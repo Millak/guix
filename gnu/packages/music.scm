@@ -4227,14 +4227,14 @@ websites such as Libre.fm.")
 (define-public beets
   (package
     (name "beets")
-    (version "1.6.0")
+    (version "2.0.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "beets" version))
               (sha256
                (base32
-                "0paj2nxvdx4zz9xawjpbsh0dy1kp9kfhxg8akh1rpz2awhsbfvxa"))))
-    (build-system python-build-system)
+                "1kzqn6f3iw30lav9cwf653w2ns1n09yrys54dqxf6a9ppjsp449v"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
@@ -4242,10 +4242,6 @@ websites such as Libre.fm.")
           (add-after 'unpack 'set-HOME
             (lambda _
               (setenv "HOME" (string-append (getcwd) "/tmp"))))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "-v" "test"))))
           ;; Wrap the executable, so it can find python-gi (aka
           ;; pygobject) and gstreamer plugins.
           (add-after 'wrap 'wrap-typelib
@@ -4262,7 +4258,10 @@ websites such as Libre.fm.")
            python-mock
            python-py7zr
            python-pytest
-           python-responses))
+           python-pytest-cov
+           python-setuptools
+           python-responses
+           python-wheel))
     (inputs
      (list bash-minimal
            gst-plugins-base
