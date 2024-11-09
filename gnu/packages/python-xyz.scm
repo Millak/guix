@@ -1873,6 +1873,30 @@ scatter plots, histograms and heatmaps in the terminal using braille dots.")
 the versioning system in PEP 517 build frontends.")
     (license license:expat)))
 
+(define-public python-poetry-plugin-export
+  (package
+    (name "python-poetry-plugin-export")
+    (version "1.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "poetry_plugin_export" version))
+       (sha256
+        (base32 "0qgw6w4xaw7cz9ykw376c5hcg9v2k30lnmna6pc9b4ymhn51d9hz"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f)) ;tests cycle with poetry
+    (native-inputs
+     (list python-poetry-core))
+    (propagated-inputs
+     (list python-pendulum))
+    (home-page "https://python-poetry.org/")
+    (synopsis "Poetry plugin to export the dependencies to various formats")
+    (description
+     "Poetry plugin to export the dependencies to various formats.")
+    (license license:expat)))
+
 (define-public python-portpicker
   (package
     (name "python-portpicker")
