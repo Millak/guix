@@ -792,6 +792,9 @@ in userland processes thanks to the DDE layer.")
                      "-V" "MKBINUTILS=no"
                      "-V" "MKGDB=no"
                      "-V" "MKGROFF=no"
+                     "-V" "MKDTRACE=no"
+                     "-V" "MKZFS=no"
+
                      "-V" (string-append "TOPRUMP=" toprump)
                      "-V" "BUILDRUMP_CPPFLAGS=-Wno-error=stringop-overread"
                      "-V" "RUMPUSER_EXTERNAL_DPLIBS=pthread"
@@ -802,7 +805,8 @@ in userland processes thanks to the DDE layer.")
                            " -DRUMP_REGISTER_T=int"
                            " -DRUMPUSER_CONFIG=yes"
                            " -DNO_PCI_MSI_MSIX=yes"
-                           " -DNUSB_DMA=1")
+                           " -DNUSB_DMA=1"
+                           " -DPAE")
                      "-V" (string-append
                            "CWARNFLAGS="
                            " -Wno-error=maybe-uninitialized"
