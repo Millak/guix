@@ -4227,28 +4227,26 @@ websites such as Libre.fm.")
                 "0paj2nxvdx4zz9xawjpbsh0dy1kp9kfhxg8akh1rpz2awhsbfvxa"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'set-HOME
-           (lambda _
-             (setenv "HOME" (string-append (getcwd) "/tmp"))
-             #t))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-v" "test"))))
-         ;; Wrap the executable, so it can find python-gi (aka
-         ;; pygobject) and gstreamer plugins.
-         (add-after 'wrap 'wrap-typelib
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((prog (string-append (assoc-ref outputs "out")
-                                        "/bin/beet"))
-                   (plugins (getenv "GST_PLUGIN_SYSTEM_PATH"))
-                   (types (getenv "GI_TYPELIB_PATH")))
-               (wrap-program prog
-                 `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,plugins))
-                 `("GI_TYPELIB_PATH" ":" prefix (,types)))
-               #t))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-HOME
+            (lambda _
+              (setenv "HOME" (string-append (getcwd) "/tmp"))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-v" "test"))))
+          ;; Wrap the executable, so it can find python-gi (aka
+          ;; pygobject) and gstreamer plugins.
+          (add-after 'wrap 'wrap-typelib
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((prog (string-append #$output "/bin/beet"))
+                    (plugins (getenv "GST_PLUGIN_SYSTEM_PATH"))
+                    (types (getenv "GI_TYPELIB_PATH")))
+                (wrap-program prog
+                  `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,plugins))
+                  `("GI_TYPELIB_PATH" ":" prefix (,types)))))))))
     (native-inputs
      (list gobject-introspection
            python-flask
