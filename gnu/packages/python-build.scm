@@ -531,6 +531,30 @@ any dependency management.  It aims to keep dependencies to a minimum, in
 order to make bootstrapping easier.")
     (license license:expat)))
 
+;; There are quite a few amount of Python installers in the wild we need the
+;; one from PyPa team.
+(define-public python-pypa-installer
+  (package
+    (name "python-pypa-installer")
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "installer" version))
+       (sha256
+        (base32 "0cdnqh3a3amw8k4s1pzfjh0hpvzw4pczgl702s1b16r82qqkwvd2"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f)) ; Depends on pytest, which we cannot import into this module.
+    (native-inputs
+     (list python-flit-core))
+    (home-page "https://installer.readthedocs.io/")
+    (synopsis "low-level library for installing from a Python wheel distribution")
+    (description
+     "This package provides a library for installing Python wheels.")
+    (license license:expat)))
+
 (define-public python-poetry-core-1.0
   (package
     (name "python-poetry-core")
