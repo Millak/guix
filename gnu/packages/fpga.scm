@@ -8,6 +8,7 @@
 ;;; Copyright © 2022 Christian Gelinek <cgelinek@radlogic.com.au>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2024 Jakob Kirsch <jakob.kirsch@web.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -38,6 +39,7 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
@@ -147,15 +149,15 @@ For synthesis, the compiler generates netlists in the desired format.")
 (define-public yosys
   (package
     (name "yosys")
-    (version "0.26")
+    (version "0.46")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/YosysHQ/yosys")
-                    (commit (string-append "yosys-" version))))
+                    (commit version)))
               (sha256
                (base32
-                "0s79ljgbcfkm7l9km7dcvlz4mnx38nbyxppscvh5il5lw07n45gx"))
+                "1zj7vbpy6v1wn4p5cjs4hdjd467a1j1aj2qhs148bl2s6mzq3p86"))
               (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
@@ -214,6 +216,7 @@ For synthesis, the compiler generates netlists in the desired format.")
            tcl)) ; tclsh for the tests
     (inputs
      (list abc
+           bash-minimal
            graphviz
            gtkwave
            libffi
