@@ -49,6 +49,7 @@
             %base-initrd-modules
             raw-initrd
             file-system-packages
+            file-system-modules
             base-initrd))
 
 
