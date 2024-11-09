@@ -4054,13 +4054,13 @@ formats, looking up tracks through metadata and audio fingerprints.")
 (define-public python-mutagen
   (package
     (name "python-mutagen")
-    (version "1.45.1")
+    (version "1.47.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "mutagen" version))
               (sha256
                (base32
-                "1qdk6i8gyhbi1c4j5jmbfpac3q8sff2ysri1pnp7nb9wzcp615v3"))))
+                "16gwy04xxc8p4650f8r0nd46k2y5ndhn559wrys3334p1bpsv7vi"))))
     (build-system pyproject-build-system)
     (arguments
      (list
