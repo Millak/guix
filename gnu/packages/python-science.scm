@@ -1748,11 +1748,14 @@ higher scores.")
           (add-before 'check 'build-extensions
             (lambda _
               (invoke "python" "setup.py" "build_ext" "--inplace"))))))
-    (propagated-inputs (list python-numpy))
     (native-inputs
      (list python-hypothesis
            python-pytest
-           python-setuptools-scm))
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (list python-numpy))
     (home-page "https://github.com/astrofrog/fast-histogram")
     (synopsis "Fast simple 1D and 2D histograms")
     (description
