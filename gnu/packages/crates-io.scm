@@ -49031,14 +49031,14 @@ enhances the built-in library with some useful features.")
 (define-public rust-ntest-timeout-0.9
   (package
     (name "rust-ntest-timeout")
-    (version "0.9.0")
+    (version "0.9.3")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "ntest_timeout" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1948a5ps329acg8fy2c2dyjgc8f96l0gin271cpl0yjq420lcsq6"))))
+                "1db3dzgcj2xyr4vcji90mwh8937nvj0mwbrk9adzg5qc34pwkizw"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
