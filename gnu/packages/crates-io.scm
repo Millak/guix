@@ -94703,8 +94703,45 @@ for locating fonts.")
         ("rust-zerocopy-derive" ,rust-zerocopy-derive-0.2))))
     (license license:bsd-3)))
 
+(define-public rust-zerocopy-derive-0.8
+  (package
+    (name "rust-zerocopy-derive")
+    (version "0.8.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "zerocopy-derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1cd712qs5ccn6diy53ymk8vkprgcmnx1gvg3x3xsdxqxi362ywzs"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (("\"= ?([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                   (string-append "\"^" version)))))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; unresolved import `zerocopy`
+       #:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))
+       #:cargo-development-inputs
+       (("rust-dissimilar" ,rust-dissimilar-1)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-prettyplease" ,rust-prettyplease-0.2)
+        ("rust-rustversion" ,rust-rustversion-1)
+        ("rust-static-assertions" ,rust-static-assertions-1)
+        ("rust-trybuild" ,rust-trybuild-1))))
+    (home-page "https://github.com/google/zerocopy")
+    (synopsis "Custom derive for traits from the zerocopy Rust crate")
+    (description
+     "This package provides custom derive for traits from the zerocopy Rust
+crate.")
+    (license (list license:bsd-2 license:asl2.0 license:expat))))
+
 (define-public rust-zerocopy-derive-0.7
   (package
+    (inherit rust-zerocopy-derive-0.8)
     (name "rust-zerocopy-derive")
     (version "0.7.32")
     (source
@@ -94719,7 +94756,6 @@ for locating fonts.")
         '(begin (substitute* "Cargo.toml"
                   (("\"= ?([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
                    (string-append "\"^" version)))))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f  ; unresolved import `zerocopy`
        #:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
@@ -94727,13 +94763,7 @@ for locating fonts.")
                        ("rust-syn" ,rust-syn-2))
        #:cargo-development-inputs
        (("rust-static-assertions" ,rust-static-assertions-1)
-        ("rust-trybuild" ,rust-trybuild-1))))
-    (home-page "https://github.com/google/zerocopy")
-    (synopsis "Custom derive for traits from the zerocopy Rust crate")
-    (description
-     "This package provides custom derive for traits from the zerocopy Rust
-crate.")
-    (license (list license:bsd-2 license:asl2.0 license:expat))))
+        ("rust-trybuild" ,rust-trybuild-1))))))
 
 (define-public rust-zerocopy-derive-0.3
   (package
