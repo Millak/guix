@@ -94779,14 +94779,14 @@ crate.")
   (package
     (inherit rust-zerocopy-derive-0.8)
     (name "rust-zerocopy-derive")
-    (version "0.7.32")
+    (version "0.7.35")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "zerocopy-derive" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "19nj11md42aijyqnfx8pa647fjzhz537xyc624rajwwfrn6b3qcw"))
+        (base32 "0gnf2ap2y92nwdalzz3x7142f2b83sni66l39vxp2ijd6j080kzs"))
        (modules '((guix build utils)))
        (snippet
         '(begin (substitute* "Cargo.toml"
