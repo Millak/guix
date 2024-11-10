@@ -4867,20 +4867,19 @@ Rust.")
 (define-public rust-async-channel-2
   (package
     (name "rust-async-channel")
-    (version "2.1.1")
+    (version "2.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "async-channel" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1337ywc1paw03rdlwh100kh8pa0zyp0nrlya8bpsn6zdqi5kz8qw"))))
+        (base32 "0skvwxj6ysfc6d7bhczz9a2550260g62bm5gl0nmjxxyn007id49"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-concurrent-queue" ,rust-concurrent-queue-2)
-        ("rust-event-listener" ,rust-event-listener-4)
-        ("rust-event-listener-strategy" ,rust-event-listener-strategy-0.4)
+        ("rust-event-listener-strategy" ,rust-event-listener-strategy-0.5)
         ("rust-futures-core" ,rust-futures-core-0.3)
         ("rust-pin-project-lite" ,rust-pin-project-lite-0.2))
        #:cargo-development-inputs
