@@ -2129,18 +2129,17 @@ IPC Router) bus.")
         (base32
          "1m5y2sf14qd2i9mvbb68wxqlfwvpiprgz8zmcx6wb2cnjgsszmwp"))))
     (build-system meson-build-system)
-    (inputs
-     (list
-      bash-completion
-      libgudev))
     (native-inputs
-     (list `(,glib "bin")               ;for glib-mkenums
+     (list bash-completion
+           `(,glib "bin")               ;for glib-mkenums
            gobject-introspection
            help2man
            pkg-config
            python-minimal))
-    ;; These are required by qmi-glib.pc.
+    (inputs
+     (list libgudev))
     (propagated-inputs
+     ;; These are required by qmi-glib.pc.
      (list glib
            libmbim
            libqrtr-glib))
