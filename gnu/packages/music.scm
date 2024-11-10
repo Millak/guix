@@ -4,7 +4,7 @@
 ;;; Copyright © 2015 Paul van der Walt <paul@denknerd.org>
 ;;; Copyright © 2016 Al McElrath <hello@yrns.org>
 ;;; Copyright © 2016, 2017, 2019, 2021-2024 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2016, 2018, 2021 Leo Famulari <leo@famulari.name>
+;;; Copyright © 2016, 2018, 2021, 2024 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2017, 2019 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2016 John J. Foerch <jjfoerch@earthlink.net>
 ;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
@@ -1330,6 +1330,40 @@ required.  Extempore also has strong timing and concurrency semantics, which
 are helpful when working in problem spaces where timing is important (such as
 audio and video).")
     (license license:bsd-2)))
+
+(define-public flacon
+  (package
+    (name "flacon")
+    (version "11.4.0")
+    (source
+      (origin
+        (method git-fetch)
+        (uri
+          (git-reference
+            (url "https://github.com/flacon/flacon")
+            (commit (string-append "v" version))
+            (recursive? #t)))
+        (sha256
+          (base32 "0yp73yl5x9m2l4whrzj6yx8aqv1915khmlihgp1p12m9m540dql2"))))
+    (build-system cmake-build-system)
+    (arguments
+      ;; The tests fail while attempting to exercise MacOS functionality.
+      (list #:tests? #f))
+    (native-inputs (list pkg-config))
+    (inputs
+      (list qtbase-5
+            qttools-5
+            taglib
+            uchardet
+            zlib))
+    (home-page "https://flacon.github.io/")
+    (synopsis "Split audio tracks from an audio CD image to separate tracks")
+    (description "Flacon extracts individual tracks from one big audio file
+containing an entire CD of music and saves them as separate audio files.  To do
+this, it uses information from the appropriate CUE file. Also, Flacon makes it
+possible to conveniently revise or specify tags both for all tracks at once or
+for each tag separately.")
+    (license license:lgpl2.1+)))
 
 (define-public fluida-lv2
   (package
