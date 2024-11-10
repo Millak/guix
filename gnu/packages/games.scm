@@ -11906,7 +11906,7 @@ and unsafe rides.  Which path will you take?")
 (define-public ultrastar-deluxe
   (package
     (name "ultrastar-deluxe")
-    (version "2023.9.0")
+    (version "2024.10.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -11915,7 +11915,7 @@ and unsafe rides.  Which path will you take?")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0sm0f67hpsys072yvp5phhza686ivbb18qlfy62vsdv0v9cizxia"))
+                "16q6b5nnjx5baq4m30ys47970kjgp06xihyd6qyb08s0yk2f54jz"))
               (patches (search-patches "ultrastar-deluxe-no-freesans.patch"))
               (modules '((guix build utils)))
               (snippet
@@ -11964,13 +11964,13 @@ and unsafe rides.  Which path will you take?")
                (substitute* (string-append
                              (assoc-ref outputs "out")
                              "/share/ultrastardx/fonts/fonts.ini")
-                 (("=NotoSans/") (string-append "=" #$font-google-noto
+                 (("=NotoSans/") (string-append "=" #$font-google-noto:ttf
                                                 "/share/fonts/truetype/"))
                  (("=DejaVu/") (string-append "=" #$font-dejavu
                                               "/share/fonts/truetype/"))))))))
-    (inputs (list ffmpeg-5
+    (inputs (list ffmpeg
                   font-dejavu
-                  font-google-noto
+                  (list font-google-noto "ttf")
                   ; Not needed, since we don’t have freesans.
                   ;font-wqy-microhei
                   freetype
