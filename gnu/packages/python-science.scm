@@ -2730,7 +2730,8 @@ parentdir_prefix = distributed-
            python-importlib-metadata
            python-pytest
            python-pytest-timeout
-           python-versioneer))
+           python-versioneer
+           python-wheel))
     (home-page "https://distributed.dask.org")
     (synopsis "Distributed scheduler for Dask")
     (description "Dask.distributed is a lightweight library for distributed
