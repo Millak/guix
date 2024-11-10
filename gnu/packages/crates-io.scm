@@ -6007,7 +6007,7 @@ crate.")
 (define-public rust-async-trait-0.1
   (package
     (name "rust-async-trait")
-    (version "0.1.77")
+    (version "0.1.83")
     (source
      (origin
        (method url-fetch)
@@ -6015,7 +6015,7 @@ crate.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1adf1jh2yg39rkpmqjqyr9xyd6849p0d95425i6imgbhx0syx069"))))
+         "1p8q8gm4fv2fdka8hwy2w3f8df7p5inixqi7rlmbnky3wmysw73j"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
