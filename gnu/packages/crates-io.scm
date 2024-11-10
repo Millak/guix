@@ -87155,7 +87155,7 @@ etc. distance calculations and string search.")
 (define-public rust-try-lock-0.2
   (package
     (name "rust-try-lock")
-    (version "0.2.4")
+    (version "0.2.5")
     (source
       (origin
         (method url-fetch)
@@ -87163,7 +87163,7 @@ etc. distance calculations and string search.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "1vc15paa4zi06ixsxihwbvfn24d708nsyg1ncgqwcrn42byyqa1m"))))
+          "0jqijrrvm1pyq34zn1jmy2vihd4jcrjlvsh4alkjahhssjnsn8g4"))))
     (build-system cargo-build-system)
     (home-page "https://github.com/seanmonstar/try-lock")
     (synopsis "Lightweight atomic lock")
