@@ -100,13 +100,13 @@ conversions for values passed between the two languages.")
 (define-public python-cffi
   (package
     (name "python-cffi")
-    (version "1.15.1")
+    (version "1.17.1")
     (source
      (origin
       (method url-fetch)
       (uri (pypi-uri "cffi" version))
       (sha256
-       (base32 "1y9lr651svbzf1m03s4lqbnbv2byx8f6f0ml7hjm24vvlfwvy06l"))))
+       (base32 "0918qn4yfjfgcy7i4imfy9q1cvl3svmm06anakflig1jdh0wcf8w"))))
     (build-system python-build-system)
     (inputs
      (list libffi))
@@ -129,7 +129,7 @@ conversions for values passed between the two languages.")
                                "linker_so='gcc -shared')")))
              (substitute* "testing/cffi0/test_ownlib.py"
                (("\"cc testownlib") "\"gcc testownlib"))
-             (invoke "pytest" "-v" "c/" "testing/"
+             (invoke "pytest" "-v" "src/c/" "testing/"
                      ;; Disable tests that fail (harmlessly) with glibc
                      ;; 2.34 and later:
                      ;; https://foss.heptapod.net/pypy/cffi/-/issues/528
@@ -154,7 +154,7 @@ conversions for values passed between the two languages.")
                               "testing/cffi1/test_verify1.py")
                  (("lib_m = \\[['\"]{1}m['\"]{1}\\]")
                   (format #f "lib_m = ['~a']" libm)))
-               (substitute* "c/test_c.py"
+               (substitute* "src/c/test_c.py"
                  (("find_and_load_library\\(['\"]{1}c['\"]{1}")
                   (format #f "find_and_load_library('~a'" libc)))))))))
     (home-page "https://cffi.readthedocs.io/")
