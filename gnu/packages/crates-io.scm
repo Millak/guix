@@ -79234,13 +79234,13 @@ codecs and formats.")
 (define-public rust-syn-2
   (package
     (name "rust-syn")
-    (version "2.0.48")
+    (version "2.0.87")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "syn" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
-                (base32 "0gqgfygmrxmp8q32lia9p294kdd501ybn6kn2h4gqza0irik2d8g"))))
+               (base32 "0bd3mfcswvn4jkrp7ich5kk58kmpph8412yxd36nsfnh8vilrai5"))))
     (build-system cargo-build-system)
     (arguments
      ;; Tests fail to compile
@@ -79266,7 +79266,7 @@ codecs and formats.")
         ("rust-insta" ,rust-insta-1)
         ("rust-rayon" ,rust-rayon-1)
         ("rust-ref-cast" ,rust-ref-cast-1)
-        ("rust-reqwest" ,rust-reqwest-0.11)
+        ("rust-reqwest" ,rust-reqwest-0.12)
         ("rust-rustversion" ,rust-rustversion-1)
         ("rust-syn-test-suite" ,rust-syn-test-suite-0.0.0)
         ("rust-tar" ,rust-tar-0.4)
