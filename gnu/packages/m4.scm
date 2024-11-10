@@ -2,7 +2,7 @@
 ;;; Copyright © 2012, 2013, 2015 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
-;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -63,6 +63,13 @@
                                    "tests/test-sigsegv-catch-stackoverflow2.c")
                       (("(^| )main *\\(.*" all)
                        (string-append all "{\n  exit (77);//"))))))
+              '())
+        ,@(if (target-hurd64?)
+              '((add-after 'unpack 'patch-sigsegv
+                  (lambda _
+                    ;; Stack overflow recovery does not compile
+                    (substitute* "lib/sigsegv.in.h"
+                      (("__GNU__") "__XGNU__")))))
               '())
         (add-after 'unpack 'configure-shell
           (lambda* (#:key native-inputs inputs #:allow-other-keys)
