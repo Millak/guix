@@ -38157,7 +38157,8 @@ and @code{bspatch4}.")
      (list python-pytest
            python-pyvirtualdisplay
            python-setuptools
-           python-xvfbwrapper))
+           python-xvfbwrapper
+           python-wheel))
     (inputs (list mpv))
     (propagated-inputs (list python-pillow)) ;for raw screenshots
     (home-page "https://github.com/jaseg/python-mpv")
