@@ -136,6 +136,7 @@
      (with-directory-excursion directory
        (call-with-output-file "t.c"
          (lambda (port)
+           (display "#include <stdio.h>\n" port)
            (display "int main () { puts(\"hello\"); }" port)))
        (invoke c-compiler "t.c"
                "-Wl,--enable-new-dtags" "-Wl,-rpath=/foo" "-Wl,-rpath=/bar")
@@ -164,6 +165,7 @@
      (with-directory-excursion directory
        (call-with-output-file "t.c"
          (lambda (port)
+           (display "#include <stdio.h>\n" port)
            (display "int main () { puts(\"hello\"); }" port)))
 
        (invoke c-compiler "t.c"
