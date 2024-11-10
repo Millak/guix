@@ -19206,7 +19206,7 @@ with a new public API, and RPython support.")
       ;; This test expects the hy executable to be called 'hy', but in Guix
       ;; it's .hy-real.
       #:test-flags #~(list "-k" "not test_sys_executable")))
-    (native-inputs (list python-pytest-next python-wheel))
+    (native-inputs (list python-pytest python-wheel))
     (propagated-inputs (list python-funcparserlib))
     (home-page "https://docs.hylang.org/en/stable/")
     (synopsis "Lisp frontend to Python")

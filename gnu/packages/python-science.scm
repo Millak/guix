@@ -1206,7 +1206,7 @@ doing practical, real world data analysis in Python.")
            python-matplotlib
            python-openpyxl
            python-pytest-asyncio
-           python-pytest-next
+           python-pytest
            python-pytest-localserver
            python-pytest-mock
            python-pytest-xdist
