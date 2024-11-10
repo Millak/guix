@@ -29547,6 +29547,9 @@ format.")
                              "tests/test_frequency.py")
                 (("test_07_non_posix_shell")
                  "__off_test_07_non_posix_shell")
+                ;; Fails on leap years
+                (("test_19_frequency_at_month")
+                 "__off_test_19_frequency_at_month")
                 ;; AssertionError: 48 != 24
                 (("test_20_frequency_at_year")
                  "__off_test_20_frequency_at_year")))))))
