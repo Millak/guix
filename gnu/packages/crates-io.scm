@@ -94632,8 +94632,48 @@ for locating fonts.")
     (description "@code{PolicyKit} binding.")
     (license license:expat)))
 
+(define-public rust-zerocopy-0.8
+  (package
+    (name "rust-zerocopy")
+    (version "0.8.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "zerocopy" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "170h9r9cz0cfdfka04v4dl6zsbzl45cqr6k7x2g4lbrmiw7nk7pl"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (("\"= ?([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                   (string-append "\"^" version)))))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=error::tests::alignment_display"
+         "--skip=error::tests::size_display"
+         "--skip=error::tests::validity_display"
+         "--skip=layout::tests::test_validate_cast_and_convert_metadata"
+         "--skip=util::tests::test_round_down_to_next_multiple_of_alignment_zerocopy_panic_in_const_and_vec_try_reserve")
+       #:cargo-inputs (("rust-zerocopy-derive" ,rust-zerocopy-derive-0.8))
+       #:cargo-development-inputs
+       (("rust-elain" ,rust-elain-0.3)
+        ("rust-itertools" ,rust-itertools-0.11)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-rustversion" ,rust-rustversion-1)
+        ("rust-static-assertions" ,rust-static-assertions-1)
+        ("rust-trybuild" ,rust-trybuild-1)
+        ("rust-zerocopy-derive" ,rust-zerocopy-derive-0.8))))
+    (home-page "https://github.com/google/zerocopy")
+    (synopsis "Utilities for zero-copy parsing and serialization")
+    (description "Utilities for zero-copy parsing and serialization.")
+    (license (list license:bsd-2 license:asl2.0 license:expat))))
+
 (define-public rust-zerocopy-0.7
   (package
+    (inherit rust-zerocopy-0.8)
     (name "rust-zerocopy")
     (version "0.7.32")
     (source
@@ -94648,23 +94688,19 @@ for locating fonts.")
         '(begin (substitute* "Cargo.toml"
                   (("\"= ?([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
                    (string-append "\"^" version)))))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f  ; use of undeclared crate or module `testutil`
        #:cargo-inputs (("rust-byteorder" ,rust-byteorder-1)
                        ("rust-zerocopy-derive" ,rust-zerocopy-derive-0.7))
-       #:cargo-development-inputs (("rust-assert-matches" ,rust-assert-matches-1)
-                                   ("rust-elain" ,rust-elain-0.3)
-                                   ("rust-itertools" ,rust-itertools-0.11)
-                                   ("rust-rand" ,rust-rand-0.8)
-                                   ("rust-rustversion" ,rust-rustversion-1)
-                                   ("rust-static-assertions" ,rust-static-assertions-1)
-                                   ("rust-trybuild" ,rust-trybuild-1)
-                                   ("rust-zerocopy-derive" ,rust-zerocopy-derive-0.7))))
-    (home-page "https://github.com/google/zerocopy")
-    (synopsis "Utilities for zero-copy parsing and serialization")
-    (description "Utilities for zero-copy parsing and serialization.")
-    (license (list license:bsd-2 license:asl2.0 license:expat))))
+       #:cargo-development-inputs
+       (("rust-assert-matches" ,rust-assert-matches-1)
+        ("rust-elain" ,rust-elain-0.3)
+        ("rust-itertools" ,rust-itertools-0.11)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-rustversion" ,rust-rustversion-1)
+        ("rust-static-assertions" ,rust-static-assertions-1)
+        ("rust-trybuild" ,rust-trybuild-1)
+        ("rust-zerocopy-derive" ,rust-zerocopy-derive-0.7))))))
 
 (define-public rust-zerocopy-0.6
   (package
