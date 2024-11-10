@@ -2749,6 +2749,39 @@ utilities such as ping(1).")
 with Numpy and SciPy.")
     (license license:bsd-3)))
 
+(define-public python-rich-tables
+  (package
+    (name "python-rich-tables")
+    (version "0.6.1")
+    (source
+     (origin
+       (method git-fetch)   ; no tests data in PyPi package
+       (uri (git-reference
+             (url "https://github.com/snejus/rich-tables")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1wqr6sldf97ycs4gfvsqhbh1ki2kgsaicsy44g9lspvlda5nfcp1"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-freezegun
+           python-poetry-core
+           python-pytest
+           python-pytest-cov))
+    (propagated-inputs
+     (list python-funcy
+           python-multimethod
+           python-platformdirs
+           python-rgbxy
+           python-rich
+           python-sqlparse))
+    (home-page "https://github.com/snejus/rich-tables")
+    (synopsis "Ready-made rich tables for various purposes")
+    (description
+     "This package implements rich tables for various purposes, it's JSON
+human-prettifier based on the @code{rich} Python library.")
+    (license license:expat)))
+
 (define-public python-shapely
   (package
     (name "python-shapely")
