@@ -57827,13 +57827,13 @@ replacements, adding colorful diffs.")
   (package
     (inherit rust-prettyplease-0.2)
     (name "rust-prettyplease")
-    (version "0.1.23")
+    (version "0.1.25")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "prettyplease" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
-               (base32 "0y2wbmflbkgp13ywd7qyq7hyi59x5zazmljnw8gg09wnfwak4zp9"))))
+               (base32 "11lskniv8pf8y8bn4dc3nmjapfhnibxbm5gamp2ad9qna3lld1kc"))))
     (arguments
      `(#:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
