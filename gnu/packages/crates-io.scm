@@ -5287,23 +5287,24 @@ Timer, a future that expires at a point in time.")
 (define-public rust-async-lock-3
   (package
     (name "rust-async-lock")
-    (version "3.3.0")
+    (version "3.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "async-lock" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0yxflkfw46rad4lv86f59b5z555dlfmg1riz1n8830rgi0qb8d6h"))))
+        (base32 "060vh45i809wcqyxzs5g69nqiqah7ydz0hpkcjys9258vqn4fvpz"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-event-listener" ,rust-event-listener-4)
-        ("rust-event-listener-strategy" ,rust-event-listener-strategy-0.4)
+       (("rust-event-listener" ,rust-event-listener-5)
+        ("rust-event-listener-strategy" ,rust-event-listener-strategy-0.5)
+        ("rust-loom" ,rust-loom-0.7)
         ("rust-pin-project-lite" ,rust-pin-project-lite-0.2))
        #:cargo-development-inputs
-       (("rust-async-channel" ,rust-async-channel-2)
-        ("rust-fastrand" ,rust-fastrand-2)
+       (("rust-fastrand" ,rust-fastrand-2)
+        ("rust-flume" ,rust-flume-0.11)
         ("rust-futures-lite" ,rust-futures-lite-2)
         ("rust-waker-fn" ,rust-waker-fn-1)
         ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))
