@@ -5073,29 +5073,30 @@ AsyncSeek if the inner type does.")
 (define-public rust-async-executor-1
   (package
     (name "rust-async-executor")
-    (version "1.5.1")
+    (version "1.13.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "async-executor" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1yrs723d4djhia5mimc85blrvly0kl8bj260b5vz0r4559gxr8vg"))))
+        (base32 "1v6w1dbvsmw6cs4dk4lxj5dvrikc6xi479wikwaab2qy3h09mjih"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-async-lock" ,rust-async-lock-2)
-        ("rust-async-task" ,rust-async-task-4)
+       (("rust-async-task" ,rust-async-task-4)
         ("rust-concurrent-queue" ,rust-concurrent-queue-2)
-        ("rust-fastrand" ,rust-fastrand-1)
-        ("rust-futures-lite" ,rust-futures-lite-1)
+        ("rust-fastrand" ,rust-fastrand-2)
+        ("rust-futures-lite" ,rust-futures-lite-2)
         ("rust-slab" ,rust-slab-0.4))
        #:cargo-development-inputs
-       (("rust-async-channel" ,rust-async-channel-1)
-        ("rust-async-io" ,rust-async-io-1)
-        ("rust-criterion" ,rust-criterion-0.4)
+       (("rust-async-channel" ,rust-async-channel-2)
+        ("rust-async-io" ,rust-async-io-2)
+        ("rust-async-lock" ,rust-async-lock-3)
+        ("rust-criterion" ,rust-criterion-0.5)
         ("rust-easy-parallel" ,rust-easy-parallel-3)
-        ("rust-num-cpus" ,rust-num-cpus-1)
+        ("rust-fastrand" ,rust-fastrand-2)
+        ("rust-futures-lite" ,rust-futures-lite-2)
         ("rust-once-cell" ,rust-once-cell-1))))
     (home-page "https://github.com/stjepang/async-executor")
     (synopsis "Async executor")
