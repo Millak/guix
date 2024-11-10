@@ -15462,14 +15462,14 @@ capabilities, for example to find out about its colored console abilities.")
 (define-public rust-concurrent-queue-2
   (package
     (name "rust-concurrent-queue")
-    (version "2.4.0")
+    (version "2.5.0")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "concurrent-queue" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0qvk23ynj311adb4z7v89wk3bs65blps4n24q8rgl23vjk6lhq6i"))))
+                "0wrr3mzq2ijdkxwndhf79k952cp4zkz35ray8hvsxl96xrx1k82c"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -15477,9 +15477,10 @@ capabilities, for example to find out about its colored console abilities.")
         ("rust-loom" ,rust-loom-0.7)
         ("rust-portable-atomic" ,rust-portable-atomic-1))
        #:cargo-development-inputs
-       (("rust-criterion" ,rust-criterion-0.4)
+       (("rust-criterion" ,rust-criterion-0.5)
         ("rust-easy-parallel" ,rust-easy-parallel-3)
-        ("rust-fastrand" ,rust-fastrand-2))))
+        ("rust-fastrand" ,rust-fastrand-2)
+        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))
     (home-page "https://github.com/smol-rs/concurrent-queue")
     (synopsis "Concurrent multi-producer multi-consumer queue")
     (description
