@@ -415,11 +415,19 @@ inherited."
       ;; list of symbols.
       (syntax-case field-specs ()
         (((field get properties ...) ...)
-         (string-hash (object->string
-                       (syntax->datum #'((field properties ...) ...)))
-                      (cond-expand
-                        (guile-3 (target-most-positive-fixnum))
-                        (else most-positive-fixnum))))))
+         ;; Passing (target-most-positive-fixnum) as the second argument of
+         ;; 'string-hash' won't have the intended effect when cross-compiling
+         ;; because that second argument is used to compute a modulo after the
+         ;; hash has been computed on an 'unsigned long'.  Instead, only keep
+         ;; the 32 most significant bits on 64-bit platforms, unconditionally.
+         ;; See <https://issues.guix.gnu.org/74296>.
+         (let ((hash-value
+                (string-hash
+                 (object->string (syntax->datum #'((field properties ...) ...))))))
+           (cond
+            ((< most-positive-fixnum (ash 1 32)) hash-value)
+            ((< most-positive-fixnum (ash 1 64)) (ash hash-value -32))
+            (else (error "unexpected!" most-positive-fixnum)))))))
 
     (syntax-case s ()
       ((_ type syntactic-ctor ctor pred
