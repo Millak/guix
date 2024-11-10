@@ -5207,14 +5207,14 @@ synchronous without duplicating it.")
 (define-public rust-async-io-2
   (package
     (name "rust-async-io")
-    (version "2.3.1")
+    (version "2.3.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "async-io" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0rggn074kbqxxajci1aq14b17gp75rw9l6rpbazcv9q0bc6ap5wg"))))
+        (base32 "1s679l7x6ijh8zcxqn5pqgdiyshpy4xwklv86ldm1rhfjll04js4"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-async-lock" ,rust-async-lock-3)
@@ -5227,7 +5227,7 @@ synchronous without duplicating it.")
                        ("rust-rustix" ,rust-rustix-0.38)
                        ("rust-slab" ,rust-slab-0.4)
                        ("rust-tracing" ,rust-tracing-0.1)
-                       ("rust-windows-sys" ,rust-windows-sys-0.52))
+                       ("rust-windows-sys" ,rust-windows-sys-0.59))
        #:cargo-development-inputs (("rust-async-channel" ,rust-async-channel-2)
                                    ("rust-async-net" ,rust-async-net-2)
                                    ("rust-blocking" ,rust-blocking-1)
