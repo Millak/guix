@@ -55543,7 +55543,7 @@ along with strong support for variations and the core header tables.")
 (define-public rust-pkg-config-0.3
   (package
     (name "rust-pkg-config")
-    (version "0.3.27")
+    (version "0.3.31")
     (source
      (origin
        (method url-fetch)
@@ -55551,7 +55551,7 @@ along with strong support for variations and the core header tables.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0r39ryh1magcq4cz5g9x88jllsnxnhcqr753islvyk4jp9h2h1r6"))))
+         "1wk6yp2phl91795ia0lwkr3wl4a9xkrympvhqq8cxk4d75hwhglm"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-development-inputs
