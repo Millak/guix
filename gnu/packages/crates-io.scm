@@ -48978,14 +48978,14 @@ enhances the built-in library with some useful features.")
 (define-public rust-ntest-test-cases-0.9
   (package
     (name "rust-ntest-test-cases")
-    (version "0.9.0")
+    (version "0.9.3")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "ntest_test_cases" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "08ifw9zhm1l93wh24k8zrk25sj3k9vpw29sfwq4lsvwwf6z36zdy"))))
+                "14xa1qalxn5lyl0x5ykf2l9sli0xgxp9kgpbd19jwnc8lkrd7l0n"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
