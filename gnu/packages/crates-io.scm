@@ -94675,14 +94675,14 @@ for locating fonts.")
   (package
     (inherit rust-zerocopy-0.8)
     (name "rust-zerocopy")
-    (version "0.7.32")
+    (version "0.7.35")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "zerocopy" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1ghnfxw69kx5d1aqfd5fsfrra9dgpz17yqx84nd4ryjk3sbd7m3l"))
+        (base32 "1w36q7b9il2flg0qskapgi9ymgg7p985vniqd09vi0mwib8lz6qv"))
        (modules '((guix build utils)))
        (snippet
         '(begin (substitute* "Cargo.toml"
