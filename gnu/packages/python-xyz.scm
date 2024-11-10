@@ -16479,30 +16479,36 @@ printing of sub-tables by specifying a row range.")
 (define-public python-curio
   (package
     (name "python-curio")
-    (version "1.5")
+    (version "1.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "curio" version))
        (sha256
-        (base32 "045wwg16qadsalhicbv21p14sj8i4w0l57639j7dmdqbb4p2225g"))))
-    (build-system python-build-system)
+        (base32 "0isj3jl5mx6m25nr1f7r91hfaydhkvmks9p85dyvl5h2n9nmhajn"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "pytest" "-vv" "-k"
-                       (string-append
-                        ;; Tries to open an outgoing connection.
-                        "not test_ssl_outgoing "
-                        ;; This test fails since Python 3.9.9 (see:
-                        ;; https://github.com/dabeaz/curio/issues/347).
-                        "and not test_timeout"))))))))
+     (list
+      #:test-flags
+      #~(list ;; AttributeError: 'NoneType' object has no attribute
+              ;; 'terminate'
+              "--deselect=tests/test_workers.py::test_exception"
+              ;; Tries to open an outgoing connection.
+              "--deselect=tests/test_network.py::test_ssl_outgoing"
+              ;; This test fails since Python 3.9.9, see
+              ;; <https://github.com/dabeaz/curio/issues/347>.
+              ;; AttributeError: 'NoneType' object has no attribute
+              ;; 'terminate'
+              "--deselect=tests/test_workers.py::test_worker_timeout"
+              ;; AttributeError: 'NoneType' object has no attribute
+              ;; 'terminate'
+              "--deselect=tests/test_workers.py::test_bad_cpu"
+              "--deselect=tests/test_workers.py::test_cpu"
+              "--deselect=tests/test_workers.py::test_worker_cancel")))
     (native-inputs
-     (list python-pytest))
+     (list python-pytest
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/dabeaz/curio")
     (synopsis "Coroutine-based library for concurrent Python")
     (description
