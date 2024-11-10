@@ -1539,55 +1539,48 @@ standard library.")
 (define-public python-pytest
   (package
     (name "python-pytest")
-    (version "7.1.3")
+    (version "8.3.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest" version))
        (sha256
-        (base32
-         "0f8c31v5r2kgjixvy267n0nhc4xsy65g3n9lz1i1377z5pn5ydjg"))
-       (patches (search-patches "pytest-fix-unstrable-exception-test.patch"))))
-    (build-system python-build-system)
+        (base32 "1081l7yr9z61ghjkrm8qw85ndg2hkb5fc1ibjnkhi0v4pl3q3fbh"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'build 'pretend-version
-            ;; The version string is usually derived via setuptools-scm, but
-            ;; without the git metadata available, the version string is set to
-            ;; '0.0.0'.
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
-                      #$(package-version this-package))))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (setenv "TERM" "dumb")    ;attempt disabling markup tests
-              (if tests?
-                  (invoke "pytest" "-vv" "-k"
-                          (string-append
-                           ;; This test involves the /usr directory, and fails.
-                           " not test_argcomplete"
-                           ;; These test do not honor the isatty detection and
-                           ;; fail.
-                           " and not test_code_highlight"
-                           " and not test_color_yes"))
-                  (format #t "test suite not run~%")))))))
-    (propagated-inputs
-     (list python-attrs-bootstrap
-           python-iniconfig
-           python-packaging-bootstrap
-           python-pluggy
-           python-py
-           python-tomli))
+      #:test-flags
+      ;; Tests requiring Pygment, introduces cycle.
+      #~(list "-k" (string-append
+                    "not test_code_highlight"
+                    " and not test_code_highlight_continuation"
+                    " and not test_code_highlight_custom_theme"
+                    " and not test_code_highlight_invalid_theme"
+                    " and not test_code_highlight_invalid_theme_mode"
+                    " and not test_code_highlight_simple"
+                    " and not test_color_yes"
+                    " and not test_comparisons_handle_colors"
+                    " and not test_empty_NO_COLOR_and_FORCE_COLOR_ignored"
+                    " and not test_remove_dir_prefix"))))
     (native-inputs
      ;; Tests need the "regular" bash since 'bash-final' lacks `compgen`.
      (list bash
            python-hypothesis
            python-nose
+           ;; python-pygments ; introduces cycle
            python-pytest-bootstrap
+           python-setuptools
            python-setuptools-scm
-           python-xmlschema))
+           python-xmlschema
+           python-wheel))
+    (propagated-inputs
+     (list python-attrs-bootstrap
+           python-iniconfig
+           python-packaging-bootstrap
+           python-exceptiongroup
+           python-pluggy
+           python-py
+           python-tomli))
     (home-page "https://docs.pytest.org/en/latest/")
     (synopsis "Python testing library")
     (description
@@ -1650,8 +1643,12 @@ and many external plugins.")
   (package
     (inherit python-pytest)
     (name "python-pytest-bootstrap")
-    (native-inputs (list python-iniconfig python-setuptools-scm
-                         python-tomli))
+    (native-inputs
+     (list python-iniconfig
+           python-setuptools
+           python-setuptools-scm
+           python-tomli
+           python-wheel))
     (arguments `(#:tests? #f))))
 
 (define-public python-pytest-assume
