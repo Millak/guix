@@ -48915,14 +48915,14 @@ notification library.")
 (define-public rust-ntest-0.9
   (package
     (name "rust-ntest")
-    (version "0.9.0")
+    (version "0.9.3")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "ntest" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "04pmi0y7rzpkngv7lqw48c2831bn15lg8nkgj9z30i9xnz9cd3ns"))))
+                "0c03bhsbksx89cvk3maji8mzayvjvdz7pvp5fbv3gad73l53y67v"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
