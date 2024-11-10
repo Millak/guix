@@ -82656,6 +82656,28 @@ each resource matching the specific resource location pattern.")
 logging and/or tracing infrastructure before running tests.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-test-log-macros-0.2
+  (package
+    (name "rust-test-log-macros")
+    (version "0.2.16")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "test-log-macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1xd3490hvpa6fk5sqnmyzbz5xwndfpmmshjfpa8k221jm97f56ar"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/d-e-s-o/test-log.git")
+    (synopsis "Supporting procedural macro crate for test-log")
+    (description
+     "This package provides supporting procedural macro crate for test-log.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-test-strategy-0.2
   (package
     (name "rust-test-strategy")
