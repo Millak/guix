@@ -90457,20 +90457,21 @@ of help files.")
 (define-public rust-uuid-1
   (package
     (name "rust-uuid")
-    (version "1.6.1")
+    (version "1.11.0")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "uuid" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0q45jxahvysldn3iy04m8xmr8hgig80855y9gq9di8x72v7myfay"))))
+                "0sj4l28lif2wm4xrafdfgqjywjzv43wzp8nii9a4i539myhg1igq"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-arbitrary" ,rust-arbitrary-1)
-        ("rust-atomic" ,rust-atomic-0.5)
-        ("rust-borsh" ,rust-borsh-0.10)
+        ("rust-atomic" ,rust-atomic-0.6)
+        ("rust-borsh" ,rust-borsh-1)
+        ("rust-borsh-derive" ,rust-borsh-derive-1)
         ("rust-bytemuck" ,rust-bytemuck-1)
         ("rust-getrandom" ,rust-getrandom-0.2)
         ("rust-md-5" ,rust-md-5-0.10)
@@ -90480,7 +90481,7 @@ of help files.")
         ("rust-slog" ,rust-slog-2)
         ("rust-uuid-macro-internal" ,rust-uuid-macro-internal-1)
         ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
-        ("rust-zerocopy" ,rust-zerocopy-0.6))
+        ("rust-zerocopy" ,rust-zerocopy-0.8))
        #:cargo-development-inputs
        (("rust-bincode" ,rust-bincode-1)
         ("rust-rustversion" ,rust-rustversion-1)
@@ -90489,8 +90490,7 @@ of help files.")
         ("rust-serde-test" ,rust-serde-test-1)
         ("rust-trybuild" ,rust-trybuild-1)
         ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
-        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3)
-        ("rust-windows-sys" ,rust-windows-sys-0.48))))
+        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))
     (home-page "https://github.com/uuid-rs/uuid")
     (synopsis "Library to generate and parse UUIDs")
     (description
