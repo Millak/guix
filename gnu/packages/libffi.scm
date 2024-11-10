@@ -9,6 +9,7 @@
 ;;; Copyright © 2019, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 John Doe <dftxbs3e@free.fr>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -36,11 +37,13 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages ruby)
   #:use-module (gnu packages sphinx)
   #:use-module (guix build-system gnu)
-  #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
+  #:use-module ((guix build-system python) #:select (pypi-uri))
   #:use-module (guix build-system ruby))
 
 (define-public libffi
@@ -103,60 +106,65 @@ conversions for values passed between the two languages.")
     (version "1.17.1")
     (source
      (origin
-      (method url-fetch)
-      (uri (pypi-uri "cffi" version))
-      (sha256
-       (base32 "0918qn4yfjfgcy7i4imfy9q1cvl3svmm06anakflig1jdh0wcf8w"))))
-    (build-system python-build-system)
+       (method url-fetch)
+       (uri (pypi-uri "cffi" version))
+       (sha256
+        (base32 "0918qn4yfjfgcy7i4imfy9q1cvl3svmm06anakflig1jdh0wcf8w"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "src/c/" "testing/"
+              ;; Disable tests that fail (harmlessly) with glibc 2.34 and
+              ;; later, see
+              ;; <https://foss.heptapod.net/pypy/cffi/-/issues/528>.
+              "--deselect=testing/cffi0/test_ffi_backend.py::TestFFI::test_dlopen_handle"
+              "--deselect=testing/cffi1/test_re_python.py::test_dlopen_handle")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-gcc
+            (lambda _
+              ;; XXX The "normal" approach of setting CC and friends does
+              ;; not work here.  Is this the correct way of doing things?
+              (substitute* "testing/embedding/test_basic.py"
+                (("c = distutils\\.ccompiler\\.new_compiler\\(\\)")
+                 (string-append "c = distutils.ccompiler.new_compiler();"
+                                "c.set_executables(compiler='gcc',"
+                                "compiler_so='gcc',linker_exe='gcc',"
+                                "linker_so='gcc -shared')")))
+              (substitute* "testing/cffi0/test_ownlib.py"
+                (("\"cc testownlib") "\"gcc testownlib"))))
+          (add-before 'check 'patch-paths-of-dynamically-loaded-libraries
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Shared libraries should be referred by their absolute path as
+              ;; using find_library or the like with their name fail when the
+              ;; resolved .so object is a linker script rather than an ELF
+              ;; binary (this is a limitation of the ctype library of Python).
+              (let ((libm (search-input-file inputs "lib/libm.so.6"))
+                    (libc (search-input-file inputs "lib/libc.so.6")))
+                (substitute* '("testing/cffi0/test_function.py"
+                               "testing/cffi0/test_parsing.py"
+                               "testing/cffi0/test_unicode_literals.py"
+                               "testing/cffi0/test_zdistutils.py"
+                               "testing/cffi1/test_recompiler.py")
+                  (("lib_m = ['\"]{1}m['\"]{1}")
+                   (format #f "lib_m = '~a'" libm)))
+                (substitute* '("testing/cffi0/test_verify.py"
+                               "testing/cffi1/test_verify1.py")
+                  (("lib_m = \\[['\"]{1}m['\"]{1}\\]")
+                   (format #f "lib_m = ['~a']" libm)))
+                (substitute* "src/c/test_c.py"
+                  (("find_and_load_library\\(['\"]{1}c['\"]{1}")
+                   (format #f "find_and_load_library('~a'" libc)))))))))
+    (native-inputs
+     (list pkg-config
+           python-pytest
+           python-setuptools
+           python-wheel))
     (inputs
      (list libffi))
     (propagated-inputs ; required at run-time
      (list python-pycparser))
-    (native-inputs
-     (list pkg-config python-pytest))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             ;; XXX The "normal" approach of setting CC and friends does
-             ;; not work here.  Is this the correct way of doing things?
-             (substitute* "testing/embedding/test_basic.py"
-               (("c = distutils\\.ccompiler\\.new_compiler\\(\\)")
-                (string-append "c = distutils.ccompiler.new_compiler();"
-                               "c.set_executables(compiler='gcc',"
-                               "compiler_so='gcc',linker_exe='gcc',"
-                               "linker_so='gcc -shared')")))
-             (substitute* "testing/cffi0/test_ownlib.py"
-               (("\"cc testownlib") "\"gcc testownlib"))
-             (invoke "pytest" "-v" "src/c/" "testing/"
-                     ;; Disable tests that fail (harmlessly) with glibc
-                     ;; 2.34 and later:
-                     ;; https://foss.heptapod.net/pypy/cffi/-/issues/528
-                     "-k" (string-append "not TestFFI.test_dlopen_handle "
-                                         "and not test_dlopen_handle"))))
-         (add-before 'check 'patch-paths-of-dynamically-loaded-libraries
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; Shared libraries should be referred by their absolute path as
-             ;; using find_library or the like with their name fail when the
-             ;; resolved .so object is a linker script rather than an ELF
-             ;; binary (this is a limitation of the ctype library of Python).
-             (let ((libm (search-input-file inputs "lib/libm.so.6"))
-                   (libc (search-input-file inputs "lib/libc.so.6")))
-               (substitute* '("testing/cffi0/test_function.py"
-                              "testing/cffi0/test_parsing.py"
-                              "testing/cffi0/test_unicode_literals.py"
-                              "testing/cffi0/test_zdistutils.py"
-                              "testing/cffi1/test_recompiler.py")
-                 (("lib_m = ['\"]{1}m['\"]{1}")
-                  (format #f "lib_m = '~a'" libm)))
-               (substitute* '("testing/cffi0/test_verify.py"
-                              "testing/cffi1/test_verify1.py")
-                 (("lib_m = \\[['\"]{1}m['\"]{1}\\]")
-                  (format #f "lib_m = ['~a']" libm)))
-               (substitute* "src/c/test_c.py"
-                 (("find_and_load_library\\(['\"]{1}c['\"]{1}")
-                  (format #f "find_and_load_library('~a'" libc)))))))))
     (home-page "https://cffi.readthedocs.io/")
     (synopsis "Foreign function interface for Python")
     (description "Foreign Function Interface for Python calling C code.")
