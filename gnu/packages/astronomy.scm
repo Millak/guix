@@ -1629,7 +1629,7 @@ Main features:
            python-psutil
            ;; 3.3.0+ requries newer version of pytest, see
            ;; <https://github.com/asdf-format/asdf/issues/1804>.
-           python-pytest-8
+           python-pytest
            python-pytest-doctestplus
            python-pytest-remotedata
            python-pytest-xdist
@@ -2673,7 +2673,7 @@ sensitivity or energy density
      (list nss-certs-for-test
            pkg-config
            python-cython-3
-           python-pytest-8
+           python-pytest
            python-pytest-astropy-header
            python-pytest-cython
            ;python-pytest-doctestplus

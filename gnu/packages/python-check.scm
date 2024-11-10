@@ -1967,7 +1967,7 @@ plain (undecoratored) native coroutine tests.")
            python-cython-3
            python-setuptools))
     (propagated-inputs
-     (list python-pytest-8))
+     (list python-pytest))
     (home-page "https://github.com/lgpage/pytest-cython")
     (synopsis "Cython extension modules testing plugin")
     (description
