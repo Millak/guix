@@ -25517,6 +25517,27 @@ manipulation, or @code{stdout}.")
      @end itemize")
     (license license:expat)))
 
+(define-public python-rgbxy
+  (package
+    (name "python-rgbxy")
+    (version "0.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "rgbxy" version))
+       (sha256
+        (base32 "0c3dgm1rf7ih79pgkj7adffn8hlyqh5qah8rbzlq436kz3srk83q"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
+    (home-page "https://github.com/benknight/hue-python-rgb-converter")
+    (synopsis "RGB conversion tool in Python")
+    (description
+     "This packages implements funtionality of RGB/CIE1931 'xy' gammuts
+convertion: Gamut A, B, and C.")
+    (license license:expat)))
+
 (define-public python-sure
   (package
     (name "python-sure")
