@@ -93784,23 +93784,23 @@ to XDG Base Directory specification.")
 (define-public rust-xdg-home-1
   (package
     (name "rust-xdg-home")
-    (version "1.0.0")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "xdg-home" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1kbd1ks8bvpsay6lgk60yaf1w13daaf75ghmslan031ss4y20s97"))))
+        (base32 "1xm122zz0wjc8p8cmchij0j9nw34hwncb39jc7dc0mgvb2rdl77c"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-nix" ,rust-nix-0.26)
-                       ("rust-winapi" ,rust-winapi-0.3))
+     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2)
+                       ("rust-windows-sys" ,rust-windows-sys-0.59))
        #:phases
        (modify-phases %standard-phases
          (add-before 'check 'pre-check
            (lambda _
-             (setenv "HOME" (getcwd)))))))
+             (setenv "HOME" "/"))))))
     (home-page "https://github.com/zeenix/xdg-home")
     (synopsis "User home directory per XDG Specification")
     (description "The user's home directory as per the XDG Specification.")
