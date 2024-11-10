@@ -24632,14 +24632,14 @@ convert enum to u8 slice ref.")
 (define-public rust-enumflags2-derive-0.7
   (package
     (name "rust-enumflags2-derive")
-    (version "0.7.7")
+    (version "0.7.10")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "enumflags2_derive" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0iapq76azgkqxby4v117a3jssa9rz7n18vla4i09grc3gngiz6jy"))))
+                "1s29iqx3gj5l5s19a22lpn0nljhp5l9smqac99126n2qhfhlh3fy"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
