@@ -281,7 +281,7 @@ information, refer to the @samp{dbus-daemon(1)} man page.")))
                        ,(this-package-native-input "python-wrapper")))
                 '()))
       #:configure-flags #~(list "--default-library=both"
-                                "-Dman=false"
+                                "-Dman-pages=disabled"
                                 "-Dselinux=disabled"
                                 (string-append "--bindir="
                                                #$output:bin "/bin"))
@@ -560,7 +560,7 @@ functions for strings and common data structures.")
        (substitute-keyword-arguments (package-arguments base)
          ((#:configure-flags flags ''())
           #~(cons "-Ddocumentation=true"
-                  (delete "-Dman=false" #$flags)))
+                  (delete "-Dman-pages=disabled" #$flags)))
          ((#:phases phases)
           #~(modify-phases #$phases
               (add-after 'install 'move-doc
