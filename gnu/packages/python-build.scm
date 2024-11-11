@@ -767,13 +767,13 @@ reflected in the package visible to Python, without needing a reinstall.")
 (define-public python-hatchling
   (package
     (name "python-hatchling")
-    (version "1.14.0")
+    (version "1.26.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "hatchling" version))
               (sha256
                (base32
-                "1nn5cyc9fgrbawz38drfkl2s588k2gn3yqdm2cldbx9zy0fsjbj6"))))
+                "1s9lq2x5g5f24j34r7q3zp39wyqwjixfkq8vb4gxzmf5ws96b5cd"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f))                  ;to keep dependencies to a minimum
