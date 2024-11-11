@@ -542,12 +542,14 @@ as a joint effort between the BBC and Fluendo.")
        (patches
         (search-patches "libquicktime-ffmpeg.patch"))))
     (build-system gnu-build-system)
+    (arguments
+     ;; Avoid legacy dependencies such as GTK+ 2 and FFmpeg 4.
+     (list #:configure-flags #~(list "--without-ffmpeg"
+                                     "--without-gtk")))
     (native-inputs
      (list gettext-minimal doxygen pkg-config))
     (inputs
      (list alsa-lib
-           ffmpeg-4
-           gtk+-2
            lame
            libdv
            libjpeg-turbo
