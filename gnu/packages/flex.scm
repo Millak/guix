@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2012, 2013, 2014, 2019 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -22,6 +23,7 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix build-system gnu)
+  #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages m4)
@@ -53,6 +55,12 @@
                  ((#:tests? _ #f) #f)))
               (inputs (alist-delete "flex" (package-inputs bison))))))
        `(("bison" ,bison-for-tests))))
+    (arguments
+     (if (or (target-hurd64?) (%current-target-system))
+         (list #:configure-flags
+               #~'(#$(string-append "CFLAGS=-Wno-int-conversion"
+                                    " -Wno-implicit-function-declaration")))
+         '()))
     ;; m4 is not present in PATH when cross-building
     (native-inputs
      (list help2man m4))
