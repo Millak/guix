@@ -925,4 +925,44 @@ toolchain.  Among other features it provides
        (modify-inputs (package-native-inputs base)
          (replace "zig" `(,base "zig1")))))))
 
+(define zig-0.10.0-2824-source
+  (let ((commit "8d88dcdc61c61e3410138f4402482131f5074a80")
+        (revision "2824"))
+    (zig-source
+     (git-version "0.10" revision commit)
+     commit "0xyhr98hyyb9b3c3d2lv6hxysaq1k1kmw9gynci0z9wm1y82rir8")))
+
+(define zig-0.10.0-2838
+  (let ((commit "a8de15f66a51d273cefa07eed0d8fd2952e92387")
+        (revision "2838")
+        (base zig-0.10.0-2797))
+    (package
+      (inherit base)
+      (name "zig")
+      (version (git-version "0.10.0" revision commit))
+      (source (zig-source
+               version commit
+               "0hhz1hijg5hnw41s4p4p15gllpql5hn9my6a3d80jxv8nmd367q1"))
+      ;; zig2+zig1
+      (arguments
+       (substitute-keyword-arguments (package-arguments zig-0.10.0-748)
+         ((#:phases phases '%standard-phases)
+          #~(modify-phases #$phases
+              (add-before 'prepare-source 'backup-source
+                (lambda _
+                  (copy-recursively "lib" "../lib-backup")))
+              (add-after 'prepare-source 'restore-lib
+                (lambda _
+                  (delete-file-recursively "lib")
+                  (copy-recursively
+                   (string-append #+zig-0.10.0-2824-source "/lib")
+                   "lib")))
+              (add-before 'build-zig1 'restore-source
+                (lambda _
+                  (delete-file-recursively "lib")
+                  (copy-recursively "../lib-backup" "lib")))))))
+      (native-inputs
+       (modify-inputs (package-native-inputs base)
+         (replace "zig" `(,base "zig1")))))))
+
 (define-public zig zig-0.10)
