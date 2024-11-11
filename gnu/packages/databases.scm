@@ -3942,14 +3942,11 @@ data.
        (uri (pypi-uri "pickleshare" version))
        (sha256
         (base32 "1jmghg3c53yp1i8cm6pcrm280ayi8621rwyav9fac7awjr3kss47"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda _
-                      (invoke "pytest"))))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest))
+     (list python-pytest
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/vivainio/pickleshare")
     (synopsis "Tiny key value database with concurrency support")
     (description
