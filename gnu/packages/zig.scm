@@ -1158,4 +1158,34 @@ toolchain.  Among other features it provides
     (properties `((max-silent-time . 9600)
                   ,@(clang-compiler-cpu-architectures "16")))))
 
+
+;;;
+;;; Bootstrap path for Zig 0.12.
+;;; See also: <https://git.jakstys.lt/motiejus/zig-repro>.
+;;;
+
+(define zig-0.11.0-149
+  (let ((commit "7a85ad151daece3d0bba3c8d23081502a0956c95")
+        (revision "149")
+        (base zig-0.11))
+    (package
+      (inherit base)
+      (name "zig")
+      (version (git-version "0.11.0" revision commit))
+      (source (zig-source
+               version commit
+               "1kb245d4wfs1dyv7ccw3xiawasggpln9qxfqwlp4gkdg50l1qyzw"))
+      ;; zig1
+      (arguments
+       (substitute-keyword-arguments (package-arguments zig-0.10.0-747)
+         ((#:phases phases '%standard-phases)
+          #~(modify-phases #$phases
+              (replace 'build-zig1
+                (lambda _
+                  (invoke "zig" "build" "--zig-lib-dir" "lib"
+                          "update-zig1" "--verbose")))))))
+      (native-inputs
+       (modify-inputs (package-native-inputs base)
+         (replace "zig" `(,base "out")))))))
+
 (define-public zig zig-0.10)
