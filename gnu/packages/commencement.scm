@@ -2670,7 +2670,7 @@ memoized as a function of '%current-system'."
    (package
      (inherit mig)
      (name "mig-boot0")
-     (version "1.8+git20230520")
+     (version "1.8+git20231217")
      (source
       (origin
         (inherit (package-source mig))
@@ -2683,7 +2683,7 @@ memoized as a function of '%current-system'."
                   "mig-" version ".tar.gz"))
             (sha256
              (base32
-              "1l1vfm4wap5yxylv91wssgpy7fnq22wp3akgd5nv995kychfa9jy")))))))
+              "18vz3ifrhhlvrdmlv70h63wl0kh5w8jcpsjx9yscsw9yazm1lzs7")))))))
      (native-inputs (list autoconf-boot0 automake-boot0 bison-boot0 flex-boot0
                           gnumach-headers-boot0))
      (inputs (list flex-boot0 gnumach-headers-boot0))
