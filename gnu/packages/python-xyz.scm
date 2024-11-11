@@ -19040,21 +19040,18 @@ pure Python module that works on virtually all Python versions.")
     (license license:expat)))
 
 (define-public python-execnet
-  ;; The latest release (1.9.0) is old and lacks support for Pytest 7.2.
-  (let ((commit "d6aa1a56773c2e887515d63e50b1d08338cb78a7")
-        (revision "1"))
     (package
       (name "python-execnet")
-      (version (git-version "1.9.0" revision commit))
+      (version "2.1.1")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
                       (url "https://github.com/pytest-dev/execnet")
-                      (commit commit)))
+                      (commit (string-append "v" version))))
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0s60jggcjiw38b7xsh1q2lnnr4c4kaki7c5zsv7xyj7df8ngbbsm"))))
+                  "0xlfd0h9sjl0jpc2fc689a497chwbagali7qr364k75hdyax3jfq"))))
       (build-system pyproject-build-system)
       (arguments
        (list
@@ -19087,10 +19084,7 @@ pure Python module that works on virtually all Python versions.")
       (native-inputs
        (list python-hatchling
              python-hatch-vcs
-             python-py
-             python-pytest
-             python-pytest-timeout
-             python-setuptools-scm))
+             python-pytest-bootstrap))
       (synopsis "Rapid multi-Python deployment")
       (description "Execnet provides a share-nothing model with
 channel-send/receive communication for distributing execution across many
@@ -19102,7 +19096,7 @@ minimal and fast API targeting the following uses:
 @item write scripts to administer multiple environments
 @end enumerate")
       (home-page "https://codespeak.net/execnet/")
-      (license license:expat))))
+      (license license:expat)))
 
 (define-public python-icalendar
   (package
