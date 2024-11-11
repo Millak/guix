@@ -7,7 +7,7 @@
 ;;; Copyright © 2019 Pierre-Moana Levesque <pierre.moana.levesque@gmail.com>
 ;;; Copyright © 2019, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Nicolas Goaziou <mail@nicolasgoaziou.fr>
-;;; Copyright © 2020, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;;
@@ -169,31 +169,35 @@ is on expressing the content semantically, avoiding physical markup commands.")
       (modify-inputs (package-native-inputs texinfo)
         (prepend automake)))
     (arguments
-     (substitute-keyword-arguments (package-arguments texinfo)
-       ((#:phases phases)
-        `(modify-phases ,phases
-           (add-after 'unpack 'fix-configure
-             (lambda* (#:key inputs native-inputs #:allow-other-keys)
-               ;; Replace outdated config.sub and config.guess.
-               (with-directory-excursion "build-aux"
-                 (for-each
-                  (lambda (file)
-                    (install-file (string-append
-                                   (assoc-ref
-                                    (or native-inputs inputs) "automake")
-                                   "/share/automake-"
-                                   ,(version-major+minor
-                                     (package-version automake))
-                                   "/" file) "."))
-                  '("config.sub" "config.guess")))
-               #t))
-           ;; Build native version of tools before running 'build phase.
-           ,@(if (%current-target-system)
-                 `((add-before 'build 'make-native-gnu-lib
+     (append
+      (substitute-keyword-arguments (package-arguments texinfo)
+        ((#:phases phases)
+         `(modify-phases ,phases
+            (add-after 'unpack 'fix-configure
+              (lambda* (#:key inputs native-inputs #:allow-other-keys)
+                ;; Replace outdated config.sub and config.guess.
+                (with-directory-excursion "build-aux"
+                  (for-each
+                   (lambda (file)
+                     (install-file (string-append
+                                    (assoc-ref
+                                     (or native-inputs inputs) "automake")
+                                    "/share/automake-"
+                                    ,(version-major+minor
+                                      (package-version automake))
+                                    "/" file) "."))
+                   '("config.sub" "config.guess")))
+                #t))
+            ;; Build native version of tools before running 'build phase.
+            ,@(if (%current-target-system)
+                  `((add-before 'build 'make-native-gnu-lib
                       (lambda* (#:key inputs #:allow-other-keys)
                         (invoke "make" "-C" "tools/gnulib/lib")
                         #t)))
-                 '())))))))
+                  '()))))
+      (if (or (target-hurd64?) (%current-target-system))
+          (list #:configure-flags ''("CFLAGS=-Wno-incompatible-pointer-types"))
+          '())))))
 
 (define-public info-reader
   ;; The idea of this package is to have the standalone Info reader without
