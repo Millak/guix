@@ -91,18 +91,6 @@ matching of file paths.")
 stripped of Pytest specific details.")
     (license license:expat)))
 
-(define-public python-pluggy-next
-  (package/inherit python-pluggy
-    (name "python-pluggy")
-    (version "1.5.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pluggy" version))
-       (sha256
-        (base32 "1w8c3mpliqm9biqw75ci8cfj1x5pb6g5zwblqp27ijgxjj7aizrc"))))
-    (build-system pyproject-build-system)))
-
 (define-public python-toml
   (package
     (name "python-toml")
