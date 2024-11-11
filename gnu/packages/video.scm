@@ -623,8 +623,10 @@ receiving MJPG streams.")
        (sha256
         (base32 "16pl22ra3x2mkp8p3awslhlhj46b1nq9g89301gb0q4rgmnm705i"))))
     (build-system gnu-build-system)
+    ;; Avoid a dependency on the legacy GTK+ 2.
+    (arguments (list #:configure-flags #~(list "--without-gtk")))
     (inputs
-     (list gtk+-2 libdv libjpeg-turbo libpng libquicktime sdl))
+     (list libdv libjpeg-turbo libpng libquicktime sdl))
     (native-inputs
      (list pkg-config))
     (synopsis "Tools for handling MPEG")
