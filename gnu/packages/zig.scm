@@ -24,13 +24,15 @@
   #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix utils)
+  #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system cmake)
   #:use-module (gnu packages)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages llvm)
-  #:use-module (gnu packages llvm-meta))
+  #:use-module (gnu packages llvm-meta)
+  #:use-module (gnu packages web))
 
 (define (zig-source version commit hash)
   (origin
@@ -260,5 +262,105 @@ toolchain.  Among other features it provides
        (replace "llvm" llvm-15)))
     (properties `((max-silent-time . 9600)
                   ,@(clang-compiler-cpu-architectures "15")))))
+
+
+;;;
+;;; Bootstrap path for Zig 0.11.
+;;; See also: <https://git.jakstys.lt/motiejus/zig-repro>.
+;;;
+
+;; Restore C++ stage 1 and build the initial zig1.wasm.
+(define zig-0.10.0-538-source
+  (let ((commit "bf316e550671cc71eb498b3cf799493627bb0fdc")
+        (revision "538"))
+    (zig-source
+     (git-version "0.10.0" revision commit)
+     commit "1dchc2bp842jlw0byssqzindv8cigpqcj2hk3752667jrrww13vv")))
+
+(define zig-0.10.0-539-patch
+  (let ((commit "28514476ef8c824c3d189d98f23d0f8d23e496ea"))
+    (origin
+      (method url-fetch)
+      (uri (string-append
+            "https://github.com/ziglang/zig/commit/" commit ".patch"))
+      (file-name "zig-0.10.0-539.patch")
+      (sha256
+       (base32 "0qxxiafg2sd5rr4xhw0c12rygd7zh1rmf3x8hfialyxmsbi5pfxp")))))
+
+(define zig-0.10.0-542-patch
+  (let ((commit "3ba916584db5485c38ebf2390e8d22bc6d81bf8e"))
+    (origin
+      (method url-fetch)
+      (uri (string-append
+            "https://github.com/ziglang/zig/commit/" commit ".patch"))
+      (file-name "zig-0.10.0-542.patch")
+      (sha256
+       (base32 "1l09gmbr3vqzinb63kvaskgs1d0mvm1m7w3ai3ngwg5zlabyya35")))))
+
+(define zig-0.10.0-610
+  (let ((commit "e7d28344fa3ee81d6ad7ca5ce1f83d50d8502118")
+        (revision "610")
+        (base zig-0.10))
+    (package
+      (inherit base)
+      (name "zig")
+      (version (git-version "0.10.0" revision commit))
+      (source (zig-source
+               version commit
+               "08pm3f4hh6djl3szhqgm7fa3qisdl2xh9jrp18m0z7bk2vd0bzw7"))
+      (arguments
+       (substitute-keyword-arguments (package-arguments base)
+         ;; Patch for fixing RUNPATH not applied to intermediate versions.
+         ((#:validate-runpath? _ #t) #f)
+         ;; Disable tests for intermediate versions.
+         ((#:tests? _ #t) #f)
+         ((#:phases phases '%standard-phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'backup-source
+                (lambda _
+                  (copy-recursively "." "../source-backup")))
+              (add-after 'backup-source 'prepare-source
+                (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                  ;; Revert "actually remove stage1".
+                  (invoke "patch" "--reverse" "--strip=1"
+                          "--input" #+zig-0.10.0-542-patch)
+                  ;; Revert "remove `-fstage1` option".
+                  (false-if-exception
+                   (invoke "patch" "--reverse" "--strip=1"
+                           "--input" #+zig-0.10.0-539-patch))
+                  ;; Resolve conflicts in previous patching.
+                  (invoke
+                   "patch" "--forward" "--strip=1" "--input"
+                   #+(local-file
+                      (search-patch
+                       "zig-0.10.0-610-bootstrap-resolve-conflicts.patch")))
+                  ;; Restore build system.
+                  (rename-file "stage1/config.zig.in" "src/config.zig.in")
+                  (substitute* "src/config.zig.in"
+                    (("(have_stage1 = )false" _ prefix)
+                     (string-append prefix "true")))
+                  (for-each
+                   (lambda (file)
+                     (copy-file (in-vicinity #+zig-0.10.0-538-source file)
+                                file))
+                   '("build.zig" "CMakeLists.txt"))))
+              (add-after 'install 'restore-source
+                (lambda _
+                  (for-each delete-file-recursively (find-files "."))
+                  (copy-recursively "../source-backup" ".")))
+              (add-after 'restore-source 'build-zig1
+                (lambda _
+                  (invoke (string-append #$output "/bin/zig")
+                          "build" "update-zig1" "--verbose")))
+              (add-after 'build-zig1 'install-zig1
+                (lambda _
+                  (install-file "stage1/zig1.wasm.zst"
+                                (string-append #$output:zig1 "/bin"))))
+              (delete 'install-glibc-abilists)))))
+      (native-inputs
+       (modify-inputs (package-native-inputs base)
+         (prepend binaryen)
+         (delete "glibc-abi-tool")))
+      (outputs '("out" "zig1")))))
 
 (define-public zig zig-0.10)

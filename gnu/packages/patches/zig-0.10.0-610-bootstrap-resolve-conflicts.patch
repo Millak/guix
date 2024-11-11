@@ -1,0 +1,87 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 1c03faf1e9..89406eb1b2 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -846,16 +846,17 @@ else()
+ endif()
+ 
+ set(ZIG_BUILD_ARGS
+-  --zig-lib-dir "${CMAKE_SOURCE_DIR}/lib"
+-  "-Dconfig_h=${ZIG_CONFIG_H_OUT}"
+-  "-Denable-llvm"
+-  ${ZIG_RELEASE_ARG}
+-  ${ZIG_STATIC_ARG}
+-  ${ZIG_NO_LIB_ARG}
+-  ${ZIG_SINGLE_THREADED_ARG}
+-  "-Dtarget=${ZIG_TARGET_TRIPLE}"
+-  "-Dcpu=${ZIG_TARGET_MCPU}"
+-  "-Dversion-string=${RESOLVED_ZIG_VERSION}"
++    --zig-lib-dir "${CMAKE_SOURCE_DIR}/lib"
++    "-Dconfig_h=${ZIG_CONFIG_H_OUT}"
++    "-Denable-llvm"
++    "-Denable-stage1"
++    ${ZIG_RELEASE_ARG}
++    ${ZIG_STATIC_ARG}
++    ${ZIG_NO_LIB_ARG}
++    ${ZIG_SINGLE_THREADED_ARG}
++    "-Dtarget=${ZIG_TARGET_TRIPLE}"
++    "-Dcpu=${ZIG_TARGET_MCPU}"
++    "-Dversion-string=${RESOLVED_ZIG_VERSION}"
+ )
+ 
+ add_custom_target(stage3 ALL
+diff --git a/build.zig b/build.zig
+index cf0e092326..7f80c3e1df 100644
+--- a/build.zig
++++ b/build.zig
+@@ -142,7 +142,8 @@ pub fn build(b: *Builder) !void {
+     const force_gpa = b.option(bool, "force-gpa", "Force the compiler to use GeneralPurposeAllocator") orelse false;
+     const link_libc = b.option(bool, "force-link-libc", "Force self-hosted compiler to link libc") orelse (enable_llvm or only_c);
+     const sanitize_thread = b.option(bool, "sanitize-thread", "Enable thread-sanitization") orelse false;
+-    const strip = b.option(bool, "strip", "Omit debug information");
++    const strip = b.option(bool, "strip", "Omit debug information") orelse false;
++    const use_zig0 = b.option(bool, "zig0", "Bootstrap using zig0") orelse false;
+     const value_tracing = b.option(bool, "value-tracing", "Enable extra state tracking to help troubleshoot bugs in the compiler (using the std.debug.Trace API)") orelse false;
+ 
+     const mem_leak_frames: u32 = b.option(u32, "mem-leak-frames", "How many stack frames to print when a memory leak occurs. Tests get 2x this amount.") orelse blk: {
+@@ -151,7 +152,22 @@ pub fn build(b: *Builder) !void {
+         break :blk 4;
+     };
+ 
+-    const exe = addCompilerStep(b);
++    if (only_c) {
++        target.ofmt = .c;
++    }
++
++    const main_file: ?[]const u8 = mf: {
++        if (!have_stage1) break :mf "src/main.zig";
++        if (use_zig0) break :mf null;
++        break :mf "src/stage1.zig";
++    };
++
++    const exe = b.addExecutable("zig", main_file);
++
++    const compile_step = b.step("compile", "Build the self-hosted compiler");
++    compile_step.dependOn(&exe.step);
++
++    exe.stack_size = stack_size;
+     exe.strip = strip;
+     exe.sanitize_thread = sanitize_thread;
+     exe.build_id = b.option(bool, "build-id", "Include a build id note") orelse false;
+diff --git a/src/translate_c/ast.zig b/src/translate_c/ast.zig
+index 20e4259725..bc0f002c21 100644
+--- a/src/translate_c/ast.zig
++++ b/src/translate_c/ast.zig
+@@ -1448,6 +1448,12 @@ fn renderNode(c: *Context, node: Node) Allocator.Error!NodeIndex {
+         .optional_type => return renderPrefixOp(c, node, .optional_type, .question_mark, "?"),
+         .address_of => {
+             const payload = node.castTag(.address_of).?.data;
++            if (c.zig_is_stage1 and payload.tag() == .fn_identifier)
++                return try c.addNode(.{
++                    .tag = .identifier,
++                    .main_token = try c.addIdentifier(payload.castTag(.fn_identifier).?.data),
++                    .data = undefined,
++                });
+ 
+             const ampersand = try c.addToken(.ampersand, "&");
+             const base = if (payload.tag() == .fn_identifier)
