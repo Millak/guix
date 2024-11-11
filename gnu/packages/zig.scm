@@ -474,4 +474,32 @@ toolchain.  Among other features it provides
          (replace "zig" `(,base "out"))
          (delete "zstd"))))))
 
+;; Supply zig1.wasm, build zig2 + zig1.wasm, install zig1.wasm.
+(define zig-0.10.0-748
+  (let ((commit "08b2d491bcd8c79c68495267cc71967661caea1e")
+        (revision "748")
+        (base zig-0.10.0-747))
+    (package
+      (inherit base)
+      (name "zig")
+      (version (git-version "0.10.0" revision commit))
+      (source (zig-source
+               version commit
+               "1iv1wjgj0nfbb19sp3zw4d8hmrhkah4cmklzxm8c32zsg673kv3i"))
+      (arguments
+       (substitute-keyword-arguments (package-arguments zig-0.10.0-722)
+         ;; zig1.wasm is architecture-independent.
+         ((#:target _ #f) #f)
+         ((#:phases phases '%standard-phases)
+          #~(modify-phases #$phases
+              (replace 'prepare-source
+                (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                  (install-file (search-input-file
+                                 (or native-inputs inputs) "bin/zig1.wasm")
+                                "stage1")
+                  (make-file-writable "stage1/zig1.wasm")))))))
+      (native-inputs
+       (modify-inputs (package-native-inputs base)
+         (replace "zig" `(,base "zig1")))))))
+
 (define-public zig zig-0.10)
