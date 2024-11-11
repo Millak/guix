@@ -1229,4 +1229,21 @@ toolchain.  Among other features it provides
       (properties `((max-silent-time . 9600)
                     ,@(clang-compiler-cpu-architectures "17"))))))
 
+(define zig-0.11.0-587
+  (let ((commit "6bd54a1d3ebd8d997158c57057ba742824cf7e0c")
+        (revision "587")
+        (base zig-0.11.0-494))
+    (package
+      (inherit base)
+      (name "zig")
+      (version (git-version "0.11.0" revision commit))
+      (source (zig-source
+               version commit
+               "16v6yrbwg1pc888fp3cmdbk2wyz0nm8xp66a14fi3akxyavsmkxm"))
+      ;; zig1
+      (arguments (package-arguments zig-0.10.0-747))
+      (native-inputs
+       (modify-inputs (package-native-inputs base)
+         (replace "zig" `(,base "out")))))))
+
 (define-public zig zig-0.10)
