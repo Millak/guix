@@ -94790,14 +94790,14 @@ for locating fonts.")
   (package
     (inherit rust-zbus-names-3)
     (name "rust-zbus-names")
-    (version "2.6.0")
+    (version "2.6.1")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "zbus_names" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1adl0acl39flk4jnrv7axg29kpwm7cy15w2wf0yy59mxdmvvp07v"))))
+                "13achs6jbrp4l0jy5m6nn7v89clfgb63qhldkg5ddgjh6y6p6za3"))))
     (arguments
      `(#:cargo-inputs
        (("rust-serde" ,rust-serde-1)
