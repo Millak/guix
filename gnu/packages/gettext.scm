@@ -9,7 +9,7 @@
 ;;; Copyright © 2017 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Miguel <rosen644835@gmail.com>
-;;; Copyright © 2020, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 EuAndreh <eu@euandre.org>
 ;;; Copyright © 2022, 2024 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2023 Maxim Cournoyer maxim.cournoyer@gmail.com>
@@ -130,7 +130,19 @@
                                    ((" test-tls\\$\\(EXEEXT\\) ") " ")))
                               '())
 
-                       #t)))))
+                       #t))))
+          #$@(if (%current-target-system)
+                 #~((add-after 'install 'patch-cross-shebangs
+                      (lambda _
+                        (let ((path (list (string-append #$bash-minimal "/bin"))))
+                          (define (patch-cross-shebang file)
+                            (patch-shebang file path))
+                          (with-directory-excursion
+                              (string-append #$output "/bin")
+                            (for-each
+                             patch-cross-shebang
+                             '("autopoint" "gettext.sh" "gettextize")))))))
+                 '()))
 
        ;; When tests fail, we want to know the details.
        #:make-flags #~'("VERBOSE=yes")))
