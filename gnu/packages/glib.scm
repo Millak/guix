@@ -552,41 +552,24 @@ functions for strings and common data structures.")
   (let ((base glib))
     (package/inherit base
       (properties (alist-delete 'hidden? (package-properties base)))
-      (outputs (cons "doc" (package-outputs base))) ; 20 MiB of GTK-Doc reference
+      (outputs (cons "doc" (package-outputs base)))
       (native-inputs
-       `(("docbook-xml-4.2" ,docbook-xml-4.2)
-         ("docbook-xml-4.5" ,docbook-xml)
-         ("docbook-xsl" ,docbook-xsl)
-         ("gtk-doc" ,gtk-doc/stable)
-         ("libxml2" ,libxml2)
-         ("xsltproc" ,libxslt)
-         ,@(package-native-inputs base)))
+       (modify-inputs (package-native-inputs base)
+         (append gi-docgen python-docutils)))
       (arguments
        (substitute-keyword-arguments (package-arguments base)
          ((#:configure-flags flags ''())
-          #~(cons "-Dgtk_doc=true"
+          #~(cons "-Ddocumentation=true"
                   (delete "-Dman=false" #$flags)))
          ((#:phases phases)
           #~(modify-phases #$phases
-              (add-after 'unpack 'patch-docbook-xml
-                (lambda* (#:key inputs #:allow-other-keys)
-                  (with-directory-excursion "docs"
-                    (substitute* (find-files "." "\\.xml$")
-                      (("http://www.oasis-open.org/docbook/xml/4\\.5/")
-                       (string-append (assoc-ref inputs "docbook-xml-4.5")
-                                      "/xml/dtd/docbook/"))
-                      (("http://www.oasis-open.org/docbook/xml/4\\.2/")
-                       (string-append (assoc-ref inputs "docbook-xml-4.2")
-                                      "/xml/dtd/docbook/"))))))
               (add-after 'install 'move-doc
-                (lambda* (#:key outputs #:allow-other-keys)
-                  (let* ((out (assoc-ref outputs "out"))
-                         (doc (assoc-ref outputs "doc"))
-                         (html (string-append "/share/gtk-doc")))
-                    (mkdir-p (string-append doc "/share"))
+                (lambda _
+                  (let ((doc "/share/doc"))
+                    (mkdir-p (string-append #$output:doc "/share"))
                     (rename-file
-                     (string-append out html)
-                     (string-append doc html))))))))))))
+                     (string-append #$output doc)
+                     (string-append #$output:doc doc))))))))))))
 
 (define (python-extension-suffix python triplet)
   "Determine the suffix for C extensions for PYTHON when compiled
