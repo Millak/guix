@@ -2128,7 +2128,9 @@ timeout has been exceeded.")
          "1y93q914gwf0nshql1qix6sj826q163b04vw17zmwhsnbv00c2d3"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:phases
+     ;; See <https://github.com/pytest-dev/pytest-forked/issues/88>.
+     (list #:tests? #f
+           #:phases
            #~(modify-phases %standard-phases
                (add-before 'build 'pretend-version
                  ;; The version string is usually derived via setuptools-scm,
