@@ -3613,17 +3613,31 @@ mocks, stubs and fakes.")
 (define-public python-flaky
   (package
     (name "python-flaky")
-    (version "3.7.0")
+    (version "3.8.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "flaky" version))
               (sha256
                (base32
-                "03daz352021211kvdb056f3afrd2gsdq0rd1awgr38910xw01l9s"))))
-    (build-system python-build-system)
+                "1xcrjrr63131n2ydj5hn0gagka5dpkmdlqdxrxd3spwhxj0ll827"))))
+    (build-system pyproject-build-system)
     (arguments
-     ;; TODO: Tests require 'coveralls' and 'genty' which are not in Guix yet.
-     '(#:tests? #f))
+     (list
+      ;; XXX: Check with upstream. Tests failing with AttributeError: 'str'
+      ;; object has no attribute 'tb_frame', ValueError: too many values to
+      ;; unpack (expected 2), AssertionError: 'Plain HelloPlain Hellońőń ȁŝćȉȉ
+      ;; ŝƭȕƒƒ' != 'Plain Hellońőń ȁŝćȉȉ ŝƭȕƒƒ'.
+      #:test-flags
+      #~(list "-k" (string-append
+                    "not test_flaky_plugin_handles_non_ascii_byte_string_in_exception"
+                    " and not test_flaky_plugin_identifies_failure"
+                    " and not test_write_then_read"
+                    " and not  test_writelines_then_read"
+                    " and not test_something_flaky"))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/box/flaky")
     (synopsis "Automatically rerun flaky tests")
     (description
