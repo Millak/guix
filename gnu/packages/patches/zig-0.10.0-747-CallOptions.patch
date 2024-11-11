@@ -1,0 +1,28 @@
+From 27f2553c1c53ec417181dfe30104df993dffdab1 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Motiejus=20Jak=C5=A1tys?= <motiejus@jakstys.lt>
+Date: Tue, 5 Nov 2024 06:20:19 +0200
+Subject: [PATCH] 0.10.0-747-g7b2a936173 CallOptions + zig2-only
+
+---
+ CMakeLists.txt      | 19 -------------------
+ lib/std/builtin.zig |  5 +++++
+ 2 files changed, 5 insertions(+), 19 deletions(-)
+
+diff --git a/lib/std/builtin.zig b/lib/std/builtin.zig
+index eb1212607d..5278906d43 100644
+--- a/lib/std/builtin.zig
++++ b/lib/std/builtin.zig
+@@ -1,5 +1,10 @@
+ const builtin = @import("builtin");
+ 
++pub const CallOptions = struct {
++    modifier: CallModifier = .auto,
++    stack: ?[]align(std.Target.stack_align) u8 = null,
++};
++
+ /// `explicit_subsystem` is missing when the subsystem is automatically detected,
+ /// so Zig standard library has the subsystem detection logic here. This should generally be
+ /// used rather than `explicit_subsystem`.
+-- 
+2.44.1
+

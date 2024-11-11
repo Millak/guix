@@ -440,4 +440,38 @@ toolchain.  Among other features it provides
          (prepend zstd)
          (replace "zig" `(,base "zig1")))))))
 
+;; Supply zig2, build zig1.wasm, install zig1.wasm.
+(define zig-0.10.0-747
+  (let ((commit "7b2a936173165002105ba5e76bed69654e132fea")
+        (revision "747")
+        (base zig-0.10.0-722))
+    (package
+      (inherit base)
+      (name "zig")
+      (version (git-version "0.10.0" revision commit))
+      (source
+       (origin
+         (inherit (zig-source
+                   version commit
+                   "1z5ndywk4d1dcv2k3bw3n2zgjr3ysf3bi2ac4jhwqgnmzsw498wd"))
+         (patches (search-patches "zig-0.10.0-747-CallOptions.patch"))))
+      (arguments
+       (substitute-keyword-arguments (package-arguments zig-0.10.0-722)
+         ;; zig1.wasm is architecture-independent.
+         ((#:target _ #f) #f)
+         ((#:phases phases '%standard-phases)
+          #~(modify-phases #$phases
+              (replace 'build-zig1
+                (lambda _
+                  (invoke "zig2" "build" "--zig-lib-dir" "lib"
+                          "update-zig1" "--verbose")))
+              (delete 'prepare-source)
+              (delete 'configure)
+              (delete 'build)
+              (delete 'install)))))
+      (native-inputs
+       (modify-inputs (package-native-inputs base)
+         (replace "zig" `(,base "out"))
+         (delete "zstd"))))))
+
 (define-public zig zig-0.10)

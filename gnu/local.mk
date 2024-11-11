@@ -2421,6 +2421,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/zig-0.10-use-system-paths.patch		\
   %D%/packages/patches/zig-0.10.0-610-bootstrap-resolve-conflicts.patch	\
   %D%/packages/patches/zig-0.10.0-675-TypeOf-hack.patch		\
+  %D%/packages/patches/zig-0.10.0-747-CallOptions.patch		\
   %D%/packages/patches/zsh-egrep-failing-test.patch		\
   %D%/packages/patches/zuo-bin-sh.patch
 
