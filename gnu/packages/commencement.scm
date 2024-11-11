@@ -2635,7 +2635,7 @@ memoized as a function of '%current-system'."
    (package
      (inherit gnumach-headers)
      (name "gnumach-headers-boot0")
-     (version "1.8+git20230410")
+     (version "1.8+git20240714")
      (source
       (origin
         (inherit (package-source gnumach-headers))
@@ -2649,7 +2649,7 @@ memoized as a function of '%current-system'."
                   "gnumach-" version ".tar.gz"))
             (sha256
              (base32
-              "1s09256g2ny46idrn8frzs7r51la9ni45bmglmswlsmz9ii7dpi4")))))))
+              "1bnw5vdbq91zjxklx23qvim40fb0yw1qdxhn9n37jdfypm6q3xir")))))))
      (native-inputs (list autoconf-boot0 automake-boot0 texinfo-boot0))
      (arguments
       (substitute-keyword-arguments (package-arguments gnumach-headers)
