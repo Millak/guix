@@ -121,9 +121,7 @@ formal verification.")
     (build-system gnu-build-system)
     (arguments
      (list
-      #:test-target "check"
-      #:make-flags #~(list (string-append "PREFIX="
-                                          #$output))
+      #:make-flags #~(list (string-append "PREFIX=" #$output))
       #:bootstrap-scripts #~(list "autoconf.sh")))
     (native-inputs (list autoconf bison flex gperf))
     (home-page "https://steveicarus.github.io/iverilog")
