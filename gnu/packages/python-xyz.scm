@@ -22765,7 +22765,7 @@ scans through a file and detects issues.")
 (define-public python-jedi
   (package
     (name "python-jedi")
-    (version "0.19.1")
+    (version "0.19.2")
     (source
      (origin
        (method git-fetch)
@@ -22776,7 +22776,7 @@ scans through a file and detects issues.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1lpvxa16zyhg95s8ji3sm19qz3bawal172xwlzcl5h80mhhfagih"))))
+         "0w8rrw6s4bzr5csds8bhasrmzh9q77zh5dzisjysl8cb5qjx0w6s"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -22785,8 +22785,7 @@ scans through a file and detects issues.")
          (add-before 'check 'set-HOME
            (lambda _ (setenv "HOME" "/tmp"))))))
     (native-inputs
-     (list python-colorama
-           python-docopt
+     (list python-docopt
            python-pytest
            python-setuptools
            python-wheel))
