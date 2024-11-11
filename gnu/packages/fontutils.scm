@@ -12,7 +12,7 @@
 ;;; Copyright © 2019, 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2020, 2021, 2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
-;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021-2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2022 Felipe Balbi <balbi@kernel.org>
 ;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
@@ -1913,7 +1913,7 @@ generated list of fallback fonts are checked.")
 (define-public fontmanager
   (package
    (name "fontmanager")
-   (version "0.8.7")
+   (version "0.9.0")
    (source
     (origin
       (method git-fetch)
@@ -1922,7 +1922,7 @@ generated list of fallback fonts are checked.")
             (commit version)))
       (file-name (git-file-name name version))
       (sha256
-       (base32 "0nyda2a6vbzyz4sn9mmrr8bkifzxmmjp7x9a3c4s6n925ccy79cn"))))
+       (base32 "0pxdwpjzsmld4j2m4q423vdrkx23bb6jqszjgk5wqbr2ln772hcx"))))
    (build-system meson-build-system)
    (arguments
     `(#:glib-or-gtk? #t
@@ -1930,7 +1930,16 @@ generated list of fallback fonts are checked.")
       #:configure-flags
       (list (string-append "-Dc_link_args=-Wl,-rpath="
                            (assoc-ref %outputs "out")
-                           "/lib/font-manager"))))
+                           "/lib/font-manager"))
+      #:phases
+      (modify-phases %standard-phases
+        (add-after 'unpack 'skip-gtk-update-icon-cache
+          (lambda _ ; Remove dependency on needless desktop cache stuff.
+            (substitute* "meson.build"
+              (("gtk_update_icon_cache: true")
+               "gtk_update_icon_cache: false")
+              (("update_desktop_database: true")
+               "update_desktop_database: false")))))))
    (native-inputs
     `(("desktop-file-utils" ,desktop-file-utils)
       ("gettext" ,gettext-minimal)
@@ -1938,24 +1947,24 @@ generated list of fallback fonts are checked.")
       ("gobject-introspection" ,gobject-introspection)
       ("pkg-config" ,pkg-config)
       ("python-wrapper" ,python-wrapper)
-      ("vala" ,vala-0.52)
+      ("vala" ,vala)
       ("yelp-tools" ,yelp-tools)))
    (inputs
     `(("fonconfig" ,fontconfig)
       ("freetype" ,freetype)
       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-      ("gtk+" ,gtk+)
+      ("gtk" ,gtk)
       ("json-glib" ,json-glib)
-      ("libsoup" ,libsoup-minimal-2)
+      ("libsoup" ,libsoup)
       ("sqlite" ,sqlite)
-      ("webkitgtk" ,webkitgtk-with-libsoup2)))
+      ("webkitgtk" ,webkitgtk)))
    (home-page "https://fontmanager.github.io/")
-   (synopsis "Simple font management for GTK+ desktop environments")
+   (synopsis "Simple font management for GTK desktop environments")
    (description "Font Manager is intended to provide a way for users to
 easily manage desktop fonts, without having to resort to command-line
 tools or editing configuration files by hand.
 While designed primarily with the GNOME Desktop Environment in mind, it should
-work well with other GTK+ desktop environments.")
+work well with other GTK desktop environments.")
    (license license:gpl3+)))
 
 (define-public fntsample
