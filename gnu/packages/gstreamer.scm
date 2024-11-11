@@ -398,7 +398,7 @@ arrays of data.")
 (define-public gstreamer-docs
   (package
     (name "gstreamer-docs")
-    (version "1.22.2")
+    (version "1.24.9")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -406,7 +406,7 @@ arrays of data.")
                     "/gstreamer-docs-" version ".tar.xz"))
               (sha256
                (base32
-                "1fljaydlinzw9jf5nkhwf7ihfzd5250k2cv220mi8dxxf7rgn18y"))))
+                "0vb4d35rglvjlj2y9r0nlgankflqw0ql6gwsf4612505sa01mz7s"))))
     (build-system trivial-build-system)
     (arguments
      `(#:modules ((guix build utils))
