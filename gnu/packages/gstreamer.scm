@@ -1022,7 +1022,7 @@ think twice about shipping them.")
 (define-public gst-libav
   (package
     (name "gst-libav")
-    (version "1.24.6")
+    (version "1.24.9")
     (source
      (origin
        (method url-fetch)
@@ -1031,7 +1031,7 @@ think twice about shipping them.")
          "https://gstreamer.freedesktop.org/src/" name "/"
          name "-" version ".tar.xz"))
        (sha256
-        (base32 "1gzj4a3cqczp9hj18frzlp00xj45p1dg58ra6iz903rr3940igab"))))
+        (base32 "0v253lbic7abc9vpb690f80arql10193ljqkzgs03vh8wnd2ws1j"))))
     (build-system meson-build-system)
     (native-inputs (list perl pkg-config python-wrapper ruby))
     (inputs (list ffmpeg))
