@@ -2273,9 +2273,9 @@ exec " gcc "/bin/" program
       (inputs (%boot0-inputs))
       (native-inputs '()))))
 
-(define libstdc++-boot0-gcc7
+(define (make-libstdc++-boot0 gcc)
   ;; GCC >= 7 is needed by architectures which use C++-14 features.
-  (let ((lib (make-libstdc++ gcc-7)))
+  (let ((lib (make-libstdc++ gcc)))
     (package
       (inherit lib)
       (source (bootstrap-origin (package-source lib)))
@@ -2446,7 +2446,8 @@ exec " gcc "/bin/" program
 
               ;; The libstdc++ that libcc1 links against.
               ("libstdc++" ,(match (%current-system)
-                                   ("riscv64-linux" libstdc++-boot0-gcc7)
+                                   ("riscv64-linux" (make-libstdc++-boot0 gcc-7))
+                                   ("x86_64-gnu" (make-libstdc++-boot0 gcc-14))
                                    (_ libstdc++-boot0)))
 
               ;; Call it differently so that the builder can check whether
