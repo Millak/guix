@@ -171,6 +171,7 @@
   #:use-module (gnu packages linux)
   #:use-module (gnu packages lirc)
   #:use-module (gnu packages llvm)
+  #:use-module (gnu packages lsof)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages mail)
   #:use-module (gnu packages man)
@@ -7118,14 +7119,30 @@ part of udev-extras, then udev, then systemd.  It's now a project on its own.")
                 "0cgjlxrs4qr08igqjpkhfxpzydj8m9y9n92z091knkj5170x5bbj"))))
     (build-system meson-build-system)
     (arguments
-     (list #:glib-or-gtk? #t
-           #:configure-flags
-           #~(list "-Dsystemduserunitdir=no"
-                   "-Dtmpfilesdir=no"
-                   "-Dman=true"
-                   ;; Otherwise, the RUNPATH will lack the final path component.
-                   (string-append "-Dc_link_args=-Wl,-rpath="
-                                  #$output "/lib/gvfs"))))
+     (list
+      #:glib-or-gtk? #t
+      #:configure-flags
+      #~(list "-Dsystemduserunitdir=no"
+              "-Dtmpfilesdir=no"
+              "-Dman=true"
+              ;; Otherwise, the RUNPATH will lack the final path component.
+              (string-append "-Dc_link_args=-Wl,-rpath="
+                             #$output "/lib/gvfs"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-commands
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "monitor/udisks2/gvfsudisks2mount.c"
+                (("\"lsof -t")
+                 (string-append "\"" (search-input-file inputs "bin/lsof")
+                                " -t"))
+                (("\"umount %s")
+                 (string-append "\"" (search-input-file inputs "bin/umount")
+                                " %s")))
+              (substitute* "monitor/udisks2/gvfsudisks2volume.c"
+                (("\"mount \\\\\"%s")
+                 (string-append "\"" (search-input-file inputs "bin/mount")
+                                " \\\"%s"))))))))
     (native-inputs
      (list `(,glib "bin")               ;for glib-genmarshal, etc.
            gettext-minimal
@@ -7155,12 +7172,14 @@ part of udev-extras, then udev, then systemd.  It's now a project on its own.")
            libmtp
            libnfs
            libsecret
+           lsof
            samba
            libsoup
            libxml2
            openssh
            polkit
-           udisks))
+           udisks
+           util-linux))
     (home-page "https://wiki.gnome.org/Projects/gvfs")
     (synopsis "Userspace virtual file system for GIO")
     (description
