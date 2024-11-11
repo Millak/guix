@@ -94582,14 +94582,14 @@ for locating fonts.")
   (package
     (inherit rust-zbus-4)
     (name "rust-zbus")
-    (version "3.14.1")
+    (version "3.15.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "zbus" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0j5rxgszrmkk5pbpwccrvj3gflwqw8jv8wfx9v84qbl75l53kpii"))))
+        (base32 "1ri5gklhh3kl9gywym95679xs7n3sw2j3ky80jcd8siacc5ifpb7"))))
     (arguments
      `(#:tests? #f      ; Not all files included.
        #:cargo-inputs
