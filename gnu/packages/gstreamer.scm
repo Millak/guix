@@ -641,7 +641,7 @@ for the GStreamer multimedia library.")
 (define-public gst-plugins-good
   (package
     (name "gst-plugins-good")
-    (version "1.24.6")
+    (version "1.24.9")
     (source
      (origin
        (method url-fetch)
@@ -650,7 +650,7 @@ for the GStreamer multimedia library.")
          "https://gstreamer.freedesktop.org/src/" name "/"
          name "-" version ".tar.xz"))
        (sha256
-        (base32 "0bds42wpbsnrmqh1jk8ix157v8g5hrh8nw84wcxx8vi43n6rqswr"))))
+        (base32 "17vr55pgh2paqi82l5jn841873c2w0lal7kgz2i3qzikzw5yazc9"))))
     (build-system meson-build-system)
     (arguments
      (list
