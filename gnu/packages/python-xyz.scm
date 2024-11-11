@@ -24807,13 +24807,13 @@ both as keys and as attributes.")
 (define-public python-attrs
   (package
     (name "python-attrs")
-    (version "23.2.0")
+    (version "24.2.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "attrs" version))
               (sha256
                (base32
-                "0c0zjwcqzbmpl93izm2g37gc3lsbbb9pf275fv7zcqn256sw6pck"))))
+                "0ik35wvcmapzhyzvwhlsrk53pgxnswh3zh5fkdb8dc5m928ipysw"))))
     (build-system pyproject-build-system)
     (arguments
      (list
