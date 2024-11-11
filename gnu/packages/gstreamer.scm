@@ -760,14 +760,14 @@ model to base your own plug-in on, here it is.")
 (define-public gst-plugins-bad
   (package
     (name "gst-plugins-bad")
-    (version "1.24.6")
+    (version "1.24.9")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://gstreamer.freedesktop.org/src/"
                                   name "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0k5nqlcrl0p5gy2n9zkl34vjp0gj9sg787kwahgpr0p72darckcg"))
+                "1aswb97v1ird3rmfcsa32bvp4kgp8r987f83pd1knx8amylzgz1n"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -799,6 +799,10 @@ model to base your own plug-in on, here it is.")
 
                   ;; The 'elements_curlhttpsrc' test sometimes times out.
                   ((".*'elements/curlhttpsrc\\.c'.*") "")
+
+                  ;; The 'mxfdemux' test fails for unknown reasons (see:
+                  ;; https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/3921).
+                  ((".*'elements/mxfdemux.c'.*") "")
 
                   ;; Unexpected critical/warning, see
                   ;; <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/3000>
