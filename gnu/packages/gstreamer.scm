@@ -1045,20 +1045,21 @@ decoders, muxers, and demuxers provided by FFmpeg.")
 (define-public gst-editing-services
   (package
     (name "gst-editing-services")
-    (version "1.24.6")
+    (version "1.24.9")
     (source (origin
               (method url-fetch)
               (uri (string-append
                     "https://gstreamer.freedesktop.org/src/" name "/"
                     "gst-editing-services-" version ".tar.xz"))
-              (patches (search-patches "gst-editing-services-fix-api.patch"))
               (sha256
                (base32
-                "0rm2w7g1rgbzh3i659lw61hgzfhqk8cmx9y0zkjzwnwxmdfa53qk"))))
+                "04khlbw3wy5zr2s246252zrd4hnzv2x36l5avz0lxif6pr9nwl07"))))
     (build-system meson-build-system)
     (arguments
      (list
-      #:tests? #f                    ; FIXME: 16/23 failing tests.
+      ;; Most of the tests fail (see:
+      ;; https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/2489).
+      #:tests? #f
       #:glib-or-gtk? #t              ; To wrap binaries and/or compile schemas
       #:phases #~(modify-phases %standard-phases
                    #$@%common-gstreamer-phases)))
