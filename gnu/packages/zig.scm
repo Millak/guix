@@ -1493,4 +1493,37 @@ toolchain.  Among other features it provides
     (properties `((max-silent-time . 9600)
                   ,@(clang-compiler-cpu-architectures "17")))))
 
+
+;;;
+;;; Bootstrap path for Zig 0.13.
+;;;
+
+(define zig-0.12.0-109
+  (let ((commit "b7799ef322103c8e449c45494c29fb4a8c9867df")
+        (revision "109")
+        (base zig-0.12))
+    (package
+      (inherit base)
+      (name "zig")
+      (version (git-version "0.12.0" revision commit))
+      (source (zig-source
+               version commit
+               "1zy19w93wrd7dfdih8hfk9h3brkgaspaa60ipcmf08hlx6z2f0bz"))
+      ;; zig1
+      (arguments
+       (substitute-keyword-arguments (package-arguments zig-0.10.0-747)
+         ((#:phases phases '%standard-phases)
+          #~(modify-phases #$phases
+              ;; Build errors when zig1.wasm is not found.
+              (add-after 'unpack 'prepare-source
+                (lambda _
+                  (invoke "touch" "stage1/zig1.wasm")))
+              (replace 'build-zig1
+                (lambda _
+                  (invoke "zig" "build" "--zig-lib-dir" "lib"
+                          "update-zig1" "--verbose")))))))
+      (native-inputs
+       (modify-inputs (package-native-inputs base)
+         (replace "zig" `(,base "out")))))))
+
 (define-public zig zig-0.10)
