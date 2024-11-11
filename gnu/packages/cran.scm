@@ -23387,6 +23387,25 @@ co- and contravariate indices, and parallel computations on sequences of
 tensors.")
     (license license:gpl2+)))
 
+(define-public r-tester
+  (package
+    (name "r-tester")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "tester" version))
+       (sha256
+        (base32 "02q2l0c38ddzlh2jwbzkcyhh2k5a4gnfm8khl8cqvjkjhldi9j5y"))))
+    (properties `((upstream-name . "tester")))
+    (build-system r-build-system)
+    (native-inputs (list r-knitr))
+    (home-page "https://fbertran.github.io/tester/")
+    (synopsis "Tests and checks characteristics of R objects")
+    (description "This package allows users to test characteristics of common
+R objects.")
+    (license license:gpl3)))
+
 (define-public r-rarpack
   (package
     (name "r-rarpack")
