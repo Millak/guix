@@ -10,7 +10,7 @@
 ;;; Copyright © 2019, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
-;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2024 Remco van 't Veer <remco@remworks.net>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -1174,27 +1174,23 @@ mp3, you can use gst123 to play all your music files.")
     (license license:lgpl2.0+)))
 
 (define-public gst-plugins-espeak
-  (let ((commit "7f6e41274fb833a487a7ee8ac0c236f0821330cc")
-        (revision "1"))
-    (package
-      (name "gst-plugins-espeak")
-      (version (git-version "0.5.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/sugarlabs/gst-plugins-espeak")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0va4ghcdda8cbqzv376hgmv1ay79va4kyazibfj8m5n52bhxxqgz"))))
-      (build-system gnu-build-system)
-      (inputs
-       (list espeak-ng gstreamer gst-plugins-base))
-      (native-inputs
-       (list autoconf automake libtool pkg-config))
-      (home-page "http://wiki.sugarlabs.org/go/Activity_Team/gst-plugins-espeak")
-      (synopsis "Use espeak")
-      (description "This is a Gstreamer @code{src} plugin to use the espeak
+  (package
+    (name "gst-plugins-espeak")
+    (version "0.6.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/sugarlabs/gst-plugins-espeak")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0c9j5gbsl0rzwkqgg1c1a2vlyvcsliyl8a57qkwsqrnqrwnvw28w"))))
+    (build-system gnu-build-system)
+    (inputs (list espeak-ng gstreamer gst-plugins-base))
+    (native-inputs (list autoconf automake libtool pkg-config))
+    (home-page "http://wiki.sugarlabs.org/go/Activity_Team/gst-plugins-espeak")
+    (synopsis "Gstreamer plugin for Espeak")
+    (description "This is a Gstreamer @code{src} plugin to use the espeak
 speech synthesizer as a sound source.")
-      (license license:lgpl2.0+))))
+    (license license:lgpl2.0+)))
