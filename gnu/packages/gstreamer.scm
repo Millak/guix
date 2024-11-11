@@ -270,7 +270,7 @@ applications that want audio visualisation and audio visualisation plugins.")
 (define-public libvisual-plugins
   (package
     (name "libvisual-plugins")
-    (version "0.4.0")
+    (version "0.4.2")
     (source
      (origin
        (method git-fetch)
@@ -279,7 +279,7 @@ applications that want audio visualisation and audio visualisation plugins.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "02xwakwkqjsznc03pjlb6hcv1li1gw3r8xvyswqsm4msix5xq18a"))))
+        (base32 "12xf0qzn9w090kakrj59makjbjg9vhga5mgchmx6c1ypw10fjfbc"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags (list "--disable-gstreamer-plugin"
@@ -295,7 +295,10 @@ applications that want audio visualisation and audio visualisation plugins.")
                     (lambda _
                       (chdir "libvisual-plugins"))))))
     (native-inputs
-     (list bison
+     (list automake
+           autoconf
+           autoconf-archive
+           bison
            flex
            gettext-minimal
            intltool
@@ -305,7 +308,7 @@ applications that want audio visualisation and audio visualisation plugins.")
      (list alsa-lib
            esound
            (librsvg-for-system)
-           gtk+-2
+           gtk+
            jack-2
            libx11
            libxext))
