@@ -174,9 +174,9 @@ curl supports SSL certificates, HTTP POST, HTTP PUT, FTP uploading, HTTP
 form based upload, proxies, cookies, file transfer resume, user+password
 authentication (Basic, Digest, NTLM, Negotiate, kerberos...), proxy
 tunneling, and so on.")
+    (home-page "https://curl.se/")
     (license (license:non-copyleft "file://COPYING"
-                                   "See COPYING in the distribution."))
-    (home-page "https://curl.haxx.se/")))
+                                   "See COPYING in the distribution."))))
 
 (define-public curl/fixed
   (hidden-package
