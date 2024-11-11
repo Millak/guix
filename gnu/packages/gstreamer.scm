@@ -225,7 +225,7 @@ and very fast.")
 (define-public libvisual
   (package
     (name "libvisual")
-    (version "0.4.0")
+    (version "0.4.2")
     (source
      (origin
        (method git-fetch)
@@ -235,20 +235,25 @@ and very fast.")
          (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "02xwakwkqjsznc03pjlb6hcv1li1gw3r8xvyswqsm4msix5xq18a"))))
+        (base32 "12xf0qzn9w090kakrj59makjbjg9vhga5mgchmx6c1ypw10fjfbc"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; The package is in a sub-dir of this repo.
-         (add-after 'unpack 'chdir
-           (lambda _
-             (chdir "libvisual")
-             #t)))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               ;; The package is in a sub-dir of this repo.
+               (add-after 'unpack 'chdir
+                 (lambda _
+                   (chdir "libvisual"))))))
     (native-inputs
-     (list gettext-minimal intltool libtool pkg-config))
+     (list autoconf
+           autoconf-archive
+           automake
+           gettext-minimal
+           intltool
+           libtool
+           pkg-config))
     (inputs
-     (list sdl))
+     (list sdl12-compat))
     (native-search-paths
      (list
       (search-path-specification
