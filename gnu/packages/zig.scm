@@ -843,4 +843,36 @@ toolchain.  Among other features it provides
       (properties `((max-silent-time . 9600)
                     ,@(clang-compiler-cpu-architectures "16"))))))
 
+(define zig-0.10.0-2565-source
+  (let ((commit "856a9c2e3120d9ffa1166eed13641600230946da")
+        (revision "2565"))
+    (zig-source
+     (git-version "0.10.0" revision commit)
+     commit "00wqqckiyl6c3zcvgqxssnnv4ajip872ghrgv4mfrc8sllnhkdwa")))
+
+(define zig-0.10.0-2566
+  (let ((commit "e2fe1907ecac075e4d4a37776359144318b6055a")
+        (revision "2566")
+        (base zig-0.10.0-2558))
+    (package
+      (inherit base)
+      (name "zig")
+      (version (git-version "0.10.0" revision commit))
+      (source (zig-source
+               version commit
+               "1vy36ksv7jdxdkspi0jvmfz2xwvbc26x3rqns51wk3a39ngx1g2f"))
+      (arguments
+       ;; zig1
+       (substitute-keyword-arguments (package-arguments zig-0.10.0-747)
+         ((#:phases phases '%standard-phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'restore-lib
+                (lambda _
+                  (let ((path "lib/std/start.zig"))
+                    (copy-file (in-vicinity #+zig-0.10.0-2565-source path)
+                               path))))))))
+      (native-inputs
+       (modify-inputs (package-native-inputs base)
+         (replace "zig" `(,base "out")))))))
+
 (define-public zig zig-0.10)
