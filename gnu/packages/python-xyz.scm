@@ -6018,30 +6018,28 @@ and convert DDL to BigQuery JSON schema.")
 (define-public python-jsonschema
   (package
     (name "python-jsonschema")
-    (version "4.22.0")
+    (version "4.23.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "jsonschema" version))
        (sha256
-        (base32 "1dx2c7vgsqas61mj00b6ix75cvax5s32qmchz6d12darlhsd88jv"))))
+        (base32 "1i3b4sckkc3v8vckqa11xbrj695qzrzsfzrkclra6lb3ybz9f56p"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-pyproject
-            (lambda _
-              ;; The build system does not like this.
-              (substitute* "pyproject.toml"
-                (("  \"Topic :: File Formats.*") ""))))
           (add-before 'check 'pre-check
             (lambda _
               (setenv "JSON_SCHEMA_TEST_SUITE" "json"))))))
-    (native-inputs (list python-hatchling
-                         python-hatch-fancy-pypi-readme
-                         python-hatch-vcs
-                         python-pytest))
+    (native-inputs
+     (list python-hatchling
+           python-hatch-fancy-pypi-readme
+           python-hatch-vcs
+           ;; For <tests/test_cli.py::TestCLIIntegration::test_license>.
+           python-pip
+           python-pytest))
     (propagated-inputs
      (list python-attrs
            python-fqdn
