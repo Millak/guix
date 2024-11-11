@@ -698,7 +698,7 @@ them as the version argument or in a SCM managed file.")
 (define-public python-editables
   (package
     (name "python-editables")
-    (version "0.3")
+    (version "0.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -707,8 +707,11 @@ them as the version argument or in a SCM managed file.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1gbfkgzmrmbd4ycshm09fr2wd4f1n9gq7s567jgkavhfkn7s2pn1"))))
-    (build-system python-build-system)
+                "1bp959fz987jvrnkilhyr41fw4g00g9jfyiwmfvy96hv1yl68w8b"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))    ;avoid extra dependencies such as pytest
+    (native-inputs
+     (list python-flit-core))
     (home-page "https://github.com/pfmoore/editables")
     (synopsis "Editable installations")
     (description "This library supports the building of wheels which, when
