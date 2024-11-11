@@ -95609,17 +95609,16 @@ in Pure Rust.")
   (package
     (inherit rust-zvariant-4)
     (name "rust-zvariant")
-    (version "3.15.0")
+    (version "3.15.2")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "zvariant" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "131kaczf10psc8clzlndcc52dym5vi4g22kqf0qwaq6rw2z93cj4"))))
+                "1nxj9x187jl32fd32zvq8hfn6lyq3kjadb2q7f6kb6x0igl2pvsf"))))
     (arguments
-     `(#:tests? #f  ; overflow evaluating the requirement `PhantomData<Vec<u8>>:
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-arrayvec" ,rust-arrayvec-0.7)
         ("rust-byteorder" ,rust-byteorder-1)
         ("rust-chrono" ,rust-chrono-0.4)
