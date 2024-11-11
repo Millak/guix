@@ -476,7 +476,7 @@ Android, and ChromeOS.")
 (define-public libnice
   (package
     (name "libnice")
-    (version "0.1.21")
+    (version "0.1.22")
     (source
      (origin
        (method git-fetch)
@@ -486,7 +486,7 @@ Android, and ChromeOS.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0zxh1mdrl4p2vih8f4yqzm3pp4jsmc8aq7l43dlndaz4sj4c8j44"))))
+         "0ik45q1qlr04llr2ssm6zb73840dmn31q303k3qrcpgj0jp578hg"))))
     (build-system meson-build-system)
     (outputs '("out" "doc"))
     (arguments
@@ -507,6 +507,10 @@ Android, and ChromeOS.")
                 ;; nondeterministic fashion (see:
                 ;; https://gitlab.freedesktop.org/libnice/libnice/-/issues/151).
                 (("'test-bsd'" all)
+                 (string-append "# " all))
+                ;; The test-new-trickle fails with GLib 2.83.0 (see:
+                ;; https://gitlab.freedesktop.org/libnice/libnice/-/issues/198).
+                (("'test-new-trickle'" all)
                  (string-append "# " all)))
               (substitute* "stun/tests/meson.build"
                 ;; test-bind.c:234: bad_responses: Assertion `len >= 20'
