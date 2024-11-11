@@ -640,4 +640,41 @@ toolchain.  Among other features it provides
        (modify-inputs (package-native-inputs base)
          (replace "zig" `(,base "out")))))))
 
+(define zig-0.10.0-1505-source
+  (let ((commit "fe4ea31f7e9e1c8caea6a1df107b91e8ea1a7b8a")
+        (revision "1505"))
+    (zig-source
+     (git-version "0.10.0" revision commit)
+     commit "0q91hz824l867dlzz885i4mlkjdr0v5nfk3drsnvkvz2q52r0ffx")))
+
+(define zig-0.10.0-1506
+  (let ((commit "f16c10a86b7183e99e54a70344f4681211cd52bb")
+        (revision "1506")
+        (base zig-0.10.0-1497))
+    (package
+      (inherit base)
+      (name "zig")
+      (version (git-version "0.10.0" revision commit))
+      (source (zig-source
+               version commit
+               "17qbwknv33xi8908f1kdapvvj331bmibvvjhsza04j3siq3rpbz7"))
+      ;; zig2+zig1
+      (arguments
+       (substitute-keyword-arguments (package-arguments zig-0.10.0-748)
+         ((#:phases phases '%standard-phases)
+          #~(modify-phases #$phases
+              (add-after 'prepare-source 'restore-lib
+                (lambda _
+                  (delete-file-recursively "lib")
+                  (copy-recursively
+                   (string-append #+zig-0.10.0-1505-source "/lib")
+                   "lib")))
+              (replace 'build-zig1
+                (lambda _
+                  (invoke "./zig2" "build" "--zig-lib-dir" "lib"
+                          "update-zig1" "--verbose")))))))
+      (native-inputs
+       (modify-inputs (package-native-inputs base)
+         (replace "zig" `(,base "zig1")))))))
+
 (define-public zig zig-0.10)
