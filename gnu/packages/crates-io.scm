@@ -95701,16 +95701,21 @@ in Pure Rust.")
   (package
     (inherit rust-zvariant-derive-4)
     (name "rust-zvariant-derive")
-    (version "3.15.0")
+    (version "3.15.2")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "zvariant_derive" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1kcfgpqshggr5v7dwldjggix79zcyj7fizw7dkh6w39iziyplkck"))))
+                "1nbydrkawjwxan12vy79qsrn7gwc483mpfzqs685ybyppv04vhip"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin (substitute* "Cargo.toml"
+                         (("\"= ?([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                          (string-append "\"^" version)))))))
     (arguments
-     `(#:tests? #f      ; Needs unstable features.
+     `(#:tests? #f      ; use of undeclared crate or module `zvariant`
        #:cargo-inputs
        (("rust-proc-macro-crate" ,rust-proc-macro-crate-1)
         ("rust-proc-macro2" ,rust-proc-macro2-1)
