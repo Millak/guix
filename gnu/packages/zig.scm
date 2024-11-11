@@ -1526,4 +1526,41 @@ toolchain.  Among other features it provides
        (modify-inputs (package-native-inputs base)
          (replace "zig" `(,base "out")))))))
 
+(define zig-0.13-glibc-abi-tool
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+          (url "https://github.com/ziglang/glibc-abi-tool")
+          (commit "fc5d0a7046b76795e4219f8f168e118ec29fbc53")))
+    (file-name "glibc-abi-tool")
+    (sha256
+     (base32 "1q9plbqkkk3jzrvsgcjmj5jjdncz4ym9p0snglz4kkjwwm65gqs1"))))
+
+(define-public zig-0.13
+  (package
+    (inherit zig-0.12)
+    (name "zig")
+    (version "0.13.0")
+    (source
+     (origin
+       (inherit (zig-source
+                 version version
+                 "0ly8042lbsa8019g0d1jg4l06rxpq2530n9mijq66n4lmx7a5976"))
+       (patches
+        (search-patches
+         "zig-0.12-use-baseline-cpu-by-default.patch"
+         "zig-0.12-use-system-paths.patch"
+         "zig-0.13-fix-runpath.patch"))))
+    (inputs
+     (modify-inputs (package-inputs zig-0.12)
+       (replace "clang" clang-18)
+       (replace "lld" lld-18)))
+    (native-inputs
+     (modify-inputs (package-native-inputs zig-0.12)
+       (replace "glibc-abi-tool" zig-0.13-glibc-abi-tool)
+       (replace "llvm" llvm-18)
+       (replace "zig" `(,zig-0.12.0-109 "zig1"))))
+    (properties `((max-silent-time . 9600)
+                  ,@(clang-compiler-cpu-architectures "18")))))
+
 (define-public zig zig-0.10)
