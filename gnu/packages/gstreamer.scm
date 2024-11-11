@@ -369,14 +369,14 @@ another.")
 (define-public orc
   (package
     (name "orc")
-    (version "0.4.32")
+    (version "0.4.40")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://gstreamer.freedesktop.org/data/src/"
                                   "orc/orc-" version ".tar.xz"))
               (sha256
                (base32
-                "1w0qmyj3v9sb2g7ff39pp38b9850y9hyy0bag26ifrby5f7ksvm6"))))
+                "1avlxyn8nvpml5lzdqpa0zq7vnrqj731y1h5jvyl2z7vipkvxhiz"))))
     (build-system meson-build-system)
     (arguments
      `(#:phases
