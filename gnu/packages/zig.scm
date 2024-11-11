@@ -598,4 +598,29 @@ toolchain.  Among other features it provides
        (modify-inputs (package-native-inputs base)
          (replace "zig" `(,base "zig1")))))))
 
+;; Supply zig2, build zig1.wasm + zig2, install zig2.
+(define zig-0.10.0-1073
+  (let ((commit "4c1007fc044689b8cbc20634d73debb43df8efe1")
+        (revision "1073")
+        (base zig-0.10.0-1027))
+    (package
+      (inherit base)
+      (name "zig")
+      (version (git-version "0.10.0" revision commit))
+      (source (zig-source
+               version commit
+               "1mgvi3m2aph10c1ij9b4k6xs3jbp8hbswqgdnzxdi5y0ak7h1pd4"))
+      (arguments
+       (substitute-keyword-arguments (package-arguments zig-0.10.0-851)
+         ((#:phases phases '%standard-phases)
+          #~(modify-phases #$phases
+              (add-before 'build 'build-zig1
+                (lambda _
+                  (invoke "zig2" "build" "--zig-lib-dir" "lib"
+                          "update-zig1" "--verbose")))
+              (delete 'prepare-source)))))
+      (native-inputs
+       (modify-inputs (package-native-inputs base)
+         (replace "zig" `(,base "out")))))))
+
 (define-public zig zig-0.10)
