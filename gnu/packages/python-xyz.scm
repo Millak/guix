@@ -5576,6 +5576,8 @@ port forwards using @acronym{UPnP, Universal Plug and Play}.")
     (home-page "http://miniupnp.free.fr")
     (license license:bsd-3)))
 
+;; NOTE: As taken from upstram: "this library is in maintenance mode and
+;; should not be used in new code."
 (define-public python-py
   (package
     (name "python-py")
@@ -5587,15 +5589,13 @@ port forwards using @acronym{UPnP, Universal Plug and Play}.")
        (sha256
         (base32
          "06c7m7sfcn7587xd4s2bng8m6q1gsfd3j93afhplfjq74r0mrisi"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     ;; FIXME: "ImportError: 'test' module incorrectly imported from
-     ;; '/gnu/store/...-python-pytest-mimimal-3.0.5/lib/python3.5/site-packages'.
-     ;; Expected '/tmp/guix-build-python-py-1.4.31.drv-0/py-1.4.31/py'.
-     ;; Is this module globally installed?"
-     '(#:tests? #f))
+     '(#:tests? #f)) ;cycle with python-pytest
     (native-inputs
-     (list python-setuptools-scm))
+     (list python-setuptools
+           python-setuptools-scm
+           python-wheel))
     (home-page "https://github.com/pytest-dev/py")
     (synopsis "Python library for parsing, I/O, instrospection, and logging")
     (description
