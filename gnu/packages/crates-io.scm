@@ -95782,14 +95782,14 @@ in Pure Rust.")
   (package
     (inherit rust-zvariant-utils-2)
     (name "rust-zvariant-utils")
-    (version "1.0.1")
+    (version "1.1.1")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "zvariant_utils" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "00625h3240rixvfhq6yhws1d4bwf3vrf74v8s69b97aq27cg0d3j"))))
+                "0nkxvv1g9vrajjncgpsnb0q9cvgirdw9vk4p9wyd336npn8p5ykm"))))
     (arguments
      `(#:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
