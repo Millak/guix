@@ -2041,21 +2041,21 @@ same arguments.")
 (define-public python-pytest-xdist
   (package
     (name "python-pytest-xdist")
-    (version "2.5.0")
+    (version "3.6.1")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "pytest-xdist" version))
+       (uri (pypi-uri "pytest_xdist" version))
        (sha256
         (base32
-         "1psf5dqxvc38qzxvc305mkg5xpdmdkbkkfiyqlmdnkgh7z5dx025"))))
+         "039h0w8qc3d2ix55rrdj6i50i8jqxxl7dx9pjxvfq7i3vfj5dlga"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      ;; Fails with OSError: cannot send to <Channel id=1 closed>
-      ;; on foreign distribution.
-      '(list "-k" "not test_internal_errors_propagate_to_controller")))
+      ;; Failes with execnet.gateway_base.RemoteError: Traceback (most recent
+      ;; call last).
+      #~(list "-k" "not test_ignore_sys_path_hook_entry")))
     (native-inputs (list python-filelock
                          python-pytest
                          python-setuptools
