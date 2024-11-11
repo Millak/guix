@@ -27835,25 +27835,18 @@ Kodi plugin.")
 (define-public python-parso
   (package
     (name "python-parso")
-    (version "0.8.3")
+    (version "0.8.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "parso" version))
        (sha256
-        (base32 "185gkxq92kqiw2h5zp1cmyn04055x0lix4hmi5c077xm1clvw1wc"))
-       (patches
-        (search-patches "python-parso-unit-tests-in-3.10.patch"))))
+        (base32 "0bdr38l6p7d9q8agxljdbzm4158grkp1sms5lfcr1f8g4ic7nfpb"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-vv")))))))
+     (list python-pytest
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/davidhalter/parso")
     (synopsis "Python Parser")
     (description "Parso is a Python parser that supports error recovery and
