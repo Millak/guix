@@ -363,4 +363,49 @@ toolchain.  Among other features it provides
          (delete "glibc-abi-tool")))
       (outputs '("out" "zig1")))))
 
+;; Supply zig1.wasm.zst, build zig2 + zig1.wasm, install zig2 + zig1.wasm.zst.
+(define zig-0.10.0-675
+  (let ((commit "9d93b2ccf11f584320a2c5209dd2d94705167695")
+        (revision "675")
+        (base zig-0.10.0-610))
+    (package
+      (inherit base)
+      (name "zig")
+      (version (git-version "0.10.0" revision commit))
+      (source
+       (origin
+         (inherit (zig-source
+                   version commit
+                   "1qsfsv8wg0kz616sgj7dw9ihdz5rsm80p3ambl5lnkrjhwym7z7x"))
+         (patches (search-patches "zig-0.10.0-675-TypeOf-hack.patch"))))
+      (arguments
+       (substitute-keyword-arguments (package-arguments base)
+         ((#:phases phases '%standard-phases)
+          #~(modify-phases #$phases
+              (replace 'prepare-source
+                (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                  (install-file (search-input-file
+                                 (or native-inputs inputs) "bin/zig1.wasm.zst")
+                                "stage1")))
+              (add-after 'prepare-source 'remove-stage3
+                (lambda _
+                  ;; Multiline substitution.
+                  (invoke
+                   "sed" "--in-place" "/^add_custom_target(stage3/,/^)$/d"
+                   "CMakeLists.txt")))
+              (replace 'install
+                (lambda _
+                  (install-file "zig2" (string-append #$output "/bin"))
+                  (mkdir-p (string-append #$output "/lib"))
+                  (copy-recursively "lib" (string-append #$output "/lib/zig"))))
+              (replace 'build-zig1
+                (lambda _
+                  (invoke "./zig2" "build" "update-zig1" "--verbose")))
+              (delete 'patch-more-shebangs)
+              (delete 'backup-source)
+              (delete 'restore-source)))))
+      (native-inputs
+       (modify-inputs (package-native-inputs base)
+         (prepend `(,base "zig1")))))))
+
 (define-public zig zig-0.10)
