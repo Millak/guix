@@ -1912,60 +1912,60 @@ generated list of fallback fonts are checked.")
 
 (define-public fontmanager
   (package
-   (name "fontmanager")
-   (version "0.9.0")
-   (source
-    (origin
-      (method git-fetch)
-      (uri (git-reference
-            (url "https://github.com/FontManager/font-manager")
-            (commit version)))
-      (file-name (git-file-name name version))
-      (sha256
-       (base32 "0pxdwpjzsmld4j2m4q423vdrkx23bb6jqszjgk5wqbr2ln772hcx"))))
-   (build-system meson-build-system)
-   (arguments
-    `(#:glib-or-gtk? #t
-      #:build-type "release"
-      #:configure-flags
-      (list (string-append "-Dc_link_args=-Wl,-rpath="
-                           (assoc-ref %outputs "out")
-                           "/lib/font-manager"))
-      #:phases
-      (modify-phases %standard-phases
-        (add-after 'unpack 'skip-gtk-update-icon-cache
-          (lambda _ ; Remove dependency on needless desktop cache stuff.
-            (substitute* "meson.build"
-              (("gtk_update_icon_cache: true")
-               "gtk_update_icon_cache: false")
-              (("update_desktop_database: true")
-               "update_desktop_database: false")))))))
-   (native-inputs
-    `(("desktop-file-utils" ,desktop-file-utils)
-      ("gettext" ,gettext-minimal)
-      ("glib" ,glib "bin")
-      ("gobject-introspection" ,gobject-introspection)
-      ("pkg-config" ,pkg-config)
-      ("python-wrapper" ,python-wrapper)
-      ("vala" ,vala)
-      ("yelp-tools" ,yelp-tools)))
-   (inputs
-    `(("fonconfig" ,fontconfig)
-      ("freetype" ,freetype)
-      ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-      ("gtk" ,gtk)
-      ("json-glib" ,json-glib)
-      ("libsoup" ,libsoup)
-      ("sqlite" ,sqlite)
-      ("webkitgtk" ,webkitgtk)))
-   (home-page "https://fontmanager.github.io/")
-   (synopsis "Simple font management for GTK desktop environments")
-   (description "Font Manager is intended to provide a way for users to
+    (name "fontmanager")
+    (version "0.9.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/FontManager/font-manager")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0pxdwpjzsmld4j2m4q423vdrkx23bb6jqszjgk5wqbr2ln772hcx"))))
+    (build-system meson-build-system)
+    (arguments
+     (list #:glib-or-gtk? #t
+           #:build-type "release"
+           #:configure-flags
+           #~(list (string-append "-Dc_link_args=-Wl,-rpath=" #$output
+                                  "/lib/font-manager"))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'skip-gtk-update-icon-cache
+                 (lambda _
+                   ;; Remove dependency on needless desktop cache stuff.
+                   (substitute* "meson.build"
+                     (("gtk_update_icon_cache: true")
+                      "gtk_update_icon_cache: false")
+                     (("update_desktop_database: true")
+                      "update_desktop_database: false")))))))
+    (native-inputs
+     (list desktop-file-utils
+           gettext-minimal
+           `(,glib "bin")
+           gobject-introspection
+           pkg-config
+           python-wrapper
+           vala
+           yelp-tools))
+    (inputs
+     (list fontconfig
+           freetype
+           gsettings-desktop-schemas
+           gtk
+           json-glib
+           libsoup
+           sqlite
+           webkitgtk))
+    (home-page "https://fontmanager.github.io/")
+    (synopsis "Simple font management for GTK desktop environments")
+    (description "Font Manager is intended to provide a way for users to
 easily manage desktop fonts, without having to resort to command-line
 tools or editing configuration files by hand.
 While designed primarily with the GNOME Desktop Environment in mind, it should
 work well with other GTK desktop environments.")
-   (license license:gpl3+)))
+    (license license:gpl3+)))
 
 (define-public fntsample
   (package
