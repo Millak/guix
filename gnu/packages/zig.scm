@@ -677,4 +677,44 @@ toolchain.  Among other features it provides
        (modify-inputs (package-native-inputs base)
          (replace "zig" `(,base "zig1")))))))
 
+(define zig-0.10.0-1637-source
+  (let ((commit "4e6f21e2cb2c557b5c019f4acf445665a26edcba")
+        (revision "1637"))
+    (zig-source
+     (git-version "0.10.0" revision commit)
+     commit "1nd55j2c0br7rqx9fj6bkjyymkf1k6ms2m9f7byrc1ahggdyxrpv")))
+
+(define zig-0.10.0-1638
+  (let ((commit "7199d7c77715fe06606c5c89595e6852b3fa8c20")
+        (revision "1638")
+        (base zig-0.10.0-1506))
+    (package
+      (inherit base)
+      (name "zig")
+      (version (git-version "0.10.0" revision commit))
+      (source
+       (origin
+         (inherit (zig-source
+                   version commit
+                   "15mvfgab9wglm1g5gakvqwb7l33v1vjwjwchb3pmhxmkxkrjkmgq"))
+         (patches (search-patches "zig-0.10.0-1638-re-add-qualCast.patch"))))
+      ;; zig2+zig1
+      (arguments
+       (substitute-keyword-arguments (package-arguments zig-0.10.0-748)
+         ((#:phases phases '%standard-phases)
+          #~(modify-phases #$phases
+              (add-after 'prepare-source 'restore-lib
+                (lambda _
+                  (delete-file-recursively "lib")
+                  (copy-recursively
+                   (string-append #+zig-0.10.0-1637-source "/lib")
+                   "lib")))
+              (replace 'build-zig1
+                (lambda _
+                  (invoke "./zig2" "build" "--zig-lib-dir" "lib"
+                          "update-zig1" "--verbose")))))))
+      (native-inputs
+       (modify-inputs (package-native-inputs base)
+         (replace "zig" `(,base "zig1")))))))
+
 (define-public zig zig-0.10)
