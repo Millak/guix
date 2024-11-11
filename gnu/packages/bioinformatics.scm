@@ -1102,7 +1102,7 @@ with DNA methylation micro-array data.")
         #:imported-modules
         `(,@%r-build-system-modules (guix build minify-build-system))
         #:phases
-        '(modify-phases %standard-phases
+        '(modify-phases (@ (guix build r-build-system) %standard-phases)
            (add-after 'unpack 'process-javascript
              (lambda* (#:key inputs #:allow-other-keys)
                (with-directory-excursion "docs/deps/"
