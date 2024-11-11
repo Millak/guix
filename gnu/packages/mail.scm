@@ -3138,11 +3138,9 @@ powerful user customization features.")
          (add-after 'unpack 'remove-build-timestamps
            ;; Avoid embedding timestamps for reproducible build
            (lambda _
-                  (substitute*
-                      (list
-                       "devtools/bin/configure.sh"
-                       "cf/sh/makeinfo.sh")
-                    (("on `date`") ""))))
+             (substitute* '("devtools/bin/configure.sh"
+                            "cf/sh/makeinfo.sh")
+               (("on `date`") ""))))
          (add-before 'build 'replace-/bin/sh
            (lambda _
              (substitute*
@@ -3154,14 +3152,13 @@ powerful user customization features.")
                (("/bin/sh") (which "sh")))
 
              (substitute* "devtools/bin/Build"
-               (("SHELL=/bin/sh") (string-append "SHELL=" (which "sh"))))
-             #t))
+               (("SHELL=/bin/sh") (string-append "SHELL=" (which "sh"))))))
          (add-before 'build 'replace-/usr
            (lambda _
              (substitute*
-               '("devtools/OS/Linux"
-                 "cf/ostype/mklinux.m4"
-                 "cf/ostype/linux.m4")
+                 '("devtools/OS/Linux"
+                   "cf/ostype/mklinux.m4"
+                   "cf/ostype/linux.m4")
                (("/usr/sbin") "/sbin"))))
          (replace 'configure
            (lambda _
@@ -3185,15 +3182,13 @@ define(`confLIBS', `-lresolv')
 define(`confINSTALL', `~a/devtools/bin/install.sh')
 define(`confDEPEND_TYPE', `CC-M')
 define(`confINST_DEP', `')
-" (getcwd))))
-             #t))
+" (getcwd))))))
          (replace 'build
            (lambda _
              (invoke "sh" "Build")
              (with-directory-excursion "cf/cf"
                (copy-file "generic-linux.mc" "sendmail.mc")
-               (invoke "sh" "Build" "sendmail.cf"))
-             #t))
+               (invoke "sh" "Build" "sendmail.cf"))))
          (add-before 'install 'pre-install
            (lambda _
              (let ((out (assoc-ref %outputs "out")))
@@ -3202,24 +3197,21 @@ define(`confINST_DEP', `')
                (mkdir-p (string-append out "/etc/mail"))
                (setenv "DESTDIR" out)
                (with-directory-excursion "cf/cf"
-                 (invoke "sh" "Build" "install-cf"))
-               #t)))
+                 (invoke "sh" "Build" "install-cf")))))
          (add-after 'install 'post-install
            (lambda _
-               ;; Make symbolic links manually, because build script uses
-               ;; absolute paths for them and ignores DESTDIR.
-               (for-each
-                 (lambda (name)
-                   (symlink "../sbin/sendmail" (string-append %output "/bin/" name)))
-                 '("hoststat" "newaliases" "mailq" "purgestat")))))
+             ;; Make symbolic links manually, because build script uses
+             ;; absolute paths for them and ignores DESTDIR.
+             (for-each
+              (lambda (name)
+                (symlink "../sbin/sendmail" (string-append %output "/bin/" name)))
+              '("hoststat" "newaliases" "mailq" "purgestat")))))
        ;; There is no make check.  There are some post installation tests, but those
-       ;; require root privileges
+       ;; require root privileges.
        #:tests? #f))
-    (inputs
-     (list m4 perl))
+    (inputs (list m4 perl))
     (home-page "https://sendmail.org")
-    (synopsis
-     "Highly configurable Mail Transfer Agent (MTA)")
+    (synopsis "Highly configurable Mail Transfer Agent (MTA)")
     (description
      "Sendmail is a mail transfer agent (MTA) originally developed by Eric
 Allman.  It is highly configurable and supports many delivery methods and many
