@@ -1084,4 +1084,78 @@ toolchain.  Among other features it provides
        (modify-inputs (package-native-inputs base)
          (replace "zig" `(,base "out")))))))
 
+(define zig-0.11-glibc-abi-tool
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+          (url "https://github.com/ziglang/glibc-abi-tool")
+          (commit "13576b1ea957882be7ff2c99f4cdc27454930219")))
+    (file-name "glibc-abi-tool")
+    (sha256
+     (base32 "09m0ipixxw0dnal0zsgk6kvcz29y9s256b9y00s4hkhj95n630il"))
+    (modules '((guix build utils)))
+    (snippet
+     #~(begin
+         (substitute* "consolidate.zig"
+           ((".*minor = 3[5678].*") "")
+           (("(w\\.writeIntLittle.u16, )(@intCast.*);" _ prefix suffix)
+            (string-append prefix "@as(u16, " suffix ");")))
+         (with-directory-excursion "glibc"
+           (for-each delete-file-recursively
+                     '("2.35" "2.36" "2.37" "2.38")))))))
+
+(define-public zig-0.11
+  (package
+    (inherit zig-0.10)
+    (name "zig")
+    (version "0.11.0")
+    (source
+     (origin
+       (inherit (zig-source
+                 version version
+                 "0qh7c27cd4wcdjj0mbpkarvwypfk1js8hkyxs0z149qv75zkbrca"))
+       (patches
+        (search-patches
+         "zig-0.9-use-baseline-cpu-by-default.patch"
+         "zig-0.11-use-system-paths.patch"
+         "zig-0.11-fix-runpath.patch"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments zig-0.10)
+       ((#:phases phases '%standard-phases)
+        #~(modify-phases #$phases
+            (add-after 'unpack 'prepare-source
+              (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                (install-file (search-input-file
+                               (or native-inputs inputs) "bin/zig1.wasm")
+                              "stage1")
+                (make-file-writable "stage1/zig1.wasm")))
+            (add-after 'install 'build-zig1
+              (lambda _
+                (invoke (string-append #$output "/bin/zig")
+                        "build" "update-zig1" "--verbose")))
+            (add-after 'build-zig1 'install-zig1
+              (lambda _
+                (install-file "stage1/zig1.wasm"
+                              (string-append #$output:zig1 "/bin"))))
+            ;; TODO: Disable tests for macOS target and run full test.
+            ;; Issue with glibc in CPLUS_INCLUDE_PATH:
+            ;; <https://github.com/ziglang/zig/issues/18063>.
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (invoke (string-append #$output "/bin/zig")
+                          "test" "-I" "test" "test/behavior.zig"))))))))
+    (inputs
+     (modify-inputs (package-inputs zig-0.10)
+       (replace "clang" clang-16)
+       (replace "lld" lld-16)))
+    (native-inputs
+     (modify-inputs (package-native-inputs zig-0.10)
+       (prepend binaryen `(,zig-0.10.0-3985 "zig1"))
+       (replace "glibc-abi-tool" zig-0.11-glibc-abi-tool)
+       (replace "llvm" llvm-16)))
+    (outputs '("out" "zig1"))
+    (properties `((max-silent-time . 9600)
+                  ,@(clang-compiler-cpu-architectures "16")))))
+
 (define-public zig zig-0.10)
