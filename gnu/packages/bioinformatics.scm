@@ -1062,6 +1062,198 @@ simultaneously considered.")
 with DNA methylation micro-array data.")
       (license license:unlicense))))
 
+(define-public r-hdwgcna
+  (let ((commit "950b8c74c5d74b30b4a562820e70ca00ee29e2c6")
+        (revision "1"))
+    (package
+      (name "r-hdwgcna")
+      (version (git-version "0.4.00" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/smorabit/hdWGCNA")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0d9hr2ly7k6kq6yp5spjlp6lp9yx593xmggajyzjxlhxi2lbyqgn"))
+         (snippet
+          '(for-each delete-file
+                     (list
+                      "docs/deps/bootstrap-5.1.0/bootstrap.bundle.min.js"
+                      "docs/deps/bootstrap-5.3.1/bootstrap.bundle.min.js"
+                      "docs/deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"
+                      "docs/deps/clipboard.js-2.0.11/clipboard.min.js"
+                      "docs/deps/headroom-0.11.0/headroom.min.js"
+                      "docs/deps/headroom-0.11.0/jQuery.headroom.min.js"
+                      "docs/deps/jquery-3.6.0/jquery-3.6.0.min.js"
+                      "docs/deps/search-1.0.0/autocomplete.jquery.min.js"
+                      "docs/deps/search-1.0.0/fuse.min.js"
+                      "docs/deps/search-1.0.0/mark.min.js")))))
+      (properties `((upstream-name . "hdWGCNA")))
+      (build-system r-build-system)
+      (arguments
+       (list
+        #:modules
+        '((guix build r-build-system)
+          (guix build minify-build-system)
+          (guix build utils)
+          (ice-9 match))
+        #:imported-modules
+        `(,@%r-build-system-modules (guix build minify-build-system))
+        #:phases
+        '(modify-phases %standard-phases
+           (add-after 'unpack 'process-javascript
+             (lambda* (#:key inputs #:allow-other-keys)
+               (with-directory-excursion "docs/deps/"
+                 (for-each (match-lambda
+                             ((source . target)
+                              (minify source #:target target)))
+                           `((,(string-append (assoc-ref inputs "js-bootstrap-5.1")
+                                              "/dist/js/bootstrap.bundle.js")
+                              . "bootstrap-5.1.0/bootstrap.bundle.min.js")
+                             (,(string-append (assoc-ref inputs "js-bootstrap-5.3")
+                                              "/dist/js/bootstrap.bundle.js")
+                              . "bootstrap-5.3.1/bootstrap.bundle.min.js")
+                             (,(search-input-file inputs "/dist/bootstrap-toc.js")
+                              . "bootstrap-toc-1.0.1/bootstrap-toc.min.js")
+                             (,(search-input-file inputs "/dist/clipboard.js")
+                              . "clipboard.js-2.0.11/clipboard.min.js")
+                             ("jquery-3.6.0/jquery-3.6.0.js"
+                              . "jquery-3.6.0/jquery-3.6.0.min.js")
+                             (,(search-input-file inputs "/dist/autocomplete.jquery.js")
+                              . "search-1.0.0/autocomplete.jquery.min.js")
+                             (,(search-input-file inputs "/dist/fuse.js")
+                              . "search-1.0.0/fuse.min.js")
+                             (,(search-input-file inputs "/dist/mark.js")
+                              . "search-1.0.0/mark.min.js")
+                             (,(assoc-ref inputs "js-headroom")
+                              . "headroom-0.11.0/headroom.min.js")
+                             (,(assoc-ref inputs "js-headroom-jquery")
+                              . "docs/deps/headroom-0.11.0/jQuery.headroom.min.js")))))))))
+      (propagated-inputs (list r-dplyr
+                               r-enrichr
+                               r-geneoverlap
+                               r-genomicranges
+                               r-ggplot2
+                               r-ggraph
+                               r-ggrepel
+                               r-harmony
+                               r-igraph
+                               r-matrix
+                               r-proxy
+                               r-seurat
+                               r-tester
+                               r-tidygraph
+                               r-ucell
+                               r-wgcna))
+      (native-inputs
+       `(("esbuild" ,esbuild)
+         ("js-autocomplete"
+          ,(let ((version "0.38.0"))
+             (origin
+               (method git-fetch)
+               (uri (git-reference
+                     (url "https://github.com/algolia/autocomplete")
+                     (commit (string-append "v" version))))
+               (file-name (git-file-name "js-autocomplete" version))
+               (sha256
+                (base32
+                 "04r1qmd5cxcf8cf471kx51y6wq86rh54y42y7xl51z95ag5csswl")))))
+         ("js-bootstrap-5.1"
+          ,(let ((version "5.1.0"))
+             (origin
+               (method git-fetch)
+               (uri (git-reference
+                     (url "https://github.com/twbs/bootstrap")
+                     (commit (string-append "v" version))))
+               (file-name (git-file-name "js-bootstrap" version))
+               (sha256
+                (base32
+                 "0wjyi497wy2lbypkxwa72z294zbh827lb2s8pzgi40hvjsw00ns4")))))
+         ("js-bootstrap-5.3"
+          ,(let ((version "5.3.1"))
+             (origin
+               (method git-fetch)
+               (uri (git-reference
+                     (url "https://github.com/twbs/bootstrap")
+                     (commit (string-append "v" version))))
+               (file-name (git-file-name "js-bootstrap" version))
+               (sha256
+                (base32
+                 "045majqayd4wrpq3r3fisi56grwizykwj5705jlzsg7bwln8v3qr")))))
+         ("js-bootstrap-toc"
+          ,(let ((version "1.0.1"))
+             (origin
+               (method git-fetch)
+               (uri (git-reference
+                     (url "https://github.com/afeld/bootstrap-toc")
+                     (commit (string-append "v" version))))
+               (file-name (git-file-name "js-bootstrap-toc" version))
+               (sha256
+                (base32
+                 "1d4rqvbkwmmld0d8nz2is1rwc55rlb4b0v2anylxj63335cs0mk0")))))
+         ("js-clipboard"
+          ,(let ((version "2.0.11"))
+             (origin
+               (method git-fetch)
+               (uri (git-reference
+                     (url "https://github.com/zenorocha/clipboard.js")
+                     (commit (string-append "v" version))))
+               (file-name (git-file-name "js-clipboard" version))
+               (sha256
+                (base32
+                 "0nn9cry7ddf47vkl3vnpc4z86da46wq7m3qf3awcs05197bjn1vj")))))
+         ("js-fuse"
+          ,(let ((version "6.4.6"))
+             (origin
+               (method git-fetch)
+               (uri (git-reference
+                     (url "https://github.com/krisk/Fuse")
+                     (commit (string-append "v" version))))
+               (file-name (git-file-name "js-fuse" version))
+               (sha256
+                (base32
+                 "1k0l2vxw4nsmwrz48kmgv41ymphrdwbdbckiv9w011jwbnfsqvn5")))))
+         ("js-mark"
+          ,(let ((version "8.11.1"))
+             (origin
+               (method git-fetch)
+               (uri (git-reference
+                     (url "https://github.com/julkue/mark.js")
+                     (commit version)))
+               (file-name (git-file-name "js-mark" version))
+               (sha256
+                (base32
+                 "108cw4732wjlwwjwpc86fqlr8yfrlagqdn7126qxa70c0ldfma93")))))
+         ("js-headroom"
+          ,(let ((version "0.11.0"))
+             (origin
+               (method url-fetch)
+               (uri (string-append "https://unpkg.com/headroom.js@"
+                                   version "/dist/headroom.js"))
+               (file-name (string-append "js-headroom-" version ".js"))
+               (sha256
+                (base32
+                 "0d76fpajxzwsj4847zgrv05daq8ri8hcww5dcldq1q2iyyxsmrva")))))
+         ("js-headroom-jquery"
+          ,(let ((version "0.11.0"))
+             (origin
+               (method url-fetch)
+               (uri (string-append "https://unpkg.com/headroom.js@"
+                                   version "/dist/jQuery.headroom.js"))
+               (file-name (string-append "js-headroom-jquery-" version ".js"))
+               (sha256
+                (base32
+                 "1jz1ampd9k8p32m6bid4yrr66bkngd8blj2q0774hl91rszhjqrv")))))))
+      (home-page "https://github.com/smorabit/hdWGCNA")
+      (synopsis "Weighted gene co-expression network analysis")
+      (description
+       "@code{hdWGCNA} is an R package for performing weighted gene
+co-expression network analysis in high dimensional -omics such as single-cell
+RNA-seq or spatial transcriptomics.")
+      (license license:gpl3))))
+
 (define-public r-netid
   (let ((commit "6ad1ffdd64a6584cc1d392524dad8e248d4590a8")
         (revision "1"))
