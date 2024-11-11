@@ -94711,14 +94711,19 @@ for locating fonts.")
   (package
     (inherit rust-zbus-macros-4)
     (name "rust-zbus-macros")
-    (version "3.14.1")
+    (version "3.15.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "zbus_macros" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "17dwc1vvvwxlgn78cpds72hcf7y1hxqkjnpm0zlc0y38ji57kla1"))))
+        (base32 "19g0d7d4b8l8ycw498sz8pwkplv300j31i9hnihq0zl81xxljcbi"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (("\"= ?([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                   (string-append "\"^" version)))))))
     (arguments
      `(#:tests? #f      ; Tests need a running dbus instance.
        #:cargo-inputs (("rust-proc-macro-crate" ,rust-proc-macro-crate-1)
