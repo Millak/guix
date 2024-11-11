@@ -5387,17 +5387,18 @@ and other secrets.  It communicates with the \"Secret Service\" using DBus.")
 (define-public gi-docgen
   (package
     (name "gi-docgen")
-    (version "2023.1")
+    (version "2024.1")
     (source (origin
               (method url-fetch)
-              (uri (pypi-uri "gi-docgen" version))
+              (uri (pypi-uri "gi_docgen" version))
               (sha256
                (base32
-                "18vzbw1k531qxi9qcwlxl97xk9dg16has7khg6a5d0pqrflyvbc8"))))
+                "0cf237ml2jhqcv1zlb35qbvjg4i8a4blawdah5s7f28iz5lmajia"))))
     (build-system python-build-system)
     (propagated-inputs (list python-jinja2
                              python-markdown
                              python-markupsafe
+                             python-packaging
                              python-pygments
                              python-tomli
                              python-typogrify))
