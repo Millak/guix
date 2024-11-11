@@ -564,4 +564,21 @@ toolchain.  Among other features it provides
        (modify-inputs (package-native-inputs base)
          (replace "zig" `(,base "zig1")))))))
 
+(define zig-0.10.0-962
+  (let ((commit "622311fb9ac7ee6d93dcb8cda4b608751f7e092a")
+        (revision "962")
+        (base zig-0.10.0-961))
+    (package
+      (inherit base)
+      (name "zig")
+      (version (git-version "0.10.0" revision commit))
+      (source (zig-source
+               version commit
+               "1yywzmxr6nwhdix5x9k5nrxa4n1nc8x8v1gqgyvwdhz47x9vw8b0"))
+      ;; zig1
+      (arguments (package-arguments zig-0.10.0-747))
+      (native-inputs
+       (modify-inputs (package-native-inputs base)
+         (replace "zig" `(,base "out")))))))
+
 (define-public zig zig-0.10)
