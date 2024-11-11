@@ -463,14 +463,14 @@ that client code uses to construct the grammar directly in Python code.")
 (define-public python-packaging-bootstrap
   (package
     (name "python-packaging-bootstrap")
-    (version "23.2")
+    (version "24.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "packaging" version))
        (sha256
         (base32
-         "1ifgjb0d0bnnm78hv3mnl7hi233m7jamb2plma752djh83lv13q4"))))
+         "0zxrq3nn0lmmqp3p2d92v0yqbs29kl87k4vkqmmk8bckbvfaca62"))))
     (build-system pyproject-build-system)
     (arguments `(#:tests? #f))         ;disabled to avoid extra dependencies
     (propagated-inputs
