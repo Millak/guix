@@ -173,13 +173,13 @@ Python file, so it can be easily copied into your project.")
 (define-public python-tomli
   (package
     (name "python-tomli")
-    (version "2.0.1")
+    (version "2.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "tomli" version))
        (sha256
-        (base32 "0kwazq3i18rphcr8gak4fgzdcj5w5bbn4k4j2l6ma32gj496qlny"))))
+        (base32 "1f4a9nvy8g82bl0k1wdxz9y1j843ai4l4glp0iyy357c5ap6qr1z"))))
     (build-system pyproject-build-system)
     (arguments
      `(#:tests? #f))                      ;disabled to avoid extra dependencies
