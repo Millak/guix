@@ -408,4 +408,36 @@ toolchain.  Among other features it provides
        (modify-inputs (package-native-inputs base)
          (prepend `(,base "zig1")))))))
 
+;; Supply zig1.wasm.zst, build zig2 + zig1.wasm, install zig2 + zig1.wasm.
+(define zig-0.10.0-722
+  (let ((commit "d10fd78d4615f329141f5c19f893039d56aff425")
+        (revision "722")
+        (base zig-0.10.0-675))
+    (package
+      (inherit base)
+      (name "zig")
+      (version (git-version "0.10.0" revision commit))
+      (source (zig-source
+               version commit
+               "0829wymcwph71zlwql6v7i7j9gr1m96acyp2xsr69vq2h98wmlap"))
+      (arguments
+       (substitute-keyword-arguments (package-arguments base)
+         ((#:phases phases '%standard-phases)
+          #~(modify-phases #$phases
+              (replace 'prepare-source
+                (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                  (install-file (search-input-file
+                                 (or native-inputs inputs) "bin/zig1.wasm.zst")
+                                "stage1")
+                  (invoke "zstd" "-d" "stage1/zig1.wasm.zst")
+                  (make-file-writable "stage1/zig1.wasm")))
+              (replace 'install-zig1
+                (lambda _
+                  (install-file "stage1/zig1.wasm"
+                                (string-append #$output:zig1 "/bin"))))))))
+      (native-inputs
+       (modify-inputs (package-native-inputs base)
+         (prepend zstd)
+         (replace "zig" `(,base "zig1")))))))
+
 (define-public zig zig-0.10)
