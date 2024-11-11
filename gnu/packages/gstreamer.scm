@@ -965,7 +965,7 @@ par compared to the rest.")
 (define-public gst-plugins-ugly
   (package
     (name "gst-plugins-ugly")
-    (version "1.24.6")
+    (version "1.24.9")
     (source
      (origin
        (method url-fetch)
@@ -973,7 +973,7 @@ par compared to the rest.")
         (string-append "https://gstreamer.freedesktop.org/src/"
                        name "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "1i3m9b48ab7h385qlbxn7p43zfdpymf8gkamf9ijwa5bg0lvpzax"))))
+        (base32 "1dn33ivfc0rnn545y40303h5z9bm5ca9f8j2czmhbk9q1w8k0ssb"))))
     (build-system meson-build-system)
     (arguments
      (list #:glib-or-gtk? #t         ; To wrap binaries and/or compile schemas
