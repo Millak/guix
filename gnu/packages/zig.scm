@@ -502,4 +502,26 @@ toolchain.  Among other features it provides
        (modify-inputs (package-native-inputs base)
          (replace "zig" `(,base "zig1")))))))
 
+;; Supply zig1.wasm, build zig2, install zig2.
+(define zig-0.10.0-851
+  (let ((commit "aac2d6b56f32134ea32fb3d984e3fcdfddd8aaf6")
+        (revision "851")
+        (base zig-0.10.0-748))
+    (package
+      (inherit base)
+      (name "zig")
+      (version (git-version "0.10.0" revision commit))
+      (source (zig-source
+               version commit
+               "026q8igib5a2wiqdxispijph7isx8g1m0p6xgclikrmwpkpr7wb8"))
+      (arguments
+       (substitute-keyword-arguments (package-arguments zig-0.10.0-748)
+         ((#:phases phases '%standard-phases)
+          #~(modify-phases #$phases
+              (delete 'build-zig1)
+              (delete 'install-zig1)))))
+      (native-inputs
+       (modify-inputs (package-native-inputs base)
+         (replace "zig" `(,base "zig1")))))))
+
 (define-public zig zig-0.10)
