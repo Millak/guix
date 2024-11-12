@@ -1971,23 +1971,33 @@ IPC Router) bus.")
 (define-public libqmi
   (package
     (name "libqmi")
-    (version "1.30.8")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://www.freedesktop.org/software/libqmi/"
-                    "libqmi-" version ".tar.xz"))
-              (sha256
-               (base32
-                "140rmjw436rh6rqmnfw6yaflpffd27ilwcv4s9jvvl1skv784946"))))
-    (build-system gnu-build-system)
+    (version "1.34.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.freedesktop.org/mobile-broadband/libqmi")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1m5y2sf14qd2i9mvbb68wxqlfwvpiprgz8zmcx6wb2cnjgsszmwp"))))
+    (build-system meson-build-system)
     (inputs
-     (list libgudev))
+     (list
+      bash-completion
+      libgudev))
     (native-inputs
-     (list `(,glib "bin") ; for glib-mkenums
-           pkg-config python-wrapper))
+     (list `(,glib "bin")               ;for glib-mkenums
+           gobject-introspection
+           help2man
+           pkg-config
+           python-minimal))
+    ;; These are required by qmi-glib.pc.
     (propagated-inputs
-     (list glib)) ; required by qmi-glib.pc
+     (list glib
+           libmbim
+           libqrtr-glib))
     (synopsis "Library to communicate with QMI-powered modems")
     (home-page "https://www.freedesktop.org/wiki/Software/libqmi/")
     (description
