@@ -214,11 +214,11 @@ For synthesis, the compiler generates netlists in the desired format.")
      (list bison
            cxxopts                      ;header-only library
            flex
-           gawk ; for the tests and "make" progress pretty-printing
-           iverilog ; for the tests
+           gawk             ;for the tests and "make" progress pretty-printing
+           iverilog         ;for the tests
            pkg-config
            python
-           tcl)) ; tclsh for the tests
+           tcl))                        ;tclsh for the tests
     (inputs
      (list abc
            bash-minimal
@@ -226,13 +226,13 @@ For synthesis, the compiler generates netlists in the desired format.")
            gtkwave
            libffi
            psmisc
+           python
+           python-click
            readline
            tcl
            xdot
            z3
-           zlib
-           python
-           python-click))
+           zlib))
     (home-page "https://yosyshq.net/yosys/")
     (synopsis "FPGA Verilog RTL synthesizer")
     (description "Yosys synthesizes Verilog-2005.")
