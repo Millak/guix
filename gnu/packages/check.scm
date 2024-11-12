@@ -2008,37 +2008,24 @@ Python's @code{random.seed}.")
 (define-public python-pytest-mock
   (package
     (name "python-pytest-mock")
-    (version "3.10.0")
+    (version "3.14.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest-mock" version))
        (sha256
-        (base32 "0kzdwwdjw001qzf1n4qzh7c364rvmb0cmkfqdwr2l9bwxy2v1ggv"))
-       (modules '((guix build utils)))
-       (snippet
-        ;; Some tests do a string match on Pytest output, and fails when
-        ;; warnings are present.  Adjust to cope with warnings from
-        ;; third-party libraries (looking at you, pytest-asyncio).
-        '(substitute* "tests/test_pytest_mock.py"
-           (("1 passed in \\*")
-            "1 passed*")))))
-    (build-system python-build-system)
+        (base32 "1l0b864arbzrq13z635l1x9ial0w7pgz6svd0nyavkpy3rd2a697"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               ;; Skip the assertion rewriting tests, which don't work in the
-               ;; presence of read-only Python modules (a limitation of
-               ;; Pytest).  Also skip the "test_standalone_mock" test, which
-               ;; can only work when 'python-mock' is not available
-               ;; (currently propagated by Pytest 5).
-               (invoke "pytest" "--assert=plain" "-vv"
-                       "-k" "not test_standalone_mock")))))))
+     (list
+      ;; Skip the assertion rewriting tests, which don't work in the presence
+      ;; of read-only Python modules (a limitation of Pytest).
+      #:test-flags #~(list "--assert=plain")))
     (native-inputs
-     (list python-pytest-asyncio python-setuptools-scm))
+     (list python-pytest-asyncio
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
     (propagated-inputs
      (list python-pytest))
     (home-page "https://github.com/pytest-dev/pytest-mock/")
