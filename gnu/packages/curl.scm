@@ -185,7 +185,8 @@ tunneling, and so on.")
      (replacement curl/fixed)
      (source (origin
                (inherit (package-source curl))
-               (patches (search-patches "curl-CVE-2024-8096.patch")))))))
+               (patches (append (origin-patches (package-source curl))
+                                (search-patches "curl-CVE-2024-8096.patch"))))))))
 
 (define-public gnurl (deprecated-package "gnurl" curl))
 
