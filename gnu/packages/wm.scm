@@ -1831,7 +1831,7 @@ modules for building a Wayland compositor.")
 (define-public wl-mirror
   (package
     (name "wl-mirror")
-    (version "0.16.2")
+    (version "0.17.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1840,7 +1840,7 @@ modules for building a Wayland compositor.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1jdycr9vf5skbf55kbm2hc3zl3qg58x3bb6xqkf9qx14m4ramcdj"))))
+                "1szzaahpq0ihpabjh4djkrmhlp0z3g39pdsmrcg7jdz6qw49pj8k"))))
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #f                  ;No tests.
