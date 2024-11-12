@@ -5763,7 +5763,7 @@ on a GUI toolkit.")
 (define-public libseat
   (package
     (name "libseat")
-    (version "0.8.0")
+    (version "0.9.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5772,15 +5772,15 @@ on a GUI toolkit.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "02wzrgp8di6hqmicnm2fim6jnvbn62wy248ikvdvrhiywrb7i931"))))
+                "1q1ih1f9v5240nlas1gz44giwq4k88p3yikfq7w0a4sw58yr6pz8"))))
     (build-system meson-build-system)
     (arguments
-     `(#:configure-flags '("-Dlibseat-logind=elogind"
-                           "-Dserver=disabled")))
+     (list #:configure-flags #~(list "-Dlibseat-logind=elogind"
+                                     "-Dserver=disabled")))
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (propagated-inputs
-     `(("elogind" ,elogind)))
+     (list elogind))
     (home-page "https://sr.ht/~kennylevinsen/seatd")
     (synopsis "Seat management library")
     (description
@@ -5793,16 +5793,16 @@ allows applications to use whatever seat management is available.")
     (inherit libseat)
     (name "seatd")
     (arguments
-     `(#:configure-flags '("-Dlibseat-logind=elogind")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'remove-libs
-           (lambda* (#:key outputs #:allow-other-keys)
-             (with-directory-excursion (assoc-ref outputs "out")
-               (for-each delete-file-recursively '("lib" "include"))))))))
+     (list #:configure-flags #~(list "-Dlibseat-logind=elogind")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'remove-libs
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (with-directory-excursion (assoc-ref outputs "out")
+                     (for-each delete-file-recursively '("lib" "include"))))))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("scdoc" ,scdoc)))
+     (list pkg-config
+           scdoc))
     (inputs '())
     (synopsis "Seat management daemon")
     (description
