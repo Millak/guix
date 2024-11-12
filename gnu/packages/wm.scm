@@ -211,7 +211,7 @@ the leaves of a full binary tree.")
 (define-public cage
   (package
     (name "cage")
-    (version "0.1.5")
+    (version "0.2.0")
     (source
      (origin
        (method git-fetch)
@@ -219,12 +219,12 @@ the leaves of a full binary tree.")
              (url "https://github.com/cage-kiosk/cage")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
-       (sha256 (base32 "11sg9x08zl2nr7a723h462knz5lf58sgvkhv1mgc9z3hhkhvbsja"))))
+       (sha256 (base32 "0y7vqyvzphpzm0bnkrhs7qqbjpcb0sn0nlwif9y43l5kmp7ns8fr"))))
     (build-system meson-build-system)
     (native-inputs (list pkg-config scdoc
                          ;; for wayland-scanner
                          wayland))
-    (inputs (list wayland wlroots-0.16 libxkbcommon))
+    (inputs (list wayland wlroots libxkbcommon))
     (home-page "https://github.com/cage-kiosk/cage")
     (synopsis "Wayland kiosk")
     (description "This package provides a Wayland @dfn{kiosk}, which runs a
