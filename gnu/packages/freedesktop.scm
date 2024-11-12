@@ -1935,6 +1935,39 @@ which speak the Mobile Interface Broadband Model (MBIM) protocol.")
      ;; The mbimcli tool is released under the GPLv2+ license.
      (list license:lgpl2.0+ license:gpl2+))))
 
+(define-public libqrtr-glib
+  (package
+    (name "libqrtr-glib")
+    (version "1.2.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://gitlab.freedesktop.org/mobile-broadband/libqrtr-glib")
+         (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0bfn5kfscli0rrxvmzdl6ix5ikh0kxia7ad83rmh1hksfcwynwlh"))))
+    (build-system meson-build-system)
+    (inputs
+     (list libgudev libmbim))
+    (native-inputs
+     (list bash-completion
+           `(,glib "bin")
+           gtk-doc
+           gobject-introspection
+           pkg-config))
+    (propagated-inputs
+     (list glib))                       ;required by mm-glib.pc
+    (synopsis "Qualcomm IPC Router protocol helper library")
+    (description
+     "libqrtr-glib is a glib-based library to use and manage the QRTR (Qualcomm
+IPC Router) bus.")
+    (home-page "https://gitlab.freedesktop.org/mobile-broadband/libqrtr-glib")
+    (license license:lgpl2.1+)))
+
 (define-public libqmi
   (package
     (name "libqmi")
