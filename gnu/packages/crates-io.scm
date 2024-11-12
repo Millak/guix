@@ -67864,26 +67864,38 @@ It is automatically published using the compiler repository at
 @code{rustc-demangle} crate.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-rustc-hash-2
+  (package
+    (name "rust-rustc-hash")
+    (version "2.0.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "rustc-hash" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32 "0lni0lf846bzrf3jvci6jaf4142n1mdqxvcpczk5ch9pfgyk8c2q"))))
+    (build-system cargo-build-system)
+    (arguments `(#:cargo-inputs (("rust-rand" ,rust-rand-0.8))))
+    (home-page "https://github.com/rust-lang/rustc-hash")
+    (synopsis "Speedy, non-cryptographic hash used in rustc")
+    (description
+     "This package provides a speedy, non-cryptographic hash used in rustc.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-rustc-hash-1
   (package
+    (inherit rust-rustc-hash-2)
     (name "rust-rustc-hash")
     (version "1.1.0")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "rustc-hash" version))
-        (file-name
-          (string-append name "-" version ".tar.gz"))
+        (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-          (base32
-            "1qkc5khrmv5pqi5l5ca9p5nl5hs742cagrndhbrlk3dhlrx3zm08"))))
-    (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
-    (home-page "https://github.com/rust-lang/rustc-hash")
-    (synopsis "Speedy, non-cryptographic hash used in rustc")
-    (description
-     "This package provides a speedy, non-cryptographic hash used in rustc.")
-    (license (list license:asl2.0 license:expat))))
+         (base32 "1qkc5khrmv5pqi5l5ca9p5nl5hs742cagrndhbrlk3dhlrx3zm08"))))
+    (arguments `(#:skip-build? #t))))
 
 (define-public rust-rustc-hex-2
   (package
