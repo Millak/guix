@@ -171,30 +171,29 @@ For synthesis, the compiler generates netlists in the desired format.")
       #~(modify-phases %standard-phases
           (add-before 'configure 'fix-paths
             (lambda* (#:key inputs #:allow-other-keys)
-              (substitute* "./backends/smt2/smtio.py"
+              (substitute* "backends/smt2/smtio.py"
                 (("\\['z3")
-                 (string-append "['" (search-input-file inputs "/bin/z3"))))
-              (substitute* "./kernel/fstdata.cc"
+                 (string-append "['" (search-input-file inputs "bin/z3"))))
+              (substitute* "kernel/fstdata.cc"
                 (("vcd2fst")
-                 (search-input-file inputs "/bin/vcd2fst")))
-              (substitute* '("./passes/cmds/show.cc"
-                             "./passes/cmds/viz.cc")
+                 (search-input-file inputs "bin/vcd2fst")))
               (substitute* "kernel/driver.cc"
                 (("^#include \"libs/cxxopts/include/cxxopts.hpp\"")
                  "#include <cxxopts.hpp>"))
+              (substitute* '("passes/cmds/show.cc"
+                             "passes/cmds/viz.cc")
                 (("exec xdot")
-                 (string-append "exec " (search-input-file inputs
-                                                           "/bin/xdot")))
+                 (string-append "exec " (search-input-file inputs "bin/xdot")))
                 (("dot -")
-                 (string-append (search-input-file inputs "/bin/dot") " -"))
+                 (string-append (search-input-file inputs "bin/dot") " -"))
                 (("fuser")
-                 (search-input-file inputs "/bin/fuser")))))
+                 (search-input-file inputs "bin/fuser")))))
           (replace 'configure
             (lambda* (#:key make-flags #:allow-other-keys)
               (apply invoke "make" "config-gcc" make-flags)))
           (add-after 'configure 'use-external-abc
             (lambda* (#:key inputs #:allow-other-keys)
-              (substitute* '("./Makefile")
+              (substitute* '("Makefile")
                 (("ABCEXTERNAL \\?=")
                  (string-append "ABCEXTERNAL = "
                                 (search-input-file inputs "/bin/abc"))))))
