@@ -31,6 +31,30 @@
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages llvm-meta))
 
+(define (zig-source version commit hash)
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+          (url "https://github.com/ziglang/zig")
+          (commit commit)))
+    (file-name (git-file-name "zig" version))
+    (sha256 (base32 hash))
+    (modules '((guix build utils)))
+    (snippet
+     #~(for-each
+        (lambda (file)
+          (when (file-exists? file)
+            (delete-file file)))
+        (append
+         '("stage1/zig1.wasm"
+           "stage1/zig1.wasm.zst")
+         ;; Generated from glibc sources, see also:
+         ;; https://github.com/ziglang/zig/blob/master/lib/libc/glibc/README.md
+         ;; https://github.com/ziglang/glibc-abi-tool
+         '("lib/libc/glibc/abilists")
+         ;; IETF RFC documents have nonfree license.
+         (find-files "." "^rfc[0-9]+\\.txt"))))))
+
 (define-public zig-0.9
   (package
     (name "zig")
