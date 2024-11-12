@@ -45,6 +45,7 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages elf)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages gawk)
@@ -149,7 +150,7 @@ For synthesis, the compiler generates netlists in the desired format.")
 (define-public yosys
   (package
     (name "yosys")
-    (version "0.46")
+    (version "0.47")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -157,7 +158,7 @@ For synthesis, the compiler generates netlists in the desired format.")
                     (commit version)))
               (sha256
                (base32
-                "1zj7vbpy6v1wn4p5cjs4hdjd467a1j1aj2qhs148bl2s6mzq3p86"))
+                "061sqb59vl61rshlwgv3n51x0fxd9x3lb6gfbdl7nzia8im7x0qm"))
               (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
@@ -178,6 +179,9 @@ For synthesis, the compiler generates netlists in the desired format.")
                  (search-input-file inputs "/bin/vcd2fst")))
               (substitute* '("./passes/cmds/show.cc"
                              "./passes/cmds/viz.cc")
+              (substitute* "kernel/driver.cc"
+                (("^#include \"libs/cxxopts/include/cxxopts.hpp\"")
+                 "#include <cxxopts.hpp>"))
                 (("exec xdot")
                  (string-append "exec " (search-input-file inputs
                                                            "/bin/xdot")))
@@ -208,6 +212,7 @@ For synthesis, the compiler generates netlists in the desired format.")
                 `("GUIX_PYTHONPATH" ":" prefix (,(getenv "GUIX_PYTHONPATH")))))))))
     (native-inputs
      (list bison
+           cxxopts                      ;header-only library
            flex
            gawk ; for the tests and "make" progress pretty-printing
            iverilog ; for the tests
