@@ -7807,6 +7807,7 @@ abilities and powers.")
        (uri (string-append "https://sourceforge.net/projects/" name
                            "/files/all-in-one/" version "/"
                            name "-" version ".tar.bz2/download"))
+       (file-name (string-append name "-" version ".tar.bz2"))
        (sha256
         (base32
          "0kdq0sc7dsfzlr0ggbxggcbkivc6yp30nqwjwcaxg9295s3b06wa"))
@@ -7838,7 +7839,7 @@ abilities and powers.")
      ;; yet been generated, with errors such as "controlconfig.cpp:30:10:
      ;; fatal error: tgfclient.h: No such file or directory".  The issue was
      ;; reported to the 'torcs-devel' mailing list (see:
-     ;; https://sourceforge.net/p/torcs/mailman/torcs-devel/).
+     ;; https://sourceforge.net/p/torcs/mailman/message/58834764/).
      (list #:modules `(,@%default-gnu-modules (srfi srfi-26))
            #:parallel-build? #f
            #:tests? #f                  ;no test suite
