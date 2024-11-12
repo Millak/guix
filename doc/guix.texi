@@ -10648,7 +10648,7 @@ Make @var{file} writable for its owner.
 
 @deffn {Procedure} copy-recursively source destination @
   [#:log (current-output-port)] [#:follow-symlinks? #f] @
-  [#:copy-file copy-file] [#:keep-mtime? #f] [#:keep-permissions? #t]
+  [#:copy-file copy-file] [#:keep-mtime? #f] [#:keep-permissions? #t] @
   [#:select? (const #t)]
 Copy @var{source} directory to @var{destination}.  Follow symlinks if
 @var{follow-symlinks?}  is true; otherwise, just preserve them.  Call
