@@ -352,7 +352,7 @@ random access nor for in-place modification.  This package provides the
 @command{bsdcat}, @command{bsdcpio} and @command{bsdtar} commands.")
     (license license:bsd-2)))
 
-(define-public libarchive/fixed
+(define libarchive/fixed
   (package
     (inherit libarchive)
     (version "3.7.7")
