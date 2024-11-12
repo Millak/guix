@@ -15,6 +15,7 @@
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
 ;;; Copyright © 2021, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022, 2023 Juliana Sims <juli@incana.org>
+;;; Copyright © 2024 Evgeny Pisemsky <mail@pisemsky.site>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -41,6 +42,7 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
+  #:use-module (guix build-system guile)
   #:use-module (guix modules)
   #:use-module (gnu packages)
   #:use-module (gnu packages adns)
@@ -54,6 +56,7 @@
   #:use-module (gnu packages cppi)
   #:use-module (gnu packages elf)
   #:use-module (gnu packages gcc)
+  #:use-module (gnu packages guile)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages lisp)
   #:use-module (gnu packages logging)
@@ -1042,3 +1045,47 @@ with GNU make.")
     ;; pdpmake is distributed under the public domain, but the sources include
     ;; tests under the GPL license version 2.
     (license (list license:gpl2 license:public-domain))))
+
+(define-public potato-make
+  ;; No releases.
+  (let ((commit "e8c09ce1f6a33c013b27961b0a07f991db33e6fb")
+        (revision "0"))
+    (package
+      (name "potato-make")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/spk121/potato-make")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0axgrkqdfip5f2bp7d2dprd74g58lyc0c7lgg2m93k5jqn1lpbmj"))
+         ;; Delete files of the seemingly unfinished pmake program.
+         (snippet '(begin
+                     (delete-file "pmake")
+                     (delete-file "documents/pmake.org")
+                     (delete-file "make/main.scm")
+                     (rmdir "documents")
+                     (rmdir "make")))))
+      (build-system guile-build-system)
+      (arguments
+       (list
+        #:phases #~(modify-phases %standard-phases
+                     (add-after 'build 'check
+                       (lambda _
+                         ;; Delete test referencing nonexistent file.
+                         (delete-file "tests/parse.sh")
+                         (for-each (lambda (f)
+                                     (invoke "guile" "-L" "." "-s" f))
+                                   (find-files "tests")))))))
+      (native-inputs (list guile-3.0))
+      (home-page "https://github.com/spk121/potato-make")
+      (synopsis "Library to write makefiles in Guile Scheme")
+      (description
+       "Potato Make is a Scheme library that aims to simplify the task of
+maintaining, updating, and regenerating programs.  It is inspired by
+the POSIX make utility and allows to write a build script in Guile
+Scheme.")
+      (license license:expat))))
