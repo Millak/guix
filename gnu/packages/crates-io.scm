@@ -19132,22 +19132,22 @@ use with sct crate.")
 (define-public rust-ctrlc-3
   (package
     (name "rust-ctrlc")
-    (version "3.4.1")
+    (version "3.4.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "ctrlc" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1pyglsl1j3b54mdgv1bkxnvgp823n11pkipxmxabh18rcaymzsc2"))))
+        (base32 "1lqdhyl8csq8l2011g4w3wjps84w2cmwfn7jhx79ngrgm45apvlh"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-nix" ,rust-nix-0.27)
-        ("rust-windows-sys" ,rust-windows-sys-0.48))
+       (("rust-nix" ,rust-nix-0.29)
+        ("rust-windows-sys" ,rust-windows-sys-0.59))
        #:cargo-development-inputs
        (("rust-signal-hook" ,rust-signal-hook-0.3)
-        ("rust-windows-sys" ,rust-windows-sys-0.48))))
+        ("rust-windows-sys" ,rust-windows-sys-0.59))))
     (home-page "https://github.com/Detegr/rust-ctrlc")
     (synopsis "Easy Ctrl-C handler for Rust projects")
     (description
