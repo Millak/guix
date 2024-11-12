@@ -11200,3 +11200,26 @@ System Management Unit for certain AMD Ryzen processors.
 This includes access to the System Management Network.")
     (home-page "https://gitlab.com/leogx9r/ryzen_smu")
     (license license:gpl2)))
+
+(define-public hid-wiimote-plus
+  (package
+    (name "hid-wiimote-plus")
+    (version "0.9.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/dkosmari/hid-wiimote-plus.git")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1rkp311x60jm73xlqypxsp375rx3fa55jyrspz1aqjga0q6cvswi"))))
+    (build-system linux-module-build-system)
+    (arguments
+     (list #:tests? #f)) ; No tests.
+    (synopsis "WiiMote HID kernel module")
+    (description "This package provides a WiiMote driver that follows the
+Linux input convention.  Specifically, that allows you to use the D-pad
+as a gamepad.")
+    (home-page "https://github.com/dkosmari/hid-wiimote-plus")
+    (license license:gpl2+)))
