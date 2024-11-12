@@ -205,14 +205,14 @@ toolchain.  Among other features it provides
     (version "0.10.1")
     (source
      (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/ziglang/zig.git")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1sh5xjsksl52i4cfv1qj36sz5h0ln7cq4pdhgs3960mk8a90im7b"))
-       (patches (search-patches "zig-0.9-use-baseline-cpu-by-default.patch"))))
+       (inherit (zig-source
+                 version version
+                 "1sh5xjsksl52i4cfv1qj36sz5h0ln7cq4pdhgs3960mk8a90im7b"))
+       (patches
+        (search-patches
+         "zig-0.9-use-baseline-cpu-by-default.patch"
+         "zig-0.10-use-system-paths.patch"
+         "zig-0.10-fix-runpath.patch"))))
     (arguments
      (substitute-keyword-arguments (package-arguments zig-0.9)
        ((#:configure-flags flags ''())
@@ -220,8 +220,6 @@ toolchain.  Among other features it provides
                  "-DZIG_SHARED_LLVM=ON"
                  (string-append "-DZIG_LIB_DIR=" #$output "/lib/zig")
                  #$flags))
-       ;; TODO: zig binary can't find ld-linux.
-       ((#:validate-runpath? _ #t) #f)
        ((#:tests? _ #t) #t)
        ((#:phases phases '%standard-phases)
         #~(modify-phases #$phases
@@ -235,10 +233,10 @@ toolchain.  Among other features it provides
                 (setenv "CC" #$(cc-for-target))))
             (add-after 'patch-source-shebangs 'patch-more-shebangs
               (lambda* (#:key inputs #:allow-other-keys)
-                ;; Zig uses information about /usr/bin/env to determine the
-                ;; version of glibc and other data.
+                ;; Zig uses information about an ELF file to determine the
+                ;; version of glibc and other data for native builds.
                 (substitute* "lib/std/zig/system/NativeTargetInfo.zig"
-                  (("/usr/bin/env") (search-input-file inputs "/bin/env")))))
+                  (("/usr/bin/env") (search-input-file inputs "bin/clang++")))))
             (replace 'check
               (lambda* (#:key tests? #:allow-other-keys)
                 (when tests?

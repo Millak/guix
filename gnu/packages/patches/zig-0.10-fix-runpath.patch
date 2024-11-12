@@ -1,0 +1,45 @@
+From b8678a24d96c4a94d7309ea56bd35bae41fbbeae Mon Sep 17 00:00:00 2001
+From: Hilton Chain <hako@ultrarare.space>
+Date: Wed, 27 Nov 2024 11:55:44 +0800
+Subject: [PATCH] Fix RUNPATH issue.
+
+Add needed libraries and libc to RUNPATH when CROSS_LIBRARY_PATH or LIBRARY_PATH
+is set.
+---
+ src/Compilation.zig | 2 +-
+ src/link/Elf.zig    | 6 ++++++
+ 2 files changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/src/Compilation.zig b/src/Compilation.zig
+index 3ddf936e57..138df1f913 100644
+--- a/src/Compilation.zig
++++ b/src/Compilation.zig
+@@ -1886,7 +1886,7 @@ pub fn create(gpa: Allocator, options: InitOptions) !*Compilation {
+             .llvm_cpu_features = llvm_cpu_features,
+             .skip_linker_dependencies = options.skip_linker_dependencies,
+             .parent_compilation_link_libc = options.parent_compilation_link_libc,
+-            .each_lib_rpath = options.each_lib_rpath orelse options.is_native_os,
++            .each_lib_rpath = std.zig.system.NativePaths.isGuix(arena) or options.each_lib_rpath orelse false,
+             .build_id = build_id,
+             .cache_mode = cache_mode,
+             .disable_lld_caching = options.disable_lld_caching or cache_mode == .whole,
+diff --git a/src/link/Elf.zig b/src/link/Elf.zig
+index 2663f90aee..8813aea827 100644
+--- a/src/link/Elf.zig
++++ b/src/link/Elf.zig
+@@ -1620,6 +1620,12 @@ fn linkWithLLD(self: *Elf, comp: *Compilation, prog_node: *std.Progress.Node) !v
+                     }
+                 }
+             }
++            if (self.base.options.link_libc and self.base.options.link_mode == .Dynamic) {
++                if (self.base.options.libc_installation) |libc_installation| {
++                    try argv.append("-rpath");
++                    try argv.append(libc_installation.crt_dir.?);
++                }
++            }
+         }
+ 
+         for (self.base.options.lib_dirs) |lib_dir| {
+-- 
+2.46.0
+
