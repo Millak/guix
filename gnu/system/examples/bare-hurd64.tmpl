@@ -5,12 +5,13 @@
 
 ;; To build a disk image for a virtual machine, do:
 ;;
-;;     ./pre-inst-env guix system image --image-type=hurd-qcow2 \
-;;         gnu/system/examples/bare-hurd.tmpl
+;;     ./pre-inst-env guix system image --image-type=hurd64-qcow2 \
+;;         gnu/system/examples/bare-hurd64.tmpl
 ;;
 ;; You may run it like so:
 ;;
-;;     guix shell qemu -- qemu-system-i386 -m 2048                \
+;;     guix shell qemu@7 -- qemu-system-x86_64 -m 2048            \
+;;       --machine q35                                            \
 ;;       --enable-kvm                                             \
 ;;       --device e1000,netdev=net0                               \
 ;;       --netdev user,id=net0,hostfwd=tcp:127.0.0.1:10022-:2222  \
@@ -30,18 +31,19 @@
 (use-service-modules ssh)
 (use-package-modules ssh)
 
-(define %hurd-os
+(define %hurd64-os
   (operating-system
-    (inherit %hurd-default-operating-system)
+    (inherit %hurd64-default-operating-system)
     (bootloader (bootloader-configuration
                  (bootloader grub-minimal-bootloader)
                  (targets '("/dev/sdX"))))
+    (kernel-arguments '("noide")) ;use rumpdisk
     (file-systems (cons (file-system
                           (device (file-system-label "hurd"))
                           (mount-point "/")
                           (type "ext2"))
                         %base-file-systems))
-    (host-name "guixygnu")
+    (host-name "guixygnu64")
     (timezone "Europe/Amsterdam")
     (users (cons (user-account
                   (name "guix")
@@ -65,4 +67,4 @@
                     ;; %base-services/hurd
                     %base-services+qemu-networking/hurd))))
 
-%hurd-os
+%hurd64-os
