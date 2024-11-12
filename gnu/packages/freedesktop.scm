@@ -1901,23 +1901,30 @@ these interfaces, based on the useradd, usermod and userdel commands.")
 (define-public libmbim
   (package
     (name "libmbim")
-    (version "1.26.4")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://www.freedesktop.org/software/libmbim/"
-                    "libmbim-" version ".tar.xz"))
-              (sha256
-               (base32
-                "1ncaarl4lgc7i52rwz50yq701wk2rr478cjybxbifsjqqk2cx27n"))))
-    (build-system gnu-build-system)
+    (version "1.30.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.freedesktop.org/mobile-broadband/libmbim")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "00kbjvpka51zrfjigzd3rk6r4x8hkg1xfj7d9zl9lccysnxyjx5h"))))
+    (build-system meson-build-system)
     (native-inputs
-     (list `(,glib "bin") ; for glib-mkenums
-           pkg-config python-wrapper))
+     (list `(,glib "bin")               ;for glib-mkenums
+           gobject-introspection
+           help2man
+           pkg-config
+           python-minimal))
     (propagated-inputs
-     (list glib)) ; required by mbim-glib.pc
+     (list glib))                       ;required by mbim-glib.pc
     (inputs
-     (list libgudev))
+     (list
+      bash-completion
+      libgudev))
     (synopsis "Library to communicate with MBIM-powered modems")
     (home-page "https://www.freedesktop.org/wiki/Software/libmbim/")
     (description
