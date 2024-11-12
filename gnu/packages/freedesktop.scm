@@ -2011,34 +2011,46 @@ which speak the Qualcomm MSM Interface (QMI) protocol.")
 (define-public modem-manager
   (package
     (name "modem-manager")
-    (version "1.18.12")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://www.freedesktop.org/software/ModemManager/"
-                    "ModemManager-" version ".tar.xz"))
-              (sha256
-               (base32
-                "0c74n5jl1qvq2qlbwzfkgxny8smjcgkid1nhdnl6qnlmbn9f8r5l"))))
-    (build-system gnu-build-system)
+    (version "1.22.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://gitlab.freedesktop.org/mobile-broadband/ModemManager")
+         (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0fj4ibjfsxal3xfk3hrj4l9vg7zbj42k9lj7151illl2n3d5ngzw"))))
+    (build-system meson-build-system)
     (arguments
      (list
       #:configure-flags
-      #~(list (string-append "--with-udev-base-dir=" #$output "/lib/udev"))))
+      #~(list (string-append "-Dudevdir=" #$output "/lib/udev")
+              "-Dsystemdsystemunitdir=no"
+              "-Dvapi=true")))
     (native-inputs
      (list dbus
            gettext-minimal
            gobject-introspection
            `(,glib "bin")               ;for glib-mkenums
+           libxslt                      ;for xsltproc
            pkg-config
-           python
-           python-dbus
-           python-pygobject
+           python-minimal
+           python-dbus                  ;for test
+           python-pygobject             ;for test
            vala))
     (propagated-inputs
      (list glib))                       ;required by mm-glib.pc
     (inputs
-     (list libgudev libmbim libqmi polkit))
+     (list bash-completion
+           elogind
+           libgudev
+           libmbim
+           libqmi
+           libqrtr-glib
+           polkit))
     (synopsis "Mobile broadband modems manager")
     (home-page "https://www.freedesktop.org/wiki/Software/ModemManager/")
     (description
