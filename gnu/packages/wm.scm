@@ -1597,7 +1597,7 @@ started automatically on the first call via D-Bus.")
 (define-public dwl
   (package
     (name "dwl")
-    (version "0.6")
+    (version "0.7")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1606,7 +1606,7 @@ started automatically on the first call via D-Bus.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1j7lmp6k80g54hrsmwixh8ahpnbax4khgiybg8lhlvmq93618a3z"))))
+                "0404awsx8v9fyk7p2bg3p937sc56ixf8ay465xgvjcnv78hh4apd"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f                  ; no tests
