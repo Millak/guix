@@ -164,8 +164,8 @@ For synthesis, the compiler generates netlists in the desired format.")
     (arguments
      (list
       #:test-target "test"
-      #:make-flags #~(list "CC=gcc"
-                           "CXX=g++"
+      #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
+                           (string-append "CXX=" #$(cxx-for-target))
                            (string-append "PREFIX=" #$output))
       #:phases
       #~(modify-phases %standard-phases
