@@ -215,12 +215,13 @@ toolchain.  Among other features it provides
          "zig-0.10-fix-runpath.patch"))))
     (arguments
      (substitute-keyword-arguments (package-arguments zig-0.9)
+       ((#:tests? _ #t)
+        (not (%current-target-system)))
        ((#:configure-flags flags ''())
         #~(cons* "-DZIG_TARGET_MCPU=baseline"
                  "-DZIG_SHARED_LLVM=ON"
                  (string-append "-DZIG_LIB_DIR=" #$output "/lib/zig")
                  #$flags))
-       ((#:tests? _ #t) #t)
        ((#:phases phases '%standard-phases)
         #~(modify-phases #$phases
             #$@(if (target-riscv64?)
