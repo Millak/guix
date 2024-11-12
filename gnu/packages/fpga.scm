@@ -128,7 +128,7 @@ formal verification.")
       #:bootstrap-scripts #~(list "autoconf.sh")))
     (native-inputs (list autoconf bison flex gperf))
     (inputs (list zlib))
-    (home-page "https://steveicarus.github.io/iverilog")
+    (home-page "https://steveicarus.github.io/iverilog/")
     (synopsis "FPGA Verilog simulation and synthesis tool")
     (description
      "Icarus Verilog is a Verilog simulation and synthesis tool.
