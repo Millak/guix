@@ -3,6 +3,7 @@
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021 Calum Irwin <calumirwin1@gmail.com>
 ;;; Copyright © 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2023, 2024 Hilton Chain <hako@ultrarare.space>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -55,21 +56,31 @@
          ;; IETF RFC documents have nonfree license.
          (find-files "." "^rfc[0-9]+\\.txt"))))))
 
+(define zig-0.9-glibc-abi-tool
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+          (url "https://github.com/ziglang/glibc-abi-tool")
+          (commit "6f992064f821c612f68806422b2780c9260cbc4c")))
+    (file-name "glibc-abi-tool")
+    (sha256
+     (base32 "0lsi3f2lkixcdidljby73by2sypywb813yqdapy9md4bi2h8hhgp"))))
+
 (define-public zig-0.9
   (package
     (name "zig")
     (version "0.9.1")
     (source
      (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/ziglang/zig.git")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0nfvgg23sw50ksy0z0ml6lkdsvmd0278mq29m23dbb2jsirkhry7"))
-       (patches (search-patches "zig-0.9-riscv-support.patch"
-                                "zig-use-system-paths.patch"))))
+       (inherit (zig-source
+                 version version
+                 "0nfvgg23sw50ksy0z0ml6lkdsvmd0278mq29m23dbb2jsirkhry7"))
+       (patches
+        (search-patches
+         "zig-0.9-riscv-support.patch"
+         "zig-0.9-use-baseline-cpu-by-default.patch"
+         "zig-0.9-use-system-paths.patch"
+         "zig-0.9-fix-runpath.patch"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -119,13 +130,28 @@
                         "-Dskip-stage2-tests"
                         ;; Non-native tests try to link and execute non-native
                         ;; binaries.
-                        "-Dskip-non-native")))))))
+                        "-Dskip-non-native"))))
+          (add-before 'check 'install-glibc-abilists
+            (lambda* (#:key inputs native-inputs #:allow-other-keys)
+              (mkdir-p "/tmp/glibc-abi-tool")
+              (with-directory-excursion "/tmp/glibc-abi-tool"
+                (copy-recursively
+                 (dirname (search-input-file
+                           (or native-inputs inputs) "consolidate.zig"))
+                 ".")
+                (for-each make-file-writable (find-files "."))
+                (invoke (string-append #$output "/bin/zig")
+                        "run" "consolidate.zig")
+                (install-file
+                 "abilists"
+                 (string-append #$output "/lib/zig/libc/glibc"))))))))
     (inputs
      (list clang-13                     ;Clang propagates llvm.
            lld-13))
     ;; Zig compiles fine with GCC, but also needs native LLVM libraries.
     (native-inputs
-     (list llvm-13))
+     (list llvm-13
+           zig-0.9-glibc-abi-tool))
     (native-search-paths
      (list
       (search-path-specification
@@ -157,6 +183,21 @@ toolchain.  Among other features it provides
                   ,@(clang-compiler-cpu-architectures "13")))
     (license license:expat)))
 
+(define zig-0.10-glibc-abi-tool
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+          (url "https://github.com/ziglang/glibc-abi-tool")
+          (commit "b07bf67ab3c15881f13b9c3c03bcec04535760bb")))
+    (file-name "glibc-abi-tool")
+    (sha256
+     (base32 "0csn3c9pj8wchwy5sk5lfnhjn8a3c8cp45fv7mkpi5bqxzdzf1na"))
+    (modules '((guix build utils)))
+    (snippet
+     #~(substitute* "consolidate.zig"
+         (("(@ctz.)u.., " _ prefix) prefix)
+         (("(@popCount.)u.., " _ prefix) prefix)))))
+
 (define-public zig-0.10
   (package
     (inherit zig-0.9)
@@ -171,7 +212,7 @@ toolchain.  Among other features it provides
        (file-name (git-file-name name version))
        (sha256
         (base32 "1sh5xjsksl52i4cfv1qj36sz5h0ln7cq4pdhgs3960mk8a90im7b"))
-       (patches (search-patches "zig-use-baseline-cpu-by-default.patch"))))
+       (patches (search-patches "zig-0.9-use-baseline-cpu-by-default.patch"))))
     (arguments
      (substitute-keyword-arguments (package-arguments zig-0.9)
        ((#:configure-flags flags ''())
@@ -216,6 +257,7 @@ toolchain.  Among other features it provides
        (replace "lld" lld-15)))
     (native-inputs
      (modify-inputs (package-native-inputs zig-0.9)
+       (replace "glibc-abi-tool" zig-0.10-glibc-abi-tool)
        (replace "llvm" llvm-15)))
     (properties `((max-silent-time . 9600)
                   ,@(clang-compiler-cpu-architectures "15")))))

@@ -1,0 +1,27 @@
+From 97d6b38ee78941b96bfd30dc2c814fd9c38561e3 Mon Sep 17 00:00:00 2001
+From: Hilton Chain <hako@ultrarare.space>
+Date: Wed, 27 Nov 2024 11:55:44 +0800
+Subject: [PATCH] Fix RUNPATH issue.
+
+Add needed libraries and libc to RUNPATH when CROSS_LIBRARY_PATH or LIBRARY_PATH
+is set.
+---
+ src/Compilation.zig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/Compilation.zig b/src/Compilation.zig
+index b44c7da78d..be28538e6a 100644
+--- a/src/Compilation.zig
++++ b/src/Compilation.zig
+@@ -1515,7 +1515,7 @@ pub fn create(gpa: Allocator, options: InitOptions) !*Compilation {
+             .llvm_cpu_features = llvm_cpu_features,
+             .skip_linker_dependencies = options.skip_linker_dependencies,
+             .parent_compilation_link_libc = options.parent_compilation_link_libc,
+-            .each_lib_rpath = options.each_lib_rpath orelse options.is_native_os,
++            .each_lib_rpath = std.zig.system.NativePaths.isGuix(arena) or options.each_lib_rpath orelse false,
+             .disable_lld_caching = options.disable_lld_caching,
+             .subsystem = options.subsystem,
+             .is_test = options.is_test,
+-- 
+2.46.0
+

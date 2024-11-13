@@ -1,0 +1,136 @@
+From 751da768de9b58126fef8f69c70eea5c4180f739 Mon Sep 17 00:00:00 2001
+From: Hilton Chain <hako@ultrarare.space>
+Date: Wed, 27 Nov 2024 11:54:51 +0800
+Subject: [PATCH] Use system paths.
+
+Prefer Guix search paths and support Guix cross builds.
+---
+ lib/std/zig/system/NativePaths.zig      | 56 ++++++++++++++++++++++++-
+ lib/std/zig/system/NativeTargetInfo.zig | 25 +++++++++--
+ src/main.zig                            |  3 +-
+ 3 files changed, 78 insertions(+), 6 deletions(-)
+
+diff --git a/lib/std/zig/system/NativePaths.zig b/lib/std/zig/system/NativePaths.zig
+index 8e3e46e481..bb6ac32da6 100644
+--- a/lib/std/zig/system/NativePaths.zig
++++ b/lib/std/zig/system/NativePaths.zig
+@@ -25,7 +25,53 @@ pub fn detect(allocator: Allocator, native_info: NativeTargetInfo) !NativePaths
+         .warnings = ArrayList([:0]u8).init(allocator),
+     };
+     errdefer self.deinit();
+-
++    if (isGuix(allocator)) {
++        const guix_cross_include_paths = [_][]const u8{ "CROSS_C_INCLUDE_PATH", "CROSS_CPLUS_INCLUDE_PATH" };
++        for (guix_cross_include_paths) |env_var| {
++            if (process.getEnvVarOwned(allocator, env_var)) |include_path| {
++                var it = mem.tokenize(u8, include_path, ":");
++                while (it.next()) |dir|
++                    try self.addIncludeDir(dir);
++            } else |err| switch (err) {
++                error.InvalidUtf8 => {},
++                error.EnvironmentVariableNotFound => {},
++                error.OutOfMemory => |e| return e,
++            }
++        }
++        if (process.getEnvVarOwned(allocator, "CROSS_LIBRARY_PATH")) |library_path| {
++            var it = mem.tokenize(u8, library_path, ":");
++            while (it.next()) |dir|
++                try self.addLibDir(dir);
++        } else |err| switch (err) {
++            error.InvalidUtf8 => {},
++            error.EnvironmentVariableNotFound => {},
++            error.OutOfMemory => |e| return e,
++        }
++        if (!isCrossGuix(allocator)) {
++            const guix_include_paths = [_][]const u8{ "C_INCLUDE_PATH", "CPLUS_INCLUDE_PATH" };
++            for (guix_include_paths) |env_var| {
++                if (process.getEnvVarOwned(allocator, env_var)) |include_path| {
++                    var it = mem.tokenize(u8, include_path, ":");
++                    while (it.next()) |dir|
++                        try self.addIncludeDir(dir);
++                } else |err| switch (err) {
++                    error.InvalidUtf8 => {},
++                    error.EnvironmentVariableNotFound => {},
++                    error.OutOfMemory => |e| return e,
++                }
++            }
++            if (process.getEnvVarOwned(allocator, "LIBRARY_PATH")) |library_path| {
++                var it = mem.tokenize(u8, library_path, ":");
++                while (it.next()) |dir|
++                    try self.addLibDir(dir);
++            } else |err| switch (err) {
++                error.InvalidUtf8 => {},
++                error.EnvironmentVariableNotFound => {},
++                error.OutOfMemory => |e| return e,
++            }
++        }
++        return self;
++    }
+     var is_nix = false;
+     if (process.getEnvVarOwned(allocator, "NIX_CFLAGS_COMPILE")) |nix_cflags_compile| {
+         defer allocator.free(nix_cflags_compile);
+@@ -203,3 +249,11 @@ fn appendArray(self: *NativePaths, array: *ArrayList([:0]u8), s: []const u8) !vo
+     errdefer array.allocator.free(item);
+     try array.append(item);
+ }
++
++pub fn isCrossGuix(arena: Allocator) bool {
++    return process.hasEnvVar(arena, "CROSS_LIBRARY_PATH") catch false;
++}
++
++pub fn isGuix(arena: Allocator) bool {
++    return isCrossGuix(arena) or process.hasEnvVar(arena, "LIBRARY_PATH") catch false;
++}
+diff --git a/lib/std/zig/system/NativeTargetInfo.zig b/lib/std/zig/system/NativeTargetInfo.zig
+index af41fc7905..4ee5ee0b6e 100644
+--- a/lib/std/zig/system/NativeTargetInfo.zig
++++ b/lib/std/zig/system/NativeTargetInfo.zig
+@@ -784,10 +784,27 @@ fn defaultAbiAndDynamicLinker(cpu: Target.Cpu, os: Target.Os, cross_target: Cros
+     };
+     return NativeTargetInfo{
+         .target = target,
+-        .dynamic_linker = if (cross_target.dynamic_linker.get() == null)
+-            target.standardDynamicLinkerPath()
+-        else
+-            cross_target.dynamic_linker,
++        .dynamic_linker = if (cross_target.dynamic_linker.get() == null) blk: {
++            var standard_linker = target.standardDynamicLinkerPath();
++            if (standard_linker.get()) |standard_linker_path| {
++                if (builtin.os.tag != .windows and builtin.os.tag != .wasi) {
++                    if (std.os.getenv("CROSS_LIBRARY_PATH") orelse std.os.getenv("LIBRARY_PATH")) |library_path| {
++                        const linker_basename = fs.path.basename(standard_linker_path);
++                        var buffer: [255]u8 = undefined;
++                        var it = mem.tokenize(u8, library_path, ":");
++                        while (it.next()) |dir| {
++                            const linker_fullpath = std.fmt.bufPrint(&buffer, "{s}{s}{s}", .{ dir, fs.path.sep_str, linker_basename }) catch "";
++                            const guix_linker_path = fs.cwd().realpath(linker_fullpath, &buffer) catch "";
++                            if (guix_linker_path.len != 0) {
++                                standard_linker.set(guix_linker_path);
++                                break;
++                            }
++                        }
++                    }
++                }
++            }
++            break :blk standard_linker;
++        } else cross_target.dynamic_linker,
+     };
+ }
+ 
+diff --git a/src/main.zig b/src/main.zig
+index 42daa95d3a..1ab9d0f7aa 100644
+--- a/src/main.zig
++++ b/src/main.zig
+@@ -2039,7 +2039,8 @@ fn buildOutputType(
+             want_native_include_dirs = true;
+     }
+ 
+-    if (sysroot == null and cross_target.isNativeOs() and (system_libs.count() != 0 or want_native_include_dirs)) {
++    if (std.zig.system.NativePaths.isCrossGuix(arena) or
++        sysroot == null and cross_target.isNativeOs() and (system_libs.count() != 0 or want_native_include_dirs)) {
+         const paths = std.zig.system.NativePaths.detect(arena, target_info) catch |err| {
+             fatal("unable to detect native system paths: {s}", .{@errorName(err)});
+         };
+-- 
+2.46.0
+
