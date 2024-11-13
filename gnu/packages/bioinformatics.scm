@@ -3223,6 +3223,61 @@ Python.")
     ;; licensed lgpl2.1+
     (license (list license:expat license:lgpl2.1+))))
 
+(define-public python-pybio
+  (let ((commit "c91fddc483da535d5097364405d76ad9b1bde07f")
+        (revision "1"))
+    (package
+      (name "python-pybio")
+      (version (git-version "0.3.12" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/grexor/pybio")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0s3n1bqp25zf5pzfsj0x1kqr6i2a6iffpb8hkjwhyvjqrxf5d9rk"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:tests? #false                 ;There are no automated tests
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'check 'set-home
+              ;; A HOME directory is required when importing the module during
+              ;; the sanity check.
+              (lambda _ (setenv "HOME" "/tmp")))
+            (add-after 'unpack 'adjust-requirements
+              (lambda _
+                ;; bs4 is an alternative name for beautifulsoup4, only used to
+                ;; avoid name squatting on pypi.
+                (substitute* "setup.py"
+                  (("bs4") "beautifulsoup4"))))
+            (add-after 'unpack 'avoid-internet-while-building
+              (lambda _
+                (setenv "GUIX_BUILD" "yes")
+                (substitute* "pybio/__init__.py"
+                  (("^pybio.core.genomes.init\\(\\)" m)
+                   (string-append m
+                                  "\
+ if not os.getenv('GUIX_BUILD') else None"))))))))
+      (propagated-inputs
+       (list python-beautifulsoup4 python-numpy
+             python-psutil python-pysam python-requests))
+      (native-inputs (list python-pytest))
+      (home-page "https://github.com/grexor/pybio")
+      (synopsis "Basic genomics toolset")
+      (description
+       "This tool provides a Python framework to streamline genomics
+operations.  It offers a direct interface to Ensembl genome assemblies and
+annotations, while also accommodating custom genomes via FASTA/GTF inputs.
+The primary objective of pybio is to simplify genome management.  It achieves
+this by providing automatic download of Ensembl genome assemblies and
+annotation, provides Python genomic feature search and sequence retrieval from
+the managed genomes, STAR indexing and mapping and more.")
+      (license license:gpl3+))))
+
 (define-public python-ega-download-client
   (package
     (name "python-ega-download-client")
