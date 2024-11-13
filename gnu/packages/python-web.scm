@@ -4206,6 +4206,17 @@ opt.override_default_trust_store_from_path(None, os.getenv('SSL_CERT_FILE')) if 
      "This package provides a common runtime for AWS Python projects.")
     (license license:asl2.0)))
 
+(define-public python-awscrt-for-awscli
+  (package
+    (inherit python-awscrt)
+    (version "0.22.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "awscrt" version))
+       (sha256
+        (base32 "0w6pw42jbznrxh92cd97p96dg2nz698mcbfy7md3zw18jfsb18jc"))))))
+
 (define-public awscli
   (package
     ;; Note: updating awscli typically requires updating botocore as well.
