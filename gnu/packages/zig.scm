@@ -1445,4 +1445,52 @@ toolchain.  Among other features it provides
        (modify-inputs (package-native-inputs base)
          (replace "zig" `(,base "out")))))))
 
+(define zig-0.12-glibc-abi-tool
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+          (url "https://github.com/ziglang/glibc-abi-tool")
+          (commit "fc5d0a7046b76795e4219f8f168e118ec29fbc53")))
+    (file-name "glibc-abi-tool")
+    (sha256
+     (base32 "1q9plbqkkk3jzrvsgcjmj5jjdncz4ym9p0snglz4kkjwwm65gqs1"))))
+
+(define-public zig-0.12
+  (package
+    (inherit zig-0.11)
+    (name "zig")
+    (version "0.12.1")
+    (source
+     (origin
+       (inherit (zig-source
+                 version version
+                 "0ssgfrsk116p16rwjwq1z2pvvcdij6s30s19bhzjms7maz4s77hb"))
+       (patches
+        (search-patches
+         "zig-0.12-use-baseline-cpu-by-default.patch"
+         "zig-0.12-use-system-paths.patch"
+         "zig-0.12-fix-runpath.patch"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments zig-0.11)
+       ((#:phases phases '%standard-phases)
+        #~(modify-phases #$phases
+            (replace 'patch-more-shebangs
+              (lambda* (#:key inputs #:allow-other-keys)
+                ;; Zig uses information about an ELF file to determine the
+                ;; version of glibc and other data for native builds.
+                (substitute* "lib/std/zig/system.zig"
+                  (("/usr/bin/env")
+                   (search-input-file inputs "bin/clang++")))))))))
+    (inputs
+     (modify-inputs (package-inputs zig-0.11)
+       (replace "clang" clang-17)
+       (replace "lld" lld-17)))
+    (native-inputs
+     (modify-inputs (package-native-inputs zig-0.11)
+       (replace "glibc-abi-tool" zig-0.12-glibc-abi-tool)
+       (replace "llvm" llvm-17)
+       (replace "zig" `(,zig-0.11.0-3604 "zig1"))))
+    (properties `((max-silent-time . 9600)
+                  ,@(clang-compiler-cpu-architectures "17")))))
+
 (define-public zig zig-0.10)
