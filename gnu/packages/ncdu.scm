@@ -20,8 +20,10 @@
 
 (define-module (gnu packages ncdu)
   #:use-module (gnu packages)
+  #:use-module (gnu packages compression)
   #:use-module (gnu packages ncurses)
-  #:use-module (gnu packages perl)
+  #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages zig)
   #:use-module (guix licenses)
   #:use-module (guix packages)
   #:use-module (guix download)
@@ -60,29 +62,19 @@ ncurses installed.")
   (package
     (inherit ncdu-1)
     (name "ncdu")
-    (version "2.2.2")
+    (version "2.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://dev.yorhel.nl/download/ncdu-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "14zrmcxnrczamqjrib99jga05ixk0dzfav3pd6s1h8vm9q121nch"))
-              (modules '((guix build utils)))
-              (snippet
-               #~(begin
-                   ;; Delete a pregenerated man page.  We'll build it ourselves.
-                   (delete-file "ncdu.1")))))
+                "01g5mpvsm78lkd0yin82gyancrl23npy69qcp3d60vmm72yiwirz"))))
     (build-system zig-build-system)
     (arguments
-     (list
-       #:phases
-       #~(modify-phases %standard-phases
-           (delete 'validate-runpath)
-           (add-after 'build 'build-manpage
-             (lambda _
-               (invoke "make" "doc"))))))
-    (native-inputs (list perl))
+     (list #:zig zig-0.12))
+    (inputs (list ncurses `(,zstd "lib")))
+    (native-inputs (list pkg-config))
     (properties `((tunable? . #t)))))
 
 (define-public ncdu-2
