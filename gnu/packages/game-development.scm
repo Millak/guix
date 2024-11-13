@@ -1312,40 +1312,6 @@ package is the Nuklear bindings for LÖVE created by Kevin Harrison.")
     (home-page "https://github.com/keharriso/love-nuklear/")
     (license license:expat)))
 
-(define-public allegro-4
-  (package
-    (name "allegro")
-    (version "4.4.3.1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/liballeg/allegro5/"
-                                  "releases/download/" version "/allegro-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "1m6lz35nk07dli26kkwz3wa50jsrxs1kb6w1nj14a911l34xn6gc"))))
-    (build-system cmake-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-build-system
-           (lambda _
-             ;; Build addons as shared libraries.  Trying to set ADDON_LINKAGE
-             ;; via a command line option doesn't work because it is
-             ;; unconditionally clobbered in the build script.
-             (substitute* '("CMakeLists.txt")
-               (("ADDON_LINKAGE STATIC")
-                "ADDON_LINKAGE SHARED")))))))
-    (inputs
-     (list glu libpng libvorbis mesa zlib))
-    (synopsis "Game programming library")
-    (description "Allegro is a library mainly aimed at video game and
-multimedia programming.  It handles common, low-level tasks such as creating
-windows, accepting user input, loading data, drawing images, playing sounds,
-etc.")
-    (home-page "https://liballeg.org")
-    (license license:giftware)))
-
 (define-public allegro
   (package
     (name "allegro")
