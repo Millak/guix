@@ -1387,65 +1387,6 @@ etc.")
     (home-page "https://liballeg.org")
     (license license:bsd-3)))
 
-(define-public aseprite
-  (package
-    (name "aseprite")
-    (version "1.1.7") ; After 1.1.7 the source is no longer distributed under the GPL.
-    ;; TODO: Unbundle third party software.
-    (source (origin
-              (method url-fetch/zipbomb)
-              (uri (string-append "https://github.com/aseprite/aseprite"
-                                  "/releases/download/v" version
-                                  "/Aseprite-v" version "-Source.zip"))
-              (sha256
-               (base32
-                "1plss4i1lfxcznv9p0pip1bkhj7ipw7jlhsh5avd6dzw079l4nvv"))))
-    (build-system cmake-build-system)
-    (arguments
-     '(#:configure-flags
-       ;; Use shared libraries instead of building bundled source.
-       (list "-DWITH_WEBP_SUPPORT=1"
-             "-DUSE_SHARED_CURL=1"
-             "-DUSE_SHARED_GIFLIB=1"
-             "-DUSE_SHARED_JPEGLIB=1"
-             "-DUSE_SHARED_ZLIB=1"
-             "-DUSE_SHARED_LIBPNG=1"
-             "-DUSE_SHARED_LIBLOADPNG=1"
-             "-DUSE_SHARED_LIBWEBP=1"
-             "-DUSE_SHARED_TINYXML=1"
-             "-DUSE_SHARED_PIXMAN=1"
-             "-DUSE_SHARED_FREETYPE=1"
-             "-DUSE_SHARED_ALLEGRO4=1"
-             "-DENABLE_UPDATER=0" ; no auto-updates
-             (string-append "-DFREETYPE_INCLUDE_DIR="
-                            (assoc-ref %build-inputs "freetype")
-                            "/include/freetype2"))))
-    (native-inputs
-     (list pkg-config))
-    ;; TODO: Use a patched Allegro 4 that supports window resizing.  This
-    ;; patched version is bundled with Aseprite, but the patches should be
-    ;; extracted and applied on top of a standalone Allegro 4 package.
-    (inputs
-     `(("allegro" ,allegro-4)
-       ("curl" ,curl)
-       ("freetype" ,freetype)
-       ("giflib" ,giflib)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("libwebp" ,libwebp)
-       ("libx11" ,libx11)
-       ("libxext" ,libxext)
-       ("libxxf86vm" ,libxxf86vm)
-       ("pixman" ,pixman)
-       ("tinyxml" ,tinyxml)
-       ("zlib" ,zlib)))
-    (synopsis "Animated sprite editor and pixel art tool")
-    (description "Aseprite is a tool for creating 2D pixel art for video
-games.  In addition to basic pixel editing features, Aseprite can assist in
-the creation of animations, tiled graphics, texture atlases, and more.")
-    (home-page "https://www.aseprite.org/")
-    (license license:gpl2+)))
-
 (define-public libresprite
   (package
     (name "libresprite")
