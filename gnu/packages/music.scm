@@ -131,7 +131,6 @@
   #:use-module (gnu packages fonts)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
-  #:use-module (gnu packages game-development)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages ghostscript)
@@ -991,17 +990,6 @@ settings (aliasing, linear interpolation and cubic interpolation).")
     ;; license, a known free software license.
     ;; Therefore, the DUMB license may be considered a free software license.
     (license (license:fsf-free "file://LICENSE"))))
-
-(define-public dumb-allegro4
-  (package
-    (inherit dumb)
-    (name "dumb-allegro4")
-    (arguments
-     (substitute-keyword-arguments (package-arguments dumb)
-       ((#:configure-flags flags)
-        `(cons "-DBUILD_ALLEGRO4=ON" ,(delete "-DBUILD_ALLEGRO4=OFF" flags)))))
-    (inputs
-     (list allegro-4))))
 
 (define-public hydrogen
   (package
