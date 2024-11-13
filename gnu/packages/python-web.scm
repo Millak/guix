@@ -4217,7 +4217,10 @@ Services (AWS) API.")
      '(#:tests? #f))
     (inputs
      (list python-importlib-resources
-           python-executor))))
+           python-executor))
+    (native-inputs
+     (list python-poetry-core
+           python-pytest))))
 
 
 (define-public python-wsgiproxy2
