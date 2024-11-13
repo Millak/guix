@@ -19363,7 +19363,7 @@ Amazon Web Services (AWS) API.")
 (define-public python-boto3
   (package
     (name "python-boto3")
-    (version "1.35.54")
+    (version "1.35.59")
     (source
      (origin
        (method git-fetch)               ; no tests in PyPI release
@@ -19372,17 +19372,16 @@ Amazon Web Services (AWS) API.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0w0k719i8pyzkvd2snv6z91r57k6cxkq1i3phygdpwzk0k6acvj2"))))
+        (base32 "10bdzdaw7qg2m5n5ivb2zzsdl7wgjmz05xyxajd4cmk629ick95m"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
       #~(list "--numprocesses" "auto"
-              ;; Tests require networking.
+              ;; Integration tests are trying to connect to AWS.
               "--ignore" "tests/integration")))
     (native-inputs
      (list python-mock
-           python-nose
            python-pytest
            python-pytest-xdist
            python-setuptools
