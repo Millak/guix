@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013-2019, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2021 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2016-2019, 2021-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2019, 2021-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017, 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020, 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Jonathan Brielmaier <jonathan.brielmaier@web.de>
@@ -387,26 +387,32 @@ PKCS #5, PKCS #7, PKCS #11, PKCS #12, S/MIME, X.509 v3 certificates, and other
 security standards.
 
 This package tracks the Rapid Release channel, which updates frequently.")))
+
 (define-public nsncd
   (package
     (name "nsncd")
-    (version "2024-04-09")
+    (version "1.5.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/twosigma/nsncd")
-             (commit "7605e330d5a313a8656e6fcaf1c10cd6b5cdd427")))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1hk8bh2a02nyk3rpzbjx1a2iiz15d0vx3ysa180wmr8gsc9ymph5"))))
+        (base32 "1qiphwlwbnni2vfqjbdzv2a1qgqv2ycmygmyrbx8pgaak9gl5hfi"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
-       '("--"
+       '("--release" "--"
          ;; These tests fail with the current builder network setup
          "--skip=ffi::test_gethostbyaddr_r"
-         "--skip=ffi::test_gethostbyname2_r")
+         "--skip=ffi::test_gethostbyname2_r"
+         "--skip=handlers::test::test_handle_getservbyname_name"
+         "--skip=handlers::test::test_handle_getservbyname_name_proto"
+         "--skip=handlers::test::test_handle_getservbyport_port"
+         "--skip=handlers::test::test_handle_getservbyport_port_proto"
+         "--skip=handlers::test::test_handle_getservbyport_port_proto_aliases")
       #:install-source? #f
        #:cargo-inputs
        (("rust-anyhow" ,rust-anyhow-1)
