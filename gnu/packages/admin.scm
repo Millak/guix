@@ -1582,7 +1582,7 @@ connection alive.")
                      (lambda _
                        (substitute* "configure"
                          (("--host=\\$host")
-                          "--host=$host_alias"))
+                          "--host=$host_alias --build=$build_alias"))
                        ;; BIND needs a native compiler because the DHCP
                        ;; build system uses the built 'gen' executable.
                        (setenv "BUILD_CC" "gcc")
