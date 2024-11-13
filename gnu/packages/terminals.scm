@@ -1731,19 +1731,18 @@ terminal.  Note that you need support for OpenGL 3.2 or higher.")
                 "1xag6agcqkq2p7gp20qxjb95ah7p6lia65jmm5v51rqxfzclx2h1"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ; no test suite
-       #:make-flags (list (string-append "CC=" ,(cc-for-target))
-                          (string-append "PREFIX=" (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
-         ;; No ./configure script
-         (delete 'configure)
-         (add-after 'install 'install-doc
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (doc (string-append out "/share/doc/" ,name "-" ,version)))
-               (install-file "README.md" doc)
-               #t))))))
+     (list #:tests? #f ; no test suite
+           #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
+                                (string-append "PREFIX=" #$output))
+           #:phases
+           #~(modify-phases %standard-phases
+               ;; No ./configure script
+               (delete 'configure)
+               (add-after 'install 'install-doc
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let* ((out (assoc-ref outputs "out"))
+                          (doc (string-append out "/share/doc/" #$name "-" #$version)))
+                     (install-file "README.md" doc)))))))
     (home-page "https://github.com/wtarreau/bootterm")
     (synopsis "Serial terminal")
     (description "Bootterm is a terminal designed to ease connection to
