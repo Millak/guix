@@ -100,6 +100,7 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages certs)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages crates-web)
@@ -4131,6 +4132,79 @@ supports url redirection and retries, and also gzip and deflate decoding.")
 can reuse the same socket connection for multiple requests, it can POST files,
 supports url redirection and retries, and also gzip and deflate decoding.")
     (license license:expat)))
+
+(define-public python-awscrt
+  (package
+    (name "python-awscrt")
+    (version "0.23.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "awscrt" version))
+       (sha256
+        (base32 "0a669xxfmgw3g6xpcnm64pbmlrbxw5wf3jcrivixscl2glapdxgx"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-broken-tests
+            (lambda _
+              ;; Disable broken tests.  These tests fail because the
+              ;; certificate bundle at the default location does not exist.
+              (substitute* "test/test_auth.py"
+                (("def test_default_provider")
+                 "def _test_default_provider"))
+              (substitute* "test/test_http_client.py"
+                (("def test_h2_client")
+                 "def _test_h2_client"))
+              (substitute* "test/test_s3.py"
+                (("def test_sanity")
+                 "def _test_sanity")
+                (("def test_sanity_secure")
+                 "def _test_sanity_secure")
+                (("def test_wait_shutdown")
+                 "def _test_wait_shutdown"))))
+          (add-after 'unpack 'override-cert-bundle-location
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((bundle (search-input-file inputs
+                                               "/etc/ssl/certs/ca-certificates.crt")))
+                (setenv "SSL_CERT_FILE" bundle)
+                (substitute* "awscrt/io.py"
+                  (("( +)opt = TlsContextOptions\\(\\)" m indent)
+                   (string-append m "\n"
+                                  indent "import os\n"
+                                  indent "\
+opt.override_default_trust_store_from_path(None, os.getenv('SSL_CERT_FILE')) if os.getenv('SSL_CERT_FILE') else None\n")))
+                (substitute* "test/appexit_http.py"
+                  (("( +)tls_ctx_opt = awscrt.io.TlsContextOptions.*" m indent)
+                   (string-append m indent
+                                  "tls_ctx_opt.override_default_trust_store_from_path(None, '"
+                                  bundle "')\n")))
+                (substitute* "test/test_io.py"
+                  (("( +)opt = TlsContextOptions\\(\\).*" m indent)
+                   (string-append m indent
+                                  "opt.override_default_trust_store_from_path(None, '"
+                                  bundle "')\n"))))))
+          (add-after 'unpack 'use-system-libraries
+            (lambda _
+              (setenv "AWS_CRT_BUILD_USE_SYSTEM_LIBCRYPTO" "1")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "python3" "-m" "unittest"
+                        "discover" "--verbose")))))))
+    (inputs (list openssl))
+    (native-inputs (list cmake-minimal
+                         ;; For tests only
+                         nss-certs-for-test
+                         python-boto3
+                         python-websockets))
+    (home-page "https://github.com/awslabs/aws-crt-python")
+    (synopsis "Common runtime for AWS Python projects")
+    (description
+     "This package provides a common runtime for AWS Python projects.")
+    (license license:asl2.0)))
 
 (define-public awscli
   (package
