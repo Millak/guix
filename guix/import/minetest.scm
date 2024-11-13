@@ -483,7 +483,7 @@ list of AUTHOR/NAME strings."
   (and (string-prefix? "minetest-" (package:package-name pkg))
        (assq-ref (package:package-properties pkg) 'upstream-name)))
 
-(define* (latest-minetest-release pkg #:key (version #f))
+(define* (latest-minetest-release pkg #:key version partial-version?)
   "Return an <upstream-source> for the latest release of the package PKG,
 or #false if the latest release couldn't be determined."
   (define author/name

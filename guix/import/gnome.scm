@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017, 2019, 2021, 2024 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -19,14 +19,15 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (guix import gnome)
+  #:use-module ((guix import utils) #:select (find-version))
   #:use-module (guix upstream)
-  #:use-module (guix utils)
   #:use-module (guix packages)
   #:use-module (guix http-client)
   #:use-module (guix diagnostics)
   #:use-module (guix i18n)
   #:use-module (json)
   #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
   #:use-module (web uri)
   #:use-module (ice-9 match)
@@ -58,10 +59,10 @@ source for metadata."
                                             name "/" relative-url))))
                         '("tar.lz" "tar.xz" "tar.bz2" "tar.gz")))))))
 
-(define* (import-gnome-release package #:key (version #f))
+(define* (import-gnome-release package #:key version partial-version?)
   "Return the latest release of PACKAGE, a GNOME package, or #f if it could
 not be determined. Optionally include a VERSION string to fetch a specific
-version."
+version, which may be partial if PARTIAL-VERSION? is #t."
   (define %not-dot
     (char-set-complement (char-set #\.)))
 
@@ -90,28 +91,6 @@ https://discourse.gnome.org/t/new-gnome-versioning-scheme/4235"
     ;; Some packages like "NetworkManager" have camel-case names.
     (package-upstream-name package))
 
-  (define (find-latest-release releases)
-    (fold (match-lambda*
-           (((key . value) result)
-            (cond ((release-version? key)
-                   (match result
-                     (#f
-                      (cons key value))
-                     ((newest . _)
-                      (if (version>? key newest)
-                          (cons key value)
-                          result))))
-                  (else
-                   result))))
-          #f
-          releases))
-
-  (define (find-version-release releases version)
-    (find (match-lambda
-            ((key . value)
-             (string=? key version)))
-          releases))
-
   (guard (c ((http-get-error? c)
              (unless (= 404 (http-get-error-code c))
                (warning (G_ "failed to download from '~a': ~a (~s)~%")
@@ -135,11 +114,20 @@ https://discourse.gnome.org/t/new-gnome-versioning-scheme/4235"
       (match json
         (#(4 releases _ ...)
          (let* ((releases (assoc-ref releases upstream-name))
-                (latest (if version
-                            (find-version-release releases version)
-                            (find-latest-release releases))))
-           (and latest
-                (jsonish->upstream-source upstream-name latest))))))))
+                (all-versions (map car releases))
+                (release-versions (filter release-version? all-versions))
+                (version (or (find-version release-versions
+                                           version partial-version?)
+                             (and version
+                                  ;; If the user-provided VERSION could not be
+                                  ;; found, fallback to look through all
+                                  ;; versions.
+                                  (find-version all-versions
+                                                version partial-version?)))))
+           (and version
+                (jsonish->upstream-source
+                 upstream-name
+                 (find (compose (cut string=? version <>) car) releases)))))))))
 
 (define %gnome-updater
   (upstream-updater

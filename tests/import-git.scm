@@ -22,6 +22,7 @@
   #:use-module (guix tests)
   #:use-module (guix packages)
   #:use-module (guix import git)
+  #:use-module ((guix import utils) #:select (find-version))
   #:use-module (guix git-download)
   #:use-module (guix tests git)
   #:use-module (srfi srfi-1)
@@ -44,6 +45,9 @@
        (sha256
         (base32
          "0000000000000000000000000000000000000000000000000000"))))))
+
+(define (latest-git-tag-version package)
+  (find-version (map car ((@@ (guix import git) get-package-tags) package))))
 
 (test-equal "latest-git-tag-version: no custom prefix, suffix, and delimiter"
   "1.0.1"

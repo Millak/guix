@@ -10,7 +10,7 @@
 ;;; Copyright © 2020 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
-;;; Copyright © 2023, 2025 Maxim Cournoyer maxim.cournoyer@gmail.com>
+;;; Copyright © 2023-2025 Maxim Cournoyer maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -170,7 +170,9 @@ specified with `--select'.\n"))
   -m, --manifest=FILE    select all the packages from the manifest in FILE"))
   (display (G_ "
       --target-version=VERSION
-                         update the package or packages to VERSION"))
+                         update the package or packages to VERSION
+                         VERSION may be partially specified, e.g. as 6
+                         or 6.4 instead of 6.4.3"))
   (display (G_ "
   -t, --type=UPDATER,... restrict to updates from the specified updaters
                          (e.g., 'gnu')"))
@@ -213,20 +215,22 @@ specified with `--select'.\n"))
 ;;;
 
 (define-record-type <update-spec>
-  (%update-spec package version)
+  (%update-spec package version partial?)
   update?
   (package update-spec-package)
-  (version update-spec-version))
+  (version update-spec-version)
+  (partial? update-spec-partial?))
 
-(define* (update-spec package #:optional version)
-  (%update-spec package version))
+(define* (update-spec package #:optional version partial?)
+  (%update-spec package version partial?))
 
 (define (update-specification->update-spec spec fallback-version)
   "Given SPEC, a package name like \"guile@2.0=2.0.8\", return a <update>
 record with two fields: the package to upgrade, and the target version.  When
 SPEC lacks a version, use FALLBACK-VERSION."
   (match (string-rindex spec #\=)
-    (#f  (update-spec (specification->package spec) fallback-version))
+    (#f  (update-spec (specification->package spec) fallback-version
+                      (not (not fallback-version))))
     (idx (update-spec (specification->package (substring spec 0 idx))
                       (substring spec (1+ idx))))))
 
@@ -282,9 +286,9 @@ update would trigger a complete rebuild."
                                  spec target-version)))
                          (('expression . exp)
                           (list (update-spec (read/eval-package-expression exp)
-                                             target-version)))
+                                             target-version #t)))
                          (('manifest . manifest)
-                          (map (cut update-spec <> target-version)
+                          (map (cut update-spec <> target-version #t)
                                (packages-from-manifest manifest)))
                          (_
                           '()))
@@ -364,92 +368,97 @@ update would trigger a complete rebuild."
            (G_ "no updater for ~a~%")
            (package-name package)))
 
-(define* (update-package store package version updaters
+(define* (update-package store update-spec updaters
                          #:key (key-download 'auto) key-server
                          warn?)
-  "Update the source file that defines PACKAGE with the new version.
-KEY-DOWNLOAD specifies a download policy for missing OpenPGP keys; allowed
-values: 'auto' (default), interactive', 'always', and 'never'.  When WARN? is
-true, warn about packages that have no matching updater."
-  (if (lookup-updater package updaters)
-      (let ((version output source
-                     (package-update store package updaters
-                                     #:version version
-                                     #:key-download key-download
-                                     #:key-server key-server))
-            (loc (or (package-field-location package 'version)
-                     (package-location package))))
-        (when version
-          (if (and=> output file-exists?)
-              (begin
-                (info loc
-                      (G_ "~a: updating from version ~a to version ~a...~%")
-                      (package-name package)
-                      (package-version package) version)
-                (let ((hash (file-hash* output)))
-                  (update-package-source package source hash)))
-              (warning (G_ "~a: version ~a could not be \
+  "Update the source file that correspond to the package in UPDATE-SPEC,
+an <update-spec> object.  KEY-DOWNLOAD specifies a download policy for
+missing OpenPGP keys; allowed values: 'auto' (default), 'interactive',
+'always', and 'never'.  When WARN? is true, warn about packages that
+have no matching updater.  PARTIAL-VERSION? is provided to the
+underlying `package-update' call; see its documentation for the
+details."
+  (match update-spec
+    (($ <update-spec> package version partial?)
+     (if (lookup-updater package updaters)
+         (let ((version output source
+                        (package-update store package updaters
+                                        #:version version
+                                        #:partial-version? partial?
+                                        #:key-download key-download
+                                        #:key-server key-server))
+               (loc (or (package-field-location package 'version)
+                        (package-location package))))
+           (when version
+             (if (and=> output file-exists?)
+                 (begin
+                   (info loc
+                         (G_ "~a: updating from version ~a to version ~a...~%")
+                         (package-name package)
+                         (package-version package) version)
+                   (let ((hash (file-hash* output)))
+                     (update-package-source package source hash)))
+                 (warning (G_ "~a: version ~a could not be \
 downloaded and authenticated; not updating~%")
-                       (package-name package) version))))
-      (when warn?
-        (warn-no-updater package))))
+                          (package-name package) version))))
+         (when warn?
+           (warn-no-updater package))))))
 
 (define* (check-for-package-update update-spec updaters #:key warn?)
   "Check whether UPDATE-SPEC is feasible, and print a message.
 When WARN? is true and no updater exists for PACKAGE, print a warning."
-  (define package
-    (update-spec-package update-spec))
-
-  (match (package-latest-release package updaters
-                                 #:version
-                                 (update-spec-version update-spec))
-    ((? upstream-source? source)
-     (let ((loc (or (package-field-location package 'version)
-                    (package-location package))))
-       (case (version-compare (upstream-source-version source)
-                              (package-version package))
-         ((>)
-          (info loc
-                (G_ "~a would be upgraded from ~a to ~a~%")
-                (package-name package) (package-version package)
-                (upstream-source-version source)))
-         ((=)
-          (when warn?
-            (info loc
-                  (G_ "~a is already the latest version of ~a~%")
-                  (package-version package)
-                  (package-name package))))
-         (else
-          (if (update-spec-version update-spec)
-              (info loc
-                    (G_ "~a would be downgraded from ~a to ~a~%")
-                    (package-name package)
-                    (package-version package)
-                    (upstream-source-version source))
-              (when warn?
-                (warning loc
-                         (G_ "~a is greater than \
+  (match update-spec
+    (($ <update-spec> package version partial?)
+     (match (package-latest-release package updaters
+                                    #:version version
+                                    #:partial-version? partial?)
+       ((? upstream-source? source)
+        (let ((loc (or (package-field-location package 'version)
+                       (package-location package))))
+          (case (version-compare (upstream-source-version source)
+                                 (package-version package))
+            ((>)
+             (info loc
+                   (G_ "~a would be upgraded from ~a to ~a~%")
+                   (package-name package) (package-version package)
+                   (upstream-source-version source)))
+            ((=)
+             (when warn?
+               (info loc
+                     (G_ "~a is already the latest version of ~a~%")
+                     (package-version package)
+                     (package-name package))))
+            (else
+             (if version
+                 (info loc
+                       (G_ "~a would be downgraded from ~a to ~a~%")
+                       (package-name package)
+                       (package-version package)
+                       (upstream-source-version source))
+                 (when warn?
+                   (warning loc
+                            (G_ "~a is greater than \
 the latest known version of ~a (~a)~%")
-                         (package-version package)
-                         (package-name package)
-                         (upstream-source-version source))))))))
-    (#f
-     (when warn?
-       ;; Distinguish between "no updater" and "failing updater."
-       (match (lookup-updater package updaters)
-         ((? upstream-updater? updater)
-          (if (update-spec-version update-spec)
-              (warning (G_ "'~a' updater failed to find version ~a of '~a'~%")
-                       (upstream-updater-name updater)
-                       (update-spec-version update-spec)
-                       (package-name package))
-              (warning (package-location package)
-                       (G_ "'~a' updater failed to determine available \
+                            (package-version package)
+                            (package-name package)
+                            (upstream-source-version source))))))))
+       (#f
+        (when warn?
+          ;; Distinguish between "no updater" and "failing updater."
+          (match (lookup-updater package updaters)
+            ((? upstream-updater? updater)
+             (if version
+                 (warning (G_ "'~a' updater failed to find version ~a of '~a'~%")
+                          (upstream-updater-name updater)
+                          version
+                          (package-name package))
+                 (warning (package-location package)
+                          (G_ "'~a' updater failed to determine available \
 releases for ~a~%")
-                       (upstream-updater-name updater)
-                       (package-name package))))
-         (#f
-          (warn-no-updater package)))))))
+                          (upstream-updater-name updater)
+                          (package-name package))))
+            (#f
+             (warn-no-updater package)))))))))
 
 
 ;;;
@@ -634,10 +643,9 @@ all are dependent packages: ~{~a~^ ~}~%")
                                             (compose location-line
                                                      spec->location)))))
                   (for-each
-                   (lambda (update)
+                   (lambda (spec)
                      (update-package store
-                                     (update-spec-package update)
-                                     (update-spec-version update)
+                                     spec
                                      updaters
                                      #:key-server (%openpgp-key-server)
                                      #:key-download key-download

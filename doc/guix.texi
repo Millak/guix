@@ -14975,6 +14975,7 @@ gnu/packages/guile.scm:147:2: guile: updating from version 2.0.10 to version 2.0
 @dots{}
 @end example
 
+@cindex target version, guix refresh
 In some specific cases, you may have many packages specified via a
 manifest or a module selection which should all be updated together; for
 these cases, the @option{--target-version} option can be provided to have
@@ -14993,6 +14994,17 @@ gnu/packages/qt.scm:1202:13: qtdeclarative would be upgraded from 5.15.8 to 5.15
 gnu/packages/qt.scm:1762:13: qtserialbus would be upgraded from 5.15.8 to 5.15.10
 gnu/packages/qt.scm:2070:13: qtquickcontrols2 would be upgraded from 5.15.8 to 5.15.10
 @dots{}
+@end example
+
+@cindex partial target version, guix refresh
+The @option{--target-version} option accepts partial version prefixes,
+which can be useful to update to the latest major or major-minor
+prefixed version:
+
+@example
+$ guix refresh qtbase@@5 qtdeclarative@@5 --target-version=5
+gnu/packages/qt.scm:1472:13: qtdeclarative would be upgraded from 5.15.8 to 5.15.10
+gnu/packages/qt.scm:452:13: qtbase would be upgraded from 5.15.8 to 5.15.10
 @end example
 
 Sometimes the upstream name differs from the package name used in Guix,

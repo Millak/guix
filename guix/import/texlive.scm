@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -35,7 +35,8 @@
   #:use-module (guix store)
   #:use-module (guix svn-download)
   #:use-module (guix upstream)
-  #:use-module ((guix utils) #:select (downstream-package-name))
+  #:use-module ((guix utils) #:select (downstream-package-name
+                                       version>? version-prefix?))
   #:use-module (ice-9 ftw)
   #:use-module (ice-9 match)
   #:use-module (ice-9 popen)
@@ -261,17 +262,21 @@ not succeed."
   "Return number of days since Epoch."
   (floor (/ (time-second (current-time)) (* 24 60 60))))
 
-(define latest-texlive-tag
-  ;; Return the latest TeX Live tag in repository.  The argument refers to
-  ;; current day, so memoization is only active a single day, as the
-  ;; repository may have been updated between two calls.
+(define texlive-tags
   (memoize
    (lambda* (#:key (day (current-day)))
-     (let ((output
-            (svn-command "ls" (string-append %texlive-repository "tags") "-v")))
-       ;; E.g. "70951 karl april 15 18:11 texlive-2024.2/\n\n"
-       (and=> (string-match "texlive-([^/]+)/\n*$" output)
-              (cut match:substring <> 1))))))
+     "Return all tags found in for the TeX Live tags in repository, from
+latest to oldest.  The argument refers to current day, so memoization is only
+active a single day, as the repository may have been updated between two
+calls."
+     (let* ((output (svn-command
+                     "ls" (string-append %texlive-repository "tags") "-v"))
+            (lines (string-split output #\newline)))
+       ;; Each line look like "70951 karl april 15 18:11 texlive-2024.2/\n\n".
+       (filter-map (lambda (l)
+                     (and=> (string-match "texlive-([^/]+)/\n*$" l)
+                            (cut match:substring <> 1)))
+                   lines)))))
 
 (define string->license
   (match-lambda
@@ -761,7 +766,7 @@ associated Guix package, or #f on failure.  Fetch metadata for a specific
 version whenever VERSION keyword is specified.  Otherwise, grab package latest
 release.  When DATABASE is provided, fetch metadata from there, ignoring
 VERSION."
-    (let ((version (or version (latest-texlive-tag))))
+    (let ((version (or version (first (texlive-tags)))))
       (tlpdb->package name version (or database (tlpdb/cached version))))))
 
 (define* (texlive-recursive-import name #:key repo version)
@@ -785,13 +790,14 @@ VERSION."
              (eq? 'texlive
                   (build-system-name (package-build-system package)))))))
 
-(define* (latest-release package #:key version)
+(define* (latest-release package #:key version partial-version?)
   "Return an <upstream-source> for the latest release of PACKAGE.  Optionally
-include a VERSION string to fetch a specific version."
-  (let* ((version (or version (latest-texlive-tag)))
+include a VERSION string to fetch a specific version, which may be a partial
+prefix when PARTIAL-VERSION? is #t."
+  (let* ((version (find-version (texlive-tags) version partial-version?))
          (database (tlpdb/cached version))
          (upstream-name (package-upstream-name* package)))
-    (and (assoc-ref database upstream-name)
+    (and version (assoc-ref database upstream-name)
          (upstream-source
           (package upstream-name)
           (version version)

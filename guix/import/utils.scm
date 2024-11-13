@@ -7,7 +7,7 @@
 ;;; Copyright © 2019 Robert Vollmert <rob@vllmrt.net>
 ;;; Copyright © 2020 Helio Machado <0x2b3bfa0+guix@googlemail.com>
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2022 Alice Brenon <alice.brenon@ens-lyon.fr>
@@ -84,6 +84,8 @@
             chunk-lines
 
             guix-name
+
+            find-version
 
             recursive-import))
 
@@ -619,6 +621,22 @@ separated by PRED."
             (loop (cdr after) res))))))
 
 (define-deprecated/alias guix-name downstream-package-name)
+
+(define* (find-version versions #:optional version partial?)
+  "Find VERSION amongst VERSIONS.  When VERSION is not provided, return the
+latest version.  When PARTIAL? is #t, VERSION is treated as a version prefix;
+e.g. finding version \"0.1\" may return \"0.1.8\" if it is the newest \"0.1\"
+prefixed version found in VERSIONS.  Return #f when VERSION could not be
+found."
+  (let ((versions (sort versions version>?)))
+    (cond
+     ((and version partial?)            ;partial version
+      (find (cut version-prefix? version <>) versions))
+     ((and version (not partial?))      ;exact version
+      (find (cut string=? version <>) versions))
+     ((not (null? versions))            ;latest version
+      (first versions))
+     (else #f))))                       ;should not happen
 
 (define (topological-sort nodes
                           node-dependencies

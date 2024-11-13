@@ -417,7 +417,7 @@ package in OPAM."
     (member (build-system-name (package-build-system package)) '(dune ocaml))
     (not (string-prefix? "ocaml4" (package-name package)))))
 
-(define* (latest-release package #:key (version #f))
+(define* (latest-release package #:key version partial-version?)
   "Return an <upstream-source> for the latest release of PACKAGE."
   (when version
     (raise

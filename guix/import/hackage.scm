@@ -379,7 +379,7 @@ respectively."
   (let ((hackage-rx (make-regexp "(https?://hackage.haskell.org|mirror://hackage/)")))
     (url-predicate (cut regexp-exec hackage-rx <>))))
 
-(define* (import-release package #:key (version #f))
+(define* (import-release package #:key version partial-version?)
   "Return an <upstream-source> for the latest release of PACKAGE."
   (let* ((hackage-name (package-upstream-name* package))
          (cabal-meta (hackage-fetch hackage-name version)))

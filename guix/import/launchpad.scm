@@ -3,6 +3,7 @@
 ;;; Copyright © 2021 Matthew James Kraai <kraai@ftbfs.org>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
+;;; Copyright © 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -26,9 +27,10 @@
   #:use-module (web uri)
   #:use-module ((guix download) #:prefix download:)
   #:use-module (guix import json)
+  #:use-module ((guix import utils) #:select (find-version))
   #:use-module (guix packages)
   #:use-module (guix upstream)
-  #:use-module (guix utils)
+  #:use-module ((guix utils) #:select (version-major+minor))
   #:export (%launchpad-updater))
 
 (define (find-extension url)
@@ -103,9 +105,9 @@ URL of the form
   (match (string-split (uri-path (string->uri url)) #\/)
     ((_ repo . rest) repo)))
 
-(define (latest-released-version repository)
-  "Return a string of the newest released version name given the REPOSITORY,
-for example, 'linuxdcpp'. Return #f if there is no releases."
+(define (release-versions repository)
+  "Return a list of the release version strings available for REPOSITORY, a
+repository name such as 'linuxdcpp'."
   (define (pre-release? x)
     ;; Versions containing anything other than digit characters and "." (for
     ;; example, "5.1.0-rc1") are assumed to be pre-releases.
@@ -116,31 +118,31 @@ for example, 'linuxdcpp'. Return #f if there is no releases."
   (match (json-fetch
           (string-append "https://api.launchpad.net/1.0/"
                          repository "/releases"))
-    (#f #f)                                       ;404 or similar
+    (#f #f)                             ;404 or similar
     (json
-     (assoc-ref
-      (last (remove pre-release? (vector->list (assoc-ref json "entries"))))
-      "version"))))
+     (let ((releases (remove pre-release?
+                             (vector->list (assoc-ref json "entries")))))
+       (map (cut assoc-ref <> "version") releases)))))
 
-(define* (import-release pkg #:key (version #f))
+(define* (import-release pkg #:key version partial-version?)
   "Return an <upstream-source> for the latest release of PKG. Optionally
-include a VERSION string to fetch a specific version."
+include a VERSION string to fetch a specific version.  When PARTIAL-VERSION?
+is #t, update to the latest version prefixed by VERSION."
   (define (origin-launchpad-uri origin)
     (match (origin-uri origin)
-      ((? string? url) url) ; surely a Launchpad URL
+      ((? string? url) url)             ;surely a Launchpad URL
       ((urls ...)
        (find (cut string-contains <> "launchpad.net") urls))))
 
   (let* ((source-uri (origin-launchpad-uri (package-source pkg)))
          (name (package-name pkg))
-         (repository (launchpad-repository source-uri))
-         (newest-version (or version (latest-released-version repository))))
-    (if newest-version
+         (versions (release-versions (launchpad-repository source-uri)))
+         (version (find-version versions version partial-version?)))
+    (and version
         (upstream-source
          (package name)
-         (version newest-version)
-         (urls (list (updated-launchpad-url pkg newest-version))))
-        #f))) ; On Launchpad but no proper releases
+         (version version)
+         (urls (list (updated-launchpad-url pkg version)))))))
 
 (define %launchpad-updater
   (upstream-updater

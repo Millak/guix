@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019 Julien Lepiller <julien@lepiller.eu>
+;;; Copyright © 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -36,6 +37,7 @@
   #:use-module (guix upstream)
   #:use-module (guix utils)
   #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-2)
   #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-26)
   #:export (composer->guix-package
@@ -57,10 +59,6 @@
     ((string-prefix? "v" version)
      (substring version 1))
     (else version)))
-
-(define (latest-version versions)
-  (fold (lambda (a b) (if (version>? (fix-version a) (fix-version b)) a b))
-        (car versions) versions))
 
 (define (json->require dict)
   (if dict
@@ -102,31 +100,25 @@
          (not (string-contains d "beta"))
          (not (string-contains d "rc")))))
 
-(define* (composer-fetch name #:key (version #f))
+(define* (composer-fetch name #:key version partial-version?)
   "Return a composer-package representation of the Composer metadata for the
-package NAME with optional VERSION, or #f on failure."
-  (let* ((url (string-append (%composer-base-url) "/p/" name ".json"))
-         (packages (and=> (json-fetch url)
-                          (lambda (pkg)
-                            (let ((pkgs (assoc-ref pkg "packages")))
-                              (or (assoc-ref pkgs name) pkg))))))
-    (if packages
-        (json->composer-package
-         (if version
-             (assoc-ref packages version)
-             (cdr
-              (fold
-               (lambda (new cur-max)
-                 (match new
-                   (((? valid-version? version) . tail)
-                    (if (version>? (fix-version version)
-                                   (fix-version (car cur-max)))
-                        (cons* version tail)
-                        cur-max))
-                   (_ cur-max)))
-               (cons* "0.0.0" #f)
-               packages))))
-        #f)))
+package NAME with optional VERSION, or #f on failure.  VERSION may be gien as
+version prefix if PARTIAL-VERSION? is #t."
+  (and-let* ((url (string-append (%composer-base-url) "/p/" name ".json"))
+             (packages (and=> (json-fetch url)
+                              (lambda (pkg)
+                                (let ((pkgs (assoc-ref pkg "packages")))
+                                  (or (assoc-ref pkgs name) pkg)))))
+             (all-versions (map car packages))
+             (valid-versions (filter valid-version? all-versions))
+             (version (or (find-version valid-versions version partial-version?)
+                          (and version
+                               ;; If the user-provided VERSION could not be
+                               ;; found, fallback to look through all
+                               ;; versions.
+                               (find-version all-versions version
+                                             partial-version?)))))
+    (json->composer-package (assoc-ref packages version))))
 
 (define (php-package-name name)
   "Given the NAME of a package on Packagist, return a Guix-compliant name for
@@ -246,10 +238,15 @@ package in Packagist."
    (downstream-name (php-package-name dependency))
    (type type)))
 
-(define* (import-release package #:key (version #f))
-  "Return an <upstream-source> for VERSION or the latest release of PACKAGE."
+(define* (import-release package #:key version partial-version?)
+  "Return an <upstream-source> for VERSION or the latest release of PACKAGE.
+If PARTIAL-VERSION? is #t, the provided VERSION may be a partial version
+prefix."
   (let* ((php-name (guix-package->composer-name package))
-         (composer-package (composer-fetch php-name #:version version)))
+         (composer-package (composer-fetch php-name
+                                           #:version version
+                                           #:partial-version?
+                                           partial-version?)))
     (if composer-package
         (upstream-source
          (package (composer-package-name composer-package))

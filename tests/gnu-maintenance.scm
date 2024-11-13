@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2023-2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -26,6 +27,7 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-64)
   #:use-module ((web client) #:select (current-http-proxy))
+  #:use-module ((web uri) #:select (uri? uri->string))
   #:use-module (ice-9 match))
 
 (test-begin "gnu-maintenance")
@@ -157,11 +159,17 @@ submodules/qtbase-everywhere-src-6.5.2.tar.xz"
   (rewrite-url "https://download.qt.io/official_releases/qt/6.3/6.3.2/\
 submodules/qtbase-everywhere-src-6.3.2.tar.xz" "6.3.2" #:to-version "6.5.2"))
 
-(test-equal "rewrite-url, without to-version"
-  "http://dist.libuv.example.org/dist/v1.46.0/libuv-v1.46.0.tar.gz"
-  (with-http-server
-      ;; First reply, crawling http://dist.libuv.example.org/dist/.
-      `((200 "\
+(define (mock-http-fetch/cached testcase)
+  (lambda (url . rest)
+    (let* ((url (if (uri? url)
+                    (uri->string url)
+                    url))
+           (body (assoc-ref testcase url)))
+      (if body
+          (open-input-string body)
+          (error "mocked http-fetch Unexpected URL: " url)))))
+
+(define libuv-dist-html "\
 <!DOCTYPE html>
 <html>
 <head><title>Index of dist</title></head>
@@ -174,8 +182,8 @@ submodules/qtbase-everywhere-src-6.3.2.tar.xz" "6.3.2" #:to-version "6.5.2"))
 <a href=\"v1.46.0/\" title=\"v1.46.0/\">v1.46.0/</a>
 </body>
 </html>")
-        ;; Second reply, crawling http://dist.libuv.example.org/dist/v1.46.0/.
-        (200 "\
+
+(define libuv-dist-1.46.0-html "\
 <!DOCTYPE html>
 <html>
 <head><title>Index of dist/v1.46.0</title></head>
@@ -190,9 +198,44 @@ submodules/qtbase-everywhere-src-6.3.2.tar.xz" "6.3.2" #:to-version "6.5.2"))
 <a href=\"libuv-v1.46.0.tar.gz.sign\" title=\"libuv-v1.46.0.tar.gz.sign\">
    libuv-v1.46.0.tar.gz.sign</a>
 </body>
-</html>"))
-    (parameterize ((current-http-proxy (%local-url)))
-      (rewrite-url "http://dist.libuv.example.org/dist/v1.45.0/libuv-v1.45.0.tar.gz"
-                   "1.45.0"))))
+</html>")
+
+(define libuv-dist-1.44.2-html "\
+<!DOCTYPE html>
+<html>
+<head><title>Index of dist/v1.44.2</title></head>
+<body>
+<a href=\"../\">../</a>
+<a href=\"libuv-v1.44.2-dist.tar.gz\" title=\"libuv-v1.44.2-dist.tar.gz\">
+   libuv-v1.44.2-dist.tar.gz</a>
+<a href=\"libuv-v1.44.2-dist.tar.gz.sign\" title=\"libuv-v1.44.2-dist.tar.gz.sign\">
+   libuv-v1.44.2-dist.tar.gz.sign</a>
+<a href=\"libuv-v1.44.2.tar.gz\" title=\"libuv-v1.44.2.tar.gz\">
+   libuv-v1.44.2.tar.gz</a>
+<a href=\"libuv-v1.44.2.tar.gz.sign\" title=\"libuv-v1.44.2.tar.gz.sign\">
+   libuv-v1.44.2.tar.gz.sign</a>
+</body>
+</html>")
+
+(define libuv-html-data
+  `(("http://dist.libuv.example.org/dist" . ,libuv-dist-html)
+    ("http://dist.libuv.example.org/dist/v1.44.2" . ,libuv-dist-1.44.2-html)
+    ("http://dist.libuv.example.org/dist/v1.46.0" . ,libuv-dist-1.46.0-html)))
+
+(test-equal "rewrite-url, without to-version"
+  "http://dist.libuv.example.org/dist/v1.46.0/libuv-v1.46.0.tar.gz"
+  (mock ((guix http-client) http-fetch/cached
+         (mock-http-fetch/cached libuv-html-data))
+        (rewrite-url
+         "http://dist.libuv.example.org/dist/v1.45.0/libuv-v1.45.0.tar.gz"
+         "1.45.0")))
+
+(test-equal "rewrite-url, partial to-version"
+  "http://dist.libuv.example.org/dist/v1.44.2/libuv-v1.44.2.tar.gz"
+  (mock ((guix http-client) http-fetch/cached
+         (mock-http-fetch/cached libuv-html-data))
+        (rewrite-url
+         "http://dist.libuv.example.org/dist/v1.45.0/libuv-v1.45.0.tar.gz"
+         "1.45.0" #:to-version "1.44" #:partial-version? #t)))
 
 (test-end)

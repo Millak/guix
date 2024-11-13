@@ -26,7 +26,7 @@
   #:use-module (guix git-download)
   #:use-module (guix packages)
   #:use-module (guix upstream)
-  #:use-module (guix utils)
+  #:use-module ((guix import utils) #:select (find-version))
   #:use-module (ice-9 match)
   #:use-module (ice-9 regex)
   #:use-module (srfi srfi-1)
@@ -34,10 +34,7 @@
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
   #:use-module (srfi srfi-71)
-  #:export (%generic-git-updater
-
-            ;; For tests.
-            latest-git-tag-version))
+  #:export (%generic-git-updater))
 
 ;;; Commentary:
 ;;;
@@ -121,7 +118,9 @@ version corresponding to the tag, and the cdr is the name of the tag."
                    ;; with "."
                    pre-release-rx suffix-rx))
 
-
+  (define (pre-release? tag)
+    (any (cut regexp-exec <> tag)
+         %pre-release-rx))
 
   (define (get-version tag)
     (let ((tag-match (regexp-exec (make-regexp tag-rx) tag)))
@@ -135,30 +134,20 @@ version corresponding to the tag, and the cdr is the name of the tag."
                    (string-append version (match:substring tag-match 3))
                    version)))))
 
-  (define (entry<? a b)
-    (eq? (version-compare (car a) (car b)) '<))
+  (filter-map (lambda (tag)
+                (let ((version (get-version tag)))
+                  (and version
+                       (or pre-releases?
+                           (not (pre-release? version)))
+                       (cons version tag))))
+              tags))
 
-  (define (pre-release? tag)
-    (any (cut regexp-exec <> tag)
-         %pre-release-rx))
-
-  (stable-sort (filter-map (lambda (tag)
-                             (let ((version (get-version tag)))
-                               (and version
-                                    (or pre-releases?
-                                        (not (pre-release? version)))
-                                    (cons version tag))))
-                           tags)
-               entry<?))
-
-(define* (latest-tag url
-                     #:key prefix suffix delim pre-releases? (version #f))
-  "Return the latest version and corresponding tag available from the Git
-repository at URL. Optionally include a VERSION string to fetch a specific
-version."
+(define* (get-tags url #:key prefix suffix delim pre-releases?)
+  "Return a alist of the Git tags available from URL.  The tags are keyed by
+their version, a mapping derived from their name."
   (let* ((tags (map (cut string-drop <> (string-length "refs/tags/"))
                     (remote-refs url #:tags? #t)))
-         (versions->tags
+         (versions+tags
           (version-mapping tags
                            #:prefix prefix
                            #:suffix suffix
@@ -167,47 +156,38 @@ version."
     (cond
      ((null? tags)
       (git-no-tags-error))
-     ((null? versions->tags)
+     ((null? versions+tags)
       (git-no-valid-tags-error))
      (else
-      (let ((versions (if version
-                          (filter (match-lambda
-                                   ((candidate-version . tag)
-                                    (string=? version candidate-version)))
-                                  versions->tags)
-                          versions->tags)))
-        (if (null? versions)
-            (values #f #f)
-            (match (last versions)
-              ((version . tag)
-               (values version tag)))))))))
+      versions+tags))))                 ;already sorted
 
-(define* (latest-git-tag-version package #:key (version #f))
-  "Given a PACKAGE, return the latest version of it and the corresponding git
-tag, or #false and #false if the latest version could not be determined.
-Optionally include a VERSION string to fetch a specific version."
+(define* (get-package-tags package)
+  "Given a PACKAGE, return all its known tags, an alist keyed by the tags
+associated versions. "
   (guard (c ((or (git-no-tags-error? c) (git-no-valid-tags-error? c))
              (warning (or (package-field-location package 'source)
                           (package-location package))
                       (G_ "~a for ~a~%")
                       (condition-message c)
                       (package-name package))
-             (values #f #f))
+             '())
             ((eq? (exception-kind c) 'git-error)
              (warning (or (package-field-location package 'source)
                           (package-location package))
                       (G_ "failed to fetch Git repository for ~a~%")
                       (package-name package))
-             (values #f #f)))
+             '()))
     (let* ((source (package-source package))
            (url (git-reference-url (origin-uri source)))
            (property (cute assq-ref (package-properties package) <>)))
-      (latest-tag url
-                  #:version version
-                  #:prefix (property 'release-tag-prefix)
-                  #:suffix (property 'release-tag-suffix)
-                  #:delim (property 'release-tag-version-delimiter)
-                  #:pre-releases? (property 'accept-pre-releases?)))))
+      (get-tags url
+                #:prefix (property 'release-tag-prefix)
+                #:suffix (property 'release-tag-suffix)
+                #:delim (property 'release-tag-version-delimiter)
+                #:pre-releases? (property 'accept-pre-releases?)))))
+
+;; Prevent Guile from inlining this procedure so we can use it in tests.
+(set! get-package-tags get-package-tags)
 
 (define (git-package? package)
   "Return true if PACKAGE is hosted on a Git repository."
@@ -217,21 +197,24 @@ Optionally include a VERSION string to fetch a specific version."
           (git-reference? (origin-uri origin))))
     (_ #f)))
 
-(define* (import-git-release package #:key (version #f))
+(define* (import-git-release package #:key version partial-version?)
   "Return an <upstream-source> for the latest release of PACKAGE.
-Optionally include a VERSION string to fetch a specific version."
+Optionally include a VERSION string to fetch a specific version, which may be
+a version prefix when PARTIAL-VERSION? is #t."
   (let* ((name (package-name package))
          (old-version (package-version package))
          (old-reference (origin-uri (package-source package)))
-         (new-version new-version-tag
-                      (latest-git-tag-version package #:version version)))
-    (and new-version new-version-tag
+         (tags (get-package-tags package))
+         (versions (map car tags))
+         (version (find-version versions version partial-version?))
+         (tag (assoc-ref tags version)))
+    (and version
          (upstream-source
           (package name)
-          (version new-version)
+          (version version)
           (urls (git-reference
                  (url (git-reference-url old-reference))
-                 (commit new-version-tag)
+                 (commit tag)
                  (recursive? (git-reference-recursive? old-reference))))))))
 
 (define %generic-git-updater

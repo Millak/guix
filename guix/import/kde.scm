@@ -2,6 +2,7 @@
 ;;; Copyright © 2016 David Craven <david@craven.ch>
 ;;; Copyright © 2016, 2017 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2019 Hartmut Goebel <h.goebel@crazy-compilers.com>
+;;; Copyright © 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -19,6 +20,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (guix import kde)
+  #:use-module ((guix import utils) #:select (find-version))
   #:use-module (guix http-client)
   #:use-module (guix gnu-maintenance)
   #:use-module (guix packages)
@@ -149,48 +151,39 @@ Output:
       (string-join (map version->pattern directory-parts) "/")
       "/"))))
 
-(define* (import-kde-release package #:key (version #f))
+(define* (import-kde-release package #:key version partial-version?)
   "Return the latest release of PACKAGE, a KDE package, or #f if it could
 not be determined. Optionally include a VERSION string to fetch a specific
-version."
-
-  (define (find-latest-archive-version archives)
-    (fold (lambda (file1 file2)
-            (if (and file2
-                     (version>? (tarball-sans-extension (basename file2))
-                                (tarball-sans-extension (basename file1))))
-                file2
-                file1))
-          #f
-          archives))
-
+version, which may be a partial prefix when PARTIAL-VERSION? is #t."
   (let* ((uri      (string->uri (origin-uri (package-source package))))
          (path-rx  (uri->kde-path-pattern uri))
          (name     (package-upstream-name package))
          (files    (download.kde.org-files))
-         ;; select archives for this package
+         ;; Select archives for this package.
          (relevant (filter (lambda (file)
                              (and (regexp-exec path-rx file)
                                   (release-file? name (basename file))))
                            files))
-         ;; Find latest version.
-         (version (or version
-                      (and (not (null? relevant))
-                           (tarball->version (find-latest-archive-version relevant)))))
-         ;; Find archives matching this version.
-         (tarballs (filter (lambda (file)
-                             (string=? version (tarball->version file)))
-                           relevant)))
-    (match tarballs
-      (() #f)
-      (_
-       (upstream-source
-        (package name)
-        (version version)
-        (urls (map (lambda (file)
-                     (string-append "mirror://kde/" file))
-                   tarballs)))))))
-
+         ;; Build an association list of file names keyed by their version.
+         (all-tarballs (map (lambda (x)
+                              (cons (tarball->version x) x))
+                            relevant))
+         (versions (map car all-tarballs))
+         ;; Find the latest version.
+         (version (find-version versions version partial-version?))
+         ;; Find all archives matching this version.
+         (tarballs (and version
+                        (map cdr (filter (match-lambda
+                                           ((x . file-name)
+                                            (string=? version x)))
+                                         all-tarballs)))))
+    (and version tarballs
+         (upstream-source
+          (package name)
+          (version version)
+          (urls (map (lambda (file)
+                       (string-append "mirror://kde/" file))
+                     tarballs))))))
 
 (define %kde-updater
   (upstream-updater

@@ -422,7 +422,7 @@ type '<elpa-package>'."
           (string-drop (package-name package) 6)
           (package-name package))))
 
-(define* (latest-release package #:key (version #f))
+(define* (latest-release package #:key version partial-version?)
   "Return an <upstream-release> for the latest release of PACKAGE."
   (define name (guix-package->elpa-name package))
   (define repo (elpa-repository package))

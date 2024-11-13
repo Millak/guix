@@ -31,7 +31,8 @@ export GUIX_TEST_UPDATER_TARGETS
 idutils_version="$(guix package -A ^idutils$ | cut -f2)"
 GUIX_TEST_UPDATER_TARGETS='
   (("guile" "3" (("12.5" "file:///dev/null")
-                 ("1.6.4" "file:///dev/null")))
+                 ("1.6.4" "file:///dev/null")
+                 ("3.13.3" "file:///dev/null")))
    ("libreoffice" "" (("1.0" "file:///dev/null")))
    ("idutils" "" (("'$idutils_version'" "file:///dev/null")))
    ("the-test-package" "" (("5.5" "file://'$PWD/$module_dir'/source"
@@ -113,6 +114,13 @@ esac
 guix refresh -t test guile --target-version=2.0.0 # XXX: should return non-zero?
 case "$(guix refresh -t test guile --target-version=2.0.0 2>&1)" in
     *"failed to find"*"2.0.0"*) true;;
+    *) false;;
+esac
+
+# Partial target version => select the newest release prefixed by it.
+guix refresh -t test guile --target-version=3 # XXX: should return non-zero?
+case "$(guix refresh -t test guile --target-version=3 2>&1)" in
+    *"would be upgraded"*"3.13.3"*) true;;
     *) false;;
 esac
 

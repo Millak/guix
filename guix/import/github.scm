@@ -7,6 +7,7 @@
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2023 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -30,7 +31,8 @@
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-71)
-  #:use-module (guix utils)
+  #:use-module ((guix import utils) #:select (find-version))
+  #:use-module ((guix utils) #:select (string-replace-substring))
   #:use-module (guix i18n)
   #:use-module (guix diagnostics)
   #:use-module ((guix ui) #:select (display-hint))
@@ -246,40 +248,49 @@ Alternatively, you can wait until your rate limit is reset, or use the
                                            #:headers headers))))
                  (match result
                    (#()
-                    ;; We got the empty list, presumably because the user didn't use GitHub's
-                    ;; "release" mechanism, but hopefully they did use Git tags.
+                    ;; We got the empty list, presumably because the user
+                    ;; didn't use GitHub's "release" mechanism, but hopefully
+                    ;; they did use Git tags.
                     (json->scm (http-fetch tag-url
                                            #:port connection
                                            #:keep-alive? #t
                                            #:headers headers)))
                    (x x)))))))))
 
-(define* (latest-released-version url package-name #:key (version #f))
-  "Return the newest released version and its tag given a string URL like
-'https://github.com/arq5x/bedtools2/archive/v2.24.0.tar.gz' and the name of
-the package e.g. 'bedtools2'.  Return #f (two values) if there are no
-releases.
+(define* (get-package-tags package)
+  "Return an alist of tags keyed by their version for PACKAGE, a <package>
+object."
+  (define (github-uri uri)
+    (match uri
+      ((? string? url)
+       url)                             ;surely a github.com URL
+      ((? download:git-reference? ref)
+       (download:git-reference-url ref))
+      ((urls ...)
+       (find (cut string-contains <> "github.com") urls))))
 
-Optionally include a VERSION string to fetch a specific version."
   (define (pre-release? x)
     (assoc-ref x "prerelease"))
+
+  (define source-uri
+    (github-uri (origin-uri (package-source package))))
 
   ;; This procedure returns (version . tag) pair, or #f
   ;; if RELEASE doesn't seyem to correspond to a version.
   (define (release->version release)
-    (let ((tag (or (assoc-ref release "tag_name") ;a "release"
-                   (assoc-ref release "name")))   ;a tag
-          (name-length (string-length package-name)))
+    (let* ((tag (or (assoc-ref release "tag_name") ;a "release"
+                    (assoc-ref release "name")))   ;a tag
+           (name (package-upstream-name package))
+           (name-length (string-length name)))
       (cond
-       ;; some tags include the name of the package e.g. "fdupes-1.51"
-       ;; so remove these
+       ;; Some tags include the name of the package e.g. "fdupes-1.51"; remove
+       ;; these.
        ((and (< name-length (string-length tag))
-             (string=? (string-append package-name "-")
+             (string=? (string-append name "-")
                        (substring tag 0 (+ name-length 1))))
         (cons (substring tag (+ name-length 1)) tag))
-       ;; some tags start with a "v" e.g. "v0.25.0"
-       ;; or with the word "version" e.g. "version.2.1"
-       ;; where some are just the version number
+       ;; Some tags start with a "v" e.g. "v0.25.0" or with the word "version"
+       ;; e.g. "version.2.1" where some are just the version number.
        ((string-prefix? "version" tag)
         (cons (if (char-set-contains? char-set:digit (string-ref tag 7))
                   (substring tag 7)
@@ -294,53 +305,32 @@ Optionally include a VERSION string to fetch a specific version."
         (cons tag tag))
        (else #f))))
 
-  (match (and=> (fetch-releases-or-tags url) vector->list)
-    (#f (values #f #f))
+  (match (and=> (fetch-releases-or-tags source-uri) vector->list)
+    (#f '())
     (json
-     (let ((releases (filter-map release->version
-                                 (match (remove pre-release? json)
-                                   (() json)         ; keep everything
-                                   (releases releases)))))
-       (match (if version
-                  ;; Find matching release version.
-                  (filter (match-lambda
-                           ((candidate-version . tag)
-                            (string=? version candidate-version)))
-                          releases)
-                  ;; Sort releases descending.
-                  (sort releases
-                        (lambda (x y) (version>? (car x) (car y)))))
-       (((latest-version . tag) . _) (values latest-version tag))
-       (() (values #f #f)))))))
+     (filter-map release->version
+                 (match (remove pre-release? json)
+                   (() json)      ;keep everything
+                   (releases releases))))))
 
-(define* (import-release pkg #:key (version #f))
+(define* (import-release pkg #:key version partial-version?)
   "Return an <upstream-source> for the latest release of PKG.
-Optionally include a VERSION string to fetch a specific version."
-  (define (github-uri uri)
-    (match uri
-      ((? string? url)
-       url)                                       ;surely a github.com URL
-      ((? download:git-reference? ref)
-       (download:git-reference-url ref))
-      ((urls ...)
-       (find (cut string-contains <> "github.com") urls))))
-
+Optionally include a VERSION string to fetch a specific version, which may be
+a partial version prefix if PARTIAL-VERSION? is #t."
   (let* ((original-uri (origin-uri (package-source pkg)))
-         (source-uri (github-uri original-uri))
-         (name (package-upstream-name pkg))
-         (newest-version version-tag
-                         (latest-released-version source-uri name
-                                                  #:version version)))
-    (if newest-version
-        (upstream-source
-         (package name)
-         (version newest-version)
-         (urls (if (download:git-reference? original-uri)
-                   (download:git-reference
-                    (inherit original-uri)
-                    (commit version-tag))
-                   (list (updated-github-url pkg newest-version)))))
-        #f))) ; On GitHub but no proper releases
+         (tags (get-package-tags pkg))
+         (versions (map car tags))
+         (version (find-version versions version partial-version?))
+         (tag (assoc-ref tags version)))
+    (and version
+         (upstream-source
+          (package (package-upstream-name pkg))
+          (version version)
+          (urls (if (download:git-reference? original-uri)
+                    (download:git-reference
+                     (inherit original-uri)
+                     (commit tag))
+                    (list (updated-github-url pkg version))))))))
 
 (define %github-updater
   (upstream-updater
@@ -348,5 +338,3 @@ Optionally include a VERSION string to fetch a specific version."
    (description "Updater for GitHub packages")
    (pred github-package?)
    (import import-release)))
-
-

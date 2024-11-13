@@ -49,6 +49,25 @@
   \"licenses\": [\"MIT\", \"Apache 2.0\"]
 }")
 
+(define test-foo-versions-json
+  "[{\"authors\": \" Maxim \",
+     \"built_at\": \"2012-10-24T00:00:00.000Z\",
+     \"created_at\": \"2012-11-03T07:41:49.007Z\",
+     \"description\": \"test gem\",
+     \"downloads_count\" :9195,
+     \"metadata\": {\"homepage_uri\":\"\"},
+     \"number\": \"1.0.0\",
+     \"summary\": \"foo!!!\",
+     \"platform\": \"ruby\",
+     \"rubygems_version\": \"\u003e= 0\",
+     \"ruby_version\": null,
+     \"priceless\": false,
+     \"licenses\": null,
+     \"requirements\": null,
+     \"sha\": \"523009a5b977f79c8eaa79b521e416f26482bc4fbbcc04bd08580696e303a715\",
+     \"spec_sha\": \"c7cf42bac0d01eb12b68294d1cdb4e20e7cb222ca958ad70ed1e9a686b551819\"
+}]")
+
 (define test-foo-v2-json
   "{
   \"name\": \"foo\",
@@ -273,6 +292,9 @@
              ("https://rubygems.org/api/v1/gems/foo.json"
               (values (open-input-string test-foo-json)
                       (string-length test-foo-json)))
+             ("https://rubygems.org/api/v1/versions/foo.json"
+              (values (open-input-string test-foo-versions-json)
+                      (string-length test-foo-versions-json)))
              (_ (error "Unexpected URL: " url)))))
         (let ((source (package-latest-release
                        (dummy-package "ruby-foo"

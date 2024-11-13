@@ -4,6 +4,7 @@
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2024 Ekaitz Zarraga <ekaitz@elenq.tech>
+;;; Copyright © 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -24,6 +25,7 @@
   #:use-module (ice-9 ftw)
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-71)
   #:use-module (gcrypt hash)
   #:use-module (guix git)
@@ -99,12 +101,9 @@ to the repository."
   (let ((eggs-directory (eggs-repository)))
     (string-append eggs-directory "/" name)))
 
-(define (find-latest-version name)
-  "Get the latest version of the egg NAME."
-  (let ((directory (scandir (egg-directory name))))
-    (if directory
-        (last directory)
-        #f)))
+(define (get-versions name)
+  "Get the release versions of the egg NAME."
+  (or (scandir (egg-directory name)) '()))
 
 (define* (egg-metadata name #:key (version #f) (file #f))
   "Return the package metadata file for the egg NAME at version VERSION, or if
@@ -112,7 +111,7 @@ FILE is specified, return the package metadata in FILE."
   (call-with-input-file (or file
                             (string-append (egg-directory name) "/"
                                            (or version
-                                               (find-latest-version name))
+                                               (first (get-versions name)))
                                            "/" name ".egg"))
     read))
 
@@ -188,7 +187,7 @@ not work."
   (if (not egg-content)
       (values #f '())                    ; egg doesn't exist
       (let* ((version* (or (assoc-ref egg-content 'version)
-                           (find-latest-version name)))
+                           (first (get-versions name))))
              (version (if (list? version*) (first version*) version*))
              (source-url (if source #f `(egg-uri ,name version)))
              (tarball (if source
@@ -333,16 +332,18 @@ not work."
 ;;; Updater.
 ;;;
 
-(define* (import-release package #:key (version #f))
+(define* (import-release package #:key version partial-version?)
   "Return an @code{<upstream-source>} for the latest release of PACKAGE.
-Optionally include a VERSION string to fetch a specific version."
+Optionally fetch a specific VERSION string, which may be a version prefix when
+PARTIAL-VERSION? is #t."
   (let* ((egg-name (guix-package->egg-name package))
-         (version (or version (find-latest-version egg-name)))
-         (source-url (egg-uri egg-name version)))
-    (upstream-source
-     (package (package-name package))
-     (version version)
-     (urls (list source-url)))))
+         (versions (get-versions egg-name))
+         (version (find-version versions version partial-version?)))
+    (and version
+         (upstream-source
+          (package (package-name package))
+          (version version)
+          (urls (list (egg-uri egg-name version)))))))
 
 (define %egg-updater
   (upstream-updater

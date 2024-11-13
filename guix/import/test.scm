@@ -18,6 +18,8 @@
 
 (define-module (guix import test)
   #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-26)
+  #:use-module ((guix import utils) #:select (find-version))
   #:use-module (guix packages)
   #:use-module (guix upstream)
   #:use-module ((guix utils) #:select (version-prefix?))
@@ -76,18 +78,17 @@
   (and (not (vlist-null? (test-target-version)))  ;cheap test
        (pair? (available-updates package))))
 
-(define* (import-release package #:key (version #f))
+(define* (import-release package #:key version partial-version?)
   "Return the <upstream-source> record denoting either the latest version of
 PACKAGE or VERSION."
   (match (available-updates package)
     (() #f)
     ((sources ...)
-     (if version
-         (find (lambda (source)
-                 (string=? (upstream-source-version source)
-                           version))
-               sources)
-         (first sources)))))
+     (let* ((versions (map upstream-source-version sources))
+            (version  (find-version versions version partial-version?)))
+       (and version
+            (find (compose (cut string=? version <>) upstream-source-version)
+                  sources))))))
 
 (define %test-updater
   (upstream-updater

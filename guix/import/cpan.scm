@@ -328,7 +328,7 @@ in RELEASE, a <cpan-release> record."
                                              ")"))))
     (url-predicate (cut regexp-exec cpan-rx <>))))
 
-(define* (latest-release package #:key (version #f))
+(define* (latest-release package #:key version partial-version?)
   "Return an <upstream-source> for the latest release of PACKAGE."
   (when version
     (raise

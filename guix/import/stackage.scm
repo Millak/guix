@@ -142,7 +142,7 @@ included in the Stackage LTS release."
          (mlambda ()
            (stackage-lts-packages
             (stackage-lts-info-fetch %default-lts-version)))))
-    (lambda* (pkg #:key (version #f))
+    (lambda* (pkg #:key version partial-version?)
       "Return an <upstream-source> for the latest Stackage LTS release of
 PACKAGE or #f if the package is not included in the Stackage LTS release."
       (when version

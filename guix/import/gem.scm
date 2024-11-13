@@ -7,6 +7,7 @@
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2022 Taiju HIGASHI <higashi@taiju.info>
 ;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
+;;; Copyright © 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -26,6 +27,7 @@
 (define-module (guix import gem)
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-26)
   #:use-module (json)
   #:use-module (guix import utils)
   #:use-module (guix import json)
@@ -35,6 +37,7 @@
   #:use-module (guix base16)
   #:use-module (guix base32)
   #:use-module ((guix build-system ruby) #:select (rubygems-uri))
+  #:use-module ((guix utils) #:select (version>? version-prefix?))
   #:export (gem->guix-package
             %gem-updater
             gem-recursive-import))
@@ -89,6 +92,15 @@
               (string-append "https://rubygems.org/api/v2/rubygems/" name "/versions/" version ".json")
               (string-append "https://rubygems.org/api/v1/gems/" name ".json")))
          json->gem))
+
+(define (get-versions name)
+  "Return all the versions for the gem NAME, sorted in decreasing order."
+  (let* ((url (string-append "https://rubygems.org/api/v1/versions/"
+                             name ".json"))
+         (versions-data (json-fetch url)))
+    (sort (map (cut assoc-ref <> "number")
+               (vector->list versions-data))
+          version>?)))
 
 (define (ruby-package-name name)
   "Given the NAME of a package on RubyGems, return a Guix-compliant name for
@@ -172,7 +184,7 @@ package on RubyGems."
 (define gem-package?
   (url-prefix-predicate "https://rubygems.org/downloads/"))
 
-(define* (import-release package #:key (version #f))
+(define* (import-release package #:key version partial-version?)
   "Return an <upstream-source> for the latest release of PACKAGE."
   (let* ((gem-name (guix-package->gem-name package))
          (gem      (rubygems-fetch gem-name))
@@ -184,13 +196,14 @@ package on RubyGems."
                               (ruby-package-name name))
                              (type 'propagated))))
                         (gem-dependencies-runtime (gem-dependencies gem))))
-         (version  (or version (gem-version gem)))
-         (url      (rubygems-uri gem-name version)))
-    (upstream-source
-     (package (package-name package))
-     (version version)
-     (urls (list url))
-     (inputs inputs))))
+         (versions (get-versions gem-name))
+         (version  (find-version versions version partial-version?)))
+    (and version
+         (upstream-source
+          (package (package-name package))
+          (version version)
+          (urls (list (rubygems-uri gem-name version)))
+          (inputs inputs)))))
 
 (define %gem-updater
   (upstream-updater

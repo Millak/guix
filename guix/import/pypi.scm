@@ -35,6 +35,7 @@
   #:use-module (ice-9 regex)
   #:use-module ((ice-9 rdelim) #:select (read-line))
   #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-2)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
@@ -522,11 +523,17 @@ pypi-uri declaration in the generated package. You may need to replace ~s with
 a substring of the PyPI URI that identifies the package.")  pypi-url name))
 name)))
 
-(define* (pypi-package->upstream-source pypi-package #:optional version)
+(define* (pypi-package->upstream-source pypi-package
+                                        #:optional version partial-version?)
   "Return the upstream source for the given VERSION of PYPI-PACKAGE, a
-<pypi-project> record.  If VERSION is omitted or #f, use the latest version."
+<pypi-project> record.  If VERSION is omitted or #f, use the latest version.
+If PARTIAL-VERSION? is #t, use the latest version found that is prefixed by
+VERSION."
   (let* ((info       (pypi-project-info pypi-package))
-         (version    (or version (project-info-version info)))
+         (versions   (map (match-lambda
+                            ((version . _) version))
+                          (pypi-project-releases pypi-package)))
+         (version    (find-version versions version partial-version?))
          (dist       (source-release pypi-package version))
          (source-url (distribution-url dist))
          (wheel-url  (and=> (wheel-release pypi-package version)
@@ -661,14 +668,14 @@ source.  To build it from source, refer to the upstream repository at
          (string-prefix? "https://pypi.org/packages" url)
          (string-prefix? "https://files.pythonhosted.org/packages" url)))))
 
-(define* (import-release package #:key (version #f))
+(define* (import-release package #:key version partial-version?)
   "Return an <upstream-source> for the latest release of PACKAGE. Optionally
 include a VERSION string to fetch a specific version."
-  (let* ((pypi-name    (guix-package->pypi-name package))
-         (pypi-package (pypi-fetch pypi-name)))
-    (and pypi-package
-         (guard (c ((missing-source-error? c) #f))
-           (pypi-package->upstream-source pypi-package version)))))
+  (and-let* ((pypi-name    (guix-package->pypi-name package))
+             (pypi-package (pypi-fetch pypi-name)))
+    (guard (c ((missing-source-error? c) #f))
+      (pypi-package->upstream-source pypi-package
+                                     version partial-version?))))
 
 (define %pypi-updater
   (upstream-updater

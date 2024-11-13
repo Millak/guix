@@ -7,6 +7,7 @@
 ;;; Copyright © 2023 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2023, 2024 David Elsing <david.elsing@posteo.net>
+;;; Copyright © 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2025 Herman Rimm <herman@rimm.ee>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -278,8 +279,9 @@ and LICENSE."
               (loop curr remaining)
               (loop next remaining))))))
 
-(define (max-crate-version-of-semver semver-range range)
-  "Returns a <crate-version> of the highest version within the semver range."
+(define (max-crate-version-of-semver semver-range versions)
+  "Returns the <crate-version> of the highest version found in VERSIONS that
+satisfies SEMVER-RANGE."
 
   (define (crate->semver crate)
     (string->semver (crate-version-number crate)))
@@ -287,7 +289,7 @@ and LICENSE."
   (min-element
    (filter (lambda (crate)
              (semver-range-contains? semver-range (crate->semver crate)))
-           range)
+           versions)
    (lambda args
      (apply semver>? (map crate->semver args)))))
 
@@ -491,25 +493,34 @@ look up the development dependencs for the given crate."
 (define crate-package?
   (url-predicate crate-url?))
 
-(define* (import-release package #:key (version #f))
-  "Return an <upstream-source> for the latest release of PACKAGE. Optionally
-include a VERSION string to fetch a specific version."
+(define* (import-release package #:key version partial-version?)
+  "Return an <upstream-source> for the latest release of PACKAGE.  Optionally
+include a VERSION string to fetch a specific version, which may be a partial
+prefix when PARTIAL-VERSION? is #t."
   (let* ((crate-name (guix-package->crate-name package))
          (crate      (lookup-crate crate-name))
-         (version    (or version
-                         (let ((max-crate-version
-                                 (max-crate-version-of-semver
-                                   (string->semver-range
-                                     (string-append "^" (package-version package)))
-                                   (nonyanked-crate-versions crate))))
-                           (and=> max-crate-version
-                                  crate-version-number)))))
-    (if version
-        (upstream-source
-         (package (package-name package))
-         (version version)
-         (urls (list (crate-uri crate-name version))))
-        #f)))
+         (versions (delay (nonyanked-crate-versions crate)))
+         (find-max-minor-patch-version (lambda (base-version)
+                                         (max-crate-version-of-semver
+                                          (string->semver-range
+                                           (string-append
+                                            "^" base-version))
+                                          (force versions))))
+         (version (cond
+                   ((and version partial-version?) ;partial version
+                    (and=> (find-max-minor-patch-version version)
+                           crate-version-number))
+                   ((and version (not partial-version?)) ;exact version
+                    version)
+                   (else                ;latest version
+                    (and=> (find-max-minor-patch-version
+                            (package-version package))
+                           crate-version-number)))))
+    (and version
+         (upstream-source
+          (package (package-name package))
+          (version version)
+          (urls (list (crate-uri crate-name version)))))))
 
 (define %crate-updater
   (upstream-updater

@@ -3,7 +3,7 @@
 ;;; Copyright © 2016 David Craven <david@craven.ch>
 ;;; Copyright © 2017, 2019-2021, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2019 Martin Becze <mjbecze@riseup.net>
-;;; Copyright © 2019 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2019, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020-2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -32,7 +32,7 @@
                           call-with-temporary-output-file))
   #:use-module (guix packages)
   #:use-module (guix upstream)
-  #:autoload   (guix utils) (version>? file-sans-extension)
+  #:autoload   (guix utils) (file-sans-extension version>? version-prefix?)
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
@@ -95,7 +95,7 @@
 
 
 (define (lookup-hexpm name)
-  "Look up NAME on hex.pm and return the corresponding <hexpm> record
+  "Look up NAME on hex.pm and return the corresponding <hexpm-pkgdef> record
 or #f if it was not found."
   (and=> (json-fetch (package-url name))
          json->hexpm))
@@ -215,16 +215,11 @@ build-system, and DEPENDENCIES the inputs for the package."
                          license)))
               strings))
 
-(define (hexpm-latest-release package)
-  "Return the version string for the latest stable release of PACKAGE."
-  ;; Use latest-stable if specified (see comment in hexpm-pkgdef above),
-  ;; otherwise compare the lists of release versions.
-  (let ((latest-stable (hexpm-latest-stable package)))
-    (if (not (unspecified? latest-stable))
-        latest-stable
-        (let ((versions (map hexpm-version-number (hexpm-versions package))))
-          (fold (lambda (a b)
-                  (if (version>? a b) a b)) (car versions) versions)))))
+(define (hexpm-releases package)
+  "Return the version strings for releases of PACKAGE, a <hexpm-pkgdef>
+object, ordered from newest to oldest."
+  (sort (map hexpm-version-number (hexpm-versions package))
+        version>?))
 
 (define* (hexpm->guix-package package-name #:key version #:allow-other-keys)
   "Fetch the metadata for PACKAGE-NAME from hexpms.io, and return the
@@ -238,7 +233,7 @@ latest version of PACKAGE-NAME."
   (define version-number
     (and package
          (or version
-             (hexpm-latest-release package))))
+             (first (hexpm-releases package)))))
 
   (define version*
     (and package
@@ -320,17 +315,20 @@ latest version of PACKAGE-NAME."
 ;;; Updater
 ;;;
 
-(define* (import-release package #:key (version #f))
+(define* (import-release package #:key version partial-version?)
   "Return an <upstream-source> for the latest release of PACKAGE. Optionally
-include a VERSION string to fetch a specific version."
+include a VERSION string to fetch a specific version, which may be a version
+prefix when PARTIAL-VERSION? is #t."
   (let* ((hexpm-name (guix-package->hexpm-name package))
          (hexpm      (lookup-hexpm hexpm-name))
-         (version    (or version (hexpm-latest-release hexpm)))
-         (url        (hexpm-uri hexpm-name version)))
-    (upstream-source
-     (package (package-name package))
-     (version version)
-     (urls (list url)))))
+         (latest-stable (hexpm-latest-stable hexpm))
+         (releases (hexpm-releases hexpm))
+         (version (find-version releases version partial-version?)))
+    (and version
+         (upstream-source
+          (package (package-name package))
+          (version version)
+          (urls (list (hexpm-uri hexpm-name version)))))))
 
 (define %hexpm-updater
   (upstream-updater

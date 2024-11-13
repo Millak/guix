@@ -3,7 +3,7 @@
 ;;; Copyright © 2012, 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
-;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2023, 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -44,7 +44,7 @@
   #:use-module (guix records)
   #:use-module (guix upstream)
   #:use-module (guix packages)
-  #:autoload   (guix import utils) (false-if-networking-error)
+  #:autoload   (guix import utils) (false-if-networking-error find-version)
   #:autoload   (zlib) (call-with-gzip-input-port)
   #:autoload   (htmlprag) (html->sxml)            ;from Guile-Lib
   #:export (gnu-package-name
@@ -346,12 +346,15 @@ name/directory pairs."
 
 (define* (import-ftp-release project
                              #:key
-                             (version #f)
+                             version
+                             partial-version?
                              (server "ftp.gnu.org")
                              (directory (string-append "/gnu/" project))
                              (file->signature (cut string-append <> ".sig")))
   "Return an <upstream-source> for the latest release of PROJECT on SERVER
-under DIRECTORY, or #f. Optionally include a VERSION string to fetch a specific version.
+under DIRECTORY, or #f.  Optionally include a VERSION string to fetch a
+specific version, which may be marked as partially specified via
+PARTIAL-VERSION?.
 
 Use FTP-OPEN and FTP-CLOSE to open (resp. close) FTP connections; this can be
 useful to reuse connections.
@@ -417,7 +420,9 @@ return the corresponding signature URL, or #f it signatures are unavailable."
                                     (and (release-file? project file)
                                          (file->source directory file)))
                                    (_ #f))
-                                 entries)))
+                                 entries))
+           (versions (map upstream-source-version releases))
+           (version (find-version versions version partial-version?)))
 
       ;; Assume that SUBDIRS correspond to versions, and jump into the
       ;; one with the highest version number.
@@ -440,14 +445,17 @@ return the corresponding signature URL, or #f it signatures are unavailable."
 
 (define* (import-release package
                          #:key
-                         (version #f)
+                         version
+                         partial-version?
                          (server "ftp.gnu.org")
                          (directory (string-append "/gnu/" package)))
   "Return the <upstream-source> for the latest version of PACKAGE or #f.
 PACKAGE must be the canonical name of a GNU package. Optionally include a
-VERSION string to fetch a specific version."
+VERSION string to fetch a specific version, which may be marked as partially
+specified via PARTIAL-VERSION?."
   (import-ftp-release package
                       #:version version
+                      #:partial-version? partial-version?
                       #:server server
                       #:directory directory))
 
@@ -463,7 +471,7 @@ of EXP otherwise."
           (close-port port))
       #f)))
 
-(define* (import-release* package #:key (version #f))
+(define* (import-release* package #:key version partial-version?)
   "Like 'import-release', but (1) take a <package> object, and (2) ignore FTP
 errors that might occur when PACKAGE is not actually a GNU package, or not
 hosted on ftp.gnu.org, or not under that name (this is the case for
@@ -474,6 +482,7 @@ hosted on ftp.gnu.org, or not under that name (this is the case for
      (false-if-ftp-error
       (import-release (package-upstream-name package)
                       #:version version
+                      #:partial-version? partial-version?
                       #:server server
                       #:directory directory)))))
 
@@ -561,16 +570,23 @@ URL is a directory instead of a file, it should be suffixed with a slash (/)."
 ;;; TODO: Extend to support the RPM and GNOME version schemes?
 (define %version-rx "[0-9.]+")
 
-(define* (rewrite-url url version #:key to-version)
+(define* (rewrite-url url version #:key to-version partial-version?)
   "Rewrite URL so that the URL path components matching the current VERSION or
 VERSION-MAJOR.VERSION-MINOR are updated with that of the latest version found
 by crawling the corresponding URL directories.  Alternatively, when TO-VERSION
-is specified, rewrite version matches directly to it without crawling URL.
+is specified, rewrite version matches directly to it without crawling URL.  If
+TO-VERSION is provided and PARTIAL-VERSION? set to #t, then crawl URL to find
+the newest compatible release (one that is prefixed by TO-VERSION).
 
 For example, the URL
 \"https://dist.libuv.org/dist/v1.45.0/libuv-v1.45.0.tar.gz\" could be
 rewritten to something like
-\"https://dist.libuv.org/dist/v1.46.0/libuv-v1.46.0.tar.gz\"."
+\"https://dist.libuv.org/dist/v1.46.0/libuv-v1.46.0.tar.gz\".
+
+With TO-VERSION set to \"1.49\" and PARTIAL-VERSION? set to #t, the URL
+\"https://dist.libuv.org/dist/v1.45.0/libuv-v1.45.0.tar.gz\" could be
+rewritten to something like
+\"https://dist.libuv.org/dist/v1.49.2/libuv-v1.49.2.tar.gz\"."
   ;; XXX: major-minor may be #f if version is not a triplet but a single
   ;; number such as "2".
   (let* ((major-minor (false-if-exception (version-major+minor version)))
@@ -590,14 +606,15 @@ rewritten to something like
      (reverse
       (fold
        (lambda (s parents)
-         (if to-version
+         (if (and to-version (not partial-version?))
              ;; Direct rewrite case; the archive is assumed to exist.
              (let ((u (string-replace-substring s version to-version)))
                (cons (if (and major-minor to-major-minor)
                          (string-replace-substring u major-minor to-major-minor)
                          u)
                      parents))
-             ;; More involved HTML crawl case.
+             ;; More involved HTML crawl case to get the latest version or a
+             ;; partial to-version.
              (let* ((pattern (if major-minor
                                  (format #f "(~a|~a)" version major-minor)
                                  (format #f "(~a)" version)))
@@ -620,15 +637,14 @@ rewritten to something like
                                               (m (string-match pattern l))
                                               (v (match:substring m 1)))
                                            (cons v l)))
-                                       links)))
-                     ;; Retrieve the item having the largest version.
-                     (if (null? candidates)
-                         parents
-                         (cons (cdr (first (sort candidates
-                                                 (lambda (x y)
-                                                   (version>? (car x)
-                                                              (car y))))))
-                               parents)))
+                                       links))
+                          (versions (map car candidates))
+                          (version (find-version versions to-version
+                                                 partial-version?)))
+                     ;; Retrieve the item having the greatest version.
+                     (if version
+                         (cons (assoc-ref candidates version) parents)
+                         parents))      ;XXX: bogus case; throw an error?
                    ;; No version found in path component; continue.
                    (cons s parents)))))
        (reverse url-prefix-components)
@@ -639,12 +655,14 @@ rewritten to something like
                               #:key
                               rewrite-url?
                               version
+                              partial-version?
                               (directory (string-append
                                           "/" (package-upstream-name package)))
                               file->signature)
   "Return an <upstream-source> for the latest release of PACKAGE under
 DIRECTORY at BASE-URL, or #f.  Optionally include a VERSION string to fetch a
-specific version.
+specific version, which may be marked as partially specified via
+PARTIAL-VERSION?.
 
 BASE-URL should be the URL of an HTML page, typically a directory listing as
 found on 'https://kernel.org/pub'.
@@ -663,7 +681,8 @@ also updated to the latest version, as explained in the doc of the
                   base-url
                   (string-append base-url directory "/")))
          (url (if rewrite-url?
-                  (rewrite-url url current-version #:to-version version)
+                  (rewrite-url url current-version #:to-version version
+                               #:partial-version? partial-version?)
                   url))
          (links (map (cut canonicalize-url <> url) (url->links url))))
 
@@ -695,23 +714,18 @@ else #f.  URL is assumed to fully specified."
                         (lambda (url) (list (uri-mirror-rewrite url))))))))))
 
     (define candidates
-      (filter-map url->release links))
+      (coalesce-sources (filter-map url->release links)))
 
-    (match candidates
-      (() #f)
-      ((first . _)
-       (if version
-           ;; Find matching release version and return it.
-           (find (lambda (upstream)
-                   (string=? (upstream-source-version upstream) version))
-                 (coalesce-sources candidates))
-           ;; Select the most recent release and return it.
-           (reduce (lambda (r1 r2)
-                     (if (version>? (upstream-source-version r1)
-                                    (upstream-source-version r2))
-                         r1 r2))
-                   first
-                   (coalesce-sources candidates)))))))
+    (define versions
+      (map upstream-source-version candidates))
+
+    (define new-version
+      (find-version versions version partial-version?))
+
+    (and new-version
+         (find (compose (cut string=? new-version <>)
+                        upstream-source-version)
+               candidates))))
 
 
 ;;;
@@ -743,7 +757,7 @@ else #f.  URL is assumed to fully specified."
            (call-with-gzip-input-port port
              (compose string->lines get-string-all))))))
 
-(define* (import-gnu-release package #:key (version #f))
+(define* (import-gnu-release package #:key version partial-version?)
   "Return the latest release of PACKAGE, a GNU package available via
 ftp.gnu.org. Optionally include a VERSION string to fetch a specific version.
 
@@ -776,12 +790,15 @@ list available from %GNU-FILE-LIST-URI over HTTP(S)."
                                     (string-contains file directory)
                                     (release-file? name (basename file))))
                              files))
-           ;; find latest version
-           (version (or version
-                        (and (not (null? relevant))
-                             (tarball->version
-                              (find-latest-tarball-version relevant)))))
-           ;; find tarballs matching this version
+           (versions (delay (sort (delete-duplicates
+                                   (map tarball->version relevant))
+                                  version>?)))
+           (version (or (and version partial-version?
+                             (find (cut version-prefix? version <>)
+                                   (force versions)))
+                        version
+                        (first (force versions))))
+           ;; Find tarballs matching this version.
            (tarballs (filter (lambda (file)
                                (string=? version (tarball->version file)))
                              relevant)))
@@ -998,11 +1015,11 @@ updater."
   (or (assoc-ref (package-properties package) 'release-monitoring-url)
       ((url-predicate http-url?) package)))
 
-(define* (import-html-updatable-release package #:key (version #f))
+(define* (import-html-updatable-release package #:key version partial-version?)
   "Return the latest release of PACKAGE else #f.  Do that by crawling the HTML
 page of the directory containing its source tarball.  Optionally include a
-VERSION string to fetch a specific version."
-
+VERSION string to fetch a specific version; which may be partially provided
+when PARTIAL-VERSION? is #t."
   (define (expand-uri uri)
     (match uri
       ((and (? string?) (? (cut string-prefix? "mirror://" <>) url))
@@ -1029,6 +1046,7 @@ VERSION string to fetch a specific version."
      (import-html-release base package
                           #:rewrite-url? #t
                           #:version version
+                          #:partial-version? partial-version?
                           #:directory directory))))
 
 (define %gnu-updater
