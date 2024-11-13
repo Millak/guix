@@ -73,6 +73,7 @@
   #:use-module (gnu packages assembly)
   #:use-module (gnu packages audio)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages backup)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
@@ -1448,7 +1449,7 @@ the creation of animations, tiled graphics, texture atlases, and more.")
 (define-public libresprite
   (package
     (name "libresprite")
-    (version "1.0")
+    (version "1.1")
     ;; TODO: Unbundle third party software.
     ;; - duktape is bundled inside the project but it's hard to unbundle:
     ;;   there are many differences from a version to the next and it is not
@@ -1462,34 +1463,34 @@ the creation of animations, tiled graphics, texture atlases, and more.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0djbjjh21ahlxzh0b0jp4mpfycam8h9157i4wbxkd618fraadhbp"))))
+                "0i1g730khnb8xj56c07x0b0ni6sx4n8vp3w13yazqx9anj23y856"))))
     (build-system cmake-build-system)
     (arguments
-     '(#:configure-flags
-       (list "-DWITH_WEBP_SUPPORT=1"
-             "-DWITH_DESKTOP_INTEGRATION=1")
-       ;; Tests are unmaintained
-       #:tests? #f))
-    (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list #:configure-flags
+           #~(list "-DWITH_WEBP_SUPPORT=1"
+                   "-DWITH_DESKTOP_INTEGRATION=1")
+           ;; Tests are unmaintained
+           #:tests? #f))
+    (native-inputs (list pkg-config))
     (inputs
-     `(("curl" ,curl)
-       ("freetype" ,freetype)
-       ("giflib" ,giflib)
-       ("googletest" ,googletest)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("libwebp" ,libwebp)
-       ("libx11" ,libx11)
-       ("libxext" ,libxext)
-       ("libxxf86dga" ,libxxf86dga)
-       ("libxxf86vm" ,libxxf86vm)
-       ("lua" ,lua)                     ; Optional
-       ("pixman" ,pixman)
-       ("sdl2" ,sdl2)
-       ("sdl2-image" ,sdl2-image)
-       ("tinyxml" ,tinyxml)
-       ("zlib" ,zlib)))
+     (list curl
+           freetype
+           giflib
+           googletest
+           libarchive
+           libjpeg-turbo
+           libpng
+           libwebp
+           libx11
+           libxext
+           libxxf86dga
+           libxxf86vm
+           lua  ;optional
+           pixman
+           sdl2
+           sdl2-image
+           tinyxml2
+           zlib))
     (synopsis "Animated sprite editor and pixel art tool")
     (description "LibreSprite is a tool for creating 2D pixel art for video
 games.  In addition to basic pixel editing features, it can assist in the
