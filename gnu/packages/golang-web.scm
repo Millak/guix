@@ -3078,6 +3078,45 @@ router.")
 @acronym{Simple Service Discovery Protocol, SSDP}} library for Golang.")
     (license license:expat)))
 
+(define-public go-github-com-libdns-libdns
+  (package
+    (name "go-github-com-libdns-libdns")
+    (version "0.2.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/libdns/libdns")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00zx6yij1ac8mhswhsks1nchzgmhbzrsm9hr0faqbmx0vkip78j5"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/libdns/libdns"))
+    (native-inputs (list go-github-com-stretchr-testify))
+    (propagated-inputs (list go-golang-org-x-exp))
+    (home-page "https://github.com/libdns/libdns")
+    (synopsis "Universal DNS provider APIs for Go")
+    (description
+     "@code{libdns} is a collection of free-range DNS provider client
+implementations.  It defines the core interfaces that provider packages should
+implement.  They are small and idiomatic interfaces with well-defined semantics.
+
+The interfaces include:
+@itemize
+@item @url{https://pkg.go.dev/github.com/libdns/libdns#RecordGetter, RecordGetter} to
+list records.
+@item @url{https://pkg.go.dev/github.com/libdns/libdns#RecordAppender,
+RecordAppender} to append new records.
+@item @url{https://pkg.go.dev/github.com/libdns/libdns#RecordSetter, RecordSetter} to
+set (create or change existing) records.
+@item @url{https://pkg.go.dev/github.com/libdns/libdns#RecordDeleter, RecordDeleter}
+to delete records.
+@end itemize")
+    (license license:expat)))
+
 (define-public go-github-com-libp2p-go-cidranger
   (package
     (name "go-github-com-libp2p-go-cidranger")
