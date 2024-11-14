@@ -26304,33 +26304,45 @@ handling type for easy idiomatic error handling and reporting in Rust.")
      "Crate for mimicking simd crate on stable Rust.")
     (license (list license:asl2.0 license:expat))))
 
-(define-public rust-fallible-collections-0.4
+(define-public rust-fallible-collections-0.5
   (package
     (name "rust-fallible-collections")
-    (version "0.4.6")
+    (version "0.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "fallible_collections" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "0ma7lga3zqbpzrhl76raljc6y69f38mb6j5yhkk6ldkh531wqmrz"))))
+        (base32 "0x6zmjkmr5ps2riylrrdvnds85qd3i31jmcjvghs76s19p8qaglb"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-hashbrown" ,rust-hashbrown-0.12))))
+     `(#:cargo-inputs (("rust-hashbrown" ,rust-hashbrown-0.14))))
     (home-page "https://github.com/vcombey/fallible_collections")
     (synopsis "Fallible collections implementation in Rust")
     (description "This library extends the Rust standard collections to return
 a result when an allocation error occurs, ala
-@url{https://github.com/rust-lang/rfcs/blob/master/text/2116-alloc-me-maybe.md,RFC
-2116}.  The API currently proposes a fallible interface for @code{Vec},
+@url{https://github.com/rust-lang/rfcs/blob/master/text/2116-alloc-me-maybe.md,
+RFC 2116}.  The API currently proposes a fallible interface for @code{Vec},
 @code{Box}, @code{Arc}, @code{Btree} and @code{Rc}, as well as a
 @code{TryClone} trait which is implemented for primitive Rust traits and a
 fallible format macro.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-fallible-collections-0.4
+  (package
+    (inherit rust-fallible-collections-0.5)
+    (name "rust-fallible-collections")
+    (version "0.4.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "fallible_collections" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1zf6ir26qbdwlywv9m266n19p6yzqqmi968qy8njc58aiiv6k358"))))
+    (arguments
+     `(#:cargo-inputs (("rust-hashbrown" ,rust-hashbrown-0.13))))))
 
 (define-public rust-failure-0.1
   (package
