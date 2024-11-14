@@ -1090,17 +1090,18 @@ Foundation framework.")
 (define-public rust-objc-sys-0.3
   (package
     (name "rust-objc-sys")
-    (version "0.3.2")
+    (version "0.3.5")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "objc-sys" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0nbl4p4dmajhm0ji1z09jrlrxhqs4jfkvj1zjschh38qwhj17iy7"))))
+                "0423gry7s3rmz8s3pzzm1zy5mdjif75g6dbzc2lf2z0c77fipffd"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t         ; Needs gcc-objc
+     ;; Must specify the desired runtime using Cargo features on non-Apple platforms
+     `(#:skip-build? #t
        #:cargo-inputs (("rust-cc" ,rust-cc-1))))
     (home-page "https://github.com/madsmtm/objc2")
     (synopsis "Raw bindings to the Objective-C runtime and ABI")
