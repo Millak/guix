@@ -681,6 +681,7 @@ estimation) corresponding to the book: Wand, M.P. and Jones, M.C. (1995)
                (base32
                 "1xq09lfjlca6c7mn412hjjav0q66p7wmjrwx5f3ygv3jwh8p4dsb"))))
     (build-system r-build-system)
+    (native-inputs (list r-mass))
     (home-page "https://lattice.r-forge.r-project.org/")
     (synopsis "High-level data visualization system")
     (description
