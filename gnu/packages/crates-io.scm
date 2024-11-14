@@ -11229,20 +11229,20 @@ brightness between monitors.")
        #:cargo-development-inputs
        (("rust-lazycell" ,rust-lazycell-1))))))
 
-(define-public rust-calloop-wayland-source-0.2
+(define-public rust-calloop-wayland-source-0.3
   (package
     (name "rust-calloop-wayland-source")
-    (version "0.2.0")
+    (version "0.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "calloop-wayland-source" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "00lgxlqnkd150ylfn3wi4464ibif1qwbp38shj1aszvc8ywsj3hg"))))
+        (base32 "086x5mq16prrcwd9k6bw9an0sp8bj9l5daz4ziz5z4snf2c6m9lm"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-calloop" ,rust-calloop-0.12)
+     `(#:cargo-inputs (("rust-calloop" ,rust-calloop-0.13)
                        ("rust-log" ,rust-log-0.4)
                        ("rust-rustix" ,rust-rustix-0.38)
                        ("rust-wayland-backend" ,rust-wayland-backend-0.3)
@@ -11255,6 +11255,28 @@ brightness between monitors.")
     (description
      "This package provides a wayland-rs client event source for callloop.")
     (license license:expat)))
+
+(define-public rust-calloop-wayland-source-0.2
+  (package
+    (inherit rust-calloop-wayland-source-0.3)
+    (name "rust-calloop-wayland-source")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "calloop-wayland-source" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "00lgxlqnkd150ylfn3wi4464ibif1qwbp38shj1aszvc8ywsj3hg"))))
+    (arguments
+     `(#:cargo-inputs (("rust-calloop" ,rust-calloop-0.12)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-rustix" ,rust-rustix-0.38)
+                       ("rust-wayland-backend" ,rust-wayland-backend-0.3)
+                       ("rust-wayland-client" ,rust-wayland-client-0.31))
+       #:cargo-development-inputs
+       (("rust-tempfile" ,rust-tempfile-3)
+        ("rust-wayland-protocols" ,rust-wayland-protocols-0.31))))))
 
 (define-public rust-camino-1
   (package
