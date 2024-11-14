@@ -905,7 +905,7 @@ dynamic library for the C language implementation of HEALPix.")
 (define-public imppg
   (package
     (name "imppg")
-    (version "0.6.5")
+    (version "1.9.2-beta")
     (source
      (origin
        (method git-fetch)
@@ -914,15 +914,16 @@ dynamic library for the C language implementation of HEALPix.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0a6wb1a9adwd01dmy0r03xxp8iz9y7mvh30088ajilhj4lf90vxa"))))
+        (base32 "13kqvl9ay4x0ia7iikxbhg96pp46f1awr382p05gxdvsxksq900v"))))
     (build-system cmake-build-system)
-    (arguments
-     (list ;; No test provided
-      #:tests? #f))
     (native-inputs
      (list boost pkg-config))
     (inputs
-     (list cfitsio freeimage glew wxwidgets-3.0))
+     (list cfitsio
+           freeimage
+           glew
+           lua
+           wxwidgets-3.0))
     (home-page "https://github.com/GreatAttractor/imppg")
     (synopsis "Astronomical Image Post-Proccessor (ImPPG)")
     (description
