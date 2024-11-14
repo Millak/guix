@@ -2248,8 +2248,72 @@ EUI-64, also known as MAC-48 media access control addresses.")
 similar formats like VCard.")
     (license license:asl2.0)))
 
+(define-public rust-image-0.25
+  (package
+    (name "rust-image")
+    (version "0.25.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "image" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0fsnfgg8hr66ag5nxipvb7d50kbg40qfpbsql59qkwa2ssp48vyd"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--"
+         ;; Not all files included.
+         "--skip=codecs::bmp::decoder::test::read_rect"
+         "--skip=codecs::bmp::decoder::test::test_no_header"
+         "--skip=codecs::jpeg::decoder::tests::test_exif_orientation"
+         "--skip=codecs::openexr::test::compare_cropped"
+         "--skip=codecs::openexr::test::compare_exr_hdr"
+         "--skip=codecs::openexr::test::compare_rgba_rgb"
+         "--skip=codecs::png::tests::ensure_no_decoder_off_by_one"
+         "--skip=codecs::png::tests::underlying_error"
+         "--skip=codecs::qoi::tests::decode_test_image"
+         "--skip=codecs::tga::encoder::tests::compressed::round_trip_bw"
+         "--skip=dynimage::test::image_dimensions"
+         "--skip=dynimage::test::open_16bpc_png"
+         "--skip=imageops::sample::tests::resize_transparent_image"
+         "--skip=imageops::sample::tests::test_resize_same_size"
+         "--skip=imageops::sample::tests::test_sample_bilinear"
+         "--skip=imageops::sample::tests::test_sample_nearest"
+         "--skip=imageops::tests::fast_blur_approximates_gaussian_blur_well")
+       #:cargo-inputs (("rust-bytemuck" ,rust-bytemuck-1)
+                       ("rust-byteorder-lite" ,rust-byteorder-lite-0.1)
+                       ("rust-color-quant" ,rust-color-quant-1)
+                       ("rust-dav1d" ,rust-dav1d-0.10)
+                       ("rust-exr" ,rust-exr-1)
+                       ("rust-gif" ,rust-gif-0.13)
+                       ("rust-image-webp" ,rust-image-webp-0.2)
+                       ("rust-mp4parse" ,rust-mp4parse-0.17)
+                       ("rust-num-traits" ,rust-num-traits-0.2)
+                       ("rust-png" ,rust-png-0.17)
+                       ("rust-qoi" ,rust-qoi-0.4)
+                       ("rust-ravif" ,rust-ravif-0.11)
+                       ("rust-rayon" ,rust-rayon-1)
+                       ("rust-rgb" ,rust-rgb-0.8)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-tiff" ,rust-tiff-0.9)
+                       ("rust-zune-core" ,rust-zune-core-0.4)
+                       ("rust-zune-jpeg" ,rust-zune-jpeg-0.4))
+       #:cargo-development-inputs (("rust-crc32fast" ,rust-crc32fast-1)
+                                   ("rust-criterion" ,rust-criterion-0.5)
+                                   ("rust-glob" ,rust-glob-0.3)
+                                   ("rust-num-complex" ,rust-num-complex-0.4)
+                                   ("rust-quickcheck" ,rust-quickcheck-1))))
+    (home-page "https://github.com/image-rs/image")
+    (synopsis "Imaging library written in Rust")
+    (description
+     "This package is an imaging library written in Rust.  It provides basic
+filters and decoders for the most common image formats.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-image-0.24
   (package
+    (inherit rust-image-0.25)
     (name "rust-image")
     (version "0.24.7")
     (source (origin
@@ -2258,7 +2322,6 @@ similar formats like VCard.")
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32 "04d7f25b8nlszfv9a474n4a0al4m2sv9gqj3yiphhqr0syyzsgbg"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f              ; Not all files included.
        #:cargo-inputs
@@ -2285,13 +2348,7 @@ similar formats like VCard.")
         ("rust-glob" ,rust-glob-0.3)
         ("rust-jpeg-decoder" ,rust-jpeg-decoder-0.3)
         ("rust-num-complex" ,rust-num-complex-0.4)
-        ("rust-quickcheck" ,rust-quickcheck-1))))
-    (home-page "https://github.com/image-rs/image")
-    (synopsis "Imaging library written in Rust")
-    (description
-     "This package is an imaging library written in Rust.  It provides basic
-filters and decoders for the most common image formats.")
-    (license license:expat)))
+        ("rust-quickcheck" ,rust-quickcheck-1))))))
 
 (define-public rust-image-0.23
   (package
