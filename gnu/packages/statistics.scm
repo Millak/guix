@@ -4578,13 +4578,13 @@ vignettes.")
 (define-public r-mvtnorm
   (package
     (name "r-mvtnorm")
-    (version "1.3-1")
+    (version "1.3-2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "mvtnorm" version))
               (sha256
                (base32
-                "0hazs8vw04vp8jba70p642nrhrjf9m201sq9g7xwiyb7fx7h6vx2"))))
+                "1cmjl7h4v27rh9dzl5ayv4fw5i2lrj2sbsaz52na1ak0vni4cfva"))))
     (build-system r-build-system)
     (native-inputs
      (list gfortran))
