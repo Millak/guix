@@ -1727,6 +1727,32 @@ PKCS#8 PrivateKeyInfo format and EncryptedPrivateKeyInfo format with
 PKCS#5 (v2.0) algorithms.")
     (license license:expat)))
 
+(define-public go-github-com-zeebo-pcg
+  (package
+    (name "go-github-com-zeebo-pcg")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/zeebo/pcg")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "02vyy2zc4jdcyf22dxw8dxcp1gwzy8j5qd6yxw324qyh2w557nh5"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/zeebo/pcg"))
+    (native-inputs (list go-github-com-zeebo-assert))
+    (home-page "https://github.com/zeebo/pcg")
+    (synopsis "PCG random number generator")
+    (description
+     "@code{pcg} is a random number generator that uses
+@url{https://en.wikipedia.org/wiki/Permuted_congruential_generator, Permuted
+Congruential Generator} (PCG) algorithm.")
+    (license license:cc0)))
+
 (define-public go-lukechampine-com-blake3
   (package
     (name "go-lukechampine-com-blake3")
