@@ -5036,8 +5036,34 @@ extensions.")
         ("rust-wayland-sys" ,rust-wayland-sys-0.21)
         ("rust-wayland-scanner" ,rust-wayland-scanner-0.21))))))
 
+(define-public rust-wayland-protocols-plasma-0.3
+  (package
+    (name "rust-wayland-protocols-plasma")
+    (version "0.3.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wayland-protocols-plasma" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1g8jxv1k3zdbcqmhr4fpghgibp2940hz45sm2pmwfs7f92swlccv"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-wayland-backend" ,rust-wayland-backend-0.3)
+                       ("rust-wayland-client" ,rust-wayland-client-0.31)
+                       ("rust-wayland-protocols" ,rust-wayland-protocols-0.32)
+                       ("rust-wayland-scanner" ,rust-wayland-scanner-0.31)
+                       ("rust-wayland-server" ,rust-wayland-server-0.31))))
+    (home-page "https://github.com/smithay/wayland-rs")
+    (synopsis "Generated API for the Plasma wayland protocol extensions")
+    (description "This package provides a generated API for the Plasma wayland
+protocol extensions.")
+    (license license:expat)))
+
 (define-public rust-wayland-protocols-plasma-0.2
   (package
+    (inherit rust-wayland-protocols-plasma-0.3)
     (name "rust-wayland-protocols-plasma")
     (version "0.2.0")
     (source
@@ -5047,18 +5073,13 @@ extensions.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0yglbxd4ka8284k0j0ssh9hf6wd9qp2n0s2qrsdymyaz258kb013"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
                        ("rust-wayland-backend" ,rust-wayland-backend-0.3)
                        ("rust-wayland-client" ,rust-wayland-client-0.31)
                        ("rust-wayland-protocols" ,rust-wayland-protocols-0.31)
                        ("rust-wayland-scanner" ,rust-wayland-scanner-0.31)
-                       ("rust-wayland-server" ,rust-wayland-server-0.31))))
-    (home-page "https://github.com/smithay/wayland-rs")
-    (synopsis "Generated API for the Plasma wayland protocol extensions")
-    (description "Generated API for the Plasma wayland protocol extensions.")
-    (license license:expat)))
+                       ("rust-wayland-server" ,rust-wayland-server-0.31))))))
 
 (define-public rust-wayland-protocols-wlr-0.2
   (package
