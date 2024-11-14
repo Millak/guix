@@ -7571,14 +7571,14 @@ that uses Serde for transforming structs into bytes and vice versa!")
 (define-public rust-bindgen-0.69
   (package
     (name "rust-bindgen")
-    (version "0.69.4")
+    (version "0.69.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "bindgen" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "18194611hn3k1dkxlha7a52sr8vmfhl9blc54xhj08cahd8wh3d0"))))
+        (base32 "1240snlcfj663k04bjsg629g4wx6f83flgbjh5rzpgyagk3864r7"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-annotate-snippets" ,rust-annotate-snippets-0.9)
