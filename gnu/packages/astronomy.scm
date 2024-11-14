@@ -3138,13 +3138,13 @@ deconvolution).  Such post-processing is not performed by Stackistry.")
 (define-public python-astropy
   (package
     (name "python-astropy")
-    (version "6.1.4")
+    (version "6.1.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "astropy" version))
        (sha256
-        (base32 "0d0cnqm0p00ap8wys5jcg9h958c6mizx87wzwvmrpackn3i5h59n"))
+        (base32 "0iv8mkdflfprigv3g6666v80nvg6blwz0989hqw232g7gms57qb3"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -3163,12 +3163,16 @@ deconvolution).  Such post-processing is not performed by Stackistry.")
       #:test-flags
       #~(list "--pyargs" "astropy"
               "--numprocesses" (number->string (parallel-job-count))
-              "-k" (string-append
+              "-k" (string-join
                     ;; Skip tests that need remote data.
-                    "not remote_data"
-                    ;; ValueError: The truth value of an array with more than
-                    ;; one element is ambiguous. Use a.any() or a.all()
-                    " and not test_table_comp[t16-t26]"))
+                    (list "not remote_data"
+                          ;; ValueError: The truth value of an array with more than
+                          ;; one element is ambiguous. Use a.any() or a.all()
+                          "test_table_comp[t16-t26]"
+                          ;; UnboundLocalError: local variable 'ihd'
+                          ;; referenced before assignment
+                          "test_delay_doc_updates")
+                    " and not "))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'preparations
@@ -3203,36 +3207,36 @@ deconvolution).  Such post-processing is not performed by Stackistry.")
     (native-inputs
      (list nss-certs-for-test
            pkg-config
-           python-colorlog
-           python-coverage
            python-cython-3
            python-extension-helpers
-           python-h5py
            python-ipython
-           python-jplephem
            python-objgraph
            python-pandas
-           python-pyarrow
            python-pytest
            python-pytest-astropy
            python-pytest-astropy-header
            python-pytest-mpl
            python-pytest-xdist
            python-scikit-image
+           python-setuptools
            python-setuptools-scm
            python-sgp4
            python-skyfield
            python-threadpoolctl
-           python-timezonefinder))
+           python-timezonefinder
+           python-wheel))
     (inputs
      (list expat wcslib))
     (propagated-inputs
      (list python-astropy-iers-data
            python-configobj
+           python-h5py
+           python-jplephem
            python-matplotlib
            python-numpy
            python-packaging
            python-ply
+           python-pyarrow
            python-pyerfa
            python-pyyaml
            python-scipy))
