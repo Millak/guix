@@ -22,6 +22,7 @@
 ;;; Copyright © 2024 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
+;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1401,6 +1402,30 @@ testmark} format, which itself is a subset of Markdown format.")
 gracefully enhance standard library testing package and behaviors of the
 @command{go test} command.")
     (license license:expat)))
+
+(define-public go-github-com-zeebo-assert
+  (package
+    (name "go-github-com-zeebo-assert")
+    (version "1.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/zeebo/assert")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xfklg04ic4xl5q7xy913jzvn2v9bxmrsnm4lyjqznninysgs9xb"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/zeebo/assert"))
+    (home-page "https://github.com/zeebo/assert")
+    (synopsis "High-level assertions for tests")
+    (description
+     "@code{assert} is a testing library that provides high-level assertions API
+based on Go @code{testing} library procedures.")
+    (license license:cc0)))
 
 (define-public go-go-uber-org-goleak
   (package
