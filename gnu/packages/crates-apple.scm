@@ -1253,6 +1253,32 @@ the Cocoa Foundation framework.")
      "This package provides bindings to the @code{AppKit} framework.")
     (license license:expat)))
 
+(define-public rust-objc2-cloud-kit-0.2
+  (package
+    (name "rust-objc2-cloud-kit")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "objc2-cloud-kit" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "02dhjvmcq8c2bwj31jx423jygif1scs9f0lmlab0ayhw75b3ppbl"))))
+    (build-system cargo-build-system)
+    (arguments
+     ;; Must specify the desired runtime using Cargo features on non-Apple platforms
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-block2" ,rust-block2-0.5)
+                       ("rust-objc2" ,rust-objc2-0.5)
+                       ("rust-objc2-core-location" ,rust-objc2-core-location-0.2)
+                       ("rust-objc2-foundation" ,rust-objc2-foundation-0.2))))
+    (home-page "https://github.com/madsmtm/objc2")
+    (synopsis "Bindings to the CloudKit framework")
+    (description
+     "This package provides bindings to the @code{CloudKit} framework.")
+    (license license:expat)))
+
 (define-public rust-objc2-encode-4
   (package
     (name "rust-objc2-encode")
