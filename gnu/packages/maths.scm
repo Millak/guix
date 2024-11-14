@@ -8607,7 +8607,7 @@ aggregation-based algebraic multigrid.")
 (define-public dune-localfunctions
   (package
     (name "dune-localfunctions")
-    (version "2.9.0")
+    (version "2.10.0")
     (source
      (origin
        (method url-fetch)
@@ -8615,7 +8615,7 @@ aggregation-based algebraic multigrid.")
                            version "/dune-localfunctions-" version ".tar.gz"))
        (sha256
         (base32
-         "02zl49q40ifmic221fxlhi8zj9pybdyjavzvgn1zwh636ysgjbsp"))))
+         "0a5hyd7fps18178dq41nxa21h0i9ah6sw7di8qkc4i1rh052rzc1"))))
     (build-system cmake-build-system)
     (arguments
      `(#:phases
