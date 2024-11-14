@@ -4792,17 +4792,17 @@ initializing an OpenGL or Vulkan context.")
      `(#:cargo-inputs (("rust-wayland-client" ,rust-wayland-client-0.28)
                        ("rust-wayland-sys" ,rust-wayland-sys-0.28))))))
 
-(define-public rust-wayland-protocols-0.31
+(define-public rust-wayland-protocols-0.32
   (package
     (name "rust-wayland-protocols")
-    (version "0.31.2")
+    (version "0.32.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "wayland-protocols" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1x310l1p6p3p3l76nl1l2yava9408dy77s605917zadlp1jz70cg"))))
+        (base32 "13pmq788d2w9c7sqpjjxi1344bzq1g1ja4vlaa4rlvjfgkjsvl3w"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
@@ -4816,6 +4816,25 @@ initializing an OpenGL or Vulkan context.")
      "This package provides a generated API for the officials Wayland protocol
 extensions.")
     (license license:expat)))
+
+(define-public rust-wayland-protocols-0.31
+  (package
+    (inherit rust-wayland-protocols-0.32)
+    (name "rust-wayland-protocols")
+    (version "0.31.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wayland-protocols" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1x310l1p6p3p3l76nl1l2yava9408dy77s605917zadlp1jz70cg"))))
+    (arguments
+     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-wayland-backend" ,rust-wayland-backend-0.3)
+                       ("rust-wayland-client" ,rust-wayland-client-0.31)
+                       ("rust-wayland-scanner" ,rust-wayland-scanner-0.31)
+                       ("rust-wayland-server" ,rust-wayland-server-0.31))))))
 
 (define-public rust-wayland-protocols-0.30
   (package
