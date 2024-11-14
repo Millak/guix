@@ -39720,13 +39720,13 @@ installation and loading of the core mlr3 packages.")
 (define-public r-mlr3viz
   (package
     (name "r-mlr3viz")
-    (version "0.9.0")
+    (version "0.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mlr3viz" version))
        (sha256
-        (base32 "1dm0xkrmd4c9hs22rxpxvvd4xxki4nxh2x7s06s2d7n3dhr4l3xh"))))
+        (base32 "0xjw59lv6bwq9ww3a3lm4lmxjqrgppr4wpip0p7f6lyr3jpbih51"))))
     (properties `((upstream-name . "mlr3viz")))
     (build-system r-build-system)
     (propagated-inputs (list r-checkmate
