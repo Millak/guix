@@ -23691,6 +23691,32 @@ tensors.")
 R objects.")
     (license license:gpl3)))
 
+(define-public r-testit
+  (package
+    (name "r-testit")
+    (version "0.13")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "testit" version))
+       (sha256
+        (base32 "104dcxdmzgj340mwk4lpw1y6j1xc4rv4a2v09ckx3nvbmdl73m4h"))))
+    (properties `((upstream-name . "testit")))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; Tests need it.
+         (add-after 'unpack 'set-HOME
+           (lambda _ (setenv "HOME" "/tmp"))))))
+    (home-page "https://github.com/yihui/testit")
+    (synopsis "Simple package for testing R packages")
+    (description
+     "This package provides two convenience functions @code{assert()} and
+@code{test_pkg()} to facilitate testing R packages.")
+    (license license:gpl3)))
+
 (define-public r-rarpack
   (package
     (name "r-rarpack")
