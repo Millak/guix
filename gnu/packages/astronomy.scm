@@ -753,7 +753,8 @@ programs for the manipulation and analysis of astronomical data.")
 
 (define-public gpredict
   ;; The latest tag, 2.3, has no major difference with 2.2.1 and is dated for
-  ;; 2018. Additionally, there is some activity on the master branch.
+  ;; 2018. Additionally, there is some activity on the master branch, see
+  ;; <https://github.com/csete/gpredict/issues/368>.
   (package
     (name "gpredict")
     (version "2.2.1")
