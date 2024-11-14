@@ -8805,17 +8805,15 @@ operating on statically typed trees of objects.")
 (define-public dune-functions
   (package
     (name "dune-functions")
-    (version "2.9.0")
+    (version "2.10.0")
     (source
      (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://gitlab.dune-project.org/staging/dune-functions.git")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
+       (method url-fetch)
+       (uri (string-append "https://dune-project.org/download/"
+                           version "/dune-functions-" version ".tar.gz"))
        (sha256
         (base32
-         "0pmi9vk0pdq9qp3xvknsndg8l6f2xkjr1rwbfbzsl9aj0qv9rn2p"))))
+         "1v2yyiqacspa7fkz5pbhd9hcz8rk5bhyhlhwvr3jjgmniiy0x2hp"))))
     (build-system cmake-build-system)
     (arguments
      `(#:phases
