@@ -1709,15 +1709,15 @@ This package just includes the agent component.")))
 (define-public guix-jupyter
   (package
     (name "guix-jupyter")
-    (version "0.2.2")
-    (home-page "https://gitlab.inria.fr/guix-hpc/guix-kernel")
+    (version "0.3.0")
+    (home-page "https://codeberg.org/guix-science/guix-jupyter")
     (source (origin
               (method git-fetch)
               (uri (git-reference (url home-page)
                                   (commit (string-append "v" version))))
               (sha256
                (base32
-                "17m6970wnvwlbarq4gxz5bakhzyhq5ch8qd8jw55ydccpv6473kq"))
+                "0cvjxv60la2bqmwb7m2bfpvjy8hx1hmjk2qy9wfzaffcabgr0x44"))
               (file-name (string-append "guix-jupyter-" version "-checkout"))))
     (build-system gnu-build-system)
     (arguments
@@ -1764,16 +1764,7 @@ This package just includes the agent component.")))
                    "\",\n\t\t\""))
                  (("guix-jupyter-kernel.scm")
                   (string-append out "/share/guile/site/" effective
-                                 "/guix-jupyter-kernel.scm"))))))
-         (add-before 'check 'define-home
-           (lambda _
-             ;; IPython goes awry when HOME points to a non-existent
-             ;; directory:
-             ;;
-             ;; IPython/paths.py:70: UserWarning: IPython parent '/homeless-shelter' is not a writable location, using a temp directory.
-             ;;
-             ;; This in turn leads to test failures, so define HOME.
-             (setenv "HOME" (getcwd)))))))
+                                 "/guix-jupyter-kernel.scm")))))))))
     (native-inputs
      (list autoconf
            automake
