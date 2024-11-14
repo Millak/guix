@@ -1525,7 +1525,7 @@ basic input/output.")
 (define-public alacritty
   (package
     (name "alacritty")
-    (version "0.13.1")
+    (version "0.14.0")
     (source
      (origin
        ;; XXX: The crate at "crates.io" contains only the alacritty subproject
@@ -1537,26 +1537,22 @@ basic input/output.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1y5xc9ryn9r0adygq53vrbpb8lazkmcqw38q978pbf0i57nwczrn"))))
+        (base32 "0wfrj3h6rp90mclvssansh6p48q394xa8pzw74pjznzi2jxjw6b6"))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
-       #:cargo-test-flags
-       '("--release" "--"
-         ;; Completions generated with a different minor version of clap?
-         "--skip=cli::tests::completions")
        #:cargo-inputs
        (("rust-ahash" ,rust-ahash-0.8)
-        ("rust-base64" ,rust-base64-0.21)
+        ("rust-base64" ,rust-base64-0.22)
         ("rust-bitflags" ,rust-bitflags-2)
         ("rust-clap" ,rust-clap-4)
         ("rust-cocoa" ,rust-cocoa-0.25)
         ("rust-copypasta" ,rust-copypasta-0.10)
-        ("rust-crossfont" ,rust-crossfont-0.7)
+        ("rust-crossfont" ,rust-crossfont-0.8)
         ("rust-dirs" ,rust-dirs-5)
         ("rust-embed-resource" ,rust-embed-resource-2)
         ("rust-gl-generator" ,rust-gl-generator-0.14)
-        ("rust-glutin" ,rust-glutin-0.31)
+        ("rust-glutin" ,rust-glutin-0.32)
         ("rust-home" ,rust-home-0.5)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-log" ,rust-log-0.4)
@@ -1569,7 +1565,6 @@ basic input/output.")
         ("rust-png" ,rust-png-0.17)
         ("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-raw-window-handle" ,rust-raw-window-handle-0.5)
         ("rust-regex-automata" ,rust-regex-automata-0.4)
         ("rust-rustix-openpty" ,rust-rustix-openpty-0.1)
         ("rust-serde" ,rust-serde-1)
@@ -1577,11 +1572,13 @@ basic input/output.")
         ("rust-serde-yaml" ,rust-serde-yaml-0.9)
         ("rust-signal-hook" ,rust-signal-hook-0.3)
         ("rust-syn" ,rust-syn-2)
+        ("rust-tempfile" ,rust-tempfile-3)
         ("rust-toml" ,rust-toml-0.8)
+        ("rust-toml-edit" ,rust-toml-edit-0.22)
         ("rust-unicode-width" ,rust-unicode-width-0.1)
         ("rust-vte" ,rust-vte-0.13)
-        ("rust-windows-sys" ,rust-windows-sys-0.48)
-        ("rust-winit" ,rust-winit-0.29)
+        ("rust-windows-sys" ,rust-windows-sys-0.52)
+        ("rust-winit" ,rust-winit-0.30)
         ("rust-xdg" ,rust-xdg-2))
        #:cargo-development-inputs
        (("rust-clap-complete" ,rust-clap-complete-4)
