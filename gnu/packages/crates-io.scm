@@ -10521,7 +10521,7 @@ high efficiency.")
 (define-public rust-bytemuck-derive-1
   (package
     (name "rust-bytemuck-derive")
-    (version "1.5.0")
+    (version "1.8.0")
     (source
       (origin
         (method url-fetch)
@@ -10529,7 +10529,7 @@ high efficiency.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "1cgj75df2v32l4fmvnp25xxkkz4lp6hz76f7hfhd55wgbzmvfnln"))))
+          "1v5r33dgl12rqbvh440fdjxmxxr49qpzmg6vpw5jzdbcjk6w7z5w"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; unresolved import `bytemuck`
