@@ -18770,13 +18770,13 @@ and to both short and long sequence reads.")
 (define-public r-flames
   (package
     (name "r-flames")
-    (version "2.0.0")
+    (version "2.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "FLAMES" version))
        (sha256
-        (base32 "12463i5kdbbl1wbkia82ma33va8pmplh9jj1hijx394hf504xh2i"))))
+        (base32 "0fhgis2grzzpzarlza4kqw8ysanlsw410wykjjakk35pyx275j8m"))))
     (properties `((upstream-name . "FLAMES")))
     (build-system r-build-system)
     (arguments
