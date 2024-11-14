@@ -3362,6 +3362,30 @@ negative infinity in Julia.")
 interfaces with @file{.ini} files.")
     (license license:expat)))
 
+(define-public julia-initialvalues
+  (package
+    (name "julia-initialvalues")
+    (version "0.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/JuliaFolds/InitialValues.jl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "13gihn824c3vxrpm6vg06vr6zmmy43j1qyya48jig8rdkjp820n6"))))
+    (build-system julia-build-system)
+    (arguments
+     (list #:tests? #f)) ; Cycle with BangBang.jl
+    (home-page "https://github.com/JuliaFolds/InitialValues.jl")
+    (synopsis
+     "Canonical default initial values and identity elements for Julia")
+    (description
+     "This package provides a canoncial set of default initial values
+and identity elements for Julia.")
+    (license license:expat)))
+
 (define-public julia-inlinestrings
   (package
     (name "julia-inlinestrings")
