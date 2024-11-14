@@ -2291,14 +2291,14 @@ rebase.")
 (define-public rust-bindgen-cli
   (package
     (name "rust-bindgen-cli")
-    (version "0.69.4")
+    (version "0.69.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "bindgen-cli" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "00dfny07m4xfnqbfn7yr7cqwilj6935lbyg5d39yxjfj8jglfcax"))))
+        (base32 "1g984q5f5j6bglmbz4hbw40srhb5jywjhwc2v2livcxhvdq2hw8m"))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
