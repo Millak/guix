@@ -1726,7 +1726,14 @@ extremely large and complex data collections.")
                 ;; modifies the test reference.
                 (substitute* "test/test_check_version.sh.in"
                   (("TESTING\\(\\).*" all)
-                   (string-append all "\nSKIP; exit 0\n")))))))))))
+                   (string-append all "\nSKIP; exit 0\n")))))
+            (add-after 'patch-configure 'patch-configure-build-settings
+              (lambda _
+                (substitute* "src/H5build_settings.autotools.c.in"
+                  ;; Don't record the build-time kernel version to make the
+                  ;; library file reproducible.
+                  (("@UNAME_INFO@")
+                   "Linux"))))))))))
 
 (define-public hdf5
   ;; Default version of HDF5.
