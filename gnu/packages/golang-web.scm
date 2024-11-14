@@ -3654,6 +3654,68 @@ integrates with Go's runtime network poller to provide asynchronous I/O and
 deadline support.")
     (license license:expat)))
 
+(define-public go-github-com-mholt-acmez
+  (package
+    (name "go-github-com-mholt-acmez")
+    (version "2.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mholt/acmez")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xfl6p8izgjs1d26iygfilmmagxld409qsgdy60r1chfsrcnraby"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/mholt/acmez"))
+    (propagated-inputs
+     (list go-golang-org-x-crypto
+           go-golang-org-x-net
+           go-go-uber-org-zap))
+    (home-page "https://github.com/mholt/acmez")
+    (synopsis "ACME (RFC 8555) client library for Go")
+    (description
+     "@code{ACMEz} is a lightweight, fully-compliant
+@url{https://tools.ietf.org/html/rfc8555, RFC 8555} (ACME) implementation, that
+provides an API for getting certificates.  @code{ACMEz} is suitable for large-scale
+enterprise deployments.  It also supports common IETF-standardized ACME extensions.
+
+This module has two primary packages:
+@itemize
+@item @code{acmez} is a high-level wrapper for getting certificates.  It implements
+the ACME order flow described in RFC 8555 including challenge solving using pluggable
+solvers.
+@item @code{acme} is a low-level RFC 8555 implementation that provides the
+fundamental ACME operations, mainly useful if you have advanced or niche
+requirements.
+@end itemize
+
+Main features:
+@itemize
+@item Go API that thoroughly documented with spec citations.
+@item Structured error values (@samp{problems} as defined in
+@url{https://tools.ietf.org/html/rfc7807, RFC 7807}.)
+@item Smart retries (resilient against network and server hiccups.)
+@item Challenge plasticity (randomized challenges, and will retry others if one
+fails.)
+@item Context cancellation (suitable for high-frequency config changes or reloads.)
+@item Highly flexible and customizable.
+@item External Account Binding (EAB) support.
+@item Tested with numerous ACME CAs (more than just Let's Encrypt.)
+@item Implements niche aspects of RFC 8555 (such as alt cert chains and account key
+rollover.)
+@item Efficient solving of large SAN lists (e.g. for slow DNS record propagation.)
+@item Utility functions for solving challenges: device attestation
+challenges (draft-acme-device-attest-02), @url{https://tools.ietf.org/html/rfc8737,
+RFC 8737} (tls-alpn-01 challenge), @url{https://tools.ietf.org/html/rfc8823, RFC
+8823} (email-reply-00 challenge; S/MIME.)
+@item ACME Renewal Information (ARI) support (draft-ietf-acme-ari-03.)
+@end itemize")
+    (license license:asl2.0)))
+
 (define-public go-github-com-microcosm-cc-bluemonday
   (package
     (name "go-github-com-microcosm-cc-bluemonday")
