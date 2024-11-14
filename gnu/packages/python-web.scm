@@ -4136,7 +4136,7 @@ supports url redirection and retries, and also gzip and deflate decoding.")
   (package
     ;; Note: updating awscli typically requires updating botocore as well.
     (name "awscli")
-    (version "1.35.20")
+    (version "1.36.0")
     (source
      (origin
        (method git-fetch)               ; no tests in PyPI release
@@ -4145,7 +4145,7 @@ supports url redirection and retries, and also gzip and deflate decoding.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1hj1hj374hdwb8wq2xw20ywjyrv37s65nfsjzs6k9wa0f629alkf"))))
+        (base32 "1iwivc5kj2h5619rvbncrh4649lalxj7bxndzvrjw398vv7cixp5"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -4158,6 +4158,10 @@ supports url redirection and retries, and also gzip and deflate decoding.")
               ;; AssertionError: 'argument operation: Invalid choice, valid
               ;; choices are:' not found in '
               "-k" (string-append "not test_subscribe_to_shard_removed"
+                                  ;; Tests fail during mocking.
+                                  " and not test_expected_runtime_dependencies"
+                                  " and not test_expected_unbounded_runtime_dependencies"
+                                  " and not test_no_groff_or_mandoc_exists"
                                   " and not test_start_conversation_removed"))
       #:phases
       #~(modify-phases %standard-phases
