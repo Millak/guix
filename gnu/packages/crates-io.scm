@@ -1508,8 +1508,43 @@ the code to interact with the underlying operating system ALSA interface.")
 sparse matrix prior to Cholesky factorization.")
     (license license:bsd-3)))
 
+(define-public rust-android-activity-0.6
+  (package
+    (name "rust-android-activity")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "android-activity" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0inh88x8x2fh62jg739s9hwyvdh8i920qf0qw7bhr802j9c7hsgg"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t     ; error: ndk-sys only supports compiling for Android.
+       #:cargo-inputs (("rust-android-properties" ,rust-android-properties-0.2)
+                       ("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-cc" ,rust-cc-1)
+                       ("rust-cesu8" ,rust-cesu8-1)
+                       ("rust-jni" ,rust-jni-0.21)
+                       ("rust-jni-sys" ,rust-jni-sys-0.3)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-ndk" ,rust-ndk-0.9)
+                       ("rust-ndk-context" ,rust-ndk-context-0.1)
+                       ("rust-ndk-sys" ,rust-ndk-sys-0.6)
+                       ("rust-num-enum" ,rust-num-enum-0.7)
+                       ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/rust-mobile/android-activity")
+    (synopsis "Glue for building Rust applications on Android")
+    (description
+     "This package provides the glue for building Rust applications on Android
+with @code{NativeActivity} or @code{GameActivity}.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-android-activity-0.5
   (package
+    (inherit rust-android-activity-0.6)
     (name "rust-android-activity")
     (version "0.5.1")
     (source
@@ -1519,7 +1554,6 @@ sparse matrix prior to Cholesky factorization.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1fgl1jbzwbxrw4naw8bzjmphqj68q3hiylc05pakyz4p5a8h3f1r"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t     ; Only supports compiling for Android.
        #:cargo-inputs (("rust-android-properties" ,rust-android-properties-0.2)
@@ -1534,12 +1568,7 @@ sparse matrix prior to Cholesky factorization.")
                        ("rust-ndk-context" ,rust-ndk-context-0.1)
                        ("rust-ndk-sys" ,rust-ndk-sys-0.5)
                        ("rust-num-enum" ,rust-num-enum-0.7)
-                       ("rust-thiserror" ,rust-thiserror-1))))
-    (home-page "https://github.com/rust-mobile/android-activity")
-    (synopsis "Glue for building Rust applications on Android")
-    (description "This package provides the glue needed for building Rust
-applications on Android with NativeActivity or GameActivity.")
-    (license (list license:expat license:asl2.0))))
+                       ("rust-thiserror" ,rust-thiserror-1))))))
 
 (define-public rust-android-activity-0.4
   (package
