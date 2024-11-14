@@ -40841,17 +40841,17 @@ facility.  Provides a safe interface around the raw system calls allowing
 user-space programs to perform key manipulation.")
     (license (list license:asl2.0 license:expat))))
 
-(define-public rust-linux-raw-sys-0.4
+(define-public rust-linux-raw-sys-0.6
   (package
     (name "rust-linux-raw-sys")
-    (version "0.4.12")
+    (version "0.6.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "linux-raw-sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0mhlla3gk1jgn6mrq9s255rvvq8a1w3yk2vpjiwsd6hmmy1imkf4"))))
+        (base32 "1mv3c1zz51ydcj768zavm8g06gz5jb1p7yigmmif7hz5whdmnf1a"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -40861,13 +40861,32 @@ user-space programs to perform key manipulation.")
        (("rust-libc" ,rust-libc-0.2)
         ("rust-static-assertions" ,rust-static-assertions-1))))
     (home-page "https://github.com/sunfishcode/linux-raw-sys")
-    (synopsis "Generated bindings for Linux APIs")
-    (description
-     "This package provides automatically generated bindings for
+    (synopsis "Generated bindings for Linux's userspace API")
+    (description "This package provides automatically generated bindings for
 Linux userspace APIs.")
     ;; The user can choose either license, or a variant of ASL2.0 with
     ;; LLVM exception.  See COPYRIGHT in the repository.
     (license (list license:asl2.0 license:expat))))
+
+(define-public rust-linux-raw-sys-0.4
+  (package
+    (inherit rust-linux-raw-sys-0.6)
+    (name "rust-linux-raw-sys")
+    (version "0.4.14")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "linux-raw-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "12gsjgbhhjwywpqcrizv80vrp7p7grsz5laqq773i33wphjsxcvq"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
+        ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1))
+       #:cargo-development-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-static-assertions" ,rust-static-assertions-1))))))
 
 (define-public rust-linux-raw-sys-0.3
   (package
