@@ -4,7 +4,7 @@
 ;;; Copyright © 2015, 2016, 2019, 2021, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
-;;; Copyright © 2020, 2021 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2021, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -38,6 +38,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages pkg-config)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module ((guix licenses) #:select (gpl3+))
   #:use-module (guix packages)
   #:use-module (guix utils)
@@ -61,43 +62,44 @@
     (build-system gnu-build-system)
     (outputs '("out" "debug"))
     (arguments
-     `(#:tests? #f                      ;FIXME: 217 unexpected failures
-       #:out-of-source? #t
-       #:modules ((srfi srfi-1)
+     (list
+      #:tests? #f                       ;FIXME: 217 unexpected failures
+      #:out-of-source? #t
+      #:modules `((srfi srfi-1)
                   ,@%default-gnu-modules)
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'patch-paths
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      (let ((sh (string-append (assoc-ref inputs "bash")
-                                               "/bin/sh")))
-                        (substitute* '("gdb/ser-pipe.c"
-                                       "gdbsupport/pathstuff.cc")
-                          (("\"/bin/sh\"")
-                           (format #f "~s" sh))))))
-                  (add-after 'configure 'post-configure
-                    (lambda _
-                      (for-each patch-makefile-SHELL
-                                (find-files "." "Makefile\\.in"))))
-                  (add-after 'install 'remove-libs-already-in-binutils
-                    (lambda* (#:key native-inputs inputs outputs
-                              #:allow-other-keys)
-                      ;; Like Binutils, GDB installs libbfd, libopcodes, etc.
-                      ;; However, this leads to collisions when both are
-                      ;; installed, and really is none of its business,
-                      ;; conceptually.  So remove them.
-                      (let* ((binutils (or (assoc-ref inputs "binutils")
-                                           (assoc-ref native-inputs "binutils")))
-                             (out      (assoc-ref outputs "out"))
-                             (files1   (with-directory-excursion binutils
-                                         (append (find-files "lib")
-                                             (find-files "include"))))
-                             (files2   (with-directory-excursion out
-                                         (append (find-files "lib")
-                                             (find-files "include"))))
-                             (common   (lset-intersection string=?
-                                                          files1 files2)))
-                        (with-directory-excursion out
-                          (for-each delete-file common))))))))
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'patch-paths
+                     (lambda* (#:key inputs #:allow-other-keys)
+                       (let ((sh (string-append (assoc-ref inputs "bash")
+                                                "/bin/sh")))
+                         (substitute* '("gdb/ser-pipe.c"
+                                        "gdbsupport/pathstuff.cc")
+                           (("\"/bin/sh\"")
+                            (format #f "~s" sh))))))
+                   (add-after 'configure 'post-configure
+                     (lambda _
+                       (for-each patch-makefile-SHELL
+                                 (find-files "." "Makefile\\.in"))))
+                   (add-after 'install 'remove-libs-already-in-binutils
+                     (lambda* (#:key native-inputs inputs outputs
+                               #:allow-other-keys)
+                       ;; Like Binutils, GDB installs libbfd, libopcodes, etc.
+                       ;; However, this leads to collisions when both are
+                       ;; installed, and really is none of its business,
+                       ;; conceptually.  So remove them.
+                       (let* ((binutils (or (assoc-ref inputs "binutils")
+                                            (assoc-ref native-inputs "binutils")))
+                              (out      (assoc-ref outputs "out"))
+                              (files1   (with-directory-excursion binutils
+                                          (append (find-files "lib")
+                                                  (find-files "include"))))
+                              (files2   (with-directory-excursion out
+                                          (append (find-files "lib")
+                                                  (find-files "include"))))
+                              (common   (lset-intersection string=?
+                                                           files1 files2)))
+                         (with-directory-excursion out
+                           (for-each delete-file common))))))))
     (inputs
      `(("bash" ,bash)
        ("expat" ,expat)
@@ -166,13 +168,14 @@ written in C, C++, Ada, Objective-C, Pascal and more.")
   (package/inherit gdb-14
     (name "gdb-multiarch")
     (arguments
-     `(#:configure-flags
-       (list "--enable-targets=all"
-             "--enable-multilib"
-             "--enable-interwork"
-             "--enable-languages=c,c++"
-             "--disable-nls")
-       ,@(package-arguments gdb-14)))
+     (append
+      (list #:configure-flags
+            #~(list "--enable-targets=all"
+                    "--enable-multilib"
+                    "--enable-interwork"
+                    "--enable-languages=c,c++"
+                    "--disable-nls"))
+      (package-arguments gdb-14)))
     (synopsis "The GNU debugger (with all architectures enabled)")))
 
 (define-public gdb-minimal
@@ -185,13 +188,14 @@ written in C, C++, Ada, Objective-C, Pascal and more.")
   (package/inherit gdb-14
     (name "avr-gdb")
     (arguments
-     `(#:configure-flags
-       (list "--target=avr"
-             "--disable-nls"
-             "--enable-languages=c,c++"
-             "--with-system-readline"
-             "--enable-source-highlight")
-       ,@(package-arguments gdb-14)))
+     (append
+      (list #:configure-flags
+            #~(list "--target=avr"
+                    "--disable-nls"
+                    "--enable-languages=c,c++"
+                    "--with-system-readline"
+                    "--enable-source-highlight"))
+      (package-arguments gdb-14)))
     (synopsis "The GNU Debugger for AVR")
     (description
      "GDB is the GNU debugger.  With it, you can monitor what a program is
