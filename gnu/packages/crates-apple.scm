@@ -1451,6 +1451,31 @@ the Cocoa Foundation framework.")
     (description "This package provides bindings to the Foundation framework.")
     (license license:expat)))
 
+(define-public rust-objc2-link-presentation-0.2
+  (package
+    (name "rust-objc2-link-presentation")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "objc2-link-presentation" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "160k4qh00yrx57dabn3hzas4r98kmk9bc0qsy1jvwday3irax8d1"))))
+    (build-system cargo-build-system)
+    (arguments
+     ;; Must specify the desired runtime using Cargo features on non-Apple platforms
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-block2" ,rust-block2-0.5)
+                       ("rust-objc2" ,rust-objc2-0.5)
+                       ("rust-objc2-app-kit" ,rust-objc2-app-kit-0.2)
+                       ("rust-objc2-foundation" ,rust-objc2-foundation-0.2))))
+    (home-page "https://github.com/madsmtm/objc2")
+    (synopsis "Bindings to the LinkPresentation framework")
+    (description
+     "This package provides bindings to the @code{LinkPresentation} framework.")
+    (license license:expat)))
+
 (define-public rust-objc2-proc-macros-0.1
   (package
     (name "rust-objc2-proc-macros")
