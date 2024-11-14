@@ -1106,8 +1106,36 @@ and iOS.")
     (description "Calculate Delta E between two colors in CIE Lab space.")
     (license license:expat)))
 
+(define-public rust-drm-0.12
+  (package
+    (name "rust-drm")
+    (version "0.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "drm" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ldmrglplhrcfmpyjy2ga4hg89c89f0kzmky3b0j85b0pm5qr24q"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-bytemuck" ,rust-bytemuck-1)
+                       ("rust-drm-ffi" ,rust-drm-ffi-0.8)
+                       ("rust-drm-fourcc" ,rust-drm-fourcc-2)
+                       ("rust-rustix" ,rust-rustix-0.38))
+       #:cargo-development-inputs (("rust-image" ,rust-image-0.24)
+                                   ("rust-rustix" ,rust-rustix-0.38)
+                                   ("rust-rustyline" ,rust-rustyline-13))))
+    (home-page "https://github.com/Smithay/drm-rs")
+    (synopsis "Safe, low-level bindings to the Direct Rendering Manager API")
+    (description
+     "Safe, low-level bindings to the Direct Rendering Manager API.")
+    (license license:expat)))
+
 (define-public rust-drm-0.10
   (package
+    (inherit rust-drm-0.12)
     (name "rust-drm")
     (version "0.10.0")
     (source
@@ -1117,7 +1145,6 @@ and iOS.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "11xyv3l03a3zxsrfr02mwnn5d6h4100919zb2v9fpizv7xq1pywp"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
                        ("rust-bytemuck" ,rust-bytemuck-1)
@@ -1126,12 +1153,7 @@ and iOS.")
                        ("rust-nix" ,rust-nix-0.27))
        #:cargo-development-inputs (("rust-image" ,rust-image-0.24)
                                    ("rust-nix" ,rust-nix-0.27)
-                                   ("rust-rustyline" ,rust-rustyline-12))))
-    (home-page "https://github.com/Smithay/drm-rs")
-    (synopsis "Safe, low-level bindings to the Direct Rendering Manager API")
-    (description
-     "Safe, low-level bindings to the Direct Rendering Manager API.")
-    (license license:expat)))
+                                   ("rust-rustyline" ,rust-rustyline-12))))))
 
 (define-public rust-drm-ffi-0.6
   (package
