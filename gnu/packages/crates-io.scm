@@ -51591,26 +51591,27 @@ usability when dealing with Rust Options.")
 (define-public rust-orbclient-0.3
   (package
     (name "rust-orbclient")
-    (version "0.3.44")
+    (version "0.3.48")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "orbclient" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
-               (base32 "0zbn0kckbsa4bk3cik8gpfcir33zw4gsvqmmxya2w4aydkhjk60f"))))
+               (base32 "0hzxjsvvsl5i9d3aqzc6kdcsch1i6flij5dkignhhkz2qb72c2xs"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin (substitute* "Cargo.toml"
+                         (("\"=([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                          (string-append "\"^" version)))))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t     ; Building requires SDL2 inputs.
        #:cargo-inputs
-       (("rust-cfg-if" ,rust-cfg-if-1)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-raw-window-handle" ,rust-raw-window-handle-0.3)
-        ("rust-redox-syscall" ,rust-redox-syscall-0.2)
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-libredox" ,rust-libredox-0.1)
+        ("rust-raw-window-handle" ,rust-raw-window-handle-0.5)
         ("rust-sdl2" ,rust-sdl2-0.35)
-        ("rust-sdl2-sys" ,rust-sdl2-sys-0.35)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
-        ("rust-web-sys" ,rust-web-sys-0.3))
+        ("rust-sdl2-sys" ,rust-sdl2-sys-0.35))
        #:cargo-development-inputs
        (("rust-serde-derive" ,rust-serde-derive-1)
         ("rust-toml" ,rust-toml-0.7))))
