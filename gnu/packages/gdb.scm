@@ -67,6 +67,9 @@
       #:out-of-source? #t
       #:modules `((srfi srfi-1)
                   ,@%default-gnu-modules)
+      #:configure-flags (if (target-hurd64?)
+                            #~'("--enable-targets=i586-pc-gnu,x86_64-pc-gnu")
+                            #~'())
       #:phases #~(modify-phases %standard-phases
                    (add-after 'unpack 'patch-paths
                      (lambda* (#:key inputs #:allow-other-keys)
@@ -160,6 +163,19 @@ written in C, C++, Ada, Objective-C, Pascal and more.")
                 "0wkprsjyyh204fdjlkaz20k847l88i9y8m9zqsv15vcd3l3dhk9d"))))
     (properties '())))
 
+(define-public gdb-15
+  (package
+    (inherit gdb-14)
+    (version "15.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnu/gdb/gdb-"
+                                  version ".tar.xz"))
+              (patches (search-patches "gdb-hurd64.patch"))
+              (sha256
+               (base32
+                "0k9i8mizg4hby020k53kqmc835pajh9c8d5klv5s1ddm6p6hqdc3"))))))
+
 (define-public gdb
   ;; The "default" version.
   gdb-14)
@@ -182,6 +198,12 @@ written in C, C++, Ada, Objective-C, Pascal and more.")
   (package/inherit gdb-14
     (name "gdb-minimal")
     (inputs (fold alist-delete (package-inputs gdb)
+                  '("libxml2" "ncurses" "python-wrapper" "source-highlight")))))
+
+(define-public gdb-minimal-15
+  (package/inherit gdb-15
+    (name "gdb-minimal")
+    (inputs (fold alist-delete (package-inputs gdb-15)
                   '("libxml2" "ncurses" "python-wrapper" "source-highlight")))))
 
 (define-public avr-gdb
