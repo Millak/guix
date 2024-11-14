@@ -10327,13 +10327,13 @@ from the data points.")
 (define-public r-coro
   (package
     (name "r-coro")
-    (version "1.0.5")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "coro" version))
        (sha256
-        (base32 "0r2a7ipiwq5dsy6114vsr9918aq0r1xy60bfqfjlj0kx404msxdc"))))
+        (base32 "1kvaf5484s6dn6zm4nw0ns6fi09lcqnljb51w4fdgsm80s04k6kc"))))
     (properties `((upstream-name . "coro")))
     (build-system r-build-system)
     (propagated-inputs (list r-rlang))
