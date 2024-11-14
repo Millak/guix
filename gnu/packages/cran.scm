@@ -39424,13 +39424,13 @@ mlr3 is loaded.")
 (define-public r-mlr3filters
   (package
     (name "r-mlr3filters")
-    (version "0.8.0")
+    (version "0.8.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mlr3filters" version))
        (sha256
-        (base32 "16z359bc2li7f35xk4g08np3r2a3127avv0ak6bn9bywcs13z6bl"))))
+        (base32 "12gbvp99hai6cnqa8nxlc4x24ig2andnwhhhfkxdkbxjm89dnfaa"))))
     (properties `((upstream-name . "mlr3filters")))
     (build-system r-build-system)
     (propagated-inputs (list r-backports
