@@ -3633,15 +3633,16 @@ offers access to an XPath \"interpreter\".")
 (define-public r-xnomial
   (package
     (name "r-xnomial")
-    (version "1.0.4")
+    (version "1.0.4.1")
     (source
      (origin (method url-fetch)
              (uri (cran-uri "XNomial" version))
              (sha256
               (base32
-               "1mwx302576rmsjllbq2clfxilm3hkyp5bw0wmwqbn0kgv5wpy8z6"))))
+               "09chxyj35s291myjaxk6y9afvg2wdsi05vz7rwqmaqzmvyqcwpw7"))))
     (properties (quasiquote ((upstream-name . "XNomial"))))
     (build-system r-build-system)
+    (native-inputs (list r-knitr))
     (home-page "https://cran.r-project.org/web/packages/XNomial")
     (synopsis "Goodness-of-Fit test for multinomial data")
     (description
