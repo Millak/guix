@@ -407,23 +407,24 @@ Mac, and Unix.")
 (define-public rust-avif-parse-1
   (package
     (name "rust-avif-parse")
-    (version "1.0.0")
+    (version "1.3.2")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "avif-parse" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
-               (base32 "1vhd4n06g5mbf4sznz67mk352pw9hh97f4ysafp737xvzfd3zyw7"))))
+               (base32 "02gjhprg6hs79shpb7mljc68zsz0f75dall1pkhqcax0f5jmpdvz"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-bitreader" ,rust-bitreader-0.3)
+       (("rust-arrayvec" ,rust-arrayvec-0.7)
+        ("rust-bitreader" ,rust-bitreader-0.3)
         ("rust-byteorder" ,rust-byteorder-1)
-        ("rust-fallible-collections" ,rust-fallible-collections-0.4)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-static-assertions" ,rust-static-assertions-1))
+        ("rust-fallible-collections" ,rust-fallible-collections-0.5)
+        ("rust-leb128" ,rust-leb128-0.2)
+        ("rust-log" ,rust-log-0.4))
        #:cargo-development-inputs
-       (("rust-env-logger" ,rust-env-logger-0.9)
+       (("rust-env-logger" ,rust-env-logger-0.11)
         ("rust-walkdir" ,rust-walkdir-2))))
     (home-page "https://github.com/kornelski/avif-parse")
     (synopsis "Parser for AVIF image files")
