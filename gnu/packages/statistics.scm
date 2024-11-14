@@ -6874,15 +6874,7 @@ completion.")
         (sha256
          (base32
           "0asvybb7kmr48pfkibp1qi3h3vlq2fl0mazaf0xj6zywhi5awks4"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (setenv "TZ" "UTC")
-               (invoke "pytest" "-v" "rpy2/tests/")))))))
+    (build-system pyproject-build-system)
     (propagated-inputs
      (list python-cffi
            python-six
@@ -6893,16 +6885,17 @@ completion.")
            python-ipython
            python-tzlocal))
     (inputs
-     (list readline
-           icu4c
+     (list icu4c
+           libdeflate
            pcre
+           python-numpy
+           readline
            r-minimal
            r-survival
            r-ggplot2
            r-rsqlite
            r-dplyr
            r-dbplyr
-           python-numpy
            zlib))
     (native-inputs
      (list python-coverage
