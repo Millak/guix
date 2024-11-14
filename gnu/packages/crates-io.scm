@@ -70573,8 +70573,34 @@ Pwrite traits from the scroll crate.")
        (("rust-ring" ,rust-ring-0.13)
         ("rust-untrusted" ,rust-untrusted-0.6))))))
 
+(define-public rust-sctk-adwaita-0.10
+  (package
+    (name "rust-sctk-adwaita")
+    (version "0.10.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sctk-adwaita" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1v14vqp7k39jk7pgaibwc06qq9vcmi82k7zlv3qpfvq52w17y9xn"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-ab-glyph" ,rust-ab-glyph-0.2)
+        ("rust-crossfont" ,rust-crossfont-0.8)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-memmap2" ,rust-memmap2-0.9)
+        ("rust-smithay-client-toolkit" ,rust-smithay-client-toolkit-0.19)
+        ("rust-tiny-skia" ,rust-tiny-skia-0.11))))
+    (home-page "https://github.com/PolyMeilex/sctk-adwaita")
+    (synopsis "Adwaita-like SCTK Frame")
+    (description "This package provides Adwaita-like SCTK Frame.")
+    (license license:expat)))
+
 (define-public rust-sctk-adwaita-0.8
   (package
+    (inherit rust-sctk-adwaita-0.10)
     (name "rust-sctk-adwaita")
     (version "0.8.1")
     (source
@@ -70584,7 +70610,6 @@ Pwrite traits from the scroll crate.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0l35njnl25axhkg2r5jg1iqdyhp788qfgcl8p4hsar5jlprymcl2"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-ab-glyph" ,rust-ab-glyph-0.2)
@@ -70592,11 +70617,7 @@ Pwrite traits from the scroll crate.")
         ("rust-log" ,rust-log-0.4)
         ("rust-memmap2" ,rust-memmap2-0.9)
         ("rust-smithay-client-toolkit" ,rust-smithay-client-toolkit-0.18)
-        ("rust-tiny-skia" ,rust-tiny-skia-0.11))))
-    (home-page "https://github.com/PolyMeilex/sctk-adwaita")
-    (synopsis "Adwaita-like SCTK Frame")
-    (description "Adwaita-like SCTK Frame.")
-    (license license:expat)))
+        ("rust-tiny-skia" ,rust-tiny-skia-0.11))))))
 
 (define-public rust-sctk-adwaita-0.5
   (package
