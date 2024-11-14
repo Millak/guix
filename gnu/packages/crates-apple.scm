@@ -479,8 +479,31 @@ CommonCrypto library.")
      "Bindings for Apple's CoreAudio frameworks generated via rust-bindgen.")
     (license license:expat)))
 
+(define-public rust-core-foundation-0.10
+  (package
+    (name "rust-core-foundation")
+    (version "0.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "core-foundation" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0qscay14s2rwkg8nd8ljhiaf149hj8sfy95d70zssy64r3jp2lmm"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; link kind `framework` is only supported on Apple targets
+       #:cargo-inputs (("rust-core-foundation-sys" ,rust-core-foundation-sys-0.8)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-uuid" ,rust-uuid-1))))
+    (home-page "https://github.com/servo/core-foundation-rs")
+    (synopsis "Bindings to Core Foundation for macOS")
+    (description "This package provides bindings to Core Foundation for macOS.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-core-foundation-0.9
   (package
+    (inherit rust-core-foundation-0.10)
     (name "rust-core-foundation")
     (version "0.9.4")
     (source
@@ -490,18 +513,13 @@ CommonCrypto library.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "13zvbbj07yk3b61b8fhwfzhy35535a583irf23vlcg59j7h9bqci"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f             ;tests fail with a lot of "undefined reference"
        #:cargo-inputs
        (("rust-chrono" ,rust-chrono-0.4)
         ("rust-core-foundation-sys" ,rust-core-foundation-sys-0.8)
         ("rust-libc" ,rust-libc-0.2)
-        ("rust-uuid" ,rust-uuid-0.5))))
-    (home-page "https://github.com/servo/core-foundation-rs")
-    (synopsis "Bindings to Core Foundation for macOS")
-    (description "This package provides bindings to Core Foundation for macOS.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-uuid" ,rust-uuid-0.5))))))
 
 (define-public rust-core-foundation-0.7
   (package
