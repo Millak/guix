@@ -1685,8 +1685,45 @@ EUI-64, also known as MAC-48 media access control addresses.")
 @code{WebGL}) anywhere, and avoid target-specific code.")
     (license (list license:expat license:asl2.0 license:zlib))))
 
+(define-public rust-glutin-0.32
+  (package
+    (name "rust-glutin")
+    (version "0.32.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "glutin" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "16g4sp38p8ca7jj8bdn28s480yl58xa432v3grhafzph1cm42sgc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-cfg-aliases" ,rust-cfg-aliases-0.2)
+                       ("rust-cgl" ,rust-cgl-0.3)
+                       ("rust-core-foundation" ,rust-core-foundation-0.9)
+                       ("rust-dispatch" ,rust-dispatch-0.2)
+                       ("rust-glutin-egl-sys" ,rust-glutin-egl-sys-0.7)
+                       ("rust-glutin-glx-sys" ,rust-glutin-glx-sys-0.6)
+                       ("rust-glutin-wgl-sys" ,rust-glutin-wgl-sys-0.6)
+                       ("rust-libloading" ,rust-libloading-0.8)
+                       ("rust-objc2" ,rust-objc2-0.5)
+                       ("rust-objc2-app-kit" ,rust-objc2-app-kit-0.2)
+                       ("rust-objc2-foundation" ,rust-objc2-foundation-0.2)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-raw-window-handle" ,rust-raw-window-handle-0.6)
+                       ("rust-wayland-sys" ,rust-wayland-sys-0.31)
+                       ("rust-windows-sys" ,rust-windows-sys-0.52)
+                       ("rust-x11-dl" ,rust-x11-dl-2))))
+    (home-page "https://github.com/rust-windowing/glutin")
+    (synopsis "Cross-platform OpenGL context provider")
+    (description
+     "This package provides a cross-platform @code{OpenGL} context provider.")
+    (license license:asl2.0)))
+
 (define-public rust-glutin-0.31
   (package
+    (inherit rust-glutin-0.32)
     (name "rust-glutin")
     (version "0.31.2")
     (source
@@ -1696,7 +1733,6 @@ EUI-64, also known as MAC-48 media access control addresses.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "04mjvgh2dipwa8wdy8gc70k8w48104v8vmr2cmqdqspq5ai5jm00"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
                        ("rust-cfg-aliases" ,rust-cfg-aliases-0.1)
@@ -1713,11 +1749,7 @@ EUI-64, also known as MAC-48 media access control addresses.")
                        ("rust-raw-window-handle" ,rust-raw-window-handle-0.5)
                        ("rust-wayland-sys" ,rust-wayland-sys-0.31)
                        ("rust-windows-sys" ,rust-windows-sys-0.48)
-                       ("rust-x11-dl" ,rust-x11-dl-2))))
-    (home-page "https://github.com/rust-windowing/glutin")
-    (synopsis "Cross-platform OpenGL context provider")
-    (description "This package provides an OpenGL context provider.")
-    (license license:asl2.0)))
+                       ("rust-x11-dl" ,rust-x11-dl-2))))))
 
 (define-public rust-glutin-0.30
   (package
