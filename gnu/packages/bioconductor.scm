@@ -2346,14 +2346,14 @@ containers.")
 (define-public r-msigdb
   (package
     (name "r-msigdb")
-    (version "1.13.0")
+    (version "1.14.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "msigdb" version
                                      'experiment))
               (sha256
                (base32
-                "063zch6gq3dsnyygb37qgyvpisn7kqh3aiv8168bx4mnq0m5mr2a"))))
+                "1bla3jj5vdvb956pz07fxsihiwqlkpm409rdhljbdnld438q3kpp"))))
     (properties `((upstream-name . "msigdb")))
     (build-system r-build-system)
     (propagated-inputs (list r-annotationdbi
