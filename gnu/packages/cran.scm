@@ -5007,13 +5007,13 @@ enables creativity when plotting and experimenting with data.")
 (define-public r-model4you
   (package
     (name "r-model4you")
-    (version "0.9-7")
+    (version "0.9-8")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "model4you" version))
               (sha256
                (base32
-                "0pni9v3nradvy8sp2m07903vc7z610xrh426lf19dxss12kgrfi8"))))
+                "17xa2lvbsbwsyy54nna99xxwjv04p7xgqa61jz1ivggq0fgrd9fg"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-formula
