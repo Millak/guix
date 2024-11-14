@@ -10587,6 +10587,29 @@ little-endian.")
        (("rust-quickcheck" ,rust-quickcheck-0.2)
         ("rust-rand" ,rust-rand-0.3))))))
 
+(define-public rust-byteorder-lite-0.1
+  (package
+    (name "rust-byteorder-lite")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "byteorder-lite" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "15alafmz4b9az56z6x7glcbcb6a8bfgyd109qc3bvx07zx4fj7wg"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs (("rust-quickcheck" ,rust-quickcheck-0.9)
+                                   ("rust-rand" ,rust-rand-0.7))))
+    (home-page "https://github.com/image-rs/byteorder-lite")
+    (synopsis
+     "Library for reading/writing numbers in big-endian and little-endian")
+    (description
+     "This package provides a library for reading/writing numbers in big-endian
+and little-endian.")
+    (license (list license:unlicense license:expat))))
+
 (define-public rust-bytes-1
   (package
     (name "rust-bytes")
