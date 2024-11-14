@@ -22690,14 +22690,14 @@ sequence (@code{DNAse-seq}) experiments.")
 (define-public r-singlecellexperiment
   (package
     (name "r-singlecellexperiment")
-    (version "1.28.0")
+    (version "1.28.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "SingleCellExperiment" version))
        (sha256
         (base32
-         "0gwxmlx56xjnp29q3zl5j5b770d793zdf17jk8fxmm3y9ybmp9pm"))))
+         "1kaxlhfg2c2vdvd1bw24qrxh2ffzxrxmd51znrisrhpvjl7r53jx"))))
     (properties
      `((upstream-name . "SingleCellExperiment")))
     (build-system r-build-system)
