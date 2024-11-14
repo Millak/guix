@@ -1647,21 +1647,28 @@ implementation of the ASDF Standard.")
 (define-public python-asdf-astropy
   (package
     (name "python-asdf-astropy")
-    (version "0.6.1")
+    (version "0.7.0")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "asdf-astropy" version))
+       (uri (pypi-uri "asdf_astropy" version))
        (sha256
-        (base32 "1ipjpjiirycj2npicbp39ka7db61vx45j8dm2iis71g5l1rzkblp"))))
+        (base32 "0985bhmhnjzlf8n78r1i1dfhbvq167xqz0667kg3jm0l2177b0f9"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
       #~(list "--numprocesses" (number->string (parallel-job-count)))
-      #:phases #~(modify-phases %standard-phases
-                   (add-before 'check 'set-home-env
-                     (lambda _ (setenv "HOME" "/tmp"))))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                ;; numpy>=1.24, all tests passed successfuly. Scheduled for
+                ;; update in python-team.
+                ((">=1.24") ">=1.23"))))
+          (add-before 'check 'set-home-env
+            (lambda _ (setenv "HOME" "/tmp"))))))
     (native-inputs
      (list python-coverage
            python-h5py
