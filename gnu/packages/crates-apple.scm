@@ -1224,6 +1224,35 @@ the Cocoa Foundation framework.")
         ("rust-objc2-proc-macros" ,rust-objc2-proc-macros-0.1)
         ("rust-uuid" ,rust-uuid-1))))))
 
+(define-public rust-objc2-app-kit-0.2
+  (package
+    (name "rust-objc2-app-kit")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "objc2-app-kit" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1zqyi5l1bm26j1bgmac9783ah36m5kcrxlqp5carglnpwgcrms74"))))
+    (build-system cargo-build-system)
+    (arguments
+     ;; Must specify the desired runtime using Cargo features on non-Apple platforms
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-block2" ,rust-block2-0.5)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-objc2" ,rust-objc2-0.5)
+                       ("rust-objc2-core-data" ,rust-objc2-core-data-0.2)
+                       ("rust-objc2-core-image" ,rust-objc2-core-image-0.2)
+                       ("rust-objc2-foundation" ,rust-objc2-foundation-0.2)
+                       ("rust-objc2-quartz-core" ,rust-objc2-quartz-core-0.2))))
+    (home-page "https://github.com/madsmtm/objc2")
+    (synopsis "Bindings to the AppKit framework")
+    (description
+     "This package provides bindings to the @code{AppKit} framework.")
+    (license license:expat)))
+
 (define-public rust-objc2-encode-4
   (package
     (name "rust-objc2-encode")
