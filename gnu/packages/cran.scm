@@ -5522,34 +5522,17 @@ LaTeX.")
 (define-public r-curl
   (package
     (name "r-curl")
-    (version "5.2.3")
+    (version "6.0.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "curl" version))
               (sha256
                (base32
-                "1gq72y38glifhgqifasbpgspn1l84b6rcam6i58zldb0xpy91q5v"))))
+                "0qi3skrkdr43siiw28fmwdkjfqy3ynql5r94nlm9fpvlsyz90744"))))
     (properties
      `((upstream-name . "curl")
        (updater-extra-inputs . ("curl"))))
     (build-system r-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; The environment variable CURL_CA_BUNDLE is only respected when
-         ;; running Windows, so we disable the platform checks.
-         ;; This can be removed once the libcurl has been patched.
-         (add-after 'unpack 'allow-CURL_CA_BUNDLE
-           (lambda _
-             (substitute* "R/onload.R"
-               (("if \\(!grepl\\(\"mingw\".*")
-                "if (FALSE)\n"))
-             (substitute* "src/handle.c"
-               (("/\\* Only set" m)
-                (string-append "\
-const char *_ca_bundle = getenv(\"CURL_CA_BUNDLE\");
-if(_ca_bundle != NULL) { curl_easy_setopt(handle, CURLOPT_CAINFO, _ca_bundle); }
-" m))))))))
     (inputs
      (list curl zlib))
     (native-inputs
