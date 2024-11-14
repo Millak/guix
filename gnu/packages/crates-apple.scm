@@ -1517,6 +1517,30 @@ the Cocoa Foundation framework.")
     (description "This package provides procedural macros for the objc2 project.")
     (license license:expat)))
 
+(define-public rust-objc2-uniform-type-identifiers-0.2
+  (package
+    (name "rust-objc2-uniform-type-identifiers")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "objc2-uniform-type-identifiers" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ziv4wkbxcaw015ypg0q49ycl7m14l3x56mpq2k1rznv92bmzyj4"))))
+    (build-system cargo-build-system)
+    (arguments
+     ;; Must specify the desired runtime using Cargo features on non-Apple platforms
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-block2" ,rust-block2-0.5)
+                       ("rust-objc2" ,rust-objc2-0.5)
+                       ("rust-objc2-foundation" ,rust-objc2-foundation-0.2))))
+    (home-page "https://github.com/madsmtm/objc2")
+    (synopsis "Bindings to the UniformTypeIdentifiers framework")
+    (description
+     "This package provides bindings to the @code{UniformTypeIdentifiers} framework.")
+    (license license:expat)))
+
 (define-public rust-objc2-user-notifications-0.2
   (package
     (name "rust-objc2-user-notifications")
