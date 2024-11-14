@@ -9529,23 +9529,22 @@ contexts.")
 (define-public r-cvxr
   (package
     (name "r-cvxr")
-    (version "1.0-14")
+    (version "1.0-15")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "CVXR" version))
               (sha256
                (base32
-                "1nvwym5fwkyqkw8dpar571kr5695w7yrih6w9vnhswikp717q0jd"))))
+                "13435gwqgdaw7xxxza5k9p10z2wjlw9x5d1znj03h44k6wm1jfy1"))))
     (properties `((upstream-name . "CVXR")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-bit64
-           r-clarabel
+           r-cli
            r-ecosolver
            r-gmp
            r-matrix
            r-osqp
-           r-r6
            r-rcpp
            r-rcppeigen
            r-rmpfr
