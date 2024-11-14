@@ -8665,7 +8665,7 @@ assemble global function spaces on finite-element grids.")
 (define-public dune-alugrid
   (package
     (name "dune-alugrid")
-    (version "2.9.0")
+    (version "2.10.0")
     (source
      (origin
        (method git-fetch)
@@ -8675,7 +8675,7 @@ assemble global function spaces on finite-element grids.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0s41jinsfpm56nx41vkmyv3y9n072ssw9hxjm7di64zcszgpjmzd"))))
+         "0289vqf9azhgqda04qa5prn201xnsd9i0r8gy6jn0g6wfy9bcpav"))))
     (build-system cmake-build-system)
     (arguments
      `(#:phases
