@@ -4723,13 +4723,13 @@ package is a port of the Python package @code{cssselect}.")
 (define-public r-relations
   (package
     (name "r-relations")
-    (version "0.6-13")
+    (version "0.6-14")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "relations" version))
        (sha256
-        (base32 "1nnr0kcr3whbwzi36sg7wn46jp7r0hfkvcwlybvjsjhczcvc6ngq"))))
+        (base32 "176qybc6pl2lvrbqyvy6xwxhan5jdsdrpjly25vqf0bjynsv4kq2"))))
     (properties `((upstream-name . "relations")))
     (build-system r-build-system)
     (propagated-inputs (list r-cluster r-sets r-slam))
