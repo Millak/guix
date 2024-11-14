@@ -3090,18 +3090,19 @@ structures.")
 (define-public rust-arrayvec-0.7
   (package
     (name "rust-arrayvec")
-    (version "0.7.4")
+    (version "0.7.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "arrayvec" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "04b7n722jij0v3fnm3qk072d5ysc2q30rl9fz33zpfhzah30mlwn"))))
+        (base32 "0l1fz4ccgv6pm609rif37sl5nv5k6lbzi7kkppgzqzh1vwix20kw"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-serde" ,rust-serde-1)
+       (("rust-borsh" ,rust-borsh-1)
+        ("rust-serde" ,rust-serde-1)
         ("rust-zeroize" ,rust-zeroize-1))
        #:cargo-development-inputs
        (("rust-bencher" ,rust-bencher-0.1)
