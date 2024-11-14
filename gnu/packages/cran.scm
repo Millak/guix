@@ -2102,23 +2102,18 @@ RUV-I, and RUV-III, along with various supporting algorithms.")
 (define-public r-waldo
   (package
     (name "r-waldo")
-    (version "0.5.3")
+    (version "0.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "waldo" version))
        (sha256
         (base32
-         "01kv3hz4inijks4nq863ikpgvphy4hqwfqjr6vpbk3yz6i5nss6r"))))
+         "1jbn3vfykyv8czwqs6wbb8m172cl2fqgggy86n3h1rrg59rz7hy9"))))
     (properties `((upstream-name . "waldo")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-cli
-           r-diffobj
-           r-glue
-           r-rematch2
-           r-rlang
-           r-tibble))
+     (list r-cli r-diffobj r-glue r-rlang))
     (home-page "https://github.com/r-lib/waldo")
     (synopsis "Find differences between R objects")
     (description
