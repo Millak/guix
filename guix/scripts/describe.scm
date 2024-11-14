@@ -254,6 +254,7 @@ PROFILE and NUMBER "
                          "/commit/?id=" commit)))
       ("notabug.org" ,labhub-url)
       ("framagit.org" ,labhub-url)
+      ("codeberg.org" ,labhub-url)
       ("gitlab.com" ,labhub-url)
       ("gitlab.inria.fr" ,labhub-url)
       ("github.com" ,labhub-url))))
