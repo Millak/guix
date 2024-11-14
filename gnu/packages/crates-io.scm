@@ -21000,14 +21000,14 @@ resource-constrained devices, like micro-controllers.")
 (define-public rust-defmt-macros-0.3
   (package
     (name "rust-defmt-macros")
-    (version "0.3.7")
+    (version "0.3.9")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "defmt-macros" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1nmvni24vfrcqaaaa95ag278sfm7sdshw94mkvhi7i1ap6kwgg8q"))))
+        (base32 "1jrdbwcifbbsx0zmab3cqachai5fj16ralpjplz9pxzixw4z7ag3"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -21019,7 +21019,7 @@ resource-constrained devices, like micro-controllers.")
        #:cargo-development-inputs
        (("rust-maplit" ,rust-maplit-1)
         ("rust-pretty-assertions" ,rust-pretty-assertions-1)
-        ("rust-rstest" ,rust-rstest-0.17))))
+        ("rust-rstest" ,rust-rstest-0.19))))
     (home-page "https://github.com/knurling-rs/defmt")
     (synopsis "Macros for rust-defmt")
     (description "This package provides macros for rust-defmt crate")
