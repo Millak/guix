@@ -4200,18 +4200,20 @@ supports url redirection and retries, and also gzip and deflate decoding.")
 Services (AWS) API.")
     (license license:asl2.0)))
 
+;; This is not an official release of awscli version 2, so it should not be
+;; named awscli.
 (define-public awscli-2
   (package
     (inherit awscli)
-    (name "awscli")
-    (version "2.2.0")
+    (name "awscliv2")
+    (version "2.3.1")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri (string-append name "v2") version))
+       (uri (pypi-uri name version))
        (sha256
         (base32
-         "0g1icsy2l4n540gnhliypy830dfp08hpfc3rk12dlxgc9v3ra4wl"))))
+         "1bpp6kmb75qdhgzsx69ki04345bfkzwnmg84y5x6nyfpph2g3fsz"))))
     (arguments
      ;; FIXME: The 'pypi' release does not contain tests.
      '(#:tests? #f))
