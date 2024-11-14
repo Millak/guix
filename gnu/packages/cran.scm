@@ -26164,14 +26164,14 @@ package.")
 (define-public r-yulab-utils
   (package
     (name "r-yulab-utils")
-    (version "0.1.7")
+    (version "0.1.8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "yulab.utils" version))
        (sha256
         (base32
-         "0q2zjhvn4s17s098lacfp94v0v8qm5479v8al0c05r1dx3x0mkq3"))))
+         "1dhjd64iha5v34jlcak487vjdwc1yw23a6xdpv76fg88ywwj8j8w"))))
     (properties `((upstream-name . "yulab.utils")))
     (build-system r-build-system)
     (propagated-inputs
