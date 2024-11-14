@@ -20,6 +20,7 @@
   #:use-module ((guix build gnu-build-system) #:prefix gnu:)
   #:use-module (guix build utils)
   #:use-module (ice-9 match)
+  #:use-module (ice-9 format)
   #:use-module (ice-9 ftw)
   #:use-module (ice-9 popen)
   #:use-module (srfi srfi-1)
@@ -62,7 +63,7 @@
                             inputs))
                ":"))
 
-(define* (check #:key test-target inputs outputs tests? #:allow-other-keys)
+(define* (check #:key test-target test-types inputs outputs tests? #:allow-other-keys)
   "Run the test suite of a given R package."
   (let* ((libdir    (string-append (assoc-ref outputs "out") "/site-library/"))
 
@@ -80,10 +81,20 @@
          (site-path (string-append libdir ":" (generate-site-path inputs))))
     (when (and tests? (file-exists? testdir))
       (setenv "R_LIBS_SITE" site-path)
-      (pipe-to-r (string-append "tools::testInstalledPackage(\"" pkg-name "\", "
-                                "lib.loc = \"" libdir "\")")
-                 '("--no-save" "--slave")))
-    #t))
+      (guard (c ((invoke-error? c)
+                 ;; Dump the test suite log to facilitate debugging.
+                 (display "\nTests failed, dumping logs.\n"
+                          (current-error-port))
+                 (gnu:dump-file-contents "." ".*\\.Rout\\.fail$")
+                 (raise c)))
+        (pipe-to-r (string-append "quit(status=tools::testInstalledPackage(\"" pkg-name "\", "
+                                  "lib.loc = \"" libdir "\", "
+                                  "errorsAreFatal=TRUE, "
+                                  (if test-types
+                                      (format #false "types=c(~{\"~a\"~^,~})" test-types)
+                                      "types=c(\"tests\", \"vignettes\")")
+                                  "))")
+                   '("--no-save" "--slave"))))))
 
 (define* (install #:key outputs inputs (configure-flags '())
                   #:allow-other-keys)
