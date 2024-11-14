@@ -95983,6 +95983,29 @@ compression library.")
         ("rust-libc" ,rust-libc-0.2)
         ("rust-pkg-config" ,rust-pkg-config-0.3))))))
 
+(define-public rust-zune-core-0.4
+  (package
+    (name "rust-zune-core")
+    (version "0.4.12")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "zune-core" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0jj1ra86klzlcj9aha9als9d1dzs7pqv3azs1j3n96822wn3lhiz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-log" ,rust-log-0.4)
+                       ("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/etemesi254/zune-image")
+    (synopsis
+     "Core utilities for image processing in the zune family of crates")
+    (description
+     "This package provides core utilities for image processing in the zune
+family of crates.")
+    (license (list license:expat license:asl2.0 license:zlib))))
+
 (define-public rust-zune-inflate-0.2
   (package
     (name "rust-zune-inflate")
