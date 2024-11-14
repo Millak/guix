@@ -462,19 +462,21 @@ untrusted data.")
 (define-public rust-avif-serialize-0.8
   (package
     (name "rust-avif-serialize")
-    (version "0.8.1")
+    (version "0.8.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "avif-serialize" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1llnwlj11wcifdlny8x8yksl3zmz8i6a35il0cd4ar335yj7av47"))))
+        (base32 "0qnxpnwl5yn31xh3ymr546jbazj3xi1nzvay47502cf4j0908dg3"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f  ; use of undeclared crate or module `mp4parse`
-       #:cargo-inputs (("rust-arrayvec" ,rust-arrayvec-0.7))
-       #:cargo-development-inputs (("rust-avif-parse" ,rust-avif-parse-1))))
+     `(#:cargo-inputs (("rust-arrayvec" ,rust-arrayvec-0.7))
+       #:cargo-development-inputs
+       (("rust-avif-parse" ,rust-avif-parse-1)
+        ("rust-fallible-collections" ,rust-fallible-collections-0.4)
+        ("rust-mp4parse" ,rust-mp4parse-0.17))))
     (home-page "https://lib.rs/avif-serialize")
     (synopsis "Writer for AVIF header structure (MPEG/HEIF/MIAF/ISO-BMFF)")
     (description
