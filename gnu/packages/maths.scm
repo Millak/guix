@@ -8383,7 +8383,7 @@ linear algebra primitives specifically targeting graph analytics.")
 (define-public dune-common
   (package
     (name "dune-common")
-    (version "2.9.0")
+    (version "2.10.0")
     (source
      (origin
        (method url-fetch)
@@ -8391,7 +8391,7 @@ linear algebra primitives specifically targeting graph analytics.")
                            version "/dune-common-" version ".tar.gz"))
        (sha256
         (base32
-         "04pzk8q0bibci8z5xlwndhh3y3vs63mw7kad62lbzfwrr5121hrd"))
+         "1pdgxlxb570fm7smk1zv9b3iq1wzjg6g0s4361xs2w5qrf6drh4l"))
        (patches (search-patches "dune-common-skip-failing-tests.patch"))))
     (build-system cmake-build-system)
     (arguments
