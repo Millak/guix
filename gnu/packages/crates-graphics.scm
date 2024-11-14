@@ -1175,8 +1175,30 @@ and iOS.")
                                    ("rust-nix" ,rust-nix-0.27)
                                    ("rust-rustyline" ,rust-rustyline-12))))))
 
+(define-public rust-drm-ffi-0.8
+  (package
+    (name "rust-drm-ffi")
+    (version "0.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "drm-ffi" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0lwd4zvimd4132cpay3vs41gf1sv3s4gx37a997wnz4bwhkqgjcp"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-drm-sys" ,rust-drm-sys-0.7)
+                       ("rust-rustix" ,rust-rustix-0.38))))
+    (home-page "https://github.com/Smithay/drm-rs")
+    (synopsis "Safe, low-level bindings to the Direct Rendering Manager API")
+    (description
+     "Safe, low-level bindings to the Direct Rendering Manager API.")
+    (license license:expat)))
+
 (define-public rust-drm-ffi-0.6
   (package
+    (inherit rust-drm-ffi-0.8)
     (name "rust-drm-ffi")
     (version "0.6.0")
     (source
@@ -1186,15 +1208,9 @@ and iOS.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0par8xcrpnz1h53yam4ai9jpqc9as337vclzsn4hw9xnqhciqzds"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-drm-sys" ,rust-drm-sys-0.5)
-                       ("rust-nix" ,rust-nix-0.27))))
-    (home-page "https://github.com/Smithay/drm-rs")
-    (synopsis "Safe, low-level bindings to the Direct Rendering Manager API")
-    (description
-     "Safe, low-level bindings to the Direct Rendering Manager API.")
-    (license license:expat)))
+                       ("rust-nix" ,rust-nix-0.27))))))
 
 (define-public rust-drm-fourcc-2
   (package
