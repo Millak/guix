@@ -11317,17 +11317,18 @@ different experiment.")
 (define-public r-screpertoire
   (package
     (name "r-screpertoire")
-    (version "2.2.0")
+    (version "2.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "scRepertoire" version))
        (sha256
-        (base32 "0x383v4ykc8v3r34vdi286d99prvj00z29gp4kc9hx38fmh70vcc"))))
+        (base32 "0id62pkjyk48jxica8mfzb2mzwc5f1ijb7d5200grxzn453zsihm"))))
     (properties `((upstream-name . "scRepertoire")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-cubature
+     (list r-assertthat
+           r-cubature
            r-dplyr
            r-evmix
            r-ggalluvial
@@ -11337,7 +11338,9 @@ different experiment.")
            r-hash
            r-igraph
            r-inext
+           r-lifecycle
            r-plyr
+           r-purrr
            r-quantreg
            r-rcpp
            r-reshape2
