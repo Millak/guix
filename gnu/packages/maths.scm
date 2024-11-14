@@ -8500,7 +8500,7 @@ This package contains the DUNE UG grid classes.")
 (define-public dune-grid
   (package
     (name "dune-grid")
-    (version "2.9.0")
+    (version "2.10.0")
     (source
      (origin
        (method url-fetch)
@@ -8508,9 +8508,7 @@ This package contains the DUNE UG grid classes.")
                            version "/dune-grid-" version ".tar.gz"))
        (sha256
         (base32
-         "17l2vlr8q3rfifxv80r3jlzamx478xn0vfjkrl3ns1akk7miycq8"))
-       (patches (search-patches
-                  "dune-grid-add-missing-include-cassert.patch"))))
+         "0mh06g3sryx3s0d7zgzsz6j18vbzb0f46wq7aw6ahj2hswb7rsrg"))))
     (build-system cmake-build-system)
     (arguments
      `(#:phases
