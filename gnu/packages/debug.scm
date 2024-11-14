@@ -1037,7 +1037,7 @@ to aid in debugging.")
 (define-public delve
   (package
     (name "delve")
-    (version "1.21.0")
+    (version "1.23.1")
     (source
      (origin
        (method git-fetch)
@@ -1047,7 +1047,7 @@ to aid in debugging.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1gdynx4gp02lj47znnf638kkbmmsl24a9fis81a2fg3pdrg6jg3c"))))
+         "1k0ink3jjplbq1si7cnrm7ch6jasnc3y83yksmrwhhbfa1ybk87s"))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "github.com/go-delve/delve/cmd/dlv"
