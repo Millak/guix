@@ -5718,8 +5718,90 @@ from xml files.")
        #:cargo-development-inputs
        (("rust-image" ,rust-image-0.24))))))
 
+(define-public rust-winit-0.30
+  (package
+    (name "rust-winit")
+    (version "0.30.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "winit" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0rrczmdykbn43bkl3jvi2yg374rwpnf9h2qz855f0xqh3xmfgs8b"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-ahash" ,rust-ahash-0.8)
+        ("rust-android-activity" ,rust-android-activity-0.6)
+        ("rust-atomic-waker" ,rust-atomic-waker-1)
+        ("rust-bitflags" ,rust-bitflags-2)
+        ("rust-block2" ,rust-block2-0.5)
+        ("rust-bytemuck" ,rust-bytemuck-1)
+        ("rust-calloop" ,rust-calloop-0.13)
+        ("rust-cfg-aliases" ,rust-cfg-aliases-0.2)
+        ("rust-concurrent-queue" ,rust-concurrent-queue-2)
+        ("rust-core-foundation" ,rust-core-foundation-0.9)
+        ("rust-core-graphics" ,rust-core-graphics-0.23)
+        ("rust-cursor-icon" ,rust-cursor-icon-1)
+        ("rust-dpi" ,rust-dpi-0.1)
+        ("rust-js-sys" ,rust-js-sys-0.3)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-memmap2" ,rust-memmap2-0.9)
+        ("rust-ndk" ,rust-ndk-0.9)
+        ("rust-objc2" ,rust-objc2-0.5)
+        ("rust-objc2-app-kit" ,rust-objc2-app-kit-0.2)
+        ("rust-objc2-foundation" ,rust-objc2-foundation-0.2)
+        ("rust-objc2-ui-kit" ,rust-objc2-ui-kit-0.2)
+        ("rust-orbclient" ,rust-orbclient-0.3)
+        ("rust-percent-encoding" ,rust-percent-encoding-2)
+        ("rust-pin-project" ,rust-pin-project-1)
+        ("rust-raw-window-handle" ,rust-raw-window-handle-0.6)
+        ("rust-raw-window-handle" ,rust-raw-window-handle-0.5)
+        ("rust-raw-window-handle" ,rust-raw-window-handle-0.4)
+        ("rust-redox-syscall" ,rust-redox-syscall-0.4)
+        ("rust-rustix" ,rust-rustix-0.38)
+        ("rust-sctk-adwaita" ,rust-sctk-adwaita-0.10)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-smithay-client-toolkit" ,rust-smithay-client-toolkit-0.19)
+        ("rust-smol-str" ,rust-smol-str-0.2)
+        ("rust-tracing" ,rust-tracing-0.1)
+        ("rust-unicode-segmentation" ,rust-unicode-segmentation-1)
+        ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
+        ("rust-wasm-bindgen-futures" ,rust-wasm-bindgen-futures-0.4)
+        ("rust-wayland-backend" ,rust-wayland-backend-0.3)
+        ("rust-wayland-client" ,rust-wayland-client-0.31)
+        ("rust-wayland-protocols" ,rust-wayland-protocols-0.32)
+        ("rust-wayland-protocols-plasma" ,rust-wayland-protocols-plasma-0.3)
+        ("rust-web-sys" ,rust-web-sys-0.3)
+        ("rust-web-time" ,rust-web-time-1)
+        ("rust-windows-sys" ,rust-windows-sys-0.52)
+        ("rust-x11-dl" ,rust-x11-dl-2)
+        ("rust-x11rb" ,rust-x11rb-0.13)
+        ("rust-xkbcommon-dl" ,rust-xkbcommon-dl-0.4))
+       #:cargo-development-inputs
+       (("rust-console-error-panic-hook" ,rust-console-error-panic-hook-0.1)
+        ("rust-image" ,rust-image-0.25)
+        ("rust-softbuffer" ,rust-softbuffer-0.4)
+        ("rust-tracing" ,rust-tracing-0.1)
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3)
+        ("rust-tracing-web" ,rust-tracing-web-0.1))))
+    (home-page "https://github.com/rust-windowing/winit")
+    (synopsis "Window creation library")
+    (description
+     "Winit is a window creation and management library. It can create
+windows and lets you handle events (for example: the window being
+resized, a key being pressed, a mouse movement, etc.) produced by
+window.
+
+Winit is designed to be a low-level brick in a hierarchy of libraries.
+Consequently, in order to show something on the window you need to use
+the platform-specific getters provided by winit, or another library.")
+    (license license:asl2.0)))
+
 (define-public rust-winit-0.29
   (package
+    (inherit rust-winit-0.30)
     (name "rust-winit")
     (version "0.29.10")
     (source
@@ -5729,7 +5811,6 @@ from xml files.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1kzzl8m68sq6njdr6n1b90ppfg1pfhkcq48iqxpfdshyjh8lz0jc"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-ahash" ,rust-ahash-0.8)
@@ -5781,19 +5862,7 @@ from xml files.")
         ("rust-image" ,rust-image-0.24)
         ("rust-simple-logger" ,rust-simple-logger-4)
         ("rust-softbuffer" ,rust-softbuffer-0.3)
-        ("rust-web-sys" ,rust-web-sys-0.3))))
-    (home-page "https://github.com/rust-windowing/winit")
-    (synopsis "Window creation library")
-    (description
-     "Winit is a window creation and management library. It can create
-windows and lets you handle events (for example: the window being
-resized, a key being pressed, a mouse movement, etc.) produced by
-window.
-
-Winit is designed to be a low-level brick in a hierarchy of libraries.
-Consequently, in order to show something on the window you need to use
-the platform-specific getters provided by winit, or another library.")
-    (license license:asl2.0)))
+        ("rust-web-sys" ,rust-web-sys-0.3))))))
 
 (define-public rust-winit-0.28
   (package
