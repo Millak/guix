@@ -48,6 +48,7 @@
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gl)
+  #:use-module (gnu packages image)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
@@ -2472,6 +2473,32 @@ filters and decoders for the most common image formats.")
        (("rust-glob" ,rust-glob-0.2)
         ("rust-num-complex" ,rust-num-complex-0.2)
         ("rust-quickcheck" ,rust-quickcheck-0.6))))))
+
+(define-public rust-image-webp-0.2
+  (package
+    (name "rust-image-webp")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "image-webp" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0bz2zf9rfkfwf50bv60p6vnwnggg75s3bsnnnp6aj4a7v7iyhcg0"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-byteorder-lite" ,rust-byteorder-lite-0.1)
+                       ("rust-quick-error" ,rust-quick-error-2))
+       #:cargo-development-inputs (("rust-paste" ,rust-paste-1)
+                                   ("rust-png" ,rust-png-0.17)
+                                   ("rust-rand" ,rust-rand-0.8)
+                                   ("rust-webp" ,rust-webp-0.3))))
+    (inputs (list libwebp))
+    (home-page "https://github.com/image-rs/image-webp")
+    (synopsis "WebP encoding and decoding in pure Rust")
+    (description
+     "This package provides @code{WebP} encoding and decoding in pure Rust.")
+    (license (list license:expat license:asl2.0))))
 
 (define-public rust-imageproc-0.23
   (package
