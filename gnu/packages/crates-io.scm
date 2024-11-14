@@ -68439,14 +68439,14 @@ rustc compiler.")
 (define-public rust-rustix-0.38
   (package
     (name "rust-rustix")
-    (version "0.38.31") ;XXX drop rust-rustix-for-bcachefs-tools when updating
+    (version "0.38.40")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rustix" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0jg9yj3i6qnzk1y82hng7rb1bwhslfbh57507dxcs9mgcakf38vf"))
+        (base32 "1h33ilqk4psn6kqfmd232df3x3lrwp4gjl2nisdmajyw3hzfmr4r"))
        (snippet
         #~(begin (use-modules (guix build utils))
                  (for-each delete-file (find-files "." "\\.a$"))
@@ -68478,7 +68478,6 @@ rustc compiler.")
         ("rust-windows-sys" ,rust-windows-sys-0.52))
        #:cargo-development-inputs
        (("rust-criterion" ,rust-criterion-0.4)
-        ("rust-ctor" ,rust-ctor-0.2)
         ("rust-errno" ,rust-errno-0.3)
         ("rust-flate2" ,rust-flate2-1)
         ("rust-libc" ,rust-libc-0.2)
@@ -68492,20 +68491,6 @@ rustc compiler.")
      "This package provides safe Rust bindings to POSIX syscalls.")
     ;; Apache 2.0, Apache 2.0 with LLVM exception, or Expat.
     (license (list license:asl2.0 license:expat))))
-
-(define-public rust-rustix-for-bcachefs-tools
-  ;; The package above is too old; too many dependents to update it directly.
-  (package
-    (inherit rust-rustix-0.38)
-    (name (package-name rust-rustix-0.38))
-    (version "0.38.34")
-    (source
-     (origin
-       (inherit (package-source rust-rustix-0.38))
-       (uri (crate-uri "rustix" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "03vkqa2ism7q56rkifyy8mns0wwqrk70f4i4fd53r97p8b05xp3h"))))))
 
 (define-public rust-rustix-0.37
   (package
