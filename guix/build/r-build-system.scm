@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2017, 2018 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2017, 2018, 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -24,6 +24,7 @@
   #:use-module (ice-9 popen)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
+  #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
   #:export (%standard-phases
             r-build))
@@ -40,14 +41,15 @@
 (define (pipe-to-r command params)
   (let ((port (apply open-pipe* OPEN_WRITE "R" params)))
     (display command port)
-    (let ((code (status:exit-val (close-pipe port))))
+    (let* ((closed (close-pipe port))
+           (code (status:exit-val closed)))
       (unless (zero? code)
         (raise (condition ((@@ (guix build utils) &invoke-error)
                            (program "R")
                            (arguments (cons command params))
-                           (exit-status (status:exit-val code))
-                           (term-signal (status:term-sig code))
-                           (stop-signal (status:stop-sig code)))))))))
+                           (exit-status code)
+                           (term-signal (status:term-sig closed))
+                           (stop-signal (status:stop-sig closed)))))))))
 
 (define (generate-site-path inputs)
   (string-join (map (match-lambda
