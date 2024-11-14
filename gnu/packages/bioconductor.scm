@@ -12280,13 +12280,13 @@ that integrates the various evidences.")
 (define-public r-structstrings
   (package
     (name "r-structstrings")
-    (version "1.22.0")
+    (version "1.22.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "Structstrings" version))
        (sha256
-        (base32 "1z552zh3jb42hpfxh2nhy8brafwhffwb6jhlm0y6b125c8bwswcx"))))
+        (base32 "02nzkn5iwqqixj92vyfazdxsv7j6hpzkn005gznv11kfkagv9hwn"))))
     (properties `((upstream-name . "Structstrings")))
     (build-system r-build-system)
     (propagated-inputs (list r-biocgenerics
