@@ -1727,6 +1727,35 @@ PKCS#8 PrivateKeyInfo format and EncryptedPrivateKeyInfo format with
 PKCS#5 (v2.0) algorithms.")
     (license license:expat)))
 
+(define-public go-github-com-zeebo-blake3
+  (package
+    (name "go-github-com-zeebo-blake3")
+    (version "0.2.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/zeebo/blake3")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "117p973ccgalaqg7byj0qcd1xapysplql9np1sr9jkca500khcgf"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/zeebo/blake3"))
+    (native-inputs (list go-github-com-zeebo-assert))
+    (propagated-inputs
+     (list go-github-com-klauspost-cpuid-v2
+           go-github-com-zeebo-pcg))
+    (home-page "https://github.com/zeebo/blake3")
+    (synopsis "Pure Go implementation of BLAKE3")
+    (description
+     "@code{blake3} is an implementation of
+@url{https://en.wikipedia.org/wiki/BLAKE_(hash_function)#BLAKE3, BLAKE3} with AVX2
+and SSE4.1 acceleration.")
+    (license license:cc0)))
+
 (define-public go-github-com-zeebo-pcg
   (package
     (name "go-github-com-zeebo-pcg")
