@@ -1106,6 +1106,26 @@ and iOS.")
     (description "Calculate Delta E between two colors in CIE Lab space.")
     (license license:expat)))
 
+(define-public rust-dpi-0.1
+  (package
+    (name "rust-dpi")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "dpi" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0lzz48gpgbwdrw0s8vib0589ij9jizv1vzsphm4xd9kw58lhwp7j"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-mint" ,rust-mint-0.5)
+                       ("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/rust-windowing/winit")
+    (synopsis "Types for handling UI scaling")
+    (description "This package provides types for handling UI scaling.")
+    (license license:asl2.0)))
+
 (define-public rust-drm-0.12
   (package
     (name "rust-drm")
