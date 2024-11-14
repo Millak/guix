@@ -1199,13 +1199,13 @@ Ensembl.")
 (define-public r-escape
   (package
     (name "r-escape")
-    (version "2.2.0")
+    (version "2.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "escape" version))
        (sha256
-        (base32 "116wzfl3y4pvh03fb8vbv3k4m9ligd9qzjl3plj9sqcr0dxn0lkk"))))
+        (base32 "0874r80za3kxf9vc9arz8ncsddqffzi6a28vivaah293kg23nc0m"))))
     (properties `((upstream-name . "escape")))
     (build-system r-build-system)
     (propagated-inputs (list r-aucell
