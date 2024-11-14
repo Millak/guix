@@ -1141,8 +1141,32 @@ and iOS.")
 Direct Rendering Manager} format fourcc.")
     (license license:expat)))
 
+(define-public rust-drm-sys-0.7
+  (package
+    (name "rust-drm-sys")
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "drm-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "11irvbzb0rbsm5zxgxsbaca8f6nvkl8kvwk3hwp6q6bf1gjdsfgx"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.69)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-linux-raw-sys" ,rust-linux-raw-sys-0.6)
+                       ("rust-pkg-config" ,rust-pkg-config-0.3))))
+    (home-page "https://github.com/Smithay/drm-rs")
+    (synopsis "Bindings to the Direct Rendering Manager API")
+    (description
+     "This package provides bindings to the Direct Rendering Manager API.")
+    (license license:expat)))
+
 (define-public rust-drm-sys-0.5
   (package
+    (inherit rust-drm-sys-0.7)
     (name "rust-drm-sys")
     (version "0.5.0")
     (source
@@ -1152,14 +1176,9 @@ Direct Rendering Manager} format fourcc.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1bhmwzbraxclivn2h83ab7aqdcly82sy7w85az6mcah6d021qkrs"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.66)
-                       ("rust-pkg-config" ,rust-pkg-config-0.3))))
-    (home-page "https://github.com/Smithay/drm-rs")
-    (synopsis "Bindings to the Direct Rendering Manager API")
-    (description "Bindings to the Direct Rendering Manager API.")
-    (license license:expat)))
+                       ("rust-pkg-config" ,rust-pkg-config-0.3))))))
 
 (define-public rust-enterpolation-0.2
   (package
