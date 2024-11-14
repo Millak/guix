@@ -5677,8 +5677,32 @@ with wayrs-client.")
 from xml files.")
     (license license:expat)))
 
+(define-public rust-webp-0.3
+  (package
+    (name "rust-webp")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "webp" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "169dihaimcr3ih3fqg8z3n47aqd9rhb3vhw4hk0g0npva4pialwg"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Test fails to find all webp functions.
+       #:cargo-inputs (("rust-image" ,rust-image-0.25)
+                       ("rust-libwebp-sys" ,rust-libwebp-sys-0.9))
+       #:cargo-development-inputs (("rust-image" ,rust-image-0.25))))
+    (inputs (list libwebp))
+    (home-page "https://github.com/jaredforth/webp")
+    (synopsis "WebP conversion library")
+    (description "This package provides a @code{WebP} conversion library.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-webp-0.2
   (package
+    (inherit rust-webp-0.3)
     (name "rust-webp")
     (version "0.2.2")
     (source (origin
@@ -5687,17 +5711,12 @@ from xml files.")
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32 "1bhw6xp7vg4rx7flxgzvdzk21q2dx1bsn06h0yj7jq0n3y12y0ng"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-image" ,rust-image-0.24)
         ("rust-libwebp-sys" ,rust-libwebp-sys-0.4))
        #:cargo-development-inputs
-       (("rust-image" ,rust-image-0.24))))
-    (home-page "https://github.com/jaredforth/webp")
-    (synopsis "WebP conversion library")
-    (description "This package procides a WebP conversion library.")
-    (license (list license:expat license:asl2.0))))
+       (("rust-image" ,rust-image-0.24))))))
 
 (define-public rust-winit-0.29
   (package
