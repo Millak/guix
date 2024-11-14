@@ -1224,8 +1224,27 @@ the Cocoa Foundation framework.")
         ("rust-objc2-proc-macros" ,rust-objc2-proc-macros-0.1)
         ("rust-uuid" ,rust-uuid-1))))))
 
+(define-public rust-objc2-encode-4
+  (package
+    (name "rust-objc2-encode")
+    (version "4.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "objc2-encode" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1y7hjg4k828zhn4fjnbidrz3vzw4llk9ldy92drj47ydjc9yg4bq"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/madsmtm/objc2")
+    (synopsis "Objective-C type-encoding representation and parsing")
+    (description
+     "This package provides Objective-C type-encoding representation and parsing.")
+    (license license:expat)))
+
 (define-public rust-objc2-encode-3
   (package
+    (inherit rust-objc2-encode-4)
     (name "rust-objc2-encode")
     (version "3.0.0")
     (source
@@ -1234,13 +1253,7 @@ the Cocoa Foundation framework.")
        (uri (crate-uri "objc2-encode" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0rknhkcnyj4qv1pzqp5j8l80726phz8fcxpsbpz9nhmg6xdq8yfh"))))
-    (build-system cargo-build-system)
-    (home-page "https://github.com/madsmtm/objc2")
-    (synopsis "Objective-C type-encoding representation and parsing")
-    (description "This package provides objective-C type-encoding
-representation and parsing.")
-    (license license:expat)))
+        (base32 "0rknhkcnyj4qv1pzqp5j8l80726phz8fcxpsbpz9nhmg6xdq8yfh"))))))
 
 (define-public rust-objc2-encode-2
   (package
