@@ -201,7 +201,7 @@ seamlessly with your desktop environment.")
 (define-public snac2
   (package
     (name "snac")
-    (version "2.55")
+    (version "2.63")
     (source
      (origin
        (method git-fetch)
@@ -210,7 +210,7 @@ seamlessly with your desktop environment.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "06qmg0wy1f4r6l8j52jnma4d2b8sj8fqf52vn7qqbbs8jz7aj74s"))))
+        (base32 "040pa0cg8l22xdr2nvgxlcm1i9wgbyhvzlmkw35rvjbc8j3d0m69"))))
     (build-system gnu-build-system)
     (inputs (list curl openssl))
     (arguments
@@ -227,7 +227,8 @@ seamlessly with your desktop environment.")
        #:tests? #f ; no test target
        #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
                             (string-append "CFLAGS=-O2 -g -Wall -Wextra")
-                            (string-append "PREFIX=" #$output))))
+                            (string-append "PREFIX=" #$output)
+                            (string-append "PREFIX_MAN=" #$output "/share/man"))))
     (home-page "https://codeberg.org/grunfink/snac2")
     (synopsis
      "Simple, minimalistic ActivityPub instance written in portable C")
