@@ -810,8 +810,10 @@ backward), and manual time control
     (license license:gpl2+)))
 
 (define* (healpix-source #:key version sha256-base32-hash)
-    ;; The sources of HEALPix containing 6 independent packages (Fortran90,
-    ;; IDL, C, C++, java and python) and distributed togather libsharp.
+    ;; The sources of HEALPix contains 6 independent packages (Fortran90, IDL,
+    ;; C, C++, Java and Python) and distributed together with libsharp.  There
+    ;; is also a fresh C++ tarball which does not follow the naming pattern
+    ;; e.g. healpix_cxx-3.82.1.tar.gz.
      (origin
        (method url-fetch)
        (uri
