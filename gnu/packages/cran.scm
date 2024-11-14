@@ -9039,13 +9039,13 @@ package.")
 (define-public r-inline
   (package
     (name "r-inline")
-    (version "0.3.19")
+    (version "0.3.20")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "inline" version))
               (sha256
                (base32
-                "1mcr9hgq6kkq03n7pkcccxa7vg8jma0q7lfxc5vvkc6snydk1s8f"))))
+                "0102axl0481z1fnkm9xcjswa9mrjwwi5fkfp8ja6iqighxfszi3j"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/inline")
     (synopsis "Functions to inline C, C++, Fortran function calls from R")
