@@ -9245,13 +9245,13 @@ functions from LINPACK.")
 (define-public r-litedown
   (package
     (name "r-litedown")
-    (version "0.3")
+    (version "0.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "litedown" version))
        (sha256
-        (base32 "1324iw339img4nacpp79n1md6argxzcxhlr5kccscldwzx6q9a6a"))))
+        (base32 "1fm0932z35flb7rwx3pydifrfmw62b7hrm6qr7b0wv9gcqvi6pxx"))))
     (properties `((upstream-name . "litedown")))
     (build-system r-build-system)
     (propagated-inputs (list r-commonmark r-xfun))
