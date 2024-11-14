@@ -4690,14 +4690,14 @@ and wayland-server.")
 (define-public rust-wayland-cursor-0.31
   (package
     (name "rust-wayland-cursor")
-    (version "0.31.1")
+    (version "0.31.7")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "wayland-cursor" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1fii68l6x235b867q96yx1xqkl16azkf5i841ldd24yxd2l5zkki"))))
+        (base32 "0k4yijr0rxlqw15clzbh6a3jd760l1xz3zg0gxg07c7xmb1qpc1j"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-rustix" ,rust-rustix-0.38)
