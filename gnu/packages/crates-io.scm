@@ -96032,6 +96032,27 @@ family of crates.")
 in Pure Rust.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-zune-jpeg-0.4
+  (package
+    (name "rust-zune-jpeg")
+    (version "0.4.13")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "zune-jpeg" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0s07igp839yy66hs5f8g6gzvvanywgv3zxr2hq18yk8bc0c9828n"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-zune-core" ,rust-zune-core-0.4))))
+    (home-page
+     "https://github.com/etemesi254/zune-image/tree/dev/crates/zune-jpeg")
+    (synopsis "fast, correct and safe jpeg decoder")
+    (description
+     "This package provides a fast, correct and safe jpeg decoder.")
+    (license (list license:expat license:asl2.0 license:zlib))))
+
 (define-public rust-zvariant-4
   (package
     (name "rust-zvariant")
