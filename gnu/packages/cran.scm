@@ -36436,13 +36436,13 @@ Kolmogorov-Smirnov, ANOVA) are also supported.")
 (define-public r-spatstat-univar
   (package
     (name "r-spatstat-univar")
-    (version "3.0-1")
+    (version "3.1-1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "spatstat.univar" version))
        (sha256
-        (base32 "063hmk0c5liyhg03d5afndynjrnp4yik3rgpmk51zq1npm3wjv6n"))))
+        (base32 "12x8w2y44qfiqd92dv0gfrdylg7lsl06mdprsc1yr8vpg8a0hb6m"))))
     (properties `((upstream-name . "spatstat.univar")))
     (build-system r-build-system)
     (propagated-inputs (list r-spatstat-utils))
