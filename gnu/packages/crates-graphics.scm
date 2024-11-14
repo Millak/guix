@@ -955,8 +955,35 @@ and iOS.")
     (description "Low level D3D12 API wrapper.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-dav1d-0.10
+  (package
+    (name "rust-dav1d")
+    (version "0.10.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "dav1d" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1qd13sm1bfbc5chjgrzk4syffkky994lkyzhqrqklqxg1fj58jqd"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-av-data" ,rust-av-data-0.4)
+                       ("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-dav1d-sys" ,rust-dav1d-sys-0.8)
+                       ("rust-static-assertions" ,rust-static-assertions-1))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list dav1d clang llvm))
+    (home-page "https://github.com/rust-av/dav1d-rs")
+    (synopsis "Libdav1d bindings")
+    (description "This package provides libdav1d bindings in rust.")
+    (license license:expat)))
+
 (define-public rust-dav1d-0.6
   (package
+    (inherit rust-dav1d-0.10)
     (name "rust-dav1d")
     (version "0.6.1")
     (source (origin
@@ -966,18 +993,9 @@ and iOS.")
               (sha256
                (base32
                 "0qz2lx37pmx798lysgh6k5lk5y20ckr7pp8c1p6v2z0p721i913j"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-dav1d-sys" ,rust-dav1d-sys-0.3))))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list dav1d clang llvm))
-    (home-page "https://github.com/rust-av/dav1d-rs")
-    (synopsis "Libdav1d bindings")
-    (description "This package provides libdav1d bindings in rust.")
-    (license license:expat)))
+       (("rust-dav1d-sys" ,rust-dav1d-sys-0.3))))))
 
 (define-public rust-dav1d-sys-0.7
   (package
