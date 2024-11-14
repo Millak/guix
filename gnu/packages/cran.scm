@@ -3222,13 +3222,13 @@ axis} (SMA), and @dfn{ranged major axis} (RMA).")
 (define-public r-ggpmisc
   (package
     (name "r-ggpmisc")
-    (version "0.6.0")
+    (version "0.6.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ggpmisc" version))
               (sha256
                (base32
-                "145w1pbwjdahgs06v8lms3ynpqryrrr4v0h8bgsmaqqkq1hjixmi"))))
+                "1ipi8dsxql94gk9h020shbvy26arpwjqlmkplyy746vmhkc03ma8"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-confintr
