@@ -20973,14 +20973,14 @@ written in rust.")
 (define-public rust-defmt-0.3
   (package
     (name "rust-defmt")
-    (version "0.3.6")
+    (version "0.3.8")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "defmt" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "15a53435jpy9jj3g49mxp94g961zslggbin2nd9f2va20wlmaf9r"))))
+        (base32 "1q79ryg6q1i2nfhs5wcrc018y8sblvsjlryl45qqi2v6c8id57d9"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags '("--release" "--features=unstable-test")
