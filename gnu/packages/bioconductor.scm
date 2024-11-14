@@ -14039,54 +14039,68 @@ defined categories which are over/under represented in RNA-seq data.")
            (for-each delete-file
                      ;; XXX: we keep inst/v1/js/glimma.min.js because
                      ;; it's not clear how to build it.
-                     (cons "vega/vega.min.js"
-                           (find-files "datatables"
-                                       "\\.min\\.js$")))))))
+                     (cons* "vega/vega.min.js"
+                            "jquery/jquery-3.6.1.min.js"
+                            (find-files "datatables"
+                                        "\\.min\\.js$")))))))
     (properties `((upstream-name . "Glimma")))
     (build-system r-build-system)
     (arguments
      (list
-      #:modules '((guix build utils)
-                  (guix build r-build-system)
-                  (srfi srfi-1))
+      #:modules
+      '((guix build r-build-system)
+        (guix build minify-build-system)
+        (guix build utils)
+        (srfi srfi-1)
+        (ice-9 match))
+      #:imported-modules
+      `(,@%r-build-system-modules
+        (guix build minify-build-system))
       #:phases
-      '(modify-phases %standard-phases
+      '(modify-phases (@ (guix build r-build-system) %standard-phases)
          (add-after 'unpack 'process-javascript
            (lambda* (#:key inputs #:allow-other-keys)
              (with-directory-excursion "inst/htmlwidgets/lib/"
-               (let ((files (list "datatables/Buttons-1.6.1/js/buttons.bootstrap.js"
-                                  "datatables/Buttons-1.6.1/js/buttons.bootstrap4.js"
-                                  "datatables/Buttons-1.6.1/js/buttons.colVis.js"
-                                  "datatables/Buttons-1.6.1/js/buttons.flash.js"
-                                  "datatables/Buttons-1.6.1/js/buttons.foundation.js"
-                                  "datatables/Buttons-1.6.1/js/buttons.html5.js"
-                                  "datatables/Buttons-1.6.1/js/buttons.jqueryui.js"
-                                  "datatables/Buttons-1.6.1/js/buttons.print.js"
-                                  "datatables/Buttons-1.6.1/js/buttons.semanticui.js"
-                                  "datatables/Buttons-1.6.1/js/dataTables.buttons.js"
-                                  "datatables/DataTables-1.10.20/js/dataTables.bootstrap.js"
-                                  "datatables/DataTables-1.10.20/js/dataTables.bootstrap4.js"
-                                  "datatables/DataTables-1.10.20/js/dataTables.foundation.js"
-                                  "datatables/DataTables-1.10.20/js/dataTables.jqueryui.js"
-                                  "datatables/DataTables-1.10.20/js/dataTables.semanticui.js"
-                                  "datatables/DataTables-1.10.20/js/jquery.dataTables.js"
+               (let ((files (list "datatables/Buttons-2.3.3/js/buttons.bootstrap.js"
+                                  "datatables/Buttons-2.3.3/js/buttons.bootstrap4.js"
+                                  "datatables/Buttons-2.3.3/js/buttons.bootstrap5.js"
+                                  "datatables/Buttons-2.3.3/js/buttons.bulma.js"
+                                  "datatables/Buttons-2.3.3/js/buttons.colVis.js"
+                                  "datatables/Buttons-2.3.3/js/buttons.dataTables.js"
+                                  "datatables/Buttons-2.3.3/js/buttons.foundation.js"
+                                  "datatables/Buttons-2.3.3/js/buttons.html5.js"
+                                  "datatables/Buttons-2.3.3/js/buttons.jqueryui.js"
+                                  "datatables/Buttons-2.3.3/js/buttons.print.js"
+                                  "datatables/Buttons-2.3.3/js/buttons.semanticui.js"
+                                  "datatables/Buttons-2.3.3/js/dataTables.buttons.js"
+                                  "datatables/DataTables-1.13.1/js/dataTables.bootstrap.js"
+                                  "datatables/DataTables-1.13.1/js/dataTables.bootstrap4.js"
+                                  "datatables/DataTables-1.13.1/js/dataTables.bootstrap5.js"
+                                  "datatables/DataTables-1.13.1/js/dataTables.bulma.js"
+                                  "datatables/DataTables-1.13.1/js/dataTables.dataTables.js"
+                                  "datatables/DataTables-1.13.1/js/dataTables.foundation.js"
+                                  "datatables/DataTables-1.13.1/js/dataTables.jqueryui.js"
+                                  "datatables/DataTables-1.13.1/js/dataTables.semanticui.js"
+                                  "datatables/DataTables-1.13.1/js/jquery.dataTables.js"
                                   "datatables/JSZip-2.5.0/jszip.js"
-                                  "datatables/Scroller-2.0.1/js/dataTables.scroller.js"
-                                  "datatables/Scroller-2.0.1/js/scroller.bootstrap.js"
-                                  "datatables/Scroller-2.0.1/js/scroller.bootstrap4.js"
-                                  "datatables/Scroller-2.0.1/js/scroller.foundation.js"
-                                  "datatables/Scroller-2.0.1/js/scroller.jqueryui.js"
-                                  "datatables/Scroller-2.0.1/js/scroller.semanticui.js"
+                                  "datatables/Scroller-2.0.7/js/dataTables.scroller.js"
+                                  "datatables/Scroller-2.0.7/js/scroller.bootstrap.js"
+                                  "datatables/Scroller-2.0.7/js/scroller.bootstrap4.js"
+                                  "datatables/Scroller-2.0.7/js/scroller.bootstrap5.js"
+                                  "datatables/Scroller-2.0.7/js/scroller.bulma.js"
+                                  "datatables/Scroller-2.0.7/js/scroller.dataTables.js"
+                                  "datatables/Scroller-2.0.7/js/scroller.foundation.js"
+                                  "datatables/Scroller-2.0.7/js/scroller.jqueryui.js"
+                                  "datatables/Scroller-2.0.7/js/scroller.semanticui.js"
                                   "datatables/datatables.js"
-                                  "datatables/jQuery-1.12.4/jquery-1.12.4.js"
                                   "vega/vega.js")))
                  (for-each (lambda (source)
-                             (let ((target (string-append (basename source ".js") ".min.js")))
-                               (format #true "Processing ~a --> ~a~%"
-                                       source target)
-                               (invoke "esbuild" source "--minify"
-                                       (string-append "--outfile=" target))))
-                           files))))))))
+                             (let ((target (string-append (dirname source) "/" (basename source ".js") ".min.js")))
+                               (minify source #:target target)))
+                           files)
+                 (let ((source (assoc-ref inputs "js-jquery"))
+                       (target "jquery/jquery-3.6.1.min.js"))
+                   (minify source #:target target)))))))))
     (propagated-inputs
      (list r-deseq2
            r-edger
@@ -14096,7 +14110,15 @@ defined categories which are over/under represented in RNA-seq data.")
            r-s4vectors
            r-summarizedexperiment))
     (native-inputs
-     (list esbuild r-knitr))
+     `(("esbuild" ,esbuild)
+       ("r-knitr" ,r-knitr)
+       ("js-jquery"
+        ,(origin
+           (method url-fetch)
+           (uri "https://code.jquery.com/jquery-3.6.1.js")
+           (sha256
+            (base32
+             "1lm4zcpvqdi7qi2s7bgci2z74wazq0z0bdvjmlrqbhmfrpk42ffz"))))))
     (home-page "https://github.com/Shians/Glimma")
     (synopsis "Interactive HTML graphics")
     (description
