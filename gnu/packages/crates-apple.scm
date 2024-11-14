@@ -1517,6 +1517,32 @@ the Cocoa Foundation framework.")
     (description "This package provides procedural macros for the objc2 project.")
     (license license:expat)))
 
+(define-public rust-objc2-user-notifications-0.2
+  (package
+    (name "rust-objc2-user-notifications")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "objc2-user-notifications" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1cscv2w3vxzaslz101ddv0z9ycrrs4ayikk4my4qd3im8bvcpkvn"))))
+    (build-system cargo-build-system)
+    (arguments
+     ;; Must specify the desired runtime using Cargo features on non-Apple platforms
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-block2" ,rust-block2-0.5)
+                       ("rust-objc2" ,rust-objc2-0.5)
+                       ("rust-objc2-core-location" ,rust-objc2-core-location-0.2)
+                       ("rust-objc2-foundation" ,rust-objc2-foundation-0.2))))
+    (home-page "https://github.com/madsmtm/objc2")
+    (synopsis "Bindings to the UserNotifications framework")
+    (description
+     "This package provides bindings to the @code{UserNotifications} framework.")
+    (license license:expat)))
+
 (define-public rust-readkey-0.1
   (package
     (name "rust-readkey")
