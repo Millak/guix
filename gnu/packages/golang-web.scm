@@ -641,6 +641,86 @@ Manager,NTLM}/Negotiate authentication over HTTP.")
      "This package provides SCSS compiler support for Go applications.")
     (license license:expat)))
 
+(define-public go-github-com-caddyserver-certmagic
+  (package
+    (name "go-github-com-caddyserver-certmagic")
+    (version "0.21.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/caddyserver/certmagic")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "061whx9p00lpxlfnywizqx5z9b020ggqg5vx5r5v2qhdrprg1gkz"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-skip"
+              ;; Some tests require networking to run so skip them altogether.
+              (string-join
+               (list "TestLookupNameserversOK/physics.georgetown.edu."
+                     "TestFindZoneByFqdn/domain_is_a_CNAME"
+                     "TestFindZoneByFqdn/domain_is_a_non-existent_subdomain"
+                     "TestFindZoneByFqdn/domain_is_a_eTLD"
+                     "TestFindZoneByFqdn/domain_is_a_cross-zone_CNAME"
+                     "TestFindZoneByFqdn/NXDOMAIN"
+                     "TestFindZoneByFqdn/several_non_existent_nameservers")
+               "|"))
+      #:import-path "github.com/caddyserver/certmagic"))
+    (propagated-inputs
+     (list go-github-com-caddyserver-zerossl
+           go-github-com-klauspost-cpuid-v2
+           go-github-com-libdns-libdns
+           go-github-com-mholt-acmez
+           go-github-com-miekg-dns
+           go-github-com-zeebo-blake3
+           go-go-uber-org-zap
+           go-golang-org-x-crypto
+           go-golang-org-x-net))
+    (home-page "https://github.com/caddyserver/certmagic")
+    (synopsis "Automatic HTTPS for any Go program")
+    (description
+     "@code{certmagic} provides API for TLS Automation with full control over almost
+every aspect of the system.
+
+Main features:
+@itemize
+@item Fully automated certificate management including issuance and renewal, with
+support for certificate revocation.  Also works in conjunction with your own
+certificates.
+@item Wildcard certificates.
+@item One-line, fully managed HTTPS servers, with HTTP->HTTPS redirects.
+@item Multiple issuers supported: get certificates from multiple sources/CAs for
+redundancy and resiliency.
+@item Solves all 3 common ACME challenges: HTTP, TLS-ALPN, and DNS (and capable of
+others.)
+@item Robust error handling:
+@itemize
+@item Challenges are randomized to avoid accidental dependence and rotated to
+overcome certain network blockages.
+@item Robust retries for up to 30 days.
+@item Exponential backoff with carefully-tuned intervals.
+@item Retries with optional test/staging CA endpoint instead of production, to avoid
+rate limits.
+@end itemize
+@item All libdns DNS providers work out-of-the-box.
+@item Pluggable storage backends (default: file system) and key sources.
+@item Automatic OCSP stapling.
+@item Distributed solving of all challenges (works behind load balancers.)
+@item Supports @samp{on-demand} issuance of certificates.
+@item Optional event hooks for observation.
+@item One-time private keys by default (new key for each cert) to discourage pinning
+and reduce scope of key compromise.
+@item Works with any certificate authority (CA) compliant with the ACME specification
+@url{https://tools.ietf.org/html/rfc8555, RFC 8555}.
+@item Must-Staple (optional; not default.)
+@item Full support for draft-ietf-acme-ari (ACME Renewal Information; ARI) extension.
+@end itemize")
+    (license license:expat)))
+
 (define-public go-github-com-caddyserver-zerossl
   (package
     (name "go-github-com-caddyserver-zerossl")
