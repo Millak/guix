@@ -1352,6 +1352,31 @@ the Cocoa Foundation framework.")
      "This package provides bindings to the @code{CoreImage} framework.")
     (license license:expat)))
 
+(define-public rust-objc2-core-location-0.2
+  (package
+    (name "rust-objc2-core-location")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "objc2-core-location" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "10apgsrigqryvi4rcc0f6yfjflvrl83f4bi5hkr48ck89vizw300"))))
+    (build-system cargo-build-system)
+    (arguments
+     ;; Must specify the desired runtime using Cargo features on non-Apple platforms
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-block2" ,rust-block2-0.5)
+                       ("rust-objc2" ,rust-objc2-0.5)
+                       ("rust-objc2-contacts" ,rust-objc2-contacts-0.2)
+                       ("rust-objc2-foundation" ,rust-objc2-foundation-0.2))))
+    (home-page "https://github.com/madsmtm/objc2")
+    (synopsis "Bindings to the CoreLocation framework")
+    (description
+     "This package provides bindings to the @code{CoreLocation} framework.")
+    (license license:expat)))
+
 (define-public rust-objc2-encode-4
   (package
     (name "rust-objc2-encode")
