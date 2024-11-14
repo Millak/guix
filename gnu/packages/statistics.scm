@@ -6456,17 +6456,17 @@ diagnostic tools (@code{ctlcurves} and @code{DiscrFact}).")
 (define-public r-ranger
   (package
     (name "r-ranger")
-    (version "0.16.0")
+    (version "0.17.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ranger" version))
        (sha256
         (base32
-         "12c52gqqwaaid5b062gad18ir1vala1z3a0z5j4af1xqzlxgk583"))))
+         "0dlxl1cgxd778gzvnnvnxlwm37q825fw48g2kwyzjyliwi6dz36l"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-rcpp r-matrix r-rcppeigen))
+     (list r-matrix r-rcpp r-rcppeigen))
     (home-page "https://github.com/imbs-hl/ranger")
     (synopsis "Fast implementation of random forests")
     (description
