@@ -23181,14 +23181,14 @@ them in distributed compute environments.")
 (define-public r-parallelly
   (package
     (name "r-parallelly")
-    (version "1.38.0")
+    (version "1.39.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "parallelly" version))
        (sha256
         (base32
-         "1ani63idvsx2apg3q2h9smi3sx7wbwpwpwjz585q9fyichy84b33"))))
+         "0caql3iyzcx5ihxqbnvar6p75miwh8r97kzwbrrqyv5wzr56cmvq"))))
     (properties `((upstream-name . "parallelly")))
     (build-system r-build-system)
     (home-page "https://github.com/HenrikBengtsson/parallelly")
