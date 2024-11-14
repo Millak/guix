@@ -1424,6 +1424,33 @@ the Cocoa Foundation framework.")
      `(#:tests? #f      ; Test suite wants gcc-objc
        #:cargo-inputs (("rust-objc-sys" ,rust-objc-sys-0.2))))))
 
+(define-public rust-objc2-foundation-0.2
+  (package
+    (name "rust-objc2-foundation")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "objc2-foundation" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1a6mi77jsig7950vmx9ydvsxaighzdiglk5d229k569pvajkirhf"))))
+    (build-system cargo-build-system)
+    (arguments
+     ;; Must specify the desired runtime using Cargo features on non-Apple platforms
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-block2" ,rust-block2-0.5)
+                       ("rust-dispatch" ,rust-dispatch-0.2)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-objc2" ,rust-objc2-0.5))
+       #:cargo-development-inputs
+       (("rust-static-assertions" ,rust-static-assertions-1))))
+    (home-page "https://github.com/madsmtm/objc2")
+    (synopsis "Bindings to the Foundation framework")
+    (description "This package provides bindings to the Foundation framework.")
+    (license license:expat)))
+
 (define-public rust-objc2-proc-macros-0.1
   (package
     (name "rust-objc2-proc-macros")
