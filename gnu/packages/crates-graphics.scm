@@ -3684,7 +3684,7 @@ in AVIF format (powers the @code{cavif} tool).")
 (define-public rust-rgb-0.8
   (package
     (name "rust-rgb")
-    (version "0.8.37")
+    (version "0.8.50")
     (source
      (origin
        (method url-fetch)
@@ -3692,11 +3692,12 @@ in AVIF format (powers the @code{cavif} tool).")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1n275hng7hmnzjavmdf24vqd86nm6bkg80nhr4zmgzb49c0aiah5"))))
+         "02ii3nsciska0sj23ggxaz8gj64ksw8nbpfjcwxlh037chb7sfap"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bytemuck" ,rust-bytemuck-1)
+        ("rust-defmt" ,rust-defmt-0.3)
         ("rust-serde" ,rust-serde-1))
        #:cargo-development-inputs
        (("rust-serde-json" ,rust-serde-json-1))))
