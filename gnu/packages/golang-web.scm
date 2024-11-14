@@ -641,6 +641,33 @@ Manager,NTLM}/Negotiate authentication over HTTP.")
      "This package provides SCSS compiler support for Go applications.")
     (license license:expat)))
 
+(define-public go-github-com-caddyserver-zerossl
+  (package
+    (name "go-github-com-caddyserver-zerossl")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/caddyserver/zerossl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0hr2kdabhm35hz5krp7m3g6wxvyb9xlqgmy3krf4wwb3yabsqp1m"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/caddyserver/zerossl"))
+    (home-page "https://github.com/caddyserver/zerossl")
+    (synopsis "ZeroSSL REST API client implementation for Go")
+    (description
+     "@code{zerossl} implements the @url{https://zerossl.com/documentation/api/,
+ZeroSSL REST API}.
+
+The REST API is distinct from the @url{https://zerossl.com/documentation/acme/, ACME
+endpoint}, which is a standardized way of obtaining certificates.")
+    (license license:expat)))
+
 (define-public go-github-com-ccding-go-stun
   (package
     (name "go-github-com-ccding-go-stun")
