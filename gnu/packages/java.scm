@@ -1870,7 +1870,7 @@ OpenJDK.")
   (package
     (inherit openjdk21)
     (name "jbr")
-    (version "21.0.2b397.7")
+    (version "21.0.3b509.11")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1879,7 +1879,7 @@ OpenJDK.")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "0xwldx2k9cx0b6xdh8ic0v87cr89khwr8hxnnrpwdsia1i8gkpga"))
+                "03xkghbp0b1czc2ags9n8ilprf9sy4bhsma0wf8xfapqn6d2sfyd"))
               (patches (search-patches "openjdk-21-fix-rpath.patch"
                                        "jbr-17-xcursor-no-dynamic.patch"))))
     (inputs
