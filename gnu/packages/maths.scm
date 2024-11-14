@@ -8717,12 +8717,12 @@ cubes.")
 
 (define-public dune-subgrid
   ; dune-subgrid does not tag its releases.
-  ; The following commit is a few commits past the releases/2.9 branch
-  ; to include some additional commits fixing compatibility with dune-uggrid.
-  (let ((commit "e83f3f919c2602425467ed767f279bc9c356c436"))
+  ; The following commit is the last commit on the releases/2.10 branch
+  ; as of 2024-11-14.
+  (let ((commit "e71cc9c2514356c7cd989f0c13661f10c37c58df"))
     (package
       (name "dune-subgrid")
-      (version (git-version "2.9.0" "1" commit))
+      (version (git-version "2.10.0" "1" commit))
       (source
        (origin
          (method git-fetch)
@@ -8732,7 +8732,7 @@ cubes.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-            "1dv4zg5j17bldpgg02ycg9fbfmnc1kffixgzbkkz86f2dmwgh2b6"))))
+            "1vahmj2r9r684n8rgnqqb8zhi3wibkxjsv1kql804azx71dslx0d"))))
       (build-system cmake-build-system)
       (arguments
        `(#:phases
