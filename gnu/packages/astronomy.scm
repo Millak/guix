@@ -1130,7 +1130,7 @@ Astrometry and Astrodynamics library.")
 (define-public libpasastro
   (package
     (name "libpasastro")
-    (version "1.4.2")
+    (version "1.4.3")
     (source
      (origin
        (method git-fetch)
@@ -1139,7 +1139,7 @@ Astrometry and Astrodynamics library.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1na3gyb3nzb5gdgccs1653j2gnz6w3v1mqzhyhkx3yqw8bs3q5x0"))))
+        (base32 "16d0kc22a1cn9kl8s0mxnaw0ax6qjq3rwhfifgpf1a3f9qp17115"))))
     (build-system gnu-build-system)
     (arguments
      (list
