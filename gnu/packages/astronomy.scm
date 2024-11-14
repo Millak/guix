@@ -4862,6 +4862,74 @@ spherical polygons that represent arbitrary regions of the sky.")
     ;; QD_LIBRARY_LICENSE.rst for bandeled QD source
     (license license:bsd-3)))
 
+(define-public python-spisea
+  (package
+    (name "python-spisea")
+    (version "2.1.11")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/astropy/SPISEA")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1xgmbg1c0lijvbsfiicjl2r4y7prm47qnmj86w69wa8xxsz7n2ph"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; Tests require additinal data, see
+      ;; <https://spisea.readthedocs.io/en/latest/getting_started.html>.
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'preparations
+            (lambda _
+              ;; Tests and sanity check are failed with ImportError: cannot
+              ;; import name 'update_default_config' from
+              ;; 'astropy.config.configuration'.
+              (delete-file "spisea/_astropy_init.py")
+              (with-output-to-file "spisea/__init__.py"
+                (lambda _
+                  (display
+                   (string-append "__version__ = \""
+                                  #$(package-version this-package)
+                                  "\""))))
+              (substitute* "setup.cfg"
+                (("astropy-package-template-example = .*") ""))
+              ;; The version could not be determined from git checkout.
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+    (native-inputs
+     (list python-cython
+           python-extension-helpers
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (list python-astropy
+           python-matplotlib
+           python-numpy
+           python-pysynphot
+           python-scipy))
+    (home-page "https://spisea.readthedocs.io/en/stable/index.html")
+    (synopsis "Stellar Population Synthesis Modeling")
+    (description
+     "SPISEA is an python package that generates single-age,
+single-metallicity populations (i.e. star clusters). It gives the user control
+over many parameters:
+
+@itemize
+@item cluster characteristics (age, metallicity, mass, distance)
+@item total extinction, differential extinction, and extinction law
+@item stellar evolution and atmosphere models
+@item stellar multiplicity and Initial Mass Function
+@item initial-Final Mass Relation
+@item photometric filters
+@end itemize")
+    ;; Licensed under a 3-clause BSD style license - see LICENSE.rst
+    ;; spisea/_astropy_init.py:
+    (license (list license:gpl3+ license:bsd-3))))
+
 (define-public python-statmorph
   (package
     (name "python-statmorph")
