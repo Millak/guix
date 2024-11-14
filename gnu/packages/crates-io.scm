@@ -71317,7 +71317,7 @@ formats:
 (define-public rust-serde-1
   (package
     (name "rust-serde")
-    (version "1.0.210")
+    (version "1.0.215")
     (source
      (origin
        (method url-fetch)
@@ -71325,7 +71325,7 @@ formats:
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0flc0z8wgax1k4j5bf2zyq48bgzyv425jkd5w0i6wbh7f8j5kqy8"))))
+         "13xqkw93cw9rnbkm0zy1apnilzq7l2xf1qw8m1nkga8i1fnw24v5"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
