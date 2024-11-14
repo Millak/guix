@@ -16625,14 +16625,14 @@ the standard library.")
 (define-public rust-copypasta-0.10
   (package
     (name "rust-copypasta")
-    (version "0.10.0")
+    (version "0.10.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "copypasta" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1bk5dby9jyn20d628l0cqjij738q1nqdqp8378f9x7mz951kcdbd"))))
+        (base32 "0n58sfbahs49ar0qivz1sqz1ixhh1ifgp5bzifjkvabwhqi59f6y"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-clipboard-win" ,rust-clipboard-win-3)
@@ -16640,7 +16640,7 @@ the standard library.")
                        ("rust-objc-foundation" ,rust-objc-foundation-0.1)
                        ("rust-objc-id" ,rust-objc-id-0.1)
                        ("rust-smithay-clipboard" ,rust-smithay-clipboard-0.7)
-                       ("rust-x11-clipboard" ,rust-x11-clipboard-0.8))))
+                       ("rust-x11-clipboard" ,rust-x11-clipboard-0.9))))
     (home-page "https://github.com/alacritty/copypasta")
     (synopsis "Get and set the contents of the OS-level clipboard")
     (description
