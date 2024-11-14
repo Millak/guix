@@ -839,8 +839,32 @@ for computer graphics.")
         ("rust-foreign-types" ,rust-foreign-types-0.3)
         ("rust-libc" ,rust-libc-0.2))))))
 
+(define-public rust-core-graphics-types-0.2
+  (package
+    (name "rust-core-graphics-types")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "core-graphics-types" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1sqka1rz84lr3p69i1s6lggnpnznmrw4ngc5q76w9xhky80s2i1x"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t ; link kind `framework` is only supported on Apple targets
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-core-foundation" ,rust-core-foundation-0.10)
+                       ("rust-libc" ,rust-libc-0.2))))
+    (home-page "https://github.com/servo/core-foundation-rs")
+    (synopsis "Bindings for some fundamental Core Graphics types")
+    (description
+     "This package provides bindings for some fundamental Core Graphics types.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-core-graphics-types-0.1
   (package
+    (inherit rust-core-graphics-types-0.2)
     (name "rust-core-graphics-types")
     (version "0.1.1")
     (source
@@ -850,20 +874,13 @@ for computer graphics.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "12vqf0n5mjjcqjksdd82n2zh8hfda2zpiiqsr522c2266j5vcs1s"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-1)
         ("rust-core-foundation" ,rust-core-foundation-0.9)
         ("rust-foreign-types" ,rust-foreign-types-0.3)
-        ("rust-libc" ,rust-libc-0.2))))
-    (home-page "https://github.com/servo/core-foundation-rs")
-    (synopsis "Bindings for some fundamental Core Graphics types")
-    (description
-     "This package provides bindings for some fundamental Core Graphics
-types.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-libc" ,rust-libc-0.2))))))
 
 (define-public rust-core-video-sys-0.1
   (package
