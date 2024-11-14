@@ -63,8 +63,30 @@
 extension of blocks.")
     (license license:expat)))
 
+(define-public rust-block2-0.5
+  (package
+    (name "rust-block2")
+    (version "0.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "block2" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0pyiha5his2grzqr3mynmq244laql2j20992i59asp0gy7mjw4rc"))))
+    (build-system cargo-build-system)
+    (arguments
+     ;; Must specify the desired runtime using Cargo features on non-Apple platforms
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-objc2" ,rust-objc2-0.5))))
+    (home-page "https://github.com/madsmtm/objc2")
+    (synopsis "Apple's C language extension of blocks")
+    (description "This package contains Apple's C language extension of blocks.")
+    (license license:expat)))
+
 (define-public rust-block2-0.3
   (package
+    (inherit rust-block2-0.5)
     (name "rust-block2")
     (version "0.3.0")
     (source
@@ -74,15 +96,10 @@ extension of blocks.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0s2ywcis2xf9444vmdgzr7ankrrkpchn8zimaw950cszm1imdd8m"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t ; link kind `framework` is only supported on Apple targets
        #:cargo-inputs (("rust-block-sys" ,rust-block-sys-0.2)
-                       ("rust-objc2" ,rust-objc2-0.4))))
-    (home-page "https://github.com/madsmtm/objc2")
-    (synopsis "Apple's C language extension of blocks")
-    (description "This package contains Apple's C language extension of blocks.")
-    (license license:expat)))
+                       ("rust-objc2" ,rust-objc2-0.4))))))
 
 (define-public rust-block2-0.2
   (package
