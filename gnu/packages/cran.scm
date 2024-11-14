@@ -6925,13 +6925,13 @@ work well on small screens.")
 (define-public r-minty
   (package
     (name "r-minty")
-    (version "0.0.1")
+    (version "0.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "minty" version))
        (sha256
-        (base32 "1kbs4f36s5bnjpc5wcqawbk154n9wjpf549hsjj4xdcg7ihcdgfg"))))
+        (base32 "0hh7yqg8cff0x7b23ng4944h7rqpm96zb7qrqifkdssxcl1jf8ln"))))
     (properties `((upstream-name . "minty")))
     (build-system r-build-system)
     (propagated-inputs (list r-cpp11 r-tzdb))
