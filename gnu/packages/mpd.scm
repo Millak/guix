@@ -296,28 +296,32 @@ terminal using ncurses.")
 (define-public ncmpcpp
   (package
     (name "ncmpcpp")
-    (version "0.9.2")
+    (version "0.10.1")
     (source (origin
-              (method url-fetch)
-              (uri
-               (string-append "https://ncmpcpp.rybczak.net/stable/ncmpcpp-"
-                              version ".tar.bz2"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ncmpcpp/ncmpcpp")
+                    (commit (string-append version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "06rs734n120jp51hr0fkkhxrm7zscbhpdwls0m5b5cccghazdazs"))))
+                "1chs7xpbsd1kmrdi4z41s0qcl7b661548jj6va1najgm5r5mwxy3"))))
     (build-system gnu-build-system)
-    (inputs (list libmpdclient
-                  boost
-                  readline
-                  ncurses
-                  taglib
+    (inputs (list boost
+                  curl
                   icu4c
-                  curl))
+                  libmpdclient
+                  ncurses
+                  readline
+                  taglib))
     (native-inputs
-     (list pkg-config))
+     (list autoconf-2.71
+           automake
+           libtool
+           pkg-config))
     (arguments
-     '(#:configure-flags
-       '("BOOST_LIB_SUFFIX=" "--with-taglib" "--enable-clock")))
+     (list #:configure-flags
+           #~(list "BOOST_LIB_SUFFIX=" "--with-taglib" "--enable-clock")))
     (synopsis "Featureful ncurses based MPD client inspired by ncmpc")
     (description "Ncmpcpp is an mpd client with a UI very similar to ncmpc,
 but it provides new useful features such as support for regular expressions
