@@ -1836,7 +1836,7 @@ OpenJDK.")
   (package
     (inherit openjdk17)
     (name "jbr")
-    (version "17.0.10b1207.6")
+    (version "17.0.11b1207.30")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1845,7 +1845,7 @@ OpenJDK.")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "034c00dr5qmyxvw3xpnpbhlmz3w8pkp52zm7wypjprczd90ylfrc"))
+                "5bbf5z8faf9sdkig2fwkj06hb7hs9s3bpzzvbqn2i75lbwqk3bln"))
               (patches (search-patches "jbr-17-xcursor-no-dynamic.patch"))))
     (arguments
      (substitute-keyword-arguments (package-arguments openjdk17)
