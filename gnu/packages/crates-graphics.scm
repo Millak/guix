@@ -3463,14 +3463,14 @@ interactive applications.")
 (define-public rust-ravif-0.11
   (package
     (name "rust-ravif")
-    (version "0.11.6")
+    (version "0.11.11")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "ravif" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1315abwxldavjxdl8dphab16fh8akw000hn406dbjnsi53b4kgl5"))
+        (base32 "1ij51acd3pkl3rr2ha3r3nc7pvg649m49bvyngpcv98fpnbgs4r4"))
        (modules '((guix build utils)))
        (snippet
         '(begin (substitute* "Cargo.toml"
@@ -3479,7 +3479,6 @@ interactive applications.")
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-avif-serialize" ,rust-avif-serialize-0.8)
-                       ("rust-bitstream-io" ,rust-bitstream-io-2)
                        ("rust-imgref" ,rust-imgref-1)
                        ("rust-loop9" ,rust-loop9-0.1)
                        ("rust-quick-error" ,rust-quick-error-2)
