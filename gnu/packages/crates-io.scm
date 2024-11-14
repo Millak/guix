@@ -93395,14 +93395,14 @@ available on a platform.")
 (define-public rust-weezl-0.1
   (package
     (name "rust-weezl")
-    (version "0.1.7")
+    (version "0.1.8")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "weezl" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1frdbq6y5jn2j93i20hc80swpkj30p1wffwxj1nr4fp09m6id4wi"))))
+        (base32 "10lhndjgs6y5djpg3b420xngcr6jkmv70q8rb1qcicbily35pa2k"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f              ; Not all files included.
