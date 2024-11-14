@@ -1517,6 +1517,40 @@ the Cocoa Foundation framework.")
     (description "This package provides procedural macros for the objc2 project.")
     (license license:expat)))
 
+(define-public rust-objc2-ui-kit-0.2
+  (package
+    (name "rust-objc2-ui-kit")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "objc2-ui-kit" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0vrb5r8z658l8c19bx78qks8c5hg956544yirf8npk90idwldfxq"))))
+    (build-system cargo-build-system)
+    (arguments
+     ;; Must specify the desired runtime using Cargo features on non-Apple platforms
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-2)
+        ("rust-block2" ,rust-block2-0.5)
+        ("rust-objc2" ,rust-objc2-0.5)
+        ("rust-objc2-cloud-kit" ,rust-objc2-cloud-kit-0.2)
+        ("rust-objc2-core-data" ,rust-objc2-core-data-0.2)
+        ("rust-objc2-core-image" ,rust-objc2-core-image-0.2)
+        ("rust-objc2-core-location" ,rust-objc2-core-location-0.2)
+        ("rust-objc2-foundation" ,rust-objc2-foundation-0.2)
+        ("rust-objc2-link-presentation" ,rust-objc2-link-presentation-0.2)
+        ("rust-objc2-quartz-core" ,rust-objc2-quartz-core-0.2)
+        ("rust-objc2-symbols" ,rust-objc2-symbols-0.2)
+        ("rust-objc2-uniform-type-identifiers" ,rust-objc2-uniform-type-identifiers-0.2)
+        ("rust-objc2-user-notifications" ,rust-objc2-user-notifications-0.2))))
+    (home-page "https://github.com/madsmtm/objc2")
+    (synopsis "Bindings to the UIKit framework")
+    (description "This package provides bindings to the UIKit framework.")
+    (license license:expat)))
+
 (define-public rust-objc2-symbols-0.2
   (package
     (name "rust-objc2-symbols")
