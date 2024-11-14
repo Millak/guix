@@ -1165,7 +1165,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/dtc-meson-cell-overflow.patch		\
   %D%/packages/patches/duc-fix-test-sh.patch                    \
   %D%/packages/patches/dune-common-skip-failing-tests.patch	\
-  %D%/packages/patches/dune-istl-fix-solver-playground.patch	\
   %D%/packages/patches/durden-shadow-arcan.patch		\
   %D%/packages/patches/dvd+rw-tools-add-include.patch 		\
   %D%/packages/patches/dwarves-threading-reproducibility.patch	\

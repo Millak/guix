@@ -8546,7 +8546,7 @@ This package contains the basic DUNE grid classes.")
 (define-public dune-istl
   (package
     (name "dune-istl")
-    (version "2.9.0")
+    (version "2.10.0")
     (source
      (origin
        (method url-fetch)
@@ -8554,8 +8554,7 @@ This package contains the basic DUNE grid classes.")
                            version "/dune-istl-" version ".tar.gz"))
        (sha256
         (base32
-         "0smghqr400xl84j0laabgwaj2p5jlj3n3s85bm7qp9m2vjz6rav6"))
-       (patches (search-patches "dune-istl-fix-solver-playground.patch"))))
+         "0rk95rkj87gpb3gn40jl532rybs2lxkhn7g6b30m9kbzz7yfjfbc"))))
     (build-system cmake-build-system)
     (arguments
      `(#:phases
