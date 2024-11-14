@@ -12827,6 +12827,29 @@ MEDLINE XML repository.")
 abstract syntax tree (AST) nodes without side effects.")
     (license license:expat)))
 
+(define-public python-puremagic
+  (package
+    (name "python-puremagic")
+    (version "1.28")
+    (source
+     (origin
+       (method git-fetch)               ;no tests in PyPI archive
+       (uri (git-reference
+             (url "https://github.com/cdgriffith/puremagic")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0sffrjjqh37ijwnggyvs2rfm4iwaz2m395wqg0x727wv8i0x3f3b"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest))
+    (home-page "https://github.com/cdgriffith/puremagic")
+    (synopsis "Pure Python implementation of magic file detection")
+    (description
+     "This package implements a functionality that will identify a file based
+off it's magic numbers.")
+    (license license:expat)))
+
 (define-public python-ast-decompiler
   (package
     (name "python-ast-decompiler")
