@@ -8607,16 +8607,14 @@ bit-packing.  It is a port of simdcomp C library to Rust.")
 (define-public rust-bitreader-0.3
   (package
     (name "rust-bitreader")
-    (version "0.3.6")
+    (version "0.3.11")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "bitreader" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "0hcrn2s483si9j6v3gykn3029g4m2s5rifd9czz9iznihlfafknq"))))
+        (base32 "0rn010p46g7fv08la915yq4q1vjfpgz8baf3bdv6rmb3w6qmjrc8"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
