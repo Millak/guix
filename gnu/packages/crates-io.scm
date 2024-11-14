@@ -87438,6 +87438,32 @@ application authors using tracing to instrument their applications.")
 events.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-tracing-web-0.1
+  (package
+    (name "rust-tracing-web")
+    (version "0.1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tracing-web" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0z7yvr0v38yacqhqb1hbawy25jhgymd7izgbj66izmgbzr0s3rmr"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-js-sys" ,rust-js-sys-0.3)
+                       ("rust-tracing-core" ,rust-tracing-core-0.1)
+                       ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3)
+                       ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
+                       ("rust-web-sys" ,rust-web-sys-0.3))
+       #:cargo-development-inputs
+       (("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))
+    (home-page "https://github.com/WorldSEnder/tracing-web")
+    (synopsis "Tracing compatible subscriber layer for web platforms")
+    (description
+     "This package provides a tracing compatible subscriber layer for web platforms.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-trackable-1
   (package
     (name "rust-trackable")
