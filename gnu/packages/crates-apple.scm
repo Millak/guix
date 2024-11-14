@@ -1427,14 +1427,14 @@ the Cocoa Foundation framework.")
 (define-public rust-objc2-proc-macros-0.1
   (package
     (name "rust-objc2-proc-macros")
-    (version "0.1.1")
+    (version "0.1.3")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "objc2-proc-macros" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "07j3snswvj6532x32zgn4llc2xaf31rj4iw18n6dsrf2p0jvh1xr"))))
+                "1w335fj58k76z94d242xq18qkj7iw082lpy3kxnisaa5r7q4aaa6"))))
     (build-system cargo-build-system)
     (home-page "https://github.com/madsmtm/objc2")
     (synopsis "Procedural macros for the objc2 project")
