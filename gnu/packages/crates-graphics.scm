@@ -380,6 +380,30 @@ Mac, and Unix.")
     (description "Interop library between ash and raw-window-handle.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-av-data-0.4
+  (package
+    (name "rust-av-data")
+    (version "0.4.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "av-data" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "135kq5javpf83xci44srw9k0inh3g6k40ijr4qi3s6qn6m1y4jhj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-byte-slice-cast" ,rust-byte-slice-cast-1)
+                       ("rust-bytes" ,rust-bytes-1)
+                       ("rust-num-derive" ,rust-num-derive-0.4)
+                       ("rust-num-rational" ,rust-num-rational-0.4)
+                       ("rust-num-traits" ,rust-num-traits-0.2)
+                       ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/rust-av/rust-av")
+    (synopsis "Multimedia data structures")
+    (description "This package provides multimedia data structures.")
+    (license license:expat)))
+
 (define-public rust-avif-parse-1
   (package
     (name "rust-avif-parse")
