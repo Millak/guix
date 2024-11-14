@@ -8765,17 +8765,15 @@ provides the full grid interface including adaptive mesh refinement.")
 (define-public dune-typetree
   (package
     (name "dune-typetree")
-    (version "2.9.0")
+    (version "2.10.0")
     (source
      (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://gitlab.dune-project.org/staging/dune-typetree.git")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
+       (method url-fetch)
+       (uri (string-append "https://dune-project.org/download/"
+                           version "/dune-typetree-" version ".tar.gz"))
        (sha256
         (base32
-         "1qcnl8giivnn8zprszdwrqw4q29sv3c2pr8dlrz616j10i4r8p18"))))
+         "0k756c543r79jz51jfnvi6knnxv7y19xg69yb15b0hrv4gq015pf"))))
     (build-system cmake-build-system)
     (arguments
      `(#:phases
