@@ -1327,6 +1327,31 @@ the Cocoa Foundation framework.")
      "This package provides bindings to the @code{CoreData} framework.")
     (license license:expat)))
 
+(define-public rust-objc2-core-image-0.2
+  (package
+    (name "rust-objc2-core-image")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "objc2-core-image" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "102csfb82zi2sbzliwsfd589ckz0gysf7y6434c9zj97lmihj9jm"))))
+    (build-system cargo-build-system)
+    (arguments
+     ;; Must specify the desired runtime using Cargo features on non-Apple platforms
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-block2" ,rust-block2-0.5)
+                       ("rust-objc2" ,rust-objc2-0.5)
+                       ("rust-objc2-foundation" ,rust-objc2-foundation-0.2)
+                       ("rust-objc2-metal" ,rust-objc2-metal-0.2))))
+    (home-page "https://github.com/madsmtm/objc2")
+    (synopsis "Bindings to the CoreImage framework")
+    (description
+     "This package provides bindings to the @code{CoreImage} framework.")
+    (license license:expat)))
+
 (define-public rust-objc2-encode-4
   (package
     (name "rust-objc2-encode")
