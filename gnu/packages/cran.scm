@@ -39400,13 +39400,13 @@ customization by the user.")
 (define-public r-mlr3data
   (package
     (name "r-mlr3data")
-    (version "0.7.0")
+    (version "0.9.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mlr3data" version))
        (sha256
-        (base32 "04hwmj8cdszwgd845va26pgzdw0k4cm025zjrmp3fr7ypp73mirg"))))
+        (base32 "05hbg2s1y8gxkbrnvmw0vahl5x9dbdajhl857j2j7f7pbdwckjva"))))
     (properties `((upstream-name . "mlr3data")))
     (build-system r-build-system)
     (home-page "https://github.com/mlr-org/mlr3data")
