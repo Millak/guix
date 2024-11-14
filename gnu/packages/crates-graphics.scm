@@ -4036,8 +4036,96 @@ applications.")
        #:cargo-development-inputs
        (("rust-smithay-client-toolkit" ,rust-smithay-client-toolkit-0.16))))))
 
+(define-public rust-softbuffer-0.4
+  (package
+    (name "rust-softbuffer")
+    (version "0.4.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "softbuffer" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "025v65wsfncn1wp571rr9vj3ghfgnb6y06ai0nnjqy9favfiq18q"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--release" "--"
+                            ;; Not all files included.
+                            "--skip=src/lib.rs")
+       #:cargo-inputs (("rust-as-raw-xcb-connection" ,rust-as-raw-xcb-connection-1)
+                       ("rust-bytemuck" ,rust-bytemuck-1)
+                       ("rust-cfg-aliases" ,rust-cfg-aliases-0.2)
+                       ("rust-core-graphics" ,rust-core-graphics-0.24)
+                       ("rust-drm" ,rust-drm-0.12)
+                       ("rust-fastrand" ,rust-fastrand-2)
+                       ("rust-foreign-types" ,rust-foreign-types-0.5)
+                       ("rust-js-sys" ,rust-js-sys-0.3)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-memmap2" ,rust-memmap2-0.9)
+                       ("rust-objc2" ,rust-objc2-0.5)
+                       ("rust-objc2-foundation" ,rust-objc2-foundation-0.2)
+                       ("rust-objc2-quartz-core" ,rust-objc2-quartz-core-0.2)
+                       ("rust-raw-window-handle" ,rust-raw-window-handle-0.6)
+                       ("rust-redox-syscall" ,rust-redox-syscall-0.5)
+                       ("rust-rustix" ,rust-rustix-0.38)
+                       ("rust-tiny-xlib" ,rust-tiny-xlib-0.2)
+                       ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
+                       ("rust-wayland-backend" ,rust-wayland-backend-0.3)
+                       ("rust-wayland-client" ,rust-wayland-client-0.31)
+                       ("rust-wayland-sys" ,rust-wayland-sys-0.31)
+                       ("rust-web-sys" ,rust-web-sys-0.3)
+                       ("rust-windows-sys" ,rust-windows-sys-0.59)
+                       ("rust-x11rb" ,rust-x11rb-0.13))
+       #:cargo-development-inputs
+       (("rust-colorous" ,rust-colorous-1)
+        ("rust-criterion" ,rust-criterion-0.4)
+        ("rust-image" ,rust-image-0.25)
+        ("rust-rayon" ,rust-rayon-1)
+        ("rust-rustix" ,rust-rustix-0.38)
+        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3)
+        ("rust-web-time" ,rust-web-time-1)
+        ("rust-winit" ,rust-winit-0.30))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'configure 'add-absolute-library-references
+           (lambda* (#:key inputs vendor-dir #:allow-other-keys)
+             (substitute* (find-files vendor-dir "\\.rs$")
+               (("libX11\\.so")
+                (search-input-file inputs "lib/libX11.so"))
+               (("libX11-xcb\\.so")
+                (search-input-file inputs "lib/libX11-xcb.so"))
+               ;; Lots of libraries from rust-x11-dl and others.
+               (("libX[[:alpha:]]*\\.so" all)
+                (search-input-file inputs (string-append "lib/" all))))))
+         (add-before 'check 'pre-check
+           (lambda* (#:key native-inputs inputs #:allow-other-keys)
+             ;; Most tests require an X server.
+             (let ((xvfb (search-input-file (or native-inputs inputs)
+                                            "bin/Xvfb"))
+                   (display ":1"))
+               (setenv "DISPLAY" display)
+               (system (string-append xvfb " " display " &"))))))))
+    (inputs (list libx11
+                  libxcursor
+                  libxext
+                  libxft
+                  libxi
+                  libxinerama
+                  libxmu
+                  libxpresent
+                  libxrandr
+                  libxscrnsaver
+                  libxt
+                  libxtst))
+    (native-inputs (list xorg-server-for-tests))
+    (home-page "https://github.com/rust-windowing/softbuffer")
+    (synopsis "Cross-platform software buffer")
+    (description "Cross-platform software buffer.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-softbuffer-0.3
   (package
+    (inherit rust-softbuffer-0.4)
     (name "rust-softbuffer")
     (version "0.3.3")
     (source
@@ -4047,7 +4135,6 @@ applications.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0j199d8zg964324sppk1gnkq2361ivay7ykrlm71npg8v3ma4vc2"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-as-raw-xcb-connection" ,rust-as-raw-xcb-connection-1)
                        ("rust-bytemuck" ,rust-bytemuck-1)
@@ -4101,24 +4188,7 @@ applications.")
                                             "bin/Xvfb"))
                    (display ":1"))
                (setenv "DISPLAY" display)
-               (system (string-append xvfb " " display " &"))))))))
-    (inputs (list libx11
-                  libxcursor
-                  libxext
-                  libxft
-                  libxi
-                  libxinerama
-                  libxmu
-                  libxpresent
-                  libxrandr
-                  libxscrnsaver
-                  libxt
-                  libxtst))
-    (native-inputs (list xorg-server-for-tests))
-    (home-page "https://github.com/rust-windowing/softbuffer")
-    (synopsis "Cross-platform software buffer")
-    (description "Cross-platform software buffer.")
-    (license (list license:expat license:asl2.0))))
+               (system (string-append xvfb " " display " &"))))))))))
 
 (define-public rust-tiff-0.9
   (package
