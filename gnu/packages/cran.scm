@@ -20689,14 +20689,14 @@ in-memory raw vectors.")
 (define-public r-nlp
   (package
     (name "r-nlp")
-    (version "0.3-0")
+    (version "0.3-1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "NLP" version))
        (sha256
         (base32
-         "1v5kszwj56hdyd07ya9p0caxrd4ckpa1x6d0y6d1xrsi074638n0"))))
+         "1x64j49lfrj2yklwpcwsbzkadcjsbkwiximgvzlqqdpl7ldbp80q"))))
     (properties `((upstream-name . "NLP")))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/NLP/")
