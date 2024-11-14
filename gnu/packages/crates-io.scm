@@ -28644,6 +28644,25 @@ values to other threads.")
     (description "This package provides bindings for FreeType font library.")
     (license license:expat)))
 
+(define-public rust-freetype-rs-0.36
+  (package
+    (inherit rust-freetype-rs-0.37)
+    (name "rust-freetype-rs")
+    (version "0.36.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "freetype-rs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "05rbdl18ks2rb0kz7giwpcv7k1hfg19hbp406l9h95m0dkixwhjl"))))
+    (arguments
+     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-freetype-sys" ,rust-freetype-sys-0.20)
+                       ("rust-libc" ,rust-libc-0.2))
+       #:cargo-development-inputs
+       (("rust-unicode-normalization" ,rust-unicode-normalization-0.1))))))
+
 (define-public rust-freetype-rs-0.35
   (package
     (inherit rust-freetype-rs-0.37)
