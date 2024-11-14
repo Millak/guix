@@ -2669,8 +2669,42 @@ It's features include:
      "This package builds and links to the dav1d AV1 decoder.")
     (license license:bsd-2)))
 
+(define-public rust-libwebp-sys-0.9
+  (package
+    (name "rust-libwebp-sys")
+    (version "0.9.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libwebp-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0cv7hxzh9p66q5c4ay30bvffh0y66abwmr2nliscwrbigkgk1kal"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (delete-file-recursively "vendor")
+                 ;; Force linking to our packaged libwebp.
+                 (delete-file "build.rs")
+                 (with-output-to-file "build.rs"
+                   (lambda _
+                     (format #t "fn main() {~@
+                             println!(\"cargo:rustc-link-lib=webp\");~@
+                             }~%")))))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Test fails to find all webp functions.
+       #:cargo-inputs (("rust-cc" ,rust-cc-1)
+                       ("rust-glob" ,rust-glob-0.3))))
+    (inputs (list libwebp))
+    (home-page "https://github.com/NoXF/libwebp-sys")
+    (synopsis "Bindings to libwebp (bindgen, static linking)")
+    (description
+     "This package provides Bindings to libwebp (bindgen, static linking).")
+    (license license:expat)))
+
 (define-public rust-libwebp-sys-0.4
   (package
+    (inherit rust-libwebp-sys-0.9)
     (name "rust-libwebp-sys")
     (version "0.4.2")
     (source (origin
@@ -2679,17 +2713,12 @@ It's features include:
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32 "1gvjaqhjpzdskx8x4q1lfgw24jnbjgkx4s6dxpkkg2d2ba4d37s3"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
        '("--release" "--"
          "--skip=tests::poke")
        #:cargo-inputs
-       (("rust-cc" ,rust-cc-1))))
-    (home-page "https://github.com/NoXF/libwebp-sys")
-    (synopsis "Bindings to libwebp (bindgen, static linking)")
-    (description "Bindings to libwebp (bindgen, static linking)")
-    (license license:expat)))
+       (("rust-cc" ,rust-cc-1))))))
 
 (define-public rust-line-drawing-0.7
   (package
