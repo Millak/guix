@@ -53675,14 +53675,14 @@ Format (MCF).")
 (define-public rust-paste-1
   (package
     (name "rust-paste")
-    (version "1.0.14")
+    (version "1.0.15")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "paste" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0k7d54zz8zrz0623l3xhvws61z5q2wd3hkwim6gylk8212placfy"))))
+        (base32 "02pxffpdqkapy292harq6asfjvadgp1s005fip9ljfsn9fvxgh2p"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; Can't compile rust-paste-test-suite
