@@ -8011,13 +8011,13 @@ graphics packages that comes with the base installation.")
 (define-public r-ctrdata
   (package
     (name "r-ctrdata")
-    (version "1.19.4")
+    (version "1.19.5")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ctrdata" version))
               (sha256
                (base32
-                "1vr5qrjk9flklw819dkw7dx418ipjrs4q0slj7jr4hjxj20fl25b"))))
+                "0pjsfnl1v6a6cs6hny092jby750l5br7fdzws9lnly0iky1lf55g"))))
     (properties `((upstream-name . "ctrdata")))
     (build-system r-build-system)
     (propagated-inputs
