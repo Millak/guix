@@ -71753,7 +71753,7 @@ TOML/JSON/MessagePack strings and serializable values.")
 (define-public rust-serde-derive-1
   (package
     (name "rust-serde-derive")
-    (version "1.0.210")
+    (version "1.0.215")
     (source
      (origin
        (method url-fetch)
@@ -71761,7 +71761,7 @@ TOML/JSON/MessagePack strings and serializable values.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "07yzy4wafk79ps0hmbqmsqh5xjna4pm4q57wc847bb8gl3nh4f94"))))
+         "1h2nswy0rmzblil38h12wxsgni1ik63rk22wy19g48v9hrpqc7md"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
