@@ -147,6 +147,7 @@
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 Spencer King <spencer.king@nursiapress.com>
 ;;; Copyright © 2024 emma thompson <bigbookofbug@proton.me>
+;;; Copyright © 2024 Liam Hupfer <liam@hpfr.net>
 
 ;;;
 ;;; This file is part of GNU Guix.
@@ -9806,7 +9807,13 @@ Tracker as well as bug identifiers prepared for @code{bug-reference-mode}.")
                  (lambda* (#:key inputs #:allow-other-keys)
                    (emacs-substitute-variables "piem-b4.el"
                      ("piem-b4-b4-executable"
-                      (search-input-file inputs "/bin/b4"))))))))
+                      (search-input-file inputs "/bin/b4")))))
+               (add-after 'install 'makeinfo
+                 (lambda _
+                   (invoke "makeinfo" "Documentation/piem.texi")
+                   (install-file "piem.info"
+                                 (string-append #$output "/share/info")))))))
+    (native-inputs (list texinfo))
     (inputs
      (list b4
            emacs-debbugs
