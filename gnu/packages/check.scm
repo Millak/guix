@@ -1642,14 +1642,14 @@ following improvements:
 (define-public python-pytest-cov
   (package
     (name "python-pytest-cov")
-    (version "3.0.0")
+    (version "6.0.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "pytest-cov" version))
         (sha256
-         (base32 "0w6lfv8gc1lxmnvsz7mq5z9shxac5zz6s9mwrai108kxc6qzbw77"))))
-    (build-system python-build-system)
+         (base32 "1h5dvj4lr0qpbxqd38g66ab7q41vbx30n0kgszibi2r4raavbq7x"))))
+    (build-system pyproject-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -1660,6 +1660,9 @@ following improvements:
             ;; with "Duplicate implicit target name".
             (invoke "python" "./setup.py" "check"
                     "--strict" "--metadata"))))))
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-coverage python-pytest))
     (home-page "https://github.com/pytest-dev/pytest-cov")
