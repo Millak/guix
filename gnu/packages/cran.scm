@@ -4650,6 +4650,26 @@ designed to make it easy to install and load multiple tidyverse packages in a
 single step.")
     (license license:gpl3)))
 
+(define-public r-tis
+  (package
+    (name "r-tis")
+    (version "1.39")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "tis" version))
+       (sha256
+        (base32 "1sq3acz8mybsbxng5fga4ynqvh1ly9hs3ca727jiyx1gam712mis"))))
+    (properties `((upstream-name . "tis")))
+    (build-system r-build-system)
+    (home-page "https://cran.r-project.org/package=tis")
+    (synopsis "Time indexes and time indexed series")
+    (description
+     "This package provides functions and S3 classes for time indexes and time
+indexed series, which are compatible with FAME frequencies.")
+    ;; Unlimited distribution
+    (license (license:non-copyleft "file://DESCRIPTION"))))
+
 (define-public r-tkrplot
   (package
     (name "r-tkrplot")
