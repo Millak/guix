@@ -43,6 +43,7 @@
   #:use-module (gnu packages admin)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages certs)
   #:use-module (gnu packages check)
   #:use-module (gnu packages django)
   #:use-module (gnu packages docker)
@@ -2228,32 +2229,43 @@ supported by the MyPy typechecker.")
 (define-public python-mypy
   (package
     (name "python-mypy")
-    (version "1.4.1")
+    (version "1.13.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "mypy" version))
        (sha256
         (base32
-         "06svfmqbnb45pydy8lcrr12wqhhla5dl888w0g4f3wm1ismxkg4v"))))
-    (build-system python-build-system)
+         "0pl3plw815824z5gsncnjg3yn2v5wz0gqp20wdrncgmzdwdsd482"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "mypyc")))))))
+     (list
+      ;; It tries to download hatchling and install aditional test
+      ;; dependencies.
+      #:test-flags #~(list "--ignore=mypy/test/testpep561.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-home
+            (lambda _
+              ;; The directory '/homeless-shelter/.cache/pip' or its parent
+              ;; directory is not owned or is not writable by the current
+              ;; user.
+              (setenv "HOME" "/tmp"))))))
     (native-inputs
-     (list python-attrs
+     (list nss-certs-for-test
+           python-attrs
            python-lxml
            python-psutil
            python-pytest
            python-pytest-forked
            python-pytest-xdist
-           python-virtualenv))
+           python-setuptools
+           python-virtualenv
+           python-wheel))
     (propagated-inputs
-     (list python-mypy-extensions python-tomli python-typing-extensions))
+     (list python-mypy-extensions
+           python-tomli
+           python-typing-extensions))
     (home-page "https://www.mypy-lang.org/")
     (synopsis "Static type checker for Python")
     (description "Mypy is an optional static type checker for Python that aims
@@ -2273,12 +2285,10 @@ them using any Python VM with basically no runtime overhead.")
      (inherit python-mypy)
      (name "python-mypy-minimal")
      (arguments
-      `(#:tests? #f
-        #:phases (modify-phases %standard-phases
-                   ;; XXX: Fails with: "In procedure utime: No such file or
-                   ;; directory".
-                   (delete 'ensure-no-mtimes-pre-1980))))
-     (native-inputs '()))))
+      `(#:tests? #f))
+     (native-inputs
+      (list python-setuptools
+            python-wheel)))))
 
 (define-public python-nptyping
   (package
