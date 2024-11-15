@@ -1095,13 +1095,13 @@ framework and makes it easy to undo any monkey patching.  The fixtures are:
 (define-public python-pytest-mpl
   (package
     (name "python-pytest-mpl")
-    (version "0.16.1")
+    (version "0.17.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest-mpl" version))
        (sha256
-        (base32 "0sa4229xkkah3fdg9wnqnvb9j13xsd3x1h5rwbsgb3sf2a0icmrd"))))
+        (base32 "1inaaafzxgbxldz4xqvx68gpj8p5i30qlsgva8sb7d34wvbhbvzv"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -1114,7 +1114,6 @@ framework and makes it easy to undo any monkey patching.  The fixtures are:
     (propagated-inputs
      (list python-jinja2
            python-matplotlib
-           python-nose
            python-packaging
            python-pillow))
     (home-page "https://github.com/matplotlib/pytest-mpl")
