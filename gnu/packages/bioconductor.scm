@@ -2030,6 +2030,28 @@ genomation package.  Included are Chip Seq, Methylation and Cage data,
 downloaded from Encode.")
     (license license:gpl3+)))
 
+(define-public r-golubesets
+  (package
+    (name "r-golubesets")
+    (version "1.48.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "golubEsets" version
+                              'experiment))
+       (sha256
+        (base32 "0f0lk9qp6d5frvgs5c34jm7fhnjw4v76wi45pdjbh0sr0fhzxf9z"))))
+    (properties `((upstream-name . "golubEsets")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biobase))
+    (home-page "https://bioconductor.org/packages/golubEsets")
+    (synopsis "ExpressionSets for golub leukemia data")
+    (description
+     "This is a representation of public golub data with some covariate data
+of provenance unknown to the maintainer at present; it now employs
+@code{ExpressionSet} format.")
+    (license license:lgpl2.0+)))
+
 (define-public r-hdcytodata
   (package
     (name "r-hdcytodata")
