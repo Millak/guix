@@ -3175,6 +3175,30 @@ set edges, set labels, and regions.  From version 1.0, it is possible to
 customize these components as you demand in ordinary @code{ggplot2} grammar.")
     (license license:gpl3)))
 
+(define-public r-lbfgsb3c
+  (package
+    (name "r-lbfgsb3c")
+    (version "2024-3.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "lbfgsb3c" version))
+       (sha256
+        (base32 "0rgikv5p05rv4r55mihlbk1953jiwd95wp2rn05xqi4ix33y3vxj"))))
+    (properties `((upstream-name . "lbfgsb3c")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-numderiv r-rcpp r-rcpparmadillo))
+    (native-inputs (list gfortran r-knitr r-testthat))
+    (home-page "https://nlmixr2.github.io/lbfgsb3c/")
+    (synopsis "Limited memory BFGS minimizer with bounds on parameters")
+    (description
+     "This package lets you interface to Nocedal et al. L-BFGS-B.3.0 limited
+memory BFGS minimizer with bounds on parameters.  This registers a R
+compatible C interface to L-BFGS-B.3.0 that uses the same function types and
+optimization as the @code{optim()} function.  This package also adds more
+stopping criteria as well as allowing the adjustment of more tolerances.")
+    (license license:gpl2)))
+
 (define-public r-lmds
   (package
     (name "r-lmds")
