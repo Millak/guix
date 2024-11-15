@@ -9819,7 +9819,7 @@ Tracker as well as bug identifiers prepared for @code{bug-reference-mode}.")
            emacs-debbugs
            emacs-elfeed
            emacs-notmuch))
-    (home-page "https://docs.kyleam.com/piem")
+    (home-page "https://docs.kyleam.com/piem/")
     (synopsis "Glue for working with public-inbox archives")
     (description "This package provides a collection of Emacs libraries for
 working with public-inbox archives.  As much of the hard work here is already
