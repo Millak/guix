@@ -2411,18 +2411,55 @@ have failed since the last commit or what tests are currently failing.")))
 (define-public python-coverage
   (package
     (name "python-coverage")
-    (version "6.4.3")
+    (version "7.6.7")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "coverage" version))
        (sha256
         (base32
-         "157vndwrzyv9ypn2w3b6g8gv7vw07v994hq8nxasdb75k3ry2apc"))))
-    (build-system python-build-system)
+         "094x8fsqfp7blrz3wh823p5vvzdrri5mw17z32hwjh8lwhk4i7fp"))))
+    (build-system pyproject-build-system)
     (arguments
-     ;; FIXME: 95 tests failed, 539 passed, 6 skipped, 2 errors.
-     '(#:tests? #f))
+     (list
+      #:test-flags
+      #~(list "--numprocesses=auto"
+              ;; XXX: Tests fail for multiple assertion reasons or missing
+              ;; fake modules.
+              "--ignore=tests/test_venv.py"
+              "--ignore=tests/test_report.py"
+              "--ignore=tests/test_plugins.py"
+              "--ignore=tests/test_debug.py"
+              "--ignore=tests/test_xml.py"
+              "--ignore=tests/test_python.py"
+              "--ignore=tests/test_concurrency.py"
+              "--ignore=tests/test_process.py"
+              "--deselect=tests/test_annotate.py::AnnotationGoldTest::test_multi"
+              "--deselect=tests/test_cmdline.py::CmdLineStdoutTest::test_version"
+              "--deselect=tests/test_api.py::RelativePathTest::test_files_up_one_level"
+              "--deselect=tests/test_filereporter.py::FileReporterTest::test_zipfile"
+              "--deselect=tests/test_oddball.py::DoctestTest::test_doctest")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-pyproject
+            (lambda _
+              (substitute* "pyproject.toml"
+                ;; Just run pytest with no frills.
+                (("addopts.*") ""))))
+          (add-before 'check 'fix-conftest
+            ;; It tries to scan the whole sys.path and "find some place to
+            ;; write to".
+            (lambda _
+              (with-output-to-file (string-append (getcwd) "/test.pth")
+                (lambda _ (display "")))
+              (substitute* "tests/conftest.py"
+                (("map(Path, sys.path)") (format #f "[~s]" (getcwd)))))))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-xdist ; hardcoded in tests/conftests.py
+           python-flaky
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-tomli))
     (home-page "https://coverage.readthedocs.io")
