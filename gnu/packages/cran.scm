@@ -5129,6 +5129,28 @@ model fitting and error handling.")
 into a pipeline of data manipulation and visualisation.")
     (license license:gpl3)))
 
+(define-public r-mondate
+  (package
+    (name "r-mondate")
+    (version "1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "mondate" version))
+       (sha256
+        (base32 "1spz3xv450mw0i984hjp6r4lk653nmjawf9cipv9z7isc4zv3ac3"))))
+    (properties `((upstream-name . "mondate")))
+    (build-system r-build-system)
+    (home-page "https://www.r-project.org")
+    (synopsis "Keep track of dates in terms of months")
+    (description
+     "Keep track of dates in terms of fractional calendar months per Damien
+Laker \"Time Calculations for Annualizing Returns: the Need for
+Standardization\", The Journal of Performance Measurement, 2008.  Model dates
+as of close of business.  Perform date arithmetic in units of \"months\" and
+\"years\".  Allow \"infinite\" dates to model \"ultimate\" time.")
+    (license license:mpl2.0)))
+
 (define-public r-morpho
   (package
     (name "r-morpho")
