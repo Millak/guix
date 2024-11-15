@@ -1,0 +1,32 @@
+Upstream-status: Presented upstream.
+
+From 80dcd31562827f4b6d085affe9d9f22164f7ed34 Mon Sep 17 00:00:00 2001
+From: Janneke Nieuwenhuizen <janneke@gnu.org>
+Date: Fri, 15 Nov 2024 16:18:29 +0100
+Subject: [PATCH] build: Support the 64bit Hurd.
+
+* configure.ac: When cross-compiling declare LZ_decompress_open before
+using it in conftest.c.
+---
+ configure.ac | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/configure.ac b/configure.ac
+index 50dc5ac..4c56768 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -32,7 +32,10 @@ AC_DEFUN([GUILE_LIBLZ_FILE_NAME], [
+     [if test "$cross_compiling" = yes; then
+        # When cross-compiling, we cannot rely on 'ldd'.  Instead, look
+        # the output of 'ld --verbose', assuming we're using GNU ld.
+-       echo 'int main () { return LZ_decompress_open(); }' > conftest.c
++       cat > conftest.c <<EOF
++int LZ_decompress_open ();
++int main () { return LZ_decompress_open(); }
++EOF
+        guile_cv_liblz_libdir="\
+           `$CC conftest.c -o conftest$EXEEXT -llz -Wl,--verbose 2>/dev/null \
+           | grep -E '^/.*/liblz\.(a|so)'`"
+-- 
+2.46.0
+

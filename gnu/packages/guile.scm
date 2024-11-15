@@ -4,7 +4,7 @@
 ;;; Copyright © 2014, 2016, 2018 David Thompson <davet@gnu.org>
 ;;; Copyright © 2014, 2017, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015, 2017 Christine Lemmer-Webber <cwebber@dustycloud.org>
-;;; Copyright © 2016, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2016, 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2016, 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2019, 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Andy Wingo <wingo@igalia.com>
@@ -962,8 +962,18 @@ Guile's foreign function interface.")
          "1whgmwkr1v8m63p4aaqn8blwl9vcrswwhbfv4bm0aghl5a6rryd7"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:make-flags
-       '("GUILE_AUTO_COMPILE=0"))) ;to prevent guild warnings
+     (list
+      #:make-flags #~'("GUILE_AUTO_COMPILE=0") ;prevent guild warnings
+      #:phases (if (or (%current-target-system) (target-hurd64?))
+                   #~(modify-phases %standard-phases
+                       (add-after 'unpack 'apply-hurd64-patch
+                         (lambda _
+                           (let ((patch
+                                  #$(local-file
+                                     (search-patch
+                                      "guile-lzlib-hurd64.patch"))))
+                             (invoke "patch" "--force" "-p1" "-i" patch)))))
+                   #~%standard-phases)))
     (native-inputs (list autoconf automake pkg-config guile-3.0))
     (inputs (list guile-3.0 lzlib))
     (synopsis "Guile bindings to lzlib")
