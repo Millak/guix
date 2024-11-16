@@ -54,6 +54,24 @@ gcc_dir=")
     (close-port port))
   (setenv "ZIG_LIBC" "/tmp/guix-zig-libc-paths"))
 
+(define (zig-target target)
+  (cond
+   ((string=? target "i586-pc-gnu")
+    "x86-hurd-gnu")
+   ((string=? target "i686-linux-gnu")
+    "x86-linux-gnu")
+   ((string=? target "i686-w64-mingw32")
+    "x86-windows-gnu")
+   ((string=? target "mips64el-linux-gnu")
+    "mips64el-linux-gnuabi64")
+   ((string=? target "powerpc-linux-gnu")
+    "powerpc-linux-gnueabi")
+   ((string=? target "x86_64-pc-gnu")
+    "x86_64-hurd-gnu")
+   ((string=? target "x86_64-w64-mingw32")
+    "x86_64-windows-gnu")
+   (else target)))
+
 (define* (build #:key
                 zig-build-flags
                 zig-release-type       ;; "safe", "fast" or "small" empty for a
@@ -69,7 +87,7 @@ gcc_dir=")
                      "--prefix-exe-dir"     "bin"
                      "--prefix-include-dir" "include"
                      ,@(if target
-                         (list (string-append "-Dtarget=" target))
+                         (list (string-append "-Dtarget=" (zig-target target)))
                          '())
                      ,@(if zig-release-type
                          (list (string-append "-Drelease-" zig-release-type))
