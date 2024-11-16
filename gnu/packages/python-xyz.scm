@@ -11833,43 +11833,55 @@ wraps Python's standard library threading and multiprocessing objects.")
        (uri (pypi-uri "pexpect" version))
        (sha256
         (base32 "032cg337h8awydgypz6f4wx848lw8dyrj4zy988x0lyib4ws8rgw"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'prepare-tests
-           (lambda _
-             (substitute* (find-files "tests")
-               (("/bin/ls") (which "ls"))
-               (("/bin/echo") (which "echo"))
-               (("/bin/which") (which "which"))
-               ;; Many tests try to use the /bin directory which
-               ;; is not present in the build environment.
-               ;; Use one that's non-empty and unlikely to change.
-               (("/bin'") "/dev'")
-               ;; Disable failing test.  See upstream bug report
-               ;; https://github.com/pexpect/pexpect/issues/568
-               (("def test_bash") "def _test_bash"))
-             ;; XXX: Socket connection test gets "Connection reset by peer".
-             ;; Why does it not work? Delete for now.
-             (delete-file "tests/test_socket.py")
-             #t))
-         (replace 'check (lambda _ (invoke "nosetests" "-v"))))))
+     (list
+      #:test-flags
+      #~(list "-k" (string-join
+                    (list
+                     ;; Disable failing test, see
+                     ;; <https://github.com/pexpect/pexpect/issues/568>.
+                     "not test_bash"
+                     ;; Fails with attempt to find OpenSSL.
+                     "test_large_stdout_stream"
+                     ;; Tests fail while trying to find
+                     ;; tmp-pexpect-xxxxxxxxxxxx directories.
+                     "test_run_uses_env"
+                     "test_run_uses_env_path"
+                     "test_run_uses_env_path_over_path"
+                     "test_spawn_uses_env"
+                     ;; Fails with assertion error: assert 0 == 500
+                     "test_before_across_chunks")
+                    " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'prepare-tests
+            (lambda _
+              (substitute* (find-files "tests")
+                (("/bin/bash") (which "bash"))
+                (("/bin/echo") (which "echo"))
+                (("/bin/ls") (which "ls"))
+                (("/bin/which") (which "which"))
+                ;; Many tests try to use the /bin directory which is not
+                ;; present in the build environment.  Use one that's non-empty
+                ;; and unlikely to change.
+                (("/bin'") "/dev'")))))))
     (native-inputs
-     `(("python-nose" ,python-nose)
-       ("python-pytest" ,python-pytest)
-       ("man-db" ,man-db)
-       ("which" ,which)
-       ("bash-full" ,bash)))                 ;full Bash for 'test_replwrap.py'
+     (list bash    ;full Bash for 'test_replwrap.py'
+           man-db
+           python-pytest
+           python-setuptools
+           python-wheel
+           which))
     (propagated-inputs
      (list python-ptyprocess))
     (home-page "https://pexpect.readthedocs.org/")
     (synopsis "Controlling interactive console applications")
     (description
      "Pexpect is a pure Python module for spawning child applications;
-controlling them; and responding to expected patterns in their output.
-Pexpect works like Don Libes’ Expect.  Pexpect allows your script to spawn a
-child application and control it as if a human were typing commands.")
+controlling them; and responding to expected patterns in their output. Pexpect
+works like Don Libes’ Expect.  Pexpect allows your script to spawn a child
+application and control it as if a human were typing commands.")
     (license license:isc)))
 
 (define-public python-sexpdata
