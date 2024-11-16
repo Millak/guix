@@ -1115,7 +1115,7 @@ doing practical, real world data analysis in Python.")
 (define-public python-pandas-2
   (package
     (name "python-pandas")
-    (version "2.1.1")
+    (version "2.2.3")
     (source
      (origin
        (method git-fetch)
@@ -1124,33 +1124,48 @@ doing practical, real world data analysis in Python.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1v9j38bvw739csdfl98ga6fqjdm61q3p5a2l7h364kg925nbc9r1"))))
+        (base32 "00f6jnplwg7iffnxdm4hpfls0ncbarc23933xq1rm5nk5g8dcldx"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
       #~(list "--pyargs" "pandas"
               ;; "--exitfirst"
-              ;; FIXME "-n" (number->string (parallel-job-count))
+              "--numprocesses" (number->string (parallel-job-count))
               "-m" "not slow and not network and not db"
-              "-k" (string-append
-                    "not test_git_version"
-                    " and not test_show_versions_console"
-                    ;; Not testing ~ expansion.
-                    " and not test_expand_user"
-                    " and not test_get_handle_with_path"
-                    ;; These test access the internet (see:
-                    ;; https://github.com/pandas-dev/pandas/issues/45085).:
-                    ;; pandas/tests/io/xml/test_xml.py::test_wrong_url[lxml]
-                    ;; pandas/tests/io/xml/test_xml.py::test_wrong_url[etree]
-                    " and not test_wrong_url"
-                    ;; TODO: Missing input
-                    " and not TestS3"
-                    " and not s3"
-                    ;; This test fails when run with pytest-xdist
-                    ;; (see: https://github.com/pandas-dev/pandas/issues/39096).
-                    " and not test_memory_usage"
-                    " and not test_parsing_tzlocal_deprecated"))
+              ;; All tests errored.
+              "--ignore=pandas/tests/io/test_clipboard.py"
+              "-k" (string-join
+                    (list
+                     "not test_git_version"
+                     "test_show_versions_console"
+                     ;; Not testing ~ expansion.
+                     "test_expand_user"
+                     "test_get_handle_with_path"
+                     ;; These test access the internet (see:
+                     ;; https://github.com/pandas-dev/pandas/issues/45085).:
+                     ;; pandas/tests/io/xml/test_xml.py::test_wrong_url[lxml]
+                     ;; pandas/tests/io/xml/test_xml.py::test_wrong_url[etree]
+                     "test_wrong_url"
+                     ;; TODO: Missing input
+                     "TestS3"
+                     "s3"
+                     ;; This test fails when run with pytest-xdist
+                     ;; (see: https://github.com/pandas-dev/pandas/issues/39096).
+                     "test_memory_usage"
+                     "test_parsing_tzlocal_deprecated"
+                     ;; PyArrow is optional.
+                     "test_style_bar_with_pyarrow_NA_values"
+                     "test_very_negative_exponent"
+                     "test_usecols_no_header_pyarrow"
+                     "test_scientific_no_exponent[pyarrow-None]"
+                     "test_inspect_getmembers"
+                     ;; SciPy introduces cycle, optional.
+                     "test_savefig"
+                     ;; It requires a fresh python-tzdata, including new
+                     ;; timezones.
+                     "test_repr")
+                    " and not "))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'version-set-by-guix
@@ -1200,7 +1215,7 @@ doing practical, real world data analysis in Python.")
     (native-inputs
      (list meson-python
            python-beautifulsoup4
-           python-cython-0.29.35
+           python-cython-3
            python-html5lib
            python-lxml
            python-matplotlib
