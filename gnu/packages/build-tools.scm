@@ -335,13 +335,13 @@ resembles Python.")
 (define-public meson-python
   (package
     (name "meson-python")
-    (version "0.15.0")
+    (version "0.17.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "meson_python" version))
               (sha256
                (base32
-                "0vyjhjabvm41hqijifk33idbdl62i76kfyf884f9rs29rpp77nzx"))))
+                "10szxcqgki4zwkrwmsirdg68h03k9qmfswd4r5xyz7p1y9lizfgg"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:test-flags #~(list "tests"
@@ -352,7 +352,7 @@ resembles Python.")
      (list meson
            ninja
            python-colorama
-           python-cython
+           python-cython-3
            python-pyproject-metadata
            python-tomli
            python-typing-extensions
@@ -362,7 +362,7 @@ resembles Python.")
            git-minimal/pinned
            patchelf
            pkg-config
-           python-cython
+           python-cython-3
            python-gitpython
            python-pytest
            python-pytest-cov
