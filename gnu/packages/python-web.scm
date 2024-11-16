@@ -5593,29 +5593,33 @@ List.  Forked from and using the same API as the publicsuffix package.")
 (define-public python-werkzeug
   (package
     (name "python-werkzeug")
-    (version "2.0.2")
+    (version "3.1.3")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "Werkzeug" version))
+       (uri (pypi-uri "werkzeug" version))
        (sha256
         (base32
-         "16nvv9dh37ssf5pkny9yj2li0n6wyzsygh8a9i86r3gfipybcaxa"))))
-    (build-system python-build-system)
+         "0ij7si3aa3ykac7k7fz481h4majqqwn2iqwhjxkji4y18plkqwk0"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "python" "-m" "pytest"
-                       ;; Test tries to use the network.
-                       "-k not test_reloader_sys_path")))))))
-    (propagated-inputs
-     (list python-requests))
+     (list
+      #:test-flags
+      ;; Test requiring networking setup.
+      #~(list "--ignore=tests/test_serving.py"
+              "--deselect=tests/test_debug.py::test_basic"
+              "--deselect=tests/test_exceptions.py::test_response_body"
+              "--deselect=tests/middleware/test_http_proxy.py::test_http_proxy")))
     (native-inputs
-     (list python-pytest python-pytest-timeout python-pytest-xprocess))
+     (list python-flit-core
+           python-pytest
+           python-watchdog
+           python-ephemeral-port-reserve
+           python-pytest-timeout
+           python-pytest-xprocess))
+    (propagated-inputs
+     (list python-markupsafe
+           python-requests))
     (home-page "https://palletsprojects.com/p/werkzeug/")
     (synopsis "Utilities for WSGI applications")
     (description "One of the most advanced WSGI utility modules.  It includes a
