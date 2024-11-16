@@ -25,6 +25,7 @@
 ;; Copyright © 2024 Vivien Kraus <vivien@planete-kraus.eu>
 ;; Copyright © 2024 Guillaume Le Vaillant <glv@posteo.net>
 ;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
+;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;
 ;; Copying and distribution of this file, with or without modification, are
 ;; permitted in any medium without royalty provided the copyright notice and
@@ -32,6 +33,68 @@
 
 (channel-news
  (version 0)
+
+ (entry (commit "b93434e656eba4260df82158a96c295000d3ff44")
+        (title (en "PostgreSQL service upgrade")
+               (de "PostgreSQL-Dienst aktualisiert")
+               (fr "Mise à jour du service PostgreSQL"))
+        (body
+         (en "\
+This news entry concerns users of the @code{postgresql-service-type}.
+
+The default PostgreSQL used in @code{postgresql-configuration} has been
+deprecated, and will be removed in a few months.  However, the value of the
+default @code{postgresql-configuration-postgresql} can't be directly changed
+to a newer major version of PostgreSQL, because switching to a major version
+currently requires a manual update of the database.
+
+Because of this, the default value of postgresql-configuration-postgresql has
+been unset.  Current users of the service will have to set it manually.  If it
+was unset, use @code{postgresql-10} and plan an upgrade in the next month to a
+supported version of PostgreSQL.  To upgrade, you will need to either dump
+your database using your previous version of PostgreSQL and reload it in the
+new version or use the @command{pg_upgrade} application.  See
+@url{https://www.postgresql.org/docs/current/upgrading.html} for more info.")
+         (de "\
+Diese Neuigkeit betrifft Nutzer des @code{postgresql-service-type}.
+
+Die in @code{postgresql-configuration} bisher vorgegebene Version von
+PostgreSQL gilt als veraltet und wird in ein paar Monaten entfernt werden.
+Allerdings können wir den Vorgabewert von
+@code{postgresql-configuration-postgresql} nicht einfach für Sie auf eine
+neuere große Version ändern, weil bei so einem Wechsel die Datenbank derzeit
+manuell aktualisiert werden muss.
+
+Aus diesem Grund wurde der Vorgabewert von
+@code{postgresql-configuration-postgresql} von nun an entfernt.  Aktuelle
+Nutzer des Dienstes müssen sie selbst setzen.  Wenn kein Wert gesetzt war,
+sollten Sie @code{postgresql-10} eintragen und dabei einplanen, dass Sie es
+kommenden Monat auf eine unterstützte Version von PostgreSQL aktualisieren
+müssen.  Zum Aktualisieren werden Sie entweder mit der vorherigen Version von
+PostgreSQL ein Dump Ihrer Datenbank exportieren, das Sie dann in der neuen
+Version laden, oder Sie benutzen dafür die Anwendung @command{pg_upgrade}.
+Siehe @url{https://www.postgresql.org/docs/current/upgrading.html} für weitere
+Informationen.")
+         (fr "\
+Ce message concerne les utilisateurs du service-type PostgreSQL.
+
+La précédente version par défaut de PostgreSQL utilisée dans
+@code{postgresqsl-configuration} est obsolète et sera supprimée dans quelques
+mois.  Cependant, la valeur de la configuration par défaut
+@code{postgresql-configuration-postgresql} ne peut pas être changée
+directement pour une version majeure prise en charge de PostgreSQL, car le
+passage à une nouvelle version majeure nécessite actuellement une mise à jour
+manuelle de la base de données.
+
+Pour cette raison, la valeur par défaut de
+@code{postgresql-configuration-postgresql} a été supprimée et les utilisateurs
+actuels du service doivent la configurer manuellement. Si elle n’était pas
+définie, utilisez @code{postgresql-10} et prévoyez une mise à jour dans le
+mois à venir vers une version plus récente de PostgreSQL.  Pour effectuer la
+mise à jour, vous devrez soit exporter votre base de données sous une version
+de PostgreSQL puis la réimporter sous une nouvelle version, soit utiliser
+l'application @command{pg_upgrade}. Pour plus d'informations, consultez
+@url{https://www.postgresql.org/docs/current/upgrading.html}.")))
 
  (entry (commit "cfc85eb0c67a5cf10a3fbe2531b926cbb8c62489")
         (title
