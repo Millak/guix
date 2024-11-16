@@ -15559,22 +15559,18 @@ functionalities with some extras.")
 (define-public python-ptyprocess
   (package
     (name "python-ptyprocess")
-    (version "0.5.2")
+    (version "0.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ptyprocess" version))
        (sha256
         (base32
-         "0ra31k10v3629xq0kdn8lwmfbi97anmk48r03yvh7mks0kq96hg6"))))
-    (build-system python-build-system)
+         "081j893x6c9qrfszp8swfqlpvk8agh1jc32y9140pvnf90xhlpaw"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-nose))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _ (invoke "nosetests"))))))
+     (list python-flit-core
+           python-pytest))
     (home-page "https://github.com/pexpect/ptyprocess")
     (synopsis "Run a subprocess in a pseudo terminal")
     (description
