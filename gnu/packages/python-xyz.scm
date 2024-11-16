@@ -4483,7 +4483,7 @@ server.")
 (define-public python-openpyxl
   (package
     (name "python-openpyxl")
-    (version "3.0.10")
+    (version "3.1.5")
     (source
      (origin
        ;; We use the upstream repository, as the tests are not included in the
@@ -4494,7 +4494,7 @@ server.")
              (changeset version)))
        (file-name (string-append name "-" version "-checkout"))
        (sha256
-        (base32 "0f8ym32vdn8wyziiy5bz8iiwvgj7dlccy86wkfcn5syqgivgqnv9"))))
+        (base32 "17z6rrvv3q1axy9r13c2hln2pazfn9n5bhkzrbjcjakgbfjl6mss"))))
     (build-system pyproject-build-system)
     (native-inputs (list python-lxml
                          python-pillow
