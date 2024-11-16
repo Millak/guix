@@ -33872,27 +33872,22 @@ EDU SDK.  This library has the following features:
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; Minimize test requirements.
+      #:test-flags
+      #~(list "--deselect=test/git/test_git.py::Repo::test_pyproject"
+              "--ignore=test/git/test_invocations.py"
+              "--ignore=test/test_render.py")
       #:phases
       #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                ;; Taken from tox.ini.
-                (invoke "python" "setup.py" "make_versioneer")
-                (invoke "python" "-m" "unittest" "discover" "test")
-                (invoke "python" "test/git/test_git.py" "-v")
-                ;; Some invocation tests require the network.
-                ;;(invoke "python" "test/git/test_invocations.py" "-v")
-                (invoke "python" "setup.py" "make_long_version_py_git")
-                (invoke "pyflakes" "setup.py" "versioneer.py" "git_version.py")
-                (invoke "python" "test/run_pyflakes_src.py")
-                (invoke "pyflakes" "test")
-                (invoke "flake8" "git_version.py" "versioneer.py")
-                (invoke "pycodestyle" "--max-line-length=88"
-                        "git_version.py" "versioneer.py")))))))
+          (add-before 'check 'pre-check
+            (lambda _
+              (invoke "python" "setup.py" "make_versioneer"
+                      "make_long_version_py_git"))))))
     (native-inputs
-     (list git-minimal python-flake8 python-pycodestyle python-pyflakes
-           python-pypa-build python-setuptools python-wheel))
+     (list git-minimal/pinned
+           python-pytest
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-tomli))
     (home-page "https://github.com/python-versioneer/python-versioneer")
