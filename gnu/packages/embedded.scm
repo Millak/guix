@@ -13,6 +13,7 @@
 ;;; Copyright © 2022 Mathieu Othacehe <othacehe@gnu.org>
 ;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1639,7 +1640,7 @@ STC89, STC90, STC10, STC11, STC12, STC15, STC8 and STC32 series.")
 (define-public stlink
   (package
     (name "stlink")
-    (version "1.7.0")
+    (version "1.8.0")
     (source
      (origin
        (method git-fetch)
@@ -1649,7 +1650,7 @@ STC89, STC90, STC10, STC11, STC12, STC15, STC8 and STC32 series.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "03xypffpbp4imrczbxmq69vgkr7mbp0ps9dk815br5wwlz6vgygl"))))
+         "1g5ahnj400sdf75k3xafawa6x0pzz7s86nqnfd65gqjr3bdlhlc6"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ;no tests
