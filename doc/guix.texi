@@ -26247,7 +26247,7 @@ Data type representing the configuration for the
 @code{postgresql-service-type}.
 
 @table @asis
-@item @code{postgresql} (default: @code{postgresql})
+@item @code{postgresql}
 PostgreSQL package to use for the service.
 
 @item @code{port} (default: @code{5432})

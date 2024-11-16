@@ -167,8 +167,11 @@ host	all	all	::1/128 	md5"))
 (define-record-type* <postgresql-configuration>
   postgresql-configuration make-postgresql-configuration
   postgresql-configuration?
-  (postgresql         postgresql-configuration-postgresql ;file-like
-                      (default postgresql))
+  ;; Setting no default ensures that the user sets its current postgresql
+  ;; explicitely.  Since major upgrades currently require a manual migration
+  ;; of the database, this way the user is responsible for upgrading properly.
+  ;; MAYBE TODO: Write an action to automatically upgrade in Guix.
+  (postgresql         postgresql-configuration-postgresql) ;file-like
   (port               postgresql-configuration-port
                       (default 5432))
   (locale             postgresql-configuration-locale
@@ -343,10 +346,9 @@ host	all	all	::1/128 	md5"))
           (service-extension
            profile-service-type
            (compose list postgresql-configuration-postgresql))))
-   (default-value (postgresql-configuration))
    (description "Run the PostgreSQL database server.")))
 
-(define-deprecated (postgresql-service #:key (postgresql postgresql)
+(define-deprecated (postgresql-service #:key (postgresql postgresql-10)
                                        (port 5432)
                                        (locale "en_US.utf8")
                                        (config-file (postgresql-config-file))
