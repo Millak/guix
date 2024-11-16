@@ -175,6 +175,20 @@ number/base32-hash tuples, directly usable in the 'patch-series' form."
 
         #:phases
         (modify-phases %standard-phases
+          ,@(if (and (target-hurd?) (not (system-hurd?)))
+                `((add-after 'configure 'create-pipesize.h
+                    ;; The Bash Makefile mentions how PIPESIZE calculation is
+                    ;; "technically wrong" when cross-compiling, and offers no
+                    ;; way to override it.  On the 64bit Hurd, it can make
+                    ;; bash hang.
+                    (lambda _
+                      (with-directory-excursion "builtins"
+                        (with-output-to-file "psize.aux"
+                          (lambda _ (display "dummy to pacify make\n")))
+                        (with-output-to-file "pipesize.h"
+                          (lambda _ (display "#define PIPESIZE 16384\n")))))))
+                '())
+
           (add-after 'install 'install-sh-symlink
             (lambda* (#:key outputs #:allow-other-keys)
               ;; Add a `sh' -> `bash' link.
