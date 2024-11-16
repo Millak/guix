@@ -8820,13 +8820,56 @@ writing C extensions for Python as easy as Python itself.")
     ;; Cython 3 is not officially released yet, so distinguish the name
     ;; for now.
     (name "python-cython-next")
-    (version "3.0.8")
+    (version "3.0.11")
     (source (origin
               (method url-fetch)
-              (uri (pypi-uri "Cython" version))
+              (uri (pypi-uri "cython" version))
               (sha256
                (base32
-                "1rlxscrn4bgdlbhjjikknbz5s2hyvn2rjfparry5wxnmiwyl4cw3"))))
+                "1zzsn60cl1qcz11h6c3miqayb7yfxdm1x19i2fk4qav8z0mdsiki"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-vv"
+              "-j" (number->string (parallel-job-count))
+              "-x" (string-join
+                    (list "annotate_html"
+                          "Debugger"
+                          ;; It introduces cycle.
+                          "numpy_test"
+                          ;; It fails with AssertionError: Failed doctest test
+                          ;; for complex_numbers_cpp.double_abs.
+                          "complex_numbers_cpp"
+                          ;; This test fails when running on 24 cores.
+                          "cpp_stl_conversion"
+                          ;; XXX: On 32-bit architectures, running the
+                          ;; parallel tests fails on many-core systems, see
+                          ;; <https://github.com/cython/cython/issues/2807>.
+                          #$@(if (not (target-64bit?))
+                                 '("run.parallel")
+                                 '())
+                          #$@(if (system-hurd?)
+                                 '("test_class_ref"
+                                   "test_compiler_directives"
+                                   "test_lang_version")
+                                 '()))
+                    "|"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              ;; Disable compiler optimizations to greatly reduce the running
+              ;; time of the test suite.
+              (setenv "CFLAGS" "-O0")
+              ;; Some tests require access to "$HOME/.cython".
+              (setenv "HOME" "/tmp")
+              (when tests?
+                (apply invoke "python" "runtests.py" test-flags)))))))
+    (native-inputs
+     (list libxcrypt
+           python-setuptools
+           python-wheel))
     (properties '())))
 
 ;; NOTE: when upgrading numpy please make sure that python-numba,
