@@ -1,0 +1,48 @@
+From eb630302e42f4f565d44f9894c5ab832b99267e2 Mon Sep 17 00:00:00 2001
+From: Hilton Chain <hako@ultrarare.space>
+Date: Sun, 17 Nov 2024 18:08:21 +0800
+Subject: [PATCH 1/5] zig build: respect `PKG_CONFIG` environment variable
+
+[Upstream commit: d263f1ec0eb988f0e4ed1859351f5040f590996b]
+
+`PKG_CONFIG` environment variable is used to override path to
+pkg-config executable, for example when it's name is prepended by
+target triple for cross-compilation purposes:
+
+```
+PKG_CONFIG=/usr/bin/aarch64-unknown-linux-gnu-pkgconf zig build
+```
+
+Signed-off-by: Eric Joldasov <bratishkaerik@landless-city.net>
+---
+ lib/std/build.zig | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/lib/std/build.zig b/lib/std/build.zig
+index 1b9a61beb6..2fa6afa12d 100644
+--- a/lib/std/build.zig
++++ b/lib/std/build.zig
+@@ -1284,7 +1284,8 @@ pub const Builder = struct {
+     }
+ 
+     fn execPkgConfigList(self: *Builder, out_code: *u8) (PkgConfigError || ExecError)![]const PkgConfigPkg {
+-        const stdout = try self.execAllowFail(&[_][]const u8{ "pkg-config", "--list-all" }, out_code, .Ignore);
++        const pkg_config_exe = self.env_map.get("PKG_CONFIG") orelse "pkg-config";
++        const stdout = try self.execAllowFail(&[_][]const u8{ pkg_config_exe, "--list-all" }, out_code, .Ignore);
+         var list = ArrayList(PkgConfigPkg).init(self.allocator);
+         errdefer list.deinit();
+         var line_it = mem.tokenize(u8, stdout, "\r\n");
+@@ -2113,8 +2114,9 @@ pub const LibExeObjStep = struct {
+         };
+ 
+         var code: u8 = undefined;
++        const pkg_config_exe = self.builder.env_map.get("PKG_CONFIG") orelse "pkg-config";
+         const stdout = if (self.builder.execAllowFail(&[_][]const u8{
+-            "pkg-config",
++            pkg_config_exe,
+             pkg_name,
+             "--cflags",
+             "--libs",
+-- 
+2.46.0
+

@@ -2413,21 +2413,26 @@ dist_patch_DATA =						\
   %D%/packages/patches/xygrib-fix-finding-data.patch		\
   %D%/packages/patches/xygrib-newer-proj.patch			\
   %D%/packages/patches/yggdrasil-extra-config.patch	\
+  %D%/packages/patches/zig-0.9-build-respect-PKG_CONFIG-env-var.patch	\
   %D%/packages/patches/zig-0.9-fix-runpath.patch		\
   %D%/packages/patches/zig-0.9-riscv-support.patch		\
   %D%/packages/patches/zig-0.9-use-baseline-cpu-by-default.patch	\
   %D%/packages/patches/zig-0.9-use-system-paths.patch		\
+  %D%/packages/patches/zig-0.10-build-respect-PKG_CONFIG-env-var.patch	\
   %D%/packages/patches/zig-0.10-fix-runpath.patch		\
   %D%/packages/patches/zig-0.10-use-system-paths.patch		\
   %D%/packages/patches/zig-0.10.0-610-bootstrap-resolve-conflicts.patch	\
   %D%/packages/patches/zig-0.10.0-675-TypeOf-hack.patch		\
   %D%/packages/patches/zig-0.10.0-747-CallOptions.patch		\
   %D%/packages/patches/zig-0.10.0-1638-re-add-qualCast.patch	\
+  %D%/packages/patches/zig-0.11-build-respect-PKG_CONFIG-env-var.patch	\
   %D%/packages/patches/zig-0.11-fix-runpath.patch		\
   %D%/packages/patches/zig-0.11-use-system-paths.patch		\
+  %D%/packages/patches/zig-0.12-build-respect-PKG_CONFIG-env-var.patch	\
   %D%/packages/patches/zig-0.12-fix-runpath.patch		\
   %D%/packages/patches/zig-0.12-use-baseline-cpu-by-default.patch	\
   %D%/packages/patches/zig-0.12-use-system-paths.patch		\
+  %D%/packages/patches/zig-0.13-build-respect-PKG_CONFIG-env-var.patch	\
   %D%/packages/patches/zig-0.13-fix-runpath.patch		\
   %D%/packages/patches/zsh-egrep-failing-test.patch		\
   %D%/packages/patches/zuo-bin-sh.patch

@@ -39,6 +39,11 @@
   ;; Set cache dir, otherwise Zig looks for `$HOME/.cache'.
   (setenv "ZIG_GLOBAL_CACHE_DIR" global-cache-dir)
 
+  (setenv "PKG_CONFIG"
+          (if target
+              (string-append target "-pkg-config")
+              "pkg-config"))
+
   ;; Libc paths for target.
   (let ((libc (assoc-ref inputs (if target "cross-libc" "libc")))
         (port (open-file "/tmp/guix-zig-libc-paths" "w" #:encoding "utf8")))

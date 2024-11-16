@@ -1,0 +1,48 @@
+From 0cdc9eedd666478ab6d0ca168ea7f7da91f94f2b Mon Sep 17 00:00:00 2001
+From: Eric Joldasov <bratishkaerik@landless-city.net>
+Date: Wed, 8 May 2024 23:21:34 +0500
+Subject: [PATCH 1/5] zig build: respect `PKG_CONFIG` environment variable
+
+[Upstream commit: d263f1ec0eb988f0e4ed1859351f5040f590996b]
+
+`PKG_CONFIG` environment variable is used to override path to
+pkg-config executable, for example when it's name is prepended by
+target triple for cross-compilation purposes:
+
+```
+PKG_CONFIG=/usr/bin/aarch64-unknown-linux-gnu-pkgconf zig build
+```
+
+Signed-off-by: Eric Joldasov <bratishkaerik@landless-city.net>
+---
+ lib/std/Build/Step/Compile.zig | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/lib/std/Build/Step/Compile.zig b/lib/std/Build/Step/Compile.zig
+index 335a7e2df7..1def445ef0 100644
+--- a/lib/std/Build/Step/Compile.zig
++++ b/lib/std/Build/Step/Compile.zig
+@@ -792,8 +792,9 @@ fn runPkgConfig(self: *Compile, lib_name: []const u8) ![]const []const u8 {
+     };
+ 
+     var code: u8 = undefined;
++    const pkg_config_exe = b.env_map.get("PKG_CONFIG") orelse "pkg-config";
+     const stdout = if (b.execAllowFail(&[_][]const u8{
+-        "pkg-config",
++        pkg_config_exe,
+         pkg_name,
+         "--cflags",
+         "--libs",
+@@ -2147,7 +2148,8 @@ pub fn doAtomicSymLinks(
+ }
+ 
+ fn execPkgConfigList(self: *std.Build, out_code: *u8) (PkgConfigError || ExecError)![]const PkgConfigPkg {
+-    const stdout = try self.execAllowFail(&[_][]const u8{ "pkg-config", "--list-all" }, out_code, .Ignore);
++    const pkg_config_exe = self.env_map.get("PKG_CONFIG") orelse "pkg-config";
++    const stdout = try self.execAllowFail(&[_][]const u8{ pkg_config_exe, "--list-all" }, out_code, .Ignore);
+     var list = ArrayList(PkgConfigPkg).init(self.allocator);
+     errdefer list.deinit();
+     var line_it = mem.tokenizeAny(u8, stdout, "\r\n");
+-- 
+2.46.0
+

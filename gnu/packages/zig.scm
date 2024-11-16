@@ -79,6 +79,7 @@
                  "0nfvgg23sw50ksy0z0ml6lkdsvmd0278mq29m23dbb2jsirkhry7"))
        (patches
         (search-patches
+         "zig-0.9-build-respect-PKG_CONFIG-env-var.patch"
          "zig-0.9-riscv-support.patch"
          "zig-0.9-use-baseline-cpu-by-default.patch"
          "zig-0.9-use-system-paths.patch"
@@ -212,6 +213,7 @@ toolchain.  Among other features it provides
                  "1sh5xjsksl52i4cfv1qj36sz5h0ln7cq4pdhgs3960mk8a90im7b"))
        (patches
         (search-patches
+         "zig-0.10-build-respect-PKG_CONFIG-env-var.patch"
          "zig-0.9-use-baseline-cpu-by-default.patch"
          "zig-0.10-use-system-paths.patch"
          "zig-0.10-fix-runpath.patch"))))
@@ -1116,6 +1118,7 @@ toolchain.  Among other features it provides
                  "0qh7c27cd4wcdjj0mbpkarvwypfk1js8hkyxs0z149qv75zkbrca"))
        (patches
         (search-patches
+         "zig-0.11-build-respect-PKG_CONFIG-env-var.patch"
          "zig-0.9-use-baseline-cpu-by-default.patch"
          "zig-0.11-use-system-paths.patch"
          "zig-0.11-fix-runpath.patch"))))
@@ -1467,6 +1470,7 @@ toolchain.  Among other features it provides
                  "0ssgfrsk116p16rwjwq1z2pvvcdij6s30s19bhzjms7maz4s77hb"))
        (patches
         (search-patches
+         "zig-0.12-build-respect-PKG_CONFIG-env-var.patch"
          "zig-0.12-use-baseline-cpu-by-default.patch"
          "zig-0.12-use-system-paths.patch"
          "zig-0.12-fix-runpath.patch"))))
@@ -1548,6 +1552,7 @@ toolchain.  Among other features it provides
                  "0ly8042lbsa8019g0d1jg4l06rxpq2530n9mijq66n4lmx7a5976"))
        (patches
         (search-patches
+         "zig-0.13-build-respect-PKG_CONFIG-env-var.patch"
          "zig-0.12-use-baseline-cpu-by-default.patch"
          "zig-0.12-use-system-paths.patch"
          "zig-0.13-fix-runpath.patch"))))
