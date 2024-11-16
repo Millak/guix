@@ -38,6 +38,7 @@
 ;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2024 Jakob Kirsch <jakob.kirsch@web.de>
 ;;; Copyright © 2024 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -732,6 +733,12 @@ server and embedded PowerPC, and S390 guests.")
                            (string-append "LIBDIR = " lib "\n"))
                           (("/usr/include")
                            include)))))
+                  ;; XXX: "make -C test" fails because it cannot find "x86test"
+                  ;; executable due to parallel tests.  So we need to make sure that
+                  ;; this file is built before running the tests.
+                  (add-before 'check 'make-x86test
+                    (lambda _
+                      (invoke "make" "-C" "test" "x86test")))
                   (delete 'configure)))) ;no configure script
     (native-inputs (list nasm perl))
     (synopsis "Library for x86 emulation")
