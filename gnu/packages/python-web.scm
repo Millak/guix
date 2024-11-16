@@ -5401,6 +5401,27 @@ this it tries to be opinion-free and very extendable.")
 server.")
     (license license:expat)))
 
+(define-public python-ephemeral-port-reserve
+  (package
+    (name "python-ephemeral-port-reserve")
+    (version "1.1.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ephemeral_port_reserve" version))
+       (sha256
+        (base32 "1chl9hil7ggz6l4sfhmp0l2j55qcskbc3pj9360b0309jwndmxxq"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
+    (home-page "https://github.com/Yelp/ephemeral-port-reserve/")
+    (synopsis "Find an unused port, reliably")
+    (description
+     "Bind to an ephemeral port, force it into the TIME_WAIT state, and unbind
+it.")
+    (license license:expat)))
+
 (define-public python-flask-migrate
   (package
     (name "python-flask-migrate")
