@@ -154,7 +154,12 @@ as \"x86_64-linux\"."
          (llvm-monorepo (package-version llvm))))
     (build-system cmake-build-system)
     (native-inputs
-     (cond ((version>=? version "18")
+     (cond ((version>=? version "19")
+            ;; TODO: Remove this when GCC 14 is the default.
+            ;; libfuzzer fails to build with GCC 13
+            (modify-inputs (package-native-inputs llvm)
+              (prepend gcc-14)))
+           ((version>=? version "18")
             ;; TODO: Remove this when GCC 13 is the default.
             ;; libfuzzer fails to build with GCC 12
             (modify-inputs (package-native-inputs llvm)
@@ -264,6 +269,11 @@ until LLVM/Clang 14."
      `(#:configure-flags
        (list "-DCLANG_INCLUDE_TESTS=True"
 
+             ;; TODO: Use --gcc-install-dir when GCC_INSTALL_PREFIX is
+             ;; removed.  See: https://github.com/llvm/llvm-project/pull/77537
+             ,@(if (version>=? version "19")
+                   '("-DUSE_DEPRECATED_GCC_INSTALL_PREFIX=ON")
+                   '())
              ;; Find libgcc_s, crtbegin.o, and crtend.o.
              (string-append "-DGCC_INSTALL_PREFIX="
                             (assoc-ref %build-inputs "gcc-lib"))
@@ -555,7 +565,8 @@ output), and Binutils.")
     ("15.0.7" . "12sggw15sxq1krh1mfk3c1f07h895jlxbcifpwk3pznh4m1rjfy2")
     ("16.0.6" . "0jxmapg7shwkl88m4mqgfjv4ziqdmnppxhjz6vz51ycp2x4nmjky")
     ("17.0.6" . "1a7rq3rgw5vxm8y39fyzr4kv7w97lli4a0c1qrkchwk8p0n07hgh")
-    ("18.1.8" . "1l9wm0g9jrpdf309kxjx7xrzf13h81kz8bbp0md14nrz38qll9la")))
+    ("18.1.8" . "1l9wm0g9jrpdf309kxjx7xrzf13h81kz8bbp0md14nrz38qll9la")
+    ("19.1.3" . "051miidbiqz4d2m1kk5w2am0hayjymbvc9pgjcjq7cadwbap8k1m")))
 
 (define %llvm-patches
   '(("14.0.6" . ("clang-14.0-libc-search-path.patch"
@@ -568,6 +579,8 @@ output), and Binutils.")
     ("17.0.6" . ("clang-17.0-libc-search-path.patch"
                  "clang-17.0-link-dsymutil-latomic.patch"))
     ("18.1.8" . ("clang-18.0-libc-search-path.patch"
+                 "clang-17.0-link-dsymutil-latomic.patch"))
+    ("19.1.3" . ("clang-18.0-libc-search-path.patch"
                  "clang-17.0-link-dsymutil-latomic.patch"))))
 
 (define (llvm-monorepo version)
@@ -1538,6 +1551,48 @@ Library.")
 
 (define-public clang-toolchain-18
   (make-clang-toolchain clang-18 libomp-18))
+
+(define-public llvm-19
+  (package
+    (inherit llvm-15)
+    (version "19.1.3")
+    (source (llvm-monorepo version))
+    (arguments
+     (substitute-keyword-arguments (package-arguments llvm-15)
+       ;; The build daemon goes OOM on i686-linux on this phase.
+       ((#:phases phases #~'%standard-phases)
+        (if (target-x86-32?)
+            #~(modify-phases #$phases
+                (delete 'make-dynamic-linker-cache))
+            phases))))))
+
+(define-public clang-runtime-19
+  (clang-runtime-from-llvm llvm-19))
+
+(define-public clang-19
+  (clang-from-llvm
+   llvm-19 clang-runtime-19
+   #:tools-extra
+   (origin
+     (method url-fetch)
+     (uri (llvm-uri "clang-tools-extra"
+                    (package-version llvm-19)))
+     (sha256
+      (base32
+       "0ig3syx0m9hcjzr4yl568jv2rz3haadgr9nhv8jv0gspx55ywn33")))))
+
+(define-public libomp-19
+  (package
+    (inherit libomp-15)
+    (version (package-version llvm-19))
+    (source (llvm-monorepo version))
+    (native-inputs
+     (modify-inputs (package-native-inputs libomp-15)
+       (replace "clang" clang-19)
+       (replace "llvm" llvm-19)))))
+
+(define-public clang-toolchain-19
+  (make-clang-toolchain clang-19 libomp-19))
 
 ;; Default LLVM and Clang version.
 (define-public libomp libomp-13)
