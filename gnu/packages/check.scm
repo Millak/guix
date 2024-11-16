@@ -2933,17 +2933,28 @@ by the test.")
 (define-public python-pytest-mypy
   (package
     (name "python-pytest-mypy")
-    (version "0.9.1")
+    (version "0.10.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest-mypy" version))
        (sha256
-        (base32 "0p5bd4r4gbwk1h7mpx1jkhdwkckapfz24bp9x5mmqb610ps3pylz"))))
-    (build-system python-build-system)
-    (native-inputs (list python-setuptools-scm))
+        (base32 "1nyk9xxkwb03sp6avn5l4ysncybnyw4ibrp2lcn3mw934dj8yigq"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags #~(list "--numprocesses" "auto")))
+    (native-inputs
+     (list python-pexpect
+           python-pytest-xdist
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
     (propagated-inputs
-     (list python-attrs python-filelock python-mypy python-pytest))
+     (list python-attrs
+           python-filelock
+           python-mypy
+           python-pytest))
     (home-page "https://github.com/dbader/pytest-mypy")
     (synopsis "Mypy static type checker plugin for Pytest")
     (description "@code{pytest-mypi} is a static type checker plugin for
