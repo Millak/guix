@@ -1653,14 +1653,13 @@ STC89, STC90, STC10, STC11, STC12, STC15, STC8 and STC32 series.")
          "1g5ahnj400sdf75k3xafawa6x0pzz7s86nqnfd65gqjr3bdlhlc6"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f                      ;no tests
-       #:configure-flags
-       (let* ((out (assoc-ref %outputs "out"))
-              (etc (in-vicinity out "etc"))
-              (modprobe (in-vicinity etc "modprobe.d"))
-              (udev-rules (in-vicinity etc "udev/rules.d")))
-         (list (string-append "-DSTLINK_UDEV_RULES_DIR=" udev-rules)
-               (string-append "-DSTLINK_MODPROBED_DIR=" modprobe)))))
+     (list #:tests? #f                      ;no tests
+           #:configure-flags
+           #~(let* ((etc (in-vicinity #$output "etc"))
+                    (modprobe (in-vicinity etc "modprobe.d"))
+                    (udev-rules (in-vicinity etc "udev/rules.d")))
+               (list (string-append "-DSTLINK_UDEV_RULES_DIR=" udev-rules)
+                     (string-append "-DSTLINK_MODPROBED_DIR=" modprobe)))))
     (inputs
      (list libusb))
     (synopsis "Programmer for STM32 Discovery boards")
