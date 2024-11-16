@@ -8876,7 +8876,11 @@ writing C extensions for Python as easy as Python itself.")
 (define-public python-numpy
   (package
     (name "python-numpy")
-    (version "1.23.2")
+    ;; XXX: Any other versions up to 1.26.4 failed to build with error similar
+    ;; to: 'fenv_t' has not been declared in '::' 58 | using ::fenv_t;
+    ;; See <https://github.com/numpy/numpy/issues/21075#issuecomment-1047976197>,
+    ;; <https://github.com/numpy/numpy/issues/24318>.
+    (version "1.24.4")
     (source
      (origin
        (method url-fetch)
@@ -8885,12 +8889,12 @@ writing C extensions for Python as easy as Python itself.")
              version "/numpy-" version ".tar.gz"))
        (sha256
         (base32
-         "00bx3idjwhmzkdawg2dx1bp0316ig37jfx0dm82bvyv1hbj013dp"))))
-    (build-system python-build-system)
+         "0qwldmkq5bns561ppkz7psphc4jqfj5j1x4dhq0i8r4qwjjf7xc0"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:modules '((guix build utils)
-                  (guix build python-build-system)
+                  (guix build pyproject-build-system)
                   (ice-9 format))
       #:phases
       #~(modify-phases %standard-phases
@@ -8930,6 +8934,11 @@ include_dirs = ~:*~a/include~%"
                         ;; does *not* automatically provide -n when -j is used
                         ;; (see: https://github.com/numpy/numpy/issues/21359).
                         "--" "-n" (number->string (parallel-job-count))
+                        ;; Disable Pytest Warnings, they are resolved in the
+                        ;; latest 1.x.x: pytest.PytestRemovedIn9Warning: Marks
+                        ;; applied to fixtures have no effect,
+                        ;; DeprecationWarning.
+                        "-p" "no:warnings"
                         "-k" (string-append
                               ;; These tests may fail on 32-bit systems (see:
                               ;; https://github.com/numpy/numpy/issues/18387).
@@ -8939,6 +8948,14 @@ include_dirs = ~:*~a/include~%"
                               ;; x86_64 CPUs such as the Core 2 Duo (see:
                               ;; https://github.com/numpy/numpy/issues/22170).
                               "and not test_rint_big_int "
+                              ;; They fail to detect compiler.
+                              "and not test_compile1 "
+                              "and not test_compile2 "
+                              ;; Due to disabled warnings
+                              "and not test_getattr_warning "
+                              "and not test_integer_signs "
+                              "and not test_implicit_cast_float_to_int_fails "
+                              "and not test_integer_signs "
                               ;; The huge_array test is too large for 32-bit (see:
                               ;; https://bugs.gentoo.org/843599 and
                               ;; https://bugs.gentoo.org/846548).
@@ -8960,12 +8977,17 @@ include_dirs = ~:*~a/include~%"
                                      " and not test_fpclass")
                                    '())))))))))
     (native-inputs
-     (list python-cython
+     (list gfortran
+           meson-python
+           pkg-config
+           python-cython ;; overwrite Cython from meson-python
            python-hypothesis
+           python-mypy
            python-pytest
            python-pytest-xdist
+           python-setuptools
            python-typing-extensions
-           gfortran))
+           python-wheel))
     (inputs (list bash openblas))
     (home-page "https://numpy.org")
     (synopsis "Fundamental package for scientific computing with Python")
