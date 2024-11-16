@@ -31531,16 +31531,23 @@ files.  These files are used to translate strings in android apps.")
 (define-public python-watchdog
   (package
     (name "python-watchdog")
-    (version "2.1.6")
+    (version "6.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "watchdog" version))
        (sha256
-        (base32 "1rx2nyl0cyj0v4ja795cl3gi26577c5wg48syr3byz3ndkgpavm3"))))
+        (base32 "10n2v2iflhdriwfp34yvhfcckqb6vs7378fdvqj8xbm3zn17rpwx"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:test-flags #~(list "-k" "not test_kill_auto_restart")))
+     (list
+      #:test-flags
+      #~(list "-k" (string-join
+                    (list "not test_kill_auto_restart"
+                          "test_auto_restart_on_file_change_debounce"
+                          ;; Fails with too many open files.
+                          "test_select_fd")
+                    " and not "))))
     (propagated-inputs
      (list python-pathtools python-pyyaml))
     (native-inputs
