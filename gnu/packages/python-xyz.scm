@@ -11826,13 +11826,13 @@ wraps Python's standard library threading and multiprocessing objects.")
 (define-public python-pexpect
   (package
     (name "python-pexpect")
-    (version "4.8.0")
+    (version "4.9.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pexpect" version))
        (sha256
-        (base32 "032cg337h8awydgypz6f4wx848lw8dyrj4zy988x0lyib4ws8rgw"))))
+        (base32 "03ykxacc64ijldbpa31v5lxw93an0z0xmhm21q2i369w7w942zgf"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -11851,7 +11851,9 @@ wraps Python's standard library threading and multiprocessing objects.")
                      "test_run_uses_env_path_over_path"
                      "test_spawn_uses_env"
                      ;; Fails with assertion error: assert 0 == 500
-                     "test_before_across_chunks")
+                     "test_before_across_chunks"
+                     ;; Bash is enough for tests.
+                     "test_zsh")
                     " and not "))
       #:phases
       #~(modify-phases %standard-phases
