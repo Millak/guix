@@ -3527,15 +3527,26 @@ Python's built-in @code{re} module with compatible interfaces.")
 (define-public python-filelock
   (package
     (name "python-filelock")
-    (version "3.0.12")
+    (version "3.16.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "filelock" version))
        (sha256
         (base32
-         "0ngzlvb5j8gqs2nxlp2b0jhzii792h66wsn694qm8kqixr225n0q"))))
-    (build-system python-build-system)
+         "0d8ljvmsfgriiqf5dqii91gfcpj7cpjrh8fnsvifaiyvspygnjf2"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; Break cycle with virtualenv.
+      #:test-flags #~(list "--ignore=tests/test_virtualenv.py")))
+    (native-inputs
+     (list python-hatch-vcs
+           python-hatchling
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-mock
+           python-setuptools-scm))
     (home-page "https://github.com/tox-dev/py-filelock")
     (synopsis "Platform independent file lock")
     (description "@code{filelock} contains a single module implementing
