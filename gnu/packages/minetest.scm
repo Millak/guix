@@ -28,6 +28,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages audio)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages fontutils)
@@ -54,7 +55,7 @@
 (define-public minetest
   (package
     (name "minetest")
-    (version "5.9.0")
+    (version "5.10.0")
     (source
      (origin
        (method git-fetch)
@@ -63,56 +64,39 @@
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1h4yn4k0wpjr1h24aiqcnc9xsxgxj4bq757pla2pa9zmh2xf45kk"))
-       (modules '((guix build utils)))
-       ;; Delete bundled libraries, keep lib/sha256 because there's no good
-       ;; upstream, see:
-       ;; https://github.com/openssl/openssl/blob/master/crypto/sha/sha512.c
-       ;; "SHA512 low level APIs are deprecated for public use,
-       ;; but still ok for internal use." Also asked MT devs on IRC for this.
+        (base32 "1nsnsf1axiazb8zz51c0742kh0qx2b298pr5mr91m0l9r6dv1sdj"))
+       (modules '((guix build utils)
+                  (srfi srfi-26)
+                  (ice-9 ftw)))
+       ;; Delete bundled libraries.
+       ;; - Keep lib/sha256 because there's no good upstream, see:
+       ;;   https://github.com/openssl/openssl/blob/master/crypto/sha/sha512.c
+       ;;   "SHA512 low level APIs are deprecated for public use,
+       ;;   but still ok for internal use." Also asked MT devs on IRC for this.
+       ;; - tiniergltf is intended for Minetest and diverged from upstream.
        (snippet
-        '(begin
+        '(let ((keep '("." ".." "sha256" "tiniergltf")))
            (with-directory-excursion "lib"
-             (for-each (lambda (file)
-                         (if (not (string=? file "sha256"))
-                             (delete-file-recursively file)))
-                       (find-files (string-append "lib") #:directories? #t)))
-           #t))))
+             (for-each delete-file-recursively
+                       (scandir "." (negate (cut member <> keep)))))
+           ;; IrrlichtMT includes
+           (delete-file-recursively "irr/include/KHR")
+           (delete-file-recursively "irr/src/vendor")
+           (substitute* "irr/src/COpenGLCommon.h"
+             (("\"vendor/gl.h\"") "<GL/gl.h>"))
+           ;; Catch2
+           (substitute* "CMakeLists.txt"
+             (("add_subdirectory\\(lib/catch2\\)") "find_package(Catch2 3 REQUIRED)"))
+           (substitute* "src/catch.h"
+             (("catch_amalgamated.hpp") "catch2/catch_all.hpp"))))))
     (build-system cmake-build-system)
     (arguments
      (list
       #:configure-flags
       #~(list "-DENABLE_LTO=ON"
-              "-DENABLE_UPDATE_CHECKER=FALSE"
-              (string-append "-DCURL_INCLUDE_DIR="
-                             (search-input-directory
-                              %build-inputs "include/curl"))
-              (string-append "-DZSTD_INCLUDE_DIR="
-                             (dirname (search-input-file
-                                       %build-inputs
-                                       "include/zstd.h")))
-              (string-append "-DZSTD_LIBRARY="
-                             (search-input-file
-                              %build-inputs "lib/libzstd.so")))
+              "-DENABLE_UPDATE_CHECKER=FALSE")
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-sources
-            (lambda* (#:key inputs #:allow-other-keys)
-              (substitute* "src/filesys.cpp"
-                ;; Use store-path for "rm" instead of non-existing FHS path.
-                (("\"/bin/rm\"")
-                 (format #f "~s"
-                         (search-input-file inputs "bin/rm"))))
-              (substitute* "src/CMakeLists.txt"
-                ;; Let minetest binary remain in build directory.
-                (("set\\(EXECUTABLE_OUTPUT_PATH .*\\)")
-                 ""))
-              (substitute* "src/unittest/test_servermodmanager.cpp"
-                ;; do no override MINETEST_GAME_PATH
-                (("(un)?setenv\\(\"MINETEST_GAME_PATH\".*\\);")
-                 "(void)0;"))
-              (setenv "MINETEST_GAME_PATH" ;for check
-                      (string-append (getcwd) "/games"))))
           (delete 'check)
           (add-after 'install 'check
             (lambda* (#:key tests? #:allow-other-keys)
@@ -120,7 +104,10 @@
               ;; when invoked on the target outside of `guix build'.
               (when tests?
                 (setenv "HOME" "/tmp")
-                (invoke "src/minetest" "--run-unittests")))))))
+                (setenv "MINETEST_GAME_PATH"
+                        (string-append (getcwd) "/../source/games"))
+                (invoke "../source/bin/luanti" "--run-unittests")
+                (invoke "../source/util/test_multiplayer.sh")))))))
     (native-search-paths
      (list (search-path-specification
             (variable "MINETEST_GAME_PATH")
@@ -128,9 +115,8 @@
            (search-path-specification
             (variable "MINETEST_MOD_PATH")
             (files '("share/minetest/mods")))))
-    (native-inputs (list pkg-config))
-    (inputs (list coreutils
-                  curl
+    (native-inputs (list catch2-3 pkg-config))
+    (inputs (list curl
                   freetype
                   gettext-minimal
                   gmp
@@ -139,7 +125,6 @@
                   libpng
                   libogg
                   libvorbis
-                  libxxf86vm
                   libxi
                   luajit
                   mesa
@@ -147,6 +132,7 @@
                   openal
                   sqlite
                   `(,zstd "lib")))
+    (outputs '("out" "debug"))
     (synopsis "Voxel game engine")
     (description
      "Minetest is a voxel game engine that supports modding and game creation
