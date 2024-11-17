@@ -12200,13 +12200,15 @@ estimated from a given sample.")
        (sha256
         (base32
          "00p4r1z4xc05m25y0qa7svr67lbypcfqyp2b0ja9asgx90i7s5j3"))))
-    (build-system r-build-system)
-    (propagated-inputs
-     (list r-cli r-glue r-lifecycle r-rlang))
     (properties
      ;; We can't have r-knitr among the inputs here, because r-vctrs ends up
      ;; being an eventual input to r-knitr.
-     '((updater-ignored-native-inputs . ("r-knitr"))))
+     '((updater-ignored-native-inputs . ("r-knitr" "r-testthat"))))
+    (build-system r-build-system)
+    ;; Some tests require tibble, which depends on this package.
+    (arguments (list #:tests? #false))
+    (propagated-inputs
+     (list r-cli r-glue r-lifecycle r-rlang))
     (home-page "https://github.com/r-lib/vctrs")
     (synopsis "Vector helpers")
     (description
