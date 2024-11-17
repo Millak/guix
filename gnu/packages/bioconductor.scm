@@ -11098,8 +11098,11 @@ pre-processed data.")
                 "0gh91rxahdh3ablngm094mnyrdrklm70cjlhwjwz2rydbr3a6dbg"))))
     (build-system r-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
+     (list
+      ;; Tests require internet access.
+      #:tests? #false
+      #:phases
+      '(modify-phases %standard-phases
          (add-after 'unpack 'use-system-zlib
            (lambda _
              (substitute* "DESCRIPTION"
