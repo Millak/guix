@@ -39,7 +39,7 @@
 (define-public libcotp
   (package
     (name "libcotp")
-    (version "2.0.1")
+    (version "3.1.0")
     (source
      (origin
        (method git-fetch)
@@ -48,8 +48,14 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "12ps2msclcbv53gjf936cny10an8sc70b9frp6xxjirfn5jg2h63"))))
+        (base32 "1lw15blzzds3qq4ydhi6fsk189p1rbvzy5fzz4r3fv6wlmcyyprs"))))
     (build-system cmake-build-system)
+    (arguments `(#:tests? #f))
+    ;; TODO: tests:
+    ;; Tests can be built with -DBUILD_TESTS=on.
+    ;; Tests don't have a general `check` target so they have to be run manually.
+    ;; Tests require `criterion`, which is not included in guix and has several
+    ;; bundled dependencies.
     (inputs (list libgcrypt))
     (native-inputs (list pkg-config))
     (home-page "https://github.com/paolostivanin/libcotp")
