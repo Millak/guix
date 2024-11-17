@@ -3877,6 +3877,9 @@ data.")
         (base32
          "1r5gdf9fp3rprvrhf0gzl9qmmqhgdn5gscpm5hk8zxpraf3qscsn"))))
     (build-system r-build-system)
+    ;; Tests require doparallel, which we cannot add because of a dependency
+    ;; cycle.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-codetools r-iterators))
     (native-inputs
