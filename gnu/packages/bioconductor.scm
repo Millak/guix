@@ -2441,6 +2441,32 @@ article 'Conservation of an RNA regulatory map between Drosophila and mammals'
 by Brooks et al., Genome Research 2011.")
     (license license:lgpl2.1+)))
 
+(define-public r-pasillabamsubset
+  (package
+    (name "r-pasillabamsubset")
+    (version "0.44.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "pasillaBamSubset" version
+                              'experiment))
+       (sha256
+        (base32 "1i1z5vh0clvwrh2dlq0vw61k6nqvm9x7gzqxhm9wx4fxsgry6ncc"))))
+    (properties `((upstream-name . "pasillaBamSubset")))
+    (build-system r-build-system)
+    (home-page "https://bioconductor.org/packages/pasillaBamSubset")
+    (synopsis "Subset of BAM files from \"Pasilla\" experiment")
+    (description
+     "This package provides a subset of BAM files untreated1.bam (single-end
+reads) and untreated3.bam (paired-end reads) from \"Pasilla\"
+experiment (Pasilla knock-down by Brooks et al., Genome Research 2011).  See
+the vignette in the pasilla data package for how BAM files untreated1.bam and
+untreated3.bam were obtained from the RNA-Seq read sequence data that is
+provided by NCBI Gene Expression Omnibus under accession numbers GSM461176 to
+GSM461181.  It also contains the DNA sequence for fly chromosome 4 to which
+the reads can be mapped.")
+    (license license:lgpl2.0+)))
+
 (define-public r-hsmmsinglecell
   (package
     (name "r-hsmmsinglecell")
