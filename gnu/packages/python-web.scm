@@ -5015,18 +5015,18 @@ apps.")
 (define-public python-flask-restful
   (package
     (name "python-flask-restful")
-    (version "0.3.9")
+    (version "0.3.10")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "Flask-RESTful" version))
         (sha256
          (base32
-          "0gm5dz088v3d2k1dkcp9b3nnqpkk0fp2jly870hijj2xhc5nbv6c"))))
+          "0dzckjjz3aw8nmisr5g9mnv02s2nqlhblykr9ydqzpr703pz4jpy"))))
     (build-system pyproject-build-system)
     (arguments
-     ;; This test fails because '/' is not 'http://localhost/'.
-     (list #:test-flags '(list "-k" "not test_redirect")))
+     ;; See <https://github.com/flask-restful/flask-restful/issues/980>.
+     (list #:tests? #f))
     (propagated-inputs
      (list python-aniso8601 python-flask python-pytz))
     (native-inputs
