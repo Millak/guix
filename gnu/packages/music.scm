@@ -5926,7 +5926,7 @@ real time GM synthesizer.")
 (define-public sonivox-eas
   (package
     (name "sonivox-eas")
-    (version "1.3.0")
+    (version "1.5.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5935,11 +5935,13 @@ real time GM synthesizer.")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "1ygmlrsdzxii2dvj6id2ai3xv3klw2x67ip5rcp823jzczl0wpjd"))))
-    (build-system cmake-build-system)
-    (arguments '(#:tests? #f)) ; there are no tests
+                "1y67bi2vcwb1avwz18i41q85cmqx9svwx4q3kpmh951l49s9k8vz"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f)) ; there are no tests
     (inputs
-     (list alsa-lib drumstick pulseaudio qtbase-5))
+     (list alsa-lib drumstick pulseaudio qtwayland sonivox))
     (native-inputs
      (list pkg-config))
     (home-page "https://github.com/pedrolcl/Linux-SonivoxEas")
@@ -5947,9 +5949,7 @@ real time GM synthesizer.")
     (description "This project is a real time General MIDI synthesizer based
 on the Sonivox EAS Synthesizer by Google.  It does not need external
 soundfonts, using embedded samples instead.")
-    ;; Sonivox is released under the ASL2.0; the rest of the code is under
-    ;; GPLv2+.
-    (license (list license:gpl2+ license:asl2.0))))
+    (license license:gpl2+)))
 
 (define-public whysynth
   (package
