@@ -138,21 +138,28 @@ interfaces for other technical domains.")
 (define-public python-graphviz
   (package
     (name "python-graphviz")
-    (version "0.20.1")
+    (version "0.20.3")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "graphviz" version ".zip"))
               (sha256
                (base32
-                "1y1b956r01kg7qarkkrivhn71q64k0gbq6bcybd4gfd3v95g2n4c"))))
+                "0pcjnnhprs1hb4r9jr7r4qjxc7lzsjlka8d5gcp3kym9ws0vrmh9"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
-      '(modify-phases %standard-phases
-         (add-before 'check 'prepare-chec
-           ;; Needed for fontconfig cache directories
-           (lambda _ (setenv "HOME" (getcwd)))))))
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'pathch-pytest-options
+            (lambda _
+              (substitute* "setup.cfg"
+                ((".*doctest.*") "")
+                (("--cov.*") ""))))
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (when tests?
+                (setenv "HOME" "/tmp")
+                  (apply invoke "python" "run-tests.py" test-flags)))))))
     (native-inputs
      (list unzip
            ;; For tests.
