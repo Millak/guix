@@ -2740,38 +2740,35 @@ library remains flexible, portable, and easily embeddable.")
     (inputs
      (list libev libconfig pcre))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'fix-tests
-           (lambda _
-             (substitute* "t"
-               ;; XXX: Disable a failing test.
-               (("my \\$DROP_CNX =          1;")
-                "my $DROP_CNX =          0;")
-               ;; XXX: "sslh-select" seems to not support this option for some
-               ;; reason.  According to "sslhconf.cfg" this option just overrides the
-               ;; verbosity configuration so it seems that we can safely drop it.
-               (("-v 4")
-                ""))
-             (substitute* "test.cfg"
-               ;; The Guix build environment lacks ‘ip4-localhost’.
-               (("ip4-localhost") "localhost"))
-             #t))
-         ;; Many of these files are mentioned in the man page. Install them.
-         (add-after 'install 'install-documentation
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (doc (string-append out "/share/doc/sslh")))
-               (install-file "README.md" doc)
-               (for-each
-                (lambda (file)
-                  (install-file file (string-append doc "/examples")))
-                (append (find-files "." "\\.cfg")
-                        (find-files "scripts"))))
-             #t)))
-       #:make-flags (list ,(string-append "CC=" (cc-for-target))
-                          "USELIBCONFIG=1"
-                          (string-append "PREFIX=" (assoc-ref %outputs "out")))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'fix-tests
+                 (lambda _
+                   (substitute* "t"
+                     ;; XXX: Disable a failing test.
+                     (("my \\$DROP_CNX =          1;")
+                      "my $DROP_CNX =          0;")
+                     ;; XXX: "sslh-select" seems to not support this option for some
+                     ;; reason.  According to "sslhconf.cfg" this option just overrides the
+                     ;; verbosity configuration so it seems that we can safely drop it.
+                     (("-v 4")
+                      ""))
+                   (substitute* "test.cfg"
+                     ;; The Guix build environment lacks ‘ip4-localhost’.
+                     (("ip4-localhost") "localhost"))))
+               ;; Many of these files are mentioned in the man page. Install them.
+               (add-after 'install 'install-documentation
+                 (lambda _
+                   (let* ((doc (string-append #$output "/share/doc/sslh")))
+                     (install-file "README.md" doc)
+                     (for-each
+                      (lambda (file)
+                        (install-file file (string-append doc "/examples")))
+                      (append (find-files "." "\\.cfg")
+                              (find-files "scripts")))))))
+           #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
+                                "USELIBCONFIG=1"
+                                (string-append "PREFIX=" #$output))
        #:test-target "test"))
     (home-page "https://www.rutschle.net/tech/sslh/README.html")
     (synopsis "Applicative network protocol demultiplexer")
