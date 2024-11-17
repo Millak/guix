@@ -11896,7 +11896,13 @@ constants, and control debugging of packages via environment variables.")
        (uri (cran-uri "processx" version))
        (sha256
         (base32 "02z7n59pglz6jw1vyyl0mkc7mz2c7y8yzsnhq5yz62digwnnf9v6"))))
+    (properties
+     ;; We can't have testthat among the inputs, because that would lead to a
+     ;; dependency cycle.
+     '((updater-ignored-native-inputs . ("r-testthat"))))
     (build-system r-build-system)
+    ;; Tests require r-testthat, which indirectly depends on this package.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-ps r-r6))
     (home-page "https://github.com/r-lib/processx3")
