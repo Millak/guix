@@ -75,6 +75,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages certs)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
@@ -2639,28 +2640,28 @@ the last py.test invocation.")
 (define-public python-pytest-localserver
   (package
     (name "python-pytest-localserver")
-    (version "0.7.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pytest-localserver" version))
-              (sha256
-               (base32
-                "0fzysfzvlc2p5dh6lhs5sq3h8g4mypwvqm4w44fr6f5lbialcyz7"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "py.test" "-v"))))))
+    (version "0.9.0.post0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest_localserver" version))
+       (sha256
+        (base32 "1w2zgpdr1wj7mxnsyqyiy3alqrdm7wngxb7ra14brll2ndps6cw0"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest python-requests python-six))
+     (list nss-certs-for-test
+           python-pytest
+           python-requests
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
     (propagated-inputs
      (list python-werkzeug))
-    (synopsis "Py.test plugin to test server connections locally")
-    (description "Pytest-localserver is a plugin for the pytest testing
-framework which enables you to test server connections locally.")
     (home-page "https://pypi.org/project/pytest-localserver/")
+    (synopsis "Py.test plugin to test server connections locally")
+    (description
+     "Pytest-localserver is a plugin for the pytest testing framework which
+enables you to test server connections locally.")
     (license license:expat)))
 
 (define-public python-pytest-xprocess
