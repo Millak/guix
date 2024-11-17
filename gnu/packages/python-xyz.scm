@@ -26148,26 +26148,25 @@ currently supports the OpenAPI specification, formerly known as Swagger.")
 (define-public python-apispec-webframeworks
   (package
     (name "python-apispec-webframeworks")
-    (version "0.5.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "apispec-webframeworks" version))
-              (sha256
-               (base32
-                "1wyw30402xq2a8icrsjmy9v43jyvawcjd85ccb2zicqlg4k5pcqd"))))
+    (version "1.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "apispec_webframeworks" version))
+       (sha256
+        (base32 "10gxjwmk8w67b7vcivcky4hrpv1gx8acrshnyp1169va4s62i2an"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-apispec python-setuptools))
     (native-inputs
-     (list python-bottle
-           python-flake8
-           python-flake8-bugbear
+     (list python-aiohttp
+           python-flit-core
+           python-bottle
            python-flask
-           python-mock
            python-pytest
            python-pyyaml
            python-tornado
-           python-tox
            python-wheel))
+    (propagated-inputs
+     (list python-apispec))
     (home-page "https://github.com/marshmallow-code/apispec-webframeworks")
     (synopsis "Web framework plugins for apispec")
     (description "This package provides plugins for using @code{apispec} with
