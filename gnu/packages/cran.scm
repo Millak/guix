@@ -19428,6 +19428,8 @@ repositories.")
         (base32
          "0d0bqwi4a0kpday3kbvaawhqfh7lcx4jx2hm5nspgvjv4504sfqf"))))
     (build-system r-build-system)
+    ;; Tests require r-testthat, which indirectly depends on this package.
+    (arguments (list #:tests? #false))
     (native-inputs
      (list r-knitr))
     (home-page "https://fs.r-lib.org")
