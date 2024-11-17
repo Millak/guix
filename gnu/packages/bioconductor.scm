@@ -6379,6 +6379,8 @@ over-abundant or less-abundant as compared to that of normal cells.")
     (properties
      `((upstream-name . "IRanges")))
     (build-system r-build-system)
+    ;; Some tests require r-xvector, causing a dependency cycle.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-biocgenerics r-s4vectors))
     (home-page "https://bioconductor.org/packages/IRanges")
