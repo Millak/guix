@@ -3196,6 +3196,8 @@ tools to simplify the devolpment of R packages.")
                (base32
                 "18y1jbyf6b70zm0kyjdjhdzyskhsbaww3j0kpyjcqxfjjgs0afha"))))
     (build-system r-build-system)
+    ;; Tests require r-testthat, which indirectly depends on this package.
+    (arguments (list #:tests? #false))
     (native-inputs
      (list r-knitr))
     (home-page "https://github.com/jimhester/withr")
