@@ -3025,7 +3025,12 @@ other packages.")
        (sha256
         (base32
          "1sw6nizfbb88358r6mafiqiqdwd49cvf507g5cqggf72x3xxqshx"))))
+    (properties
+     ;; We can't have r-testthat among the inputs here to avoid a dependency
+     ;; cycle.
+     '((updater-ignored-native-inputs . ("r-testthat"))))
     (build-system r-build-system)
+    (arguments (list #:tests? #false))
     (home-page "https://cran.r-project.org/web/packages/commonmark")
     (synopsis "CommonMark and Github Markdown Rendering in R")
     (description
