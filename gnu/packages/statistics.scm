@@ -1635,7 +1635,13 @@ emitter (http://pyyaml.org/wiki/LibYAML) for R.")
               (sha256
                (base32
                 "1lx2k2gg14pmpbh8i884mdaqx0zaf0x07x1001z3hja6cmwwali9"))))
+    (properties
+     ;; We can't have r-litedown among the inputs here to avoid a dependency
+     ;; cycle.
+     '((updater-ignored-native-inputs . ("r-litedown"))))
     (build-system r-build-system)
+    ;; Tests need r-tibble, which needs r-knitr.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-evaluate r-highr r-xfun r-yaml))
     (home-page "https://yihui.org/knitr/")
