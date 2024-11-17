@@ -3450,6 +3450,8 @@ encoder/decoder, round-off-error-free sum and cumsum, etc.")
         (base32
          "16bf6ga5fgm83j3m67plw5i54az2vdbvw5m99ixaqkd24pxn7x5m"))))
     (build-system r-build-system)
+    ;; Tests require r-testthat, which uses this package.
+    (arguments (list #:tests? #false))
     (native-inputs
      (list r-knitr))
     (home-page "https://github.com/krlmlr/rprojroot")
