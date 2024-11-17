@@ -1797,32 +1797,25 @@ update print statements
 (define-public python-pytest-httpserver
   (package
     (name "python-pytest-httpserver")
-    (version "1.0.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pytest_httpserver" version))
-              (sha256
-               (base32
-                "0vbls0j570l5my83j4jnk5blmnir44i0w511azlh41nl6k8rac5f"))))
-    (build-system python-build-system)
+    (version "1.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest_httpserver" version))
+       (sha256
+        (base32 "00c7vki5qpl40qn5riyppkjnmgrvhsbg0hsdp6qm3m9fkqcv073b"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest))
+     (list python-poetry-core
+           python-toml
+           python-pytest))
     (propagated-inputs
      (list python-werkzeug))
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'fix-library-loading
-           (lambda _
-             (setenv "GUIX_PYTHONPATH" (string-append (getenv "GUIX_PYTHONPATH") ":."))))
-         (replace 'check
-           (lambda _
-             (invoke "pytest" "tests" "-vv")
-             (invoke "pytest" "tests" "-vv" "--ssl"))))))
     (home-page "https://github.com/csernazs/pytest-httpserver")
     (synopsis "HTTP server for pytest")
-    (description "Pytest plugin library to test http clients without
-contacting the real http server.")
+    (description
+     "Pytest plugin library to test http clients without contacting the real
+http server.")
     (license license:expat)))
 
 (define-public python-pytest-nunit
