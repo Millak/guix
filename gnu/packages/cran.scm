@@ -29571,14 +29571,16 @@ atmospheric physics.")
        (sha256
         (base32
          "1k4ibf2x90xgmzaq47vf9wrsh6a2fp2lg1l8bq89632bx33x795d"))))
-    (build-system r-build-system)
-    (propagated-inputs
-     (list r-cli r-glue r-rlang))
     (properties
      ;; We can't add this here because via r-stringr this package ends up
      ;; being an input to r-knitr.
-     '((updater-ignored-native-inputs . ("r-knitr"))
+     '((updater-ignored-native-inputs . ("r-knitr" "r-testthat"))
        (upstream-name . "lifecycle")))
+    (build-system r-build-system)
+    ;; Tests require r-testthat, which uses this package.
+    (arguments (list #:tests? #false))
+    (propagated-inputs
+     (list r-cli r-glue r-rlang))
     (home-page "https://github.com/r-lib/lifecycle")
     (synopsis "Manage the life cycle of your package functions")
     (description
