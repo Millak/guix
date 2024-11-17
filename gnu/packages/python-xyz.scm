@@ -26177,16 +26177,16 @@ web frameworks.")
 (define-public python-flasgger
   (package
     (name "python-flasgger")
-    (version "0.9.5")
+    (version "0.9.7.1")
     (source
       (origin
         (method git-fetch)
         (uri (git-reference
               (url "https://github.com/rochacbruno/flasgger")
-              (commit version)))
+              (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-          (base32 "0a2djgfq905a4in16068qz0ikg88dm4nbckaamhaz2v9khllr0bi"))))
+          (base32 "08dnn19swfa5lsscj38hil41b3xnqvwgwnx9q2vg9kv26bs1zcah"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -26202,14 +26202,15 @@ web frameworks.")
             (for-each delete-file '("examples/marshmallow_apispec.py"
                                     "examples/validation.py")))))))
     (propagated-inputs
-     (list python-flask python-pyyaml python-jsonschema python-mistune
+     (list python-flask
+           python-pyyaml
+           python-jsonschema
+           python-mistune
            python-six))
     (native-inputs
      (list python-apispec
            python-apispec-webframeworks
            python-decorator
-           python-flake8
-           python-flask-jwt
            python-flask-restful
            python-flex
            python-marshmallow
