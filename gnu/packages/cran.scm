@@ -2168,8 +2168,13 @@ RUV-I, and RUV-III, along with various supporting algorithms.")
        (sha256
         (base32
          "1jbn3vfykyv8czwqs6wbb8m172cl2fqgggy86n3h1rrg59rz7hy9"))))
-    (properties `((upstream-name . "waldo")))
+    (properties
+     ;; We can't add testthat here because of a dependency cycle.
+     '((updater-ignored-native-inputs . ("r-testthat"))
+       (upstream-name . "waldo")))
     (build-system r-build-system)
+    ;; Tests require r-testthat, which depends on this package.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-cli r-diffobj r-glue r-rlang))
     (home-page "https://github.com/r-lib/waldo")
