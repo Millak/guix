@@ -7807,7 +7807,14 @@ processes.  Most of its code is based on the @code{psutil} Python package.")
        (uri (cran-uri "pkgbuild" version))
        (sha256
         (base32 "000swh4qfd536d1qpi81xxfk161fl6j159qcbrzw1d5q08ml9pi1"))))
+    (properties
+     ;; We can't have r-testthat among the inputs, because that would lead to
+     ;; a dependency cycle.
+     '((updater-ignored-native-inputs . ("r-testthat"))))
     (build-system r-build-system)
+    ;; Tests require r-testthat, but that package indirectly depends on
+    ;; r-pkgbuild.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-callr r-cli r-desc r-processx r-r6))
     (home-page "https://github.com/r-pkgs/pkgbuild")
