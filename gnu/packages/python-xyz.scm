@@ -29297,10 +29297,10 @@ that is accessible to other projects developed in Cython.")
 pure-Python.")
     (license license:asl2.0)))
 
-(define python-cloudpickle-testpkg
+(define-public python-cloudpickle
   (package
-    (name "python-cloudpickle-testpkg")
-    (version "1.6.0")
+    (name "python-cloudpickle")
+    (version "3.1.0")
     (source
      (origin
        ;; Archive on pypi does not include test infrastructure.
@@ -29310,41 +29310,12 @@ pure-Python.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1584d21d4rcpryn8yfz0pjnjprk4zm367m0razdcz8cjbsh0dxp6"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'chdir
-           (lambda _ (chdir "tests/cloudpickle_testpkg"))))))
-    (home-page "https://github.com/cloudpipe/cloudpickle")
-    (synopsis "Extended pickling support for Python objects")
-    (description
-     "Cloudpickle makes it possible to serialize Python constructs not
-supported by the default pickle module from the Python standard library.  It
-is especially useful for cluster computing where Python expressions are
-shipped over the network to execute on remote hosts, possibly close to the
-data.")
-    (license license:bsd-3)))
-
-(define-public python-cloudpickle
-  (package
-    (inherit python-cloudpickle-testpkg)
-    (name "python-cloudpickle")
-    (build-system python-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (if tests?
-                 (invoke "pytest" "-s" "-vv")
-                 (format #t "test suite not run~%")))))))
+        (base32 "16z0jdg5b1r23vw1l0bwsg40zcmnrbznr4frjac9kq5j6jm4fw6d"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list ;; For tests.
-           python-cloudpickle-testpkg python-psutil python-pytest
-           python-tornado-6))
+     (list python-flit-core
+           python-psutil
+           python-pytest))
     (home-page "https://github.com/cloudpipe/cloudpickle")
     (synopsis "Extended pickling support for Python objects")
     (description
