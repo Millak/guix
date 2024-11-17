@@ -7836,7 +7836,13 @@ is configured appropriately so R can use them.")
        (sha256
         (base32
          "0jbmlvii40q6ymdhislmgby6dpf9585xl9d5cf8g4nn2kig8ir09"))))
+    (properties
+     ;; Avoid dependency cycle.
+     '((updater-ignored-native-inputs . ("r-testthat"))))
     (build-system r-build-system)
+    ;; Tests require r-testthat.  Adding it to the inputs would lead to a
+    ;; dependency cycle.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-cli
            r-desc
