@@ -3052,6 +3052,9 @@ series of numeric vectors/matrices and factors.")
         (base32 "1jaw3jz9jz8v7msqv76f234vhrkcy21xgva81m0d313hf6ly4gfs"))))
     (properties `((upstream-name . "fontawesome")))
     (build-system r-build-system)
+    ;; Some tests require r-dplyr; adding it to the inputs would lead to a
+    ;; dependency cycle.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-htmltools r-rlang))
     (home-page "https://github.com/rstudio/fontawesome")
