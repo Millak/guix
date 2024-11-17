@@ -4513,26 +4513,21 @@ minimum of WSGI.")
 (define-public python-flask
   (package
     (name "python-flask")
-    (version "2.1.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "Flask" version))
-              (sha256
-               (base32
-                "1j0rjly2yhbm566lq2s8543fs7fz86f77abps539djcfalzbvjd8"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-vv" "tests")))))))
+    (version "3.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "flask" version))
+       (sha256
+        (base32 "1b1nb250jxrjplbs21wnwq69250vs3iz2pdhs7cwi5y8hi8kr1sz"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest))
+     (list python-flit-core
+           python-pytest))
     (propagated-inputs
      (list python-asgiref               ;async extra
            python-click
+           python-blinker
            python-importlib-metadata
            python-itsdangerous
            python-jinja2
