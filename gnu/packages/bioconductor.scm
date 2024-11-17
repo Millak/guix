@@ -6990,6 +6990,8 @@ microarrays.")
     (properties
      `((upstream-name . "AnnotationDbi")))
     (build-system r-build-system)
+    ;; Tests require annotation packages that depend on this package.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-biobase
            r-biocgenerics
