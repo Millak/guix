@@ -1778,6 +1778,8 @@ R packages that praise their users.")
                (base32
                 "1xz94i0r62lslyqya8gz6i2r100wi26y5c2822v2i7lkflwwx1fp"))))
     (build-system r-build-system)
+    ;; Some tests require r-xml2, which uses r-testthat.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-brio
            r-callr
