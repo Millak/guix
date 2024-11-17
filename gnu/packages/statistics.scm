@@ -1845,7 +1845,13 @@ defined in different packages.")
               (sha256
                (base32
                 "1qd6chyciwhj6f6w56d3pcy4q8qdvqkyn2s709qjiwwba0klbmzj"))))
+    (properties
+     ;; We can't have r-testthat among the inputs here to avoid a dependency
+     ;; cycle.
+     '((updater-ignored-native-inputs . ("r-testthat"))))
     (build-system r-build-system)
+    ;; Tests require r-testthat, which indirectly depends on this package.
+    (arguments (list #:tests? #false))
     (home-page "http://rlang.tidyverse.org")
     (synopsis "Functions for base types, core R and Tidyverse features")
     (description "This package provides a toolbox for working with base types,
