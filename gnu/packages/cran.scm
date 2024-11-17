@@ -5089,7 +5089,11 @@ imputation by chained equations).")
        (sha256
         (base32
          "1y2ildc0ni01lkcircbr648f5knq6ch6smh5xap2xr39x1ky7g74"))))
+    (properties
+     ;; Avoid dependency cycle.
+     '((updater-ignored-native-inputs . ("r-testthat"))))
     (build-system r-build-system)
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-processx r-r6))
     (home-page "https://github.com/r-lib/callr#readme")
