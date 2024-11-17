@@ -5581,6 +5581,8 @@ Notation (JSON) using the rapidjsonr library.")
                (base32
                 "1c4hdsdcn8iphd901nk7lv8g7sxm29vlxmgc3p02hcqnw7h31wc9"))))
     (build-system r-build-system)
+    ;; Tests depend on r-testthat, which depends indirectly on r-jsonlite.
+    (arguments (list #:tests? #false))
     (native-inputs
      (list r-knitr r-r-rsp))
     (home-page "https://arxiv.org/abs/1403.2805")
