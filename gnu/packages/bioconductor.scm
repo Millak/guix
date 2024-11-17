@@ -2770,7 +2770,9 @@ ranking by fold-change and visualization.")
        (uri (bioconductor-uri "ADaCGH2" version))
        (sha256
         (base32 "1pzzbqh5wflhn9zqpdggx80y6zhdzg6i4xwgzjrh89bq90ibck04"))))
-    (properties `((upstream-name . "ADaCGH2")))
+    (properties
+     `((upstream-name . "ADaCGH2")
+       (updater-extra-inputs . ("python-wrapper"))))
     (build-system r-build-system)
     (arguments
      (list
