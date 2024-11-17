@@ -6959,6 +6959,8 @@ structure.")
         (base32
          "1m7cc5hawzdvm0b1il4fcilipnsv1n94zqvwhkbr3041rklf7l7y"))))
     (build-system r-build-system)
+    ;; Tests require a number of annotation packages.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-annotationdbi
            r-biobase
