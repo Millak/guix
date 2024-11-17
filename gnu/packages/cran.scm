@@ -7780,7 +7780,13 @@ print, summary, plot, update, etc.
        (uri (cran-uri "ps" version))
        (sha256
         (base32 "1087m3a76vldiamj81qqzqk0n23jjw2c42bsyc91sfhpa1zkp832"))))
+    (properties
+     ;; We can't have r-testthat among the inputs, because that would lead to
+     ;; a dependency cycle.
+     '((updater-ignored-native-inputs . ("r-testthat"))))
     (build-system r-build-system)
+    ;; Tests depend on r-testthat, which depends indirectly on r-ps.
+    (arguments (list #:tests? #false))
     (home-page "https://ps.r-lib.org")
     (synopsis "List, query, and manipulate system processes")
     (description
