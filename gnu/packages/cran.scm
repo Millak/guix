@@ -7583,11 +7583,12 @@ colors are provided.")
        (sha256
         (base32
          "183j9gpffmi30lfifl8d9sq1l25f8dgsgqd3blpndf4rm15kcvy8"))))
-    (build-system r-build-system)
     (properties
      ;; knitr depends on glue, so we can't add knitr here to build the
-     ;; vignettes.
-     '((updater-ignored-native-inputs . ("r-knitr"))))
+     ;; vignettes.  Same with testthat
+     '((updater-ignored-native-inputs . ("r-knitr" "r-testthat"))))
+    (build-system r-build-system)
+    (arguments (list #:tests? #false))
     (home-page "https://github.com/tidyverse/glue")
     (synopsis "Interpreted string literals")
     (description
