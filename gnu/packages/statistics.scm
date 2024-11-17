@@ -1745,7 +1745,14 @@ you call it again with the same arguments it returns the pre-computed value.")
               (sha256
                (base32
                 "0sfsx4k77fsx1dx9c186dg273psrr3awz4ivfvmbbvs1amla0x1y"))))
+    (properties
+     ;; We can't have r-testthat among the inputs here to avoid a dependency
+     ;; cycle.
+     '((updater-ignored-native-inputs . ("r-testthat"))))
     (build-system r-build-system)
+    ;; Tests need r-testthat, which would lead to a dependency cycle.
+    ;; r-crayon@1.5.3 -> r-diffobj@0.3.5 -> r-waldo@0.6.1 -> r-testthat@3.2.1.1
+    (arguments (list #:tests? #false))
     (home-page "https://github.com/gaborcsardi/crayon")
     (synopsis "Colored terminal output for R")
     (description
