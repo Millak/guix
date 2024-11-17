@@ -151,9 +151,9 @@ PACKAGE or #f if the package is not included in the Stackage LTS release."
           (G_ "~a updater doesn't support updating to a specific version, sorry.")
           "stackage")))
       (let* ((hackage-name (package-upstream-name* pkg))
-             (version (lts-package-version (packages) hackage-name))
-             (name-version (hackage-name-version hackage-name version)))
-        (match (and=> name-version hackage-fetch)
+             (version (lts-package-version (packages) hackage-name)))
+        (match (and hackage-name version
+                    (hackage-fetch hackage-name version))
           (#f
            (warning (G_ "failed to parse ~a~%")
                     (hackage-cabal-url hackage-name))
@@ -164,7 +164,8 @@ PACKAGE or #f if the package is not included in the Stackage LTS release."
                 (version version)
                 (urls (list url))
                 (inputs
-                 (let ((cabal (eval-cabal (hackage-fetch name-version) '())))
+                 (let ((cabal (eval-cabal (hackage-fetch hackage-name version)
+                                          '())))
                    (cabal-package-inputs cabal)))))))))))
 
 (define (stackage-lts-package? package)
