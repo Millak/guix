@@ -9154,6 +9154,8 @@ Shiny-based display methods for Bioconductor objects.")
          "19jy6nl46krlspzyqgmyix0d53izrdy3yx69nlamzph4gwjf5m0f"))))
     (properties `((upstream-name . "KEGGREST")))
     (build-system r-build-system)
+    ;; Tests contact the internet.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-biostrings r-httr r-png))
     (native-inputs
