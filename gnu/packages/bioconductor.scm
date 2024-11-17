@@ -5118,6 +5118,8 @@ of Bioconductor.")
     (properties
      `((upstream-name . "BiocGenerics")))
     (build-system r-build-system)
+    ;; Tests require r-iranges, which needs this package.
+    (arguments (list #:tests? #false))
     (home-page "https://bioconductor.org/packages/BiocGenerics")
     (synopsis "S4 generic functions for Bioconductor")
     (description
