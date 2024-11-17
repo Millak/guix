@@ -22,7 +22,7 @@
 ;;; Copyright © 2021 Nikita Domnitskii <nikita@domnitskii.me>
 ;;; Copyright © 2021 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
-;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -144,9 +144,25 @@
                                     ;; configuration, as this is not correct for
                                     ;; all architectures.
                                     (_ #t)))
-                            (#t #t)))))))
+                            (#t #t)))))
+              #$@(if (target-hurd64?)
+                     #~((add-after 'unpack 'apply-hurd64-patch
+                         (lambda _
+                           (let ((patch
+                                  #$(local-file
+                                     (search-patch
+                                      "libgpg-error-hurd64.patch"))))
+                             (invoke "patch" "--force" "-p1" "-i" patch)))))
+                     #~())))
           ((system-hurd?)
-           #~((add-after 'unpack 'skip-tests
+           #~((add-after 'unpack 'apply-hurd64-patch
+                         (lambda _
+                           (let ((patch
+                                  #$(local-file
+                                     (search-patch
+                                      "libgpg-error-hurd64.patch"))))
+                             (invoke "patch" "--force" "-p1" "-i" patch))))
+              (add-after 'unpack 'skip-tests
                 (lambda _
                   (substitute* "tests/t-syserror.c"
                     (("(^| )main *\\(.*" all)
