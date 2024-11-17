@@ -146,6 +146,41 @@ hardware.")
     (home-page "https://libsdl.org/")
     (license license:bsd-3)))
 
+(define-public sdl3
+  (package
+    (inherit sdl2)
+    (name "sdl3")
+    (version "3.1.6")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/libsdl-org/SDL")
+                    ;; Change to release- when 3.2.0 is released.
+                    (commit (string-append "preview-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1plyp0x8rvfwxpmfdjndj78kbfaisljjza700mvks4qyjjvmk2rh"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;no check target
+      #:configure-flags
+      #~(list "-DSDL_SHARED=ON"
+              "-DSDL_ALSA_SHARED=OFF"
+              "-DSDL_PULSEAUDIO_SHARED=OFF"
+              "-DSDL_X11_SHARED=OFF"
+              "-DSDL_WAYLAND_SHARED=OFF"
+              "-DSDL_KMSDRM=ON"
+              "-DSDL_KMSDRM_SHARED=OFF"
+              (string-append
+               "-DCMAKE_INSTALL_RPATH="
+               (string-join
+                (list
+                 (string-append #$(this-package-input "eudev") "/lib")
+                 (string-append #$(this-package-input "vulkan-loader") "/lib"))
+                ";")))))))
+
 (define-public sdl12-compat
   (package
     (name "sdl12-compat")
