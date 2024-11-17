@@ -3335,25 +3335,34 @@ browser.")
 (define-public drumstick
   (package
     (name "drumstick")
-    (version "2.3.1")
+    (version "2.9.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/drumstick/"
                                   version "/drumstick-" version ".tar.bz2"))
               (sha256
                (base32
-                "1rs248pkgn6d29nkvw9ab6dvi1vsz220jdmz1ddzr29cpyc0adfh"))))
-    (build-system cmake-build-system)
+                "1n1kkxkl1y4bwbm8hmqbc58l643qpyh8s7r4rw6jzi63jkvad42k"))))
+    (build-system qt-build-system)
     (arguments
-     `(#:tests? #f))                      ; no test target
+     (list #:qtbase qtbase
+           #:tests? #f)) ;no test target
     (inputs
-     (list qtbase-5 qtsvg-5 qttools-5 alsa-lib))
+     (list alsa-lib
+           fluidsynth
+           pipewire
+           pulseaudio
+           qt5compat
+           qtsvg
+           qtwayland
+           sonivox))
     (native-inputs
      (list pkg-config
            libxslt ; for xsltproc
            docbook-xsl
            doxygen
-           graphviz)) ; for dot
+           graphviz ; for dot
+           qttools))
     (home-page "https://drumstick.sourceforge.io/")
     (synopsis "C++ MIDI library")
     (description
