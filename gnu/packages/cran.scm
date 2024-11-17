@@ -37119,6 +37119,8 @@ for linear mixed models (AIREML).")
     (properties `((upstream-name . "cpp11")))
     (build-system r-build-system)
     (native-inputs (list r-knitr))
+    ;; Tests also require these packages: r-decor, r-tibble, and r-vctrs.
+    (arguments (list #:tests? #false))
     (home-page "https://github.com/r-lib/cpp11")
     (synopsis "C++11 Interface for R's C Interface")
     (description
