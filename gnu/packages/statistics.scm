@@ -1057,11 +1057,13 @@ algorithms.")
        (uri (cran-uri "magrittr" version))
        (sha256
         (base32 "1ljmrrm36y31db5z4cl863ap8k3jcaxk0qzy3f0cn6iag4zzigx2"))))
+    (properties
+     ;; We can't have r-knitr or r-testthat among the inputs here, because
+     ;; that would lead to dependency cycles.
+     '((updater-ignored-native-inputs . ("r-knitr" "r-testthat"))))
     (build-system r-build-system)
-    ;; knitr needs magrittr
-    #;
-    (native-inputs
-     `(("r-knitr" ,r-knitr)))
+    ;; Tests require r-testthat, which uses this package.
+    (arguments (list #:tests? #false))
     (home-page "https://cran.r-project.org/web/packages/magrittr/index.html")
     (synopsis "Forward-pipe operator for R")
     (description
