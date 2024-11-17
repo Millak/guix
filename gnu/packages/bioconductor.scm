@@ -22192,6 +22192,8 @@ array-like semantic.  It also provides:
     (properties
      `((upstream-name . "S4Vectors")))
     (build-system r-build-system)
+    ;; Tests require r-iranges, which depends on this package.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-biocgenerics))
     (native-inputs (list r-knitr))
