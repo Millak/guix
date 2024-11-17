@@ -5,6 +5,7 @@
 ;;; Copyright © 2019 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2021-2024 Philip McGrath <philip@philipmcgrath.com>
+;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -500,7 +501,7 @@ version of Chez Scheme.")
     (name "chez-scheme")
     ;; The version should match `(scheme-version-number #t)`.
     ;; See s/cmacros.ss c. line 360.
-    (version "10.0.0")
+    (version "10.1.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -508,11 +509,9 @@ version of Chez Scheme.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "1q66vafhiwk617z51qkm1v64r3bxqhhf5lzrmsa4l9d5yhvlyk09"))
+                "0y07n2has2592g41zgl275as2wbw1fqd2y7a34llpbqnfpc7923s"))
               (file-name (git-file-name name version))
-              (patches (search-patches "chez-scheme-backport-configure.patch"
-                                       "chez-scheme-backport-signal.patch"
-                                       "chez-scheme-bin-sh.patch"))
+              (patches (search-patches "chez-scheme-bin-sh.patch"))
               (snippet #~(begin
                            (use-modules (guix build utils))
                            ;; TODO: consider putting this in a (guix ...) or
@@ -540,7 +539,7 @@ version of Chez Scheme.")
     (synopsis "R6RS Scheme compiler and run-time")
     (description
      "Chez Scheme is both a programming language and a high-performance
-implementation of that language. The language is a superset of R6RS Scheme
+implementation of that language.  The language is a superset of R6RS Scheme
 with numerous extensions, including native threads, non-blocking I/O, local
 modules, and much more.  Chez Scheme compiles source expressions incrementally
 to machine code, providing the speed of compiled code in an interactive
