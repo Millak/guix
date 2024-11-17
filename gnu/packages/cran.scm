@@ -11779,9 +11779,15 @@ multivariate function estimation using smoothing splines.")
        (sha256
         (base32
          "0ha8mijnzlz1cxsjk502j2gzspd8fnk3j79bvnqm871225ghi5a2"))))
+    (properties
+     ;; We can't have r-testthat among the inputs, because that would lead to
+     ;; a dependency cycle.
+     '((updater-ignored-native-inputs . ("r-testthat"))))
     (build-system r-build-system)
     (arguments
      (list
+      ;; Tests require r-testthat, but that package needs r-cli.
+      #:tests? #false
       #:phases
       '(modify-phases %standard-phases
          ;; Do not embed the PID of the build process.
