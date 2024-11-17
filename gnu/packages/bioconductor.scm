@@ -8320,6 +8320,8 @@ genomic intervals.  In addition, it can use BAM or BigWig files as input.")
     (properties
      `((upstream-name . "GenomeInfoDb")))
     (build-system r-build-system)
+    ;; Tests attempt to download files.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-biocgenerics r-genomeinfodbdata r-iranges r-s4vectors
            r-ucsc-utils))
