@@ -8803,6 +8803,8 @@ plot networks.")
         (base32
          "0gsng2aggnljl4z82la9hpnd26hngzhj8fizx4wx22npqjj93694"))))
     (build-system r-build-system)
+    ;; Some tests need the r-cba package, which depends on r-proxy.
+    (arguments (list #:tests? #false))
     (home-page "https://cran.r-project.org/web/packages/proxy")
     (synopsis "Distance and similarity measures")
     (description
