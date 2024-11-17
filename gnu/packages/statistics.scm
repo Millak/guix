@@ -2998,7 +2998,12 @@ module, Java Server Pages, and Python's psp module.")
        (sha256
         (base32
          "09ig14bm68cps6d1mrmj6hhjr01i6gz1ri35qpkwk3yp7nkqsijl"))))
+    (properties
+     ;; We can't have r-testthat among the inputs here to avoid a dependency
+     ;; cycle.
+     '((updater-ignored-native-inputs . ("r-testthat"))))
     (build-system r-build-system)
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-cli r-r6))
     (home-page "https://github.com/r-pkgs/desc")
