@@ -3377,22 +3377,31 @@ backends, including ALSA, OSS, Network and FluidSynth.")
 (define-public vmpk
   (package
     (name "vmpk")
-    (version "0.8.4")
+    (version "0.9.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/vmpk/vmpk/"
                                   version "/vmpk-" version ".tar.bz2"))
               (sha256
                (base32
-                "0kh8pns9pla9c47y2nwckjpiihczg6rpg96aignsdsd7vkql69s9"))))
-    (build-system cmake-build-system)
+                "1ndwmshw3skfcxb3f606hv4y80hfisfp5bdc81a0f0qrpx6f2zn4"))))
+    (build-system qt-build-system)
     (arguments
-     `(#:tests? #f))  ; no test target
+     (list #:qtbase qtbase
+           #:tests? #f  ; no test target
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'wrap-drumstick
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (wrap-program (string-append #$output "/bin/vmpk")
+                     `("DRUMSTICKRT" =
+                       (,(search-input-directory inputs
+                                            "/lib/drumstick2")))))))))
     (inputs
-     (list drumstick qtbase-5 qtsvg-5 qtx11extras))
+     (list drumstick qt5compat qtsvg qtwayland))
     (native-inputs
      (list libxslt ;for xsltproc
-           docbook-xml-4.4 docbook-xsl qttools-5 pkg-config))
+           docbook-xml-4.4 docbook-xsl qttools pkg-config))
     (home-page "https://vmpk.sourceforge.io/")
     (synopsis "Virtual MIDI piano keyboard")
     (description
