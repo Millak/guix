@@ -26122,37 +26122,27 @@ datatypes to and from native Python datatypes.")
 (define-public python-apispec
   (package
     (name "python-apispec")
-    (version "6.0.2")
+    (version "6.7.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "apispec" version))
        (sha256
-        (base32
-         "11vqxwdxmm7qmyhdbxk4gnx37nbzmn266ah92gi4pvzd76vq0vg7"))))
+        (base32 "0cxr10m3gj7nmipi3blsj31jz6qfjbfzjrwsnxaxzzhgyipqn6y0"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; Disable validation tests since they require
-      ;; the optional 'prance' library which is not
-      ;; yet in Guix.
-      #:test-flags '(list "-k" "not openapi_tools_validate")))
-    (propagated-inputs
-     (list python-packaging))
     (native-inputs
-     (list python-flake8
-           python-flake8-bugbear
-           python-marshmallow
+     (list python-flit-core
            python-mypy
-           python-pytest
-           python-pyyaml
-           python-setuptools
-           python-wheel))
+           python-openapi-spec-validator
+           python-pytest))
+    (propagated-inputs
+     (list python-marshmallow
+           python-pyyaml))
     (home-page "https://github.com/marshmallow-code/apispec")
     (synopsis "Swagger/OpenAPI specification generator")
-    (description "@code{python-apispec} is a pluggable API specification
-generator.  It currently supports the OpenAPI specification, formerly known as
-Swagger.")
+    (description
+     "@code{python-apispec} is a pluggable API specification generator.  It
+currently supports the OpenAPI specification, formerly known as Swagger.")
     (license license:expat)))
 
 (define-public python-apispec-webframeworks
