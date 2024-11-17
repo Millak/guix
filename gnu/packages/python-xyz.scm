@@ -11394,7 +11394,7 @@ a front-end for C compilers or analysis tools.")
 (define-public python-xlsxwriter
   (package
     (name "python-xlsxwriter")
-    (version "3.0.3")
+    (version "3.2.0")
     (source
      (origin
        ;; There are no tests in the PyPI tarball.
@@ -11404,8 +11404,11 @@ a front-end for C compilers or analysis tools.")
              (commit (string-append "RELEASE_" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1lr7mmik6r4zns069i4zfx1cnwhz6snmlh2zsiry0cwx8cv33wpm"))))
-    (build-system python-build-system)
+        (base32 "1g16xb4nsjd807qcm8756ixlxxvdjmbr2v7r6wxkajw1h4m8id0w"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
     (home-page "https://github.com/jmcnamara/XlsxWriter")
     (synopsis "Python module for creating Excel XLSX files")
     (description
