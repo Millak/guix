@@ -194,6 +194,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
+  #:use-module (gnu packages python-compression)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
@@ -6937,24 +6938,40 @@ exploit attempts.")
 (define-public python-httpbin
   (package
     (name "python-httpbin")
-    (version "0.5.0")
+    (version "0.10.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "httpbin" version))
        (sha256
-        (base32
-         "1dc92lnk846hpilslrqnr63x55cxll4qx88gif8fm521gv9cbyvr"))))
-    (build-system python-build-system)
+        (base32 "1a8pcf6411pqkpl3c5z93wml0nw4xb6j9dnjl976ij31h9llh8b3"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
     (propagated-inputs
-     (list python-decorator python-flask python-itsdangerous
-           python-markupsafe python-six))
-    (home-page "https://github.com/Runscope/httpbin")
+     (list python-brotlicffi
+           python-decorator
+           python-flasgger
+           python-flask
+           python-greenlet
+           python-greenlet
+           python-itsdangerous
+           python-markupsafe
+           python-six
+           python-werkzeug))
+    ;; The archive in PyPI points to a fork of
+    ;; <https://github.com/postmanlabs/httpbin> which is unmaintained for 6y,
+    ;; where <https://github.com/Runscope/httpbin> rediects to.  See
+    ;; <https://github.com/postmanlabs/httpbin/issues/719>
+    (home-page "https://github.com/psf/httpbin")
     (synopsis "HTTP request and response service")
-    (description "Testing an HTTP Library can become difficult sometimes.
-@code{RequestBin} is fantastic for testing POST requests, but doesn't let you control the
-response.  This exists to cover all kinds of HTTP scenarios.  All endpoint responses are
-JSON-encoded.")
+    (description
+     "Testing an HTTP Library can become difficult sometimes.
+@code{RequestBin} is fantastic for testing POST requests, but doesn't let you
+control the response.  This exists to cover all kinds of HTTP scenarios.  All
+endpoint responses are JSON-encoded.")
     (license license:isc)))
 
 (define-public python-pytest-httpbin
