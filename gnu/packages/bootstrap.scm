@@ -774,12 +774,12 @@ $out/bin/guile --version~%"
                                      "/binaries.tar"))
               (chmod "lib" #o755)
 
-              ;; Patch libc.so so it refers to the right path.
-              (substitute* "lib/libc.so"
-                (("/[^ ]+/lib/(libc|ld)" _ prefix)
-                 (string-append out "/lib/" prefix)))
-
-              #t))))))
+              ;; Patch linker scripts so they refer to the right file-names.
+              (substitute* ,(if (target-hurd64?)
+                                ''("lib/libc.so" "lib/libm.so")
+                                "lib/libc.so")
+                (("/[^ ]+/lib/(libc|libm|libh|ld)" _ prefix)
+                 (string-append out "/lib/" prefix)))))))))
     (inputs
      `(("tar" ,(bootstrap-executable "tar" (%current-system)))
        ("xz"  ,(bootstrap-executable "xz" (%current-system)))
