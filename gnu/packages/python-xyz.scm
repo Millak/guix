@@ -8634,15 +8634,19 @@ enable formatting of partial files.")
 (define-public python-blinker
   (package
     (name "python-blinker")
-    (version "1.4")
+    (version "1.9.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "blinker" version))
        (sha256
         (base32
-         "1dpq0vb01p36jjwbhhd08ylvrnyvcc82yxx3mwjx6awrycjyw6j7"))))
-    (build-system python-build-system)
+         "1gs5aigi8v8k4cymm06gdgaylv5yps6yk5n8gigf9v5blxjj5kml"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-flit-core
+           python-pytest
+           python-pytest-asyncio))
     (home-page "https://pythonhosted.org/blinker/")
     (synopsis "Fast, simple object-to-object and broadcast signaling")
     (description
