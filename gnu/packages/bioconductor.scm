@@ -128,6 +128,29 @@ in @code{MaskedDNAString} objects.")
 Ensembl.")
     (license license:artistic2.0)))
 
+(define-public r-hgu95av2-db
+  (package
+    (name "r-hgu95av2-db")
+    (version "3.13.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "hgu95av2.db" version
+                              'annotation))
+       (sha256
+        (base32 "1zk3mb9p8z2xabqr6y9jdiwidjzkgn22jlqyqg1bq0iahmj2ywpz"))))
+    (properties `((upstream-name . "hgu95av2.db")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-annotationdbi r-org-hs-eg-db))
+    (native-inputs (list r-runit))
+    (home-page "https://bioconductor.org/packages/hgu95av2.db")
+    (synopsis
+     "Affymetrix HG_U95Av2 Array annotation data (chip hgu95av2)")
+    (description
+     "This package provides Affymetrix HG_U95Av2 Array annotation
+data (chip hgu95av2) assembled using data from public repositories.")
+    (license license:artistic2.0)))
+
 (define-public r-hpo-db
   (package
     (name "r-hpo-db")
