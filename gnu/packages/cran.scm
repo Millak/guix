@@ -6175,6 +6175,8 @@ Markdown documents.  More generally, icons can be inserted in any
     (build-system r-build-system)
     (arguments
      (list
+      ;; Some tests require shiny, leading to a dependency cycle.
+      #:tests? #false
       #:modules '((guix build r-build-system)
                   (guix build minify-build-system)
                   (guix build utils)
