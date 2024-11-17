@@ -136,7 +136,9 @@ replace (
 
 (define fixtures-go-check-test
   (let ((version
-           "{\"Version\":\"v0.0.0-20201130134442-10cb98267c6c\",\"Time\":\"2020-11-30T13:44:42Z\"}")
+         "{\"Version\":\"v0.0.0-20201130134442-10cb98267c6c\",\"Time\":\"2020-11-30T13:44:42Z\"}")
+        (go.info
+         "{\"Version\":\"v0.0.0-20201130134442-10cb98267c6c\",\"Time\":\"2020-11-30T13:44:42Z\"}")
         (go.mod
           "module gopkg.in/check.v1
 
@@ -174,6 +176,8 @@ require github.com/kr/pretty v0.2.1
        . ,go.mod)
       ("https://proxy.golang.org/github.com/go-check/check/@latest"
        . ,version)
+      ("https://proxy.golang.org/github.com/go-check/check/@v/v0.0.0-20201130134442-10cb98267c6c.info"
+       . ,go.info)
       ("https://github.com/go-check/check?go-get=1"
        . ,go-get)
       ("https://pkg.go.dev/github.com/go-check/check"
