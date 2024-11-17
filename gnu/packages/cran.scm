@@ -7561,6 +7561,8 @@ XML.  To learn more about the Abbyy OCR API, see @url{http://ocrsdk.com/}.")
        (sha256
         (base32 "02ydb0vncck0l9shfbz07gymdy5l2vinb0miivyb1r6nykjww8g7"))))
     (build-system r-build-system)
+    ;; Tests require r-vcd, which depends on this package.
+    (arguments (list #:tests? #false))
     (native-inputs
      (list r-knitr))
     (home-page "https://cran.r-project.org/web/packages/colorspace")
