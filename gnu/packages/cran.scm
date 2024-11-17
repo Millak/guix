@@ -342,8 +342,13 @@ selecting columns of table-formatted files too large for the available RAM.")
        (sha256
         (base32
          "1f6hh7mck4bb1caivcvr6ms2pyqzzzawqyxjbgi9s0rrx8sj7wm9"))))
-    (properties `((upstream-name . "brio")))
+    (properties
+     ;; We can't add testthat here because of a dependency cycle.
+     '((updater-ignored-native-inputs . ("r-testthat"))
+       (upstream-name . "brio")))
     (build-system r-build-system)
+    ;; Tests require r-testthat, which uses r-brio as an input.
+    (arguments (list #:tests? #false))
     (home-page "https://github.com/r-lib/brio")
     (synopsis "Basic R input output")
     (description
