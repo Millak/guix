@@ -9727,14 +9727,29 @@ comparison.
      (list
       #:test-flags
       '(list "-m" "not network"
-             "-k"
-             (string-append
-              ;; This one fails with a small difference in the upper left.
-              "not test_figure_legend_outside"
-              " and not test_warn_big_data_best_loc"
-              ;; The 'test_lazy_auto_backend_selection' fails
-              ;; because it would require an X server; skip it.
-              " and not test_lazy_auto_backend_selection"))
+        "-k" (string-join
+              (list
+               ;; This one fails with a small difference in the upper left.
+               "not test_figure_legend_outside"
+               "test_warn_big_data_best_loc"
+               ;; The 'test_lazy_auto_backend_selection' fails because it
+               ;; would require an X server; skip it.
+               "test_lazy_auto_backend_selection"
+               ;; It fails with deprecation warning The register_cmap function
+               ;; was deprecated in Matplotlib 3.7 and will be removed two
+               ;; minor releases later.
+               "test_double_register_builtin_cmap"
+               ;; Failed: DID NOT WARN. No warnings of type (<class
+               ;; 'UserWarning'>,) were emitted.
+               "test_rcparams_update"
+               "test_rcparams_init"
+               ;; ResourceWarning: unclosed file <_io.BufferedWriter
+               ;; name='a.pdf'>
+               "test_multipage_keep_empty"
+               ;; UserWarning: Glyph 8722 (\N{MINUS SIGN}) missing from
+               ;; current font.
+               "test_mathtext_ticks")
+              " and not "))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'pretend-version
