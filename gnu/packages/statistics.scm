@@ -1767,7 +1767,13 @@ New styles can also be created easily.  This package was inspired by the
        (sha256
         (base32
          "1gfyypnvmih97p2r0php9qa39grzqpsdbq5g0fdsbpq5zms5w0sw"))))
+    (properties
+     ;; We can't have r-testthat among the inputs here to avoid a dependency
+     ;; cycle.
+     '((updater-ignored-native-inputs . ("r-testthat"))))
     (build-system r-build-system)
+    ;; Tests require r-testthat, which depends on r-praise.
+    (arguments (list #:tests? #false))
     (home-page "https://github.com/gaborcsardi/praise")
     (synopsis "Functions to praise users")
     (description
