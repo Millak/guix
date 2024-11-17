@@ -1815,7 +1815,13 @@ flexible and easy to set up.")
               (sha256
                (base32
                 "0j5z0b0myzjyyykk310xsa9n2mcm9bz8yqbq4xgz2yzdq8lvv4ld"))))
+    (properties
+     ;; We can't have r-testthat among the inputs here to avoid a dependency
+     ;; cycle.
+     '((updater-ignored-native-inputs . ("r-testthat"))))
     (build-system r-build-system)
+    ;; Tests require r-testthat, which indirectly depends on this package.
+    (arguments (list #:tests? #false))
     (home-page "https://github.com/wch/R6/")
     (synopsis "Classes with reference semantics in R")
     (description
