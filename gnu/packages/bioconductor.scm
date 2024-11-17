@@ -5925,6 +5925,9 @@ fold changes mean and variability for each selected gene.")
     (properties
      `((upstream-name . "DelayedArray")))
     (build-system r-build-system)
+    ;; Tests require r-hdf5array, but adding it would lead to a dependency
+    ;; cycle.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-biocgenerics
            r-iranges
