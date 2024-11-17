@@ -3571,14 +3571,14 @@ different audio devices such as ALSA or PulseAudio.")
 (define-public qjackctl
   (package
     (name "qjackctl")
-    (version "0.9.8")
+    (version "1.0.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/qjackctl/qjackctl/"
                                   version "/qjackctl-" version ".tar.gz"))
               (sha256
                (base32
-                "1rvxgxd7bbv7yazcpw3ily0jlra8ms5c0kkf7cybgivahw59zk87"))))
+                "0wzimnxb9yjj155l0hqb57smf0158a4bbzi6bj11pp60njld4zqn"))))
     (build-system cmake-build-system)
     (arguments
      '(#:tests? #f))                    ; no check target
@@ -3586,10 +3586,10 @@ different audio devices such as ALSA or PulseAudio.")
      (list alsa-lib
            jack-1
            portaudio
-           qtbase-5
-           qtsvg-5))
+           qtbase
+           qtsvg))
     (native-inputs
-     (list pkg-config qttools-5))
+     (list pkg-config qttools))
     (home-page "https://qjackctl.sourceforge.io/")
     (synopsis "Jack server control application")
     (description "Control a Jack server.  Allows you to plug various sources
