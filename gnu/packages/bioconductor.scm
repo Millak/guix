@@ -7173,6 +7173,8 @@ paired-end data.")
     (properties
      `((upstream-name . "Biobase")))
     (build-system r-build-system)
+    ;; One test depends on golubEsets, which depends on r-biobase.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-biocgenerics))
     (native-inputs (list r-knitr))
