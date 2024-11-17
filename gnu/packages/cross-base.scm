@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013-2018, 2020, 2023-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2018 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2016, 2019, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2016, 2019, 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2016 Manolis Fragkiskos Ragkousis <manolis837@gmail.com>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2020, 2021 Marius Bakke <marius@gnu.org>
@@ -61,7 +61,7 @@
   ;;
   ;; Note: This is a macro so that we do not refer to 'gcc' from the top
   ;; level, which would lead to circular-dependency issues.
-  (identifier-syntax gcc))
+  (identifier-syntax gcc-14))
 
 (define %gcc-include-paths
   ;; Environment variables for header search paths.
