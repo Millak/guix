@@ -3628,8 +3628,11 @@ engine (version 3.8.8.2) is included.")
     (properties `((upstream-name . "RCurl")))
     (build-system r-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
+     (list
+      ;; Tests require internet connection.
+      #:tests? #false
+      #:phases
+      '(modify-phases %standard-phases
          (add-after 'unpack 'respect-CURL_CA_BUNDLE
            (lambda _
              (substitute* "R/options.S"
