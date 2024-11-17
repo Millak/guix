@@ -5885,6 +5885,35 @@ your favorite sampled sounds and bashing away on a MIDI controller.")
 the electronic or dubstep genre.")
       (license license:gpl3+))))
 
+(define-public sonivox
+  (package
+    (name "sonivox")
+    (version "3.6.14")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/pedrolcl/sonivox")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0zn9v4lxjpnpdlpnv2px8ch3z0xagmqlvff5pd39pss3mxfp32g0"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags
+           (if (%current-target-system)
+               #~(list "-DBUILD_TESTING=OFF")
+               #~(list "-DBUILD_TESTING=ON"))))
+    (native-inputs
+     (list googletest))
+    (home-page "https://github.com/pedrolcl/sonivox")
+    (synopsis "Fork of the AOSP platform_external_sonivox")
+    (description "This project is a fork of the Android Open Source Project
+@code{platform_external_sonivox}.  It is a Wave Table synthesizer, using
+embedded samples.  It also supports external DLS soundfont files.  It is also a
+real time GM synthesizer.")
+    (license license:asl2.0)))
+
 (define-public sonivox-eas
   (package
     (name "sonivox-eas")
