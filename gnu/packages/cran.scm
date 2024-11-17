@@ -35846,6 +35846,8 @@ estimation.")
          "1da4daxgk4kbq1n2mn72482c3j96wba0xf4mzffgasn20ib2swqd"))))
     (properties `((upstream-name . "optimx")))
     (build-system r-build-system)
+    ;; Tests require too many additional packages.
+    (arguments (list #:tests? #false))
     (propagated-inputs (list r-nloptr r-numderiv r-pracma))
     (native-inputs (list r-r-rsp))
     (home-page "https://cran.r-project.org/web/packages/optimx/")
