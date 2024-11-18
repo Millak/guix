@@ -42272,6 +42272,7 @@ in order to customise how it should change with time.")
     (properties `((upstream-name . "tzdb")))
     (build-system r-build-system)
     (propagated-inputs (list r-cpp11))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/r-lib/tzdb")
     (synopsis "Time Zone Database Information")
     (description
