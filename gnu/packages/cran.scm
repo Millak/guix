@@ -10263,7 +10263,7 @@ the Kaplan-Meier and Aalen-Johansen methods.")
     (propagated-inputs
      (list r-drr r-magrittr))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/gdkrmr/dimRed")
     (synopsis "Framework for dimensionality reduction")
     (description
