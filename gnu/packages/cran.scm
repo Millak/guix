@@ -4808,7 +4808,7 @@ noisy black-box functions.")
         (base32 "0gn7xpbl7y86n19y8jvw00m03p3aff78yv2g62yp96bi7qygaq2a"))))
     (properties `((upstream-name . "tgstat")))
     (build-system r-build-system)
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://cran.r-project.org/package=tgstat")
     (synopsis "Amos Tanay's Group High Performance Statistical Utilities")
     (description
