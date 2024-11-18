@@ -42416,7 +42416,7 @@ using either @code{httpuv} or @code{Rhttpd}.")
     (propagated-inputs
      (list r-jsonlite r-rcpp))
     (native-inputs
-     (list protobuf pkg-config))
+     (list pkg-config protobuf r-sf r-testthat))
     (home-page "https://github.com/jeroen/protolite")
     (synopsis "Highly optimized protocol buffer serializers")
     (description
