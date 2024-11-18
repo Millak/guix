@@ -10817,7 +10817,7 @@ by base R methods related to model fitting.")
            r-tibble
            r-tidyr))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/tidyverse/broom")
     (synopsis "Convert statistical analysis objects into tidy data frames")
     (description
