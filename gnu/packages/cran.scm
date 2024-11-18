@@ -15173,6 +15173,7 @@ stored data and compression with the LZ4 and ZSTD compressors.")
     (properties `((upstream-name . "fst")))
     (build-system r-build-system)
     (propagated-inputs (list r-fstcore r-rcpp))
+    (native-inputs (list r-data-table r-testthat))
     (home-page "https://www.fstpackage.org")
     (synopsis "Fast serialization of data frames")
     (description
