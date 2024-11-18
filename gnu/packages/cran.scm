@@ -39009,7 +39009,7 @@ vignettes in all common formats.")
            r-tokenizers
            r-vctrs))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/juliasilge/tidytext")
     (synopsis "Text mining using dplyr, ggplot2, and other Tidy tools")
     (description
