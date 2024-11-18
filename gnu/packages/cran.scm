@@ -5718,7 +5718,7 @@ in systems and applications.")
     (properties `((upstream-name . "jsonvalidate")))
     (build-system r-build-system)
     (propagated-inputs (list r-v8))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://docs.ropensci.org/jsonvalidate/")
     (synopsis "Validate JSON schema")
     (description
