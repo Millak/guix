@@ -40040,6 +40040,7 @@ use on EC2 instances, the package 'aws.ec2metadata' is suggested.")
            r-digest
            r-httr
            r-xml2))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/cloudyr/aws.s3")
     (synopsis "AWS S3 Client Package")
     (description
