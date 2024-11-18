@@ -40392,6 +40392,7 @@ are.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-backports r-checkmate r-data-table r-digest r-r6))
+    (native-inputs (list r-testthat))
     (home-page "https://mlr3misc.mlr-org.com/")
     (synopsis "Helper functions for mlr3")
     (description "@code{mlr3misc} provides frequently used helper functions
