@@ -7246,7 +7246,7 @@ punctuation.")
     (propagated-inputs
      (list r-htmltools r-jsonlite r-lazyeval r-r6))
     (native-inputs
-     (list esbuild js-selectize))
+     (list esbuild js-selectize r-testthat))
     (home-page "https://rstudio.github.io/crosstalk/")
     (synopsis "Inter-widget interactivity for HTML widgets")
     (description
