@@ -17472,6 +17472,7 @@ several entropy estimators.")
          "1zlc1ximx96f235c0l8qfs6vbp1kpnbf943wxsfahnnlnxvwi59f"))))
     (properties `((upstream-name . "nsprcomp")))
     (build-system r-build-system)
+    (native-inputs (list r-testthat))
     (home-page "https://sigg-iten.ch/research/")
     (synopsis "Non-negative and sparse PCA")
     (description
