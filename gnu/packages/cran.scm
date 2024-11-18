@@ -44210,6 +44210,7 @@ for testing and developing your own models.")
     (properties `((upstream-name . "miscTools")))
     (build-system r-build-system)
     (propagated-inputs (list r-digest))
+    (native-inputs (list r-ecdat))
     (home-page "http://www.micEcon.org")
     (synopsis "Miscellaneous tools and utilities")
     (description
