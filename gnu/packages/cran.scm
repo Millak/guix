@@ -29499,7 +29499,7 @@ on graphs of millions of nodes (as long as they can fit in memory).")
     (propagated-inputs
      (list r-cli r-farver r-ggplot2 r-gtable r-rlang))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat r-vdiffr))
     (home-page "https://github.com/thomasp85/patchwork")
     (synopsis "Compose ggplot2 plots")
     (description
