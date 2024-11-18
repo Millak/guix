@@ -4043,7 +4043,7 @@ control over dimensions and appearance.")
     (properties `((upstream-name . "philentropy")))
     (build-system r-build-system)
     (propagated-inputs (list r-kernsmooth r-poorman r-rcpp))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/drostlab/philentropy")
     (synopsis
      "Similarity and distance quantification between probability functions")
