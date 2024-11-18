@@ -17119,6 +17119,7 @@ Group (Non-)Overlap considerations.")
          "0wmslhggdhamvzfa0nvj6j5bc8jhiy3n5q0p5ha9bcsyvi92mf01"))))
     (properties `((upstream-name . "Deriv")))
     (build-system r-build-system)
+    (native-inputs (list r-testthat))
     (home-page "https://cran.r-project.org/web/packages/Deriv")
     (synopsis "Symbolic differentiation")
     (description
