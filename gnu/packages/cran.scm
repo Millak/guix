@@ -3332,7 +3332,7 @@ scale-sensitive information.")
            r-tibble
            r-venn
            r-yulab-utils))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/gaospecial/ggVennDiagram")
     (synopsis "Implementention of the Venn diagram using ggplot2")
     (description
