@@ -5896,7 +5896,7 @@ LaTeX.")
     (inputs
      (list curl zlib))
     (native-inputs
-     (list pkg-config r-knitr))
+     (list pkg-config r-knitr r-testthat))
     (home-page "https://github.com/jeroenooms/curl")
     (synopsis "HTTP client for R")
     (description
