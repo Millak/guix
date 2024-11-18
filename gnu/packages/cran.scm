@@ -685,7 +685,7 @@ or a given luminosity.")
                 "12gr1diyy2azy1fbh8z129lkm0ahwvm98j5hqxv93yp089a02l8c"))))
     (properties `((upstream-name . "consort")))
     (build-system r-build-system)
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/adayim/consort/")
     (synopsis "Create Consort Diagrams")
     (description
