@@ -16939,6 +16939,9 @@ distribution).")
                 "079zjzqvslv8k9pj52xwdhk6a9a8sg0p9wc6s457lz0ircan9ml6"))))
     (properties `((upstream-name . "golem")))
     (build-system r-build-system)
+    ;; The tests attempt to install packages and mess up the test environment.
+    ;; We don't do that around here.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-attempt
            r-config
