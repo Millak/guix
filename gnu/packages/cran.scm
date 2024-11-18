@@ -8757,7 +8757,7 @@ introduces more meaningful reordering for a coupled heatmap visualization.")
     (propagated-inputs
      (list r-crayon r-globaloptions r-rjson))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/jokergoo/GetoptLong")
     (synopsis "Parsing command-line arguments and variable interpolation")
     (description
