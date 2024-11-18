@@ -10938,7 +10938,7 @@ from the data points.")
     (properties `((upstream-name . "coro")))
     (build-system r-build-system)
     (propagated-inputs (list r-rlang))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/r-lib/coro")
     (synopsis "Coroutines for R")
     (description
