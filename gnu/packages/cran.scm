@@ -42662,7 +42662,7 @@ C API for topology operations on geometries.")
            r-tidyselect
            r-whisker
            r-yaml))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/rstudio/tfruns")
     (synopsis "Training run tools for TensorFlow")
     (description
