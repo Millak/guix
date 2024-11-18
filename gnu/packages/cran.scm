@@ -12124,6 +12124,7 @@ rules, boxes, trees, and Unicode symbols with ASCII alternatives.")
         (base32
          "0j9hnbyzbyzclgm4qwyqqkrqcrblxfm190489sgcvr5i7vg2smr8"))))
     (build-system r-build-system)
+    (native-inputs (list r-testthat))
     (home-page "https://bitbucket.org/djhshih/argparser")
     (synopsis "Command-line argument parser")
     (description
