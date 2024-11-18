@@ -9887,10 +9887,20 @@ provides the R language without the environment.")
         (base32
          "0n25b3f92pghkavk4j9l25v1k6wjwkmpyvxslf05ixpzkmd23d38"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'delete-bad-tests
+           (lambda _
+             ;; Needs package GeneralizedHyperbolic
+             (delete-file "tests/t-fitdist-customoptim.R")
+             ;; Needs package rgenoud
+             (delete-file "tests/t-fitdistcens.R"))))))
     (propagated-inputs
      (list r-mass r-rlang r-survival))
     (native-inputs
-     (list r-knitr))
+     (list r-actuar r-knitr r-mc2d))
     (home-page "https://riskassessment.r-forge.r-project.org")
     (synopsis "Fitting a parametric distribution from data")
     (description
