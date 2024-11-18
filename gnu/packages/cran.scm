@@ -44151,7 +44151,7 @@ options for aggregating multi-layer rasters.")
     (properties `((upstream-name . "BIEN")))
     (build-system r-build-system)
     (native-inputs
-      (list r-knitr))
+      (list r-knitr r-testthat))
     (propagated-inputs
       (list r-ape
             r-dbi
