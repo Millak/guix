@@ -43899,6 +43899,7 @@ configuration of status code, short description, and verbose message.")
            r-magrittr
            r-r6
            r-urltools))
+    (native-inputs (list r-httr r-testthat))
     (home-page "https://github.com/ropensci/webmockr")
     (synopsis "Stubbing and setting expectations on HTTP Requests")
     (description
