@@ -11629,6 +11629,7 @@ procedure, following functionality is available:
     (build-system r-build-system)
     (propagated-inputs
      (list r-futile-logger))
+    (native-inputs (list r-testthat))
     (home-page "https://cran.r-project.org/web/packages/VennDiagram/")
     (synopsis "Generate High-Resolution Venn and Euler Plots")
     (description
