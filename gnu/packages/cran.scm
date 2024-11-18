@@ -11009,7 +11009,7 @@ the parameters of a stable distribution.")
     (properties `((upstream-name . "stabm")))
     (build-system r-build-system)
     (propagated-inputs (list r-checkmate r-matrix))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://bommert.github.io/stabm/")
     (synopsis "Stability measures for feature selection")
     (description
