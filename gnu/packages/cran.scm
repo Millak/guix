@@ -17049,7 +17049,7 @@ matches version and feature constraints.")
     (propagated-inputs
      (list r-findpython r-jsonlite r-r6))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/trevorld/argparse")
     (synopsis "Command line optional and positional argument parser")
     (description
