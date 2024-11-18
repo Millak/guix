@@ -6257,6 +6257,7 @@ expression estimates for all genes.")
     (properties `((upstream-name . "bsicons")))
     (build-system r-build-system)
     (propagated-inputs (list r-cli r-htmltools r-rlang))
+    (native-inputs (list r-bslib r-testthat))
     (home-page "https://github.com/rstudio/bsicons")
     (synopsis "Easily work with Bootstrap icons")
     (description
