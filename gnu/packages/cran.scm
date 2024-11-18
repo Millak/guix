@@ -39204,7 +39204,7 @@ use.")
            r-workflowsets
            r-yardstick))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/tidymodels/tidymodels")
     (synopsis "Tidy collection for modeling and statistical analysis")
     (description
