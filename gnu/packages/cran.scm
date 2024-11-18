@@ -41129,6 +41129,7 @@ package online.")
            texlive-ulem
            texlive-upquote
            (texlive-updmap.cfg (list texlive-lm))))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/crsh/prereg")
     (synopsis
      "R Markdown Templates to preregister Scientific Studies")
