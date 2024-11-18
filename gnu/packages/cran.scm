@@ -8096,7 +8096,7 @@ performs global optimization by differential evolution.")
     (properties `((upstream-name . "RcppDist")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp r-rcpparmadillo))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/duckmayr/RcppDist")
     (synopsis "Integration of additional probability distributions")
     (description
