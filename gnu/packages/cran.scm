@@ -15054,7 +15054,7 @@ and classification and regression trees.")
     (propagated-inputs
      (list r-rcpp r-rlang))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/r-lib/later")
     (synopsis "Utilities for delaying function execution")
     (description
