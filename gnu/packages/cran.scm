@@ -43865,7 +43865,7 @@ backed by the @url{https://bokeh.pydata.org/, Bokeh visualization library}.")
     (propagated-inputs
      (list r-httpcode r-r6 r-whisker))
     (native-inputs
-     (list r-knitr))
+     (list r-crul r-knitr r-testthat))
     (home-page "https://docs.ropensci.org/fauxpas")
     (synopsis "HTTP error helpers")
     (description
