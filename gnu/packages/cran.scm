@@ -3149,6 +3149,7 @@ Currently handlers are provided for CDK, MOE and BCI fingerprint data.")
     (properties `((upstream-name . "fpeek")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/davidgohel/fpeek")
     (synopsis "Check text files content at a glance")
     (description
