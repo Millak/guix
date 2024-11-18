@@ -5633,6 +5633,7 @@ in Miettinen, Nordhausen and Taskinen (2017) <doi:10.18637/jss.v076.i02>.")
     (properties `((upstream-name . "job")))
     (build-system r-build-system)
     (propagated-inputs (list r-digest r-rstudioapi))
+    (native-inputs (list r-testthat))
     (home-page "https://cran.r-project.org/package=job")
     (synopsis "Run code as an RStudio job")
     (description
