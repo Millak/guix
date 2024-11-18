@@ -4983,7 +4983,7 @@ cross-platform graphical user interface toolkit} widget.")
            r-tibble
            r-xml2))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/hadley/rvest")
     (synopsis "Simple web scraping for R")
     (description
