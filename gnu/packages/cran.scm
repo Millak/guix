@@ -17277,6 +17277,7 @@ containing one or more SNPs that evolved under directional selection.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-plyr r-rcpp))
+    (native-inputs (list r-testthat))
     (home-page "https://web.expasy.org/pROC/")
     (synopsis "Display and analyze ROC curves")
     (description
