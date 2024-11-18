@@ -17634,6 +17634,7 @@ provide replacement functions for the ACM licensed @code{akima::interp} and
     (properties `((upstream-name . "ABCoptim")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/gvegayon/ABCoptim/")
     (synopsis "Optimization of Artificial Bee Colony algorithm")
     (description
