@@ -12172,7 +12172,7 @@ variation information} (NVI) and entropy.")
     (properties `((upstream-name . "attempt")))
     (build-system r-build-system)
     (propagated-inputs (list r-rlang))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/ColinFay/attempt")
     (synopsis "Tools for defensive programming")
     (description
