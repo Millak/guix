@@ -17920,6 +17920,7 @@ futures can be used as backends for the @code{foreach} framework.")
            r-magrittr
            r-plyr
            r-scales))
+    (native-inputs (list r-testthat))
     (home-page "https://cran.r-project.org/package=superheat")
     (synopsis "Graphical tool for exploring complex datasets using heatmaps")
     (description
