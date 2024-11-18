@@ -41216,7 +41216,7 @@ percentages, citations, person tags, phone numbers, times, and zip codes.")
             "1mci6x65h94qiz9cwikx2inbrwkykv43zbs8abfbx416zrh2bbn9"))))
     (properties `((upstream-name . "mgsub")))
     (build-system r-build-system)
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page
       "https://cran.r-project.org/package=mgsub")
     (synopsis
