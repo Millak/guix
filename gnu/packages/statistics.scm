@@ -597,8 +597,11 @@ k-nearest neighbour, Learning Vector Quantization and Self-Organizing Maps.")
         (base32
          "0r1i243mjbsx00ccg3f46c5iwnfmjxmhhdjvrj3m799mzpx0xifi"))))
     (build-system r-build-system)
+    ;; Tests insist on loading Matrix not from the locations specified with
+    ;; R_LIBS_SITE.
+    (arguments (list #:tests? #false))
     (native-inputs
-     (list gfortran))
+     (list gfortran r-matrix))
     (home-page "https://cran.r-project.org/web/packages/cluster")
     (synopsis "Methods for cluster analysis")
     (description
