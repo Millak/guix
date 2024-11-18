@@ -15523,7 +15523,7 @@ provides methods to display spatiotemporal rasters, and vector fields.")
     (propagated-inputs
      (list r-httr r-jsonlite r-xml))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://docs.ropensci.org/rentrez/")
     (synopsis "Entrez in R")
     (description
