@@ -11417,6 +11417,7 @@ paths and can be seen as the spatial brother to the tweenr package.")
         (base32
          "0267gvcg6mmf28x26z6njw373prwpaq8aqkd6aavyhrjsv2aqmji"))))
     (build-system r-build-system)
+    (native-inputs (list r-testthat))
     (home-page "https://cran.r-project.org/web/packages/truncnorm/")
     (synopsis "Truncated normal distribution")
     (description "This package provides functions for the truncated normal
