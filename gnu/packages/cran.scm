@@ -1734,7 +1734,7 @@ required to use it.")
               (setenv "DISPLAY" ":1"))))))
     (propagated-inputs (list r-digest r-gwidgets2 r-memoise))
     (native-inputs
-     (list xorg-server-for-tests))
+     (list r-testthat xorg-server-for-tests))
     (home-page "https://github.com/jverzani/gWidgets2tcltk")
     (synopsis "Toolkit implementation of gWidgets2 for tcltk")
     (description "This package is a port of the @code{gWidgets2} API for the
