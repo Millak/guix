@@ -17835,7 +17835,7 @@ Models\" (Hastie and Tibshirani, 1990).")
     (propagated-inputs
      (list r-cvauc r-gam r-nnls))
     (native-inputs
-     (list r-knitr r-rmarkdown))
+     (list r-knitr r-rmarkdown r-testthat))
     (home-page "https://github.com/ecpolley/SuperLearner")
     (synopsis "Super learner prediction")
     (description
