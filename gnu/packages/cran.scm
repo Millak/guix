@@ -41676,7 +41676,7 @@ to read the latter.")
             r-stringi
             r-striprtf
             r-xml2))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page
       "https://github.com/quanteda/readtext")
     (synopsis
