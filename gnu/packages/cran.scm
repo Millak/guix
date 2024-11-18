@@ -10366,6 +10366,16 @@ included in this package.")
          "1rvi1h7jm02vnsrk9mm0fldymf7zyjkv1id6xvn1iwgb5psz2syf"))))
     (properties `((upstream-name . "timeDate")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-before 'check 'set-TZDIR
+           (lambda* (#:key inputs #:allow-other-keys)
+             ;; Tests would fail without this.
+             (setenv "TZDIR"
+                     (search-input-directory inputs "share/zoneinfo")))))))
+    (native-inputs (list r-runit tzdata-for-tests))
     (home-page "https://www.rmetrics.org")
     (synopsis "Chronological and calendar objects")
     (description
