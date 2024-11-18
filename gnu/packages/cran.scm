@@ -16581,7 +16581,7 @@ intervals.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-stringi r-stringr))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat r-tibble))
     (home-page "https://github.com/Tazinho/snakecase")
     (synopsis "Convert strings into any case")
     (description
