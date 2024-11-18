@@ -3447,7 +3447,7 @@ axis} (SMA), and @dfn{ranged major axis} (RMA).")
            r-splus2r
            r-tibble))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://www.r4photobiology.info/")
     (synopsis "Miscellaneous Extensions to @code{ggplot2}")
     (description "This package provides extensions to @code{ggplot2},
