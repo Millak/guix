@@ -13412,6 +13412,7 @@ Cryer and Kung-Sik Chan.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-rcpp))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/twolodzko/extraDistr")
     (synopsis "Additional univariate and multivariate distributions")
     (description
