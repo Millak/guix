@@ -44127,7 +44127,7 @@ formatting and delivering log messages with low overhead.")
     (build-system r-build-system)
     (propagated-inputs
       (list r-raster r-rcpp r-rcpparmadillo r-wk))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-geos r-knitr r-testthat))
     (home-page "https://github.com/ecohealthalliance/fasterize")
     (synopsis "Fast Polygon to Raster Conversion")
     (description
