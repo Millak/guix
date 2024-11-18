@@ -11254,6 +11254,7 @@ response matrices.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-mass r-matrix r-nlme r-numderiv r-ucminf))
+    (native-inputs (list r-lme4 r-testthat r-xtable))
     (home-page "https://github.com/runehaubo/ordinal")
     (synopsis "Regression models for ordinal data")
     (description
