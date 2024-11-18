@@ -41039,6 +41039,7 @@ AGG to use as alternative to the raster devices provided through the
            r-vctrs
            r-withr
            r-yaml))
+    (native-inputs (list r-testthat))
     (home-page "https://downlit.r-lib.org/")
     (synopsis "Syntax highlighting and automatic linking")
     (description
