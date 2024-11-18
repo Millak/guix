@@ -41753,7 +41753,7 @@ light-weight geometry library used by @url{http://postgis.net/,PostGIS}.")
     (build-system r-build-system)
     (propagated-inputs
       (list r-abind r-classint r-rlang r-sf r-units))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat r-tibble))
     (home-page "https://r-spatial.github.io/stars/")
     (synopsis
       "Spatiotemporal Arrays, Raster and Vector Data Cubes")
