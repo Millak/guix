@@ -2725,7 +2725,7 @@ similar rank-based tests for equal probability distributions due to Neuhauser
     (propagated-inputs
      (list r-curl r-jsonlite r-rcpp))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://jeroen.cran.dev/V8")
     (synopsis "Embedded JavaScript and WebAssembly engine for R")
     (description
