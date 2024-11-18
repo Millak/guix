@@ -42387,6 +42387,7 @@ with well defined variance functions).")
     (build-system r-build-system)
     (propagated-inputs
      (list r-curl r-jsonlite))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/jeroen/webutils")
     (synopsis "Utility functions for developing web applications")
     (description
