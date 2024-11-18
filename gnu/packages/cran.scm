@@ -15571,7 +15571,9 @@ reproducible.")
         (base32
          "01xig6ijsjnkwdjh03zdp86mqm5pjlqp9br34pn644rf98qg8k2y"))))
     (build-system r-build-system)
-    (native-inputs (list esbuild r-knitr))
+    ;; Tests need shinytest2.
+    (arguments (list #:tests? #false))
+    (native-inputs (list esbuild r-knitr r-testthat))
     (propagated-inputs
      (list r-checkmate
            r-digest
