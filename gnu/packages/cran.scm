@@ -15690,7 +15690,7 @@ always locate the files relative to your project root.")
            r-rlang
            r-withr))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/rstudio/reticulate")
     (synopsis "R interface to Python")
     (description
