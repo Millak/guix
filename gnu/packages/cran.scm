@@ -6273,9 +6273,16 @@ weights.")
          "1lnl2xssz33vg7p6a8ij55hg6j1p1d3y2mq22pvf0r3rmnd08cz1"))))
     (properties `((upstream-name . "sass")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; One test fails when the current locale is the C locale.
+         (add-before 'check 'set-test-locale
+           (lambda _ (setenv "LC_ALL" "en_US.UTF-8"))))))
     (propagated-inputs
      (list r-fs r-htmltools r-r6 r-rappdirs r-rlang))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/rstudio/sass")
     (synopsis "Syntactically Awesome Style Sheets (SASS)")
     (description
