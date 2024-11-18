@@ -41269,7 +41269,7 @@ in same length matches).")
             r-textshape
             r-tidyr
             r-zoo))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/mjockers/syuzhet")
     (synopsis
       "Extracts Sentiment and Sentiment-Derived Plot Arcs from Text")
