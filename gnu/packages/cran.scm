@@ -14933,7 +14933,7 @@ custom infix operators.")
     (propagated-inputs
      (list r-rcpp r-stringi r-zip))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/awalker89/openxlsx")
     (synopsis "Read, write and edit XLSX files")
     (description
