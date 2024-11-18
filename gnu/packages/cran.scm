@@ -39468,7 +39468,7 @@ data (variant call format, e.g. VCF or BCF) or meta-analysis results in R.")
     (properties `((upstream-name . "MALDIquant")))
     (build-system r-build-system)
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://cran.r-project.org/web/packages/MALDIquant")
     (synopsis "Quantitative analysis of mass spectrometry data")
     (description
