@@ -1794,6 +1794,7 @@ pronounceable identifiers.")
            r-tibble
            r-vctrs
            r-withr))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/tidyverse/googlesheets4")
     (synopsis "Access Google Sheets using the Sheets API V4")
     (description
