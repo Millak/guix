@@ -4474,6 +4474,7 @@ similar to OLS.")
           r-quadprog
           r-stabs
           r-survival))
+   (native-inputs (list r-testthat))
    (home-page "https://github.com/boost-R/mboost")
    (synopsis "Model-based boosting")
    (description
