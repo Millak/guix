@@ -3179,7 +3179,7 @@ in good performances with large files.")
           r-tidyr
           r-tidyselect))
    (native-inputs
-    (list r-knitr))
+    (list r-knitr r-testthat))
    (home-page "https://corybrunson.github.io/ggalluvial/")
    (synopsis "Alluvial plots for ggplot2")
    (description "This package provides alluvial plots for @code{ggplot2}.
