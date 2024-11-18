@@ -41506,7 +41506,7 @@ functionalities in strex.")
            r-tibble
            r-vctrs
            r-zip))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page
      "https://cran.r-project.org/package=readODS")
     (synopsis "Read and Write ODS Files")
