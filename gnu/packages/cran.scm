@@ -5453,6 +5453,7 @@ as of close of business.  Perform date arithmetic in units of \"months\" and
                              r-rgl
                              r-rvcg
                              r-sf))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/zarquon42b/Morpho")
     (synopsis
      "Calculations and visualizations related to geometric morphometrics")
