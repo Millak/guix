@@ -10565,6 +10565,7 @@ functions are available at both the R level, and through Rcpp.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-linprog r-lpsolve r-magic r-rcpp r-rcppprogress))
+    (native-inputs (list r-testthat))
     (home-page "https://geometry.r-forge.r-project.org/")
     (synopsis "Mesh generator and surface tessellator")
     (description
