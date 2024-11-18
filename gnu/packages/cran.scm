@@ -14467,6 +14467,7 @@ extracting and replacing data in arrays.")
          "1m28h8pcd78049lz2qixhkcr9h5b3jik3maqzfbvq9y58z71i4a7"))))
     (properties `((upstream-name . "PRROC")))
     (build-system r-build-system)
+    (native-inputs (list r-ggplot2 r-testthat))
     (home-page "https://cran.r-project.org/web/packages/PRROC/")
     (synopsis "Precision-Recall and ROC curves for weighted and unweighted data")
     (description
