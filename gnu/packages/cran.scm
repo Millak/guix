@@ -40312,6 +40312,7 @@ the performance of optimized feature sets with nested resampling.")
                              r-mlr3tuning
                              r-paradox
                              r-r6))
+    (native-inputs (list r-mlr3pipelines r-testthat))
     (home-page "https://mlr3hyperband.mlr-org.com")
     (synopsis "Hyperband for mlr3")
     (description
