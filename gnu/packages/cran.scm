@@ -14287,7 +14287,7 @@ and within plot factors interact.")
         (base32 "039frwrsxq1lb97s7vf2vbyyadimkigs628ymym06fxka53drdkp"))))
     (properties `((upstream-name . "alluvial")))
     (build-system r-build-system)
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/mbojan/alluvial")
     (synopsis "Create parallel sets plots (Alluvial Diagrams)")
     (description
