@@ -157,6 +157,7 @@
 ;;; Copyright © 2024 Rick Huijzer <ikbenrickhuyzer@gmail.com>
 ;;; Copyright © 2024 Peter Kannewitz <petre-vps@posteo.net>
 ;;; Copyright © 2024 Aaron Covrig <aaron.covrig.us@ieee.org>
+;;; Copyright © 2024 Evgeny Pisemsky <mail@pisemsky.site>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -32223,6 +32224,33 @@ For the most part it's transliterated from C, the major differences are:
     (description
      "Jinxed is an implementation of a subset of the Python curses library.")
     (license license:mpl2.0)))
+
+(define-public python-svgelements
+  (package
+    (name "python-svgelements")
+    (version "1.9.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "svgelements" version))
+       (sha256
+        (base32 "1xrp7yxg65dqdrmghriljf9hh2smq2zhzr2hzmqifgfd0ijas0kw"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-anyio
+           python-pytest
+           python-numpy
+           python-pillow
+           python-scipy
+           python-setuptools
+           python-wheel))
+    (home-page "https://github.com/meerk40t/svgelements")
+    (synopsis "SVG parsing for elements, paths, and other SVG objects")
+    (description
+     "This module does high fidelity SVG parsing and geometric rendering.
+The goal is to successfully and correctly process SVG for use with any scripts
+that may need or want to use SVG files as geometric data.")
+    (license license:expat)))
 
 (define-public python-svgutils
   (package
