@@ -3972,6 +3972,7 @@ naming conventions as distance methods of existing R packages.")
     (properties `((upstream-name . "ParamHelpers")))
     (build-system r-build-system)
     (propagated-inputs (list r-backports r-bbmisc r-checkmate r-fastmatch))
+    (native-inputs (list r-testthat))
     (home-page "https://paramhelpers.mlr-org.com")
     (synopsis
      "Helpers for parameters in black-box optimization, tuning, and machine learning")
