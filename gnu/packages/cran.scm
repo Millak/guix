@@ -41475,7 +41475,7 @@ user streams, and to parse the output into data frames.")
            r-rlang
            r-stringi
            r-stringr))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://rorynolan.github.io/strex/")
     (synopsis "Extra string manipulation functions")
     (description
