@@ -2512,6 +2512,7 @@ times for R expressions.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-dplyr r-tibble))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/csgillespie/benchmarkme-data")
     (synopsis "Data set for the @code{benchmarkme} package")
     (description "This package contains the data set for the crowd-sourced
