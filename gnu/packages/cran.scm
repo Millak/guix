@@ -3711,6 +3711,18 @@ available as companion packages.")
        (sha256
         (base32 "122qyd88qr8cc8h3k46xpygm00inqpm55zdy0b7535958imhygmk"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; We need this for one failing test.
+         (add-before 'check 'set-timezone
+           ;; This package is picky about timezones.
+           (lambda* (#:key inputs #:allow-other-keys)
+             (setenv "TZ" "UTC+1")
+             (setenv "TZDIR"
+                     (search-input-directory inputs
+                                             "share/zoneinfo")))))))
     (propagated-inputs
      (list r-cli
            r-farver
@@ -3722,6 +3734,7 @@ available as companion packages.")
            r-rcolorbrewer
            r-rlang
            r-viridislite))
+    (native-inputs (list r-hms r-stringi r-testthat tzdata-for-tests))
     (home-page "https://github.com/hadley/scales")
     (synopsis "Scale functions for visualization")
     (description
