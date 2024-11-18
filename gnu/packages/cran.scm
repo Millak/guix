@@ -12147,6 +12147,7 @@ script.")
     (properties `((upstream-name . "aricode")))
     (build-system r-build-system)
     (propagated-inputs (list r-matrix r-rcpp))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/jchiquet/aricode")
     (synopsis "Efficient computations of standard clustering comparison measures")
     (description
