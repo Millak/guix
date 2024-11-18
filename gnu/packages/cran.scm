@@ -10916,7 +10916,7 @@ for certain use cases.")
     (propagated-inputs
      (list r-ggplot2 r-rcpp r-rlang r-scales r-withr))
     (native-inputs
-     (list r-knitr)) ; for vignettes
+     (list r-knitr r-testthat)) ; for vignettes
     (home-page "https://github.com/slowkow/ggrepel")
     (synopsis "Repulsive text and label geometries for ggplot2")
     (description
