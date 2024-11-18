@@ -17533,7 +17533,7 @@ visualization and candidate genes around SNPs.")
            r-rcpp
            r-rlang
            r-withr))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://evalclass.github.io/precrec/")
     (synopsis "Calculate accurate precision-recall and ROC curves")
     (description
