@@ -433,6 +433,7 @@ multiple and joint correspondence analysis.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-fastmap r-rlang))
+    (native-inputs (list r-testthat))
     (home-page "https://cachem.r-lib.org/")
     (synopsis "Cache R objects with automatic pruning")
     (description
