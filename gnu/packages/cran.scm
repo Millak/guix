@@ -12402,7 +12402,7 @@ Markdown documents.")
            r-registry
            r-tsp
            r-vegan))
-    (native-inputs (list gfortran))
+    (native-inputs (list gfortran r-dendextend r-testthat))
     (home-page "https://s2.smu.edu/IDA/seriation/")
     (synopsis "Infrastructure for ordering objects using seriation")
     (description
