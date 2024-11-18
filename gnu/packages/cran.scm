@@ -40344,6 +40344,7 @@ black-box optimization in bbotk.")
                              r-paradox
                              r-r6
                              r-spacefillr))
+    (native-inputs (list r-testthat))
     (home-page "https://mlr3mbo.mlr-org.com")
     (synopsis "Flexible Bayesian optimization")
     (description
