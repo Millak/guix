@@ -33850,6 +33850,7 @@ above.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-dplyr r-lintr r-purrr))
+    (native-inputs (list r-testthat))
     (home-page "https://cran.r-project.org/web/packages/adaptalint/")
     (synopsis "Check R code style")
     (description
