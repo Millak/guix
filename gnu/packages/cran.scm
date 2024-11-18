@@ -12272,6 +12272,7 @@ operations and statistical functions are provided.")
     (properties `((upstream-name . "TSP")))
     (build-system r-build-system)
     (propagated-inputs (list r-foreach))
+    (native-inputs (list r-maps r-testthat))
     (home-page "https://cran.r-project.org/web/packages/TSP/")
     (synopsis "Traveling salesperson problem (TSP)")
     (description "This package provides basic infrastructure and some
