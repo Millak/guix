@@ -40547,6 +40547,7 @@ installation and loading of the core mlr3 packages.")
                              r-mlr3misc
                              r-scales
                              r-viridis))
+    (native-inputs (list r-testthat))
     (home-page "https://mlr3viz.mlr-org.com")
     (synopsis "Visualizations for mlr3")
     (description
