@@ -7743,7 +7743,7 @@ Docstrings (PEP-0257) and Julia's Triple-Quoted String Literals.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-glmnet r-matrix))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-mass r-testthat))
     (home-page "https://github.com/hongooi73/glmnetUtils")
     (synopsis
      "Streamline the process of fitting elastic net models with glmnet")
