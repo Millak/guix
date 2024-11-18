@@ -7881,6 +7881,7 @@ error stream.")
        (sha256
         (base32 "1krkl11b90w4hbdj168x4x9mvifwmx8ia265gr6gl8c99j6h2ac0"))))
     (build-system r-build-system)
+    (native-inputs (list r-runit r-testthat))
     (home-page "https://mevik.net/work/software/pls.html")
     (synopsis "Partial Least Squares and Principal Component Regression")
     (description
