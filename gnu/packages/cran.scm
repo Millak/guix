@@ -42749,7 +42749,7 @@ between them.")
            r-tensorflow
            r-tfruns
            r-zeallot))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://keras.rstudio.com")
     (synopsis "R Interface to 'Keras'")
     (description
