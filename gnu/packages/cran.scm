@@ -16141,7 +16141,7 @@ results to the user.")
     (propagated-inputs
      (list r-bit64 r-r6))
     (native-inputs
-     (list pkg-config r-knitr))
+     (list pkg-config r-knitr r-testthat))
     (home-page "https://hhoeflin.github.io/hdf5r")
     (synopsis "Interface to the HDF5 binary data format")
     (description
