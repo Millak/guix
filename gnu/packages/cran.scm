@@ -43564,6 +43564,7 @@ algorithms.  Confusion matrices are provided too.")
            r-svdialogs
            r-svmisc
            r-tiff))
+    (native-inputs (list r-testthat))
     (home-page "https://www.sciviews.org/zooimage")
     (synopsis "Analysis of numerical plankton images")
     (description
