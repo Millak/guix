@@ -12344,7 +12344,7 @@ of merit, ordering functions, and enhanced versions of @code{pairs} and
                              r-stringr
                              r-tibble
                              r-xml2))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://docs.ropensci.org/webchem/")
     (synopsis "Chemical information from the web")
     (description
