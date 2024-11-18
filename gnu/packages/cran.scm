@@ -1756,7 +1756,7 @@ required to use it.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-openssl r-uuid))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/richfitz/ids")
     (synopsis "Generate random identifiers")
     (description
