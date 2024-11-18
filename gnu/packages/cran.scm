@@ -41381,6 +41381,7 @@ text but not always easily handled by analysis algorithms.  The
     (build-system r-build-system)
     (propagated-inputs
       (list r-magrittr r-rcpp r-stringr))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/kota7/striprtf")
     (synopsis "Extract Text from RTF File")
     (description
