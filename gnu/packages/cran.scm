@@ -5861,7 +5861,12 @@ applications.")
            (sha256
             (base32
              "1zicjv44sx6n83vrkd2lwnlbf7qakzh3gcfjw0lhq48b5z55ma3q"))))
-       ("r-knitr" ,r-knitr)))
+       ("r-dplyr" ,r-dplyr)
+       ("r-knitr" ,r-knitr)
+       ("r-purrr" ,r-purrr)
+       ("r-testthat" ,r-testthat)
+       ("r-xml" ,r-xml)
+       ("r-xml2" ,r-xml2)))
     (home-page "http://gforge.se/packages/")
     (synopsis "Advanced tables for Markdown/HTML")
     (description
