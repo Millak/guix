@@ -10284,7 +10284,19 @@ methods.")
                 "1d26mr3avw6bpx786k223bnylzqr7z1h7rrjc38pi5db2iahnp6q"))))
     (properties `((upstream-name . "timechange")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; We need this for tests.
+         (add-before 'check 'set-timezone
+           (lambda* (#:key inputs #:allow-other-keys)
+             (setenv "TZ" "UTC")
+             (setenv "TZDIR"
+                     (search-input-directory inputs
+                                             "share/zoneinfo")))))))
     (propagated-inputs (list r-cpp11))
+    (native-inputs (list r-testthat tzdata-for-tests))
     (home-page "https://github.com/vspinu/timechange/")
     (synopsis "Efficient manipulation of Date-Times")
     (description
