@@ -3761,6 +3761,7 @@ API.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-remotes))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/trinker/pacman")
     (synopsis "Package Management Tool")
     (description "This package provides tools to more conveniently perform
