@@ -16647,7 +16647,7 @@ Decomposition in R (Beaton et al 2014) <doi:10.1016/j.csda.2013.11.006>.")
          "1zc5w7nf8mlvk55shdqyjgb7nnx17gac8nl7wqs1ws7mq5x0n7b8"))))
     (build-system r-build-system)
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://easystats.github.io/insight/")
     (synopsis "Easy access to model information for various model objects")
     (description
