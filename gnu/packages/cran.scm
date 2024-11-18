@@ -2531,7 +2531,7 @@ benchmarks from running the @code{benchmarkme} package.")
                 "0qaz8wy3n08k9lr8qljk5i8z8db18scbdc8m734aymd307h00w8x"))))
     (build-system r-build-system)
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (propagated-inputs
      (list r-benchmarkmedata
            r-doparallel
