@@ -7,7 +7,7 @@
 ;;; Copyright © 2015, 2016, 2017, 2018, 2020, 2021, 2022, 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2017, 2018 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2015 Jeff Mickey <j@codemac.net>
-;;; Copyright © 2015-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2016 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -1779,24 +1779,45 @@ or junctions, and always follows hard links.")
                     (static (assoc-ref outputs "static"))
                     (shared-libs (string-append lib "/lib"))
                     (static-libs (string-append static "/lib")))
-               ;; Move the static library to its own output to save ~1MiB.
                (mkdir-p static-libs)
-               (for-each (lambda (ar)
-                           (link ar (string-append static-libs "/"
-                                                   (basename ar)))
-                           (delete-file ar))
-                         (find-files shared-libs "\\.a$"))
+               ;; This is based on the win64 release zip file from zstd.
+               ,@(if (target-mingw?)
+                     `((for-each delete-file (find-files out "\\.so"))
+                       (for-each delete-file (find-files shared-libs "\\.so"))
+                       (rename-file (string-append shared-libs "/libzstd.a")
+                                    (string-append static-libs "/libzstd_static.lib"))
+                       (delete-file-recursively
+                         (string-append shared-libs "/pkgconfig"))
+                       ;; no binary for interpreter `sh' found in $PATH
+                       (delete-file (string-append out "/bin/zstdgrep"))
+                       (delete-file (string-append out "/bin/zstdless"))
+                       (delete-file (string-append out "/share/man/man1/zstdgrep.1"))
+                       (delete-file (string-append out "/share/man/man1/zstdless.1")))
+                     `(;; Move the static library to its own output to save ~1MiB.
+                       (for-each (lambda (ar)
+                                   (link ar (string-append static-libs "/"
+                                                           (basename ar)))
+                                   (delete-file ar))
+                                 (find-files shared-libs "\\.a$"))
 
-               ;; Make sure the pkg-config file refers to the right output.
-               (substitute* (string-append shared-libs "/pkgconfig/libzstd.pc")
-                 (("^prefix=.*")
-                  ;; Note: The .pc file expects a trailing slash for 'prefix'.
-                  (string-append "prefix=" lib "/\n")))))))
+                       ;; Make sure the pkg-config file refers to the right output.
+                       (substitute* (string-append shared-libs "/pkgconfig/libzstd.pc")
+                         (("^prefix=.*")
+                          ;; Note: The .pc file expects a trailing slash for 'prefix'.
+                          (string-append "prefix=" lib "/\n")))))))))
        #:make-flags
        (list ,(string-append "CC=" (cc-for-target))
              (string-append "prefix=" (assoc-ref %outputs "out"))
              (string-append "libdir=" (assoc-ref %outputs "lib") "/lib")
              (string-append "includedir=" (assoc-ref %outputs "lib") "/include")
+             ,@(if (target-mingw?)
+                   `(;; See the note in the Makefile.
+                     "TARGET_SYSTEM=Windows"
+                     ;; Don't try to link with pthread.
+                     "THREAD_LD="
+                     ;; This isn't picked up correctly in the Makefiles.
+                     "EXT=.exe")
+                   '())
              ;; Auto-detection is over-engineered and buggy.
              "PCLIBDIR=lib"
              "PCINCDIR=include"
