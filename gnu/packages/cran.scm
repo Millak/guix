@@ -42340,14 +42340,12 @@ package vignettes.")
     (build-system r-build-system)
     (inputs (list pari-gp))
     (propagated-inputs (list r-mass))
-    (home-page
-      "https://github.com/RobinHankin/elliptic")
-    (synopsis
-      "Weierstrass and Jacobi Elliptic Functions")
+    (home-page "https://github.com/RobinHankin/elliptic")
+    (synopsis "Weierstrass and Jacobi elliptic functions")
     (description
-      "A suite of elliptic and related functions including Weierstrass and
-Jacobi forms.  Also includes various tools for manipulating and visualizing
-complex functions.")
+     "This package provides a suite of elliptic and related functions
+including Weierstrass and Jacobi forms.  It also includes various tools for
+manipulating and visualizing complex functions.")
     (license license:gpl2)))
 
 (define-public r-hypergeo
