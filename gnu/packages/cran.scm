@@ -133,6 +133,7 @@
         (base32 "1cvjdbi17qz8gr5898zchm5fyz4n51z66lwps25v8a9mhwab8imi"))))
     (properties `((upstream-name . "abbreviate")))
     (build-system r-build-system)
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/sigbertklinke/abbreviate")
     (synopsis "Readable string abbreviation")
     (description
