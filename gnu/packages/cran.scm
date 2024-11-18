@@ -13491,7 +13491,7 @@ chaotic time series analysis.")
     (properties `((upstream-name . "fresh")))
     (build-system r-build-system)
     (propagated-inputs (list r-bslib r-htmltools r-rstudioapi r-sass r-shiny))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/dreamRs/fresh")
     (synopsis "Create custom Bootstrap themes to use in Shiny")
     (description
