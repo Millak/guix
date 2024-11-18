@@ -13657,7 +13657,7 @@ the matrix exponential and logarithm, and the determinant.")
     (properties `((upstream-name . "ComplexUpset")))
     (build-system r-build-system)
     (propagated-inputs (list r-colorspace r-ggplot2 r-patchwork r-scales))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/krassowski/complex-upset")
     (synopsis "Create complex UpSet plots using ggplot2 components")
     (description
