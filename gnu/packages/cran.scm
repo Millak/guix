@@ -12832,7 +12832,7 @@ Institute of Standards and Technology}, USA.")
          "1nf1yg14cgxrs4np1yghpzw1nczaslfv3rvf3918wrlzg0vp6l7q"))))
     (build-system r-build-system)
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/hofnerb/stabs")
     (synopsis "Stability selection with error control")
     (description
