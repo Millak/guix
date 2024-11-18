@@ -9182,7 +9182,7 @@ a variety of different samplers.")
                              r-sf
                              r-sp
                              r-v8))
-    (native-inputs (list esbuild r-knitr))
+    (native-inputs (list esbuild r-knitr r-testthat))
     (home-page "https://github.com/ateucher/rmapshaper")
     (synopsis "Client for mapshaper for geospatial operations")
     (description
