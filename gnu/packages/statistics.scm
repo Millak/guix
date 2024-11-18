@@ -5971,7 +5971,7 @@ analysis} (PCA) by projection pursuit.")
     (propagated-inputs
      (list r-lattice r-mvtnorm r-pcapp r-robustbase))
     (native-inputs
-     (list gfortran))
+     (list gfortran r-mass))
     (home-page "https://cran.r-project.org/web/packages/rrcov")
     (synopsis "Scalable robust estimators with high breakdown Point")
     (description
