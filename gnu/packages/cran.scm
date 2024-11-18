@@ -3997,6 +3997,7 @@ evaluations is also provided.")
     (properties `((upstream-name . "parallelMap")))
     (build-system r-build-system)
     (propagated-inputs (list r-bbmisc r-checkmate))
+    (native-inputs (list r-batchjobs r-batchtools r-rpart r-testthat))
     (home-page "https://parallelmap.mlr-org.com")
     (synopsis "Unified interface to parallelization backends")
     (description
