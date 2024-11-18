@@ -3100,8 +3100,21 @@ proposals for count data.")
                (base32
                 "1f1g7f362sidh99n2pcgnj8iwsn7hnjgpdnkrqml5qzrd0k8dhz6"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      ;; Vignettes require r-tseries, which depends on r-zoo.
+      #:test-types '(list "tests")
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'delete-bad-tests
+           (lambda _
+             ;; These tests require r-tseries, which depends on r-zoo.
+             (for-each delete-file
+                       '("tests/vignette-zoo-quickref.R"
+                         "tests/vignette-zoo.R")))))))
     (propagated-inputs
      (list r-lattice))
+    (native-inputs (list r-chron r-mondate r-timedate r-tis))
     (home-page "https://zoo.R-Forge.R-project.org/")
     (synopsis "S3 infrastructure for regular and irregular time series")
     (description "This package contains an S3 class with methods for totally
