@@ -10652,6 +10652,7 @@ Core algorithms are executed in parallel on systems supporting OpenMP.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-rcpp))
+    (native-inputs (list r-testthat))
     (home-page "https://cran.r-project.org/web/packages/RcppRoll")
     (synopsis "Efficient rolling and windowed operations")
     (description
