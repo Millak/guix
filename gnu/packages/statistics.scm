@@ -1964,6 +1964,17 @@ database.")
         (base32
          "1zxw4ignzm2fzixsf6n80f44b9q7434vamy2xj4v31wlx3dmnixv"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; We need this for one failing test.
+         (add-before 'check 'set-timezone
+           (lambda* (#:key inputs #:allow-other-keys)
+             (setenv "TZ" "UTC+1")
+             (setenv "TZDIR"
+                     (search-input-directory inputs
+                                             "share/zoneinfo")))))))
     (propagated-inputs
      (list r-blob
            r-cli
@@ -1982,7 +1993,7 @@ database.")
            r-vctrs
            r-withr))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-rsqlite r-testthat tzdata-for-tests))
     (home-page "https://github.com/tidyverse/dbplyr")
     (synopsis "Dplyr back end for databases")
     (description
