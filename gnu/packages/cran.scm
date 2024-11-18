@@ -43942,7 +43942,7 @@ parsing.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-cluster r-iotools r-mass r-matrix r-rcpp r-sparsesvd))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://wordspace.r-forge.r-project.org/")
     (synopsis "Distributional semantic models in R")
     (description
