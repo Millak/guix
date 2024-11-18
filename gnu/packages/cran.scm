@@ -2940,7 +2940,7 @@ wind-roses and Walter&Lieth climate diagrams are included.")
          "1s9vvv3cxnz8w11gsi8z9ddv9jzib5qf5qqxnwqrrv7vj8cr7hij"))))
     (build-system r-build-system)
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/mdlincoln/clipr")
     (synopsis "Read and write from the system clipboard")
     (description
