@@ -8969,6 +8969,7 @@ parallel - each request in a separate fork.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-crayon r-hms r-prettyunits r-r6))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/gaborcsardi/progress")
     (synopsis "Terminal progress bars")
     (description
