@@ -43040,6 +43040,15 @@ fully reproducible.")
          "19ql3sylkbxqwzafgfd5iv9lr3pdakqisgpdasnsjl17fj3ydrj4"))))
     (properties `((upstream-name . "paws.common")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; These tests require internet access.
+         (add-after 'unpack 'delete-bad-tests
+           (lambda _
+             (delete-file "tests/testthat/test_logging.R")
+             (delete-file "tests/testthat/test_net.R"))))))
     (propagated-inputs
      (list r-base64enc
            r-curl
@@ -43048,6 +43057,7 @@ fully reproducible.")
            r-jsonlite
            r-rcpp
            r-xml2))
+    (native-inputs (list r-mockery r-testthat))
     (home-page "https://cran.r-project.org/package=paws.common")
     (synopsis "Paws low-level Amazon Web Services API")
     (description
