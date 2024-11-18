@@ -11201,6 +11201,7 @@ with the package @code{optim}.")
         (base32 "0ddf1zcalbrn293qmr9kdzz3x16fzc4k1bwb1pjmwnspisqfi8kj"))))
     (properties `((upstream-name . "usedist")))
     (build-system r-build-system)
+    (native-inputs (list r-testthat))
     (home-page "https://cran.r-project.org/package=usedist")
     (synopsis "Distance matrix utilities")
     (description
