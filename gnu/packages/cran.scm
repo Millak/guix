@@ -39530,6 +39530,7 @@ data to rasters.  It speeds up plotting of data with millions of points.")
            r-rlang
            r-sp
            r-spam))
+    (native-inputs (list r-testthat))
     (home-page "https://satijalab.org/seurat")
     (synopsis "Data structures for single cell data")
     (description
