@@ -1244,11 +1244,7 @@ transliteration, concatenation, date-time formatting and parsing, etc.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli r-glue r-lifecycle r-magrittr r-rlang r-stringi r-vctrs))
-    ;; We can't add r-knitr here, because this package ends up being an input
-    ;; to r-knitr.
-    #;
-    (native-inputs
-     (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/hadley/stringr")
     (synopsis "Simple, consistent wrappers for common string operations")
     (description
