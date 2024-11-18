@@ -4132,6 +4132,7 @@ with default R plot functions.")
                              r-stringi
                              r-swagger
                              r-webutils))
+    (native-inputs (list r-testthat))
     (home-page "https://www.rplumber.io")
     (synopsis "API generator for R")
     (description
