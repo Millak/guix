@@ -42245,7 +42245,7 @@ complex functions.")
             ;; For HTML output.
             r-base64enc
             r-htmltools))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://gganimate.com")
     (synopsis "Grammar of Animated Graphics")
     (description
