@@ -15150,7 +15150,7 @@ methods.")
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp))
     (inputs (list zlib))
-    (native-inputs (list pkg-config))
+    (native-inputs (list pkg-config r-lintr r-testthat))
     (home-page "https://www.fstpackage.org/fstcore/")
     (synopsis "R bindings to the fstlib library")
     (description
