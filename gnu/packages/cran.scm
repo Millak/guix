@@ -17859,7 +17859,7 @@ a library of prediction algorithms to be used in the super learner.")
     (propagated-inputs
      (list r-future-apply r-np r-superlearner))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/benkeser/drtmle")
     (synopsis "Doubly-robust nonparametric estimation and inference")
     (description
