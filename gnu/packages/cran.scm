@@ -8895,6 +8895,7 @@ curve to a data matrix in arbitrary dimensions.")
     (properties `((upstream-name . "prismatic")))
     (build-system r-build-system)
     (propagated-inputs (list r-farver))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/EmilHvitfeldt/prismatic")
     (synopsis "Color manipulation tools")
     (description
