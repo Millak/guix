@@ -41353,8 +41353,8 @@ indefinite article choice, \"a\" or \"an\".")
             r-qdapregex
             r-stringi
             r-textshape))
-    (home-page
-      "https://github.com/trinker/textclean")
+    (native-inputs (list r-testthat))
+    (home-page "https://github.com/trinker/textclean")
     (synopsis "Text Cleaning Tools")
     (description
       "Tools to clean and process text.  Tools are geared at checking for
