@@ -15713,6 +15713,7 @@ Python to R they are converted back to R types.")
          "1l9y945qmpla68rx6dnaxc83vmvkw26cw4zzfgfsvi36wsja1hgk"))))
     (build-system r-build-system)
     (propagated-inputs (list r-backports))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/romainfrancois/bibtex")
     (synopsis "Bibtex parser")
     (description "This package provides a utility for R to parse a bibtex
