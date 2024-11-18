@@ -4048,6 +4048,38 @@ excellent candidate for labeling of a polygon.")
 @code{dplyr} and the wider @code{tidyverse} using only @code{base}.")
     (license license:expat)))
 
+(define-public r-ecfun
+  (package
+    (name "r-ecfun")
+    (version "0.3-6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "Ecfun" version))
+       (sha256
+        (base32 "0651vbb040y17sizh927vq4jfidpxilmwdgkhmr7z8p24yb588rc"))))
+    (properties `((upstream-name . "Ecfun")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-bma
+                             r-fda
+                             r-jpeg
+                             r-mass
+                             r-mvtnorm
+                             r-readr
+                             r-rvest
+                             r-rworldmap
+                             r-stringi
+                             r-tis
+                             r-xml2))
+    (native-inputs (list r-knitr))
+    (home-page "https://www.r-project.org")
+    (synopsis "Functions for Ecdat")
+    (description
+     "This package provides functions and vignettes to update data sets in
+Ecdat and to create, manipulate, plot, and analyze those and similar data
+sets.")
+    (license license:gpl2+)))
+
 (define-public r-ecosolver
   (package
     (name "r-ecosolver")
