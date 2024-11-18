@@ -8362,6 +8362,7 @@ where the bound function accepts additional arguments.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-bindr r-plogr r-rcpp))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/krlmlr/bindrcpp")
     (synopsis "Rcpp interface to active bindings")
     (description
