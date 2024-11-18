@@ -42878,7 +42878,7 @@ lognormal distribution and their mixture distribution.")
     (propagated-inputs
      (list r-shiny))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/nutriverse/zscorer")
     (synopsis "Child Anthropometry z-Score Calculator")
     (description
