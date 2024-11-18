@@ -44187,6 +44187,7 @@ of a small set of carefully designed functions, most of which
     (properties `((upstream-name . "maxLik")))
     (build-system r-build-system)
     (propagated-inputs (list r-generics r-misctools r-sandwich))
+    (native-inputs (list r-mass))
     (home-page "https://cran.r-project.org/package=maxLik")
     (synopsis "Maximum Likelihood Estimation and related tools")
     (description
