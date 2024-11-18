@@ -10487,27 +10487,37 @@ by pycodestyle.")
 (define-public python-dirty-equals
   (package
     (name "python-dirty-equals")
-    (version "0.7.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/samuelcolvin/dirty-equals")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1hw044d6q0ij8hrrbp6wbdb49xbyjd22viansy817hpmd0yf85ja"))))
+    (version "0.8.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/samuelcolvin/dirty-equals")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1jp9jbfs90m8jkpcvi798zxxx49a94rzn8gki9fraqhbqxkv76qd"))))
     (build-system pyproject-build-system)
     (arguments
-     ;; This test requires pytest-examples, which in turn requires
-     ;; python-ruff, which is difficult to package because it is
-     ;; written in Rust (TODO: Enable when Ruff is in Guix!).
-     (list #:test-flags #~'("--ignore" "tests/test_docs.py")))
+     (list
+      #:test-flags
+      ;; This test requires pytest-examples, which in turn requires
+      ;; python-ruff, which is difficult to package because it is written in
+      ;; Rust (TODO: Enable when Ruff is in Guix!).
+      #~(list "--ignore=tests/test_docs.py"
+              ;; Optional typing check with Pydantic.
+              "--ignore=tests/test_other.py"
+              ;; TODO: Some timezones are missing in PyTZ, remove constrain
+              ;; when updated.
+              "-k" (string-append "not test_is_datetime_zoneinfo"
+                                  " and not test_is_now_tz"
+                                  " and not test_tz"))))
     (native-inputs
      (list python-hatchling
-           python-pydantic
+           ;; python-pydantic ; introduces cycle, optinoal
            python-pytest))
-    (propagated-inputs (list python-pytz))
+    (propagated-inputs
+     (list python-pytz))
     (home-page "https://dirty-equals.helpmanual.io/")
     (synopsis "Do dirty (but useful) things with equals")
     (description
