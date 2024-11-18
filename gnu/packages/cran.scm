@@ -18337,6 +18337,7 @@ distributed on a compute cluster.")
            r-stringi
            r-stringr
            r-tidyr))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/abjur/abjutils/")
     (synopsis "Collection of tools for jurimetrical analysis")
     (description
