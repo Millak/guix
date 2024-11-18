@@ -12292,7 +12292,7 @@ traveling salesman problem).")
         (base32
          "19adb1bw46pcnmmhqz2jklr0vmma3llxajqp0j9mqfksmsisv927"))))
     (build-system r-build-system)
-    (native-inputs (list gfortran))
+    (native-inputs (list gfortran r-testthat))
     (home-page "https://cran.r-project.org/web/packages/qap/")
     (synopsis "Heuristics for the quadratic assignment problem (QAP)")
     (description "This package implements heuristics for the @dfn{quadratic
