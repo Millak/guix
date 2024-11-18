@@ -916,7 +916,7 @@ functions are included.")
     (propagated-inputs
      (list r-insight))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://easystats.github.io/datawizard/")
     (synopsis "Easy data wrangling")
     (description
