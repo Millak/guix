@@ -41242,6 +41242,7 @@ in same length matches).")
     (build-system r-build-system)
     (propagated-inputs
       (list r-data-table r-slam r-stringi))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/trinker/textshape")
     (synopsis "Tools for Reshaping Text")
     (description
