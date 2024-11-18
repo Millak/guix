@@ -2491,6 +2491,7 @@ volume or copy a file.")
     (properties `((upstream-name . "bench")))
     (build-system r-build-system)
     (propagated-inputs (list r-glue r-pillar r-profmem r-rlang r-tibble))
+    (native-inputs (list r-testthat))
     (home-page "https://bench.r-lib.org/")
     (synopsis "High precision timing of R expressions")
     (description
