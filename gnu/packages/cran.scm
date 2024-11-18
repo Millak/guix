@@ -15367,7 +15367,7 @@ finance, conversion from and to JSON, and many other applications.")
            r-tidyselect
            r-vctrs))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat r-tidyr))
     (home-page "https://github.com/tidyverse/dtplyr")
     (synopsis "Data Table back-end for dplyr")
     (description
