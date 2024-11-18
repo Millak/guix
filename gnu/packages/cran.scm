@@ -18185,7 +18185,7 @@ biological data by Michael Whitlock and Dolph Schluter.")
     (properties `((upstream-name . "svGUI")))
     (build-system r-build-system)
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/SciViews/svGUI/")
     (synopsis "Functions for managing GUI clients in R")
     (description
