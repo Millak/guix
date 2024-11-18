@@ -12197,6 +12197,7 @@ functions and used in the data analysis.")
          "16ghf60rj0l8ypm0hxjp23zxdi2ndq8ii74cilq61m107fnha9mj"))))
     (build-system r-build-system)
     (propagated-inputs (list r-crayon))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/r-lib/debugme#readme")
     (synopsis "Debug R packages")
     (description
