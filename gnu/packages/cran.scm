@@ -32596,6 +32596,7 @@ API; see the package vignette for details.")
     (properties `((upstream-name . "actuar")))
     (build-system r-build-system)
     (propagated-inputs (list r-expint))
+    (native-inputs (list r-mass))
     (home-page "https://gitlab.com/vigou3/actuar")
     (synopsis "Actuarial functions and heavy tailed distributions")
     (description
