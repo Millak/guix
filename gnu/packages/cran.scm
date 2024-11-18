@@ -40123,7 +40123,7 @@ well as email and push notifications.")
                              r-stringi
                              r-survival
                              r-xml))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://mlr.mlr-org.com")
     (synopsis "Machine learning in R")
     (description
