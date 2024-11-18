@@ -16741,7 +16741,7 @@ tidyverse workflow.")
            r-stringi
            r-uuid
            r-v8))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://docs.ropensci.org/nodbi/")
     (synopsis "NoSQL database connector")
     (description
