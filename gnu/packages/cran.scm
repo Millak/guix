@@ -4759,7 +4759,7 @@ data types as well.")
                              r-rcppparallel
                              r-tgstat
                              r-tibble))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://tanaylab.github.io/tglkmeans/")
     (synopsis "Efficient implementation of K-Means++ algorithm")
     (description
