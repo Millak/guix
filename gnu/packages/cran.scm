@@ -3946,6 +3946,7 @@ statistical analyses or create publication-ready tables and plots.")
     (properties `((upstream-name . "parallelDist")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp r-rcpparmadillo r-rcppparallel))
+    (native-inputs (list r-dtw r-ggplot2 r-proxy r-rcppxptrutils r-testthat))
     (home-page "https://github.com/alexeckert/parallelDist")
     (synopsis "Parallel Distance Matrix Computation using multiple threads")
     (description
