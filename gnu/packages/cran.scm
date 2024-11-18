@@ -9355,6 +9355,7 @@ SpatialVx.")
               "0ayazgyqlc8jcqr03cwfmfhm4pck6xri1r6vkgqy4arqkrrnrcqr"))))
    (properties `((upstream-name . "etrunct")))
    (build-system r-build-system)
+   (native-inputs (list r-testthat))
    (home-page "https://cran.r-project.org/web/packages/etrunct")
    (synopsis "Computes moments of univariate truncated T distribution")
    (description "This package computes moments of univariate truncated
