@@ -16791,7 +16791,7 @@ hypothesis of normality.")
            r-stringr
            r-survival))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/cardiomoon/moonBook")
     (synopsis "Functions and datasets for the book by Keon-Woong Moon")
     (description
