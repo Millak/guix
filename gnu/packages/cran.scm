@@ -11033,6 +11033,7 @@ available.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-clue r-rpart))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/paulponcet/statip")
     (synopsis "Statistical functions for probability distributions and regression")
     (description
