@@ -7336,6 +7336,7 @@ so-called readr first edition parsing engine, now superseded by vroom.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-hms r-rcpp r-tibble))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/wesm/feather")
     (synopsis "R Bindings to the Feather API")
     (description "Read and write feather files, a lightweight binary columnar
