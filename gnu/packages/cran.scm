@@ -1291,7 +1291,7 @@ and ready to use.")
            r-rcolorbrewer
            r-scales
            r-tibble))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/hrbrmstr/ggalt")
     (synopsis
      "Geometries, coordinate systems, fonts and more for ggplot2")
