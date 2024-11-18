@@ -3738,6 +3738,7 @@ level p-values.")
                 "0ykmz3j1n06w1injcnlkb3xv79vwiyv94j74m950rfrbv97dda58"))))
     (properties `((upstream-name . "swagger")))
     (build-system r-build-system)
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/rstudio/swagger")
     (synopsis
      "Dynamically generate documentation from a Swagger-compliant API")
