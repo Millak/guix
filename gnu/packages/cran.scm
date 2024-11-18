@@ -17563,7 +17563,7 @@ of precision-recall and ROC (Receiver Operator Characteristics) curves.")
            r-rcpparmadillo
            r-rhpcblasctl
            r-statmod))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://cran.r-project.org/package=NetRep")
     (synopsis "Permutation testing network module preservation across datasets")
     (description
