@@ -2807,7 +2807,7 @@ intersections.")
            r-purrr
            r-rlang
            r-vegan))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://cran.r-project.org/package=RVenn")
     (synopsis "Set operations for many sets")
     (description
