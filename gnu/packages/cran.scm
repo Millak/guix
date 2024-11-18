@@ -41885,7 +41885,7 @@ Application Program Interfaces (API)}.")
     (build-system r-build-system)
     (propagated-inputs
       (list r-intervals r-readr r-stringi r-stringr r-tibble))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page
       "https://github.com/a-hurst/eyelinker")
     (synopsis
