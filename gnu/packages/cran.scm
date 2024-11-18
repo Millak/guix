@@ -43531,6 +43531,7 @@ large datasets.")
            r-nnet
            r-randomforest
            r-rpart))
+    (native-inputs (list r-testthat))
     (home-page "https://www.sciviews.org/zooimage")
     (synopsis "Machine learning algorithms with unified interface")
     (description
