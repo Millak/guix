@@ -3218,7 +3218,7 @@ variables.")
            r-xts
            r-zoo))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://docs.r4photobiology.info/ggpp/")
     (synopsis "Grammar extensions to ggplot2")
     (description
