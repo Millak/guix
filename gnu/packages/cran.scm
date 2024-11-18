@@ -11230,6 +11230,7 @@ distances.")
           r-plyr
           r-purrr
           r-scales))
+   (native-inputs (list r-testthat))
    (home-page "https://github.com/jaredlander/useful")
    (synopsis "Collection of handy, useful functions")
    (description "This package provides a set of little functions that have been
