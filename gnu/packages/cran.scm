@@ -888,7 +888,7 @@ etc.")
                              r-tibble
                              r-tidyr
                              r-tidyselect))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/thie1e/cutpointr")
     (synopsis "Determine optimal cutpoints for binary classification")
     (description
