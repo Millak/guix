@@ -5116,7 +5116,7 @@ sources.")
            r-rstudioapi
            r-withr))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/tidyverse/reprex")
     (synopsis "Prepare reproducible R code examples for sharing")
     (description
