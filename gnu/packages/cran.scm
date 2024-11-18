@@ -6598,6 +6598,11 @@ the end user.")
                   (srfi srfi-1))
       #:phases
       '(modify-phases %standard-phases
+         (add-after 'unpack 'delete-bad-tests
+           (lambda _
+             ;; This file requires r-shinytest, which has a big JavaScript
+             ;; problem.
+             (delete-file "tests/testthat/test_tree_interactive.R")))
          (add-after 'unpack 'replace-minified-javascript
            (lambda* (#:key inputs #:allow-other-keys)
              (with-directory-excursion "inst/www/jsTree-3.3.7/"
@@ -6630,7 +6635,8 @@ the end user.")
            (uri "https://code.jquery.com/jquery-3.3.1.js")
            (sha256
             (base32
-             "1b8zxrp6xwzpw25apn8j4qws0f6sr7qr7h2va5h1mjyfqvn29anq"))))))
+             "1b8zxrp6xwzpw25apn8j4qws0f6sr7qr7h2va5h1mjyfqvn29anq"))))
+       ("r-testthat" ,r-testthat)))
     (home-page "https://cran.r-project.org/web/packages/shinyTree/")
     (synopsis "jsTree bindings for Shiny")
     (description
