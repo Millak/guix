@@ -938,7 +938,7 @@ wrangling backend for the packages in the @code{easystats} ecosystem.")
     (properties `((upstream-name . "dbscan")))
     (build-system r-build-system)
     (propagated-inputs (list r-generics r-rcpp))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/mhahsler/dbscan")
     (synopsis "Density-based spatial clustering of applications with noise")
     (description
