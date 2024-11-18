@@ -4910,7 +4910,7 @@ of the package is similar or identical to tidyverse.")
            r-tidyr
            r-xml2))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://tidyverse.tidyverse.org")
     (synopsis "Install and load packages from the \"Tidyverse\"")
     (description
