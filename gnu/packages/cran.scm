@@ -11596,7 +11596,7 @@ functions to generate, plot and work with objective functions.")
            r-rcolorbrewer
            r-rcpp
            r-rcpparmadillo))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://gitlab.com/TReynkens/smurf")
     (synopsis "Sparse multi-type regularized feature modeling")
     (description
