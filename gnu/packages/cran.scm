@@ -2131,6 +2131,7 @@ the lp_solve solver.")
                              r-jsonlite
                              r-tibble
                              r-xml2))
+    (native-inputs (list r-testthat r-vcr))
     (home-page "https://github.com/ropensci/rorcid")
     (synopsis "Interface to the @url{Orcid.org, https://orcid.org} API")
     (description
