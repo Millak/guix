@@ -2960,6 +2960,17 @@ the system clipboards.")
                 "1n7hl5mbywfshk8jid5shnsqsn1al0v636wsy14f681zkp1jyba3"))))
     (properties `((upstream-name . "clock")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; We need this for tests.
+         (add-before 'check 'set-timezone
+           (lambda* (#:key inputs #:allow-other-keys)
+             (setenv "TZ" "UTC")
+             (setenv "TZDIR"
+                     (search-input-directory inputs
+                                             "share/zoneinfo")))))))
     (propagated-inputs
      (list r-cli
            r-cpp11
@@ -2967,7 +2978,7 @@ the system clipboards.")
            r-rlang
            r-tzdb
            r-vctrs))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat tzdata-for-tests))
     (home-page "https://clock.r-lib.org")
     (synopsis "Date-Time types and tools")
     (description
