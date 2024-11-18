@@ -15846,7 +15846,7 @@ movies, and TV shows.")
          "02mjailzyqkdnzky60dgampw2sq6mnn7s66fk0lhy32s8apm280i"))))
     (build-system r-build-system)
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (propagated-inputs
      (list r-ggplot2))
     (home-page "https://github.com/const-ae/ggsignif")
