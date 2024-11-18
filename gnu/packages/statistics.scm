@@ -1896,12 +1896,12 @@ like tidy evaluation.")
      (list r-fansi
            r-lifecycle
            r-magrittr
-           r-pkgconfig
            r-pillar
+           r-pkgconfig
            r-rlang
            r-vctrs))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/hadley/tibble")
     (synopsis "Simple data frames")
     (description
