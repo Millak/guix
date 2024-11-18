@@ -15649,7 +15649,7 @@ obtain a better initial configuration in non-metric MDS.")
     (properties `((upstream-name . "here")))
     (build-system r-build-system)
     (propagated-inputs (list r-rprojroot))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://here.r-lib.org/")
     (synopsis "Simpler way to find files")
     (description
