@@ -42717,6 +42717,7 @@ Tensorflow graphs.")
            r-tfautograph
            r-tfruns
            r-yaml))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/rstudio/tensorflow")
     (synopsis "R interface to TensorFlow")
     (description
