@@ -3642,7 +3642,9 @@ is the GNU Compiler Collection.")
 
 ;; The default GCC
 (define-public gcc-toolchain
-  gcc-toolchain-11)
+  (if (host-hurd64?)
+      gcc-toolchain-14
+      gcc-toolchain-11))
 
 (define-public gcc-toolchain-aka-gcc
   ;; It's natural for users to try "guix install gcc".  This package

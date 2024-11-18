@@ -858,7 +858,10 @@ It also includes runtime support libraries for these languages.")
 
 ;; Note: When changing the default gcc version, update
 ;;       the gcc-toolchain-* definitions.
-(define-public gcc gcc-11)
+(define-public gcc
+  (if (host-hurd64?)
+      gcc-14
+      gcc-11))
 
 
 ;;;

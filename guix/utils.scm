@@ -96,6 +96,9 @@
             system-hurd?
             target-hurd64?
             system-hurd64?
+            host-hurd?
+            host-hurd64?
+            host-x86-64?
             target-mingw?
             target-x86-32?
             target-x86-64?
@@ -728,6 +731,22 @@ a character other than '@'."
   "Is the current system the 64bit GNU(/Hurd) system?"
   (and (system-hurd?)
        (target-64bit? (%current-system))))
+
+(define (host-hurd?)
+  "Are we running on a Hurd system?  This is almost never the right function,
+use target-hurd? or system-hurd? instead."
+  (equal? (utsname:sysname (uname)) "GNU"))
+
+(define (host-x86-64?)
+  "Are we running on a x86_64 system?  This is almost never the right
+function, use target-x86-64? or system-x86-64? instead."
+  (equal? (utsname:machine (uname)) "x86_64"))
+
+(define (host-hurd64?)
+  "Are we running on a 64bit Hurd?  This is almost never the right
+function, use target-hurd64? or system-hurd64? instead."
+  (and (host-hurd?)
+       (host-x86-64?)))
 
 (define* (target-mingw? #:optional (target (%current-target-system)))
   "Is the operating system of TARGET Windows?"
