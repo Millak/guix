@@ -5314,6 +5314,7 @@ the embedded @code{RapidXML} C++ library.")
                              r-r6
                              r-rlang
                              r-tibble))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/ludvigolsen/rearrr")
     (synopsis "Rearranging data by a set of methods")
     (description
