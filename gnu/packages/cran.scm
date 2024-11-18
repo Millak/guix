@@ -43424,7 +43424,7 @@ DynamoDB NoSQL database, and Lambda functions-as-a-service.")
            r-pbapply
            r-stringr
            r-syuzhet))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "http://zoomgroupstats.org")
     (synopsis "Analyze text, audio, and video from Zoom meetings")
     (description
