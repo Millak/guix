@@ -14858,6 +14858,7 @@ misclassification probabilities of different models.")
         (base32
          "13y2mhy59jshw0vz7dbq0zg96j1151fqcdb5ycbmjlhwg0448xc3"))))
     (build-system r-build-system)
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/gaborcsardi/zip")
     (synopsis "Cross-platform Zip compression")
     (description
