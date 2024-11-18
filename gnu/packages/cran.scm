@@ -14956,6 +14956,13 @@ dependency on Java.")
         (base32
          "1annh9zsfskizr2idylgvqm41cfzldn56bh9vkzxqqvznka7k123"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-before 'check 'find-zip
+           (lambda _
+             (setenv "R_ZIPCMD" (which "zip")))))))
     (propagated-inputs
      (list r-curl
            r-data-table
@@ -14968,7 +14975,7 @@ dependency on Java.")
            r-tibble
            r-writexl))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-stringi r-testthat r-xml2 zip))
     (home-page "https://github.com/leeper/rio")
     (synopsis "Swiss-army knife for data I/O")
     (description
