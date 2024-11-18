@@ -1474,7 +1474,7 @@ contingency table analysis, meta-analysis, and regression analyses.")
     (properties `((upstream-name . "glmpca")))
     (build-system r-build-system)
     (propagated-inputs (list r-mass))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/willtownes/glmpca")
     (synopsis "Dimension Reduction of Non-Normally Distributed Data")
     (description
