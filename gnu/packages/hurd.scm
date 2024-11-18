@@ -592,6 +592,12 @@ implementing them.")
                               (search-input-file %build-inputs "/bin/bash"))
                "PKGDIR=libdde_linux26"
                (string-append "CC=" ,(cc-for-target))
+               (string-append "WARNINGS="
+                              " -Wno-declaration-missing-parameter-type"
+                              " -Wno-implicit-function-declaration"
+                              " -Wno-implicit-int"
+                              " -Wno-int-conversion"
+                              " -Wno-strict-prototypes")
                "ARCH=x86")
          #:configure-flags
          ,#~(list (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib"))
