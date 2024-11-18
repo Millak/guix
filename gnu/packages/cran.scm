@@ -40084,6 +40084,7 @@ well as email and push notifications.")
          "1rz5ncrvvv9h9grls15apa63v2nh9j87fmp4mwjjil37jx6a5zki"))))
     (properties `((upstream-name . "mHG")))
     (build-system r-build-system)
+    (native-inputs (list r-testthat))
     (home-page "https://cran.r-project.org/package=mHG")
     (synopsis "Minimum-hypergeometric test")
     (description
