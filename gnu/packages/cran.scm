@@ -6173,6 +6173,7 @@ conditionals and comparisons, and more.")
     (properties `((upstream-name . "safetensors")))
     (build-system r-build-system)
     (propagated-inputs (list r-cli r-jsonlite r-r6 r-rlang))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/mlverse/safetensors")
     (synopsis "Safetensors file format")
     (description
