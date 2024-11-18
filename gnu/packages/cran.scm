@@ -44283,6 +44283,7 @@ interface.")
     (properties `((upstream-name . "metadat")))
     (build-system r-build-system)
     (propagated-inputs (list r-mathjaxr))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/wviechtb/metadat")
     (synopsis "Meta-Analysis Datasets")
     (description
