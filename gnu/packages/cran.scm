@@ -5399,6 +5399,7 @@ model fitting and error handling.")
            r-tidyr
            r-tidyselect
            r-vctrs))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/tidyverse/modelr")
     (synopsis "Helper functions for modelling in pipelines")
     (description
