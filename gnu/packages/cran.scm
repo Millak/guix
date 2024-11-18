@@ -39395,6 +39395,7 @@ covariate (usually group indicator) and the scores.")
         (base32
          "06zlp6m0w3gxxa04q7jhfh29r0d8xa0lgn9jaz80axn94css243m"))))
     (build-system r-build-system)
+    (native-inputs (list r-testthat))
     (home-page "https://rqtl.org/")
     (synopsis "R package for analyzing QTL experiments in genetics")
     (description "R/qtl is an extension library for the R statistics system.
