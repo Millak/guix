@@ -42532,7 +42532,7 @@ Apache2.")
     (propagated-inputs
      (list r-raster r-rcpp r-sf))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://isciences.gitlab.io/exactextractr/")
     (synopsis "Fast extraction from raster datasets using polygons")
     (description
