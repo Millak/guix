@@ -8700,7 +8700,7 @@ rows, dropping names) to see if the modified versions are identical.")
     (propagated-inputs
      (list r-ggplot2 r-magrittr r-viridis))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://cran.r-project.org/web/packages/dendextend")
     (synopsis "Extending 'dendrogram' functionality in R")
     (description
