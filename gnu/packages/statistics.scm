@@ -4862,6 +4862,8 @@ features present in other programming languages.")
     (build-system r-build-system)
     (arguments
      (list
+      ;; Tests require internet access.
+      #:tests? #false
       #:modules '((guix build utils)
                   (guix build r-build-system)
                   (srfi srfi-1))
