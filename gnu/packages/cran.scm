@@ -17024,6 +17024,7 @@ support for default values, positional argument support, etc.")
         (base32
          "1dydchid5mc79253v5b86bnbg3rm78w0hs586c1rr56lmz5r12hg"))))
     (build-system r-build-system)
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/trevorld/findpython")
     (synopsis "Functions to find an acceptable Python binary")
     (description
