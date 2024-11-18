@@ -488,6 +488,7 @@ evaluation.")
                              r-rlang
                              r-tidyr
                              r-tidyselect))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/insightsengineering/cards")
     (synopsis "Analysis Results Data")
     (description
