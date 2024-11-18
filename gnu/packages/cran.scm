@@ -6150,7 +6150,7 @@ jQuery.")
     (build-system r-build-system)
     (inputs (list jq))
     (propagated-inputs (list r-lazyeval r-magrittr))
-    (native-inputs (list pkg-config))
+    (native-inputs (list pkg-config r-testthat))
     (home-page "https://docs.ropensci.org/jqr/")
     (synopsis "R client for jq, a JSON Processor")
     (description
