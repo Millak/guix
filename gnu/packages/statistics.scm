@@ -2857,6 +2857,8 @@ previous R versions and their release dates.")
                (base32
                 "1g7jy6dnc5igs7yqy1n7cmy0ia8dm2yi3qj1mil2y0q88m4m2ldz"))))
     (build-system r-build-system)
+    ;; Fails with: could not find function "whisker.render"
+    (arguments (list #:tests? #false))
     (home-page "https://github.com/edwindj/whisker")
     (synopsis "Logicless mustache templating for R")
     (description
