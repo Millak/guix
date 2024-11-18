@@ -5283,7 +5283,7 @@ it has been in the first iteration.")
     (propagated-inputs
      (list r-cellranger r-cpp11 r-progress r-tibble))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://readxl.tidyverse.org")
     (synopsis "Read Excel files")
     (description
