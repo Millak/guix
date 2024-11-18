@@ -9285,7 +9285,7 @@ provides an interactive R manager and worker environment.")
     (build-system r-build-system)
     (inputs (list zlib))
     (propagated-inputs (list r-rcpp))
-    (native-inputs (list gfortran))
+    (native-inputs (list gfortran r-matrix r-slam r-testthat))
     (home-page "https://www.mumps-solver.org/")
     (synopsis "Wrapper for MUMPS library")
     (description
