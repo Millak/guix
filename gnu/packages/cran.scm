@@ -7033,6 +7033,7 @@ distributions, and a variety of utility functions.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-dplyr r-magrittr r-purrr r-r-utils r-readr))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/oganm/homologene")
     (synopsis "Quick access to homologene and gene annotation updates")
     (description
