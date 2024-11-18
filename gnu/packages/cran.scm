@@ -5960,7 +5960,7 @@ and vice-versa.")
     (properties `((upstream-name . "fastDummies")))
     (build-system r-build-system)
     (propagated-inputs (list r-data-table r-stringr r-tibble))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/jacobkap/fastDummies")
     (synopsis "Create dummy columns and rows from categorical variables")
     (description
