@@ -2083,10 +2083,22 @@ times.")
                 "11k12ixkd7k6lca8lsxlx4z6f6q3ljm6l4784wafa1nhbczwkazl"))))
     (properties `((upstream-name . "data.table")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; These two phases are needed for 3 otherwise failing tests
+         (add-after 'unpack 'set-HOME
+           (lambda _ (setenv "HOME" "/tmp")))
+         (add-before 'check 'set-timezone
+           (lambda* (#:key inputs #:allow-other-keys)
+             (setenv "TZ" "UTC+1")
+             (setenv "TZDIR"
+                     (search-input-directory inputs "share/zoneinfo")))))))
     (inputs
      (list zlib))
     (native-inputs
-     (list pkg-config r-knitr))
+     (list pkg-config r-knitr tzdata-for-tests))
     (home-page "https://github.com/Rdatatable/data.table/wiki")
     (synopsis "Enhanced version of data.frame R object")
     (description

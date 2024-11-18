@@ -15333,7 +15333,7 @@ JavaScript library) and interact with the igraph package.")
     (propagated-inputs
      (list r-r6 r-stringi))
     (native-inputs
-     (list r-knitr r-rmarkdown))
+     (list r-knitr r-rmarkdown r-testthat))
     (home-page "https://github.com/gluc/data.tree")
     (synopsis "General purpose hierarchical data structure")
     (description
