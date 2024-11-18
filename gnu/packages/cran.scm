@@ -12727,6 +12727,7 @@ features:
            r-rcpp
            r-rcppeigen
            r-rcppspdlog))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/kharchenkolab/N2R")
     (synopsis "Fast and scalable approximate k-Nearest Neighbor search methods")
     (description
