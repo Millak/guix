@@ -39087,7 +39087,7 @@ functions or computational engines (e.g. R, Spark, Stan, etc).")
            r-tidyr
            r-vctrs))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/tidymodels/infer")
     (synopsis "Tidy statistical inference")
     (description
