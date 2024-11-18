@@ -10397,6 +10397,7 @@ with particular emphasis on making attractive log axis plots.")
      (list `(,mariadb "dev") zlib))
     (propagated-inputs
      (list r-dbi))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/r-dbi/RMySQL")
     (synopsis "Database interface and MySQL driver for R")
     (description
