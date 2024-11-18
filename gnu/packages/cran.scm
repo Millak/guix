@@ -14242,7 +14242,8 @@ local smoothers and many more.")
 https://html2canvas.hertzen.com/dist/html2canvas.js")
              (sha256
               (base32
-               "0svkfnzzsydbsrwi7ky91rjqj97x5rfic69hbr9pwhm0zxlb9i81")))))
+               "0svkfnzzsydbsrwi7ky91rjqj97x5rfic69hbr9pwhm0zxlb9i81")))
+           r-testthat))
     (home-page "https://github.com/radiant-rstats/radiant.data")
     (synopsis "Data menu for Radiant: business analytics using R and Shiny")
     (description
