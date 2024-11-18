@@ -39134,6 +39134,7 @@ model-related packages.")
            r-stable
            r-stabledist
            r-statip))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/paulponcet/modeest")
     (synopsis "Mode estimations for univariate data or distributions")
     (description
