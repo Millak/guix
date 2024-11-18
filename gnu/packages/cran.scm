@@ -4831,6 +4831,7 @@ data using K-nn graph partitions.")
                 "0cw8r1gn4p2v1l3d80brk9sfr9nyckyyym5nr9xq3d74l74vgkcg"))))
     (properties `((upstream-name . "tictoc")))
     (build-system r-build-system)
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/jabiru/tictoc")
     (synopsis
      "Time R scripts and implementations of stack and list structures")
