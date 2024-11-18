@@ -761,7 +761,7 @@ queues, stacks, deques, dicts and ordered dicts.")
     (properties `((upstream-name . "correlation")))
     (build-system r-build-system)
     (propagated-inputs (list r-bayestestr r-datawizard r-insight r-parameters))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://easystats.github.io/correlation/")
     (synopsis "Methods for correlation analysis")
     (description
