@@ -16825,7 +16825,7 @@ functions.")
            r-uuid
            r-xml2))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://davidgohel.github.io/flextable")
     (synopsis "Functions for tabular reporting")
     (description
