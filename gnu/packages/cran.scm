@@ -8149,6 +8149,30 @@ is provided.")
 on (non-orthogonal) variable vectors in scatterplots and biplots.")
     (license license:gpl2)))
 
+(define-public r-calibrator
+  (package
+    (name "r-calibrator")
+    (version "1.2-8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "calibrator" version))
+       (sha256
+        (base32 "1m9g1pmnr6d9jkg5ab0l0cbqfj7kmx7sdmcdqdhn9ifyhhn7812y"))))
+    (properties `((upstream-name . "calibrator")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-cubature r-emulator r-mvtnorm))
+    (home-page "https://github.com/RobinHankin/calibrator.git")
+    (synopsis "Bayesian calibration of complex computer codes")
+    (description
+     "This package performs Bayesian calibration of computer models as per
+Kennedy and O'Hagan 2001.  The package includes routines to find the
+hyperparameters and parameters; see the help page for @code{stage1()} for a
+worked example using the toy dataset.  A tutorial is provided in the
+@file{calex.Rnw} vignette; and a suite of especially simple one dimensional
+examples appears in @file{inst/doc/one.dim/}.")
+    (license license:gpl2)))
+
 (define-public r-shape
   (package
     (name "r-shape")
