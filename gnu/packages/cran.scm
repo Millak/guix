@@ -39110,6 +39110,7 @@ expressive statistical grammar that coheres with the Tidy design framework.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-dplyr r-mass r-purrr r-rlang r-tibble))
+    (native-inputs (list r-testthat))
     (home-page "https://modeldata.tidymodels.org")
     (synopsis "Data sets useful for modeling packages")
     (description
