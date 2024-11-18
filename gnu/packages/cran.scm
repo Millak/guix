@@ -38934,7 +38934,7 @@ thinking for the fun stuff.")
     (propagated-inputs
      (list r-rcpp r-snowballc r-stringi))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://lincolnmullen.com/software/tokenizers/")
     (synopsis "Fast, consistent tokenization of natural language text")
     (description
