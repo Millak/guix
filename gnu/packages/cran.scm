@@ -6065,7 +6065,7 @@ rules and utility functions for adaptive GH quadrature.")
            r-rcpparmadillo
            r-survival))
     (native-inputs
-     (list gfortran))
+     (list gfortran r-ggplot2 r-testthat))
     (home-page "https://github.com/mclements/rstpm2")
     (synopsis "Link-based survival models")
     (description
