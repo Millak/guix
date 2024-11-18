@@ -9464,7 +9464,8 @@ can safely interchange most code.")
                (file-name (git-file-name "jexcel" version))
                (sha256
                 (base32
-                 "1zk0wc4h0vax7zgimhwqq2icrvjr84agm3qv42l16gim7gq7fqfq"))))))
+                 "1zk0wc4h0vax7zgimhwqq2icrvjr84agm3qv42l16gim7gq7fqfq"))))
+           r-testthat))
     (home-page "https://github.com/Swechhya/excelR")
     (synopsis "Wrapper of the JavaScript library jExcel")
     (description
