@@ -12832,8 +12832,19 @@ of prediction methods available in @code{caret}.")
         (base32
          "0yx20v3izm7037cx5swc19966z97w7q9xw4p2p6skfyap4nqjcxz"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      ;; Vignettes require r-sna, which depends on r-network.
+      #:test-types '(list "tests")
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'delete-bad-tests
+           (lambda _
+             ;; One test requires access to the internet.
+             (delete-file "tests/testthat/test-read.paj.R"))))))
     (propagated-inputs
      (list r-magrittr r-statnet-common r-tibble))
+    (native-inputs (list r-testthat))
     (home-page "https://statnet.org/")
     (synopsis "Classes for relational data")
     (description
