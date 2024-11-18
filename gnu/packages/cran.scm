@@ -5656,8 +5656,19 @@ environment.  Two RStudio Addins can be used to run selected code as a job.")
                 "0bxgyj5b1hnijq5315g050giixy4k5mjz2zdx8yil0igb5ifji9p"))))
     (properties `((upstream-name . "jsonify")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; We need this for tests.
+         (add-before 'check 'set-timezone
+           (lambda* (#:key inputs #:allow-other-keys)
+             (setenv "TZ" "UTC")
+             (setenv "TZDIR"
+                     (search-input-directory inputs
+                                             "share/zoneinfo")))))))
     (propagated-inputs (list r-rapidjsonr r-rcpp))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat tzdata-for-tests))
     (home-page "https://cran.r-project.org/package=jsonify")
     (synopsis
      "Convert between R objects and JavaScript Object Notation (JSON)")
