@@ -1476,6 +1476,10 @@ for template use among CRAN packages.")
               (sha256
                (base32
                 "1qki65w0qr8wndpsydy7frhdddbm122284zkn8ccdqskbgjw6v23"))))
+    (properties
+     ;; We can't have r-testthat among the inputs here to avoid a dependency
+     ;; cycle.
+     '((updater-ignored-native-inputs . ("r-testthat"))))
     (build-system r-build-system)
     (home-page "https://github.com/hadley/evaluate")
     (synopsis "Parsing and evaluation tools for R")
