@@ -38964,7 +38964,7 @@ consistent interface, and the package is built on the @code{stringi} and
     (propagated-inputs
      (list r-digest r-rcpp))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/ropensci/hunspell#readme")
     (synopsis "High-performance stemmer, tokenizer, and spell checker")
     (description
