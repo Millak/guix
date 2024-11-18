@@ -44056,7 +44056,7 @@ present in the @code{testthat} package.")
            r-mmwrweek
            r-readr
            r-rlang))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-mockery r-testthat r-webmockr))
     (home-page "https://github.com/reichlab/zoltr")
     (synopsis "Interface to the Zoltar forecast repository API")
     (description
