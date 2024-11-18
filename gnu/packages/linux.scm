@@ -150,6 +150,7 @@
   #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages image)
   #:use-module (gnu packages kde-frameworks)
+  #:use-module (gnu packages libevent)
   #:use-module (gnu packages libunwind)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages llvm)
@@ -9062,6 +9063,60 @@ the @file{uapi/misc/cxi.h} C header file for use by user-land software.
 
 Currently the Linux driver itself is missing from this package.")
       (license license:gpl2+))))
+
+(define-public libcxi
+  (let ((commit "5b6f8b5d57017c7963debb379d5693c59aca63ed")
+        (revision "0"))
+    (package
+      (name "libcxi")
+      (version (git-version "1.0.1" revision commit))
+      (home-page "https://github.com/HewlettPackard/shs-libcxi")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference (url home-page) (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1h3dhird8p11q4ziaxzg1hr5gxcgwx1limzdcyildyaw50dy549g"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:configure-flags
+             #~(list "--disable-static"
+                     (string-append "--with-udevrulesdir="
+                                    #$output "/lib/udev/rules.d"))
+
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-before 'configure 'set-cassini-file-names
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (substitute* "utils/cxi_dump_csrs.py"
+                       (("/usr/share/cassini-headers/csr_defs.json")
+                        (search-input-file
+                         inputs
+                         "/share/cassini-headers/csr_defs.json"))))))))
+      (native-inputs (list autoconf
+                           automake
+                           libtool
+                           pkg-config
+                           python-wrapper))
+      (inputs (list libconfig
+                    libuv
+                    fuse-2
+                    libyaml
+                    libnl
+                    numactl
+                    eudev
+                    (list lm-sensors "lib")))
+      (propagated-inputs (list cassini-headers cxi-driver))
+      (synopsis "Interface to the Cassini/Slingshot high-speed interconnect")
+      (description
+       "Libcxi provides applications with a low-level interface to the
+Cray/HPE Cassini high-speed @acronym{NIC, network interface controller}, also
+known as Slingshot.")
+
+      ;; License is spelled out in 'cray-libcxi.spec' and in source file
+      ;; headers.
+      (license (list license:lgpl2.1+ license:bsd-3))))) ;dual-licensed
 
 (define-public libfabric
   (package
