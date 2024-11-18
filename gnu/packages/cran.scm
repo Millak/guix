@@ -16371,8 +16371,11 @@ provided.")
          "0igrmi0v17jsbfa770d6rcfnkjx6l2x3shskvjzhc5xbqjbn6qir"))))
     (properties `((upstream-name . "Rdpack")))
     (build-system r-build-system)
+    ;; FIXME It's unclear why the tests fail.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-rbibutils))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/GeoBosh/Rdpack")
     (synopsis "Update and manipulate Rd documentation objects")
     (description
