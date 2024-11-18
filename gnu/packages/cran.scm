@@ -40634,6 +40634,7 @@ computational operations, add-on packages provide additional functionality.")
            r-mlr3misc
            r-paradox
            r-r6))
+    (native-inputs (list r-testthat))
     (home-page "https://mlr3learners.mlr-org.com/")
     (synopsis "Recommended Learners for @code{mlr3}")
     (description "@code{mlr3learners} extends @code{mlr3} and @code{mlr3proba}
