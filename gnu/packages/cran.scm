@@ -43664,6 +43664,9 @@ conservation prioritization software.")
          "1l1ks44v52iggw9nhs56lfj6804yab5b17k8fzrc6h1kvj3vda0s"))))
     (properties `((upstream-name . "MMWRweek")))
     (build-system r-build-system)
+    ;; FIXME Tests fail with: could not find function "context"
+    (arguments (list #:tests? #false))
+    (native-inputs (list r-testthat))
     (home-page "http://wwwn.cdc.gov/nndss/document/MMWR_Week_overview.pdf")
     (synopsis "Convert dates to MMWR day, week, and year")
     (description
