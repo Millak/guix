@@ -9691,6 +9691,7 @@ classes in the @code{stats4} package.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-bbmle r-coda r-lattice r-mass r-plyr))
+    (native-inputs (list r-testthat))
     (home-page "https://www.math.mcmaster.ca/bolker/emdbook")
     (synopsis "Support functions and data for \"Ecological Models and Data\"")
     (description
