@@ -11654,7 +11654,7 @@ structure.")
     (propagated-inputs
      (list r-sm r-zoo))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "http://wsopuppenkiste.wiso.uni-goettingen.de/~dadler")
     (synopsis "Violin plot")
     (description
