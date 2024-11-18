@@ -42773,10 +42773,19 @@ and GPU devices.")
          "0vi1slx2s4r5zf82lazqv0c3m12xq73wlgsbz6af4y00h0bkr3ps"))))
     (properties `((upstream-name . "zzlite")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; These tests require internet access.
+         (add-after 'unpack 'delete-bad-tests
+           (lambda _
+             (delete-file "tests/testthat/test-zz_format.R")
+             (delete-file "tests/testthat/test-zz_get_info.R"))))))
     (propagated-inputs
      (list r-httr r-jsonlite))
     (native-inputs
-     (list r-knitr))
+     (list r-httptest r-knitr r-testthat))
     (home-page "https://cran.r-project.org/package=zzlite")
     (synopsis "Wrapper for the Zamzar file conversion API")
     (description
