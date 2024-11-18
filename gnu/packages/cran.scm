@@ -18413,6 +18413,7 @@ detection.")
     (properties `((upstream-name . "ABPS")))
     (build-system r-build-system)
     (propagated-inputs (list r-kernlab))
+    (native-inputs (list r-testthat))
     (home-page "https://cran.r-project.org/web/packages/ABPS/")
     (synopsis "Abnormal blood profile score to detect blood doping")
     (description
