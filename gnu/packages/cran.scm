@@ -273,8 +273,12 @@ regression).")
        (sha256
         (base32 "00g5ik3f6260m38jl8k4s8nycmy7mzdwr7qslrl66phpg84xzmln"))))
     (properties `((upstream-name . "box")))
+    (arguments
+     ;; Tests don't work because of this error:
+     ;; the ‘box’ package is not supposed to be attached!
+     (list #:test-types '(list "vignettes")))
     (build-system r-build-system)
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://klmr.me/box/")
     (synopsis "Write reusable, composable and modular R code")
     (description
