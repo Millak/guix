@@ -8,6 +8,7 @@
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 John Doe <dftxbs3e@free.fr>
+;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -60,7 +61,12 @@
      `(;; Prevent the build system from passing -march and -mtune to the
        ;; compiler.  See "ax_cc_maxopt.m4" and "ax_gcc_archflag.m4".
        #:configure-flags '("--enable-portable-binary"
-                           "--without-gcc-arch")))
+                           "--without-gcc-arch"
+                           ,@(if (or (target-hurd64?) (%current-target-system))
+                                 (list (string-append
+                                        "CFLAGS=-g -O2"
+                                        " -Wno-implicit-function-declaration"))
+                                 '()))))
     (outputs '("out" "debug"))
     (synopsis "Foreign function call interface library")
     (description
