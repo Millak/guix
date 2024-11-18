@@ -1522,14 +1522,15 @@ There is also a Shiny app as a user interface in this package.")
               (sha256
                (base32
                 "19z0gwdy46z6gb46b3fs2ljxa2cn0bpvx7aam0jk75h180l183g9"))))
+    (properties
+     ;; We can't have r-knitr among the inputs here, because r-highr depends
+     ;; on r-xfun, which is an input to r-knitr.
+     '((updater-ignored-native-inputs . ("r-knitr"))))
     (build-system r-build-system)
-    (propagated-inputs
-     (list r-xfun))
-    ;; We cannot add knitr to the inputs, because highr depends on xfun, which
-    ;; is an input to knitr.
-    #;
-    (native-inputs
-     `(("r-knitr" ,r-knitr)))
+    ;; Do not build vignettes as they need r-knitr.
+    (arguments (list #:test-types '(list "tests")))
+    (propagated-inputs (list r-xfun))
+    (native-inputs (list r-testit))
     (home-page "https://github.com/yihui/highr")
     (synopsis "Syntax highlighting for R source code")
     (description
