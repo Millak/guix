@@ -20248,6 +20248,34 @@ to colexicographical order.")
 simple multicore parallelism.")
     (license license:expat)))
 
+(define-public r-multiplex
+  (package
+    (name "r-multiplex")
+    (version "3.8-3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "multiplex" version))
+       (sha256
+        (base32 "0ninfd1gf7w2b97l8r7nbgnk8v8312qymfvqbzdarynlxz6qbdlv"))))
+    (properties `((upstream-name . "multiplex")))
+    (build-system r-build-system)
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/mplex/multiplex/")
+    (synopsis "Algebraic tools for the analysis of multiple social networks")
+    (description
+     "Algebraic procedures for analyses of multiple social networks are
+delivered with this package.  @code{multiplex} makes possible, among other
+things, to create and manipulate multiplex, multimode, and multilevel network
+data with different formats.  Effective ways are available to treat multiple
+networks with routines that combine algebraic systems like the partially
+ordered semigroup with decomposition procedures or semiring structures with
+the relational bundles occurring in different types of multivariate networks.
+multiplex provides also an algebraic approach for affiliation networks through
+Galois derivations between families of the pairs of subsets in the two domains
+of the network with visualization options.")
+    (license license:gpl3)))
+
 (define-public r-misc3d
   (package
     (name "r-misc3d")
