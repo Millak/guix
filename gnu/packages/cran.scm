@@ -40252,6 +40252,7 @@ mlr3 is loaded.")
                              r-mlr3misc
                              r-paradox
                              r-r6))
+    (native-inputs (list r-testthat))
     (home-page "https://mlr3filters.mlr-org.com")
     (synopsis "Filter based feature selection for mlr3")
     (description
