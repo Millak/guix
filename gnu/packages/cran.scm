@@ -15418,7 +15418,10 @@ automatically translated to the equivalent, but usually much faster,
            (uri "https://d3js.org/d3.v4.js")
            (sha256
             (base32
-             "0y7byf6kcinfz9ac59jxc4v6kppdazmnyqfav0dm4h550fzfqqlg"))))))
+             "0y7byf6kcinfz9ac59jxc4v6kppdazmnyqfav0dm4h550fzfqqlg"))))
+       ("r-colorspace" ,r-colorspace)
+       ("r-testthat" ,r-testthat)
+       ("r-tibble" ,r-tibble)))
     (home-page "https://github.com/AdeelK93/collapsibleTree")
     (synopsis "Interactive collapsible tree diagrams using D3.js")
     (description
