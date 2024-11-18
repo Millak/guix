@@ -1448,7 +1448,7 @@ plots.")
                              r-rlang
                              r-statsexpressions
                              r-tidyr))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat r-vdiffr))
     (home-page "https://indrajeetpatil.github.io/ggstatsplot/")
     (synopsis "Based plots with statistical details")
     (description
