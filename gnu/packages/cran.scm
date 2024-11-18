@@ -1354,7 +1354,7 @@ axis breaks of a ggplot.")
                              r-tibble
                              r-vctrs
                              r-withr))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-dplyr r-knitr r-testthat r-tidyr r-vdiffr))
     (home-page "https://mjskay.github.io/ggdist/")
     (synopsis "Visualizations of distributions and uncertainty")
     (description
