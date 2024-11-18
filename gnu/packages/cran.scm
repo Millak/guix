@@ -6483,6 +6483,9 @@ previewing themes in real time.")
         (guix build minify-build-system))
       #:phases
       '(modify-phases (@ (guix build r-build-system) %standard-phases)
+         ;; This is needed for some tests.
+         (add-before 'check 'set-HOME
+           (lambda _ (setenv "HOME" "/tmp")))
          (add-after 'unpack 'replace-bundled-minified-JavaScript
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((replace-file (lambda (old new)
@@ -6560,7 +6563,10 @@ previewing themes in real time.")
 v1.0.7/_site/plugins/js/bootstrap-accessibility.js")
            (sha256
             (base32
-             "1489wyzwrpf86y7vhc13n4v3mszmsfybhd3f75jkpnbvyp5sncm8"))))))
+             "1489wyzwrpf86y7vhc13n4v3mszmsfybhd3f75jkpnbvyp5sncm8"))))
+       ("r-future" ,r-future)
+       ("r-ggplot2" ,r-ggplot2)
+       ("r-testthat" ,r-testthat)))
     (home-page "https://shiny.rstudio.com")
     (synopsis "Easy interactive web applications with R")
     (description
