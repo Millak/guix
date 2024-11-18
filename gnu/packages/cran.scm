@@ -18014,7 +18014,7 @@ subsequence} (LCS) using a dynamic programming algorithm.")
            r-tidyselect
            r-vctrs))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://larmarange.github.io/labelled/")
     (synopsis "Manipulating labelled data")
     (description
