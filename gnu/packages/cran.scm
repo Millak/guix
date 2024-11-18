@@ -14779,6 +14779,17 @@ and Eclat.")
         (base32
          "1cfinqlbchmkhkgmdwiy3mnxb17lp02jfk2gpw56hq9vh6wimhqz"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-before 'install 'set-timezone
+           (lambda* (#:key inputs #:allow-other-keys)
+             (setenv "TZ" "UTC")
+             (setenv "TZDIR"
+                     (search-input-directory inputs
+                                             "share/zoneinfo")))))))
+    (native-inputs (list r-testthat tzdata-for-tests))
     (home-page "https://github.com/gaborcsardi/parsedate")
     (synopsis
      "Recognize and parse dates in various formats")
