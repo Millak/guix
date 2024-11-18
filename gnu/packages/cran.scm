@@ -16710,7 +16710,7 @@ vice versa), or to deal with multiple declared missing values.")
            r-sjlabelled
            r-tidyselect))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/strengejacke/sjmisc")
     (synopsis "Data and variable transformation functions")
     (description
