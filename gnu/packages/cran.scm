@@ -6560,6 +6560,7 @@ separately.")
                              r-shiny
                              r-sourcetools
                              r-styler))
+    (native-inputs (list r-testthat))
     (home-page "https://rstudio.github.io/shinymeta/")
     (synopsis "Export domain logic from Shiny using meta-programming")
     (description
