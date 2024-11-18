@@ -12996,6 +12996,7 @@ rules with R.")
     (properties `((upstream-name . "leaflet.providers")))
     (build-system r-build-system)
     (propagated-inputs (list r-htmltools))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/rstudio/leaflet.providers")
     (synopsis "Leaflet map tile providers")
     (description
