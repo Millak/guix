@@ -14907,6 +14907,7 @@ Files, Fine-tunes, Moderations, and legacy Engines endpoints.")
                 "1v4dg7xhz24dnp0zxn815x1405ig64ibii6y40la1gvmzcc41dz5"))))
     (properties `((upstream-name . "operator.tools")))
     (build-system r-build-system)
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/decisionpatterns/operator.tools")
     (synopsis "Utilities for working with R's operators")
     (description
