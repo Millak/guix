@@ -13809,7 +13809,7 @@ powerful and convenient features.")
            r-viridis
            r-webshot))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://cran.r-project.org/package=heatmaply")
     (synopsis "Interactive cluster heat maps using plotly")
     (description
