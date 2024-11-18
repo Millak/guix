@@ -15761,6 +15761,7 @@ file.")
            r-shiny))
     (native-inputs
      `(("r-knitr" ,r-knitr)
+       ("r-testthat" ,r-testthat)
        ("esbuild" ,esbuild)
        ;; It is not ideal to use this concatenated (but not minified)
        ;; JavaScript file, as the original source is written in TypeScript.
