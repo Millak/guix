@@ -2860,6 +2860,7 @@ programming packages such as @code{knitr} and @code{rmarkdown}.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-lobstr r-rlang))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/r-lib/carrier")
     (synopsis "Isolate functions for remote execution")
     (description
