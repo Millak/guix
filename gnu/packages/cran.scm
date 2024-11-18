@@ -5984,6 +5984,7 @@ speed increase from creating dummy variables through @code{model.matrix()}.")
          "0ilj7gcbnha6l61sqzk6wrj6l08mxyay49957izha7axj6i09nmi"))))
     (properties `((upstream-name . "fastmap")))
     (build-system r-build-system)
+    (native-inputs (list r-testthat))
     (home-page "https://r-lib.github.io/fastmap/")
     (synopsis "Fast implementation of a key-value store")
     (description
