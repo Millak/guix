@@ -8340,6 +8340,7 @@ functions subject to simple constraints.")
         (base32
          "1l05fpk2yql3jka321c0bdgx6mqq9pvfrg2844lbjfpbgjkmqy3w"))))
     (build-system r-build-system)
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/krlmlr/bindr")
     (synopsis "Parametrized active bindings")
     (description
