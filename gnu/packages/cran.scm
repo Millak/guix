@@ -39446,6 +39446,7 @@ designs.  Broman et al. (2018) <doi:10.1534/genetics.118.301595>.")
     (build-system r-build-system)
     (inputs
      (list zlib))
+    (native-inputs (list r-testthat))
     (home-page "http://seqminer.genomic.codes")
     (synopsis "Read nucleotide sequence data (VCF, BCF, and METAL formats)")
     (description
