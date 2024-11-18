@@ -16603,6 +16603,7 @@ parse and convert strings into cases like snake or camel among others.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-data-table))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/leeper/prediction")
     (synopsis "Tidy, type-safe prediction methods")
     (description
