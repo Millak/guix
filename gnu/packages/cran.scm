@@ -12024,7 +12024,7 @@ plotting.  a three dimensional point cloud.")
     (propagated-inputs
      (list r-ggplot2 r-scales r-withr))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/clauswilke/ggridges")
     (synopsis "Ridgeline plots in ggplot2")
     (description
