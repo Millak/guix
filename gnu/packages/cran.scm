@@ -39423,6 +39423,7 @@ genome scans.")
            r-rcppeigen
            r-rsqlite
            r-yaml))
+    (native-inputs (list r-qtl r-testthat))
     (home-page "https://kbroman.org/qtl2/")
     (synopsis "Quantitative Trait Locus Mapping in Experimental Crosses")
     (description
