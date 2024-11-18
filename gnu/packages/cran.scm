@@ -1228,7 +1228,7 @@ It also provides visualization tools for analyzing these biases.")
                              r-stringr
                              r-tibble
                              r-tidyr))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-ggplot2 r-knitr r-testthat))
     (home-page "https://github.com/dgrtwo/fuzzyjoin")
     (synopsis "Join tables together on inexact matching")
     (description
