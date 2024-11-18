@@ -7516,6 +7516,7 @@ files and in-memory raw vectors.")
            r-stringr
            r-tibble
            r-tidyr))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/dkahle/ggmap")
     (synopsis "Spatial visualization with ggplot2")
     (description "This package provides a collection of functions to visualize
