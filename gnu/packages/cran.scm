@@ -5477,7 +5477,7 @@ sliding semi-landmarks and semi-automated surface landmark placement.")
     (properties `((upstream-name . "HGNChelper")))
     (build-system r-build-system)
     (propagated-inputs (list r-splitstackshape))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/waldronlab/HGNChelper")
     (synopsis
      "Identification and correction of invalid gene symbols for human and mouse")
