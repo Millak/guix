@@ -40011,6 +40011,7 @@ also provided for each method.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-base64enc r-digest))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/cloudyr/aws.signature")
     (synopsis "Amazon Web Services Request Signatures")
     (description
