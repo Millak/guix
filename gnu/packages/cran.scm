@@ -43392,6 +43392,7 @@ functions-as-a-service, containers, batch processing, and more.")
            r-paws-networking
            r-paws-security-identity
            r-paws-storage))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/paws-r/paws")
     (synopsis "Amazon Web Services software development kit")
     (description
