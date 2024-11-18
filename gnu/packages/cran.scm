@@ -239,6 +239,28 @@ a recent compiler).  Asio is written and maintained by Christopher
 M. Kohlhoff, and released under the Boost Software License', Version 1.0.")
     (license license:boost1.0)))
 
+(define-public r-bma
+  (package
+    (name "r-bma")
+    (version "3.18.19")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "BMA" version))
+       (sha256
+        (base32 "0hldrbl7bcf5rchc5vl8v1y679yjbxq8pca79pgc3g607pnddsh9"))))
+    (properties `((upstream-name . "BMA")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-inline r-leaps r-robustbase r-rrcov r-survival))
+    (native-inputs (list gfortran r-mass))
+    (home-page "https://github.com/hanase/BMA")
+    (synopsis "Bayesian model averaging")
+    (description
+     "This is a package for Bayesian model averaging and variable selection
+for linear models, generalized linear models and survival models (cox
+regression).")
+    (license license:gpl2+)))
+
 (define-public r-box
   (package
     (name "r-box")
