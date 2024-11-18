@@ -1409,7 +1409,7 @@ samples) are easily visualized.")
                              r-scales
                              r-stringr
                              r-tidyr))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://larmarange.github.io/ggstats/")
     (synopsis "Extension to ggplot2 for plotting stats")
     (description
