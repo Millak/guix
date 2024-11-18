@@ -10166,7 +10166,7 @@ these progress updates.")
            r-squarem
            r-survival))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/kkholst/lava")
     (synopsis "Latent variable models")
     (description
