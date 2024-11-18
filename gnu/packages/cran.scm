@@ -39157,6 +39157,7 @@ distributions.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli r-memoise r-rlang))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/r-lib/conflicted")
     (synopsis "Alternative conflict resolution strategy")
     (description
