@@ -44104,7 +44104,7 @@ Monte Carlo approach implemented in JAGS.")
         (base32 "1ph4al2ish2c3zpznr2zn7wg4hjn1bslywc1vv6smrxfcch3n90g"))))
     (properties `((upstream-name . "logger")))
     (build-system r-build-system)
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://daroczig.github.io/logger/")
     (synopsis "Lightweight and flexible logging utility")
     (description
