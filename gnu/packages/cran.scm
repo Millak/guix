@@ -561,6 +561,7 @@ multi-dimensional data, considering its structure.")
     (properties `((upstream-name . "changepoint")))
     (build-system r-build-system)
     (propagated-inputs (list r-zoo))
+    (native-inputs (list r-testthat r-vdiffr))
     (home-page "https://github.com/rkillick/changepoint/")
     (synopsis "Methods for changepoint detection")
     (description
