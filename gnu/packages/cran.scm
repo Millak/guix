@@ -42340,6 +42340,7 @@ package vignettes.")
     (build-system r-build-system)
     (inputs (list pari-gp))
     (propagated-inputs (list r-mass))
+    (native-inputs (list r-calibrator r-emulator))
     (home-page "https://github.com/RobinHankin/elliptic")
     (synopsis "Weierstrass and Jacobi elliptic functions")
     (description
