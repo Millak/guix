@@ -40606,6 +40606,7 @@ implemented as @code{R6} classes.")
            r-parallelly
            r-r6
            r-uuid))
+    (native-inputs (list r-matrix r-remotes r-rpart r-testthat))
     (home-page "https://mlr3.mlr-org.com/")
     (synopsis "Machine Learning in R - Next Generation")
     (description "@code{mlr3} enables efficient, object-oriented programming
