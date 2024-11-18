@@ -14063,7 +14063,7 @@ facilitate data exploration.")
     (properties `((upstream-name . "randomizr")))
     (build-system r-build-system)
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://declaredesign.org/r/randomizr/")
     (synopsis "Tools for common forms of random assignment and sampling")
     (description
