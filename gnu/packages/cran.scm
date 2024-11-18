@@ -42924,6 +42924,8 @@ with the dynamic plots from @code{dygraphs}.")
          "10shwl1y9220m7ld5w9fjsjzy5yg8myrz9cz97ps9z2bw7bvka5j"))))
     (properties `((upstream-name . "rfigshare")))
     (build-system r-build-system)
+    ;; Tests attempt to connect to api.figshare.com
+    (arguments (list #:test-types '(list "vignettes")))
     (propagated-inputs
      (list r-ggplot2
            r-httpuv
@@ -42932,7 +42934,7 @@ with the dynamic plots from @code{dygraphs}.")
            r-xml
            r-yaml))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/ropensci/rfigshare")
     (synopsis "R Interface to figshare")
     (description
