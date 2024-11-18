@@ -16407,6 +16407,7 @@ references and Rd files.")
            r-uuid
            r-xml2
            r-zip))
+    (native-inputs (list r-testthat))
     (home-page "https://davidgohel.github.io/officer")
     (synopsis "Manipulation of Word and PowerPoint documents")
     (description
