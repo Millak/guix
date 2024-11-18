@@ -9555,7 +9555,7 @@ by Li, Brown, Huang, and Bickel")
     (properties `((upstream-name . "iNEXT")))
     (build-system r-build-system)
     (propagated-inputs (list r-ggplot2 r-rcpp r-reshape2))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "http://chao.stat.nthu.edu.tw/wordpress/software_download/")
     (synopsis "Interpolation and extrapolation for species diversity")
     (description
