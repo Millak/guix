@@ -11083,7 +11083,7 @@ functions for:
                              r-withr
                              r-wrs2
                              r-zeallot))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-patrick r-testthat))
     (home-page "https://indrajeetpatil.github.io/statsExpressions/")
     (synopsis "Dataframes and expressions with statistical details")
     (description
