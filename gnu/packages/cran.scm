@@ -3475,7 +3475,14 @@ respecting the grammar of its graphics paradigm.")
            r-scales
            r-tibble
            r-vctrs))
-    (native-inputs (list r-knitr))
+    (native-inputs
+     (list r-dplyr
+           r-ggdendro
+           r-knitr
+           r-testthat
+           r-tidyr
+           r-vdiffr
+           r-viridis))
     (home-page "https://cran.r-project.org/package=ggside")
     (synopsis "Side grammar graphics that extends @code{ggplot2}")
     (description
