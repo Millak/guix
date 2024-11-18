@@ -533,6 +533,7 @@ available, greatly increasing its breadth and scope.")
         (base32
          "1ln8079g7l6yxdh7bmcn2acjlln0hvrhhjbp5r0wl0xms662wm6q"))))
     (build-system r-build-system)
+    (native-inputs (list r-survival))
     (home-page "https://cran.r-project.org/web/packages/boot")
     (synopsis "Bootstrap functions for R")
     (description
