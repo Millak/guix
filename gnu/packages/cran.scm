@@ -43767,7 +43767,7 @@ inspiration from Ruby's @code{faraday} gem.")
            r-knitr
            r-magrittr
            r-rmarkdown))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/ropensci/gistr")
     (synopsis "Work with Gists in browser")
     (description
