@@ -5587,7 +5587,7 @@ particularly easy to create complete web applications using httpuv alone.")
            r-rlang
            r-vctrs
            r-withr))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://httr2.r-lib.org")
     (synopsis "Perform HTTP requests and process the responses")
     (description
