@@ -14757,6 +14757,7 @@ used.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-generics r-matrix))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/mhahsler/arules")
     (synopsis "Mining association rules and frequent itemsets")
     (description
