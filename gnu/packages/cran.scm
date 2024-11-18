@@ -1883,6 +1883,18 @@ significance probabilities for all the elements in the final ranking.")
         (base32 "1q8c3h328iwscnayxj8qc71s2hkqdqwnpf38kn3zz3ks66qzjf8c"))))
     (properties `((upstream-name . "RPresto")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; We need this for failing tests, because lubridate needs these
+         ;; variables.
+         (add-before 'check 'set-timezone
+           (lambda* (#:key inputs #:allow-other-keys)
+             (setenv "TZ" "UTC")
+             (setenv "TZDIR"
+                     (search-input-directory inputs
+                                             "share/zoneinfo")))))))
     (propagated-inputs
      (list r-bit64
            r-dbi
@@ -1899,7 +1911,7 @@ significance probabilities for all the elements in the final ranking.")
            r-stringi
            r-tibble
            r-vctrs))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat tzdata-for-tests))
     (home-page "https://github.com/prestodb/RPresto")
     (synopsis "DBI connector to Presto")
     (description
