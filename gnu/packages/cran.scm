@@ -740,6 +740,7 @@ effectively deal with variable labels, attributes, and missing data.")
         (base32 "003zlp5s2ilq3pq0imlp7p46jkfihwzg1hkkgk7378ikcbwnz17z"))))
     (properties `((upstream-name . "collections")))
     (build-system r-build-system)
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/randy3k/collections")
     (synopsis "High performance container data types")
     (description
