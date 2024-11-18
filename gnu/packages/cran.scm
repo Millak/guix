@@ -18212,7 +18212,7 @@ calls to the particular toolkits in use in function of the context.")
     (propagated-inputs
      (list r-rstudioapi r-svgui))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/SciViews/svDialogs/")
     (synopsis "Portable dialog boxes")
     (description
