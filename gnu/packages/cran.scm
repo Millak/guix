@@ -783,6 +783,7 @@ correlations, distance correlations and more.")
         (base32 "1dix4prcavwbi7l7ifw1frvpmqqdcrvk4c45xl7ckg6068713nzr"))))
     (properties `((upstream-name . "countrycode")))
     (build-system r-build-system)
+    (native-inputs (list r-testthat r-tibble r-utf8))
     (home-page "https://vincentarelbundock.github.io/countrycode/")
     (synopsis "Convert country names and country codes")
     (description
