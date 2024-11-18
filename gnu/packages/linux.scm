@@ -9005,6 +9005,34 @@ comparing system environments.")
    (home-page "https://github.com/jamesodhunt/procenv/")
    (license license:gpl3+)))
 
+(define-public cassini-headers
+  (let ((commit "9a8a738a879f007849fbc69be8e3487a4abf0952")
+        (revision "0"))
+    (package
+      (name "cassini-headers")
+      (version (git-version "2.0.0"               ;per .spec file
+                            revision commit))
+      (home-page "https://github.com/HewlettPackard/shs-cassini-headers")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference (url home-page) (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0a54vwfr29n0i392wdap7rzmq0lb8mxa17d8yljdbm0kzrq48csz"))))
+      (build-system copy-build-system)
+      (arguments
+       (list #:install-plan
+             #~'(("include" "include")
+                 ("share/cassini-headers" "share/cassini-headers"))))
+      (synopsis "Cassini network hardware definitions and headers")
+      (description
+       "This package provides hardware definitions and C headers for use by
+the Linux driver and by user-space applications for the Cassini/Slingshot
+high-speed network interconnect made by HPE (formerly Cray).  User-land
+software uses @file{cxi_prov_hw.h} from this package.")
+      (license (list license:gpl2 license:bsd-2))))) ;dual-licensed
+
 (define-public libfabric
   (package
     (name "libfabric")
