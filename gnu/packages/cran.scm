@@ -6123,7 +6123,7 @@ multi-state models.")
     (propagated-inputs
      (list r-htmltools))
     (native-inputs
-     (list esbuild))
+     (list esbuild r-testthat))
     (home-page "https://cran.r-project.org/package=jquerylib")
     (synopsis "Obtain jQuery as an HTML dependency object")
     (description
