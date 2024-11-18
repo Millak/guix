@@ -15923,10 +15923,11 @@ matrix.")
            r-polynom
            r-purrr
            r-rlang
-           r-scales
            r-rstatix
+           r-scales
            r-tibble
            r-tidyr))
+    (native-inputs (list r-testthat))
     (home-page "http://www.sthda.com/english/rpkgs/ggpubr")
     (synopsis "ggplot2-based publication-ready plots")
     (description
