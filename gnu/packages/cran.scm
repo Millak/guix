@@ -5367,6 +5367,7 @@ the personalised models.")
     (properties `((upstream-name . "modelenv")))
     (build-system r-build-system)
     (propagated-inputs (list r-cli r-glue r-rlang r-tibble r-vctrs))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/tidymodels/modelenv")
     (synopsis "Tools for registering models for use in tidymodels")
     (description
