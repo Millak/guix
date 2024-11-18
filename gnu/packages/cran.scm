@@ -3386,6 +3386,7 @@ stopping criteria as well as allowing the adjustment of more tolerances.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-assertthat r-dynutils r-irlba r-matrix))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/dynverse/lmds")
     (synopsis "Landmark multi-dimensional scaling")
     (description
