@@ -8875,6 +8875,7 @@ quantities.")
    (build-system r-build-system)
    (propagated-inputs
     (list r-rcpp))
+   (native-inputs (list r-testthat))
    (home-page "https://github.com/rcannood/princurve")
    (synopsis "Fit a principal curve in arbitrary dimension")
    (description "This package provides procedures for fitting a principal
