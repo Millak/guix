@@ -3839,7 +3839,7 @@ method for preprocessing data for conos.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-colorspace r-dichromat r-mapproj r-maps))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://kwstat.github.io/pals/")
     (synopsis "Color palettes, color maps, and tools to evaluate them")
     (description
