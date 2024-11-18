@@ -13974,6 +13974,7 @@ files.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-jsonlite r-shiny))
+    (native-inputs (list r-testthat))
     (home-page "https://cran.r-project.org/web/packages/shinyAce/")
     (synopsis "Ace editor bindings for Shiny")
     (description
