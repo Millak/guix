@@ -40203,6 +40203,7 @@ customization by the user.")
                              r-mlr3misc
                              r-paradox
                              r-r6))
+    (native-inputs (list r-testthat))
     (home-page "https://mlr3cluster.mlr-org.com")
     (synopsis "Cluster extension for mlr3")
     (description
