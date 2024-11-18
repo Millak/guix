@@ -11565,6 +11565,7 @@ and density estimation")
                              r-paramhelpers
                              r-rcpp
                              r-rcpparmadillo))
+    (native-inputs (list r-testthat))
     (home-page "https://jakobbossek.github.io/smoof/")
     (synopsis "Single and multi-objective optimization test functions")
     (description
