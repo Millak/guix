@@ -43471,7 +43471,7 @@ zoom/navigate any plot when called with any active plot.")
     (propagated-inputs
      (list r-rdpack r-stringi))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://josempozo.github.io/zoolog/")
     (synopsis "Zooarchaeological analysis with log-ratios")
     (description
