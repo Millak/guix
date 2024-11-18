@@ -39497,7 +39497,7 @@ as allowing spectra with different resolutions.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-ggplot2 r-scales))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/exaexa/scattermore")
     (synopsis "Scatterplots with more points")
     (description
