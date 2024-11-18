@@ -2540,6 +2540,37 @@ larger than memory.")
     ;; Expanded from GPL
     (license (list license:gpl2+ license:gpl3+))))
 
+(define-public r-bipartite
+  (package
+    (name "r-bipartite")
+    (version "2.20")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "bipartite" version))
+       (sha256
+        (base32 "0wgx695r5knlrzg0wv5h2sivh3xzjsb50lafmb08j1fvg3hnrxl6"))))
+    (properties `((upstream-name . "bipartite")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-fields
+                             r-igraph
+                             r-mass
+                             r-permute
+                             r-sna
+                             r-vegan))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/biometry/bipartite")
+    (synopsis
+     "Visualising bipartite networks and calculating ecological indices")
+    (description
+     "This package provides functions to visualise webs and calculate a series
+of indices commonly used to describe pattern in (ecological) webs.  It focuses
+on webs consisting of only two levels (bipartite), e.g. pollination webs or
+predator-prey-webs.  Visualisation is important to get an idea of what we are
+actually looking at, while the indices summarise different aspects of the
+web's topology.")
+    (license (list license:gpl2+ license:gpl3+))))
+
 (define-public r-bwstest
   (package
     (name "r-bwstest")
