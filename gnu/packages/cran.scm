@@ -43448,6 +43448,10 @@ participants and their emotional expressions throughout the meeting.")
          "05ikad4j1qi5y8mn77n9bw7d6ic3api9d7mbcn855w8xcc69ja4q"))))
     (properties `((upstream-name . "zoom")))
     (build-system r-build-system)
+    ;; FIXME Tests fail with: could not find function "test_that", even though
+    ;; r-testthat is available.
+    (arguments (list #:tests? #false))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/cbarbu/R-package-zoom")
     (synopsis "Spatial data visualization tool")
     (description
