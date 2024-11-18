@@ -7314,6 +7314,7 @@ work well on small screens.")
     (properties `((upstream-name . "minty")))
     (build-system r-build-system)
     (propagated-inputs (list r-cpp11 r-tzdb))
+    (native-inputs (list r-hms r-testthat tzdata-for-tests))
     (home-page "https://gesistsa.github.io/minty/")
     (synopsis "Minimal type guesser")
     (description
