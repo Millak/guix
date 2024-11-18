@@ -17733,6 +17733,7 @@ and coverage methods to tune the choice of threshold.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli r-ggplot2 r-plyr r-rlang r-withr))
+    (native-inputs (list r-testthat))
     (home-page "https://cran.r-project.org/web/packages/ggstance/")
     (synopsis "Horizontal and vertical versions of @code{r-ggplot2}")
     (description
