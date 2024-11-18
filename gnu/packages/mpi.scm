@@ -234,6 +234,7 @@ bind processes, and much more.")
      (list
       #:configure-flags #~`("--enable-mpi-ext=affinity" ;cr doesn't work
                             "--with-sge"
+                            "--disable-static"
 
                             #$@(if (package? (this-package-input "valgrind"))
                                    #~("--enable-memchecker"
@@ -342,6 +343,7 @@ software vendors, application developers and computer science researchers.")
      (list #:configure-flags
            #~(list "--enable-mpi-ext=affinity"         ;cr doesn't work
                    "--with-sge"
+                   "--disable-static"
 
                    #$@(if (package? (this-package-input "valgrind"))
                           #~("--enable-memchecker"
