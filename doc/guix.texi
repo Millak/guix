@@ -5933,6 +5933,10 @@ The general syntax is:
 guix shell [@var{options}] [@var{package}@dots{}]
 @end example
 
+Sometimes an interactive shell session is not desired.  An arbitrary
+command may be invoked by placing the @code{--} token to separate the
+command from the rest of the arguments.
+
 The following example creates an environment containing Python and NumPy,
 building or downloading any missing package, and runs the
 @command{python3} command in that environment:
