@@ -6903,7 +6903,8 @@ Bootstrap themes, which are packaged for use with Shiny applications.")
            (uri "https://d3js.org/d3.v7.js")
            (sha256
             (base32
-             "1m4i3kqzkz7w06sp9zqcy9f88xpdhi7cqih3phdrf4yjmfk1pfjg"))))))
+             "1m4i3kqzkz7w06sp9zqcy9f88xpdhi7cqih3phdrf4yjmfk1pfjg"))))
+       ("r-testthat" ,r-testthat)))
     (home-page "https://github.com/timelyportfolio/d3r")
     (synopsis "d3.js utilities for R")
     (description
