@@ -14684,7 +14684,7 @@ dynamic cellular processes at single-cell resolution.")
            r-remotes
            r-stringr
            r-tibble))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/dynverse/dynutils")
     (synopsis "Common functionality for the dynverse packages")
     (description
