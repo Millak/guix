@@ -4271,7 +4271,7 @@ sets.")
                 "1izc8dwj438wpkmdmhwnnhkijz5skig4gwxgr6f1bzmj08bfv515"))))
     (properties `((upstream-name . "ECOSolveR")))
     (build-system r-build-system)
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-matrix r-testthat))
     (home-page "https://bnaras.github.io/ECOSolveR/")
     (synopsis "Embedded conic solver in R")
     (description
