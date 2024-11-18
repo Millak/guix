@@ -39634,6 +39634,7 @@ other R users.")
            r-spatstat-geom
            r-tibble
            r-uwot))
+    (native-inputs (list r-testthat))
     (home-page "https://www.satijalab.org/seurat")
     (synopsis "Seurat is an R toolkit for single cell genomics")
     (description
