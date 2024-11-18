@@ -15885,6 +15885,7 @@ and adds the annotation to the plot.")
            r-tibble
            r-tidyr
            r-tidyselect))
+    (native-inputs (list r-testthat))
     (home-page "https://rpkgs.datanovia.com/rstatix/")
     (synopsis "Pipe-friendly framework for basic statistical tests")
     (description
