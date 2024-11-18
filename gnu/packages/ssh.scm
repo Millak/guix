@@ -13,7 +13,7 @@
 ;;; Copyright © 2018 Manuel Graf <graf@init.at>
 ;;; Copyright © 2019 Gábor Boskovits <boskovits@gmail.com>
 ;;; Copyright © 2019, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
-;;; Copyright © 2020, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
@@ -156,7 +156,12 @@ file names.
     (build-system cmake-build-system)
     (outputs '("out" "debug"))
     (arguments
-     '(#:configure-flags '("-DWITH_GCRYPT=ON")
+     `(#:configure-flags '("-DWITH_GCRYPT=ON"
+                           ,@(if (and (%current-target-system) (target-x86-32?))
+                                 (list (string-append
+                                        "-DCMAKE_C_FLAGS=-g -O2"
+                                        " -Wno-incompatible-pointer-types"))
+                                 '()))
 
        ;; TODO: Add 'CMockery' and '-DWITH_TESTING=ON' for the test suite.
        #:tests? #f))
