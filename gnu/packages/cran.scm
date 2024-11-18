@@ -12369,6 +12369,7 @@ Wikidata.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-callr r-jsonlite r-magrittr))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/wch/webshot/")
     (synopsis "Take screenshots of web pages")
     (description
