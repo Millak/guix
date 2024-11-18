@@ -29460,7 +29460,7 @@ computed using the L1 (Manhattan, taxicab) metric.")
     (propagated-inputs
      (list r-igraph r-matrix r-reticulate))
     (native-inputs
-     (list r-knitr))
+     (list r-bipartite r-data-table r-knitr r-multiplex r-testthat r-tibble))
     (home-page "https://github.com/TomKellyGenetics/leiden")
     (synopsis "R implementation of Leiden clustering algorithm")
     (description
