@@ -8626,7 +8626,7 @@ provided for interactively exploring the constructed data.")
     (propagated-inputs
      (list r-pracma))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/csgillespie/poweRlaw")
     (synopsis "Tools for the analysis of heavy tailed distributions")
     (description
