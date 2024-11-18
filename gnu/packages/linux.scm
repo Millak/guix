@@ -9133,21 +9133,37 @@ known as Slingshot.")
     (build-system gnu-build-system)
     (inputs
      (let ((if-supported                          ;XXX: copied from openmpi
-            (lambda (package)
+            (lambda (package . extra)
               (if (and (not (%current-target-system))
                        (member (%current-system)
                                (package-supported-systems package)))
-                  (list package)
+                  (cons package extra)
                   '()))))
        (append (list rdma-core libnl)
                (if-supported psm)
-               (if-supported psm2))))
+               (if-supported psm2)
+               (if-supported libcxi curl json-c))))
     (arguments
      (list #:configure-flags
            #~(append (if #$(target-64bit?)
                            (list "--enable-efa")
                            '())
-                     (list "--enable-verbs"))))
+                     (list #$@(if (this-package-input "libcxi")
+                                  #~("--enable-cxi")
+                                  #~())
+                           "--enable-verbs"))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'remove-libtool-archive
+                 (lambda _
+                   ;; 'libfabric.la' has '-ljson-c' without a corresponding
+                   ;; '-L' in 'dependency_libs', which in turn causes users
+                   ;; such as Open MPI to fail at link time due to '-ljson-c'
+                   ;; not being found, even when building a shared library.
+                   ;; So, remove the .la file.
+                   (delete-file
+                    (string-append #$output
+                                   "/lib/libfabric.la")))))))
     (home-page "https://ofiwg.github.io/libfabric/")
     (synopsis "Open Fabric Interfaces")
     (description
