@@ -4621,6 +4621,7 @@ These functions draw text grob with background shadow.")
         (base32
          "0flihfpfawismsy5piddf2flz1i1fw35k47gxwkbhk87wcr767h5"))))
     (build-system r-build-system)
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/jeroen/sys")
     (synopsis "Powerful and reliable tools for running system commands in R")
     (description
