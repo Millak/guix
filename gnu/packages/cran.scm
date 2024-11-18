@@ -41191,8 +41191,8 @@ visualized at any level of the experiment's design.")
     (properties `((upstream-name . "qdapRegex")))
     (build-system r-build-system)
     (propagated-inputs (list r-stringi))
-    (home-page
-      "https://trinker.github.com/qdapRegex/")
+    (native-inputs (list r-testthat))
+    (home-page "https://trinker.github.com/qdapRegex/")
     (synopsis
       "Regular Expression Removal, Extraction, and Replacement Tools")
     (description
