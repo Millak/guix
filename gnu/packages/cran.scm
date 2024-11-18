@@ -4676,6 +4676,7 @@ large-scale hypothesis testing and false discovery rate estimation.")
          "1pf7q2p0caxnb22zvg6yj250b817drldk5d7rvr4i9s49jkhc8bc"))))
     (build-system r-build-system)
     (propagated-inputs (list r-sys))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/jeroen/askpass")
     (synopsis "Safe password entry for R")
     (description
