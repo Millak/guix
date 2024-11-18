@@ -4498,6 +4498,7 @@ high-dimensional data.")
     (properties `((upstream-name . "mc2d")))
     (build-system r-build-system)
     (propagated-inputs (list r-ggplot2 r-ggpubr r-mvtnorm))
+    (native-inputs (list r-testthat))
     (home-page "https://cran.r-project.org/package=mc2d")
     (synopsis "Tools for two-dimensional monte-carlo simulations")
     (description
