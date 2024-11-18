@@ -41729,7 +41729,7 @@ and formatted text files with additional meta-data, such including @code{.csv},
      (list geos proj sqlite zlib))
     (propagated-inputs
      (list r-rcpp r-sf r-units))
-    (native-inputs (list pkg-config))
+    (native-inputs (list pkg-config r-geosphere r-sp r-testthat))
     (home-page "https://github.com/r-spatial/lwgeom/")
     (synopsis "Bindings to Selected 'liblwgeom' Functions for Simple Features")
     (description
