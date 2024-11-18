@@ -18,6 +18,7 @@
 ;;; Copyright © 2022 Jacob Hart <hartja1@yahoo.com>
 ;;; Copyright © 2022 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2023 Clément Lassieur <clement@lassieur.org>
+;;; Copyright © 2024 Noisytoot <ron@noisytoot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -510,7 +511,7 @@ desktops.")
 (define-public qbittorrent
   (package
     (name "qbittorrent")
-    (version "4.6.6")
+    (version "5.0.1")
     (source
      (origin
        (method git-fetch)
@@ -519,19 +520,20 @@ desktops.")
              (commit (string-append "release-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0kv7dgnfy8m480kxc4na9v9cjq9f9m3il191w7yvj4i8lz6jcaq1"))))
+        (base32 "03kqir7jyrzblg4642gnf2pp8f0x68njgaalmq8qjh7dcx0d6rq6"))))
     (build-system qt-build-system)
     (arguments
-     (list #:configure-flags #~(list "-DTESTING=ON")
+     (list #:qtbase qtbase
+           #:configure-flags #~(list "-DTESTING=ON")
            #:test-target "check"))
     (native-inputs
-     (list qttools-5))
+     (list qttools))
     (inputs
      (list boost
            libtorrent-rasterbar
            openssl
            python-wrapper
-           qtsvg-5
+           qtsvg
            zlib))
     (home-page "https://www.qbittorrent.org/")
     (synopsis "Graphical BitTorrent client")
