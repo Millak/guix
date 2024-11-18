@@ -15445,6 +15445,7 @@ the source data frame.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-httr r-jsonlite r-yaml))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/bergant/rapiclient")
     (synopsis "Dynamic OpenAPI/Swagger client")
     (description
