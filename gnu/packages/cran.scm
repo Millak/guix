@@ -1702,6 +1702,8 @@ testing (using Fisher's test) for SNP genotypes as typically obtained in a
                 "1ifljpdazzmwf3mgkg9g76365n2cmw8dd3da161fpvw84xxyznfl"))))
     (properties `((upstream-name . "gWidgets2")))
     (build-system r-build-system)
+    ;; Tests fail with: could not find function "gwindow"
+    (arguments (list #:tests? #false))
     (propagated-inputs (list r-digest))
     (home-page "https://github.com/gWidgets3/gWidgets2")
     (synopsis "Rewrite of gWidgets API for simplified GUI construction")
