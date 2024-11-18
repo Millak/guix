@@ -40168,7 +40168,7 @@ Most operations can be parallelized.")
                              r-parallelmap
                              r-paramhelpers
                              r-smoof))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/mlr-org/mlrMBO")
     (synopsis "Model-based optimization with mlr")
     (description
