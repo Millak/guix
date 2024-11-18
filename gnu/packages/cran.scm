@@ -10865,7 +10865,7 @@ provides a one-row summary of model-level statistics.")
            r-vctrs
            r-withr))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/topepo/recipes")
     (synopsis "Preprocessing tools to create design matrices")
     (description
