@@ -40692,7 +40692,7 @@ annealing.")
            r-paradox
            r-r6))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-mlr3pipelines r-testthat))
     (home-page "https://mlr3tuning.mlr-org.com/")
     (synopsis "Tuning for @code{mlr3}")
     (description "@code{mlr3tuning} implements methods for hyperparameter
