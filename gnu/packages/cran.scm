@@ -11805,7 +11805,7 @@ Analysis with R\" by Michael Friendly and David Meyer (2015).")
               "1yj91cphin232m09wrpj8l27vxblyryh658siakz55hxjs5y85yz"))))
    (build-system r-build-system)
    (native-inputs
-    (list r-knitr))
+    (list r-adegenet r-knitr r-testthat))
    (inputs
     (list zlib))
    (propagated-inputs
