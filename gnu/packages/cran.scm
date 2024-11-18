@@ -17588,7 +17588,7 @@ through permutation testing.")
     (propagated-inputs
      (list r-igraph r-network))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://mbojan.github.io/intergraph")
     (synopsis "Coercion routines for network data objects")
     (description
