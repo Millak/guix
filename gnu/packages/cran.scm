@@ -18034,6 +18034,15 @@ haven package.")
        (sha256
         (base32 "0vbpivyxms46px3wqkbl1wq199mqdxq94gsiplv4i7lz0lzghsfm"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'delete-bad-tests
+           (lambda _
+             ;; This file requires r-mosaic, which we can't add because of a
+             ;; dependency cycle.
+             (delete-file "tests/testthat/test-layer-factory.R"))))))
     (propagated-inputs
      (list r-ggplot2
            r-ggridges
@@ -18044,7 +18053,7 @@ haven package.")
            r-stringr
            r-tibble))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-palmerpenguins r-testthat))
     (home-page "https://github.com/ProjectMOSAIC/ggformula/")
     (synopsis "Formula interface for the @code{r-ggplot2}")
     (description
