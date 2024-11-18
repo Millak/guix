@@ -43310,6 +43310,7 @@ CloudFront content delivery, load balancing, and more.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-paws-common))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/paws-r/paws")
     (synopsis
      "Amazon Web Services Database Services")
