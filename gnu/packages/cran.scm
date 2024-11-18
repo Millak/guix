@@ -4048,6 +4048,25 @@ excellent candidate for labeling of a polygon.")
 @code{dplyr} and the wider @code{tidyverse} using only @code{base}.")
     (license license:expat)))
 
+(define-public r-ecdat
+  (package
+    (name "r-ecdat")
+    (version "0.4-2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "Ecdat" version))
+       (sha256
+        (base32 "1vyc4ynkd65mng2x8wvzn47crsvaqfz97n89jxn12xv13bpsbs7c"))))
+    (properties `((upstream-name . "Ecdat")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-ecfun))
+    (home-page "https://www.r-project.org")
+    (synopsis "Data sets for econometrics")
+    (description "This package provides data sets for econometrics, including
+political science.")
+    (license license:gpl2+)))
+
 (define-public r-ecfun
   (package
     (name "r-ecfun")
