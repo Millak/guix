@@ -4656,7 +4656,7 @@ mechanism.")
           r-squarem
           r-truncnorm))
    (native-inputs
-    (list r-knitr))
+    (list r-knitr r-testthat))
    (home-page "https://github.com/stephens999/ashr")
    (synopsis "Methods for adaptive shrinkage, using empirical bayes")
    (description "This package implements an empirical Bayes approach for
