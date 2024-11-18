@@ -9667,7 +9667,7 @@ matrices, a special case of sparse matrices.")
            r-mvtnorm
            r-numderiv))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://cran.r-project.org/web/packages/bbmle")
     (synopsis "Tools for General Maximum Likelihood Estimation")
     (description
