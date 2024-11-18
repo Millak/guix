@@ -10083,7 +10083,7 @@ contexts.")
            r-rcppeigen
            r-rmpfr
            r-scs))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://cvxr.rbind.io")
     (synopsis "Disciplined convex optimization")
     (description
