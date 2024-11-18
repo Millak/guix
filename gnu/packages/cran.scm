@@ -11927,7 +11927,7 @@ phylogenies and ancestral character states.")
            r-rspectra
            r-shiny
            r-shinyjs))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/asardaes/dtwclust")
     (synopsis
      "Clustering time series with dynamic time warping distance optimization")
