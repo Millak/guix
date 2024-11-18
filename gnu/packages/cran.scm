@@ -40370,6 +40370,7 @@ is straightforward via mlr3tuning.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-checkmate r-mlr3misc r-prroc))
+    (native-inputs (list r-testthat))
     (home-page "https://mlr3measures.mlr-org.com/")
     (synopsis "Performance measures for mlr3")
     (description "This package implements multiple performance measures for
