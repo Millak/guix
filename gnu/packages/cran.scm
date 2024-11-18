@@ -2075,7 +2075,7 @@ datum to another.")
         (base32 "17s7wi248vj6wbcxb6z0fdsw8bijjxva4sldlqcz4m73ccnrdikf"))))
     (properties `((upstream-name . "ROCit")))
     (build-system r-build-system)
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://cran.r-project.org/package=ROCit")
     (synopsis "Performance Assessment of Binary Classifier with Visualization")
     (description
