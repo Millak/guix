@@ -41841,7 +41841,7 @@ supply the workflow to create thematic maps.  This package also facilitates
            r-rlang
            r-tibble
            r-withr))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://docs.ropensci.org/rtweet/")
     (synopsis "Collect Twitter data")
     (description
