@@ -710,6 +710,7 @@ also flexible enough to handle most nonstandard requirements.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-lattice))
+    (native-inputs (list r-mass))
     (home-page "https://Matrix.R-forge.R-project.org/")
     (synopsis "Sparse and dense matrix classes and methods")
     (description
