@@ -41005,7 +41005,7 @@ the font tool-set provided by the @code{systemfonts} package.")
     (propagated-inputs
      (list r-systemfonts r-textshaping))
     (native-inputs
-     (list pkg-config))
+     (list pkg-config r-testthat))
     (home-page "https://ragg.r-lib.org")
     (synopsis "Graphic devices based on AGG")
     (description
