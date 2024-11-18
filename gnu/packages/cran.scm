@@ -15466,6 +15466,7 @@ dynamically as a list of R functions.")
         (base32
          "1161i3jgjvzjv4p8qbz9r976fnggkcrw3mlj4yd1h2svnijrz5a9"))))
     (build-system r-build-system)
+    (native-inputs (list r-testthat))
     (home-page "https://cran.r-project.org/web/packages/rappdirs/")
     (synopsis "Determine where to save data, caches, and logs")
     (description
