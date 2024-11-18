@@ -5023,7 +5023,8 @@ and SHAKE256 extendable-output functions (XOF).")
         (base32 "09y1n3iy297g49xlpl7xrjpwgnm57pskx5991lyfcpizbz8ax22m"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-stringr r-r6))
+     (list r-r6 r-stringr))
+    (native-inputs (list r-testthat))
     (home-page "https://sjp.co.nz/projects/selectr/")
     (synopsis "Translate CSS selectors to XPath expressions")
     (description
