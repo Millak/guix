@@ -10784,6 +10784,7 @@ and 4PL models and generalized partial credit models.")
         (base32
          "0lyhhwik0w7m5h3fbwl2f52gc1v2g6g6h6sc47sa9f58pxin213m"))))
     (build-system r-build-system)
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/r-lib/generics")
     (synopsis "Common S3 generics not provided by base R methods")
     (description
