@@ -40281,6 +40281,7 @@ supported.  Partial scoring of multivariate filter methods is supported.")
                              r-paradox
                              r-r6
                              r-stabm))
+    (native-inputs (list r-testthat))
     (home-page "https://mlr3fselect.mlr-org.com")
     (synopsis "Feature selection for mlr3")
     (description
