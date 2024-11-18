@@ -9006,6 +9006,7 @@ package also provides a C++ API, that works with or without Rcpp.")
            r-rlang
            r-scales
            r-tidyr))
+    (native-inputs (list r-survival r-testthat r-vdiffr))
     (home-page "https://ggobi.github.io/ggally")
     (synopsis "Extension to ggplot2")
     (description
