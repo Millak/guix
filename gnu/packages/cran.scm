@@ -16346,6 +16346,7 @@ implemented in bibutils.")
                              r-rjson
                              r-rlang
                              r-slam))
+    (native-inputs (list r-testthat))
     (home-page "https://cmmr.github.io/rbiom/index.html")
     (synopsis "Read/write, transform, and summarize BIOM data")
     (description
