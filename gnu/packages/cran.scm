@@ -13536,7 +13536,7 @@ applied econometric analysis.")
     (propagated-inputs
      (list r-rcpp))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/bnaras/cubature")
     (synopsis "Adaptive multivariate integration over hypercubes")
     (description
