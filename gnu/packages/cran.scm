@@ -8470,7 +8470,7 @@ ellipses, circles, cylinders, arrows, ...")
     (properties `((upstream-name . "GlobalOptions")))
     (build-system r-build-system)
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/jokergoo/GlobalOptions")
     (synopsis "Generate functions to get or set global options")
     (description
