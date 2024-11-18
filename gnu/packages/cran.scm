@@ -12487,7 +12487,18 @@ iVAT).")
     (build-system r-build-system)
     (properties
      ;; knitr itself depends on xfun
-     '((updater-ignored-native-inputs . ("r-knitr"))))
+     '((updater-ignored-native-inputs . ("r-knitr" "r-litedown"))))
+    (arguments
+     (list
+      ;; Do not build vignettes, because they require r-litedown, which
+      ;; depends on r-xfun.
+      #:test-types '(list "tests")
+      #:phases
+      '(modify-phases %standard-phases
+         ;; Needed for tests
+         (add-after 'unpack 'set-HOME
+           (lambda _ (setenv "HOME" "/tmp"))))))
+    (native-inputs (list r-codetools r-testit))
     (home-page "https://github.com/yihui/xfun")
     (synopsis "Miscellaneous functions")
     (description
