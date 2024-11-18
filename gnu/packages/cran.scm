@@ -14885,6 +14885,7 @@ additional external tools on any platform.")
                              r-jsonlite
                              r-lifecycle
                              r-magrittr))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/irudnyts/openai")
     (synopsis "R Wrapper for OpenAI API")
     (description
