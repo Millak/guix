@@ -12602,6 +12602,7 @@ packages that work with genomic data.")
     (properties `((upstream-name . "piton")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/Ironholds/piton")
     (synopsis "Parsing expression grammars in Rcpp")
     (description
