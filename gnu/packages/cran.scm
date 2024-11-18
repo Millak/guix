@@ -8800,6 +8800,7 @@ any subsequent lookup as it keeps the hash table in memory.")
          "13hq86rmcvlz46v9airb8imj183s1z7fyzfcr3s1ma1wm5991v9a"))))
     (build-system r-build-system)
     (propagated-inputs (list r-bit))
+    (native-inputs (list r-testthat))
     (home-page "https://ff.r-forge.r-project.org/")
     (synopsis "Memory-efficient storage of large data on disk and access functions")
     (description
