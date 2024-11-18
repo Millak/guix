@@ -709,7 +709,7 @@ labels on the node can also be achieved.")
     (properties `((upstream-name . "collapse")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://sebkrantz.github.io/collapse/")
     (synopsis "Advanced and fast data transformation")
     (description
