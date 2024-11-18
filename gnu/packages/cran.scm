@@ -17809,7 +17809,7 @@ repeated measures data, respectively.")
     (propagated-inputs
      (list r-foreach))
     (native-inputs
-     (list gfortran))
+     (list gfortran r-testthat))
     (home-page "https://cran.r-project.org/package=gam")
     (synopsis "Generalized additive models")
     (description
