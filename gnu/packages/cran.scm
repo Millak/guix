@@ -8599,7 +8599,7 @@ trials.")
            r-rlang
            r-stringi
            r-tibble))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://cran.r-project.org/package=ctrialsgov")
     (synopsis
      "Query data from U.S. National Library of Medicine's Clinical Trials Database")
