@@ -18307,6 +18307,7 @@ genotypes as \"graphical genotypes\".")
            r-purrr
            r-rlang
            r-vctrs))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/DavisVaughan/furrr")
     (synopsis "Apply mapping functions in parallel using futures")
     (description
