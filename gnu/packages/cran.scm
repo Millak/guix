@@ -15082,7 +15082,7 @@ time after the current time, after the R execution stack has emptied.")
            r-rcpp
            r-rlang))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://rstudio.github.io/promises")
     (synopsis "Abstractions for promise-based asynchronous programming")
     (description
