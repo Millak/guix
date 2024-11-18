@@ -7588,7 +7588,7 @@ plot functionality is provided in a single ggplot2 layer by calling the
     (inputs
      (list readstat zlib))
     (native-inputs
-     (list pkg-config r-knitr))
+     (list pkg-config r-knitr r-testthat))
     (propagated-inputs
      (list r-cli
            r-cpp11
