@@ -147,6 +147,7 @@
 ;;; Copyright © 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2023 Attila Lendvai <attila@lendvai.name>
 ;;; Copyright © 2023, 2024 Troy Figiel <troy@troyfigiel.com>
+;;; Copyright © 2023 Adam Faiz <adam.faiz@disroot.org>
 ;;; Copyright © 2024 Timothee Mathieu <timothee.mathieu@inria.fr>
 ;;; Copyright © 2024 Ian Eure <ian@retrospec.tv>
 ;;; Copyright © 2024 Adriel Dumas--Jondeau <leirda@disroot.org>
@@ -31173,6 +31174,42 @@ file system attributes.  Extended attributes extend the basic attributes of file
 and directories in the file system.  They are stored as name:data pairs
 associated with file system objects (files, directories, symlinks, etc).")
     (license license:expat)))
+
+(define-public python-json-e
+  (package
+    (name "python-json-e")
+    (version "4.8.0")
+     (source
+      (origin
+        (method git-fetch)               ; no tests in PyPI release
+        (uri (git-reference
+              (url "https://github.com/json-e/json-e")
+              (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "1zsx17jjhvan1ziq5aaqwids3b9kzx3j8czf9qznqqqvb1n133g8"))))
+     (build-system pyproject-build-system)
+     (arguments
+      (list
+       #:phases
+       #~(modify-phases %standard-phases
+           ;; Git repository provides implementations for JavaScript, Golang,
+           ;;  Python and Rust, pick "py".
+           (add-before 'build 'chdir-to-py
+             (lambda _
+               (chdir "py"))))))
+     (native-inputs
+      (list python-freezegun
+            python-pytest
+            python-pyyaml
+            python-setuptools
+            python-wheel))
+     (home-page "https://json-e.js.org")
+     (synopsis "Data-structure parameterizer for embedding context in JSON objects")
+     (description
+      "This package provides a data-structure parameterization system written
+for embedding context in JSON objects.")
+     (license license:mpl2.0)))
 
 (define-public python-json-logger
   (package
