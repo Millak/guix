@@ -5807,7 +5807,7 @@ a list of p-values.")
            r-knitr r-rmarkdown
            r-yaml))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/ramnathv/htmlwidgets")
     (synopsis "HTML Widgets for R")
     (description
