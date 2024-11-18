@@ -41600,7 +41600,7 @@ parallel programming style, which is intended for batch parallel execution.")
     (build-system r-build-system)
     (inputs (list zlib poppler))
     (propagated-inputs (list r-qpdf r-rcpp))
-    (native-inputs (list pkg-config))
+    (native-inputs (list pkg-config r-testthat))
     (home-page "https://docs.ropensci.org/pdftools/")
     (synopsis "Text Extraction, Rendering and Converting of PDF Documents")
     (description
