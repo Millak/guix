@@ -17070,6 +17070,7 @@ and automatically generate usage notices.")
         (base32
          "044ifii4gpinzi9vbv5aw0da956ccslxg34xmx24njf6x5dhn0wa"))))
     (build-system r-build-system)
+    (native-inputs (list r-testthat))
     (home-page "https://cran.r-project.org/web/packages/hash/")
     (synopsis "Implementation of hash/associated arrays/dictionaries")
     (description
