@@ -16677,7 +16677,7 @@ information are missing.")
     (propagated-inputs
      (list r-datawizard r-insight))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/strengejacke/sjlabelled")
     (synopsis "Labelled data utility functions")
     (description
