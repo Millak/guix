@@ -1512,7 +1512,7 @@ such as counts or binary matrices.")
            r-vctrs
            r-withr))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://googledrive.tidyverse.org")
     (synopsis "Interface to Google Drive")
     (description "This package lets you manage Google Drive files from R.")
