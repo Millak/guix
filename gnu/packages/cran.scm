@@ -374,6 +374,9 @@ files and provide more explicit control over line endings.")
         (base32 "0k97smqgxggdkbgfs2yvvgqw225q9106124kaw499m6cjcldxqyi"))))
     (properties `((upstream-name . "broom.helpers")))
     (build-system r-build-system)
+    ;; Tests require gtsummary, which cannot be packaged due to massive
+    ;; amounts of minified JavaScript.
+    (arguments (list #:test-types '(list "vignettes")))
     (propagated-inputs (list r-broom
                              r-cards
                              r-cli
@@ -385,7 +388,7 @@ files and provide more explicit control over line endings.")
                              r-stringr
                              r-tibble
                              r-tidyr))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://larmarange.github.io/broom.helpers/")
     (synopsis "Helpers for Model Coefficients Tibbles")
     (description
