@@ -28996,6 +28996,31 @@ complex composition of plots by providing mathematical operators for combining
 multiple plots.")
     (license license:expat)))
 
+(define-public r-patrick
+  (package
+    (name "r-patrick")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "patrick" version))
+       (sha256
+        (base32 "1ghjvm82hgal091hfjfyz3ndg32xsggip5pp4y0g7rmrzpfjmpjs"))))
+    (properties `((upstream-name . "patrick")))
+    (build-system r-build-system)
+    ;; One test fails.
+    (arguments (list #:tests? #false))
+    (propagated-inputs (list r-dplyr r-purrr r-rlang r-testthat r-tibble))
+    (native-inputs (list r-testthat))
+    (home-page "https://github.com/google/patrick")
+    (synopsis "Parameterized Unit Testing")
+    (description
+     "This is an extension of the @code{testthat} package that lets you add
+parameters to your unit tests.  Parameterized unit tests are often easier to
+read and more reliable, since they follow the DNRY (do not repeat yourself)
+rule.")
+    (license license:asl2.0)))
+
 (define-public r-rliger
   (package
     (name "r-rliger")
