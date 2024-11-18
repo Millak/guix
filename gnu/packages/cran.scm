@@ -2677,6 +2677,7 @@ web's topology.")
     (properties `((upstream-name . "BWStest")))
     (build-system r-build-system)
     (propagated-inputs (list r-memoise r-rcpp))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/shabbychef/BWStest")
     (synopsis "Baumgartner Weiss Schindler Test of equal distributions")
     (description
