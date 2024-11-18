@@ -1558,7 +1558,7 @@ the output locally.")
     (properties `((upstream-name . "gsignal")))
     (build-system r-build-system)
     (propagated-inputs (list r-pracma r-rcpp))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/gjmvanboxtel/gsignal")
     (synopsis "Signal processing")
     (description
