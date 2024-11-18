@@ -4178,6 +4178,7 @@ colleagues (2019) @url{https://doi:10.18637/jss.v090.c01}.")
     (properties `((upstream-name . "polylabelr")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/jolars/polylabelr")
     (synopsis "Finding pole of inaccessibility (visual center) of a polygon")
     (description
