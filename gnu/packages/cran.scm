@@ -2571,7 +2571,7 @@ specifications, such as RAM, CPU type, and R version.")
                              r-purrr
                              r-recipes
                              r-tibble))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://petersonr.github.io/bestNormalize/")
     (synopsis "Normalizing transformation functions")
     (description
