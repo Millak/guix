@@ -43736,7 +43736,7 @@ neighborhood graphs, and relatives.")
            r-mime
            r-r6
            r-urltools))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/ropensci/crul")
     (synopsis "HTTP client")
     (description
