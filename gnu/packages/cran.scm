@@ -15545,8 +15545,9 @@ those searches and pull data into their R sessions.")
          "09dyr3bka8540k1lq1kyvvvrkj32ck2dw5ys796qjwhfz38jdwap"))))
     (properties `((upstream-name . "renv")))
     (build-system r-build-system)
-    (native-inputs
-     (list r-knitr))
+    ;; Tests attempt to install packages.
+    (arguments (list #:tests? #false))
+    (native-inputs (list r-knitr))
     (home-page "https://rstudio.github.io/renv")
     (synopsis "Project environments")
     (description
