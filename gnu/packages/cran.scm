@@ -13150,7 +13150,8 @@ information between package updates.")
            (file-name "js-proj4leaflet-1.0.2.js")
            (sha256
             (base32
-             "0vyrbf6gv2lyh4c2bzp5349ivwvvg28gpn87y52a7jdb13rlkpab"))))))
+             "0vyrbf6gv2lyh4c2bzp5349ivwvvg28gpn87y52a7jdb13rlkpab"))))
+       ("r-testthat" ,r-testthat)))
     (propagated-inputs
      (list r-crosstalk
            r-htmltools
