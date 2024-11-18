@@ -10178,6 +10178,7 @@ available in a vignette.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-digest))
+    (native-inputs (list r-future))
     (home-page "https://progressr.futureverse.org")
     (synopsis "Inclusive, unifying API for progress updates")
     (description
