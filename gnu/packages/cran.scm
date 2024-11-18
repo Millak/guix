@@ -17759,7 +17759,7 @@ and coverage methods to tune the choice of threshold.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-ggplot2 r-ggrepel r-igraph r-network r-sna))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/briatte/ggnetwork")
     (synopsis "Geometries to plot networks with ggplot2")
     (description
