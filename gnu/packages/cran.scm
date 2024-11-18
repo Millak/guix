@@ -41545,7 +41545,7 @@ as a data frame.  It also supports writing data frames to an ODS file.")
       (list libjpeg-turbo qpdf zlib))
     (propagated-inputs
       (list r-askpass r-curl r-rcpp))
-    (native-inputs (list pkg-config))
+    (native-inputs (list pkg-config r-testthat))
     (home-page "https://github.com/ropensci/qpdf")
     (synopsis
       "Split, Combine and Compress PDF Files")
