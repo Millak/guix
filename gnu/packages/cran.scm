@@ -15128,6 +15128,7 @@ using the @code{snow} package.")
     (properties `((upstream-name . "FSA")))
     (build-system r-build-system)
     (propagated-inputs (list r-car r-dunn-test r-lmtest r-plotrix r-withr))
+    (native-inputs (list r-testthat))
     (home-page "https://fishr-core-team.github.io/FSA/")
     (synopsis "Simple fisheries stock assessment methods")
     (description
