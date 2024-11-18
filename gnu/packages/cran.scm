@@ -9084,7 +9084,7 @@ print, summary, etc.")
                              r-rcolorbrewer
                              r-rcpp
                              r-reshape2))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://cran.r-project.org/package=LambertW")
     (synopsis
      "Probabilistic models to analyze and Gaussianize heavy-tailed, skewed data")
