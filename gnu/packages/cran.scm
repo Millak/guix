@@ -39279,9 +39279,17 @@ package also provides functions to visualize the observed data and the MLE.")
          "0rl6w4j1fqvr7vn0dbzmir28xbi2wdn9m3lrxwjvvf47pp1lqd07"))))
     (properties `((upstream-name . "metafor")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; When there is no HOME directory, this package will fail to find
+         ;; the vignette builder.
+         (add-after 'unpack 'set-HOME
+           (lambda _ (setenv "HOME" "/tmp"))))))
     (propagated-inputs
      (list r-mathjaxr r-matrix r-metadat r-nlme r-numderiv r-pbapply))
-    (native-inputs (list r-r-rsp))
+    (native-inputs (list r-r-rsp r-testthat))
     (home-page "https://cran.r-project.org/web/packages/metafor/")
     (synopsis "Meta-analysis package for R")
     (description
