@@ -8253,9 +8253,10 @@ functions and compiled functions callable by other packages.")
          "1s5v4fa59gmjcd0cn7q7zy67ww9zwnly4apbgr87x9qkzgzbmpl8"))))
     (properties `((upstream-name . "RcppThread")))
     (build-system r-build-system)
-    (native-inputs (list r-r-rsp))
-    (home-page
-     "https://github.com/tnagler/RcppThread")
+    ;; For unknown reasons r-r-rsp is not found when building vignettes.
+    (arguments (list #:test-types '(list "tests")))
+    (native-inputs (list r-r-rsp r-rcpp r-testthat))
+    (home-page "https://github.com/tnagler/RcppThread")
     (synopsis "R threading in C++")
     (description
      "This package provides a C++11-style thread class and thread pool that can
