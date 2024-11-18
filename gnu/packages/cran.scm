@@ -12643,7 +12643,7 @@ their own grammars and easily expose them in R packages.")
         (base32 "01pvnirma3wzfqnnz8zvyqajjyysjm3sd6813bgdhz199lcg7hhz"))))
     (properties `((upstream-name . "tinylabels")))
     (build-system r-build-system)
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/mariusbarth/tinylabels")
     (synopsis "Lightweight variable labels")
     (description
