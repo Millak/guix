@@ -11462,7 +11462,7 @@ packages are automatically available for truncation.")
         (base32 "0k40a48qzwmardjnkf0h5s5zryivzvdanz61kxdqdfqlil19ma0d"))))
     (properties `((upstream-name . "tryCatchLog")))
     (build-system r-build-system)
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/aryoda/tryCatchLog")
     (synopsis "Advanced tryCatch and try functions")
     (description
