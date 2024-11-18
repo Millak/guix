@@ -2469,6 +2469,7 @@ plot the results.")
            r-glue
            r-processx
            r-purrr))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/dynverse/babelwhale")
     (synopsis "Talking to Docker and Singularity containers")
     (description
