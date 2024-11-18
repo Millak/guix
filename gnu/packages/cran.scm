@@ -42606,7 +42606,7 @@ package.")
     (propagated-inputs
      (list r-bh r-rapiserialize r-rcpp r-stringfish))
     (native-inputs
-     (list pkg-config r-knitr))
+     (list pkg-config r-dplyr r-data-table r-knitr r-testthat))
     (home-page "https://github.com/traversc/qs")
     (synopsis "Quick serialization of R objects")
     (description
