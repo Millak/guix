@@ -40484,6 +40484,7 @@ performing ordinal regression.")
                              r-mlr3tuning
                              r-paradox
                              r-r6))
+    (native-inputs (list r-mlr3learners r-testthat))
     (home-page "https://mlr3tuningspaces.mlr-org.com")
     (synopsis "Search spaces for mlr3")
     (description
