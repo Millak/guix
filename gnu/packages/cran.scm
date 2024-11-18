@@ -9943,6 +9943,7 @@ for Environmental Statistics\" (Millard, 2013, Springer, ISBN
     (properties `((upstream-name . "suntools")))
     (build-system r-build-system)
     (propagated-inputs (list r-sf))
+    (native-inputs (list r-testthat tzdata-for-tests))
     (home-page "https://github.com/adokter/suntools/")
     (synopsis
      "Calculate sun position, sunrise, sunset, solar noon and twilight")
