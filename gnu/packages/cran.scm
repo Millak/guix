@@ -12490,7 +12490,7 @@ to variables on the left-hand side of the assignment.")
                 "0fi9aqrmikdg5ibwhn82kslj4lxih03vm27jmi14m73h09yy4in5"))))
     (properties `((upstream-name . "zlog")))
     (build-system r-build-system)
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://cran.r-project.org/package=zlog")
     (synopsis "Transformation for laboratory easurements")
     (description
