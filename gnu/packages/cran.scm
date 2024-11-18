@@ -42688,6 +42688,7 @@ runs.")
     (inputs (list tensorflow))
     (propagated-inputs
      (list r-backports r-reticulate))
+    (native-inputs (list r-testthat))
     (home-page "https://t-kalinowski.github.io/tfautograph/")
     (synopsis "Autograph R for Tensorflow")
     (description
