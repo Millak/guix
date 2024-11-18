@@ -16849,6 +16849,7 @@ documents.")
          "14wv9l927bh57jbdxcf8wb429mz85x5bnsm31i2j3m0db0ikf4ax"))))
     (build-system r-build-system)
     (inputs (list zlib))
+    (native-inputs (list r-spelling r-testthat))
     (home-page "https://github.com/ropensci/writexl")
     (synopsis "Export data frames to xlsx format")
     (description
