@@ -1256,7 +1256,7 @@ distance and regular expression matching.")
            r-htmltools
            r-jsonlite
            r-shiny))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat r-vcr))
     (home-page "https://dreamrs.github.io/gfonts/")
     (synopsis "Offline Google fonts for Markdown and Shiny")
     (description
