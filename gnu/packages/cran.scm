@@ -3808,6 +3808,7 @@ functions which can speed up workflow.")
            r-rtsne
            r-sccore
            r-urltools))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/kharchenkolab/pagoda2")
     (synopsis "Single cell analysis and differential expression")
     (description
