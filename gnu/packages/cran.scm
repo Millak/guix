@@ -10963,7 +10963,7 @@ with iterators from the @code{reticulate} package.")
          "0xnpi4cqclsikd00mjn0qb611g1a619hfr2d3ch8kra1a1kiz8w4"))))
     (build-system r-build-system)
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/taiyun/corrplot")
     (synopsis "Visualization of a correlation matrix")
     (description
