@@ -2661,6 +2661,38 @@ similar rank-based tests for equal probability distributions due to Neuhauser
 WebAssembly engine.")
     (license license:expat)))
 
+(define-public r-vcr
+  (package
+    (name "r-vcr")
+    (version "1.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "vcr" version))
+       (sha256
+        (base32 "0jp6p9k6y2rshxyq5hb3gv3idk2l426cizy1j2aqcz3s503axsxf"))))
+    (properties `((upstream-name . "vcr")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-base64enc
+                             r-crul
+                             r-httr
+                             r-httr2
+                             r-r6
+                             r-rprojroot
+                             r-urltools
+                             r-webmockr
+                             r-yaml))
+    (native-inputs (list r-knitr r-testthat))
+    (home-page "https://github.com/ropensci/vcr/")
+    (synopsis "Record HTTP calls to disk")
+    (description
+     "This package lets you record test suite HTTP requests and replay them
+during future runs.  It works by hooking into the @code{webmockr} R package
+for matching HTTP requests by various rules, and then caching real HTTP
+responses on disk in cassettes.  Subsequent HTTP requests matching any
+previous requests in the same cassette use a cached HTTP response.")
+    (license license:expat)))
+
 (define-public r-venn
   (package
     (name "r-venn")
