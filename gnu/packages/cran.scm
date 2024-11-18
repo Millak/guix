@@ -182,7 +182,7 @@ the vignette \"AER\" for a package overview.)")
                 "15pa4p78p6r478l05481lzx6z4ahswj728s1sb3xp3pvn6rv4jfj"))))
     (properties `((upstream-name . "afpt")))
     (build-system r-build-system)
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/MarcoKlH/afpt-r/")
     (synopsis "Tools for modelling of animal flight performance")
     (description
