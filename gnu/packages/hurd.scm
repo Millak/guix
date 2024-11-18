@@ -478,6 +478,12 @@ exec ${system}/rc \"$@\"
                                     "/bin/bash")
                      (string-append "CC="
                                     ,(cc-for-target))
+                     (string-append "WARNINGS="
+                                    " -Wno-declaration-missing-parameter-type"
+                                    " -Wno-implicit-function-declaration"
+                                    " -Wno-implicit-int"
+                                    " -Wno-int-conversion"
+                                    " -Wno-strict-prototypes")
                      "ARCH=x86")))
          (add-after 'install 'install-goodies
            (lambda* (#:key inputs native-inputs outputs #:allow-other-keys)
