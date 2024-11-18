@@ -11359,6 +11359,7 @@ analysis of multiply imputed data sets.")
            r-rlang
            r-rpart
            r-tidyr))
+    (native-inputs (list r-testthat))
     (home-page "https://cran.r-project.org/web/packages/mice/")
     (synopsis "Multivariate imputation by chained equations")
     (description
