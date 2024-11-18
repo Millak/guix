@@ -1131,6 +1131,37 @@ work with FlowSOM and flow-cytometry use-cases.")
 Distance (EMD).")
     (license license:expat)))
 
+(define-public r-emulator
+  (package
+    (name "r-emulator")
+    (version "1.2-24")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "emulator" version))
+       (sha256
+        (base32 "0sd45wjdb00iyj8n16kqxypisam7ibwvpcaxsi1z56yzlzp93p4i"))))
+    (properties `((upstream-name . "emulator")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-mvtnorm))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/RobinHankin/emulator")
+    (synopsis "Bayesian emulation of computer programs")
+    (description
+     "This package allows one to estimate the output of a computer program, as
+a function of the input parameters, without actually running it.  The computer
+program is assumed to be a Gaussian process, whose parameters are estimated
+using Bayesian techniques that give a PDF of expected program output.  This
+PDF is conditional on a training set of runs, each consisting of a point in
+parameter space and the model output at that point.  The emphasis is on
+complex codes that take weeks or months to run, and that have a large number
+of undetermined input parameters; many climate prediction models fall into
+this class.  The emulator essentially determines Bayesian posterior estimates
+of the PDF of the output of a model, conditioned on results from previous runs
+and a user-specified prior linear model.  The package includes functionality
+to evaluate quadratic forms efficiently.")
+    (license (list license:gpl2+ license:gpl3+))))
+
 (define-public r-fateid
   (package
     (name "r-fateid")
