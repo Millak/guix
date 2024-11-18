@@ -1378,7 +1378,7 @@ and to generate base64 encoded string from raster matrix.")
     (build-system r-build-system)
     (inputs (list libpng zlib))
     (propagated-inputs (list r-cpp11 r-systemfonts))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-fontquiver r-knitr r-testthat r-xml2))
     (home-page "https://svglite.r-lib.org")
     (synopsis "SVG graphics device")
     (description
