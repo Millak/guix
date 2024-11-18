@@ -7768,6 +7768,7 @@ some utility functions.")
     (properties `((upstream-name . "paletteer")))
     (build-system r-build-system)
     (propagated-inputs (list r-prismatic r-rematch2 r-rlang r-rstudioapi))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/EmilHvitfeldt/paletteer")
     (synopsis "Comprehensive collection of color palettes")
     (description
