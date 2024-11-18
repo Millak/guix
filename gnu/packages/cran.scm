@@ -1379,7 +1379,7 @@ samples) are easily visualized.")
     (properties `((upstream-name . "ggfittext")))
     (build-system r-build-system)
     (propagated-inputs (list r-cli r-ggplot2 r-gridtext r-shades r-stringi))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat r-vdiffr))
     (home-page "https://wilkox.org/ggfittext/")
     (synopsis "Ggfittext is a ggplot2 extension for fitting text into boxes")
     (description
