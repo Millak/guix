@@ -10479,7 +10479,7 @@ to access PostgreSQL database systems.")
            r-plogr
            r-withr))
     (native-inputs
-     (list pkg-config r-knitr))
+     (list pkg-config r-knitr r-testthat))
     (home-page "https://rpostgres.r-dbi.org")
     (synopsis "Rcpp Interface to PostgreSQL")
     (description
