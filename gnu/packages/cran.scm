@@ -40663,6 +40663,7 @@ vector machines, and gradient boosting.")
            r-mlr3misc
            r-paradox
            r-r6))
+    (native-inputs (list r-testthat))
     (home-page "https://bbotk.mlr-org.com")
     (synopsis "Black-Box Optimization Toolkit")
     (description "This package provides a common framework for optimization of
