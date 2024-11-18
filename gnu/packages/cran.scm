@@ -40872,6 +40872,7 @@ unit tests of graphics).")
            r-rlang
            r-testthat
            r-xml2))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/r-lib/vdiffr")
     (synopsis "Visual regression testing and graphical diffing")
     (description
