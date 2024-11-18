@@ -39814,7 +39814,7 @@ distributed as independent packages.")
            r-quadprog
            r-rcpp))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/KlausVigo/phangorn")
     (synopsis "Phylogenetic analysis in R")
     (description
