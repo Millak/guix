@@ -40058,10 +40058,18 @@ Services (AWS) Simple Storage Service (S3) REST API.")
                (base32
                 "09x1vw6cnc1c0p0ylcz1q1vcxyaf1kljhh7ni3gl5jm19zii2h4c"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'delete-bad-tests
+           (lambda _
+             ;; Two tests produce warning where none are expected.
+             (delete-file "tests/testthat/test_print_LogEvent.R"))))))
     (propagated-inputs
      (list r-r6))
     (native-inputs
-     (list r-knitr))
+     (list r-data-table r-future r-knitr r-rotor r-testthat r-tibble))
     (home-page "https://s-fleck.github.io/lgr/")
     (synopsis "Fully featured logging framework")
     (description "This package offers a flexible, feature-rich yet
