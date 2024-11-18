@@ -17001,6 +17001,7 @@ Venn diagram, heatmap).")
         (base32
          "12qy48adnibfi9rpv5qd8k3hipbc4q85514dsz0xnhdsdnz6rlw7"))))
     (build-system r-build-system)
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/trevorld/getopt")
     (synopsis "Command-line option processor for R")
     (description
