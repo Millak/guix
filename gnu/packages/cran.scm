@@ -41062,6 +41062,10 @@ in output to the equivalent HTML.")
          "1phcdh1a178m60164613p6z9cqz379wp3d6b62k4ss64z1sc7qf7"))))
     (properties `((upstream-name . "pkgdown")))
     (build-system r-build-system)
+    ;; Many tests require internet access.  Some need r-quarto.  This causes
+    ;; 38 tests to fail, but we cannot easily disable just those and keep the
+    ;; passing 646 tests.
+    (arguments (list #:tests? #false))
     (inputs (list pandoc))
     (propagated-inputs
      (list r-bslib
@@ -41085,7 +41089,7 @@ in output to the equivalent HTML.")
            r-xml2
            r-yaml))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-htmlwidgets r-testthat))
     (home-page "https://pkgdown.r-lib.org")
     (synopsis "Make static HTML documentation for an R package")
     (description
