@@ -42853,7 +42853,7 @@ Bessel K function.")
      (list r-distributionutils r-mixtools r-rcpp r-rcppeigen
            r-rcppnumerical))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/mattocci27/ztpln")
     (synopsis "Zero-truncated Poisson lognormal distribution")
     (description
