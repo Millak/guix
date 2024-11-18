@@ -9207,7 +9207,7 @@ multi-part to single-part geometries.")
     (build-system r-build-system)
     (inputs (list pandoc))
     (propagated-inputs (list r-assertthat r-rmarkdown))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/crsh/rmdfiltr")
     (synopsis "Lua filters for R Markdown")
     (description
