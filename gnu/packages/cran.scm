@@ -8120,7 +8120,7 @@ distributions, Armadillo vectors and matrices.")
     (properties `((upstream-name . "RcppML")))
     (build-system r-build-system)
     (propagated-inputs (list r-matrix r-rcpp r-rcppeigen))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/zdebruine/RcppML")
     (synopsis "Rcpp machine learning library")
     (description
