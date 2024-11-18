@@ -12902,6 +12902,7 @@ software developed by the Statnet Project.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-ggplot2 r-plyr r-rlang r-rmarkdown r-stringi))
+    (native-inputs (list r-testthat))
     (home-page "https://cran.r-project.org/web/packages/statcheck/")
     (synopsis "Extract statistics from articles and recompute p-values")
     (description "This package can automatically extract statistical
