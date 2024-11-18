@@ -2895,7 +2895,7 @@ size and can be easily tested locally before being sent to a remote.")
            r-tibble
            r-tidyr
            r-xml2))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://ropenspain.github.io/climaemet/")
     (synopsis "Climate AEMET Tools")
     (description
