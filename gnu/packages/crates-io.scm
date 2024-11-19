@@ -27429,6 +27429,28 @@ prime field implementations in rust.")
      "More ergonomic wrappers around @code{RawFd} and @code{RawHandle}.")
     (license license:expat)))
 
+(define-public rust-filename-0.1
+  (package
+    (name "rust-filename")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "filename" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1s7byy8c939qrm6hsjqq0vicfv6rkxb3yrhslg7zkggyxw1xzr33"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2)
+                       ("rust-winapi" ,rust-winapi-0.3))
+       #:cargo-development-inputs (("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/flier/rust-filename")
+    (synopsis "Get filename from a raw file descriptor")
+    (description
+     "This package provides a way to get the filename from a raw file descriptor.")
+    (license license:expat)))
+
 (define-public rust-filesize-0.2
   (package
     (name "rust-filesize")
