@@ -10933,10 +10933,21 @@ browser.")
                (base32
                 "0qjz5592ziy1f0dskdn2xvi0jm7wxpnjgvjcvwmp3jgzs2s84p3b"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'delete-bad-tests
+           (lambda _
+             ;; Some of the tests expect to be able to use the proprietary
+             ;; SZIP, which we've removed from r-rhdf5lib.
+             (for-each delete-file
+                       '("tests/testthat/test_H5P_dcpl.R"
+                         "tests/testthat/test_h5read.R")))))))
     (propagated-inputs
      (list r-rhdf5filters r-rhdf5lib))
     (native-inputs
-     (list r-knitr))
+     (list r-bit64 r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/rhdf5")
     (synopsis "HDF5 interface to R")
     (description
