@@ -568,8 +568,8 @@ Performance is achieved by using the LLVM JIT compiler.")
        (list
         #:configure-flags
         #~(list "-DBUILD_SHARED_LIBS=ON"
-                "-DLLAMA_BLAS=ON"
-                "-DLLAMA_BLAS_VENDOR=OpenBLAS"
+                "-DGGML_BLAS=ON"
+                "-DGGML_BLAS_VENDOR=OpenBLAS"
                 (string-append "-DBLAS_INCLUDE_DIRS="
                                #$(this-package-input "openblas")
                                "/include")
@@ -577,12 +577,12 @@ Performance is achieved by using the LLVM JIT compiler.")
                                #$(this-package-input "openblas")
                                "/lib/libopenblas.so")
 
-                "-DLLAMA_NATIVE=OFF" ;no '-march=native'
-                "-DLLAMA_FMA=OFF"    ;and no '-mfma', etc.
-                "-DLLAMA_AVX2=OFF"
-                "-DLLAMA_AVX512=OFF"
-                "-DLLAMA_AVX512_VBMI=OFF"
-                "-DLLAMA_AVX512_VNNI=OFF")
+                "-DGGML_NATIVE=OFF" ;no '-march=native'
+                "-DGGML_FMA=OFF"    ;and no '-mfma', etc.
+                "-DGGML_AVX2=OFF"
+                "-DGGML_AVX512=OFF"
+                "-DGGML_AVX512_VBMI=OFF"
+                "-DGGML_AVX512_VNNI=OFF")
 
         #:modules '((ice-9 textual-ports)
                     (guix build utils)
