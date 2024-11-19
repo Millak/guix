@@ -3421,8 +3421,8 @@ September 2004}")
                 (substitute* (find-files "." "^petsc(conf|machineinfo).h$")
                   ;; Prevent build directory from leaking into compiled code
                   (((getcwd)) out)
-                  (("Machine characteristics: Linux-[0-9]+\\.[0-9]+\\.[0-9]+")
-                    "Machine characteristics: Linux-x.x.x"))
+                  (("Machine characteristics: Linux-[0-9]+\\.[0-9]+\\.[0-9]+-arch[0-9]+-[0-9]+")
+                    "Machine characteristics: Linux-x.x.x-archx-x"))
                 (substitute* (find-files "." "petscvariables")
                   ;; Do not expose build machine characteristics, set to defaults.
                   (("MAKE_NP = [[:digit:]]+") "MAKE_NP = 2")
