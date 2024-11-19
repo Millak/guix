@@ -184,7 +184,7 @@ and the r-build-system."
         #:scope (list "gnu/packages/sugar.scm")))
 
 (define-team sysadmin
-  (team 'sugar
+  (team 'sysadmin
         #:name "Sysadmin team"
         #:description
         "Networking, server clustering, high availability."
