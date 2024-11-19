@@ -23229,7 +23229,7 @@ Visium platform.")
            r-sparsearray
            r-sparsematrixstats))
     (native-inputs
-     (list r-knitr))
+     (list r-hdf5array r-knitr r-testthat))
     (home-page "https://github.com/PeteHaitch/DelayedMatrixStats")
     (synopsis "Functions that apply to rows and columns of DelayedMatrix objects")
     (description
