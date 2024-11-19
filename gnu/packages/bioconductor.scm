@@ -72,6 +72,29 @@
 
 ;;; Annotations
 
+(define-public r-bsgenome-drerio-ucsc-danrer7
+  (package
+    (name "r-bsgenome-drerio-ucsc-danrer7")
+    (version "1.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "BSgenome.Drerio.UCSC.danRer7" version
+                              'annotation))
+       (sha256
+        (base32 "17x3hj08jag05y8q4aziy455jy15dpwkdbh97v3byzcda0kpwbpg"))))
+    (properties `((upstream-name . "BSgenome.Drerio.UCSC.danRer7")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-bsgenome))
+    (home-page
+     "https://bioconductor.org/packages/BSgenome.Drerio.UCSC.danRer7")
+    (synopsis "Full genome sequences for Danio rerio (UCSC version danRer7)")
+    (description
+     "This package provides full genome sequences for Danio rerio (Zebrafish)
+as provided by UCSC (@code{danRer7}, Jul. 2010) and stored in Biostrings
+objects.")
+    (license license:artistic2.0)))
+
 (define-public r-bsgenome-hsapiens-ucsc-hg38-masked
   (package
     (name "r-bsgenome-hsapiens-ucsc-hg38-masked")
