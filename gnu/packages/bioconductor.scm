@@ -8458,6 +8458,8 @@ Commons RESTful service.")
     (properties
      `((upstream-name . "GenomicFeatures")))
     (build-system r-build-system)
+    ;; Test require r-txdbmaker, which depends on r-genomicfeatures.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-annotationdbi
            r-biocgenerics
