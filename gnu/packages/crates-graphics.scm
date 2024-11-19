@@ -956,6 +956,34 @@ and iOS.")
     (description "Low level D3D12 API wrapper.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-dark-light-1
+  (package
+    (name "rust-dark-light")
+    (version "1.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "dark-light" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0g1sq0byf5h9w12b02aza8vbrq81as4yh67yvgf419vz2sbzlxia"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-dconf-rs" ,rust-dconf-rs-0.3)
+        ("rust-detect-desktop-environment" ,rust-detect-desktop-environment-0.2)
+        ("rust-dirs" ,rust-dirs-4)
+        ("rust-objc" ,rust-objc-0.2)
+        ("rust-rust-ini" ,rust-rust-ini-0.18)
+        ("rust-web-sys" ,rust-web-sys-0.3)
+        ("rust-winreg" ,rust-winreg-0.10)
+        ("rust-zbus" ,rust-zbus-4))))
+    (home-page "https://github.com/frewsxcv/rust-dark-light")
+    (synopsis "Detect if dark mode or light mode is enabled")
+    (description
+     "This package provides a way to detect if dark mode or light mode is enabled.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-dav1d-0.10
   (package
     (name "rust-dav1d")
