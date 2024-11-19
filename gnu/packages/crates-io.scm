@@ -20545,6 +20545,24 @@ sizes.  Big-endian order is used.  WARNING: Block must be aligned!")
      "This crate is a framework for writing D-Bus method handlers (legacy).")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-dconf-rs-0.3
+  (package
+    (name "rust-dconf-rs")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "dconf_rs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "12swi0npq88kbdwnc3n324dzknir674agrh13h305876h654cikh"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/kylecorry31/dconf_rs")
+    (synopsis "Rust API for interacting with dconf")
+    (description
+     "This package provides a Rust API for interacting with dconf.")
+    (license license:expat)))
+
 (define-public rust-deadpool-0.9
   (package
     (name "rust-deadpool")
