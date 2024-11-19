@@ -1045,8 +1045,43 @@
        (("rust-shell-words" ,rust-shell-words-0.1)
         ("rust-tempfile" ,rust-tempfile-3))))))
 
+(define-public rust-gdk-sys-0.18
+  (package
+    (name "rust-gdk-sys")
+    (version "0.18.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gdk-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1whznljhqqni5sk1qwazkc75ik5gmc1zh8590cbswv9qndn8bzri"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags (list "--release" "--"
+                                "--skip=cross_validate_constants_with_c")
+       #:cargo-inputs (("rust-cairo-sys-rs" ,rust-cairo-sys-rs-0.18)
+                       ("rust-gdk-pixbuf-sys" ,rust-gdk-pixbuf-sys-0.18)
+                       ("rust-gio-sys" ,rust-gio-sys-0.18)
+                       ("rust-glib-sys" ,rust-glib-sys-0.18)
+                       ("rust-gobject-sys" ,rust-gobject-sys-0.18)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-pango-sys" ,rust-pango-sys-0.18)
+                       ("rust-pkg-config" ,rust-pkg-config-0.3)
+                       ("rust-system-deps" ,rust-system-deps-6))
+       #:cargo-development-inputs (("rust-shell-words" ,rust-shell-words-1)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
+    (native-inputs (list pkg-config))
+    (inputs
+     (list cairo gdk-pixbuf gtk+ glib pango))
+    (home-page "https://gtk-rs.org/")
+    (synopsis "FFI bindings to libgdk-3")
+    (description "This package provides FFI bindings to libgdk-3.")
+    (license license:expat)))
+
 (define-public rust-gdk-sys-0.14
   (package
+    (inherit rust-gdk-sys-0.18)
     (name "rust-gdk-sys")
     (version "0.14.0")
     (source
@@ -1056,10 +1091,8 @@
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "07hz3gg039sy7iffy2w5srxzsnqf15i3ryxkqfd995k67lyin28f"))))
-    (build-system cargo-build-system)
     (arguments
-     `(#:skip-build?
-       #t
+     `(#:skip-build? #t
        #:cargo-inputs
        (("rust-cairo-sys-rs" ,rust-cairo-sys-rs-0.14)
         ("rust-gdk-pixbuf-sys" ,rust-gdk-pixbuf-sys-0.14)
@@ -1072,13 +1105,7 @@
         ("rust-system-deps" ,rust-system-deps-3))
        #:cargo-development-inputs
        (("rust-shell-words" ,rust-shell-words-0.1)
-        ("rust-tempfile" ,rust-tempfile-3))))
-    (inputs
-     (list cairo gdk-pixbuf gtk+ glib pango))
-    (home-page "https://gtk-rs.org/")
-    (synopsis "FFI bindings to libgdk-3")
-    (description "FFI bindings to libgdk-3")
-    (license license:expat)))
+        ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-gdk-sys-0.10
   (package
