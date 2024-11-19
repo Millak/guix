@@ -9833,6 +9833,7 @@ solution.  Interfaces to solvers on CRAN and elsewhere are provided.")
          "0n1s32l9p4vdm3h5q6g43s0qbpzry08difsh0yay80wrla6f3rb6"))))
     (properties `((upstream-name . "SQUAREM")))
     (build-system r-build-system)
+    (native-inputs (list r-setrng))
     (home-page "https://coah.jhu.edu/people/Faculty_personal_Pages/Varadhan.html")
     (synopsis "Squared Extrapolation Methods for Accelerating EM-Like Monotone Algorithms")
     (description
