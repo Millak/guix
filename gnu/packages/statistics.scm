@@ -6636,10 +6636,24 @@ is supported.")
         (base32
          "1zvzycng2hsks9d7552nb93abzjrs43c975rc16s3c1is8318vib"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; We need this for one failing test.
+         (add-before 'check 'set-timezone
+           (lambda* (#:key inputs #:allow-other-keys)
+             (setenv "LOCALTIME"
+                     (search-input-file inputs
+                                        "share/zoneinfo/localtime"))
+             (setenv "TZ" "UTC")
+             (setenv "TZDIR"
+                     (search-input-directory inputs
+                                             "share/zoneinfo")))))))
     (propagated-inputs
      (list r-generics r-timechange))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat r-vctrs tzdata-for-tests))
     (home-page "https://cran.r-project.org/web/packages/lubridate/")
     (synopsis "Make dealing with dates a little easier")
     (description
