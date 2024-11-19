@@ -866,29 +866,36 @@ $out/bin/guile --version~%"
                (tarball (assoc-ref %build-inputs "tarball")))
 
            (mkdir out)
-           (copy-file tarball "binaries.tar.xz")
+           (copy-file tarball "binaries.tar.xz") ;avoid: more than one hard link
            (invoke xz "-d" "binaries.tar.xz")
            (let ((builddir (getcwd))
                  (bindir   (string-append out "/bin")))
+
+             (define (wrap-program program)
+               (let ((wrapped (format #f ".~a-wrapped" program)))
+                 (rename-file program wrapped)
+                 (call-with-output-file program
+                   (lambda (p)
+                     (format p "#!~a
+exec ~a/bin/~a -B~a/lib \
+     -Wl,-rpath -Wl,~a/lib \
+     -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
+                             bash
+                             out wrapped
+                             libc libc libc
+                             ,(glibc-dynamic-linker)))))
+               (chmod program #o555))
+
              (with-directory-excursion out
                (invoke tar "xvf"
                        (string-append builddir "/binaries.tar")))
 
              (with-directory-excursion bindir
                (chmod "." #o755)
-               (rename-file "gcc" ".gcc-wrapped")
-               (call-with-output-file "gcc"
-                 (lambda (p)
-                   (format p "#!~a
-exec ~a/bin/.gcc-wrapped -B~a/lib \
-     -Wl,-rpath -Wl,~a/lib \
-     -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
-                           bash
-                           out libc libc libc
-                           ,(glibc-dynamic-linker))))
-
-               (chmod "gcc" #o555)
-               #t))))))
+               (for-each wrap-program
+                         ,(if (target-hurd64?)
+                              ''("gcc" "g++")
+                              ''("gcc")))))))))
     (inputs
      `(("tar" ,(bootstrap-executable "tar" (%current-system)))
        ("xz"  ,(bootstrap-executable "xz" (%current-system)))
