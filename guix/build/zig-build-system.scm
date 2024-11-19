@@ -20,6 +20,7 @@
 (define-module (guix build zig-build-system)
   #:use-module ((guix build gnu-build-system) #:prefix gnu:)
   #:use-module (guix build utils)
+  #:use-module (guix build zig-utils)
   #:use-module (ice-9 popen)
   #:use-module (ice-9 rdelim)
   #:use-module (ice-9 ftw)
@@ -33,55 +34,12 @@
 
 ;; Interesting guide here:
 ;; https://github.com/riverwm/river/blob/master/PACKAGING.md
-(define global-cache-dir "zig-cache")
-
-(define* (configure #:key inputs target #:allow-other-keys)
-  ;; Set cache dir, otherwise Zig looks for `$HOME/.cache'.
-  (setenv "ZIG_GLOBAL_CACHE_DIR" global-cache-dir)
-
-  (setenv "PKG_CONFIG"
-          (if target
-              (string-append target "-pkg-config")
-              "pkg-config"))
-
-  ;; Libc paths for target.
-  (let ((libc (assoc-ref inputs (if target "cross-libc" "libc")))
-        (port (open-file "/tmp/guix-zig-libc-paths" "w" #:encoding "utf8")))
-    (display
-     (string-append "\
-include_dir=" libc "/include
-sys_include_dir=" libc "/include
-crt_dir=" libc "/lib
-msvc_lib_dir=
-kernel32_lib_dir=
-gcc_dir=")
-     port)
-    (close-port port))
-  (setenv "ZIG_LIBC" "/tmp/guix-zig-libc-paths"))
-
-(define (zig-target target)
-  (cond
-   ((string=? target "i586-pc-gnu")
-    "x86-hurd-gnu")
-   ((string=? target "i686-linux-gnu")
-    "x86-linux-gnu")
-   ((string=? target "i686-w64-mingw32")
-    "x86-windows-gnu")
-   ((string=? target "mips64el-linux-gnu")
-    "mips64el-linux-gnuabi64")
-   ((string=? target "powerpc-linux-gnu")
-    "powerpc-linux-gnueabi")
-   ((string=? target "x86_64-pc-gnu")
-    "x86_64-hurd-gnu")
-   ((string=? target "x86_64-w64-mingw32")
-    "x86_64-windows-gnu")
-   (else target)))
 
 (define* (build #:key
                 zig-build-flags
+                zig-build-target
                 zig-release-type       ;; "safe", "fast" or "small" empty for a
                                        ;; debug build"
-                target
                 #:allow-other-keys)
   "Build a given Zig package."
 
@@ -91,9 +49,7 @@ gcc_dir=")
                      "--prefix-lib-dir"     "lib"
                      "--prefix-exe-dir"     "bin"
                      "--prefix-include-dir" "include"
-                     ,@(if target
-                         (list (string-append "-Dtarget=" (zig-target target)))
-                         '())
+                     ,(string-append "-Dtarget=" (zig-target zig-build-target))
                      ,@(if zig-release-type
                          (list (string-append "-Drelease-" zig-release-type))
                          '())
@@ -125,7 +81,7 @@ gcc_dir=")
 (define %standard-phases
   (modify-phases gnu:%standard-phases
     (delete 'bootstrap)
-    (replace 'configure configure)
+    (replace 'configure zig-configure)
     (replace 'build build)
     (replace 'check check)
     (replace 'install install)))

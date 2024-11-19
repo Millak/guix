@@ -284,6 +284,7 @@ MODULES =					\
   guix/build/bournish.scm			\
   guix/build/qt-utils.scm			\
   guix/build/zig-build-system.scm		\
+  guix/build/zig-utils.scm			\
   guix/build/make-bootstrap.scm			\
   guix/build/toml.scm			\
   guix/search-paths.scm				\

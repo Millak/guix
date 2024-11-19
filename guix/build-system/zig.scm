@@ -23,6 +23,7 @@
   #:use-module (guix gexp)
   #:use-module (guix monads)
   #:use-module (guix packages)
+  #:use-module (guix platform)
   #:use-module (guix build-system)
   #:use-module (guix build-system gnu)
   #:use-module (ice-9 match)
@@ -39,6 +40,7 @@
 (define %zig-build-system-modules
   ;; Build-side modules imported by default.
   `((guix build zig-build-system)
+    (guix build zig-utils)
     ,@%default-gnu-imported-modules))
 
 (define* (zig-build name inputs
@@ -67,6 +69,9 @@
                      #:system #$system
                      #:test-target #$test-target
                      #:zig-build-flags #$zig-build-flags
+                     ;; For reproducibility.
+                     #:zig-build-target #$(platform-target
+                                           (lookup-platform-by-system system))
                      #:zig-test-flags #$zig-test-flags
                      #:zig-release-type #$zig-release-type
                      #:tests? #$tests?
@@ -137,6 +142,7 @@
                                                 search-path-specification->sexp
                                                 native-search-paths)
                      #:zig-build-flags #$zig-build-flags
+                     #:zig-build-target #$target
                      #:zig-test-flags #$zig-test-flags
                      #:zig-release-type #$zig-release-type
                      #:zig-destdir #$zig-destdir

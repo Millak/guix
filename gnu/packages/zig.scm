@@ -23,6 +23,7 @@
 (define-module (gnu packages zig)
   #:use-module (guix gexp)
   #:use-module (guix packages)
+  #:use-module (guix platform)
   #:use-module (guix utils)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -87,11 +88,24 @@
     (build-system cmake-build-system)
     (arguments
      (list
+      #:imported-modules
+      (cons '(guix build zig-utils)
+            %cmake-build-system-modules)
+      #:modules
+      (cons '(guix build zig-utils)
+            '((guix build cmake-build-system)
+              (guix build utils)))
       #:configure-flags
-      #~(list #$@(if (%current-target-system)
-                     (list (string-append "-DZIG_TARGET_TRIPLE="
-                                          (%current-target-system)))
-                     '()))
+      #~(list (string-append "-DZIG_LIB_DIR=" #$output "/lib/zig")
+              "-DZIG_TARGET_MCPU=baseline"
+              (string-append
+               "-DZIG_TARGET_TRIPLE="
+               (zig-target
+                #$(platform-target
+                   (lookup-platform-by-target-or-system
+                    (or (%current-target-system)
+                        (%current-system))))))
+              "-DZIG_USE_LLVM_CONFIG=ON")
       #:out-of-source? #f         ; for tests
       ;; There are too many unclear test failures.
       #:tests? (not (or (target-riscv64?)
@@ -114,15 +128,14 @@
                          ;; Is this symbol x86 only in glibc?
                          ((".*link_static_lib_as_system_lib.*") "")))))
                  '())
-          (add-after 'configure 'set-cache-dir
-            (lambda _
-              ;; Set cache dir, otherwise Zig looks for `$HOME/.cache'.
-              (setenv "ZIG_GLOBAL_CACHE_DIR"
-                      (string-append (getcwd) "/zig-cache"))))
+          (add-before 'configure 'zig-configure zig-configure)
           (delete 'check)
           (add-after 'install 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
+                ;; error(libc_installation): msvc_lib_dir may not be empty for
+                ;; windows-msvc.
+                (unsetenv "ZIG_LIBC")
                 (invoke (string-append #$output "/bin/zig")
                         ;; Testing the standard library takes >7.5GB RAM, and
                         ;; will fail if it is OOM-killed.  The 'test-toolchain'
@@ -222,20 +235,13 @@ toolchain.  Among other features it provides
        ((#:tests? _ #t)
         (not (%current-target-system)))
        ((#:configure-flags flags ''())
-        #~(cons* "-DZIG_TARGET_MCPU=baseline"
-                 "-DZIG_SHARED_LLVM=ON"
-                 (string-append "-DZIG_LIB_DIR=" #$output "/lib/zig")
-                 #$flags))
+        #~(cons "-DZIG_SHARED_LLVM=ON"
+                #$flags))
        ((#:phases phases '%standard-phases)
         #~(modify-phases #$phases
             #$@(if (target-riscv64?)
                    `((delete 'adjust-tests))
                    '())
-            (add-after 'unpack 'set-CC
-              (lambda _
-                ;; Set CC, since the stage 2 zig relies on it to find the libc
-                ;; installation, and otherwise silently links against its own.
-                (setenv "CC" #$(cc-for-target))))
             (add-after 'patch-source-shebangs 'patch-more-shebangs
               (lambda* (#:key inputs #:allow-other-keys)
                 ;; Zig uses information about an ELF file to determine the
@@ -245,6 +251,9 @@ toolchain.  Among other features it provides
             (replace 'check
               (lambda* (#:key tests? #:allow-other-keys)
                 (when tests?
+                  ;; error(libc_installation): msvc_lib_dir may not be empty for
+                  ;; windows-msvc.
+                  (unsetenv "ZIG_LIBC")
                   (invoke (string-append #$output "/bin/zig")
                           "build" "test"
                           ;; We're not testing the compiler bootstrap chain.
@@ -314,6 +323,13 @@ toolchain.  Among other features it provides
        (substitute-keyword-arguments (package-arguments base)
          ;; Patch for fixing RUNPATH not applied to intermediate versions.
          ((#:validate-runpath? _ #t) #f)
+         ;; Patch for cross-compilation not applied to intermediate versions.
+         ((#:modules modules '())
+          (cons '(srfi srfi-1) modules))
+         ((#:configure-flags flags ''())
+          #~(filter (lambda (flag)
+                      (not (string-contains flag "ZIG_TARGET_TRIPLE")))
+                    #$flags))
          ;; Disable tests for intermediate versions.
          ((#:tests? _ #t) #f)
          ((#:phases phases '%standard-phases)
