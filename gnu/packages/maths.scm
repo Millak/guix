@@ -3422,7 +3422,8 @@ September 2004}")
                   ;; Prevent build directory from leaking into compiled code
                   (((getcwd)) out)
                   (("Machine characteristics: Linux-[0-9]+\\.[0-9]+\\.[0-9]+-arch[0-9]+-[0-9]+")
-                    "Machine characteristics: Linux-x.x.x-archx-x"))
+                    "Machine characteristics: Linux-x.x.x-archx-x")
+                  (("([[:graph:]]+)/bin/make") "\"make"))
                 (substitute* (find-files "." "petscvariables")
                   ;; Do not expose build machine characteristics, set to defaults.
                   (("MAKE_NP = [[:digit:]]+") "MAKE_NP = 2")
@@ -3462,7 +3463,8 @@ September 2004}")
                 (("([[:graph:]]+)/bin/make") "make")
                 (("([[:graph:]]+)/bin/diff") "diff")
                 (("([[:graph:]]+)/bin/sed") "sed")
-                (("([[:graph:]]+)/bin/gfortran") "gfortran")))))
+                (("([[:graph:]]+)/bin/gfortran") "gfortran")
+                (("([[:graph:]]+)/bin/gcov") "gcov")))))
 
           ;; Some of the tests get linked with '-L$prefix/lib -lpetsc' (even
           ;; though that's unnecessary because they also explicitly link
