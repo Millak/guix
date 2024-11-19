@@ -2742,7 +2742,7 @@ memoized as a function of '%current-system'."
 
 (define* (kernel-headers-boot0 #:optional (system (%current-system)))
   (match system
-    ("i586-gnu" hurd-core-headers-boot0)
+    ((? target-hurd?) hurd-core-headers-boot0)
     (_ linux-libre-headers-boot0)))
 
 (define texinfo-boot0
