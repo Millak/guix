@@ -3451,6 +3451,26 @@
      "Foreign Function Interface (FFI) bindings to libgstreamer-1.0.")
     (license license:expat)))
 
+(define-public rust-gstreamer-sys-0.20
+  (package
+    (inherit rust-gstreamer-sys-0.21)
+    (name "rust-gstreamer-sys")
+    (version "0.20.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gstreamer-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ll6ax5wjbvhccq7cx35w4jw6lyvzm017g58mzdlfzggmm3y0vz5"))))
+    (arguments
+     `(#:cargo-inputs (("rust-glib-sys" ,rust-glib-sys-0.17)
+                       ("rust-gobject-sys" ,rust-gobject-sys-0.17)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-system-deps" ,rust-system-deps-6))
+       #:cargo-development-inputs (("rust-shell-words" ,rust-shell-words-1)
+                                   ("rust-tempfile" ,rust-tempfile-3))))))
+
 (define-public rust-gstreamer-sys-0.18
   (package
     (inherit rust-gstreamer-sys-0.21)
