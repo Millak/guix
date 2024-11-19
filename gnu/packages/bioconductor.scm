@@ -8141,6 +8141,9 @@ visualization of Illumina DNA methylation array data.")
         (base32
          "1p7hlhyzirzcq1g0i62hr3l4k60fm4y04qb4k04lls8wynfxhy0a"))))
     (build-system r-build-system)
+    ;; The tests require r-ensdb-hsapiens-v86, which depends on
+    ;; this package.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-annotationdbi
            r-annotationfilter
