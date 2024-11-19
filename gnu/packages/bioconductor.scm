@@ -22579,6 +22579,15 @@ packages.")
         (base32
          "0w1abs9nwpn66zc81alnzvdrg5y5w0sl2qdqw6bx3hp0ry1sjfr5"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'disable-bad-test
+           (lambda _
+             ;; This test would require r-beachmat-hdf5, but that package
+             ;; depends on r-beachmat.
+             (delete-file "tests/testthat/test-initializeCpp-other.R"))))))
     (propagated-inputs
      (list r-assorthead
            r-biocgenerics
@@ -22587,7 +22596,7 @@ packages.")
            r-rcpp
            r-sparsearray))
     (native-inputs
-     (list r-knitr))
+     (list r-biocparallel r-hdf5array r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/beachmat")
     (synopsis "Compiling Bioconductor to handle each matrix type")
     (description "This package provides a consistent C++ class interface for a
