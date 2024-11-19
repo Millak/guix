@@ -21808,6 +21808,28 @@ writing derives macros for enums.")
     (description "This package provides an Hjson deserializer for Serde.")
     (license license:expat)))
 
+(define-public rust-detect-desktop-environment-1
+  (package
+    (name "rust-detect-desktop-environment")
+    (version "1.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "detect-desktop-environment" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1crybsn50nax07zz2sxyi88nfq05yyqicqqa6ni03j8swfxs29yg"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-test-flags
+           ''("--release" "--"
+              "--skip=DesktopEnvironment::from_freedesktop"
+              "--skip=DesktopEnvironment::from_xdg_name")))
+    (home-page "https://github.com/demurgos/detect-desktop-environment")
+    (synopsis "Autodetect the desktop environment")
+    (description "This package provides autodetect for the desktop environment.")
+    (license license:expat)))
+
 (define-public rust-detone-1
   (package
     (name "rust-detone")
