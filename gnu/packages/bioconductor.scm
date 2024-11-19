@@ -13003,6 +13003,8 @@ libraries for systems that do not have these available via other means.")
         (base32 "1y1z2vjw04aq139a9f43s4kwl8zbx734s593cm15g0yxjsdpcgxv"))))
     (properties `((upstream-name . "zellkonverter")))
     (build-system r-build-system)
+    ;; This uses r-basilisk, which attempts to set up a Conda environment.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-basilisk
            r-cli
