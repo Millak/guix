@@ -2993,6 +2993,47 @@
     (description "Rust bindings for GStreamer.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gstreamer-0.20
+  (package
+    (inherit rust-gstreamer-0.21)
+    (name "rust-gstreamer")
+    (version "0.20.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gstreamer" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1jcg143f5k1s4p8knqw0cc8x81shgax0spx1dypiranl4021b960"))))
+    (arguments
+     `(#:cargo-test-flags
+       (list "--release" "--"
+             "--skip=typefind::tests::test_typefind_call_function")
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-1)
+                       ("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-futures-channel" ,rust-futures-channel-0.3)
+                       ("rust-futures-core" ,rust-futures-core-0.3)
+                       ("rust-futures-util" ,rust-futures-util-0.3)
+                       ("rust-glib" ,rust-glib-0.17)
+                       ("rust-gstreamer-sys" ,rust-gstreamer-sys-0.20)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-muldiv" ,rust-muldiv-1)
+                       ("rust-num-integer" ,rust-num-integer-0.1)
+                       ("rust-num-rational" ,rust-num-rational-0.4)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-option-operations" ,rust-option-operations-0.5)
+                       ("rust-paste" ,rust-paste-1)
+                       ("rust-pretty-hex" ,rust-pretty-hex-0.3)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-bytes" ,rust-serde-bytes-0.11)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs
+       (("rust-futures-executor" ,rust-futures-executor-0.3)
+        ("rust-gir-format-check" ,rust-gir-format-check-0.1)
+        ("rust-ron" ,rust-ron-0.8)
+        ("rust-serde-json" ,rust-serde-json-1))))))
+
 (define-public rust-gstreamer-0.18
   (package
     (inherit rust-gstreamer-0.21)
