@@ -19379,7 +19379,7 @@ Amazon Web Services (AWS) API.")
     (arguments
      (list
       #:test-flags
-      #~(list "--numprocesses" "auto"
+      #~(list "--numprocesses" (number->string (parallel-job-count))
               ;; Integration tests are trying to connect to AWS.
               "--ignore" "tests/integration")))
     (native-inputs
