@@ -22518,6 +22518,35 @@ variety of commonly used matrix types, including sparse and HDF5-backed
 matrices.")
     (license license:gpl3)))
 
+(define-public r-beachmat-hdf5
+  (package
+    (name "r-beachmat-hdf5")
+    (version "1.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "beachmat.hdf5" version))
+       (sha256
+        (base32 "0jla4by5y8qalswfam348p2459lk191x4p057w24jqgcf98gbbhg"))))
+    (properties `((upstream-name . "beachmat.hdf5")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-assorthead
+                             r-beachmat
+                             r-delayedarray
+                             r-hdf5array
+                             r-rcpp
+                             r-rhdf5lib))
+    (native-inputs (list r-knitr r-testthat))
+    (home-page "https://bioconductor.org/packages/beachmat.hdf5")
+    (synopsis "beachmat bindings for HDF5-backed matrices")
+    (description
+     "This package extends beachmat to support initialization of tatami
+matrices from HDF5-backed arrays.  This allows C++ code in downstream packages
+to directly call the HDF5 C/C++ library to access array data, without the need
+for block processing via @code{DelayedArray}.  Some utilities are also
+provided for direct creation of an in-memory tatami matrix from a HDF5 file.")
+    (license license:gpl3)))
+
 (define-public r-beadarray
   (package
     (name "r-beadarray")
