@@ -2391,13 +2391,21 @@ exec " gcc "/bin/" program
          `(let* ((libc        (assoc-ref %build-inputs "libc"))
                  (libc-native (or (assoc-ref %build-inputs "libc-native")
                                   libc)))
-            `(,(string-append "LDFLAGS="
-                              "-Wl,-rpath=" libc-native "/lib "
-                              "-Wl,-dynamic-linker "
-                              "-Wl," libc-native ,(glibc-dynamic-linker
-                                                   (match (%current-system)
-                                                     ("x86_64-linux" "i686-linux")
-                                                     (_ (%current-system))))))))
+            `(,,@(append
+                  `((string-append "LDFLAGS="
+                                   "-Wl,-rpath=" libc-native "/lib "
+                                   "-Wl,-dynamic-linker "
+                                   "-Wl," libc-native
+                                   ,(glibc-dynamic-linker
+                                     (match (%current-system)
+                                       ("x86_64-linux" "i686-linux")
+                                       (_ (%current-system))))))
+                  (if (target-hurd64?)
+                      ;;Convince gmp's configure that gcc works
+                      (list (string-append
+                             "CC_FOR_BUILD=gcc"
+                             " -Wno-implicit-function-declaration"))
+                      '())))))
         ((#:phases phases)
          #~(modify-phases #$phases
              (add-after 'unpack 'unpack-gmp&co
@@ -2421,6 +2429,20 @@ exec " gcc "/bin/" program
                                            char-set:letter)
                                         #$(package-name lib)))
                            (list gmp-6.0 mpfr mpc)))))
+             #$@(if (target-hurd64?)
+                    #~((add-after 'unpack 'patch-libcc1-static
+                         (lambda _
+                           ;;Attempting to build libcc1 shared gives:
+                           ;;  install: cannot stat '.libs/libcc1.so.0.0.0':
+                           ;;  No such file or directory
+                           ;;convince gcc harder to not build a shared libcc1
+                           (substitute* "Makefile.def"
+                             (("module= libcc1; [^;]*;") "module= libcc1;"))
+                           (substitute* "Makefile.in"
+                             (("(--target=[$][{]target_alias[}]) --enable-shared \\\\"
+                               all target)
+                              (string-append target " \\"))))))
+                    #~())
              #$(match (%current-system)
                  ((or "i686-linux" "x86_64-linux")
                   #~(add-before 'configure 'fix-libcc1
