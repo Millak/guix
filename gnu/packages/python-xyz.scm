@@ -19725,15 +19725,17 @@ alternative when librabbitmq is not available.")
 (define-public python-benchmark-4dn
   (package
     (name "python-benchmark-4dn")
-    (version "0.5.23")
+    (version "0.5.24")
     (source (origin
               (method url-fetch)
-              (uri (pypi-uri "Benchmark-4dn" version))
+              (uri (pypi-uri "benchmark_4dn" version))
               (sha256
                (base32
-                "0z3vxrkap59sk394ynvp0457mdvb201idcswlrpgjscnrp2h4ypi"))))
-    (properties '(("upstream-name" . "Benchmark-4dn")))
+                "1cjin99p8mrh4nkbr4hsdfks9c22dfw3gk5ad80b4rxngs8mwj0s"))))
+    (properties '(("upstream-name" . "benchmark_4dn")))
     (build-system pyproject-build-system)
+    ;; There are none.
+    (arguments (list #:tests? #false))
     (native-inputs
      (list python-poetry-core))
     (home-page "https://github.com/SooLee/Benchmark/")
