@@ -21830,6 +21830,20 @@ writing derives macros for enums.")
     (description "This package provides autodetect for the desktop environment.")
     (license license:expat)))
 
+(define-public rust-detect-desktop-environment-0.2
+  (package
+    (inherit rust-detect-desktop-environment-1)
+    (name "rust-detect-desktop-environment")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "detect-desktop-environment" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0408nmfgb54wqigjpqxwcxy5jp4ni1fjvynqdgpa84svvmhavn11"))))
+    (arguments '())))
+
 (define-public rust-detone-1
   (package
     (name "rust-detone")
