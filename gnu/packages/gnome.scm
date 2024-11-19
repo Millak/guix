@@ -15,7 +15,7 @@
 ;;; Copyright © 2016, 2017, 2018 Rene Saavedra <pacoon@protonmail.com>
 ;;; Copyright © 2016 Jochem Raat <jchmrt@riseup.net>
 ;;; Copyright © 2016, 2017, 2019 Kei Kebreau <kkebreau@posteo.net>
-;;; Copyright © 2016 Jan Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2016, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2016 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016, 2018 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
@@ -2644,7 +2644,7 @@ GNOME Desktop.")
                         #$output "/share/p11-kit/modules/")
          (string-append "--with-pkcs11-modules="
                         #$output "/share/p11-kit/modules/"))
-      #:parallel-tests? (not (target-riscv64?))
+      #:parallel-tests? #f
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-/bin/sh-reference
