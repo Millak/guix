@@ -5256,13 +5256,13 @@ CDF, Atom 0.3, and Atom 1.0 feeds.")
 (define-public python-tibanna
   (package
     (name "python-tibanna")
-    (version "4.0.0")
+    (version "5.4.3")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "tibanna" version))
               (sha256
                (base32
-                "185jr5b1dfgh82xcjal0y9wbzds37s0yhx0hp8awlvw26v72awv2"))))
+                "11pbyw881qaj08syc9mwr301rm3jhy6vyci98pxin2dwvyzkgwhd"))))
     (build-system pyproject-build-system)
     (arguments
      ;; Tests require AWS credentials and access to the internet.
