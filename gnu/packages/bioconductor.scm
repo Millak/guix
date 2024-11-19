@@ -11662,6 +11662,7 @@ Stephens (1990).")
     (build-system r-build-system)
     (propagated-inputs
      (list r-biostrings r-genomicranges r-iranges r-kernsmooth r-plotrix))
+    (native-inputs (list r-biocstyle r-bsgenome-drerio-ucsc-danrer7 r-runit))
     (home-page "https://bioconductor.org/packages/seqPattern")
     (synopsis "Visualising oligonucleotide patterns and motif occurrences")
     (description
