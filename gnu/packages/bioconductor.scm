@@ -22455,8 +22455,15 @@ provided.")
          "1jkrlmnsf5ncs4l77b29p8cjn6nmaadpvrsn5z1qixsw1axbqwi0"))))
     (properties `((upstream-name . "HDF5Array")))
     (build-system r-build-system)
-    (inputs
-     (list))
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'delete-bad-tests
+           (lambda _
+             ;; This file depends on r-zellkonverter, which uses r-basilisk to
+             ;; set up a Conda environment.  We don't want that.
+             (delete-file "inst/unitTests/test_H5ADMatrixSeed-class.R"))))))
     (propagated-inputs
      (list r-biocgenerics
            r-delayedarray
@@ -22468,6 +22475,10 @@ provided.")
            r-s4arrays
            r-s4vectors
            r-sparsearray))
+    (native-inputs
+     (list r-biocparallel
+           r-runit
+           r-singlecellexperiment))
     (home-page "https://bioconductor.org/packages/HDF5Array")
     (synopsis "HDF5 back end for DelayedArray objects")
     (description "This package provides an array-like container for convenient
