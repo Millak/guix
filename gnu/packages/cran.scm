@@ -34129,7 +34129,17 @@ programming} (OOP) using R Reference Class.")
          "1a124nzxldc6687kvgkg41dqfbqb7yqdgm9dj5fj8g4bax9qcgg8"))))
     (properties `((upstream-name . "proxyC")))
     (build-system r-build-system)
-    (native-inputs (list r-knitr))
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'patch-bad-tests
+           (lambda _
+             ;; Two tests produce harmless warnings.
+             (substitute* '("tests/testthat/test-dist.R"
+                            "tests/testthat/test-simil.R")
+               (("expect_silent\\(\\{") "expect_warning({")))))))
+    (native-inputs (list r-entropy r-knitr r-testthat))
     (inputs (list tbb))
     (propagated-inputs
      (list r-matrix r-rcpp r-rcpparmadillo))
