@@ -53,6 +53,7 @@
     (build-system zig-build-system)
     (arguments
      (list
+      #:install-source? #f
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'install 'install-wayland-session
@@ -98,6 +99,7 @@ directly from a tty using KMS/DRM.")
     (arguments
      (list
       #:zig zig-0.9
+      #:install-source? #f
       #:zig-release-type "safe"))
     (synopsis "Distributed financial accounting database")
     (description "TigerBeetle is a financial accounting database designed for
@@ -122,8 +124,9 @@ mission-critical safety and performance for financial services.")
     (build-system zig-build-system)
     (inputs (list zig-0.10 python))
     (arguments
-     ;; The tests fail with memory leaks.
-     (list #:tests? #f))
+     (list #:install-source? #f
+           ;; The tests fail with memory leaks.
+           #:tests? #f))
     (synopsis "Zig language server")
     (description
      "Zig Language Server is a language server implementing the @acronym{LSP,

@@ -24,38 +24,113 @@
   #:use-module (ice-9 popen)
   #:use-module (ice-9 rdelim)
   #:use-module (ice-9 ftw)
-  #:use-module (ice-9 format)
   #:use-module (ice-9 match)
-  #:use-module (rnrs io ports)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:export (%standard-phases
-            zig-build))
+            zig-build
+            zig-source-install-path))
 
 ;; Interesting guide here:
 ;; https://github.com/riverwm/river/blob/master/PACKAGING.md
 
+(define (zig-source-install-path output)
+  (string-append output "/src/zig/" (strip-store-file-name output)))
+
+(define (zig-input-install-path input)
+  (zig-source-install-path
+   (dirname (dirname (dirname (canonicalize-path input))))))
+
+;; Notes on Zig package manager (`build.zig.zon')
+;; 1. Dependency definition (name -> URL + hash)
+;; - Dependency names are not necessarily consistent across packages.
+;; - `zig fetch <url> --name=<name>' fetches <url> to Zig cache, computes its
+;; hash, then overwrites dependency <name> with <url> and the computed hash.
+;; 2. Dependency lookup
+;; Lookup hash in Zig cache, fetch URL when missing.
+;; 3. Recursive dependency is possible
+;; `build.zig.zon' -> dependency (`build.zig.zon' -> next dependency).
+;;
+;; With our naming convention and different expectation on package sources,
+;; we'll need to change dependency names and hashes for nearly every Zig
+;; package.
+;; - `rename-zig-dependencies' in `(gnu packages zig)' takes care of names.
+;; - `unpack-dependencies' below is for hashes.  Ideally we can parse
+;; `build.zig.zon' and only `zig fetch' required dependencies for current
+;; package, this way recursive dependencies are resolved by fetching store paths
+;; defined in dependency URLs.  However Zig package manager currently doesn't
+;; support file URLs[0] so we are instead fetching all dependencies needed for
+;; the build process and all of them are added to involved `build.zig.zon' as a
+;; side effect.
+;; [0]: https://github.com/ziglang/zig/pull/21931
+(define (unpack-dependencies . _)
+  "Unpack Zig dependencies from GUIX_ZIG_PACKAGE_PATH."
+  (define zig-inputs
+    (append-map
+     (lambda (directory)
+       (map (lambda (input-name)
+              (cons input-name
+                    (in-vicinity directory input-name)))
+            (scandir directory (negate (cut member <> '("." ".."))))))
+     (or (and=> (getenv "GUIX_ZIG_PACKAGE_PATH")
+                (cut string-split <> #\:))
+         '())))
+  (define (strip-version input)
+    (let* ((name+version (string-split input #\-))
+           (penult (first (take-right name+version 2)))
+           (ultima (last name+version)))
+      (string-join
+       (drop-right name+version
+                   (cond
+                    ;; aaa-0.0.0
+                    ((= 3 (length (string-split ultima #\.)))
+                     1)
+                    ;; bbb-0.0.0-0.0000000-output
+                    ((and (= 2 (length (string-split penult #\.)))
+                          (not (string-contains ultima ".")))
+                     3)
+                    ;; ccc-0.0.0-output
+                    ;; ddd-0.0.0-0.0000000
+                    (else 2)))
+       "-")))
+  (for-each
+   (lambda (build.zig.zon)
+     (format #t "unpacking dependencies for ~s...~%" build.zig.zon)
+     (with-directory-excursion (dirname build.zig.zon)
+       (false-if-exception
+        (for-each
+         (match-lambda
+           ((input-name . input-path)
+            (let ((call `("zig" "fetch"
+                          ,(zig-input-install-path input-path)
+                          ,(string-append "--save=" (strip-version input-name)))))
+              (format #t "running: ~s~%" call)
+              (apply invoke call))))
+         (reverse zig-inputs)))))
+   (find-files "." "^build\\.zig\\.zon$")))
+
 (define* (build #:key
                 zig-build-flags
                 zig-build-target
-                zig-release-type       ;; "safe", "fast" or "small" empty for a
-                                       ;; debug build"
+                ;; "safe", "fast" or "small", empty for a "debug" build.
+                zig-release-type
+                skip-build?
                 #:allow-other-keys)
   "Build a given Zig package."
-
-  (setenv "DESTDIR" "out")
-  (let ((call `("zig" "build"
-                     "--prefix"             ""            ;; Don't add /usr
-                     "--prefix-lib-dir"     "lib"
-                     "--prefix-exe-dir"     "bin"
-                     "--prefix-include-dir" "include"
-                     ,(string-append "-Dtarget=" (zig-target zig-build-target))
-                     ,@(if zig-release-type
-                         (list (string-append "-Drelease-" zig-release-type))
-                         '())
-                     ,@zig-build-flags)))
-  (format #t "running: ~s~%" call)
-  (apply invoke call)))
+  (when (not skip-build?)
+    (setenv "DESTDIR" "out")
+    (let ((call `("zig" "build"
+                  "--prefix"             ""            ;; Don't add /usr
+                  "--prefix-lib-dir"     "lib"
+                  "--prefix-exe-dir"     "bin"
+                  "--prefix-include-dir" "include"
+                  ,(string-append "-Dtarget=" (zig-target zig-build-target))
+                  ,@(if zig-release-type
+                        (list (string-append "-Drelease-" zig-release-type))
+                        '())
+                  ,@zig-build-flags)))
+      (format #t "running: ~s~%" call)
+      (apply invoke call))))
 
 (define* (check #:key tests?
                 zig-test-flags
@@ -73,15 +148,22 @@
         (setenv "DESTDIR" old-destdir)
         (unsetenv "DESTDIR")))))
 
-(define* (install #:key inputs outputs #:allow-other-keys)
+(define* (install #:key outputs install-source? #:allow-other-keys)
   "Install a given Zig package."
-  (let ((out (assoc-ref outputs "out")))
-    (copy-recursively "out" out)))
+  (let* ((out (assoc-ref outputs "out"))
+         (source-install-path (zig-source-install-path out)))
+    (when (file-exists? "out")
+      (copy-recursively "out" out)
+      (delete-file-recursively "out"))
+    (when install-source?
+      (mkdir-p source-install-path)
+      (copy-recursively "." source-install-path))))
 
 (define %standard-phases
   (modify-phases gnu:%standard-phases
     (delete 'bootstrap)
     (replace 'configure zig-configure)
+    (add-after 'configure 'unpack-dependencies unpack-dependencies)
     (replace 'build build)
     (replace 'check check)
     (replace 'install install)))

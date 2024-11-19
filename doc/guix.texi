@@ -10190,17 +10190,30 @@ build system (@command{zig build} command).
 Selecting this build system adds @code{zig} to the package inputs, in
 addition to the packages of @code{gnu-build-system}.
 
-There is no @code{configure} phase because Zig packages typically do not
-need to be configured.  The @code{#:zig-build-flags} parameter is a list of
-flags that are passed to the @code{zig} command during the build.  The
-@code{#:zig-test-flags} parameter is a list of flags that are passed to the
-@code{zig test} command during the @code{check} phase.  The default compiler
-package can be overridden with the @code{#:zig} argument.
+This build system by default installs package source to output.  This
+behavior can be disabled by setting @code{#:install-source?} parameter
+to @code{#f}.
 
-The optional @code{zig-release-type} parameter declares the type of release.
-Possible values are: @code{safe}, @code{fast}, or @code{small}. The default
-value is @code{#f}, which causes the release flag to be omitted from the
-@code{zig} command.  That results in a @code{debug} build.
+For packages that don't install anything and don't come with a test
+suite (likely library packages to be used by other Zig packages), you
+can set @code{#:skip-build?} parameter to @code{#t}, which skips
+@code{build} and @code{check} phases.
+
+The @code{configure} phase sets up environment for @command{zig build}.
+You need to add custom phases after it if you want to invoke
+@command{zig}.
+
+The @code{#:zig-build-flags} parameter is a list of flags that are
+passed to @command{zig build} in @code{build} phase.  The
+@code{#:zig-test-flags} parameter is a list of flags that are passed to
+@command{zig build test} in @code{check} phase.  The default compiler
+package can be overridden with the @code{#:zig} parameter.
+
+The optional @code{#:zig-release-type} parameter declares the type of
+release.  Possible values are: @code{"safe"}, @code{"fast"}, or
+@code{"small"}.  The default value is @code{#f}, which causes the
+release flag to be omitted from the @code{zig} command and results in a
+@code{"debug"} build.
 @end defvar
 
 @defvar scons-build-system

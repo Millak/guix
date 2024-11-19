@@ -24,6 +24,7 @@
   #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix platform)
+  #:use-module (guix search-paths)
   #:use-module (guix utils)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -33,7 +34,51 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages llvm-meta)
-  #:use-module (gnu packages web))
+  #:use-module (gnu packages web)
+  #:export (add-build.zig.zon
+            rename-zig-dependencies))
+
+(define* (add-build.zig.zon name version dependencies #:optional (paths '("")))
+  "Snippet to generate build.zig.zon of DEPENDENCIES for package NAME@VERSION."
+  `(let ((port (open-file "build.zig.zon" "w" #:encoding "utf8")))
+     (format port "\
+.{
+    .name = \"~a\",
+    .version = \"~a\",
+    .paths = .{
+~{\
+        \"~a\",
+~}\
+    },
+    .dependencies = .{
+~{\
+        .@\"~a\" = .{
+            .url = \"\",
+        },
+~}\
+    },
+}~%" ,name ,version (quote ,paths) (quote ,dependencies))
+     (close-port port)))
+
+(define* (rename-zig-dependencies mapping #:optional (directories '(".")))
+  "Snippet to rename Zig dependencies in build.zig and build.zig.zon."
+  `(begin
+     (use-modules (ice-9 match)
+                  (guix build utils))
+     (for-each
+      (lambda (directory)
+        (for-each
+         (match-lambda
+           ((old-name . new-name)
+            (with-directory-excursion directory
+              (substitute* "build.zig"
+                (((string-append "([Dd]ependency.\")" old-name) _ prefix)
+                 (string-append prefix new-name)))
+              (substitute* "build.zig.zon"
+                (((format #f "\\.(@\")?~a\"?" old-name))
+                 (format #f ".@\"~a\"" new-name))))))
+         (quote ,mapping)))
+      (quote ,directories))))
 
 (define (zig-source version commit hash)
   (origin
@@ -169,16 +214,12 @@
      (list llvm-13
            zig-0.9-glibc-abi-tool))
     (native-search-paths
-     (list
-      (search-path-specification
-       (variable "C_INCLUDE_PATH")
-       (files '("include")))
-      (search-path-specification
-       (variable "CPLUS_INCLUDE_PATH")
-       (files '("include/c++" "include")))
-      (search-path-specification
-       (variable "LIBRARY_PATH")
-       (files '("lib" "lib64")))))
+     (list $C_INCLUDE_PATH
+           $CPLUS_INCLUDE_PATH
+           $LIBRARY_PATH
+           (search-path-specification
+            (variable "GUIX_ZIG_PACKAGE_PATH")
+            (files '("src/zig")))))
     (synopsis "General purpose programming language and toolchain")
     (description "Zig is a general-purpose programming language and
 toolchain.  Among other features it provides

@@ -48,6 +48,8 @@
                     source
                     (tests? #t)
                     (test-target #f)
+                    (install-source? #t)
+                    (skip-build? #f)
                     (zig-build-flags ''())
                     (zig-test-flags ''())
                     (zig-release-type #f)
@@ -68,13 +70,15 @@
                      #:source #+source
                      #:system #$system
                      #:test-target #$test-target
+                     #:install-source? #$install-source?
+                     #:skip-build? #$skip-build?
                      #:zig-build-flags #$zig-build-flags
                      ;; For reproducibility.
                      #:zig-build-target #$(platform-target
                                            (lookup-platform-by-system system))
                      #:zig-test-flags #$zig-test-flags
                      #:zig-release-type #$zig-release-type
-                     #:tests? #$tests?
+                     #:tests? #$(and tests? (not skip-build?))
                      #:phases #$phases
                      #:outputs #$(outputs->gexp outputs)
                      #:search-paths '#$(sexp->gexp
@@ -98,6 +102,8 @@
                           (native-search-paths '())
                           (tests? #t)
                           (test-target #f)
+                          (install-source? #t)
+                          (skip-build? #f)
                           (zig-build-flags ''())
                           (zig-test-flags ''())
                           (zig-destdir "out")
@@ -141,13 +147,15 @@
                      #:native-search-paths '#$(map
                                                 search-path-specification->sexp
                                                 native-search-paths)
+                     #:install-source? #$install-source?
+                     #:skip-build? #$skip-build?
                      #:zig-build-flags #$zig-build-flags
                      #:zig-build-target #$target
                      #:zig-test-flags #$zig-test-flags
                      #:zig-release-type #$zig-release-type
                      #:zig-destdir #$zig-destdir
                      #:zig-test-destdir #$zig-test-destdir
-                     #:tests? #$tests?
+                     #:tests? #$(and tests? (not skip-build?))
                      #:search-paths '#$(sexp->gexp
                                         (map search-path-specification->sexp
                                              search-paths))))))
