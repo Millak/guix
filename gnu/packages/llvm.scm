@@ -170,6 +170,9 @@ as \"x86_64-linux\"."
       (list llvm)
       (if (version>=? version "15")
           (list libffi)
+          '())
+      (if (member (version-major version) (list "10" "11"))
+          (list libxcrypt)
           '())))
     (arguments
      `(;; Don't use '-g' during the build to save space.
