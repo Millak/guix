@@ -123,7 +123,6 @@ exec $pre_inst_env_maybe guix repl -- "$0" "$@"
         #:scope
         (list "gnu/packages/django.scm"
               "gnu/packages/jupyter.scm"
-              ;; Match haskell.scm and haskell-*.scm.
               (make-regexp* "^gnu/packages/python(-.+|)\\.scm$")
               "gnu/packages/sphinx.scm"
               "gnu/packages/tryton.scm"

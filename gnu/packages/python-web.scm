@@ -5088,7 +5088,7 @@ opt.override_default_trust_store_from_path(None, os.getenv('SSL_CERT_FILE')) if 
       #~(list "--numprocesses" (number->string (parallel-job-count))
               ;; Tests require networking.
               "--ignore" "tests/integration"
-              ;; It strugles to set PYTHONPATH.
+              ;; It struggles to set PYTHONPATH.
               ;;
               ;; AssertionError: 'argument operation: Invalid choice, valid
               ;; choices are:' not found in '
