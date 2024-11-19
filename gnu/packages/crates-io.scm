@@ -71006,6 +71006,25 @@ statistical guarantees.")
     (description "This package provides low-level bindings to libseccomp.")
     (license license:lgpl2.1)))
 
+(define-public rust-secfmt-0.1
+  (package
+    (name "rust-secfmt")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "secfmt" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0710fwskvbgz5kzsa3c29j47bs5lbhkn27qabmy9j48phqr39iy8"))))
+    (build-system cargo-build-system)
+    (home-page "https://crates.io/crates/secfmt")
+    (synopsis "Converts seconds into a human readable format")
+    (description
+     "This package provides a way to convert seconds into a human readable
+format (struct) containing years, days, hours, minutes and seconds.")
+    (license license:expat)))
+
 (define-public rust-secrecy-0.8
   (package
     (name "rust-secrecy")
