@@ -23104,7 +23104,7 @@ quality control.")
            r-statmod
            r-summarizedexperiment))
     (native-inputs
-     (list r-knitr))
+     (list r-delayedmatrixstats r-hdf5array r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/scran")
     (synopsis "Methods for single-cell RNA-Seq data analysis")
     (description "This package implements a variety of low-level analyses of
