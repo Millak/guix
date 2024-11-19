@@ -6882,13 +6882,13 @@ flexibility and power of the Python language.")
 (define-public kalamine
   (package
     (name "kalamine")
-    (version "0.36")
+    (version "0.38")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "kalamine" version))
        (sha256
-        (base32 "1xxncavq5a0dydhzpfjdxmqsddl77275d9k9giw1032bdyb9d5is"))))
+        (base32 "0dj0v4in6jngh7f5ypvxyadjsilbiwxj3rx6yxxmh5zab6dxzyhz"))))
     (build-system pyproject-build-system)
     (arguments
      (list
