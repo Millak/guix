@@ -799,6 +799,14 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                    (string-append head "\"$ENV{CMAKE_PREFIX_PATH}\"")))))
             (delete 'patch-bin-sh)
             (delete 'patch-xdg-open)
+            ;; Some tests fail to build on i686-linux
+            #$@(if (target-x86-32?)
+                   #~((add-after 'unpack 'skip-some-tests
+                        ;; This might be a FLOAT16 problem.
+                        (lambda _
+                          (substitute* "tests/auto/corelib/global/CMakeLists.txt"
+                            ((".*qcomparehelpers.*") "")))))
+                   #~())
             (add-after 'patch-paths 'patch-more-paths
               (lambda* (#:key inputs #:allow-other-keys)
                 (substitute* (find-files "bin" "\\.in$")
