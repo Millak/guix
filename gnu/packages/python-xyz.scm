@@ -13526,6 +13526,31 @@ generate MPS or LP files and call GLPK, COIN CLP/CBC, CPLEX, and GUROBI to
 solve linear problems.")
     (license license:expat)))
 
+(define-public python-py-partiql-parser
+  (package
+    (name "python-py-partiql-parser")
+    (version "0.3.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "py-partiql-parser" version))
+       (sha256
+        (base32 "1cnbp1pk1ydgyrqdvdg5aa83qdd6ljrigz40r7kxpmdxqfnz2hak"))))
+    (build-system pyproject-build-system)
+    ;; There are no tests.
+    (arguments (list #:tests? #false))
+    (native-inputs
+     (list python-black
+           python-flake8
+           python-hatchling
+           python-mypy
+           python-pytest))
+    (home-page "https://pypi.org/project/py-partiql-parser/")
+    (synopsis "Pure Python PartiQL Parser")
+    (description "This package provides a tokenizer/parser/executor for the
+PartiQL language, in Python.")
+    (license license:expat)))
+
 (define-public python-py-tes
   (package
     (name "python-py-tes")
