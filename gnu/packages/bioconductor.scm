@@ -1283,6 +1283,27 @@ sequencing.  Using raw count information, Seurat objects, or
 across individual cells.")
     (license license:gpl2)))
 
+(define-public r-sift-hsapiens-dbsnp132
+  (package
+    (name "r-sift-hsapiens-dbsnp132")
+    (version "1.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "SIFT.Hsapiens.dbSNP132" version
+                              'annotation))
+       (sha256
+        (base32 "1akqhmv9hp41q2jrvz4xvpdi30c4c6v4xbz6ykn6pdf0217p7xry"))))
+    (properties `((upstream-name . "SIFT.Hsapiens.dbSNP132")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-annotationdbi r-rsqlite r-variantannotation))
+    (home-page "https://bioconductor.org/packages/SIFT.Hsapiens.dbSNP132")
+    (synopsis "SIFT Predictions for Homo sapiens dbSNP build 132")
+    (description
+     "This package provides a database of SIFT predictions for Homo sapiens
+@code{dbSNP} build 132.")
+    (license license:artistic2.0)))
+
 (define-public r-snplocs-hsapiens-dbsnp144-grch37
   (package
     (name "r-snplocs-hsapiens-dbsnp144-grch37")
