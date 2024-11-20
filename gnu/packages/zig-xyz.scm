@@ -129,6 +129,36 @@ mission-critical safety and performance for financial services.")
     (home-page "https://codeberg.org/ifreund/zig-pixman")
     (license license:expat)))
 
+(define-public zig-wayland
+  (package
+    (name "zig-wayland")
+    (version "0.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://codeberg.org/ifreund/zig-wayland")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1cf5085f6c0yly4fcr49jry3mh12bybw98x5lvickl6w5gxsvy3n"))))
+    (build-system zig-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'configure 'fix-cross-compilation
+                 (lambda _
+                   (substitute* "build.zig"
+                     (("pkg-config") (getenv "PKG_CONFIG"))))))))
+    (propagated-inputs (list wayland wayland-protocols))
+    (native-inputs (list pkg-config wayland))
+    (synopsis "Zig Wayland bindings and protocol scanner")
+    (description
+     "This package provides Zig bindings for @code{wayland} and a @code{Scanner}
+interface.")
+    (home-page "https://codeberg.org/ifreund/zig-wayland")
+    (license license:expat)))
+
 (define-public zig-zls
   (package
     (name "zig-zls")
