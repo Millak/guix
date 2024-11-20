@@ -6216,6 +6216,29 @@ provides an implementation of the Git transport layer.")
 package is used to traverse Git commit graphs and trees.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-traverse-0.39
+  (package
+    (inherit rust-gix-traverse-0.41)
+    (name "rust-gix-traverse")
+    (version "0.39.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-traverse" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0h48bbjym6fkdhy9q7p8v6rn9ksvkwxp8fs1415cyw8ya66a36g4"))))
+    (arguments
+     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-gix-commitgraph" ,rust-gix-commitgraph-0.24)
+                       ("rust-gix-date" ,rust-gix-date-0.8)
+                       ("rust-gix-hash" ,rust-gix-hash-0.14)
+                       ("rust-gix-hashtable" ,rust-gix-hashtable-0.5)
+                       ("rust-gix-object" ,rust-gix-object-0.42)
+                       ("rust-gix-revwalk" ,rust-gix-revwalk-0.13)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-thiserror" ,rust-thiserror-1))))))
+
 (define-public rust-gix-traverse-0.36
   (package
     (inherit rust-gix-traverse-0.41)
