@@ -316,7 +316,8 @@ Hurd-minimal package which are needed for both glibc and GCC.")
     (name "hurd")
     (source (origin
               (inherit (package-source hurd-headers))
-              (patches (search-patches "hurd-rumpdisk-no-hd.patch"
+              (patches (search-patches "hurd-refcounts-assert.patch"
+                                       "hurd-rumpdisk-no-hd.patch"
                                        "hurd-startup.patch"
                                        "hurd-64bit.patch"))))
     (version (package-version hurd-headers))
