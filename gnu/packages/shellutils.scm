@@ -47,6 +47,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
   #:use-module (guix build-system python)
+  #:use-module (gnu packages admin)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bison)
@@ -946,14 +947,19 @@ source ${GUIX_ENVIRONMENT:-$HOME/.guix-profile}/etc/profile.d/grc.sh
                           (string-append "source "
                                          #$output
                                          "/share/liquidprompt/liquidprompt")))))
-		   (add-after 'fix-plugin 'fix-tput-path
-		     (lambda* (#:key inputs #:allow-other-keys)
-		       (substitute* "liquidprompt"
-			 (("([ (])tput " all beginning)
+                   (add-after 'fix-plugin 'fix-utils-path
+                     (lambda* (#:key inputs #:allow-other-keys)
+                       (substitute* "liquidprompt"
+                         (("([ (])\\\\?(tput|hostname|cksum|uname|tty|grep)([) ])"
+                           all beginning command ending)
                           (string-append beginning
-                                         (search-input-file inputs "bin/tput")
-                                         " "))))))))
-    (inputs (list ncurses))
+                                         (search-input-file
+                                          inputs
+                                          (string-append "bin/" command))
+                                         ending))))))))
+    (inputs (list ncurses
+                  coreutils
+                  inetutils))
     (synopsis "Full-featured prompt for Bash & Zsh")
     (description
      "Liquidprompt is an adaptive prompt for Bash and Zsh that gives
