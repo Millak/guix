@@ -7965,6 +7965,8 @@ initiative to bring PASSTEC 2000 functionalities to R.")
               (base32
                "1nqabizmy44c6ip7clg15wljwmd66p7jzzdb3xfsh40bjym1a00g"))))
    (build-system r-build-system)
+   ;; Vignettes require r-psychotree, which depends on this package.
+   (arguments (list #:test-types '(list "tests")))
    (propagated-inputs
     (list r-formula
           r-inum
@@ -7972,6 +7974,7 @@ initiative to bring PASSTEC 2000 functionalities to R.")
           r-mvtnorm
           r-rpart
           r-survival))
+   (native-inputs (list r-aer r-coin r-mlbench r-party r-pmml r-vcd r-xml))
    (home-page "https://partykit.R-Forge.R-project.org/partykit")
    (synopsis "Toolkit for recursive partytioning")
    (description
