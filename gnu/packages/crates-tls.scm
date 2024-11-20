@@ -2010,8 +2010,39 @@ rustls-platform-verifier crate.  You shouldn't depend on this directly.")
 Public Key Infrastructure Certificate format as described in RFC 5280.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-x509-parser-0.16
+  (package
+    (name "rust-x509-parser")
+    (version "0.16.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "x509-parser" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0s8zyl6fafkzpylcpcn08bmcmrzzcb6gfjx2h8zny3bh60pidg7w"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Tests not included in release tarball
+       #:cargo-inputs (("rust-asn1-rs" ,rust-asn1-rs-0.6)
+                       ("rust-data-encoding" ,rust-data-encoding-2)
+                       ("rust-der-parser" ,rust-der-parser-9)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-nom" ,rust-nom-7)
+                       ("rust-oid-registry" ,rust-oid-registry-0.7)
+                       ("rust-ring" ,rust-ring-0.17)
+                       ("rust-rusticata-macros" ,rust-rusticata-macros-4)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-time" ,rust-time-0.3))))
+    (home-page "https://github.com/rusticata/x509-parser")
+    (synopsis "Parser for the X.509 v3 format (RFC 5280 certificates)")
+    (description "This crate provides a parser for the X.509 v3 format (RFC
+5280 certificates).")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-x509-parser-0.15
   (package
+    (inherit rust-x509-parser-0.16)
     (name "rust-x509-parser")
     (version "0.15.1")
     (source (origin
@@ -2021,7 +2052,6 @@ Public Key Infrastructure Certificate format as described in RFC 5280.")
               (sha256
                (base32
                 "1nk3ryam7yzsza735xdypkv1i4c35gqlygax5jyr74bbnsjznsbh"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-asn1-rs" ,rust-asn1-rs-0.5)
@@ -2033,12 +2063,7 @@ Public Key Infrastructure Certificate format as described in RFC 5280.")
         ("rust-ring" ,rust-ring-0.16)
         ("rust-rusticata-macros" ,rust-rusticata-macros-4)
         ("rust-thiserror" ,rust-thiserror-1)
-        ("rust-time" ,rust-time-0.3))))
-    (home-page "https://github.com/rusticata/x509-parser")
-    (synopsis "X.509 parser written in pure Rust")
-    (description "This crate provides a parser for the X.509 v3 format (RFC
-5280 certificates).")
-    (license (list license:expat license:asl2.0))))
+        ("rust-time" ,rust-time-0.3))))))
 
 (define-public rust-x509-parser-0.14
   (package
