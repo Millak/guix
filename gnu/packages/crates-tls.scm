@@ -430,27 +430,37 @@ version of AWS-LC.")
 (define-public rust-aws-lc-rs-1
   (package
     (name "rust-aws-lc-rs")
-    (version "1.6.1")
+    (version "1.11.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "aws-lc-rs" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0jmwpin66yibpq0ha7i61g2ryz9gp4y6by4337fdjj2ckhwbm55v"))))
+        (base32 "0ifz8z5y4qg94ri9vybyv2pq0hr7ds3da1r6rmd08dk2nr02hz7y"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (("\"[=~] ?([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                   (string-append "\"^" version)))))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f          ; Not all files included.
        #:cargo-inputs (("rust-aws-lc-fips-sys" ,rust-aws-lc-fips-sys-0.12)
-                       ("rust-aws-lc-sys" ,rust-aws-lc-sys-0.13)
+                       ("rust-aws-lc-sys" ,rust-aws-lc-sys-0.23)
                        ("rust-mirai-annotations" ,rust-mirai-annotations-1)
                        ("rust-paste" ,rust-paste-1)
                        ("rust-untrusted" ,rust-untrusted-0.7)
                        ("rust-zeroize" ,rust-zeroize-1))
        #:cargo-development-inputs (("rust-clap" ,rust-clap-4)
                                    ("rust-hex" ,rust-hex-0.4)
+                                   ("rust-home" ,rust-home-0.5)
                                    ("rust-lazy-static" ,rust-lazy-static-1)
-                                   ("rust-regex" ,rust-regex-1))))
+                                   ("rust-proc-macro2" ,rust-proc-macro2-1)
+                                   ("rust-regex" ,rust-regex-1)
+                                   ("rust-regex-automata" ,rust-regex-automata-0.3)
+                                   ("rust-regex-syntax" ,rust-regex-syntax-0.7)
+                                   ("rust-which" ,rust-which-5))))
     (native-inputs (list cmake-minimal))
     (home-page "https://github.com/awslabs/aws-lc-rs")
     (synopsis "AWS-LC is a general-purpose cryptographic library")
