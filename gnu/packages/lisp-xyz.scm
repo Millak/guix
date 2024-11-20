@@ -20619,6 +20619,7 @@ determination library using @emph{magic} numbers.")
            sbcl-trivial-garbage))
     (arguments
      (list
+      #:asd-systems ''("magicl" "magicl/ext-expokit")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-paths
