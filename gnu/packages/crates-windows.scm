@@ -45,18 +45,18 @@
 (define-public rust-anstyle-wincon-3
   (package
     (name "rust-anstyle-wincon")
-    (version "3.0.2")
+    (version "3.0.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "anstyle-wincon" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "19v0fv400bmp4niqpzxnhg83vz12mmqv7l2l8vi80qcdxj0lpm8w"))))
+        (base32 "099ir0w3lbpsp1nxdzbf4anq98ww8ykyc9pd1g03xgkj1v7dn291"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-anstyle" ,rust-anstyle-1)
-                       ("rust-windows-sys" ,rust-windows-sys-0.52))
+                       ("rust-windows-sys" ,rust-windows-sys-0.59))
        #:cargo-development-inputs (("rust-lexopt" ,rust-lexopt-0.3))))
     (home-page "https://github.com/rust-cli/anstyle")
     (synopsis "Styling legacy Windows terminals")
