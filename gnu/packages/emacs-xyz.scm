@@ -8176,6 +8176,27 @@ other markup language major modes.")
 configuration, cache, and other data.")
     (license license:gpl3+)))
 
+(define-public emacs-standard-themes
+  (package
+    (name "emacs-standard-themes")
+    (version "2.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://elpa.gnu.org/packages/standard-themes-"
+                           version ".tar"))
+       (sha256
+        (base32 "0x7fphd36kwg4vfwix5rq7260xl6x6cjfwsq11rj4af30sm4hlfn"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/protesilaos/standard-themes")
+    (synopsis "Like the default Emacs theme but more consistent")
+    (description
+     "The standard-themes are a pair of light and dark themes for GNU Emacs.
+They emulate the out-of-the-box looks of Emacs (which technically do
+@emph{not} constitute a theme) while bringing to them thematic consistency,
+customizability, and extensibility.")
+    (license license:gpl3+)))
+
 (define-public emacs-string-inflection
   (package
     (name "emacs-string-inflection")
