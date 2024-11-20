@@ -9519,8 +9519,37 @@ Bresenham's line algorithm.")
 @code{mpsc} pattern to enable broadcasting items.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-brotli-7
+  (package
+    (name "rust-brotli")
+    (version "7.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "brotli" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1g99xay61mds9d23fnfj5gfbd6g11gihfgs3y1abljwldzqvi5yc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-alloc-no-stdlib" ,rust-alloc-no-stdlib-2)
+                       ("rust-alloc-stdlib" ,rust-alloc-stdlib-0.2)
+                       ("rust-brotli-decompressor" ,rust-brotli-decompressor-4)
+                       ("rust-sha2" ,rust-sha2-0.10))))
+    (home-page "https://github.com/dropbox/rust-brotli")
+    (synopsis "Brotli compressor and decompressor")
+    (description
+     "This package provides a brotli compressor and decompressor that with an
+interface avoiding the rust stdlib.  This makes it suitable for embedded devices
+and kernels.  It is designed with a pluggable allocator so that the standard
+lib's allocator may be employed.  The default build also includes a stdlib
+allocator and stream interface.  Disable this with --features=no-stdlib.  All
+included code is safe.")
+    (license (list license:bsd-3 license:expat))))
+
 (define-public rust-brotli-3
   (package
+    (inherit rust-brotli-7)
     (name "rust-brotli")
     (version "3.5.0")
     (source
@@ -9531,19 +9560,12 @@ Bresenham's line algorithm.")
        (sha256
         (base32
          "14f34ml3i8qbnh4hhlv5r6j10bkx420gspsl1cgznl1wqrdx4h6n"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-alloc-no-stdlib" ,rust-alloc-no-stdlib-2)
         ("rust-alloc-stdlib" ,rust-alloc-stdlib-0.2)
         ("rust-brotli-decompressor" ,rust-brotli-decompressor-2)
-        ("rust-sha2" ,rust-sha2-0.10))))
-    (home-page "https://github.com/dropbox/rust-brotli")
-    (synopsis "Brotli compressor and decompressor")
-    (description "This package provides a brotli compressor and decompressor
-with no dependency on the rust stdlib.  This makes it suitable for embedded
-devices and kernels.")
-    (license (list license:bsd-3 license:expat))))
+        ("rust-sha2" ,rust-sha2-0.10))))))
 
 (define-public rust-brotli-decompressor-2
   (package
