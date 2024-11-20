@@ -7826,6 +7826,44 @@ Data were collected and made available by Dr. Kristen Gorman and the Palmer
 Station Long Term Ecological Research (LTER) Program.")
     (license license:cc0)))
 
+(define-public r-party
+  (package
+    (name "r-party")
+    (version "1.3-17")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "party" version))
+       (sha256
+        (base32 "0jvxy9v30aazh9rkvhwz95gaq7s64sasdlsp9ckm1ks3wyqpdq7h"))))
+    (properties `((upstream-name . "party")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-coin
+                             r-modeltools
+                             r-mvtnorm
+                             r-sandwich
+                             r-strucchange
+                             r-survival
+                             r-zoo))
+    (native-inputs (list r-mlbench r-vcd))
+    (home-page "https://party.r-forge.r-project.org")
+    (synopsis "Laboratory for recursive partitioning")
+    (description
+     "This package provides a computational toolbox for recursive
+partitioning.  The core of the package is @code{ctree()}, an implementation of
+conditional inference trees which embed tree-structured regression models into
+a well defined theory of conditional inference procedures.  This
+non-parametric class of regression trees is applicable to all kinds of
+regression problems, including nominal, ordinal, numeric, censored as well as
+multivariate response variables and arbitrary measurement scales of the
+covariates.  Based on conditional inference trees, @code{cforest()} provides
+an implementation of Breiman's random forests.  The function @code{mob()}
+implements an algorithm for recursive partitioning based on parametric
+models (e.g. linear models, GLMs or survival regression) employing parameter
+instability tests for split selection.  Extensible functionality for
+visualizing tree-structured regression models is available.")
+    (license license:gpl2)))
+
 (define-public r-pastecs
   (package
    (name "r-pastecs")
