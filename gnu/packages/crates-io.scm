@@ -74601,14 +74601,14 @@ extensions.")
 (define-public rust-similar-2
   (package
     (name "rust-similar")
-    (version "2.4.0")
+    (version "2.6.0")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "similar" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "08gspd5a2w21k9s641z6fxvrzj34611rcjbjr5685vh9r8da9zij"))))
+                "0vk89dx2mmjp81pmszsa1s3mpzvbiy4krvfbq3s3mc3k27wd9q8x"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
