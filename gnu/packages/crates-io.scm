@@ -17578,14 +17578,14 @@ to the @code{is_x86_feature_detected!} macro.")
 (define-public rust-crates-io-0.40
   (package
     (name "rust-crates-io")
-    (version "0.40.0")
+    (version "0.40.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "crates-io" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1y4f7hjs7wq84qcmfcc5mflp00by9vk2ypkfc1wcz2c8zi6qp58r"))))
+        (base32 "1hzi7k6vcx1mdns3wmpdw16k8hv67rlg41axpqm252vjfw93y7sw"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-curl" ,rust-curl-0.4)
