@@ -6515,7 +6515,7 @@ and fairly speedy.")
 (define-public python-uvicorn
   (package
     (name "python-uvicorn")
-    (version "0.23.2")
+    (version "0.32.0")
     (source
      (origin
        ;; PyPI tarball has no tests.
@@ -6525,17 +6525,19 @@ and fairly speedy.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1qa4cwifss9cnasfr0ffn76rvh7wcfjkl6nw99yz43rjmdpj3h7p"))))
+        (base32 "0csl5drf58yhih6kyl5imkkb1hsv24c99fjkzhr3pmzas0jahf1d"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:test-flags
-           #~(list "-o" "asyncio_mode=auto"
-                   "-k"
-                   (string-join
-                    ;; These error or fail due to networking.
-                    '("not test_keepalive"
-                      "not test_bind_unix_socket_works_with_reload_or_workers")
-                    " and "))))
+     (list
+      #:test-flags
+      '(list "-o" "asyncio_mode=auto")
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'patch-pyproject
+           (lambda _
+             ;; Hatchling doesn't like this.
+             (substitute* "pyproject.toml"
+               ((".*Programming Language :: Python :: 3.13.*") "")))))))
     (native-inputs
      (list python-a2wsgi
            python-hatchling
