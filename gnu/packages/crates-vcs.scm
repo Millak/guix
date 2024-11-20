@@ -6567,6 +6567,33 @@ package contains validation functions for various kinds of names in Git.")
 types and utilities.  Part of Gitoxide a pure Rust implementation of Git.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-worktree-0.34
+  (package
+    (inherit rust-gix-worktree-0.36)
+    (name "rust-gix-worktree")
+    (version "0.34.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-worktree" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "19p7xzrl1i4jw2fhzywqkfd00dn58k9nksll0qi7548bprp35xr6"))))
+    (arguments
+     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-attributes" ,rust-gix-attributes-0.22)
+                       ("rust-gix-features" ,rust-gix-features-0.38)
+                       ("rust-gix-fs" ,rust-gix-fs-0.11)
+                       ("rust-gix-glob" ,rust-gix-glob-0.16)
+                       ("rust-gix-hash" ,rust-gix-hash-0.14)
+                       ("rust-gix-ignore" ,rust-gix-ignore-0.11)
+                       ("rust-gix-index" ,rust-gix-index-0.33)
+                       ("rust-gix-object" ,rust-gix-object-0.42)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-validate" ,rust-gix-validate-0.8)
+                       ("rust-serde" ,rust-serde-1))))))
+
 (define-public rust-gix-worktree-0.29
   (package
     (inherit rust-gix-worktree-0.36)
