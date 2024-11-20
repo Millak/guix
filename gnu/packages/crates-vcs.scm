@@ -4000,6 +4000,34 @@ support.")
 Gitoxide is a pure Rust implementation of Git.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-odb-0.61
+  (package
+    (inherit rust-gix-odb-0.63)
+    (name "rust-gix-odb")
+    (version "0.61.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-odb" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "16xwwfjna9m3rd66hkhcyps6s3bq23r5wpbxpfixi4qxakz89lr0"))))
+    (arguments
+     `(#:cargo-inputs (("rust-arc-swap" ,rust-arc-swap-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-date" ,rust-gix-date-0.8)
+                       ("rust-gix-features" ,rust-gix-features-0.38)
+                       ("rust-gix-fs" ,rust-gix-fs-0.11)
+                       ("rust-gix-hash" ,rust-gix-hash-0.14)
+                       ("rust-gix-object" ,rust-gix-object-0.42)
+                       ("rust-gix-pack" ,rust-gix-pack-0.51)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-quote" ,rust-gix-quote-0.4)
+                       ("rust-parking-lot" ,rust-parking-lot-0.12)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-tempfile" ,rust-tempfile-3)
+                       ("rust-thiserror" ,rust-thiserror-1))))))
+
 (define-public rust-gix-odb-0.56
   (package
     (inherit rust-gix-odb-0.63)
