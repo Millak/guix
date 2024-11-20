@@ -8765,6 +8765,8 @@ compare different dendrograms to one another.")
         (base32 "0rs7y471wrhkgibxdmfh5xhp3pa004rrlm2w08b6qli5gq4im5d2"))))
     (properties `((upstream-name . "dendsort")))
     (build-system r-build-system)
+    ;; Tests fail with: could not find function "context"
+    (arguments (list #:tests? #false))
     (native-inputs (list r-knitr))
     (home-page "https://github.com/evanbiederstedt/dendsort")
     (synopsis "Modular leaf ordering methods for dendrogram nodes")
