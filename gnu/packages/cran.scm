@@ -1823,6 +1823,32 @@ matrix decomposition, sparse principal components analysis, and sparse
 canonical correlation analysis.")
     (license license:gpl2+)))
 
+(define-public r-pmml
+  (package
+    (name "r-pmml")
+    (version "2.5.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "pmml" version))
+       (sha256
+        (base32 "1faad5yqyh6dx40056w74vlyw4wxjgh41jv8b2vf2gh26laf22kk"))))
+    (properties `((upstream-name . "pmml")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-stringr r-xml))
+    (native-inputs (list r-knitr r-testthat))
+    (home-page "https://open-source.softwareag.com/r-pmml/")
+    (synopsis "Generate PMML for various models")
+    (description
+     "The Predictive Model Markup Language (PMML) is an XML-based language
+which provides a way for applications to define machine learning, statistical
+and data mining models and to share models between PMML compliant
+applications.  More information about the PMML industry standard and the Data
+Mining Group can be found at @url{http://dmg.org/}.  The generated PMML can be
+imported into any PMML consuming application, such as Zementis Predictive
+Analytics products.")
+    (license license:gpl3)))
+
 (define-public r-robslopes
   (package
     (name "r-robslopes")
