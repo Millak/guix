@@ -40699,17 +40699,17 @@ This package contains the protobuf logic.")
     (description "This package provides Rust bindings for libspa.")
     (license license:expat)))
 
-(define-public rust-libsqlite3-sys-0.28
+(define-public rust-libsqlite3-sys-0.30
   (package
     (name "rust-libsqlite3-sys")
-    (version "0.28.0")
+    (version "0.30.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "libsqlite3-sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0gzwfw0n2wqgaihcgj65wzd3lclfxyy62gixq8sv6z04fi15h40c"))))
+        (base32 "0jcikvgbj84xc7ikdmpc8m4y5lyqgrb9aqblphwk67kv95xgp69f"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.69)
@@ -40726,6 +40726,28 @@ This package contains the protobuf logic.")
     (description
      "This package provides native Rust bindings to the libsqlite3 library.")
     (license license:expat)))
+
+(define-public rust-libsqlite3-sys-0.28
+  (package
+    (inherit rust-libsqlite3-sys-0.30)
+    (name "rust-libsqlite3-sys")
+    (version "0.28.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libsqlite3-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0gzwfw0n2wqgaihcgj65wzd3lclfxyy62gixq8sv6z04fi15h40c"))))
+    (arguments
+     `(#:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.69)
+                       ("rust-cc" ,rust-cc-1)
+                       ("rust-openssl-sys" ,rust-openssl-sys-0.9)
+                       ("rust-pkg-config" ,rust-pkg-config-0.3)
+                       ("rust-prettyplease" ,rust-prettyplease-0.2)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2)
+                       ("rust-vcpkg" ,rust-vcpkg-0.2))))))
 
 (define-public rust-libsqlite3-sys-0.27
   (package
