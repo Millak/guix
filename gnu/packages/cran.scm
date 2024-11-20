@@ -7538,6 +7538,31 @@ coordinates.")
 complex non-linear objective function with a very large number of optima.")
     (license license:gpl2)))
 
+(define-public r-geos
+  (package
+    (name "r-geos")
+    (version "0.2.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "geos" version))
+       (sha256
+        (base32 "03cxm9rby7qmk9apqk3sh373rnzqcrj23cn6q153gq93lx372b8n"))))
+    (properties `((upstream-name . "geos")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-libgeos r-wk))
+    (native-inputs (list r-testthat))
+    (home-page "https://paleolimbot.github.io/geos/")
+    (synopsis "Open Source Geometry Engine (GEOS) R API")
+    (description
+     "This package provides an R API to the Open Source Geometry Engine (GEOS)
+library and a vector format with which to efficiently store GEOS geometries.
+High-performance functions to extract information from, calculate
+relationships between, and transform geometries are provided.  Finally,
+facilities to import and export geometry vectors to other spatial formats are
+provided.")
+    (license license:expat)))
+
 (define-public r-geosphere
   (package
     (name "r-geosphere")
