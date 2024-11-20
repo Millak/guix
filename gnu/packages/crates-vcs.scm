@@ -6739,6 +6739,32 @@ types and utilities.  Part of Gitoxide a pure Rust implementation of Git.")
 a pure Rust implementation of Git.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-worktree-state-0.11
+  (package
+    (inherit rust-gix-worktree-state-0.13)
+    (name "rust-gix-worktree-state")
+    (version "0.11.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-worktree-state" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1n2wv2fgdryxn1pa0rg2k43lqc7kpjx4665ihnj6f47mnl2n5v9r"))))
+    (arguments
+     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-gix-features" ,rust-gix-features-0.38)
+                       ("rust-gix-filter" ,rust-gix-filter-0.11)
+                       ("rust-gix-fs" ,rust-gix-fs-0.11)
+                       ("rust-gix-glob" ,rust-gix-glob-0.16)
+                       ("rust-gix-hash" ,rust-gix-hash-0.14)
+                       ("rust-gix-index" ,rust-gix-index-0.33)
+                       ("rust-gix-object" ,rust-gix-object-0.42)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-worktree" ,rust-gix-worktree-0.34)
+                       ("rust-io-close" ,rust-io-close-0.3)
+                       ("rust-thiserror" ,rust-thiserror-1))))))
+
 (define-public rust-gix-worktree-state-0.6
   (package
     (inherit rust-gix-worktree-state-0.13)
