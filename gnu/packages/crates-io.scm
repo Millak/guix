@@ -96360,8 +96360,32 @@ implementation that works everywhere, even WASM!")
     (native-inputs '())
     (inputs '())))
 
+(define-public rust-zlib-rs-0.4
+  (package
+    (name "rust-zlib-rs")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "zlib-rs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1rbyn2bd0mi7b60bx7qgxslz90dxfxaxrpk1q5625jb6cpfak91c"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-arbitrary" ,rust-arbitrary-1)
+                       ("rust-quickcheck" ,rust-quickcheck-1))
+       #:cargo-development-inputs (("rust-crc32fast" ,rust-crc32fast-1)
+                                   ("rust-quickcheck" ,rust-quickcheck-1))))
+    (home-page "https://github.com/trifectatechfoundation/zlib-rs")
+    (synopsis "Memory-safe zlib implementation written in Rust")
+    (description
+     "This package provides a memory-safe zlib implementation written in Rust.")
+    (license license:zlib)))
+
 (define-public rust-zlib-rs-0.3
   (package
+    (inherit rust-zlib-rs-0.4)
     (name "rust-zlib-rs")
     (version "0.3.1")
     (source
@@ -96371,16 +96395,10 @@ implementation that works everywhere, even WASM!")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "06kkjpqddvb5n8c24mmd3lmmcsy2yfwfsjyni8dggysayfd7r50b"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-arbitrary" ,rust-arbitrary-1)
                        ("rust-libz-sys" ,rust-libz-sys-1)
-                       ("rust-quickcheck" ,rust-quickcheck-1))))
-    (home-page "https://github.com/trifectatechfoundation/zlib-rs")
-    (synopsis "Memory-safe zlib implementation written in Rust")
-    (description
-     "This package provides a memory-safe zlib implementation written in Rust.")
-    (license license:zlib)))
+                       ("rust-quickcheck" ,rust-quickcheck-1))))))
 
 (define-public rust-zlib-rs-0.1
   (package
