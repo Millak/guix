@@ -102,18 +102,18 @@
 (define-public rust-cargo-credential-wincred-0.4
   (package
     (name "rust-cargo-credential-wincred")
-    (version "0.4.3")
+    (version "0.4.8")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "cargo-credential-wincred" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0bb9yczmk3ral2r20v5c4jzf3l9qp0nmm11i20s0w5inprp9b228"))))
+        (base32 "1idydvigr3car3czf0mm27a5qq6qmci5dilskqh238fpyx8i7z2v"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-cargo-credential" ,rust-cargo-credential-0.4)
-                       ("rust-windows-sys" ,rust-windows-sys-0.52))))
+                       ("rust-windows-sys" ,rust-windows-sys-0.59))))
     (home-page "https://github.com/rust-lang/cargo")
     (synopsis
      "Cargo credential process that stores tokens with Windows Credential Manager")
