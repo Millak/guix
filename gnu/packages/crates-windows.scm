@@ -365,6 +365,28 @@ inclusion of Windows resources in the most resilient fashion imaginable.")
 API library @code{gdi32}.")
     (license license:expat)))
 
+(define-public rust-implib-0.3
+  (package
+    (name "rust-implib")
+    (version "0.3.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "implib" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1n1bcfcsnng54ssf4hjknx87amz61j0kdis94f9kk7gnva07v9r7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-memoffset" ,rust-memoffset-0.9)
+                       ("rust-object" ,rust-object-0.36))))
+    (home-page "https://github.com/messense/implib-rs")
+    (synopsis "Generate Windows import library from module definition file")
+    (description
+     "This package provides a way to generate a Windows import library from a
+module definition file.")
+    (license license:expat)))
+
 (define-public rust-ipconfig-0.3
   (package
     (name "rust-ipconfig")
