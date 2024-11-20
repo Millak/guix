@@ -470,21 +470,21 @@ cryptographic operations.  This library strives to be API-compatible with the
 popular Rust library named ring.")
     (license (list license:isc license:openssl license:asl2.0))))
 
-;; TODO: Unbundle aws-lc.
-(define-public rust-aws-lc-sys-0.13
+(define-public rust-aws-lc-sys-0.23
   (package
     (name "rust-aws-lc-sys")
-    (version "0.13.0")
+    (version "0.23.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "aws-lc-sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "05a7z5hg00zpk4gvqggzv7j6bvljplx2c1kw44ifmxjnf5469rdn"))))
+        (base32 "15igggl0xvzx212di0z4l1hxcvjhlk5ns67iw5yis7p8knd62fmd"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.69)
+                       ("rust-cc" ,rust-cc-1)
                        ("rust-cmake" ,rust-cmake-0.1)
                        ("rust-dunce" ,rust-dunce-1)
                        ("rust-fs-extra" ,rust-fs-extra-1)
@@ -498,6 +498,27 @@ popular Rust library named ring.")
 Cryptography team for AWS and their customers.  It is based on code from the
 Google @code{BoringSSL} project and the @code{OpenSSL} project.")
     (license (list license:isc license:openssl license:asl2.0))))
+
+;; TODO: Unbundle aws-lc.
+(define-public rust-aws-lc-sys-0.13
+  (package
+    (inherit rust-aws-lc-sys-0.23)
+    (name "rust-aws-lc-sys")
+    (version "0.13.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "aws-lc-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "05a7z5hg00zpk4gvqggzv7j6bvljplx2c1kw44ifmxjnf5469rdn"))))
+    (arguments
+     `(#:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.69)
+                       ("rust-cmake" ,rust-cmake-0.1)
+                       ("rust-dunce" ,rust-dunce-1)
+                       ("rust-fs-extra" ,rust-fs-extra-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-paste" ,rust-paste-1))))))
 
 (define-public rust-der-0.7
   (package
