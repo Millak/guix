@@ -19498,6 +19498,30 @@ Cohen (1988).")
 and permutation inference in the framework of Strasser and Weber (1999).")
     (license license:gpl2)))
 
+(define-public r-libgeos
+  (package
+    (name "r-libgeos")
+    (version "3.11.1-2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "libgeos" version))
+       (sha256
+        (base32 "0d4gfcll0z4f57sv8vax2bbc4fvs4da4510qwisd7wf5ghjhsbb0"))))
+    (properties `((upstream-name . "libgeos")))
+    (build-system r-build-system)
+    (native-inputs (list r-testthat))
+    (home-page "https://paleolimbot.github.io/libgeos/")
+    (synopsis "Open Source Geometry Engine (GEOS) C API")
+    (description
+     "This package provides the Open Source Geometry Engine (GEOS) as a C API
+that can be used to write high-performance C and C++ geometry operations using
+R as an interface.  Headers are provided to make linking to and using these
+functions from C++ code as easy and as safe as possible.  This package
+contains an internal copy of the GEOS library to guarantee the best possible
+consistency on multiple platforms.")
+    (license license:lgpl2.1+)))
+
 (define-public r-coin
   (package
     (name "r-coin")
