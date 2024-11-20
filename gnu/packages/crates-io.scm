@@ -11820,14 +11820,14 @@ capabilities.")
 (define-public rust-cargo-credential-libsecret-0.4
   (package
     (name "rust-cargo-credential-libsecret")
-    (version "0.4.3")
+    (version "0.4.8")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "cargo-credential-libsecret" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1mbqys6gv4my81zwxcf12mj5xkpvykd4254hfns1npzqwnmy3lv2"))))
+        (base32 "14v1rnk4pwsfqipllnlkb9vcf1xaj51mpw6i5l0mji82qhidv0vz"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
