@@ -20766,6 +20766,7 @@ package provides a minimal R interface by relying on the Rcpp package.")
            (lambda* (#:key inputs #:allow-other-keys)
              (setenv "TBB_ROOT" (assoc-ref inputs "tbb")))))))
     (inputs (list tbb-2020))
+    (native-inputs (list r-rcpp r-runit))
     (home-page "https://rcppcore.github.io/RcppParallel/")
     (synopsis "Parallel programming tools for Rcpp")
     (description
