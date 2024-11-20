@@ -18484,6 +18484,8 @@ Infinium HumanMethylation 450k assay.")
          "08j0589rwylirna6r4bwk5vb965fp4zpj0msk0mlhppngqzlc2kc"))))
     (properties `((upstream-name . "BiocFileCache")))
     (build-system r-build-system)
+    ;; Tests require internet access.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-curl
            r-dbi
