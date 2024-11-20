@@ -3814,6 +3814,36 @@ functions to handle immutable and mutable git objects with decoding and encoding
 support.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-object-0.42
+  (package
+    (inherit rust-gix-object-0.44)
+    (name "rust-gix-object")
+    (version "0.42.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-object" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "11p3pynmriglj5j3hzh5qa4sz7pnhzxxzr1w85xzmhp7ni32zni5"))))
+    (arguments
+     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-actor" ,rust-gix-actor-0.31)
+                       ("rust-gix-date" ,rust-gix-date-0.8)
+                       ("rust-gix-features" ,rust-gix-features-0.38)
+                       ("rust-gix-hash" ,rust-gix-hash-0.14)
+                       ("rust-gix-utils" ,rust-gix-utils-0.1)
+                       ("rust-gix-validate" ,rust-gix-validate-0.8)
+                       ("rust-itoa" ,rust-itoa-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-winnow" ,rust-winnow-0.6))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.5)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1))))))
+
 (define-public rust-gix-object-0.40
   (package
     (inherit rust-gix-object-0.44)
