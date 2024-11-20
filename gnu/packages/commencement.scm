@@ -3255,13 +3255,32 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
          ;; Since $LIBRARY_PATH is not honored, add the relevant flags.
          #~(let ((zlib (assoc-ref %build-inputs "zlib")))
              (map (lambda (flag)
-                    (if (string-prefix? "LDFLAGS=" flag)
+                    (if #$(if (target-hurd64?)
+                              #~(and (string? flag)
+                                     (string-prefix? "LDFLAGS=" flag))
+                              #~(string-prefix? "LDFLAGS=" flag))
                         (string-append flag " -L"
                                        (assoc-ref %build-inputs "libstdc++")
                                        "/lib -L" zlib "/lib -Wl,-rpath="
                                        zlib "/lib")
                         flag))
-                  #$flags)))
+                  #$(if (target-hurd64?)
+                        `(cons
+                          (string-append
+                           ;;Convince gmp's configure that gcc works
+                           "STAGE_CC_WRAPPER=" (getcwd) "/build/gcc.sh")
+                          ,flags)
+                        flags))))
+        ((#:configure-flags flags)
+         (if (target-hurd64?)
+             #~(append
+                #$flags
+                (list #$(string-append
+                         ;;Convince gmp's configure that gcc works
+                         "CC=gcc"
+                         " -Wno-implicit-function-declaration")
+                      "--disable-plugin"))
+             flags))
         ;; Build again GMP & co. within GCC's build process, because it's hard
         ;; to do outside (because GCC-BOOT0 is a cross-compiler, and thus
         ;; doesn't honor $LIBRARY_PATH, which breaks `gnu-build-system'.)
@@ -3306,7 +3325,19 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
                                                (getenv "CPLUS_INCLUDE_PATH")
                                                #\:))
                                       ":")
-                                     "\nAM_CXXFLAGS = ")))))))))))
+                                     "\nAM_CXXFLAGS = "))))))
+             #$@(if (target-hurd64?)
+                    #~((add-after 'configure 'create-stage-wrapper
+                         (lambda _
+                           (with-output-to-file "gcc.sh"
+                             (lambda _
+                               (format #t "#! ~a/bin/bash
+exec \"$@\" \
+    -Wno-error \
+    -Wno-implicit-function-declaration"
+                                       #$static-bash-for-glibc)))
+                           (chmod "gcc.sh" #o555))))
+                    #~()))))))
 
     ;; This time we want Texinfo, so we get the manual.  Add
     ;; STATIC-BASH-FOR-GLIBC so that it's used in the final shebangs of
