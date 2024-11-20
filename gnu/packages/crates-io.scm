@@ -1661,20 +1661,20 @@ with @code{NativeActivity} or @code{GameActivity}.")
         (base32 "0klq7cp4lm74gjf9p12zdjcr159blbicrfvadmaqvfxbi8njw1dq"))))
     (arguments `(#:skip-build? #true)))) ;XXX: Android only
 
-(define-public rust-android-logger-0.11
+(define-public rust-android-logger-0.13
   (package
     (name "rust-android-logger")
-    (version "0.11.3")
+    (version "0.13.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "android_logger" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0fl8ix7q1cj73lzy6xcwyrqwpvnx5aaxszawidivv9ra4h6bh6c6"))))
+        (base32 "0bvp6lf39q0zykn70lys562kdb14r9dfm91m79jxq53cfi7i7564"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-android-log-sys" ,rust-android-log-sys-0.2)
+     `(#:cargo-inputs (("rust-android-log-sys" ,rust-android-log-sys-0.3)
                        ("rust-env-logger" ,rust-env-logger-0.10)
                        ("rust-log" ,rust-log-0.4)
                        ("rust-once-cell" ,rust-once-cell-1))))
@@ -1684,6 +1684,24 @@ with @code{NativeActivity} or @code{GameActivity}.")
      "This library is a drop-in replacement for @code{env_logger}.  Instead,
 it outputs messages to Android's logcat.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-android-logger-0.11
+  (package
+    (inherit rust-android-logger-0.13)
+    (name "rust-android-logger")
+    (version "0.11.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "android_logger" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0fl8ix7q1cj73lzy6xcwyrqwpvnx5aaxszawidivv9ra4h6bh6c6"))))
+    (arguments
+     `(#:cargo-inputs (("rust-android-log-sys" ,rust-android-log-sys-0.2)
+                       ("rust-env-logger" ,rust-env-logger-0.10)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-once-cell" ,rust-once-cell-1))))))
 
 (define-public rust-android-logger-0.10
   (package
