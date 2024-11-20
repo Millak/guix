@@ -3198,7 +3198,7 @@ keys.  Part of Gitoxide a Rust implementation of Git.")
         (base32 "0bfjbrwmg8w9hi5bv47db272ks8b3385zrkn45l1fh248hr21m0c"))))
     (build-system cargo-build-system)
     (arguments
-     `(#: cargo-test-flags
+     `(#:cargo-test-flags
        (list "--release" "--"
              "--skip=access::tests::entry_by_path_with_conflicting_file")
        #:cargo-inputs
