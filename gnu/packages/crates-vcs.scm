@@ -2311,6 +2311,32 @@ directory walking.")
 This package is part of Gitoxide, a pure Rust implementation of Git.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-discover-0.33
+  (package
+    (inherit rust-gix-discover-0.35)
+    (name "rust-gix-discover")
+    (version "0.33.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-discover" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "03j52f646q05igg4bln6svjxhxiz944khinj7sx33jy3rqqjfrk7"))))
+    (arguments
+     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-dunce" ,rust-dunce-1)
+                       ("rust-gix-fs" ,rust-gix-fs-0.11)
+                       ("rust-gix-hash" ,rust-gix-hash-0.14)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-ref" ,rust-gix-ref-0.45)
+                       ("rust-gix-sec" ,rust-gix-sec-0.10)
+                       ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs (("rust-defer" ,rust-defer-0.2)
+                                   ("rust-is-ci" ,rust-is-ci-1)
+                                   ("rust-serial-test" ,rust-serial-test-3)
+                                   ("rust-tempfile" ,rust-tempfile-3))))))
+
 (define-public rust-gix-discover-0.28
   (package
     (inherit rust-gix-discover-0.35)
