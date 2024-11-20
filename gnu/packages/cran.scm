@@ -11846,6 +11846,8 @@ modeling for empirical income distributions.")
         (base32
          "1k7q3nl437bmg1pylivfykwx4l0k104qkypml5b6xvwkwfn65b4x"))))
     (build-system r-build-system)
+    ;; Vignettes require r-coin, which needs r-vcd.
+    (arguments (list #:test-types '(list "tests")))
     (propagated-inputs
      (list r-colorspace r-lmtest r-mass))
     (home-page "https://cran.r-project.org/web/packages/vcd/")
