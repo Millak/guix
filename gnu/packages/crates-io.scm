@@ -81601,7 +81601,7 @@ that exposes the same functionality at the command line.")
 (define-public rust-tar-0.4
   (package
     (name "rust-tar")
-    (version "0.4.40")
+    (version "0.4.43")
     (source
       (origin
         (method url-fetch)
@@ -81609,7 +81609,7 @@ that exposes the same functionality at the command line.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "1nrd3v2kfhb2zh0a44ag0s2348xjcdxiqx8cl14ir2923zmgqsmi"))))
+          "1xm1l6gg180wq9xrq9vhyyxxpr4kvyh933yjagax05wf7wqrhnf6"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; Test tarballs not included in crate.
