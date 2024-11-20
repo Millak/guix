@@ -228,8 +228,32 @@
                                    ("rust-pem" ,rust-pem-1)
                                    ("rust-trybuild" ,rust-trybuild-1))))))
 
+(define-public rust-asn1-rs-derive-0.5
+  (package
+    (name "rust-asn1-rs-derive")
+    (version "0.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "asn1-rs-derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "140ldl0vp1d0090bpm0w9j8g80dwc03wp928w5kv5diwwlrjsp4n"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2)
+                       ("rust-synstructure" ,rust-synstructure-0.13))))
+    (home-page "https://github.com/rusticata/asn1-rs")
+    (synopsis "Derive macros for the `asn1-rs` crate")
+    (description
+     "This package provides derive macros for the @code{asn1-rs} crate.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-asn1-rs-derive-0.4
   (package
+    (inherit rust-asn1-rs-derive-0.5)
     (name "rust-asn1-rs-derive")
     (version "0.4.0")
     (source (origin
@@ -239,18 +263,12 @@
               (sha256
                (base32
                 "0v7fgmnzk7jjxv51grhwzcx5bf167nlqwk3vcmq7xblf5s4karbj"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1)
-        ("rust-synstructure" ,rust-synstructure-0.12))))
-    (home-page "https://github.com/rusticata/asn1-rs")
-    (synopsis "Derive macros for the `asn1-rs` crate")
-    (description
-     "This package provides derive macros for the @code{asn1-rs} crate.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-synstructure" ,rust-synstructure-0.12))))))
 
 (define-public rust-asn1-rs-derive-0.1
   (package
