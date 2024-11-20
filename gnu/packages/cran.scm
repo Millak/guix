@@ -25979,7 +25979,7 @@ information about geometries.")
            r-s2
            r-units))
     (native-inputs
-     (list pkg-config r-knitr))
+     (list pkg-config r-knitr r-testthat r-tibble))
     (home-page "https://github.com/r-spatial/sf/")
     (synopsis "Simple features for R")
     (description
