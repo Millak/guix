@@ -1822,8 +1822,38 @@ it outputs messages to Android's logcat.")
     ;; The user can choose either license.
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-annotate-snippets-0.11
+  (package
+    (name "rust-annotate-snippets")
+    (version "0.11.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "annotate-snippets" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "14frjyhpm41mn2rn70p9288xny1l0jx70k7d2iy9k9sy9vamxqr4"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anstyle" ,rust-anstyle-1)
+                       ("rust-unicode-width" ,rust-unicode-width-0.1))
+       #:cargo-development-inputs (("rust-anstream" ,rust-anstream-0.6)
+                                   ("rust-criterion" ,rust-criterion-0.5)
+                                   ("rust-difference" ,rust-difference-2)
+                                   ("rust-glob" ,rust-glob-0.3)
+                                   ("rust-serde" ,rust-serde-1)
+                                   ("rust-snapbox" ,rust-snapbox-0.6)
+                                   ("rust-toml" ,rust-toml-0.5)
+                                   ("rust-tryfn" ,rust-tryfn-0.2))))
+    (home-page "https://github.com/rust-lang/annotate-snippets-rs")
+    (synopsis "Library for building code annotations")
+    (description
+     "This package provides a library for building code annotations.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-annotate-snippets-0.10
   (package
+    (inherit rust-annotate-snippets-0.11)
     (name "rust-annotate-snippets")
     (version "0.10.2")
     (source
@@ -1833,7 +1863,6 @@ it outputs messages to Android's logcat.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1rmzxhi079d6j67x1dyv3sjkrc13x6av513cn27pwjl8i5bnd6vd"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-anstyle" ,rust-anstyle-1)
                        ("rust-unicode-width" ,rust-unicode-width-0.1))
@@ -1841,11 +1870,7 @@ it outputs messages to Android's logcat.")
                                    ("rust-difference" ,rust-difference-2)
                                    ("rust-glob" ,rust-glob-0.3)
                                    ("rust-serde" ,rust-serde-1)
-                                   ("rust-toml" ,rust-toml-0.5))))
-    (home-page "https://github.com/rust-lang/annotate-snippets-rs")
-    (synopsis "Library for building code annotations")
-    (description "Library for building code annotations.")
-    (license (list license:asl2.0 license:expat))))
+                                   ("rust-toml" ,rust-toml-0.5))))))
 
 (define-public rust-annotate-snippets-0.9
   (package
