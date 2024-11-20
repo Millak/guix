@@ -3648,6 +3648,75 @@ alignments and perform the following operations:
 files.")
     (license license:expat)))
 
+(define-public python-whatshap
+  (let ((revision "0")
+        (commit "5722d69404532d3172758acd04e77fce734711c7")
+        (base-version "2.3"))
+    (package
+      (name "python-whatshap")
+      (version (git-version base-version revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/whatshap/whatshap")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1f9jgwb2kzhn190lxzhc14ji4flmrrdqh39d0g42qzvr1i19yv7p"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:test-flags
+        '(list "-k"
+               (string-append
+                ;; We have no solver for pulp.
+                "not test_blockcut_sensitivities3 "
+                "and not test_get_optimal_permutations2 "
+                ;; Unknown error with the test file.
+                "and not test_vcf_with_missing_headers "
+                ;; Missing test file.
+                "and not test_matrix"))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'pretend-version
+              (lambda _
+                (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$base-version)))
+            (replace 'check
+              (lambda* (#:key tests? test-flags #:allow-other-keys)
+                (when tests?
+                  ;; Step out of source dir so python does not import from CWD.
+                  (let ((tests (string-append (getcwd) "/tests")))
+                    (with-directory-excursion "/tmp"
+                      (setenv "HOME" "/tmp")
+                      ;; Test data files are looked up relative to the current
+                      ;; directory.
+                      (mkdir-p "tests/")
+                      (copy-recursively (string-append tests "/data")
+                                        "tests/data")
+                      (apply invoke "pytest" "-vv" tests test-flags)))))))))
+      (propagated-inputs (list python-biopython
+                               python-matplotlib
+                               python-networkx
+                               python-pulp
+                               python-pyfaidx
+                               python-scipy
+                               python-xopen))
+      (native-inputs (list python-cython
+                           python-pytest
+                           python-pysam
+                           python-setuptools
+                           python-setuptools-scm
+                           python-sphinx
+                           python-sphinx-issues))
+      (home-page "https://whatshap.readthedocs.io/")
+      (synopsis "Read-based phasing of genomic variants")
+      (description
+       "WhatsHap is software for phasing genomic variants using DNA sequencing
+reads, also called read-based phasing or haplotype assembly.  It is especially
+suitable for long reads, but works also well with short reads.")
+      (license license:expat))))
+
 (define-public bioperl-minimal
   (package
     (name "bioperl-minimal")
