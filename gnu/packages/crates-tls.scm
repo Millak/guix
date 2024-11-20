@@ -40,6 +40,7 @@
   #:use-module (gnu packages crates-windows)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages jemalloc)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages rust-apps)
@@ -1108,8 +1109,67 @@ grammars and BER/DER encodings, for example.")
         ("rust-webpki" ,rust-webpki-0.22)
         ("rust-x509-parser" ,rust-x509-parser-0.12))))))
 
+(define-public rust-rustls-0.23
+  (package
+    (name "rust-rustls")
+    (version "0.23.17")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rustls" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "07lg2b56s3gp3acd8a6yaqbpji8vv3xmv3ay8vaacjy525ap86kz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Not all files included.
+       #:cargo-inputs (("rust-aws-lc-rs" ,rust-aws-lc-rs-1)
+                       ("rust-brotli" ,rust-brotli-7)
+                       ("rust-brotli-decompressor" ,rust-brotli-decompressor-4)
+                       ("rust-hashbrown" ,rust-hashbrown-0.15)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-ring" ,rust-ring-0.17)
+                       ("rust-rustls-pki-types" ,rust-rustls-pki-types-1)
+                       ("rust-rustls-webpki" ,rust-rustls-webpki-0.102)
+                       ("rust-rustversion" ,rust-rustversion-1)
+                       ("rust-subtle" ,rust-subtle-2)
+                       ("rust-zeroize" ,rust-zeroize-1)
+                       ("rust-zlib-rs" ,rust-zlib-rs-0.4))
+       #:cargo-development-inputs
+       (("rust-base64" ,rust-base64-0.22)
+        ("rust-bencher" ,rust-bencher-0.1)
+        ("rust-clap" ,rust-clap-4)
+        ("rust-env-logger" ,rust-env-logger-0.10)
+        ("rust-hex" ,rust-hex-0.4)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-num-bigint" ,rust-num-bigint-0.4)
+        ("rust-rcgen" ,rust-rcgen-0.13)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-tikv-jemallocator" ,rust-tikv-jemallocator-0.6)
+        ("rust-time" ,rust-time-0.3)
+        ("rust-webpki-roots" ,rust-webpki-roots-0.26))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'configure 'override-jemalloc
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let ((jemalloc (assoc-ref inputs "jemalloc")))
+               ;; This flag is needed when not using the bundled jemalloc.
+               ;; https://github.com/tikv/jemallocator/issues/19
+               (setenv "CARGO_FEATURE_UNPREFIXED_MALLOC_ON_SUPPORTED_PLATFORMS" "1")
+               (setenv "JEMALLOC_OVERRIDE"
+                       (string-append jemalloc "/lib/libjemalloc_pic.a"))))))))
+    (inputs (list jemalloc))
+    (home-page "https://github.com/rustls/rustls")
+    (synopsis "Modern TLS library written in Rust")
+    (description
+     "This package provides a modern TLS library written in Rust.")
+    (license (list license:asl2.0 license:isc license:expat))))
+
 (define-public rust-rustls-0.22
   (package
+    (inherit rust-rustls-0.23)
     (name "rust-rustls")
     (version "0.22.2")
     (source
@@ -1119,7 +1179,6 @@ grammars and BER/DER encodings, for example.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0hcxyhq6ynvws9v5b2h81s1nwmijmya7a3vyyyhsy1wqpmb9jz78"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f          ; Not all files included.
        #:cargo-inputs (("rust-aws-lc-rs" ,rust-aws-lc-rs-1)
@@ -1135,12 +1194,7 @@ grammars and BER/DER encodings, for example.")
                                    ("rust-env-logger" ,rust-env-logger-0.10)
                                    ("rust-log" ,rust-log-0.4)
                                    ("rust-rustls-pemfile" ,rust-rustls-pemfile-2)
-                                   ("rust-webpki-roots" ,rust-webpki-roots-0.26))))
-    (home-page "https://github.com/rustls/rustls")
-    (synopsis "Modern TLS library written in Rust")
-    (description
-     "This package provides a modern TLS library written in Rust.")
-    (license (list license:asl2.0 license:isc license:expat))))
+                                   ("rust-webpki-roots" ,rust-webpki-roots-0.26))))))
 
 (define-public rust-rustls-0.21
   (package
