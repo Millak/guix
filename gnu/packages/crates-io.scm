@@ -72839,18 +72839,19 @@ format to another.")
 (define-public rust-serde-untagged-0.1
   (package
     (name "rust-serde-untagged")
-    (version "0.1.4")
+    (version "0.1.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "serde-untagged" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1b2x30zczv16q6xakjlh1mhn6y1m2ww994szxfhlnryqfc1y13jc"))))
+        (base32 "1dn5nmkmbpc0x50ai3lp307pdf50dzd8wb5xbjp5rxw2pncvlxi6"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-erased-serde" ,rust-erased-serde-0.4)
-                       ("rust-serde" ,rust-serde-1))
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-typeid" ,rust-typeid-1))
        #:cargo-development-inputs (("rust-serde-derive" ,rust-serde-derive-1)
                                    ("rust-serde-json" ,rust-serde-json-1)
                                    ("rust-toml" ,rust-toml-0.8))))
