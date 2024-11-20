@@ -19506,14 +19506,6 @@ and permutation inference in the framework of Strasser and Weber (1999).")
         (base32
          "0x5rh002w4xgczbvnh7qfv3qv4iv7p6vdrwwyvchqmzgygdh4qwa"))))
     (build-system r-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         ;; This test fails because the file has an invalid encoding
-         (add-after 'unpack 'remove-test-file-with-latin-encoding
-           (lambda _
-             (delete-file "tests/regtest_size.R"))))))
     (propagated-inputs
      (list r-libcoin
            r-matrixstats
@@ -19521,6 +19513,7 @@ and permutation inference in the framework of Strasser and Weber (1999).")
            r-multcomp
            r-mvtnorm
            r-survival))
+    (native-inputs (list r-e1071 r-vcd r-xtable))
     (home-page "https://coin.r-forge.r-project.org")
     (synopsis "Conditional inference procedures in a permutation test framework")
     (description
