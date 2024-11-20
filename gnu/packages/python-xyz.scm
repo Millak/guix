@@ -3,7 +3,7 @@
 ;;; Copyright © 2013-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013, 2014, 2015, 2016, 2019, 2023 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2014, 2015 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2014, 2017, 2021, 2022 Eric Bavier <bavier@posteo.net>
+;;; Copyright © 2014, 2017, 2021, 2022, 2024 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2014, 2015 Federico Beffa <beffa@fbengineering.ch>
 ;;; Copyright © 2015 Omar Radwan <toxemicsquire4@gmail.com>
 ;;; Copyright © 2015 Pierre-Antoine Rault <par@rigelk.eu>
@@ -15339,6 +15339,24 @@ checksums.  It implement more than a hundred checksum routines.")
     (synopsis "Manage Python errors with ease")
     (description
      "Python library that makes exceptions handling and inspection easier.")
+    (license license:expat)))
+
+(define-public python-stdio-mgr
+  (package
+    (name "python-stdio-mgr")
+    (version "1.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "stdio-mgr" version))
+       (sha256
+        (base32 "11j1kxxrp76vm6l8wvfnw50fb6lmckxf25nkra70jpiacd8kn73q"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-attrs))
+    (home-page "https://github.com/bskinn/stdio-mgr")
+    (synopsis "Context manager for mocking/wrapping stdin/stdout/stderr")
+    (description "This package contains a context manager for mocking/wrapping
+stdin/stdout/stderr.")
     (license license:expat)))
 
 (define-public python-stdlib-list
