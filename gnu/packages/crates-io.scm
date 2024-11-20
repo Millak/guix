@@ -89389,6 +89389,24 @@ and XXH3 algorithms.")
                        ("rust-quote" ,rust-quote-1)
                        ("rust-syn" ,rust-syn-2))))))
 
+(define-public rust-typeid-1
+  (package
+    (name "rust-typeid")
+    (version "1.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "typeid" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0vi32jv3s3nbybbl4r317wi2bk8j4fx4d8p88jji8pnd1hpdn4qf"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/dtolnay/typeid")
+    (synopsis "Const TypeId and non-'static TypeId")
+    (description
+     "This package provides @code{TypeId} and non-'static @code{TypeId}.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-typemap-0.3
   (package
     (name "rust-typemap")
