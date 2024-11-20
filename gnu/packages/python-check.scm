@@ -21,6 +21,7 @@
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2024 Navid Afkhami <navid.afkhami@mdc-berlin.de>
 ;;; Copyright © 2024 David Elsing <david.elsing@posteo.net>
+;;; Copyright © 2024 Eric Bavier <bavier@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1197,6 +1198,25 @@ support and @code{subtests} fixture.")
     (description "This package provides a Pytest plugin for customizing string
 representations of doctest results.  It can change the display hook used by
 doctest to render the object representations.")
+    (license license:expat)))
+
+(define-public python-pytest-check
+  (package
+    (name "python-pytest-check")
+    (version "2.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest_check" version))
+       (sha256
+        (base32 "0l7n2jhadbkmqr8kzja8zwclhjvhc87qsgr5v867zgsry37fy92j"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-flit-core))
+    (propagated-inputs (list python-pytest))
+    (home-page "https://github.com/okken/pytest-check")
+    (synopsis "Pytest plugin to allow multiple failures")
+    (description "This package provides a pytest plugin that allows multiple
+failures per test.")
     (license license:expat)))
 
 (define-public python-pytest-checkdocs
