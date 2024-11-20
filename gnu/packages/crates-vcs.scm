@@ -3550,6 +3550,26 @@ implementation of Git.")
 Gitoxide, a pure Rust implementation of Git.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-mailmap-0.23
+  (package
+    (inherit rust-gix-mailmap-0.24)
+    (name "rust-gix-mailmap")
+    (version "0.23.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-mailmap" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "024jy339znwi11pz826favmn6in5fn73ygskq33r19dnxnkaqvgg"))))
+    (arguments
+     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-actor" ,rust-gix-actor-0.31)
+                       ("rust-gix-date" ,rust-gix-date-0.8)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-1))))))
+
 (define-public rust-gix-mailmap-0.21
   (package
     (inherit rust-gix-mailmap-0.24)
