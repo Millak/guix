@@ -1,0 +1,34 @@
+See suggestion in https://github.com/bskinn/sphobjinv/issues/275
+
+This prevents the module from creating an ssl context upon import, when,
+during a build especially, a certificate file may not be present.  Otherwise
+module import would fail.
+
+--- a/src/sphobjinv/inventory.py
++++ b/src/sphobjinv/inventory.py
+@@ -30,7 +30,6 @@ Sphinx |objects.inv| files.
+ """
+ 
+ import re
+-import ssl
+ import urllib.request as urlrq
+ from zlib import error as zlib_error
+ 
+@@ -218,8 +217,15 @@ class Inventory:
+     #: zlib compression line for v2 |objects.inv| header
+     header_zlib = "# The remainder of this file is compressed using zlib."
+ 
+-    # Private class member for SSL context, since context creation is slow(?)
+-    _sslcontext = ssl.create_default_context(cafile=certifi.where())
++    # Private class member for SSL context
++    _sslcontext_ = None
++
++    @property
++    def _sslcontext(self):
++        import ssl
++        if not self._sslcontext_:
++            self._sslcontext_ = ssl.create_default_context(cafile=certifi.where())
++        return self._sslcontext_
+ 
+     @property
+     def count(self):

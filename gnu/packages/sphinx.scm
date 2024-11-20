@@ -1092,18 +1092,30 @@ executed during the Sphinx build process.")
 (define-public python-sphobjinv
   (package
     (name "python-sphobjinv")
-    (version "2.0.1")
+    (version "2.3.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sphobjinv" version))
        (sha256
         (base32
-         "126lgm54c94ay3fci512ap4l607gak90pbz0fk98syxvj5izrrzx"))))
+         "10x4g92agj6aai0lj0xpcx58zlm1zamzws1w9dczsl1izpz07ij7"))
+       (patches (search-patches
+                 "python-sphobjinv-defer-ssl-import.patch"))))
     (build-system python-build-system)
+    (arguments
+     (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (replace 'check
+             (lambda* (#:key tests? #:allow-other-keys)
+               (when tests?
+                 (invoke "pytest")))))))
+    (native-inputs
+     (list python-dictdiffer python-pytest python-pytest-check
+           python-sphinx python-stdio-mgr))
     (propagated-inputs
-     (list python-attrs python-certifi python-fuzzywuzzy
-           python-jsonschema python-levenshtein))
+     (list python-attrs python-certifi python-jsonschema))
     (home-page "https://github.com/bskinn/sphobjinv")
     (synopsis "Sphinx cross-reference tool")
     (description "Sphinx objects.inv inspection/manipulation tool.")
