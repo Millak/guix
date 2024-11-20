@@ -28499,6 +28499,7 @@ the graph, and propagating graph labels.")
                 "13r944b9ip078hqwdpzn3jv21zm47d9l2b1f5y6glcj5pxs9iwy3"))))
     (properties `((upstream-name . "scs")))
     (build-system r-build-system)
+    (native-inputs (list r-matrix r-slam))
     (home-page "https://github.com/FlorianSchwendinger/scs")
     (synopsis "Splitting conic solver")
     (description
