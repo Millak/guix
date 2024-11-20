@@ -19,6 +19,7 @@
 ;;; Copyright © 2022 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2023 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2024 Noisytoot <ron@noisytoot.org>
+;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -511,7 +512,7 @@ desktops.")
 (define-public qbittorrent
   (package
     (name "qbittorrent")
-    (version "5.0.1")
+    (version "5.0.2")
     (source
      (origin
        (method git-fetch)
@@ -520,7 +521,7 @@ desktops.")
              (commit (string-append "release-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "03kqir7jyrzblg4642gnf2pp8f0x68njgaalmq8qjh7dcx0d6rq6"))))
+        (base32 "0dh3zn8r05s1jfixm7gxzhvvili8k92n6chz0g3qhd8m17613194"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
