@@ -5530,6 +5530,30 @@ and the Viterbi algorithm.  The algorithms are based of those of Walter
 Zucchini.")
    (license license:gpl2+)))
 
+(define-public r-hsaur3
+  (package
+    (name "r-hsaur3")
+    (version "1.0-15")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "HSAUR3" version))
+       (sha256
+        (base32 "17yg6ql9c88pg5higmrvhnavx6hcbr4nm5r65d8q3iqfkgnc6ym1"))))
+    (properties `((upstream-name . "HSAUR3")))
+    (build-system r-build-system)
+    (home-page "https://cran.r-project.org/package=HSAUR3")
+    (synopsis "Handbook of Statistical Analyses Using R (3rd Edition)")
+    (description
+     "This package provides functions, data sets, analyses and examples from
+the third edition of the book A Handbook of Statistical Analyses Using
+R (Torsten Hothorn and Brian S. Everitt, Chapman & Hall/CRC, 2014).  The first
+chapter of the book, which is entitled An Introduction to R, is completely
+included in this package, for all other chapters, a vignette containing all
+data analyses is available.  In addition, Sweave source code for slides of
+selected chapters is included in this package.")
+    (license license:gpl2)))
+
 (define-public r-httpuv
   (package
     (name "r-httpuv")
