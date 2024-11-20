@@ -1044,10 +1044,6 @@ tst_qt_cmake_create.cpp"
                                  ;; v3.normalized()' returned FALSE. ()
                                  "tst_qvectornd"
 
-                                 ;; Actual   (qRed(p))  : 11
-                                 ;; Expected (qGreen(p)): 10
-                                 "tst_qcolorspace"
-
                                  ;; Actual   (dv.validate(value, dummy)): Invalid
                                  ;; Expected (standard_state)           : Intermediate
                                  "tst_qdoublevalidator")))
