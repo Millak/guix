@@ -33089,6 +33089,7 @@ Johnson-Graybill, LBI, Tusell and modified Tukey non-additivity tests.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-class r-lattice r-modeltools))
+    (native-inputs (list r-ellipse))
     (home-page "https://cran.r-project.org/web/packages/flexclust/")
     (synopsis "Flexible cluster algorithms")
     (description
