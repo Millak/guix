@@ -25405,17 +25405,18 @@ deserialized from environment variables.")
 (define-public rust-erased-serde-0.4
   (package
     (name "rust-erased-serde")
-    (version "0.4.1")
+    (version "0.4.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "erased-serde" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "02kwm9a115ivksjsgv4l17mryf626yk7g14wq6jx6sz07ycg1nsa"))))
+        (base32 "13dirfj9972nvk05b20w3xyn3xp1j6qyfp9avhksnkxbcnfkiqi4"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-serde" ,rust-serde-1))
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1)
+                       ("rust-typeid" ,rust-typeid-1))
        #:cargo-development-inputs (("rust-rustversion" ,rust-rustversion-1)
                                    ("rust-serde-cbor" ,rust-serde-cbor-0.11)
                                    ("rust-serde-derive" ,rust-serde-derive-1)
