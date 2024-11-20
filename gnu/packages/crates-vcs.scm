@@ -2644,6 +2644,35 @@ compile-time feature flags.")
 Git filters in Rust.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-filter-0.11
+  (package
+    (inherit rust-gix-filter-0.13)
+    (name "rust-gix-filter")
+    (version "0.11.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-filter" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "06m6ph3b67696ckq5gfn9pwm77sh507km7sfzx6my9r8v8w7fm76"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bstr" ,rust-bstr-1)
+        ("rust-encoding-rs" ,rust-encoding-rs-0.8)
+        ("rust-gix-attributes" ,rust-gix-attributes-0.22)
+        ("rust-gix-command" ,rust-gix-command-0.3)
+        ("rust-gix-hash" ,rust-gix-hash-0.14)
+        ("rust-gix-object" ,rust-gix-object-0.42)
+        ("rust-gix-packetline-blocking" ,rust-gix-packetline-blocking-0.17)
+        ("rust-gix-path" ,rust-gix-path-0.10)
+        ("rust-gix-quote" ,rust-gix-quote-0.4)
+        ("rust-gix-trace" ,rust-gix-trace-0.1)
+        ("rust-gix-utils" ,rust-gix-utils-0.1)
+        ("rust-smallvec" ,rust-smallvec-1)
+        ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs (("rust-serial-test" ,rust-serial-test-3))))))
+
 (define-public rust-gix-filter-0.8
   (package
     (inherit rust-gix-filter-0.13)
