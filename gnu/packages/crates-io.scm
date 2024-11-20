@@ -68822,14 +68822,14 @@ rustc compiler.")
 (define-public rust-rustfix-0.8
   (package
     (name "rust-rustfix")
-    (version "0.8.1")
+    (version "0.8.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rustfix" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1975qnw1rdd1bsj8qzii0vx0mdxv4946xp4gfprmvnj6f04lp1l1"))))
+        (base32 "09d3jy7c7zzqsphj836shjp55qq30lkj404wnfhlhvas81kb1clg"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-serde" ,rust-serde-1)
