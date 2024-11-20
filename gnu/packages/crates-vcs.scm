@@ -5107,6 +5107,26 @@ Part of Gitoxide, a project to create a pure Rust Git implementation.")
 a pure Rust implementation of Git.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-refspec-0.23
+  (package
+    (inherit rust-gix-refspec-0.25)
+    (name "rust-gix-refspec")
+    (version "0.23.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-refspec" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0drzc1p43mc8nprxlqm4s86y9b23rsz89dvqghgmsmb25v6zhs38"))))
+    (arguments
+     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-gix-hash" ,rust-gix-hash-0.14)
+                       ("rust-gix-revision" ,rust-gix-revision-0.27)
+                       ("rust-gix-validate" ,rust-gix-validate-0.8)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-thiserror" ,rust-thiserror-1))))))
+
 (define-public rust-gix-refspec-0.21
   (package
     (inherit rust-gix-refspec-0.25)
