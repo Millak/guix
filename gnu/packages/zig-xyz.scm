@@ -141,6 +141,30 @@ mission-critical safety and performance for financial services.")
 @code{ext-session-lock-v1} protocol.")
     (license license:expat)))
 
+(define-public zig-diffz
+  (let ((commit "420fcb22306ffd4c9c3c761863dfbb6bdbb18a73")
+        (revision "0"))
+    (package
+      (name "zig-diffz")
+      (version (git-version "0.0.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/ziglibs/diffz")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0rbcprl2c1kbd7xfwdqycz8r5grm069fcy6fafi14cnak77i0xyi"))))
+      (build-system zig-build-system)
+      (arguments (list #:skip-build? #t))
+      (synopsis "Implementation of go-diff's diffmatchpatch in Zig")
+      (description
+       "This package provides a Zig implementation of @code{diffmatchpatch} in
+@code{go-github-com-sergi-go-diff}.")
+      (home-page "https://github.com/ziglibs/diffz")
+      (license license:expat))))
+
 (define-public zig-pixman
   (package
     (name "zig-pixman")
