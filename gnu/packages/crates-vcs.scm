@@ -1170,6 +1170,31 @@ package provides a way to identify Git actors.")
      "This package provides archive generation from of a worktree stream.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-archive-0.13
+  (package
+    (inherit rust-gix-archive-0.15)
+    (name "rust-gix-archive")
+    (version "0.13.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-archive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1m4nwxcfrivnf74kx38sxgcalba8nbl2fq4xlvad28q2vzmvpdk3"))))
+    (arguments
+     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-flate2" ,rust-flate2-1)
+                       ("rust-gix-date" ,rust-gix-date-0.8)
+                       ("rust-gix-object" ,rust-gix-object-0.42)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-worktree-stream" ,rust-gix-worktree-stream-0.13)
+                       ("rust-tar" ,rust-tar-0.4)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-time" ,rust-time-0.3)
+                       ("rust-zip" ,rust-zip-2))))))
+
 (define-public rust-gix-archive-0.8
   (package
     (inherit rust-gix-archive-0.15)
