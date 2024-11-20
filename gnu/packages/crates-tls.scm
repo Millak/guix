@@ -44,7 +44,8 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages rust-apps)
-  #:use-module (gnu packages tls))
+  #:use-module (gnu packages tls)
+  #:use-module (gnu packages valgrind))
 
 (define-public rust-asn1-0.15
   (package
@@ -1617,18 +1618,25 @@ PEM-encodings commonly used to store keys and certificates at rest.")
 (define-public rust-rustls-pki-types-1
   (package
     (name "rust-rustls-pki-types")
-    (version "1.7.0")
+    (version "1.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rustls-pki-types" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0banlc9xzwqrx8n0h4bd0igmq3z5hc72rn941lf22cp3gkkraqlp"))))
+        (base32 "0jv78c32pgf1i0bn7rzf4xdr9qh5wsvigp6akc1yhzls7hdj1w8n"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (substitute* "Cargo.toml"
+                   (("\"=([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                    (string-append "\"^" version)))))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-web-time" ,rust-web-time-1))))
+       (("rust-web-time" ,rust-web-time-1))
+       #:cargo-development-inputs (("rust-crabgrind" ,rust-crabgrind-0.1))))
+    (native-inputs (list valgrind))
     (home-page "https://github.com/rustls/pki-types")
     (synopsis "Shared types for the rustls PKI ecosystem")
     (description
