@@ -10693,6 +10693,34 @@ displays of path diagrams, factor analysis and structural equation models are
 created using basic graphics.")
     (license license:gpl2+)))
 
+(define-public r-psychotools
+  (package
+    (name "r-psychotools")
+    (version "0.7-4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "psychotools" version))
+       (sha256
+        (base32 "197hym0fxfsyg6kf0pf9g5wbsa1kkicd4lqrxfy2g3c7aczad9zy"))))
+    (properties `((upstream-name . "psychotools")))
+    (build-system r-build-system)
+    (home-page "https://cran.r-project.org/package=psychotools")
+    (synopsis "Psychometric modeling infrastructure")
+    (description
+     "This package provides infrastructure for psychometric modeling such as
+data classes (for item response data and paired comparisons), basic model
+fitting functions (for Bradley-Terry, Rasch, parametric logistic IRT,
+generalized partial credit, rating scale, multinomial processing tree models),
+extractor functions for different types of parameters (item, person,
+threshold, discrimination, guessing, upper asymptotes), unified inference and
+visualizations, and various datasets for illustration.  It is intended as a
+common lightweight and efficient toolbox for psychometric modeling and a
+common building block for fitting psychometric mixture models in package
+@code{psychomix} and trees based on psychometric models in package
+@code{psychotree}.")
+    (license (list license:gpl2 license:gpl3))))
+
 (define-public r-generics
   (package
     (name "r-generics")
