@@ -165,6 +165,29 @@ mission-critical safety and performance for financial services.")
       (home-page "https://github.com/ziglibs/diffz")
       (license license:expat))))
 
+(define-public zig-known-folders
+  (let ((commit "1cceeb70e77dec941a4178160ff6c8d05a74de6f")
+        (revision "0"))
+    (package
+      (name "zig-known-folders")
+      (version (git-version "0.7.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/ziglibs/known-folders")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1kr58ragd6nk29ps0fwc4r3zxv2javkiq4vny4zwx6wqqid98nld"))))
+      (build-system zig-build-system)
+      (synopsis "Zig library to access well-known folders")
+      (description
+       "This package provides a Zig library for accessing well-known folders
+across several operating systems.")
+      (home-page "https://github.com/ziglibs/known-folders")
+      (license license:expat))))
+
 (define-public zig-pixman
   (package
     (name "zig-pixman")
