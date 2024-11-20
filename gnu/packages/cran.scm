@@ -10721,6 +10721,28 @@ common building block for fitting psychometric mixture models in package
 @code{psychotree}.")
     (license (list license:gpl2 license:gpl3))))
 
+(define-public r-psychotree
+  (package
+    (name "r-psychotree")
+    (version "0.16-1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "psychotree" version))
+       (sha256
+        (base32 "04ipl6kadfvyl28wx8jbpisb4pcswrwq1qiqm90h47ldbnmha932"))))
+    (properties `((upstream-name . "psychotree")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-formula r-partykit r-psychotools))
+    (home-page "https://cran.r-project.org/package=psychotree")
+    (synopsis "Recursive Partitioning Based on Psychometric Models")
+    (description
+     "Recursive partitioning based on psychometric models, employing the general MOB
+algorithm (from package partykit) to obtain Bradley-Terry trees, Rasch trees,
+rating scale and partial credit trees, and MPT trees, trees for 1PL, 2PL, 3PL
+and 4PL models and generalized partial credit models.")
+    (license (list license:gpl2 license:gpl3))))
+
 (define-public r-generics
   (package
     (name "r-generics")
