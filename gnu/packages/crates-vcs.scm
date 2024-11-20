@@ -5390,6 +5390,27 @@ handles finding names and parsing specifications.")
 Gitoxide, a pure Rust implementation of Git.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-revwalk-0.13
+  (package
+    (inherit rust-gix-revwalk-0.15)
+    (name "rust-gix-revwalk")
+    (version "0.13.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-revwalk" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1q23mcf4ji5q8qi3g86vxxgz4x4ykgqja0kyacgi9bvimg50q0qv"))))
+    (arguments
+     `(#:cargo-inputs (("rust-gix-commitgraph" ,rust-gix-commitgraph-0.24)
+                       ("rust-gix-date" ,rust-gix-date-0.8)
+                       ("rust-gix-hash" ,rust-gix-hash-0.14)
+                       ("rust-gix-hashtable" ,rust-gix-hashtable-0.5)
+                       ("rust-gix-object" ,rust-gix-object-0.42)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-thiserror" ,rust-thiserror-1))))))
+
 (define-public rust-gix-revwalk-0.11
   (package
     (inherit rust-gix-revwalk-0.15)
