@@ -3232,6 +3232,45 @@ keys.  Part of Gitoxide a Rust implementation of Git.")
 crate implements the Git index file.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-index-0.33
+  (package
+    (inherit rust-gix-index-0.35)
+    (name "rust-gix-index")
+    (version "0.33.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-index" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0gyply1fzp0wbl8jvckiw4hyv34na7lq0jd4z14bp15xapml96ls"))))
+    (arguments
+     `(#:cargo-test-flags
+       (list "--release" "--"
+             "--skip=access::tests::entry_by_path_with_conflicting_file")
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-filetime" ,rust-filetime-0.2)
+                       ("rust-fnv" ,rust-fnv-1)
+                       ("rust-gix-bitmap" ,rust-gix-bitmap-0.2)
+                       ("rust-gix-features" ,rust-gix-features-0.38)
+                       ("rust-gix-fs" ,rust-gix-fs-0.11)
+                       ("rust-gix-hash" ,rust-gix-hash-0.14)
+                       ("rust-gix-lock" ,rust-gix-lock-14)
+                       ("rust-gix-object" ,rust-gix-object-0.42)
+                       ("rust-gix-traverse" ,rust-gix-traverse-0.39)
+                       ("rust-gix-utils" ,rust-gix-utils-0.1)
+                       ("rust-gix-validate" ,rust-gix-validate-0.8)
+                       ("rust-hashbrown" ,rust-hashbrown-0.14)
+                       ("rust-itoa" ,rust-itoa-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-memmap2" ,rust-memmap2-0.9)
+                       ("rust-rustix" ,rust-rustix-0.38)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-thiserror" ,rust-thiserror-1))))))
+
 (define-public rust-gix-index-0.28
   (package
     (inherit rust-gix-index-0.35)
