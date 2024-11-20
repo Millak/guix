@@ -72396,14 +72396,14 @@ derive macros.")
 (define-public rust-serde-ignored-0.1
   (package
     (name "rust-serde-ignored")
-    (version "0.1.9")
+    (version "0.1.10")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "serde_ignored" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "199c91ddk6p132xavn6hm3idw55j1c5a5xbhww4g4fgxadf1vhw0"))))
+        (base32 "1psdv0ahmxgw4l3dg341j5q2k09d7glj93v01mm14lhvdniikqx8"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
