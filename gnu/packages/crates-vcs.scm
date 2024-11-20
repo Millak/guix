@@ -6502,14 +6502,14 @@ package contains validation functions for various kinds of names in Git.")
   (package
     (inherit rust-gix-validate-0.9)
     (name "rust-gix-validate")
-    (version "0.8.4")
+    (version "0.8.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gix-validate" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0i8m4jv53yn8nhp2niifb03p6lcyj1sd8d6x36n5x624c3hcd7z3"))))
+        (base32 "1kqad8a2wdz69ma7hspi21pazgpkrc5hg4iw37gsvca99b9pvhl2"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
