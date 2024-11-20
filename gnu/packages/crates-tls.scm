@@ -1845,26 +1845,26 @@ PEM-encodings commonly used to store keys and certificates at rest.")
 (define-public rust-rustls-webpki-0.102
   (package
     (name "rust-rustls-webpki")
-    (version "0.102.1")
+    (version "0.102.8")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rustls-webpki" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0nz9d3xhy8cg6anmvq64scyiva8bglrc6j3v6bdxw2f96xha4k7g"))))
+        (base32 "1sdy8ks86b7jpabpnb2px2s7f1sq8v0nqf6fnlvwzm4vfk41pjk4"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f
+     `(#:tests? #f      ; file not found for module `test_utils`
        #:cargo-inputs (("rust-aws-lc-rs" ,rust-aws-lc-rs-1)
                        ("rust-ring" ,rust-ring-0.17)
                        ("rust-rustls-pki-types" ,rust-rustls-pki-types-1)
                        ("rust-untrusted" ,rust-untrusted-0.9))
-       #:cargo-development-inputs (("rust-base64" ,rust-base64-0.21)
+       #:cargo-development-inputs (("rust-base64" ,rust-base64-0.22)
                                    ("rust-bencher" ,rust-bencher-0.1)
                                    ("rust-bzip2" ,rust-bzip2-0.4)
                                    ("rust-once-cell" ,rust-once-cell-1)
-                                   ("rust-rcgen" ,rust-rcgen-0.12)
+                                   ("rust-rcgen" ,rust-rcgen-0.13)
                                    ("rust-serde" ,rust-serde-1)
                                    ("rust-serde-json" ,rust-serde-json-1))))
     (home-page "https://github.com/rustls/webpki")
