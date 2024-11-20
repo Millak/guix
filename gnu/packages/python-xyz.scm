@@ -10444,6 +10444,18 @@ a general image processing tool.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "13wwq7slw2q9djh7n39qdmlrzd9k3x7hdr36wk8qbgp3b6bcgvj6"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; This test fails because it cannot find the zlib version string
+      ;; "1.3.1".
+      #:test-flags '(list "-k not test_sanity")
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'patch-ldconfig
+           (lambda _
+             (substitute* "setup.py"
+               (("\\['/sbin/ldconfig', '-p'\\]") "['true']")))))))
     (inputs
      (modify-inputs (package-inputs python-pillow)
        (prepend libraqm libimagequant)))
