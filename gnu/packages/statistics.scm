@@ -3316,6 +3316,17 @@ time-of-day values, based on the @code{difftime} class.")
                (base32
                 "02p1jjal73j39r49ba4jlvbx8bdqmm96nsdp47igyv54w1gmm9hg"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-before 'check 'set-timezone
+           (lambda* (#:key inputs #:allow-other-keys)
+             ;; Two tests would fail without this.
+             (setenv "TZ" "UTC+1")
+             (setenv "TZDIR"
+                     (search-input-directory inputs
+                                             "share/zoneinfo")))))))
     (propagated-inputs
      (list r-cli
            r-clipr
@@ -3329,7 +3340,7 @@ time-of-day values, based on the @code{difftime} class.")
            r-tzdb
            r-vroom))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat tzdata-for-tests))
     (home-page "https://github.com/hadley/readr")
     (synopsis "Read tabular data")
     (description
