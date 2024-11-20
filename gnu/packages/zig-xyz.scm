@@ -159,6 +159,27 @@ interface.")
     (home-page "https://codeberg.org/ifreund/zig-wayland")
     (license license:expat)))
 
+(define-public zig-xkbcommon
+  (package
+    (name "zig-xkbcommon")
+    (version "0.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://codeberg.org/ifreund/zig-xkbcommon")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "16f59n7l2gcpnq8gb4v8skr4jhb2l6ax75rna92nqzj15f4ikqag"))))
+    (build-system zig-build-system)
+    (arguments (list #:skip-build? #t))
+    (propagated-inputs (list libxkbcommon))
+    (synopsis "Zig bindings for libxkbcommon")
+    (description "This package provides Zig bindings for @code{libxkbcommon}.")
+    (home-page "https://codeberg.org/ifreund/zig-xkbcommon")
+    (license license:expat)))
+
 (define-public zig-zls
   (package
     (name "zig-zls")
