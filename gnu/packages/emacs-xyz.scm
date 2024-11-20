@@ -18487,6 +18487,36 @@ a visual interface, reduce overhead of completion by using statistic method,
 extensibility.")
     (license license:gpl3+)))
 
+(define-public emacs-auto-dark
+  (package
+    (name "emacs-auto-dark")
+    (version "0.13.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/LionyxML/auto-dark-emacs")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0cp4hcac2kya3m8cc8xfrv01cg06vi70zgp4m6q39cw2i9dnlnch"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/LionyxML/auto-dark-emacs")
+    (synopsis "Dark/light automatic Emacs theme switcher")
+    (description "This package provides the @code{auto-dark-mode} minor mode,
+which enables automatic switching between two user-defined (customizable)
+themes.  This transition occurs seamlessly in response to dark mode being
+enabled or disabled in the desktop preferences (such as in GNOME).  It uses
+DBus to query the system configured value.  To enable it, put the following
+snippet to your Emacs configuration file:
+@lisp
+(require auto-dark)
+(auto-dark-mode t)
+@end lisp
+To customize the themes used, visit @samp{M-x customize-group auto-dark}.")
+    (license license:gpl2+)))
+
 (define-public emacs-autocrypt
   (let ((commit "dc0223f11daf526621fda206b38bf06c29759c94")) ;version bump
     (package
