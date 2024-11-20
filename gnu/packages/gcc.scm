@@ -843,7 +843,8 @@ It also includes runtime support libraries for these languages.")
                   #~(modify-phases #$phases
                       (add-before 'configure 'pre-x86-configure
                         (lambda _
-                          (substitute* "gcc/config/i386/t-linux64"
+                          (substitute* '("gcc/config/i386/t-linux64"
+                                         "gcc/config/i386/t-gnu64")
                             (("\\.\\./lib64") "../lib"))))))))
     (properties
      `((compiler-cpu-architectures
