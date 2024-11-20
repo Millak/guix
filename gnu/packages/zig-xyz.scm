@@ -108,6 +108,27 @@ mission-critical safety and performance for financial services.")
     (home-page "https://github.com/tigerbeetledb/tigerbeetle")
     (license license:asl2.0)))
 
+(define-public zig-pixman
+  (package
+    (name "zig-pixman")
+    (version "0.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://codeberg.org/ifreund/zig-pixman")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0il6nw51kf08bcxpf45n7h78k1iyfi1zarcvpb7n19g2r48dkiyd"))))
+    (build-system zig-build-system)
+    (arguments (list #:skip-build? #t))
+    (propagated-inputs (list pixman))
+    (synopsis "Zig bindings for Pixman")
+    (description "This package provides Zig bindings for @code{pixman}.")
+    (home-page "https://codeberg.org/ifreund/zig-pixman")
+    (license license:expat)))
+
 (define-public zig-zls
   (package
     (name "zig-zls")
