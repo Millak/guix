@@ -84400,34 +84400,62 @@ system.")
         ("rust-ordered-float" ,rust-ordered-float-1)
         ("rust-threadpool" ,rust-threadpool-1))))))
 
+(define-public rust-tikv-jemalloc-sys-0.6
+  (package
+    (name "rust-tikv-jemalloc-sys")
+    (version "0.6.0+5.3.0-1-ge13ca993e8ccb9ba9847cc330696e02839f328f7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tikv-jemalloc-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0baf5vjpg9ipa388md4yxim77rdblnk8r95mnp1akbqjcj860g6d"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (delete-file-recursively "jemalloc")))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cc" ,rust-cc-1)
+                       ("rust-libc" ,rust-libc-0.2))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'configure 'override-jemalloc
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let ((jemalloc (assoc-ref inputs "jemalloc")))
+               ;; This flag is needed when not using the bundled jemalloc.
+               ;; https://github.com/tikv/jemallocator/issues/19
+               (setenv "CARGO_FEATURE_UNPREFIXED_MALLOC_ON_SUPPORTED_PLATFORMS" "1")
+               (setenv "JEMALLOC_OVERRIDE"
+                       (string-append jemalloc "/lib/libjemalloc_pic.a"))))))))
+    (inputs (list jemalloc))
+    (home-page "https://github.com/tikv/jemallocator")
+    (synopsis "Rust FFI bindings to jemalloc")
+    (description "This package provides a Rust FFI bindings to jemalloc.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-tikv-jemalloc-sys-0.4
   (package
+    (inherit rust-tikv-jemalloc-sys-0.6)
     (name "rust-tikv-jemalloc-sys")
     (version "0.4.1+5.2.1-patched")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tikv-jemalloc-sys" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
          "1lw6gy9gzk7g7h71nm8a5ybrilhqgr583mn80nslr78p0ldk69la"))
        (modules '((guix build utils)))
        (snippet
         '(begin (delete-file-recursively "jemalloc")))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-cc" ,rust-cc-1)
         ("rust-fs-extra" ,rust-fs-extra-1)
-        ("rust-libc" ,rust-libc-0.2))))
-    (home-page
-     "https://github.com/tikv/jemallocator")
-    (synopsis "Rust FFI bindings to jemalloc")
-    (description "This package provides a Rust FFI bindings to jemalloc.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-libc" ,rust-libc-0.2))))))
 
 (define-public rust-tikv-jemallocator-0.4
   (package
