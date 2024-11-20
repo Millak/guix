@@ -12213,14 +12213,14 @@ parsing with Serde.")
 (define-public rust-cargo-util-0.2
   (package
     (name "rust-cargo-util")
-    (version "0.2.9")
+    (version "0.2.15")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "cargo-util" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0hp3sj7j9l5k771ayz1srm39gr21mcw9v3qpy3wc38akdqy2r1kl"))))
+        (base32 "08mi6jsxbf9s2q40bxm2jws4bx5hyk5vca41l1h55jir8ji6gpdn"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -12238,7 +12238,7 @@ parsing with Serde.")
         ("rust-tempfile" ,rust-tempfile-3)
         ("rust-tracing" ,rust-tracing-0.1)
         ("rust-walkdir" ,rust-walkdir-2)
-        ("rust-windows-sys" ,rust-windows-sys-0.52))))
+        ("rust-windows-sys" ,rust-windows-sys-0.59))))
     (inputs
      (list openssl))
     (native-inputs
