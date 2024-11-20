@@ -2019,14 +2019,14 @@ with ANSI strings.")
 (define-public rust-anstream-0.6
   (package
     (name "rust-anstream")
-    (version "0.6.13")
+    (version "0.6.18")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "anstream" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1yv2idkyf9mp9xwc684v0ywqiy86lwc9gvllwdishl7y6czx0syr"))))
+        (base32 "16sjk4x3ns2c3ya1x28a44kh6p47c7vhk27251i015hik1lm7k4a"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -2035,9 +2035,10 @@ with ANSI strings.")
         ("rust-anstyle-query" ,rust-anstyle-query-1)
         ("rust-anstyle-wincon" ,rust-anstyle-wincon-3)
         ("rust-colorchoice" ,rust-colorchoice-1)
+        ("rust-is-terminal-polyfill" ,rust-is-terminal-polyfill-1)
         ("rust-utf8parse" ,rust-utf8parse-0.2))
        #:cargo-development-inputs
-       (("rust-criterion" ,rust-criterion-0.5)
+       (("rust-divan" ,rust-divan-0.1)
         ("rust-lexopt" ,rust-lexopt-0.3)
         ("rust-owo-colors" ,rust-owo-colors-4)
         ("rust-proptest" ,rust-proptest-1)
