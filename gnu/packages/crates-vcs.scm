@@ -3662,6 +3662,28 @@ Gitoxide, a pure Rust implementation of Git.")
 Git's negotiation algorithms.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-negotiate-0.13
+  (package
+    (inherit rust-gix-negotiate-0.15)
+    (name "rust-gix-negotiate")
+    (version "0.13.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-negotiate" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0962x6gxhwp55kyr26hzsswv8qbg9h1f16x8kd8n7fq7cgxpkj4y"))))
+    (arguments
+     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-gix-commitgraph" ,rust-gix-commitgraph-0.24)
+                       ("rust-gix-date" ,rust-gix-date-0.8)
+                       ("rust-gix-hash" ,rust-gix-hash-0.14)
+                       ("rust-gix-object" ,rust-gix-object-0.42)
+                       ("rust-gix-revwalk" ,rust-gix-revwalk-0.13)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-thiserror" ,rust-thiserror-1))))))
+
 (define-public rust-gix-negotiate-0.11
   (package
     (inherit rust-gix-negotiate-0.15)
