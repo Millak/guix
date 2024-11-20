@@ -32808,8 +32808,44 @@ already-hashed or hash-like data.")
      "This crate implements an unordered multiset implementation using a hash bag.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-hashbrown-0.15
+  (package
+    (name "rust-hashbrown")
+    (version "0.15.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "hashbrown" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1czsvasi3azv2079fcvbhvpisa16w6fi1mfk8zm2c5wbyqdgr6rs"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-allocator-api2" ,rust-allocator-api2-0.2)
+        ("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
+        ("rust-equivalent" ,rust-equivalent-1)
+        ("rust-foldhash" ,rust-foldhash-0.1)
+        ("rust-rayon" ,rust-rayon-1)
+        ("rust-rustc-std-workspace-alloc" ,rust-rustc-std-workspace-alloc-1)
+        ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1)
+        ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-bumpalo" ,rust-bumpalo-3)
+                                   ("rust-doc-comment" ,rust-doc-comment-0.3)
+                                   ("rust-fnv" ,rust-fnv-1)
+                                   ("rust-lazy-static" ,rust-lazy-static-1)
+                                   ("rust-rand" ,rust-rand-0.8)
+                                   ("rust-rayon" ,rust-rayon-1)
+                                   ("rust-serde-test" ,rust-serde-test-1))))
+    (home-page "https://github.com/rust-lang/hashbrown")
+    (synopsis "Rust port of Google's SwissTable hash map")
+    (description
+     "This package provides a Rust port of Google's @code{SwissTable} hash map.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-hashbrown-0.14
   (package
+    (inherit rust-hashbrown-0.15)
     (name "rust-hashbrown")
     (version "0.14.3")
     (source (origin
@@ -32825,7 +32861,6 @@ already-hashed or hash-like data.")
                   (substitute* "Cargo.toml"
                     (("=([[:digit:]]+\\.[[:digit:]]+\\.[[:digit:]]+)" _ version)
                      (string-append "^" version)))))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-ahash" ,rust-ahash-0.8)
@@ -32845,12 +32880,7 @@ already-hashed or hash-like data.")
         ("rust-rand" ,rust-rand-0.8)
         ("rust-rayon" ,rust-rayon-1)
         ("rust-rkyv" ,rust-rkyv-0.7)
-        ("rust-serde-test" ,rust-serde-test-1))))
-    (home-page "https://github.com/rust-lang/hashbrown")
-    (synopsis "Rust port of Google's SwissTable hash map")
-    (description
-     "This package provides a Rust port of Google's SwissTable hash map.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-serde-test" ,rust-serde-test-1))))))
 
 (define-public rust-hashbrown-0.13
   (package
