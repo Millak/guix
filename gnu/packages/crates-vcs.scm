@@ -431,8 +431,33 @@ reading and writing git repositories.")
         ("rust-thread-id" ,rust-thread-id-3)
         ("rust-time" ,rust-time-0.1))))))
 
+(define-public rust-git2-curl-0.20
+  (package
+    (name "rust-git2-curl")
+    (version "0.20.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "git2-curl" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "17q7p4xdmvzn8jy75cdpl6bncy70z1v864wv0ch2690wg9919zv8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t                 ;need rust-civet and others
+       #:cargo-inputs (("rust-curl" ,rust-curl-0.4)
+                       ("rust-git2" ,rust-git2-0.19)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-url" ,rust-url-2))))
+    (home-page "https://github.com/rust-lang/git2-rs")
+    (synopsis "Libgit2 HTTP transport backend powered by @code{libcurl}")
+    (description "Backend for an HTTP transport in @code{libgit2}, powered by
+libcurl, which is intended to be used with the @code{git2} crate.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-git2-curl-0.19
   (package
+    (inherit rust-git2-curl-0.20)
     (name "rust-git2-curl")
     (version "0.19.0")
     (source
@@ -442,18 +467,12 @@ reading and writing git repositories.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1hzp64h1x8kr2vvf3bx195s1999sh8d0cygw4vykymwcc1hnpqkq"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t                 ;need rust-civet and others
        #:cargo-inputs (("rust-curl" ,rust-curl-0.4)
                        ("rust-git2" ,rust-git2-0.18)
                        ("rust-log" ,rust-log-0.4)
-                       ("rust-url" ,rust-url-2))))
-    (home-page "https://github.com/rust-lang/git2-rs")
-    (synopsis "Libgit2 HTTP transport backend powered by @code{libcurl}")
-    (description "Backend for an HTTP transport in @code{libgit2}, powered by
-libcurl, which is intended to be used with the @code{git2} crate.")
-    (license (list license:expat license:asl2.0))))
+                       ("rust-url" ,rust-url-2))))))
 
 (define-public rust-git2-curl-0.18
   (package
