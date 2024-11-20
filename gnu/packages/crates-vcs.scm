@@ -1031,6 +1031,31 @@ and correct.  Interact with Git repositories just like Git would.")
 package provides a way to identify Git actors.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-actor-0.31
+  (package
+    (inherit rust-gix-actor-0.32)
+    (name "rust-gix-actor")
+    (version "0.31.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-actor" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1wm3i9g69hkfhwiw1c4z9fr1hkfxsfxyzdh07b637f1lgqsm9r50"))))
+    (arguments
+     `(#:tests? #f ; use of undeclared crate or module `gix_testtools`
+       #:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-date" ,rust-gix-date-0.8)
+                       ("rust-gix-utils" ,rust-gix-utils-0.1)
+                       ("rust-itoa" ,rust-itoa-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-winnow" ,rust-winnow-0.6))
+       #:cargo-development-inputs
+       (("rust-pretty-assertions" ,rust-pretty-assertions-1))))))
+
 (define-public rust-gix-actor-0.29
   (package
     (inherit rust-gix-actor-0.32)
