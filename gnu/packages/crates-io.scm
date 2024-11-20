@@ -1615,8 +1615,27 @@ with @code{NativeActivity} or @code{GameActivity}.")
     (description "This package provides the glue for the Android JNI.")
     (license license:expat)))
 
+(define-public rust-android-log-sys-0.3
+  (package
+    (name "rust-android-log-sys")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "android_log-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0dwrvwkx2xxqys6nrhfavbbqfx2rs61nq8akrlnqkfbapxb81k2y"))))
+    (build-system cargo-build-system)
+    (arguments `(#:skip-build? #true))      ;XXX: Android only
+    (home-page "https://github.com/rust-mobile/android_log-sys-rs")
+    (synopsis "FFI bindings to Android log Library")
+    (description "This package provides FFI bindings to Android log Library.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-android-log-sys-0.2
   (package
+    (inherit rust-android-log-sys-0.3)
     (name "rust-android-log-sys")
     (version "0.2.0")
     (source
@@ -1626,12 +1645,7 @@ with @code{NativeActivity} or @code{GameActivity}.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0bhhs1cgzp9vzjvkn2q31ppc7w4am5s273hkvl5iac5475kmp5l5"))))
-    (arguments `(#:skip-build? #true))  ;XXX: Android only
-    (build-system cargo-build-system)
-    (home-page "https://github.com/nercury/android_log-sys-rs")
-    (synopsis "FFI bindings to Android log Library")
-    (description "This package provides FFI bindings to Android log Library.")
-    (license (list license:expat license:asl2.0))))
+    (arguments `(#:skip-build? #true))))    ;XXX: Android only
 
 (define-public rust-android-log-sys-0.1
   (package
