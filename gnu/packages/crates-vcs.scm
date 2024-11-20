@@ -6876,6 +6876,30 @@ a pure Rust implementation of Git.")
 It's part of Gitoxide, a pure Rust implementation of Git.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-worktree-stream-0.13
+  (package
+    (inherit rust-gix-worktree-stream-0.15)
+    (name "rust-gix-worktree-stream")
+    (version "0.13.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-worktree-stream" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "08gd3fca4jjaygsawpm7s6f3p7rvb3br87ap8ipqahcs4jb4hpg3"))))
+    (arguments
+     `(#:cargo-inputs (("rust-gix-attributes" ,rust-gix-attributes-0.22)
+                       ("rust-gix-features" ,rust-gix-features-0.38)
+                       ("rust-gix-filter" ,rust-gix-filter-0.11)
+                       ("rust-gix-fs" ,rust-gix-fs-0.11)
+                       ("rust-gix-hash" ,rust-gix-hash-0.14)
+                       ("rust-gix-object" ,rust-gix-object-0.42)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-traverse" ,rust-gix-traverse-0.39)
+                       ("rust-parking-lot" ,rust-parking-lot-0.12)
+                       ("rust-thiserror" ,rust-thiserror-1))))))
+
 (define-public rust-gix-worktree-stream-0.8
   (package
     (inherit rust-gix-worktree-stream-0.15)
