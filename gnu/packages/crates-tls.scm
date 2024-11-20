@@ -1842,6 +1842,25 @@ PEM-encodings commonly used to store keys and certificates at rest.")
      "This crate provides shared types for the rustls PKI ecosystem.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-rustls-platform-verifier-android-0.1
+  (package
+    (name "rust-rustls-platform-verifier-android")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rustls-platform-verifier-android" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "13vq6sxsgz9547xm2zbdxiw8x7ad1g8n8ax6xvxsjqszk7q6awgq"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/rustls/rustls-platform-verifier")
+    (synopsis "JVM support component of the rustls-platform-verifier crate")
+    (description
+     "This package provides the internal JVM support component of the
+rustls-platform-verifier crate.  You shouldn't depend on this directly.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-rustls-webpki-0.102
   (package
     (name "rust-rustls-webpki")
