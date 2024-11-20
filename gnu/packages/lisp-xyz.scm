@@ -20557,7 +20557,7 @@ determination library using @emph{magic} numbers.")
 (define-public sbcl-magicl
   (package
     (name "sbcl-magicl")
-    (version "0.9.1")
+    (version "0.11.0")
     (source
      (origin
        (method git-fetch)
@@ -20566,13 +20566,13 @@ determination library using @emph{magic} numbers.")
              (commit (string-append "v" version))))
        (file-name (git-file-name "cl-magicl" version))
        (sha256
-        (base32 "0x9p55qin399jhr5md88nij8fv78b64xjhww7ys364pkjnx8ak9v"))))
+        (base32 "10scw5qhrgjhfrlia5iqn2yy2zj1d57m45g479vg56lw849whscw"))))
     (build-system asdf-build-system/sbcl)
     (native-inputs (list gfortran sbcl-fiasco))
     (inputs
      (list lapack
-           sbcl-alexandria
            sbcl-abstract-classes
+           sbcl-alexandria
            sbcl-cffi
            sbcl-interface
            sbcl-policy-cond
