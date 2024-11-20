@@ -2026,7 +2026,7 @@ Amazon S3 compatible object storage server.")
     (build-system pyproject-build-system)
     (arguments
      '(#:test-flags
-       (list "-n" "auto"
+       (list "--n" (number->string (parallel-job-count))
              "-k" (string-append
                    ;; Disable hanginging tests
                    "not test_multi_socket_select"
@@ -4235,7 +4235,7 @@ opt.override_default_trust_store_from_path(None, os.getenv('SSL_CERT_FILE')) if 
     (arguments
      (list
       #:test-flags
-      #~(list "--numprocesses" "auto"
+      #~(list "--numprocesses" (number->string (parallel-job-count))
               ;; Tests require networking.
               "--ignore" "tests/integration"
               ;; It strugles to set PYTHONPATH.
@@ -4909,7 +4909,7 @@ Betamax that may possibly end up in the main package.")
     (arguments
      (list
       #:test-flags
-      #~(list "--numprocesses" "auto"
+      #~(list "--numprocesses" (number->string (parallel-job-count))
               ;; Tests require networking.
               "--ignore" "tests/integration")))
     (native-inputs

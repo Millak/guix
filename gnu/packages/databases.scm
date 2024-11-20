@@ -5203,7 +5203,7 @@ other traditional Python scientific computing packages.")
     (arguments
      (list
       #:test-flags
-      #~(list "-n" "auto")
+      #~(list "--numprocesses" (number->string (parallel-job-count)))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'relax-requirements

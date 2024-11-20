@@ -1653,7 +1653,7 @@ implementation of the ASDF Standard.")
     (arguments
      (list
       #:test-flags
-      #~(list "-n" "auto")
+      #~(list "--numprocesses" (number->string (parallel-job-count)))
       #:phases #~(modify-phases %standard-phases
                    (add-before 'check 'set-home-env
                      (lambda _ (setenv "HOME" "/tmp"))))))
@@ -3034,7 +3034,7 @@ deconvolution).  Such post-processing is not performed by Stackistry.")
      (list
       #:test-flags
       #~(list "--pyargs" "astropy"
-              "--numprocesses" "auto"
+              "--numprocesses" (number->string (parallel-job-count))
               "-k" (string-append
                     ;; Skip tests that need remote data.
                     "not remote_data"
@@ -3924,7 +3924,7 @@ can be described by @acronym{WCS, World Coordinate System} translations.")
     (arguments
      (list
       #:test-flags
-      #~(list "--numprocesses" "auto")
+      #~(list "--numprocesses" (number->string (parallel-job-count)))
       #:phases
       #~(modify-phases %standard-phases
          (add-after 'unpack 'relax-requirements
@@ -4085,7 +4085,7 @@ Low-Earth Orbit (LEO).")
     (arguments
      (list
       #:test-flags
-      #~(list "-n" "auto")))
+      #~(list "--numprocesses" (number->string (parallel-job-count)))))
     (propagated-inputs
      ;; XXX: With python-synphot (marked as optional) package added to the list
      ;; it tries to download from remote host during tests and fails. Overall
@@ -4191,7 +4191,7 @@ Virtual observatory (VO) using Python.")
     (arguments
      (list
       #:test-flags
-      #~(list "--numprocesses" "auto")
+      #~(list "--numprocesses" (number->string (parallel-job-count)))
       #:phases
       #~(modify-phases %standard-phases
           ;; setup.py was removed in 84c80a280431adda00641cda5264c7de18b43b2f
@@ -4295,7 +4295,7 @@ PSF} describing how the optical system spreads light from sources.")
       #:test-flags
       #~(list "--arraydiff"
               "--arraydiff-default-format=fits"
-              "--numprocesses" "auto"
+              "--numprocesses" (number->string (parallel-job-count))
               "--pyargs" "reproject")
       #:phases
       #~(modify-phases %standard-phases
@@ -4399,7 +4399,7 @@ orbits described in TLE files.")
     (arguments
      (list
       #:test-flags
-      #~(list "--numprocesses" "auto"
+      #~(list "--numprocesses" (number->string (parallel-job-count))
               ;; Requries SpicePy not packed in Guix yet.
               "--ignore=sunpy/coordinates/tests/test_spice.py")
       #:phases
@@ -4589,7 +4589,7 @@ elevation, solar azimuth, rahukaalam, and the phases of the moon.")
       ;; See <https://github.com/radio-astro-tools/radio-beam/issues/129>.
       #:tests? #f
       #:test-flags
-      #~(list "-n" "auto")))
+      #~(list "--numprocesses" (number->string (parallel-job-count)))))
     (propagated-inputs
      (list python-astropy
            ;; XXX: Currently failing in upstream as it's optional silent
@@ -4981,7 +4981,7 @@ processing functions: @code{xyxymatch}, @code{geomap}.")
     (arguments
      (list
       #:test-flags
-      #~(list "--numprocesses" "auto"
+      #~(list "--numprocesses" (number->string (parallel-job-count))
               ;; Disable tests requiring access to CRDS servers to download
               ;; ~500MiB of data.
               "-k" "not test_crds_selectors_vs_datamodel")
@@ -5450,7 +5450,7 @@ Features:
     (arguments
      (list
       #:test-flags
-      #~(list "--numprocesses" "auto"
+      #~(list "--numprocesses" (number->string (parallel-job-count))
               ;; Disable 2 failing tests, see
               ;; <https://github.com/spacetelescope/pysiaf/issues/338>
               "-k" (string-append "not test_write_jwst_siaf_xlsx"
@@ -5543,7 +5543,8 @@ spectra, and data.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags #~(list "--numprocesses" "auto")
+      #:test-flags
+      #~(list "--numprocesses" (number->string (parallel-job-count)))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'set-home-env
@@ -5835,7 +5836,7 @@ package such as asdf-astropy.")
     (arguments
      (list
       #:test-flags
-      #~(list "-n" "auto")))
+      #~(list "--numprocesses" (number->string (parallel-job-count)))))
     (native-inputs
      (list python-pytest
            python-pytest-xdist
@@ -6137,7 +6138,7 @@ solar physics.")
     (arguments
      (list
       #:test-flags
-      #~(list "--numprocesses" "auto")
+      #~(list "--numprocesses" (number->string (parallel-job-count)))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'set-env
@@ -6295,7 +6296,7 @@ between image and reference catalogs. Currently only aligning images with
     (arguments
      (list
       #:test-flags
-      #~(list "--numprocesses" "auto"
+      #~(list "--numprocesses" (number->string (parallel-job-count))
               "-k" (string-append
                     ;; Test requiring network access
                     "not test_monthly_trending_plot_auto_opdtable"
@@ -6383,7 +6384,7 @@ using (multivariate) polynomials.")
      (list
       #:build-backend "setuptools.build_meta"
       #:test-flags
-      #~(list "--numprocesses" "auto")
+      #~(list "--numprocesses" (number->string (parallel-job-count)))
       #:phases
       #~(modify-phases %standard-phases
          (add-after 'unpack 'relax-requirements

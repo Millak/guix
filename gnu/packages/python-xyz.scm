@@ -2296,7 +2296,7 @@ Python library and command line interface.")
     (arguments
      (list
       #:test-flags
-      #~(list "--numprocesses" "auto"
+      #~(list "--numprocesses" (number->string (parallel-job-count))
               ;; Failing test due to inability of ctypes.util.find_library()
               ;; to determine library path, which is patched above.
               "--ignore=tests/test_config.py")
@@ -28320,7 +28320,7 @@ codecs for use in data storage and communication applications.")
     (arguments
      (list
       #:test-flags
-      #~(list "-n" "auto"
+      #~(list "--numprocesses" (number->string (parallel-job-count))
               ;; This tests are flaky.  The pass several times on my laptop
               ;; but occasionally fail.  They fail pretty reliably on the
               ;; build farm.
@@ -28845,7 +28845,7 @@ decisions with any given backend.")
      (list
       ;; Avoid coverage
       #:test-flags
-      #~(list "-n" "auto"
+      #~(list "--numprocesses" (number->string (parallel-job-count))
               "-m" "not gpu and not slow and not network"
               ;; These all fail with different hashes.  Doesn't seem
               ;; problematic.

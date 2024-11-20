@@ -2744,7 +2744,7 @@ instantly.")
     (arguments
      (list
       #:test-flags
-      #~(list "--numprocesses" "auto"
+      #~(list "--numprocesses" (number->string (parallel-job-count))
               ;; check_examples_test.py contains failing tests that
               ;; show what happens if a counterexample is found.
               "--ignore=crosshair/examples/check_examples_test.py"
