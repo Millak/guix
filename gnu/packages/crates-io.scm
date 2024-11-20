@@ -84457,33 +84457,57 @@ system.")
         ("rust-fs-extra" ,rust-fs-extra-1)
         ("rust-libc" ,rust-libc-0.2))))))
 
+(define-public rust-tikv-jemallocator-0.6
+  (package
+    (name "rust-tikv-jemallocator")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tikv-jemallocator" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0r985npb7d9hrbs3mb0bkfbv0nvzjpgvzsbpyj21bn0qhpqmzv2c"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; use of undeclared crate or module `tikv_jemalloc_ctl`
+       #:cargo-inputs (("rust-libc" ,rust-libc-0.2)
+                       ("rust-tikv-jemalloc-sys" ,rust-tikv-jemalloc-sys-0.6))
+       #:cargo-development-inputs (("rust-paste" ,rust-paste-1))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'configure 'override-jemalloc
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let ((jemalloc (assoc-ref inputs "jemalloc")))
+               ;; This flag is needed when not using the bundled jemalloc.
+               ;; https://github.com/tikv/jemallocator/issues/19
+               (setenv "CARGO_FEATURE_UNPREFIXED_MALLOC_ON_SUPPORTED_PLATFORMS" "1")
+               (setenv "JEMALLOC_OVERRIDE"
+                       (string-append jemalloc "/lib/libjemalloc_pic.a"))))))))
+    (inputs (list jemalloc))
+    (home-page "https://github.com/tikv/jemallocator")
+    (synopsis "Rust allocator backed by jemalloc")
+    (description "This package provides a Rust allocator backed by jemalloc.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-tikv-jemallocator-0.4
   (package
+    (inherit rust-tikv-jemallocator-0.6)
     (name "rust-tikv-jemallocator")
     (version "0.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tikv-jemallocator" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
          "1pyc94yx74s3vxnr22gnpj0b2f87s0vql0c5ayy1b1zb0jkaa51w"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-libc" ,rust-libc-0.2)
-        ("rust-tikv-jemalloc-sys"
-         ,rust-tikv-jemalloc-sys-0.4))))
-    (home-page
-     "https://github.com/tikv/jemallocator")
-    (synopsis
-     "Rust allocator backed by jemalloc")
-    (description
-     "This package provides a Rust allocator backed by jemalloc.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-tikv-jemalloc-sys" ,rust-tikv-jemalloc-sys-0.4))))))
 
 (define-public rust-tikv-jemalloc-ctl-0.4
   (package
