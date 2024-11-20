@@ -1673,19 +1673,19 @@ currently pressed on macOS.")
 (define-public rust-security-framework-2
   (package
     (name "rust-security-framework")
-    (version "2.9.2")
+    (version "2.11.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "security-framework" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1pplxk15s5yxvi2m1sz5xfmjibp96cscdcl432w9jzbk0frlzdh5"))))
+        (base32 "00ldclwx78dm61v7wkach9lcx76awlrv0fdgjdwch4dmy12j4yw9"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f                      ;missing files
+     `(#:tests? #f      ; unresolved import `security_framework::secure_transport`
        #:cargo-inputs
-       (("rust-bitflags" ,rust-bitflags-1)
+       (("rust-bitflags" ,rust-bitflags-2)
         ("rust-core-foundation" ,rust-core-foundation-0.9)
         ("rust-core-foundation-sys" ,rust-core-foundation-sys-0.8)
         ("rust-libc" ,rust-libc-0.2)
@@ -1697,7 +1697,7 @@ currently pressed on macOS.")
         ("rust-hex" ,rust-hex-0.4)
         ("rust-tempdir" ,rust-tempdir-0.3)
         ("rust-time" ,rust-time-0.3)
-        ("rust-x509-parser" ,rust-x509-parser-0.15))))
+        ("rust-x509-parser" ,rust-x509-parser-0.16))))
     (home-page "https://lib.rs/crates/security_framework")
     (synopsis "@code{Security.framework} bindings for macOS and iOS")
     (description "This package provides @code{Security.framework} bindings for
