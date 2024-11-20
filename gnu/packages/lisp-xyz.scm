@@ -15117,6 +15117,45 @@ sacrificing much in the way of power.")
 (define-public ecl-external-program
   (sbcl-package->ecl-package sbcl-external-program))
 
+(define-public sbcl-f2cl
+  (let ((commit "a3dabbe429ff2fe6039a60c2546d287b4157f546")
+        (revision "1"))
+    (package
+      (name "sbcl-f2cl")
+      (version (git-version "1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/rtoy/f2cl")
+               (commit commit)))
+         (file-name (git-file-name "cl-f2cl" version))
+         (sha256
+          (base32 "1fc54n3g7kah93yj99dkvac4i765sysvcc6pwajhp2srr1np204s"))
+         (modules '((guix build utils)))
+         (snippet #~(delete-file-recursively "debian"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'fix-build
+                   (lambda _
+                     (substitute* "src/f2cl2.l"
+                       (("\\(optimize \\(speed 3\\) \\(safety 1\\)\\)\\)" all)
+                        (string-append all ")"))))))))
+      (synopsis "Fortran 77 to Common Lisp translator")
+      (description
+       "F2cl is a Common Lisp library that can convert Fortran 77 code into
+Common Lisp code.")
+      (home-page "https://github.com/rtoy/f2cl")
+      (license license:gpl2))))
+
+(define-public cl-f2cl
+  (sbcl-package->cl-source-package sbcl-f2cl))
+
+(define-public ecl-f2cl
+  (sbcl-package->ecl-package sbcl-f2cl))
+
 (define-public sbcl-fakenil
   (package
     (name "sbcl-fakenil")
