@@ -5718,6 +5718,27 @@ Gitoxide is a pure Rust implementation of Git.")
 implementation of Git.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-submodule-0.12
+  (package
+    (inherit rust-gix-submodule-0.14)
+    (name "rust-gix-submodule")
+    (version "0.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-submodule" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1zalx2cc2b2sj8kqncbkbpnj1np9lxr09j4yscwmx000m9lhybhg"))))
+    (arguments
+     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-gix-config" ,rust-gix-config-0.38)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-pathspec" ,rust-gix-pathspec-0.7)
+                       ("rust-gix-refspec" ,rust-gix-refspec-0.23)
+                       ("rust-gix-url" ,rust-gix-url-0.27)
+                       ("rust-thiserror" ,rust-thiserror-1))))))
+
 (define-public rust-gix-submodule-0.7
   (package
     (inherit rust-gix-submodule-0.14)
