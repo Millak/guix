@@ -288,8 +288,31 @@
                        ("rust-syn" ,rust-syn-1)
                        ("rust-synstructure" ,rust-synstructure-0.12))))))
 
+(define-public rust-asn1-rs-impl-0.2
+  (package
+    (name "rust-asn1-rs-impl")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "asn1-rs-impl" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1xv56m0wrwix4av3w86sih1nsa5g1dgfz135lz1qdznn5h60a63v"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/rusticata/asn1-rs")
+    (synopsis "Implementation details for the `asn1-rs` crate")
+    (description
+     "This package provides implementation details for the @code{asn1-rs} crate.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-asn1-rs-impl-0.1
   (package
+    (inherit rust-asn1-rs-impl-0.2)
     (name "rust-asn1-rs-impl")
     (version "0.1.0")
     (source (origin
@@ -299,17 +322,11 @@
               (sha256
                (base32
                 "1va27bn7qxqp4wanzjlkagnynv6jnrhnwmcky2ahzb1r405p6xr7"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))
-    (home-page "https://github.com/rusticata/asn1-rs")
-    (synopsis "Implementation details for the `asn1-rs` crate")
-    (description
-     "This package provides implementation details for the @code{asn1-rs} crate.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-syn" ,rust-syn-1))))))
 
 (define-public rust-async-native-tls-0.3
   (package
