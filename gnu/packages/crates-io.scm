@@ -76984,8 +76984,39 @@ SPIR-V.")
        (("rust-libc" ,rust-libc-0.2)
         ("rust-sqlite3-sys" ,rust-sqlite3-sys-0.13))))))
 
+(define-public rust-sqlite3-parser-0.13
+  (package
+    (name "rust-sqlite3-parser")
+    (version "0.13.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sqlite3-parser" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "02sjybc8r2nwpgi54bcp2vjmzyaczxbdxvxxx067716bsvd0flzb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-cc" ,rust-cc-1)
+                       ("rust-fallible-iterator" ,rust-fallible-iterator-0.3)
+                       ("rust-indexmap" ,rust-indexmap-2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-memchr" ,rust-memchr-2)
+                       ("rust-phf" ,rust-phf-0.11)
+                       ("rust-phf-codegen" ,rust-phf-codegen-0.11)
+                       ("rust-phf-shared" ,rust-phf-shared-0.11)
+                       ("rust-uncased" ,rust-uncased-0.9)
+                       ("rust-uncased" ,rust-uncased-0.9))
+       #:cargo-development-inputs (("rust-env-logger" ,rust-env-logger-0.11))))
+    (home-page "https://github.com/gwenn/lemon-rs")
+    (synopsis "SQL parser (as understood by SQLite)")
+    (description "This package provides an SQL parser (as understood by SQLite).")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-sqlite3-parser-0.12
   (package
+    (inherit rust-sqlite3-parser-0.13)
     (name "rust-sqlite3-parser")
     (version "0.12.0")
     (source
@@ -76995,7 +77026,6 @@ SPIR-V.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1dx8j16ki2fsrwn1p36wnf079pvcs17549rin29x99vhkcpjbpcs"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
                        ("rust-cc" ,rust-cc-1)
@@ -77009,11 +77039,7 @@ SPIR-V.")
                        ("rust-smallvec" ,rust-smallvec-1)
                        ("rust-uncased" ,rust-uncased-0.9)
                        ("rust-uncased" ,rust-uncased-0.9))
-       #:cargo-development-inputs (("rust-env-logger" ,rust-env-logger-0.10))))
-    (home-page "https://github.com/gwenn/lemon-rs")
-    (synopsis "SQL parser (as understood by SQLite)")
-    (description "This package provides an SQL parser (as understood by SQLite).")
-    (license (list license:asl2.0 license:expat))))
+       #:cargo-development-inputs (("rust-env-logger" ,rust-env-logger-0.10))))))
 
 (define-public rust-sqlite3-src-0.5
   (package
