@@ -2288,6 +2288,14 @@ exec " gcc "/bin/" program
          #:validate-runpath? #f
 
          ,@(substitute-keyword-arguments (package-arguments lib)
+             ((#:configure-flags flags)
+              (if (target-hurd64?)
+                  #~(cons* "--disable-shared"
+                           "--disable-libstdcxx-dual-abi"
+                           "--disable-libstdcxx-threads"
+                           "--disable-libstdcxx-pch"
+                           #$flags)
+                  flags))
              ((#:phases phases)
               #~(modify-phases #$phases
                   (add-after 'unpack 'unpack-gmp&co
