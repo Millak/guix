@@ -9567,8 +9567,32 @@ included code is safe.")
         ("rust-brotli-decompressor" ,rust-brotli-decompressor-2)
         ("rust-sha2" ,rust-sha2-0.10))))))
 
+(define-public rust-brotli-decompressor-4
+  (package
+    (name "rust-brotli-decompressor")
+    (version "4.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "brotli-decompressor" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0qn39c7n6wm40i2bm0d3q2qslmaavlh804iv0ccbba4m80pbsics"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; not all test files included
+       #:cargo-inputs (("rust-alloc-no-stdlib" ,rust-alloc-no-stdlib-2)
+                       ("rust-alloc-stdlib" ,rust-alloc-stdlib-0.2))))
+    (home-page "https://github.com/dropbox/rust-brotli-decompressor")
+    (synopsis "Brotli decompressor")
+    (description "This package provides a brotli decompressor with no
+dependency on the rust stdlib.  This makes it suitable for embedded devices
+and kernels.")
+    (license (list license:bsd-3 license:expat))))
+
 (define-public rust-brotli-decompressor-2
   (package
+    (inherit rust-brotli-decompressor-4)
     (name "rust-brotli-decompressor")
     (version "2.5.1")
     (source
@@ -9579,18 +9603,11 @@ included code is safe.")
        (sha256
         (base32
          "0kyyh9701dwqzwvn2frff4ww0zibikqd1s1xvl7n1pfpc3z4lbjf"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; not all test files included
        #:cargo-inputs
        (("rust-alloc-no-stdlib" ,rust-alloc-no-stdlib-2)
-        ("rust-alloc-stdlib" ,rust-alloc-stdlib-0.2))))
-    (home-page "https://github.com/dropbox/rust-brotli-decompressor")
-    (synopsis "Brotli decompressor")
-    (description "This package provides a brotli decompressor with no
-dependency on the rust stdlib.  This makes it suitable for embedded devices
-and kernels.")
-    (license (list license:bsd-3 license:expat))))
+        ("rust-alloc-stdlib" ,rust-alloc-stdlib-0.2))))))
 
 (define-public rust-brotli-sys-0.3
   (package
