@@ -18099,11 +18099,11 @@ floating point values to IEEE 754 binary representation.")
   (sbcl-package->ecl-package sbcl-ieee-floats))
 
 (define-public sbcl-in-memory-streams
-  (let ((commit "bb4ce9c8c08479c9904f5d29f2b6187f264dc620")
+  (let ((commit "a0812140609d350e6d974711be6acd0566b360cc")
         (revision "1"))
     (package
       (name "sbcl-in-memory-streams")
-      (version (git-version "1.0" revision commit))
+      (version (git-version "2.0" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -18112,12 +18112,12 @@ floating point values to IEEE 754 binary representation.")
                (commit commit)))
          (file-name (git-file-name "cl-in-memory-streams" version))
          (sha256
-          (base32 "1fls1jnkf86wimip6f95y496sc4rxpsh2y65lgqsqpi0yda5xl2f"))))
+          (base32 "1mgdwgf98k5wsxrlvqjjkg6f8ass6gbhcbg1y489v17pwqjhbgaz"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-fiveam))
       (inputs
-       (list sbcl-trivial-gray-streams))
+       (list sbcl-bordeaux-threads sbcl-trivial-gray-streams))
       (synopsis "In-memory streams for any element type")
       (description
        "This Common Lisp library provides an implementation of in-memory input
