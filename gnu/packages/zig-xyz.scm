@@ -39,43 +39,44 @@
 (define-public river
   (package
     (name "river")
-    (version "0.2.4")
+    (version "0.3.6")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/riverwm/river")
-             (commit (string-append "v" version))
-             (recursive? #t)))
+             (url "https://codeberg.org/river/river")
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1nvhqs6wwisf8ama7y1y3q3nf2jm9sh5bn46z8kyds8cikm0x1vh"))))
+        (base32 "1g4p1fa9kf23ldq1p8yplkb7hnkhfynhn93z6qqm67nacss2idbc"))))
     (build-system zig-build-system)
     (arguments
-     (list
-      #:zig zig-0.10
-      #:install-source? #f
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'install 'install-wayland-session
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let* ((out (assoc-ref outputs "out"))
-                     (wayland-sessions
-                      (string-append out "/share/wayland-sessions")))
-                (mkdir-p wayland-sessions)
-                (install-file "contrib/river.desktop"
-                              wayland-sessions)))))
-      #:zig-build-flags #~(list "-Dxwayland") ;experimental xwayland support
-      #:zig-release-type "safe"))
-    (native-inputs (list libevdev
-                         libxkbcommon
-                         pkg-config
-                         pixman
-                         scdoc
-                         wayland
-                         wayland-protocols
-                         wlroots-0.16))
-    (home-page "https://github.com/riverwm/river")
+     (list #:install-source? #f
+           #:zig-release-type "safe"
+           #:zig-build-flags
+           #~(list "-Dpie" "-Dxwayland")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-path
+                 (lambda _
+                   (substitute* "build.zig"
+                     (("/bin/sh") (which "sh")))))
+               (add-after 'install 'install-wayland-session
+                 (lambda _
+                   (let ((wayland-sessions
+                          (string-append #$output "/share/wayland-sessions")))
+                     (mkdir-p wayland-sessions)
+                     (install-file "contrib/river.desktop"
+                                   wayland-sessions)))))))
+    (inputs
+     (list libevdev
+           zig-wayland
+           zig-wlroots
+           zig-xkbcommon))
+    (native-inputs
+     (list pkg-config
+           scdoc))
+    (home-page "https://isaacfreund.com/software/river/")
     (synopsis "Dynamic tiling Wayland compositor")
     (description
      "River is a dynamic tiling Wayland compositor with flexible
