@@ -10743,6 +10743,7 @@ provided.")
            r-prodlim
            r-rpart
            r-survival))
+    (native-inputs (list r-mlbench r-th-data))
     (home-page "https://cran.r-project.org/web/packages/ipred")
     (synopsis "Improved predictors")
     (description
