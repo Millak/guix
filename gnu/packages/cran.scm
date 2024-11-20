@@ -27027,6 +27027,7 @@ consists of @code{grid} grobs and viewports that can then be manipulated with
         (base32
          "09gy2wmm3jp2k3q6zbmjl6z55a974221q7vi6xhmdd5abnwj722j"))))
     (build-system r-build-system)
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/thomasp85/farver")
     (synopsis "Vectorized color conversion and comparison")
     (description
