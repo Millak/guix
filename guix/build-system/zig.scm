@@ -48,6 +48,8 @@
                     source
                     (tests? #t)
                     (test-target #f)
+                    (parallel-build? #t)
+                    (parallel-tests? #t)
                     (install-source? #t)
                     (skip-build? #f)
                     (zig-build-flags ''())
@@ -70,6 +72,8 @@
                      #:source #+source
                      #:system #$system
                      #:test-target #$test-target
+                     #:parallel-build? #$parallel-build?
+                     #:parallel-tests? #$parallel-tests?
                      #:install-source? #$install-source?
                      #:skip-build? #$skip-build?
                      #:zig-build-flags #$zig-build-flags
@@ -102,6 +106,8 @@
                           (native-search-paths '())
                           (tests? #t)
                           (test-target #f)
+                          (parallel-build? #t)
+                          (parallel-tests? #t)
                           (install-source? #t)
                           (skip-build? #f)
                           (zig-build-flags ''())
@@ -140,6 +146,8 @@
                      #:outputs %outputs
                      #:target #$target
                      #:test-target #$test-target
+                     #:parallel-build? #$parallel-build?
+                     #:parallel-tests? #$parallel-tests?
                      #:inputs %build-target-inputs
                      #:native-inputs %build-host-inputs
                      #:search-paths '#$(map search-path-specification->sexp

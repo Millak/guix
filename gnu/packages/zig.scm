@@ -1639,4 +1639,4 @@ toolchain.  Among other features it provides
     (properties `((max-silent-time . 9600)
                   ,@(clang-compiler-cpu-architectures "18")))))
 
-(define-public zig zig-0.10)
+(define-public zig zig-0.13)

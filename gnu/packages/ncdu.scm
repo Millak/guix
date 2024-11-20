@@ -72,8 +72,10 @@ ncurses installed.")
                 "01g5mpvsm78lkd0yin82gyancrl23npy69qcp3d60vmm72yiwirz"))))
     (build-system zig-build-system)
     (arguments
-     (list #:zig zig-0.12
-           #:install-source? #f))
+     (list #:install-source? #f
+           #:zig-release-type "safe"
+           #:zig-build-flags
+           #~(list "-Dpie")))
     (inputs (list ncurses `(,zstd "lib")))
     (native-inputs (list pkg-config))
     (properties `((tunable? . #t)))))

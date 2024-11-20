@@ -53,6 +53,7 @@
     (build-system zig-build-system)
     (arguments
      (list
+      #:zig zig-0.10
       #:install-source? #f
       #:phases
       #~(modify-phases %standard-phases
@@ -124,7 +125,9 @@ mission-critical safety and performance for financial services.")
     (build-system zig-build-system)
     (inputs (list zig-0.10 python))
     (arguments
-     (list #:install-source? #f
+     (list #:zig zig-0.10
+           #:install-source? #f
+           #:zig-release-type "safe"
            ;; The tests fail with memory leaks.
            #:tests? #f))
     (synopsis "Zig language server")
