@@ -2042,14 +2042,14 @@ to interact with Git credentials helpers.")
   (package
     (inherit rust-gix-date-0.9)
     (name "rust-gix-date")
-    (version "0.8.5")
+    (version "0.8.7")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gix-date" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1755v9rxk388x8ypinlmw5qcl2q9qxll3kinppghx1s1985162qq"))))
+        (base32 "1h5qygjxr8p2g2vdrzpvx0plnyy9gsym29wjxc5fx48ly8qnkvcy"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
