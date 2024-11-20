@@ -10433,7 +10433,7 @@ a general image processing tool.")
   (package
     (inherit python-pillow)
     (name "python-pillow-simd")
-    (version "9.2.0")
+    (version "9.3.0")
     ;; The PyPI tarball does not include test files.
     (source
      (origin
@@ -10443,7 +10443,7 @@ a general image processing tool.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "13wwq7slw2q9djh7n39qdmlrzd9k3x7hdr36wk8qbgp3b6bcgvj6"))))
+        (base32 "0qnvpwzlx4rfz17qmsipr5iwzmh8xgmzvc79spnrmqibk3s18vyi"))))
     (build-system pyproject-build-system)
     (arguments
      (list
