@@ -124,6 +124,7 @@
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages valgrind)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml)
@@ -17264,6 +17265,32 @@ to the @code{is_x86_feature_detected!} macro.")
     (synopsis "Bindings to Google's cpu profiler")
     (description "This package provides bindings to Google's cpu profiler.")
     (license license:bsd-2)))
+
+(define-public rust-crabgrind-0.1
+  (package
+    (name "rust-crabgrind")
+    (version "0.1.11")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "crabgrind" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "06rn7ymna8i2d9sf8krshpffd5wzmk18gfrd5041bvclj71rxsfr"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--release" "--"
+                            "--skip=tests::count_errors"
+                            "--skip=tests::non_simd_call"
+                            "--skip=tests::test_run_mode_under_valgrind"
+                            "--skip=tests::wrong_monitor_command")
+       #:cargo-inputs (("rust-cc" ,rust-cc-1))))
+    (inputs (list valgrind))
+    (home-page "https://github.com/2dav/crabgrind")
+    (synopsis "Rust bindings to \"Valgrind Client Request\" interface")
+    (description
+     "This package provides Rust bindings to \"Valgrind Client Request\" interface.")
+    (license license:expat)))
 
 (define-public rust-cradle-0.2
   (package
