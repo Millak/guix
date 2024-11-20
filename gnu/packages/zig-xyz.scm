@@ -159,6 +159,47 @@ interface.")
     (home-page "https://codeberg.org/ifreund/zig-wayland")
     (license license:expat)))
 
+(define-public zig-wlroots
+  (package
+    (name "zig-wlroots")
+    (version "0.18.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://codeberg.org/ifreund/zig-wlroots")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1rckbrdqc4b5q6r8ppijkkf0xi01536sfsnfgmy9f3mfj3hvifvy"))))
+    (build-system zig-build-system)
+    (arguments
+     (list #:zig-release-type "safe"
+           #:zig-build-flags
+           #~(list "-Denable-tests")
+           #:zig-test-flags
+           #~(list "-Denable-tests")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'install-tinywl
+                 (lambda args
+                   (chdir "tinywl")
+                   (apply (assoc-ref %standard-phases 'build)
+                          `(,@args #:zig-build-flags ()))
+                   (apply (assoc-ref %standard-phases 'install)
+                          `(,@args #:install-source? #f))
+                   (chdir ".."))))))
+    (propagated-inputs
+     (list wlroots
+           zig-pixman
+           zig-wayland
+           zig-xkbcommon))
+    (native-inputs (list pkg-config))
+    (synopsis "Zig bindings for wlroots")
+    (description "This package provides Zig bindings for @code{wlroots}.")
+    (home-page "https://codeberg.org/ifreund/zig-wlroots")
+    (license license:expat)))
+
 (define-public zig-xkbcommon
   (package
     (name "zig-xkbcommon")
