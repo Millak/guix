@@ -11769,14 +11769,14 @@ capabilities.")
 (define-public rust-cargo-credential-0.4
   (package
     (name "rust-cargo-credential")
-    (version "0.4.4")
+    (version "0.4.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "cargo-credential" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1qvmiy683s4hq3fk9gz7bvshngjc2p1mn5arkw5fc5c7ygd04p2f"))))
+        (base32 "1kf4s49b7xrsy658k5jsm1wwrv4iqj42amcgskpwpskhari7qgis"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
@@ -11786,7 +11786,7 @@ capabilities.")
                        ("rust-thiserror" ,rust-thiserror-1)
                        ("rust-time" ,rust-time-0.3)
                        ("rust-windows-sys" ,rust-windows-sys-0.52))
-       #:cargo-development-inputs (("rust-snapbox" ,rust-snapbox-0.4))))
+       #:cargo-development-inputs (("rust-snapbox" ,rust-snapbox-0.6))))
     (home-page "https://github.com/rust-lang/cargo")
     (synopsis "Library to assist writing Cargo credential helpers")
     (description
