@@ -36893,6 +36893,25 @@ whether or not a given path points to an executable file.")
 stream runs in a TTY.")
     (license license:expat)))
 
+(define-public rust-is-terminal-polyfill-1
+  (package
+    (name "rust-is-terminal-polyfill")
+    (version "1.70.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "is_terminal_polyfill" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1kwfgglh91z33kl0w5i338mfpa3zs0hidq5j4ny4rmjwrikchhvr"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/polyfill-rs/is_terminal_polyfill")
+    (synopsis "Polyfill for `is_terminal` stdlib feature for use with older MSRVs")
+    (description
+     "This package provides Polyfill for `is_terminal` stdlib feature for use
+with older MSRVs.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-is-wsl-0.4
   (package
     (name "rust-is-wsl")
