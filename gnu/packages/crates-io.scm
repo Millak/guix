@@ -12173,6 +12173,24 @@ optional dependency graph analysis.")
 supported by Cargo.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-cargo-test-macro-0.3
+  (package
+    (name "rust-cargo-test-macro")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cargo-test-macro" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "15n83v5ffz4p3mjd03hwqlyaawp59bqwdg2amk3i45h6s5743flj"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/rust-lang/cargo")
+    (synopsis "Helper proc-macro for Cargo's testsuite")
+    (description
+     "This package provides a helper proc-macro for Cargo's testsuite.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-cargo-toml-0.19
   (package
     (name "rust-cargo-toml")
