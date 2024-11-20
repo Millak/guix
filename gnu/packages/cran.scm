@@ -160,6 +160,7 @@ characters, such that the strings remain unique (if they originally were).")
            r-sandwich
            r-survival
            r-zoo))
+    (native-inputs (list r-foreign))
     (home-page "https://cran.r-project.org/package=AER")
     (synopsis "Applied econometrics with R")
     (description
