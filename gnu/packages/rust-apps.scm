@@ -2316,8 +2316,43 @@ by modifying your @file{Cargo.toml} file from the command line.")
 rebase.")
     (license license:gpl3+)))
 
+(define-public rust-cbindgen-0.27
+  (package
+    (name "rust-cbindgen")
+    (version "0.27.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cbindgen" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1sqm3axr678d72yihgmpr9d17mj99ccibxfqhw53mgzwzkbqvkiz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-clap" ,rust-clap-4)
+                       ("rust-heck" ,rust-heck-0.4)
+                       ("rust-indexmap" ,rust-indexmap-2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-syn" ,rust-syn-2)
+                       ("rust-tempfile" ,rust-tempfile-3)
+                       ("rust-toml" ,rust-toml-0.8))
+       #:cargo-development-inputs
+       (("rust-pretty-assertions" ,rust-pretty-assertions-1)
+        ("rust-serial-test" ,rust-serial-test-2))))
+    (native-inputs (list python-cython))
+    (home-page "https://github.com/eqrion/cbindgen")
+    (synopsis "Tool for generating C bindings to Rust code")
+    (description
+     "This package provides a tool for generating C/C++ bindings to Rust code.")
+    (license license:mpl2.0)))
+
 (define-public rust-cbindgen-0.26
   (package
+    (inherit rust-cbindgen-0.27)
     (name "rust-cbindgen")
     (version "0.26.0")
     (source
@@ -2327,7 +2362,6 @@ rebase.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0jdbxmn5h5nlr4bifx85gny309djv5djs9q78fa1d7sj0wdw2sys"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-clap" ,rust-clap-3)
                        ("rust-heck" ,rust-heck-0.4)
@@ -2340,13 +2374,7 @@ rebase.")
                        ("rust-syn" ,rust-syn-1)
                        ("rust-tempfile" ,rust-tempfile-3)
                        ("rust-toml" ,rust-toml-0.5))
-       #:cargo-development-inputs (("rust-serial-test" ,rust-serial-test-0.5))))
-    (native-inputs (list python-cython))
-    (home-page "https://github.com/eqrion/cbindgen/")
-    (synopsis "Tool for generating C bindings to Rust code")
-    (description
-     "This package provides a tool for generating C/C++ bindings to Rust code.")
-    (license license:mpl2.0)))
+       #:cargo-development-inputs (("rust-serial-test" ,rust-serial-test-0.5))))))
 
 (define-public rust-cbindgen-0.24
   (package
@@ -2374,7 +2402,7 @@ rebase.")
               (base32
                "006rn3fn4njayjxr2vd24g1awssr9i3894nbmfzkybx07j728vav"))))))
 
-(define-public rust-cbindgen rust-cbindgen-0.26)
+(define-public rust-cbindgen rust-cbindgen-0.27)
 
 (define-public rust-bindgen-cli
   (package
