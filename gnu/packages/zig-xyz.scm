@@ -301,7 +301,7 @@ interface.")
     (home-page "https://codeberg.org/ifreund/zig-xkbcommon")
     (license license:expat)))
 
-(define-public zig-zls
+(define-public zig-zls-0.10
   (package
     (name "zig-zls")
     (version "0.10.0")
@@ -329,3 +329,5 @@ interface.")
 Language Server Protocol} for the Zig programming language.")
     (home-page "https://github.com/zigtools/zls")
     (license license:expat)))
+
+(define-public zig-zls zig-zls-0.10)
