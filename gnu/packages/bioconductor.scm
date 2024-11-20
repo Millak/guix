@@ -12785,6 +12785,15 @@ R, enabling interactive analysis and visualization of genome-scale data.")
     (properties
      `((upstream-name . "VariantAnnotation")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'delete-bad-tests
+           (lambda _
+             ;; These tests depend on SIFT.Hsapiens.dbSNP132, which depends on
+             ;; r-variantannotation.
+             (delete-file "inst/unitTests/test_SIFTandPolyPhen.R"))))))
     (propagated-inputs
      (list r-annotationdbi
            r-biobase
@@ -12804,7 +12813,9 @@ R, enabling interactive analysis and visualization of genome-scale data.")
            r-summarizedexperiment
            r-xvector
            r-zlibbioc))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-bsgenome-hsapiens-ucsc-hg19
+                         r-knitr r-runit r-snpstats
+                         r-txdb-hsapiens-ucsc-hg19-knowngene))
     (home-page "https://bioconductor.org/packages/VariantAnnotation")
     (synopsis "Package for annotation of genetic variants")
     (description "This R package can annotate variants, compute amino acid
