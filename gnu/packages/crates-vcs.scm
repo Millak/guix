@@ -5240,6 +5240,30 @@ a pure Rust implementation of Git.")
 handles finding names and parsing specifications.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-revision-0.27
+  (package
+    (inherit rust-gix-revision-0.29)
+    (name "rust-gix-revision")
+    (version "0.27.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-revision" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1kmd96vky58yf46g5nxqny8gl3df4447vb6x6w2lp30iq91kxc81"))))
+    (arguments
+     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-date" ,rust-gix-date-0.8)
+                       ("rust-gix-hash" ,rust-gix-hash-0.14)
+                       ("rust-gix-hashtable" ,rust-gix-hashtable-0.5)
+                       ("rust-gix-object" ,rust-gix-object-0.42)
+                       ("rust-gix-revwalk" ,rust-gix-revwalk-0.13)
+                       ("rust-gix-trace" ,rust-gix-trace-0.1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-1))))))
+
 (define-public rust-gix-revision-0.25
   (package
     (inherit rust-gix-revision-0.29)
