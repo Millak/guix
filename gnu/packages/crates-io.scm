@@ -28514,6 +28514,33 @@ implementation that is more efficient for smaller hash keys.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-foldhash-0.1
+  (package
+    (name "rust-foldhash")
+    (version "0.1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "foldhash" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "18in1a8mjcg43pfrdkhwzr0w988zb2bmb6sqwi07snjlkhvcc7pq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs (("rust-ahash" ,rust-ahash-0.8)
+                                   ("rust-chrono" ,rust-chrono-0.4)
+                                   ("rust-criterion" ,rust-criterion-0.5)
+                                   ("rust-fxhash" ,rust-fxhash-0.2)
+                                   ("rust-hashbrown" ,rust-hashbrown-0.14)
+                                   ("rust-rand" ,rust-rand-0.8)
+                                   ("rust-uuid" ,rust-uuid-1))))
+    (home-page "https://github.com/orlp/foldhash")
+    (synopsis "Non-cryptographic, minimally DoS-resistant hashing algorithm")
+    (description
+     "This package provides a fast, non-cryptographic, minimally
+@code{DoS-resistant} hashing algorithm.")
+    (license license:zlib)))
+
 (define-public rust-font-kit-0.11
   (package
     (name "rust-font-kit")
