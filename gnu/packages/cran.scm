@@ -21959,6 +21959,37 @@ only sparse real matrices in Matrix package format are supported.")
     ;; BSD-3.
     (license (list license:bsd-3 license:bsd-2))))
 
+(define-public r-spatialreg
+  (package
+    (name "r-spatialreg")
+    (version "1.3-5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "spatialreg" version))
+       (sha256
+        (base32 "1i00gclgkkkvkhnhrnvc8r7666glch9zi3qcqcijlrfk48psmzpf"))))
+    (properties `((upstream-name . "spatialreg")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-boot
+                             r-coda
+                             r-learnbayes
+                             r-mass
+                             r-matrix
+                             r-multcomp
+                             r-nlme
+                             r-sf
+                             r-spdata
+                             r-spdep))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/r-spatial/spatialreg/")
+    (synopsis "Spatial regression analysis")
+    (description
+     "This package provides a collection of all the estimation functions for
+spatial cross-sectional models (on lattice/areal data using spatial weights
+matrices) contained up to now in @code{spdep}.")
+    (license license:gpl2)))
+
 (define-public r-speedglm
   (package
     (name "r-speedglm")
