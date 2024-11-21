@@ -34503,7 +34503,7 @@ SystemTime}}.")
 (define-public rust-hyprland-0.3
   (package
     (name "rust-hyprland")
-    (version "0.3.12")
+    (version "0.3.13")
     (source
      (origin
        (method url-fetch)
@@ -34511,7 +34511,7 @@ SystemTime}}.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "01pvz7bpdwj6ja410mm2flrk43x6cq1xbp11mpf1ngwzi7klmafz"))))
+         "1s6xi0k93nxi4xgw09k14xxvdygwqc5nr4fk9n4m3m35q0f8yypq"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
@@ -34522,13 +34522,13 @@ SystemTime}}.")
          "--skip=data"
          "--skip=dispatch")
          #:cargo-inputs
-       (("rust-async-net" ,rust-async-net-1)
+       (("rust-async-net" ,rust-async-net-2)
         ("rust-async-std" ,rust-async-std-1)
         ("rust-async-trait" ,rust-async-trait-0.1)
         ("rust-derive-more" ,rust-derive-more-0.99)
         ("rust-doc-comment" ,rust-doc-comment-0.3)
         ("rust-futures" ,rust-futures-0.3)
-        ("rust-futures-lite" ,rust-futures-lite-1)
+        ("rust-futures-lite" ,rust-futures-lite-2)
         ("rust-hex" ,rust-hex-0.4)
         ("rust-hyprland-macros" ,rust-hyprland-macros-0.3)
         ("rust-lazy-static" ,rust-lazy-static-1)
@@ -34538,7 +34538,7 @@ SystemTime}}.")
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-serde-repr" ,rust-serde-repr-0.1)
-        ("rust-strum" ,rust-strum-0.25)
+        ("rust-strum" ,rust-strum-0.26)
         ("rust-tokio" ,rust-tokio-1))))
     (home-page "https://github.com/hyprland-community/hyprland-rs")
     (synopsis "An unofficial rust wrapper for Hyprland's IPC")
