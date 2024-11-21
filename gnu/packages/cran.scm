@@ -19410,13 +19410,12 @@ observation.")
        (sha256
         (base32 "0rhvxw243vvdv3hxa6pi343gcjc2cbxq1jzqirl9k1l4i3897l87"))))
     (build-system r-build-system)
-    (home-page
-     "https://cran.r-project.org/web/packages/aspi/")
-    (synopsis
-     "Analysis of symmetry of parasitic infections")
+    (native-inputs (list r-knitr r-testthat))
+    (home-page "https://cran.r-project.org/web/packages/aspi/")
+    (synopsis "Analysis of symmetry of parasitic infections")
     (description
-     "This package provides tools for the analysis and visualization of bilateral
-      asymmetry in parasitic infections.")
+     "This package provides tools for the analysis and visualization of
+bilateral asymmetry in parasitic infections.")
     (license license:gpl3+)))
 
 (define-public r-sandwich
