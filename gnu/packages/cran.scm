@@ -42600,7 +42600,7 @@ asynchronously from formatting.")
                 "1h6jb0xwkyhm9lwm7nj9bhrb5dhrsifvkpqkrd594j1lz74dar8x"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-plyr r-lattice))
+     (list r-lattice r-plyr))
     (home-page "https://cran.r-project.org/web/packages/Rmisc/")
     (synopsis "Ryan Miscellaneous")
     (description "The Rmisc library contains functions for data analysis and
