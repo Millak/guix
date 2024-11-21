@@ -6207,13 +6207,13 @@ default) to world coordinates.")
 (define-public python-rad
   (package
     (name "python-rad")
-    (version "0.21.0")
+    (version "0.22.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "rad" version))
        (sha256
-        (base32 "0b2gfsyccfx9dmmh725h7qjh5rxabg5w1j52yzfi8b0a8nmg6j6a"))))
+        (base32 "1p6v49gzbzishy1kdd5g8nbl97qp459s1smb6j94wvif4262zkm8"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -6221,9 +6221,13 @@ default) to world coordinates.")
       ;; python-rad -> python-roman-datamodels -> python-crds -> python-rad
       #:test-flags #~(list "--ignore=tests/test_schemas.py")))
     (native-inputs
-     (list python-pytest python-setuptools-scm))
+     (list python-pytest
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
     (propagated-inputs
-     (list python-asdf python-asdf-astropy))
+     (list python-asdf
+           python-asdf-astropy))
     (home-page "https://github.com/spacetelescope/rad")
     (synopsis "Roman Attribute Dictionary")
     (description
