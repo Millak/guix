@@ -6532,19 +6532,30 @@ using (multivariate) polynomials.")
 (define-public python-yt
   (package
     (name "python-yt")
-    (version "4.3.1")
+    (version "4.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "yt" version))
        (sha256
-        (base32 "03jy35vyniyd1pd3sv0zpd2f3ks2iyqw65xv28ids8nw6v1vavbv"))))
+        (base32 "1mf084wp0wrhi17npzbyz42lh3xwlc2hggr8h4pmighsnafdy58f"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:build-backend "setuptools.build_meta"
       #:test-flags
-      #~(list "--numprocesses" (number->string (parallel-job-count)))
+      #~(list "--numprocesses" (number->string (parallel-job-count))
+              "-k" (string-join
+                    ;; Tests requiring networking.
+                    (list "not test_load_sample_timeout"
+                          "test_unknown_filename"
+                          "test_typo_filename"
+                          "test_data_dir_broken"
+                          "test_registry_byte_size_dtype"
+                          "test_registry_byte_size_sign"
+                          ;; AssertionError: Arrays are not equal
+                          "test_field_cut_off_axis_octree")
+                    " and not "))
       #:phases
       #~(modify-phases %standard-phases
          (add-after 'unpack 'relax-requirements
@@ -6560,10 +6571,8 @@ using (multivariate) polynomials.")
               (setenv "HOME" "/tmp")
               (invoke "python" "setup.py" "build_ext" "--inplace"))))))
     (native-inputs
-     (list python-cython-3
-           python-nose
-           python-nose-exclude
-           python-nose-timer
+     (list nss-certs-for-test
+           python-cython-3
            python-pyaml
            python-pytest
            python-pytest-mpl
@@ -6582,7 +6591,24 @@ using (multivariate) polynomials.")
            python-pillow
            python-tomli-w
            python-tqdm
-           python-unyt))
+           python-unyt
+           ;; Optional
+           ;; python-arm-pyart ; not packed yet
+           ;; python-f90nml
+           ;; python-firefly
+           ;; python-miniball
+           ;; python-pyx
+           ;; python-ratarmount
+           python-astropy
+           python-cartopy
+           python-glue-core
+           python-h5py
+           python-netcdf4
+           python-pandas
+           python-pooch
+           python-regions
+           python-requests
+           python-xarray))
     (home-page "http://yt-project.org/")
     (synopsis "Analyzing and visualizing volumetric data framework")
     (description
