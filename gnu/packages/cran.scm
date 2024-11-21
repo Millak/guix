@@ -38674,7 +38674,7 @@ more.")
            r-tidyselect
            r-vctrs))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-modeldata r-recipes r-testthat))
     (home-page "https://github.com/tidymodels/workflows")
     (synopsis "Modeling workflows")
     (description
