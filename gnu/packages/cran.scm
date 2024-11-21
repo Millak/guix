@@ -29260,10 +29260,22 @@ the current document.")
         (base32
          "1s8vpj0rwyvzq6q4bby0szxwsj34z26mkrm7qx4pbs9g1g86yk9r"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'delete-bad-tests
+           (lambda _
+             ;; One tests here requires r-titanic.
+             (delete-file "tests/testthat/test_callbacks.R")
+             ;; This needs internet access
+             (delete-file "tests/testthat/test_model_compatibility.R")
+             ;; object 'Arthritis' not found
+             (delete-file "tests/testthat/test_helpers.R"))))))
     (propagated-inputs
      (list r-data-table r-jsonlite r-matrix))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/dmlc/xgboost")
     (synopsis "Extreme gradient boosting")
     (description
