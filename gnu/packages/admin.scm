@@ -426,7 +426,7 @@ interface and is based on GNU Guile.")
 (define-public shepherd-run
   (package
     (name "shepherd-run")
-    (version "0.1.0")
+    (version "0.2.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -435,7 +435,7 @@ interface and is based on GNU Guile.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "033l8ignsrr6p2wgwcyqlswpbf58kyl8cf7zwkz028gqfq4arkr8"))))
+                "0mvn5qi4bq9nsb1462pbzssb1z5w2s160lqd2ps3rjjc4z3f3gjj"))))
     (build-system gnu-build-system)
     (arguments
      (list
