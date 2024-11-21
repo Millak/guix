@@ -8011,6 +8011,7 @@ generating and manipulating colors in R.")
     (properties `((upstream-name . "reghelper")))
     (build-system r-build-system)
     (propagated-inputs (list r-ggplot2 r-lme4 r-mass r-nlme r-rlang))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/jeff-hughes/reghelper")
     (synopsis "Helper Functions for Regression Analysis")
     (description
