@@ -39128,7 +39128,7 @@ results.")
            r-vctrs
            r-workflowsets))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://tidyposterior.tidymodels.org")
     (synopsis "Bayesian analysis to compare models using resampling statistics")
     (description
