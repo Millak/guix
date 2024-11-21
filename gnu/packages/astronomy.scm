@@ -1532,21 +1532,28 @@ model-fitting photometry or morphological analyses.")
 (define-public python-aplpy
   (package
     (name "python-aplpy")
-    (version "2.1.0")
+    (version "2.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "aplpy" version))
        (sha256
-        (base32 "0ph9jhv4q4i4z6nkqr6hjw9148kdlnayxsn83qgv5dqn0h3nc9r8"))))
+        (base32 "03c8k7y75f5bwm8d08fr5xfaay4d9jzr5sas4j2frs7zrr8aak51"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; FIXME: https://github.com/aplpy/aplpy/issues/492
-      #:tests? #f
+      #:test-flags #~(list "--pyargs" "aplpy")
       #:phases
       #~(modify-phases %standard-phases
-          (delete 'sanity-check))))
+          (add-after 'unpack 'set-env
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list python-pytest-astropy
+           python-pytest-mpl
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
     (propagated-inputs
      (list python-astropy
            python-matplotlib
@@ -1557,9 +1564,6 @@ model-fitting photometry or morphological analyses.")
            python-reproject
            python-scikit-image
            python-shapely))
-    (native-inputs
-     (list python-pytest-astropy
-           python-pytest-mpl))
     (home-page "http://aplpy.github.io")
     (synopsis "Astronomical Plotting Library in Python")
     (description
