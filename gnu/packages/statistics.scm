@@ -6578,6 +6578,7 @@ diagnostic tools (@code{ctlcurves} and @code{DiscrFact}).")
     (build-system r-build-system)
     (propagated-inputs
      (list r-matrix r-rcpp r-rcppeigen))
+    (native-inputs (list r-survival r-testthat))
     (home-page "https://github.com/imbs-hl/ranger")
     (synopsis "Fast implementation of random forests")
     (description
