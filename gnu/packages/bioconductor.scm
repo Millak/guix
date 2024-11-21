@@ -50,6 +50,7 @@
   #:use-module (gnu packages curl)
   #:use-module (gnu packages docker)
   #:use-module (gnu packages gcc)
+  #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages graph)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages haskell-xyz)
@@ -64,6 +65,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages statistics)
+  #:use-module (gnu packages tex)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml)
@@ -21523,7 +21525,36 @@ different graph related packages produced by Bioconductor.")
     (propagated-inputs
      (list r-biocmanager r-bookdown r-knitr r-rmarkdown r-yaml))
     (native-inputs
-     (list r-knitr))
+     (list ghostscript
+           r-biocgenerics r-knitr r-runit
+           (texlive-updmap.cfg
+            (list texlive-bera
+                  texlive-booktabs
+                  texlive-caption
+                  texlive-changepage
+                  texlive-enumitem
+                  texlive-etoolbox
+                  texlive-etoolbox
+                  texlive-fancyhdr
+                  texlive-fancyvrb
+                  texlive-footmisc
+                  texlive-framed
+                  texlive-geometry
+                  texlive-helvetic
+                  texlive-marginfix
+                  texlive-mathtools
+                  texlive-nowidow
+                  texlive-parnotes
+                  texlive-parskip
+                  texlive-pdfcrop
+                  texlive-placeins
+                  texlive-preprint      ;authblk
+                  texlive-ragged2e
+                  texlive-soul
+                  texlive-titlesec
+                  texlive-titling
+                  texlive-xcolor
+                  texlive-xstring))))
     (home-page "https://bioconductor.org/packages/BiocStyle")
     (synopsis "Bioconductor formatting styles")
     (description "This package provides standard formatting styles for
