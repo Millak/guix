@@ -2156,7 +2156,8 @@ facilities for checking incoming mail.")
      `(#:configure-flags '("--sysconfdir=/etc"
                            "--localstatedir=/var"
                            "--with-sqlite"  ; not auto-detected
-                           "--with-lucene") ; not auto-detected
+                           "--with-lucene"
+                           "--with-moduledir=/usr/lib/dovecot") ; not auto-detected
        ;; The -rdynamic linker flag is needed for the backtrace() function to
        ;; have symbol names rather than just addresses.  Dovecot's tests rely
        ;; on this, see https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=962630.
@@ -2176,9 +2177,12 @@ facilities for checking incoming mail.")
                                 "src/lib-smtp/test-bin/sendmail-success.sh")
                (("cat") (which "cat")))))
          (replace 'install
-           (lambda* (#:key make-flags #:allow-other-keys)
+           (lambda* (#:key outputs make-flags #:allow-other-keys)
+             ;; The .la files don't like having the moduledir moved.
+             (for-each delete-file (find-files "." "\\.la"))
              ;; Simple hack to avoid installing a trivial README in /etc.
              (apply invoke "make" "install" "sysconfdir=/tmp/bogus"
+                    (string-append "moduledir=" (assoc-ref outputs "out") "/lib/dovecot")
                     make-flags))))))
     (home-page "https://www.dovecot.org")
     (synopsis "Secure POP3/IMAP server")
