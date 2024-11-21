@@ -3776,6 +3776,14 @@ advanced keybindings, word-level diff highlighting, syntax highlighting for
      (substitute-keyword-arguments (package-arguments rust-xremap)
        ((#:features _) '(list "gnome"))))))
 
+(define-public xremap-kde
+  (package
+    (inherit rust-xremap)
+    (name "xremap-kde")
+    (arguments
+     (substitute-keyword-arguments (package-arguments rust-xremap)
+       ((#:features _) '(list "kde"))))))
+
 (define-public xremap-wlroots
   (package
     (inherit rust-xremap)
