@@ -2158,12 +2158,14 @@ CFITSIO library.  Among other things, it can
           ;; Tests need this
           (add-before 'check 'set-HOME
             (lambda _ (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools-scm))
     (propagated-inputs
      (list python-astroml
            python-numpy
            python-scipy
            python-supersmoother))
-    (native-inputs (list python-pytest python-nose python-setuptools-scm))
     (home-page "https://github.com/astroml/gatspy")
     (synopsis "General tools for astronomical time series in Python")
     (description
