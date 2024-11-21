@@ -35526,7 +35526,7 @@ using the @code{rstan} and @code{rstanarm} packages).")
     (propagated-inputs
      (list r-desc r-rcpp r-rcppparallel))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-rstan r-testthat r-usethis))
     (home-page "https://mc-stan.org/rstantools/")
     (synopsis "Tools for developing R packages interfacing with Stan")
     (description
