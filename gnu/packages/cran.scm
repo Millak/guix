@@ -12872,6 +12872,8 @@ automatically.")
          "0x0w1fiqd98vmpz8yrp9ig0ry1wfr16g6bkjzd2a8sq9gn417z7n"))))
     (properties `((upstream-name . "tinytest")))
     (build-system r-build-system)
+    ;; Vignettes complain about a missing file, which is in fact there.
+    (arguments (list #:test-types '(list "tests")))
     (home-page "https://github.com/markvanderloo/tinytest")
     (synopsis "Lightweight unit testing framework")
     (description
