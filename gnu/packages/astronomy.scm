@@ -1756,32 +1756,32 @@ astronomical images, especially when there is no WCS information available.")
     (license license:expat)))
 
 (define-public python-astrodendro
-    (package
-      (name "python-astrodendro")
-      (version "0.3.1")
-      (source
-       (origin
-         (method url-fetch)
-         (uri (pypi-uri "astrodendro" version))
-         (sha256
-          (base32 "0pav2rq5q0wyr38g6z8ai4z2iqqc9x04iwll158yvkvgnv352m0i"))))
-      (build-system pyproject-build-system)
-      (native-inputs
-       (list python-pytest
-             python-setuptools
-             python-setuptools-scm
-             python-wheel))
-      (propagated-inputs
-       (list python-astropy
-             python-h5py
-             python-matplotlib
-             python-numpy))
-      (home-page "https://dendrograms.readthedocs.io/")
-      (synopsis "Astronomical dendrograms computation")
-      (description
-       "This package provides an way to compute dendrograms of observed or
+  (package
+    (name "python-astrodendro")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "astrodendro" version))
+       (sha256
+        (base32 "0pav2rq5q0wyr38g6z8ai4z2iqqc9x04iwll158yvkvgnv352m0i"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (list python-astropy
+           python-h5py
+           python-matplotlib
+           python-numpy))
+    (home-page "https://dendrograms.readthedocs.io/")
+    (synopsis "Astronomical dendrograms computation")
+    (description
+     "This package provides an way to compute dendrograms of observed or
 simulated Astronomical data in Python.")
-      (license license:expat)))
+    (license license:expat)))
 
 (define-public python-astroml
   (package
