@@ -1922,6 +1922,28 @@ aggregation that is robust to noise and also facilitates the calculation of
 significance probabilities for all the elements in the final ranking.")
     (license license:gpl2)))
 
+(define-public r-rotor
+  (package
+    (name "r-rotor")
+    (version "0.3.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "rotor" version))
+       (sha256
+        (base32 "02mzcwd94hykysz3cv0q3dlhbbd4k3rm1di7dcw6m4masgzy05zb"))))
+    (properties `((upstream-name . "rotor")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-dint r-r6))
+    (native-inputs (list r-testthat))
+    (home-page "https://s-fleck.github.io/rotor/")
+    (synopsis "Log rotation and conditional backups")
+    (description
+     "This package provides tools to conditionally rotate or back-up files
+based on their size or the date of the last backup; inspired by the utility
+@code{logrotate}'.")
+    (license license:expat)))
+
 (define-public r-rpresto
   (package
     (name "r-rpresto")
