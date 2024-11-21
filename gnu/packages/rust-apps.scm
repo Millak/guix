@@ -2758,23 +2758,25 @@ blanks grouped by language.")
 (define-public vivid
   (package
     (name "vivid")
-    (version "0.7.0")
+    (version "0.10.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "vivid" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "01fds6dm19bqgqydaa6n051v9l4wh9rb5d6sr9akwp2cc0fs43b7"))))
+        (base32 "1xynznf7drvhjhhnwdxrbjgr6qgfa5lzwxxqdclnjvzwkbhl2i2q"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:install-source? #f
+       #:cargo-inputs
        (("rust-ansi-colours" ,rust-ansi-colours-1)
-        ("rust-clap" ,rust-clap-2)
-        ("rust-dirs" ,rust-dirs-3)
+        ("rust-clap" ,rust-clap-4)
+        ("rust-etcetera" ,rust-etcetera-0.8)
         ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-rust-embed" ,rust-rust-embed-5)
-        ("rust-yaml-rust" ,rust-yaml-rust-0.4))))
+        ("rust-rust-embed" ,rust-rust-embed-8)
+        ("rust-yaml-rust" ,rust-yaml-rust-0.4))
+       #:cargo-development-inputs (("rust-assert-cmd" ,rust-assert-cmd-2))))
     (home-page "https://github.com/sharkdp/vivid")
     (synopsis "LS_COLORS environment variable manager")
     (description
