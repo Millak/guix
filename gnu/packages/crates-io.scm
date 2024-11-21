@@ -7647,8 +7647,42 @@ base32 and base16 (hex)")
 that uses Serde for transforming structs into bytes and vice versa!")
     (license license:expat)))
 
+(define-public rust-bindgen-0.70
+  (package
+    (name "rust-bindgen")
+    (version "0.70.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "bindgen" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0vyf0jp6apcy9kjyz4s8vldj0xqycnbzb6zv3skkwiqdi3nqz7gl"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-annotate-snippets" ,rust-annotate-snippets-0.9)
+                       ("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-cexpr" ,rust-cexpr-0.6)
+                       ("rust-clang-sys" ,rust-clang-sys-1)
+                       ("rust-itertools" ,rust-itertools-0.10)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-prettyplease" ,rust-prettyplease-0.2)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-rustc-hash" ,rust-rustc-hash-1)
+                       ("rust-shlex" ,rust-shlex-1)
+                       ("rust-syn" ,rust-syn-2))))
+    (inputs (list clang))
+    (home-page "https://rust-lang.github.io/rust-bindgen/")
+    (synopsis "Generate Rust FFI bindings to C and C++ libraries")
+    (description "This package can be used to automatically generate Rust FFI
+bindings to C and C++ libraries.")
+    (license license:bsd-3)))
+
 (define-public rust-bindgen-0.69
   (package
+    (inherit rust-bindgen-0.70)
     (name "rust-bindgen")
     (version "0.69.5")
     (source
@@ -7658,7 +7692,6 @@ that uses Serde for transforming structs into bytes and vice versa!")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1240snlcfj663k04bjsg629g4wx6f83flgbjh5rzpgyagk3864r7"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-annotate-snippets" ,rust-annotate-snippets-0.9)
                        ("rust-bitflags" ,rust-bitflags-2)
@@ -7675,13 +7708,7 @@ that uses Serde for transforming structs into bytes and vice versa!")
                        ("rust-rustc-hash" ,rust-rustc-hash-1)
                        ("rust-shlex" ,rust-shlex-1)
                        ("rust-syn" ,rust-syn-2)
-                       ("rust-which" ,rust-which-4))))
-    (inputs (list clang))
-    (home-page "https://rust-lang.github.io/rust-bindgen/")
-    (synopsis "Generate Rust FFI bindings to C and C++ libraries")
-    (description "This package can be used to automatically generate Rust FFI
-bindings to C and C++ libraries.")
-    (license license:bsd-3)))
+                       ("rust-which" ,rust-which-4))))))
 
 (define-public rust-bindgen-0.68
   (package
