@@ -1589,7 +1589,7 @@ ca495991b7852b855"))
            pkg-config
            python-wrapper
            rust
-           rust-cbindgen
+           rust-cbindgen-0.24
            which
            yasm))
     (home-page "https://www.thunderbird.net")
