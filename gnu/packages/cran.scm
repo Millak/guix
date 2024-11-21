@@ -41182,6 +41182,7 @@ itself."))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-fontbitstreamvera r-fontliberation))
+    (native-inputs (list r-htmltools r-testthat))
     (home-page "https://cran.r-project.org/package=fontquiver")
     (synopsis "Set of installed fonts")
     (description
