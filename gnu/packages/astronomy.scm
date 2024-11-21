@@ -4388,13 +4388,13 @@ PSF} describing how the optical system spreads light from sources.")
 (define-public python-reproject
   (package
     (name "python-reproject")
-    (version "0.14.0")
+    (version "0.14.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "reproject" version))
        (sha256
-        (base32 "1h5v74da32ai9dkhcdn3xx4h05awlxhhnrsdjj1sb644c1vlyg6x"))))
+        (base32 "0yg5dga054xdwsx75q204h04gmrw0mgayc74l4rpymcbkckymj2k"))))
     (build-system pyproject-build-system)
     (arguments
      (list
