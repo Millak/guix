@@ -297,10 +297,41 @@ acl_check_data:
    (service dhcp-client-service-type)
    (service dovecot-service-type
             (dovecot-configuration
+             (extensions (list dovecot-pigeonhole))
              (disable-plaintext-auth? #f)
+             ;; Required for sieve!
+             (postmaster-address "postmaster@komputilo")
              (ssl? "no")
              (auth-mechanisms '("anonymous"))
              (auth-anonymous-username "alice")
+             (protocols
+              (list (protocol-configuration
+                     (name "imap")
+                     (mail-plugins '("$mail_plugins" "imap_sieve"))
+                     (imap-metadata? #t))))
+
+             (plugin-configuration
+              (plugin-configuration
+               (entries (list
+                         (cons 'sieve-global "/tmp")
+                         (cons 'sieve-extensions "+editheader")
+
+                         (cons 'imapsieve-mailbox1-name "*")
+                         (cons 'imapsieve-mailbox1-causes "APPEND")
+                         ;; Run the script *before* the user scripts
+                         (cons 'imapsieve-mailbox1-before "file:/tmp/main.sieve")
+                         ;; We want to automatically remove original email
+                         (cons 'imapsieve-expunge-discarded "yes")
+
+                         (cons 'sieve-trace-debug "yes")
+                         (cons 'sieve-trace-dir "/tmp")
+                         (cons 'sieve-trace-level "tests")
+                         (cons 'sieve-plugins "sieve_imapsieve")
+                         ;; You cannot run scripts anywhere you want
+                         ;; Sieve allows you to only run scripts under
+                         ;; sieve_pipe_bin_dir.
+                         (cons 'sieve-pipe-bin-dir "/tmp")))))
+
              (mail-location
               (string-append "maildir:~/Maildir"
                              ":INBOX=~/Maildir/INBOX"
@@ -333,6 +364,18 @@ acl_check_data:
 
           (define message "From: test@example.com\n\
 Subject: Hello Nice to meet you!")
+
+          (define sieve-script
+            "require \"editheader\";\n
+addheader \"X-Sieve-Filtered\" \"Guix\";
+")
+          ;; Install our sieve script
+          (marionette-eval
+           `(begin
+              (with-output-to-file "/tmp/main.sieve"
+                (lambda ()
+                  (display ,sieve-script))))
+           marionette)
 
           (test-runner-current (system-test-runner #$output))
           (test-begin "dovecot")
@@ -367,6 +410,19 @@ Subject: Hello Nice to meet you!")
               ;; Create a TESTBOX mailbox
               (write-line "a CREATE TESTBOX" imap)
               (read-line imap) ;OK
+              ;; Select mailbox. This is required so that dovecot did
+              ;; synchronization correctly.
+              (write-line "a SELECT TESTBOX" imap)
+              ;; ("* FLAGS (\\Answered \\Flagged \\Deleted \\Seen \\Draft)\r")
+              ;; ("* OK [PERMANENTFLAGS (\\Answered \\Flagged \\Deleted \\Seen \\Draft \\*)] Flags permitted.\r")
+              ;; ("* 1 EXISTS\r")
+              ;; ("* 1 RECENT\r")
+              ;; ("* OK [UNSEEN 1] First unseen.\r")
+              ;; ("* OK [UIDVALIDITY 1732177859] UIDs valid\r")
+              ;; ("* OK [UIDNEXT 3] Predicted next UID\r")
+              (for-each (lambda (n)
+                          (read-line imap))
+                        (iota 7))
               ;; Append a message to a TESTBOX mailbox
               (write-line (format #f "a APPEND TESTBOX {~a}"
                                   (number->string (message-length message)))
@@ -380,18 +436,18 @@ Subject: Hello Nice to meet you!")
               #t))
 
           (test-equal "mail arrived"
-            message
+            (string-join (list "X-Sieve-Filtered: Guix" message) "\n")
             (marionette-eval
              '(begin
                 (use-modules (ice-9 ftw)
                              (ice-9 match)
                              (rnrs io ports))
-
-                (let ((TESTBOX/new "/home/alice/Maildir/TESTBOX/new/"))
-                  (match (scandir TESTBOX/new)
+                ;; XXX: We expect a new email in /cur directory
+                (let ((TESTBOX/cur "/home/alice/Maildir/TESTBOX/cur/"))
+                  (match (scandir TESTBOX/cur)
                     (("." ".." message-file)
                      (call-with-input-file
-                         (string-append TESTBOX/new message-file)
+                         (string-append TESTBOX/cur message-file)
                        get-string-all)))))
              marionette))
 
