@@ -838,6 +838,27 @@ index based on an ordered version of the Lorenz curve as a robust model
 comparison tool involving zero-inflated and highly skewed distributions.")
     (license license:gpl2+)))
 
+(define-public r-cubist
+  (package
+    (name "r-cubist")
+    (version "0.4.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "Cubist" version))
+       (sha256
+        (base32 "140m4if4g4v74dwhzdp4bgdgy4zzcyplxqd311gfg7dn0kqzzmai"))))
+    (properties `((upstream-name . "Cubist")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-lattice r-reshape2))
+    (native-inputs (list r-knitr r-testthat))
+    (home-page "https://topepo.github.io/Cubist/")
+    (synopsis "Rule- and instance-based regression modeling")
+    (description
+     "This is package for regression modeling using rules with added
+instance-based corrections.")
+    (license license:gpl3)))
+
 (define-public r-curry
   (package
     (name "r-curry")
