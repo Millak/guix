@@ -5784,13 +5784,13 @@ well as ephemerides services
 (define-public python-sep-pjw
   (package
     (name "python-sep-pjw")
-    (version "1.3.6")
+    (version "1.3.7")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sep_pjw" version))
        (sha256
-        (base32 "0ji3khgswidnnqx34js9fyk39kgh4gvf7q8gk2f7r4acaabzja2v"))))
+        (base32 "1z8m2l3ccxj1izdazv7a0hg6zd1495bvby8w114s5ji7fd91vdv7"))))
     (build-system pyproject-build-system)
     (arguments
      (list
