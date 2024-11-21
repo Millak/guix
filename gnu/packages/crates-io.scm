@@ -68011,14 +68011,14 @@ the file-system during development.")
 (define-public rust-rust-embed-impl-8
   (package
     (name "rust-rust-embed-impl")
-    (version "8.3.0")
+    (version "8.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rust-embed-impl" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1j2gqh8dl6c26y9iicjfgj9r5in3fw8k52fxnczhlln0qsiw46mr"))))
+        (base32 "0y0lfrvpqnh98lngf6z6crjwkhp9yhvl2ac7xig14lbrhv4dn9b1"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
