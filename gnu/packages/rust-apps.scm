@@ -3785,7 +3785,12 @@ advanced keybindings, word-level diff highlighting, syntax highlighting for
        ((#:features _) '(list "wlroots"))))))
 
 (define-public xremap-hyprland
-  (deprecated-package "xremap-hyprland" xremap-wlroots))
+  (package
+    (inherit rust-xremap)
+    (name "xremap-hyprland")
+    (arguments
+     (substitute-keyword-arguments (package-arguments rust-xremap)
+       ((#:features _) '(list "hyprland"))))))
 
 (define-public xremap-sway
   (deprecated-package "xremap-sway" xremap-wlroots))
