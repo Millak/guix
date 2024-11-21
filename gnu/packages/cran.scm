@@ -19270,7 +19270,7 @@ estimation problem.")
                 "1fjlgfd13zqlqilr19h00glgaqq54z9mmg2f4dkml1dxw94dlp9l"))))
     (properties `((upstream-name . "QuickJSR")))
     (build-system r-build-system)
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-tinytest))
     (home-page "https://cran.r-project.org/package=QuickJSR")
     (synopsis "Interface for the QuickJS lightweight JavaScript engine")
     (description
