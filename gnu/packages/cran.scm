@@ -18870,7 +18870,7 @@ samples is large and the number of mixture components is not too large.")
     (propagated-inputs
      (list r-curl r-magrittr r-rcpp))
     (native-inputs
-     (list pkg-config r-knitr))
+     (list pkg-config r-knitr r-spelling))
     (home-page "https://github.com/ropensci/magick")
     (synopsis "Advanced graphics and image-processing in R")
     (description
