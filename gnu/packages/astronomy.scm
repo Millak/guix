@@ -6648,8 +6648,9 @@ using (multivariate) polynomials.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; Disable test which require MPI setup and failed to run, check why.
-      #:test-flags #~(list "--ignore=test_halo_finders_ts.py")
+      ;; Disable test which requires MPI setup and failed to run, check why.
+      #:test-flags
+      #~(list "--ignore=yt_astro_analysis/halo_analysis/tests/test_halo_finders_ts.py")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'build-extensions
@@ -6657,9 +6658,9 @@ using (multivariate) polynomials.")
               (invoke "python" "setup.py" "build_ext" "--inplace"))))))
     (native-inputs
      (list python-cython
-           python-nose
-           python-tomli
+           python-pytest
            python-setuptools
+           python-tomli
            python-wheel))
     (propagated-inputs
      (list python-h5py
