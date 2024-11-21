@@ -42847,6 +42847,8 @@ the @code{raster} package that is suitable for extracting raster values using
          "14vrg6mkwwgw1klgpvjn7936yfxav55rainz71xjjih2j21vq21n"))))
     (properties `((upstream-name . "stringfish")))
     (build-system r-build-system)
+    ;; Tests require r-qs, which depends on this package.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-rcpp r-rcppparallel))
     (native-inputs
