@@ -38770,7 +38770,7 @@ object sizes.")
            r-vctrs
            r-withr))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-mosaic r-survival r-testthat r-tidyr))
     (home-page "https://github.com/tidymodels/yardstick")
     (synopsis "Tidy characterizations of model performance")
     (description
