@@ -20188,6 +20188,16 @@ User credentials are shared with command line git through the
         (base32
          "1dfcyxvw95lhm4giarsw266833sfbckk44nddjqpxqxarvwm1y4q"))))
     (build-system r-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'delete-bad-tests
+           (lambda _
+             ;; FIXME cran_version("usethis") return NULL
+             (delete-file "tests/testthat/test-release.R")))
+         ;; This is needed for tests.
+         (add-after 'unpack 'set-HOME
+           (lambda _ (setenv "HOME" "/tmp"))))))
     (propagated-inputs
      (list r-cli
            r-clipr
@@ -20208,6 +20218,7 @@ User credentials are shared with command line git through the
            r-whisker
            r-withr
            r-yaml))
+    (native-inputs (list r-knitr r-rmarkdown r-roxygen2 r-testthat r-tibble))
     (home-page "https://github.com/r-lib/usethis")
     (synopsis "Automate R package and project setup")
     (description
