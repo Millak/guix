@@ -27484,6 +27484,25 @@ Available @code{dovecot-configuration} fields are:
 The dovecot package.
 @end deftypevr
 
+@deftypevr {@code{dovecot-configuration} parameter} package-list extensions
+A list of additional Dovecot plugin packages to make available at runtime. During
+service activation, the @file{lib/dovecot} directory from each specified package
+is combined with Dovecot's core modules into a unified module directory.
+
+For example, to enable Sieve filtering:
+
+@lisp
+(extensions (list dovecot-pigeonhole))
+@end lisp
+
+Each package in the list must provide its modules at @file{lib/dovecot},
+as this is where @code{make-dovecot-moduledir} expects to find its
+extensions. The service combines these directories to create a unified
+module structure.
+
+The default value is an empty list, providing only core Dovecot functionality.
+@end deftypevr
+
 @deftypevr {@code{dovecot-configuration} parameter} comma-separated-string-list listen
 A list of IPs or hosts where to listen for connections.  @samp{*}
 listens on all IPv4 interfaces, @samp{::} listens on all IPv6
