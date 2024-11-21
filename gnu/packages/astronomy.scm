@@ -4032,13 +4032,13 @@ can be described by @acronym{WCS, World Coordinate System} translations.")
 (define-public python-photutils
   (package
     (name "python-photutils")
-    (version "2.0.1")
+    (version "2.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "photutils" version))
        (sha256
-        (base32 "1mcsp5bsg3i6w3v9gf7vhkyhlxsn57hgbs0b94p5c4hcv9fa4y3g"))))
+        (base32 "0lpah7a4wb3r7i8d4gc5bmb34bx3idg921220xhsgdplml77syzh"))))
     (build-system pyproject-build-system)
     (arguments
      (list
