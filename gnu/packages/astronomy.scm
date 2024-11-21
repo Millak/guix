@@ -5829,36 +5829,29 @@ object.")
 (define-public python-synphot
   (package
     (name "python-synphot")
-    (version "1.4.0")
+    (version "1.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "synphot" version))
        (sha256
-        (base32 "0fk860bxaqbamrq15pkqlbvhbf70y50cra2mgvv9r0cxq37isbi6"))))
+        (base32 "0xifg0fbh2rj3jn5i504c0qh51dlzgr1l2k962nh38synjhq9csc"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? test-flags #:allow-other-keys)
-              (when tests?
-                (invoke "python" "setup.py" "build_ext" "--inplace")
-                ;; Step out of the source directory to avoid interference; we
-                ;; want to run the installed code with extensions etc.
-                (with-directory-excursion "/tmp"
-                  (apply invoke "pytest" "-v" test-flags))))))))
+      #:test-flags #~(list "--pyargs" "synphot")))
+    (native-inputs
+     (list python-pytest
+           python-pytest-astropy
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
     (propagated-inputs
      (list python-astropy
            python-dust-extinction
            python-numpy
            python-scipy
            python-specutils ))
-    (native-inputs
-     (list python-pytest
-           python-pytest-astropy
-           python-setuptools-scm))
     (home-page "https://github.com/spacetelescope/synphot_refactor")
     (synopsis "Synthetic photometry using Astropy")
     (description
