@@ -21386,6 +21386,8 @@ related functions.")
         (base32
          "1mbgl6an18dzry55pvy08zdhj1gar5mlyvkfnlawiqyqq081frr6"))))
     (build-system r-build-system)
+    ;; Tests require r-fbasics, which depends on this package
+    (arguments (list #:tests? #false))
     (home-page "https://www.rmetrics.org")
     (synopsis "Stable distribution functions")
     (description
