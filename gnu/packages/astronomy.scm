@@ -5436,13 +5436,13 @@ files.")
 (define-public python-pyerfa
   (package
     (name "python-pyerfa")
-    (version "2.0.1.4")
+    (version "2.0.1.5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyerfa" version))
        (sha256
-        (base32 "1lwx4hril705r2iz4pirgn0wrpv1wk20mr669g03bsij69qsdf5c"))
+        (base32 "1h7nw61wqx9qsznnl8qandixr6c1n3f65hyqwzanav44wi7v5mhp"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
