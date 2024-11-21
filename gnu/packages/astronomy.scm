@@ -5058,26 +5058,27 @@ processing functions: @code{xyxymatch}, @code{geomap}.")
 (define-public python-stcal
   (package
     (name "python-stcal")
-    (version "1.9.0")
+    (version "1.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "stcal" version))
        (sha256
-        (base32 "1n843r19zyjm14iadfbi71ixpk0jrbhaj7h3szy1yhnhrfsrkwar"))))
+        (base32 "1h0vkc3nd77qm2ph1nihpd1n7dzr3d4rw2wga6j7siqjiwmphj3g"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      #~(list "-k" (string-append
+      #~(list "-k" (string-join
                     ;; Tests requiring network access.
-                    "not test_absolute_align"
-                    " and not test_relative_align[True]"
-                    " and not test_relative_align[False]"
-                    " and not test_get_catalog"
-                    " and not test_create_catalog"
-                    " and not test_create_catalog_graceful_failure"
-                    " and not test_parse_refcat"))
+                    (list "not test_absolute_align"
+                          "test_relative_align[True]"
+                          "test_relative_align[False]"
+                          "test_get_catalog"
+                          "test_create_catalog"
+                          "test_create_catalog_graceful_failure"
+                          "test_parse_refcat")
+                    " and not "))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-slope-fitter
@@ -5097,6 +5098,14 @@ processing functions: @code{xyxymatch}, @code{geomap}.")
             (lambda _
               ;; Cython extensions have to be built before running the tests.
               (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (native-inputs
+     (list python-cython-3
+           python-psutil
+           python-pytest
+           python-pytest-doctestplus
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
     (propagated-inputs
      (list opencv ;Provides OpenCV-Python
            python-asdf
@@ -5108,12 +5117,6 @@ processing functions: @code{xyxymatch}, @code{geomap}.")
            python-scikit-image
            python-scipy
            python-tweakwcs))
-    (native-inputs
-     (list python-cython-3
-           python-psutil
-           python-pytest
-           python-pytest-doctestplus
-           python-setuptools-scm))
     (home-page "https://github.com/spacetelescope/stcal")
     (synopsis "STScI tools and algorithms used in calibration pipelines")
     (description "STScI tools and algorithms used in calibration pipelines.")
