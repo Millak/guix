@@ -7929,7 +7929,7 @@ experiment via several parameterizations")
            r-plyr
            r-rlrsim
            r-stringr))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/pitakakariki/simr")
     (synopsis
      "Power analysis for generalized linear mixed models by simulation")
