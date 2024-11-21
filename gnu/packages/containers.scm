@@ -465,7 +465,7 @@ Its main purpose is to support the key usage by @code{docker-init}:
 (define-public podman
   (package
     (name "podman")
-    (version "5.2.5")
+    (version "5.3.1")
     (source
      (origin
        (method git-fetch)
@@ -473,7 +473,7 @@ Its main purpose is to support the key usage by @code{docker-init}:
              (url "https://github.com/containers/podman")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "1s0zjfclayqaknc457wy8iqlb9g170a7v3b8rnv59v3fkhkbpa81"))
+        (base32 "1315rqsfiwq4i2vvdzb6nkwbvgwimsj7f71ma1svvqhp8kbly04h"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
@@ -554,7 +554,7 @@ Its main purpose is to support the key usage by @code{docker-init}:
              (inputs (list pcre2)))     ; Drop once grep on master supports -P
            bats
            git
-           go-1.21
+           go-1.22
            go-github-com-go-md2man
            mandoc
            pkg-config
