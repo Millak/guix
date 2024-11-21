@@ -3704,7 +3704,7 @@ advanced keybindings, word-level diff highlighting, syntax highlighting for
 (define-public rust-xremap
   (package
     (name "rust-xremap")
-    (version "0.10.1")
+    (version "0.10.2")
     (source
      (origin
        (method url-fetch)
@@ -3712,7 +3712,7 @@ advanced keybindings, word-level diff highlighting, syntax highlighting for
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0a89vdldswd5zawln17gfrfqxjn4pacqlkn4hf5kn8r5znr0ap01"))))
+         "1chh8lcwx167f0bnd1w99rww54g9k9axf7qnxwcgzmg6m0adyx8d"))))
     (build-system cargo-build-system)
     (arguments
      `(#:features '()
@@ -3725,6 +3725,7 @@ advanced keybindings, word-level diff highlighting, syntax highlighting for
         ("rust-env-logger" ,rust-env-logger-0.10)
         ("rust-evdev" ,rust-evdev-0.12)
         ("rust-fork" ,rust-fork-0.2)
+        ("rust-hyprland" ,rust-hyprland-0.3)
         ("rust-indoc" ,rust-indoc-2)
         ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-log" ,rust-log-0.4)
@@ -3746,9 +3747,9 @@ advanced keybindings, word-level diff highlighting, syntax highlighting for
              (let* ((out (assoc-ref outputs "out"))
                     (share (string-append out "/share"))
                     (xremap (string-append out "/bin/xremap")))
-               (mkdir-p (string-append share "/bash-completion/completions"))
+               (mkdir-p (string-append out "/etc/bash_completion.d"))
                (with-output-to-file
-                 (string-append share "/bash-completion/completions/xremap")
+                 (string-append out "/etc/bash_completion.d/xremap")
                  (lambda _ (invoke xremap "--completions" "bash")))
                (mkdir-p (string-append share "/fish/vendor_completions.d"))
                (with-output-to-file
