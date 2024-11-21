@@ -12418,7 +12418,10 @@ timeout.  It can also poll several processes at once.")
                 "0hwazbv91lcxcddas7hwyc86rzl5fbyw6mrpksbyb6025ivj8g85"))))
     (properties `((upstream-name . "timeSeries")))
     (build-system r-build-system)
+    ;; Vignettes require a large number of other packages.
+    (arguments (list #:test-types '(list "tests")))
     (propagated-inputs (list r-timedate))
+    (native-inputs (list r-runit))
     (home-page
      "https://r-forge.r-project.org/scm/viewvc.php/pkg/timeSeries/?root=rmetrics")
     (synopsis "Metrics for financial time series objects")
