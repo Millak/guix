@@ -5609,6 +5609,36 @@ data analyses is available.  In addition, Sweave source code for slides of
 selected chapters is included in this package.")
     (license license:gpl2)))
 
+(define-public r-httptest
+  (package
+    (name "r-httptest")
+    (version "4.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "httptest" version))
+       (sha256
+        (base32 "0c370jxkd9dzqg5pdf2mcv2kjzr9zp9qai9riivjgygj6jhlcjav"))))
+    (properties `((upstream-name . "httptest")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-curl r-digest r-httr r-jsonlite r-testthat))
+    (native-inputs (list r-knitr r-spelling r-testthat))
+    (home-page "https://enpiar.com/r/httptest/")
+    (synopsis "Test environment for HTTP requests")
+    (description
+     "Testing and documenting code that communicates with remote servers can
+be painful.  Dealing with authentication, server state, and other
+complications can make testing seem too costly to bother with.  But it doesn't
+need to be that hard.  This package enables one to test all of the logic on
+the R sides of the API in your package without requiring access to the remote
+service.  Importantly, it provides three contexts that mock the network
+connection in different ways, as well as testing functions to assert that HTTP
+requests were---or were not---made.  It also allows one to safely record real
+API responses to use as test fixtures.  The ability to save responses and load
+them offline also enables one to write vignettes and other dynamic documents
+that can be distributed without access to a live server.")
+    (license license:expat)))
+
 (define-public r-httpuv
   (package
     (name "r-httpuv")
