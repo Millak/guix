@@ -5897,6 +5897,7 @@ and resampling-based inference.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-mass r-mclust))
+    (native-inputs (list r-spatialreg r-spdep))
     (home-page "https://cran.r-project.org/web/packages/prabclus")
     (synopsis "Parametric bootstrap tests for spatial neighborhood clustering")
     (description
