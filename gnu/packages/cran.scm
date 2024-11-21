@@ -35481,6 +35481,15 @@ series/point highlighting.")
          "0afm703zriyqprz1zvypir80lq2ylfff3qvj5i7p9n365mm8b150"))))
     (properties `((upstream-name . "shinystan")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'delete-bad-tests
+           (lambda _
+             ;; One test requires r-rstanarm, which depends on this very
+             ;; package.
+             (delete-file "tests/testthat/test_misc.R"))))))
     (propagated-inputs
      (list r-bayesplot
            r-colourpicker
@@ -35498,6 +35507,7 @@ series/point highlighting.")
            r-threejs
            r-xtable
            r-xts))
+    (native-inputs (list r-coda r-testthat))
     (home-page "https://mc-stan.org/")
     (synopsis "Interactive visual and numerical analysis for Bayesian models")
     (description
