@@ -2742,49 +2742,51 @@ and the options
 (define-public python-sncosmo
   (package
     (name "python-sncosmo")
-    (version "2.11.1")
+    (version "2.11.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sncosmo" version))
        (sha256
-        (base32 "0nmhrvaw22zxpmykl70a91mc88pxmw0x5fdxjiz3hdzkdbqrg0x9"))))
+        (base32 "1n7kh2qinp04ilf8d26hgjs6c3bdy5vbmppc6ps9jy1q0ll8gi69"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
       ;; Disable tests requireing remote access to download test data.
       #~(list
-         "-k" (string-append "not test_megacampsf_bandpass"
-                             " and not test_builtins_remote_aa"
-                             " and not test_builtins_remote_nm"
-                             " and not test_builtins_remote_um"
-                             " and not test_builtins_remote_wfc3"
-                             " and not test_builtins_megacampsf"
-                             " and not test_builtins_timeseries_ascii"
-                             " and not test_builtins_timeseries_fits"
-                             " and not test_builtins_salt2model"
-                             " and not test_builtins_salt3model"
-                             " and not test_builtins_2011fe"
-                             " and not test_builtins_mlcs2k2"
-                             " and not test_builtins_snemo"
-                             " and not test_builtins_sugar"
-                             " and not test_builtins_magsys_fits"
-                             " and not test_builtins_magsys_csp"
-                             " and not test_builtins_magsys_ab_b12"
-                             " and not test_builtins_magsys_jla"
-                             " and not test_csp_magsystem"
-                             " and not test_compositemagsystem_band_error"
-                             " and not test_G10"
-                             " and not test_C11"
-                             " and not test_salt2source_timeseries_vs_snfit"
-                             " and not test_salt2source_rcov_vs_snfit"
-                             " and not test_bandflux"
-                             " and not test_bandflux_multi"
-                             " and not test_bandflux_zpsys"
-                             " and not test_bandfluxcov"
-                             " and not test_bandmag"
-                             " and not test_sugarsource"))
+         "-k" (string-join
+               (list "not test_megacampsf_bandpass"
+                     "test_builtins_remote_aa"
+                     "test_builtins_remote_nm"
+                     "test_builtins_remote_um"
+                     "test_builtins_remote_wfc3"
+                     "test_builtins_megacampsf"
+                     "test_builtins_timeseries_ascii"
+                     "test_builtins_timeseries_fits"
+                     "test_builtins_salt2model"
+                     "test_builtins_salt3model"
+                     "test_builtins_2011fe"
+                     "test_builtins_mlcs2k2"
+                     "test_builtins_snemo"
+                     "test_builtins_sugar"
+                     "test_builtins_magsys_fits"
+                     "test_builtins_magsys_csp"
+                     "test_builtins_magsys_ab_b12"
+                     "test_builtins_magsys_jla"
+                     "test_csp_magsystem"
+                     "test_compositemagsystem_band_error"
+                     "test_G10"
+                     "test_C11"
+                     "test_salt2source_timeseries_vs_snfit"
+                     "test_salt2source_rcov_vs_snfit"
+                     "test_bandflux"
+                     "test_bandflux_multi"
+                     "test_bandflux_zpsys"
+                     "test_bandfluxcov"
+                     "test_bandmag"
+                     "test_sugarsource")
+               " and not "))
       #:phases
       #~(modify-phases %standard-phases
          (add-after 'unpack 'relax-requirements
