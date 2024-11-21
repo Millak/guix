@@ -5125,13 +5125,13 @@ processing functions: @code{xyxymatch}, @code{geomap}.")
 (define-public python-stdatamodels
   (package
     (name "python-stdatamodels")
-    (version "2.1.1")
+    (version "2.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "stdatamodels" version))
        (sha256
-        (base32 "08zkr0amc65dj2lr90d2r29cj23f8h0ms94qmmcgcq2r4xlpna10"))))
+        (base32 "0x7fzkda9cr7bsf8hq2q090a73cxk3l3ynipq8lqixfp8c94m3kq"))))
     (build-system pyproject-build-system)
     (arguments
      (list
