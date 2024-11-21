@@ -7788,7 +7788,7 @@ Calculates confidence intervals for the difference in proportion.")
            r-readxl
            r-rstudioapi
            r-withr))
-    (native-inputs (list gfortran r-r-rsp))
+    (native-inputs (list gfortran r-r-rsp r-testthat))
     (home-page "https://andrisignorell.github.io/DescTools/")
     (synopsis "Tools for Descriptive Statistics")
     (description
