@@ -38961,7 +38961,7 @@ prediction of kriging models.")
            r-tibble
            r-vctrs
            r-withr))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-kernlab r-knitr r-testthat))
     (home-page "https://dials.tidymodels.org/")
     (synopsis "Tools for creating tuning parameter values")
     (description
