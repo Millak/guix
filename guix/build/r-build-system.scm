@@ -80,6 +80,10 @@
          (testdir   (string-append libdir pkg-name "/" test-target))
          (site-path (string-append libdir ":" (generate-site-path inputs))))
     (when (and tests? (file-exists? testdir))
+      ;; Skip tests that should be skipped on CI systems.
+      (setenv "CI" "1")
+      (setenv "NOT_CRAN" "skip")
+      (setenv "IS_BIOC_BUILD_MACHINE" "true")
       (setenv "R_LIBS_SITE" site-path)
       (guard (c ((invoke-error? c)
                  ;; Dump the test suite log to facilitate debugging.
