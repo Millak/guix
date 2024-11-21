@@ -5211,13 +5211,13 @@ implementing calibration pipeline software.")
 (define-public python-stsynphot
   (package
     (name "python-stsynphot")
-    (version "1.3.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "stsynphot" version))
-              (sha256
-               (base32
-                "15m3vy39mc7rh1mrxs8d2bs0bx5vv632m6wg8n15fqjzhadqy7j5"))))
+    (version "1.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "stsynphot" version))
+       (sha256
+        (base32 "02xaglg1kv3mk6gqjcs1283mmy9b42fgsga8g2z8768lkgwmmg9j"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -5226,16 +5226,20 @@ implementing calibration pipeline software.")
       ;; Failed to load Vega spectrum from
       ;; /grp/redcat/trds/calspec/alpha_lyr_stis_010.fits;
       #:tests? #f))
-    (propagated-inputs (list python-astropy
-                             python-beautifulsoup4
-                             python-matplotlib
-                             python-numpy
-                             python-scipy
-                             python-synphot))
-    (native-inputs (list python-pytest
-                         python-pytest-astropy
-                         python-pytest-astropy-header
-                         python-setuptools-scm))
+    (native-inputs
+     (list python-pytest
+           python-pytest-astropy
+           python-pytest-astropy-header
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (list python-astropy
+           python-beautifulsoup4
+           python-matplotlib
+           python-numpy
+           python-scipy
+           python-synphot))
     (home-page "https://github.com/spacetelescope/stsynphot_refactor")
     (synopsis "Synthetic photometry using Astropy for HST and JWST")
     (description
