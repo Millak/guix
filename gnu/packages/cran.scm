@@ -39068,7 +39068,7 @@ methods, and post-processing steps.")
            r-withr
            r-workflows))
     (native-inputs
-     (list r-knitr))
+     (list r-kknn r-knitr r-modeldata r-testthat))
     (home-page "https://github.com/tidymodels/workflowsets")
     (synopsis "Create a collection of tidymodels workflows")
     (description
