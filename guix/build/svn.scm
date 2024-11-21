@@ -46,7 +46,8 @@ valid Subversion revision.  Return #t on success, #f otherwise."
            ;; Trust the server certificate.  This is OK as we
            ;; verify the checksum later.  This can be removed when
            ;; ca-certificates package is added.
-           "--trust-server-cert" "-r" (number->string revision)
+           "--trust-server-cert-failures=unknown-ca,cn-mismatch,expired,not-yet-valid,other"
+           "-r" (number->string revision)
 
            ;; Disable keyword substitutions (keywords are CVS-like strings
            ;; like "$Date$", "$Id$", and so on) for two reasons: (1) some
