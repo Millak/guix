@@ -38792,7 +38792,7 @@ and regression metrics (e.g., RMSE).")
          "1gj65kgs7x63f6y2vnv13k293b52k4afbmdlcam635h9vs8da2h2"))))
     (properties `((upstream-name . "warp")))
     (build-system r-build-system)
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat tzdata-for-tests))
     (home-page "https://github.com/DavisVaughan/warp")
     (synopsis "Group dates")
     (description
