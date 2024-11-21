@@ -67945,14 +67945,14 @@ suitable for financial calculations.")
 (define-public rust-rust-embed-8
   (package
     (name "rust-rust-embed")
-    (version "8.3.0")
+    (version "8.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rust-embed" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0ic70vd4lh6dhjnxaq8wywq3bg23jf78jyyashb3s1b601nz8y7v"))))
+        (base32 "1h2k15ajsq9x70l11h61m4wlg8qias4mw4bg4yy7wpnx9x5ayrps"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags '("--release" "--"
@@ -67962,7 +67962,7 @@ suitable for financial calculations.")
        #:cargo-inputs (("rust-actix-web" ,rust-actix-web-4)
                        ("rust-axum" ,rust-axum-0.7)
                        ("rust-hex" ,rust-hex-0.4)
-                       ("rust-include-flate" ,rust-include-flate-0.2)
+                       ("rust-include-flate" ,rust-include-flate-0.3)
                        ("rust-mime-guess" ,rust-mime-guess-2)
                        ("rust-poem" ,rust-poem-1)
                        ("rust-rocket" ,rust-rocket-0.5)
