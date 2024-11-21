@@ -3531,7 +3531,7 @@ bad pixel tracking throughout the reduction process.")
 (define-public python-cdflib
   (package
     (name "python-cdflib")
-    (version "1.3.1")
+    (version "1.3.2")
     (source
      (origin
        (method git-fetch)               ; no tests in PyPI release
@@ -3540,7 +3540,7 @@ bad pixel tracking throughout the reduction process.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0zmz9wjhlq43lqy5k4fld9cj5k39s1hkkaligrn3kpf9hcbd79qn"))))
+        (base32 "0g723s5xg7vd37vlbjpgpiljd3vxwccslwzcf619zvdnc2xbcw2c"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:phases
