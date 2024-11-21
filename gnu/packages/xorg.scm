@@ -264,6 +264,18 @@ which can be read by any architecture.")
 the core protocol and (many) extensions for the X Window System.")
     (license license:x11)))
 
+(define-public xorgproto-2024
+  (package
+    (inherit xorgproto)
+    (version "2024.1")
+        (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://xorg/individual/proto"
+                                  "/xorgproto-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0nfbbi4j130m2gxzp20hp642xizbbl68jpbzahiq8nw183yja8ip"))))))
+
 (define-public bigreqsproto
   (package
     (name "bigreqsproto")
@@ -5273,7 +5285,7 @@ EGLStream families of extensions.")
 (define-public xorg-server-xwayland
   (package
     (name "xorg-server-xwayland")
-    (version "23.2.5")
+    (version "24.1.4")
     (source
      (origin
        (method url-fetch)
@@ -5281,7 +5293,7 @@ EGLStream families of extensions.")
                            "/xserver/xwayland-" version ".tar.xz"))
        (sha256
         (base32
-         "145xykwmyqkaa8zrbn5fnvnff67iral9mc5raamglnbsd3r7zv1k"))))
+         "1x1lmw1br3dxxfppfny1vkmk2l2vk5248i3k05smb7w1mgdphsnr"))))
     (inputs (list font-dejavu
                   dbus
                   egl-wayland
@@ -5299,7 +5311,7 @@ EGLStream families of extensions.")
                   wayland-protocols
                   xkbcomp
                   xkeyboard-config
-                  xorgproto
+                  xorgproto-2024
                   xtrans))
     (native-inputs (cons pkg-config
                          (if (%current-target-system)
@@ -5311,8 +5323,7 @@ EGLStream families of extensions.")
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags
-       (list "-Dxwayland_eglstream=true"
-             (string-append "-Dxkb_dir="
+       (list (string-append "-Dxkb_dir="
                             (assoc-ref %build-inputs "xkeyboard-config")
                             "/share/X11/xkb")
              (string-append "-Dxkb_bin_dir="
