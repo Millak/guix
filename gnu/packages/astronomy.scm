@@ -4356,44 +4356,28 @@ setup(ext_modules=get_extensions())")))))
 (define-public python-regularizepsf
   (package
     (name "python-regularizepsf")
-    (version "0.4.0")
+    (version "1.0.2")
     (source
      (origin
-       (method git-fetch) ; no tests data in the PyPI tarball
-       (uri (git-reference
-             (url "https://github.com/punch-mission/regularizepsf")
-             (commit version)))
-       (file-name (git-file-name name version))
+       (method url-fetch)
+       (uri (pypi-uri "regularizepsf" version))
        (sha256
-        (base32 "0b16lscrzd1lribwis19y6dh6qrgddhcinlc2lbwkzzqqkjdnyzi"))))
+        (base32 "1ial8i9nshhpn3lsgnjqm94dfrzxwz2qgpd8bjzmml1ls0j7sm9v"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-         (add-after 'unpack 'relax-requirements
-           (lambda _
-             (substitute* "setup.py"
-               ;; numpy==1.26.4
-               (("==1.26.4") ">=1.23"))))
-          (add-before 'check 'build-extensions
-            (lambda _
-              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-mpl
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
     (propagated-inputs
      (list python-astropy
-           python-dill
            python-h5py
-           python-lmfit
            python-matplotlib
            python-numpy
            python-scikit-image
            python-scipy
            python-sep-pjw))
-    (native-inputs
-     (list python-cython
-           python-pytest
-           python-pytest-mpl
-           python-pytest-runner))
     (home-page "https://github.com/punch-mission/regularizepsf")
     (synopsis "Point spread function modeling and regularization")
     (description
