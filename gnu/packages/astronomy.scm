@@ -6307,13 +6307,13 @@ solar physics.")
 (define-public python-roman-datamodels
   (package
     (name "python-roman-datamodels")
-    (version "0.21.0")
+    (version "0.22.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "roman_datamodels" version))
        (sha256
-        (base32 "00hwyxixdk3i48nhqnn7pnkkp3fran6fn8kzwx2w4bjkwv8cd126"))))
+        (base32 "0n50pgs7y0nmrx86qlny27mas2zgx708gm3xfkl7an2nwkdfwfld"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -6324,6 +6324,14 @@ solar physics.")
           (add-after 'unpack 'set-env
             (lambda _
               (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-doctestplus
+           python-pytest-env
+           python-pytest-xdist
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
     (propagated-inputs
      (list python-asdf
            python-asdf-astropy
@@ -6332,12 +6340,6 @@ solar physics.")
            python-numpy
            python-psutil
            python-rad))
-    (native-inputs
-     (list python-pytest
-           python-pytest-doctestplus
-           python-pytest-env
-           python-pytest-xdist
-           python-setuptools-scm))
     (home-page "https://github.com/spacetelescope/roman_datamodels")
     (synopsis "Roman Datamodels Support")
     (description
