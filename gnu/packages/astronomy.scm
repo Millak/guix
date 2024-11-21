@@ -5313,13 +5313,13 @@ milliarcsecond).")
 (define-public python-jwst
   (package
     (name "python-jwst")
-    (version "1.16.0")
+    (version "1.16.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "jwst" version))
               (sha256
                (base32
-                "06krkpfhwpc825bsdl0rffd9qlqw1rl928fwxa7cywds5dahpiyn"))
+                "1bqfgqp4gdm1ky5dvzhzpgygwr710h4mbykp5sb9aw3cw9jg1bk7"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -5379,7 +5379,9 @@ milliarcsecond).")
                          python-pytest-openfiles
                          python-requests-mock
                          ;; python-ruff ; not packed yet in Guix
-                         python-setuptools-scm))
+                         python-setuptools
+                         python-setuptools-scm
+                         python-wheel))
     (home-page "https://jwst-pipeline.readthedocs.io/en/latest/")
     (synopsis
      "Python library for science observations from the James Webb Space Telescope")
