@@ -268,7 +268,7 @@ Browser.")
      (list
       rust
       `(,rust "cargo")
-      rust-cbindgen
+      rust-cbindgen-0.26
       lld-as-ld-wrapper-16  ; for cargo rustc
       llvm-16
       clang-16
