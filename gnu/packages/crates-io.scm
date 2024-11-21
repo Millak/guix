@@ -12234,17 +12234,17 @@ supported by Cargo.")
      "This package provides a testing framework for Cargo's testsuite.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-cargo-toml-0.19
+(define-public rust-cargo-toml-0.20
   (package
     (name "rust-cargo-toml")
-    (version "0.19.2")
+    (version "0.20.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "cargo_toml" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1gljfkdjx07fisn5xkklv56ki3p49ppf8fkry7c1psx28bgmd0x9"))))
+        (base32 "1h0srl8n4s0xs6bq9z9zpkni3brzkkm0fmw4g00cmd10qq9mmnl8"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-serde" ,rust-serde-1)
@@ -12254,6 +12254,22 @@ supported by Cargo.")
     (description "This package provides `Cargo.toml` struct definitions for
 parsing with Serde.")
     (license (list license:asl2.0 license:expat))))
+
+(define-public rust-cargo-toml-0.19
+  (package
+    (inherit rust-cargo-toml-0.20)
+    (name "rust-cargo-toml")
+    (version "0.19.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cargo_toml" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1gljfkdjx07fisn5xkklv56ki3p49ppf8fkry7c1psx28bgmd0x9"))))
+    (arguments
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1)
+                       ("rust-toml" ,rust-toml-0.8))))))
 
 (define-public rust-cargo-toml-0.16
   (package
