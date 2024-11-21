@@ -3967,13 +3967,13 @@ Carlo.")
 (define-public python-ndcube
   (package
     (name "python-ndcube")
-    (version "2.2.3")
+    (version "2.2.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ndcube" version))
        (sha256
-        (base32 "01sxmy5ki5bcgva5z3m20mg20dfx5n6dkb41kdfcdizqmsw96qmn"))))
+        (base32 "08l4nq43igpic6v3zjnyjq3yy44czg79798rmv5la52hbzbz1kj3"))))
     (build-system pyproject-build-system)
     (arguments
      (list
