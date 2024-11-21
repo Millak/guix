@@ -35270,8 +35270,33 @@ a trait for tuples.")
     (description "The procedural macro used by include_dir.")
     (license license:expat)))
 
+(define-public rust-include-flate-0.3
+  (package
+    (name "rust-include-flate")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "include-flate" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ghiy1f2ipzw71nggrv6chard023nyjmvq2dyg0qcm39a1kw2jfz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; `#![feature]` may not be used on the stable release channel
+       #:cargo-inputs (("rust-include-flate-codegen" ,rust-include-flate-codegen-0.2)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-libflate" ,rust-libflate-2))))
+    (home-page "https://github.com/SOF3/include-flate")
+    (synopsis "Variant of @code{include_bytes!/include_str!} with compression")
+    (description
+     "This package provides a variant of @code{include_bytes!/include_str!}
+with compile-time deflation and runtime lazy inflation.")
+    (license license:asl2.0)))
+
 (define-public rust-include-flate-0.2
   (package
+    (inherit rust-include-flate-0.3)
     (name "rust-include-flate")
     (version "0.2.0")
     (source
@@ -35281,19 +35306,12 @@ a trait for tuples.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1c5dsx6j9jwrd6calhxdgip85qjy45hc8v1740fr61k46ilibqf2"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t ; `#![feature]` may not be used on the stable release channel
        #:cargo-inputs (("rust-include-flate-codegen-exports"
                         ,rust-include-flate-codegen-exports-0.1)
                        ("rust-lazy-static" ,rust-lazy-static-1)
-                       ("rust-libflate" ,rust-libflate-1))))
-    (home-page "https://github.com/SOF3/include-flate")
-    (synopsis "Variant of @code{include_bytes!/include_str!} with compression")
-    (description
-     "This package provides a variant of @code{include_bytes!/include_str!}
-with compile-time deflation and runtime lazy inflation.")
-    (license license:asl2.0)))
+                       ("rust-libflate" ,rust-libflate-1))))))
 
 (define-public rust-include-flate-0.1
   (package
