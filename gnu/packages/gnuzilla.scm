@@ -775,7 +775,7 @@ variable defined below.  It requires guile-json to be installed."
       ;;  ,(search-patch "icecat-use-system-media-libs.patch"))
       rust
       `(,rust "cargo")
-      rust-cbindgen
+      rust-cbindgen-0.24
       llvm-17
       clang-17
       perl
