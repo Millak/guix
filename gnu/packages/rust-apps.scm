@@ -1141,16 +1141,20 @@ characters, ASCII whitespace characters, other ASCII characters and non-ASCII.")
 (define-public hyperfine
   (package
     (name "hyperfine")
-    (version "1.11.0")
+    (version "1.18.0")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "hyperfine" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
+        (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "0m5lrvx6wwkxqdc5digm1k4diiaqcg5j4pia77s5nw1aam7k51hy"))))
+          "146064gf713pwbhpwypa70921bvc62p1px5w1fq3h7zj1alzl7ay"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* (find-files "." "^Cargo\\.toml$")
+                  (("\"=([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                   (string-append "\"^" version)))))))
     (build-system cargo-build-system)
     (arguments
      `(#:modules ((guix build cargo-build-system)
@@ -1158,22 +1162,29 @@ characters, ASCII whitespace characters, other ASCII characters and non-ASCII.")
                   (srfi srfi-26))
        #:install-source? #f
        #:cargo-inputs
-       (("rust-atty" ,rust-atty-0.2)
-        ("rust-cfg-if" ,rust-cfg-if-0.1)
-        ("rust-clap" ,rust-clap-2)
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-atty" ,rust-atty-0.2)
+        ("rust-clap" ,rust-clap-4)
+        ("rust-clap-complete" ,rust-clap-complete-4)
         ("rust-colored" ,rust-colored-2)
         ("rust-csv" ,rust-csv-1)
-        ("rust-indicatif" ,rust-indicatif-0.15)
+        ("rust-indicatif" ,rust-indicatif-0.17)
         ("rust-libc" ,rust-libc-0.2)
-        ("rust-rand" ,rust-rand-0.7)
+        ("rust-nix" ,rust-nix-0.26)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-rand" ,rust-rand-0.8)
         ("rust-rust-decimal" ,rust-rust-decimal-1)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-shell-words" ,rust-shell-words-1)
         ("rust-statistical" ,rust-statistical-1)
-        ("rust-version-check" ,rust-version-check-0.9)
-        ("rust-winapi" ,rust-winapi-0.3))
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-windows-sys" ,rust-windows-sys-0.48))
        #:cargo-development-inputs
-       (("rust-approx" ,rust-approx-0.3))
+       (("rust-approx" ,rust-approx-0.5)
+        ("rust-assert-cmd" ,rust-assert-cmd-2)
+        ("rust-predicates" ,rust-predicates-3)
+        ("rust-tempfile" ,rust-tempfile-3))
        #:phases
        (modify-phases %standard-phases
         (add-after 'install 'install-more
@@ -1181,7 +1192,7 @@ characters, ASCII whitespace characters, other ASCII characters and non-ASCII.")
             (let* ((out   (assoc-ref outputs "out"))
                    (share (string-append out "/share/"))
                    (man   (string-append share "man/man1"))
-                   (bash  (string-append share "bash-completion/completions"))
+                   (bash  (string-append out "/etc/bash_completion.d/"))
                    (fish  (string-append share "fish/vendor_completions.d"))
                    (zsh   (string-append share "zsh/site-functions")))
               (install-file "doc/hyperfine.1" man)
