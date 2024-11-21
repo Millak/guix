@@ -2432,18 +2432,18 @@ rebase.")
 (define-public rust-bindgen-cli
   (package
     (name "rust-bindgen-cli")
-    (version "0.69.5")
+    (version "0.70.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "bindgen-cli" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1g984q5f5j6bglmbz4hbw40srhb5jywjhwc2v2livcxhvdq2hw8m"))))
+        (base32 "1anm1gci1ycbv6sz4a5dan7phqbypcnw48xribxmm1wdsm39wgrk"))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
-       #:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.69)
+       #:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.70)
                        ("rust-clap" ,rust-clap-4)
                        ("rust-clap-complete" ,rust-clap-complete-4)
                        ("rust-env-logger" ,rust-env-logger-0.10)
@@ -2465,9 +2465,9 @@ rebase.")
              (let* ((out (assoc-ref outputs "out"))
                     (share (string-append out "/share"))
                     (bindgen (string-append out "/bin/bindgen")))
-               (mkdir-p (string-append share "/bash-completion/completions"))
+               (mkdir-p (string-append out "/etc/bash_completion.d/"))
                (with-output-to-file
-                 (string-append share "/bash-completion/completions/bindgen")
+                 (string-append out "/etc/bash_completion.d/bindgen")
                  (lambda _ (invoke bindgen "--generate-shell-completions" "bash")))
                (mkdir-p (string-append share "/fish/vendor_completions.d"))
                (with-output-to-file
