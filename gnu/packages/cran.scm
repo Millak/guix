@@ -35666,7 +35666,7 @@ need to derive the partial derivatives.")
            r-stanheaders
            r-survival))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://mc-stan.org/rstanarm/")
     (synopsis "Bayesian applied regression modeling via Stan")
     (description
