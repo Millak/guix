@@ -977,6 +977,28 @@ also provided.")
 visualization of their differences.")
     (license license:gpl2+)))
 
+(define-public r-dint
+  (package
+    (name "r-dint")
+    (version "2.1.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "dint" version))
+       (sha256
+        (base32 "0qfvxzix6k24xnjxh9nhz9dq3qfwl14mnd7rp03l8yvh6frws8fh"))))
+    (properties `((upstream-name . "dint")))
+    (build-system r-build-system)
+    (native-inputs (list r-knitr r-testthat))
+    (home-page "https://github.com/s-fleck/dint")
+    (synopsis "Toolkit for year-quarter, year-month and year-isoweek dates")
+    (description
+     "This package provides S3 classes and methods to create and work with
+year-quarter, year-month and year-isoweek vectors.  Basic arithmetic
+operations (such as adding and subtracting) are supported, as well as
+formatting and converting to and from standard R date types.")
+    (license license:expat)))
+
 (define-public r-dirichletreg
   (package
     (name "r-dirichletreg")
