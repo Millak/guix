@@ -1756,32 +1756,16 @@ astronomical images, especially when there is no WCS information available.")
     (license license:expat)))
 
 (define-public python-astrodendro
-  ;; XXX: 0.2.0 was released 8 years ago and not compatible with Python 3.10,
-  ;; use the latest commit on master branch, see
-  ;; <https://github.com/dendrograms/astrodendro/issues/189>.
-  (let ((commit "3181c36489caa4c62b36b7ec8e06f4da65af6fda")
-        (revision "0"))
     (package
       (name "python-astrodendro")
-      (version (git-version "0.2.0" revision commit))
+      (version "0.3.1")
       (source
        (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/dendrograms/astrodendro")
-               (commit commit)))
+         (method url-fetch)
+         (uri (pypi-uri "astrodendro" version))
          (sha256
-          (base32 "1imahzl0g8r1lxyiz9wi9q4zk519yxgn6qs1nb0ybb34sipjs4kz"))
-         (file-name (git-file-name name version))))
+          (base32 "0pav2rq5q0wyr38g6z8ai4z2iqqc9x04iwll158yvkvgnv352m0i"))))
       (build-system pyproject-build-system)
-      (arguments
-       (list
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-before 'build 'set-env-version
-              (lambda _
-                (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
-                        #$(version-major+minor+point version)))))))
       (native-inputs
        (list python-pytest
              python-setuptools
@@ -1797,7 +1781,7 @@ astronomical images, especially when there is no WCS information available.")
       (description
        "This package provides an way to compute dendrograms of observed or
 simulated Astronomical data in Python.")
-      (license license:expat))))
+      (license license:expat)))
 
 (define-public python-astroml
   (package
