@@ -39173,6 +39173,14 @@ models without involving a test set.")
          "1h05gm6fwjh6v9qqi9jbislf008h7d50k003qymb0x9gz6p75qgy"))))
     (properties `((upstream-name . "tidypredict")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'delete-bad-tests
+           (lambda _
+             ;; Two tests require r-earth.
+             (delete-file "tests/testthat/test-earth.R"))))))
     (propagated-inputs
      (list r-dplyr
            r-generics
@@ -39182,7 +39190,14 @@ models without involving a test set.")
            r-tibble
            r-tidyr))
     (native-inputs
-     (list r-knitr))
+     (list r-cubist
+           r-dbplyr
+           r-knitr
+           r-mlbench
+           r-parsnip
+           r-partykit
+           r-ranger
+           r-testthat))
     (home-page "https://tidypredict.tidymodels.org")
     (synopsis "Run predictions inside the database")
     (description
