@@ -68059,14 +68059,14 @@ the file-system during development.")
 (define-public rust-rust-embed-utils-8
   (package
     (name "rust-rust-embed-utils")
-    (version "8.3.0")
+    (version "8.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rust-embed-utils" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "10am6j29b5p7na45cz6vqxkg8gy47xbir95d9vzzyrr50f4r1xl6"))))
+        (base32 "17aj29y2xis2fhp4i1wyf0xqm6ljhn3z5qdh75hbbb4sgrvlflrf"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-globset" ,rust-globset-0.4)
