@@ -1724,7 +1724,7 @@ specification.")
 (define-public python-astroalign
   (package
     (name "python-astroalign")
-    (version "2.6.0")
+    (version "2.6.1")
     (source
      (origin
        ;; There are no tests in the PyPI tarball.
@@ -1734,7 +1734,7 @@ specification.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19dmdnp2hzhzd25601xrfflhxi3j2rgpwf3nl882173wb544cxyq"))))
+        (base32 "1r65n0jx3gvr43c8svswcpvjdjwz85xcvxrrxmvxzv0w2bd6xcc9"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-astropy
