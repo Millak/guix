@@ -11736,7 +11736,7 @@ reference point and sorted by a user defined feature.")
                              r-summarizedexperiment
                              r-tibble
                              r-wheatmap))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/zwdzwd/sesame")
     (synopsis "Step-wise analysis of DNA Methylation BeadChips")
     (description
