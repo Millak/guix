@@ -12876,6 +12876,7 @@ vectors.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-xfun))
+    (native-inputs (list r-testit))
     (home-page "https://github.com/yihui/tinytex")
     (synopsis "Helper functions for TeX Live and compiling LaTeX documents")
     (description
