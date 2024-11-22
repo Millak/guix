@@ -23113,7 +23113,7 @@ cell types to infer the cell of origin of each single cell independently.")
            r-singlecellexperiment
            r-sparsearray
            r-summarizedexperiment))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/scuttle")
     (synopsis "Single-cell RNA-Seq analysis utilities")
     (description
