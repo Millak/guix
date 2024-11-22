@@ -2824,7 +2824,7 @@ and environmental data in the framework of Euclidean exploratory methods.")
     (propagated-inputs
      (list r-cli r-rlang))
     (native-inputs
-     (list pkg-config r-knitr))
+     (list pkg-config r-knitr r-testthat))
     (home-page "https://github.com/hadley/xml2")
     (synopsis "Parse XML with R")
     (description
