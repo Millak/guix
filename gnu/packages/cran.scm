@@ -28643,7 +28643,7 @@ Row} (CSR) format.")
            r-rsparse
            r-stringi))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://text2vec.org")
     (synopsis "Text mining framework for R")
     (description
