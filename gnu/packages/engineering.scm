@@ -3084,7 +3084,7 @@ Newton-Raphson power flow solvers in the C++ library lightsim2grid, and the
 (define-public python-scikit-rf
   (package
     (name "python-scikit-rf")
-    (version "1.3.0")
+    (version "1.6.2")
     (source (origin
               (method git-fetch) ;PyPI misses some files required for tests
               (uri (git-reference
@@ -3092,32 +3092,22 @@ Newton-Raphson power flow solvers in the C++ library lightsim2grid, and the
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "0idr730zdwlxdqyvh3s24720pxrjhwixih24gbqzipgp8nh0713i"))
+                "0s339mw231jgml6wdi6zmvy93x58pv6fmk6xmpjpymdr4g36kk86"))
               (file-name (git-file-name name version))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags '(list ;; Missing docscrape dependency.
-                          "--ignore=doc/sphinxext/tests/test_docscrape.py"
-                          ;; these test require network
-                          "--ignore=skrf/tests/test_network.py")))
-    (propagated-inputs (list python-matplotlib
-                             python-networkx
-                             python-numpy
-                             python-openpyxl
+    (propagated-inputs (list python-numpy
                              python-pandas
-                             python-pyqt
-                             python-pyqtgraph
-                             python-qtpy
-                             python-scipy))
-    (native-inputs (list python-coverage
-                         python-flake8
-                         python-nbval
+                             python-scipy
+                             python-typing-extensions))
+    (native-inputs (list python-matplotlib
                          python-networkx
+                         python-openpyxl
                          python-pytest
-                         python-pytest-cov
+                         python-pytest-cov ; --cov runs by default on skrf
                          python-pytest-mock
-                         python-pyvisa))
+                         python-pyvisa
+                         python-setuptools
+                         python-wheel))
     (home-page "https://scikit-rf.org/")
     (synopsis "Radio frequency and Microwave Engineering Scikit")
     (description "Scikit-rf, or @code{skrf}, is a Python package for RF and
