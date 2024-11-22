@@ -1408,19 +1408,21 @@ friendly library for concurrency and async I/O in Python.")
 (define-public python-pytest-flake8
   (package
     (name "python-pytest-flake8")
-    (version "1.0.7")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "pytest-flake8" version))
+       (uri (pypi-uri "pytest_flake8" version))
        (sha256
         (base32
-         "0syx68xk5ss3hgp3nr2y122w0fgkzr5936ghsqrkymh3m5hrf9gh"))))
-    (build-system python-build-system)
+         "1rhz7mxcg7x9dbabfcjai3zxikfgw7az07m4ddf92bg35ib3byw8"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-flake8))
-    (native-inputs
-     (list python-pytest))
     (home-page "https://github.com/tholo/pytest-flake8")
     (synopsis "Pytest plugin to check FLAKE8 requirements")
     (description
