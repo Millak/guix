@@ -8747,7 +8747,7 @@ Enrichment Analysis} (GSEA).")
                              r-sparsematrixstats
                              r-spatialexperiment
                              r-summarizedexperiment))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-runit))
     (home-page "https://github.com/rcastelo/GSVA")
     (synopsis "Gene Set Variation Analysis for microarray and RNA-seq data")
     (description
