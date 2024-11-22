@@ -35535,6 +35535,7 @@ plots and fluctuation diagrams.")
          "1mvj2s78n2r66nlqq5bjrvgdwlwbcqdj81yryc34sv3y4m1mkpv9"))))
     (properties `((upstream-name . "packrat")))
     (build-system r-build-system)
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/rstudio/packrat/")
     (synopsis "Dependency management R projects")
     (description
