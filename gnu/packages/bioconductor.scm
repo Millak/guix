@@ -13902,6 +13902,7 @@ enrichedGO (addGeneIDs).")
    (build-system r-build-system)
    (propagated-inputs
     (list r-matrixstats))
+   (native-inputs (list r-testthat))
    (home-page "https://bioconductor.org/packages/MatrixGenerics")
    (synopsis "S4 generic summary statistic functions for matrix-like objects")
    (description
