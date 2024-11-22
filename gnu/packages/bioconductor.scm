@@ -5568,7 +5568,7 @@ set analyses, and can deal with repeated or longitudinal data.")
            r-rjava
            r-summarizedexperiment))
     (native-inputs
-     (list r-knitr zip)) ;zip is needed for repacking the jar
+     (list r-knitr r-testthat zip)) ;zip is needed for repacking the jar
     (home-page "https://bioconductor.org/packages/debCAM")
     (synopsis "Deconvolution by convex analysis of mixtures")
     (description
