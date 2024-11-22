@@ -20986,6 +20986,7 @@ This package provides an R interface.")
     (properties `((upstream-name . "RcppHNSW")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp))
+    (native-inputs (list r-testthat))
     (home-page "https://cran.r-project.org/web/packages/RcppHNSW/")
     (synopsis "Rcpp bindings for hnswlib, a library for approximate nearest neighbors")
     (description
