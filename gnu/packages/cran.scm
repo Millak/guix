@@ -32049,6 +32049,7 @@ behind, even on errors or user interrupts.")
          "087hq4i7jp67ba2finzsqjfnqbiprl33na6ryjv9zqzsdawj9cym"))))
     (properties `((upstream-name . "acnr")))
     (build-system r-build-system)
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/mpierrejean/acnr")
     (synopsis "Annotated copy-number regions")
     (description
