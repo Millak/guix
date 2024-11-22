@@ -407,6 +407,7 @@ based on mapping using Entrez Gene identifiers.")
     (properties `((upstream-name . "org.Sc.sgd.db")))
     (build-system r-build-system)
     (propagated-inputs (list r-annotationdbi))
+    (native-inputs (list r-runit))
     (home-page "https://bioconductor.org/packages/org.Sc.sgd.db")
     (synopsis "Genome wide annotation for Yeast")
     (description
