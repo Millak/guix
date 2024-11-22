@@ -22488,6 +22488,7 @@ accompanying package @code{rnaturalearth}.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-progress r-rcpp))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/fmichonneau/rncl")
     (synopsis "Interface to the Nexus class library")
     (description "This package provides an interface to the Nexus class
