@@ -6101,6 +6101,7 @@ estimation and robust multivariate analysis with high breakdown point.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-lattice))
+    (native-inputs (list r-mass))
     (home-page "https://cran.r-project.org/web/packages/fit.models")
     (synopsis "Compare fitted models")
     (description
