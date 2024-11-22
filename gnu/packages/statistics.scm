@@ -1631,6 +1631,7 @@ syntax that can be converted to XHTML or other formats.")
                (base32
                 "0v9al1fh82vpjhml91j73sim7gfyc0154kxaam41sdkf6qnx8dp2"))))
     (build-system r-build-system)
+    (native-inputs (list r-runit))
     (home-page "https://cran.r-project.org/web/packages/yaml/")
     (synopsis "Methods to convert R data to YAML and back")
     (description
