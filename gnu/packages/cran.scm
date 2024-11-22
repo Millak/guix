@@ -20339,6 +20339,7 @@ Rcpp, RStudio projects, and more.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/r-lib/sessioninfo#readme")
     (synopsis "R session information")
     (description
