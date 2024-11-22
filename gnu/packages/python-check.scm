@@ -953,22 +953,19 @@ someone to import them in their actual tests to use them.")
 (define-public python-pytest-metadata
   (package
     (name "python-pytest-metadata")
-    (version "1.11.0")
+    (version "3.1.1")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "pytest-metadata" version))
+       (uri (pypi-uri "pytest_metadata" version))
        (sha256
-        (base32 "1wgcz0w053lnjln0081kjmfflaq7bwncxdzx7k63kr9lkpa0ddbi"))))
-    (build-system python-build-system)
-    (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (invoke "pytest" "-vv")))))))
-    (native-inputs (list python-pytest python-setuptools-scm))
+        (base32 "1j0ph028mj81314vxb027d5b98xii3zl2vd9i8b3zh7val1rp8nj"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-hatchling
+           python-hatch-vcs
+           python-pytest
+           python-setuptools-scm))
     (home-page "https://github.com/pytest-dev/pytest-metadata")
     (synopsis "Access test session metadata with Pytest")
     (description
