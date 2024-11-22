@@ -25806,6 +25806,7 @@ customizable sets, and intervals.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-gmp r-mathjaxr r-polynom r-rdpack r-sets))
+    (native-inputs (list r-testthat))
     (home-page "https://cran.r-project.org/web/packages/partitions")
     (synopsis "Additive partitions of integers")
     (description
