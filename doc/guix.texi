@@ -7277,7 +7277,8 @@ build} (@pxref{Additional Build Options, @option{--expression} in
 @command{guix build}}).
 
 @item --file=@var{file}
-build a pack the code within @var{file} evaluates to.
+Build a pack containing the package or other object the code within
+@var{file} evaluates to.
 
 This has the same purpose as the same-named option in @command{guix
 build} (@pxref{Additional Build Options, @option{--file} in
@@ -8679,7 +8680,8 @@ This is exactly what the @option{--with-input} command-line option does
 The following variant of @code{package-input-rewriting} can match packages to
 be replaced by name rather than by identity.
 
-@deffn {Procedure} package-input-rewriting/spec @var{replacements} [#:deep? #t]
+@deffn {Procedure} package-input-rewriting/spec @var{replacements} @
+  [#:deep? #t] [#:replace-hidden? #t]
 Return a procedure that, given a package, applies the given
 @var{replacements} to all the package graph, including implicit inputs
 unless @var{deep?} is false.
@@ -8688,7 +8690,7 @@ unless @var{deep?} is false.
 package specification such as @code{"gcc"} or @code{"guile@@2"}, and
 each procedure takes a matching package and returns a replacement for
 that package.  Matching packages that have the @code{hidden?} property
-set are not replaced.
+set are not replaced unless @var{replace-hidden?} is set to true.
 @end deffn
 
 The example above could be rewritten this way:

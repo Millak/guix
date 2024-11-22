@@ -1611,14 +1611,16 @@ package and returns its new name after rewrite."
   (package-mapping rewrite cut?
                    #:deep? deep?))
 
-(define* (package-input-rewriting/spec replacements #:key (deep? #t))
+(define* (package-input-rewriting/spec replacements
+                                       #:key (deep? #t) (replace-hidden? #f))
   "Return a procedure that, given a package, applies the given REPLACEMENTS to
 all the package graph, including implicit inputs unless DEEP? is false.
 
 REPLACEMENTS is a list of spec/procedures pair; each spec is a package
 specification such as \"gcc\" or \"guile@2\", and each procedure takes a
 matching package and returns a replacement for that package.  Matching
-packages that have the 'hidden?' property set are not replaced."
+packages that have the 'hidden?' property set are not replaced unless
+REPLACE-HIDDEN? is set to true."
   (define table
     (fold (lambda (replacement table)
             (match replacement
@@ -1647,7 +1649,8 @@ packages that have the 'hidden?' property set are not replaced."
 
   (define (rewrite p)
     (if (or (assq-ref (package-properties p) replacement-property)
-            (hidden-package? p))
+            (and (not replace-hidden?)
+                 (hidden-package? p)))
         p
         (match (find-replacement p)
           (#f p)

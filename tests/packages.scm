@@ -1628,6 +1628,21 @@
     (match (delete-duplicates pythons eq?)
       ((p) (eq? p python)))))
 
+(test-assert "package-input-rewriting/spec, replace hidden package"
+  ;; Rewrite hidden packages when requested.
+  (let* ((python  (hidden-package python))
+         (p0      (dummy-package "chbouib"
+                    (build-system trivial-build-system)
+                    (inputs (list python))))
+         (rewrite (package-input-rewriting/spec
+                   `(("python" . ,(const sed)))
+                   #:replace-hidden? #t))
+         (p1      (rewrite p0)))
+    (match (package-inputs p1)
+      ((("python" python))
+       (and (string=? (package-full-name python)
+                      (package-full-name sed)))))))
+
 (test-equal "package-input-rewriting/spec, graft"
   (derivation-file-name (package-derivation %store sed))
 
