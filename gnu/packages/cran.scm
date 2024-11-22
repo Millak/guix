@@ -27261,7 +27261,7 @@ the XKCD web comic.")
     (propagated-inputs
      (list r-dplyr r-rlang))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page
      "https://igordot.github.io/babelgene/")
     (synopsis "Gene orthologs for model organisms in a Tidy data format")
