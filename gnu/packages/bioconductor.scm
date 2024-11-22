@@ -7087,7 +7087,7 @@ annotation data packages using SQLite data storage.")
     (propagated-inputs
      (list r-genomicranges r-lazyeval))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/Bioconductor/AnnotationFilter")
     (synopsis "Facilities for filtering Bioconductor annotation resources")
     (description
