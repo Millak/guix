@@ -20091,7 +20091,7 @@ back to file after modifications.")
            r-rlang
            r-stringr
            r-tidyr))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/rcannood/GillespieSSA2")
     (synopsis "Gillespie's stochastic simulation algorithm")
     (description
