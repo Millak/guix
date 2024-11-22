@@ -8364,7 +8364,7 @@ and visualize the results.")
            r-s4vectors
            r-seqpattern))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-runit))
     (home-page "https://bioinformatics.mdc-berlin.de/genomation/")
     (synopsis "Summary, annotation and visualization of genomic data")
     (description
