@@ -4945,7 +4945,7 @@ It uses and relies on grid graphics and formal (S4) classes and methods.")
     (propagated-inputs
      (list r-cli r-lifecycle r-magrittr r-rlang r-vctrs))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/hadley/purrr")
     (synopsis "Functional programming tools")
     (description
