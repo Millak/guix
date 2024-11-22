@@ -32588,7 +32588,7 @@ allowed.")
            r-shiny
            r-shinydashboard))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/Wenchao-Ma/GDINA")
     (synopsis "Generalized DINA model framework")
     (description
