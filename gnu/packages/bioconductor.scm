@@ -1467,7 +1467,7 @@ database is exposed as a @code{TxDb} object.")
      `((upstream-name . "TxDb.Mmusculus.UCSC.mm10.knownGene")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-bsgenome r-genomicfeatures r-annotationdbi))
+     (list r-annotationdbi r-genomicfeatures))
     (home-page
      "https://bioconductor.org/packages/TxDb.Mmusculus.UCSC.mm10.knownGene/")
     (synopsis "Annotation package for TxDb knownGene object(s) for Mouse")
