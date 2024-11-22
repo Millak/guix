@@ -17482,7 +17482,7 @@ position-specific scores within R and Bioconductor.")
                              r-iranges
                              r-org-hs-eg-db
                              r-rtracklayer))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/LieberInstitute/GenomicState")
     (synopsis "Build and access GenomicState objects")
     (description
