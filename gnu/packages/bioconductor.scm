@@ -18731,7 +18731,7 @@ index.")
            r-shortread
            r-txdbmaker))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/QuasR/")
     (synopsis "Quantify and annotate short reads in R")
     (description
