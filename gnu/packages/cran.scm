@@ -37358,7 +37358,7 @@ repositories to be added.")
     (build-system r-build-system)
     (propagated-inputs
       (list r-assertthat r-binman r-processx r-semver r-yaml))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://docs.ropensci.org/wdman/")
     (synopsis "Webdriver/Selenium binary manager")
     (description
