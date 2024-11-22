@@ -5498,7 +5498,7 @@ offers nice visualization of methyl-circle plots.")
            r-tibble
            r-viridislite))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/borishejblum/dearseq")
     (synopsis "DEA for RNA-seq data through a robust variance component test")
     (description
