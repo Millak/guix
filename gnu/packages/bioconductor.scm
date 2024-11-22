@@ -6073,7 +6073,7 @@ heterogeneity in the original high-dimensional space.")
                              r-rsamtools
                              r-rtracklayer
                              r-s4vectors))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/lcolladotor/derfinder")
     (synopsis
      "Annotation-agnostic differential expression analysis of RNA-seq data")
