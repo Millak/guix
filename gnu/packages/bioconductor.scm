@@ -9290,7 +9290,7 @@ scale with the dimensions of large data sets.")
     (properties `((upstream-name . "lfa")))
     (build-system r-build-system)
     (propagated-inputs (list r-corpcor r-rspectra))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/StoreyLab/lfa")
     (synopsis "Logistic Factor Analysis for categorical data")
     (description
