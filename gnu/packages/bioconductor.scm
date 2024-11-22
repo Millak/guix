@@ -24059,6 +24059,7 @@ methods based on resistant statistics.")
            r-png
            r-rgraphviz
            r-xml))
+    (native-inputs (list r-runit))
     (home-page "https://pathview.uncc.edu/")
     (synopsis "Tool set for pathway based data integration and visualization")
     (description
