@@ -4194,7 +4194,7 @@ create an alternative mapping from sequences.")
                 "0zqbpip172w02d9iw3n10b0c3pcnk63fp28m886333wcsm7j84b0"))))
     (build-system r-build-system)
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (propagated-inputs
      (list r-aneufinderdata
            r-bamsignals
