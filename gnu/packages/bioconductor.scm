@@ -16732,7 +16732,7 @@ to multiple hypothesis correction.")
            r-reshape2
            r-yulab-utils))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://guangchuangyu.github.io/software/DOSE/")
     (synopsis "Disease ontology semantic and enrichment analysis")
     (description
