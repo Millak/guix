@@ -12774,7 +12774,7 @@ convenient formats.")
                 "1rrnldicisjf2cjkvnynlsr91illi6v6wfyqn20xb10p947cyckl"))))
     (build-system r-build-system)
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-readr r-testthat r-tximportdata))
     (home-page "https://bioconductor.org/packages/tximport")
     (synopsis "Import and summarize transcript-level estimates for gene-level analysis")
     (description
