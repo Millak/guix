@@ -20798,6 +20798,7 @@ tests of linear contrasts of fixed effects are also available.")
            r-matrix
            r-mgcv
            r-pbkrtest))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/bcjaeger/r2glmm")
     (synopsis "Compute R squared for mixed (multilevel) models")
     (description
