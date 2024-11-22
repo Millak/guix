@@ -16895,7 +16895,7 @@ profiles (GO and KEGG) of gene and gene clusters.")
                 "1csj6xn5kldfrrzl5qhd5dh59c0inmabx5pbbjq0zb2rad5scqj9"))))
     (build-system r-build-system)
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (propagated-inputs
      (list r-ape
            r-biocgenerics
