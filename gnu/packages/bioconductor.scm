@@ -10758,7 +10758,7 @@ matrix for a set of strings.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-bh r-graph))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-runit))
     (home-page "https://www.bioconductor.org/packages/RBGL")
     (synopsis "Interface to the Boost graph library")
     (description
