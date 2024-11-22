@@ -5113,6 +5113,7 @@ distribution).")
         (base32
          "09jwg3glp32q4ml4khhzi8j7bzg9zhqqdg1m6r8gibh756zzgnhm"))))
     (build-system r-build-system)
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/MangoTheCat/rematch")
     (synopsis "Match regular expressions with a nicer API")
     (description
