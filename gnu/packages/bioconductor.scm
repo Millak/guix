@@ -21828,7 +21828,7 @@ tools for genome-scale analysis of cancer studies.")
     (propagated-inputs
      (list r-biocparallel r-gseabase r-matrix))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://llrs.github.io/BioCor/")
     (synopsis "Functional similarities")
     (description
