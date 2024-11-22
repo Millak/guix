@@ -18174,7 +18174,7 @@ genes.")
      `((upstream-name . "MassSpecWavelet")))
     (build-system r-build-system)
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-runit))
     (home-page "https://bioconductor.org/packages/MassSpecWavelet/")
     (synopsis "Mass spectrum processing by wavelet-based algorithms")
     (description
