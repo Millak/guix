@@ -25008,7 +25008,7 @@ transformation, respectively.")
     (propagated-inputs
      (list r-digest r-jsonlite r-shiny))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://deanattali.com/shinyjs")
     (synopsis "Improve the user experience of your Shiny apps")
     (description
