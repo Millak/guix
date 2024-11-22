@@ -3851,6 +3851,7 @@ options defined in other packages.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-futile-options r-lambda-r))
+    (native-inputs (list r-testthat))
     (home-page "https://cran.r-project.org/web/packages/futile.logger")
     (synopsis "Logging utility for R")
     (description
