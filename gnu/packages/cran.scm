@@ -25853,6 +25853,7 @@ methods.")
         (base32 "0w8ld4xllx0lj1jz8i2sj92f8136hlwri1d8ldpg1ymxj7aw93vg"))))
     (properties `((upstream-name . "unglue")))
     (build-system r-build-system)
+    (native-inputs (list r-testthat))
     (home-page "https://cran.r-project.org/package=unglue")
     (synopsis "Extract matched substrings using a pattern")
     (description
