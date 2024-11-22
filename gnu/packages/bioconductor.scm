@@ -24885,7 +24885,7 @@ transcription factor binding consensus by heuristic search.")
            r-rlang
            r-styler
            r-usethis))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/lcolladotor/biocthis")
     (synopsis "Automate package and project setup for Bioconductor packages")
     (description
