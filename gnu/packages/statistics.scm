@@ -3325,6 +3325,7 @@ were originally a part of the r-devtools package.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-lifecycle r-pkgconfig r-rlang r-vctrs))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/rstats-db/hms")
     (synopsis "Pretty time of day")
     (description
