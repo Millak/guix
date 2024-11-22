@@ -6765,8 +6765,8 @@ and the corresponding decision threshold.")
            r-glue
            r-lifecycle
            r-magrittr
-           r-tibble
-           r-rlang))
+           r-rlang
+           r-tibble))
     (native-inputs
      (list r-knitr))
     (home-page "https://forcats.tidyverse.org")
