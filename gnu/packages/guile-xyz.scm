@@ -937,6 +937,13 @@ is not available for Guile 2.0.")
            guile-3.0            ;for 'guild compile
            ;; Gettext brings 'AC_LIB_LINKFLAGS_FROM_LIBS'
            gettext-minimal))
+    (arguments
+     (if (%current-target-system)
+         (substitute-keyword-arguments (package-arguments guile-fibers)
+           ((#:phases phases)
+            #~(modify-phases #$phases
+                (delete 'apply-cross-build-fix-patch))))
+         (package-arguments guile-fibers)))
     (inputs
      (list guile-3.0))                            ;for libguile-3.0.so
     (supported-systems
