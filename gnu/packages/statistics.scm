@@ -4804,7 +4804,7 @@ memory usage.")
     (propagated-inputs
      (list r-ggplot2 r-gridextra r-viridislite))
     (native-inputs
-     (list r-knitr)) ; for vignettes
+     (list r-knitr r-testthat)) ; for vignettes
     (home-page "https://github.com/sjmgarnier/viridis")
     (synopsis "Matplotlib default color map")
     (description
