@@ -3606,7 +3606,7 @@ variety of formats.")
     (propagated-inputs
      (list r-gtable))
     (native-inputs
-     (list r-knitr)) ;for building vignettes
+     (list r-knitr r-testthat)) ;for building vignettes
     (home-page "https://github.com/baptiste/gridextra")
     (synopsis "Miscellaneous functions for \"Grid\" graphics")
     (description
