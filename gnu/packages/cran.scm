@@ -33606,7 +33606,7 @@ Edition), John Wiley and Sons.")
                              r-patchwork
                              r-rlang
                              r-xgboost))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/ModelOriented/shapviz")
     (synopsis "SHAP visualizations")
     (description
