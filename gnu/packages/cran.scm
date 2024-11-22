@@ -26595,7 +26595,7 @@ generalized linear models, and quantile regression.")
     (properties `((upstream-name . "arsenal")))
     (build-system r-build-system)
     (propagated-inputs (list r-knitr))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/mayoverse/arsenal")
     (synopsis "Functions for large-scale statistical summaries")
     (description
