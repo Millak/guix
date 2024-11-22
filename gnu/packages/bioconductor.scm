@@ -23913,7 +23913,7 @@ functionalities including parsing, graph operation, visualization and etc.")
            r-matrix
            r-rlang))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-runit))
     (home-page "https://bioconductor.org/packages/ldblock")
     (synopsis "Data structures for linkage disequilibrium measures in populations")
     (description
