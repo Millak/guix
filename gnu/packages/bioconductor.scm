@@ -6611,7 +6611,7 @@ absolute GSEA.")
    (propagated-inputs
     (list r-biobase r-limsolve))
    (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
    (home-page "https://www.biorxiv.org/content/10.1101/669911v1")
    (synopsis "Decomposition of bulk expression with single-cell sequencing")
    (description "This package provides tools to accurately estimate cell type
