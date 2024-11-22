@@ -39041,6 +39041,7 @@ observations.")
     (properties `((upstream-name . "scico")))
     (build-system r-build-system)
     (propagated-inputs (list r-scales))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/thomasp85/scico")
     (synopsis "Colour Palettes Based on the Scientific Colour-Maps")
     (description
