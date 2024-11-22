@@ -27295,7 +27295,7 @@ compiled by the HGNC Comparison of Orthology Predictions (HCOP).")
            r-tibble
            r-tidyselect))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/igordot/msigdbr")
     (synopsis "MSigDB gene sets for multiple organisms")
     (description
