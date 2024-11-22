@@ -4577,6 +4577,7 @@ message passing.")
      (list r-bh r-bigmemory-sri r-rcpp r-uuid))
     (inputs
      (list `(,util-linux "lib"))) ;for -luuid
+    (native-inputs (list r-testthat))
     (supported-systems
      (fold delete
            %supported-systems
