@@ -7851,7 +7851,7 @@ distribution.")
            r-s4vectors
            r-summarizedexperiment))
     (native-inputs
-     (list r-knitr r-rmarkdown))
+     (list r-knitr r-rmarkdown r-testthat))
     (home-page "https://bioconductor.org/packages/DESeq2")
     (synopsis "Differential gene expression analysis")
     (description
