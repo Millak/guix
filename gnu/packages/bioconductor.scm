@@ -24029,7 +24029,7 @@ other functional sequencing data.")
         (base32 "08vaqnrgkqxb99xjmgja3hs6r7n0z9chmykw6kjv6fgg914qlf2d"))))
     (properties `((upstream-name . "parody")))
     (build-system r-build-system)
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/parody")
     (synopsis "Parametric and resistant outlier detection")
     (description
