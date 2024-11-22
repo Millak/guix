@@ -25298,7 +25298,7 @@ help unravel disease regulatory trajectory.")
            r-superheat
            r-tibble))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://code.nimahejazi.org/biotmle/")
     (synopsis "Targeted learning with moderated statistics for biomarker discovery")
     (description
