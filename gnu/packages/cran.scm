@@ -33116,7 +33116,7 @@ number embedded in the file rather than the file extension.")
            r-readbitmap
            r-stringr))
     (native-inputs
-     (list pkg-config r-knitr))
+     (list pkg-config r-knitr r-testthat))
     (home-page "https://dahtah.github.io/imager/")
     (synopsis "Image processing library")
     (description
