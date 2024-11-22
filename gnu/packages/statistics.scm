@@ -5507,7 +5507,7 @@ including:
     (propagated-inputs
      (list r-gplots))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://rocr.bioinf.mpi-sb.mpg.de/")
     (synopsis "Visualizing the performance of scoring classifiers")
     (description
