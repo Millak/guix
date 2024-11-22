@@ -3445,7 +3445,7 @@ applications can enrich this metadata with context-specific properties.")
                              r-s4arrays
                              r-s4vectors
                              r-sparsearray))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/alabaster.matrix")
     (synopsis "Load and save artifacts from file")
     (description
