@@ -19713,7 +19713,7 @@ self-organizing map clustering and minimal spanning trees.")
            r-rgl
            r-tidyr))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "http://www.mixOmics.org")
     (synopsis "Multivariate methods for exploration of biological datasets")
     (description
