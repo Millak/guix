@@ -1868,20 +1868,26 @@ decorators from external files.")
 (define-public python-pytest-random-order
   (package
     (name "python-pytest-random-order")
-    (version "1.0.4")
+    (version "1.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest-random-order" version))
        (sha256
-        (base32 "0lpzl218l04vjy4gckrbrcacc3w9xrjnvz64bf2i132c58s5j8bb"))))
-    (build-system python-build-system)
+        (base32 "104hww3b86jchk41kjhyycr541pd2dfgqkww6lx5y70z9z9xfwj4"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (when tests?
-                        (invoke "python" "-m" "pytest" "--random-order")))))))
+     (list
+      #:test-flags
+      ;; AttributeError: module 'py' has no attribute 'code'.
+      #~(list "-k" (string-append "not test_it_works_with_actual_tests"
+                                  " and not test_failed_first"
+                                  " and not test_doctests"))))
+    (native-inputs
+     (list python-pytest-xdist
+           python-setuptools
+           python-py
+           python-wheel))
     (propagated-inputs
      (list python-pytest))
     (home-page "https://github.com/jbasko/pytest-random-order")
