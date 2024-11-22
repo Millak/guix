@@ -4730,6 +4730,32 @@ POP3, the Post Office Protocol version 3, as specified by
                (base32
                 "0ca2wh45xvc09rv6v6sz3vbnkzrjzk5c4l6dk50zk4dwxvghma8r"))))
     (build-system ruby-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'regenerate-certificate
+            ;; On version 0.5.0 a Makefile was introduced to regenerated
+            ;; the certificates, and instead of calling openssl directory
+            ;; we could do (with-directory-excursion "test/net/fixtures"
+            ;; (invoke "make" "regen_certs"). However the certificate is
+            ;; expired versions before 0.5.0 as well.
+            (lambda _
+              (with-directory-excursion "test/net/fixtures"
+                (invoke
+                 "openssl" "req" "-new" "-key" "server.key" "-out"
+                 "server.csr" "-subj"
+                 "/C=JP/ST=Shimane/O=Ruby Core Team/OU=Ruby Test/CN=localhost")
+                (invoke "openssl" "req" "-new" "-x509" "-days" "3650"
+                        "-key" "server.key" "-out" "cacert.pem" "-subj"
+                        (string-append
+                         "/C=JP/ST=Shimane/L=Matz-e city/O=Ruby "
+                         "Core Team/CN=Ruby Test "
+                         "CA/emailAddress=security@ruby-lang.org"))
+                (invoke "openssl" "x509" "-days" "3650" "-CA" "cacert.pem"
+                        "-CAkey" "server.key" "-set_serial" "00" "-in"
+                        "server.csr" "-req" "-out" "server.crt")))))))
+    (native-inputs (list openssl))
     (propagated-inputs (list ruby-net-protocol))
     (synopsis "Simple Mail Transfer Protocol client library for Ruby")
     (description "This library provides functionality to send Internet mail
