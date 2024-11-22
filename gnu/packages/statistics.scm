@@ -2041,6 +2041,7 @@ features require SQL translation to be provided by the package author.")
     (build-system r-build-system)
     (inputs
      (list gfortran))
+    (native-inputs (list r-testthat))
     (home-page "https://cran.r-project.org/web/packages/acepack")
     (synopsis "Functions for regression transformations")
     (description
