@@ -20830,7 +20830,7 @@ al. (2016)).")
            r-testthat
            r-usethis))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://snystrom.github.io/cmdfun/")
     (synopsis "Framework for building interfaces to shell commands")
     (description
