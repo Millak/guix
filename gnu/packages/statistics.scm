@@ -3626,6 +3626,7 @@ and draw tables.")
                (base32
                 "0l1qph8zyi2sic3k2qcd7vlfl7rzfh1q7z7zvjkl5f7y1x2fy3rk"))))
     (build-system r-build-system)
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/gaborcsardi/pkgconfig")
     (synopsis "Private configuration for R packages")
     (description "This package provides the functionality to set configuration
