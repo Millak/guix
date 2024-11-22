@@ -15340,6 +15340,7 @@ promises, but with a syntax that is idiomatic R.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-foreach r-iterators r-snow))
+    (native-inputs (list r-runit))
     (home-page "https://cran.r-project.org/web/packages/doSNOW")
     (synopsis "Foreach parallel adaptor for the snow package")
     (description
