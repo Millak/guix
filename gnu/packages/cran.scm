@@ -20568,7 +20568,7 @@ exact and interval-censored observations.")
                 "0raxlyvr3kr8c8bzjgs7hb9n76m314vzvfiz7c74v6cqpkmh6dkx"))))
     (properties `((upstream-name . "clusterCrit")))
     (build-system r-build-system)
-    (native-inputs (list gfortran))
+    (native-inputs (list gfortran r-runit))
     (home-page "https://www.r-project.org/")
     (synopsis "Computing clustering validation indices")
     (description
