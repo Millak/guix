@@ -37057,6 +37057,7 @@ amounts of memory.")
     (properties `((upstream-name . "Boruta")))
     (build-system r-build-system)
     (propagated-inputs (list r-ranger))
+    (native-inputs (list r-testthat))
     (home-page "https://gitlab.com/mbq/Boruta/")
     (synopsis "Wrapper algorithm for all relevant feature selection")
     (description
