@@ -25876,6 +25876,7 @@ standard regular expressions.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-brobdingnag r-partitions r-polynom))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/RobinHankin/untb.git")
     (synopsis "Ecological drift under the UNTB")
     (description
