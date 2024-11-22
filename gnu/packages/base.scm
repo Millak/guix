@@ -1598,7 +1598,8 @@ command.")
                 (search-patches "glibc-hurd-pthread_setcancelstate.patch"
                                 "glibc-hurd64-fault.patch"
                                 "glibc-hurd64-intr-msg-clobber.patch"
-                                "glibc-hurd64-sgms-context.patch")))))))
+                                "glibc-hurd64-sgms-context.patch"
+                                "glibc-hurd64-gcc-14.2-tls-bug.patch")))))))
 
 (define-public glibc/hurd-headers
   (package/inherit glibc/hurd

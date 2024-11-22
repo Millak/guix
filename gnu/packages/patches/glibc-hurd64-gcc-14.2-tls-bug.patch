@@ -1,0 +1,28 @@
+From 0b23ab98d25d880ee602af91e62aa39564510cac Mon Sep 17 00:00:00 2001
+From: Janneke Nieuwenhuizen <janneke@gnu.org>
+Date: Fri, 22 Nov 2024 16:26:08 +0100
+Subject: [PATCH] x86_64-hurd: sigreturn: Hack around gcc-14.2 optimization
+ bug.
+
+See: <https://lists.gnu.org/archive/html/bug-hurd/2024-11/msg00143.html>.
+
+* sysdeps/mach/hurd/x86_64/sigreturn.c (__sigreturn2): Add nop.
+---
+ sysdeps/mach/hurd/x86_64/sigreturn.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sysdeps/mach/hurd/x86_64/sigreturn.c b/sysdeps/mach/hurd/x86_64/sigreturn.c
+index 7a0193497d..256cc1268a 100644
+--- a/sysdeps/mach/hurd/x86_64/sigreturn.c
++++ b/sysdeps/mach/hurd/x86_64/sigreturn.c
+@@ -45,6 +45,7 @@ __sigreturn2 (struct hurd_sigstate *ss, uintptr_t *usp,
+     (void) __mach_port_mod_refs (__mach_task_self (), reply_port,
+                                  MACH_PORT_RIGHT_RECEIVE, -1);
+   THREAD_SETMEM (THREAD_SELF, reply_port, sc_reply_port);
++  asm ("nop"); // See <https://lists.gnu.org/archive/html/bug-hurd/2024-11/msg00143.html>.
+ 
+   asm volatile (
+                 /* Point the stack to the register dump.  */
+-- 
+2.46.0
+
