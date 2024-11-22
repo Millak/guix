@@ -5726,7 +5726,7 @@ that can be distributed without access to a live server.")
      (list libuv-for-r-httpuv zlib))
     (propagated-inputs
      (list r-later r-promises r-r6 r-rcpp))
-    (native-inputs (list pkg-config))
+    (native-inputs (list pkg-config r-curl r-testthat))
     (home-page "https://github.com/rstudio/httpuv")
     (synopsis "HTTP and WebSocket server library for R")
     (description
