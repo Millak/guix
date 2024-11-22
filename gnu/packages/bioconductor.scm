@@ -11369,7 +11369,7 @@ cell types based on specific research needs.")
            r-singlecellexperiment
            r-summarizedexperiment
            r-xgboost))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/plger/scDblFinder")
     (synopsis "Detect multiplets in single-cell RNA sequencing data")
     (description
