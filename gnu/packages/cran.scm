@@ -28148,7 +28148,7 @@ storing the data and calls.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-ggplot2 r-gridtext r-rlang r-scales))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://wilkelab.org/ggtext/")
     (synopsis "Improved text rendering support for ggplot2")
     (description
