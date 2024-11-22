@@ -20857,7 +20857,7 @@ inside R when they might usually leave to execute non-R software.")
     (properties `((upstream-name . "rslurm")))
     (build-system r-build-system)
     (propagated-inputs (list r-whisker))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "http://cyberhelp.sesync.org/rslurm/")
     (synopsis "Submit R calculations to a Slurm cluster")
     (description
