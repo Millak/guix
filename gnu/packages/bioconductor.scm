@@ -4009,7 +4009,7 @@ paired or unpaired study designs.")
            r-shiny
            r-shinydashboard
            r-tximport))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/csoneson/alevinQC")
     (synopsis "Quality control reports for @code{Alevin} output")
     (description
