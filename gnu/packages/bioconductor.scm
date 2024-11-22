@@ -14626,7 +14626,7 @@ achieved for all methods using the BiocParallel framework.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-delayedarray r-matrix r-s4vectors))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/LTLA/ScaledMatrix")
     (synopsis "Create a DelayedMatrix of scaled and centered values")
     (description
