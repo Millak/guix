@@ -3127,7 +3127,7 @@ tables, autolinks and strikethrough text.")
            r-withr
            r-xml2))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/klutometis/roxygen")
     (synopsis "In-source documentation system for R")
     (description
