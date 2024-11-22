@@ -2702,7 +2702,7 @@ cultures from 4 patients at 2 time points over 3 conditions (DPN, OHT and contro
                              r-readr
                              r-s4vectors
                              r-stringr))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/sesameData")
     (synopsis "Supporting Data for SeSAMe Package")
     (description
