@@ -15488,7 +15488,7 @@ several functions from the R igraph package.")
     (properties `((upstream-name . "sangerseqR")))
     (build-system r-build-system)
     (propagated-inputs (list r-biostrings r-pwalign r-shiny r-stringr))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-runit))
     (home-page "https://bioconductor.org/packages/sangerseqR")
     (synopsis "Tools for Sanger Sequencing data in R")
     (description
