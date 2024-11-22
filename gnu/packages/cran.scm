@@ -30987,7 +30987,8 @@ cell free DNA} (cfDNA).")
            (uri "https://cdn.jsdelivr.net/npm/intro.js@3.2.1/intro.js")
            (sha256
             (base32
-             "0vh5n7hqqyx2pdvlqq6xadfqibcn78h5961rwhpf817kpxfzv8v7"))))))
+             "0vh5n7hqqyx2pdvlqq6xadfqibcn78h5961rwhpf817kpxfzv8v7"))))
+       ("r-testthat" ,r-testthat)))
     (propagated-inputs
      (list r-jsonlite r-shiny))
     (home-page "https://github.com/carlganz/rintrojs")
