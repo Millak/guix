@@ -25284,7 +25284,7 @@ latent growth curve models.")
     (propagated-inputs
      (list r-compquadform r-lavaan r-mvtnorm r-sandwich))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://cran.r-project.org/web/packages/nonnest2/")
     (synopsis "Tests of non-nested models")
     (description
