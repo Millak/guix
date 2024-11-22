@@ -13428,6 +13428,7 @@ signal in the input, that lead to spurious peaks during peak calling.")
            r-s4vectors
            r-summarizedexperiment
            r-systempiper))
+    (native-inputs (list r-testthat))
     (home-page "https://bioconductor.org/packages/DiffBind")
     (synopsis "Differential binding analysis of ChIP-Seq peak data")
     (description
