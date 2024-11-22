@@ -10961,18 +10961,26 @@ writable properties, cached properties, etc.")
 (define-public python-executing
   (package
     (name "python-executing")
-    (version "0.8.2")
+    (version "2.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "executing" version))
        (sha256
-        (base32 "08q0xh9fd8k41sqpp23q6fb9bf7yj4y2q6sv30pj36vvk8pg8fy2"))))
-    (build-system python-build-system)
+        (base32 "1axrwh7kr7nshzjw6vj9w9hn3rqh9af2c257ll7iba0d4vfpv8lf"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f))                    ; TODO: tests require python-asttokens
+     (list
+      ;; AssertionError: assert 'test failure' in ''
+      #:test-flags #~(list "-k" "not test_two_statement_lookups")))
     (native-inputs
-     (list python-setuptools-scm python-toml))
+     (list python-asttokens
+           python-littleutils
+           python-pytest
+           python-setuptools
+           python-setuptools-scm
+           python-toml
+           python-wheel))
     (home-page "https://github.com/alexmojaki/executing")
     (synopsis "Get information about what a Python frame is currently doing")
     (description "This package lets you get information about what a frame is
