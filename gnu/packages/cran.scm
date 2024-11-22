@@ -23066,7 +23066,7 @@ and manipulating sets of ontological terms.")
            r-rlang
            r-withr))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://gargle.r-lib.org")
     (synopsis "Utilities for working with Google APIs")
     (description
