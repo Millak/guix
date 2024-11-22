@@ -34112,6 +34112,7 @@ OpenMP.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-quantreg))
+    (native-inputs (list r-testthat))
     (home-page "https://www.ms.uky.edu/~mai/EmpLik.html")
     (synopsis "Empirical likelihood ratio for censored/truncated data")
     (description
