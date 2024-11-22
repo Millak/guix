@@ -24091,6 +24091,7 @@ sampling.")
     (properties `((upstream-name . "protViz")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/protViz/protViz/")
     (synopsis "Visualizing and analyzing mass spectrometry data in proteomics")
     (description
