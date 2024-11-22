@@ -17814,7 +17814,7 @@ visualization with image data.")
            r-s4vectors
            r-summarizedexperiment))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/hansenlab/yamss")
     (synopsis "Tools for high-throughput metabolomics")
     (description
