@@ -37575,6 +37575,7 @@ your current R session using? How much ram do you even have?")
          "0fh8qbjlwzagh272lgwr4bxcqcjb1qpz53mgs8rzlvncax6nk5bk"))))
     (properties `((upstream-name . "Metrics")))
     (build-system r-build-system)
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/mfrasco/Metrics")
     (synopsis "Evaluation metrics for machine learning")
     (description
