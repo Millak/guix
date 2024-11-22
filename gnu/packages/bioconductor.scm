@@ -13355,7 +13355,7 @@ spectrometry} data.")
            r-rcppeigen
            r-rcppnumerical
            r-summarizedexperiment))
-    (native-inputs (list r-knitr r-rmarkdown))
+    (native-inputs (list r-knitr r-rmarkdown r-testthat))
     (home-page "https://bioconductor.org/packages/apeglm")
     (synopsis "Approximate posterior estimation for GLM coefficients")
     (description "This package provides Bayesian shrinkage estimators for
