@@ -17839,7 +17839,7 @@ analysis.")
     (propagated-inputs
      (list r-circlize r-genomicranges r-getoptlong r-iranges))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/jokergoo/gtrellis")
     (synopsis "Genome level Trellis layout")
     (description
