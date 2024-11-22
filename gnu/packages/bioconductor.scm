@@ -15271,7 +15271,7 @@ interactive exploration of results.")
     (propagated-inputs
      (list r-delayedarray r-matrix r-s4vectors))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/LTLA/ResidualMatrix")
     (synopsis "Create a DelayedMatrix of regression residuals")
     (description
