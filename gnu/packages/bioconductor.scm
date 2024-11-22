@@ -24442,7 +24442,7 @@ anatomical terms, mapped to genes by expression patterns.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-httpuv r-httr r-jsonlite r-stringi))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/tamerh/biobtreeR")
     (synopsis "Use biobtree tool from R")
     (description
