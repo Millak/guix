@@ -20709,7 +20709,7 @@ analysing multivariate abundance data in community ecology.")
     (properties `((upstream-name . "mvnfast")))
     (build-system r-build-system)
     (propagated-inputs (list r-bh r-rcpp r-rcpparmadillo))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/mfasiolo/mvnfast/")
     (synopsis "Fast multivariate normal and Student's t methods")
     (description
