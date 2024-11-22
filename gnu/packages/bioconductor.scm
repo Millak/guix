@@ -6180,7 +6180,7 @@ possibly confounded by SNPs and cross-hybridisation.  It includes
            r-mass
            r-reshape2
            r-s4vectors))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/DRIMSeq")
     (synopsis "Differential transcript usage and tuQTL analyses with Dirichlet-multinomial model in RNA-seq")
     (description
