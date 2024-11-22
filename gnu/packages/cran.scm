@@ -38961,6 +38961,7 @@ object sizes.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-lattice r-lhs))
+    (native-inputs (list r-testthat))
     (home-page "https://cran.r-project.org/web/packages/GPfit/")
     (synopsis "Gaussian Processes modeling")
     (description
