@@ -6226,7 +6226,7 @@ results.")
            r-singlecellexperiment
            r-sparsearray
            r-summarizedexperiment))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/DropletUtils")
     (synopsis "Utilities for handling single-cell droplet data")
     (description
