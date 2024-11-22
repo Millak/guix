@@ -3938,6 +3938,7 @@ standard R subsetting and Kronecker products.")
         (base32
          "0yv7rh6ghlfx727xy2aq64a7skyxp9msakaffs641q9h15d0gwyf"))))
     (build-system r-build-system)
+    (native-inputs (list r-runit))
     (home-page "https://cran.r-project.org/web/packages/iterators")
     (synopsis "Iterator construct for R")
     (description
