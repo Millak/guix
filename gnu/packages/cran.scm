@@ -33751,7 +33751,7 @@ and time parsing.")
     (properties `((upstream-name . "anndata")))
     (build-system r-build-system)
     (propagated-inputs (list r-assertthat r-matrix r-r6 r-reticulate))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://anndata.dynverse.org")
     (synopsis "Anndata for R")
     (description
