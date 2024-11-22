@@ -354,6 +354,7 @@ even help to identify disease associations that are not obvious.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-annotationdbi))
+    (native-inputs (list r-runit))
     (home-page "https://bioconductor.org/packages/org.EcK12.eg.db")
     (synopsis "Genome wide annotation for E coli strain K12")
     (description
