@@ -29142,7 +29142,7 @@ feature effects.  Key functions are:
     (properties `((upstream-name . "iBreakDown")))
     (build-system r-build-system)
     (propagated-inputs (list r-ggplot2))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://ModelOriented.github.io/iBreakDown/")
     (synopsis "Model agnostic instance level variable attributions")
     (description
