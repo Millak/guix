@@ -24342,7 +24342,7 @@ regions or annotations of your choice from BigWig files.")
            r-rcpp
            r-rdpack))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/uds-helms/BEclear")
     (synopsis "Correction of batch effects in DNA methylation data")
     (description
