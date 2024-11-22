@@ -2953,6 +2953,50 @@ web applications.  Caveman2 has three design goals:
 (define-public ecl-caveman
   (sbcl-package->ecl-package sbcl-caveman))
 
+(define-public sbcl-cblas
+  (let ((commit "1eb97919ccf0ec3add7724e1a21872580bd0cdc6")
+        (revision "1"))
+    (package
+      (name "sbcl-cblas")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/digikar99/cl-cblas")
+               (commit commit)))
+         (file-name (git-file-name "cl-cblas" version))
+         (sha256
+          (base32 "1bd2w51r71pgm6sc6m2fms4j1bbnli023j4w3rbxw9cln0g7badp"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list openblas
+             sbcl-cffi
+             sbcl-cl-autowrap))
+      (arguments
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'fix-paths
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (substitute* "src/shared-object.lisp"
+                       (("/usr/.*/libopenblas\\.so")
+                        (search-input-file inputs "/lib/libopenblas.so"))
+                       (("\"libopenblas\\.so\"")
+                        (string-append "\""
+                                       (search-input-file inputs
+                                                          "/lib/libopenblas.so")
+                                       "\""))))))))
+      (synopsis "Common Lisp bindings for CBLAS")
+      (description
+       "This package provides Common Lisp bindings to access the linear
+algebra libraries using the CBLAS API.  Currently the OpenBLAS implementation
+is used.")
+      (home-page "https://github.com/digikar99/cl-cblas")
+      (license license:expat))))
+
+(define-public cl-cblas
+  (sbcl-package->cl-source-package sbcl-cblas))
+
 (define-public sbcl-cells
   (let ((commit "e8542b17fddd6340c1e237ce482a52327c8ead8e"))
     (package
