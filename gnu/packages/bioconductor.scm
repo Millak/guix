@@ -19592,7 +19592,7 @@ package.")
            r-rbgl
            r-rcolorbrewer))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/openCyto")
     (synopsis "Hierarchical gating pipeline for flow cytometry data")
     (description
