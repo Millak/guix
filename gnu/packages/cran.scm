@@ -23152,7 +23152,7 @@ limitations\" using the GNU Multiple Precision library.")
     (propagated-inputs
      (list r-gmp))
     (native-inputs
-     (list pkg-config))
+     (list pkg-config r-mass r-sfsmisc))
     (home-page "https://rmpfr.r-forge.r-project.org/")
     (synopsis "R bindings to the MPFR library")
     (description
