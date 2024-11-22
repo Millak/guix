@@ -23638,7 +23638,7 @@ by Ernst and Kellis.")
            r-summarizedexperiment
            r-variantannotation))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "http://www.tengfei.name/ggbio/")
     (synopsis "Visualization tools for genomic data")
     (description
