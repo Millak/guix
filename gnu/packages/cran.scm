@@ -25608,6 +25608,7 @@ correlation matrix between effect size estimates is known.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-tibble))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/r-lib/rematch2")
     (synopsis "Tidy output from regular expression matching")
     (description
