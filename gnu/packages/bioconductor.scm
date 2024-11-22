@@ -3964,7 +3964,7 @@ for interacting with other cloud providers.")
            r-s4vectors
            r-summarizedexperiment
            r-zcompositions))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/ggloor/ALDEx_bioc")
     (synopsis "Analysis of differential abundance taking sample variation into account")
     (description
