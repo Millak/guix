@@ -4509,6 +4509,8 @@ Stochastic Neighbor Embedding using a Barnes-Hut implementation.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-class r-proxy))
+    ;; For vignettes
+    (native-inputs (list r-mlbench r-randomforest r-xtable))
     (home-page "https://cran.r-project.org/web/packages/e1071")
     (synopsis "Miscellaneous functions for probability theory")
     (description
