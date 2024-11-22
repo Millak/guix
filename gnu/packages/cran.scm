@@ -20688,6 +20688,7 @@ the interfaces between R and C++.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-mass r-rcpp r-rcppgsl r-statmod r-tweedie))
+    (native-inputs (list r-testthat))
     (home-page "https://cran.r-project.org/web/packages/mvabund/")
     (synopsis "Statistical methods for analysing multivariate abundance data")
     (description
