@@ -25687,7 +25687,7 @@ can be used with function approximation, eligibility traces (Singh & Sutton,
            r-plyr
            r-scales))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/stefanedwards/lemon")
     (synopsis "Freshen up your ggplot2 plots")
     (description
