@@ -30115,6 +30115,7 @@ and interfaces to external frameworks.")
     (native-inputs
      (list esbuild
            r-knitr  ;for vignettes
+           r-testthat
            (let ((version "3.3.5"))
              (origin
                (method git-fetch)
