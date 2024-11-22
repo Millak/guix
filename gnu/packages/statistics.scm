@@ -793,6 +793,7 @@ single hidden layer, and for multinomial log-linear models.")
         (base32
          "1bxbvbv3jwz1j6yhgswbr6qy574n9rbp3cnwl9badkm6dbnrmf7r"))))
     (build-system r-build-system)
+    (native-inputs (list r-survival))
     (home-page "https://cran.r-project.org/web/packages/rpart")
     (synopsis "Recursive partitioning and regression trees")
     (description
