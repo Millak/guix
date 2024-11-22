@@ -26636,7 +26636,7 @@ include
     (propagated-inputs
      (list r-arsenal r-rms))
     (native-inputs
-     (list r-r-rsp)) ; for vignettes
+     (list r-r-rsp r-testthat)) ; for vignettes
     (home-page "https://www.mayo.edu/research/labs/statistical-genetics-genetic-epidemiology/software")
     (synopsis "Analysis of haplotypes when linkage phase is ambiguous")
     (description
