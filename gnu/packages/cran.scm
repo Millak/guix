@@ -34084,6 +34084,7 @@ PDF or PostScript.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-igraph r-matrix))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/rcc-uchicago/influenceR")
     (synopsis "Tools to quantify structural importance of nodes in a network")
     (description
