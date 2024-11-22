@@ -14475,7 +14475,7 @@ genes or proteins in these datasets.")
                              r-rtracklayer
                              r-s4vectors
                              r-tidyselect))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/plyranges")
     (synopsis "Fluent interface for manipulating GenomicRanges")
     (description
