@@ -880,7 +880,7 @@ curves, Cox models, and parametric accelerated failure time models.")
          "1vfbwy2kl5rykmh1r9lw4s9yw7dnia18h0ks266p2q9dikiwbpc9"))))
     (build-system r-build-system)
     (native-inputs
-     (list r-knitr r-rmarkdown))
+     (list r-knitr r-rmarkdown r-testthat))
     (home-page "https://ff.r-forge.r-project.org")
     (synopsis "Class for vectors of 1-bit booleans")
     (description
