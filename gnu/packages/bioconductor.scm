@@ -4907,6 +4907,7 @@ interest.")
     (properties `((upstream-name . "BaseSpaceR")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcurl r-rjsonio))
+    (native-inputs (list r-runit))
     (home-page "https://bioconductor.org/packages/BaseSpaceR")
     (synopsis "R SDK for BaseSpace RESTful API")
     (description
