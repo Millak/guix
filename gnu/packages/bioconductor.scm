@@ -11965,7 +11965,7 @@ and comparing the clusterings.")
                              r-s4vectors
                              r-summarizedexperiment
                              r-tidyr))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://davislaboratory.github.io/singscore/")
     (synopsis "Rank-based single-sample gene set scoring method")
     (description
