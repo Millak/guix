@@ -4704,7 +4704,7 @@ cohorts of interdependent C++ libraries.")
            r-sparsematrixstats
            r-squarem
            r-summarizedexperiment))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-runit))
     (home-page "https://github.com/functionalgenomics/atena")
     (synopsis "Analysis of transposable elements")
     (description
