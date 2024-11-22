@@ -19987,50 +19987,54 @@ carrys on from the end of the body.")
   (sbcl-package->ecl-package sbcl-livesupport))
 
 (define-public sbcl-lla
-  (let ((commit "ded805d1e9b1493e17b601116ba9bd8a3de3024f")
-        (revision "1"))
+  (let ((commit "4008d363a43647adc39579a48b549650a0742e61")
+        (revision "2"))
     (package
       (name "sbcl-lla")
-      (version (git-version "0.2" revision commit))
+      (version (git-version "0.4.0" revision commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/tpapp/lla")
+               (url "https://github.com/Lisp-Stat/lla")
                (commit commit)))
          (file-name (git-file-name "cl-lla" version))
          (sha256
-          (base32 "0n9vc7dnyjbbsv1n7rd8sylwda5fsdf8f890g4nachanyx0xps9k"))))
+          (base32 "19j11z8m00ry2bfn3ahai155b6qz995qqg7ipzvjdr05sj4gfb58"))))
       (build-system asdf-build-system/sbcl)
-      (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'fix-paths
-             (lambda* (#:key inputs #:allow-other-keys)
-               (substitute* "src/configuration.lisp"
-                 (("\"libblas.so.3gf\"")
-                  (string-append "\"" (assoc-ref inputs "lapack")
-                                 "/lib/libopenblas.so\""))
-                 (("\"liblapack.so.3gf\"")
-                  (string-append "\"" (assoc-ref inputs "lapack")
-                                 "/lib/libopenblas.so\""))))))))
-      (inputs
-       `(("anaphora" ,sbcl-anaphora)
-         ("alexandria" ,sbcl-alexandria)
-         ("cffi" ,sbcl-cffi)
-         ("cl-num-utils" ,sbcl-cl-num-utils)
-         ("cl-slice" ,sbcl-cl-slice)
-         ("lapack" ,openblas)
-         ("let-plus" ,sbcl-let-plus)))
       (native-inputs
        (list sbcl-clunit))
-      (home-page "https://github.com/tpapp/lla")
+      (inputs
+       (list openblas
+             sbcl-anaphora
+             sbcl-alexandria
+             sbcl-cffi
+             sbcl-let-plus
+             sbcl-numerical-utilities
+             sbcl-select))
+      (arguments
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'fix-paths
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (substitute* "src/configuration.lisp"
+                       (("\"libblas.so.3gf\"")
+                        (string-append "\""
+                                       (search-input-file inputs
+                                                          "/lib/libopenblas.so")
+                                       "\""))
+                       (("\"liblapack.so.3gf\"")
+                        (string-append "\""
+                                       (search-input-file inputs
+                                                          "/lib/libopenblas.so")
+                                       "\""))))))))
+      (home-page "https://lisp-stat.github.io/lla/")
       (synopsis "Linear algebra library for Common Lisp")
       (description
        "LLA is a high-level Common Lisp library built on BLAS and LAPACK, but
 providing a much more abstract interface with the purpose of freeing the user
 from low-level concerns and reducing the number of bugs in numerical code.")
-      (license license:boost1.0))))
+      (license license:ms-pl))))
 
 (define-public cl-lla
   (sbcl-package->cl-source-package sbcl-lla))
