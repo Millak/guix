@@ -19090,7 +19090,7 @@ and to both short and long sequence reads.")
            r-tidyselect
            r-txdbmaker
            r-withr))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/OliverVoogd/FLAMES")
     (synopsis
      "Full Length Analysis of Mutations and Splicing in long read RNA-seq data")
