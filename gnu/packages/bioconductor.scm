@@ -12994,10 +12994,10 @@ describing each of the graphs.")
              (substitute* "DESCRIPTION"
                (("zlibbioc, ") ""))
              (substitute* "NAMESPACE"
-               (("import\\(zlibbioc\\)") ""))
-             #t)))))
+               (("import\\(zlibbioc\\)") "")))))))
     (inputs
      (list zlib))
+    (native-inputs (list r-runit))
     (propagated-inputs
      (list r-biocgenerics r-iranges r-s4vectors r-zlibbioc))
     (home-page "https://bioconductor.org/packages/XVector")
