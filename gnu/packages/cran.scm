@@ -36402,7 +36402,7 @@ evaluated interactively.")
            r-scales
            r-stringr))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-r-rsp r-testthat))
     (home-page "https://github.com/quentingronau/bridgesampling")
     (synopsis "Bridge sampling for marginal likelihoods and Bayes factors")
     (description
