@@ -3647,6 +3647,7 @@ that package, other packages are unaffected.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-rlang r-vctrs))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/hadley/blob")
     (synopsis "Simple S3 Class for representing vectors of binary data")
     (description "Raw vectors in R are useful for storing a single binary
