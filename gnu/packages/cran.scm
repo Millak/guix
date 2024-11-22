@@ -20117,7 +20117,7 @@ package works as intended.")
     (properties `((upstream-name . "gitcreds")))
     (build-system r-build-system)
     (inputs (list git-minimal))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/r-lib/gitcreds")
     (synopsis "Query git credentials from R")
     (description
