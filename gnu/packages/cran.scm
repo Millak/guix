@@ -25433,6 +25433,7 @@ compatible with @code{rzmq} are also provided.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-base64enc r-htmltools r-jsonlite r-pillar))
+    (native-inputs (list r-testthat))
     (home-page "https://cran.r-project.org/web/packages/repr/")
     (synopsis "Serializable representations")
     (description
