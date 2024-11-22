@@ -18646,7 +18646,7 @@ alignment tool.")
            r-s4vectors
            r-summarizedexperiment))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-runit))
     (home-page "https://bioconductor.org/packages/SGSeq/")
     (synopsis "Splice event prediction and quantification from RNA-seq data")
     (description
