@@ -28522,7 +28522,7 @@ library.")
     (propagated-inputs
      (list r-lazyeval))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/kevinushey/rex")
     (synopsis "Friendly regular expressions")
     (description
