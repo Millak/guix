@@ -10732,6 +10732,7 @@ proteomics packages.")
     (build-system r-build-system)
     (propagated-inputs (list r-biocgenerics r-biostrings r-iranges r-s4vectors
                              r-xvector))
+    (native-inputs (list r-runit))
     (home-page "https://bioconductor.org/packages/pwalign")
     (synopsis "Perform pairwise sequence alignments")
     (description
