@@ -8541,7 +8541,7 @@ extracting the desired features in a convenient format.")
            r-s4vectors
            r-summarizedexperiment
            r-variantannotation))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-runit))
     (home-page "https://bioconductor.org/packages/GenomicFiles")
     (synopsis "Distributed computing by file or by range")
     (description
