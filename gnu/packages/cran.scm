@@ -29479,7 +29479,7 @@ easily.")
     (propagated-inputs
      (list r-matrix r-openssl r-rcpp r-reticulate r-rspectra))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/tkonopka/umap")
     (synopsis "Uniform manifold approximation and projection")
     (description
