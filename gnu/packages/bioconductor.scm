@@ -24418,7 +24418,7 @@ all RNA-Seq libraries of each species integrated in Bgee.")
            r-tidyr
            r-topgo
            r-zellkonverter))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/BgeeDB/BgeeDB_R")
     (synopsis "Annotation and gene expression data retrieval from Bgee database")
     (description
