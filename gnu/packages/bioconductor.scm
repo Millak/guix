@@ -24957,7 +24957,7 @@ the Bioconductor project.")
            r-withr
            r-xml
            r-yaml))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/biodb")
     (synopsis "Library for connecting to chemical and biological databases")
     (description
