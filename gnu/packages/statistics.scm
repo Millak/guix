@@ -1683,7 +1683,7 @@ generation in R using Literate Programming techniques.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-knitr r-markdown r-rmarkdown))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/jimhester/knitrBootstrap")
     (synopsis "Knitr bootstrap framework")
     (description
