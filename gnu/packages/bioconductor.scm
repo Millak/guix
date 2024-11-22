@@ -5060,7 +5060,7 @@ usage.")
            r-r-utils
            r-rcpp
            r-rcpparmadillo))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/SimoneTiberi/BANDITS")
     (synopsis "Bayesian analysis of differential splicing")
     (description
