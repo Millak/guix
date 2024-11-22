@@ -2049,7 +2049,7 @@ associated with cell type.")
            r-quadprog
            r-s4vectors
            r-summarizedexperiment))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/immunomethylomics/FlowSorted.Blood.EPIC")
     (synopsis
      "Illumina EPIC data on immunomagnetic sorted peripheral adult blood cells")
