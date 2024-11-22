@@ -18979,7 +18979,7 @@ datasets.")
            r-rtracklayer
            r-s4vectors))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/annotatr/")
     (synopsis "Annotation of genomic regions to genomic annotations")
     (description
