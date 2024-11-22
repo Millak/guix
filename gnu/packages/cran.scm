@@ -30049,7 +30049,7 @@ dataset-specific factors.")
                              r-rhpcblasctl
                              r-rlang
                              r-tibble))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://cran.r-project.org/web/packages/harmony/index.html")
     (synopsis "Integration of single cell sequencing data")
     (description
