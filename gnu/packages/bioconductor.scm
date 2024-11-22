@@ -4819,7 +4819,7 @@ meta-pattern.")
     (properties `((upstream-name . "awst")))
     (build-system r-build-system)
     (propagated-inputs (list r-summarizedexperiment))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/drisso/awst")
     (synopsis "Asymmetric within-sample transformation")
     (description
