@@ -26751,6 +26751,17 @@ exact test for Hardy-Weinberg equilibrium.")
         (base32
          "05yj7jwwd0q2yk8gpp44fhh3sknvw3g6p9glj6z6rz46p9xf31kr"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'compatibility
+           (lambda _
+             ;; ".path.package" is obsolete.
+             (substitute* "inst/tests/test.R"
+               (("# Read a pedfile" m)
+                (string-append "library(tdthap)\n" m))
+               (("\\.path.package") "path.package")))))))
     (home-page "https://cran.r-project.org/web/packages/tdthap/")
     (synopsis "TDT tests for extended haplotypes")
     (description
