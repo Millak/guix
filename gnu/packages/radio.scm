@@ -15,6 +15,7 @@
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2024 Andy Tai <atai@atai.org>
+;;; Copyright © 2024 Noisytoot <ron@noisytoot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2388,7 +2389,7 @@ receiver.")
 (define-public welle-io
   (package
     (name "welle-io")
-    (version "2.4")
+    (version "2.5")
     (source
      (origin
        (method git-fetch)
@@ -2397,7 +2398,7 @@ receiver.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0vl98pciw6xzcxyprcb4613rxn0i202f104lmy900jrny0pq4y65"))))
+        (base32 "1c3pcn2apc7sf68scwnij6xr00x25650387gr05z7xw3k36jfadi"))))
     (build-system qt-build-system)
     (native-inputs
      (list pkg-config))
@@ -2410,16 +2411,14 @@ receiver.")
            libusb
            mpg123
            rtl-sdr
-           qtbase-5
-           qtcharts-5
-           qtdeclarative-5
-           qtgraphicaleffects
-           qtmultimedia-5
-           qtquickcontrols-5
-           qtquickcontrols2-5
+           qtdeclarative
+           qtcharts
+           qt5compat
+           qtmultimedia
            soapysdr))
     (arguments
-     (list #:configure-flags #~(list "-DAIRSPY=ON"
+     (list #:qtbase qtbase
+           #:configure-flags #~(list "-DAIRSPY=ON"
                                      "-DRTLSDR=ON"
                                      "-DSOAPYSDR=ON")
            #:tests? #f))
