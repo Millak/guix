@@ -28026,6 +28026,7 @@ in-memory raw vectors.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-ggplot2 r-reshape2))
+    (native-inputs (list r-testthat))
     (home-page "http://www.sthda.com/english/wiki/ggcorrplot")
     (synopsis "Visualization of a correlation matrix using ggplot2")
     (description
