@@ -11853,7 +11853,7 @@ ungapped alignment formats.")
                              r-rsamtools
                              r-stringr))
     (inputs (list ncurses))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-runit))
     (home-page "https://bioconductor.org/packages/SICtools")
     (synopsis
      "Find SNV/Indel differences between two bam files with near relationship")
