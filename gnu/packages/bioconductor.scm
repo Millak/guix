@@ -8842,7 +8842,7 @@ matrix to solve the memory problem.")
                  "if (Sys.getenv(\"GUIX_BUILD\") == \"\") {" m "}"))))))))
     (propagated-inputs (list r-experimenthub))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/hpar/")
     (synopsis "Human Protein Atlas in R")
     (description "This package provides a simple interface to and data from
