@@ -13873,7 +13873,7 @@ determining dependencies between variables, code improvement suggestions.")
            r-universalmotif
            r-venndiagram))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/ChIPpeakAnno")
     (synopsis "Peaks annotation from ChIP-seq and ChIP-chip experiments")
     (description
