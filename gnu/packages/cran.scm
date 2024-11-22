@@ -5126,6 +5126,13 @@ scraping tasks, inspired by libraries like @code{BeautifulSoup}.")
         (base32 "0bmnbjnwwb7s697f9pjy905x8pj6jmsg4rldgmrzpbhazlzwxbn6"))))
     (properties `((upstream-name . "secretbase")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; Needed by tests
+         (add-after 'unpack 'set-HOME
+           (lambda _ (setenv "HOME" "/tmp"))))))
     (home-page "https://shikokuchuo.net/secretbase/")
     (synopsis "Cryptographic Hash and Extendable-Output Functions")
     (description
