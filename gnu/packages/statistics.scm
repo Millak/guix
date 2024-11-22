@@ -4754,7 +4754,7 @@ vignettes.")
                 "1cmjl7h4v27rh9dzl5ayv4fw5i2lrj2sbsaz52na1ak0vni4cfva"))))
     (build-system r-build-system)
     (native-inputs
-     (list gfortran))
+     (list gfortran r-numderiv))
     (home-page "https://mvtnorm.R-forge.R-project.org")
     (synopsis "Package for multivariate normal and t-distributions")
     (description "This package can compute multivariate normal and
