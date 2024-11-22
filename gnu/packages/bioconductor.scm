@@ -7595,7 +7595,7 @@ regions and to highlight copy number alterations.")
                 "0l15apga9c0pcclvdx4zdyl9zd3v4isc5rb95d7h7s2wa3mskaxh"))))
     (build-system r-build-system)
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (propagated-inputs
      (list r-annotationdbi
            r-aplot
