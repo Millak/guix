@@ -19636,7 +19636,7 @@ sequential way to mimic the manual gating strategy.")
            r-xml
            r-yaml))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/RGLab/CytoML")
     (synopsis "GatingML interface for cross platform cytometry data sharing")
     (description
