@@ -8399,6 +8399,8 @@ names in their natural, rather than lexicographic, order.")
     (properties
      `((upstream-name . "GenomicAlignments")))
     (build-system r-build-system)
+    ;; Vignettes require more packages.
+    (arguments (list #:test-types '(list "tests")))
     (propagated-inputs
      (list r-biocgenerics
            r-biocparallel
@@ -8409,7 +8411,7 @@ names in their natural, rather than lexicographic, order.")
            r-rsamtools
            r-s4vectors
            r-summarizedexperiment))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-pasillabamsubset r-runit))
     (home-page "https://bioconductor.org/packages/GenomicAlignments")
     (synopsis "Representation and manipulation of short genomic alignments")
     (description
