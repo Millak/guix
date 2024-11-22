@@ -25611,7 +25611,7 @@ estimates, etc.")
            r-tidyr
            r-xml
            r-xml2))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/BioinformaticsFMRP/TCGAbiolinks")
     (synopsis "Integrative analysis with GDC data")
     (description
