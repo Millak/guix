@@ -29305,6 +29305,7 @@ includes data sets from oceanography.")
            r-shiny))
     (native-inputs
      `(("r-knitr" ,r-knitr)
+       ("r-testthat" ,r-testthat)
        ("esbuild" ,esbuild)
        ("d3.v3.js"
         ,(origin
