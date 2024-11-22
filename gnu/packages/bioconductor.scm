@@ -11618,7 +11618,7 @@ with cell- and gene-level metadata.")
            r-matrix
            r-singlecellexperiment
            r-summarizedexperiment))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/scry.html")
     (synopsis "Small-count analysis methods for high-dimensional data")
     (description
