@@ -6230,6 +6230,7 @@ VGLMs can be loosely thought of as multivariate generalised linear models.")
         (base32
          "04xf1p7c0066cwnxfmzaikbc322bxnw022ziv8kkhzlc6268rvdf"))))
     (build-system r-build-system)
+    (native-inputs (list r-future))
     (home-page "https://github.com/psolymos/pbapply")
     (synopsis "Adding progress bar to apply functions")
     (description
