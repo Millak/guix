@@ -15814,6 +15814,7 @@ Bayes Analyses of Microarrays} (EBAM).")
            r-locfit
            r-matrixstats
            r-s4vectors))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/ririzarr/bumphunter")
     (synopsis "Find bumps in genomic data")
     (description
