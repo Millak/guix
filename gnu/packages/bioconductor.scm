@@ -6362,7 +6362,9 @@ arbitrary genomic intervals along chromosomal ideogram.")
        (sha256
         (base32
          "04ccxn2nzwjmcpbsxrksavrhjgbwv1zpc9i9dkyjsf0sirhn1mkf"))))
-    (properties `((upstream-name . "infercnv")))
+    (properties
+     `((upstream-name . "infercnv")
+       (updater-extra-inputs . ("python"))))
     (build-system r-build-system)
     (inputs (list python))
     (propagated-inputs
