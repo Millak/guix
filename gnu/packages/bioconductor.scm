@@ -1285,7 +1285,7 @@ Ensembl.")
                              r-stringr
                              r-summarizedexperiment
                              r-ucell))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/escape")
     (synopsis "Single cell analysis platform for enrichment")
     (description
