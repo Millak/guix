@@ -3279,7 +3279,7 @@ but which also provides utilities which may be useful for other platforms.")
            r-rvest
            r-smoother
            r-zoo))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/adductomicsR")
     (synopsis "Processing of adductomic mass spectral datasets")
     (description
