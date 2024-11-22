@@ -22156,6 +22156,7 @@ linear models to large data sets by updating algorithms.")
            r-gridextra
            r-rcolorbrewer
            r-rtsne))
+    (native-inputs (list r-testthat))
     (home-page "https://cran.r-project.org/web/packages/densityClust")
     (synopsis "Clustering by fast search and find of density peaks")
     (description
