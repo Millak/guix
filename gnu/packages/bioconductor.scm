@@ -3709,7 +3709,7 @@ canonical cancer pathways.")
            r-plyr
            r-qvalue
            r-rocr))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-runit))
     (home-page "https://www.sequinstandards.com/")
     (synopsis "Statistical analysis of sequins")
     (description
