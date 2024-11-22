@@ -25512,7 +25512,7 @@ interest on transformed methylation proportions.")
            r-xml2
            r-yaml
            r-zip))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://saezlab.github.io/OmnipathR/")
     (synopsis "OmniPath web service client and more")
     (description
