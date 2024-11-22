@@ -8542,10 +8542,12 @@ provide added flexibility for data combination and manipulation.")
     (properties
      `((upstream-name . "GenomicRanges")))
     (build-system r-build-system)
+    ;; The vignettes require more packages.
+    (arguments (list #:test-types '(list "tests")))
     (propagated-inputs
      (list r-biocgenerics r-genomeinfodb r-iranges r-s4vectors r-xvector))
     (native-inputs
-     (list r-knitr))
+     (list r-biostrings r-biocstyle r-knitr r-runit))
     (home-page "https://bioconductor.org/packages/GenomicRanges")
     (synopsis "Representation and manipulation of genomic intervals")
     (description
