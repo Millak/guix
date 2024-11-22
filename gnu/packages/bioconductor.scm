@@ -1116,6 +1116,7 @@ based on mapping using Entrez Gene identifiers.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-annotationdbi))
+    (native-inputs (list r-runit))
     (home-page "https://www.bioconductor.org/packages/org.Hs.eg.db/")
     (synopsis "Genome wide annotation for Human")
     (description
