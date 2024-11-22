@@ -36810,7 +36810,7 @@ here.")
            r-rcpparmadillo
            r-rstantools
            r-scales))
-    (native-inputs (list r-knitr r-rmarkdown))
+    (native-inputs (list r-knitr r-rmarkdown r-testthat))
     (home-page "https://mc-stan.org/projpred/")
     (synopsis "Projection predictive feature selection")
     (description
