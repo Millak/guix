@@ -5428,6 +5428,7 @@ tests for whether a value is missing, empty or contains only @code{NA} and
     (build-system r-build-system)
     (propagated-inputs
      (list r-gtools))
+    (native-inputs (list r-runit))
     (home-page "https://cran.r-project.org/web/packages/gdata")
     (synopsis "Various R programming tools for data manipulation")
     (description
