@@ -3930,7 +3930,7 @@ to transform JSON responses to formats more amenable to manipulation in R.")
     (properties `((upstream-name . "AnVILBase")))
     (build-system r-build-system)
     (propagated-inputs (list r-dplyr r-httr r-httr2 r-jsonlite r-tibble))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/Bioconductor/AnVILBase")
     (synopsis "Generic functions for interacting with the AnVIL system")
     (description
