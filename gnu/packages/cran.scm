@@ -22706,7 +22706,7 @@ handling.")
            r-png
            r-rlang
            r-sf))
-    (native-inputs (list r-knitr r-rmarkdown))
+    (native-inputs (list r-knitr r-rmarkdown r-testthat))
     (home-page "https://trevorldavis.com/R/gridpattern/")
     (synopsis "Grid pattern grobs")
     (description
