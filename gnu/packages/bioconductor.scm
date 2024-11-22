@@ -7404,7 +7404,7 @@ objects.")
            r-iranges
            r-s4vectors
            r-xvector))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/Biostrings")
     (synopsis "String objects and algorithms for biological sequences")
     (description
