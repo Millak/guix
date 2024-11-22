@@ -22853,7 +22853,7 @@ decompression of raw bead-level data from the Illumina BeadArray platform.")
            r-s4vectors
            r-xvector))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/ge11232002/CNEr")
     (synopsis "CNE Detection and Visualization")
     (description
