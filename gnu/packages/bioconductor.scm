@@ -16339,7 +16339,7 @@ evaluation of DEG analysis methods.")
            r-tidyr
            r-xvector))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/IONiseR/")
     (synopsis "Quality assessment tools for Oxford Nanopore MinION data")
     (description
