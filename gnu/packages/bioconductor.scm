@@ -3378,7 +3378,7 @@ well as on dataset of gene expression data.")
            r-singlecellexperiment
            r-smurf
            r-summarizedexperiment))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/airpart")
     (synopsis "Differential cell-type-specific allelic imbalance")
     (description
