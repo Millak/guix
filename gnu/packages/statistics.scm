@@ -3016,6 +3016,7 @@ or source files in a key-value fashion.")
            r-rsqlite
            r-sendmailr
            r-stringi))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/tudo-r/BatchJobs")
     (synopsis "Batch computing with R")
     (description
