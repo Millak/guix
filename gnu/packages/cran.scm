@@ -29831,6 +29831,7 @@ tools for examining posterior distributions are also included.")
          "1hanh3my84mdr5wy6b89fawqzfc184vff1y65wy4l5ld9qza1n44"))))
     (properties `((upstream-name . "RANN.L1")))
     (build-system r-build-system)
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/jefferis/RANN/tree/master-L1")
     (synopsis "Fast nearest neighbour search using L1 metric")
     (description
