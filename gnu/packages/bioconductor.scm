@@ -1609,6 +1609,7 @@ Disease Ontology.")
     (properties `((upstream-name . "hgu133plus2.db")))
     (build-system r-build-system)
     (propagated-inputs (list r-annotationdbi r-org-hs-eg-db))
+    (native-inputs (list r-runit))
     (home-page "https://bioconductor.org/packages/hgu133plus2.db")
     (synopsis "Affymetrix Affymetrix HG-U133_Plus_2 Array annotation data")
     (description
