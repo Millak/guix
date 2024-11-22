@@ -9516,7 +9516,7 @@ high distances can be flagged as potentially low-quality.")
     (properties `((upstream-name . "MetaboCoreUtils")))
     (build-system r-build-system)
     (propagated-inputs (list r-biocparallel r-mscoreutils))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/RforMassSpectrometry/MetaboCoreUtils")
     (synopsis "Core utils for Metabolomics data")
     (description
