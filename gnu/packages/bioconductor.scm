@@ -1323,12 +1323,11 @@ across individual cells.")
     (arguments `(#:substitutable? #f))
     (propagated-inputs
      (list r-biocgenerics
-           r-s4vectors
-           r-iranges
+           r-bsgenome
            r-genomeinfodb
            r-genomicranges
-           r-bsgenome
-           r-biostrings))
+           r-iranges
+           r-s4vectors))
     (home-page
      "https://bioconductor.org/packages/SNPlocs.Hsapiens.dbSNP144.GRCh37/")
     (synopsis "SNP locations for Homo sapiens (dbSNP Build 144)")
