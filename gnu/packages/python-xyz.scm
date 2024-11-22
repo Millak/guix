@@ -13218,16 +13218,22 @@ to Python code.")
 (define-public python-asttokens
   (package
     (name "python-asttokens")
-    (version "2.2.1")
+    (version "2.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "asttokens" version))
        (sha256
-        (base32 "1wwlpvnrh67z4228841zgpqc46vigslzmbvk2izbfc3g585i28j6"))))
-    (build-system python-build-system)
-    (propagated-inputs (list python-six))
-    (native-inputs (list python-astroid python-pytest python-setuptools-scm))
+        (base32 "182b4l8sys07a46icg68h7b3d8iqkzvgsjqkgq1fp9m9idqnjf5h"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-astroid
+           python-pytest
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (list python-six))
     (home-page "https://github.com/gristlabs/asttokens")
     (synopsis "Python library to annotate abstract syntax trees")
     (description "The @code{asttokens} module annotates Python abstract syntax
