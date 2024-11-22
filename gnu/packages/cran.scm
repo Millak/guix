@@ -14540,7 +14540,7 @@ plots) for multivariate and time series-like data.")
          "1c7fw5akdm8f44zgdafsgz2fpn6kfwifaw29yakl7zykq89vq8m3"))))
     (build-system r-build-system)
     (propagated-inputs (list r-mass))
-    (native-inputs (list gfortran))
+    (native-inputs (list gfortran r-pracma))
     (home-page "https://cran.r-project.org/web/packages/signal/")
     (synopsis "Signal processing")
     (description
