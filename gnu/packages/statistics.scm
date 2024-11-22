@@ -4485,6 +4485,7 @@ the way current RNG settings can be changed.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-rcpp))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/jkrijthe/Rtsne")
     (synopsis "T-distributed stochastic neighbor embedding")
     (description
