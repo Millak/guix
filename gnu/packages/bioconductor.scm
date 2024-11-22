@@ -21980,7 +21980,7 @@ analytics on packages.")
            r-tibble
            r-tidyr))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page
      "https://bioconductor.org/packages/BiocSet")
     (synopsis
