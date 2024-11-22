@@ -23943,8 +23943,9 @@ library.")
                             . "d3/d3.min.js")))))))))
     (native-inputs
      `(("esbuild" ,esbuild)
-       ("r-rmarkdown" ,r-rmarkdown)
        ("r-knitr" ,r-knitr)
+       ("r-rmarkdown" ,r-rmarkdown)
+       ("r-testthat" ,r-testthat)
        ("js-d3"
         ,(origin
            (method url-fetch)
