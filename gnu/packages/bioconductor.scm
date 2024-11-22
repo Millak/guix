@@ -12119,6 +12119,7 @@ tissues.  Current functionalities include
     (native-inputs
      (list esbuild
            r-knitr
+           r-runit
            (origin
              (method url-fetch)
              (uri "https://web.archive.org/web/20230428092426id_/\
