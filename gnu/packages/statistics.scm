@@ -4017,6 +4017,7 @@ using the parallel package.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-foreach r-iterators))
+    (native-inputs (list r-runit))
     (home-page "https://cran.r-project.org/web/packages/doMC")
     (synopsis "Foreach parallel adaptor for the 'parallel' package")
     (description
