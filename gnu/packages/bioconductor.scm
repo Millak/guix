@@ -23830,7 +23830,7 @@ with your data.")
            r-snpstats
            r-variantannotation))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/gwascat")
     (synopsis "Tools for data in the EMBL-EBI GWAS catalog")
     (description
