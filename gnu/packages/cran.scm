@@ -12679,6 +12679,7 @@ display.")
         (base32
          "1sd1igcfnv27pa3bqxlbyxchi562h7grnjg1l7wxx3bwr49i57s3"))))
     (build-system r-build-system)
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/nteetor/zeallot")
     (synopsis "Multiple, unpacking, and destructuring assignment")
     (description
