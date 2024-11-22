@@ -27524,6 +27524,7 @@ much faster than the serial versions.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-rcpp r-triebeard))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/Ironholds/urltools/")
     (synopsis "Vectorized tools for URL handling and parsing")
     (description
