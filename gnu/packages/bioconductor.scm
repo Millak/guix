@@ -25110,7 +25110,7 @@ using aCGH or sequencing.")
            r-sva
            r-wgcna))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/almeidasilvaf/BioNERO")
     (synopsis "Biological network reconstruction omnibus")
     (description
