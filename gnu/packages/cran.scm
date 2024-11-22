@@ -28607,6 +28607,7 @@ on, for a performance vs accuracy trade-off.")
            r-rcpp
            r-rcpparmadillo
            r-rhpcblasctl))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/rexyai/rsparse")
     (synopsis "Statistical learning on sparse matrices")
     (description
