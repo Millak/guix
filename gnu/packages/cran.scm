@@ -31823,6 +31823,7 @@ the align-and-count method.")
          "0dqi0w92zq1f9542ma2nk5gkqzfmd4jlf34vysb4vv7mag20xk9d"))))
     (properties `((upstream-name . "filelock")))
     (build-system r-build-system)
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/r-lib/filelock")
     (synopsis "Portable file locking")
     (description
