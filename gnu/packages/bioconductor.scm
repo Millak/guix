@@ -3674,7 +3674,7 @@ problems.")
            r-reshape2
            r-rmarkdown
            r-tibble))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/AMARETTO")
     (synopsis "Regulatory network inference and driver gene evaluation")
     (description
