@@ -4137,7 +4137,7 @@ data.")
            r-tidyr
            r-tidyselect
            r-vctrs))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://sipss.github.io/AlpsNMR/")
     (synopsis "Automated spectral processing system for NMR")
     (description
