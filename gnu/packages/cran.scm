@@ -17618,6 +17618,26 @@ visualization of similarity data.")
     (properties
      `((upstream-name . "manipulateWidget")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:modules '((guix build r-build-system)
+                  (guix build minify-build-system)
+                  (guix build utils)
+                  (ice-9 match))
+      #:imported-modules `(,@%r-build-system-modules
+                           (guix build minify-build-system))
+      #:phases
+      '(modify-phases (@ (guix build r-build-system) %standard-phases)
+         (add-after 'unpack 'process-javascript
+           (lambda* (#:key inputs #:allow-other-keys)
+             (with-directory-excursion "inst/lib/export"
+               (for-each (match-lambda
+                           ((source . target)
+                            (minify source #:target target)))
+                         `((,(assoc-ref inputs "js-html2canvas")
+                            . "html2canvas/html2canvas.js")
+                           (,(search-input-file inputs "FileSaver.js")
+                            . "FileSaver/FileSaver.min.js")))))))))
     (propagated-inputs
      (list r-base64enc
            r-codetools
@@ -17629,7 +17649,32 @@ visualization of similarity data.")
            r-shinyjs
            r-webshot))
     (native-inputs
-     (list r-knitr))
+     `(("esbuild" ,esbuild)
+       ("r-knitr" ,r-knitr)
+       ("r-testthat" ,r-testthat)
+       ;; inst/lib/export/html2canvas/html2canvas.js, version 1.0.0-rc.3
+       ("js-html2canvas"
+        ,(let ((version "1.0.0-rc.3"))
+           (origin
+             (method url-fetch)
+             (uri (string-append
+                   "https://github.com/niklasvh/html2canvas/"
+                   "releases/download/v" version "/html2canvas.js"))
+             (sha256
+              (base32
+               "0gxw8ihxkiwhh8hs8n7k1fsim7gq7v31h89fc9k2dw3namg7m2qp")))))
+       ;; inst/lib/export/FileSaver/FileSaver.min.js
+       ("js-filesaver"
+        ,(let ((version "1.2.0"))
+           (origin
+             (method git-fetch)
+             (uri (git-reference
+                   (url "https://github.com/eligrey/FileSaver.js")
+                   (commit version)))
+             (file-name (git-file-name "js-filesaver" version))
+             (sha256
+              (base32
+               "07mw01056fk36pganhs27y8rl5y5hrdsm945pwbbvmdjnzq4ijny")))))))
     (home-page "https://github.com/rte-antares-rpackage/manipulateWidget/")
     (synopsis "Add even more interactivity to interactive charts")
     (description
