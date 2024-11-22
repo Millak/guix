@@ -19190,7 +19190,7 @@ were influenced by the drake R package by Will Landau (2018)
                              r-tidyselect
                              r-vctrs
                              r-yaml))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://docs.ropensci.org/targets/")
     (synopsis "Dynamic function-oriented Make-like declarative pipelines")
     (description
