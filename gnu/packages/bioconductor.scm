@@ -23293,7 +23293,7 @@ data in the column sparse format.")
                              r-s4vectors
                              r-singlecellexperiment
                              r-summarizedexperiment))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/drighelli/SpatialExperiment")
     (synopsis "S4 class for spatially resolved -omics data")
     (description
