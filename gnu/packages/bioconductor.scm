@@ -18314,7 +18314,7 @@ that arising from 16s metagenomic surveys.")
            r-rtracklayer
            r-s4vectors))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/wiggleplotr/")
     (synopsis "Make read coverage plots from BigWig files")
     (description
