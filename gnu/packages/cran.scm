@@ -13201,6 +13201,7 @@ of these tests are also included.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-curl r-xts r-zoo))
+    (native-inputs (list r-runit))
     (home-page "https://github.com/joshuaulrich/TTR")
     (synopsis "Technical trading rules")
     (description
