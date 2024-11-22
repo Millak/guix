@@ -20980,7 +20980,7 @@ results.")
     (propagated-inputs
      (list r-genomicranges r-poibin))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/BiFET")
     (synopsis "Bias-free footprint enrichment test")
     (description
