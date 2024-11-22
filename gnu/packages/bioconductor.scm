@@ -11768,7 +11768,7 @@ and advanced quality control routines.")
            r-minfi
            r-rcolorbrewer
            r-shiny))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/shinyMethyl")
     (synopsis "Interactive visualization for Illumina methylation arrays")
     (description
