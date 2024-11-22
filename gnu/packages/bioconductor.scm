@@ -9940,7 +9940,7 @@ platform that mimics both single and multi-sample scRNA-seq data.")
          "16a5g9l025pj7xrl3g78nkqyrcnldj8y2025ibvsfg0921zyqiyp"))))
     (build-system r-build-system)
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (propagated-inputs
      (list r-biocgenerics
            r-biostrings
