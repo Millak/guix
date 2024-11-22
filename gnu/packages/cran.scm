@@ -37389,7 +37389,7 @@ and to manage processes involving them.")
      (list r-catools
            r-httr
            r-wdman))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://docs.ropensci.org/RSelenium/")
     (synopsis "R bindings for Selenium WebDriver")
     (description
