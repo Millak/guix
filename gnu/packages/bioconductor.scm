@@ -18078,7 +18078,7 @@ groups.")
            r-rcolorbrewer
            r-readr))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/yarn/")
     (synopsis "Robust multi-condition RNA-Seq preprocessing and normalization")
     (description
