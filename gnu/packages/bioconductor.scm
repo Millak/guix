@@ -22454,7 +22454,7 @@ data manipulation and visualization.")
     (propagated-inputs
      (list r-graph))
     (native-inputs
-     (list pkg-config))
+     (list pkg-config r-runit))
     (home-page "https://bioconductor.org/packages/Rgraphviz")
     (synopsis "Plotting capabilities for R graph objects")
     (description
