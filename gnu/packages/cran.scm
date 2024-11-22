@@ -38285,6 +38285,7 @@ Environmental Data}.")
              (base32
               "0mz801y9mzld9ypp3xmsjw2d8l9q97sdnv09wrci9xi3yg2sjf6d"))))
    (build-system r-build-system)
+   (native-inputs (list r-testthat))
    (home-page "https://cran.r-project.org/web/packages/naturalsort/")
    (synopsis "Natural ordering")
    (description "This package provides functions related to human natural
