@@ -19407,7 +19407,7 @@ statistics to the plot.")
            r-mass
            r-rcolorbrewer))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/flowViz/")
     (synopsis "Visualization for flow cytometry")
     (description
