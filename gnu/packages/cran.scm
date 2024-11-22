@@ -38169,7 +38169,7 @@ model.")
            r-lifecycle
            r-rcpp
            r-rcpparmadillo))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/mlampros/ClusterR")
     (synopsis "Clustering")
     (description
