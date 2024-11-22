@@ -32369,7 +32369,7 @@ errors.")
     (properties `((upstream-name . "acs")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-httr r-plyr r-rcpp r-stringr r-xml))
+     (list r-httr r-plyr r-stringr r-xml))
     (home-page "https://dusp.mit.edu/faculty/ezra-haber-glenn")
     (synopsis "Work with data from the US Census")
     (description
