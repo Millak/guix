@@ -25700,7 +25700,7 @@ embeddings and functions to build new reference.")
            r-txdbmaker
            r-tximport))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/mikelove/tximeta")
     (synopsis "Transcript quantification import with automatic metadata")
     (description
