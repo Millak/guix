@@ -38935,6 +38935,7 @@ workflow.  The advantages are:
            r-crayon
            r-prettyunits
            r-rlang))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/r-lib/lobstr")
     (synopsis "Visualize R data structures with trees")
     (description
