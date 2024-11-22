@@ -1357,7 +1357,7 @@ agnes cluster diagrams.")
          "0vv8g0h5fkpna5b3fqrj6dkdxpqr0ws5sdmzgysb17gw4vviq39b"))))
     (build-system r-build-system)
     (native-inputs
-     (list pkg-config))
+     (list pkg-config r-testthat))
     (inputs
      (list cairo fontconfig freetype zlib))
     (propagated-inputs
