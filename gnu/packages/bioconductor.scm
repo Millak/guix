@@ -20501,7 +20501,7 @@ populations, splice site strength, conservation, etc.")
            r-rlang
            r-scales))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-runit))
     (home-page "https://bioconductor.org/packages/variancePartition/")
     (synopsis "Analyze variation in gene expression experiments")
     (description
