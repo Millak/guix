@@ -5702,6 +5702,7 @@ dispersion modeling and Tweedie power-law families.")
     (properties
      `((upstream-name . "RANN")))
     (build-system r-build-system)
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/jefferis/RANN")
     (synopsis "Fast nearest neighbour search")
     (description
