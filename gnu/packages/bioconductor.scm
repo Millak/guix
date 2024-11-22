@@ -15732,7 +15732,7 @@ high-throughput analyses.")
            r-tidyr
            r-xml2))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/seandavi/GEOquery/")
     (synopsis "Get data from NCBI Gene Expression Omnibus (GEO)")
     (description
