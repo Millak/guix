@@ -8486,7 +8486,10 @@ components.")
         (base32 "0kf9sfsm3n036a8a8gjfpc9qdryvadb019kqjh80n1szdv7bdl04"))))
     (properties `((upstream-name . "BB")))
     (build-system r-build-system)
+    ;; could not find function "latex"
+    (arguments (list #:test-types '(list "tests")))
     (propagated-inputs (list r-quadprog))
+    (native-inputs (list r-numderiv r-setrng))
     (home-page "https://publichealth.jhu.edu/")
     (synopsis "Solving and optimizing large-scale nonlinear systems")
     (description
