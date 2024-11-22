@@ -24068,7 +24068,7 @@ profiling R code.")
            r-rcpp
            r-rcpparmadillo))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/l-ramirez-lopez/prospectr")
     (synopsis "Functions for processing and sample selection of spectroscopic data")
     (description
