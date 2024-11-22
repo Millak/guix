@@ -26302,6 +26302,7 @@ datum transformations.")
     (properties `((upstream-name . "sfd")))
     (build-system r-build-system)
     (propagated-inputs (list r-cli r-rlang r-tibble))
+    (native-inputs (list r-testthat))
     (home-page "https://cran.r-project.org/package=sfd")
     (synopsis "Space-Filling Design Library")
     (description
