@@ -30641,7 +30641,7 @@ as a boxplot function.")
     (inputs (list zlib))
     (propagated-inputs (list r-rcpp))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "http://thegrantlab.org/bio3d/")
     (synopsis "Biological structure analysis")
     (description
