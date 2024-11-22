@@ -12425,7 +12425,7 @@ data sets ensuring a small memory footprint.")
     (properties `((upstream-name . "stageR")))
     (build-system r-build-system)
     (propagated-inputs (list r-summarizedexperiment))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/stageR")
     (synopsis "Stage-wise analysis of high throughput gene expression data")
     (description
