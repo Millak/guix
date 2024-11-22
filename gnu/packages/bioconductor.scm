@@ -18895,7 +18895,7 @@ packages.")
            r-plotly
            r-summarizedexperiment))
     (native-inputs
-     (list r-knitr)) ; for vignettes
+     (list r-knitr r-testthat)) ; for vignettes
     (home-page "https://dx.doi.org/10.1021/acs.jproteome.5b00354")
     (synopsis "Multivariate analysis and feature selection of omics data")
     (description
