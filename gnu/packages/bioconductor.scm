@@ -896,12 +896,12 @@ https://github.com/DiseaseOntology/HumanDiseaseOntology/tree/main/src/ontology}.
      `((upstream-name . "Homo.sapiens")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-genomicfeatures
+     (list r-annotationdbi
+           r-genomicfeatures
            r-go-db
            r-org-hs-eg-db
-           r-txdb-hsapiens-ucsc-hg19-knowngene
            r-organismdbi
-           r-annotationdbi))
+           r-txdb-hsapiens-ucsc-hg19-knowngene))
     (home-page "https://bioconductor.org/packages/Homo.sapiens/")
     (synopsis "Annotation package for the Homo.sapiens object")
     (description
