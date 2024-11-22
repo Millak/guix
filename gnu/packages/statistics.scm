@@ -1404,6 +1404,7 @@ considerably faster, produces smaller files, and leaves text as is.")
                (base32
                 "17wy5bdfzg73sg2clisg1k3zyn1adkj59x56m5nwia2k8z67zkw5"))))
     (build-system r-build-system)
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/hadley/assertthat")
     (synopsis "Easy pre and post assertions")
     (description
