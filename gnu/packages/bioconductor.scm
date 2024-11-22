@@ -7513,6 +7513,7 @@ genome data packages and support for efficient SNP representation.")
            r-gseabase
            r-matrix
            r-rbgl))
+    (native-inputs (list r-runit))
     (home-page "https://bioconductor.org/packages/Category")
     (synopsis "Category analysis")
     (description
