@@ -36210,6 +36210,7 @@ carrying out convergence diagnostics and statistical and graphical analysis of
                (base32
                 "0xig0rvc81hg7mw0iq9s0an1nw24fg0kfs2p2n6dzhwl9w506fjr"))))
     (build-system r-build-system)
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/sckott/httpcode")
     (synopsis "HTTP status code helper")
     (description "@code{httpcode} provides functionality for finding and
