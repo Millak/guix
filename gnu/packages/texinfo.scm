@@ -76,6 +76,10 @@
                   #t)))
             %standard-phases)
 
+       ,@(if (%current-target-system)
+             (list #:configure-flags #~'("texinfo_cv_sys_iconv_converts_euc_cn=yes"))
+             '())
+
        ;; XXX: Work around <https://issues.guix.gnu.org/59616>.
        #:tests? ,(and (not (target-hurd?))
                       (not (%current-target-system)))))
