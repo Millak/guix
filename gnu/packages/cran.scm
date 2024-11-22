@@ -22446,7 +22446,7 @@ Touzet and Varre (2007).")
     (properties `((upstream-name . "rnaturalearth")))
     (build-system r-build-system)
     (propagated-inputs (list r-httr r-jsonlite r-sf r-terra))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://cran.r-project.org/package=rnaturalearth")
     (synopsis "World map data from Natural Earth")
     (description
