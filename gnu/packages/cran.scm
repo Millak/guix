@@ -28105,7 +28105,7 @@ wrap.")
     (properties `((upstream-name . "gggenes")))
     (build-system r-build-system)
     (propagated-inputs (list r-ggfittext r-ggplot2 r-rlang))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://wilkox.org/gggenes/")
     (synopsis "Draw gene arrow maps in ggplot2")
     (description
