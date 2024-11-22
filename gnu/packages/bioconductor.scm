@@ -18215,7 +18215,7 @@ based on @dfn{Continuous Wavelet Transform} (CWT).")
            r-spectra
            r-summarizedexperiment))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/xcms/")
     (synopsis "LC/MS and GC/MS mass spectrometry data analysis")
     (description
