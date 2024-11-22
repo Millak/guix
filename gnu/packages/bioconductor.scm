@@ -8219,7 +8219,7 @@ chromosome region or transcript models of lincRNA genes.")
                              r-matrixstats
                              r-quadprog
                              r-stringr))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/sjczheng/EpiDISH")
     (synopsis "Epigenetic dissection of intra-sample-heterogeneity")
     (description
