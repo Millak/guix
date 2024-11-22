@@ -1815,18 +1815,21 @@ also ensuring that the notebooks are running without errors.")
 (define-public python-pytest-flask
   (package
     (name "python-pytest-flask")
-    (version "1.0.0")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest-flask" version))
        (sha256
-        (base32
-         "1hln7mwgdzfi5ma0kqfsi768l7p24jhkw8l0imhifwy08nh7hmjd"))))
-    (build-system python-build-system)
+        (base32 "0pm93xli1pvq9w053grndi84hxq087mr2xhagvac98qvnabirgjq"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-flask python-pytest python-setuptools-scm
-           python-werkzeug))
+     (list python-pytest
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (list python-flask))
     (home-page "https://github.com/pytest-dev/pytest-flask")
     (synopsis "Pytest fixtures to test Flask applications")
     (description
