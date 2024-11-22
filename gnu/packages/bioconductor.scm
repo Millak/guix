@@ -8970,7 +8970,7 @@ fraction} are included.")
                              r-matrixgenerics
                              r-s4vectors
                              r-summarizedexperiment))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/RaggedExperiment")
     (synopsis "Representation of sparse experiments and assays across samples")
     (description
