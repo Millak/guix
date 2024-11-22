@@ -18774,7 +18774,7 @@ quantification of genomic regions of interest.")
            r-shiny
            r-shortread))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/labbcb/Rqc")
     (synopsis "Quality control tool for high-throughput sequencing data")
     (description
