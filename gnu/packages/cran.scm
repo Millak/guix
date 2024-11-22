@@ -36084,7 +36084,7 @@ appropriate dog and cat images for many status codes.")
                 "1jp0l0hi5kv4yh28qg2yj2z5fj33gnfvdz2g2v4ibn516fj2d636"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-stringr r-magrittr))
+     (list r-magrittr r-stringr))
     (native-inputs
      (list r-knitr))
     (home-page "https://github.com/stefano-meschiari/latex2exp/")
