@@ -18997,7 +18997,7 @@ multiple-imputation datasets.")
    (propagated-inputs
     (list r-irlba r-rcpp r-rcpparmadillo))
    (native-inputs
-    (list r-knitr))
+    (list r-knitr r-testthat))
    (home-page "https://github.com/stephenslab/mixsqp")
    (synopsis
     "Sequential quadratic programming for maximum-likelihood estimation")
