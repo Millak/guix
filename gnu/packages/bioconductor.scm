@@ -12988,6 +12988,7 @@ molecular functions, respectively, and produces intuitive graphical outputs.")
         (base32 "1r4n5lnps47qrl90m5mm0i3530l0r31hd7hsp2d004sgbmyak304"))))
     (properties `((upstream-name . "xmapbridge")))
     (build-system r-build-system)
+    (native-inputs (list r-runit))
     (home-page "https://git.bioconductor.org/packages/xmapbridge")
     (synopsis "Display numeric data in the web based genome browser X:MAP")
     (description
