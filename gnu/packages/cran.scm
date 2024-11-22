@@ -25583,7 +25583,7 @@ plotting functions are available for analyzing clustering results.")
            r-rcpparmadillo
            r-rdpack
            r-reshape2))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-runit))
     (home-page "https://diseaseneurogenomics.github.io/remaCor/")
     (synopsis "Random effects meta-analysis for correlated test statistics")
     (description
