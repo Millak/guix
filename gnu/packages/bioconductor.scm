@@ -18041,7 +18041,7 @@ chips with the MAQC reference datasets.")
            r-minfi
            r-rcolorbrewer))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-runit))
     (home-page "https://bioconductor.org/packages/quantro/")
     (synopsis "Test for when to use quantile normalization")
     (description
