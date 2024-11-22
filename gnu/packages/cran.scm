@@ -26015,7 +26015,7 @@ interface for asynchronous rendering of R graphics.")
     (propagated-inputs
      (list r-rcpp))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/r-quantities/units/")
     (synopsis "Measurement Units for R Vectors")
     (description
