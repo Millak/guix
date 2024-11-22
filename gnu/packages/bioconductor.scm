@@ -20084,7 +20084,7 @@ cisTopics and explore the nature and regulatory proteins driving them.")
     (propagated-inputs
      (list r-dplyr r-reshape2))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/GENIE3")
     (synopsis "Gene network inference with ensemble of trees")
     (description
