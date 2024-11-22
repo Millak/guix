@@ -19285,7 +19285,7 @@ interact with gated cytometry data.")
            r-rprotobuflib
            r-s4vectors))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/flowCore")
     (synopsis "Basic structures for flow cytometry data")
     (description
