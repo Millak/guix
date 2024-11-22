@@ -35642,7 +35642,8 @@ documents, Shiny applications, Plumber APIs, plots, and static web content.")
                                "moment-fquarter/1.0.1/moment-fquarter.js"))
            (sha256
             (base32
-             "01mdnsaibm9jy2f1qpbn692hpv309lhj5si9nagib4dawmrkffij"))))))
+             "01mdnsaibm9jy2f1qpbn692hpv309lhj5si9nagib4dawmrkffij"))))
+       ("r-testthat" ,r-testthat)))
     (propagated-inputs
      (list r-htmltools r-htmlwidgets r-magrittr r-xts r-zoo))
     (home-page "https://github.com/rstudio/dygraphs")
