@@ -16016,7 +16016,7 @@ experiments.")
            r-summarizedexperiment
            r-tibble
            r-tidyr))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://marionilab.github.io/miloR")
     (synopsis "Differential neighbourhood abundance testing on a graph")
     (description
