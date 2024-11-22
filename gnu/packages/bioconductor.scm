@@ -13688,7 +13688,7 @@ fitting of some classes of graphical Markov models.")
                              r-magrittr
                              r-rlang
                              r-tidytree))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/YuLab-SMU/ggtreeExtra/")
     (synopsis
      "Add geometric layers On circular or other layout tree of ggtree")
