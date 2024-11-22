@@ -36255,7 +36255,7 @@ rendered as text, axis labels, etc. throughout R's plotting system.")
     (propagated-inputs
      (list r-httr r-plyr r-stringr r-tibble r-xml2))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/ropensci/oai/")
     (synopsis "General purpose OAI-PMH services client")
     (description "@code{oai} provides a general purpose client to work with
