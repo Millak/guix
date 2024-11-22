@@ -2967,7 +2967,7 @@ the @code{GFAGpathUi} function.")
            r-saver
            r-singlecellexperiment
            r-summarizedexperiment))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/ADImpute")
     (synopsis "Adaptive computational prediction for dropout imputations")
     (description
