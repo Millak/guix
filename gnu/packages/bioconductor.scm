@@ -23385,7 +23385,7 @@ within the R for Mass Spectrometry packages.")
     (propagated-inputs
      (list r-mscoreutils r-protgenerics r-summarizedexperiment))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/RforMassSpectrometry/MsFeatures")
     (synopsis "Functionality for mass spectrometry features")
     (description
