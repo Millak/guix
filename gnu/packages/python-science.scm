@@ -1410,7 +1410,7 @@ idea of the remaining amount of computation to be done.")
                              python-pandas-stubs ;mypy extra
                              python-pydantic
                              python-scipy ;hypotheses extra
-                             python-typeguard-4
+                             python-typeguard
                              python-typing-inspect
                              python-wrapt))
     (native-inputs (list python-dask ;dask extra

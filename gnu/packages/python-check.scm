@@ -412,7 +412,7 @@ nosetests, etc...) in Python projects.")
            python-mypy
            python-numpy
            python-setuptools
-           python-typeguard-4))
+           python-typeguard))
     (propagated-inputs
      (list python-asttokens
            python-typing-extensions))
