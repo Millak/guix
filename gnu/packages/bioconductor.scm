@@ -24379,7 +24379,7 @@ real numbers.")
            r-sjmisc
            r-txdbmaker
            r-tximport))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/BgeeDB/BgeeCall")
     (synopsis "RNA-Seq present/absent gene expression calls generation")
     (description
