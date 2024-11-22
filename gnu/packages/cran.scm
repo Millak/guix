@@ -35082,6 +35082,7 @@ estimate parameters given observed data.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-foreign r-openxlsx r-plyr r-runit r-xtable))
+    (native-inputs (list r-runit))
     (home-page "https://cran.r-project.org/package=kutils")
     (synopsis "Project management tools")
     (description
