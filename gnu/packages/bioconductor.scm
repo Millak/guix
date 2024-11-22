@@ -3807,7 +3807,7 @@ these biases and construct statistically consistent estimators.")
            r-umap
            r-vegan
            r-xml))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/compbiomed/animalcules")
     (synopsis "Interactive microbiome analysis toolkit")
     (description
