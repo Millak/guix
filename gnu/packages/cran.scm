@@ -36879,7 +36879,7 @@ including means, variances, intervals, and highest density regions.")
            r-tibble
            r-vctrs))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://mc-stan.org/posterior/")
     (synopsis "Tools for working with posterior distributions")
     (description
