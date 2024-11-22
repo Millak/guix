@@ -3162,7 +3162,7 @@ collation, and NAMESPACE files.")
     (inputs
      (list openssl zlib))
     (native-inputs
-     (list pkg-config r-knitr))
+     (list pkg-config r-knitr r-testthat))
     (propagated-inputs
      (list r-askpass))
     (home-page "https://github.com/jeroenooms/openssl")
