@@ -3625,7 +3625,7 @@ in multi-layer WGCN using a continuous optimization approach.")
            r-shortread
            r-stringr
            r-waffle))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/valenlab/amplican")
     (synopsis "Automated analysis of CRISPR experiments")
     (description
