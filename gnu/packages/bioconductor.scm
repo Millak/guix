@@ -12749,7 +12749,7 @@ dependencies between GO terms can be implemented and applied.")
                              r-rtracklayer
                              r-s4vectors
                              r-ucsc-utils))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-runit))
     (home-page "https://bioconductor.org/packages/txdbmaker")
     (synopsis "Tools for making TxDb objects from genomic annotations")
     (description
