@@ -1306,7 +1306,7 @@ using just two functions: melt and dcast (or acast).")
            r-vctrs
            r-withr))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://ggplot2.tidyverse.org")
     (synopsis "Implementation of the grammar of graphics")
     (description
