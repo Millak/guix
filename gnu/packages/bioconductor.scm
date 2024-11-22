@@ -7155,7 +7155,7 @@ databases.  Packages produced are intended to be used with AnnotationDbi.")
            r-s4vectors
            r-yaml))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-runit))
     (home-page "https://bioconductor.org/packages/AnnotationHub")
     (synopsis "Client to access AnnotationHub resources")
     (description
