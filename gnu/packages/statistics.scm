@@ -6301,6 +6301,7 @@ decompositions of such matrices, and solutions of linear systems.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-data-table r-rcpp))
+    (native-inputs (list r-testthat))
     (home-page "https://cran.r-project.org/web/packages/ModelMetrics")
     (synopsis "Rapid calculation of model metrics")
     (description
