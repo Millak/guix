@@ -33934,6 +33934,8 @@ aesthetics.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-matrix r-rcpp r-rcppeigen))
+    (native-inputs
+     (list r-testthat))
     (home-page "https://github.com/flying-sheep/knn.covertree")
     (synopsis "Accurate kNN Implementation with multiple distance measures")
     (description
