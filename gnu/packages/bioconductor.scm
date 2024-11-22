@@ -16069,7 +16069,7 @@ model.")
            r-siggenes
            r-summarizedexperiment))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-runit))
     (home-page "https://github.com/hansenlab/minfi")
     (synopsis "Analyze Illumina Infinium DNA methylation arrays")
     (description
