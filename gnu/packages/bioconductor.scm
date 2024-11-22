@@ -11127,7 +11127,7 @@ tab-delimited (tabix) files.")
                              r-viridis
                              r-xml
                              r-xml2))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://rtcga.github.io/RTCGA/")
     (synopsis "The Cancer Genome Atlas data integration")
     (description
