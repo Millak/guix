@@ -5333,7 +5333,7 @@ enrichment in single cell data.")
            r-rlang
            r-s4vectors
            r-summarizedexperiment))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/CoreGx")
     (synopsis
      "Classes and functions to serve as the basis for other Gx packages")
