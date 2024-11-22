@@ -6414,7 +6414,7 @@ arbitrary genomic intervals along chromosomal ideogram.")
            r-singlecellexperiment
            r-summarizedexperiment
            r-tidyr))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/broadinstitute/inferCNV/wiki")
     (synopsis "Infer copy number variation from single-cell RNA-Seq data")
     (description
