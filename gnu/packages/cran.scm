@@ -35204,7 +35204,7 @@ league, the Bundesliga.  It contains data from 1964 to 2016.")
                              r-rlang
                              r-tibble
                              r-vctrs))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://butcher.tidymodels.org/")
     (synopsis "Model butcher")
     (description
