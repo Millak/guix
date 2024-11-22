@@ -3356,6 +3356,39 @@ This is intended to be used with the Jolly Good Reference Frontend
                    license:isc          ;libco
                    license:lgpl2.1+))))
 
+(define-public libretro-beetle-gba
+  ;; There are no releases.  Use the latest commit.
+  (let ((commit "6cee80685f735ea6c2373db2622a1f1ee9f39d39")
+        (revision "0"))
+    (package
+      (name "libretro-beetle-gba")
+      ;; Use Mednafen core version as base.  Defined in libretro.cpp:73.
+      (version (git-version "0.9.36" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/libretro/beetle-gba-libretro")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "14fm2g3hrsvvd57d6m9apzc30ypa4m0m5hk2viq422fm2l9y0xbb"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
+                                  (string-append "GIT_VERSION=" #$commit)
+                                  (string-append "prefix=" #$output))
+             #:tests? #f                ;no tests
+             #:phases #~(modify-phases %standard-phases
+                          (delete 'configure))))
+      (home-page "https://github.com/libretro/beetle-gba-libretro")
+      (synopsis "Standalone port of Mednafen GBA to libretro")
+      (description
+       "A standalone port of Mednafen’s GameBoy Advance emulator called Beetle
+GBA to libretro.  Beetle GBA is based on VBA-M, itself a fork of Visual Boy
+Advance.")
+      (license license:gpl2+))))
+
 (define-public libretro-bsnes-jg
   ;; There aren't any release yet; use the latest commit.
   (let ((commit "0d42dea0cb20aba8bfec05b928e4aed2b295352a")
