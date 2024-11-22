@@ -24985,7 +24985,7 @@ separate published packages.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-jsonlite r-matrix r-plyr r-rhdf5))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/joey711/biomformat/")
     (synopsis "Interface package for the BIOM file format")
     (description
