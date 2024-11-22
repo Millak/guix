@@ -31879,7 +31879,7 @@ columns, ad allows for quick addition of extra columns to a filematrix.")
                              r-stringi
                              r-stringr
                              r-withr))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/rorynolan/filesstrings")
     (synopsis "Handy file and string manipulation")
     (description
