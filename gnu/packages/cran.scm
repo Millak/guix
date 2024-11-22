@@ -13666,6 +13666,7 @@ multivariate distributions.")
            r-stabledist
            r-timedate
            r-timeseries))
+    (native-inputs (list r-runit))
     (home-page
      "https://r-forge.r-project.org/scm/viewvc.php/pkg/fBasics/?root=rmetrics")
     (synopsis "Metrics for markets and basic statistics")
