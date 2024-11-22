@@ -18484,7 +18484,7 @@ rapid adapter trimming, identification, and read merging.")
            r-reshape2
            r-tidyr))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/saezlab/progeny")
     (synopsis "Pathway responsive gene activity inference")
     (description
