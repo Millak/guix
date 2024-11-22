@@ -4859,7 +4859,7 @@ more complete @code{viridis} package.")
     (propagated-inputs
      (list r-cli r-glue r-lifecycle r-rlang r-vctrs r-withr))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://cran.r-project.org/web/packages/tidyselect")
     (synopsis "Select from a set of strings")
     (description
