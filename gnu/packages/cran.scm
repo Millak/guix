@@ -36370,6 +36370,7 @@ subpopulation type designs.")
     (build-system r-build-system)
     (inputs
      (list python-nbconvert pandoc))
+    (native-inputs (list r-testthat))
     (home-page "https://cran.r-project.org/web/packages/nbconvertR/")
     (synopsis "Vignette engine wrapping Jupyter notebooks")
     (description
