@@ -10710,6 +10710,7 @@ batch correction and normalization.")
          "0pg7rqz0ixaiihqybynm94qvdc5y953xzxzxvwv5gbmxdk9s3lmk"))))
     (properties `((upstream-name . "ProtGenerics")))
     (build-system r-build-system)
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/lgatto/ProtGenerics")
     (synopsis "S4 generic functions for proteomics infrastructure")
     (description
