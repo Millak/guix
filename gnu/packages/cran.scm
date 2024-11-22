@@ -30201,6 +30201,7 @@ be used further by e.g. graphic devices.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-igraph r-rcpp r-rcpparmadillo))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/schochastics/graphlayouts")
     (synopsis "Additional layout algorithms for network visualizations")
     (description
