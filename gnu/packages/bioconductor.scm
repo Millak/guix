@@ -3208,7 +3208,7 @@ experiment.")
            r-singlecellexperiment
            r-summarizedexperiment
            r-tibble))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/jasonratcliff/aggregateBioVar")
     (synopsis "Differential gene expression analysis for multi-subject scRNA-seq")
     (description
