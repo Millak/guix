@@ -21229,7 +21229,7 @@ visualizing RNA-sequencing datasets and differentially expressed genes.")
                                 "/include/eigen3"))))))))
     (inputs (list eigen openbabel))
     (propagated-inputs (list r-bh r-biocgenerics r-rcpp r-zlibbioc))
-    (native-inputs (list pkg-config r-knitr))
+    (native-inputs (list pkg-config r-knitr r-runit))
     (home-page "https://github.com/girke-lab/ChemmineOB")
     (synopsis "R interface to a subset of OpenBabel functionalities")
     (description
