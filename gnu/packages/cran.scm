@@ -27453,6 +27453,7 @@ packages with Rcpp.")
                 "BASEDATETIME <- structure(0, class = c(\"POSIXct\", \"POSIXt\"))\n")))))))
     (propagated-inputs
      (list r-cpp11 r-farver r-magrittr r-rlang r-vctrs))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/thomasp85/tweenr")
     (synopsis "Interpolate data for smooth animations")
     (description
