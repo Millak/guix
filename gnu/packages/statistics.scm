@@ -3805,6 +3805,7 @@ plotted and compared with the asymptotic curve.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-formatr))
+    (native-inputs (list r-testit))
     (home-page "https://cran.r-project.org/web/packages/lambda.r")
     (synopsis "Functional programming extension for R")
     (description
