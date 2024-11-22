@@ -35793,7 +35793,7 @@ techniques to average Bayesian predictive distributions.")
                      (search-input-directory inputs
                                              "share/zoneinfo")))))))
     (native-inputs
-     (list r-knitr tzdata-for-tests))
+     (list r-knitr r-testthat tzdata-for-tests))
     (propagated-inputs
      (list r-bh
            r-ggplot2
