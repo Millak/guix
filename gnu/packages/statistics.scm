@@ -6256,7 +6256,7 @@ decompositions of such matrices, and solutions of linear systems.")
     (properties `((upstream-name . "ModelMetrics")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-rcpp r-data-table))
+     (list r-data-table r-rcpp))
     (home-page "https://cran.r-project.org/web/packages/ModelMetrics")
     (synopsis "Rapid calculation of model metrics")
     (description
