@@ -6251,7 +6251,7 @@ pseudo-cells, and downsampling of the count matrix.")
     (properties `((upstream-name . "dsb")))
     (build-system r-build-system)
     (propagated-inputs (list r-limma r-magrittr r-mclust))
-    (native-inputs (list r-knitr r-rmarkdown))
+    (native-inputs (list r-knitr r-rmarkdown r-testthat))
     (home-page "https://github.com/niaid/dsb")
     (synopsis
      "Normalize & denoise droplet single cell protein data (CITE-Seq)")
