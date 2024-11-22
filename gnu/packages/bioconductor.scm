@@ -5091,7 +5091,7 @@ the posterior densities for the average relative abundance of transcripts.")
            r-mvtnorm
            r-rstan
            r-stringr))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/banocc")
     (synopsis "Bayesian analysis of compositional covariance")
     (description
