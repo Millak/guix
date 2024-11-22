@@ -11928,7 +11928,7 @@ methods for semantic similarity analysis.")
            r-simona
            r-slam
            r-tm))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/jokergoo/simplifyEnrichment")
     (synopsis "Simplify functional enrichment results")
     (description "This package provides a new clustering algorithm, binary
