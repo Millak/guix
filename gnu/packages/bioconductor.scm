@@ -2351,7 +2351,7 @@ with different methylation clocks.")
                              r-singlecellexperiment
                              r-spatialexperiment
                              r-summarizedexperiment))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/MarioniLab/MouseGastrulationData")
     (synopsis
      "Single-Cell omics data across mouse gastrulation and early organogenesis")
