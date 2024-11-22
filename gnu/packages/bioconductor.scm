@@ -19673,6 +19673,7 @@ standard to exchange gated cytometry data with other software platforms.")
            r-rtsne
            r-tidyr
            r-xml))
+    (native-inputs (list r-testthat))
     (home-page "https://bioconductor.org/packages/FlowSOM/")
     (synopsis "Visualize and interpret cytometry data")
     (description
