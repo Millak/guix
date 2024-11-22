@@ -20929,7 +20929,7 @@ address a bug.")
     (build-system r-build-system)
     (inputs (list gmp))
     (propagated-inputs (list r-cpp11 r-gmp))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/jwood000/RcppAlgos")
     (synopsis
      "High performance tools for combinatorics and computational mathematics")
