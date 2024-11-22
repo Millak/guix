@@ -28902,7 +28902,7 @@ batch correction, and data correction.")
            r-vctrs
            r-withr))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/r-lib/styler")
     (synopsis "Non-invasive pretty printing of R code")
     (description
