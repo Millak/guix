@@ -19763,7 +19763,7 @@ delete entire rows with missing data.")
            r-robustbase
            r-viridis))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/DepecheR/")
     (synopsis "Identify traits of clusters in high-dimensional entities")
     (description
