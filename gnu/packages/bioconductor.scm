@@ -1933,7 +1933,7 @@ cancer study published in Wang et al. 2005 and Minn et al 2007.")
            r-rsqlite
            r-s4vectors
            r-summarizedexperiment))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/LTLA/celldex")
     (synopsis "Reference index for cell types")
     (description
