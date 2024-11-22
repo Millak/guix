@@ -1425,6 +1425,7 @@ wrong.")
                (base32
                 "1m10i059csrcqkcn59a8wspn784alxsq3symzhn24mhhl894346n"))))
     (build-system r-build-system)
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/hadley/lazyeval")
     (synopsis "Lazy (non-standard) evaluation in R")
     (description
