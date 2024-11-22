@@ -8682,7 +8682,7 @@ facilitate the use of this test for gene set testing of GO and KEGG terms.")
            r-graph
            r-rbgl
            r-rgraphviz))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-runit))
     (home-page "https://bioconductor.org/packages/GOstats")
     (synopsis "Tools for manipulating GO and microarrays")
     (description
