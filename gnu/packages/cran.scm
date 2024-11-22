@@ -35022,7 +35022,7 @@ and analyze Stan models.")
     (propagated-inputs
      (list r-lifecycle r-mvtnorm r-rcpp r-rcppeigen))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/jpritikin/rpf")
     (synopsis "Response probability functions")
     (description
