@@ -54,6 +54,7 @@
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
+  #:use-module (gnu packages version-control)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
@@ -791,28 +792,37 @@ files and/or directories.")
 (define-public python-pytest-doctestplus
   (package
     (name "python-pytest-doctestplus")
-    (version "1.2.0")
+    (version "1.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest-doctestplus" version))
        (sha256
-        (base32 "0cmrkgpib869kpy8h8hfkg20w16lakkmbkw8cxdywpmf5wx7dbf5"))))
+        (base32 "0ybn613rp0wqzm97hncwnpn8wx7bz91rajgnclplv8yfr2iahwi4"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:test-flags
-           #~(list "-k" (string-append
-                         ;; Tests requiring network access.
-                         "not test_remote_data_url"
-                         " and not test_remote_data_float_cmp"
-                         " and not test_remote_data_ignore_whitespace"
-                         " and not test_remote_data_ellipsis"
-                         " and not test_remote_data_requires"
-                         " and not test_remote_data_ignore_warnings"
-                         ;; Requiring git available.
-                         " and not test_generate_diff_basic"))))
+     (list
+      #:test-flags
+      #~(list "-k" (string-join
+                    ;; Tests requiring network access.
+                    (list "not test_remote_data_url"
+                          "test_remote_data_float_cmp"
+                          "test_remote_data_ignore_whitespace"
+                          "test_remote_data_ellipsis"
+                          "test_remote_data_requires"
+                          "test_remote_data_ignore_warnings")
+                    " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-git-path
+            (lambda _
+              (substitute* "pytest_doctestplus/plugin.py"
+                (("\"git\"")
+                 (format #f "'~a/bin/git'"
+                         #$(this-package-native-input "git-minimal")))))))))
     (native-inputs
-     (list python-numpy
+     (list git-minimal/pinned
+           python-numpy
            python-pytest
            python-setuptools-scm
            python-wheel))
