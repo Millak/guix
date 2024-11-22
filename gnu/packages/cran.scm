@@ -34865,7 +34865,7 @@ actuarial models such as pension mathematics.")
     (propagated-inputs
      (list r-float r-matrix r-rcpp r-rhpcblasctl))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/david-cortes/MatrixExtra")
     (synopsis "Extra methods for sparse matrices")
     (description
