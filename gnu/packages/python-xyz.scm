@@ -13314,7 +13314,7 @@ than the default.")
 (define-public python-ipython
   (package
     (name "python-ipython")
-    (version "8.22.1")
+    (version "8.29.0")
     (source
      (origin
        (method git-fetch)
@@ -13323,7 +13323,7 @@ than the default.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1gpy8842sdq4wk8h5xns1k7k75wb31vvv4ycjglx4ri5kwwz44aa"))))
+        (base32 "03yrq0wsi98y1v3rf7ai013xhv46i7167dccp1244sfvrsrs4962"))))
     (build-system pyproject-build-system)
     (arguments
      (list
