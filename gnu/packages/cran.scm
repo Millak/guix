@@ -32900,7 +32900,7 @@ data for different accelerometer brands.")
     (propagated-inputs
      (list r-data-table r-matrixstats r-r-utils))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://cran.r-project.org/web/packages/ActivityIndex/")
     (synopsis "Activity Index calculation using raw accelerometry data")
     (description
