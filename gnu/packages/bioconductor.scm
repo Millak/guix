@@ -18256,7 +18256,7 @@ data for high-throughput, untargeted analyte profiling.")
                              r-rlang
                              r-tibble
                              r-tidyr))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/AnaGalhoz37/wppi")
     (synopsis "Weighting protein-protein interactions")
     (description
