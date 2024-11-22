@@ -7330,8 +7330,9 @@ only one command.")
      `((upstream-name . "BiocParallel")))
     (build-system r-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
+     (list
+      #:phases
+      '(modify-phases %standard-phases
          (add-after 'unpack 'make-reproducible
            (lambda _
              ;; Remove generated documentation.
@@ -7358,7 +7359,7 @@ only one command.")
     (propagated-inputs
      (list r-bh r-codetools r-cpp11 r-futile-logger r-snow))
     (native-inputs
-     (list r-knitr))
+     (list r-batchtools r-biocgenerics r-doparallel r-knitr r-runit))
     (home-page "https://bioconductor.org/packages/BiocParallel")
     (synopsis "Bioconductor facilities for parallel evaluation")
     (description
