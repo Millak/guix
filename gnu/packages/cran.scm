@@ -14354,6 +14354,7 @@ interface is provided to call C functions of the five optimization algorithms
     (build-system r-build-system)
     (propagated-inputs
      (list r-backports))
+    (native-inputs (list r-checkmate r-knitr r-testthat))
     (home-page "https://github.com/mllg/base64url")
     (synopsis "Fast and URL-safe base64 encoder and decoder")
     (description
