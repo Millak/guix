@@ -13507,7 +13507,7 @@ processing to visualization and annotation.")
            r-tibble
            r-tidyr
            r-vegan))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/rmolbrich/MBECS")
     (synopsis
      "Evaluation and correction of batch effects in microbiome data-sets")
