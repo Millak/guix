@@ -28438,6 +28438,7 @@ matched.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-ggplot2))
+    (native-inputs (list r-testthat))
     (home-page "https://cran.r-project.org/package=ggnewscale")
     (synopsis "Multiple fill and color scales in ggplot2")
     (description
