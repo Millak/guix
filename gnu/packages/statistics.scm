@@ -3036,6 +3036,7 @@ SLURM and Sun Grid Engine.  Multicore and SSH systems are also supported.")
                (base32
                 "13x3vnrhfcvr479r4dya61a5vcky2gb4kv2xbivy0ah39qrzg0a1"))))
     (build-system r-build-system)
+    (native-inputs (list r-testthat))
     (home-page "https://cran.r-project.org/web/packages/brew")
     (synopsis "Templating framework for report generation")
     (description
