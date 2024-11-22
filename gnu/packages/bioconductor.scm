@@ -4274,6 +4274,7 @@ network fusion.")
            r-lattice
            r-rmysql
            r-rsamtools))
+    (native-inputs (list r-runit))
     (home-page "https://github.com/cruk-mi/annmap")
     (synopsis
      "Genome annotation and visualisation for Affymetrix arrays and NGS analysis")
