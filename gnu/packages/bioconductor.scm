@@ -12002,7 +12002,7 @@ level.")
                              r-stringr
                              r-summarizedexperiment
                              r-xml2))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/TCGAutils")
     (synopsis "TCGA utility functions for data management")
     (description
