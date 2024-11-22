@@ -25830,6 +25830,7 @@ partition functions are also given.")
     (properties `((upstream-name . "Brobdingnag")))
     (build-system r-build-system)
     (propagated-inputs (list r-matrix))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/RobinHankin/Brobdingnag.git")
     (synopsis "Very large numbers in R")
     (description
