@@ -22336,7 +22336,7 @@ routines.")
            r-iranges
            r-matrix
            r-s4vectors))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/S4Arrays")
     (synopsis "Foundation of array-like containers in Bioconductor")
     (description
