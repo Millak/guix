@@ -10940,7 +10940,7 @@ region sets and other genomic features.")
            r-r-utils
            r-xml))
     (native-inputs
-     (list esbuild r-rmarkdown
+     (list esbuild r-rmarkdown r-runit
            (origin
              (method url-fetch)
              (uri "https://code.jquery.com/jquery-1.8.0.js")
