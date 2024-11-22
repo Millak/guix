@@ -39252,6 +39252,7 @@ for creating, simulating, or validating values for such parameters.")
            r-withr
            r-workflows
            r-yardstick))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/tidymodels/tune")
     (synopsis "Tidy tuning tools")
     (description
