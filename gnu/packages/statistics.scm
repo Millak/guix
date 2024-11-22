@@ -7688,7 +7688,7 @@ normal model.")
            r-viridis
            r-visdat))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/njtierney/naniar")
     (synopsis
      "Data structures, summaries, and visualisations for missing data")
