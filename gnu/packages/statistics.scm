@@ -5758,7 +5758,12 @@ letters, as is often required for scientific publications.")
          "03by64xi7yka0hzc1qyz1jdqzah6isvr3cdsc7g5v6hb4f178kl5"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-mass r-kernlab r-plotly r-scales r-segmented r-survival))
+     (list r-kernlab
+           r-mass
+           r-plotly
+           r-scales
+           r-segmented
+           r-survival))
     (home-page "https://cran.r-project.org/web/packages/mixtools")
     (synopsis "Tools for analyzing finite mixture models")
     (description
