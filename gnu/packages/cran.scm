@@ -18744,7 +18744,7 @@ for the reconstruction of gene regulatory networks.")
                              r-rlang
                              r-tibble
                              r-tidyr))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/mastoffel/partR2")
     (synopsis "Partitioning R2 in generalized linear mixed models")
     (description
