@@ -21633,7 +21633,7 @@ functionality.")
            r-rcurl
            r-runit
            r-xml))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-runit))
     (home-page "https://bioconductor.org/packages/biocViews")
     (synopsis "Bioconductor package categorization helper")
     (description "The purpose of biocViews is to create HTML pages that
