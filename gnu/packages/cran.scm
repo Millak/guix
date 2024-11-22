@@ -25509,6 +25509,7 @@ running IRkernel session.")
            r-pbdzmq
            r-repr
            r-uuid))
+    (native-inputs (list r-testthat))
     (home-page "https://cran.r-project.org/web/packages/IRkernel/")
     (synopsis "Native R kernel for Jupyter")
     (description
