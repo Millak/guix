@@ -28963,6 +28963,7 @@ parallel versions of vectorized R functions of the @code{mc*apply} family.")
          "0ghpbhs3bqxv9s759i3klfzrvigaxp34sscsy2m0n3d08j09f206"))))
     (build-system r-build-system)
     (propagated-inputs (list r-lme4))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/vdorie/blme")
     (synopsis "Bayesian linear mixed-effects models")
     (description
