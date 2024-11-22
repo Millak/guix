@@ -20262,7 +20262,7 @@ user credentials.")
            r-sys
            r-zip))
     (native-inputs
-     (list pkg-config r-knitr))
+     (list pkg-config r-knitr r-testthat))
     (home-page "https://docs.ropensci.org/gert/")
     (synopsis "Simple Git client for R")
     (description
