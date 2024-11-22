@@ -61,6 +61,8 @@
             tunable-package?
             tuned-package
 
+            package-with-upstream-version
+
             show-transformation-options-help
             transformation-option-key?
             cacheable-transformation-option-key?
