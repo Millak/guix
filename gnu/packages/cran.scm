@@ -34461,6 +34461,7 @@ pages.")
     (properties `((upstream-name . "formula.tools")))
     (build-system r-build-system)
     (propagated-inputs (list r-operator-tools))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/decisionpatterns/formula.tools")
     (synopsis
      "Utilities for manipulating formulas, calls, assignments and other R objects")
