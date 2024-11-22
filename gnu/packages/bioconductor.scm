@@ -21911,6 +21911,7 @@ gene selection, testing relationships, and so on.")
     (native-inputs
      `(("esbuild" ,esbuild)
        ("r-knitr" ,r-knitr)
+       ("r-testthat" ,r-testthat)
        ("js-bootstrap"
         ,(origin
            (method url-fetch)
