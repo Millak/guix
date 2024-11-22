@@ -4459,6 +4459,7 @@ package registries.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-digest))
+    (native-inputs (list r-testthat))
     (home-page "https://renozao.github.io/rngtools")
     (synopsis "Utility functions for working with random number generators")
     (description
