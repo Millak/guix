@@ -26868,7 +26868,9 @@ SELECT or UPDATE queries to an end-point.")
 releases/download/v0.10.1/mathquill-0.10.1.tgz")
            (sha256
             (base32
-             "1159l2fi7k3wyclp0pksc0qng291glb8qpa67bvcxwyb9dfiwav7"))))))
+             "1159l2fi7k3wyclp0pksc0qng291glb8qpa67bvcxwyb9dfiwav7"))))
+       ("r-testit" ,r-testit)
+       ("r-testthat" ,r-testthat)))
     (home-page "https://github.com/rstudio/bookdown")
     (synopsis "Authoring books and technical documents with R markdown")
     (description "This package provides output formats and utilities for
