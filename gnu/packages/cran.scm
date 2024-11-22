@@ -30355,7 +30355,7 @@ in pipelines.")
     (propagated-inputs
      (list r-bayestestr r-datawizard r-insight))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://cran.r-project.org/web/packages/parameters")
     (synopsis "Processing of model parameters")
     (description
