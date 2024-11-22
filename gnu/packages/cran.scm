@@ -23103,6 +23103,7 @@ preparing, executing, and processing HTTP requests.")
            r-rapidjsonr
            r-rlang
            r-tibble))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/r-dbi/bigrquery")
     (synopsis "R interface to Google's BigQuery API")
     (description
