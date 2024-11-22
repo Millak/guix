@@ -10808,7 +10808,7 @@ the graph algorithms contained in the Boost library.")
            r-seqlogo
            r-txdbmaker))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (synopsis "RNA-centric annotation system")
     (description
      "RCAS aims to be a standalone RNA-centric annotation system that provides
