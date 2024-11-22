@@ -30175,7 +30175,7 @@ both R code and compiled C/C++/FORTRAN code.")
     (inputs
      (list fontconfig freetype zlib))
     (native-inputs
-     (list pkg-config r-knitr))
+     (list pkg-config r-knitr r-testthat))
     (home-page "https://github.com/r-lib/systemfonts")
     (synopsis "System native font finding")
     (description
