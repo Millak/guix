@@ -34716,6 +34716,7 @@ Gibbs sampling by Xuan-Hieu Phan and co-authors.")
            r-rcpparmadillo
            r-slam
            r-stringr))
+    (native-inputs (list r-testthat))
     (home-page "https://www.structuraltopicmodel.com/")
     (synopsis "Estimation of the Structural Topic Model")
     (description
