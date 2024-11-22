@@ -9470,7 +9470,7 @@ experiments.")
            r-iranges
            r-reshape2
            r-rtracklayer))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/DiogoVeiga/maser")
     (synopsis "Mapping alternative splicing events to proteins")
     (description
