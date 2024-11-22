@@ -7996,7 +7996,7 @@ originally made available by Holmes, Harris, and Quince, 2012, PLoS ONE 7(2):
            r-s4vectors
            r-singlecellexperiment
            r-summarizedexperiment))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/dittoSeq")
     (synopsis "Single-cell and bulk RNA sequencing visualization")
     (description
