@@ -26325,6 +26325,7 @@ The design types included are Audze-Eglais, MaxiMin, and uniform.")
     (properties `((upstream-name . "sfheaders")))
     (build-system r-build-system)
     (propagated-inputs (list r-geometries r-rcpp))
+    (native-inputs (list r-testthat))
     (home-page "https://dcooley.github.io/sfheaders/")
     (synopsis "Converts between R objects and Simple Feature objects")
     (description
