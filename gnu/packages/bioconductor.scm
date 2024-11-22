@@ -4536,7 +4536,7 @@ model as latent variables.")
            r-ropls
            r-summarizedexperiment
            r-zoo))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/ASICS")
     (synopsis "Automatic statistical identification in complex spectra")
     (description
