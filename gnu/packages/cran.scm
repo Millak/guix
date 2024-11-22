@@ -14883,6 +14883,7 @@ contain lags, diffs and missing values.")
            r-tidygraph
            r-tidyr
            r-viridis))
+    (native-inputs (list r-r-rsp r-testthat))
     (home-page "https://github.com/dynverse/dyngen")
     (synopsis "Multi-Modal simulator for single-cell omics analyses")
     (description
