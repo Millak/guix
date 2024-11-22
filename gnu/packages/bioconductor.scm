@@ -15118,7 +15118,7 @@ gene and isoform level using RNA-seq data")
            r-s4vectors
            r-variantannotation))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/karyoploteR/")
     (synopsis "Plot customizable linear genomes displaying arbitrary data")
     (description "This package creates karyotype plots of arbitrary genomes and
