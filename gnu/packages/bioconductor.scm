@@ -21754,7 +21754,7 @@ db and resource files to AWS S3 buckets.")
            r-summarizedexperiment
            r-tidyr))
     (native-inputs
-     (list r-knitr r-r-rsp))
+     (list r-knitr r-r-rsp r-testthat))
     (home-page "https://waldronlab.io/MultiAssayExperiment/")
     (synopsis "Integration of multi-omics experiments in Bioconductor")
     (description
