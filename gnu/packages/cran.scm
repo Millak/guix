@@ -36842,6 +36842,7 @@ vignette for more information and examples.")
            r-pillar
            r-rlang
            r-vctrs))
+    (native-inputs (list r-testthat))
     (home-page "https://pkg.mitchelloharawild.com/distributional/")
     (synopsis "Vectorized probability distributions")
     (description
