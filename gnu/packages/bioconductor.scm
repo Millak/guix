@@ -11809,7 +11809,7 @@ methylation array data.  Both the 450k and EPIC array are supported.")
            r-s4vectors
            r-xvector
            r-zlibbioc))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-runit))
     (home-page "https://bioconductor.org/packages/ShortRead")
     (synopsis "FASTQ input and manipulation tools")
     (description
