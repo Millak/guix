@@ -24655,7 +24655,7 @@ input.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-dir-expiry))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/basilisk.utils")
     (synopsis "Basilisk installation utilities")
     (description
