@@ -2428,7 +2428,7 @@ files for various search engines.")
                              r-s4vectors
                              r-spectra
                              r-summarizedexperiment))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/RforMassSpectrometry/MsExperiment")
     (synopsis "Infrastructure for Mass Spectrometry experiments")
     (description
