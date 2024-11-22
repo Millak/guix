@@ -14393,7 +14393,7 @@ information.")
            r-sparsearray
            r-summarizedexperiment
            r-vctrs))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/const-ae/glmGamPoi")
     (synopsis "Fit a Gamma-Poisson Generalized Linear Model")
     (description
