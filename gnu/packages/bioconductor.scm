@@ -23357,7 +23357,7 @@ memory usage and processing time is minimized.")
     (propagated-inputs
      (list r-clue r-mass r-rcpp r-s4vectors))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/RforMassSpectrometry/MsCoreUtils")
     (synopsis "Core utils for mass spectrometry data")
     (description
