@@ -21209,7 +21209,7 @@ to colexicographical order.")
            r-tibble
            r-tidyselect
            r-vctrs))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://multidplyr.tidyverse.org")
     (synopsis "Multi-process dplyr backend")
     (description
