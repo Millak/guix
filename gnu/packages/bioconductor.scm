@@ -211,6 +211,7 @@ data (chip hgu95av2) assembled using data from public repositories.")
      (list r-annotationdbi r-annotationhub r-biocfilecache r-dbi))
     (native-inputs
      `(("r-knitr" ,r-knitr)
+       ("r-testthat" ,r-testthat)
        ("HPO.sqlite"
         ,(origin
            (method url-fetch)
