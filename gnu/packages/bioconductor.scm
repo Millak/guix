@@ -15244,7 +15244,7 @@ independent of the p-value under the null hypothesis.")
            r-shinydashboard
            r-upsetr))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/iCOBRA")
     (synopsis "Comparison and visualization of ranking and assignment methods")
     (description
