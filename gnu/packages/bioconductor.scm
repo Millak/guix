@@ -2463,7 +2463,7 @@ containers.")
                              r-gseabase
                              r-org-hs-eg-db
                              r-org-mm-eg-db))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://doi.org/doi:10.18129/B9.bioc.msigdb")
     (synopsis "ExperimentHub package for the molecular signatures database")
     (description
