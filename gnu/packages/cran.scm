@@ -30329,7 +30329,7 @@ cell RNA-seq experiments.")
     (propagated-inputs
      (list r-dplyr r-mass r-rlang))
     (native-inputs
-     (list r-knitr))           ; needed for vignette
+     (list r-knitr r-testthat))           ; needed for vignette
     (home-page "https://github.com/ropensci/assertr")
     (synopsis "Assertive programming for R analysis pipelines")
     (description
