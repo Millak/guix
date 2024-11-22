@@ -17879,7 +17879,7 @@ genomic categories and to add self-defined graphics in the plot.")
            r-s4vectors
            r-variantannotation))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/juliangehring/SomaticSignatures")
     (synopsis "Somatic signatures")
     (description
