@@ -26889,7 +26889,7 @@ authoring books and technical documents with R Markdown.")
         (base32 "02qnbipdmnw01f40300pg1ycrcbnr37f8yiqbabm6jznf6r4ihm9"))))
     (properties `((upstream-name . "options")))
     (build-system r-build-system)
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://dgkf.github.io/options/")
     (synopsis "Simple, consistent package options")
     (description
