@@ -10042,7 +10042,7 @@ package TeXshade.")
            r-scales
            r-vsn))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/lgatto/MSnbase")
     (synopsis "Base functions and classes for MS-based proteomics")
     (description
