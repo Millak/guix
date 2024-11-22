@@ -18608,7 +18608,7 @@ Gaussian distributions.")
                    (setenv "POPCNT_CAPABILITY" "0")))))))
     (inputs (list zlib))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/Rbowtie/")
     (synopsis "R bowtie wrapper")
     (description
