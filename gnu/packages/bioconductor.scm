@@ -17927,7 +17927,7 @@ decomposition algorithms.")
            r-somaticsignatures
            r-variantannotation))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/YAPSA/")
     (synopsis "Yet another package for signature analysis")
     (description
