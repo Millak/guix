@@ -10180,7 +10180,7 @@ specific parser.")
            r-rcpp
            r-rhdf5lib))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-runit))
     (home-page "https://github.com/sneumann/mzR/")
     (synopsis "Parser for mass spectrometry data files")
     (description
