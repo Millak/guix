@@ -20057,6 +20057,7 @@ terms) and much more.  This package supports labelled data.")
         (base32
          "04yqij344dwm0xqgara8xia42mlmij3i8711qbb5534w05a1l6bv"))))
     (build-system r-build-system)
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/dvdscripter/ini")
     (synopsis "Read and write configuration files")
     (description
