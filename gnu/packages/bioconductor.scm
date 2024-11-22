@@ -24489,6 +24489,7 @@ information networks from data.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-biobase r-e1071 r-ebarrays r-minet))
+    (native-inputs (list r-runit))
     (home-page "https://www.cicancer.org")
     (synopsis "Classify diseases and build gene networks using expression profiles")
     (description
