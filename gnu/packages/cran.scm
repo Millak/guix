@@ -38694,6 +38694,7 @@ assumptions.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-magrittr r-rlang))
+    (native-inputs (list r-testthat))
     (home-page "https://cran.r-project.org/web/packages/forge/")
     (synopsis "Cast values into shape")
     (description
