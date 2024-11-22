@@ -12812,7 +12812,7 @@ of gene-level counts.")
            r-stringr
            r-tibble))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/rnabioco/valr")
     (synopsis "Genome interval arithmetic in R")
     (description
