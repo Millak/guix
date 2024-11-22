@@ -33398,7 +33398,7 @@ It also provides a small number of bug fixes to the original code.")
            r-rlang
            r-safetensors
            r-withr))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://torch.mlverse.org/docs")
     (synopsis "Tensors and neural networks with GPU acceleration")
     (description
