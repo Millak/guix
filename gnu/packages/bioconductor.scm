@@ -24618,6 +24618,8 @@ package, primarily for creation of the underlying Conda instance.")
          "0ziyxi6qcsvs2ks28vh0sdfp3xilh1kfzyhy0qwa2fwn7j7dnhr3"))))
     (properties `((upstream-name . "basilisk")))
     (build-system r-build-system)
+    ;; Several tests attempt to install things with Conda.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-basilisk-utils r-dir-expiry r-reticulate))
     (native-inputs (list r-knitr))
