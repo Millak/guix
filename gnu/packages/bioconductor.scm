@@ -2880,7 +2880,7 @@ storing data.")
                              r-rcpp
                              r-stringr
                              r-summarizedexperiment))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/ADAM")
     (synopsis "Gene activity and diversity analysis module")
     (description
