@@ -8712,7 +8712,7 @@ testing and other simple calculations.")
            r-graph
            r-xml))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/GSEABase")
     (synopsis "Gene set enrichment data structures and methods")
     (description
