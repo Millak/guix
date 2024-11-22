@@ -23013,7 +23013,7 @@ This package wraps C++ code from the MOODS motif calling library.")
            r-shiny
            r-summarizedexperiment
            r-tfbstools))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/release/bioc/html/chromVAR.html")
     (synopsis "Determine chromatin variation across regions")
     (description
