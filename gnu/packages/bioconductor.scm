@@ -16764,7 +16764,7 @@ data.")
                              r-locfit
                              r-matrixstats
                              r-rcpp))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/jokergoo/EnrichedHeatmap")
     (synopsis "Enriched heatmaps")
     (description
