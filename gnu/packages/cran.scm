@@ -35471,6 +35471,7 @@ Haberman's interaction model when all items are dichotomously scored.")
     (native-inputs
      `(("esbuild" ,esbuild)
        ("r-knitr" ,r-knitr)
+       ("r-testthat" ,r-testthat)
        ("js-plotly"
         ,(let ((version "2.10.1"))
            (origin
