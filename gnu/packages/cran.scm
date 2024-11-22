@@ -38718,7 +38718,7 @@ coerce and verify the types and shapes of values for input checking.")
     (propagated-inputs
      (list r-yaml))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/rstudio/config")
     (synopsis "Manage environment specific configuration values")
     (description
