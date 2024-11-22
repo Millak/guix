@@ -10324,7 +10324,7 @@ functionality of the @code{TxDb} packages (e.g.,
            r-rbgl
            r-s4vectors
            r-txdbmaker))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-runit))
     (home-page "https://bioconductor.org/packages/OrganismDbi")
     (synopsis "Software to enable the smooth interfacing of database packages")
     (description "The package enables a simple unified interface to several
