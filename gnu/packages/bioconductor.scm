@@ -25565,7 +25565,7 @@ for ligand activity prediction from transcriptomics data.")
            r-summarizedexperiment
            r-variantannotation))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/trichelab/biscuiteer")
     (synopsis "Convenience functions for the Biscuit package")
     (description
