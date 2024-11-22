@@ -11063,7 +11063,7 @@ HDF5 datasets.")
            r-s4vectors
            r-xvector
            r-zlibbioc))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-runit))
     (home-page "https://bioconductor.org/packages/release/bioc/html/Rsamtools.html")
     (synopsis "Interface to samtools, bcftools, and tabix")
     (description
