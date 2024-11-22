@@ -35752,7 +35752,7 @@ recommendations for developers.")
     (propagated-inputs
      (list r-checkmate r-matrixstats r-posterior))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://mc-stan.org/loo/")
     (synopsis "Leave-One-Out cross-validation and WAIC for Bayesian models")
     (description
