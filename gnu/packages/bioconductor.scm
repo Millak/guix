@@ -17704,7 +17704,7 @@ text files).")
            r-summarizedexperiment
            r-variantannotation))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/pappewaio/AllelicImbalance")
     (synopsis "Investigate allele-specific expression")
     (description
