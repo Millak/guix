@@ -5774,7 +5774,7 @@ Farebrother's algorithm or Liu et al.'s algorithm.")
     (propagated-inputs
      (list r-ggplot2 r-gtable r-rlang r-scales))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/wilkelab/cowplot")
     (synopsis "Streamlined plot theme and plot annotations for ggplot2")
     (description
