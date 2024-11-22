@@ -26913,7 +26913,7 @@ global options, defining default values and more.")
     (propagated-inputs
      (list r-getopt))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/trevorld/optparse")
     (synopsis "Command line option parser")
     (description
