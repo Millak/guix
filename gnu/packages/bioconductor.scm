@@ -12673,7 +12673,7 @@ unmodeled, or latent sources of noise.")
            r-summarizedexperiment
            r-yaml))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/tgirke/systemPipeR")
     (synopsis "Next generation sequencing workflow and reporting environment")
     (description
