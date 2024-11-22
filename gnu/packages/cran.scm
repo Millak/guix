@@ -39952,6 +39952,7 @@ including:
          "1sbvc9pd8j4wigblncd5jsgfnphp4kz1jy3acyivcclh79wh27jn"))))
     (properties `((upstream-name . "perm")))
     (build-system r-build-system)
+    (native-inputs (list r-coin))
     (home-page "https://cran.r-project.org/web/packages/perm/")
     (synopsis "Exact or asymptotic permutation tests")
     (description
