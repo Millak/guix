@@ -18688,7 +18688,7 @@ interpretation.")
     (propagated-inputs
      (list r-genomicranges r-sgseq r-txdbmaker))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/fmicompbio/Rhisat2")
     (synopsis "R Wrapper for HISAT2 sequence aligner")
     (description
