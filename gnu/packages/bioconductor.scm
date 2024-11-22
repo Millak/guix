@@ -7031,7 +7031,7 @@ structure.")
            r-httr
            r-xml
            r-xtable))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-runit))
     (home-page
      "https://bioconductor.org/packages/annotate")
     (synopsis "Annotation for microarrays")
