@@ -9837,7 +9837,7 @@ location information (and the reverse operation) is implemented as well.")
                              r-scales
                              r-summarizedexperiment
                              r-topgo))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/imbeimainz/mosdef")
     (synopsis "Frequently used and useful differential expression functions")
     (description
