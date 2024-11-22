@@ -4830,6 +4830,7 @@ most common form of color blindness.")
          "18g1rk24kr47jl01r70vvni2146fl9xxpjcvjp6d5k6y64fi2gw9"))))
     (properties `((upstream-name . "viridisLite")))
     (build-system r-build-system)
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/sjmgarnier/viridisLite")
     (synopsis "Default color maps from matplotlib")
     (description
