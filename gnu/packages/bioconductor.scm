@@ -15889,7 +15889,7 @@ data in a format that is compatible with two-dimensional containers like the
            r-tidyr
            r-treesummarizedexperiment
            r-vegan))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/microbiome/mia")
     (synopsis "Microbiome analysis")
     (description
