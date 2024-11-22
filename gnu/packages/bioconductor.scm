@@ -19835,7 +19835,7 @@ genes in the gene-set that are ranked above the leading edge).")
     (build-system r-build-system)
     (propagated-inputs
      (list r-data-table r-delaporte r-hmisc r-mass r-matrixstats))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/Chicago")
     (synopsis "Capture Hi-C analysis of genomic organization")
     (description
