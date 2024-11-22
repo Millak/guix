@@ -14311,6 +14311,7 @@ experimental designs and random samples for common sampling designs.")
     (properties `((upstream-name . "ROI")))
     (build-system r-build-system)
     (propagated-inputs (list r-checkmate r-registry r-slam))
+    (native-inputs (list r-r-rsp r-testthat))
     (home-page "https://roi.r-forge.r-project.org/")
     (synopsis "R optimization infrastructure")
     (description
