@@ -4682,10 +4682,18 @@ persistent (on the file system).")
     (properties `((upstream-name . "R.rsp")))
     (build-system r-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
+     (list
+      ;; Vignettes require r-r-devices, which uses r-r-rsp.
+      #:test-types '(list "tests")
+      #:phases
+      '(modify-phases %standard-phases
          (add-after 'unpack 'set-HOME
-           (lambda _ (setenv "HOME" "/tmp"))))))
+           (lambda _ (setenv "HOME" "/tmp")))
+         (add-after 'unpack 'delete-broken-test
+           (lambda _
+             ;; The multi,selfcontained.R tests fail because r-r-devices is
+             ;; missing.  It depends on r-r-rsp, so we can't add it.
+             (delete-file "tests/multi,selfcontained.R"))))))
     (propagated-inputs
      (list r-digest r-r-cache r-r-methodss3 r-r-oo r-r-utils))
     (home-page "https://github.com/HenrikBengtsson/R.rsp")
