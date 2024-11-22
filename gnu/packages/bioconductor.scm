@@ -8043,7 +8043,7 @@ code{dittoColors()}.")
            r-rsamtools
            r-shortread))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/drisso/EDASeq")
     (synopsis "Exploratory data analysis and normalization for RNA-Seq")
     (description
