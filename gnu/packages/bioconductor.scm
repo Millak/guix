@@ -5212,7 +5212,7 @@ packages.")
            r-iranges
            r-rsamtools
            r-s4vectors))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/daewoooo/BreakPointR")
     (synopsis "Find breakpoints in Strand-seq data")
     (description
