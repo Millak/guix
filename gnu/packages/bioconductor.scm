@@ -8996,7 +8996,7 @@ rectangular dataset.")
     (properties `((upstream-name . "Rdisop")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/sneumann/Rdisop")
     (synopsis "Decomposition of isotopic patterns")
     (description
