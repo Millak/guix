@@ -4859,7 +4859,7 @@ artifacts.")
            r-reshape2
            r-rsamtools
            r-scales))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-runit))
     (home-page "https://bioconductor.org/packages/BaalChIP")
     (synopsis
      "Analysis of allele-specific transcription factor binding in cancer genomes")
