@@ -19149,6 +19149,7 @@ handle data from simple random samples as well as complex surveys.")
                              r-tidyselect
                              r-vctrs
                              r-withr))
+    (native-inputs (list r-testthat))
     (home-page "https://docs.ropensci.org/tarchetypes/")
     (synopsis "Archetypes for Targets")
     (description
