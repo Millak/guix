@@ -22652,6 +22652,7 @@ substitutions, amongst other features.")
          "0zynplxqvbmf23cm2rsz3wz2jx6mv55z94mn1k44ny3lx625cnpw"))))
     (build-system r-build-system)
     (propagated-inputs (list r-ore))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/jonclayden/reportr")
     (synopsis "General message and error reporting system")
     (description
