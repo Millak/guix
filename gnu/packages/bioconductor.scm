@@ -16699,7 +16699,7 @@ presence of additional sites within the allowed window size.")
            r-rcpp
            r-scales))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/ctlab/fgsea/")
     (synopsis "Fast gene set enrichment analysis")
     (description
