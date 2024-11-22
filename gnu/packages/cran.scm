@@ -24839,7 +24839,7 @@ tensors.")
         (base32 "02q2l0c38ddzlh2jwbzkcyhh2k5a4gnfm8khl8cqvjkjhldi9j5y"))))
     (properties `((upstream-name . "tester")))
     (build-system r-build-system)
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://fbertran.github.io/tester/")
     (synopsis "Tests and checks characteristics of R objects")
     (description "This package allows users to test characteristics of common
