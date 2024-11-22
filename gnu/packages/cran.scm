@@ -34593,7 +34593,7 @@ analysis and natural language processing.")
     (propagated-inputs
      (list r-data-table r-reticulate))
     (native-inputs
-     (list r-r-rsp))
+     (list r-r-rsp r-testthat))
     (home-page "https://spacyr.quanteda.io")
     (synopsis "R wrapper for the spaCy NLP library")
     (description
