@@ -19624,7 +19624,7 @@ the differences were not significantly different.")
     (propagated-inputs
      (list r-estimability r-mvtnorm r-numderiv))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/rvlenth/emmeans")
     (synopsis "Estimated marginal means, aka least-squares means")
     (description
