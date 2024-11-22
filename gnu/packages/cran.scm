@@ -28720,6 +28720,7 @@ provided.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-callr r-crayon r-desc r-remotes r-withr))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/MangoTheCat/cyclocomp")
     (synopsis "Cyclomatic complexity of R code")
     (description
