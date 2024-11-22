@@ -18453,7 +18453,7 @@ This algorithm is based on the publication by Hart et al., 2013 (Pubmed ID
     (inputs
      (list samtools zlib))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/Rbowtie2/")
     (synopsis "R wrapper for Bowtie2 and AdapterRemoval")
     (description
