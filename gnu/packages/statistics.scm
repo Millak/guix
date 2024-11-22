@@ -3648,6 +3648,13 @@ a column in data frame.")
                 "1kllna6hfnyy3rizr8wkpfn7p5sxv3sra12x9vz68hp6i4jmgq15"))))
     (properties `((upstream-name . "RSQLite")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; Needed for one failing test
+         (add-before 'check 'set-locale
+           (lambda _ (setenv "LC_ALL" "en_US.UTF-8"))))))
     (propagated-inputs
      (list r-bit64
            r-blob
@@ -3658,7 +3665,7 @@ a column in data frame.")
            r-plogr
            r-rlang))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/rstats-db/RSQLite")
     (synopsis "SQLite interface for R")
     (description
