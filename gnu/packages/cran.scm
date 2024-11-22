@@ -27844,7 +27844,8 @@ discriminant analysis for the purpose of classifying high dimensional data.")
              (file-name (git-file-name "lodash.js" version))
              (sha256
               (base32
-               "0gd1rhp85z0xybii19fkkqkbshcklwrrcvj335z17q2cnbb57v44")))))))
+               "0gd1rhp85z0xybii19fkkqkbshcklwrrcvj335z17q2cnbb57v44")))))
+       ("r-testthat" ,r-testthat)))
     (home-page "https://ggvis.rstudio.com/")
     (synopsis "Interactive grammar of graphics")
     (description
