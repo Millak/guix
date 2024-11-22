@@ -25656,7 +25656,7 @@ starburst plots) in order to easily develop complete analysis pipelines.")
            r-scattermore
            r-singlecellexperiment
            r-summarizedexperiment))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/hansenlab/tricycle")
     (synopsis "Transferable representation and inference of cell cycle")
     (description
