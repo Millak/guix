@@ -22970,7 +22970,7 @@ customizable visualzations with minimal effort.")
            r-s4vectors
            r-summarizedexperiment
            r-tfbstools))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/motifmatchr")
     (synopsis "Fast motif matching in R")
     (description
