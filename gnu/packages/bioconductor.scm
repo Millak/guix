@@ -9588,7 +9588,7 @@ correlations.")
            r-summarizedexperiment
            r-tibble
            r-tidyr))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/MetaNeighbor")
     (synopsis "Single cell replicability analysis")
     (description
