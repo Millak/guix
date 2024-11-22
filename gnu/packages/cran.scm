@@ -21091,7 +21091,7 @@ simulation of correlated data, and more.")
     (properties `((upstream-name . "BiocManager")))
     (build-system r-build-system)
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://cran.r-project.org/web/packages/BiocManager/")
     (synopsis "Access the Bioconductor project package repository")
     (description
