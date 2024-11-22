@@ -23202,6 +23202,7 @@ such as @code{gnlm}, @code{stable}, @code{growth}, @code{repeated}, and
     (properties
      `((upstream-name . "assertive.base")))
     (build-system r-build-system)
+    (native-inputs (list r-testthat))
     (home-page "https://bitbucket.org/richierocks/assertive.base")
     (synopsis "Core of the assertive package")
     (description
