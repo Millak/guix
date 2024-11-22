@@ -27420,7 +27420,7 @@ converting them to @code{ggplot} objects.")
          "1xz0xwq9c986as6g7z2g1ycvw1ryh4g89ygldvakpr21cgpjybqr"))))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/Ironholds/triebeard/")
     (synopsis "Radix trees in Rcpp")
     (description
