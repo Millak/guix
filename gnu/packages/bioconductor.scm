@@ -11284,7 +11284,7 @@ differential expression analysis, RNAseq data and related problems.")
                              r-matrix
                              r-pbapply
                              r-summarizedexperiment))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/statOmics/satuRn")
     (synopsis
      "Analysis of differential transcript usage for scRNA-seq applications")
