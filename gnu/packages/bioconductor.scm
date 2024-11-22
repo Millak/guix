@@ -22902,7 +22902,7 @@ advanced visualization of sets of conserved noncoding elements.")
            r-tfmpvalue
            r-xml
            r-xvector))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/ge11232002/TFBSTools")
     (synopsis "Transcription factor binding site (TFBS) analysis")
     (description
