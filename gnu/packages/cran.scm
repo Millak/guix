@@ -25738,7 +25738,7 @@ whole genome approach to detecting significant QTL in linkage maps.")
            bedtools
            htslib)) ; for tabix
     (native-inputs
-     (list r-knitr)) ; for vignettes
+     (list r-knitr r-testthat)) ; for vignettes
     (home-page "https://cran.r-project.org/web/packages/bedr")
     (synopsis "Genomic region processing")
     (description
