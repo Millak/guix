@@ -13182,7 +13182,7 @@ packages.")
            r-rsqlite
            r-zlibbioc))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-runit))
     (home-page "https://bioconductor.org/packages/oligo/")
     (synopsis "Preprocessing tools for oligonucleotide arrays")
     (description
