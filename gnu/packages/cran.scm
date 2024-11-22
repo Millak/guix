@@ -14565,6 +14565,8 @@ It also includes interpolation functions.")
      ;; find the patched references in those files.
      (list pandoc
            r-rjson))
+    ;; For tests
+    (native-inputs (list r-mass))
     (home-page "https://github.com/djvanderlaan/simplermarkdown")
     (synopsis "Simple engine for generating reports using R")
     (description
