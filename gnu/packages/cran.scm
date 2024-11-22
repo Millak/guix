@@ -34569,6 +34569,7 @@ character codes as well as the UN M.49 area codes.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-isocodes))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/quanteda/stopwords")
     (synopsis "Multilingual stopword lists")
     (description
