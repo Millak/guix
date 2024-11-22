@@ -6276,7 +6276,7 @@ modules:
 (define-public python-tinycss2
   (package
     (name "python-tinycss2")
-    (version "1.1.0")
+    (version "1.4.0")
     (source
      (origin
        (method git-fetch)
@@ -6286,13 +6286,14 @@ modules:
              (recursive? #true)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0zyc48vbmczpqj7f3f0d7zb3bz29fyj50dg0m6bbwbr5i88kq3sq"))))
+        (base32 "11m5vhpdz6zlzq2lqqklkhd0h4jxblpvcrdf9cc4s06nhr9acp0r"))))
     (build-system pyproject-build-system)
+    (native-inputs
+     (list python-flit
+           python-pytest
+           python-pytest-cov))
     (propagated-inputs
      (list python-webencodings))
-    (native-inputs
-     (list python-flit python-pytest python-pytest-cov
-           python-pytest-flake8 python-pytest-isort))
     (home-page "https://tinycss2.readthedocs.io/")
     (synopsis "Low-level CSS parser for Python")
     (description "@code{tinycss2} can parse strings, return Python objects
