@@ -23265,7 +23265,7 @@ in the @code{matrixStats} package from CRAN.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-matrix r-matrixgenerics r-matrixstats r-rcpp))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/sparseMatrixStats/")
     (synopsis "Summary statistics for rows and columns of sparse matrices")
     (description
