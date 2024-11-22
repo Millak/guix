@@ -7572,23 +7572,23 @@ various statistical models with linear predictors.")
             "0z9p9vdcmcdwqmixaiqnhli2b06whbap6y4pqx4a5gcdgxlj09zr"))))
     (properties `((upstream-name . "BayesFactor")))
     (build-system r-build-system)
+    ;; Tests fail with: could not find function "context"
+    (arguments (list #:test-types '(list "vignettes")))
     (propagated-inputs
-      (list r-coda
-            r-hypergeo
-            r-matrix
-            r-matrixmodels
-            r-mvtnorm
-            r-pbapply
-            r-rcpp
-            r-rcppeigen
-            r-stringr))
-    (native-inputs (list r-knitr))
-    (home-page
-      "https://richarddmorey.github.io/BayesFactor/")
-    (synopsis
-      "Computation of Bayes Factors for Common Designs")
+     (list r-coda
+           r-hypergeo
+           r-matrix
+           r-matrixmodels
+           r-mvtnorm
+           r-pbapply
+           r-rcpp
+           r-rcppeigen
+           r-stringr))
+    (native-inputs (list r-knitr r-testthat))
+    (home-page "https://richarddmorey.github.io/BayesFactor/")
+    (synopsis "Computation of Bayes factors for common designs")
     (description
-      "This package provides a suite of functions for computing various Bayes
+     "This package provides a suite of functions for computing various Bayes
 factors for simple designs, including contingency tables, one- and two-sample
 designs, one-way designs, general ANOVA designs, and linear regression.")
     (license license:gpl2)))
