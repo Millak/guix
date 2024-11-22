@@ -20191,6 +20191,7 @@ operations, built on top of the libuv C library.")
         (base32
          "1q7gi2zmykhzas9v8fdnbpdq7pzdcpbhim1yxvd2062l777g4j86"))))
     (build-system r-build-system)
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/gaborcsardi/clisymbols")
     (synopsis "Unicode symbols at the R prompt")
     (description
