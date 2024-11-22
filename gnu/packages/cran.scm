@@ -34651,7 +34651,7 @@ Norwegian, Portuguese, Romanian, Russian, Spanish, Swedish and Turkish.")
            r-yaml))
     (inputs (list tbb))
     (native-inputs
-     (list pkg-config r-knitr))
+     (list pkg-config r-knitr r-testthat))
     (home-page "https://quanteda.io")
     (synopsis "Quantitative analysis of textual data")
     (description
