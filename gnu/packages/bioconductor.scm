@@ -16875,7 +16875,7 @@ attempts to assess their statistical significance.")
            r-tidyr
            r-yulab-utils))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://guangchuangyu.github.io/software/clusterProfiler/")
     (synopsis "Analysis and visualization of functional profiles for gene clusters")
     (description
