@@ -21337,7 +21337,7 @@ searching and clustering.")
            r-rsqlite
            r-xml))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/girke-lab/bioassayR")
     (synopsis "Cross-target analysis of small molecule bioactivity")
     (description
