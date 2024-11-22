@@ -38507,7 +38507,7 @@ models.")
     (propagated-inputs
      (list r-ape r-rcpp))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://cran.r-project.org/web/packages/TransPhylo/")
     (synopsis "Inference of transmission tree from a dated phylogeny")
     (description
