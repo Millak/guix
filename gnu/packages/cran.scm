@@ -38850,7 +38850,7 @@ model.")
        (updater-extra-native-inputs . ("which"))))
     (build-system r-build-system)
     (native-inputs
-     (list gfortran pkg-config r-knitr which))
+     (list gfortran pkg-config r-knitr r-testthat which))
     (inputs
      (list glpk libxml2 zlib))
     (propagated-inputs
