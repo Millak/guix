@@ -19811,6 +19811,7 @@ detection, parallelism through BLAS and parallel user templates.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-datawizard r-effectsize r-insight r-parameters r-performance))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/strengejacke/sjstats")
     (synopsis "Functions for common statistical computations")
     (description
