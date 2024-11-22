@@ -29105,7 +29105,7 @@ engine (Salmon et al., 2011) as provided by the package @code{sitmo}.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-ggplot2 r-gridextra r-scales))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://ModelOriented.github.io/ingredients/")
     (synopsis "Effects and importances of model ingredients")
     (description
