@@ -22420,6 +22420,7 @@ handle.")
     (properties `((upstream-name . "TFMPvalue")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/ge11232002/TFMPvalue")
     (synopsis "P-value computation for position weight matrices")
     (description
