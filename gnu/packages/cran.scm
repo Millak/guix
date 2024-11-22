@@ -39442,7 +39442,7 @@ and \"Persuasion\".")
            r-stringr
            r-tidyr
            r-tidyselect))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/sfirke/janitor")
     (synopsis "Simple tools for examining and cleaning dirty data")
     (description
