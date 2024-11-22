@@ -12457,6 +12457,7 @@ Biology at
            r-png
            r-rcolorbrewer
            r-sqldf))
+    (native-inputs (list r-runit))
     (home-page "https://git.bioconductor.org/packages/STRINGdb")
     (synopsis "Search tool for the retrieval of interacting proteins database")
     (description
