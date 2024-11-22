@@ -6515,6 +6515,7 @@ to Applied regression, Second Edition, Sage, 2011.")
          "0j2b37gwjpgmrnr00srdzm751hzlpsjb54ph63xxmcdfnwhlnqmi"))))
     (properties `((upstream-name . "RcppProgress")))
     (build-system r-build-system)
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/kforner/rcpp_progress")
     (synopsis "Interruptible progress bar for C++ in R packages")
     (description
