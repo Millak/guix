@@ -36233,7 +36233,7 @@ appropriate dog and cat images for many status codes.")
     (propagated-inputs
      (list r-magrittr r-stringr))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/stefano-meschiari/latex2exp/")
     (synopsis "Use LaTeX expressions in plots")
     (description "@code{latex2exp} parses and converts LaTeX math formulas to
