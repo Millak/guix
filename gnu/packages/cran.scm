@@ -23603,7 +23603,7 @@ to throw errors if they aren't in the right form.")
          "1ah88h77lc9zb68b3xyk97xpid2pilkywk25m68x3m1h3xbspmma"))))
     (properties `((upstream-name . "dotCall64")))
     (build-system r-build-system)
-    (native-inputs (list gfortran))
+    (native-inputs (list gfortran r-rhpcblasctl r-testthat))
     (home-page "https://git.math.uzh.ch/reinhard.furrer/dotCall64")
     (synopsis "Enhanced foreign function interface supporting long vectors")
     (description
