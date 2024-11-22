@@ -24742,7 +24742,7 @@ effects from the jQuery UI library.")
            r-rsqlite
            r-scrypt
            r-shiny))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/datastorm-open/shinymanager")
     (synopsis "Authentication management for Shiny applications")
     (description
