@@ -25148,7 +25148,7 @@ marginal histograms/boxplots/density plots to ggplot2 scatterplots.")
            r-rlang
            r-scales
            r-vctrs))
-    (native-inputs (list r-knitr r-ragg r-rmarkdown))
+    (native-inputs (list r-knitr r-ragg r-rmarkdown r-testthat))
     (home-page "https://github.com/coolbutuseless/ggpattern")
     (synopsis "Ggplot2 pattern geoms")
     (description
