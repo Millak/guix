@@ -32980,6 +32980,7 @@ behavior variables from activPAL events files.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-dplyr r-ggplot2 r-lubridate r-readr r-tidyr))
+    (native-inputs (list r-testthat))
     (home-page "https://cran.r-project.org/web/packages/actogrammr/")
     (synopsis "Read in activity data and plot actograms")
     (description
