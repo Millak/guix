@@ -24275,7 +24275,7 @@ visualizations for publication-quality multi-panel figures.")
            r-s4vectors
            r-sva))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/ballgown")
     (synopsis "Flexible, isoform-level differential expression analysis")
     (description
