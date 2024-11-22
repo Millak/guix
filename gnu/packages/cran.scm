@@ -3230,6 +3230,7 @@ are needed.")
         (base32 "04jcwkydjrs31pia6kq8z2n9s54im950q08hs2ay15xjxxkmb8ic"))))
     (properties `((upstream-name . "fingerprint")))
     (build-system r-build-system)
+    (native-inputs (list r-runit))
     (home-page "https://cran.r-project.org/package=fingerprint")
     (synopsis "Functions to Operate on Binary Fingerprint Data")
     (description
