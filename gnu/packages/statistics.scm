@@ -1723,6 +1723,7 @@ the execution time of R expressions.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-codetools r-lobstr r-rcpp r-stringr))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/hadley/pryr")
     (synopsis "Tools for computing on the R language")
     (description
