@@ -12239,7 +12239,7 @@ structures to hold pseudotime inference results.")
            r-stringr
            r-structstrings
            r-xvector))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/tRNA")
     (synopsis "Analyzing tRNA sequences and structures")
     (description
