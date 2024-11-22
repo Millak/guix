@@ -16367,6 +16367,7 @@ surface of a flowcell.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-multcomp r-multtest r-mvtnorm r-plotrix))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/kornl/mutoss/")
     (synopsis "Unified multiple testing procedures")
     (description
