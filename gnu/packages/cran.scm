@@ -29378,7 +29378,7 @@ results and plots in a unified style using the @code{ggplot2} package.")
            r-stringr
            r-xml2))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/ropensci/RefManageR/")
     (synopsis "Straightforward BibTeX and BibLaTeX bibliography management")
     (description
