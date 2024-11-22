@@ -19877,7 +19877,7 @@ differentiation.")
     (propagated-inputs
      (list r-datawizard r-insight))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/easystats/bayestestR")
     (synopsis "Describe Bayesian models and posterior distributions")
     (description
