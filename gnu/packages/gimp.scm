@@ -424,7 +424,7 @@ that is extensible via a plugin system.")
   (package
     (inherit gimp)
     (name "gimp-next")
-    (version "2.99.18")
+    (version "3.0.0-RC1")
     (source
      (origin
        (method url-fetch)
@@ -432,7 +432,7 @@ that is extensible via a plugin system.")
                            (version-major+minor version)
                            "/gimp-" version ".tar.xz"))
        (sha256
-        (base32 "0vnvdl7x88njyyxkbgdbhz6jwz1qasrxh0fpwk6x1m609alvf6wc"))))
+        (base32 "0rpvbyfd6fyaz4bz9isr9h0l0ckz741p0hgkmagpi3p3qmjb5l5k"))))
     (build-system meson-build-system)
     (arguments
      (list #:modules `((ice-9 popen)
@@ -459,7 +459,7 @@ that is extensible via a plugin system.")
     (inputs (modify-inputs (package-inputs gimp)
               (replace "gtk+" gtk+)
               (prepend libxmu libxt)
-              (prepend python gjs)
+              (prepend python python-pygobject gjs)
               (prepend libxslt)))
     (native-inputs (modify-inputs (package-native-inputs gimp)
                      (prepend appstream-glib
