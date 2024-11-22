@@ -15314,7 +15314,7 @@ multiplication and calculation of row/column sums or means.")
            r-singlecellexperiment
            r-sparsearray
            r-summarizedexperiment))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/batchelor")
     (synopsis "Single-Cell Batch Correction Methods")
     (description
