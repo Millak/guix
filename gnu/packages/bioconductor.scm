@@ -19805,7 +19805,7 @@ data, to only emphasize the data that actually matters.")
            r-tibble
            r-zoo))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://aertslab.org/#scenic")
     (synopsis "Identify transcription factor binding motifs enriched on a gene list")
     (description
