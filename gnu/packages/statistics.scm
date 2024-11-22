@@ -6814,7 +6814,7 @@ and the corresponding decision threshold.")
            r-rlang
            r-tibble))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://forcats.tidyverse.org")
     (synopsis "Tools for working with factors")
     (description "This package provides helpers for reordering factor
