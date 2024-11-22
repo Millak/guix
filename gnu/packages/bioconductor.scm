@@ -314,6 +314,7 @@ It retrieves this data from the Genome Aggregation Database
      (list r-annotationdbi r-annotationhub r-biocfilecache r-dbi))
     (native-inputs
      `(("r-knitr" ,r-knitr)
+       ("r-testthat" ,r-testthat)
        ("MPO.sqlite"
         ,(origin
            (method url-fetch)
