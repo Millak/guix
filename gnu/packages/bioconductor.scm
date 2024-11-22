@@ -5805,7 +5805,7 @@ negative control samples.")
            r-rsq
            r-s4vectors
            r-tidyr))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/BIMSBbioinfo/deconvR")
     (synopsis "Simulation and deconvolution of omic profiles")
     (description
