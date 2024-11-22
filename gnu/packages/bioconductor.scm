@@ -5023,7 +5023,7 @@ Various visual and textual types of output are available.")
            r-summarizedexperiment
            r-tidyr
            r-xgboost))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/GoekeLab/bambu")
     (synopsis
      "Isoform reconstruction and quantification for long read RNA-Seq data")
