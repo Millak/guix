@@ -37502,6 +37502,7 @@ doi.org/10.1007/s10115-013-0679-x} for details.")
                              r-matrix
                              r-mvtnorm
                              r-sandwich))
+    (native-inputs (list r-testthat))
     (home-page "https://imai.princeton.edu/projects/mechanisms.html")
     (synopsis "Causal mediation analysis")
     (description
