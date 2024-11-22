@@ -15925,7 +15925,7 @@ summarization.")
            r-tibble
            r-tidyr
            r-vegan))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://microbiome.github.io/microbiome/")
     (synopsis "Tools for microbiome analysis")
     (description
