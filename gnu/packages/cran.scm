@@ -22051,6 +22051,7 @@ the topic.")
         (base32
          "1zxhwizs916qm5by7nfslqnarl2q5202xc2azlhrnzk0wj3khiwz"))))
     (build-system r-build-system)
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/docopt/docopt.R")
     (synopsis "Command-line interface specification language")
     (description
