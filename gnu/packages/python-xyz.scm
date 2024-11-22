@@ -18991,7 +18991,7 @@ for atomic file system operations.")
 (define-public python-qstylizer
   (package
     (name "python-qstylizer")
-    (version "0.2.3")
+    (version "0.2.4")
     (source
      (origin
        (method git-fetch)
@@ -19000,7 +19000,7 @@ for atomic file system operations.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1n11f63pbqzmb7sj9cj0jq9kv8sfinjqhg7fs0mnfsrici8435br"))))
+        (base32 "0413msw23kv87fgs14ajp9wb2qxkcw6ydvwjzabz7xcp8iif9kr2"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -19012,10 +19012,12 @@ for atomic file system operations.")
     (native-inputs
      (list python-pbr
            python-pytest
-           python-pytest-catchlog
-           python-pytest-mock))
+           python-pytest-mock
+           python-setuptools
+           python-wheel))
     (propagated-inputs
-     (list python-inflection python-tinycss2))
+     (list python-inflection
+           python-tinycss2))
     (home-page "https://github.com/blambright/qstylizer")
     (synopsis "Qt stylesheet generation utility for PyQt/PySide")
     (description "@code{qstylizer} is a Python package designed to help with
