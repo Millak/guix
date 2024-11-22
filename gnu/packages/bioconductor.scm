@@ -7318,7 +7318,7 @@ powerful online queries from gene annotation to database mining.")
            r-tibble
            r-withr
            r-xml))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://docs.ropensci.org/biomartr/")
     (synopsis "Genomic data retrieval")
     (description
