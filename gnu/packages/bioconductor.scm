@@ -7933,7 +7933,7 @@ exploration of the results.")
            r-s4vectors
            r-summarizedexperiment
            r-tidyr))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/lmweber/diffcyt")
     (synopsis "Differential discovery in high-dimensional cytometry")
     (description
