@@ -20766,6 +20766,7 @@ on whole-genome tiling array experiments quite easily with enough memory.")
     (properties `((upstream-name . "acde")))
     (build-system r-build-system)
     (propagated-inputs (list r-boot))
+    (native-inputs (list r-runit))
     (home-page "https://bioconductor.org/packages/acde")
     (synopsis
      "Identification of differentially expressed genes with artificial components")
