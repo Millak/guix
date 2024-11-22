@@ -28496,7 +28496,7 @@ colored by the number of neighboring points.  This is useful to visualize the
            r-tidyselect
            r-vctrs))
     (native-inputs
-     (list pkg-config))
+     (list pkg-config r-testthat))
     (home-page "https://github.com/apache/arrow/")
     (synopsis "R integration to Apache Arrow")
     (description
