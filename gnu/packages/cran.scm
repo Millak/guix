@@ -21977,7 +21977,7 @@ maps.")
            r-tidyselect
            r-yulab-utils))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/GuangchuangYu/tidytree")
     (synopsis "Tidy tool for phylogenetic tree data manipulation")
     (description
