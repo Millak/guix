@@ -38318,7 +38318,7 @@ not digit characters.")
            r-tibble
            r-tidyr))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://visdat.njtierney.com/")
     (synopsis "Preliminary Visualisation of Data")
     (description "This package provides procedures to create preliminary exploratory
