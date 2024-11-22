@@ -9793,7 +9793,7 @@ It has function interfaces for:
                              r-stringi
                              r-stringr
                              r-xvector))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/Modstrings")
     (synopsis "Working with modified nucleotide sequences")
     (description
