@@ -13276,22 +13276,34 @@ functions, useful in the context of writing unit tests among other uses.")
 (define-public python-stack-data
   (package
     (name "python-stack-data")
-    (version "0.2.0")
+    (version "0.6.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "stack_data" version))
        (sha256
-        (base32 "04lfcj5qrn4qikjw89qbdzqwm0xm4bgm4m8rll1rafk3pm0jssa5"))))
-    (build-system python-build-system)
-    (propagated-inputs (list python-asttokens python-executing python-pure-eval))
+        (base32 "1fgh900z6g1amb2f2ql461c1y8lazymxi7nqvk8xri7ywj6pfsl3"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-home-env
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
     (native-inputs
      (list python-cython
            python-littleutils
            python-pygments
            python-pytest
+           python-setuptools
            python-setuptools-scm
-           python-typeguard))
+           python-typeguard
+           python-wheel))
+    (propagated-inputs
+     (list python-asttokens
+           python-executing
+           python-pure-eval))
     (home-page "https://github.com/alexmojaki/stack_data")
     (synopsis "Python stack frame and traceback manipulation library")
     (description "The @code{stack_data} Python library extracts data from
