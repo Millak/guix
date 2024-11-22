@@ -7212,7 +7212,7 @@ classes.")
            r-rhtslib
            r-zlibbioc))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/bamsignals")
     (synopsis "Extract read count signals from bam files")
     (description
