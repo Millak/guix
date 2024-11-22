@@ -16525,27 +16525,23 @@ functional languages.")
 (define-public python-prettytable
   (package
     (name "python-prettytable")
-    (version "3.3.0")
+    (version "3.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "prettytable" version))
        (sha256
-        (base32
-         "1c599w31i2ndzbkn85xwsgv9sd2j16r56dl922w4jh3rs97vb3hi"))))
-    (build-system python-build-system)
-    (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (invoke "pytest" "-vv")))))))
+        (base32 "0168xqdr0i9r4p3a3hjd4n7f133lp4xkxhvfx63aqisplcdkwjzh"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest
-           python-pytest-lazy-fixture
+     (list python-hatchling
+           python-hatch-vcs
+           python-pytest
+           python-pytest-cov
+           python-pytest-lazy-fixtures
            python-setuptools-scm))
-    (propagated-inputs (list python-wcwidth))
+    (propagated-inputs
+     (list python-wcwidth))
     (home-page "https://github.com/jazzband/prettytable")
     (synopsis "Display tabular data in an ASCII table format")
     (description
