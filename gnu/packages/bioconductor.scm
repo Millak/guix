@@ -13732,7 +13732,7 @@ rectangular layout tree built by ggtree with the grammar of ggplot2.")
                              r-summarizedexperiment
                              r-tibble
                              r-tidyr))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/cafferychen777/ggpicrust2")
     (synopsis "Make PICRUSt2 output analysis and visualization easier")
     (description
