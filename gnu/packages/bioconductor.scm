@@ -19338,7 +19338,7 @@ change point detection.")
            r-rhdf5lib
            r-zlibbioc))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/ncdfFlow/")
     (synopsis "HDF5 based storage for flow cytometry data")
     (description
