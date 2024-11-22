@@ -19223,7 +19223,7 @@ Make (2015, ISBN:978-9881443519) and drake (2018,
                              r-lifecycle
                              r-progress
                              r-tibble))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://jessecambon.github.io/tidygeocoder/")
     (synopsis
      "Intuitive interface for getting data from geocoding services")
