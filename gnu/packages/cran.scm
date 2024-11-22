@@ -28696,6 +28696,7 @@ provided.")
          "1c6bnz3ng1qw7sfip8wq3a4dn36a4d6rbja0sadn0a4pbsmk8q3n"))))
     (properties `((upstream-name . "xmlparsedata")))
     (build-system r-build-system)
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/r-lib/xmlparsedata#readme")
     (synopsis "Parse data of @code{R} code as an @code{XML} tree")
     (description
