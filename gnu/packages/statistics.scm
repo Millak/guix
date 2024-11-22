@@ -4620,8 +4620,20 @@ maintenance for package developers.")
                 "03640a1v8jk9k9s5xirdia9lngb53gh4p9gyj2j82cx2jmxfgmkl"))))
     (properties `((upstream-name . "R.utils")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'patch-references
+           (lambda _
+             (substitute* '("R/System.R"
+                            "R/GString-class.R")
+               (("/usr/bin/env uname") (which "uname"))
+               (("/usr/bin/env whoami") (which "whoami"))))))))
     (propagated-inputs
      (list r-r-methodss3 r-r-oo))
+    (native-inputs
+     (list r-digest))
     (home-page "https://github.com/HenrikBengtsson/R.utils")
     (synopsis "Various programming utilities")
     (description
