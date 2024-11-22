@@ -22566,7 +22566,7 @@ useful for building large phylogenies using multiple markers.")
            r-xml
            r-xml2))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://docs.ropensci.org/RNeXML/")
     (synopsis "Semantically rich I/O for the NeXML Format")
     (description "This package provides access to phyloinformatic data in
