@@ -22392,6 +22392,7 @@ the first time as the statistic.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-data-table))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/mrdwab/splitstackshape")
     (synopsis "Stack and reshape datasets after splitting concatenated values")
     (description
