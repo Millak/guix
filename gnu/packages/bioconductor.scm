@@ -9064,6 +9064,7 @@ of other R packages who wish to make use of HTSlib.")
            r-methylumi
            r-plyr
            r-s4vectors))
+    (native-inputs (list r-runit))
     (home-page "https://bioconductor.org/packages/RnBeads")
     (synopsis "RnBeads")
     (description
