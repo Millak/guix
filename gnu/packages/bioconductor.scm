@@ -6106,7 +6106,7 @@ The DER Finder approach can also be used to identify differentially bounded
     (propagated-inputs
      (list r-iranges r-matrix r-s4vectors))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/leekgroup/derfinderHelper")
     (synopsis "Helper for derfinder")
     (description
