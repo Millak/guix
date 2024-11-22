@@ -3239,7 +3239,7 @@ pure C implementation of the Git core methods.")
                 "029rbfdw9b57mcnx8yblgrwd79v47ky068mr3w9p61lnr21zjzk1"))))
     (build-system r-build-system)
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://cran.r-project.org/web/packages/rstudioapi")
     (synopsis "Safely access the RStudio API")
     (description
