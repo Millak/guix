@@ -29546,7 +29546,7 @@ LargeVis method of Tang et al. (2016) is also provided.")
            r-viridislite
            r-xml2))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://haozhu233.github.io/kableExtra/")
     (synopsis "Construct complex tables with pipe syntax")
     (description
