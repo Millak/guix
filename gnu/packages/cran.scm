@@ -37608,7 +37608,7 @@ simple interface for all functions.")
            r-ggplot2
            r-metrics
            r-r6))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/christophM/iml")
     (synopsis "Interpretable machine learning")
     (description
