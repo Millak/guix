@@ -23884,6 +23884,7 @@ annotation, and functions for GWAS data cleaning and analysis.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-graph r-rcurl r-rgraphviz r-xml))
+    (native-inputs (list r-testthat))
     (home-page "https://bioconductor.org/packages/KEGGgraph")
     (synopsis "Graph approach to Kegg Pathway database in R and Bioconductor")
     (description
