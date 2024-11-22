@@ -19849,7 +19849,7 @@ models.")
            r-reformulas
            r-tmb))
     (native-inputs
-     (list r-knitr r-rmarkdown)) ; for vignettes
+     (list r-knitr r-rmarkdown r-testthat)) ; for vignettes
     (home-page "https://github.com/glmmTMB")
     (synopsis "Generalized linear mixed models")
     (description
