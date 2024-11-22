@@ -22222,7 +22222,7 @@ while other are highly specific for the special data format used for
     (build-system r-build-system)
     (propagated-inputs (list r-adimpro r-aws r-awsmethods r-oro-nifti
                              r-stringr))
-    (native-inputs (list gfortran r-knitr))
+    (native-inputs (list gfortran r-knitr r-testthat))
     (home-page "http://www.wias-berlin.de/research/ats/imaging/")
     (synopsis "Methods for quantitative magnetic resonance imaging (qMRI)")
     (description
