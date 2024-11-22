@@ -3554,7 +3554,7 @@ handled by @code{alabaster.base}.")
                              r-jsonlite
                              r-s4vectors
                              r-summarizedexperiment))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/alabaster.se")
     (synopsis "Load and save SummarizedExperiments from file")
     (description
