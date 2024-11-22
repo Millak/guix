@@ -1832,7 +1832,7 @@ dataset for the examples in package viper.")
                 (string-append
                  "if (Sys.getenv(\"GUIX_BUILD\") == \"\") {" m "}"))))))))
     (propagated-inputs (list r-experimenthub r-summarizedexperiment))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/bodymapRat")
     (synopsis "Experimental dataset from the rat BodyMap project")
     (description
