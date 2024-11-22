@@ -8987,14 +8987,31 @@ generation functions from the GSL library.")
        (list sbcl-alexandria
              sbcl-anaphora
              sbcl-array-operations
-             sbcl-cl-num-utils
              sbcl-cl-rmath
              sbcl-cl-slice
              sbcl-gsll
              sbcl-let-plus
-             sbcl-lla))
+             sbcl-lla
+             sbcl-numerical-utilities))
       (native-inputs
        (list sbcl-clunit))
+      (arguments
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'fix-build
+                   ;; Fixes to use numerical-utils instead of the deprecated
+                   ;; cl-num-utils.
+                   (lambda _
+                     (substitute* (list "cl-random.asd"
+                                        "src/package.lisp")
+                       (("cl-num-utils")
+                        "num-utils"))
+                     (substitute* (list "src/continuous-time.lisp"
+                                        "src/internals.lisp"
+                                        "src/random.lisp"
+                                        "src/univariate.lisp")
+                       (("clnu:")
+                        "nu:")))))))
       (home-page "https://github.com/tpapp/cl-random")
       (synopsis "Random variates for Common Lisp")
       (description
