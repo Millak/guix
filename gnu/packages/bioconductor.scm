@@ -872,7 +872,7 @@ information about the latest version of the Gene Ontologies.")
     (propagated-inputs
      (list r-annotationdbi r-dbi))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/HDO.db")
     (synopsis "Annotation maps describing the entire Human Disease Ontology")
     (description
