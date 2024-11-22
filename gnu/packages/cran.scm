@@ -36146,6 +36146,7 @@ statistics and p-values of the correlation coefficients.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-extrafont r-gdtools r-ggplot2 r-magrittr r-scales))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/hrbrmstr/hrbrthemes/")
     (synopsis "Additional themes, theme components and utilities for @code{ggplot2}")
     (description
