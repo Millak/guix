@@ -2871,6 +2871,7 @@ jackknifed confidence intervals are available for most estimates.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-curl r-xml2))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/metacran/rversions")
     (synopsis "Query R versions, including 'r-release' and 'r-oldrel'")
     (description
