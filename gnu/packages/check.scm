@@ -2002,6 +2002,29 @@ Python's @code{random.seed}.")
 @code{pytest.mark.parametrize}.")
     (license license:expat)))
 
+(define-public python-pytest-lazy-fixtures
+  (package
+    (name "python-pytest-lazy-fixtures")
+    (version "1.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest_lazy_fixtures" version))
+       (sha256
+        (base32 "1v819n9jrgf0rk2fidn6fkdzz68r4jin94lvy9fbb9gf546iymhc"))))
+    (native-inputs
+     (list python-poetry-core))
+    (propagated-inputs
+     (list python-pytest))
+    (build-system pyproject-build-system)
+    (home-page "https://github.com/dev-petrov/pytest-lazy-fixtures")
+    (synopsis "Use fixtures in @code{pytest.mark.parametrize}")
+    (description
+     "This plugin helps to use fixtures in @code{pytest.mark.parametrize},
+inspied by @url{https://github.com/TvoroG/pytest-lazy-fixture,
+pytest-lazy-fixture}.")
+    (license license:expat)))
+
 (define-public python-pytest-mock
   (package
     (name "python-pytest-mock")
