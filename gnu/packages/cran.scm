@@ -39068,7 +39068,7 @@ different palettes and includes both diverging and sequential types.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli r-rlang r-vctrs r-warp))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/DavisVaughan/slider")
     (synopsis "Sliding window functions")
     (description
