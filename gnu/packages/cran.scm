@@ -29346,7 +29346,7 @@ versions.  A Shiny application implementing the functions is also included.")
            r-tibble
            r-tidyr))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/sinhrks/ggfortify")
     (synopsis "Data visualization tools for statistical analysis results")
     (description
