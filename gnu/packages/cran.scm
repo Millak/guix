@@ -21620,6 +21620,7 @@ the base function @code{with()}.")
     (properties `((upstream-name . "oro.nifti")))
     (build-system r-build-system)
     (propagated-inputs (list r-abind r-bitops r-rnifti))
+    (native-inputs (list r-testthat))
     (home-page "https://rigorousanalytics.blogspot.com")
     (synopsis "Vizualization of medical imaging data")
     (description
