@@ -19969,7 +19969,7 @@ results using @code{ggplot2}.")
     (propagated-inputs
      (list r-bayestestr r-datawizard r-insight r-parameters r-performance))
     (native-inputs
-     (list r-knitr))
+     (list r-boot r-knitr r-testthat))
     (home-page "https://github.com/easystats/effectsize")
     (synopsis "Indices of effect size and standardized parameters")
     (description
