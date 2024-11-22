@@ -1047,6 +1047,7 @@ methylation array).")
     (build-system r-build-system)
     (propagated-inputs
      (list r-annotationdbi))
+    (native-inputs (list r-runit))
     (home-page "https://www.bioconductor.org/packages/org.Ce.eg.db/")
     (synopsis "Genome wide annotation for Worm")
     (description
