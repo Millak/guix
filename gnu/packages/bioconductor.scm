@@ -20836,7 +20836,7 @@ using whole genome sequencing data.")
     (propagated-inputs
      (list r-data-table r-ggplot2))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://cran.r-project.org/web/packages/ActivePathways/")
     (synopsis "Multivariate pathway enrichment analysis")
     (description
