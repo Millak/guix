@@ -27106,6 +27106,7 @@ the corresponding outputs (tables and graphs).")
                 (setenv "JAVA_LIBS" (search-input-file inputs "/lib/libjvm.so"))))))))
     (inputs
      `(("icu4c" ,icu4c)
+       ("libdeflate" ,libdeflate)
        ("jdk" ,openjdk11 "jdk")
        ("zlib" ,zlib)))
     (home-page "https://www.rforge.net/rJava/")
