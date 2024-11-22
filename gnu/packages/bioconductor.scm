@@ -10095,6 +10095,7 @@ of mass spectrometry based proteomics data.")
            r-stringr
            r-tibble
            r-xtable))
+    (native-inputs (list r-runit))
     (home-page "https://bioconductor.org/packages/MSnID")
     (synopsis "Utilities for LC-MSn proteomics identifications")
     (description
