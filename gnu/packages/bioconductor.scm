@@ -21394,7 +21394,7 @@ visualize bioinformatics analyses.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-annotationdbi r-graph r-httr r-purrr r-rappdirs r-rlang))
-    (native-inputs (list r-r-rsp))
+    (native-inputs (list r-r-rsp r-testthat))
     (home-page "https://bioconductor.org/packages/graphite/")
     (synopsis "Networks from pathway databases")
     (description
