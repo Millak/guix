@@ -12523,6 +12523,16 @@ involving two separate genomic loci encoded as GRanges objects.")
     (properties
      `((upstream-name . "SummarizedExperiment")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'delete-bad-test
+           (lambda _
+             ;; This test requires r-txdb-hsapiens-ucsc-hg19-knowngene, but we
+             ;; can't add it due to a dependency cycle.
+             (delete-file
+              "inst/unitTests/test_makeSummarizedExperimentFromExpressionSet.R"))))))
     (propagated-inputs
      (list r-biobase
            r-biocgenerics
@@ -12535,7 +12545,7 @@ involving two separate genomic loci encoded as GRanges objects.")
            r-s4arrays
            r-s4vectors))
     (native-inputs
-     (list r-knitr))
+     (list r-annotate r-digest r-hgu95av2-db r-knitr r-runit))
     (home-page "https://bioconductor.org/packages/SummarizedExperiment")
     (synopsis "Container for representing genomic ranges by sample")
     (description
