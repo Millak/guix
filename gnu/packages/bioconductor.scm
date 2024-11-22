@@ -17452,7 +17452,7 @@ type and symbol colors.")
            r-s4vectors
            r-xml))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-runit))
     (home-page "https://github.com/rcastelo/GenomicScores/")
     (synopsis "Work with genome-wide position-specific scores")
     (description
