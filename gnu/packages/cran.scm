@@ -36936,7 +36936,7 @@ inference diagnostics.
            r-rlang
            r-rstan
            r-rstantools))
-    (native-inputs (list r-knitr r-r-rsp))
+    (native-inputs (list r-knitr r-r-rsp r-testthat))
     (home-page
      "https://github.com/paul-buerkner/brms")
     (synopsis
