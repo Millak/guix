@@ -1113,7 +1113,7 @@ Munsell colour system.")
       (base32
        "1h4dyhcsv8p3h3qxsy98pib9v79dddvrnq7qx6abkblsazxqzy7g"))))
    (build-system r-build-system)
-   (native-inputs (list r-knitr))
+   (native-inputs (list r-knitr r-testthat))
    ;; Tests do not run correctly, but running them properly would entail a
    ;; circular dependency with vegan.
    (home-page "https://github.com/gavinsimpson/permute")
