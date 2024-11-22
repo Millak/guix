@@ -5653,6 +5653,7 @@ data at that region, and avoids over-plotting.")
            r-scales
            r-stringr
            r-tibble))
+    (native-inputs (list r-testthat))
     (home-page "https://cran.rstudio.com/web/packages/ggthemes")
     (synopsis "Extra themes, scales and geoms for @code{ggplot2}")
     (description "This package provides extra themes and scales for
