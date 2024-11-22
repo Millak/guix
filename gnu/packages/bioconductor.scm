@@ -6786,7 +6786,7 @@ Michailidis G (2016) <doi:10.1093/bioinformatics/btw410>.")
            r-stringr
            r-synchronicity)) ;suggested
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-runit))
     (home-page "https://renozao.github.io/NMF")
     (synopsis "Algorithms and framework for nonnegative matrix factorization")
     (description
