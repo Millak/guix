@@ -14348,6 +14348,7 @@ defined categories which are over/under represented in RNA-seq data.")
     (native-inputs
      `(("esbuild" ,esbuild)
        ("r-knitr" ,r-knitr)
+       ("r-testthat" ,r-testthat)
        ("js-jquery"
         ,(origin
            (method url-fetch)
