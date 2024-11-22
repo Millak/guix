@@ -34409,7 +34409,7 @@ space models and automatic ARIMA modelling.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-abind r-checkmate))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://gforge.se/packages/")
     (synopsis "Advanced forest plot using @code{grid} graphics")
     (description
