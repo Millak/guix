@@ -19372,7 +19372,7 @@ manipulation of flow cytometry data.")
            r-rlang
            r-scales))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/RGLab/ggcyto/issues")
     (synopsis "Visualize Cytometry data with ggplot")
     (description
