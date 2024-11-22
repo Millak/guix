@@ -1070,6 +1070,7 @@ annotations for the genome of the model worm Caenorhabditis elegans.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-annotationdbi))
+    (native-inputs (list r-runit))
     (home-page "https://www.bioconductor.org/packages/org.Dm.eg.db/")
     (synopsis "Genome wide annotation for Fly")
     (description
