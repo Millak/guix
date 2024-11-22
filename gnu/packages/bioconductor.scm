@@ -8775,7 +8775,7 @@ manner.")
     (properties `((upstream-name . "gypsum")))
     (build-system r-build-system)
     (propagated-inputs (list r-filelock r-httr2 r-jsonlite r-rappdirs))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/ArtifactDB/gypsum-R")
     (synopsis "Interface to the gypsum REST API")
     (description
