@@ -12203,7 +12203,7 @@ able to deal also with novel and case specific events.")
     (propagated-inputs
      (list r-igraph r-matrix r-s4vectors r-singlecellexperiment
            r-summarizedexperiment))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/TrajectoryUtils")
     (synopsis "Single-cell trajectory analysis utilities")
     (description
