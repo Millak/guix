@@ -29879,7 +29879,7 @@ guaranteeing well-connected communities.\" <arXiv:1810.08473>.")
            r-rcpparmadillo
            r-rcppeigen
            r-sccore))
-    (native-inputs (list gfortran))
+    (native-inputs (list gfortran r-testthat))
     (home-page "https://github.com/kharchenkolab/leidenAlg")
     (synopsis "Leiden algorithm via an R interface")
     (description
