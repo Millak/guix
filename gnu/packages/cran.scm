@@ -27591,7 +27591,7 @@ that fills this gap.")
            r-polylabelr
            r-rcpp
            r-rcpparmadillo))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/jolars/eulerr")
     (synopsis "Area-proportional Euler and Venn diagrams with ellipses")
     (description
