@@ -28125,6 +28125,7 @@ wrap.")
     (properties `((upstream-name . "ggghost")))
     (build-system r-build-system)
     (propagated-inputs (list r-animation r-ggplot2))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/jonocarroll/ggghost")
     (synopsis "Capture the spirit of your ggplot2 calls")
     (description
