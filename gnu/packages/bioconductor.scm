@@ -25231,7 +25231,7 @@ network and metabolic pathways view.")
     (propagated-inputs
      (list r-biobase r-edger r-rcpp))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://accio.github.io/BioQC/")
     (synopsis "Detect tissue heterogeneity in expression profiles with gene sets")
     (description
