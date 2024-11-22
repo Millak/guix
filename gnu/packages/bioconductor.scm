@@ -10129,7 +10129,7 @@ and irregular enzymatic cleavages, mass measurement accuracy, etc.")
            r-protgenerics
            r-xml))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/mzID")
     (synopsis "Parser for mzIdentML files")
     (description
