@@ -17193,7 +17193,7 @@ Affymetrix arrays.")
            r-vegan
            r-venndiagram))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/malhamdoosh/abseqR")
     (synopsis "Reporting and data analysis for Rep-Seq datasets of antibody libraries")
     (description
