@@ -14757,7 +14757,7 @@ data.")
     (propagated-inputs
      (list r-rcpp))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/metapod")
     (synopsis "Meta-analyses on p-values of differential analyses")
     (description
