@@ -24759,7 +24759,7 @@ targets.  It can also be used for differential expression/2-class data.")
            r-tibble
            r-tidyr
            r-xgboost))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://www.ezstatconsulting.com/BayesSpace/")
     (synopsis "Clustering and resolution enhancement of spatial transcriptomes")
     (description
