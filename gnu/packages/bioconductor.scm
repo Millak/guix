@@ -23160,7 +23160,7 @@ of other packages.")
            r-uwot
            r-viridis))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/davismcc/scater")
     (synopsis "Single-cell analysis toolkit for gene expression data in R")
     (description "This package provides a collection of tools for doing
