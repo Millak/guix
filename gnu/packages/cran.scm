@@ -39130,7 +39130,7 @@ pipeline friendly so that data processing with lists can be chained.")
            r-tidyselect
            r-vctrs))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://rsample.tidymodels.org")
     (synopsis "General resampling infrastructure")
     (description
