@@ -6333,7 +6333,7 @@ dynamic documents and vignettes.")
           r-rcpp
           r-s4vectors))
    (native-inputs
-    (list r-knitr))
+    (list r-knitr r-testthat))
    (home-page "https://bioconductor.org/packages/bluster")
    (synopsis "Clustering algorithms for Bioconductor")
    (description"This package wraps common clustering algorithms in an easily
