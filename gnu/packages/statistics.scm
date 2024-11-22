@@ -2962,6 +2962,7 @@ worries about execution time overhead.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-checkmate r-data-table))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/berndbischl/BBmisc")
     (synopsis "Miscellaneous functions for R package development")
     (description
