@@ -4379,7 +4379,7 @@ analysis of large sparse or dense matrices.")
       (base32 "1znw1p1mi7nv39l7albcg6sfxj7a1jyjw85hb3ginv870z7fbnqx"))))
    (build-system r-build-system)
    (native-inputs
-    (list gfortran r-knitr))
+    (list gfortran r-knitr r-testthat))
    (propagated-inputs
     (list r-foreach
           r-matrix
