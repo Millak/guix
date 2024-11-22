@@ -31166,7 +31166,7 @@ included.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-doparallel r-mgcv r-plyr r-shiny))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://cran.r-project.org/web/packages/qgam/")
     (synopsis "Smooth additive quantile regression models")
     (description
