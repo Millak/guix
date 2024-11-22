@@ -23077,7 +23077,7 @@ libraries.")
            r-rcpp
            r-s4vectors
            r-summarizedexperiment))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/LTLA/SingleR")
     (synopsis "Reference-based single-cell RNA-seq annotation")
     (description
