@@ -1332,7 +1332,7 @@ aesthetic attributes.")
     (propagated-inputs
      (list r-ggplot2 r-mass))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/andrie/ggdendro")
     (synopsis "Create Dendrograms and Tree Diagrams Using ggplot2")
     (description "This is a set of tools for dendrograms and tree plots using
