@@ -11590,7 +11590,7 @@ powerTCR R packages.")
                              r-singlecellexperiment
                              r-sparsearray
                              r-summarizedexperiment))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/scRNAseq")
     (synopsis "Collection of public single-cell RNA-seq datasets")
     (description
