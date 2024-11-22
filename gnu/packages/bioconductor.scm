@@ -21694,7 +21694,7 @@ access.")
                              r-experimenthub
                              r-httr
                              r-s4vectors))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-runit))
     (home-page "https://bioconductor.org/packages/ExperimentHubData")
     (synopsis "Add resources to ExperimentHub")
     (description
