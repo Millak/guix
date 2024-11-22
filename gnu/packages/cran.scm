@@ -19750,7 +19750,7 @@ correlation, censored, ordered and multivariate problems.")
     (inputs
      (list pandoc))
     (native-inputs
-     (list r-knitr))
+     (list r-gridextra r-knitr r-rstantools r-testthat))
     (propagated-inputs
      (list r-dplyr
            r-ggplot2
