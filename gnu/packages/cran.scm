@@ -38668,7 +38668,7 @@ p-value approximations.")
            r-tibble
            r-tidyr))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://rpkgs.datanovia.com/survminer/index.html")
     (synopsis "Drawing survival curves using ggplot2")
     (description
