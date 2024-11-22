@@ -1702,6 +1702,7 @@ from knitr Rmarkdown.")
                (base32
                 "0pvn94zfv50imz5g39wyqbqaa7fkl0h5sy98ic9as4b842lr47ix"))))
     (build-system r-build-system)
+    (native-inputs (list r-runit))
     (home-page "https://cran.r-project.org/web/packages/microbenchmark/")
     (synopsis "Accurate timing functions for R")
     (description
