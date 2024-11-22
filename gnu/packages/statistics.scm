@@ -2984,6 +2984,7 @@ of R packages.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-bbmisc r-checkmate))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/mllg/fail")
     (synopsis "File abstraction interface layer (FAIL)")
     (description
