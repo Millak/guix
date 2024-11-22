@@ -19990,6 +19990,7 @@ conversion of indices such as Cohen's d, r, odds, etc.")
                 "1m5ch2g77f4ldbxhzp2ls1pga8hq7ggkz1xs8a90h0s09rj0gd7w"))))
     (properties `((upstream-name . "effsize")))
     (build-system r-build-system)
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/mtorchiano/effsize/")
     (synopsis "Efficient effect size computation")
     (description
