@@ -29073,7 +29073,7 @@ dimensional low-discrepancy sequence.")
     (propagated-inputs
      (list r-bh r-rcpp r-sitmo))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://www.daqana.org/dqrng")
     (synopsis "Fast pseudo random number generators")
     (description
