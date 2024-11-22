@@ -2927,7 +2927,7 @@ functionally associated genes} (GFAG).")
            r-stringr
            r-testthat
            r-varhandle))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/ADAMgui/")
     (synopsis "GUI for gene activity and diversity analysis")
     (description
