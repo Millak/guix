@@ -6144,7 +6144,7 @@ calculation in parallel.")
            r-plyr
            r-s4vectors
            r-summarizedexperiment))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-runit))
     (home-page "https://bioconductor.org/packages/DMRcate")
     (synopsis "Methylation array and sequencing spatial analysis methods")
     (description
