@@ -1744,6 +1744,7 @@ understand the language at a deeper level.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-cachem r-rlang))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/hadley/memoise")
     (synopsis "Memoise functions for R")
     (description
