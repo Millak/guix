@@ -3865,7 +3865,7 @@ to understand their data better and discover new insights.")
            r-rtracklayer
            r-s4vectors
            r-xml))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-runit))
     (home-page "https://bioconductor.org/packages/AnnotationHubData")
     (synopsis "Transform public data resources into Bioconductor data structures")
     (description
