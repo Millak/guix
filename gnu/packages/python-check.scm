@@ -1012,12 +1012,18 @@ were inadvertently left open at the end of a unit test.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags #~(list "-k" (string-append
-                                 "not test_default_behavior"
-                                 " and not test_strict_behavior"
-                                 " and not test_strict_with_decorator"))))
+      #:test-flags
+      #~(list "--numprocesses" (number->string (parallel-job-count))
+              "-k" (string-join
+                    ;; Network access is required.
+                    (list "not test_internet_access"
+                          ;; Failed with assertion error.
+                          "test_default_behavior"
+                          "test_strict_with_decorator")
+                    " and not "))))
     (native-inputs
      (list python-pytest
+           python-pytest-xdist
            python-setuptools
            python-setuptools-scm
            python-wheel))
