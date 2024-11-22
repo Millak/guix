@@ -9670,7 +9670,7 @@ be explored.")
            r-s4vectors
            r-zlibbioc))
     (native-inputs
-     (list r-knitr)) ; for vignettes
+     (list r-knitr r-testthat)) ; for vignettes
     (home-page "https://github.com/al2na/methylKit")
     (synopsis
      "DNA methylation analysis from high-throughput bisulfite sequencing results")
