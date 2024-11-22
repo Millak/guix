@@ -1517,7 +1517,7 @@ by exposing these as TxDb objects.")
      `((upstream-name . "FDb.InfiniumMethylation.hg19")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-biostrings r-genomicfeatures r-annotationdbi r-org-hs-eg-db
+     (list r-annotationdbi r-biostrings r-genomicfeatures r-org-hs-eg-db
            r-txdb-hsapiens-ucsc-hg19-knowngene))
     (home-page "https://bioconductor.org/packages/FDb.InfiniumMethylation.hg19/")
     (synopsis "Compiled HumanMethylation27 and HumanMethylation450 annotations")
