@@ -3194,7 +3194,7 @@ integers.")
     (propagated-inputs
      (list r-curl r-jsonlite r-mime r-openssl r-r6))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/hadley/httr")
     (synopsis "Tools for working with URLs and HTTP")
     (description
