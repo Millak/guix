@@ -25351,7 +25351,7 @@ ensemble machine learning for the estimation of nuisance functions.")
            r-scales
            r-summarizedexperiment))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/hansenlab/bsseq")
     (synopsis "Analyze, manage and store bisulfite sequencing data")
     (description
