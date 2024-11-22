@@ -23232,7 +23232,7 @@ variable and significantly correlated genes.")
                              r-s4arrays
                              r-s4vectors
                              r-xvector))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/SparseArray")
     (synopsis
      "Efficient in-memory representation of multidimensional sparse arrays")
