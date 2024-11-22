@@ -11451,6 +11451,7 @@ with respect to the cell population of interest.")
                              r-rhpcblasctl
                              r-stringr
                              r-tidygraph))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/kharchenkolab/scistreer")
     (synopsis "Maximum-likelihood perfect phylogeny Inference at scale")
     (description
