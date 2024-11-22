@@ -20658,7 +20658,7 @@ data.")
            r-s4vectors
            r-yaml))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page
      "https://bioconductor.org/packages/universalmotif/")
     (synopsis
