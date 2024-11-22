@@ -27627,7 +27627,7 @@ range of inputs and can be visualized in numerous ways.")
            r-urltools
            r-xml2))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/ropensci/europepmc/")
     (synopsis "R Interface to the Europe PubMed Central RESTful Web Service")
     (description
