@@ -15836,7 +15836,7 @@ studies.")
     (properties `((upstream-name . "BumpyMatrix")))
     (build-system r-build-system)
     (propagated-inputs (list r-iranges r-matrix r-s4vectors))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/BumpyMatrix")
     (synopsis "Bumpy matrix of non-scalar objects")
     (description
