@@ -34764,6 +34764,7 @@ errors; tetrachoric and biserial correlations are special cases.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-expm r-generics r-mvtnorm r-survival r-tibble))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/chjackson/msm")
     (synopsis "Multi-state Markov and hidden Markov models in continuous time")
     (description
