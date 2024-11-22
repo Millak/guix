@@ -20881,7 +20881,7 @@ parallel calculations across cluster nodes.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-lifecycle r-rlang))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/poissonconsulting/chk")
     (synopsis "Check user-supplied function arguments")
     (description
