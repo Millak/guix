@@ -33664,7 +33664,8 @@ numerical features.  The plots are inspired by those provided by the
            (uri "https://code.jquery.com/jquery-1.4.4.js")
            (sha256
             (base32
-             "10nl4smq63vrfb0c3n0fknm1zw7ss8gicy6wc6jb6l3rmyad075k"))))))
+             "10nl4smq63vrfb0c3n0fknm1zw7ss8gicy6wc6jb6l3rmyad075k"))))
+       ("r-testit" ,r-testit)))
     (home-page "https://yihui.org/animation/")
     (synopsis "Gallery of animations and utilities to create animations")
     (description
