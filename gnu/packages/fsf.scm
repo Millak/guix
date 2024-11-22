@@ -40,6 +40,7 @@
      (list (texlive-updmap.cfg
             (list texlive-caption
                   texlive-endnotes
+                  texlive-etoolbox
                   texlive-fncychap
                   texlive-helvetic
                   texlive-times
