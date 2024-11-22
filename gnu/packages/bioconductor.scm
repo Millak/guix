@@ -16201,7 +16201,7 @@ and Infinium HD arrays are also included.")
            r-testthat
            r-tibble
            r-tidyr))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/waldronlab/lefser")
     (synopsis "LEfSE method for microbiome biomarker discovery")
     (description
