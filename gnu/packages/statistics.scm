@@ -2338,7 +2338,7 @@ machine learning, computer vision, and high-dimensional statistics.")
 (define-public python-arviz
   (package
     (name "python-arviz")
-    (version "0.19.0")
+    (version "0.20.0")
     (source (origin
               (method git-fetch)        ; PyPI misses some test files
               (uri (git-reference
@@ -2347,7 +2347,7 @@ machine learning, computer vision, and high-dimensional statistics.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0wj1yxr6as368vkr4mk9fz4584nyy12gq2v20l7542lnaabw403z"))))
+                "1dk25jmsljan6pfcq0s06vgk7gg20qqhk0zqnpd8dw94dhw2mnpa"))))
     (build-system pyproject-build-system)
     (arguments
      ;; FIXME: matplotlib tests fail because of the "--save" test flag.
