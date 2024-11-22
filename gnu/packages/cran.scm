@@ -29175,7 +29175,7 @@ classification and regression models.")
     (propagated-inputs
      (list r-ggplot2 r-ggpubr r-plyr r-trycatchlog))
     (native-inputs
-     (list r-r-rsp)) ; vignette builder
+     (list r-r-rsp r-testthat)) ; vignette builder
     (home-page "http://chris.brien.name")
     (synopsis "Functions useful in the design and ANOVA of experiments")
     (description
