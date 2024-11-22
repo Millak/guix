@@ -28388,6 +28388,7 @@ compatibility of dependent packages for some time.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-digest))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/wch/downloader")
     (synopsis "Download files over HTTP and HTTPS")
     (description
