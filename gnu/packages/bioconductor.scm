@@ -19123,7 +19123,7 @@ for manual execution.")
            r-reshape2
            r-rmarkdown
            r-scales))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/flowAI")
     (synopsis
      "Automatic and interactive quality control for flow cytometry data")
