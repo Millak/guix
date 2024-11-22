@@ -25118,7 +25118,7 @@ select colors to use in your R code.")
            r-shiny
            r-shinyjs))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/daattali/ggExtra")
     (synopsis "Marginal histograms for ggplot2 and other enhancements")
     (description
