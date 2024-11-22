@@ -14599,7 +14599,7 @@ samples.")
     (propagated-inputs
      (list r-assorthead r-rcpp))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/BiocNeighbors")
     (synopsis "Nearest Neighbor Detection for Bioconductor packages")
     (description
