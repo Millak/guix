@@ -20741,8 +20741,7 @@ using C++ code and of the OpenMP API.")
     (propagated-inputs
      (list r-car r-lme4 r-lmertest r-pbkrtest r-reshape2))
     (native-inputs
-     (list r-knitr
-           r-r-rsp)) ;vignette builder
+     (list r-knitr r-r-rsp r-testthat)) ;vignette builder
     (home-page "https://afex.singmann.science/")
     (synopsis "Analysis of factorial experiments")
     (description
