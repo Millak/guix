@@ -23416,7 +23416,7 @@ the respective packages (such as e.g. @code{xcms}).")
     (propagated-inputs
      (list r-biocgenerics r-s4vectors))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/BiocIO")
     (synopsis "Standard input and output for Bioconductor packages")
     (description
