@@ -26424,6 +26424,7 @@ spanning tree.")
            r-seqinr
            r-shiny
            r-vegan))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/thibautjombart/adegenet")
     (synopsis "Exploratory analysis of genetic and genomic data")
     (description
