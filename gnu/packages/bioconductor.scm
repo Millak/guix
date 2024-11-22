@@ -18564,7 +18564,7 @@ and data files used across sessions.")
          "0ir2xshq4qmzyli9v14cmlk262px47ng5gd23r4sf6p065xnws6m"))))
     (properties `((upstream-name . "iClusterPlus")))
     (build-system r-build-system)
-    (native-inputs (list gfortran r-runit))
+    (native-inputs (list gfortran r-biocgenerics r-runit))
     (home-page "https://bioconductor.org/packages/iClusterPlus/")
     (synopsis "Integrative clustering of multi-type genomic data")
     (description
