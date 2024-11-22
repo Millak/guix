@@ -12886,7 +12886,7 @@ coding changes and predict coding outcomes.")
     (propagated-inputs
      (list r-affy r-biobase r-ggplot2 r-lattice r-limma))
     (native-inputs
-     (list r-knitr)) ; for vignettes
+     (list r-knitr r-testthat)) ; for vignettes
     (home-page "https://bioconductor.org/packages/release/bioc/html/vsn.html")
     (synopsis "Variance stabilization and calibration for microarray data")
     (description
