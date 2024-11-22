@@ -2938,7 +2938,7 @@ R version.")
     (propagated-inputs
      (list r-backports))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/mllg/checkmate")
     (synopsis "Fast and versatile argument checks")
     (description
