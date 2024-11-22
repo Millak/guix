@@ -14133,8 +14133,8 @@ and @dfn{alternating direction method of multipliers algorithms} (ADMM).")
     (build-system r-build-system)
     (propagated-inputs
      (list r-matrixstats
-           r-mvnfast
            r-mclust
+           r-mvnfast
            r-rfast
            r-slam
            r-viridislite))
