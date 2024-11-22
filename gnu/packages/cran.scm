@@ -22611,6 +22611,7 @@ used by other packages.")
         (base32
          "1zg95sjhrfvbdlfc387g9p0vnb8nb6agdk1mb3wq3kwkm2da0bqj"))))
     (build-system r-build-system)
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/jonclayden/shades")
     (synopsis "Simple color manipulation")
     (description
