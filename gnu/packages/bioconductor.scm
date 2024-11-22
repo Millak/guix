@@ -6695,7 +6695,7 @@ mapping.")
                              r-seuratobject
                              r-singlecellexperiment
                              r-summarizedexperiment))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/powellgenomicslab/Nebulosa")
     (synopsis
      "Single-cell data visualisation using kernel gene-weighted density estimation")
