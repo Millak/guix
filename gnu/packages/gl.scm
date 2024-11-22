@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2015 Andreas Enge <andreas@enge.fr>
+;;; Copyright © 2013, 2015, 2024 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2013 Joshua Grant <tadni@riseup.net>
 ;;; Copyright © 2014, 2016 David Thompson <davet@gnu.org>
 ;;; Copyright © 2014, 2015, 2016, 2017 Mark H Weaver <mhw@netris.org>
@@ -373,7 +373,6 @@ also known as DXTn or DXTC) for Mesa.")
     (outputs '("out" "bin"))
     (arguments
      (list
-      #:meson meson-1.5
       #:configure-flags
       #~(list
          #$@(cond
