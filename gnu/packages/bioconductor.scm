@@ -16505,6 +16505,7 @@ peak definition in combination with known profile characteristics.")
            r-rtracklayer
            r-s4vectors
            r-variantannotation))
+    (native-inputs (list r-runit))
     (home-page "https://bioconductor.org/packages/VariantTools/")
     (synopsis "Tools for exploratory analysis of variant calls")
     (description
