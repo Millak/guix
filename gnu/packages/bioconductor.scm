@@ -23978,7 +23978,7 @@ on the plot.")
            r-rjags
            r-stringi))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://r-bayesian-networks.org/")
     (synopsis "Modelling multivariate data with additive bayesian networks")
     (description
