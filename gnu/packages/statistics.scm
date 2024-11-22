@@ -1272,6 +1272,7 @@ the input of another.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-plyr r-rcpp r-stringr))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/hadley/reshape")
     (synopsis "Flexibly reshape data: a reboot of the \"reshape\" package")
     (description
