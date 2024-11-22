@@ -21428,7 +21428,7 @@ symbols).")
            r-reactome-db
            r-yulab-utils))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://guangchuangyu.github.io/software/ReactomePA")
     (synopsis "Reactome pathway analysis")
     (description
