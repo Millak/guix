@@ -3583,7 +3583,7 @@ variety of formats.")
     (propagated-inputs
      (list r-cli r-glue r-lifecycle r-rlang))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://cran.r-project.org/web/packages/gtable")
     (synopsis "R library to arrange grobs in tables")
     (description
