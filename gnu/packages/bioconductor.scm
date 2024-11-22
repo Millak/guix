@@ -18863,7 +18863,7 @@ Markov-Chain-Monte-Carlo is applied to sample the activity states.")
            r-s4vectors
            r-summarizedexperiment))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/MultiDataSet/")
     (synopsis "Implementation of MultiDataSet and ResultSet")
     (description
