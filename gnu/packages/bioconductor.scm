@@ -10877,7 +10877,7 @@ with a single RCy3 function.")
            r-rtracklayer
            r-s4vectors))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/regioneR/")
     (synopsis "Association analysis of genomic regions")
     (description "This package offers a statistical framework based on
