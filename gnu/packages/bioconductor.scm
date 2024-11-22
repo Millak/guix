@@ -19512,7 +19512,7 @@ for other R packages to compile and link against.")
            r-scales
            r-xml))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/flowWorkspace/")
     (synopsis "Infrastructure for working with cytometry data")
     (description
