@@ -31090,6 +31090,7 @@ such as Ghostscript is needed to use this package.")
                 "1w287k5gjhgqcyq27xz0ybvhzkf1kydcnpcn30iziliw3xx71g2d"))))
     (properties `((upstream-name . "emoa")))
     (build-system r-build-system)
+    (native-inputs (list r-testthat))
     (home-page "https://cran.r-project.org/web/packages/emoa/")
     (synopsis "Evolutionary multiobjective optimization algorithms")
     (description
