@@ -23525,7 +23525,7 @@ relevant, and the minimum expression of the most abundant condition.")
             r-singlecellexperiment
             r-summarizedexperiment))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/HelenaLC/CATALYST")
     (synopsis "Cytometry data analysis tools")
     (description
