@@ -22076,7 +22076,7 @@ distance measures.")
            r-matrix
            r-rcpp
            r-reshape2))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/kevinblighe/PCAtools")
     (synopsis "PCAtools: everything Principal Components Analysis")
     (description
