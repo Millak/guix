@@ -22466,6 +22466,7 @@ Touzet and Varre (2007).")
                 "0k8yzgpbf8d2jxxy9vzqfa3z3w4h3i9kp4rc811f4pspxbqzmzp1"))))
     (properties `((upstream-name . "rnaturalearthdata")))
     (build-system r-build-system)
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/ropenscilabs/rnaturalearthdata")
     (synopsis "World vector map data from Natural Earth")
     (description
