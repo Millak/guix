@@ -35910,7 +35910,7 @@ trend test.")
            r-rappdirs
            r-sodium
            r-yaml))
-    (native-inputs (list pkg-config))
+    (native-inputs (list pkg-config r-testthat))
     (home-page "https://github.com/r-lib/keyring")
     (synopsis "Access the system credential store from R")
     (description
