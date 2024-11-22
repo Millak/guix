@@ -11890,7 +11890,7 @@ less than 2bp on both sides of indel region.")
                              r-s4vectors
                              r-shiny
                              r-xml2))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/jokergoo/simona")
     (synopsis "Semantic similarity on bio-ontologies")
     (description
