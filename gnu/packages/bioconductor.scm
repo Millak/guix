@@ -11648,7 +11648,7 @@ single-cell RNA-seq.")
                              r-genomicranges
                              r-iranges
                              r-s4vectors))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-runit))
     (home-page "https://github.com/zhengxwen/SeqArray")
     (synopsis
      "Data management of large-scale whole-genome sequence variant calls")
