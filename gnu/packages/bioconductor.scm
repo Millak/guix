@@ -15376,7 +15376,8 @@ the numbers of cells across batches.")
            (sha256
             (base32
              "17c3a1hqc3ybwj7hpw8prazajp2x98aq7nyfn71h6lzjvblq297g"))))
-       ("r-knitr" ,r-knitr)))
+       ("r-knitr" ,r-knitr)
+       ("r-testthat" ,r-testthat)))
     (home-page "https://github.com/RGLab/MAST/")
     (synopsis "Model-based analysis of single cell transcriptomics")
     (description
