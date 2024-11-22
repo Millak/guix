@@ -24308,7 +24308,7 @@ to annotation.")
            r-readr
            r-xfun))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/LieberInstitute/megadepth")
     (synopsis "BigWig and BAM related utilities")
     (description
