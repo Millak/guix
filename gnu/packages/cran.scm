@@ -31516,6 +31516,7 @@ discriminant} (SZVD) analysis is also included in the package.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-stringr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/c5sire/ace2fastq")
     (synopsis "ACE file to FASTQ converter")
     (description
