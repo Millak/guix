@@ -7481,6 +7481,7 @@ effort and encourages consistency.")
            r-rtracklayer
            r-s4vectors
            r-xvector))
+    (native-inputs (list r-runit))
     (home-page "https://bioconductor.org/packages/BSgenome")
     (synopsis "Infrastructure for Biostrings-based genome data packages")
     (description
