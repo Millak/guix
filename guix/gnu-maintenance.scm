@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2010-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2010-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2012, 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
@@ -30,6 +30,7 @@
   #:use-module (srfi srfi-2)
   #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-26)
+  #:use-module (srfi srfi-34)
   #:use-module (rnrs io ports)
   #:use-module ((guix http-client) #:hide (open-socket-for-uri))
   ;; not required in many cases, so autoloaded to reduce start-up costs.
@@ -496,11 +497,16 @@ hosted on ftp.gnu.org, or not under that name (this is the case for
 
 (define (url->links url)
   "Return the unique links on the HTML page accessible at URL."
-  (let* ((uri   (string->uri url))
-         (port  (http-fetch/cached uri #:ttl 3600))
-         (sxml  (html->sxml port)))
-    (close-port port)
-    (delete-duplicates (html-links sxml))))
+  (guard (c ((http-get-error? c)
+             (warning (G_ "failed to download '~a': ~a (~a)~%")
+                      url (http-get-error-code c)
+                      (http-get-error-reason c))
+             '()))
+    (let* ((uri   (string->uri url))
+           (port  (http-fetch/cached uri #:ttl 3600))
+           (sxml  (html->sxml port)))
+      (close-port port)
+      (delete-duplicates (html-links sxml)))))
 
 (define (canonicalize-url url base-url)
   "Make relative URL absolute, by appending URL to BASE-URL as required.  If
