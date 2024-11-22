@@ -37082,7 +37082,7 @@ permuted copies (shadows).")
     (propagated-inputs
      (list r-quadprog))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://directlabels.r-forge.r-project.org/")
     (synopsis "Direct labels for multicolor plots")
     (description
