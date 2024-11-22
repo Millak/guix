@@ -37302,7 +37302,7 @@ bibliographic data) and PubMed.")
     (build-system r-build-system)
     (propagated-inputs
       (list r-assertthat r-rcpp))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/johndharrison/semver")
     (synopsis "Parser for Semantic Versioning 2.0.0")
     (description
