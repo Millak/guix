@@ -5845,7 +5845,7 @@ make mapping WGBS data to their probe IDs easier.")
            r-tidyr
            r-tidyselect
            r-withr))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://saezlab.github.io/decoupleR/")
     (synopsis "Computational methods to infer biological activities from omics data")
     (description
