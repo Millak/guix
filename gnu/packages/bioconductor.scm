@@ -5292,7 +5292,7 @@ stochastic dropout events as well as systematic allelic imbalance is used.")
            r-summarizedexperiment
            r-tictoc
            r-umap))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/CelliD")
     (synopsis
      "Single cell gene signature extraction using multiple correspondence analysis")
