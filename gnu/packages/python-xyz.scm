@@ -19861,13 +19861,13 @@ document.")
 (define-public python-symengine
   (package
     (name "python-symengine")
-    (version "0.11.0")
+    (version "0.13.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "symengine" version))
        (sha256
-        (base32 "0n54rdpmz3bmxrbjqflmlrgc27rvik1jkv6x3cjvgsq4p0lhvlqd"))))
+        (base32 "0k61j333kpxf23c92hnc0svjywylffx72arcf1wjbwgbjy4a10xb"))))
     (build-system python-build-system)
     (arguments
      (list
