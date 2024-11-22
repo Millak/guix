@@ -26981,7 +26981,7 @@ and a QP solver.")
     (propagated-inputs
      (list r-ade4 r-adegenet r-gaston r-gtools))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://cran.r-project.org/web/packages/hierfstat/")
     (synopsis "Estimation and tests of hierarchical F-statistics")
     (description
