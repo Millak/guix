@@ -28295,7 +28295,8 @@ interface for editing @code{ggplot2} theme elements.")
            (uri "https://raw.githubusercontent.com/noelboss/featherlight/1.3.5/src/featherlight.js")
            (sha256
             (base32
-             "0pbxgcipzbyivzlf3hal0lpajjj33p86fggm704c1b5bcq7ljl80"))))))
+             "0pbxgcipzbyivzlf3hal0lpajjj33p86fggm704c1b5bcq7ljl80"))))
+       ("r-testthat" ,r-testthat)))
     (home-page "https://rmarkdown.rstudio.com/flexdashboard")
     (synopsis "R Markdown format for flexible dashboards")
     (description
