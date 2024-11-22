@@ -19857,7 +19857,7 @@ genes in the gene-set that are ranked above the leading edge).")
     (properties `((upstream-name . "CIARA")))
     (build-system r-build-system)
     (propagated-inputs (list r-biobase r-ggplot2 r-ggraph r-magrittr))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://cran.r-project.org/package=CIARA")
     (synopsis "Cluster-independent algorithm for rare cell types identification")
     (description
