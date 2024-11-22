@@ -34209,6 +34209,7 @@ both exclusive and shared locking.")
            r-magrittr
            r-rcurl
            r-rsqlite))
+    (native-inputs (list r-testthat))
     (home-page "https://pbiecek.github.io/archivist/")
     (synopsis "Tools for storing, restoring and searching for R objects")
     (description
