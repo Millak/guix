@@ -33754,7 +33754,7 @@ from PLINK results.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-dplyr r-ggplot2 r-ggrepel r-lifecycle r-purrr r-rlang r-tibble))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/yutannihilation/gghighlight/")
     (synopsis "Highlight lines and points in ggplot2")
     (description "Suppose we have data that has so many series that it is hard
