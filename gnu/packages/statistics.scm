@@ -7737,7 +7737,7 @@ Michael Lim & Trevor Hastie (2015)")
             "08yx87k4kl3i9g3m1j9532whvs4l0l3v5gwj8sk7qlb3m3wajakr"))))
     (properties `((upstream-name . "datasauRus")))
     (build-system r-build-system)
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page
       "https://github.com/lockedata/datasauRus")
     (synopsis "Datasets from the Datasaurus Dozen")
