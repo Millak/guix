@@ -14731,7 +14731,7 @@ data.")
            r-tidytree
            r-treeio
            r-yulab-utils))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://yulab-smu.top/treedata-book/")
     (synopsis "R package for visualization of trees and annotation data")
     (description
