@@ -34933,6 +34933,7 @@ least squares.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-lavaan r-pbivnorm))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/simsem/semTools/wiki")
     (synopsis "Useful tools for structural equation modeling")
     (description
