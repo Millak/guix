@@ -23827,6 +23827,7 @@ discovery rates.")
                 "13gd40ygx586vs6xcp6clg69a92aj8zxlk1rn3xzkx8klfjimjc5"))))
     (properties `((upstream-name . "logging")))
     (build-system r-build-system)
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/WLOGSolutions/r-logging")
     (synopsis "R logging implementation of log4j")
     (description
