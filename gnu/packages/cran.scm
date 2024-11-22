@@ -20031,7 +20031,7 @@ efficient computation even with very large data sets.")
            r-sjstats
            r-tidyr))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://strengejacke.github.io/sjPlot/")
     (synopsis "Data visualization for statistics in social science")
     (description
