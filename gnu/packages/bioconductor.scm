@@ -16566,7 +16566,7 @@ information about samples and features can be added to the plot.")
            r-rlang
            r-yulab-utils))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://guangchuangyu.github.io/software/GOSemSim")
     (synopsis "GO-terms semantic similarity measures")
     (description
