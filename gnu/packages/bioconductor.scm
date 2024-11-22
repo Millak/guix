@@ -23862,7 +23862,7 @@ EMBL-EBI GWAS catalog.")
                              r-rsqlite
                              r-sandwich
                              r-survival))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-runit))
     (home-page "https://github.com/smgogarten/GWASTools")
     (synopsis "Tools for Genome Wide Association Studies")
     (description
