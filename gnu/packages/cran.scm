@@ -27115,7 +27115,7 @@ and accessing fields.")
     (properties `((upstream-name . "svMisc")))
     (build-system r-build-system)
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/SciViews/svMisc")
     (synopsis "Miscellaneous functions for SciViews")
     (description
