@@ -5244,7 +5244,7 @@ export of Strand-seq data.")
                              r-snpstats
                              r-variantannotation
                              r-vcfr))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/single-cell-genetics/cardelino")
     (synopsis "Clone identification from single cell data")
     (description
