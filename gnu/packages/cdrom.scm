@@ -15,6 +15,7 @@
 ;;; Copyright © 2019 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2020 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2024 Julian Flake <flake@uni-koblenz.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -721,39 +722,47 @@ and/or MPP/MP+ (Musepack) format, and tags them, all in one go.")
     (license gpl2+)))
 
 (define-public geteltorito
-  (package
-    (name "geteltorito")
-    (version "0.6")
-    (home-page
-     "https://userpages.uni-koblenz.de/~krienke/ftp/noarch/geteltorito/")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append home-page name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1gkbm9ahj2mgqrkrfpibzclsriqgsbsvjh19fr815vpd9f6snkxv"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:tests? #f ; No tests.
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (delete 'build)
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (install-file "geteltorito"
-                             (string-append out "/bin"))))))))
-    (inputs (list perl))
-    (synopsis "Extract the boot image from a CD-ROM")
-    (description
-     "@command{geteltorito} can extract the initial/default boot
+  (let ((commit "d6c7ba03c3c4c5bc4cb68e3602c9427b0912f16f")
+        (revision "1"))          ;Guix package revision
+    (package
+      (name "geteltorito")
+      (version (git-version "0.6" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/rainer042/geteltorito")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "15dh5ibmqr3pyxyiica4r9nn1xk1j0gr3xy2s3n8b4n7b2mn8n01"))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:tests? #f ; No tests.
+         #:phases
+         (modify-phases %standard-phases
+           (delete 'configure)
+           (delete 'build)
+           (replace 'install
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let ((out (assoc-ref outputs "out")))
+                 (install-file "geteltorito.pl"
+                               (string-append out "/bin"))
+                 (rename-file (string-append out "/bin/geteltorito.pl")
+                              (string-append out "/bin/geteltorito"))
+                 (chmod (string-append out "/bin/geteltorito") #o555)))))))
+      (home-page
+       "https://github.com/rainer042/geteltorito")
+      (inputs (list perl))
+      (synopsis "Extract the boot image from a CD-ROM")
+      (description
+       "@command{geteltorito} can extract the initial/default boot
 image from CDs (and ISOs) that follow the El Torito specification
 for bootable CD-ROMs.
 
 Image data is written to standard output by default and all other
 information is written to standard error.")
-    (license gpl2+)))
+      (license gpl2+))))
 
 (define-public asunder
   (package
