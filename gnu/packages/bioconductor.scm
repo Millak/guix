@@ -9160,6 +9160,7 @@ microarray data, using nearest neighbor averaging.")
     (native-inputs
      `(("esbuild" ,esbuild)
        ("r-knitr" ,r-knitr)
+       ("r-runit" ,r-runit)
        ;; D3 version 2.10.3
        ("js-d3-v2"
         ,(origin
