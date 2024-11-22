@@ -7413,7 +7413,7 @@ mediation and estimating power.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-lifecycle r-sandwich))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/jepusto/clubSandwich")
     (synopsis "Cluster-Robust (Sandwich) Variance Estimators with Small-Sample
 Corrections")
