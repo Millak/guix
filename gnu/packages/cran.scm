@@ -34300,9 +34300,9 @@ package.")
     (properties `((upstream-name . "formattable")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-htmltools r-htmlwidgets r-lifecycle r-rmarkdown))
+     (list r-htmltools r-htmlwidgets r-knitr r-rmarkdown))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/renkun-ken/formattable")
     (synopsis "Print vectors and data frames with text fromatting")
     (description
