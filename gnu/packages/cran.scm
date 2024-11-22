@@ -22513,7 +22513,7 @@ library which allows parsing of NEXUS, Newick and other phylogenetic tree
     (propagated-inputs
      (list r-ade4 r-ape r-rcpp r-rncl r-rnexml))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/fmichonneau/phylobase")
     (synopsis "Base package for phylogenetic structures and comparative data")
     (description "This package provides a base @code{S4} class for comparative
