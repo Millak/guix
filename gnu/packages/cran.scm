@@ -21134,7 +21134,8 @@ Bioconductor packages.")
      (list esbuild
            pkg-config
            r-knitr
-           r-rmarkdown))                ;for vignettes
+           r-rmarkdown                  ;for vignettes
+           r-testthat))
     (inputs
      (list freetype
            glu
