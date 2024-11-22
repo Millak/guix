@@ -22131,7 +22131,7 @@ dimensional mass cytometry data.")
            r-shiny
            r-txdb-hsapiens-ucsc-hg19-knowngene
            r-txdb-hsapiens-ucsc-hg38-knowngene))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/jokergoo/rGREAT")
     (synopsis "Client for GREAT analysis")
     (description
