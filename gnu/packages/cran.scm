@@ -24507,6 +24507,7 @@ functions are provided.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-codetools r-crayon r-purrr r-rlang r-tibble))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/r-lib/sloop")
     (synopsis "Helpers for object-oriented programming in R")
     (description
