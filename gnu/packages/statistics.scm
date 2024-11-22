@@ -5136,6 +5136,7 @@ character vector.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-rematch r-tibble))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/rsheets/cellranger")
     (synopsis "Translate spreadsheet cell ranges to rows and columns")
     (description
