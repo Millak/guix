@@ -26195,6 +26195,7 @@ tessellation.")
          "12rlkspg0zavda6jfwcah7gm9fh4x13720m4gvy4xndfm5gxswxr"))))
     (properties `((upstream-name . "wk")))
     (build-system r-build-system)
+    (native-inputs (list r-testthat))
     (home-page "https://paleolimbot.github.io/wk/")
     (synopsis "Lightweight well-known geometry parsing")
     (description
