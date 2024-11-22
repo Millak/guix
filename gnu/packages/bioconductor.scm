@@ -3501,7 +3501,7 @@ context-specific properties.")
     (build-system r-build-system)
     (propagated-inputs (list r-alabaster-base r-alabaster-se r-jsonlite
                              r-singlecellexperiment))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/alabaster.sce")
     (synopsis "Load and save SingleCellExperiment from file")
     (description
