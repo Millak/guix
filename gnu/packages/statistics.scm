@@ -4269,6 +4269,7 @@ using the multicore functionality of the parallel package.")
        (list js-selectize))
       (native-inputs
        `(("r-knitr" ,r-knitr)
+         ("r-testit" ,r-testit)
          ("esbuild" ,esbuild)
          ("datatables-plugins"
           ,(let ((version "1.13.6"))
