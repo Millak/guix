@@ -13158,15 +13158,19 @@ MEDLINE XML repository.")
 (define-public python-pure-eval
   (package
     (name "python-pure-eval")
-    (version "0.2.2")
+    (version "0.2.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pure_eval" version))
        (sha256
-        (base32 "1hwsm85cwqwh6d6x4vzcimla2865s6v19ms3ym81ganzyq534i9b"))))
-    (build-system python-build-system)
-    (native-inputs (list python-pytest python-setuptools-scm))
+        (base32 "0hmg1qcv1h5k0dyj7sfp54ibnmjrvf4awdc6gin5fk2n80zrhkjz"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
     (home-page "https://github.com/alexmojaki/pure_eval")
     (synopsis "Python library to evaluate abstract syntax tree nodes")
     (description "The @code{pure_eval} Python library can safely evaluate
