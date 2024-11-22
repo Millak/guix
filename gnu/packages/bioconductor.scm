@@ -20455,6 +20455,7 @@ provides methods for retrieving enriched pathways.")
            r-summarizedexperiment
            r-variantannotation
            r-xvector))
+    (native-inputs (list r-runit))
     (home-page "https://github.com/rcastelo/VariantFiltering")
     (synopsis "Filtering of coding and non-coding genetic variants")
     (description
