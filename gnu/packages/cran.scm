@@ -28632,6 +28632,13 @@ provides tools to compute this metric.")
          "0xska080wnifvibywmwalmp4a0xdnsgpn0k3m5ahjbqckfcpklrm"))))
     (properties `((upstream-name . "lintr")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      ;; Needed by tests.
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'set-HOME
+           (lambda _ (setenv "HOME" "/tmp"))))))
     (propagated-inputs
      (list r-backports
            r-codetools
@@ -28642,7 +28649,7 @@ provides tools to compute this metric.")
            r-rex
            r-xml2
            r-xmlparsedata))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-patrick r-testthat))
     (home-page "https://github.com/jimhester/lintr")
     (synopsis "Linter for R code")
     (description "This package checks adherence to a given style, syntax
