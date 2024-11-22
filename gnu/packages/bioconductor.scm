@@ -16283,7 +16283,7 @@ especially Illumina Infinium methylation microarrays.")
            r-vegan
            r-zoo))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "http://www.jjwanglab.org/Linnorm/")
     (synopsis "Linear model and normality based transformation method")
     (description
