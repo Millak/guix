@@ -26236,7 +26236,7 @@ high-performance functions are provided here.")
     (inputs
      (list openssl zlib))
     (native-inputs
-     (list pkg-config))
+     (list pkg-config r-testthat))
     (home-page "https://r-spatial.github.io/s2/")
     (synopsis "Spherical geometry operators using the S2 geometry library")
     (description
