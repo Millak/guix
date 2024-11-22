@@ -20361,7 +20361,7 @@ more information about packages, and where they were installed from.")
          "0345s9q0fyv0wrxkklcy97h7bi85jfb3vwkh80px926d4qa3yrjd"))))
     (build-system r-build-system)
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/r-lib/remotes#readme")
     (synopsis "R package installation from remote repositories")
     (description
