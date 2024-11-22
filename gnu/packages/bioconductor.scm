@@ -17221,7 +17221,7 @@ further downstream analysis on its output.")
     (propagated-inputs
      (list r-biocparallel r-ellipse r-ggplot2))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/bacon/")
     (synopsis "Controlling bias and inflation in association studies")
     (description
