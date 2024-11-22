@@ -1509,7 +1509,7 @@ adapted for other output formats, such as HTML or LaTeX.")
                 "0k271w4bhlj7r9igkiyfw7d7bg30s2mn4sr4alb8f9w57wnapfjf"))))
     (build-system r-build-system)
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testit))
     (home-page "https://yihui.org/formatr/")
     (synopsis "Format R code automatically")
     (description
