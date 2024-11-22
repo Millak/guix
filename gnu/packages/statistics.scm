@@ -3560,7 +3560,7 @@ certain criterion, e.g., it contains a certain regular file.")
            r-xfun
            r-yaml))
     (native-inputs
-     (list esbuild r-knitr))
+     (list esbuild r-knitr r-testthat))
     (home-page "https://rmarkdown.rstudio.com")
     (synopsis "Convert R Markdown documents into a variety of formats")
     (description
