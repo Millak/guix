@@ -28799,6 +28799,7 @@ code edited with @code{RStudio IDE}, @code{Emacs} and @code{Vim}.")
            r-tibble
            r-uwot
            r-withr))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/kharchenkolab/sccore")
     (synopsis "Core utilities for single-cell RNA-Seq")
     (description
