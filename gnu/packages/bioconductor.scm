@@ -4450,7 +4450,7 @@ quality assessment.")
                 "0q7rv3aasc8xdl0mamggncgs2cdyqyagq4rnskc0c3qccb7mvakg"))))
     (properties `((upstream-name . "ASAFE")))
     (build-system r-build-system)
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/ASAFE")
     (synopsis "Ancestry Specific Allele Frequency Estimation")
     (description
