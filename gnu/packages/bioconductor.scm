@@ -12489,7 +12489,7 @@ that integrates the various evidences.")
                              r-stringi
                              r-stringr
                              r-xvector))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/FelixErnst/Structstrings")
     (synopsis "Implementation of the dot bracket annotations with Biostrings")
     (description
