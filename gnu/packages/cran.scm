@@ -39407,6 +39407,7 @@ final SQL translation of the algorithm.  It currently supports @code{lm()},
          "1ap8p1lpbj2wz90mpf1vbyzhv2spzv03bi8lwzpsir2y77hjxhxl"))))
     (properties `((upstream-name . "janeaustenr")))
     (build-system r-build-system)
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/juliasilge/janeaustenr")
     (synopsis "Jane Austen's complete novels")
     (description
