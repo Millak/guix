@@ -11674,7 +11674,7 @@ data access using the R programming language.")
     (properties `((upstream-name . "seqLogo")))
     (build-system r-build-system)
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/seqLogo")
     (synopsis "Sequence logos for DNA sequence alignments")
     (description
