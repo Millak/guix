@@ -24589,7 +24589,7 @@ approach and a multi-scale contact profile.")
            r-singlecellexperiment
            r-summarizedexperiment
            r-viridis))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/catavallejos/BASiCS")
     (synopsis "Bayesian analysis of single-cell sequencing data")
     (description
