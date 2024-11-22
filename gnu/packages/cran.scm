@@ -28863,6 +28863,7 @@ from SuiteSparse.")
            r-rcpparmadillo
            r-reshape2
            r-rlang))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/ChristophH/sctransform")
     (synopsis "Variance stabilizing transformations for Single Cell UMI Data")
     (description
