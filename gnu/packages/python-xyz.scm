@@ -17878,29 +17878,28 @@ significantly better performance.")
 (define-public python-fastjsonschema
   (package
     (name "python-fastjsonschema")
-    (version "2.15.1")
+    (version "2.20.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "fastjsonschema" version))
+       (method git-fetch)               ; no tests in PyPI release
+       (uri (git-reference
+             (url "https://github.com/horejsek/python-fastjsonschema")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1ln2j60jzyn6p8i8ljygfgrji58hc23452g7nllkcjdk4p93c7v7"))))
+        (base32 "0aqj7hf1fgana9hh9la475wiyivcr46fra1bvigp00805g14k599"))))
     (build-system pyproject-build-system)
-    (arguments `(#:tests? #f))          ;no tests included
     (native-inputs
      (list python-colorama
            python-json-spec
            python-jsonschema
-           python-pylint
            python-pytest
            python-pytest-benchmark
            python-pytest-cache
            python-setuptools
            python-wheel))
-    (home-page
-     "https://github.com/horejsek/python-fastjsonschema")
-    (synopsis
-     "Fast Python implementation of JSON schema")
+    (home-page "https://github.com/horejsek/python-fastjsonschema")
+    (synopsis "Fast Python implementation of JSON schema")
     (description
      "This library implements validation of JSON documents by JSON schema for
 drafts 04, 06 and 07.")
