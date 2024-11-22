@@ -1093,6 +1093,7 @@ annotations for the genome of the model fruit fly Drosophila melanogaster.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-annotationdbi))
+    (native-inputs (list r-runit))
     (home-page "https://www.bioconductor.org/packages/org.Dr.eg.db/")
     (synopsis "Annotation for Zebrafish")
     (description
