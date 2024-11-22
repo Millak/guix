@@ -17305,7 +17305,7 @@ distributions, modules and filter motifs.")
           r-s4vectors
           r-splitstackshape))
    (native-inputs
-     (list r-formatr r-knitr r-markdown r-rmarkdown))
+     (list r-formatr r-knitr r-markdown r-rmarkdown r-runit))
    (home-page "https://www.bioconductor.org/packages/MotifDb/")
    (synopsis "Annotated collection of protein-DNA binding sequence motifs")
    (description "This package provides more than 2000 annotated position
