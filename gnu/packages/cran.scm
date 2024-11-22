@@ -37208,7 +37208,7 @@ input.")
     (propagated-inputs
      (list r-data-table r-jsonlite r-matrix r-r6))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/Microsoft/LightGBM")
     (synopsis "Light gradient boosting machine")
     (description
