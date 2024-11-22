@@ -4741,7 +4741,7 @@ transcripts in an integrated manner.")
            r-rappdirs
            r-rcpp
            r-testthat))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/sunyoungshin/atSNP")
     (synopsis
      "Affinity test for identifying regulatory single nucleotide polymorphisms")
