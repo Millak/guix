@@ -21065,6 +21065,7 @@ then the law of total EBPs.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-graph))
+    (native-inputs (list r-runit))
     (home-page "https://bioconductor.org/packages/hypergraph")
     (synopsis "Hypergraph data structures")
     (description
