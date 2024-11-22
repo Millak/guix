@@ -30275,6 +30275,7 @@ files is supported.")
            r-rlang
            r-tibble
            r-tidyr))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/thomasp85/tidygraph")
     (synopsis "Tidy API for graph manipulation")
     (description
