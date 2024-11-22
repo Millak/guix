@@ -24966,7 +24966,7 @@ both as keys and as attributes.")
 (define-public python-astroid
   (package
     (name "python-astroid")
-    (version "2.11.7")
+    (version "3.3.4")
     (source
      (origin
        (method git-fetch)
@@ -24975,12 +24975,16 @@ both as keys and as attributes.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0lmm5bhszg1nj0xsjnh5nm39if2jzpa3ycgvhy6ddycz28dy568y"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-lazy-object-proxy python-typing-extensions python-wrapt))
+        (base32 "16cnfis2d0cyqxxx7iqi3n7ljhd55yv9v9yl1kl59k4a5jg4cnpx"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest python-pytest-runner))
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-lazy-object-proxy
+           python-typing-extensions
+           python-wrapt))
     (home-page "https://github.com/PyCQA/astroid")
     (synopsis "Python source code base representation")
     (description "@code{python-astroid} provides a common base representation
