@@ -1093,6 +1093,7 @@ see package vignette.  To quote Rene Magritte, \"Ceci n'est pas un pipe.\"")
     (build-system r-build-system)
     (propagated-inputs
      (list r-colorspace))
+    (native-inputs (list r-testthat))
     (home-page "https://cran.r-project.org/web/packages/munsell")
     (synopsis "Munsell colour system")
     (description
