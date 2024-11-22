@@ -23043,7 +23043,7 @@ sequence (@code{DNAse-seq}) experiments.")
      (list r-biocgenerics r-delayedarray r-genomicranges r-s4vectors
            r-summarizedexperiment))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/SingleCellExperiment")
     (synopsis "S4 classes for single cell data")
     (description "This package defines an S4 class for storing data from
