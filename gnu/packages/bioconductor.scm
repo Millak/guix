@@ -16664,7 +16664,7 @@ that protein levels remain constant despite fluctuating total mRNA levels.")
            r-rtracklayer
            r-summarizedexperiment
            r-variantannotation))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-runit))
     (home-page "https://bioconductor.org/packages/fcScan")
     (synopsis "Detect clusters of coordinates with user defined options")
     (description
