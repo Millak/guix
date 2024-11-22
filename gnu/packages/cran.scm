@@ -20225,7 +20225,7 @@ terminals that do not support Unicode.")
     (propagated-inputs
      (list r-askpass r-curl r-jsonlite r-openssl r-sys))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://docs.ropensci.org/credentials/")
     (synopsis "Tools for managing SSH and Git credentials")
     (description
