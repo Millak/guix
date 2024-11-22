@@ -24798,7 +24798,7 @@ features such as gene expression or cell type composition can be imputed.")
            r-rcppprogress
            r-singlecellexperiment
            r-summarizedexperiment))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/WT215/bayNorm")
     (synopsis "Single-cell RNA sequencing data normalization")
     (description
