@@ -11090,6 +11090,7 @@ tab-delimited (tabix) files.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-rcurl r-rjson r-s4vectors r-xml r-yaml))
+    (native-inputs (list r-runit))
     (home-page "https://cran.r-project.org/package=restfulr")
     (synopsis "R interface to RESTful web services")
     (description
