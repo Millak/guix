@@ -29509,7 +29509,7 @@ in R, including a translation of the original algorithm into R.")
            r-rcppannoy
            r-rcppprogress
            r-rspectra))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/jlmelville/uwot")
     (synopsis "Uniform manifold approximation and projection")
     (description
