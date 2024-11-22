@@ -6411,7 +6411,7 @@ algorithms.")
            r-rcpp
            r-rcppeigen))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat r-optimx))
     (home-page "https://cran.r-project.org/web/packages/lme4")
     (synopsis "Linear mixed-effects models using eigen and S4")
     (description
