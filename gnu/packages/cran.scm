@@ -1852,13 +1852,13 @@ can read and write both the metadata and the cell data in a Sheet.")
 (define-public r-pma
   (package
     (name "r-pma")
-    (version "1.2.1")
+    (version "1.2-4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "PMA" version))
        (sha256
-        (base32 "1rhiylm3jfarnqdkv7nwg536sgsa30ic80dk9byks9w0wf4mn59s"))))
+        (base32 "0mq0mchvl4zlj1sgnq7z5ccm0f4lhxajqvk9w265axs0s49g76ry"))))
     (properties `((upstream-name . "PMA")))
     (build-system r-build-system)
     (home-page "https://github.com/bnaras/PMA")
