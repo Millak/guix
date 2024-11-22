@@ -14418,6 +14418,7 @@ experiments.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-biobase r-rcpp))
+    (native-inputs (list r-testthat))
     (home-page "https://bioconductor.org/packages/ROTS/")
     (synopsis "Reproducibility-Optimized Test Statistic")
     (description
