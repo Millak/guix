@@ -14052,6 +14052,7 @@ more complex hypotheses) via empirical Bayesian methods.")
            r-rsamtools
            r-rtracklayer
            r-s4vectors))
+    (native-inputs (list r-runit))
     (home-page "https://bioconductor.org/packages/ChIPComp")
     (synopsis "Quantitative comparison of multiple ChIP-seq datasets")
     (description
