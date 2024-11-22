@@ -20385,6 +20385,7 @@ the code was copied over from @code{devtools}.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-processx))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/r-lib/xopen#readme")
     (synopsis "Open system files, URLs, anything")
     (description
