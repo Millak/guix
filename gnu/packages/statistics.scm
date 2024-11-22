@@ -1445,7 +1445,7 @@ evaluation (NSE) in R.")
                 "1gid1mfzq1j3n5fsnpzdb50p2m73z92s6njp0sgr503aaskhhryg"))))
     (build-system r-build-system)
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/rstats-db/DBI")
     (synopsis "R database interface")
     (description
