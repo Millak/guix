@@ -28082,6 +28082,7 @@ each of the legends).")
            r-rlang
            r-stringr
            r-xml2))
+    (native-inputs (list r-testthat))
     (home-page "https://wilkelab.org/gridtext/")
     (synopsis "Improved text rendering support for Grid graphics")
     (description
