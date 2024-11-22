@@ -36106,7 +36106,7 @@ rendered as text, axis labels, etc. throughout R's plotting system.")
                 "0czf8f2qcjl9lh48svicpis09d3iwz9cndfm7hq8wlz5dl3dwh7m"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-xml2 r-httr r-plyr r-stringr r-tibble))
+     (list r-httr r-plyr r-stringr r-tibble r-xml2))
     (native-inputs
      (list r-knitr))
     (home-page "https://github.com/ropensci/oai/")
