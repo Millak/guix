@@ -43467,7 +43467,7 @@ carrying out economic experiments.")
      `((upstream-name . "DistributionUtils")))
     (build-system r-build-system)
     (native-inputs
-     (list gfortran))
+     (list gfortran r-runit))
     (home-page "https://cran.r-project.org/package=DistributionUtils")
     (synopsis "Distribution utilities")
     (description
