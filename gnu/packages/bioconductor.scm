@@ -5954,6 +5954,7 @@ bases such as COSMIC.")
     (native-inputs
      `(("esbuild" ,esbuild)
        ("r-knitr" ,r-knitr)
+       ("r-testthat" ,r-testthat)
        ("js-jquery-sticky-kit"
         ,(origin
            (method url-fetch)
