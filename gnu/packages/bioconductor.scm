@@ -22310,6 +22310,8 @@ generated.")
     (properties
      `((upstream-name . "preprocessCore")))
     (build-system r-build-system)
+    ;; Tests fail with: "return code from pthread_create() is 22"
+    (arguments (list #:tests? #false))
     (home-page "https://github.com/bmbolstad/preprocessCore")
     (synopsis "Collection of pre-processing functions")
     (description
