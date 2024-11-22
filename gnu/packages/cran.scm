@@ -19940,7 +19940,7 @@ effects models and Bayesian models.")
     (propagated-inputs
      (list r-insight))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/strengejacke/ggeffects")
     (synopsis "Create tidy data frames of marginal effects for ggplot")
     (description
