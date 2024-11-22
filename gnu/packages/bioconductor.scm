@@ -7446,6 +7446,7 @@ biological sequences or sets of sequences.")
            r-scales
            r-summarizedexperiment
            r-variantannotation))
+    (native-inputs (list r-runit))
     (home-page "https://bioconductor.org/packages/biovizBase")
     (synopsis "Basic graphic utilities for visualization of genomic data")
     (description
