@@ -15756,6 +15756,7 @@ the bridge between GEO and BioConductor.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-base64))
+    (native-inputs (list r-runit))
     (home-page "https://github.com/HenrikBengtsson/illuminaio/")
     (synopsis "Parse Illumina microarray output files")
     (description
