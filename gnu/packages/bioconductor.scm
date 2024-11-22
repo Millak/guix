@@ -5134,7 +5134,7 @@ estimates for each correlation element.")
            r-tidyr
            r-vegan
            r-viridis))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/dunbarlabNIH/barcodetrackR")
     (synopsis "Functions for analyzing cellular barcoding data")
     (description
