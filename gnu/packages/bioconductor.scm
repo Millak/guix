@@ -12328,7 +12328,7 @@ scRNA-seq data computationally.")
           r-summarizedexperiment
           r-trajectoryutils))
    (native-inputs
-    (list r-knitr))
+    (list r-knitr r-testthat))
    (home-page "https://bioconductor.org/packages/slingshot")
    (synopsis "Tools for ordering single-cell sequencing")
    (description "This package provides functions for inferring continuous,
