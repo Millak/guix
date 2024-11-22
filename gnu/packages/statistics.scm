@@ -5565,6 +5565,7 @@ with alternating row colors) in LaTeX and HTML formats easily from
                (base32
                 "17hb6y1i9bva0fr4k9m6wncmnzdjad1b7fhsvfhva4xavpll3bds"))))
     (build-system r-build-system)
+    (native-inputs (list r-testthat))
     (home-page "https://cran.r-project.org/web/packages/vipor")
     (synopsis "Plot categorical data using noise and density estimates")
     (description
