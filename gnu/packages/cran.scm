@@ -25456,6 +25456,7 @@ several formats and MIME types.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-repr))
+    (native-inputs (list r-testthat))
     (home-page "https://cran.r-project.org/web/packages/IRdisplay/")
     (synopsis "Jupyter display machinery")
     (description
