@@ -14785,25 +14785,6 @@ possible, parallelization is achieved using the BiocParallel framework.")
         (base32
          "0w7j6xh0gzhahk1r8w2wgnylq5v476jzz0g14yjmszfkzm10va3h"))))
     (build-system r-build-system)
-    ;; Some examples loop forever, such as this one:
-    ;; > DiffusionMap(guo, 13, censor_val = 15, censor_range = c(15, 40), verbose = TRUE)
-    ;; Warning in censoring_impl(data, sigma, structure(dists, class = "dgCMatrix"),  :
-    ;;   subscript out of bounds (index 0 >= vector size 0)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key test-target inputs outputs tests? #:allow-other-keys)
-             (let* ((libdir    (string-append (assoc-ref outputs "out") "/site-library/"))
-                    (pkg-name  "destiny")
-                    (testdir   (string-append libdir pkg-name "/" test-target)))
-               (when (and tests? (file-exists? testdir))
-                 (invoke "Rscript" "--no-save" "--slave" "-e"
-                         (string-append "quit(status=tools::testInstalledPackage(\"" pkg-name "\", "
-                                        "lib.loc = \"" libdir "\", "
-                                        "errorsAreFatal=TRUE, "
-                                        "types=c(\"tests\", \"vignettes\")))")))))))))
     (propagated-inputs
      (list r-biobase
            r-biocgenerics
