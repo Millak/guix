@@ -1806,6 +1806,8 @@ R packages that praise their users.")
               (sha256
                (base32
                 "1xz94i0r62lslyqya8gz6i2r100wi26y5c2822v2i7lkflwwx1fp"))))
+    (properties
+     '((updater-ignored-native-inputs . ("r-testthat"))))
     (build-system r-build-system)
     ;; Some tests require r-xml2, which uses r-testthat.
     (arguments (list #:tests? #false))
