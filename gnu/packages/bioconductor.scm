@@ -385,6 +385,7 @@ analysis.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-annotationdbi))
+    (native-inputs (list r-runit))
     (home-page "https://bioconductor.org/packages/org.Bt.eg.db")
     (synopsis "Genome wide annotation for Bovine")
     (description
