@@ -8095,7 +8095,7 @@ CAGE.")
     (properties `((upstream-name . "EnhancedVolcano")))
     (build-system r-build-system)
     (propagated-inputs (list r-ggplot2 r-ggrepel))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-runit))
     (home-page "https://github.com/kevinblighe/EnhancedVolcano")
     (synopsis
      "Publication-ready volcano plots with enhanced coloring and labeling")
