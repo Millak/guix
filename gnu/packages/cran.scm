@@ -20149,7 +20149,7 @@ repositories.")
            r-lifecycle
            r-rlang))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/r-lib/gh#readme")
     (synopsis "Access the GitHub API via R")
     (description
