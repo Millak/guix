@@ -12632,6 +12632,7 @@ of risk prediction (survival) models.")
            r-limma
            r-matrixstats
            r-mgcv))
+    (native-inputs (list r-testthat))
     (home-page "https://bioconductor.org/packages/sva")
     (synopsis "Surrogate variable analysis")
     (description
