@@ -15428,7 +15428,7 @@ single cell assay data.")
            r-vgam
            r-viridis))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/monocle")
     (synopsis "Clustering, differential expression, and trajectory analysis for single-cell RNA-Seq")
     (description
