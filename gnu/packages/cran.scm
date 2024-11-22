@@ -26935,6 +26935,7 @@ that accept short and long options.")
     (properties `((upstream-name . "osqp")))
     (build-system r-build-system)
     (propagated-inputs (list r-matrix r-r6 r-rcpp))
+    (native-inputs (list r-testthat))
     (home-page "https://osqp.org")
     (synopsis "Quadratic Programming Solver using the OSQP Library")
     (description
