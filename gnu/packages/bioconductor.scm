@@ -13218,7 +13218,7 @@ Affymetrix (CEL files) and NimbleGen arrays (XYS files).")
                              r-summarizedexperiment
                              r-tidyr
                              r-tidyselect))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/RforMassSpectrometry/QFeatures")
     (synopsis "Quantitative features for mass spectrometry data")
     (description
