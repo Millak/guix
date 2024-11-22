@@ -21300,7 +21300,7 @@ structures.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-biocgenerics r-chemminer r-runit))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-runit))
     (home-page "https://github.com/girke-lab/fmcsR")
     (synopsis "Mismatch tolerant maximum common substructure searching")
     (description
