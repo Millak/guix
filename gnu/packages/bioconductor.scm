@@ -11544,7 +11544,7 @@ different experiment.")
            r-tidygraph
            r-truncdist
            r-vgam))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/scRepertoire")
     (synopsis "Toolkit for single-cell immune receptor profiling")
     (description
