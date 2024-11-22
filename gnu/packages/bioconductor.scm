@@ -15692,7 +15692,7 @@ distributions.")
            r-sparsematrixstats
            r-summarizedexperiment))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/scone")
     (synopsis "Single cell overview of normalized expression data")
     (description
