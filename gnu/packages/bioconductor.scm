@@ -20587,7 +20587,7 @@ directly interact with SingleCellExperiment and Seurat objects.")
     (properties `((upstream-name . "UCSC.utils")))
     (build-system r-build-system)
     (propagated-inputs (list r-httr r-jsonlite r-s4vectors))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/UCSC.utils")
     (synopsis
      "Low-level utilities to retrieve data from the UCSC Genome Browser")
