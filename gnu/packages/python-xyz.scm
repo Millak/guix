@@ -27524,30 +27524,23 @@ based on the CPython 2.7 and 3.7 parsers.")
 (define-public python-typeguard
   (package
     (name "python-typeguard")
-    (version "2.13.3")
+    (version "4.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "typeguard" version))
        (sha256
-        (base32 "1i5qzcyw2715h1g1hvj7fxykck2bkxyshpngjr3nfcx1lf6smv80"))
-       (patches (search-patches "python-typeguard-python3.10.patch"))))
-    (build-system python-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "-vv" "-k"
-                        ;; XXX: These fail when installed as a library:
-                        ;; https://github.com/agronholm/typeguard/issues/176
-                        "not usefixtures and not test_cached_module")))))))
-    (native-inputs (list python-mypy
-                         python-pytest
-                         python-setuptools-scm
-                         python-typing-extensions))
+        (base32 "06y22d1f5dhpyl71wbhsaibig5hvc2v44pw795yb8lxl02fsh8hd"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-mypy
+           python-pytest
+           python-setuptools
+           python-setuptools-scm
+           python-typing-extensions
+           python-wheel))
+    (propagated-inputs
+     (list python-typing-extensions))
     (home-page "https://github.com/agronholm/typeguard")
     (synopsis "Run-time type checker for Python")
     (description
