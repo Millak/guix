@@ -18398,7 +18398,7 @@ Currently only Affymetrix oligonucleotide analysis is supported.")
            r-softimpute
            r-summarizedexperiment))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/zinbwave")
     (synopsis "Zero-inflated negative binomial model for RNA-seq data")
     (description "This package implements a general and flexible zero-inflated
