@@ -32670,6 +32670,7 @@ poverty measures.  It provides both empirical and theoretical Lorenz curves.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-accelerometry r-dplyr r-ineq r-survival r-tidyr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/junruidi/ActFrag")
     (synopsis "Activity fragmentation metrics extraction")
     (description
