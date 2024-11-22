@@ -27870,7 +27870,7 @@ graphics using Vega.")
     (propagated-inputs
      (list r-lattice r-survival))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-runit))
     (home-page "https://github.com/gbm-developers/gbm")
     (synopsis "Generalized boosted regression models")
     (description
