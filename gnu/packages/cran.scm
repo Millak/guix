@@ -31203,6 +31203,7 @@ regression models.")
            r-rcpp
            r-sn
            r-truncnorm))
+    (native-inputs (list r-testthat))
     (home-page "https://cran.r-project.org/web/packages/abtest/")
     (synopsis "Bayesian A/B testing")
     (description
