@@ -32929,6 +32929,7 @@ al. (2016) @url{doi:10.1371/journal.pone.0160644}.")
            r-lubridate
            r-magrittr
            r-tidyr))
+    (native-inputs (list r-testthat))
     (home-page "https://cran.r-project.org/web/packages/activPAL")
     (synopsis "Processing and chart generation from activPAL events files")
     (description
