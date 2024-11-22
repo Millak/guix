@@ -6028,7 +6028,7 @@ array-like objects like @code{DataFrame} objects (typically with Rle columns),
                              r-rcpp
                              r-reticulate
                              r-rtsne))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/densvis")
     (synopsis
      "Density-preserving data visualization via non-linear dimensionality reduction")
