@@ -4241,7 +4241,7 @@ sequencing data.")
            r-mass
            r-rcolorbrewer
            r-survival))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/ANF")
     (synopsis "Affinity network fusion for complex patient clustering")
     (description
