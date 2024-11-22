@@ -24513,7 +24513,7 @@ interface to query the classifier.")
     (properties `((upstream-name . "dir.expiry")))
     (build-system r-build-system)
     (propagated-inputs (list r-filelock))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/dir.expiry")
     (synopsis "Managing expiration for cache directories")
     (description
