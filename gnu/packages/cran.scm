@@ -9954,7 +9954,10 @@ functions from LINPACK.")
         (base32 "1fm0932z35flb7rwx3pydifrfmw62b7hrm6qr7b0wv9gcqvi6pxx"))))
     (properties `((upstream-name . "litedown")))
     (build-system r-build-system)
+    ;; Building the vignettes requires internet access.
+    (arguments (list #:test-types '(list "tests")))
     (propagated-inputs (list r-commonmark r-xfun))
+    (native-inputs (list r-codetools))
     (home-page "https://github.com/yihui/litedown")
     (synopsis "Lightweight version of R Markdown")
     (description
