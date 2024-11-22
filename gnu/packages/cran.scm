@@ -36100,7 +36100,7 @@ Encyclopedia of Integer Sequences} (OEIS) in the function help page.")
     (properties `((upstream-name . "isoband")))
     (build-system r-build-system)
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/wilkelab/isoband")
     (synopsis "Generate isolines and isobands from regularly spaced elevation grids")
     (description
