@@ -63,7 +63,7 @@
 ;;; Copyright © 2021, 2024 David Pflug <david@pflug.io>
 ;;; Copyright © 2021, 2022 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Solene Rapenne <solene@perso.pw>
-;;; Copyright © 2021, 2022 Noisytoot <ron@noisytoot.org>
+;;; Copyright © 2021, 2022, 2024 Noisytoot <ron@noisytoot.org>
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2021, 2022 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2021 Christopher Baines <mail@cbaines.net>
@@ -8162,6 +8162,70 @@ elements to achieve a simple goal in the most complex way possible.")
     ;; under various licenses, listed here.
     (license (list license:gpl2 license:public-domain license:expat
                    license:cc-by-sa3.0 license:gpl3+ license:wtfpl2))))
+
+(define-public the-powder-toy
+  (package
+    (name "the-powder-toy")
+    (version "98.2.365")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/The-Powder-Toy/The-Powder-Toy")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06l39w3ggrzn8799dqll606by4f88kjr60r879w8j26csx1py76g"))))
+    (build-system meson-build-system)
+    (arguments
+     `(#:configure-flags (list (string-append
+                                "-Dworkaround_elusive_bzip2_include_dir="
+                                (assoc-ref %build-inputs "bzip2")))
+       ;; No install target
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'install
+           (lambda _
+             (let* ((output (assoc-ref %outputs "out"))
+                    (bin (string-append output "/bin"))
+                    (share (string-append output "/share"))
+                    (apps (string-append share "/applications")))
+               (mkdir-p bin)
+               (mkdir-p apps)
+               (install-file "powder" bin)
+               (install-file "resources/powder.desktop" apps)
+               (for-each
+                 (lambda (size)
+                   (let ((dir (string-append share "/icons/hicolor/"
+                                             size "x" size "/apps")))
+                     (mkdir-p dir)
+                     (copy-file (string-append (assoc-ref %build-inputs "source")
+                                               "/resources/generated_icons/icon_exe_"
+                                               size ".png")
+                                (string-append dir "/powdertoy-powder.png"))))
+                 '("16" "32" "48"))))))))
+    (native-inputs (list pkg-config))
+    (inputs (list bzip2
+                  curl
+                  fftwf
+                  jsoncpp
+                  libpng
+                  luajit
+                  sdl2
+                  zlib))
+    (synopsis "Free physics sandbox game")
+    (description
+     "The Powder Toy is a free physics sandbox game, which simulates air
+pressure and velocity, heat, gravity and a countless number of interactions
+between different substances!  The game provides you with various building
+materials, liquids, gases and electronic components which can be used to
+construct complex machines, guns, bombs, realistic terrains and almost
+anything else.  You can then mine them and watch cool explosions, add
+intricate wirings, play with little stickmen or operate your machine.")
+    (home-page "https://powdertoy.co.uk/")
+    ;; The few files that have a license header specify GPLv3+, but most don't
+    ;; and it's not otherwise specified anywhere.
+    (license license:gpl3)))
 
 (define-public pioneer
   (package
