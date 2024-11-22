@@ -24553,7 +24553,7 @@ heuristics.")
     (propagated-inputs
      (list r-foreach r-iterators r-rngtools))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://renozao.github.io/doRNG/")
     (synopsis "Generic reproducible parallel backend for foreach loops")
     (description
