@@ -8324,6 +8324,7 @@ high-throughput sequencing experiments.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-gplots r-rcolorbrewer))
+    (native-inputs (list r-runit))
     (home-page "https://www.bioconductor.org/packages/GeneOverlap/")
     (synopsis "Test and visualize gene overlaps")
     (description "This package can be used to test two sets of gene lists
