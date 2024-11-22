@@ -14659,7 +14659,7 @@ multiplication.")
            r-tibble
            r-tidytree
            r-yulab-utils))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/YuLab-SMU/treeio")
     (synopsis "Base classes and functions for Phylogenetic tree input and output")
     (description
