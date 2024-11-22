@@ -9623,7 +9623,7 @@ profiles than cells of different types.")
            r-rcolorbrewer
            r-shiny
            r-summarizedexperiment))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-runit))
     (home-page "https://git.bioconductor.org/packages/MethylAid")
     (synopsis
      "Quality control of large Illumina DNA Methylation array data sets")
