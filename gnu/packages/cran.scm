@@ -31398,7 +31398,7 @@ data.")
     (properties `((upstream-name . "mda")))
     (build-system r-build-system)
     (propagated-inputs (list r-class))
-    (native-inputs (list gfortran))
+    (native-inputs (list gfortran r-testthat))
     (home-page "https://cran.r-project.org/web/packages/mda/")
     (synopsis "Mixture and flexible discriminant analysis")
     (description
