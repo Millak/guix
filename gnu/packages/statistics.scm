@@ -6842,6 +6842,7 @@ manually \"recoding\").")
       (properties `((upstream-name . "tgconfig")))
       (build-system r-build-system)
       (propagated-inputs (list r-yaml))
+      (native-inputs (list r-testthat))
       (home-page "https://github.com/tanaylab/tgconfig")
       (synopsis "Infrastructure for managing package parameters")
       (description
