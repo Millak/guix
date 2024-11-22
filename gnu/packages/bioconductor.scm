@@ -15082,6 +15082,7 @@ and regression inferences from RNA-sequencing data.")
            r-rcpp
            r-rcppeigen
            r-testthat))
+    (native-inputs (list r-testthat))
     (home-page "https://bioconductor.org/packages/EBSeq")
     (synopsis "Differential expression analysis of RNA-seq data")
     (description
