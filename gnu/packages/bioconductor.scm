@@ -12531,7 +12531,7 @@ large extend by the @code{ViennaRNA} package.")
            r-summarizedexperiment
            r-variantannotation))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/StructuralVariantAnnotation/")
     (synopsis "R package designed to simplify structural variant analysis")
     (description
