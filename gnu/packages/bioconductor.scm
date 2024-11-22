@@ -1393,7 +1393,7 @@ exposing these as TxDb objects.")
      `((upstream-name . "TxDb.Hsapiens.UCSC.hg19.knownGene")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-genomicfeatures))
+     (list r-annotationdbi r-genomicfeatures))
     (home-page
      "https://bioconductor.org/packages/TxDb.Hsapiens.UCSC.hg19.knownGene/")
     (synopsis "Annotation package for human genome in TxDb format")
