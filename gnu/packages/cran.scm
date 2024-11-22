@@ -31623,7 +31623,7 @@ See e.g. Gentle (2003) @url{doi:10.1007/b97336}.")
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/bertcarnell/lhs")
     (synopsis "Latin Hypercube Samples")
     (description
