@@ -37333,7 +37333,7 @@ incremented as outlined at @url{http://semver.org}.")
             r-semver
             r-xml2
             r-yaml))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/ropensci/binman")
     (synopsis "Binary download manager")
     (description
