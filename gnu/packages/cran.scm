@@ -34386,7 +34386,7 @@ Raftery, Appl.Statistics, 1989); it includes inference and basic methods.")
            r-withr
            r-zoo))
     (native-inputs
-     (list r-knitr))           ; needed for vignettes
+     (list r-knitr r-testthat))           ; needed for vignettes
     (home-page "https://pkg.robjhyndman.com/forecast/")
     (synopsis "Forecasting functions for time series and linear models")
     (description
