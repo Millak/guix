@@ -4417,6 +4417,7 @@ path-wise fashion.")
            r-stringr
            r-withr
            r-xtable))
+    (native-inputs (list r-testthat))
     (home-page "https://renozao.github.io/pkgmaker")
     (synopsis "Package development utilities")
     (description
