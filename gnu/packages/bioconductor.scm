@@ -7738,6 +7738,7 @@ self-defined annotation graphics.")
            r-rlang
            r-rtsne
            r-sccore))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/kharchenkolab/conos")
     (synopsis "Clustering on network of samples")
     (description
