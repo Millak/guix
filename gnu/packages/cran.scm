@@ -39091,6 +39091,7 @@ sliding windows are to be created.")
     (properties `((upstream-name . "rlist")))
     (build-system r-build-system)
     (propagated-inputs (list r-data-table r-jsonlite r-xml r-yaml))
+    (native-inputs (list r-testthat))
     (home-page "https://renkun-ken.github.io/rlist/")
     (synopsis "Toolbox for Non-Tabular Data Manipulation")
     (description
