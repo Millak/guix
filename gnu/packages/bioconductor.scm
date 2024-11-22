@@ -8466,7 +8466,7 @@ alignments.")
                              r-tibble
                              r-tidyr
                              r-xml2))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/GenomicDataCommons")
     (synopsis "NIH/NCI genomic data commons access")
     (description
