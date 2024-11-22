@@ -11324,7 +11324,7 @@ transcripts in groups of interest.")
            r-seurat
            r-singlecellexperiment
            r-summarizedexperiment))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/grisslab/scAnnotatR")
     (synopsis "Pretrained models for prediction on single cell RNA-sequencing data")
     (description
