@@ -24474,6 +24474,7 @@ processes.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-matrix))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/erichson/rSVD")
     (synopsis "Randomized singular value decomposition")
     (description
