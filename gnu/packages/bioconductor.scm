@@ -12400,7 +12400,7 @@ tools either included in speaq or available elsewhere on CRAN.")
                              r-mscoreutils
                              r-protgenerics
                              r-s4vectors))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/RforMassSpectrometry/Spectra")
     (synopsis "Spectra infrastructure for mass spectrometry data")
     (description
