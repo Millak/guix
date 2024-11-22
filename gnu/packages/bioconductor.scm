@@ -8143,7 +8143,7 @@ parameter configurations.")
            r-rpmm
            r-s4vectors
            r-summarizedexperiment))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-runit))
     (home-page "https://bioconductor.org/packages/release/bioc/html/ENmix.html")
     (synopsis
      "Quality control and analysis tools for Illumina DNA methylation BeadChip")
