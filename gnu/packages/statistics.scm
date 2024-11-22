@@ -4895,7 +4895,7 @@ selection.")
            r-tidyselect
            r-vctrs))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/hadley/tidyr")
     (synopsis "Tidy data with `spread()` and `gather()` functions")
     (description
