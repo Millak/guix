@@ -14694,7 +14694,7 @@ platform for merging tree with associated data and converting file formats.")
            r-singlecellexperiment
            r-summarizedexperiment
            r-treeio))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/TreeSummarizedExperiment")
     (synopsis "S4 class for data with tree structures")
     (description
