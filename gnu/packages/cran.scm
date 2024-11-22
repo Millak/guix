@@ -32356,6 +32356,7 @@ management} (aCRM).")
              (base32
               "11sjkm89ql1576jy0cqbxzjdpx7qs95wbgdxg92lzkiw05nrj2lv"))))
    (build-system r-build-system)
+   (native-inputs (list r-mass))
    (home-page "https://cran.r-project.org/web/packages/tree/")
    (synopsis "Classification and regression trees")
    (description "This package provides procedures to work with classification
