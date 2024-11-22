@@ -21818,6 +21818,7 @@ Processing.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-bh r-nlp r-rcpp r-slam r-xml2))
+    (native-inputs (list r-testthat))
     (home-page "https://tm.r-forge.r-project.org/")
     (synopsis "Text mining package")
     (description
