@@ -7271,7 +7271,7 @@ on Bioconductor or which replace R functions.")
            r-stringr
            r-xml2))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/biomaRt")
     (synopsis "Interface to BioMart databases")
     (description
