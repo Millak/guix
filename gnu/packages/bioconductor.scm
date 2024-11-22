@@ -19972,7 +19972,7 @@ accessibility data.")
            r-stringr
            r-universalmotif))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page
      "https://github.com/Aufiero/circRNAprofiler")
     (synopsis
