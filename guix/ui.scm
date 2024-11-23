@@ -341,7 +341,7 @@ other objects that must match the 'format' escapes in MESSAGE."
   (display (colorize (G_ "hint: ")) port)
   (display
    ;; XXX: We should arrange so that the initial indent is wider.
-   (parameterize ((%text-width (max 15 (- (terminal-columns) 5))))
+   (parameterize ((%text-width (max 15 (- (terminal-columns port) 5))))
      (texi->plain-text (match arguments
                          (() (format #f message))
                          (_  (apply format #f message
