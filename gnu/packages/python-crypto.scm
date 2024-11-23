@@ -751,6 +751,27 @@ is a ratcheting forward secrecy protocol that works in synchronous and
 asynchronous messaging environments.")
     (license license:gpl3)))
 
+(define-public python-omemo-dr
+  (package
+    (name "python-omemo-dr")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://dev.gajim.org/gajim/omemo-dr")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1gx0znbfvs8jg9s754hha81l8wpghswkfsqx2jzpgv6gigf3sm8z"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list python-axolotl-curve25519 python-cryptography python-protobuf-5))
+    (home-page "https://dev.gajim.org/gajim/omemo-dr")
+    (synopsis "OMEMO cryptography library")
+    (description "OMEMO cryptography library that was forked from python-axolotl.")
+    (license license:gpl3)))
 
 (define-public python-pyaes
   (package
