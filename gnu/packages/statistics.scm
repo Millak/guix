@@ -5278,8 +5278,10 @@ package instead.")
         (base32 "1sgwwixidyff88nh7cvy2h3yblhxigikgnmpmgcqx41nb8jkaw8i"))))
     (properties `((upstream-name . "Hmisc")))
     (build-system r-build-system)
+    ;; Tests need r-rms, which needs this package.
+    (arguments (list #:test-types '(list "vignettes")))
     (native-inputs
-     (list gfortran))
+     (list gfortran r-mvtnorm))
     (propagated-inputs
      (list r-base64enc
            r-cluster
