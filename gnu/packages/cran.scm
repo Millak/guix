@@ -14097,7 +14097,7 @@ dendrograms.")
     (inputs
      (list zlib hdf5))
     (native-inputs
-     (list which))
+     (list r-knitr r-testthat which))
     (propagated-inputs
      (list r-rcpp))
     (home-page "https://github.com/mannau/h5")
