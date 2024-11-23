@@ -22011,6 +22011,26 @@ structs and enums.")
 writing derives macros for enums.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-derive-visitor-0.4
+  (package
+    (name "rust-derive-visitor")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "derive-visitor" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "17nacybndh0n2ayf0vchcrm5n4k6bmx605ijvax7qw5rhggnawfl"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-derive-visitor-macros" ,rust-derive-visitor-macros-0.4))))
+    (home-page "https://github.com/nikis05/derive-visitor")
+    (synopsis "Derive visitor pattern for arbitrary data structures")
+    (description "Derive visitor pattern for arbitrary data structures.")
+    (license license:expat)))
+
 (define-public rust-derive-visitor-macros-0.4
   (package
     (name "rust-derive-visitor-macros")
