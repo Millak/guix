@@ -502,31 +502,26 @@ result documents that can be read by tools such as Jenkins or Bamboo.")
 (define-public python-vcrpy
   (package
     (name "python-vcrpy")
-    (version "4.1.1")
+    (version "6.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "vcrpy" version))
        (sha256
-        (base32 "16gmzxs3lzbgf1828n0q61vbmwyhpvzdlk37x6gdk8n05zr5n2ap"))))
-    (build-system python-build-system)
+        (base32 "02fwmmc33qqybzbj1lvdz458g1fffm5cgnqihj4larw4268kvqc8"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? outputs #:allow-other-keys)
-             (when tests?
-               (substitute* "tox.ini"
-                 (("AWS_ACCESS_KEY_ID") "PYTHONPATH"))
-               ;; These tests require network access.
-               (delete-file "tests/unit/test_stubs.py")
-               (invoke "pytest" "tests/unit")))))))
-    (propagated-inputs
-     (list python-pyyaml python-six python-wrapt python-yarl))
+     (list
+      #:test-flags
+      #~(list "--ignore=tests/integration"
+              "-k" (string-join
+                    ;; These tests require network access.
+                    (list "not testing_connect"
+                          "test_get_vcr_with_matcher"
+                          "test_testcase_playback")
+                    " and not "))))
     (native-inputs
-     (list python-black
-           python-coverage
-           python-flake8
+     (list nss-certs-for-test
            python-flask
            python-httplib2
            python-ipaddress
@@ -534,8 +529,14 @@ result documents that can be read by tools such as Jenkins or Bamboo.")
            python-pytest
            python-pytest-cov
            python-pytest-httpbin
-           python-tox
-           python-urllib3))
+           python-setuptools
+           python-urllib3
+           python-wheel))
+    (propagated-inputs
+     (list python-pyyaml
+           python-six
+           python-wrapt
+           python-yarl))
     (home-page "https://github.com/kevin1024/vcrpy")
     (synopsis "Automatically mock your HTTP interactions")
     (description
