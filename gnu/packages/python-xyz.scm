@@ -16743,22 +16743,20 @@ subtasks.")
 (define-public python-sniffio
   (package
     (name "python-sniffio")
-    (version "1.2.0")
+    (version "1.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sniffio" version))
        (sha256
-        (base32 "1pnkvi6wvn4qd37y69n1ls6n8l63gfmn3pvb1jb50gqxxkn6wrn4"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "pytest" "-vv"))))))
+        (base32 "1p496yran6zwg47m7w26r8y89nrsbkrrbf4119slj3qaczf4wcpl"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-curio python-pytest python-pytest-cov))
+     (list python-curio
+           python-pytest
+           python-pytest-cov
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/python-trio/sniffio")
     (synopsis "Detect which async library a program is running under")
     (description "This package detects which async library a program is
