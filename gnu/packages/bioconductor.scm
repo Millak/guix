@@ -176,6 +176,28 @@ Ensembl.")
 data (chip hgu95av2) assembled using data from public repositories.")
     (license license:artistic2.0)))
 
+(define-public r-hgu133a-db
+  (package
+    (name "r-hgu133a-db")
+    (version "3.13.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "hgu133a.db" version
+                              'annotation))
+       (sha256
+        (base32 "00jcginfs161ls9hxsvynbrghg3awjrphnc54b8g0gj8g6x22pll"))))
+    (properties `((upstream-name . "hgu133a.db")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-annotationdbi r-org-hs-eg-db))
+    (native-inputs (list r-runit))
+    (home-page "https://bioconductor.org/packages/hgu133a.db")
+    (synopsis "Affymetrix HG-U133A Array annotation data (chip hgu133a)")
+    (description
+     "This package provides Affymetrix HG-U133A Array annotation data (chip
+hgu133a) assembled using data from public repositories.")
+    (license license:artistic2.0)))
+
 (define-public r-hpo-db
   (package
     (name "r-hpo-db")
