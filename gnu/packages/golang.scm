@@ -7044,16 +7044,16 @@ parser.")
                          (for-each delete-file-recursively
                                    '("examples" "tutorials"))))))))
     (propagated-inputs
-     `(("github.com/mattn/go-isatty" ,go-github-com-mattn-go-isatty)
-       ("github.com/muesli/termenv" ,go-github-com-muesli-termenv)
-       ("github.com/mattn/go-runewidth" ,go-github-com-mattn-go-runewidth)
-       ("go-github-com-muesli-reflow" ,go-github-com-muesli-reflow)
-       ("go-github-com-lucasb-eyer-go-colorful" ,go-github-com-lucasb-eyer-go-colorful)
-       ("github.com/containerd/console" ,go-github-com-containerd-console)
-       ("go-golang-org-x-crypto" ,go-golang-org-x-crypto)
-       ("go-golang-org-x-sys" ,go-golang-org-x-sys)
-       ("go-golang-org-x-term" ,go-golang-org-x-term)
-       ("github.com/mattn/go-isatty" ,go-github-com-mattn-go-isatty)))
+     (list go-github-com-mattn-go-isatty
+           go-github-com-muesli-termenv
+           go-github-com-mattn-go-runewidth
+           go-github-com-muesli-reflow
+           go-github-com-lucasb-eyer-go-colorful
+           go-github-com-containerd-console
+           go-golang-org-x-crypto
+           go-golang-org-x-sys
+           go-golang-org-x-term
+           go-github-com-mattn-go-isatty))
     (home-page "https://github.com/charmbracelet/bubbletea")
     (synopsis "Powerful little TUI framework")
     (description
