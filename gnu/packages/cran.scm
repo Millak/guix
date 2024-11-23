@@ -8359,6 +8359,7 @@ and Francois (2011, JSS), and the book by Eddelbuettel (2013, Springer); see
     (build-system r-build-system)
     (propagated-inputs
      (list r-rcpp r-rcpparmadillo))
+    (native-inputs (list r-lattice))
     (home-page "https://cran.r-project.org/package=RcppDE")
     (synopsis "Global optimization by differential evolution in C++")
     (description
