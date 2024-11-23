@@ -11959,8 +11959,16 @@ simplifying cross-class interoperability.")
     (properties
      `((upstream-name . "PerformanceAnalytics")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; Needed for vignettes
+         (add-after 'unpack 'set-HOME
+           (lambda _ (setenv "HOME" "/tmp"))))))
     (propagated-inputs
      (list r-quadprog r-xts r-zoo))
+    (native-inputs (list r-hmisc r-r-rsp))
     (home-page "https://r-forge.r-project.org/projects/returnanalytics/")
     (synopsis "Econometric tools for performance and risk analysis")
     (description "This is a collection of econometric functions for
