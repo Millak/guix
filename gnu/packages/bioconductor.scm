@@ -22490,8 +22490,7 @@ data manipulation and visualization.")
              ;; The replacement value is taken from src/graphviz/builddate.h
              (substitute* "src/graphviz/configure"
                (("VERSION_DATE=.*")
-                "VERSION_DATE=20200427.2341\n"))
-             #t)))))
+                "VERSION_DATE=20200427.2341\n")))))))
     ;; FIXME: Rgraphviz bundles the sources of an older variant of
     ;; graphviz.  It does not build with the latest version of graphviz, so
     ;; we do not add graphviz to the inputs.
@@ -22499,7 +22498,7 @@ data manipulation and visualization.")
     (propagated-inputs
      (list r-graph))
     (native-inputs
-     (list pkg-config r-runit))
+     (list pkg-config r-runit r-xml))
     (home-page "https://bioconductor.org/packages/Rgraphviz")
     (synopsis "Plotting capabilities for R graph objects")
     (description
