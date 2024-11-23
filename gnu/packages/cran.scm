@@ -42245,8 +42245,11 @@ data you need the @code{pdftools} package.")
     (properties `((upstream-name . "pbdMPI")))
     (build-system r-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
+     (list
+      ;; Tests fail with: "You need at least 2 MPI ranks for this test"
+      #:test-types '(list "vignettes")
+      #:phases
+      `(modify-phases %standard-phases
          (add-before 'install 'mpi-setup
            ,%openmpi-setup))))
     (inputs (list openmpi))
