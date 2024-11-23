@@ -3355,7 +3355,7 @@ objects are used so that other packages could be used as well.")
     (properties `((upstream-name . "AIMS")))
     (build-system r-build-system)
     (propagated-inputs (list r-biobase r-e1071))
-    (native-inputs (list r-runit))
+    (native-inputs (list r-breastcancervdx r-hgu133a-db r-runit))
     (home-page "https://git.bioconductor.org/packages/AIMS")
     (synopsis
      "Absolute assignment of breast cancer intrinsic molecular subtype")
