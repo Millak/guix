@@ -14342,7 +14342,14 @@ optimization problems in R.")
                 "11h6qdi0rsv0bpps6nxkzzapan284q0gldzkmgx3ww5kvnic5w3y"))))
     (properties `((upstream-name . "roptim")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'set-HOME
+           (lambda _ (setenv "HOME" "/tmp"))))))
     (propagated-inputs (list r-rcpp r-rcpparmadillo))
+    (native-inputs (list r-r-rsp r-testthat))
     (home-page "https://github.com/ypan1988/roptim/")
     (synopsis "General purpose optimization in R using C++")
     (description
