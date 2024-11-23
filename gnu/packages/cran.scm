@@ -34541,28 +34541,6 @@ This package provides methods for accessing and modifying this structures as
 well as extracting and replacing names and symbols from these objects.")
     (license license:gpl2)))
 
-(define-public r-xmisc
-  (package
-    (name "r-xmisc")
-    (version "0.2.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "Xmisc" version))
-       (sha256
-        (base32
-         "11gwlcyxhz1p50m68cnqrxmisdk99v8vrsbvyr7k67f0kvsznzs1"))))
-    (properties `((upstream-name . "Xmisc")))
-    (build-system r-build-system)
-    (home-page "https://cran.r-project.org/package=Xmisc")
-    (synopsis
-     "Xiaobei's miscellaneous classes and functions")
-    (description
-     "This package provides Xiaobei's miscellaneous classes and functions,
-which are useful when developing R packages for @dfn{object oriented
-programming} (OOP) using R Reference Class.")
-    (license license:gpl2+)))
-
 (define-public r-proxyc
   (package
     (name "r-proxyc")
