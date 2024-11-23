@@ -341,6 +341,8 @@ propagated by default) such as @code{gst-plugins-good} and
        ((#:configure-flags flags)
         #~(cons "-DPORT=WPE"
                 (delete "-DPORT=GTK" #$flags)))))
+    (inputs (modify-inputs (package-inputs webkitgtk)
+              (prepend libinput)))
     (synopsis "WebKit port optimized for embedded devices")
     (description "WPE WebKit allows embedders to create simple and performant
 systems based on Web platform technologies.  It is designed with hardware
