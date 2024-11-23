@@ -29939,24 +29939,27 @@ project.")
 (define-public python-trio
   (package
     (name "python-trio")
-    (version "0.21.0")
+    (version "0.27.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trio" version))
        (sha256
-        (base32 "04qwzy4295ajxpns0hrmn3asma80sjpimzpb3i877vwynsvkjgsj"))))
+        (base32 "0cb8qy1yj274xa21nf2jpmwssjzp39vgva7y982xmci62ymrbk0x"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
       '(list "-k"
              (string-append
-              ;; This test times out.
+              ;; This tests times out.
               "not test_ki_protection_works"
+              " and not test_KI_interrupts"
               ;; This fails with: signal only works in main thread of the main interpreter
               " and not test_catch_signals_race_condition_on_exit"
               ;; Assertion errors.
+              " and not test_named_thread_os"
+              " and not test_has_pthread_setname_np"
               " and not test_guest_mode_ki"
               " and not test_run_in_trio_thread_ki"
               " and not test_simple_cancel_scope_usage_doesnt_create\
@@ -29979,27 +29982,24 @@ _cyclic_garbage"
               " and not test_getprotobyname"
               ;; EOFError: Ran out of input.
               " and not test_static_tool_sees_all_symbols")
-             "trio/tests")
+             ;; It rerquires black and ruff to generate a final report.
+             "--ignore=src/trio/_tests/tools/test_gen_exports.py"
+             "src/trio/_tests")
       #:phases
       '(modify-phases %standard-phases
-         (add-after 'unpack 'patch-sleep
-           (lambda _
-             (substitute* "trio/tests/test_subprocess.py"
-               (("/bin/sleep")
-                (which "sleep")))))
-         (add-before 'check 'change-home
+         (add-before 'check 'set-env
            (lambda _
              ;; Tests require a writable home.
-             (setenv "HOME" "/tmp"))))))
+             (setenv "HOME" "/tmp")
+             ;; #$output is first in path which causes "import file mismatch"
+             (setenv "PYTHONPATH" (string-append (getcwd) "/src:$PYTHONPATH")))))))
     (native-inputs
      (list python-astor
-           python-ipython
            python-jedi
-           python-pylint
            python-pyopenssl
            python-pytest
-           python-pytest-xdist
-           python-pytest-cov
+           python-isort
+           python-pytest-asyncio
            python-trustme
            python-setuptools
            python-wheel))
