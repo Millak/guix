@@ -2254,6 +2254,27 @@ package.")
 please use the package TFBSTools.")
     (license license:gpl2)))
 
+(define-public r-leukemiaseset
+  (package
+    (name "r-leukemiaseset")
+    (version "1.42.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "leukemiasEset" version 'experiment))
+       (sha256
+        (base32 "1zgzg38l24vf27hhyywiv5gan6n25idziwxva09nc5qw4hyy8ikr"))))
+    (properties `((upstream-name . "leukemiasEset")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biobase))
+    (home-page "https://bioconductor.org/packages/leukemiasEset")
+    (synopsis "Leukemia's microarray gene expression data (expressionSet)")
+    (description
+     "This package provides an @code{expressionSet} containing gene expression
+data from 60 bone marrow samples of patients with one of the four main types
+of leukemia (ALL, AML, CLL, CML) or non-leukemia.")
+    (license license:gpl2+)))
+
 (define-public r-macrophage
   (package
     (name "r-macrophage")
