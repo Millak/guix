@@ -95,8 +95,8 @@
               (wait-for-screen-text marionette
                                     ;; Login button not recognized, use SDDM's
                                     ;; welcome message.
-                                    (cut string-contains <> (string-append "Welcome to "
-                                                                           #$(operating-system-host-name %sddm-os)))
+                                    (cut string-contains <>
+                                         "Select your user and enter password")
                                     #:ocr #$(file-append tesseract-ocr
                                                          "/bin/tesseract")
                                     #:timeout 60))
