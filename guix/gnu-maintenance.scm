@@ -469,10 +469,12 @@ hosted on ftp.gnu.org, or not under that name (this is the case for
 \"emacs-auctex\", for instance.)"
   (let-values (((server directory)
                 (ftp-server/directory package)))
-    (false-if-ftp-error (import-release (package-upstream-name package)
-                                        #:version version
-                                        #:server server
-                                        #:directory directory))))
+    (false-if-networking-error
+     (false-if-ftp-error
+      (import-release (package-upstream-name package)
+                      #:version version
+                      #:server server
+                      #:directory directory)))))
 
 
 ;;;
@@ -913,13 +915,14 @@ to fetch a specific version."
   "Return the latest release of PACKAGE.  Optionally include a VERSION string
 to fetch a specific version."
   (let ((uri (string->uri (origin-uri (package-source package)))))
-    (false-if-ftp-error
-     (import-ftp-release
-      (package-name package)
-      #:version version
-      #:server "ftp.freedesktop.org"
-      #:directory
-      (string-append "/pub/xorg/" (dirname (uri-path uri)))))))
+    (false-if-networking-error
+     (false-if-ftp-error
+      (import-ftp-release
+       (package-name package)
+       #:version version
+       #:server "ftp.freedesktop.org"
+       #:directory
+       (string-append "/pub/xorg/" (dirname (uri-path uri))))))))
 
 (define* (import-kernel.org-release package #:key (version #f))
   "Return the latest release of PACKAGE, a Linux kernel package.
