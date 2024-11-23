@@ -37946,6 +37946,7 @@ for the geometry of linear networks.")
            r-spatstat-sparse
            r-spatstat-utils
            r-tensor))
+    (native-inputs (list r-spatstat-model))
     (home-page "https://spatstat.org/")
     (synopsis "Core functionality of the spatstat package")
     (description
