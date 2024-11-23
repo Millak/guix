@@ -3410,7 +3410,12 @@ compiles to GTKBuilder XML.")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "0hj7f4xhwjc4x32r3lswwclbw37fw3spy806g4plkmym25hz4ydy"))))))
+                "0hj7f4xhwjc4x32r3lswwclbw37fw3spy806g4plkmym25hz4ydy"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments blueprint-compiler)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (delete 'fix-tests)))))))
 
 (define-public cambalache
   (package
