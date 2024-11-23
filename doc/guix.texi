@@ -4383,11 +4383,11 @@ this option is primarily useful when the daemon was running with
 @item --vacuum-database
 @cindex vacuum the store database
 @comment Avoid words like 'repair,' 'compress,' and 'optimize.'
-Guix uses an sqlite database to keep track of the items in (@pxref{The Store}).
-Over time it is possible that the database may grow to a large size and become
-fragmented.  As a result, one may wish to clear the freed space and join the
-partially used pages in the database left behind from removed packages or after
-running the garbage collector.  Running @command{sudo guix gc
+Guix uses an sqlite database to keep track of the items in the store
+(@pxref{The Store}).  Over time it is possible that the database may grow to a
+large size and become fragmented.  As a result, one may wish to clear the freed
+space and join the partially used pages in the database left behind from removed
+packages or after running the garbage collector.  Running @command{sudo guix gc
 --vacuum-database} will lock the database and @code{VACUUM} the store,
 defragmenting the database and purging freed pages, unlocking the database when
 it finishes.
@@ -5764,7 +5764,7 @@ named @code{keyring} (we recommend making it an @dfn{orphan branch}).
 @item
 Introduce an initial @file{.guix-authorizations} in the channel's
 repository.  Do that in a signed commit (@pxref{Commit Access}, for
-information on how to sign Git commits.)
+information on how to sign Git commits).
 
 @item
 Advertise the channel introduction, for instance on your channel's web
@@ -7359,7 +7359,7 @@ profile---by default @var{name} is @code{guix-profile}, which corresponds to
 @file{/var/guix} contains the store database (@pxref{The Store}) as well
 as garbage-collector roots (@pxref{Invoking guix gc}).  Providing it in
 the pack means that the store is ``complete'' and manageable by Guix;
-not providing it pack means that the store is ``dead'': items cannot be
+not providing it in the pack means that the store is ``dead'': items cannot be
 added to it or removed from it after extraction of the pack.
 
 One use case for this is the Guix self-contained binary tarball
@@ -8124,7 +8124,7 @@ The build tool chain is part of the @dfn{implicit inputs} of
 packages---it's usually not listed as part of the various ``inputs''
 fields and is instead pulled in by the build system.  Consequently, this
 procedure works by changing the build system of @var{package} so that it
-pulls in @var{toolchain} instead of the defaults.  @ref{Build Systems},
+pulls in @var{toolchain} instead of the defaults.  @xref{Build Systems},
 for more on build systems.
 @end deffn
 
@@ -8263,14 +8263,14 @@ Likewise, the @code{(guix git-download)} module defines the
 control repository, and the @code{git-reference} data type to describe
 the repository and revision to fetch.
 
-@deffn {Procedure} git-fetch ref hash-algo hash
+@deffn {Procedure} git-fetch ref hash-algo hash [name]
 Return a fixed-output derivation that fetches @var{ref}, a
 @code{<git-reference>} object.  The output is expected to have recursive
 hash @var{hash} of type @var{hash-algo} (a symbol).  Use @var{name} as
 the file name, or a generic name if @code{#f}.
 @end deffn
 
-@deffn {Procedure} git-fetch/lfs ref hash-algo hash
+@deffn {Procedure} git-fetch/lfs ref hash-algo hash [name]
 This is a variant of the @code{git-fetch} procedure that supports the
 Git @acronym{LFS, Large File Storage} extension.  This may be useful to
 pull some binary test data to run the test suite of a package, for
@@ -8358,7 +8358,7 @@ retrieve.
 The URL of the Subversion repository to clone.
 
 @item @code{revision}
-This string denotes revision to fetch specified as a number.
+This string denotes the revision to fetch specified as a number.
 
 @item @code{recursive?} (default: @code{#f})
 This Boolean indicates whether to recursively fetch Subversion

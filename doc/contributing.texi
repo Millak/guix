@@ -2743,7 +2743,7 @@ contributor is willing to take to help the project.
 
 Committers are in a position where they enact technical decisions.  Such
 decisions must be made by @emph{actively building consensus} among
-interested parties and stakeholders.  @ref{Making Decisions}, for more
+interested parties and stakeholders.  @xref{Making Decisions}, for more
 on that.
 
 The following sections explain how to get commit access, how to be ready
