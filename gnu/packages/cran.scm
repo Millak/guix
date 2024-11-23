@@ -10010,7 +10010,7 @@ also supported.")
             (lambda _
               (install-file "inst/bin/r"
                             (string-append #$output "/bin")))))))
-    (inputs (list icu4c zlib))
+    (inputs (list icu4c libdeflate zlib))
     (native-inputs
      (list r-simplermarkdown))
     (home-page "https://github.com/eddelbuettel/littler")
