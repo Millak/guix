@@ -43320,6 +43320,7 @@ object to and from disk.")
      (list geos))
     (propagated-inputs
      (list r-sp))
+    (native-inputs (list r-testthat r-xml))
     (home-page "https://cran.r-project.org/package=rgeos")
     (synopsis "Interface to Geometry Engine (GEOS)")
     (description
