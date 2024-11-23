@@ -22795,10 +22795,13 @@ masks, clipping paths, and gradient and pattern fills.")
          "196h7i4y1gzkwlybml9iz78p5xsx7y22nk5pmzibryn5amdbdy05"))))
     (properties `((upstream-name . "grImport")))
     (build-system r-build-system)
+    ;; Vignettes fail to find chessmod.txt
+    (arguments (list #:test-types '(list "tests")))
     (inputs
      (list ghostscript))
     (propagated-inputs
      (list r-xml))
+    (native-inputs (list r-lattice))
     (home-page "https://cran.r-project.org/web/packages/grImport")
     (synopsis "Convert, import, and draw PostScript pictures")
     (description
