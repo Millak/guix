@@ -30,6 +30,7 @@
 
 (define-module (guix scripts pack)
   #:use-module (guix scripts)
+  #:autoload   (guix import json) (json->scheme-file)
   #:use-module (guix ui)
   #:use-module (guix gexp)
   #:use-module (guix utils)
@@ -1530,6 +1531,9 @@ libfakechroot.so and related ld.so machinery as a fallback."
                  (lambda (opt name arg result)
                    (alist-cons 'derivation-only? #t result)))
 
+         (option '("file") #t #f
+                 (lambda (opt name arg result)
+                   (alist-cons 'file arg result)))
          (option '(#\f "format") #t #f
                  (lambda (opt name arg result)
                    (alist-cons 'format (string->symbol arg) result)))
@@ -1621,6 +1625,8 @@ Create a bundle of PACKAGE.\n"))
   (show-rpm-format-options)
   (newline)
   (display (G_ "
+      --file=FORMAT      build a pack the code within FILE evaluates to"))
+  (display (G_ "
   -f, --format=FORMAT    build a pack in the given FORMAT"))
   (display (G_ "
       --list-formats     list the formats available"))
@@ -1684,6 +1690,11 @@ Create a bundle of PACKAGE.\n"))
            list))
         (('expression . exp)
          (read/eval-package-expression exp))
+        (('file . file)
+         (let ((file (or (and (string-suffix? ".json" file)
+                              (json->scheme-file file))
+                         file)))
+           (load* file (make-user-module '()))))
         (x #f)))
 
     (define (manifest-from-args store opts)

@@ -7276,6 +7276,14 @@ This has the same purpose as the same-named option in @command{guix
 build} (@pxref{Additional Build Options, @option{--expression} in
 @command{guix build}}).
 
+@item --file=@var{file}
+build a pack the code within @var{file} evaluates to.
+
+This has the same purpose as the same-named option in @command{guix
+build} (@pxref{Additional Build Options, @option{--file} in
+@command{guix build}}), but it has no shorthand, because @option{-f}
+already means @option{--format}.
+
 @anchor{pack-manifest}
 @item --manifest=@var{file}
 @itemx -m @var{file}
