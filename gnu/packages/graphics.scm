@@ -527,14 +527,14 @@ typically encountered in feature film production.")
 (define-public blender
   (package
     (name "blender")
-    (version "3.6.13")                   ;3.6.x is the current LTS version
+    (version "3.6.19")                   ;4.2.x+ requires Python >= 3.12
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.blender.org/source/"
                                   "blender-" version ".tar.xz"))
               (sha256
                (base32
-                "1sx2yz1y37h8g2p6k8cjf2935p3nlvn9nvjc9yfzp79bg4ypfpbz"))))
+                "0mx5q3kb3bgx8ni4qpy02gc4kx3cc1zqc5p5vkrdggis3rk3k76h"))))
     (build-system cmake-build-system)
     (arguments
      (list
