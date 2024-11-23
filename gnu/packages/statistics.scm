@@ -3218,7 +3218,7 @@ functions make it easy to control additional request components.")
     (inputs
      (list libgit2 zlib))
     (native-inputs
-     (list pkg-config))
+     (list pkg-config tzdata-for-tests))
     (home-page "https://github.com/ropensci/git2r")
     (synopsis "Access Git repositories with R")
     (description
