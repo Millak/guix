@@ -2187,21 +2187,26 @@ threads.")
 (define-public python-tenacity
   (package
     (name "python-tenacity")
-    (version "8.0.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "tenacity" version))
-              (sha256
-               (base32
-                "0bwkvjpjfyi9dgszzad9aww2vc00w3bczjnbifi92cp7wch2l923"))))
+    (version "9.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "tenacity" version))
+       (sha256
+        (base32 "0fyp421r038naskvyhj90hkq0az96477njad4rhs6annjz53fzw0"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-setuptools-scm python-tornado-6 python-typeguard
-           python-pytest python-setuptools python-wheel))
+     (list python-pytest
+           python-setuptools
+           python-setuptools-scm
+           python-tornado-6
+           python-typeguard
+           python-wheel))
     (home-page "https://github.com/jd/tenacity")
     (synopsis "Retrying library for python")
-    (description "Tenacity is a general-purpose python library to simplify the
-task of adding retry behavior to just about anything.")
+    (description
+     "Tenacity is a general-purpose python library to simplify the task of
+adding retry behavior to just about anything.")
     (license license:asl2.0)))
 
 (define-public python-pytelegrambotapi
