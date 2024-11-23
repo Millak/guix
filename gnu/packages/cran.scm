@@ -22771,6 +22771,7 @@ for custom user-defined patterns.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-jsonlite r-xml))
+    (native-inputs (list r-lattice))
     (home-page "https://cran.r-project.org/package=gridSVG")
     (synopsis "Export grid gaphics as SVG")
     (description
