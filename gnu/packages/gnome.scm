@@ -8566,7 +8566,11 @@ users.")
                 ((".*test-link-linux.*") "")
                 ((".*test-lldp.*") "")
                 ((".*test-route-linux.*") "")
-                ((".*test-tc-linux.*") ""))))
+                ((".*test-tc-linux.*") ""))
+              (substitute* "src/libnm-client-impl/meson.build"
+                ;; Note: printenv results in bogus newline, that isn't stripped
+                (("run_command\\('printenv', '([^']*)',[^\n]*" all var)
+                 (string-append "'" (or (getenv var) "") "'")))))
           (add-before 'check 'pre-check
             (lambda _
               ;; For the missing /etc/machine-id.
