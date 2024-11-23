@@ -22821,6 +22821,7 @@ PostScript pictures in R plots.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-base64enc r-jpeg r-png r-xml))
+    (native-inputs (list r-gridsvg))
     (home-page "https://cran.r-project.org/web/packages/grImport2/")
     (synopsis "Import SVG graphics")
     (description
