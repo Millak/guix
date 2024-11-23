@@ -4547,6 +4547,7 @@ user-friendly output, and compatibility with tests implemented in R.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-grr r-matrix))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/cvarrichio/Matrix.utils")
     (synopsis
      "Data.frame-Like Operations on Sparse and Dense Matrix Objects")
