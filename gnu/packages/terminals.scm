@@ -1740,8 +1740,8 @@ terminal.  Note that you need support for OpenGL 3.2 or higher.")
                (delete 'configure)
                (add-after 'install 'install-doc
                  (lambda* (#:key outputs #:allow-other-keys)
-                   (let* ((out (assoc-ref outputs "out"))
-                          (doc (string-append out "/share/doc/" #$name "-" #$version)))
+                   (let ((doc (format #f "~a/share/doc/~a-~a"
+                                      #$output #$name #$version)))
                      (install-file "README.md" doc)))))))
     (home-page "https://github.com/wtarreau/bootterm")
     (synopsis "Serial terminal")
