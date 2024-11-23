@@ -7397,6 +7397,26 @@ define a wordlist to allow custom terminology without having to abuse
 punctuation.")
     (license license:expat)))
 
+(define-public r-caper
+  (package
+    (name "r-caper")
+    (version "1.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "caper" version))
+       (sha256
+        (base32 "1f1mw54gv1r40wrrsznhgffdj8ggrwihiwdd8wyqccyvqm49fxjg"))))
+    (properties `((upstream-name . "caper")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-ape r-mass r-mvtnorm))
+    (home-page "https://cran.r-project.org/package=caper")
+    (synopsis "Comparative analyses of phylogenetics and evolution in R")
+    (description
+     "This package provides functions for performing phylogenetic comparative
+analyses.")
+    (license license:gpl2+)))
+
 (define-public r-crosstalk
   (package
     (name "r-crosstalk")
