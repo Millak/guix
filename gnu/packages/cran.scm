@@ -38688,6 +38688,7 @@ implementation of the Shift-Algorithm by Streitberg & Roehmel.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-exactranktests r-mvtnorm))
+    (native-inputs (list r-survival))
     (home-page "https://cran.r-project.org/web/packages/maxstat/")
     (synopsis "Maximally selected rank statistics")
     (description
