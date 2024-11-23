@@ -4188,32 +4188,33 @@ directories and files.")
 (define-public python-pytest-regressions
   (package
     (name "python-pytest-regressions")
-    (version "2.3.1")
+    (version "2.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest-regressions" version))
        (sha256
-        (base32
-         "0792s1rp4hksfarnnciy0yiy2q2yqqsbin3mc9h2gxp86kdlrv5k"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-pytest-datadir python-pyyaml))
+        (base32 "1nbg20m83jsj9p12fm4qn5b7hc3vqb5h5fzfi6zvmwygq627i341"))))
+    (build-system pyproject-build-system)
     (native-inputs
      (list python-matplotlib
            python-numpy
            python-pandas
            python-pillow
            python-restructuredtext-lint
-           python-tox
+           python-setuptools
            python-setuptools-scm
            python-pytest))
+    (propagated-inputs
+     (list python-pytest-datadir
+           python-pyyaml))
     (home-page "https://github.com/ESSS/pytest-regressions")
     (synopsis "Easy to use fixtures to write regression tests")
     (description
-     "This plugin makes it simple to test general data, images, files, and numeric
-tables by saving expected data in a data directory (courtesy of pytest-datadir)
-that can be used to verify that future runs produce the same data.")
+     "This plugin makes it simple to test general data, images, files, and
+numeric tables by saving expected data in a data directory (courtesy of
+pytest-datadir) that can be used to verify that future runs produce the same
+data.")
     (license license:expat)))
 
 (define-public python-pytest-tornado5
