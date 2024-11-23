@@ -1343,40 +1343,7 @@ and OpenPGP) and available in 29 languages.")
     (license license:gpl3)))
 
 (define-public gajim-omemo
-  (package
-    (name "gajim-omemo")
-    (version "2.9.0")
-    (source
-     (origin
-       (method url-fetch/zipbomb)
-       (uri
-        (string-append
-         "https://ftp.gajim.org/plugins/master/omemo/omemo_"
-         version ".zip"))
-       (sha256
-        (base32 "0yy9r9fsrlgdywiln8bskhi8faj9hnz7b19jcap5nkhv8jn9cqq7"))))
-    (build-system trivial-build-system)
-    (arguments
-     `(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils))
-         (let* ((out (assoc-ref %outputs "out"))
-                (share (in-vicinity out "share/gajim/plugins/omemo"))
-                (source (assoc-ref %build-inputs "source")))
-           (mkdir-p share)
-           (copy-recursively source share)
-           #t))))
-    (propagated-inputs
-     (list python-axolotl python-axolotl-curve25519 python-cryptography
-           python-qrcode))
-    (synopsis "Gajim OMEMO plugin")
-    (description "Gajim-OMEMO is a plugin that adds support for the OMEMO
-Encryption to Gajim.  OMEMO is an XMPP Extension Protocol (XEP) for secure
-multi-client end-to-end encryption.")
-    (home-page
-     "https://dev.gajim.org/gajim/gajim-plugins/-/wikis/OmemoGajimPlugin")
-    (license license:gpl3+)))
+  (deprecated-package "gajim-omemo" gajim))
 
 (define-public gajim-openpgp
   (package
