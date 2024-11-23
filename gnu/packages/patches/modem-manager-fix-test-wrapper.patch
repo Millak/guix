@@ -1,0 +1,37 @@
+From daa829287894273879799a383ed4dc373c6111b0 Mon Sep 17 00:00:00 2001
+From: Alyssa Ross <hi@alyssa.is>
+Date: Wed, 8 May 2024 09:49:59 +0200
+Subject: [PATCH] build: prepend to LD_LIBRARY_PATH and GI_TYPELIB_PATH
+
+In Nixpkgs packages are installed in separate prefixes.
+Starting from GLib / gobject-introspection 2.80, GLib introspection data
+is provided by GLib itself instead of gobject-introspection. This causes
+tests failures in Nixpkgs because the GI_TYPELIB_PATH set by the build
+environment was overridden, leaving it unable to find GLib:
+
+	    ImportError: cannot import name GLib, introspection typelib not found
+
+Only GI_TYPELIB_PATH needs to be preserved in our case, but I've made
+the same change for LD_LIBRARY_PATH, other environments might rely on
+that in a similar way.
+---
+ tools/tests/test-wrapper.sh.in | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/tools/tests/test-wrapper.sh.in b/tools/tests/test-wrapper.sh.in
+index fb8cd5e8d5..d6484bed60 100755
+--- a/tools/tests/test-wrapper.sh.in
++++ b/tools/tests/test-wrapper.sh.in
+@@ -1,5 +1,8 @@
+ #!/bin/sh
+ 
++export LD_LIBRARY_PATH=@abs_top_builddir@/libmm-glib"${LD_LIBRARY_PATH+:$LD_LIBRARY_PATH}"
++export GI_TYPELIB_PATH=@abs_top_builddir@/libmm-glib"${GI_TYPELIB_PATH+:$GI_TYPELIB_PATH}"
++
+ # For debugging behavior of test-modemmanager-service.py, you can modify
+ # this line to add --log-file option
+-LD_LIBRARY_PATH=@abs_top_builddir@/libmm-glib GI_TYPELIB_PATH=@abs_top_builddir@/libmm-glib @abs_top_srcdir@/tools/test-modemmanager-service.py
++exec @abs_top_srcdir@/tools/test-modemmanager-service.py
+-- 
+GitLab
+
