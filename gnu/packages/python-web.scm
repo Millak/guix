@@ -2749,25 +2749,24 @@ connection to each user.")
 (define-public python-tornado-6
   (package
     (name "python-tornado")
-    (version "6.2")
+    (version "6.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "tornado" version))
        (sha256
-        (base32
-         "04rwzjfqa31ajz8vvkfcsp1539m8n960msnppxkcckp8plch8qwv"))))
-    (build-system python-build-system)
+        (base32 "02v2mlvr58xg0l0gh08nswl53z73wkf23sziggypk63ffjsdbflj"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (setenv "ASYNC_TEST_TIMEOUT" "25")   ; Like in tox.ini.
-               (invoke "python" "-m" "tornado.test.runtests")))))))
+     (list
+      #:test-flags
+      ;; AttributeError: 'TestIOStreamWebMixin' object has no attribute 'io_loop'
+      #~(list "--ignore=tornado/test/iostream_test.py")))
     (native-inputs
-     (list python-certifi))
+     (list python-certifi
+           python-pytest
+           python-setuptools
+           python-wheel))
     (home-page "https://www.tornadoweb.org/")
     (synopsis "Python web framework and asynchronous networking library")
     (description
