@@ -1348,7 +1348,7 @@ and OpenPGP) and available in 29 languages.")
 (define-public gajim-openpgp
   (package
     (name "gajim-openpgp")
-    (version "1.5.0")
+    (version "1.6.1")
     (source
      (origin
        (method url-fetch/zipbomb)
@@ -1357,7 +1357,7 @@ and OpenPGP) and available in 29 languages.")
          "https://ftp.gajim.org/plugins/master/openpgp/openpgp_"
          version ".zip"))
        (sha256
-        (base32 "193pbh9iri7bkamvjwp236i8g5zxxiqgsv64kll5sy76vx4q73c4"))))
+        (base32 "0m1g5wajpc3kfz5jv8y3i9xy1nqhq15ripv49lgsq7j1f0a3w3wh"))))
     (build-system trivial-build-system)
     (arguments
      `(#:modules ((guix build utils))
