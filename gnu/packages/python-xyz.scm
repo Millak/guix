@@ -34139,34 +34139,30 @@ older versions of Python and so are packaged here.")
 (define-public python-loguru
   (package
     (name "python-loguru")
-    (version "0.7.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "loguru" version))
-              (sha256
-               (base32
-                "1q83kr9zwwxchgyzf8gc6wi68ch5391mwzfxb5wlvs3axly0a4hn"))))
+    (version "0.7.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "loguru" version))
+       (sha256
+        (base32 "1b2ipp8di3y10gd7kiin9fyazv5rijbfwh3383yk8psi48ssawg6"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      ;; All of these fail with: error: Cannot find implementation or library
-      ;; stub for module named "loguru"
-      '(list "--ignore=tests/typesafety/test_logger.yml")))
-    (propagated-inputs (list python-colorama))
-    (native-inputs (list python-colorama
-                         python-freezegun
-                         python-mypy
-                         python-pre-commit
-                         python-pytest
-                         python-pytest-cov
-                         python-pytest-mypy-plugins
-                         python-sphinx
-                         python-sphinx-autobuild
-                         python-sphinx-rtd-theme
-                         python-tox
-                         python-setuptools
-                         python-wheel))
+      #~(list"--numprocesses" (number->string (parallel-job-count))
+             ;; All of these fail with: error: Cannot find implementation or
+             ;; library stub for module named "loguru"
+             "--ignore=tests/typesafety/test_logger.yml")))
+    (native-inputs
+     (list python-freezegun
+           python-pytest
+           python-pytest-mypy-plugins
+           python-pytest-xdist
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-colorama))
     (home-page "https://github.com/Delgan/loguru")
     (synopsis "Python logging made (stupidly) simple")
     (description "Python logging made (stupidly) simple")
