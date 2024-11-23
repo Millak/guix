@@ -4509,49 +4509,6 @@ back to netrc format, while preserving any whitespace that was present in the
 source file.")
       (license license:expat))))
 
-(define-public go-github-com-russross-blackfriday
-  (package
-    (name "go-github-com-russross-blackfriday")
-    (version "1.6.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/russross/blackfriday")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "036028ynpq52z9snmd2b1kjzyvv6n9sg71k651ndznggnw19aamp"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:import-path "github.com/russross/blackfriday"))
-    (propagated-inputs
-     (list go-github-com-shurcool-sanitized-anchor-name))
-    (native-inputs
-     (list go-github-com-pmezard-go-difflib))
-    (home-page "https://github.com/russross/blackfriday")
-    (synopsis "Markdown processor in Go")
-    (description "Blackfriday is a Markdown processor in Go.")
-    (license license:bsd-2)))
-
-(define-public go-github-com-russross-blackfriday-v2
-  (package
-    (inherit go-github-com-russross-blackfriday)
-    (name "go-github-com-russross-blackfriday-v2")
-    (version "2.1.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/russross/blackfriday")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0d1rg1drrfmabilqjjayklsz5d0n3hkf979sr3wsrw92bfbkivs7"))))
-    (arguments
-     (list #:import-path "github.com/russross/blackfriday/v2"))))
-
 (define-public go-github-com-rubyist-tracerx
   (let ((commit "787959303086f44a8c361240dfac53d3e9d53ed2")
         (revision "0"))
