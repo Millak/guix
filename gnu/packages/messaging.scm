@@ -1195,7 +1195,7 @@ of xmpppy.")
 (define-public gajim
   (package
     (name "gajim")
-    (version "1.7.3")
+    (version "1.9.3")
     (source
      (origin
        (method url-fetch)
@@ -1203,7 +1203,7 @@ of xmpppy.")
                            (version-major+minor version)
                            "/gajim-" version ".tar.gz"))
        (sha256
-         (base32 "066kvkjw3qcdanr3nczy0wgcwihk9jc9zhzfr5bwlqvcyxcv7k5p"))
+         (base32 "10rz8pd43a9308kj6csixsmvdc6ccnqkw83adc5cggh1798b45ag"))
        (patches
          (search-patches "gajim-honour-GAJIM_PLUGIN_PATH.patch"))))
     (build-system python-build-system)
@@ -1241,14 +1241,15 @@ of xmpppy.")
               (invoke "./pep517build/install_metadata.py" "dist/metadata"
                       (string-append "--prefix=" #$output))))
           (replace 'check
-            (lambda _
-              ;; Tests require a running X server.
-              (system "Xvfb :1 +extension GLX &")
-              (setenv "DISPLAY" ":1")
-              ;; For missing '/etc/machine-id'.
-              (setenv "DBUS_FATAL_WARNINGS" "0")
-              (invoke "dbus-launch" "python" "-m" "unittest"
-                      "discover" "-s" "test")))
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; Tests require a running X server.
+                (system "Xvfb :1 +extension GLX &")
+                (setenv "DISPLAY" ":1")
+                ;; For missing '/etc/machine-id'.
+                (setenv "DBUS_FATAL_WARNINGS" "0")
+                (invoke "dbus-launch" "python" "-m" "unittest"
+                        "discover" "-s" "test"))))
           (add-after 'install 'glib-or-gtk-compile-schemas
             (assoc-ref glib-or-gtk:%standard-phases
                        'glib-or-gtk-compile-schemas))
@@ -1288,9 +1289,7 @@ of xmpppy.")
           "/site-packages"))))))
     (native-inputs
      (list gettext-minimal
-           `(,glib "bin")
            gobject-introspection
-           `(,gtk+ "bin")
            python-distutils-extra
            python-pypa-build
            python-setuptools
@@ -1313,22 +1312,27 @@ of xmpppy.")
            gupnp-igd
            libappindicator
            libnice
+           libomemo
            libsecret
            libsoup
            libxscrnsaver
            network-manager
            python-css-parser
            python-dbus
+           python-emoji
            python-gssapi
            python-idna
            python-keyring
            python-nbxmpp
+           python-omemo-dr
            python-packaging
            python-pillow
            python-precis-i18n
            python-pycairo
            python-pygobject
-           python-pyopenssl))
+           python-pyopenssl
+           python-qrcode
+           python-sqlalchemy-2))
     (propagated-inputs
      (list dconf))
     (synopsis "Fully-featured XMPP client")
