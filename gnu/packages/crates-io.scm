@@ -53049,19 +53049,21 @@ PartialOrd types, like floats.")
 (define-public rust-ordered-float-4
   (package
     (name "rust-ordered-float")
-    (version "4.2.0")
+    (version "4.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "ordered-float" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0kjqcvvbcsibbx3hnj7ag06bd9gv2zfi5ja6rgyh2kbxbh3zfvd7"))))
+        (base32 "0ppqpjrri5r5vdz06na24d00cjaz67ambd1hcq13iy8vf3wy2pn6"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-arbitrary" ,rust-arbitrary-1)
                        ("rust-borsh" ,rust-borsh-1)
                        ("rust-bytemuck" ,rust-bytemuck-1)
+                       ("rust-derive-visitor" ,rust-derive-visitor-0.4)
+                       ("rust-num-cmp" ,rust-num-cmp-0.1)
                        ("rust-num-traits" ,rust-num-traits-0.2)
                        ("rust-proptest" ,rust-proptest-1)
                        ("rust-rand" ,rust-rand-0.8)
