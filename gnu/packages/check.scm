@@ -2981,23 +2981,45 @@ a Pytest test execution.")
 (define-public python-pytest-mypy-plugins
   (package
     (name "python-pytest-mypy-plugins")
-    (version "1.10.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pytest-mypy-plugins" version))
-              (sha256
-               (base32
-                "05ng29b05gasqj195i9hyyhx5shmwypyvajb7plxwha3g36qq98z"))))
+    (version "3.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest-mypy-plugins" version))
+       (sha256
+        (base32 "1gpynypn13032by633dr2zhng54v2gl09kwgp3ysc4wpwl09pyhl"))))
     (build-system pyproject-build-system)
-    (arguments (list #:tests? #false)) ;there are none
-    (propagated-inputs (list python-chevron
-                             python-decorator
-                             python-mypy
-                             python-pytest
-                             python-pyyaml
-                             python-setuptools
-                             python-regex))
-    (native-inputs (list python-wheel))
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k" (string-join
+                    (list "not reveal_type_extension_is_loaded"
+                          "test_pyproject_toml"
+                          "test_ini_files")
+                    " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Tests failed to run in project's root directory:
+          ;; ModuleNotFoundError: No module named 'pytest_mypy_plugins.tests'
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (when tests?
+                (setenv "HOME" "/tmp")
+                (with-directory-excursion "/tmp"
+                  (apply invoke "pytest" "-v" test-flags))))))))
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-decorator
+           python-jinja2
+           python-jsonschema
+           python-mypy
+           python-packaging
+           python-pytest
+           python-pyyaml
+           python-regex
+           python-tomlkit))
     (home-page "https://github.com/TypedDjango/pytest-mypy-plugins")
     (synopsis "Pytest plugin for writing tests for mypy plugins")
     (description "This package provides a pytest plugin for writing tests for
