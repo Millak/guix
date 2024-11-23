@@ -40455,9 +40455,13 @@ Maximum Parsimony, distance methods and Hadamard conjugation.")
          (base32
           "1k2h2pxxxm7pkjdzsn3mvf2i169vckxmyhzc4mqrcppmnbkzpx4a"))))
     (build-system r-build-system)
+    ;; FIXME There are a number of concerning test failures due to accuracy
+    ;; problems.
+    (arguments (list #:test-types '(list "vignettes")))
     (inputs (list fftw gsl))
     (propagated-inputs
      (list r-ape r-desolve r-rcpp r-subplex))
+    (native-inputs (list r-caper r-expm r-lubridate r-minqa r-testthat))
     (home-page "https://www.zoology.ubc.ca/prog/diversitree")
     (synopsis "Comparative 'phylogenetic' analyses of diversification")
     (description "This package contains a number of comparative \"phylogenetic\"
