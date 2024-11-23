@@ -14876,6 +14876,7 @@ plots for R.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-zoo))
+    (native-inputs (list r-sandwich))
     (home-page "https://cran.r-project.org/web/packages/dyn")
     (synopsis "Time series regression")
     (description
