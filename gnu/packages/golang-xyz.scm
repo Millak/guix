@@ -5645,6 +5645,30 @@ colored strings.")
      "Colorstring provides functions for colorizing strings for terminal output.")
     (license license:expat)))
 
+;; XXX: This package is in maintenance mode: "This repository has been
+;; archived by the owner on Jul 22, 2024. It is now read-only."
+(define-public go-github-com-mitchellh-mapstructure
+  (package
+    (name "go-github-com-mitchellh-mapstructure")
+    (version "1.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mitchellh/mapstructure")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "10f2v143lkip8h46shd99k5yavfqpgqmd7a6y42v7szc0lcn3mff"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "github.com/mitchellh/mapstructure"))
+    (home-page "https://github.com/mitchellh/mapstructure")
+    (synopsis "Go library for decoding generic map values")
+    (description "Go library for decoding generic map values")
+    (license license:expat)))
+
 (define-public go-github-com-modern-go-concurrent
   (package
     (name "go-github-com-modern-go-concurrent")
