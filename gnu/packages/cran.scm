@@ -8151,7 +8151,7 @@ visualizing tree-structured regression models is available.")
    (build-system r-build-system)
    (propagated-inputs
     (list r-boot))
-   (native-inputs (list r-knitr))
+   (native-inputs (list r-knitr r-svunit))
    (home-page "https://github.com/phgrosjean/pastecs")
    (synopsis "Analysis of space-time ecological series")
    (description
