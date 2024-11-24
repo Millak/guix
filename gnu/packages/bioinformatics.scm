@@ -743,7 +743,12 @@ and utilities for PacBio C++ applications.")
       (properties `((upstream-name . "anndataR")))
       (build-system r-build-system)
       (propagated-inputs (list r-matrix r-r6))
-      (native-inputs (list r-knitr))
+      (native-inputs
+       (list r-knitr
+             r-rhdf5
+             r-seuratobject
+             r-singlecellexperiment
+             r-testthat))
       (home-page "https://github.com/scverse/anndataR")
       (synopsis "AnnData interoperability in R")
       (description
