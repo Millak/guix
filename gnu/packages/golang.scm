@@ -4242,7 +4242,7 @@ fast and distributable command line applications in an expressive way.")
   (package
     (inherit go-github-com-urfave-cli)
     (name "go-github-com-urfave-cli-v2")
-    (version "2.3.0")
+    (version "2.27.5")
     (source
      (origin
        (method git-fetch)
@@ -4251,12 +4251,14 @@ fast and distributable command line applications in an expressive way.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "08pvn7gyfznni72xrxfh2x6xxa8ykr7l1ka278js8g8qkh71bj8l"))
-       ;; XXX: Remove patch when updating.
-       (patches
-        (search-patches "go-github-com-urfave-cli-v2-fix-tests.patch"))))
+        (base32 "03237hi2jqvms9cif4varyap3j1dhzcf1mr809dm7ncvzk7gxg83"))))
     (arguments
-     '(#:import-path "github.com/urfave/cli/v2"))))
+     '(#:import-path "github.com/urfave/cli/v2"))
+    (propagated-inputs
+     (list go-github-com-burntsushi-toml
+           go-github-com-go-md2man
+           go-github-com-xrash-smetrics
+           go-gopkg-in-yaml-v3))))
 
 (define-public go-github-com-go-md2man
   (package
