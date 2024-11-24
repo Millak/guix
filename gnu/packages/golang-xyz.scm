@@ -9181,6 +9181,17 @@ library.")
                     "  This package provides an command line interface (CLI)
 tool."))))
 
+(define-public go-csv2table
+  (package/inherit go-github-com-olekukonko-tablewriter
+    (name "go-csv2table")
+    (arguments
+     (list #:install-source? #f
+           #:import-path "github.com/olekukonko/tablewriter/csv2table"
+           #:unpack-path "github.com/olekukonko/tablewriter"))
+    (description
+     (string-append (package-description go-github-com-olekukonko-tablewriter)
+                    "\nThis package provides a command line interface (CLI) tool."))))
+
 (define-public go-hclogvet
   (package
     (inherit go-github-com-hashicorp-go-hclog)
