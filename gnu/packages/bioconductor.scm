@@ -2724,6 +2724,32 @@ cultures from 4 patients at 2 time points over 3 conditions (DPN, OHT and contro
     ;; The author(s) mentions only LGPL without any specific version.
     (license license:lgpl2.1+)))
 
+(define-public r-rtcga-rnaseq
+  (package
+    (name "r-rtcga-rnaseq")
+    (version "20151101.36.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "RTCGA.rnaseq" version
+                              'experiment))
+       (sha256
+        (base32 "0yn89m988gvq4y5nv56581dlh6ydyhd6dkcx1clwalb453v390dz"))))
+    (properties `((upstream-name . "RTCGA.rnaseq")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-rtcga))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/RTCGA.rnaseq")
+    (synopsis "Rna-seq datasets from The Cancer Genome Atlas Project")
+    (description
+     "This package provides rna-seq datasets from The Cancer Genome Atlas
+Project for all cohorts types from @url{http://gdac.broadinstitute.org/}.  The
+Rna-seq data format is explained here
+@url{https://wiki.nci.nih.gov/display/TCGA/RNASeq+Version+2}.  The data source
+is Illumina hiseq Level 3 RSEM normalized expression data from 2015-11-01
+snapshot.")
+    (license license:gpl2)))
+
 (define-public r-sesamedata
   (package
     (name "r-sesamedata")
