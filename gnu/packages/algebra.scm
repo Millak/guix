@@ -1474,6 +1474,7 @@ a Redesigned ARPACK.  It is a C++ library for large scale eigenvalue problems,
 built on top of Eigen.  It is implemented as a header-only C++ library and can
 be easily embedded in C++ projects that require calculating eigenvalues of
 large matrices.")
+    (properties `((lint-hidden-cpe-vendors . ("brainstormforce" "wpspectra"))))
     (license license:mpl2.0)))
 
 (define-public gappa
