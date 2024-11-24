@@ -2947,6 +2947,7 @@ command line interfaces of C++ programs.  It allows you to describe the
 options that your program supports, their types, default values, and
 documentation.")
     (home-page "https://codesynthesis.com/projects/cli/")
+    (properties `((lint-hidden-cpe-vendors . ("github" "snyk"))))
     (license license:expat)))
 
 (define-public xsd
