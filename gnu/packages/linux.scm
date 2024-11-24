@@ -3743,7 +3743,7 @@ minimizing cache miss rates for irq handlers.")
 (define-public bolt
   (package
     (name "bolt")
-    (version "0.9.5")
+    (version "0.9.8")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3752,7 +3752,7 @@ minimizing cache miss rates for irq handlers.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1b9z0sfrz6bj0mddng9s0dx59g9239zmrl03hxx2x88mb7r0wmcg"))))
+                "1i9nyvx3qcf4m607qmpklpl9xqzsh423k8y3fr6c5n0k4ajy4cxh"))))
     (build-system meson-build-system)
     (arguments
      (list #:configure-flags '(list "--localstatedir=/var")
@@ -3761,12 +3761,11 @@ minimizing cache miss rates for irq handlers.")
                         (add-after 'unpack 'replace-directories
                           (lambda* (#:key outputs #:allow-other-keys)
                             (substitute* "meson.build"
-                              (("udev.get_pkgconfig_variable..udevdir..")
-                               (string-append "'"
-                                              #$output "/lib/udev'")))
-                            (substitute* "scripts/meson-install.sh"
-                              (("mkdir.*")
-                               ""))))
+                              (("udev.get_variable\\(pkgconfig: 'udevdir'\\)")
+                               (string-append "'" #$output "/lib/udev'"))
+                              ;; Don't install in /var
+                              (("not systemd\\.found\\(\\)")
+                               "false"))))
                         (add-before 'install 'no-polkit-magic
                           (lambda* (#:key outputs #:allow-other-keys)
                             (setenv "PKEXEC_UID" "something"))))))
@@ -3788,6 +3787,7 @@ The command-line utility @command{boltctl} manages Thunderbolt devices via
 @command{boltd}.  It can list devices, monitor changes, and initiate
 authorization of devices.")
     (home-page "https://gitlab.freedesktop.org/bolt/bolt")
+    (properties `((lint-hidden-cpe-vendors . ("boltcms" "puppet"))))
     (license license:gpl2+)))
 
 (define-public jitterentropy-rngd
