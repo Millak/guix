@@ -5824,7 +5824,7 @@ and @url{https://rfc-editor.org/rfc/rfc8018.html,RFC 8018}.")
 (define-public go-github-com-xdg-go-scram
   (package
     (name "go-github-com-xdg-go-scram")
-    (version "1.0.2")
+    (version "1.1.2")
     (source
       (origin
         (method git-fetch)
@@ -5833,7 +5833,7 @@ and @url{https://rfc-editor.org/rfc/rfc8018.html,RFC 8018}.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1jyv4qgc1dgh3v96pazmgljpp9ij25k8hwn0v4fck18g16i0nccm"))))
+         (base32 "1bkznny84fdn4sy3wq5680v424glsq9nh2169qy51213bah6by84"))))
     (build-system go-build-system)
     (arguments '(#:import-path "github.com/xdg-go/scram"))
     (propagated-inputs
