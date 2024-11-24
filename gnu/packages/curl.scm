@@ -382,6 +382,7 @@ more!")
     (description
      "Provided a set of HTTP request headers, h2c outputs how to invoke
 curl to obtain exactly that HTTP request.")
+    (properties `((lint-hidden-cpe-vendors . ("golang"))))
     (license license:expat)))
 
 (define-public coeurl
