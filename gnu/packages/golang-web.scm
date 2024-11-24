@@ -171,6 +171,31 @@ API service accounts for Go.")
 2019.")
     (license license:expat)))
 
+(define-public go-github-com-aki237-nscjar
+  (package
+    (name "go-github-com-aki237-nscjar")
+    (version "0.0.0-20210417074043-bbb606196143")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/aki237/nscjar")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0vbagy9g795b17lnnkkm2f3pcrkxrzc4qbzc656g2cdkdprdyb4m"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/aki237/nscjar"))
+    (home-page "https://github.com/aki237/nscjar")
+    (synopsis "Handle Netscape / Mozilla cookies")
+    (description
+     "@code{nscjar} is a Go library used to parse and output
+Netscape/Mozilla's old-style cookie files.  It also implements a simple cookie
+jar struct to manage the cookies added to the cookie jar.")
+    (license license:expat)))
+
 (define-public go-github-com-alexliesenfeld-health
   (package
     (name "go-github-com-alexliesenfeld-health")

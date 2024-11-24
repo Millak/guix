@@ -51,6 +51,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-web)
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages kerberos)

@@ -2439,29 +2439,6 @@ writers can be supplied for alternate environments.")
       (home-page "https://github.com/alsm/ioprogress")
       (license license:expat))))
 
-(define-public go-github-com-aki237-nscjar
-    (package
-      (name "go-github-com-aki237-nscjar")
-      (version "0.0.0-20210417074043-bbb606196143")
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                       (url "https://github.com/aki237/nscjar")
-                       (commit (go-version->git-ref version))))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0vbagy9g795b17lnnkkm2f3pcrkxrzc4qbzc656g2cdkdprdyb4m"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path "github.com/aki237/nscjar"))
-      (synopsis "Handle Netscape / Mozilla cookies")
-      (description "@code{nscjar} is a Go library used to parse and output
-Netscape/Mozilla's old-style cookie files.  It also implements a simple cookie
-jar struct to manage the cookies added to the cookie jar.")
-      (home-page "https://github.com/aki237/nscjar")
-      (license license:expat)))
-
 (define-public go-github-com-gizak-termui
   (package
     (name "go-github-com-gizak-termui")
