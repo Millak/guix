@@ -37645,6 +37645,8 @@ doi.org/10.1007/s10115-013-0679-x} for details.")
         (base32 "0i88wvqqw8cmxmh9i78rqzp4s16zhf12dgl9fsk9bhw7hxhhc0i1"))))
     (properties `((upstream-name . "mediation")))
     (build-system r-build-system)
+    ;; One vignette overwrites the output of another vignette
+    (arguments (list #:test-types '(list "tests")))
     (propagated-inputs (list r-boot
                              r-hmisc
                              r-lme4
