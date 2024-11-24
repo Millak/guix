@@ -25825,7 +25825,7 @@ reproducibility.")
            r-scales
            r-vegan))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-genefilter r-knitr r-testthat))
     (home-page "https://github.com/joey711/phyloseq")
     (synopsis "Handling and analysis of high-throughput microbiome census data")
     (description
