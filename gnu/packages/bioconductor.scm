@@ -21259,6 +21259,10 @@ visualizing RNA-sequencing datasets and differentially expressed genes.")
     (build-system r-build-system)
     (arguments
      (list
+      ;; Tests require r-chemminer; adding it would lead to mutually recursive
+      ;; dependency declarations.  The tests also complain that Cairo is not
+      ;; loaded.
+      #:test-types '(list "vignettes")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-makefile
