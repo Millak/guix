@@ -2413,30 +2413,6 @@ for speed on short messages.")
 your Go binary to be later served from an http.FileSystem.")
     (license license:asl2.0)))
 
-(define-public go-github-com-alsm-ioprogress
-    (package
-      (name "go-github-com-alsm-ioprogress")
-      (version "0.0.0-20170412085706-063c3725f436")
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                       (url "https://github.com/alsm/ioprogress")
-                       (commit (go-version->git-ref version))))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "10ym5qlq77nynmkxbk767f2hfwyxg2k7hrzph05hvgzv833dhivh"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path "github.com/alsm/ioprogress"))
-      (synopsis "Textual progress bars in Go")
-      (description "@code{ioprogress} is a Go library with implementations of
-@code{io.Reader} and @code{io.Writer} that draws progress bars.  The primary use
-case for these are for command-line applications but alternate progress bar
-writers can be supplied for alternate environments.")
-      (home-page "https://github.com/alsm/ioprogress")
-      (license license:expat)))
-
 (define-public go-github-com-gizak-termui
   (package
     (name "go-github-com-gizak-termui")
