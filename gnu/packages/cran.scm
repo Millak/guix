@@ -796,6 +796,36 @@ acrophase, to predict the mean annual outcome value, and to test the
 coefficients.")
     (license license:expat)))
 
+(define-public r-cosinor2
+  (package
+    (name "r-cosinor2")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "cosinor2" version))
+       (sha256
+        (base32 "1pp0z86fflqkkllfrzx3vj98kzxjwnawr4a2d8z5q6zhq6v5qrvf"))))
+    (properties `((upstream-name . "cosinor2")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-cosinor
+                             r-cowplot
+                             r-ggplot2
+                             r-hmisc
+                             r-magrittr
+                             r-matrixstats
+                             r-purrr
+                             r-scales
+                             r-stringr))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/amutak/cosinor2")
+    (synopsis "Extended tools for Cosinor analysis of rhythms")
+    (description
+     "This package provides statistical procedures for calculating
+population-mean cosinor, non-stationary cosinor, estimation of best-fitting
+period, tests of population rhythm differences and more.")
+    (license license:gpl3)))
+
 (define-public r-countrycode
   (package
     (name "r-countrycode")
