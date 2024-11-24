@@ -7241,6 +7241,31 @@ Use waterutil with it to work with TUN/TAP packets/frames.")
      "This package provides a file system abstraction for Go.")
     (license license:asl2.0)))
 
+(define-public go-github-com-spf13-cast
+  (package
+    (name "go-github-com-spf13-cast")
+    (version "1.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/spf13/cast")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1l39v7zd8i8vvwls2frfxc583im5nj5x5lrdss4pcc36cd5a9vf4"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/spf13/cast"))
+    (native-inputs
+     (list go-github-com-frankban-quicktest))
+    (home-page "https://github.com/spf13/cast")
+    (synopsis "Safe and easy casting from one type to another in Go")
+    (description
+     "Safe and easy casting from one type to another in Go.")
+    (license license:expat)))
+
 (define-public go-github-com-spf13-cobra
   (package
     (name "go-github-com-spf13-cobra")
