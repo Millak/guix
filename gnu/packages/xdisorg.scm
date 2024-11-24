@@ -3787,6 +3787,8 @@ applications for Sway and other wlroots-based Wayland compositors.")
      "@command{dex}, @dfn{DesktopEntry Execution}, is a program to generate and
 execute @file{.desktop} files of the Application type.  It is also an
 autostarter compliant with the XDG autostart specification.")
+    (properties
+     '((lint-hidden-cpe-vendors . ("samsung" "linuxfoundation"))))
     (license license:gpl3+)))
 
 (define-public sx
