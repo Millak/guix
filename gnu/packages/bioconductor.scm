@@ -11153,6 +11153,8 @@ tab-delimited (tabix) files.")
                 "0x6fxfc75gkkvmp9ah7v0c0kg8v9m6jnysygvj76r62bkqziigr4"))))
     (properties `((upstream-name . "RTCGA")))
     (build-system r-build-system)
+    ;; Tests need r-rtcga-rnaseq, which depends on this package.
+    (arguments (list #:tests? #false))
     (propagated-inputs (list r-assertthat
                              r-data-table
                              r-dplyr
