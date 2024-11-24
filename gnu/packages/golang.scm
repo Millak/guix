@@ -4515,7 +4515,7 @@ systems.")
 (define-public go-github-com-gdamore-tcell-v2
     (package
       (inherit go-github-com-gdamore-tcell)
-      (name "go-github-com-gdamore-tcell")
+      (name "go-github-com-gdamore-tcell-v2")
       (version "2.7.4")
       (source (origin
                 (method git-fetch)
@@ -4527,15 +4527,7 @@ systems.")
                  (base32
                   "05b22sgyf8lnwjddxlfvlj7i8b67gnidhbnz86vvx8fddggpa5nd"))))
       (arguments
-       (list #:import-path "github.com/gdamore/tcell/v2"
-             #:phases
-             #~(modify-phases %standard-phases
-                 (add-before 'reset-gzip-timestamps 'make-files-writable
-                   (lambda _
-                     ;; Make sure .gz files are writable so that the
-                     ;; 'reset-gzip-timestamps' phase can do its work.
-                     (for-each make-file-writable
-                               (find-files #$output "\\.gz$")))))))
+       (list #:import-path "github.com/gdamore/tcell/v2"))
       (propagated-inputs
        (modify-inputs (package-inputs go-github-com-gdamore-tcell)
          (prepend go-golang-org-x-term go-golang-org-x-sys)))))
