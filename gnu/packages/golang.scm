@@ -5924,7 +5924,7 @@ temporal directories.")
 (define-public go-github-com-twpayne-go-vfs
   (package
     (name "go-github-com-twpayne-go-vfs")
-    (version "1.5.0")
+    (version "5.0.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5933,13 +5933,21 @@ temporal directories.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "19dm3gi45znwaqbzxhwcgkiz8059bwa3ank80hc6qhdl579bpjnz"))))
+                "152hbb6ww2f2ac2bf1d446vw8z8m22n1rsa7gvlzfa060vj9hjgx"))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "github.com/twpayne/go-vfs"))
+     (list
+      #:import-path "github.com/twpayne/go-vfs"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: Replace when go-build-system supports nested path.
+          (replace 'check
+            (lambda* (#:key import-path tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
     (native-inputs
-     (list go-github-com-bmatcuk-doublestar
-           go-github-com-stretchr-testify))
+     (list go-github-com-alecthomas-assert-v2))
     (home-page "https://github.com/twpayne/go-vfs/")
     (synopsis "Abstraction of the @code{os} and @code{ioutil} Go packages")
     (description "Package @code{vfs} provides an abstraction of the @code{os}
