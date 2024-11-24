@@ -6178,6 +6178,31 @@ queue.")
 NSQ protocol @url{https://nsq.io/}.")
     (license license:expat)))
 
+(define-public go-github-com-nxadm-tail
+  (package
+    (name "go-github-com-nxadm-tail")
+    (version "1.4.11")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/nxadm/tail")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0s8lawq661g8qqf7c1cip5l60cm2138b125jgmv9h548ji9g5yqx"))))
+    (build-system go-build-system)
+    (arguments (list #:import-path "github.com/nxadm/tail"))
+    (propagated-inputs
+     (list go-github-com-fsnotify-fsnotify
+           go-gopkg-in-tomb-v1))
+    (home-page "https://github.com/nxadm/tail")
+    (synopsis "Go implementation of the functionality of @command{tail -f}")
+    (description
+     "This package provides a Go library for reading from continuously
+updating files, like @command{tail -f}.")
+    (license license:expat)))
+
 (define-public go-github-com-oklog-run
   (package
     (name "go-github-com-oklog-run")
