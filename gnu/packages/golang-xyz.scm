@@ -1341,6 +1341,89 @@ information and periodically output metrics")
               (delete-file-recursively
                (string-append "src/" import-path "/examples")))))))))
 
+(define-public go-github-com-bmatcuk-doublestar
+  (package
+    (name "go-github-com-bmatcuk-doublestar")
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/bmatcuk/doublestar")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0bk5bixl6rqa8znxghyp6zndbccx9kdyrymjahgyp6qsrp7rk144"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; This test fails with Go 1.16.
+      #:test-flags #~(list "-skip" "TestMatch")
+      #:import-path "github.com/bmatcuk/doublestar"))
+    (home-page "https://github.com/bmatcuk/doublestar/")
+    (synopsis "Path pattern matching and globbing supporting doublestar")
+    (description
+     "@code{doublestar} is a Go implementation of path pattern
+matching and globbing with support for \"doublestar\" patterns.")
+    (license license:expat)))
+
+;; For chezmoi-1.8.11
+(define-public go-github-com-bmatcuk-doublestar-v2
+  (package
+    (inherit go-github-com-bmatcuk-doublestar)
+    (name "go-github-com-bmatcuk-doublestar-v2")
+    (version "2.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/bmatcuk/doublestar")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09ma8a9rhs8dg527vjhdf3lsb6lajaq193m6ksssm2k3qajhpi94"))))
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-bmatcuk-doublestar)
+       ((#:import-path _) "github.com/bmatcuk/doublestar/v2")))))
+
+(define-public go-github-com-bmatcuk-doublestar-v3
+  (package
+    (inherit go-github-com-bmatcuk-doublestar)
+    (name "go-github-com-bmatcuk-doublestar-v3")
+    (version "3.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/bmatcuk/doublestar")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "011h07mlmscbxxjr3h30fjjb4dw3gb245nzczaq520r112xlidhj"))))
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-bmatcuk-doublestar)
+       ((#:import-path _) "github.com/bmatcuk/doublestar/v3")))))
+
+(define-public go-github-com-bmatcuk-doublestar-v4
+  (package
+    (inherit go-github-com-bmatcuk-doublestar)
+    (name "go-github-com-bmatcuk-doublestar-v4")
+    (version "4.7.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/bmatcuk/doublestar")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1bvfxqkpl8bkfqxjxjgmz0gd4b4v6dxwrzxq2qzly0r9zrj1lfic"))))
+    (arguments
+     (list
+      #:import-path "github.com/bmatcuk/doublestar/v4"))))
+
 (define-public go-github-com-bmizerany-perks-quantile
   (package
     (name "go-github-com-bmizerany-perks-quantile")
