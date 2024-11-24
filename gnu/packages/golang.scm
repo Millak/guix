@@ -5429,15 +5429,10 @@ maps (because they are not addressable using Go reflection).")
                 "0bk5bixl6rqa8znxghyp6zndbccx9kdyrymjahgyp6qsrp7rk144"))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "github.com/bmatcuk/doublestar"
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'remove-incompatible-test
-           ;; This test fails with Go 1.16.
-           (lambda _
-             (substitute* "src/github.com/bmatcuk/doublestar/doublestar_test.go"
-               (("\\{\"a\\[\", \"a\", false, nil, false\\},.*")
-                "")))))))
+     (list
+      ;; This test fails with Go 1.16.
+      #:test-flags #~(list "-skip" "TestMatch")
+      #:import-path "github.com/bmatcuk/doublestar"))
     (home-page "https://github.com/bmatcuk/doublestar/")
     (synopsis "Path pattern matching and globbing supporting doublestar")
     (description "@code{doublestar} is a Go implementation of path pattern
