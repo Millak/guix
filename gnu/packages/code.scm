@@ -1058,14 +1058,14 @@ Using cscope, you can easily search for where symbols are used and defined.")
 (define-public xenon
   (package
     (name "xenon")
-    (version "0.9.0")
+    (version "0.9.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "xenon" version))
        (sha256
         (base32
-         "1f4gynjzfckm3rjfywwgz1c7icfx3zjqirf16aj73xv0c9ncpffj"))))
+         "1yj31bqz2bphvvyb0jkas7bxc2rw76rf1csz0mwmvah8pbc3hxaa"))))
     (build-system python-build-system)
     (arguments (list #:tests? #f)) ;test suite not shipped with the PyPI archive
     (inputs (list python-pyyaml python-radon python-requests))
@@ -1077,6 +1077,7 @@ Ideally, @code{xenon} is run every time code is committed.  Through command
 line options, various thresholds can be set for the complexity of code.  It
 will fail (i.e., it will exit with a non-zero exit code) when any of these
 requirements is not met.")
+    (properties '((lint-hidden-cpe-vendors . ("vmware"))))
     (license license:expat)))
 
 (define-public python-xenon
