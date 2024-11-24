@@ -4209,57 +4209,6 @@ references.")
       (description "A @command{.gitignore} parser for Go.")
       (license license:expat))))
 
-(define-public go-github-com-urfave-cli
-  (package
-    (name "go-github-com-urfave-cli")
-    (version "1.22.16")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/urfave/cli")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "022abbjwr3g2vbyfbdc1hg09d753hfba21b69n2nkrx168ag5ahd"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/urfave/cli"))
-    (native-inputs
-     (list go-github-com-stretchr-testify))
-    (propagated-inputs
-     (list go-github-com-go-md2man))
-    (home-page "https://github.com/urfave/cli")
-    (synopsis "Simple, fast, and fun package for building command line apps in Go")
-    (description "@command{cli} is a simple, fast, and fun package for
-building command line apps in Go.  The goal is to enable developers to write
-fast and distributable command line applications in an expressive way.")
-    (license license:expat)))
-
-(define-public go-github-com-urfave-cli-v2
-  (package
-    (inherit go-github-com-urfave-cli)
-    (name "go-github-com-urfave-cli-v2")
-    (version "2.27.5")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/urfave/cli")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "03237hi2jqvms9cif4varyap3j1dhzcf1mr809dm7ncvzk7gxg83"))))
-    (arguments
-     '(#:import-path "github.com/urfave/cli/v2"))
-    (propagated-inputs
-     (list go-github-com-burntsushi-toml
-           go-github-com-go-md2man
-           go-github-com-xrash-smetrics
-           go-gopkg-in-yaml-v3))))
-
 (define-public go-github-com-go-md2man
   (package
     (name "go-github-com-go-md2man")
