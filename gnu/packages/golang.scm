@@ -5395,7 +5395,7 @@ maps (because they are not addressable using Go reflection).")
 (define-public go-github-com-olekukonko-tablewriter
   (package
     (name "go-github-com-olekukonko-tablewriter")
-    (version "0.0.4")
+    (version "0.0.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5404,7 +5404,7 @@ maps (because they are not addressable using Go reflection).")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "02r0n2b9yh3x8xyf48k17dxlwj234hlgjycylbjxi6qg08hfmz2x"))))
+                "0zhnrih2px6jm8nxzkz8s7va3lj03bzwxim8wjba9zh7i78bp67z"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/olekukonko/tablewriter"))
