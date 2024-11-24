@@ -4212,7 +4212,7 @@ references.")
 (define-public go-github-com-urfave-cli
   (package
     (name "go-github-com-urfave-cli")
-    (version "1.22.2")
+    (version "1.22.16")
     (source
      (origin
        (method git-fetch)
@@ -4222,11 +4222,13 @@ references.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "10mcnvi5qmn00vpyk6si8gjka7p654wr9hac4zc9w5h3ickhvbdc"))
-       (patches (search-patches "go-github-com-urfave-cli-fix-tests.patch"))))
+         "022abbjwr3g2vbyfbdc1hg09d753hfba21b69n2nkrx168ag5ahd"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/urfave/cli"))
+     (list
+      #:import-path "github.com/urfave/cli"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
     (propagated-inputs
      (list go-github-com-go-md2man))
     (home-page "https://github.com/urfave/cli")
