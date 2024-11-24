@@ -3146,6 +3146,7 @@ patch associated with a particular revision of an RCS file.")
 Configuration Management (SCM).  Using it, you can record the history of
 sources files, and documents.  It fills a similar role to the free software
 RCS, PRCS, and Aegis packages.")
+    (properties '((lint-hidden-cpe-vendors . ("jenkins"))))
     (license license:gpl1+)))
 
 (define-public cvs-fast-export
