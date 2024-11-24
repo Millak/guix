@@ -45120,6 +45120,9 @@ API.")
                 "01dvih9f7m7vmjv057d1lls5kyxq5h87mmxaby566r9b2svrx0fn"))))
     (properties `((upstream-name . "spacetime")))
     (build-system r-build-system)
+    ;; Vignettes fail on file jss816.R with:
+    ;; object 'nc' not found
+    (arguments (list #:test-types '(list "tests")))
     (propagated-inputs (list r-intervals r-lattice r-sp r-xts r-zoo))
     (native-inputs (list r-knitr))
     (home-page "https://github.com/edzer/spacetime/")
