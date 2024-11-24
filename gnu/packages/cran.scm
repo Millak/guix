@@ -772,6 +772,30 @@ correlations, multilevel correlations, polychoric correlations, biweight
 correlations, distance correlations and more.")
     (license license:gpl3)))
 
+(define-public r-cosinor
+  (package
+    (name "r-cosinor")
+    (version "1.2.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "cosinor" version))
+       (sha256
+        (base32 "0nyvzmqk0rhx10fki29hcrz014bv3r40adqd5d6rbcz66kc4sjy3"))))
+    (properties `((upstream-name . "cosinor")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-ggplot2 r-shiny))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/sachsmc/cosinor")
+    (synopsis "Tools for estimating and predicting the Cosinor model")
+    (description
+     "This package provides a set of simple functions that transforms
+longitudinal data to estimate the cosinor linear model as described in
+Tong (1976).  Methods are given to summarize the mean, amplitude and
+acrophase, to predict the mean annual outcome value, and to test the
+coefficients.")
+    (license license:expat)))
+
 (define-public r-countrycode
   (package
     (name "r-countrycode")
