@@ -7362,6 +7362,47 @@ with the
 GNU extensions} to the POSIX recommendations for command-line options.")
     (license license:bsd-3)))
 
+(define-public go-github-com-spf13-viper
+  (package
+    (name "go-github-com-spf13-viper")
+    ;; Refreshing to a newer version requires long chain of missing packages.
+    (version "1.8.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/spf13/viper")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0jcsvd9l05pv10rma6zicp44q2mlvxj0qlhnf4zcg2pymb5i0hq6"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/spf13/viper"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-fsnotify-fsnotify
+           go-github-com-hashicorp-hcl
+           go-github-com-magiconair-properties
+           go-github-com-mitchellh-mapstructure
+           go-github-com-pelletier-go-toml
+           go-github-com-spf13-afero
+           go-github-com-spf13-cast
+           go-github-com-spf13-jwalterweatherman
+           go-github-com-spf13-pflag
+           go-github-com-subosito-gotenv
+           go-gopkg-in-ini-v1
+           go-gopkg-in-yaml-v2))
+    (home-page "https://github.com/spf13/viper")
+    (synopsis "Go configuration with fangs")
+    (description
+     "Viper is a complete configuration solution for Go applications including
+12-Factor apps.  It is designed to work within an application, and can handle
+all types of configuration needs and formats.")
+    (license license:expat)))
+
 (define-public go-github-com-stathat-go
   (let ((commit "74669b9f388d9d788c97399a0824adbfee78400e")
         (revision "0"))
