@@ -8134,6 +8134,7 @@ target sequences from sampled subsequences.  Example applications include
 transcript-level RNA-Seq quantification, allele-specific/haplotype expression
 analysis (from RNA-Seq), transcription factor binding quantification in
 ChIP-Seq, and analysis of metagenomic data.")
+    (properties `((lint-hidden-cpe-vendors . ("openjsf" "qs_project"))))
     (license license:artistic2.0)))
 
 (define-public express-beta-diversity
