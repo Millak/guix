@@ -4578,6 +4578,8 @@ functions are simplified but can be faster or have other advantages.")
     (properties `((upstream-name . "matrixTests")))
     (build-system r-build-system)
     (propagated-inputs (list r-matrixstats))
+    (native-inputs
+     (list r-car r-cosinor r-cosinor2 r-moments r-nortest r-pmcmrplus))
     (home-page "https://github.com/karoliskoncevicius/matrixTests")
     (synopsis "Statistical hypothesis tests on rows and columns of matrices")
     (description
