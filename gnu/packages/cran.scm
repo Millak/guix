@@ -18604,6 +18604,26 @@ case R cannot display GUI dialog boxes, a simpler command line version of these
 interactive elements is also provided as a fallback solution.")
     (license license:gpl2)))
 
+(define-public r-svunit
+  (package
+    (name "r-svunit")
+    (version "1.0.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "svUnit" version))
+       (sha256
+        (base32 "08nmlbdrmmz04ira30721l99i74w07w2avdr4pypswf2sq1nqgi6"))))
+    (properties `((upstream-name . "svUnit")))
+    (build-system r-build-system)
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/SciViews/svUnit")
+    (synopsis "Unit, integration and system testing")
+    (description
+     "This package provides a complete unit test system and functions to
+implement its GUI part.")
+    (license license:gpl2)))
+
 (define-public r-abe
   (package
     (name "r-abe")
