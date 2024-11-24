@@ -20508,10 +20508,20 @@ quick reporting.")
         (base32
          "144zkq5w7v6fpzk3x40i0baybbp0y6x2ckh4b9qljryas9mhgp9a"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'delete-bad-tests
+           (lambda _
+             ;; These tests fail in the C locale.
+             (delete-file "inst/tests/test-helpers.R")
+             (delete-file "inst/tests/test-S3.R")
+             (delete-file "inst/tests/test-evals.R"))))))
     (propagated-inputs
      (list r-digest r-rcpp))
     (native-inputs
-     (list r-knitr))
+     (list pandoc r-knitr r-lattice r-testthat))
     (home-page "https://rapporter.github.io/pander")
     (synopsis "Render R objects into Pandoc's markdown")
     (description
