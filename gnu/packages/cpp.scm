@@ -2473,6 +2473,7 @@ provides a number of utilities to make coding with expected cleaner.")
    (synopsis "Immutable data structures")
    (description "Immer is a library of persistent and immutable data structures
 written in C++.")
+   (properties '((lint-hidden-cpe-vendors . ("immer_project"))))
    (license license:boost1.0)))
 
 (define-public zug
