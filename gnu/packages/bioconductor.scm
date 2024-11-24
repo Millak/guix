@@ -16511,8 +16511,11 @@ performs inference on the parameters of the GAM.")
         (base32
          "089b7f6dwpi9abj0ncswbi4s30k45996zb99sh43avw6jcb6qj60"))))
     (build-system r-build-system)
+    ;; Vignettes need deprecated package RangedData.
+    (arguments (list #:test-types '(list "tests")))
     (propagated-inputs
      (list r-biocgenerics r-iranges r-yaml))
+    (native-inputs (list r-runit))
     (home-page "https://bioconductor.org/packages/triform/")
     (synopsis "Find enriched regions in transcription factor ChIP-sequencing data")
     (description
