@@ -2020,10 +2020,15 @@ Amazon S3 compatible object storage server.")
     (version "7.45.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pycurl" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pycurl/pycurl")
+             (commit (string-append
+                      "REL_" (string-replace-substring version "." "_")))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1ji46b924caa4saxvjxs9h673yy0kif297nxpnjn84r7w05mjc2p"))))
+        (base32
+         "1dzdramcgf63m1zg8glhqa3ik9anzjy954mshk7s3z3gsi21n8fp"))))
     (build-system pyproject-build-system)
     (arguments
      '(#:test-flags
