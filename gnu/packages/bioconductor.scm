@@ -21316,7 +21316,7 @@ add-on package rather than used directly.")
            r-rsvg
            r-stringi))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-chemmineob r-rsqlite r-runit r-snow))
     (home-page "https://github.com/girke-lab/ChemmineR")
     (synopsis "Cheminformatics toolkit for R")
     (description
