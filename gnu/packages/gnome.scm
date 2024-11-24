@@ -5698,12 +5698,14 @@ output devices.")
     (version "2.7.2")
     (source
      (origin
-       (method url-fetch)
-       (uri
-        (string-append "https://gitlab.freedesktop.org/geoclue/geoclue/-/archive/"
-                       version "/geoclue-" version ".tar.bz2"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.freedesktop.org/geoclue/geoclue")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1ljn4k1zlfx0ymmdz8ycfb976vx8r61sx68q854r0xinl124mlh1"))
+        (base32
+         "1fq5pmypbm6v9ychh9v1k71801jbr3igrxzsq36vy7cxs1dga0ig"))
        (patches (search-patches "geoclue-config.patch"))))
     (build-system meson-build-system)
     (arguments
