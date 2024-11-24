@@ -30456,7 +30456,7 @@ effect size.")
     (propagated-inputs
      (list r-sp))
     (native-inputs
-     (list pkg-config r-knitr))
+     (list pkg-config r-knitr r-sf))
     (home-page "https://rgdal.r-forge.r-project.org")
     (synopsis "Bindings for the Geospatial Data Abstraction Library")
     (description
