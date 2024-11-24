@@ -421,6 +421,7 @@ silently and reliably flow across to every other.")
 Business, OneDrive for Office365 and SharePoint and fully supports Azure
 National Cloud Deployments.  It supports one-way and two-way sync capabilities
 and securely connects to Microsoft OneDrive services.")
+    (properties '((lint-hidden-cpe-vendors . ("microsoft"))))
     (license license:gpl3)))
 
 (define-public lsyncd
