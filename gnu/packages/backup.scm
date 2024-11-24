@@ -1058,7 +1058,7 @@ precious backup space.
 (define-public restic-rest-server
   (package
     (name "restic-rest-server")
-    (version "0.12.1")
+    (version "0.13.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1067,7 +1067,7 @@ precious backup space.
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "18jk93j91dq4639nml4qnq1fq5j3s67ca3gvfka5aafln8ir8ffk"))))
+                "1ncsmwn4g1j555cgwkk5p8f093s42fip7dajhnh554jp1zx757m3"))))
     (build-system go-build-system)
     (arguments
      (list
