@@ -5821,32 +5821,6 @@ algorithm described in @url{https://rfc-editor.org/rfc/rfc2898.html,RFC 2898}
 and @url{https://rfc-editor.org/rfc/rfc8018.html,RFC 8018}.")
     (license license:asl2.0)))
 
-(define-public go-github-com-xdg-go-scram
-  (package
-    (name "go-github-com-xdg-go-scram")
-    (version "1.1.2")
-    (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/xdg-go/scram")
-               (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32 "1bkznny84fdn4sy3wq5680v424glsq9nh2169qy51213bah6by84"))))
-    (build-system go-build-system)
-    (arguments '(#:import-path "github.com/xdg-go/scram"))
-    (propagated-inputs
-     (list go-github-com-xdg-go-stringprep
-           go-github-com-xdg-go-pbkdf2))
-    (home-page "https://github.com/xdg-go/scram")
-    (synopsis "Go implementation of RFC-5802")
-    (description
-     "Package scram provides client and server implementations of the
-@acronym{Salted Challenge Response Authentication Mechanism, SCRAM} described in
-RFC-5802 and RFC-7677.")
-    (license license:asl2.0)))
-
 (define-public go-github-com-godbus-dbus
   (package
     (name "go-github-com-godbus-dbus")

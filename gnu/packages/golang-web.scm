@@ -5988,6 +5988,34 @@ missing it.  It address the issues
 @url{https://github.com/golang/go/issues/68082, #68082}.")
     (license license:bsd-3)))
 
+(define-public go-github-com-xdg-go-scram
+  (package
+    (name "go-github-com-xdg-go-scram")
+    (version "1.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/xdg-go/scram")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1bkznny84fdn4sy3wq5680v424glsq9nh2169qy51213bah6by84"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/xdg-go/scram"))
+    (propagated-inputs
+     (list go-github-com-xdg-go-stringprep
+           go-github-com-xdg-go-pbkdf2))
+    (home-page "https://github.com/xdg-go/scram")
+    (synopsis "Go implementation of RFC-5802")
+    (description
+     "Package scram provides client and server implementations of the
+@acronym{Salted Challenge Response Authentication Mechanism, SCRAM} described
+in RFC-5802 and RFC-7677.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-xeipuuv-gojsonpointer
   (let ((commit "4e3ac2762d5f479393488629ee9370b50873b3a6")
         (revision "0"))
