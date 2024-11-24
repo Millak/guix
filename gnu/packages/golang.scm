@@ -3182,7 +3182,9 @@ containers.")
 (define-public go-github-com-spf13-afero
   (package
     (name "go-github-com-spf13-afero")
-    (version "1.2.2")
+    ;; TODO: It's the latest version which does not require
+    ;; google.golang.org/api, pulling 400+ missing dependencies.
+    (version "1.6.0")
     (source
      (origin
        (method git-fetch)
@@ -3192,7 +3194,7 @@ containers.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0j9r65qgd58324m85lkl49vk9dgwd62g7dwvkfcm3k6i9dc555a9"))))
+         "0yi8p0yxiidpcg4cagxg2iyqcaapsng89rak4qyxmgails2fqg37"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/spf13/afero"))
