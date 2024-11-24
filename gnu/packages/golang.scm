@@ -3253,6 +3253,8 @@ containers.")
     (description "Go logging library")
     (license license:expat)))
 
+;; XXX: Not maintained for 3y, see
+;; <https://github.com/spf13/pflag/issues/385>.
 (define-public go-github-com-spf13-pflag
   (package
     (name "go-github-com-spf13-pflag")
