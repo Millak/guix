@@ -34127,7 +34127,7 @@ automatically show a loader when the output is (re)calculating.")
     (inputs
      (list (librsvg-for-system) pcre2 zlib))
     (native-inputs
-     (list pkg-config r-knitr r-testthat))
+     (list pkg-config r-knitr r-spelling r-testthat))
     (home-page "https://github.com/jeroen/rsvg#readme")
     (synopsis "Render SVG images into PDF, PNG, PostScript, or Bitmap arrays")
     (description
