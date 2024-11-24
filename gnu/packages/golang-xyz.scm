@@ -7925,6 +7925,40 @@ supported by the time package
 @end itemize")
     (license license:expat)))
 
+(define-public go-github-com-twpayne-go-vfs
+  (package
+    (name "go-github-com-twpayne-go-vfs")
+    (version "5.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/twpayne/go-vfs")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "152hbb6ww2f2ac2bf1d446vw8z8m22n1rsa7gvlzfa060vj9hjgx"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/twpayne/go-vfs"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: Replace when go-build-system supports nested path.
+          (replace 'check
+            (lambda* (#:key import-path tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
+    (native-inputs
+     (list go-github-com-alecthomas-assert-v2))
+    (home-page "https://github.com/twpayne/go-vfs/")
+    (synopsis "Abstraction of the @code{os} and @code{ioutil} Go packages")
+    (description
+     "Package @code{vfs} provides an abstraction of the @code{os} and
+@code{ioutil} packages that is easy to test.")
+    (license license:expat)))
+
 (define-public go-github-com-vitrun-qart
   (let ((commit "bf64b92db6b05651d6c25a3dabf2d543b360c0aa")
         (revision "0"))
