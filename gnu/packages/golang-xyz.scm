@@ -7292,6 +7292,30 @@ Use waterutil with it to work with TUN/TAP packets/frames.")
 well as a program to generate applications and command files.")
     (license license:asl2.0)))
 
+(define-public go-github-com-spf13-jwalterweatherman
+  (package
+    (name "go-github-com-spf13-jwalterweatherman")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/spf13/jwalterweatherman")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ywmkwci5zyd88ijym6f30fj5c0k2yayxarkmnazf5ybljv50q7b"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/spf13/jwalterweatherman"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/spf13/jwalterweatherman")
+    (synopsis "Go logging library")
+    (description "Go logging library")
+    (license license:expat)))
+
 (define-public go-github-com-stathat-go
   (let ((commit "74669b9f388d9d788c97399a0824adbfee78400e")
         (revision "0"))

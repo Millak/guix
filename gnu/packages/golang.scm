@@ -3179,30 +3179,6 @@ information about the resource usage and performance characteristics of running
 containers.")
       (license license:asl2.0))))
 
-(define-public go-github-com-spf13-jwalterweatherman
-  (package
-    (name "go-github-com-spf13-jwalterweatherman")
-    (version "1.1.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/spf13/jwalterweatherman")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1ywmkwci5zyd88ijym6f30fj5c0k2yayxarkmnazf5ybljv50q7b"))))
-    (build-system go-build-system)
-    (arguments
-     `(#:import-path "github.com/spf13/jwalterweatherman"))
-    (native-inputs
-     (list go-github-com-stretchr-testify))
-    (home-page "https://github.com/spf13/jwalterweatherman")
-    (synopsis "Go logging library")
-    (description "Go logging library")
-    (license license:expat)))
-
 ;; XXX: Not maintained for 3y, see
 ;; <https://github.com/spf13/pflag/issues/385>.
 (define-public go-github-com-spf13-pflag
