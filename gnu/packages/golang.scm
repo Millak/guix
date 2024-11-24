@@ -3208,7 +3208,7 @@ containers.")
 (define-public go-github-com-spf13-cast
   (package
     (name "go-github-com-spf13-cast")
-    (version "1.3.1")
+    (version "1.7.0")
     (source
      (origin
        (method git-fetch)
@@ -3218,12 +3218,12 @@ containers.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0lb84788glr0qzrq2ifi36rgvp96qrgywvxrr3ggq5hrbr38hgn1"))))
+         "1l39v7zd8i8vvwls2frfxc583im5nj5x5lrdss4pcc36cd5a9vf4"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/spf13/cast"))
     (native-inputs
-     (list go-github-com-stretchr-testify))
+     (list go-github-com-frankban-quicktest))
     (home-page "https://github.com/spf13/cast")
     (synopsis "Safe and easy casting from one type to another in Go")
     (description "Safe and easy casting from one type to another in Go")
