@@ -4667,8 +4667,17 @@ have super fancy logs.")
          "0dkk3friykg8p6wgqryx6745ahhb9z1j740k7px9dac6v5xjp78c"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/kylelemons/godebug/diff"
-       #:unpack-path "github.com/kylelemons/godebug"))
+     (list
+      #:import-path "github.com/kylelemons/godebug"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: Replace when go-build-system supports nested path.
+          (delete 'build)
+          (replace 'check
+            (lambda* (#:key import-path tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
     (home-page "https://github.com/kylelemons/godebug")
     (synopsis "Pretty printer for Go values")
     (description
