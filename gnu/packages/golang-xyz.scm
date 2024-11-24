@@ -6,7 +6,7 @@
 ;;; Copyright © 2019 Brian Leung <bkleung89@gmail.com>
 ;;; Copyright © 2019, 2021 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2019-2021 Martin Becze <mjbecze@riseup.net>
-;;; Copyright © 2019-2022, 2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2020 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2020 Jack Hill <jackhill@jackhill.us>
@@ -7323,6 +7323,44 @@ a few advantages over using the standard log library alone.
 @item really easy to log to either a temp file or a file you specify
 @end itemize")
     (license license:expat)))
+
+;; XXX: Not maintained for 3y, see
+;; <https://github.com/spf13/pflag/issues/385>.
+(define-public go-github-com-spf13-pflag
+  (package
+    (name "go-github-com-spf13-pflag")
+    (version "1.0.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/spf13/pflag")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0gpmacngd0gpslnbkzi263f5ishigzgh6pbdv9hp092rnjl4nd31"))
+       (snippet
+        #~(begin
+            (use-modules (guix build utils))
+            ;; Fix compatibility with go-1.19+
+            ;; https://github.com/spf13/pflag/issues/368
+            (substitute* "flag_test.go"
+              (("fmt\\.Println") "fmt.Print")
+              (("\\+ got\\)") "+ got + \"\\n\")")
+              (("\\+ defaultOutput\\)") "+ defaultOutput + \"\\n\")"))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/spf13/pflag"))
+    (home-page "https://github.com/spf13/pflag")
+    (synopsis "Replacement for Go's @code{flag} package")
+    (description
+     "Pflag is library to replace Go's @code{flag} package.  It implements
+POSIX/GNU-style command-line options with double hyphens.  It is is compatible
+with the
+@uref{https://www.gnu.org/software/libc/manual/html_node/Argument-Syntax.html,
+GNU extensions} to the POSIX recommendations for command-line options.")
+    (license license:bsd-3)))
 
 (define-public go-github-com-stathat-go
   (let ((commit "74669b9f388d9d788c97399a0824adbfee78400e")
