@@ -7205,6 +7205,34 @@ Use waterutil with it to work with TUN/TAP packets/frames.")
      "Quant provides an interface for image color quantizers.")
     (license license:expat)))
 
+(define-public go-github-com-spf13-afero
+  (package
+    (name "go-github-com-spf13-afero")
+    ;; TODO: It's the latest version which does not require
+    ;; google.golang.org/api, pulling 400+ missing dependencies.
+    (version "1.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/spf13/afero")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0yi8p0yxiidpcg4cagxg2iyqcaapsng89rak4qyxmgails2fqg37"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/spf13/afero"))
+    (propagated-inputs
+     (list go-github-com-pkg-sftp
+           go-golang-org-x-text))
+    (home-page "https://github.com/spf13/afero")
+    (synopsis "File system abstraction for Go")
+    (description
+     "This package provides a file system abstraction for Go.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-spf13-cobra
   (package
     (name "go-github-com-spf13-cobra")
