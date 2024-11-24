@@ -7223,7 +7223,15 @@ Use waterutil with it to work with TUN/TAP packets/frames.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/spf13/afero"))
+      #:import-path "github.com/spf13/afero"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: Replace when go-build-system supports nested path.
+          (replace 'check
+            (lambda* (#:key import-path tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
     (propagated-inputs
      (list go-github-com-pkg-sftp
            go-golang-org-x-text))
