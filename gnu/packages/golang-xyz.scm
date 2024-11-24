@@ -8528,6 +8528,33 @@ popular Levenshtein distance (aka Edit Distance or Wagner-Fischer), as well as
 the Jaro distance, the Jaro-Winkler distance, and more.")
     (license license:expat)))
 
+(define-public go-github-com-xuanwo-go-locale
+  (package
+    (name "go-github-com-xuanwo-go-locale")
+    (version "1.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Xuanwo/go-locale")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09d68ay4kcic82xjdl9b3zi5nq0srxanprk5p32n5yxqirb0pbxd"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/Xuanwo/go-locale"))
+    (propagated-inputs
+     (list go-golang-org-x-sys
+           go-golang-org-x-text))
+    (home-page "https://github.com/Xuanwo/go-locale")
+    (synopsis "Locale detection in Golang")
+    (description
+     "This package provides a functionality for cross-platform locale
+detection.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-yuin-gopher-lua
   (package
     (name "go-github-com-yuin-gopher-lua")
