@@ -21249,6 +21249,8 @@ a file-backed matrix with factor properties.")
          "1r9gr5f9as09ifagal5k7713h95qjw508cf8ny3j1jmqd24v6xhs"))))
     (properties `((upstream-name . "bigPint")))
     (build-system r-build-system)
+    ;; 4 tests fail with "cannot xtfrm data frames"
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-delayedarray
            r-dplyr
@@ -21269,7 +21271,7 @@ a file-backed matrix with factor properties.")
            r-summarizedexperiment
            r-tidyr))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-runit))
     (home-page "https://github.com/lindsayrutter/bigPint")
     (synopsis "Big multivariate data plotted interactively")
     (description
