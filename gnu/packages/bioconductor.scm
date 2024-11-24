@@ -20236,7 +20236,7 @@ metrics, with methods for objects produced by the @code{methylumi} and
     (inputs
      (list lz4 xz zlib))
     (native-inputs
-     (list r-knitr r-runit))
+     (list r-biocgenerics r-digest r-knitr r-matrix r-runit))
     (home-page "http://corearray.sourceforge.net/")
     (synopsis
      "R Interface to CoreArray Genomic Data Structure (GDS) Files")
