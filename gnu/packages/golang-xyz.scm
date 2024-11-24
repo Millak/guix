@@ -8393,6 +8393,40 @@ similar string with weeks or days too.")
      "This package provides a simple ASCII tree composing tool.")
     (license license:expat)))
 
+(define-public go-github-com-xrash-smetrics
+  (package
+    (name "go-github-com-xrash-smetrics")
+    (version "0.0.0-20240521201337-686a1a2994c1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/xrash/smetrics")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "057wgbz16n416zp23j5iv2lsd0nidbd92r4f1h8s3c1svkkqvk0a"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/xrash/smetrics"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: Replace when go-build-system supports nested path.
+          (replace 'check
+            (lambda* (#:key import-path tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
+    (home-page "https://github.com/xrash/smetrics")
+    (synopsis "String metrics library")
+    (description
+     "Package smetrics provides a bunch of algorithms for calculating the
+distance between strings. There are implementations for calculating the
+popular Levenshtein distance (aka Edit Distance or Wagner-Fischer), as well as
+the Jaro distance, the Jaro-Winkler distance, and more.")
+    (license license:expat)))
+
 (define-public go-github-com-yuin-gopher-lua
   (package
     (name "go-github-com-yuin-gopher-lua")
