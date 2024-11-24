@@ -3191,7 +3191,7 @@ compatible with the well-known scripts of the same name.")
 (define-public xdg-desktop-portal
   (package
     (name "xdg-desktop-portal")
-    (version "1.16.0")
+    (version "1.18.4")
     (source
      (origin
        (method url-fetch)
@@ -3200,30 +3200,13 @@ compatible with the well-known scripts of the same name.")
              version "/xdg-desktop-portal-" version ".tar.xz"))
        (sha256
         (base32
-         "06cczlh39kc41rvav06v37sad827y61rffy3v29i918ibj8sahav"))))
-    (build-system gnu-build-system)
-    (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("libtool" ,libtool)
-       ("glib:bin" ,glib "bin")
-       ("which" ,which)
-       ("gettext" ,gettext-minimal)))
-    (inputs
-     `(("gdk-pixbuf" ,gdk-pixbuf)
-       ("glib" ,glib)
-       ("flatpak" ,flatpak)
-       ("fontconfig" ,fontconfig)
-       ("json-glib" ,json-glib)
-       ("libportal" ,libportal)
-       ("dbus" ,dbus)
-       ("geoclue" ,geoclue)
-       ("pipewire" ,pipewire)
-       ("fuse" ,fuse)))
+         "0r8y8qmzcfj7b7brqcxr9lg8pavfds815ffvj0kqc378fhgaln5q"))
+       ;; Disable portal tests since they try to use fuse.
+       (patches (search-patches "xdg-desktop-portal-disable-portal-tests.patch"))))
+    (build-system meson-build-system)
     (arguments
      `(#:configure-flags
-       (list "--with-systemd=no")
+       (list "-Dsystemd=disabled")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'po-chmod
@@ -3234,6 +3217,26 @@ compatible with the well-known scripts of the same name.")
                        (find-files "po" "\\.po$"))))
          (add-after 'unpack 'set-home-directory
            (lambda _ (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list gettext-minimal
+           `(,glib "bin")
+           pkg-config
+           python
+           python-dbusmock
+           python-pytest
+           python-pytest-xdist))
+    (inputs
+     (list bubblewrap
+           dbus
+           flatpak
+           fontconfig
+           fuse
+           gdk-pixbuf
+           geoclue
+           glib
+           json-glib
+           libportal
+           pipewire))
     (native-search-paths
      (list (search-path-specification
             (variable "XDG_DESKTOP_PORTAL_DIR")
@@ -3251,37 +3254,6 @@ path (@code{/org/freedesktop/portal/desktop}).
 The portal interfaces include APIs for file access, opening URIs, printing
 and others.")
     (license license:lgpl2.1+)))
-
-(define-public xdg-desktop-portal-next
-  (package
-    (inherit xdg-desktop-portal)
-    (version "1.18.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append
-             "https://github.com/flatpak/xdg-desktop-portal/releases/download/"
-             version "/xdg-desktop-portal-" version ".tar.xz"))
-       (sha256
-        (base32
-         "0r8y8qmzcfj7b7brqcxr9lg8pavfds815ffvj0kqc378fhgaln5q"))
-       ;; Disable portal tests since they try to use fuse.
-       (patches (search-patches "xdg-desktop-portal-disable-portal-tests.patch"))))
-    (build-system meson-build-system)
-    (arguments
-     (substitute-keyword-arguments (package-arguments xdg-desktop-portal)
-       ((#:configure-flags _ ''())
-        #~(list "-Dsystemd=disabled"))))
-    (native-inputs
-     (list pkg-config
-           `(,glib "bin")
-           gettext-minimal
-           python
-           python-dbusmock
-           python-pytest
-           python-pytest-xdist))
-    (inputs (modify-inputs (package-inputs xdg-desktop-portal)
-              (prepend bubblewrap)))))
 
 (define-public xdg-desktop-portal-gtk
   (package
