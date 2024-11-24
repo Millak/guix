@@ -3182,7 +3182,7 @@ containers.")
 (define-public go-github-com-nxadm-tail
   (package
     (name "go-github-com-nxadm-tail")
-    (version "1.4.8")
+    (version "1.4.11")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3191,7 +3191,7 @@ containers.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1j2gi485fhwdpmyzn42wk62103fclwbfywg42p275z1qv2bsz1rc"))))
+                "0s8lawq661g8qqf7c1cip5l60cm2138b125jgmv9h548ji9g5yqx"))))
     (build-system go-build-system)
     (arguments (list #:import-path "github.com/nxadm/tail"))
     (propagated-inputs (list go-gopkg-in-tomb-v1
