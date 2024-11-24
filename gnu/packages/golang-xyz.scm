@@ -5622,6 +5622,29 @@ language, namely support for record length-delimited message streaming.")
 colored strings.")
     (license license:expat)))
 
+(define-public go-github-com-miolini-datacounter
+  (package
+    (name "go-github-com-miolini-datacounter")
+    (version "1.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/miolini/datacounter")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0s1hxqy6666qd524rdp1dr3778davc8gx9brg9lkcjvr5l05s9wa"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/miolini/datacounter"))
+    (home-page "https://github.com/miolini/datacounter")
+    (synopsis "Counters for Go readers and writers")
+    (description
+     "The datacounter package provides counters for Go readers and writers.")
+    (license license:expat)))
+
 (define-public go-github-com-mitchellh-colorstring
   (package
     (name "go-github-com-mitchellh-colorstring")
