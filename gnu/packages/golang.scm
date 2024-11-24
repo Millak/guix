@@ -2414,16 +2414,14 @@ your Go binary to be later served from an http.FileSystem.")
     (license license:asl2.0)))
 
 (define-public go-github-com-alsm-ioprogress
-  (let ((commit "063c3725f436e7fba0c8f588547bee21ffec7ac5")
-        (revision "0"))
     (package
       (name "go-github-com-alsm-ioprogress")
-      (version (git-version "0.0.0" revision commit))
+      (version "0.0.0-20170412085706-063c3725f436")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
                        (url "https://github.com/alsm/ioprogress")
-                       (commit commit)))
+                       (commit (go-version->git-ref version))))
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
@@ -2437,7 +2435,7 @@ your Go binary to be later served from an http.FileSystem.")
 case for these are for command-line applications but alternate progress bar
 writers can be supplied for alternate environments.")
       (home-page "https://github.com/alsm/ioprogress")
-      (license license:expat))))
+      (license license:expat)))
 
 (define-public go-github-com-gizak-termui
   (package
