@@ -117,6 +117,7 @@ whenever possible to the extent that the above points are not compromised.
     (description "Folders is a programming language, in which programs
 are encoded as (nested) directories.  Note that the switches you pass to
 @command{du} may affect your score when code golfing.")
+    (properties `((lint-hidden-cpe-vendors . ("premio" "jenkins"))))
     (license license:expat)))
 
 (define-public shakespeare-spl
