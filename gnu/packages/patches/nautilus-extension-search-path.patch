@@ -1,11 +1,11 @@
 Allow Nautilus to search for extensions in the directories listed
 in $NAUTILUS_EXTENSION_PATH.
 
-Index: nautilus-44.2/src/nautilus-module.c
+Index: nautilus-46.1/src/nautilus-module.c
 ===================================================================
---- nautilus-44.2.orig/src/nautilus-module.c
-+++ nautilus-44.2/src/nautilus-module.c
-@@ -220,8 +220,16 @@ static void
+--- nautilus-46.1.orig/src/nautilus-module.c
++++ nautilus-46.1/src/nautilus-module.c
+@@ -219,8 +219,16 @@ static void
  load_module_dir (const char *dirname)
  {
      GDir *dir;
@@ -18,12 +18,12 @@ Index: nautilus-44.2/src/nautilus-module.c
 +                             (const gchar **)installed_module_names);
 +
 +    if (loaded == NULL)
-+      loaded = g_hash_table_new (g_str_hash, g_str_equal);
++        loaded = g_hash_table_new (g_str_hash, g_str_equal);
 +
      dir = g_dir_open (dirname, 0, NULL);
  
      if (dir)
-@@ -232,16 +240,24 @@ load_module_dir (const char *dirname)
+@@ -231,13 +239,20 @@ load_module_dir (const char *dirname)
          {
              if (g_str_has_suffix (name, "." G_MODULE_SUFFIX))
              {
@@ -44,19 +44,14 @@ Index: nautilus-44.2/src/nautilus-module.c
 +                    filename = g_build_filename (dirname,
 +                                                 name,
 +                                                 NULL);
-+                    nautilus_module_load_file (filename,
-+                                               installed_module_name_builder);
++                    nautilus_module_load_file (filename, installed_module_name_builder);
 +                    g_hash_table_add (loaded, g_strdup (name));
 +                    g_free (filename);
 +                }
              }
--        }
+         }
  
-+        }
-         g_dir_close (dir);
-     }
- 
-@@ -278,10 +294,24 @@ nautilus_module_setup (void)
+@@ -277,9 +292,24 @@ nautilus_module_setup (void)
  
      if (!initialized)
      {
@@ -64,20 +59,20 @@ Index: nautilus-44.2/src/nautilus-module.c
          initialized = TRUE;
  
          load_module_dir (NAUTILUS_EXTENSIONDIR);
- 
-+	/* Load additional modules from the user-provided search path.  */
-+	extension_path = g_getenv ("NAUTILUS_EXTENSION_PATH");
-+	if (extension_path)
-+	  {
-+	    char **extension_dirs, **d;
 +
-+	    extension_dirs = g_strsplit (extension_path, ":", -1);
-+	    for (d = extension_dirs; d != NULL && *d != NULL; d++)
-+	      load_module_dir (*d);
++        /* Load additional modules from the user-provided search path.  */
++        extension_path = g_getenv ("NAUTILUS_EXTENSION_PATH");
++        if (extension_path)
++        {
++            char **extension_dirs, **d;
 +
-+	    g_strfreev (extension_dirs);
-+	  }
++            extension_dirs = g_strsplit (extension_path, ":", -1);
++            for (d = extension_dirs; d != NULL && *d != NULL; d++)
++                load_module_dir (*d);
 +
-         eel_debug_call_at_shutdown (free_module_objects);
++            g_strfreev (extension_dirs);
++        }
++
      }
  }
+ 

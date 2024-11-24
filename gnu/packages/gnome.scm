@@ -10003,7 +10003,7 @@ shared object databases, search tools and indexing.")
 (define-public nautilus
   (package
     (name "nautilus")
-    (version "44.3.1")
+    (version "46.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -10011,7 +10011,7 @@ shared object databases, search tools and indexing.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "05njbaq98y00n1z1smg1pdip3shr84q8a10wssm8sjbv7sirwj75"))
+                "1ykir908hz9b8c2mih15angaiv0dl8r85mhqd5zl9qxr368cks3f"))
               (patches
                (search-patches "nautilus-extension-search-path.patch"))))
     (build-system meson-build-system)
@@ -10020,6 +10020,12 @@ shared object databases, search tools and indexing.")
       #:glib-or-gtk? #t
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-commands
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/nautilus-autorun-software.c"
+                (("g_file_new_for_path \\(\"/bin/sh\");")
+                 (format #f "g_file_new_for_path (~s);"
+                         (search-input-file inputs "bin/sh"))))))
           (add-after 'unpack 'patch-tracker3-command
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "src/nautilus-tag-manager.c"
@@ -10027,13 +10033,17 @@ shared object databases, search tools and indexing.")
                  (string-append "\""
                                 (search-input-file inputs "/bin/tracker3")
                                 "\"")))))
-          (add-after 'unpack 'disable-tracker-tests
-            ;; The tracker test hangs in the build container (see:
-            ;; https://gitlab.gnome.org/GNOME/nautilus/-/issues/2486).
+          (add-after 'unpack 'fix-tests
             (lambda _
+              ;; The tracker test hangs in the build container (see:
+              ;; https://gitlab.gnome.org/GNOME/nautilus/-/issues/2486).
               (substitute* "test/automated/displayless/meson.build"
                 (("^foreach t: tracker_tests" all)
-                 (string-append "tracker_tests = []\n" all)))))
+                 (string-append "tracker_tests = []\n" all)))
+              ;; /etc does not have that many files in our build container.
+              (substitute* "test/automated/displayless/test-directory.c"
+                (("g_assert_cmpint \\(g_list_length \\(files\\), >, 10\\);")
+                 "g_assert_cmpint (g_list_length (files), >, 1);"))))
           (add-after 'unpack 'skip-gtk-update-icon-cache
             ;; Don't create 'icon-theme.cache'.
             (lambda _
@@ -10058,7 +10068,8 @@ shared object databases, search tools and indexing.")
            python
            python-pygobject))
     (inputs
-     (list dconf
+     (list bash-minimal
+           dconf
            gexiv2
            gvfs
            exempi
