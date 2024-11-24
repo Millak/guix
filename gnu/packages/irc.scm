@@ -1143,7 +1143,7 @@ what.")
 (define-public soju
   (package
     (name "soju")
-    (version "0.8.1")
+    (version "0.8.2")
     (source
      (origin
        (method git-fetch)
@@ -1152,7 +1152,7 @@ what.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "10qc0g78yhsg6fnnb046jr0s592isw0r0mvydy6frgnx9rxac6k6"))))
+        (base32 "1dk9w87ksjvbhnchyyl4yhdlhjnc9s9hpzhykfiyh935g75zv66c"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -1164,7 +1164,7 @@ what.")
             (lambda* (#:key import-path #:allow-other-keys)
               (with-directory-excursion (string-append "src/" import-path)
                 (substitute* "Makefile"
-                  ;; Do not set dfault config path.
+                  ;; Do not set default config path.
                   ((".*config_path.*:.*") "")
                   (("-X.*=.*config_path.*' ") "")
                   ((".*cp -f.*config_path.*") "")
@@ -1185,6 +1185,7 @@ what.")
      (list go-git-sr-ht-emersion-go-scfg
            go-git-sr-ht-emersion-go-sqlite3-fts5
            go-git-sr-ht-sircmpwn-go-bare
+           go-github-com-coder-websocket
            go-github-com-emersion-go-sasl
            go-github-com-lib-pq
            go-github-com-mattn-go-sqlite3
@@ -1196,7 +1197,6 @@ what.")
            go-golang-org-x-time
            go-google-golang-org-protobuf
            go-gopkg-in-irc-v4
-           go-nhooyr-io-websocket
            scdoc))
     (home-page "https://git.sr.ht/~emersion/soju")
     (synopsis "User-friendly IRC bouncer")
