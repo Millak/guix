@@ -836,7 +836,7 @@ sample proximities between pairs of cases.")
       (properties `((upstream-name . "RcppML")))
       (build-system r-build-system)
       (propagated-inputs (list r-matrix r-rcpp))
-      (native-inputs (list r-knitr))
+      (native-inputs (list r-knitr r-testthat))
       (home-page "https://github.com/zdebruine/RcppML")
       (synopsis "Rcpp machine learning Library")
       (description
