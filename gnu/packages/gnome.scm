@@ -2073,6 +2073,7 @@ formats like PNG, SVG, PDF and EPS.")
               (uri (string-append "mirror://gnome/sources/" name "/"
                                   (version-major+minor version)  "/"
                                   name "-" version ".tar.xz"))
+              (patches (search-patches "libgdata-fix-tests.patch"))
               (sha256
                (base32
                 "1iq4d1qy0vkmy29xvr13dgz4pxvn5v3yi2swryld0ajinvp951fx"))))
