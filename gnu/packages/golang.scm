@@ -4482,22 +4482,19 @@ over strings.")
     (license license:expat)))
 
 (define-public go-github-com-gdamore-tcell
-  (let ((commit "aaadc574a6ed8dc3abe56036ca130dcee1ee6b6e")
-        (version "1.1.2")
-        (revision "1"))
     (package
       (name "go-github-com-gdamore-tcell")
-      (version (git-version version revision commit))
+      (version "1.4.0")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/gdamore/tcell")
-               (commit commit)))
+               (commit (string-append "v" version))))
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "0il2nnxp2cqiy73m49215dnf9in3vd25ji8qxbmq87c5qy7i1q9d"))))
+           "178h7kj4zb8lcw84nbqanapnxrgvhq4111xw4fj6m56y46anlzwg"))))
       (build-system go-build-system)
       (arguments
        `(#:import-path "github.com/gdamore/tcell"))
@@ -4505,6 +4502,7 @@ over strings.")
        (list go-github-com-mattn-go-runewidth
              go-github-com-lucasb-eyer-go-colorful
              go-golang-org-x-text
+             go-golang-org-x-sys
              go-github-com-gdamore-encoding))
       (home-page "https://github.com/gdamore/tcell")
       (synopsis "Provide a cell-based view for text terminals")
@@ -4512,7 +4510,7 @@ over strings.")
 terminfo capability strings to avoid hard-coding escape strings for
 formatting.  It also favors portability, and includes support for all POSIX
 systems.")
-      (license license:asl2.0))))
+      (license license:asl2.0)))
 
 (define-public go-github-com-gdamore-tcell-v2
     (package
