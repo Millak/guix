@@ -5760,7 +5760,7 @@ output devices.")
 (define-public geoclue
   (package
     (name "geoclue")
-    (version "2.6.0")
+    (version "2.7.2")
     (source
      (origin
        (method url-fetch)
@@ -5768,7 +5768,7 @@ output devices.")
         (string-append "https://gitlab.freedesktop.org/geoclue/geoclue/-/archive/"
                        version "/geoclue-" version ".tar.bz2"))
        (sha256
-        (base32 "1854i8lih1jkks5w38xv8k5gs7s8629qjg3cg96ji0ffk35yzjfd"))
+        (base32 "1ljn4k1zlfx0ymmdz8ycfb976vx8r61sx68q854r0xinl124mlh1"))
        (patches (search-patches "geoclue-config.patch"))))
     (build-system meson-build-system)
     (arguments
@@ -5786,7 +5786,7 @@ output devices.")
            `(,glib "bin")
            glib-networking
            json-glib
-           libsoup-minimal-2))
+           libsoup-minimal))
     (home-page "https://gitlab.freedesktop.org/geoclue/geoclue/-/wikis/home")
     (synopsis "Geolocation service")
     (description "Geoclue is a D-Bus service that provides location
