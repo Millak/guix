@@ -7313,7 +7313,15 @@ well as a program to generate applications and command files.")
      (list go-github-com-stretchr-testify))
     (home-page "https://github.com/spf13/jwalterweatherman")
     (synopsis "Go logging library")
-    (description "Go logging library")
+    (description
+     "JWW is primarily a wrapper around the standard log library.  It provides
+a few advantages over using the standard log library alone.
+
+@itemize
+@item ready to go out of the box
+@item one library for both printing to the terminal and logging (to files)
+@item really easy to log to either a temp file or a file you specify
+@end itemize")
     (license license:expat)))
 
 (define-public go-github-com-stathat-go
