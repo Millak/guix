@@ -1595,8 +1595,14 @@ CVE vulnerabilities from '~a': ~a (~a)~%")
                          (package-name package)))
             (version (or (assoc-ref (package-properties package)
                                     'cpe-version)
-                         (package-version package))))
-        ((force lookup) name version)))))
+                         (package-version package)))
+            (vendor (assoc-ref (package-properties package)
+                               'cpe-vendor))
+            (hidden-vendors (assoc-ref (package-properties package)
+                                       'lint-hidden-cpe-vendors)))
+        ((force lookup) name version
+         #:vendor vendor
+         #:hidden-vendors hidden-vendors)))))
 
 ;; Prevent Guile 3 from inlining this procedure so we can mock it in tests.
 (set! package-vulnerabilities package-vulnerabilities)

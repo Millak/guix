@@ -25,11 +25,11 @@
   #:use-module (web uri)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-9)
-  #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-19)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
+  #:use-module (srfi srfi-71)
   #:use-module (ice-9 match)
   #:use-module (ice-9 regex)
   #:use-module (ice-9 vlist)
@@ -108,15 +108,16 @@
   ;; "cpe:2.3:a:VENDOR:PACKAGE:VERSION:PATCH-LEVEL".
   (make-regexp "^cpe:2\\.3:a:([^:]+):([^:]+):([^:]+):([^:]+):"))
 
-(define (cpe->package-name cpe)
+(define (cpe->package-identifier cpe)
   "Converts the Common Platform Enumeration (CPE) string CPE to a package
-name, in a very naive way.  Return two values: the package name, and its
-version string.  Return #f and #f if CPE does not look like an application CPE
-string."
+identifier, in a very naive way.  Return three values: the CPE vendor, the
+package name, and its version string.
+Return three #f values if CPE does not look like an application CPE string."
   (cond ((regexp-exec %cpe-package-rx cpe)
          =>
          (lambda (matches)
-           (values (match:substring matches 2)
+           (values (match:substring matches 1)
+                   (match:substring matches 2)
                    (match (match:substring matches 3)
                      ("*" '_)
                      (version
@@ -128,7 +129,7 @@ string."
                                         ;; "cpe:2.3:a:openbsd:openssh:6.8:p1".
                                         (string-drop patch-level 1)))))))))
         (else
-         (values #f #f))))
+         (values #f #f #f))))
 
 (define (cpe-match->cve-configuration alist)
   "Convert ALIST, a \"cpe_match\" alist, into an sexp representing the package
@@ -142,17 +143,18 @@ package."
     ;; Normally "cpe23Uri" is here in each "cpe_match" item, but CVE-2020-0534
     ;; has a configuration that lacks it.
     (and cpe
-         (let-values (((package version) (cpe->package-name cpe)))
+         (let ((vendor package version (cpe->package-identifier cpe)))
            (and package
-                `(,package
-                   ,(cond ((and (or starti starte) (or endi ende))
-                           `(and ,(if starti `(>= ,starti) `(> ,starte))
-                                 ,(if endi `(<= ,endi) `(< ,ende))))
-                          (starti `(>= ,starti))
-                          (starte `(> ,starte))
-                          (endi   `(<= ,endi))
-                          (ende   `(< ,ende))
-                          (else   version))))))))
+                `(,vendor
+                  ,package
+                  ,(cond ((and (or starti starte) (or endi ende))
+                          `(and ,(if starti `(>= ,starti) `(> ,starte))
+                                ,(if endi `(<= ,endi) `(< ,ende))))
+                         (starti `(>= ,starti))
+                         (starte `(> ,starte))
+                         (endi   `(<= ,endi))
+                         (ende   `(< ,ende))
+                         (else   version))))))))
 
 (define (configuration-data->cve-configurations alist)
   "Given ALIST, a JSON dictionary for the baroque \"configurations\"
@@ -228,6 +230,30 @@ records."
     (('>= min)
      (version>=? version min))))
 
+(define (vulnerability-matches? vuln vendor hidden-vendors)
+  "Checks if a VENDOR matches at least one of <vulnerability> VULN
+packages.  When VENDOR is #f, ignore packages that have a vendor among
+HIDDEN-VENDORS."
+  (define hidden-vendor?
+    (if (list? hidden-vendors)
+        (cut member <> hidden-vendors)
+        (const #f)))
+  (define vendor=?
+    (if vendor
+        (cut string=? <> vendor)
+        (const #f)))
+
+  (match vuln
+    (($ <vulnerability> id packages)
+     (any (match-lambda
+            ((? vendor=?)
+             #t)
+            ((? hidden-vendor?)
+             #f)
+            (otherwise
+             (not vendor)))
+          (map car packages)))))  ;candidate vendors
+
 
 ;;;
 ;;; High-level interface.
@@ -259,7 +285,7 @@ records."
   (vulnerability id packages)
   vulnerability?
   (id         vulnerability-id)             ;string
-  (packages   vulnerability-packages))      ;((p1 sexp1) (p2 sexp2) ...)
+  (packages   vulnerability-packages))      ;((v1 p1 sexp1) (v2 p2 sexp2) ...)
 
 (define vulnerability->sexp
   (match-lambda
@@ -271,40 +297,52 @@ records."
     (('v id (packages ...))
      (vulnerability id packages))))
 
+(define sexp-v1->vulnerability
+  (match-lambda
+    (('v id (packages ...))
+     (vulnerability id (map (cut cons #f <>) packages)))))
+
+(define vendor-tuple?
+  (match-lambda
+    ((vendor package _)
+     #t)
+    (otherwise
+     #f)))
+
 (define (cve-configuration->package-list config)
-  "Parse CONFIG, a config sexp, and return a list of the form (P SEXP)
-where P is a package name and SEXP expresses constraints on the matching
-versions."
+  "Parse CONFIG, a config sexp, and return a list of the form (V P SEXP)
+where V is a CPE vendor, P is a package name and SEXP expresses constraints on
+the matching versions."
   (let loop ((config config)
-             (packages '()))
+             (results '()))
     (match config
       (('or configs ...)
-       (fold loop packages configs))
-      (('and config _ ...)                        ;XXX
-       (loop config packages))
-      (((? string? package) '_)                   ;any version
-       (cons `(,package _)
-             (alist-delete package packages)))
-      (((? string? package) sexp)
-       (let ((previous (assoc-ref packages package)))
-         (if previous
-             (cons `(,package (or ,sexp ,@previous))
-                   (alist-delete package packages))
-             (cons `(,package ,sexp) packages)))))))
+       (fold loop results configs))
+      (('and config _ ...)                            ;XXX
+       (loop config results))
+      (((? string? vendor) (? string? package) '_)  ;any version
+       (cons `(,vendor ,package _) (remove vendor-tuple? results)))
+      (((? string? vendor) (? string? package) sexp)
+       (match (assoc-ref (assoc-ref results vendor) package)
+         ((previous)
+          (cons `(,vendor ,package (or ,sexp ,previous))
+                (remove vendor-tuple? results)))
+         (_
+          (cons `(,vendor ,package ,sexp) results)))))))
 
 (define (merge-package-lists lst)
-  "Merge the list in LST, each of which has the form (p sexp), where P
-is the name of a package and SEXP is an sexp that constrains matching
-versions."
+  "Merge the list in LST, each of which has the form (V P SEXP), where V is a
+CPE vendor, P is the name of a package and SEXP is an sexp that constrains
+matching versions."
   (fold (lambda (plist result)                    ;XXX: quadratic
           (fold (match-lambda*
-                  (((package version) result)
-                   (match (assoc-ref result package)
-                     (#f
-                      (cons `(,package ,version) result))
-                     ((previous)
-                      (cons `(,package (or ,version ,previous))
-                            (alist-delete package result))))))
+                  (((vendor package version) result)
+                   (match (assoc-ref result vendor)
+                     (((? (cut string=? package <>)) previous)
+                      (cons `(,vendor ,package (or ,version ,previous))
+                            (remove vendor-tuple? result)))
+                     (_
+                      (cons `(,vendor ,package ,version) result)))))
                 result
                 plist))
         '()
@@ -337,7 +375,7 @@ sexp to CACHE."
         (json->vulnerabilities input))
 
       (write `(vulnerabilities
-               1                                  ;format version
+               2                                  ;format version
                ,(map vulnerability->sexp vulns))
              cache))))
 
@@ -371,8 +409,10 @@ the given TTL (fetch from the NIST web site when TTL has expired)."
          (sexp (read* port)))
     (close-port port)
     (match sexp
-      (('vulnerabilities 1 vulns)
-       (map sexp->vulnerability vulns)))))
+      (('vulnerabilities 2 vulns)
+       (map sexp->vulnerability vulns))
+      (('vulnerabilities 1 vulns)  ;old format, lacks vendor info
+       (map sexp-v1->vulnerability vulns)))))
 
 (define* (current-vulnerabilities #:key (timeout 10))
   "Return the current list of Common Vulnerabilities and Exposures (CVE) as
@@ -404,7 +444,7 @@ vulnerabilities affecting the given package version."
               (($ <vulnerability> id packages)
                (fold (lambda (package table)
                        (match package
-                         ((name . versions)
+                         ((vendor name . versions)
                           (vhash-cons name (cons vuln versions)
                                       table))))
                      table
@@ -412,20 +452,18 @@ vulnerabilities affecting the given package version."
           vlist-null
           vulnerabilities))
 
-  (lambda* (package #:optional version)
-    (vhash-fold* (if version
-                     (lambda (pair result)
-                       (match pair
-                         ((vuln sexp)
-                          (if (version-matches? version sexp)
-                              (cons vuln result)
-                              result))))
-                     (lambda (pair result)
-                       (match pair
-                         ((vuln . _)
-                          (cons vuln result)))))
-                 '()
-                 package table)))
+  (lambda* (package #:optional version #:key (vendor #f) (hidden-vendors '()))
+    (vhash-fold*
+     (lambda (pair result)
+       (match pair
+         ((vuln sexp)
+          (if (and (or (and (not vendor) (null? hidden-vendors))
+                       (vulnerability-matches? vuln vendor hidden-vendors))
+                   (or (not version) (version-matches? version sexp)))
+              (cons vuln result)
+              result))))
+     '()
+     package table)))
 
 
 ;;; cve.scm ends here

@@ -34,19 +34,19 @@
    (vulnerability "CVE-2019-0001"
                   ;; Only the "a" CPE configurations are kept; the "o"
                   ;; configurations are discarded.
-                  '(("junos" (or "18.21-s4" (or "18.21-s3" "18.2")))))
+                  '(("juniper" "junos" (or "18.2" (or "18.21-s3" "18.21-s4")))))
    (vulnerability "CVE-2019-0005"
-                  '(("junos" (or "18.11" "18.1"))))
+                  '(("juniper" "junos" (or "18.1" "18.11"))))
    ;; CVE-2019-0005 has no "a" configurations.
    (vulnerability "CVE-2019-14811"
-                  '(("ghostscript" (< "9.28"))))
+                  '(("artifex" "ghostscript" (< "9.28"))))
    (vulnerability "CVE-2019-17365"
-                  '(("nix" (<= "2.3"))))
+                  '(("nixos" "nix" (<= "2.3"))))
    (vulnerability "CVE-2019-1010180"
-                  '(("gdb" _)))                   ;any version
+                  '(("gnu" "gdb" _)))                   ;any version
    (vulnerability "CVE-2019-1010204"
-                  '(("binutils" (and (>= "2.21") (<= "2.31.1")))
-                    ("binutils_gold" (and (>= "1.11") (<= "1.16")))))
+                  '(("gnu" "binutils" (and (>= "2.21") (<= "2.31.1")))
+                    ("gnu" "binutils_gold" (and (>= "1.11") (<= "1.16")))))
    ;; CVE-2019-18192 has no associated configurations.
    ))
 
