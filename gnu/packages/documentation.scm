@@ -258,12 +258,13 @@ and to some extent D.")
     (home-page "https://www.chiark.greenend.org.uk/~sgtatham/halibut/")
     (synopsis "Documentation production system for software manuals")
     (description
-     "Halibut is a text formatting system designed primarily for writing software
-documentation.  It accepts a single source format and outputs any combination of
-plain text, HTML, Unix man or info pages, PostScript or PDF.  It has extensive
-support for indexing and cross-referencing, and generates hyperlinks within output
-documents wherever possible.  It supports Unicode, with the ability to fall back to
-an alternative representation if Unicode output is not available.")
+     "Halibut is a text formatting system designed primarily for writing
+software documentation.  It accepts a single source format and outputs any
+combination of plain text, HTML, Unix man or info pages, PostScript or PDF.
+It has extensive support for indexing and cross-referencing, and generates
+hyperlinks within output documents wherever possible.  It supports Unicode,
+with the ability to fall back to an alternative representation if Unicode
+output is not available.")
     (license license:expat)))
 
 (define-public doc++
