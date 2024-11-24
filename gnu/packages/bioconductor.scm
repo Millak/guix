@@ -13857,7 +13857,7 @@ signals directly in the Bruker format.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-codetools r-graph r-xml))
-    (native-inputs (list r-knitr r-runit))
+    (native-inputs (list r-knitr r-rgraphviz r-runit))
     (home-page "https://cran.r-project.org/web/packages/CodeDepends")
     (synopsis "Analysis of R code for reproducible research and code comprehension")
     (description
