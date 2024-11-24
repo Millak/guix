@@ -30130,7 +30130,18 @@ rule.")
              (invoke "unzip" (assoc-ref inputs "optimizer-src"))
              (for-each (lambda (file) (invoke "javac" file))
                        (find-files "." "\\.java$"))
-             (apply invoke "jar" "cf" "inst/java/ModularityOptimizer.jar"
+
+             ;; Create a simple manifest.
+             (mkdir-p "META-INF")
+             (with-output-to-file "META-INF/MANIFEST.MF"
+               (lambda _
+                 (display "\
+Manifest-Version: 1.0
+Main-Class: ModularityOptimizer\n")))
+
+             ;; It is important that the manifest appears first.
+             (apply invoke "jar" "cfm" "inst/java/ModularityOptimizer.jar"
+                    "META-INF/MANIFEST.MF"
                     (find-files "." "\\.class$"))))
          (add-after 'install 'strip-jar-timestamps
            (assoc-ref ant:%standard-phases 'strip-jar-timestamps)))))
