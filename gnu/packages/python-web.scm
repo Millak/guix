@@ -2032,11 +2032,10 @@ Amazon S3 compatible object storage server.")
     (build-system pyproject-build-system)
     (arguments
      '(#:test-flags
-       ;; The test suite is not thread safe, therefore --numprocesses 1:
+       ;; The test suite is not thread safe:
        ;; - some tests want to use the same port: address already in use
        ;; - some tests use signal.Signal, i.e. main-thread only
-       (list "--numprocesses" "1" ; (number->string (parallel-job-count))
-             "-k" (string-append
+       (list "-k" (string-append
                    ;; Disable hanginging tests
                    "not test_multi_socket_select"
                    ;; E assert None is not None
@@ -2068,9 +2067,7 @@ Amazon S3 compatible object storage server.")
     (native-inputs
      (list python-bottle
            python-flaky
-           python-nose
-           python-pytest
-           python-pytest-xdist))
+           python-pytest))
     (inputs
      (list curl gnutls))
     (home-page "http://pycurl.io/")
