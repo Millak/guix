@@ -6397,6 +6397,47 @@ millisecond)
      (list
       #:import-path "github.com/oklog/ulid/v2"))))
 
+(define-public go-github-com-olekukonko-tablewriter
+  (package
+    (name "go-github-com-olekukonko-tablewriter")
+    (version "0.0.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/olekukonko/tablewriter")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zhnrih2px6jm8nxzkz8s7va3lj03bzwxim8wjba9zh7i78bp67z"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/olekukonko/tablewriter"))
+    (propagated-inputs
+     (list go-github-com-mattn-go-runewidth))
+    (home-page "https://github.com/olekukonko/tablewriter/")
+    (synopsis "Generate ASCII table")
+    (description "This package generates ASCII tables.  Features:
+@itemize
+@item automatic Padding
+@item support Multiple Lines
+@item supports Alignment
+@item support Custom Separators
+@item automatic Alignment of numbers and percentage
+@item write directly to http , file etc via @code{io.Writer}
+@item read directly from CSV file
+@item optional row line via @code{SetRowLine}
+@item normalise table header
+@item make CSV Headers optional
+@item enable or disable table border
+@item set custom footer support
+@item optional identical cells merging
+@item set custom caption
+@item optional reflowing of paragrpahs in multi-line cells
+@end itemize")
+    (license license:expat)))
+
 (define-public go-github-com-op-go-logging
   (package
     (name "go-github-com-op-go-logging")
