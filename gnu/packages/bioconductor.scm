@@ -3816,7 +3816,7 @@ analysis, modelling, and visualization of spike-in controls.")
            r-multcomp
            r-nloptr
            r-rdpack))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-knitr r-microbiome r-testthat))
     (home-page "https://github.com/FrederickHuangLin/ANCOMBC")
     (synopsis "Analysis of compositions of microbiomes with bias correction")
     (description
