@@ -190,6 +190,11 @@ test `guix build -d --sources=transitive foo \
       | grep -e 'foo\.tar\.gz' -e 'bar\.tar\.gz' -e 'bar\.dat' \
       | wc -l` -eq 3
 
+# Building the inputs.
+guix build -D hello -n
+test `guix build -D hello -d \
+      | grep -e 'glibc.*\.drv$' -e 'gcc.*\.drv$' -e 'binutils.*\.drv$' \
+      | wc -l` -ge 3
 
 # Unbound variable in thunked field.
 cat > "$module_dir/foo.scm" <<EOF

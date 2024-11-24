@@ -13614,6 +13614,31 @@ Lastly, @var{expr} may refer to a zero-argument monadic procedure
 (@pxref{The Store Monad}).  The procedure must return a derivation as a
 monadic value, which is then passed through @code{run-with-store}.
 
+@item --development
+@itemx -D
+Build the ``development environment'' (build dependencies) of the
+following package.
+
+For example, the following command builds the inputs of @code{hello},
+but @emph{not} @code{hello} itself, and also builds @code{guile}:
+
+@example
+guix build -D hello guile
+@end example
+
+Notice that @option{-D} (or @option{--development}) only applies to the
+immediately following package on the command line.  Under the hood, it
+uses @code{package->development-manifest}
+(@pxref{package-development-manifest,
+@code{package->development-manifest}}).
+
+@quotation Note
+The effect of combining @option{--development} with @option{--target}
+(for cross-compilation) may not be what you expect: it will
+cross-compile all the dependencies of the given package when it is built
+natively.
+@end quotation
+
 @item --source
 @itemx -S
 Build the source derivations of the packages, rather than the packages

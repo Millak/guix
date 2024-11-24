@@ -438,6 +438,8 @@ Build the given PACKAGE-OR-DERIVATION and return their output paths.\n"))
   -m, --manifest=FILE    build the packages that the manifest given in FILE
                          evaluates to"))
   (display (G_ "
+  -D, --development      build the inputs of the following package"))
+  (display (G_ "
   -S, --source           build the packages' source derivations"))
   (display (G_ "
       --sources[=TYPE]   build source derivations; TYPE may optionally be one
@@ -522,6 +524,9 @@ must be one of 'package', 'all', or 'transitive'~%")
          (option '(#\m "manifest") #t #f
                  (lambda (opt name arg result)
                    (alist-cons 'manifest arg result)))
+         (option '(#\D "development") #f #f
+                 (lambda (opt name arg result)
+                   (alist-cons 'development? #t result)))
          (option '(#\n "dry-run") #f #f
                  (lambda (opt name arg result)
                    (alist-cons 'dry-run? #t result)))
@@ -581,43 +586,83 @@ values.")))))))))
       (for-each validate-type lst)
       lst))
 
-  (append-map (match-lambda
-                (('argument . (? string? spec))
-                 (cond ((derivation-path? spec)
-                        (catch 'system-error
-                          (lambda ()
-                            ;; Ask for absolute file names so that .drv file
-                            ;; names passed from the user to 'read-derivation'
-                            ;; are absolute when it returns.
-                            (let ((spec (canonicalize-path spec)))
-                              (list (read-derivation-from-file spec))))
-                          (lambda args
-                            ;; Non-existent .drv files can be substituted down
-                            ;; the road, so don't error out.
-                            (if (= ENOENT (system-error-errno args))
-                                '()
-                                (apply throw args)))))
-                       ((store-path? spec)
-                        ;; Nothing to do; maybe for --log-file.
-                        '())
-                       (else
-                        (list (specification->package spec)))))
-                (('file . file)
-                 (let ((file (or (and (string-suffix? ".json" file)
-                                      (json->scheme-file file))
-                                 file)))
-                   (ensure-list (load* file (make-user-module '())))))
-                (('manifest . manifest)
-                 (map manifest-entry-item
-                      (manifest-entries
-                       (load* manifest
-                              (make-user-module '((guix profiles) (gnu)))))))
-                (('expression . str)
-                 (ensure-list (read/eval str)))
-                (('argument . (? derivation? drv))
-                 drv)
-                (_ '()))
-              opts))
+  (define system
+    (or (assoc-ref opts 'system) (%current-system)))
+
+  ;; Process OPTS in "the right order", meaning that if the user typed
+  ;; "-D hello", arrange to see the 'development? option before the "hello"
+  ;; spec.
+  (let loop ((opts (reverse opts))
+             (type 'regular)
+             (result '()))
+    (define (for-type obj)
+      ;; Return a list of objects corresponding to OBJ adjusted for TYPE.
+      (match type
+        ('regular
+         (list obj))
+        ('development
+         (if (package? obj)
+             (map manifest-entry-item
+                  (manifest-entries
+                   (package->development-manifest obj system)))
+             obj))))
+
+    (match opts
+      (()
+       (reverse result))
+      ((head . tail)
+       (match head
+         (('argument . (? string? spec))
+          (cond ((derivation-path? spec)
+                 (catch 'system-error
+                   (lambda ()
+                     ;; Ask for absolute file names so that .drv file
+                     ;; names passed from the user to 'read-derivation'
+                     ;; are absolute when it returns.
+                     (let ((spec (canonicalize-path spec)))
+                       (loop tail 'regular
+                             (cons (read-derivation-from-file spec)
+                                   result))))
+                   (lambda args
+                     ;; Non-existent .drv files can be substituted down
+                     ;; the road, so don't error out.
+                     (if (= ENOENT (system-error-errno args))
+                         (loop tail 'regular result)
+                         (apply throw args)))))
+                ((store-path? spec)
+                 ;; Nothing to do; maybe for --log-file.
+                 (loop tail type result))
+                (else
+                 (loop tail 'regular
+                       (append (for-type (specification->package spec))
+                               result)))))
+         (('argument . (? derivation? drv))
+          (loop tail 'regular (cons drv result)))
+         (('file . file)
+          (let ((file (or (and (string-suffix? ".json" file)
+                               (json->scheme-file file))
+                          file)))
+            (loop tail 'regular
+                  (append (append-map
+                           for-type
+                           (ensure-list (load* file (make-user-module '()))))
+                          result))))
+         (('manifest . manifest)
+          (loop tail 'regular
+                (append (map manifest-entry-item
+                             (manifest-entries
+                              (load* manifest
+                                     (make-user-module '((guix profiles)
+                                                         (gnu))))))
+                        result)))
+         (('expression . str)
+          (loop tail 'regular
+                (append (append-map for-type (ensure-list (read/eval str)))
+                        result)))
+         (('development? . #t)
+          (loop tail 'development result))
+         (_
+          (loop tail type result)))))))
 
 (define (options->derivations store opts)
   "Given OPTS, the result of 'args-fold', return a list of derivations to
