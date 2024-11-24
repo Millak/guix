@@ -13,6 +13,7 @@
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Joseph LaFreniere <joseph@lafreniere.xyz>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
+;;; Copyright © 2020 Ryan Prior <rprior@protonmail.com>
 ;;; Copyright © 2020, 2021 raingloom <raingloom@riseup.net>
 ;;; Copyright © 2021 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2021 Collin J. Doering <collin@rekahsoft.ca>
@@ -4727,6 +4728,50 @@ allocation.  @code{fastime} is returning the approximate time.")
     (description
      "This package provides a pretty printer for Go values.")
     (license license:expat)))
+
+(define-public go-github-com-kylelemons-godebug
+  (package
+    (name "go-github-com-kylelemons-godebug")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kylelemons/godebug")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0dkk3friykg8p6wgqryx6745ahhb9z1j740k7px9dac6v5xjp78c"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/kylelemons/godebug"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: Replace when go-build-system supports nested path.
+          (delete 'build)
+          (replace 'check
+            (lambda* (#:key import-path tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
+    (home-page "https://github.com/kylelemons/godebug")
+    (synopsis "Pretty printer for Go values")
+    (description
+     "This package will pretty print a compact representation of a Go data
+structure.  It can also produce a much more verbose, one-item-per-line
+representation suitable for computing diffs.")
+    (license license:asl2.0)))
+
+;; TODO: Merge with go-github-com-kylelemons-godebug and provide both module;
+;; for go-team.
+(define-public go-github-com-kylelemons-godebug-pretty
+  (package
+    (inherit go-github-com-kylelemons-godebug)
+    (name "go-github-com-kylelemons-godebug-pretty")
+    (arguments
+     '(#:import-path "github.com/kylelemons/godebug/pretty"
+       #:unpack-path "github.com/kylelemons/godebug"))))
 
 (define-public go-github-com-lestrrat-go-envload
   (package
