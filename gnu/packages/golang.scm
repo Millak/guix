@@ -3295,7 +3295,7 @@ GNU extensions} to the POSIX recommendations for command-line options.")
   (package
     (name "go-github-com-spf13-viper")
     ;; Refreshing to a newer version requires long chain of missing packages.
-    (version "1.7.0")
+    (version "1.8.1")
     (source
      (origin
        (method git-fetch)
@@ -3305,11 +3305,10 @@ GNU extensions} to the POSIX recommendations for command-line options.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "099n2g7fg6r8hqyszqw2axr775qyhyvwhsykvgw0f0s16ql48h5c"))))
+         "0jcsvd9l05pv10rma6zicp44q2mlvxj0qlhnf4zcg2pymb5i0hq6"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:tests? #f
       #:import-path "github.com/spf13/viper"))
     (propagated-inputs
      (list go-github-com-fsnotify-fsnotify
