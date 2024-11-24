@@ -525,7 +525,7 @@ takes advantage of modern hardware using OpenGL.")
 (define-public portfolio
   (package
     (name "portfolio")
-    (version "1.0.0")
+    (version "1.0.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -534,7 +534,7 @@ takes advantage of modern hardware using OpenGL.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ai9mx801m5lngkljg42vrpvhbvc3071sp4jypsvbzw55hxnn5ba"))))
+                "1s06kd2dhsb143piw89yzwfck7qwzlh4nlgjj2bxpsa3g68c1g11"))))
     (arguments
      (list #:glib-or-gtk? #t
            #:imported-modules `(,@%meson-build-system-modules
@@ -577,6 +577,7 @@ takes advantage of modern hardware using OpenGL.")
      "Portfolio is a minimalist file manager for those who want to use Linux
 mobile devices.  Tap to activate and long press to select, to browse, open,
 copy, move, delete, or edit your files.")
+    (properties `((lint-hidden-cpe-vendors . ("radiustheme"))))
     (license license:gpl3+)))
 
 (define-public gnome-shell-extension-unite-shell
