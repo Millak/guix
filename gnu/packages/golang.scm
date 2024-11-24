@@ -2440,20 +2440,18 @@ writers can be supplied for alternate environments.")
       (license license:expat))))
 
 (define-public go-github-com-aki237-nscjar
-  (let ((commit "e2df936ddd6050d30dd90c7214c02b5019c42f06")
-        (revision "0"))
     (package
       (name "go-github-com-aki237-nscjar")
-      (version (git-version "0.0.0" revision commit))
+      (version "0.0.0-20210417074043-bbb606196143")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
                        (url "https://github.com/aki237/nscjar")
-                       (commit commit)))
+                       (commit (go-version->git-ref version))))
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "03y7zzq12qvhsq86lb06sgns8xrkblbn7i7wd886wk3zr5574b96"))))
+                  "0vbagy9g795b17lnnkkm2f3pcrkxrzc4qbzc656g2cdkdprdyb4m"))))
       (build-system go-build-system)
       (arguments
        '(#:import-path "github.com/aki237/nscjar"))
@@ -2462,7 +2460,7 @@ writers can be supplied for alternate environments.")
 Netscape/Mozilla's old-style cookie files.  It also implements a simple cookie
 jar struct to manage the cookies added to the cookie jar.")
       (home-page "https://github.com/aki237/nscjar")
-      (license license:expat))))
+      (license license:expat)))
 
 (define-public go-github-com-gizak-termui
   (package
