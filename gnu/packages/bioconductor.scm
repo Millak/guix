@@ -7226,6 +7226,7 @@ by the user, helping with quick and reproducible access.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-matrixstats r-r-methodss3 r-r-oo r-r-utils))
+    (native-inputs (list r-princurve))
     (home-page "https://github.com/HenrikBengtsson/aroma.light")
     (synopsis "Methods for normalization and visualization of microarray data")
     (description
