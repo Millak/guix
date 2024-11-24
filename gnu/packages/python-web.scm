@@ -68,6 +68,7 @@
 ;;; Copyright © 2024 Nguyễn Gia Phong <mcsinyx@disroot.org>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Spencer King <spencer.king@geneoscopy.com>
+;;; Copyright © 2024 Attila Lendvai <attila@lendvai.name>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2026,15 +2027,17 @@ Amazon S3 compatible object storage server.")
     (build-system pyproject-build-system)
     (arguments
      '(#:test-flags
-       (list "--n" (number->string (parallel-job-count))
+       ;; The test suite is not thread safe, therefore --numprocesses 1:
+       ;; - some tests want to use the same port: address already in use
+       ;; - some tests use signal.Signal, i.e. main-thread only
+       (list "--numprocesses" "1" ; (number->string (parallel-job-count))
              "-k" (string-append
                    ;; Disable hanginging tests
                    "not test_multi_socket_select"
                    ;; E assert None is not None
                    ;; E+ where None =
                    ;; <tests.multi_callback_test.MultiCallbackTest
-                   ;; testMethod=test_easy_pause_unpause>.socket_result
-                   " and not test_easy_pause_unpause"
+                   ;; testMethod=test_multi_socket_action>.timer_result
                    " and not test_multi_socket_action"
                    ;; E pycurl.error: (1, '')
                    " and not test_http_version_3"
@@ -2047,9 +2050,8 @@ Amazon S3 compatible object storage server.")
                    ;; OSError: tests/fake-curl/libcurl/with_openssl.so: cannot
                    ;; open shared object file: No such file or directory
                    " and not test_libcurl_ssl_openssl"
-                   ;; pycurl.error: (56, 'Recv failure: Connection reset by
-                   ;; peer')
-                   " and not test_post_with_read_callback"))
+                   ;; Probably due to an expired CA
+                   " and not test_request_without_certinfo"))
        #:phases (modify-phases %standard-phases
                   (add-before 'build 'configure-tls-backend
                     (lambda _
