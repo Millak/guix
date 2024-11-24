@@ -8797,8 +8797,8 @@ Options}).
 @quotation Note
 Manifests are @emph{symbolic}: they refer to packages of the channels
 @emph{currently in use} (@pxref{Channels}).  In the example above,
-@code{gcc-toolchain} might refer to version 11 today, but it might refer
-to version 13 two years from now.
+@code{gcc-toolchain} might refer to version 14 today, but it might refer
+to version 16 two years from now.
 
 If you want to ``pin'' your software environment to specific package
 versions and variants, you need an additional piece of information: the
