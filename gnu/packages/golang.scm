@@ -5455,10 +5455,9 @@ matching and globbing with support for \"doublestar\" patterns.")
        (sha256
         (base32 "09ma8a9rhs8dg527vjhdf3lsb6lajaq193m6ksssm2k3qajhpi94"))))
     (arguments
-     (list
-      #:tests? #f ; tests have more broken parts
-      #:unpack-path "github.com/bmatcuk/doublestar/v2"
-      #:import-path "github.com/bmatcuk/doublestar/v2"))))
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-bmatcuk-doublestar)
+       ((#:import-path _) "github.com/bmatcuk/doublestar/v2")))))
 
 (define-public go-github-com-bmatcuk-doublestar-v3
   (package
