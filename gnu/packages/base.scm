@@ -549,6 +549,22 @@ used to apply commands with arbitrarily long arguments.")
                                ;; here
                                ((" test-tls\\$\\(EXEEXT\\) ") " ")))
                            '())
+                     ,@(if (system-hurd64?)
+                           '((substitute*
+                                 ;; These tests fail
+                                 '("tests/misc/sort-NaN-infloop.sh"
+                                   "tests/misc/wc-parallel.sh")
+                               (("^#!.*" all)
+                                (string-append all "exit 77;\n")))
+                             (substitute* '("gnulib-tests/test-fdutimensat.c"
+                                            "gnulib-tests/test-futimens.c"
+                                            "gnulib-tests/test-linkat.c"
+                                            "gnulib-tests/test-renameat.c"
+                                            "gnulib-tests/test-renameatu.c"
+                                            "gnulib-tests/test-utimensat.c")
+                               (("(^| )main *\\(.*" all)
+                                (string-append all "{\n  exit (77);//"))))
+                           '())
                      (substitute* "Makefile.in"
                        ;; fails on filesystems where inotify cannot be used,
                        ;; more info in #47935
