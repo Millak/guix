@@ -2184,6 +2184,7 @@ reusing frequently-requested web pages.")
     (description "Bandwidth Monitor NG is a small and simple console based
 live network and disk I/O bandwidth monitor.")
     (home-page "https://www.gropp.org/?id=projects&sub=bwm-ng")
+    (properties '((lint-hidden-cpe-vendors . ("bwm-ng_project"))))
     (license license:gpl2)))
 
 (define-public aircrack-ng
