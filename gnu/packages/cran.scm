@@ -20567,6 +20567,8 @@ of the individual checks.")
         (base32
          "0qr86idng12g6hdd764j0wmli700v7rjhw7jdjxj0ka8xm5v7ymm"))))
     (build-system r-build-system)
+    ;; Tests fail: could not find function "context"
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-mass r-pander r-plyr r-reshape2))
     (home-page "https://cran.r-project.org/web/packages/rapportools/")
