@@ -1677,7 +1677,7 @@ supports coverage of subprocesses.")
 (define-public python-pytest-relaxed
   (package
     (name "python-pytest-relaxed")
-    (version "2.0.1")
+    (version "2.0.2")
     (source
      (origin
        (method git-fetch)
@@ -1686,10 +1686,14 @@ supports coverage of subprocesses.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1lnnkadfr390i30209gpl80nymc20pmamvxjhd11gvf4d6f54n7x"))))
+        (base32 "0j37gkgcag4rpv9g5q2n80425cs1alwx8fwncx3mv7sdgqgdgqnz"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-decorator))
-    (native-inputs (list python-pytest))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-decorator))
     (home-page "https://github.com/bitprophet/pytest-relaxed")
     (synopsis "Relaxed test discovery for pytest")
     (description "This package provides relaxed test discovery for pytest.")
