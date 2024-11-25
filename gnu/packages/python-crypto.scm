@@ -192,19 +192,27 @@ This package provides a Python interface for BLAKE2.")
 (define-public python-paramiko
   (package
     (name "python-paramiko")
-    (version "2.7.2")
+    (version "3.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "paramiko" version))
        (sha256
-        (base32 "0dahwq623jnna7gsr9j0mkwr9k2n1pvkapjryhcx508d5jxg8dkz"))))
-    (build-system python-build-system)
-    (arguments
-     `(;; FIXME: Tests require many unpackaged libraries, see dev-requirements.txt.
-       #:tests? #f))
+        (base32 "0941n85xi32kvrh2mxppga527a0jz2iz2c99lpfwwmagv90fa4dd"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-icecream
+           python-pytest-relaxed
+           python-pytest-xdist
+           python-setuptools
+           python-wheel))
     (propagated-inputs
-     (list python-bcrypt python-pyasn1 python-pynacl python-cryptography))
+     (list python-cryptography
+           python-bcrypt
+           python-invoke
+           python-pyasn1
+           python-pynacl))
     (home-page "https://www.paramiko.org/")
     (synopsis "SSHv2 protocol library")
     (description "Paramiko is a python implementation of the SSHv2 protocol,
