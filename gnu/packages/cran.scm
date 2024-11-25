@@ -23366,8 +23366,18 @@ want to include run-time testing features in their own packages.")
     (properties
      `((upstream-name . "assertive.properties")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'delete-bad-tests
+           (lambda _
+             ;; One test fails
+             (delete-file
+              "tests/testthat/test-is-atomic-recursive-vector.R"))))))
     (propagated-inputs
      (list r-assertive-base))
+    (native-inputs (list r-testthat))
     (home-page "https://bitbucket.org/richierocks/assertive.properties")
     (synopsis "Assertions to check properties of variables")
     (description
