@@ -23971,9 +23971,11 @@ annotation, and functions for GWAS data cleaning and analysis.")
         (base32 "08xk85p76dbywsxw5w0ckw31m0raar5frkz14qwz4x88ilwhrw25"))))
     (properties `((upstream-name . "KEGGgraph")))
     (build-system r-build-system)
+    ;; Vignettes require connection to the internet.
+    (arguments (list #:test-types '(list "tests")))
     (propagated-inputs
      (list r-graph r-rcurl r-rgraphviz r-xml))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-hgu133plus2-db r-rbgl r-testthat))
     (home-page "https://bioconductor.org/packages/KEGGgraph")
     (synopsis "Graph approach to Kegg Pathway database in R and Bioconductor")
     (description
