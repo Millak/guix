@@ -13639,6 +13639,31 @@ cross-compile all the dependencies of the given package when it is built
 natively.
 @end quotation
 
+@cindex dependents of a package, building them
+@cindex building the dependents of a package
+@anchor{build-dependents}
+@item --dependents[=@var{depth}]
+@itemx -P [@var{depth}]
+Build the dependents of the following package.  By default, build all
+the direct and indirect dependents; when @var{depth} is provided, limit
+to dependents at that distance: 1 for direct dependents, 2 for
+dependents of dependents, and so on.
+
+For example, the command below builds @emph{all} the dependents of libgit2:
+
+@example
+guix build --dependents libgit2
+@end example
+
+To build all the packages that directly depend on NumPy, run:
+
+@example
+guix build -P1 python-numpy
+@end example
+
+The list of dependents is computed in the same way as with @command{guix
+refresh --list-dependent} (@pxref{Invoking guix refresh}).
+
 @item --source
 @itemx -S
 Build the source derivations of the packages, rather than the packages
@@ -15142,6 +15167,8 @@ result of upgrading one or more packages.
 @command{guix graph}}, for information on how to visualize the list of
 dependents of a package.
 
+@xref{build-dependents, @command{guix build --dependents}}, for a
+convenient way to build all the dependents of a package.
 @end table
 
 Be aware that the @option{--list-dependent} option only

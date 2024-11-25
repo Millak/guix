@@ -1915,7 +1915,9 @@ according to the project's conventions (@pxref{Invoking guix style}).
 
 @item
 Make sure the package builds on your platform, using @command{guix build
-@var{package}}.
+@var{package}}.  Also build at least its direct dependents with
+@command{guix build --dependents=1 @var{package}}
+(@pxref{build-dependents, @command{guix build}}).
 
 @item
 We recommend you also try building the package on other supported

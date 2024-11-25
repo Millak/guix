@@ -33,6 +33,9 @@
   #:use-module (guix profiles)
   #:use-module (guix diagnostics)
   #:autoload   (guix http-client) (http-fetch http-get-error?)
+  #:autoload   (guix scripts graph) (%bag-node-type)
+  #:autoload   (guix graph) (node-back-edges)
+  #:autoload   (guix sets) (setq set-contains? set-insert)
   #:use-module (ice-9 format)
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
@@ -440,6 +443,9 @@ Build the given PACKAGE-OR-DERIVATION and return their output paths.\n"))
   (display (G_ "
   -D, --development      build the inputs of the following package"))
   (display (G_ "
+  -P, --dependents[=N]   build dependents of the following package, up to
+                         depth N"))
+  (display (G_ "
   -S, --source           build the packages' source derivations"))
   (display (G_ "
       --sources[=TYPE]   build source derivations; TYPE may optionally be one
@@ -527,6 +533,11 @@ must be one of 'package', 'all', or 'transitive'~%")
          (option '(#\D "development") #f #f
                  (lambda (opt name arg result)
                    (alist-cons 'development? #t result)))
+         (option '(#\P "dependents") #f #t
+                 (lambda (opt name arg result)
+                   (alist-cons 'dependents
+                               (or (and=> arg string->number*) +inf.0)
+                               result)))
          (option '(#\n "dry-run") #f #f
                  (lambda (opt name arg result)
                    (alist-cons 'dry-run? #t result)))
@@ -551,7 +562,39 @@ must be one of 'package', 'all', or 'transitive'~%")
                  %standard-cross-build-options
                  %standard-native-build-options)))
 
-(define (options->things-to-build opts)
+(define (dependents store packages max-depth)
+  "List all the things that would need to be rebuilt if PACKAGES are changed."
+  ;; Using %BAG-NODE-TYPE is more accurate than using %PACKAGE-NODE-TYPE
+  ;; because it includes implicit dependencies.
+  (define (get-dependents packages edges)
+    (let loop ((packages packages)
+               (result '())
+               (depth 0)
+               (visited (setq)))
+      (if (> depth max-depth)
+          (values result visited)
+          (match packages
+            (()
+             (values result visited))
+            ((head . tail)
+             (if (set-contains? visited head)
+                 (loop tail result depth visited)
+                 (let ((next (edges head)))
+                   (call-with-values
+                       (lambda ()
+                         (loop next
+                               (cons head result)
+                               (+ depth 1)
+                               (set-insert head visited)))
+                     (lambda (result visited)
+                       (loop tail result depth visited))))))))))
+
+  (with-store store
+    (run-with-store store
+      (mlet %store-monad ((edges (node-back-edges %bag-node-type (all-packages))))
+        (return (get-dependents packages edges))))))
+
+(define (options->things-to-build store opts)
   "Read the arguments from OPTS and return a list of high-level objects to
 build---packages, gexps, derivations, and so on."
   (define (validate-type x)
@@ -600,6 +643,13 @@ values.")))))))))
       (match type
         ('regular
          (list obj))
+        (('dependents . depth)
+         (if (package? obj)
+             (begin
+               (info (G_ "computing dependents of package ~a...~%")
+                     (package-full-name obj))
+               (dependents store (list obj) depth))
+             (list obj)))
         ('development
          (if (package? obj)
              (map manifest-entry-item
@@ -661,6 +711,8 @@ values.")))))))))
                         result)))
          (('development? . #t)
           (loop tail 'development result))
+         (('dependents . depth)
+          (loop tail `(dependents . ,depth) result))
          (_
           (loop tail type result)))))))
 
@@ -687,7 +739,7 @@ build."
       (systems systems)))
 
   (define things-to-build
-    (map transform (options->things-to-build opts)))
+    (map transform (options->things-to-build store opts)))
 
   (define warn-if-unsupported
     (let ((target (assoc-ref opts 'target)))
