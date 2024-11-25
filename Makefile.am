@@ -408,6 +408,14 @@ MODULES +=					\
 
 endif BUILD_DAEMON_OFFLOAD
 
+INSTALLER_SCRIPT = guix/scripts/system/installer.scm
+
+if ENABLE_INSTALLER
+MODULES += $(INSTALLER_SCRIPT)
+else
+MODULES_NOT_COMPILED += $(INSTALLER_SCRIPT)
+endif !ENABLE_INSTALLER
+
 # Scheme implementation of the build daemon and related functionality.
 STORE_MODULES =					\
   guix/store/database.scm			\

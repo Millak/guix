@@ -642,4 +642,4 @@ and PARTITION pages are skipped."
          (outputs (build-derivations store (list drv))))
     (close-connection store)
     (format #t "running installer: ~a\n" program)
-    (invoke "./pre-inst-env" "guile" program)))
+    (invoke "guile" program)))

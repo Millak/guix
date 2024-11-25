@@ -43258,6 +43258,23 @@ This command also installs bootloader on the targets specified in
 @file{my-os-config}, unless the @option{--no-bootloader} option was
 passed.
 
+@item installer
+Run the installer.  Usually the installer is built as an @file{iso}
+image, copied to a USB Stick or DVD, and booted from (@ref{USB Stick and
+DVD Installation}).  If your machine already runs Guix and you still
+want to run the installer, e.g., for testing purposes, you can skip the
+step of creating an @file{iso} and run for instance:
+
+@example
+guix system installer --dry-run
+@end example
+
+@quotation Note
+If you do not use @option{--dry-run} then you need to run as root.  Be
+@emph{very careful} when running the installer as root, it can cause
+data loss or render your system unbootable!
+@end quotation
+
 @item vm
 @cindex virtual machine
 @cindex VM

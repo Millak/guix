@@ -56,6 +56,7 @@
                                        delete-matching-generations
                                        list-installed)
   #:autoload   (guix scripts pull) (channel-commit-hyperlink)
+  #:autoload   (guix scripts system installer) (guix-system-installer)
   #:autoload   (guix graph) (export-graph node-type
                              graph-backend-name lookup-backend)
   #:use-module (guix scripts system reconfigure)
@@ -997,6 +998,8 @@ Some ACTIONS support additional ARGS.\n"))
   (display (G_ "\
    init             initialize a root file system to run GNU\n"))
   (display (G_ "\
+   installer        run the graphical installer\n"))
+  (display (G_ "\
    extension-graph  emit the service extension graph in Dot format\n"))
   (display (G_ "\
    shepherd-graph   emit the graph of shepherd services in Dot format\n"))
@@ -1229,7 +1232,7 @@ Some ACTIONS support additional ARGS.\n"))
                   "list-generations" "describe"
                   "delete-generations" "roll-back"
                   "switch-generation" "search" "edit"
-                  "docker-image"))
+                  "docker-image" "installer"))
 
 (define (process-action action args opts)
   "Process ACTION, a sub-command, with the arguments are listed in ARGS.
@@ -1441,6 +1444,8 @@ argument list and OPTS is the option alist."
     ;; Parse sub-command ARG and augment RESULT accordingly.
     (cond ((assoc-ref result 'action)
            (alist-cons 'argument arg result))
+          ((equal? arg "installer")
+           (apply guix-system-installer args))
           ((member arg actions)
            (let ((action (string->symbol arg)))
              (alist-cons 'action action result)))
