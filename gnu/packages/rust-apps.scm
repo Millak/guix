@@ -63,6 +63,7 @@
   #:use-module (gnu packages admin)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crates-apple)
   #:use-module (gnu packages crates-crypto)
@@ -915,6 +916,104 @@ This package is the community maintained fork of @code{exa}.")
 While it does not seek to mirror all of find's powerful functionality, it provides
 defaults for 80% of the use cases.")
      (license (list license:expat license:asl2.0))))
+
+(define-public gitoxide
+  (package
+    (name "gitoxide")
+    (version "0.37.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gitoxide" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0lhnra6xsp1bk67ixzjdxwpbs40ylc71vnyigikx867lbs96sd2l"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:features '("gix-features/zlib-stock")
+       #:install-source? #f
+       #:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-clap" ,rust-clap-4)
+                       ("rust-clap-complete" ,rust-clap-complete-4)
+                       ("rust-crosstermion" ,rust-crosstermion-0.13)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-env-logger" ,rust-env-logger-0.10)
+                       ("rust-futures-lite" ,rust-futures-lite-2)
+                       ("rust-gitoxide-core" ,gitoxide-core)
+                       ("rust-gix" ,rust-gix-0.64)
+                       ("rust-gix-features" ,rust-gix-features-0.38)
+                       ("rust-is-terminal" ,rust-is-terminal-0.4)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-prodash" ,rust-prodash-28)
+                       ("rust-serde-derive" ,rust-serde-derive-1)
+                       ("rust-terminal-size" ,rust-terminal-size-0.3)
+                       ("rust-time" ,rust-time-0.3)
+                       ("rust-tracing" ,rust-tracing-0.1)
+                       ("rust-tracing-forest" ,rust-tracing-forest-0.1)
+                       ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'install 'install-extras
+           (lambda* (#:key native-inputs outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (share (string-append out "/share"))
+                    (man1 (string-append share "/man/man1"))
+                    (bash-completions-dir
+                     (string-append out "/etc/bash_completion.d/"))
+                    (zsh-completions-dir
+                     (string-append share "/zsh/site-functions"))
+                    (fish-completions-dir
+                     (string-append share "/fish/vendor_completions.d"))
+                    (elvish-completions-dir
+                     (string-append share "/elvish/lib"))
+                    (gix (if ,(%current-target-system)
+                             (search-input-file native-inputs "/bin/gix")
+                             (string-append out "/bin/gix")))
+                    (ein (if ,(%current-target-system)
+                             (search-input-file native-inputs "/bin/ein")
+                             (string-append out "/bin/ein"))))
+               (for-each mkdir-p
+                         (list bash-completions-dir
+                               zsh-completions-dir
+                               fish-completions-dir
+                               elvish-completions-dir))
+               (with-output-to-file
+                 (string-append bash-completions-dir "/gix")
+                 (lambda _ (invoke gix "completions" "--shell" "bash")))
+               (with-output-to-file
+                 (string-append bash-completions-dir "/ein")
+                 (lambda _ (invoke ein "completions" "--shell" "bash")))
+               (with-output-to-file
+                 (string-append zsh-completions-dir "/_gix")
+                 (lambda _ (invoke gix "completions" "--shell" "zsh")))
+               (with-output-to-file
+                 (string-append zsh-completions-dir "/_ein")
+                 (lambda _ (invoke ein "completions" "--shell" "zsh")))
+               (with-output-to-file
+                 (string-append fish-completions-dir "/gix.fish")
+                 (lambda _ (invoke gix "completions" "--shell" "fish")))
+               (with-output-to-file
+                 (string-append fish-completions-dir "/ein.fish")
+                 (lambda _ (invoke ein "completions" "--shell" "fish")))
+               (with-output-to-file
+                 (string-append elvish-completions-dir "/gix")
+                 (lambda _ (invoke gix "completions" "--shell" "elvish")))
+               (with-output-to-file
+                 (string-append elvish-completions-dir "/ein")
+                 (lambda _ (invoke ein "completions" "--shell" "elvish")))))))))
+    (native-inputs
+     (append
+       (if (%current-target-system)
+           (list this-package)
+           '())
+       (list cmake-minimal pkg-config)))
+    (inputs (list curl openssl zlib))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "command-line application for interacting with git repositories")
+    (description
+     "This package provides a command-line application for interacting with git
+repositories.")
+    (license (list license:expat license:asl2.0))))
 
 (define-public gitoxide-core
   (package
