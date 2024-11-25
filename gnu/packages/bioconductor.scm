@@ -23937,6 +23937,8 @@ EMBL-EBI GWAS catalog.")
                 "12crhc552cypi8ffl12vskrf4qw5567ag6h84ngnrmbn2k1nvjy4"))))
     (properties `((upstream-name . "GWASTools")))
     (build-system r-build-system)
+    ;; TODO: This needs the package GWASdata.
+    (arguments (list #:tests? #false))
     (propagated-inputs (list r-biobase
                              r-data-table
                              r-dbi
