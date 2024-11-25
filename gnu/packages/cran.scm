@@ -2225,6 +2225,25 @@ bioinformaticians to assemble complex plots for publication.")
 for authoring journal articles and conference submissions.")
     (license license:gpl3)))
 
+(define-public r-rtk
+  (package
+    (name "r-rtk")
+    (version "0.2.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "rtk" version))
+       (sha256
+        (base32 "1xafmp5y5p8fnsh16wj8n08x69v2hawnsvsy7g4dcz1i5xkhyc0m"))))
+    (properties `((upstream-name . "rtk")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-rcpp zlib))
+    (home-page "https://cran.r-project.org/package=rtk")
+    (synopsis "Rarefaction tool kit")
+    (description "This package lets you rarefy data, calculate diversity and
+plot the results.")
+    (license license:gpl2+)))
+
 (define-public r-babelwhale
   (package
     (name "r-babelwhale")
