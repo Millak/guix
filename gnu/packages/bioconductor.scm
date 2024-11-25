@@ -24054,6 +24054,14 @@ on the plot.")
         (base32
          "1sixgahjcy82yiiixgxiqbm8jcajqz0m3h0hwwm202iwzi3vyhiv"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'delete-bad-tests
+           (lambda _
+             ;; Seven tests need INLA, which bundles mystery binaries.
+             (delete-file "tests/testthat/test-build_score_cache.R"))))))
     (inputs
      (list gsl))
     (propagated-inputs
@@ -24069,7 +24077,7 @@ on the plot.")
            r-rjags
            r-stringi))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-entropy r-knitr r-moments r-rhpcblasctl r-testthat))
     (home-page "https://r-bayesian-networks.org/")
     (synopsis "Modelling multivariate data with additive bayesian networks")
     (description
