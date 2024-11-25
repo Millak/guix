@@ -119,16 +119,6 @@ name."
 ;;; Reverse package DAG.
 ;;;
 
-(define (all-packages)            ;XXX: duplicated from (guix scripts refresh)
-  "Return the list of all the distro's packages."
-  (fold-packages (lambda (package result)
-                   ;; Ignore deprecated packages.
-                   (if (package-superseded package)
-                       result
-                       (cons package result)))
-                 '()
-                 #:select? (const #t)))           ;include hidden packages
-
 (define %reverse-package-node-type
   ;; For this node type we first need to compute the list of packages and the
   ;; list of back-edges.  Since we want to do it only once, we use the

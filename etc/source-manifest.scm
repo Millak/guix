@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2021, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -24,17 +24,6 @@
              (ice-9 match) (ice-9 vlist)
              (guix packages) (guix profiles)
              (gnu packages))
-
-(define (all-packages)
-  "Return the list of all the packages, public or private, omitting only
-superseded packages."
-  (fold-packages (lambda (package lst)
-                   (match (package-replacement package)
-                     (#f (cons package lst))
-                     (replacement
-                      (append (list replacement package) lst))))
-                 '()
-                 #:select? (negate package-superseded)))
 
 (define (upstream-origin source)
   "Return SOURCE without any patches or snippet."

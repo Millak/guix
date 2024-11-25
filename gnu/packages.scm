@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2020, 2022-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2020, 2022-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2016, 2017 Alex Kost <alezost@gmail.com>
@@ -56,6 +56,7 @@
             cache-is-authoritative?
 
             fold-packages
+            all-packages
             fold-available-packages
 
             find-newest-available-packages
@@ -252,6 +253,23 @@ is guaranteed to never traverse the same package twice."
                                       result))
                                 init
                                 modules))
+
+(define all-packages
+  (mlambda ()
+    "Return the list of all public packages, including replacements and hidden
+packages, excluding superseded packages."
+    (delete-duplicates
+     (fold-packages (lambda (package result)
+                      (match (package-replacement package)
+                        ((? package? replacement)
+                         (cons* replacement package result))
+                        (#f
+                         (cons package result))))
+                    '()
+
+                    ;; Dismiss deprecated packages but keep hidden packages.
+                    #:select? (negate package-superseded))
+     eq?)))
 
 (define %package-cache-file
   ;; Location of the package cache.

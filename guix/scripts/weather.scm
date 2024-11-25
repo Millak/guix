@@ -55,21 +55,6 @@
   #:use-module (ice-9 vlist)
   #:export (guix-weather))
 
-(define (all-packages)
-  "Return the list of public packages we are going to query."
-  (delete-duplicates
-   (fold-packages (lambda (package result)
-                    (match (package-replacement package)
-                      ((? package? replacement)
-                       (cons* replacement package result))
-                      (#f
-                       (cons package result))))
-                  '()
-
-                  ;; Dismiss deprecated packages but keep hidden packages.
-                  #:select? (negate package-superseded))
-   eq?))
-
 (define (call-with-progress-reporter reporter proc)
   "This is a variant of 'call-with-progress-reporter' that works with monadic
 scope."

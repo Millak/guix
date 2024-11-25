@@ -455,16 +455,6 @@ releases for ~a~%")
 ;;; Dependents.
 ;;;
 
-(define (all-packages)
-  "Return the list of all the distro's packages."
-  (fold-packages (lambda (package result)
-                   ;; Ignore deprecated packages.
-                   (if (package-superseded package)
-                       result
-                       (cons package result)))
-                 '()
-                 #:select? (const #t)))           ;include hidden packages
-
 (define (list-dependents packages)
   "List all the things that would need to be rebuilt if PACKAGES are changed."
   ;; Using %BAG-NODE-TYPE is more accurate than using %PACKAGE-NODE-TYPE
