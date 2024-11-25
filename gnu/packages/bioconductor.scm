@@ -5327,6 +5327,49 @@ scRNA-seq data.  A flexible beta-binomial error model that accounts for
 stochastic dropout events as well as systematic allelic imbalance is used.")
     (license license:gpl3)))
 
+(define-public r-ccfindr
+  (package
+    (name "r-ccfindr")
+    (version "1.26.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "ccfindR" version))
+       (sha256
+        (base32 "1v8lrgs5rqf0pz5gg7g5hh9y7cj90s8k04bhimhlzr0iah27vhc5"))))
+    (properties
+     `((upstream-name . "ccfindR")
+       (updater-extra-inputs . ("gsl"))))
+    (build-system r-build-system)
+    (inputs (list gsl))
+    (propagated-inputs (list r-ape
+                             r-gtools
+                             r-irlba
+                             r-matrix
+                             r-rcolorbrewer
+                             r-rcpp
+                             r-rcppeigen
+                             r-rdpack
+                             r-rmpi
+                             r-rtsne
+                             r-s4vectors
+                             r-singlecellexperiment
+                             r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://dx.doi.org/10.26508/lsa.201900443")
+    (synopsis "Cancer clone finder")
+    (description
+     "This package provides a collection of tools for cancer genomic data
+clustering analyses, including those for single cell RNA-seq.  Cell clustering
+and feature gene selection analysis employ Bayesian (and maximum likelihood)
+non-negative matrix factorization (NMF) algorithm.  Input data set consists of
+RNA count matrix, gene, and cell bar code annotations.  Analysis outputs are
+factor matrices for multiple ranks and marginal likelihood values for each
+rank.  The package includes utilities for downstream analyses, including
+meta-gene identification, visualization, and construction of rank-based trees
+for clusters.")
+    (license license:gpl2+)))
+
 (define-public r-cellid
   (package
     (name "r-cellid")
