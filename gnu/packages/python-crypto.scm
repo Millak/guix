@@ -216,32 +216,25 @@ Python interface around SSH networking concepts.")
 (define-public python-ecdsa
   (package
     (name "python-ecdsa")
-    (version "0.17.0")
+    (version "0.19.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ecdsa" version))
        (sha256
-        (base32 "1ak8xa2r660d85abrlffp0bqvwdadg9ga4066g856hcy8fxh1xdr"))))
-    (build-system python-build-system)
+        (base32 "1y3bmx6aw5klx143jas3czwbsfvr5d3fs8gm1bfh16b5k48svsk0"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _ (invoke
-                      "pytest"
-                      "-vv"
-                      "-k"
-                      (string-append
-                       "not test_multithreading_with_interrupts "
-                       ;; The following test fails and will be fixed in the
-                       ;; next release after v0.18.  See
-                       ;; <https://github.com/tlsfuzzer/python-ecdsa/issues/307>.
-                       "and not test_add_different_scale_points")))))))
+     (list
+      ;; Test failes with error: AssertionError: KeyboardInterrupt not raised.
+      #:test-flags #~(list "-k" "not test_multithreading_with_interrupts")))
+    (native-inputs
+     (list openssl
+           python-pytest
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-six))
-    (native-inputs
-     (list openssl python-pytest))
     (home-page "https://github.com/warner/python-ecdsa")
     (synopsis "ECDSA cryptographic signature library (pure python)")
     (description
