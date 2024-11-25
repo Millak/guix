@@ -6300,7 +6300,7 @@ Gitoxide is a pure Rust implementation of Git.")
         ("rust-gix-refspec" ,rust-gix-refspec-0.25)
         ("rust-gix-url" ,rust-gix-url-0.27)
         ("rust-thiserror" ,rust-thiserror-1))))
-    (home-page "https://github.com/Byron/gitoxide")
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
     (synopsis
       "Functions for dealing with Git submodules")
     (description
