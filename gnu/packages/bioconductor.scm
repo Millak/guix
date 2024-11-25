@@ -11720,7 +11720,8 @@ single-cell RNA-seq.")
                              r-genomicranges
                              r-iranges
                              r-s4vectors))
-    (native-inputs (list r-knitr r-runit))
+    (native-inputs
+     (list r-digest r-knitr r-matrix r-runit r-variantannotation))
     (home-page "https://github.com/zhengxwen/SeqArray")
     (synopsis
      "Data management of large-scale whole-genome sequence variant calls")
