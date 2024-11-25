@@ -23453,6 +23453,7 @@ who want to include run-time testing features in their own packages.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-assertive-base))
+    (native-inputs (list r-testthat))
     (home-page "https://bitbucket.org/richierocks/assertive.matrices")
     (synopsis "Assertions to check properties of matrices")
     (description
