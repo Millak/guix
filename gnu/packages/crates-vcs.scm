@@ -2519,7 +2519,7 @@ directory walking.")
         ("rust-is-ci" ,rust-is-ci-1)
         ("rust-serial-test" ,rust-serial-test-3)
         ("rust-tempfile" ,rust-tempfile-3))))
-    (home-page "https://github.com/Byron/gitoxide")
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
     (synopsis
      "Discover Git repositories and check if a directory is a Git repository")
     (description
