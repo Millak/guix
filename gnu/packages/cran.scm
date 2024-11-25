@@ -21588,6 +21588,40 @@ circular variables).")
 for evolution along a phylogenetic tree.")
     (license license:gpl2+)))
 
+(define-public r-fmesher
+  (package
+    (name "r-fmesher")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "fmesher" version))
+       (sha256
+        (base32 "17cpq6yxpa4jwwq8s4s5nd1lvh4jqyxnnqz7bay63vq53g0b4c12"))))
+    (properties `((upstream-name . "fmesher")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-dplyr
+                             r-lifecycle
+                             r-matrix
+                             r-rcpp
+                             r-rlang
+                             r-sf
+                             r-tibble
+                             r-withr))
+    (native-inputs (list r-knitr r-testthat))
+    (home-page "https://inlabru-org.github.io/fmesher/")
+    (synopsis "Triangle meshes and related geometry tools")
+    (description
+     "This package lets you generate planar and spherical triangle meshes,
+compute finite element calculations for 1- and 2-dimensional flat and curved
+manifolds with associated basis function spaces, methods for lines and
+polygons, and transparent handling of coordinate reference systems and
+coordinate transformation, including @code{sf} and @code{sp} geometries.  The
+core @code{fmesher} library code was originally part of the INLA package, and
+implements parts of \"Triangulations and Applications\" by Hjelle and
+Daehlen (2006) <doi:10.1007/3-540-33261-8>.")
+    (license license:mpl2.0)))
+
 (define-public r-fmri
   (package
     (name "r-fmri")
