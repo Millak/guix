@@ -15,7 +15,7 @@
 ;;; Copyright © 2019 Steve Sprang <scs@stevesprang.com>
 ;;; Copyright © 2019 John Soo <jsoo1@asu.edu>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
-;;; Copyright © 2020,2021 Vincent Legoll <vincent.legoll@gmail.com>
+;;; Copyright © 2020,2021,2024 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020, 2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020, 2021 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2020 B. Wilson <elaexuotee@wilsonb.com>
@@ -2929,6 +2929,33 @@ full programmatic control over your models.")
     (description "@code{scad-mode} provides an Emacs major mode for editing
 OpenSCAD code.  It supports syntax highlighting, indenting and refilling of
 comments.")))
+
+(define-public ondsel-solver
+  (let ((commit "2e3659c4bce3e6885269e0cb3d640261b2a91108")
+        (revision "1"))
+    (package
+      (name "ondsel-solver")
+      ;; There's no tagged release
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Ondsel-Development/OndselSolver")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1bgk3asyz47r1kvdgcz8q7sh1g29przdsx9ib1jqqbc0nv8ww68v"))))
+      (build-system cmake-build-system)
+      (arguments
+       `(#:tests? #f)) ;; Tests require Google's gtest and gmock
+      ;; The company is shutting down, so https://ondsel.com may not exist for long
+      (home-page "https://github.com/Ondsel-Development/OndselSolver")
+      (synopsis "Assembly Constraints and Multibody Dynamics code")
+      (description
+       "The OndselSolver library for assembly constraints and multibody
+dynamics is used by FreeCAD 1.0.0 for its new Assembly workbench.")
+      (license license:lgpl2.1+))))
 
 (define-public freecad
   (package
