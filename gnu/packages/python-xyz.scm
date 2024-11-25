@@ -22307,50 +22307,79 @@ database, file, dict stores.  Cachy supports python versions 2.7+ and 3.2+.")
 (define-public poetry
   (package
     (name "poetry")
-    (version "1.1.12")
+    (version "1.8.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "poetry" version))
        (sha256
-        (base32
-         "0rr54mvcfcv9cv6vw2122y28xvd2pwqpv2x8c8j5ayz3gwsy4rjw"))))
-    (build-system python-build-system)
+        (base32 "00ljr5r9h93wh68h4m242qw58mdai8gji4g0c3bfqznicvdgi42l"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
-      #:tests? #f                      ;PyPI does not have tests
+      #:test-flags
+      #~(list "--ignore=tests/installation/test_executor.py"
+              "--ignore=tests/installation/test_chef.py"
+              "-k" (string-join
+                    (list "not test_builder_setup_generation_runs_with_pip_editable"
+                          "test_check_invalid"
+                          "test_create_poetry_fails_on_invalid_configuration"
+                          "test_installer_with_pypi_repository"
+                          "test_shell"
+                          ;; RuntimeError: No lockfile found. Unable to read
+                          ;; locked packages
+                          "test_not_fresh_lock"
+                          ;; assert False is True
+                          "test_env_system_packages_are_relative_to_lib"
+                          ;; poetry.inspection.info.PackageInfoError: Unable
+                          ;; to determine package info for path
+                          "test_info_setup_complex_calls_script")
+                    " and not "))
       #:phases
       #~(modify-phases %standard-phases
-          ;; XXX: Silent sanity check as the package requires a long chain of
-          ;; updates.
+          ;; Almost every dependency is pinned too strictly.
           (delete 'sanity-check))))
+    (native-inputs
+     (list nss-certs-for-test
+           python-deepdiff
+           python-httpretty
+           python-pytest
+           python-pytest-mock
+           python-pytest-randomly
+           python-pytest-xdist))
     (propagated-inputs
      (list python-cachecontrol
-           python-cachy
            python-cleo
-           python-clikit
            python-crashtest
+           python-dulwich
            python-entrypoints
-           python-html5lib
+           python-fastjsonschema
+           python-importlib-metadata
+           python-installer
            python-keyring
-           ; Use of deprecated version of msgpack reported upstream:
-           ; https://github.com/python-poetry/poetry/issues/3607
-           python-msgpack-transitional
            python-packaging
            python-pexpect
            python-pip
            python-pkginfo
+           python-platformdirs
            python-poetry-core
+           python-poetry-plugin-export
+           python-pypa-build
+           python-pyproject-hooks
            python-requests
            python-requests-toolbelt
            python-shellingham
+           python-tomli
            python-tomlkit
-           python-virtualenv))
+           python-trove-classifiers
+           python-virtualenv
+           python-xattr))
     (home-page "https://python-poetry.org")
     (synopsis "Python dependency management and packaging made easy")
-    (description "Poetry is a tool for dependency management and packaging
-in Python.  It allows you to declare the libraries your project depends on and
-it will manage (install/update) them for you.")
+    (description
+     "Poetry is a tool for dependency management and packaging in Python.  It
+allows you to declare the libraries your project depends on and it will
+manage (install/update) them for you.")
     (license license:expat)))
 
 (define-public python-pyproject-api
