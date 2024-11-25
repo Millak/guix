@@ -2456,7 +2456,7 @@ package is a part of Gitoxide, a pure Rust implementation of Git.")
         ("rust-thiserror" ,rust-thiserror-1))
        #:cargo-development-inputs
        (("rust-pretty-assertions" ,rust-pretty-assertions-1))))
-    (home-page "https://github.com/Byron/gitoxide")
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
     (synopsis "Gitoxide project crate that deals with directory walks")
     (description
      "This package is part of the Gitoxide project.  This crate deals with
