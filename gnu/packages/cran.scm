@@ -19264,6 +19264,11 @@ handle data from simple random samples as well as complex surveys.")
                 "0xhx2l00j1yb68a8m5b9c9ams90sp01m9kvzxjgi90zpimpmc3h1"))))
     (properties `((upstream-name . "tarchetypes")))
     (build-system r-build-system)
+    ;; Many tests fail, because r-targets looks up the system's partitions,
+    ;; which fails in the build environment.  Unfortunately, the error
+    ;; messages are both verbose and close to useless, so I can't see how we
+    ;; can work around this.
+    (arguments (list #:test-types '(list "vignettes")))
     (propagated-inputs (list r-dplyr
                              r-fs
                              r-rlang
@@ -19273,7 +19278,7 @@ handle data from simple random samples as well as complex surveys.")
                              r-tidyselect
                              r-vctrs
                              r-withr))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-rmarkdown r-testthat))
     (home-page "https://docs.ropensci.org/tarchetypes/")
     (synopsis "Archetypes for Targets")
     (description
