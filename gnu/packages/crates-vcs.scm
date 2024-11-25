@@ -5385,7 +5385,7 @@ quotations used by git.")
         ("rust-serde" ,rust-serde-1)
         ("rust-thiserror" ,rust-thiserror-1)
         ("rust-winnow" ,rust-winnow-0.6))))
-    (home-page "https://github.com/Byron/gitoxide")
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
     (synopsis "Part of Gitoxide, this crate handles Git references")
     (description "This package provides a crate to handle git references.
 Part of Gitoxide, a project to create a pure Rust Git implementation.")
