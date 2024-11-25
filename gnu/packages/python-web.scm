@@ -1591,13 +1591,13 @@ CSS3 that adds programming capabilities and some other syntactic sugar.")
 (define-public python-jsonpickle
   (package
     (name "python-jsonpickle")
-    (version "3.0.4")
+    (version "4.0.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "jsonpickle" version))
               (sha256
                (base32
-                "0ay6r1bhcw7qy8k5n4xxgy9dqzhxx8syg5ra9wwqzk91ca6lrcd1"))))
+                "0dipys8p4hkqnp9nwkpysfv7mhws2hrr73wgn00pdmq4n990hrzw"))))
     (build-system pyproject-build-system)
     (arguments
      (list
