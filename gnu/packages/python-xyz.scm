@@ -38789,9 +38789,16 @@ forms, and about 300,000 distinct lemmas.")
              ;; https://github.com/gruns/icecream/issues/144
              (string-append "not testEnableDisable"
                             " and not testSingledispatchArgumentToString"))))
-    (propagated-inputs (list python-asttokens python-colorama python-executing
-                             python-pygments))
-    (native-inputs (list python-hypothesis python-pytest))
+    (native-inputs
+     (list python-hypothesis
+           python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-asttokens
+           python-colorama
+           python-executing
+           python-pygments))
     (home-page "https://github.com/gruns/icecream")
     (synopsis
      "Single function call to debug variables, expressions, and program execution")
