@@ -1771,7 +1771,7 @@ package provides read only access to Git's commitgraph file format.")
                        ("rust-unicode-bom" ,rust-unicode-bom-2)
                        ("rust-winnow" ,rust-winnow-0.6))
        #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.5))))
-    (home-page "https://github.com/Byron/gitoxide")
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
     (synopsis "Git-config file parser and editor from the Gitoxide project")
     (description
      "This package provides a git-config file parser and editor from the
