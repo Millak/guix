@@ -23504,6 +23504,7 @@ who want to include run-time testing features in their own packages.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-assertive-base))
+    (native-inputs (list r-testthat))
     (home-page "https://bitbucket.org/richierocks/assertive.reflection")
     (synopsis "Assertions for checking the state of R")
     (description
