@@ -6879,6 +6879,8 @@ performing parallel computations on multicore machines.")
         (base32
          "1x27cbqsip5m7lzv5nvffdfjp46cdqh53qb1xvi2rf0wfdnd7763"))))
     (build-system r-build-system)
+    ;; Some tests require r-affydata, causing a dependency cycle.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-affyio
            r-biobase
