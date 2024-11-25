@@ -617,7 +617,7 @@ libcurl, which is intended to be used with the @code{git2} crate.")
                                    ("rust-pretty-assertions" ,rust-pretty-assertions-1)
                                    ("rust-serial-test" ,rust-serial-test-3)
                                    ("rust-walkdir" ,rust-walkdir-2))))
-    (home-page "https://github.com/Byron/gitoxide")
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
     (synopsis "Interact with Git repositories using a pure Rust implementation")
     (description "Gitoxide is a pure Rust implementation of Git that aims to be lean
 and correct.  Interact with Git repositories just like Git would.")
