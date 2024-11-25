@@ -44540,7 +44540,7 @@ concentric rings and radial lines emanating from a central point.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-ggplot2 r-raster r-rcolorbrewer r-reshape2 r-rgdal))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://cbig.github.io/zonator/")
     (synopsis "Utilities for Zonation spatial conservation prioritization")
     (description
