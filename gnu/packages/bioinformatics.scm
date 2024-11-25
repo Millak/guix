@@ -1611,7 +1611,7 @@ tests in large cohorts and biobanks (SAIGE-GENE+).")
                                r-reshape2
                                r-scuttle
                                r-seurat))
-      (native-inputs (list r-knitr))
+      (native-inputs (list r-knitr r-testthat))
       (home-page "https://github.com/zdebruine/singlet")
       (synopsis "Non-negative Matrix Factorization for single-cell analysis")
       (description
