@@ -43,6 +43,12 @@
     `(;; Explicitly disable tests when cross-compiling, otherwise 'make check'
       ;; proceeds and fails, unsurprisingly.
       #:tests? ,(not (%current-target-system))
+      ,@(if (system-hurd64?)
+            (list #:configure-flags
+                  `'(,(string-append
+                       "CFLAGS=-g -O2"
+                       " -Wno-implicit-function-declaration")))
+            '())
       #:phases
       (modify-phases %standard-phases
         (add-after 'unpack 'disable-test
