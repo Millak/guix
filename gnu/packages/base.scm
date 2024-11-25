@@ -170,6 +170,13 @@ command-line arguments, multiple languages, and so on.")
                                   "tests/file")
                               (("^#!.*" all)
                                (string-append all "exit 77;\n"))))))
+                     #~())
+              #$@(if (system-hurd64?)
+                     #~((add-before 'check 'skip-test
+                          (lambda _
+                            (substitute* "tests/stack-overflow" ;This test hangs
+                              (("^#!.*" all)
+                               (string-append all "exit 77;\n"))))))
                      #~()))))
    (synopsis "Print lines matching a pattern")
    (description
