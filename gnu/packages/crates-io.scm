@@ -88075,6 +88075,40 @@ Chrome-style traces.")
     (description "Utilities for enriching errors with `tracing`.")
     (license license:expat)))
 
+(define-public rust-tracing-forest-0.1
+  (package
+    (name "rust-tracing-forest")
+    (version "0.1.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tracing-forest" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0bsr88f4shanjr86ajrx9p8dmsfxxmr24a8llhxixpadn5fq6h7f"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; use of undeclared crate or module `uuid`
+       #:cargo-inputs (("rust-ansi-term" ,rust-ansi-term-0.12)
+                       ("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-tracing" ,rust-tracing-0.1)
+                       ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3)
+                       ("rust-uuid" ,rust-uuid-1))
+       #:cargo-development-inputs (("rust-rand" ,rust-rand-0.8)
+                                   ("rust-serde-json" ,rust-serde-json-1)
+                                   ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/QnnOkabayashi/tracing-forest")
+    (synopsis
+     "Preserving contextual coherence among trace data from concurrent tasks")
+    (description
+     "This package preserves contextual coherence among trace data from
+concurrent tasks.")
+    (license license:expat)))
+
 (define-public rust-tracing-futures-0.2
   (package
     (name "rust-tracing-futures")
