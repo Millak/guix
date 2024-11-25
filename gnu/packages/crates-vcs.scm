@@ -6141,7 +6141,7 @@ Gitoxide, a pure Rust implementation of Git.")
         ("rust-gix-worktree" ,rust-gix-worktree-0.36)
         ("rust-portable-atomic" ,rust-portable-atomic-1)
         ("rust-thiserror" ,rust-thiserror-1))))
-    (home-page "https://github.com/Byron/gitoxide")
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
     (synopsis
      "Gitoxide project crate that provides @code{git status} functionality")
     (description
