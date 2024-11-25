@@ -2960,7 +2960,7 @@ dynamics is used by FreeCAD 1.0.0 for its new Assembly workbench.")
 (define-public freecad
   (package
     (name "freecad")
-    (version "0.21.2")
+    (version "1.0.0")
     (source
      (origin
        (method git-fetch)
@@ -2969,12 +2969,19 @@ dynamics is used by FreeCAD 1.0.0 for its new Assembly workbench.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0s720q6vxlh78jzahqp69nl8wagb42l05dym5aqhfnr31dx666hc"))
-       ;; https://github.com/FreeCAD/FreeCAD/pull/11496
-       (patches (search-patches "freecad-vtk-9.3.patch"))))
+        (base32 "0wwymcfgi0cybj7m6awflk8c7n6iy97lpgpfhfncx3zwvjrxv588"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           ;; not required, because 3D mouse support if OFF
+           (delete-file-recursively "src/3rdParty/3Dconnexion")
+           (delete-file-recursively "src/3rdParty/GSL")           ;; c++-gsl
+           (delete-file-recursively "src/3rdParty/OndselSolver")  ;; ondsel-solver
+           (delete-file-recursively "src/3rdParty/OpenGL")))))    ;; glext.h from mesa
     (build-system qt-build-system)
     (native-inputs
-     (list doxygen
+     (list c++-gsl
+           doxygen
            graphviz
            qttools-5
            pkg-config
@@ -3004,6 +3011,7 @@ dynamics is used by FreeCAD 1.0.0 for its new Assembly workbench.")
            libxmu
            lz4
            netcdf
+           ondsel-solver
            opencascade-occt
            openmpi
            proj
@@ -3026,14 +3034,19 @@ dynamics is used by FreeCAD 1.0.0 for its new Assembly workbench.")
            tbb-2020                     ; Same version as opencascade-occt
            vtk
            xerces-c
+           yaml-cpp
            zlib))
     (arguments
-     `(#:tests? #f                      ; Project has no tests
+     `(#:tests? #f  ;; Project has tests, but they are a pain to build
        #:configure-flags
        ,#~(list
            "-DBUILD_QT5=ON"
            "-DBUILD_FLAT_MESH:BOOL=ON"
            "-DBUILD_ENABLE_CXX_STD:STRING=C++17"
+           "-DENABLE_DEVELOPER_TESTS=OFF"  ;; see the above: #:tests? comment
+           "-DFREECAD_USE_EXTERNAL_ONDSELSOLVER=ON"  ;; unbundle ondsel-solver
+           ;; Do not try to install modules into system python
+           "-DINSTALL_TO_SITEPACKAGES=OFF"
            (string-append "-DCMAKE_INSTALL_LIBDIR=" #$output "/lib"))
        #:phases
        (modify-phases %standard-phases

@@ -1284,7 +1284,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/fpc-reproducibility.patch		\
   %D%/packages/patches/fpc-glibc-2.34-compat.patch		\
   %D%/packages/patches/fpm-newer-clamp-fix.patch		\
-  %D%/packages/patches/freecad-vtk-9.3.patch		\
   %D%/packages/patches/freedink-engine-fix-sdl-hints.patch	\
   %D%/packages/patches/freeimage-libtiff-compat.patch		\
   %D%/packages/patches/freeimage-libraw-0.21-compat.patch	\
