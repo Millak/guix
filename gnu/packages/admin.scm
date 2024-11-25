@@ -6222,54 +6222,59 @@ file or files to several hosts.")
 (define-public du-dust
   (package
     (name "du-dust")
-    (version "0.8.6")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "du-dust" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1w52xdz1vi6awsvf4lph791zv13phjvz4ypmxr7f6pgxd3crr77c"))))
+    (version "1.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "du-dust" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0qr6ikq2ds8bq35iw480qyhf3d43dj61wiwp8587n3mgqf5djx8w"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-test-flags
-       (list "--release" "--"
-             "--skip=test_apparent_size")
-       #:install-source? #f
-       #:cargo-inputs (("rust-ansi-term" ,rust-ansi-term-0.12)
-                       ("rust-atty" ,rust-atty-0.2)
-                       ("rust-clap" ,rust-clap-3)
-                       ("rust-clap-complete" ,rust-clap-complete-3)
-                       ("rust-clap-mangen" ,rust-clap-mangen-0.1)
-                       ("rust-config-file" ,rust-config-file-0.2)
-                       ("rust-directories" ,rust-directories-4)
-                       ("rust-lscolors" ,rust-lscolors-0.13)
-                       ("rust-rayon" ,rust-rayon-1)
-                       ("rust-regex" ,rust-regex-1)
-                       ("rust-serde" ,rust-serde-1)
-                       ("rust-stfu8" ,rust-stfu8-0.2)
-                       ("rust-sysinfo" ,rust-sysinfo-0.27)
-                       ("rust-terminal-size" ,rust-terminal-size-0.2)
-                       ("rust-thousands" ,rust-thousands-0.2)
-                       ("rust-unicode-width" ,rust-unicode-width-0.1)
-                       ("rust-winapi-util" ,rust-winapi-util-0.1))
-       #:cargo-development-inputs (("rust-assert-cmd" ,rust-assert-cmd-2)
-                                   ("rust-tempfile" ,rust-tempfile-3))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'install-extras
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (share (string-append out "/share")))
-               (install-file "man-page/dust.1"
-                             (string-append share "/man/man1"))
-               (mkdir-p (string-append out "/etc/bash_completion.d"))
-               (copy-file "completions/dust.bash"
-                          (string-append out "/etc/bash_completion.d/dust"))
-               (install-file "completions/dust.fish"
-                             (string-append share "/fish/vendor_completions.d"))
-               (install-file "completions/_dust"
-                             (string-append share "/zsh/site-functions"))))))))
+     (list #:cargo-test-flags `(list "--release" "--"
+                                     "--skip=test_apparent_size")
+           #:install-source? #f
+           #:cargo-inputs `(("rust-ansi-term" ,rust-ansi-term-0.12)
+                            ("rust-chrono" ,rust-chrono-0.4)
+                            ("rust-clap" ,rust-clap-4)
+                            ("rust-clap-complete" ,rust-clap-complete-4)
+                            ("rust-clap-mangen" ,rust-clap-mangen-0.2)
+                            ("rust-config-file" ,rust-config-file-0.2)
+                            ("rust-ctrlc" ,rust-ctrlc-3)
+                            ("rust-directories" ,rust-directories-4)
+                            ("rust-filesize" ,rust-filesize-0.2)
+                            ("rust-lscolors" ,rust-lscolors-0.13)
+                            ("rust-rayon" ,rust-rayon-1)
+                            ("rust-regex" ,rust-regex-1)
+                            ("rust-serde" ,rust-serde-1)
+                            ("rust-serde-json" ,rust-serde-json-1)
+                            ("rust-stfu8" ,rust-stfu8-0.2)
+                            ("rust-sysinfo" ,rust-sysinfo-0.27)
+                            ("rust-terminal-size" ,rust-terminal-size-0.2)
+                            ("rust-thousands" ,rust-thousands-0.2)
+                            ("rust-unicode-width" ,rust-unicode-width-0.1)
+                            ("rust-winapi-util" ,rust-winapi-util-0.1))
+           #:cargo-development-inputs `(("rust-assert-cmd" ,rust-assert-cmd-2)
+                                        ("rust-tempfile" ,rust-tempfile-3))
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'install 'install-extras
+                          (lambda* (#:key outputs #:allow-other-keys)
+                            (let* ((out (assoc-ref outputs "out"))
+                                   (share (string-append out "/share")))
+                              (install-file "man-page/dust.1"
+                                            (string-append share "/man/man1"))
+                              (mkdir-p (string-append out
+                                        "/etc/bash_completion.d"))
+                              (copy-file "completions/dust.bash"
+                                         (string-append out
+                                          "/etc/bash_completion.d/dust"))
+                              (install-file "completions/dust.fish"
+                                            (string-append share
+                                             "/fish/vendor_completions.d"))
+                              (install-file "completions/_dust"
+                                            (string-append share
+                                             "/zsh/site-functions"))))))))
     (home-page "https://github.com/bootandy/dust")
     (synopsis "Graphical disk usage analyzer")
     (description "This package provides a graphical disk usage analyzer in
