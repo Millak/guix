@@ -405,7 +405,15 @@ differences.")
                         (lambda _
                           (substitute* "tests/large-subopt"
                             (("^#!.*" all)
-                             (string-append all "exit 77;\n"))))))
+                             (string-append all "exit 77;\n")))
+                          #$@(if (system-hurd64?)
+                                 #~((substitute*
+                                        ;; These tests hang.
+                                        '("gnulib-tests/test-c-stack.sh"
+                                          "gnulib-tests/test-c-stack2.sh")
+                                      (("^#!.*" all)
+                                       (string-append all "exit 77;\n"))))
+                                 #~()))))
                   #~%standard-phases)))
    (native-inputs (list perl))
    (synopsis "Comparing and merging files")
