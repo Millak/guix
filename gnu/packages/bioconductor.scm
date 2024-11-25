@@ -24203,7 +24203,7 @@ segmented data for individual and multiple arrays.")
     (properties `((upstream-name . "SNPRelate")))
     (build-system r-build-system)
     (propagated-inputs (list r-gdsfmt))
-    (native-inputs (list r-knitr r-runit))
+    (native-inputs (list r-biocgenerics r-matrix r-knitr r-runit))
     (home-page "https://github.com/zhengxwen/SNPRelate")
     (synopsis
      "Toolset for relatedness and Principal Component Analysis of SNP data")
