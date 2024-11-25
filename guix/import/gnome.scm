@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2017, 2019, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2017, 2019, 2021, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;;
@@ -23,6 +23,8 @@
   #:use-module (guix utils)
   #:use-module (guix packages)
   #:use-module (guix http-client)
+  #:use-module (guix diagnostics)
+  #:use-module (guix i18n)
   #:use-module (json)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-34)
@@ -111,9 +113,12 @@ https://discourse.gnome.org/t/new-gnome-versioning-scheme/4235"
           releases))
 
   (guard (c ((http-get-error? c)
-             (if (= 404 (http-get-error-code c))
-                 #f
-                 (raise c))))
+             (unless (= 404 (http-get-error-code c))
+               (warning (G_ "failed to download from '~a': ~a (~s)~%")
+                        (uri->string (http-get-error-uri c))
+                        (http-get-error-code c)
+                        (http-get-error-reason c)))
+             #f))
     (let* ((port (http-fetch/cached
                   (string->uri (string-append
                                 "https://ftp.gnome.org/pub/gnome/sources/"
