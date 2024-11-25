@@ -43834,6 +43834,8 @@ of known occurrences of a species.")
          "02y29vr2yn8al69km8faiqrwjrc1r3hsvw3dg8lwjr65cxw1krip"))))
     (properties `((upstream-name . "zoon")))
     (build-system r-build-system)
+    ;; Some tests try to fetch files from the internet.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-dismo
            r-plyr
