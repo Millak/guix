@@ -1280,29 +1280,33 @@ derivation function.")
 (define-public python-service-identity
   (package
     (name "python-service-identity")
-    (version "21.1.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "service-identity" version))
-              (sha256
-               (base32
-                "0d4x84crbz0a17d8gi90z6zlxwm9pslc65rx0cdw2797ra360v3f"))))
+    (version "24.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "service_identity" version))
+       (sha256
+        (base32 "02cfpry5alap6mf3ffq1gdq6s7a2cmgjqpb2bp6wcf8d7yhkns5q"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-idna
-           python-pytest
-           python-setuptools
-           python-wheel))
-    (propagated-inputs (list python-attrs python-cryptography python-pyasn1
-                             python-pyasn1-modules python-six))
+     (list python-hatch-fancy-pypi-readme
+           python-hatch-vcs
+           python-hatchling
+           python-idna
+           python-pytest))
+    (propagated-inputs
+     (list python-attrs
+           python-cryptography
+           python-pyasn1
+           python-pyasn1-modules
+           python-six))
     (home-page "https://service-identity.readthedocs.io/")
     (synopsis "Service identity verification for PyOpenSSL")
     (description
-     "@code{service_identity} aspires to give you all the tools you need
-for verifying whether a certificate is valid for the intended purposes.
-In the simplest case, this means host name verification.  However,
-service_identity implements RFC 6125 fully and plans to add other
-relevant RFCs too.")
+     "@code{service_identity} aspires to give you all the tools you need for
+verifying whether a certificate is valid for the intended purposes.  In the
+simplest case, this means host name verification.  However, service_identity
+implements RFC 6125 fully and plans to add other relevant RFCs too.")
     (license license:expat)))
 
 (define-public python-hkdf
