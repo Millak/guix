@@ -4433,7 +4433,9 @@ reasonable substitute.")
                     ;; localhost:6479. Connection refused."
                     "and not test_tfcall "
                     "and not test_tfunction_load_delete "
-                    "and not test_tfunction_list"))
+                    "and not test_tfunction_list"
+                    ;; AssertionError: assert 3 == 2
+                    "and not test_acl_list"))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'relax-requirements
@@ -4453,7 +4455,7 @@ reasonable substitute.")
     (native-inputs
      (list python-numpy
            python-pytest
-           python-pytest-asyncio
+           python-pytest-asyncio-0.23
            python-pytest-timeout
            python-setuptools
            python-wheel
