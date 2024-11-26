@@ -533,9 +533,9 @@ variable defined below.  It requires guile-json to be installed."
 ;; XXXX: Workaround 'snippet' limitations.
 (define computed-origin-method (@@ (guix packages) computed-origin-method))
 
-(define %icecat-base-version "115.17.0")
+(define %icecat-base-version "115.18.0")
 (define %icecat-version (string-append %icecat-base-version "-guix1"))
-(define %icecat-build-id "20241029000000") ;must be of the form YYYYMMDDhhmmss
+(define %icecat-build-id "20241126000000") ;must be of the form YYYYMMDDhhmmss
 
 ;; 'icecat-source' is a "computed" origin that generates an IceCat tarball
 ;; from the corresponding upstream Firefox ESR tarball, using the 'makeicecat'
@@ -555,12 +555,12 @@ variable defined below.  It requires guile-json to be installed."
                   "firefox-" upstream-firefox-version ".source.tar.xz"))
             (sha256
              (base32
-              "1hqnswi799wwkl8q2z7hxgjz3r8bmy3dv1hy81sywhx70ahq9wc0"))))
+              "0k1lbkaf0qq6r96lxafg4jmkc3rbckj9akkgrkzipaiwfi7ify9a"))))
 
          ;; The upstream-icecat-base-version may be older than the
          ;; %icecat-base-version.
-         (upstream-icecat-base-version "115.17.0")
-         (gnuzilla-commit "a0b1a124e8e063a35389e1f20653047f37ca069b")
+         (upstream-icecat-base-version "115.18.0")
+         (gnuzilla-commit "21732b4ee88ac55f266cc1e83f2c98514eba9ae9")
          (gnuzilla-source
           (origin
             (method git-fetch)
@@ -572,7 +572,7 @@ variable defined below.  It requires guile-json to be installed."
                                       (string-take gnuzilla-commit 8)))
             (sha256
              (base32
-              "1c4ckxp93nqy9cyxikgyljp5phgdngrzk4z6qh51si30yqmzv8kj"))))
+              "0qqwa0gpv0v61mf7rkrv2sn2z2jrfaa4akgdmf5blfsa9yv8xz79"))))
 
          ;; 'search-patch' returns either a valid file name or #f, so wrap it
          ;; in 'assume-valid-file-name' to avoid 'local-file' warnings.
@@ -776,8 +776,8 @@ variable defined below.  It requires guile-json to be installed."
       rust
       `(,rust "cargo")
       rust-cbindgen
-      llvm-15
-      clang-15
+      llvm-17
+      clang-17
       perl
       node-lts
       python-wrapper
