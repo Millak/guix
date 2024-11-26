@@ -2122,6 +2122,27 @@ interactive analytic queries against data sources of all sizes ranging from
 gigabytes to petabytes.")
     (license license:bsd-3)))
 
+(define-public r-rpushbullet
+  (package
+    (name "r-rpushbullet")
+    (version "0.3.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "RPushbullet" version))
+       (sha256
+        (base32 "1mx433hvx660a63s5dzn655zmqv1c1qij0hzddl9z38032brc4ii"))))
+    (properties `((upstream-name . "RPushbullet")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-curl r-jsonlite))
+    (home-page "https://cran.r-project.org/package=RPushbullet")
+    (synopsis "R interface to the Pushbullet messaging service")
+    (description
+     "An R interface to the Pushbullet messaging service which provides fast
+and efficient notifications (and file transfer) between computers, phones and
+tablets.")
+    (license license:gpl2+)))
+
 (define-public r-runner
   (package
     (name "r-runner")
