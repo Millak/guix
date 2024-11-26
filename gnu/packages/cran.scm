@@ -70,6 +70,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bioinformatics)
   #:use-module (gnu packages c)
+  #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages curl)
@@ -39756,6 +39757,28 @@ results of the R parser.  It supports rendering in HTML and LaTeX markup.  It
 includes a custom Sweave driver performing syntax highlighting of R code
 chunks.")
     (license license:gpl3+)))
+
+(define-public r-highs
+  (package
+    (name "r-highs")
+    (version "0.1-10")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "highs" version))
+       (sha256
+        (base32 "1vjmzbfydlm434fa1mkwwfcdhmn6sq4ppib26nxfa9zakr7h7q2c"))))
+    (properties `((upstream-name . "highs")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-checkmate r-pkgconfig r-rcpp))
+    (native-inputs (list cmake-minimal gfortran which))
+    (home-page "https://gitlab.com/roigrp/solver/highs")
+    (synopsis "'HiGHS' Optimization Solver")
+    (description
+     "This package provides an R interface to @code{HiGHS}, an optimization
+solver.  It is designed for solving mixed-integer optimization problems with
+quadratic or linear objectives and linear constraints.")
+    (license license:gpl2+)))
 
 (define-public r-clustree
   (package
