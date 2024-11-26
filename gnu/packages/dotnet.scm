@@ -682,3 +682,54 @@ a C-style programming language from Microsoft that is very similar to Java.")
               license:asl2.0
               ;; ./support, contains a copy of zlib
               license:zlib))))
+
+(define mono-3.12.1-external-repo-specs
+  ;; format: ({reponame OR (reponame dir-name)} commit sha256) ...
+  '(("aspnetwebstack"               "e77b12e6cc5ed260a98447f609e887337e44e299"
+     "0rks344qr4fmp3fs1264d2qkmm348m8d1kjd7z4l94iiirwn1fq1")
+    ("cecil"                        "33d50b874fd527118bc361d83de3d494e8bb55e1"
+     "1p4hl1796ib26ykyf5snl6cj0lx0v7mjh0xqhjw6qdh753nsjyhb")
+    ("entityframework"              "a5faddeca2bee08636f1b7b3af8389bd4119f4cd"
+     "0b05pzf6qwdd92pbzym32nfmw8rq36820vdzakq1kykfmddjr9a7")
+    ("ikdasm"                       "7ded4decb9c39446be634d42a575fda9bc3d945c"
+     "0f3mbfizxmvr5njj123w0wn7sz85v5q2mzwijjql8w1095i0916l")
+    (("ikvm-fork" "ikvm")           "22534de2098acbcf208f6b06836d122dab799e4b"
+     "1ivywy5sc594sl3bs9xrkna1dbhkp7v1mv79n96ydgq6zcs0698l")
+    ("Lucene.Net"                   "88fb67b07621dfed054d8d75fd50672fb26349df"
+     "1rfxqfz7hkp9rg5anvxlv6fna0xi0bnv1y8qbhf8x48l08yjb38k")
+    ("Newtonsoft.Json"              "471c3e0803a9f40a0acc8aeceb31de6ff93a52c4"
+     "0dgngd5hqk6yhlg40kabn6qdnknm32zcx9q6bm2w31csnsk5978s")
+    ("rx"                           "00c1aadf149334c694d2a5096983a84cf46221b8"
+     "0ndam0qrnkb4gj21lapqgcy0mqw7s18viswsjyjyaaa4fgqw8kmq")))
+
+(define-public mono-3.12.1
+  (package
+    (inherit mono-3.0)
+    (version "3.12.1")
+    (name "mono")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.winehq.org/mono/mono.git")
+                    (commit (string-append "mono-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "01sxrnfch61k8v7av7ccbmy3v37ky8yp8460j6ycnbyfa3305y0f"))
+              (modules '((guix build utils)
+                         (ice-9 string-fun)))
+              (snippet #~(begin
+                           #$(add-external-repos
+                              mono-3.12.1-external-repo-specs)
+                           #$prepare-mono-source))))
+    (native-inputs (modify-inputs (package-native-inputs mono-3.0)
+                     (replace "mono" mono-3.0)))
+    (arguments
+     (substitute-keyword-arguments (package-arguments mono-3.0)
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (add-after 'unpack 'set-TZ
+              (lambda _
+                ;; for some reason a default is only used if this is empty, not
+                ;; if it is unset.
+                (setenv "TZ" "")))))))))
