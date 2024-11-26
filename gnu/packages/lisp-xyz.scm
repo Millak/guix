@@ -14631,11 +14631,11 @@ stream.")
   (sbcl-package->ecl-package sbcl-eazy-gnuplot))
 
 (define-public sbcl-eclector
-  (let ((commit "d499b09142c7e39b4ef52e821fa767d5a8d606a0")
+  (let ((commit "28d29445556a0c03178e3daff7a2d8b378fa4340")
         (revision "0"))
     (package
       (name "sbcl-eclector")
-      (version (git-version "0.9.0" revision commit))
+      (version (git-version "0.10.0" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -14644,7 +14644,7 @@ stream.")
                (commit commit)))
          (file-name (git-file-name "cl-eclector" version))
          (sha256
-          (base32 "1sg8wmdpm8pcjwk394way5vs2ya3r995lddmi51q9zfn9hmzb7gn"))))
+          (base32 "06qhll5k0hq652gdzvvhcv4amqg9z7qillnn3z9cm8z9sv1n912v"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-fiveam))
