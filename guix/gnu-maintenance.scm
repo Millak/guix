@@ -1025,15 +1025,19 @@ VERSION string to fetch a specific version."
            (false-if-networking-error (gnu-hosted? package))))
    (import import-gnu-release)))
 
+(define gnupg-hosted?
+  (url-prefix-predicate "mirror://gnupg/"))
+
 (define %gnu-ftp-updater
   ;; This is for GNU packages taken from alternate locations, such as
-  ;; alpha.gnu.org, ftp.gnupg.org, etc.  It is obsolescent.
+  ;; alpha.gnu.org (ftp.gnupg.org is no longer available).  It is obsolescent.
   (upstream-updater
    (name 'gnu-ftp)
    (description "Updater for GNU packages only available via FTP")
    (pred (lambda (package)
            (false-if-networking-error
             (and (not (gnu-hosted? package))
+                 (not (gnupg-hosted? package))
                  (pure-gnu-package? package)))))
    (import import-release*)))
 

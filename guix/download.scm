@@ -78,8 +78,7 @@
        "ftp://mirrors.dotsrc.org/gcrypt/"
        "ftp://ftp.heanet.ie/mirrors/ftp.gnupg.org/gcrypt/"
        "ftp://ftp.mirrorservice.org/sites/ftp.gnupg.org/gcrypt/"
-       "ftp://ftp.ring.gr.jp/pub/net/gnupg/"
-       "ftp://ftp.gnupg.org/gcrypt/")
+       "ftp://ftp.ring.gr.jp/pub/net/gnupg/")
       (gnome
        "https://download.gnome.org/"
        "http://ftp.gnome.org/pub/GNOME/")
