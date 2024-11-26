@@ -13012,6 +13012,8 @@ unmodeled, or latent sources of noise.")
          "1f27vb03x1vmhi9nmizfzrvkyczhgrsgmc5fcf5xnyfmmhs97cnr"))))
     (properties `((upstream-name . "systemPipeR")))
     (build-system r-build-system)
+    ;; Tests fail because genWorkenvir fails to set up the environment.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-biocgenerics
            r-biostrings
@@ -13027,7 +13029,7 @@ unmodeled, or latent sources of noise.")
            r-summarizedexperiment
            r-yaml))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-knitr r-systempiperdata r-testthat))
     (home-page "https://github.com/tgirke/systemPipeR")
     (synopsis "Next generation sequencing workflow and reporting environment")
     (description
