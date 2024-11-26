@@ -2638,7 +2638,7 @@ RFC6455, regardless of your programming paradigm.")
 (define-public hypercorn
   (package
     (name "hypercorn")
-    (version "0.14.4")
+    (version "0.17.3")
     (source
      (origin
        (method git-fetch) ;PyPI does not have tests
@@ -2647,16 +2647,18 @@ RFC6455, regardless of your programming paradigm.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0zyf5b8959sd12ycmqzvsb8746i3gn76rz55gxvix5cwj672m7yx"))))
+        (base32 "13v6cy4frvnddv9zak06a4lmwxp121hjyfrlapxfmb7m3i8qrm02"))))
     (build-system pyproject-build-system)
     ;; Propagate because Hypercorn also exposes functionality over a module.
     (propagated-inputs (list python-exceptiongroup
                              python-h11
+                             python-taskgroup
                              python-h2
                              python-priority
                              python-tomli
                              python-wsproto))
-    (native-inputs (list python-hypothesis
+    (native-inputs (list python-httpx
+                         python-hypothesis
                          python-poetry-core
                          python-pytest
                          python-pytest-asyncio
