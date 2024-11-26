@@ -12614,6 +12614,7 @@ states in the the context of known, reference states.")
              r-reshape2
              r-rlang
              r-tidyr))
+      (native-inputs (list r-testthat))
       (home-page "https://github.com/immunogenomics/presto")
       (synopsis "Fast Functions for Differential Expression using Wilcox and AUC")
       (description "This package performs a fast Wilcoxon rank sum test and
