@@ -12052,6 +12052,8 @@ sankey, alluvial and sankey bump plots in @code{ggplot2}.")
                   "1r3y8775y2j9w92pdp42iaif7nbh260xljrhaswkz6lp71phf1yw"))))
       (properties `((upstream-name . "bamUtils")))
       (build-system r-build-system)
+      ;; See https://github.com/mskilab-org/bamUtils/issues/12
+      (arguments (list #:tests? #false))
       (propagated-inputs
        (list r-abind
              r-biocgenerics
@@ -12061,6 +12063,7 @@ sankey, alluvial and sankey bump plots in @code{ggplot2}.")
              r-gutils
              r-rsamtools
              r-variantannotation))
+      (native-inputs (list r-testthat samtools))
       (home-page "https://github.com/mskilab/bamutils/")
       (synopsis "Utility functions for manipulating BAMs")
       (description "This package provides utility functions for manipulating
