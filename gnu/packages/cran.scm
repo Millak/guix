@@ -37116,6 +37116,32 @@ Analysis and Modelling, including Exploratory Spatio-Temporal Analysis and
 Inferred Spatio-Temporal Modelling.")
     (license license:gpl2+)))
 
+(define-public r-dcurver
+  (package
+    (name "r-dcurver")
+    (version "0.9.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "dcurver" version))
+       (sha256
+        (base32 "1v4h480lff1cyjjwb80dksiffh0y4b3s07lq2l2r21rn1l4mav6c"))))
+    (properties `((upstream-name . "dcurver")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-rcpp r-rcpparmadillo))
+    (native-inputs (list r-testthat))
+    (home-page "https://github.com/oguzhanogreden/dcurver")
+    (synopsis "Utility functions for Davidian curves")
+    (description
+     "This package provides a Davidian curve defines a seminonparametric density,
+whose shape and flexibility can be tuned by easy to estimate parameters.  Since
+a special case of a Davidian curve is the standard normal density, Davidian
+curves can be used for relaxing normality assumption in statistical applications
+(Zhang & Davidian, 2001) <doi:10.1111/j.0006-341X.2001.00795.x>.  This package
+provides the density function, the gradient of the loglikelihood and a random
+generator for Davidian curves.")
+    (license license:gpl3)))
+
 (define-public r-dcv
   (package
     (name "r-dcv")
