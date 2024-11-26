@@ -37901,7 +37901,7 @@ Try a demo of the LSD by running @code{demotour()}.")
     (properties `((upstream-name . "phylogram")))
     (build-system r-build-system)
     (propagated-inputs (list r-ape))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/ropensci/phylogram/")
     (synopsis "Dendrograms for evolutionary analysis")
     (description
