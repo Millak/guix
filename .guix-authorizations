@@ -37,6 +37,8 @@
    (name "dthompson"))
   ("A28B F40C 3E55 1372 662D  14F7 41AA E7DC CA3D 8351"
    (name "efraim"))
+  ("5DBE 23D3 9053 6526 7F8C  C76A FDB9 52BD 3F73 56D6"
+   (name "ekaitz"))
   (;; primary: "2453 02B1 BAB1 F867 FDCA  96BC 8F3F 861F 82EB 7A9A"
    "CBC5 9C66 EC27 B971 7940  6B3E 6BE8 208A DF21 FE3F"
    (name "glv"))
