@@ -26329,6 +26329,7 @@ al. (2010).")
     (build-system r-build-system)
     (propagated-inputs
      (list r-checkmate r-nnet r-purrr r-r6))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://markusdumke.github.io/reinforcelearn")
     (synopsis "Reinforcement learning")
     (description
