@@ -35005,6 +35005,8 @@ Gibbs sampling by Xuan-Hieu Phan and co-authors.")
          "0cvv6q5r55iqk327rav25dymvnn77rj8chmgkbkwd0c1dpqf4x5q"))))
     (properties `((upstream-name . "stm")))
     (build-system r-build-system)
+    ;; Disable vignettes because they need internet access.
+    (arguments (list #:test-types '(list "tests")))
     (propagated-inputs
      (list r-data-table
            r-glmnet
@@ -35017,7 +35019,7 @@ Gibbs sampling by Xuan-Hieu Phan and co-authors.")
            r-rcpparmadillo
            r-slam
            r-stringr))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-testthat r-tm))
     (home-page "https://www.structuraltopicmodel.com/")
     (synopsis "Estimation of the Structural Topic Model")
     (description
