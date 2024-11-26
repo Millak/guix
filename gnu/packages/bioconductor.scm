@@ -9142,7 +9142,13 @@ testing and other simple calculations.")
            r-graph
            r-xml))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-go-db
+           r-hgu95av2
+           r-hgu95av2-db
+           r-knitr
+           r-org-hs-eg-db
+           r-runit
+           r-testthat))
     (home-page "https://bioconductor.org/packages/GSEABase")
     (synopsis "Gene set enrichment data structures and methods")
     (description
