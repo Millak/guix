@@ -26085,6 +26085,8 @@ whole genome approach to detecting significant QTL in linkage maps.")
         (base32
          "0zpqvyjgwyqawxm8qrhcv8zq2b3yxgcqkkc87br29yrl7sjb8h6j"))))
     (build-system r-build-system)
+    ;; FIXME Tests fail with: could not find function "context"
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-data-table
            r-r-utils
