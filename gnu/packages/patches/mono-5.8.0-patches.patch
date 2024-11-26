@@ -1,0 +1,60 @@
+diff --git a/mcs/class/System/Mono.AppleTls/AppleTlsContext.cs b/mcs/class/System/Mono.AppleTls/AppleTlsContext.cs
+index 0cc69e47648..51ded713ba6 100644
+--- a/mcs/class/System/Mono.AppleTls/AppleTlsContext.cs
++++ b/mcs/class/System/Mono.AppleTls/AppleTlsContext.cs
+@@ -775,7 +775,7 @@ namespace Mono.AppleTls
+ 		[DllImport (SecurityLibrary)]
+ 		extern unsafe static /* OSStatus */ SslStatus SSLRead (/* SSLContextRef */ IntPtr context, /* const void* */ byte* data, /* size_t */ IntPtr dataLength, /* size_t* */ out IntPtr processed);
+ 
+-		public override unsafe (int ret, bool wantMore) Read (byte[] buffer, int offset, int count)
++		public override unsafe System.ValueTuple<int, bool> Read (byte[] buffer, int offset, int count)
+ 		{
+ 			if (Interlocked.Exchange (ref pendingIO, 1) == 1)
+ 				throw new InvalidOperationException ();
+@@ -816,7 +816,7 @@ namespace Mono.AppleTls
+ 		[DllImport (SecurityLibrary)]
+ 		extern unsafe static /* OSStatus */ SslStatus SSLWrite (/* SSLContextRef */ IntPtr context, /* const void* */ byte* data, /* size_t */ IntPtr dataLength, /* size_t* */ out IntPtr processed);
+ 
+-		public override unsafe (int ret, bool wantMore) Write (byte[] buffer, int offset, int count)
++		public override unsafe System.ValueTuple<int, bool> Write (byte[] buffer, int offset, int count)
+ 		{
+ 			if (Interlocked.Exchange (ref pendingIO, 1) == 1)
+ 				throw new InvalidOperationException ();
+diff --git a/mcs/class/System/Mono.Btls/MonoBtlsContext.cs b/mcs/class/System/Mono.Btls/MonoBtlsContext.cs
+index 559db4aca5d..b70239c5163 100644
+--- a/mcs/class/System/Mono.Btls/MonoBtlsContext.cs
++++ b/mcs/class/System/Mono.Btls/MonoBtlsContext.cs
+@@ -300,7 +300,7 @@ namespace Mono.Btls
+ 			throw new NotImplementedException ();
+ 		}
+ 
+-		public override (int ret, bool wantMore) Read (byte[] buffer, int offset, int size)
++		public override System.ValueTuple<int, bool> Read (byte[] buffer, int offset, int size)
+ 		{
+ 			Debug ("Read: {0} {1} {2}", buffer.Length, offset, size);
+ 
+@@ -329,7 +329,7 @@ namespace Mono.Btls
+ 			}
+ 		}
+ 
+-		public override (int ret, bool wantMore) Write (byte[] buffer, int offset, int size)
++		public override System.ValueTuple<int, bool> Write (byte[] buffer, int offset, int size)
+ 		{
+ 			Debug ("Write: {0} {1} {2}", buffer.Length, offset, size);
+ 
+diff --git a/mcs/class/System/Mono.Net.Security/MobileTlsContext.cs b/mcs/class/System/Mono.Net.Security/MobileTlsContext.cs
+index 74410976a85..46f0eb59b9c 100644
+--- a/mcs/class/System/Mono.Net.Security/MobileTlsContext.cs
++++ b/mcs/class/System/Mono.Net.Security/MobileTlsContext.cs
+@@ -165,9 +165,9 @@ namespace Mono.Net.Security
+ 
+ 		public abstract void Flush ();
+ 
+-		public abstract (int ret, bool wantMore) Read (byte[] buffer, int offset, int count);
++		public abstract System.ValueTuple<int, bool> Read (byte[] buffer, int offset, int count);
+ 
+-		public abstract (int ret, bool wantMore) Write (byte[] buffer, int offset, int count);
++		public abstract System.ValueTuple<int, bool> Write (byte[] buffer, int offset, int count);
+ 
+ 		public abstract void Shutdown ();
+ 
