@@ -9506,6 +9506,37 @@ well as other operations such as clipping, erasing, dissolving, and converting
 multi-part to single-part geometries.")
     (license license:expat)))
 
+(define-public r-rmariadb
+  (package
+    (name "r-rmariadb")
+    (version "1.3.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "RMariaDB" version))
+       (sha256
+        (base32 "0b8qqg4pgz5fm21zp3jslrgmx0100rhg27lxpia3yl514pdnyvy6"))))
+    (properties
+     `((upstream-name . "RMariaDB")
+       (updater-extra-inputs . ("mariadb"))))
+    (build-system r-build-system)
+    (inputs (list `(,mariadb "lib") `(,mariadb "dev") openssl zlib))
+    (native-inputs (list r-testthat))
+    (propagated-inputs (list r-bit64
+                             r-blob
+                             r-cpp11
+                             r-dbi
+                             r-hms
+                             r-lubridate
+                             r-plogr
+                             r-rlang))
+    (home-page "https://rmariadb.r-dbi.org")
+    (synopsis "Database interface and MariaDB driver")
+    (description
+     "This package implements a DBI-compliant interface to @code{MariaDB} and
+@code{MySQL} databases.")
+    (license license:expat)))
+
 (define-public r-rmdfiltr
   (package
     (name "r-rmdfiltr")
