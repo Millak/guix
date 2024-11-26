@@ -35907,7 +35907,7 @@ and reproducible way.")
            r-rstudioapi
            r-yaml))
     (native-inputs
-     (list r-knitr r-rmarkdown r-testthat))
+     (list r-knitr r-rmarkdown r-testthat tzdata-for-tests))
     (home-page "https://github.com/rstudio/rsconnect")
     (synopsis "Deployment interface for R Markdown documents and Shiny applications")
     (description
