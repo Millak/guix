@@ -241,6 +241,36 @@ a recent compiler).  Asio is written and maintained by Christopher
 M. Kohlhoff, and released under the Boost Software License', Version 1.0.")
     (license license:boost1.0)))
 
+(define-public r-betareg
+  (package
+    (name "r-betareg")
+    (version "3.2-1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "betareg" version))
+       (sha256
+        (base32 "1izp7nirsziwx8803ckbgwyj4r1vf4ixgx5nlin7d5pkjy13c9mv"))))
+    (properties `((upstream-name . "betareg")))
+    (build-system r-build-system)
+    ;; Vignettes need r-quarto.
+    (arguments (list #:test-types '(list "tests")))
+    (propagated-inputs (list r-flexmix r-formula r-lmtest r-modeltools
+                             r-sandwich))
+    (native-inputs (list r-partykit))
+    (home-page "https://topmodels.R-Forge.R-project.org/betareg/")
+    (synopsis "Beta regression")
+    (description
+     "This package implements beta regression for modeling beta-distributed
+dependent variables on the open unit interval (0, 1), e.g., rates and
+proportions, see Cribari-Neto and Zeileis (2010) <doi:10.18637/jss.v034.i02>.
+Moreover, extended-support beta regression models can accommodate dependent
+variables with boundary observations at 0 and/or 1.  For the classical beta
+regression model, alternative specifications are provided: Bias-corrected and
+bias-reduced estimation, finite mixture models, and recursive partitioning for
+beta regression, see <doi:10.18637/jss.v048.i11>.")
+    (license (list license:gpl2 license:gpl3))))
+
 (define-public r-bma
   (package
     (name "r-bma")
