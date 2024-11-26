@@ -23579,6 +23579,45 @@ preparing, executing, and processing HTTP requests.")
      "This package provides an R interface to Google's BigQuery database.")
     (license license:gpl3)))
 
+(define-public r-gmisc
+  (package
+    (name "r-gmisc")
+    (version "3.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "Gmisc" version))
+       (sha256
+        (base32 "1s8gkqg54622xhsmhl7n5pff2b6xfij111m7h3i4inzfjfmziq43"))))
+    (properties `((upstream-name . "Gmisc")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-abind
+                             r-checkmate
+                             r-forestplot
+                             r-glue
+                             r-hmisc
+                             r-htmltable
+                             r-knitr
+                             r-lattice
+                             r-lubridate
+                             r-magrittr
+                             r-rcpp
+                             r-rlang
+                             r-rmarkdown
+                             r-stringr
+                             r-xml
+                             r-yaml))
+    (native-inputs (list r-dplyr r-knitr r-testthat))
+    (home-page "https://gforge.se")
+    (synopsis "Descriptive statistics, transition plots, and more")
+    (description
+     "This package provides tools for making the descriptive \"Table 1\" used
+in medical articles, a transition plot for showing changes between
+categories (also known as a Sankey diagram), flow charts by extending the grid
+package, a method for variable selection based on the SVD, Bezier lines with
+arrows complementing the ones in the grid package, and more.")
+    (license license:gpl3+)))
+
 (define-public r-gmp
   (package
     (name "r-gmp")
