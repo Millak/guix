@@ -12522,20 +12522,20 @@ or cl-launch for portable processing of command-line arguments.")
   (sbcl-package->ecl-package sbcl-command-line-arguments))
 
 (define-public sbcl-common-lisp-jupyter
-  (let ((commit "ba9f0e746b9200d6fd6db647d7274448119ed01b")
-        (revision "3"))
+  (let ((commit "3555a009f6d8734751bda1feadc8a09e7b0099b6")
+        (revision "0"))
     (package
       (name "sbcl-common-lisp-jupyter")
-      (version (git-version "0.1.0" revision commit))
+      (version (git-version "1.0" revision commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/yitzchak/common-lisp-jupyter")
                (commit commit)))
-         (file-name (git-file-name "common-lisp-jupyter" commit))
+         (file-name (git-file-name "cl-common-lisp-jupyter" commit))
          (sha256
-          (base32 "0si69xfzi769dprwfy7gp1x3bl7lxz6d4n98sa26w9r41wvay5ja"))))
+          (base32 "05nj171jad9819iq137i7vxgxyxz1sr3p4qxgr2k7z1ihq5kb0gw"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-alexandria
@@ -12547,15 +12547,13 @@ or cl-launch for portable processing of command-line arguments.")
              sbcl-dissect
              sbcl-eclector
              sbcl-ironclad
-             sbcl-iterate
              sbcl-multilang-documentation
+             sbcl-nontrivial-gray-streams
              sbcl-puri
              sbcl-pzmq
              sbcl-shasht
-             sbcl-static-vectors
              sbcl-trivial-do
-             sbcl-trivial-garbage
-             sbcl-trivial-gray-streams
+             sbcl-trivial-features
              sbcl-trivial-mimes))
       (home-page "https://yitzchak.github.io/common-lisp-jupyter/")
       (synopsis "Common Lisp kernel for Jupyter")
