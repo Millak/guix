@@ -12036,8 +12036,8 @@ sankey, alluvial and sankey bump plots in @code{ggplot2}.")
       (license license:gpl2))))
 
 (define-public r-bamutils
-  (let ((commit "639dba901f16944fa1b7a8d7048701ba86a2cdb8")
-        (revision "1"))
+  (let ((commit "0a7d2d90cc720aac3fe44f964abf294f1b827f32")
+        (revision "2"))
     (package
       (name "r-bamutils")
       (version (git-version "0.0.0.9000" revision commit))
@@ -12049,7 +12049,7 @@ sankey, alluvial and sankey bump plots in @code{ggplot2}.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0qwby2v5rydnipvf1iv1wz9nf02yq98k0xbc4inf9mqc54jwacs0"))))
+                  "1r3y8775y2j9w92pdp42iaif7nbh260xljrhaswkz6lp71phf1yw"))))
       (properties `((upstream-name . "bamUtils")))
       (build-system r-build-system)
       (propagated-inputs
