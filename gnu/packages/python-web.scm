@@ -835,20 +835,32 @@ ASGI server.")
 (define-public python-a2wsgi
   (package
     (name "python-a2wsgi")
-    (version "1.7.0")
+    (version "1.10.7")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "a2wsgi" version))
               (sha256
                (base32
-                "1cmsbgfg0vp8pwqz8nmkbmdi0axis1yl34qb280h5ssh08ngc1m9"))))
+                "13ikyfmkx7hlrbg5rpcdm6kw4wcsy00giil3f72hpb6sw7vjyinf"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:build-backend "pdm.backend"
-           ;; Tests have a circular dependency on uvicorn.
-           #:tests? #f))
+     (list
+      #:test-flags
+      #~(list "-k" (string-join
+                    (list "not test_starlette_stream_response"
+                          "test_starlette_base_http_middleware"
+                          "test_baize_stream_response")
+                    " and not "))
+      #:build-backend "pdm.backend"))
     (native-inputs
-     (list python-pdm-backend))
+     (list python-pdm-backend
+           python-pytest
+           ;; python-baize ; not packed yet
+           python-httpx-bootstrap
+           ;; Cycle: python-a2wsgi->python-uvicorn->
+           ;; python-httpx->python-starlette->python-a2wsgi
+           ;; python-starlette
+           python-pytest-asyncio))
     (home-page "https://github.com/abersheeran/a2wsgi")
     (synopsis "Convert WSGI to ASGI or vice versa")
     (description
