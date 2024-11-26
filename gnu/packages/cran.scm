@@ -4669,6 +4669,52 @@ regions.  GAs can be run sequentially or in parallel, using an explicit
 master-slave parallelisation or a coarse-grain islands approach.")
     (license license:gpl2+)))
 
+(define-public r-greg
+  (package
+    (name "r-greg")
+    (version "2.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "Greg" version))
+       (sha256
+        (base32 "13rsah8vf9s8wpkr5hlayyqa8v728cz80bvpg8vmlvnam8isb30s"))))
+    (properties `((upstream-name . "Greg")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-broom
+                             r-dplyr
+                             r-epi
+                             r-forestplot
+                             r-glue
+                             r-gmisc
+                             r-hmisc
+                             r-htmltable
+                             r-knitr
+                             r-nlme
+                             r-purrr
+                             r-rlang
+                             r-rms
+                             r-sandwich
+                             r-stringr
+                             r-tibble
+                             r-tidyr
+                             r-tidyselect))
+    (native-inputs (list r-boot r-knitr r-testthat r-tidyverse))
+    (home-page "http://gforge.se")
+    (synopsis "Regression helper functions")
+    (description
+     "This package provides methods for manipulating regression models and for
+describing these in a style adapted for medical journals.  It contains
+functions for generating an HTML table with crude and adjusted estimates,
+plotting hazard ratio, plotting model estimates and confidence intervals using
+forest plots, extending this to comparing multiple models in a single forest
+plots.  In addition to the descriptive methods, there are functions for the
+robust covariance matrix provided by the sandwich package, a function for
+adding non-linearities to a model, and a wrapper around the Epi package's
+@code{Lexis()} functions for time-splitting a dataset when modeling
+non-proportional hazards in Cox regressions.")
+    (license license:gpl3+)))
+
 (define-public r-grr
   (package
     (name "r-grr")
