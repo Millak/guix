@@ -35318,6 +35318,14 @@ analysis and natural language processing.")
          "1z4nx8phrc0l73xic2lkff03a54kjw343425h5mm2afz6zidcmf4"))))
     (properties `((upstream-name . "spacyr")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; When there is no HOME directory, this package will fail to find
+         ;; the vignette builder.
+         (add-after 'unpack 'set-HOME
+           (lambda _ (setenv "HOME" "/tmp"))))))
     (propagated-inputs
      (list r-data-table r-reticulate))
     (native-inputs
