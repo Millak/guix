@@ -2561,6 +2561,29 @@ timecourse of mouse gastrulation and early organogenesis.")
 methylation arrays.")
     (license license:artistic2.0)))
 
+(define-public r-minionsummarydata
+  (package
+    (name "r-minionsummarydata")
+    (version "1.36.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "minionSummaryData" version
+                              'experiment))
+       (sha256
+        (base32 "0x5d0wrl6ck12g5xq8flyngvwi2wvij9pb6km34g7rz1c34wjj1n"))))
+    (properties `((upstream-name . "minionSummaryData")))
+    (build-system r-build-system)
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/minionSummaryData")
+    (synopsis
+     "Summarized MinION sequencing data published by Ashton et al. 2015")
+    (description
+     "This package provides summarized @code{MinION} sequencing data for
+Salmonella Typhi published by Ashton et al. in 2015.  Three replicate runs are
+each provided as @code{Fast5Summary} objects.")
+    (license license:expat)))
+
 (define-public r-msdata
   (package
     (name "r-msdata")
