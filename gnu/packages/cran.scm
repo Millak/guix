@@ -2600,7 +2600,7 @@ bioinformaticians to assemble complex plots for publication.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-knitr r-lifecycle r-rmarkdown r-tinytex r-xfun r-yaml))
-    (native-inputs (list r-testit))
+    (native-inputs (list r-testit r-testthat r-withr))
     (home-page "https://github.com/rstudio/rticles")
     (synopsis "Article formats for R Markdown")
     (description
