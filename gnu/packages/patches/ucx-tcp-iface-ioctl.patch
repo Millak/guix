@@ -6,7 +6,7 @@ names of the available TCP network interfaces.
 Initially submitted at <https://github.com/openucx/ucx/pull/4462>.
 
 diff --git a/src/uct/tcp/tcp_iface.c b/src/uct/tcp/tcp_iface.c
-index 6a6cd34fa..af32bb2e9 100644
+index f90d54fef..a2f74dc32 100644
 --- a/src/uct/tcp/tcp_iface.c
 +++ b/src/uct/tcp/tcp_iface.c
 @@ -18,6 +18,8 @@
@@ -18,9 +18,9 @@ index 6a6cd34fa..af32bb2e9 100644
  
  #define UCT_TCP_IFACE_NETDEV_DIR "/sys/class/net"
  
-@@ -875,6 +877,85 @@ static UCS_CLASS_DEFINE_NEW_FUNC(uct_tcp_iface_t, uct_iface_t, uct_md_h,
-                                  uct_worker_h, const uct_iface_params_t*,
-                                  const uct_iface_config_t*);
+@@ -873,6 +875,85 @@ static int uct_tcp_is_bridge(const char *if_name)
+     return (stat(path, &st) == 0) && S_ISDIR(st.st_mode);
+ }
  
 +/* Fetch information about available network devices through an ioctl.  */
 +static ucs_status_t uct_tcp_query_devices_ioctl(uct_md_h md,
@@ -104,11 +104,11 @@ index 6a6cd34fa..af32bb2e9 100644
  ucs_status_t uct_tcp_query_devices(uct_md_h md,
                                     uct_tl_device_resource_t **devices_p,
                                     unsigned *num_devices_p)
-@@ -893,9 +974,9 @@ ucs_status_t uct_tcp_query_devices(uct_md_h md,
+@@ -890,9 +971,9 @@ ucs_status_t uct_tcp_query_devices(uct_md_h md,
  
-     dir = opendir(UCT_TCP_IFACE_NETDEV_DIR);
-     if (dir == NULL) {
--        ucs_error("opendir(%s) failed: %m", UCT_TCP_IFACE_NETDEV_DIR);
+     n = scandir(UCT_TCP_IFACE_NETDEV_DIR, &entries, NULL, alphasort);
+     if (n == -1) {
+-        ucs_error("scandir(%s) failed: %m", UCT_TCP_IFACE_NETDEV_DIR);
 -        status = UCS_ERR_IO_ERROR;
 -        goto out;
 +        /* When /sys is unavailable, as can be the case in a container,
@@ -117,10 +117,10 @@ index 6a6cd34fa..af32bb2e9 100644
      }
  
      devices     = NULL;
-@@ -963,7 +1044,6 @@ ucs_status_t uct_tcp_query_devices(uct_md_h md,
+@@ -959,7 +1040,6 @@ out_release:
+     }
  
- out_closedir:
-     closedir(dir);
+     free(entries);
 -out:
      return status;
  }
