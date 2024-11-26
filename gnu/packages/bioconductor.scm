@@ -18967,6 +18967,14 @@ alignment tool.")
          "1xchrzd384wzm81vzrcixyzn3mgnd343cp544yvfzfn2vxr4y1ij"))))
     (properties `((upstream-name . "SGSeq")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'delete-bad-tests
+           (lambda _
+             ;; This test attempts to download a data file.
+             (delete-file "inst/unitTests/test_predictVariantEffects.R"))))))
     (propagated-inputs
      (list r-annotationdbi
            r-biocgenerics
@@ -18983,7 +18991,7 @@ alignment tool.")
            r-s4vectors
            r-summarizedexperiment))
     (native-inputs
-     (list r-knitr r-runit))
+     (list r-bsgenome-hsapiens-ucsc-hg19 r-knitr r-runit))
     (home-page "https://bioconductor.org/packages/SGSeq/")
     (synopsis "Splice event prediction and quantification from RNA-seq data")
     (description
