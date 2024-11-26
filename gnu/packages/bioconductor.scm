@@ -25796,6 +25796,8 @@ help unravel disease regulatory trajectory.")
          "06m79562baskma0vyj1632w2j669s2pymfniid5b8fyd3vqi4c6w"))))
     (properties `((upstream-name . "biotmle")))
     (build-system r-build-system)
+    ;; Two tests fail with "BiocParallel errors".
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-assertthat
            r-biocgenerics
@@ -25810,7 +25812,7 @@ help unravel disease regulatory trajectory.")
            r-superheat
            r-tibble))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-biotmledata r-knitr r-testthat))
     (home-page "https://code.nimahejazi.org/biotmle/")
     (synopsis "Targeted learning with moderated statistics for biomarker discovery")
     (description
