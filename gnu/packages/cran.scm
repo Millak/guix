@@ -5414,6 +5414,7 @@ regression and Passing-Bablock regression functions.")
                 "1pacvhw5m4fsk3ysbal50fdqbvlaz8ywyqp6bn1wh42wipqbb2i8"))))
     (propagated-inputs
      (list r-mass r-nlme r-nnet r-rsolnp))
+    (native-inputs (list r-gamlss))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/depmixS4/")
     (synopsis "Dependent Mixture Models")
