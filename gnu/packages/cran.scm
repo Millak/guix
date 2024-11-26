@@ -14899,6 +14899,7 @@ functions.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-chron r-dbi r-gsubfn r-proto r-rsqlite))
+    (native-inputs (list r-svunit))
     (home-page "https://github.com/ggrothendieck/sqldf")
     (synopsis "Manipulate R data frames using SQL")
     (description
