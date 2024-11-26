@@ -7199,6 +7199,29 @@ in R and Shiny via the D3 visualization library.")
       ;; 3-clause BSD license.
       (license (list license:gpl3+ license:bsd-3)))))
 
+(define-public r-webfakes
+  (package
+    (name "r-webfakes")
+    (version "1.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "webfakes" version))
+       (sha256
+        (base32 "0c4ja653fzamafkz7chfv16f1h7iibah683ma8sk2yaayywp7j47"))))
+    (properties `((upstream-name . "webfakes")))
+    (build-system r-build-system)
+    (native-inputs (list r-curl r-testthat))
+    (home-page "https://webfakes.r-lib.org/")
+    (synopsis "Fake web apps for HTTP testing")
+    (description
+     "This package lets you create a web app that makes it easier to test web
+clients without using the internet.  It includes a web app framework with path
+matching, parameters and templates.  It can parse various HTTP request bodies.
+It can send JSON data or files from the disk.  It includes a web app that
+implements the httpbin.org web service.")
+    (license license:expat)))
+
 (define-public r-wesanderson
   (package
     (name "r-wesanderson")
