@@ -15068,6 +15068,18 @@ multiplication.")
          "0x1fd3422icp56ac01dn5nk5y04724sv80pb24fd993d426jj1xj"))))
     (properties `((upstream-name . "treeio")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'delete-bad-tests
+           (lambda _
+             ;; Some tests need r-ggtree, which depends on this package.
+             (for-each delete-file
+                       '("tests/testthat/test-conversion.R"
+                         "tests/testthat/test-merge-tree.R"
+                         "tests/testthat/test-tree-subset.R"
+                         "tests/testthat/test-treedata-accessor.R")))))))
     (propagated-inputs
      (list r-ape
            r-dplyr
@@ -15077,7 +15089,7 @@ multiplication.")
            r-tibble
            r-tidytree
            r-yulab-utils))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-igraph r-knitr r-testthat r-xml2))
     (home-page "https://github.com/YuLab-SMU/treeio")
     (synopsis "Base classes and functions for Phylogenetic tree input and output")
     (description
