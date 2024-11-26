@@ -15697,7 +15697,7 @@ coordinates.")
      (list zlib))
     (native-inputs
      (append
-       (list pkg-config r-knitr r-testthat)
+       (list gfortran pkg-config r-knitr r-testthat)
        (if (or (target-aarch64?)
                (target-riscv64?))
            (list config)
