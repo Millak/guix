@@ -455,3 +455,54 @@ a C-style programming language from Microsoft that is very similar to Java.")
                 (patch-shebang "mono/tests/test-driver")))))
        ((#:tests? _ #f) #f)
        ((#:parallel-tests? _ #f) #f)))))
+
+(define-public mono-2.4.2
+  (package
+    (inherit mono-1.9.1)
+    (version "2.4.2.3")
+    (name "mono")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.winehq.org/mono/mono.git")
+                    (commit (string-append
+                              "mono-" (string-replace-substring version "." "-")))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0mnrk17rd9c5rh30dh82a39c9ak1ns998b41ivprvy7m068skpda"))
+              (modules '((guix build utils)
+                         (ice-9 string-fun)))
+              (snippet prepare-mono-source)
+              (patches (search-patches "mono-2.4.2.3-fixes.patch"))))
+    (native-inputs (modify-inputs (package-native-inputs mono-1.9.1)
+                     (replace "mono" mono-1.9.1)))
+    (inputs (modify-inputs (package-inputs mono-1.9.1)
+              (append gettext-minimal)))
+    (arguments
+     (substitute-keyword-arguments (package-arguments mono-1.9.1)
+       ((#:tests? _ #f)
+        ;; When it tries building iltests.il in mono/mini, it gets: error
+        ;; CS0006: cannot find metadata file `TestDriver.dll'.  It builds fine
+        ;; outside of the build environment, but later tests fail, and I can't
+        ;; be bothered to figure out what's causing ilasm to not find
+        ;; TestDriver.dll.
+        #f)
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (add-before 'bootstrap 'patch-sub-autogen.sh-shebang
+              (lambda _
+                (patch-shebang "eglib/autogen.sh")))))))
+    (license (list
+              ;; most of mcs/tools, mono/man, most of mcs/class, tests by
+              ;; default, mono/eglib
+              ;; mcs/mcs, mcs/gmcs (dual-licensed GPL)
+              ;; samples
+              license:x11
+              ;; mcs/mcs, mcs/gmcs (dual-licensed X11)
+              ;; some of mcs/tools
+              license:gpl1+ ;; note: ./mcs/LICENSE.GPL specifies no version
+              ;; mono/mono (the mono VM, I think they meant mono/mini)
+              license:lgpl2.0+ ;; note: ./mcs/LICENSE.LGPL specifies no version
+              ;; mcs/jay
+              license:bsd-4))))
