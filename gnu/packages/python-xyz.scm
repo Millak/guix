@@ -34011,22 +34011,22 @@ process.")
     (name "python-aiofiles")
     (version "24.1.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "aiofiles" version))
-        (sha256
-          (base32
-            "0v0namryb6acj9bkic5rcgbnb36njj601ws85q60z0d3wp4pb812"))))
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "aiofiles" version))
+       (sha256
+        (base32 "0v0namryb6acj9bkic5rcgbnb36njj601ws85q60z0d3wp4pb812"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-hatchling
-           python-hatch-vcs
+     (list python-hatch-vcs
+           python-hatchling
            python-pytest
            python-pytest-asyncio))
     (home-page "https://github.com/Tinche/aiofiles")
     (synopsis "File support for @code{asyncio}")
-    (description "@code{python-aiofiles} is a library for handling local
-disk files in asyncio applications.")
+    (description
+     "@code{python-aiofiles} is a library for handling local disk files in
+asyncio applications.")
     (license license:asl2.0)))
 
 (define-public python-pyre-extensions
