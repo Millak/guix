@@ -18474,7 +18474,7 @@ large RNA-seq experiments.")
            r-rtracklayer
            r-s4vectors
            r-summarizedexperiment))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-rnaseqdata-hnrnpc-bam-chr14 r-testthat))
     (home-page "https://github.com/vodkatad/roar/")
     (synopsis "Identify differential APA usage from RNA-seq alignments")
     (description
