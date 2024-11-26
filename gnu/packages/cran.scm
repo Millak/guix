@@ -8075,6 +8075,7 @@ and several other tools.")
            r-progress
            r-readr
            r-xml))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/soodoku/abbyyR")
     (synopsis "Access to Abbyy Optical Character Recognition (OCR) API")
     (description
