@@ -1,0 +1,36 @@
+diff --git a/configure.in b/configure.in
+index 38cc6dc2925..4c608eb150f 100644
+--- a/configure.in
++++ b/configure.in
+@@ -470,7 +470,7 @@ AC_CHECK_HEADERS(wchar.h)
+ AC_CHECK_HEADERS(ieeefp.h)
+ AC_MSG_CHECKING(for isinf)
+ AC_TRY_LINK([#include <math.h>], [
+-	int f = isinf (1);
++	int f = isinf (1.0);
+ ], [
+ 	AC_MSG_RESULT(yes)
+ 	AC_DEFINE(HAVE_ISINF, 1, [isinf available])
+diff --git a/mono/io-layer/processes.c b/mono/io-layer/processes.c
+index 586b54715db..d27857aa092 100644
+--- a/mono/io-layer/processes.c
++++ b/mono/io-layer/processes.c
+@@ -18,6 +18,7 @@
+ #include <errno.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
++#include <sys/sysmacros.h>
+ #include <unistd.h>
+ #include <signal.h>
+ #include <sys/wait.h>
+diff --git a/runtime/Makefile.am b/runtime/Makefile.am
+index 6957a287d38..2d071230a84 100644
+--- a/runtime/Makefile.am
++++ b/runtime/Makefile.am
+@@ -1,6 +1,3 @@
+-# hack to prevent 'check' from depending on 'all'
+-AUTOMAKE_OPTIONS = cygnus
+-
+ tmpinst = _tmpinst
+ 
+ noinst_SCRIPTS = mono-wrapper monodis-wrapper

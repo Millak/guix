@@ -527,3 +527,96 @@ a C-style programming language from Microsoft that is very similar to Java.")
               (patches (search-patches "mono-2.6.4-fixes.patch"))))
     (native-inputs (modify-inputs (package-native-inputs mono-2.4.2)
                      (replace "mono" mono-2.4.2)))))
+
+;; submodule checkouts use git://, which isn't supported by github anymore, so
+;; we need to manually provide them instead of being able to use (recursive?
+;; #t).  Also try not to think too hard about the fact that some of these
+;; submodules in later versions contain binary compiler blobs which mono
+;; maintainers presumably used when creating the bootstrap binaries they
+;; published.  All fetched and updated over unauthenticated git://.
+
+(define mono-2.11.4-external-repo-specs
+  ;; format: ({reponame OR (reponame dir-name)} commit-hash origin-sha256) ...
+  ;; if reponame starts with https:// it is treated as the repository url,
+  ;; otherwise the name of a repository under https://github.com/mono/
+  '(("aspnetwebstack"               "1836deff6a2683b8a5b7dd78f2b591a10b47573e"
+     "0vqq45i8k6jylljarr09hqqiwjs8wn0lgjrl6bz72vxqpp0j344k")
+    ("cecil"                        "54e0a50464edbc254b39ea3c885ee91ada730705"
+     "007szbf5a14q838695lwdp7ap6rwzz3kzllgjfnibzlqipw3x2yk")
+    ("entityframework"              "9baca562ee3a747a41870f45e749e4436b6aca26"
+     "0l8k04bykbrbk5q2pz8hzh8xy8y4ayz7j97fw0kyk3lrai89v5da")
+    ("Newtonsoft.Json"              "471c3e0803a9f40a0acc8aeceb31de6ff93a52c4"
+     "0dgngd5hqk6yhlg40kabn6qdnknm32zcx9q6bm2w31csnsk5978s")))
+
+(define (add-external-repos specs)
+  (define (reponame->url reponame)
+    (if (string-prefix? "https://" reponame)
+        reponame
+        (string-append "https://github.com/mono/" reponame)))
+
+  (define* (external-repo-gexp reponame commit hash
+                               #:key recursive? (patches '()))
+    (let ((short-commit (string-take commit 6))
+          (reponame (if (pair? reponame) (car reponame)
+                        reponame))
+          (dir-name (if (pair? reponame) (cadr reponame)
+                        reponame)))
+      #~(copy-recursively #+(origin
+                              (method git-fetch)
+                              (uri (git-reference
+                                    (url (reponame->url reponame))
+                                    (commit commit)
+                                    (recursive? recursive?)))
+                              (file-name
+                               (git-file-name dir-name
+                                              short-commit))
+                              (sha256 (base32 hash))
+                              (patches (map search-patch patches)))
+                          #$(string-append "./external/" dir-name))))
+
+  (define (spec->gexp spec)
+    (apply external-repo-gexp spec))
+
+  #~(begin
+      #+@(map spec->gexp specs)))
+
+(define-public mono-2.11.4
+  (package
+    (inherit mono-2.6.4)
+    (version "2.11.4")
+    (name "mono")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.winehq.org/mono/mono.git")
+                    (commit (string-append "mono-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0y2bifi2avbjmfp80hjga2dyqip4b46zkvx6yfr9pa2hhm940rpx"))
+              (modules '((guix build utils)
+                         (ice-9 string-fun)))
+              (snippet #~(begin
+                           #$(add-external-repos
+                              mono-2.11.4-external-repo-specs)
+                           #$prepare-mono-source))
+              (patches (search-patches "mono-2.11.4-fixes.patch"))))
+    (build-system gnu-build-system)
+    (native-inputs (modify-inputs (package-native-inputs mono-2.6.4)
+                     (replace "mono" mono-2.6.4)))
+    (license (list
+              ;; most of mcs/tools, mono/man, most of mcs/class, tests by
+              ;; default, mono/eglib, mono/metadata/sgen*,
+              ;; mono/arch/*/XXX-codegen.h
+              ;; mcs/mcs, mcs/gmcs (dual-licensed GPL)
+              ;; samples
+              license:x11
+              ;; mcs/mcs, mcs/gmcs (dual-licensed X11)
+              ;; some of mcs/tools
+              license:gpl1+ ;; note: ./mcs/LICENSE.GPL specifies no version
+              ;; mono/mono (the mono VM, I think they meant mono/mini)
+              license:lgpl2.0+ ;; note: ./mcs/LICENSE.LGPL specifies no version
+              ;; mcs/jay
+              license:bsd-4
+              ;; mcs/class/System.Core/System/TimeZoneInfo.Android.cs
+              license:asl2.0))))
