@@ -7611,6 +7611,20 @@ on Bioconductor or which replace R functions.")
     (properties
      `((upstream-name . "biomaRt")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'delete-bad-tests
+           (lambda _
+             ;; These tests attempt to download files.
+             (for-each delete-file
+                       '("tests/testthat/test_ensemblFunctions.R"
+                         "tests/testthat/test_ensemblGenomes.R"
+                         "tests/testthat/test_getBM.R"
+                         "tests/testthat/test_z_cache.R"
+                         ;; This produces unexpected warnings.
+                         "tests/testthat/test_ensembl_ssl_settings.R")))))))
     (propagated-inputs
      (list r-annotationdbi
            r-biocfilecache
@@ -7622,7 +7636,7 @@ on Bioconductor or which replace R functions.")
            r-stringr
            r-xml2))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-httptest2 r-knitr r-mockery r-testthat))
     (home-page "https://bioconductor.org/packages/biomaRt")
     (synopsis "Interface to BioMart databases")
     (description
