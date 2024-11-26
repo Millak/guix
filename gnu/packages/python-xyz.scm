@@ -27983,19 +27983,32 @@ generators and Python 3.7's context managers into Python 3.5.")
 (define-public python-async-timeout
   (package
     (name "python-async-timeout")
-    (version "4.0.2")
+    (version "4.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "async-timeout" version))
        (sha256
-        (base32
-         "05bbjz16n1a7m1s3lmcwri2x5rc7hnh6f2hdr2lbflnv1mjf2qr1"))))
-    (build-system python-build-system)
+        (base32 "0bsj4z28ggxh1b6h6dvhx2mk6yqgb88bg8lyslpd10jdx1mxjh26"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              ;; Drop test coverage requirements
+              (substitute* "setup.cfg"
+                ((".*--cov.*") "")))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/aio-libs/async-timeout")
     (synopsis "Timeout context manager for asyncio programs")
-    (description "@code{async-timeout} provides a timeout timeout context
-manager compatible with @code{asyncio}.")
+    (description
+     "@code{async-timeout} provides a timeout timeout context manager
+compatible with @code{asyncio}.")
     (license license:asl2.0)))
 
 (define-public python-glob2
