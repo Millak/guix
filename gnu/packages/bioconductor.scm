@@ -8251,7 +8251,15 @@ originally made available by Holmes, Harris, and Quince, 2012, PLoS ONE 7(2):
            r-s4vectors
            r-singlecellexperiment
            r-summarizedexperiment))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs
+     (list r-complexheatmap
+           r-deseq2
+           r-edger
+           r-ggplot-multistats
+           r-ggrastr
+           r-knitr
+           r-plotly
+           r-testthat))
     (home-page "https://bioconductor.org/packages/dittoSeq")
     (synopsis "Single-cell and bulk RNA sequencing visualization")
     (description
