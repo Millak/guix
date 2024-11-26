@@ -244,6 +244,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/dhall.scm			\
   %D%/packages/dico.scm				\
   %D%/packages/dictd.scm			\
+  %D%/packages/dotnet.scm			\
   %D%/packages/dictionaries.scm			\
   %D%/packages/diffoscope.scm			\
   %D%/packages/digest.scm			\
