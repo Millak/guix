@@ -13358,6 +13358,8 @@ packages.")
          "0z7y8sicap04alkqrzqdjiq7jnmk5mf9h1ki4622hw5wf0gjiark"))))
     (properties `((upstream-name . "oligo")))
     (build-system r-build-system)
+    ;; Tests require r-oligodata, which depends on this package.
+    (arguments (list #:tests? #false))
     (inputs (list zlib))
     (propagated-inputs
      (list r-affxparser
