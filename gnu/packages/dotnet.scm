@@ -620,3 +620,65 @@ a C-style programming language from Microsoft that is very similar to Java.")
               license:bsd-4
               ;; mcs/class/System.Core/System/TimeZoneInfo.Android.cs
               license:asl2.0))))
+
+(define mono-3.0.12-external-repo-specs
+  ;; format: ({reponame OR (reponame dir-name)} commit sha256) ...
+  ;; if reponame starts with https:// it is treated as the repository url,
+  ;; otherwise the name of a repository under https://github.com/mono/
+  '(("aspnetwebstack"               "e77b12e6cc5ed260a98447f609e887337e44e299"
+     "0rks344qr4fmp3fs1264d2qkmm348m8d1kjd7z4l94iiirwn1fq1")
+    ("cecil"                        "54e0a50464edbc254b39ea3c885ee91ada730705"
+     "007szbf5a14q838695lwdp7ap6rwzz3kzllgjfnibzlqipw3x2yk")
+    ("entityframework"              "a5faddeca2bee08636f1b7b3af8389bd4119f4cd"
+     "0b05pzf6qwdd92pbzym32nfmw8rq36820vdzakq1kykfmddjr9a7")
+    (("ikvm-fork" "ikvm")           "10b8312c8024111780ee382688cd4c8754b1f1ac"
+     "025wf9gjgfvrq42vgw91ahy3cmzcw094vx783dsp7gjdyd8q09nm")
+    ("Lucene.Net"                   "88fb67b07621dfed054d8d75fd50672fb26349df"
+     "1rfxqfz7hkp9rg5anvxlv6fna0xi0bnv1y8qbhf8x48l08yjb38k")
+    ("Newtonsoft.Json"              "471c3e0803a9f40a0acc8aeceb31de6ff93a52c4"
+     "0dgngd5hqk6yhlg40kabn6qdnknm32zcx9q6bm2w31csnsk5978s")
+    ("rx"                           "17e8477b2cb8dd018d49a567526fe99fd2897857"
+     "0fyyy4jf0mma6kff6fvbvdcs5ra1bz4s063nvjjva9xlnv7sjvh4")))
+
+(define-public mono-3.0
+  (package
+    (inherit mono-2.11.4)
+    (version "3.0.12")
+    (name "mono")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.winehq.org/mono/mono.git")
+                    (commit (string-append "mono-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "110f3hcfikk6bxbrgjas5dqldci9f24gvm3vdgn4j9j7xhlcx1lj"))
+              (modules '((guix build utils)
+                         (ice-9 string-fun)))
+              (snippet #~(begin
+                           #$(add-external-repos
+                              mono-3.0.12-external-repo-specs)
+                           #$prepare-mono-source))))
+    (native-inputs (modify-inputs (package-native-inputs mono-2.11.4)
+                     (replace "mono" mono-2.11.4)))
+    (license (list
+              ;; most of mcs/tools, mono/man, most of mcs/class, tests by
+              ;; default, mono/eglib, mono/metadata/sgen*,
+              ;; mono/arch/*/XXX-codegen.h
+              ;; mcs/mcs, mcs/gmcs (dual-licensed GPL)
+              ;; samples
+              license:x11
+              ;; mcs/mcs, mcs/gmcs (dual-licensed X11)
+              ;; some of mcs/tools
+              license:gpl1+ ;; note: ./mcs/LICENSE.GPL specifies no version
+              ;; mono/mono (the mono VM, I think they meant mono/mini)
+              ;; mono/support (note: directory doesn't exist, probably meant
+              ;; ./support, but that contains a copy of zlib?)
+              license:lgpl2.0+ ;; note: ./mcs/LICENSE.LGPL specifies no version
+              ;; mcs/jay
+              license:bsd-4
+              ;; mcs/class/System.Core/System/TimeZoneInfo.Android.cs
+              license:asl2.0
+              ;; ./support, contains a copy of zlib
+              license:zlib))))
