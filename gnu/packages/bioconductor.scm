@@ -2275,6 +2275,29 @@ data from 60 bone marrow samples of patients with one of the four main types
 of leukemia (ALL, AML, CLL, CML) or non-leukemia.")
     (license license:gpl2+)))
 
+(define-public r-lungcancerlines
+  (package
+    (name "r-lungcancerlines")
+    (version "0.44.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "LungCancerLines" version
+                              'experiment))
+       (sha256
+        (base32 "1g6h8b94hrn8wp6fhjwx1mkrdmqmpmp1y22979apf4fn2al10y17"))))
+    (properties `((upstream-name . "LungCancerLines")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-rsamtools))
+    (home-page "https://bioconductor.org/packages/LungCancerLines")
+    (synopsis "Reads from Two Lung Cancer Cell Lines")
+    (description
+     "This package contains reads from an RNA-seq experiment between two lung
+cancer cell lines: H1993 (met) and H2073 (primary).  The reads are stored as
+Fastq files and are meant for use with the TP53Genome object in the
+@code{gmapR} package.")
+    (license license:artistic2.0)))
+
 (define-public r-macrophage
   (package
     (name "r-macrophage")
