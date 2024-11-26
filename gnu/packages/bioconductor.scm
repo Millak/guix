@@ -2369,6 +2369,26 @@ bead chip for each of the four populations (Asian, American, African and
 European).")
     (license license:gpl3)))
 
+(define-public r-illuminadatatestfiles
+  (package
+    (name "r-illuminadatatestfiles")
+    (version "1.44.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "IlluminaDataTestFiles" version
+                              'experiment))
+       (sha256
+        (base32 "0xwck8i2r2866kaimwy9klg85fs81f6h4i9zw20zxxd0qmqkpzwi"))))
+    (properties `((upstream-name . "IlluminaDataTestFiles")))
+    (build-system r-build-system)
+    (home-page "https://bioconductor.org/packages/IlluminaDataTestFiles")
+    (synopsis "Illumina microarray files (IDAT) for testing")
+    (description
+     "This package contains example data for Illumina microarray output files,
+for testing purposes.")
+    (license license:artistic2.0)))
+
 (define-public r-italicsdata
   (package
     (name "r-italicsdata")
