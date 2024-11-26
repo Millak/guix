@@ -1,0 +1,13 @@
+diff --git a/mcs/mcs/settings.cs b/mcs/mcs/settings.cs
+index 1393bcd58f3..af5febe7cf6 100644
+--- a/mcs/mcs/settings.cs
++++ b/mcs/mcs/settings.cs
+@@ -1197,7 +1197,7 @@ namespace Mono.CSharp {
+ 				}
+ 				return ParseResult.Success;
+ 
+-			case "runtimemetadataversion":
++			case "/runtimemetadataversion":
+ 				if (value.Length == 0) {
+ 					Error_RequiresArgument (option);
+ 					return ParseResult.Error;

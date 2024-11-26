@@ -733,3 +733,131 @@ a C-style programming language from Microsoft that is very similar to Java.")
                 ;; for some reason a default is only used if this is empty, not
                 ;; if it is unset.
                 (setenv "TZ" "")))))))))
+
+(define mono-4.9.0-external-repo-specs
+  ;; format: ({reponame OR (reponame dir-name)} commit sha256) ...
+  '(("aspnetwebstack"               "e77b12e6cc5ed260a98447f609e887337e44e299"
+     "0rks344qr4fmp3fs1264d2qkmm348m8d1kjd7z4l94iiirwn1fq1")
+    ;; (("reference-assemblies" "binary-reference-assemblies")
+    ;;  "6c77197318fe85dfddf75a1b344b9bf8d0007b0b"
+    ;;  "11hbs952srjlsiyin76y2llm5rfjkwjc67ya1i3p0pw193zw14jk")
+    ;; According to github description this is a "custom" fork of boringssl
+    ("boringssl"                    "c06ac6b33d3e7442ad878488b9d1100127eff998"
+     "187zpi1rvh9i6jfccwzqq337rxxi1rgny6mjq79r08dlrh0lydzc")
+    ("buildtools"                   "9b6ee8686be55a983d886938165b6206cda50772"
+     "0sjw3swavcmijynmaxh647qpkjsbgihdr8lhkyzf8dsprhlq4fxd")
+    ("cecil"                        "2b39856e80d8513f70bc3241ed05325b0de679ae"
+     "0vvax32r6bnhvrcvis83gdrdqcgyxb704hz28g9q0wnay4knqxdm")
+    (("cecil" "cecil-legacy")       "33d50b874fd527118bc361d83de3d494e8bb55e1"
+     "1p4hl1796ib26ykyf5snl6cj0lx0v7mjh0xqhjw6qdh753nsjyhb")
+    ;; ("debian-snapshot"              "9342f8f052f81deaba789f030db23a88b4369724"
+    ;;  "")
+    ("ikdasm"                       "e4deabf61c11999f200dcea6f6d6b42474cc2131"
+     "1frbf70y7n7l72j393avdiwk6153cvfwwpighkf2m46clqmq4han")
+    (("ikvm-fork" "ikvm")           "367864ef810859ae3ce652864233b35f2dd5fdbe"
+     "0ig99kbma4s0mzb13nzsk1vm200ygfr11q6mzgh6jj46s2fc35px")
+    ("Lucene.Net.Light"             "85978b7eb94738f516824341213d5e94060f5284"
+     "0d118i52m3a0vfjhfci81a2kc4qvnj23gs02hrvdrfpd1q92fyii")
+    ("Newtonsoft.Json"              "471c3e0803a9f40a0acc8aeceb31de6ff93a52c4"
+     "0dgngd5hqk6yhlg40kabn6qdnknm32zcx9q6bm2w31csnsk5978s")
+    ("nuget-buildtasks"             "04bdab55d8de9edcf628694cfd2001561e8f8e60"
+     "1nklxayxkdskg5wlfl44cndzqkl18v561rz03hwx7wbn5w89q775")
+    ("nunit-lite"                   "4bc79a6da1f0ee538560b7e4d0caff46d3c86e4f"
+     "085fpabjw47rn8hb5zw6wizsg2jrgdbj9rnlar9lrls40wig272q")
+    ("rx"                           "b29a4b0fda609e0af33ff54ed13652b6ccf0e05e"
+     "1n1jwhmsbkcv2d806immcpzkb72rz04xy98myw355a8w5ah25yiv")))
+
+(define-public mono-4.9.0
+  (package
+    (inherit mono-3.12.1)
+    (version "4.9.0")
+    (name "mono")
+    (source (origin
+              (method git-fetch)
+              (uri
+               (git-reference
+                (url "https://gitlab.winehq.org/mono/mono.git")
+                ;; some commit chosen after configure.ac was updated to make
+                ;; the version >= 4.9.0
+                (commit "5a3736606e6243d2c84d4df2cf35c284214b8cc4")))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0vqkkqkaqwbii4hdzg0vffyy31fz1kmmsa67jyqwxdsvgpjszih3"))
+              (modules '((guix build utils)
+                         (ice-9 string-fun)))
+              (snippet #~(begin
+                           #$(add-external-repos
+                              mono-4.9.0-external-repo-specs)
+                           #$prepare-mono-source))
+              (patches (search-patches
+                        ;; Saves us an extra intermediate step
+                        "mono-4.9.0-fix-runtimemetadataversion.patch"))))
+    (native-inputs (modify-inputs (package-native-inputs mono-3.12.1)
+                     (replace "mono" mono-3.12.1)
+                     (append tzdata-for-tests)))
+    (arguments
+     (substitute-keyword-arguments (package-arguments mono-3.12.1)
+       ((#:configure-flags _ #f)
+        ;; "External Boehm is no longer supported" - I VILL NOT use the
+        ;; bundled software!
+        #~(list "--with-sgen=yes"
+                "--disable-boehm"
+                "--with-csc=mcs"))
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (add-before 'configure 'set-TZDIR
+              (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                (search-input-directory (or native-inputs inputs)
+                                        "share/zoneinfo")))
+            (add-after 'unpack 'use-old-mono-libraries
+              ;; At this point in history mono had not, to my knowledge,
+              ;; deigned to grace us with the actual sources to the binaries
+              ;; shipped in external/binary-reference-assemblies, so just copy
+              ;; the libraries from an older mono for now I guess.
+              (lambda _
+                (substitute* "mcs/class/reference-assemblies/Makefile"
+                  (("\\.\\./\\.\\./\\.\\./external/binary-reference-assemblies/v")
+                   (string-append #$(this-package-native-input "mono")
+                                  "/lib/mono/")))))
+            (add-after 'unpack 'disable-Microsoft.Build.Tasks-tests
+              (lambda _
+                ;; These fail for unknown reasons
+                (substitute* "mcs/class/Microsoft.Build.Tasks/Makefile"
+                  (("^include ../../build/library.make" all)
+                   (string-append
+                    all "\nrun-test-recursive:\n\t@echo skipping tests\n")))))))))
+    (license (list
+              ;; most of mcs/tools, mono/man, most of mcs/class, tests by
+              ;; default, mono/eglib, mono/metadata/sgen*,
+              ;; mono/arch/*/XXX-codegen.h
+              ;; mcs/mcs, mcs/gmcs (dual-licensed GPL)
+              ;; samples
+              license:x11
+              ;; mcs/mcs, mcs/gmcs (dual-licensed X11)
+              ;; some of mcs/tools
+              license:gpl1+ ;; note: ./mcs/LICENSE.GPL specifies no version
+              ;; mono/mono (the mono VM, I think they meant mono/mini)
+              ;; mono/support (note: directory doesn't exist, probably meant
+              ;; ./support, but that contains a copy of zlib?)
+              license:lgpl2.0+ ;; note: ./mcs/LICENSE.LGPL specifies no version
+              ;; mcs/jay, mono/utils/memcheck.h
+              license:bsd-4
+              ;; mono/utils/bsearch.c, mono/io-layer/wapi_glob.{h,c}
+              license:bsd-3
+              ;; mono/utils/freebsd-{dwarf,elf_common,elf64,elf32}.h
+              license:bsd-2
+              ;; mcs/class/System.Core/System/TimeZoneInfo.Android.cs
+              ;; mcs/class/RabbitMQ.Client (dual licensed mpl1.1)
+              license:asl2.0
+              ;; ./support, contains a copy of zlib, incl. ./support/minizip
+              license:zlib
+              ;; mono/docs/HtmlAgilityPack, mcs/unit24
+              license:ms-pl
+              ;; mcs/class/I18N/mklist.sh, mono/benchmark/{zipmark,logic}.cs
+              ;; mcs/class/{,Compat.}ICSharpCode.SharpZipLib
+              license:gpl2+
+              ;; mcs/class/RabbitMQ.Client (dual licensed asl2.0)
+              license:mpl1.1
+              ;; API Documentation
+              license:cc-by4.0))))

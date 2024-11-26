@@ -1833,6 +1833,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/mono-2.4.2.3-fixes.patch			\
   %D%/packages/patches/mono-2.6.4-fixes.patch			\
   %D%/packages/patches/mono-2.11.4-fixes.patch			\
+  %D%/packages/patches/mono-4.9.0-fix-runtimemetadataversion.patch		\
   %D%/packages/patches/mosaicatcher-unbundle-htslib.patch	\
   %D%/packages/patches/mrrescue-support-love-11.patch		\
   %D%/packages/patches/mtools-mformat-uninitialized.patch	\
