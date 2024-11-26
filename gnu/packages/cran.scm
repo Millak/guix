@@ -25507,6 +25507,8 @@ tensors.")
         (base32 "02q2l0c38ddzlh2jwbzkcyhh2k5a4gnfm8khl8cqvjkjhldi9j5y"))))
     (properties `((upstream-name . "tester")))
     (build-system r-build-system)
+    ;; FIXME Tests fail with: could not find function "context"
+    (arguments (list #:tests? #false))
     (native-inputs (list r-knitr r-testthat))
     (home-page "https://fbertran.github.io/tester/")
     (synopsis "Tests and checks characteristics of R objects")
