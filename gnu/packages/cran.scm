@@ -29876,6 +29876,7 @@ into R and converted to @code{BibEntry} objects.")
            r-shiny
            r-shinyjs
            r-yaml))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/crsh/citr")
     (synopsis "RStudio add-in to insert Markdown citations")
     (description
