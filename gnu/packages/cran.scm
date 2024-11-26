@@ -2027,6 +2027,29 @@ aggregation that is robust to noise and also facilitates the calculation of
 significance probabilities for all the elements in the final ranking.")
     (license license:gpl2)))
 
+(define-public r-rose
+  (package
+    (name "r-rose")
+    (version "0.0-4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "ROSE" version))
+       (sha256
+        (base32 "0y3v9zkgaxpv4f4zn22ra1gkkqg5hdz8js47ppciqahfydjbfl3p"))))
+    (properties `((upstream-name . "ROSE")))
+    (build-system r-build-system)
+    (home-page "https://cran.r-project.org/package=ROSE")
+    (synopsis "Random over-sampling examples")
+    (description
+     "This package provides functions to deal with binary classification
+problems in the presence of imbalanced classes.  Synthetic balanced samples
+are generated according to ROSE (Menardi and Torelli, 2013).  Functions that
+implement more traditional remedies to the class imbalance are also provided,
+as well as different metrics to evaluate a learner accuracy.  These are
+estimated by holdout, bootstrap or cross-validation methods.")
+    (license license:gpl2)))
+
 (define-public r-rotor
   (package
     (name "r-rotor")
