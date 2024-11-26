@@ -4964,7 +4964,7 @@ start codons as the forms of evidence.")
     (properties `((upstream-name . "ASSET")))
     (build-system r-build-system)
     (propagated-inputs (list r-mass r-msm r-rmeta))
-    (native-inputs (list r-knitr r-runit))
+    (native-inputs (list r-biocgenerics r-knitr r-runit))
     (home-page "https://bioconductor.org/packages/ASSET")
     (synopsis
      "Subset-based association analysis of heterogeneous traits and subtypes")
