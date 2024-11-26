@@ -30592,8 +30592,14 @@ and interfaces to external frameworks.")
            r-yaml))
     (native-inputs
      (list esbuild
+           r-dt
+           r-htmltools
            r-knitr  ;for vignettes
+           r-memoise
+           r-mockery
+           r-rstudioapi
            r-testthat
+           r-xml2
            (let ((version "3.3.5"))
              (origin
                (method git-fetch)
