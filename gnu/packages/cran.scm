@@ -38980,7 +38980,7 @@ censored data.")
            r-tidyr
            r-tidyselect))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-broom r-covr r-knitr r-testthat))
     (home-page "https://github.com/chjackson/flexsurv-dev")
     (synopsis "Flexible parametric survival and multi-state models")
     (description
