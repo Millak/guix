@@ -7072,6 +7072,7 @@ visualization, facilitating interpretation of the data.")
              r-styler
              r-xml2
              r-xmlparsedata))
+      (native-inputs (list r-mockery r-testthat))
       (home-page "https://github.com/REditorSupport/languageserver")
       (synopsis "Language Server for R")
       (description
