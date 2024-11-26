@@ -22332,6 +22332,13 @@ db and resource files to AWS S3 buckets.")
     (properties
      `((upstream-name . "MultiAssayExperiment")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; For vignette builder.
+         (add-after 'unpack 'set-HOME
+           (lambda _ (setenv "HOME" "/tmp"))))))
     (propagated-inputs
      (list r-biobase
            r-biocbaseutils
@@ -22343,7 +22350,12 @@ db and resource files to AWS S3 buckets.")
            r-summarizedexperiment
            r-tidyr))
     (native-inputs
-     (list r-knitr r-r-rsp r-testthat))
+     (list r-hdf5array
+           r-knitr
+           r-r-rsp
+           r-raggedexperiment
+           r-reshape2
+           r-testthat))
     (home-page "https://waldronlab.io/MultiAssayExperiment/")
     (synopsis "Integration of multi-omics experiments in Bioconductor")
     (description
