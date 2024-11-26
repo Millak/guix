@@ -13334,7 +13334,7 @@ saving AnnData objects to disk.")
            r-rsqlite
            r-s4vectors
            r-summarizedexperiment))
-    (native-inputs (list r-runit))
+    (native-inputs (list r-genomewidesnp6crlmm r-human370v1ccrlmm r-runit))
     (home-page "https://bioconductor.org/packages/oligoClasses/")
     (synopsis "Classes for high-throughput arrays")
     (description
