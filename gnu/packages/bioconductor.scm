@@ -23791,6 +23791,12 @@ data in the column sparse format.")
                 "02lsz2yag9h94ylwsdbqwvlsdgx6ijz9702hg5prz122jqv7x9l3"))))
     (properties `((upstream-name . "SpatialExperiment")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'set-HOME
+           (lambda _ (setenv "HOME" "/tmp"))))))
     (propagated-inputs (list r-biocfilecache
                              r-biocgenerics
                              r-magick
@@ -23798,7 +23804,7 @@ data in the column sparse format.")
                              r-s4vectors
                              r-singlecellexperiment
                              r-summarizedexperiment))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-dropletutils r-knitr r-testthat))
     (home-page "https://github.com/drighelli/SpatialExperiment")
     (synopsis "S4 class for spatially resolved -omics data")
     (description
