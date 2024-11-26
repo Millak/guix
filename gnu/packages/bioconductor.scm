@@ -22158,6 +22158,8 @@ functionality.")
     (properties
      `((upstream-name . "biocViews")))
     (build-system r-build-system)
+    ;; Tests attempt to access http://bioconductor.org/js/versions.js
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-biobase
            r-biocmanager
