@@ -8803,6 +8803,26 @@ curve (AUROC).  The curves can also be visualized.  Support for partial areas
 is provided.")
     (license license:gpl2+)))
 
+(define-public r-audio
+  (package
+    (name "r-audio")
+    (version "0.1-11")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "audio" version))
+       (sha256
+        (base32 "0z719jxmfzmh6c885m1yixjzdsl1wy17s1sw2hp4ppz4bcrzclhh"))))
+    (properties `((upstream-name . "audio")))
+    (build-system r-build-system)
+    (native-inputs (list pkg-config))
+    (home-page "http://www.rforge.net/audio/")
+    (synopsis "Audio interface for R")
+    (description
+     "This package provides interfaces to audio devices (mainly sample-based)
+from R to allow recording and playback of audio.")
+    (license license:expat)))
+
 (define-public r-calibrate
   (package
     (name "r-calibrate")
