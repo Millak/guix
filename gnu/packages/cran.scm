@@ -33404,7 +33404,7 @@ currently limited to 8 bit greyscale images and 24, 32 bit (A)RGB images.")
      (list libjpeg-turbo libpng))
     (propagated-inputs
      (list r-bmp r-jpeg r-png r-tiff))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-pixmap r-testthat))
     (home-page "https://github.com/jefferis/readbitmap")
     (synopsis "Unified interface to read bitmap images (BMP, JPEG, PNG, TIFF)")
     (description
