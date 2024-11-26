@@ -12026,6 +12026,7 @@ sankey, alluvial and sankey bump plots in @code{ggplot2}.")
              r-matrix
              r-s4vectors
              r-stringr))
+      (native-inputs (list r-testthat))
       (home-page "https://github.com/mskilab/gUtils")
       (synopsis "Additional capabilities and speed for GenomicRanges operations")
       (description
