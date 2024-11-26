@@ -6977,7 +6977,7 @@ to any arbitrary string.  In this case, it is up to you to set valid values.")
       (properties `((upstream-name . "NNLM")))
       (build-system r-build-system)
       (propagated-inputs (list r-rcpp r-rcpparmadillo r-rcppprogress))
-      (native-inputs (list r-knitr))
+      (native-inputs (list r-knitr r-testthat))
       (home-page "https://github.com/linxihui/NNLM")
       (synopsis "Fast and versatile non-negative matrix factorization")
       (description
