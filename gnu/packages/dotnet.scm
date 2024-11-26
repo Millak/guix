@@ -1067,3 +1067,69 @@ unused0:")))))
                            #$@prepare-mono-source-0))))
     (native-inputs (modify-inputs (package-native-inputs mono-5.0.1)
                      (replace "mono" mono-5.0.1)))))
+
+(define mono-5.2.0-external-repo-specs
+  '(("aspnetwebstack"              "e77b12e6cc5ed260a98447f609e887337e44e299"
+     "0rks344qr4fmp3fs1264d2qkmm348m8d1kjd7z4l94iiirwn1fq1")
+    (("reference-assemblies" "binary-reference-assemblies")
+     "142cbeb62ffabf1dd9c1414d8dd76f93bcbed0c2"
+     "1wkd589hgb16m5zvmp9yb57agyyryaa1jj8vhl4w20i2hp22wad9")
+    ("bockbuild"                   "45aa142fa322f5b41051e7f40008f03346a1e119"
+     "1sjlgzh3hq251k729a1px707c1q2gnfayghgx1z5qyddnyaxna20")
+    ("boringssl"                   "3e0770e18835714708860ba9fe1af04a932971ff"
+     "139a0gl91a52k2r6na6ialzkqykaj1rk88zjrkaz3sdxx7nmmg6y")
+    ("buildtools"                  "b5cc6e6ab5f71f6c0be7b730058b426e92528479"
+     "0ldj5l4p4q8j9dhk0nifr3m0i64csvb56wlc2xd4zy80sfgmjn06")
+    ("cecil"                       "362e2bb00fa693d04c2d140a4cd313eb82c78d95"
+     "0bvaavlnldrja8ixb66bg33kz05950vm5sk4pz0k0zjgspfgpcvd")
+    (("cecil" "cecil-legacy")      "33d50b874fd527118bc361d83de3d494e8bb55e1"
+     "1p4hl1796ib26ykyf5snl6cj0lx0v7mjh0xqhjw6qdh753nsjyhb")
+    ("corefx"                      "78360b22e71b70de1d8cc9588cb4ef0040449c31"
+     "1wrszafyar7q1cdfba68xd6b4d54p3iim2czmxblms1yw19ycqm7")
+    ("corert"                      "ed6296dfbb88d66f08601c013caee30c88c41afa"
+     "179q1aiq44bzdckg1xqm6iwyx835cp6161w5vgsfrgbw0p3kidxr")
+    ("ikdasm"                      "88b67c42ca8b7d58141c176b46749819bfcef166"
+     "0b0b1dhg80r640n81iqawwkxi1k289n4zxjfj0ldd9rkvfxvlwaw")
+    (("ikvm-fork" "ikvm")          "7c1e61bec8c069b2cc9e214c3094b147d76bbf82"
+     "0vmc5r4j76hkd4zis1769ppdl1h1l7z8cld0y4p1m64n86ghkzfn")
+    ("linker"                      "c7450ca2669becddffdea7dcdcc06692e57989e1"
+     "0vd1vw6hqm1p127m6079p9n4xrckrf4iakvj41hnqfwws94w5mv1")
+    ("Lucene.Net.Light"            "85978b7eb94738f516824341213d5e94060f5284"
+     "0d118i52m3a0vfjhfci81a2kc4qvnj23gs02hrvdrfpd1q92fyii")
+    ("Newtonsoft.Json"             "471c3e0803a9f40a0acc8aeceb31de6ff93a52c4"
+     "0dgngd5hqk6yhlg40kabn6qdnknm32zcx9q6bm2w31csnsk5978s")
+    (("NuGet.BuildTasks" "nuget-buildtasks")
+     "8d307472ea214f2b59636431f771894dbcba7258"
+     "1h1frnj0x8k7b29ic4jisch0vlpmsmghjw554pz277f2nxaidljj")
+    (("NUnitLite" "nunit-lite")    "690603bea98aae69fca9a65130d88591bc6cabee"
+     "1f845ysjzs3yd9gcyww66dnkx484z5fknb8l0xz74sjmxk2mngwc")
+    ;; ("roslyn-binaries"          "dcb0a0534d5104eaf945d3d1f319dc33044b7bbe"
+    ;;  "")
+    ("rx"                          "b29a4b0fda609e0af33ff54ed13652b6ccf0e05e"
+     "1n1jwhmsbkcv2d806immcpzkb72rz04xy98myw355a8w5ah25yiv")
+    ;; ("xunit-binaries"           "b8e20d265b368dd6252703d5afd038d0b028e388"
+    ;;  "")
+    ))
+
+(define-public mono-5.2.0
+  (package
+    (inherit mono-5.1.0)
+    (version "5.2.0.224")
+    (name "mono")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.winehq.org/mono/mono.git")
+                    (commit (string-append "mono-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0zsgfqyjkpix05gvgvhqyyqcwcjp5xlvcyv471q32qf307dccbfa"))
+              (modules '((guix build utils)
+                         (ice-9 string-fun)))
+              (snippet #~(begin
+                           #$(add-external-repos
+                              mono-5.2.0-external-repo-specs)
+                           #$@prepare-mono-source-0))))
+    (native-inputs (modify-inputs (package-native-inputs mono-5.1.0)
+                     (replace "mono" mono-5.1.0)))))
