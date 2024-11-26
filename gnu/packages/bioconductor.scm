@@ -13320,6 +13320,8 @@ saving AnnData objects to disk.")
          "01zcbrk1yxv6jzainw4hc2c20mzg4ji8l8svbyncch39f3n6agb7"))))
     (properties `((upstream-name . "oligoClasses")))
     (build-system r-build-system)
+    ;; Some tests need pd.mapping50k.hind240, which needs this package.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-affyio
            r-biobase
