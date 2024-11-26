@@ -50,7 +50,12 @@
        #:phases (modify-phases %standard-phases
                   (delete 'configure)
                   (delete 'build)
-                  (delete 'check))))
+                  (delete 'check)
+                  (add-after 'unpack 'fix-bash-completion-directory
+                    (lambda _
+                      (substitute* "Makefile"
+                        (("\\$\\(DATADIR\\)/bash-completion/completions")
+                         "$(PREFIX)/etc/bash_completion.d")))))))
     (inputs (list acl file libcap readline))
     (home-page "https://github.com/leo-arch/clifm")
     (synopsis "Command-line file manager")
