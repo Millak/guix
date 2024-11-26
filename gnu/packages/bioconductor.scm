@@ -13134,6 +13134,16 @@ dependencies between GO terms can be implemented and applied.")
         (base32 "0k0clyrpw12b9x0nb4190lhdpd5gab4s1y645cpac66kcskc0j4p"))))
     (properties `((upstream-name . "txdbmaker")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'delete-bad-tests
+           (lambda _
+             ;; These tests attempt to download files.
+             (for-each delete-file
+                       '("inst/unitTests/test_makeTxDbFromUCSC.R"
+                         "inst/unitTests/test_makeTxDbFromBiomart.R")))))))
     (propagated-inputs (list r-annotationdbi
                              r-biobase
                              r-biocgenerics
@@ -13150,7 +13160,7 @@ dependencies between GO terms can be implemented and applied.")
                              r-rtracklayer
                              r-s4vectors
                              r-ucsc-utils))
-    (native-inputs (list r-knitr r-runit))
+    (native-inputs (list r-knitr r-rmariadb r-runit))
     (home-page "https://bioconductor.org/packages/txdbmaker")
     (synopsis "Tools for making TxDb objects from genomic annotations")
     (description
