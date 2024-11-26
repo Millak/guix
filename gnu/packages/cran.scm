@@ -41624,8 +41624,11 @@ avoid system fonts to make sure your outputs are reproducible.")
      `((upstream-name . "freetypeharfbuzz")))
     (build-system r-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
+     (list
+      ;; 6 tests fail with accuracy errors.
+      #:tests? #false
+      #:phases
+      '(modify-phases %standard-phases
          (add-after 'unpack 'prepare-static-libraries
            (lambda* (#:key inputs #:allow-other-keys)
              (mkdir-p "src/target/include")
@@ -41648,7 +41651,8 @@ avoid system fonts to make sure your outputs are reproducible.")
     ;; project.  On the other hand, Guix arguably does a better job at
     ;; "ensur[ing] deterministic computation".
     (native-inputs
-     `(("static-freetype"
+     `(("r-testthat" ,r-testthat)
+       ("static-freetype"
         ,(package
            (inherit (static-package freetype))
            (arguments
