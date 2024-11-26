@@ -397,3 +397,61 @@ a C-style programming language from Microsoft that is very similar to Java.")
               license:lgpl2.0+ ;; note: ./mcs/LICENSE.LGPL specifies no version
               ;; mcs/jay
               license:bsd-4))))
+
+(define-public mono-1.9.1
+  (package
+    (inherit mono-1.2.6)
+    (version "1.9.1")
+    (name "mono")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.winehq.org/mono/mono.git")
+                    (commit "mono-1.9.1.1")))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0s1n3zdhc2alk9smxfdl1kjz7lz2p19gs0ks4hgr864jlmf13bws"))
+              (modules '((guix build utils)
+                         (ice-9 string-fun)))
+              (snippet prepare-mono-source)
+              (patches (search-patches
+                         "mono-1.9.1-fixes.patch"
+                         "mono-1.9.1-add-MONO_CREATE_IMAGE_VERSION.patch"))))
+    (native-inputs
+     (modify-inputs (package-native-inputs mono-1.2.6)
+       (delete "pnet-git")
+       (delete "pnetlib-git")
+       (prepend mono-1.2.6)
+       (append which)
+       ;; needed for tests
+       (append perl)))
+    (arguments
+     (substitute-keyword-arguments (package-arguments mono-1.2.6)
+       ((#:make-flags _ #f)
+        #~(list #$(string-append "CC=" (cc-for-target)) "V=1"))
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (add-before 'configure 'set-cflags
+              (lambda _
+                ;; apparently can't be set via make flags in this version
+                (let ((original (getenv "CFLAGS")))
+                  (setenv "CFLAGS" (string-append (or original "")
+                                                  (if original " " "")
+                                                  "-DARG_MAX=500")))))
+            (add-before 'configure 'set-create-image-version
+              (lambda _
+                ;; pnet produces v2.x assemblies.  Mono does this weird thing
+                ;; where it always produces assemblies of the same version as
+                ;; the runtime that is running it, which is based on the
+                ;; version of the assembly that it loaded, which is based on
+                ;; what it decided for the previous compiler... on and on all
+                ;; the way back to pnet.  This breaks that chain, because
+                ;; otherwise it ends up compiling the initial mcs against .NET
+                ;; 2.0 libraries and then running with .NET 1.0 libraries.
+                (setenv "MONO_CREATE_IMAGE_VERSION" "v1.1.4322")))
+            (add-after 'unpack 'patch-test-driver-shebang
+              (lambda _
+                (patch-shebang "mono/tests/test-driver")))))
+       ((#:tests? _ #f) #f)
+       ((#:parallel-tests? _ #f) #f)))))

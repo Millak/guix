@@ -1,0 +1,59 @@
+diff --git a/data/mono.pc.in b/data/mono.pc.in
+index 6da0960db2d..d43bb187218 100644
+--- a/data/mono.pc.in
++++ b/data/mono.pc.in
+@@ -7,6 +7,6 @@ sysconfdir=@sysconfdir@
+ Name: Mono
+ Description: Mono Runtime
+ Version: @VERSION@
+-Requires: glib-2.0 gthread-2.0
++Requires: glib-2.0 gthread-2.0 bdw-gc
+ Libs: -L${libdir} @export_ldflags@ -lmono @libmono_ldflags@
+ Cflags: -I${includedir} @libmono_cflags@
+diff --git a/mono-uninstalled.pc.in b/mono-uninstalled.pc.in
+index 7fa3f12dc91..2a0734362fd 100644
+--- a/mono-uninstalled.pc.in
++++ b/mono-uninstalled.pc.in
+@@ -1,6 +1,6 @@
+ Name: Mono
+ Description: Mono Runtime
+ Version: @VERSION@
+-Requires: glib-2.0 gthread-2.0
++Requires: glib-2.0 gthread-2.0 bdw-gc
+ Libs: -L@mono_build_root@/mono/mini/.libs @export_ldflags@ -lmono @libmono_ldflags@
+ Cflags: -I@abs_top_srcdir@ -I@abs_top_srcdir@/mono @libmono_cflags@
+diff --git a/mono/metadata/Makefile.am b/mono/metadata/Makefile.am
+index 2e480190c8c..90d0f619959 100644
+--- a/mono/metadata/Makefile.am
++++ b/mono/metadata/Makefile.am
+@@ -157,7 +157,6 @@ libmonoruntimeinclude_HEADERS = \
+ 	object.h	\
+ 	exception.h	\
+ 	profiler.h	\
+-	appdomain.h	\
+ 	mono-config.h	\
+ 	debug-helpers.h	\
+ 	mempool.h
+diff --git a/mono/mini/driver.c b/mono/mini/driver.c
+index ffa4b5e5e69..85a954960eb 100644
+--- a/mono/mini/driver.c
++++ b/mono/mini/driver.c
+@@ -1033,6 +1033,7 @@ mono_main (int argc, char* argv[])
+ #endif
+ 	if (!g_thread_supported ())
+ 		g_thread_init (NULL);
++        GC_allow_register_threads();
+ 
+ 	if (mono_running_on_valgrind () && getenv ("MONO_VALGRIND_LEAK_CHECK")) {
+ 		GMemVTable mem_vtable;
+diff --git a/runtime/Makefile.am b/runtime/Makefile.am
+index e3a8a21e9e2..587b9f4aa79 100644
+--- a/runtime/Makefile.am
++++ b/runtime/Makefile.am
+@@ -1,6 +1,3 @@
+-# hack to prevent 'check' from depending on 'all'
+-AUTOMAKE_OPTIONS = cygnus
+-
+ tmpinst = _tmpinst
+ 
+ noinst_SCRIPTS = mono-wrapper monodis-wrapper semdel-wrapper

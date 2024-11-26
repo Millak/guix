@@ -1,0 +1,14 @@
+diff --git a/mono/metadata/reflection.c b/mono/metadata/reflection.c
+index ce053b0ef49..7c51f20c4cf 100644
+--- a/mono/metadata/reflection.c
++++ b/mono/metadata/reflection.c
+@@ -4336,6 +4336,9 @@ create_dynamic_mono_image (MonoDynamicAssembly *assembly, char *assembly_name, c
+ 
+ 	const char *version = mono_get_runtime_info ()->runtime_version;
+ 
++        char *env_ver = getenv("MONO_CREATE_IMAGE_VERSION");
++        if (env_ver) version = env_ver;
++
+ #if HAVE_BOEHM_GC
+ 	image = GC_MALLOC (sizeof (MonoDynamicImage));
+ #else

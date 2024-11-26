@@ -1828,6 +1828,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/module-init-tools-moduledir.patch	\
   %D%/packages/patches/monero-use-system-miniupnpc.patch			\
   %D%/packages/patches/mono-1.2.6-bootstrap.patch		\
+  %D%/packages/patches/mono-1.9.1-add-MONO_CREATE_IMAGE_VERSION.patch		\
+  %D%/packages/patches/mono-1.9.1-fixes.patch			\
   %D%/packages/patches/mosaicatcher-unbundle-htslib.patch	\
   %D%/packages/patches/mrrescue-support-love-11.patch		\
   %D%/packages/patches/mtools-mformat-uninitialized.patch	\
