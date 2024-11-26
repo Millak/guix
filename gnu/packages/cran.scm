@@ -36695,6 +36695,14 @@ evaluated interactively.")
     (properties
      `((upstream-name . "bridgesampling")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; When there is no HOME directory, this package will fail to find
+         ;; the vignette builder.
+         (add-after 'unpack 'set-HOME
+           (lambda _ (setenv "HOME" "/tmp"))))))
     (propagated-inputs
      (list r-brobdingnag
            r-coda
