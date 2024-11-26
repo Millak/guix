@@ -5586,6 +5586,8 @@ enables creativity when plotting and experimenting with data.")
            r-partykit
            r-sandwich
            r-survival))
+    (native-inputs
+     (list r-plyr r-psychotools r-strucchange r-th-data))
     (home-page "https://cran.r-project.org/web/packages/model4you/")
     (synopsis "Stratified and personalised models based on trees and forests")
     (description
