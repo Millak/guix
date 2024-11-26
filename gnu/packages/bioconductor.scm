@@ -14417,6 +14417,7 @@ the @code{arrayCGH} packages.")
            r-matrixstats
            r-r-utils
            r-rsamtools))
+    (native-inputs (list r-biocstyle))
     (home-page "https://bioconductor.org/packages/QDNAseq")
     (synopsis "Quantitative DNA sequencing for chromosomal aberrations")
     (description "The genome is divided into non-overlapping fixed-sized bins,
