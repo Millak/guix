@@ -40431,34 +40431,7 @@ other R users.")
 
 ;; This is for r-seurat5
 (define-public r-seurat5object
-  (let ((commit "185884ae527d6ce71cb51d2e84a630030e8439a3")
-        (revision "1"))
-    (package
-      (inherit r-seuratobject)
-      (name "r-seurat5object")
-      (version (git-version "4.9.9.9084" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/mojaveazure/seurat-object")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1nbai31gjsgiaazb4jhpqw8h04nm8xd131fng7zcw11kspj54n9z"))
-                ;; This file triggers renv, which we don't want to use.
-                (snippet '(delete-file ".Rprofile"))))
-      (propagated-inputs (list r-future
-                               r-future-apply
-                               r-generics
-                               r-lifecycle
-                               r-matrix
-                               r-progressr
-                               r-rcpp
-                               r-rcppeigen
-                               r-rlang
-                               r-sp
-                               r-spam)))))
+  (deprecated-package "r-seurat5object" r-seuratobject))
 
 (define-public r-seurat
   (package
