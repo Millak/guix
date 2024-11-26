@@ -35153,7 +35153,7 @@ Models.")
     (propagated-inputs
      (list r-arm r-matrix))
     (native-inputs
-     (list r-knitr))
+     (list r-betareg r-knitr r-survival r-truncnorm))
     (home-page "http://www.stat.columbia.edu/~gelman/")
     (synopsis "Missing data imputation and model checking")
     (description
