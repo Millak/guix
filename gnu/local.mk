@@ -1121,6 +1121,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/converseen-hide-non-free-pointers.patch	\
   %D%/packages/patches/cool-retro-term-wctype.patch		\
   %D%/packages/patches/coq-autosubst-1.8-remove-deprecated-files.patch		\
+  %D%/packages/patches/corefx-mono-5.4.0-patches.patch		\
   %D%/packages/patches/coreutils-gnulib-tests.patch		\
   %D%/packages/patches/cppcheck-disable-char-signedness-test.patch	\
   %D%/packages/patches/cppdap-add-CPPDAP_USE_EXTERNAL_GTEST_PACKAGE.patch\
@@ -1834,6 +1835,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/mono-2.6.4-fixes.patch			\
   %D%/packages/patches/mono-2.11.4-fixes.patch			\
   %D%/packages/patches/mono-4.9.0-fix-runtimemetadataversion.patch		\
+  %D%/packages/patches/mono-5.4.0-patches.patch		\
   %D%/packages/patches/mosaicatcher-unbundle-htslib.patch	\
   %D%/packages/patches/mrrescue-support-love-11.patch		\
   %D%/packages/patches/mtools-mformat-uninitialized.patch	\

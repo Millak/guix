@@ -1133,3 +1133,93 @@ unused0:")))))
                            #$@prepare-mono-source-0))))
     (native-inputs (modify-inputs (package-native-inputs mono-5.1.0)
                      (replace "mono" mono-5.1.0)))))
+
+(define mono-5.4.0-external-repo-specs
+  '(("aspnetwebstack"              "e77b12e6cc5ed260a98447f609e887337e44e299"
+     "0rks344qr4fmp3fs1264d2qkmm348m8d1kjd7z4l94iiirwn1fq1")
+    ("api-doc-tools"               "d03e819838c6241f92f90655cb448cc47c9e8791"
+     "1riki79f3ig3cxigviss81dz601hn92a1gifglm0mzjbs76sf3fj"
+     #:recursive? #t)
+    ("api-snapshot"                "b09033be33ab25113743151c644c831158c54042"
+     "0z67iqd1brib6ni36pklrp7rlxyhri5nk3px37fm1aacgrnsk7ck")
+    (("reference-assemblies" "binary-reference-assemblies")
+     "142cbeb62ffabf1dd9c1414d8dd76f93bcbed0c2"
+     "1wkd589hgb16m5zvmp9yb57agyyryaa1jj8vhl4w20i2hp22wad9")
+    ("bockbuild"                   "0efdb371e6d79abc54c0e3bb3689fa1646f4394e"
+     "10qr1m2wa3zb2i3j16i0cq49higjm451bhlqhqd4rlisqn0w8nrv")
+    ("boringssl"                   "3e0770e18835714708860ba9fe1af04a932971ff"
+     "139a0gl91a52k2r6na6ialzkqykaj1rk88zjrkaz3sdxx7nmmg6y")
+    ("cecil"                       "c0eb983dac62519d3ae93a689312076aacecb723"
+     "02i3pwpaf6q00pklfmwxhz0lgp83854dyqnvf4c1ys07cs8y1pdk")
+    (("cecil" "cecil-legacy")      "33d50b874fd527118bc361d83de3d494e8bb55e1"
+     "1p4hl1796ib26ykyf5snl6cj0lx0v7mjh0xqhjw6qdh753nsjyhb")
+    ("corefx"                      "9ad53d674e31327abcc60f35c14387700f50cc68"
+     "0ap4g2fj8wsar4xvbc6dkd2l67qalxlcw5laplq3an5nvj2ld65w"
+     #:patches ("corefx-mono-5.4.0-patches.patch"))
+    ("corert"                      "48dba73801e804e89f00311da99d873f9c550278"
+     "1zw47jf4cwqmaixylisxi73xf6cap41bwf9vlmpxanzxaqklzsvk")
+    ("ikdasm"                      "1d7d43603791e0236b56d076578657bee44fef6b"
+     "1kw8ykkad55qhapg6jbvqim7vainqlpz8469flm083lpz7pks3sg")
+    (("ikvm-fork" "ikvm")          "847e05fced5c9a41ff0f24f1f9d40d5a8a5772c1"
+     "1fl9bm3lmzf8iqv3x4iqkz9fc54mwdvrxisxg2nvwwcsi4saffpi")
+    ("linker"                      "99354bf5c13b8055209cb082cddc50c8047ab088"
+     "05zlajnqf83xfvn2whh9nql6j85sq12aw26sqmyqz7zcpml171mj")
+    ("Newtonsoft.Json"             "471c3e0803a9f40a0acc8aeceb31de6ff93a52c4"
+     "0dgngd5hqk6yhlg40kabn6qdnknm32zcx9q6bm2w31csnsk5978s")
+    (("NuGet.BuildTasks" "nuget-buildtasks")
+     "b58ba4282377bcefd48abdc2d62ce6330e079abe"
+     "1say03fnqkjsx97zacany3sa5j4mhfk827hkwp23ib02q18f7lvp")
+    (("NUnitLite" "nunit-lite")    "690603bea98aae69fca9a65130d88591bc6cabee"
+     "1f845ysjzs3yd9gcyww66dnkx484z5fknb8l0xz74sjmxk2mngwc")
+    ;; ("roslyn-binaries"          "1904c7d0682a878e2d25b4d49f3475d12fbb9cc6"
+    ;;  "")
+    ("rx"                          "b29a4b0fda609e0af33ff54ed13652b6ccf0e05e"
+     "1n1jwhmsbkcv2d806immcpzkb72rz04xy98myw355a8w5ah25yiv")
+    ;; ("xunit-binaries"           "d4433b0972f40cb3efaa3fbba52869bde5df8fa8"
+    ;;  "")
+    ))
+
+(define-public mono-5.4.0
+  (package
+    (inherit mono-5.2.0)
+    (version "5.4.0.212")
+    (name "mono")
+    (source (origin
+              (method git-fetch)
+              (uri
+               (git-reference
+                (url "https://gitlab.winehq.org/mono/mono.git")
+                (commit
+                 ;; 5.4.0.135 and before have a bug that makes mono not
+                 ;; self-hosting (fails to compile self, example error:
+                 ;; System.Data.SqlClient/SqlTransaction.cs(39,22): error
+                 ;; CS0738: `System.Data.SqlClient.SqlTransaction' does not
+                 ;; implement interface member
+                 ;; `System.Data.IDbTransaction.Connection.get' and the best
+                 ;; implementing candidate
+                 ;; `System.Data.SqlClient.SqlTransaction.Connection.get'
+                 ;; return type `System.Data.SqlClient.SqlConnection' does not
+                 ;; match interface member return type
+                 ;; `System.Data.IDbConnection'
+
+                 ;; Note: in above example, SqlConnection implements
+                 ;; IDbConnection.  My understanding is that for this to
+                 ;; compile properly, we need covariant return types, which is
+                 ;; a C# 9.0 feature, but somehow the same code has been
+                 ;; compiled just fine by previous versions of mono, and is
+                 ;; compiled fine by this version, but not specific 5.4.0.XXX
+                 ;; versions.
+                 "mono-5.4.0.212")))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0gx3fxz1wlq5fkj7iphv32vg9m78ia74m9pgn9rab4fyq2k9an2y"))
+              (modules '((guix build utils)
+                         (ice-9 string-fun)))
+              (snippet #~(begin
+                           #$(add-external-repos
+                              mono-5.4.0-external-repo-specs)
+                           #$@prepare-mono-source-0))
+              (patches (search-patches "mono-5.4.0-patches.patch"))))
+    (native-inputs (modify-inputs (package-native-inputs mono-5.2.0)
+                     (replace "mono" mono-5.2.0)))))

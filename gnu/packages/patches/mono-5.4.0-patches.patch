@@ -1,0 +1,100 @@
+diff --git a/mcs/class/System/Mono.Net.Security/AsyncProtocolRequest.cs b/mcs/class/System/Mono.Net.Security/AsyncProtocolRequest.cs
+index 3c537a7e427..59beb19255f 100644
+--- a/mcs/class/System/Mono.Net.Security/AsyncProtocolRequest.cs
++++ b/mcs/class/System/Mono.Net.Security/AsyncProtocolRequest.cs
+@@ -316,7 +316,9 @@ namespace Mono.Net.Security
+ 		{
+ 			Debug ("ProcessRead - read user: {0} {1}", this, status);
+ 
+-			var (ret, wantMore) = Parent.ProcessRead (UserBuffer);
++            System.ValueTuple<int, bool> t0 = Parent.ProcessRead (UserBuffer);
++            var ret = t0.Item1;
++            var wantMore = t0.Item2;
+ 
+ 			Debug ("ProcessRead - read user done: {0} - {1} {2}", this, ret, wantMore);
+ 
+@@ -355,7 +357,9 @@ namespace Mono.Net.Security
+ 				return AsyncOperationStatus.Complete;
+ 			}
+ 
+-			var (ret, wantMore) = Parent.ProcessWrite (UserBuffer);
++            System.ValueTuple<int, bool> t0 = Parent.ProcessWrite (UserBuffer);
++            var ret = t0.Item1;
++            var wantMore = t0.Item2;
+ 
+ 			Debug ("ProcessWrite - write user done: {0} - {1} {2}", this, ret, wantMore);
+ 
+diff --git a/mcs/class/System/Mono.Net.Security/MobileAuthenticatedStream.cs b/mcs/class/System/Mono.Net.Security/MobileAuthenticatedStream.cs
+index 2b380a1ae6c..66e45bc1f1d 100644
+--- a/mcs/class/System/Mono.Net.Security/MobileAuthenticatedStream.cs
++++ b/mcs/class/System/Mono.Net.Security/MobileAuthenticatedStream.cs
+@@ -403,8 +403,10 @@ namespace Mono.Net.Security
+ 				       asyncReadRequest != null ? "async" : "",
+ 				       readBuffer != null ? readBuffer.ToString () : "");
+ 				var asyncRequest = asyncHandshakeRequest ?? asyncReadRequest;
+-				var (ret, wantMore) = InternalRead (asyncRequest, readBuffer, buffer, offset, size);
+-				outWantMore = wantMore;
++                System.ValueTuple<int, bool> t0 = InternalRead (asyncRequest, readBuffer, buffer, offset, size);
++                var ret = t0.Item1;
++                var wantMore = t0.Item2;
++                outWantMore = wantMore;
+ 				return ret;
+ 			} catch (Exception ex) {
+ 				Debug ("InternalRead failed: {0}", ex);
+@@ -414,7 +416,7 @@ namespace Mono.Net.Security
+ 			}
+ 		}
+ 
+-		(int, bool) InternalRead (AsyncProtocolRequest asyncRequest, BufferOffsetSize internalBuffer, byte[] buffer, int offset, int size)
++		System.ValueTuple<int, bool> InternalRead (AsyncProtocolRequest asyncRequest, BufferOffsetSize internalBuffer, byte[] buffer, int offset, int size)
+ 		{
+ 			if (asyncRequest == null)
+ 				throw new InvalidOperationException ();
+@@ -436,7 +438,7 @@ namespace Mono.Net.Security
+ 				Debug ("InternalRead #1: {0} {1} {2}", internalBuffer.Offset, internalBuffer.TotalBytes, size);
+ 				internalBuffer.Offset = internalBuffer.Size = 0;
+ 				asyncRequest.RequestRead (size);
+-				return (0, true);
++				return new ValueTuple<int, bool>(0, true);
+ 			}
+ 
+ 			/*
+@@ -451,7 +453,7 @@ namespace Mono.Net.Security
+ 			Buffer.BlockCopy (internalBuffer.Buffer, internalBuffer.Offset, buffer, offset, len);
+ 			internalBuffer.Offset += len;
+ 			internalBuffer.Size -= len;
+-			return (len, !internalBuffer.Complete && len < size);
++			return new ValueTuple<int, bool>(len, !internalBuffer.Complete && len < size);
+ 		}
+ 
+ 		/*
+@@ -620,21 +622,23 @@ namespace Mono.Net.Security
+ 			}
+ 		}
+ 
+-		internal (int, bool) ProcessRead (BufferOffsetSize userBuffer)
++		internal System.ValueTuple<int, bool> ProcessRead (BufferOffsetSize userBuffer)
+ 		{
+ 			lock (ioLock) {
+ 				// This operates on the internal buffer and will never block.
+-				var ret = xobileTlsContext.Read (userBuffer.Buffer, userBuffer.Offset, userBuffer.Size, out bool wantMore);
+-				return (ret, wantMore);
++                bool wantMore;
++				var ret = xobileTlsContext.Read (userBuffer.Buffer, userBuffer.Offset, userBuffer.Size, out wantMore);
++				return new System.ValueTuple<int, bool>(ret, wantMore);
+ 			}
+ 		}
+ 
+-		internal (int, bool) ProcessWrite (BufferOffsetSize userBuffer)
++		internal System.ValueTuple<int, bool> ProcessWrite (BufferOffsetSize userBuffer)
+ 		{
+ 			lock (ioLock) {
+ 				// This operates on the internal buffer and will never block.
+-				var ret = xobileTlsContext.Write (userBuffer.Buffer, userBuffer.Offset, userBuffer.Size, out bool wantMore);
+-				return (ret, wantMore);
++                bool wantMore;
++				var ret = xobileTlsContext.Write (userBuffer.Buffer, userBuffer.Offset, userBuffer.Size, out wantMore);
++				return new System.ValueTuple<int, bool>(ret, wantMore);
+ 			}
+ 		}
+ 
