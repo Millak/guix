@@ -14727,7 +14727,7 @@ trait.")
                                r-seqinr
                                r-tidyverse
                                r-topdom))
-      (native-inputs (list r-knitr))
+      (native-inputs (list r-knitr r-testthat))
       (home-page "https://github.com/cran/rnaCrosslinkOO")
       (synopsis "Analysis of RNA crosslinking data")
       (description
