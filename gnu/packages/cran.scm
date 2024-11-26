@@ -33654,7 +33654,7 @@ it may be seen by an animal with less acute vision.")
            r-reshape2
            r-withr))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-fastica r-knitr r-mlmetrics r-testthat r-themis))
     (home-page "https://github.com/topepo/caret")
     (synopsis "Classification and regression training")
     (description
