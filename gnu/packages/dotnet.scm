@@ -1499,3 +1499,129 @@ unused0:")))))
                 (patches (search-patches "mono-mcs-patches-from-5.10.0.patch"))))
       (native-inputs (modify-inputs (package-native-inputs mono-5.8.0)
                        (replace "mono" mono-5.8.0))))))
+
+(define mono-5.10.0-external-repo-specs
+  '(("api-doc-tools"               "d03e819838c6241f92f90655cb448cc47c9e8791"
+     "1riki79f3ig3cxigviss81dz601hn92a1gifglm0mzjbs76sf3fj"
+     #:recursive? #t)
+    ("api-snapshot"                "da8bb8c7b970383ce26c9b09ce3689d843a6222e"
+     "00kxw09yirdh0bzkvs0v3h6bkdjv9d4g9agn3b8640awvpym3yqw")
+    ("aspnetwebstack"              "e77b12e6cc5ed260a98447f609e887337e44e299"
+     "0rks344qr4fmp3fs1264d2qkmm348m8d1kjd7z4l94iiirwn1fq1")
+    (("reference-assemblies" "binary-reference-assemblies")
+     "e048fe4a88d237d105ae02fe0363a68296099362"
+     "0i87i3x694f4g8s2flflv0ah88blxds7gbiyrwrmscqdjsifhy49")
+    ("bockbuild"                   "1908d43ec630544189bd11630a59ec4ef571db28"
+     "1h13lgic2dwnbzc58nqhjhagn0f100nl5mhzryjdmypgrf3cr1b3")
+    ("boringssl"                   "3e0770e18835714708860ba9fe1af04a932971ff"
+     "139a0gl91a52k2r6na6ialzkqykaj1rk88zjrkaz3sdxx7nmmg6y")
+    ("cecil"                       "dfee11e80d59e1a3d6d9c914c3f277c726bace52"
+     "1y2f59v988y2llqpqi0zl9ly0lkym8zw0a4vkav7cpp6m5mkq208")
+    (("cecil" "cecil-legacy")      "33d50b874fd527118bc361d83de3d494e8bb55e1"
+     "1p4hl1796ib26ykyf5snl6cj0lx0v7mjh0xqhjw6qdh753nsjyhb")
+    ("corefx"                      "e327d2855ed74dac96f684797e4820345297a690"
+     "11pinnn8zwf4hi0gfj98cyqkmh7wrmd5mhcdm84gkl9s2g18iaq0")
+    ("corert"                      "aa64b376c1a2238b1a768e158d1b11dac77d722a"
+     "1gg4m49s0ry5yx96dwjary7r395ypzzg4ssz1ajld2x5g7ggvwgg")
+    ("ikdasm"                      "465c0815558fd43c0110f8d00fc186ac0044ac6a"
+     "0xir7pcgq04hb7s8g9wsqdrypb6l29raj3iz5rcqzdm0056k75w2")
+    (("ikvm-fork" "ikvm")          "847e05fced5c9a41ff0f24f1f9d40d5a8a5772c1"
+     "1fl9bm3lmzf8iqv3x4iqkz9fc54mwdvrxisxg2nvwwcsi4saffpi")
+    ("linker"                      "84d37424cde6e66bbf997110a4dbdba7e60038e9"
+     "07ffkc9ijzsdvbkrc1fn5sb25sgxyabs54kzyblwkzparwj047qr")
+    ("Newtonsoft.Json"             "471c3e0803a9f40a0acc8aeceb31de6ff93a52c4"
+     "0dgngd5hqk6yhlg40kabn6qdnknm32zcx9q6bm2w31csnsk5978s")
+    (("NuGet.BuildTasks" "nuget-buildtasks")
+     "b2c30bc81b2a7733a4eeb252a55f6b4d50cfc3a1"
+     "01vajrfx6y12f525xdiwfbn9qzmym2s65rbiqpy9d9xw0pnq7gbl")
+    (("NUnitLite" "nunit-lite")    "70bb70b0ffd0109aadaa6e4ea178972d4fb63ea3"
+     "0ln7rn1960cdwmfqcscp2d2ncpwnknhq9rf8v53ay8g2c3g6gh4q")
+    ;; ("roslyn-binaries"          "00da53c4746250988a92055ef3ac653ccf84fc40"
+    ;;  "")
+    ("rx"                          "b29a4b0fda609e0af33ff54ed13652b6ccf0e05e"
+     "1n1jwhmsbkcv2d806immcpzkb72rz04xy98myw355a8w5ah25yiv")
+    ;; ("xunit-binaries"           "c5a907be25c201cda38bec99f6c82548ab3d9b5a"
+    ;;  "")
+    ))
+
+(define-public mono-5.10.0
+  (package
+    (inherit mono-pre-5.10.0)
+    (version "5.10.0.179")
+    (name "mono")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.winehq.org/mono/mono.git")
+                    (commit (string-append "mono-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1zvib164w4mzrsk06ym9my0208ccdanja2fx6x6mlyib358h3626"))
+              (modules '((guix build utils)
+                         (ice-9 string-fun)))
+              (snippet #~(begin
+                           #$(add-external-repos
+                              mono-5.10.0-external-repo-specs)
+                           #$@prepare-mono-source-0))
+              (patches (search-patches "mono-5.10.0-later-mcs-changes.patch"))))
+    (native-inputs (modify-inputs (package-native-inputs mono-pre-5.10.0)
+                     (replace "mono" mono-pre-5.10.0)
+                     (append python-minimal-wrapper)))
+    (arguments
+     (substitute-keyword-arguments (package-arguments mono-pre-5.10.0)
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            ;; Build now relies on these being built before any mcs is built;
+            ;; have to use the input mcs.
+            (delete 'build-reference-assemblies)
+            (add-before 'build 'build-reference-assemblies
+              (lambda* (#:key make-flags parallel-build? #:allow-other-keys)
+                (let ((top (getcwd))
+                      ;; parallel-build? needs to be false for mono's build
+                      ;; phase, but it should work here.
+                      (parallel-build? #t))
+                  (with-directory-excursion
+                      "external/binary-reference-assemblies"
+                    (substitute* (find-files "." "^Makefile$")
+                      (("CSC_COMMON_ARGS := " all)
+                       (string-append all "-delaysign+ "))
+                      (("IBM\\.Data\\.DB2_REFS := " all)
+                       (string-append all "System.Xml "))
+                      (("Mono\\.Data\\.Sqlite_REFS := " all)
+                       (string-append all "System.Xml "))
+                      (("System\\.Data\\.DataSetExtensions_REFS := " all)
+                       (string-append all "System.Xml "))
+                      (("System\\.Data\\.OracleClient_REFS := " all)
+                       (string-append all "System.Xml "))
+                      (("System\\.IdentityModel_REFS := " all)
+                       (string-append all "System.Configuration "))
+                      (("System\\.Design_REFS := " all)
+                       (string-append all "Accessibility "))
+                      (("System\\.Web\\.Extensions\\.Design_REFS := " all)
+                       (string-append all "System.Windows.Forms System.Web "))
+                      (("System\\.ServiceModel\\.Routing_REFS := " all)
+                       (string-append all "System.Xml "))
+                      (("System\\.Web\\.Abstractions_REFS := " all)
+                       (string-append all "System "))
+                      (("System\\.Reactive\\.Windows\\.Forms_REFS := " all)
+                       (string-append all "System "))
+                      (("System\\.Windows\\.Forms\\.DataVisualization_REFS := " all)
+                       (string-append all "Accessibility "))
+                      (("Facades/System\\.ServiceModel\\.Primitives_REFS := " all)
+                       (string-append all "System.Xml "))
+                      (("Facades/System\\.Dynamic\\.Runtime_REFS := " all)
+                       (string-append all "System "))
+                      (("Facades/System\\.Xml\\.XDocument_REFS := " all)
+                       (string-append all "System.Xml "))
+                      (("Facades/System\\.Runtime\\.Serialization.Xml_REFS := " all)
+                       (string-append all "System.Xml "))
+                      (("Facades/System\\.Data\\.Common_REFS := " all)
+                       (string-append all "System System.Xml ")))
+                    (apply invoke "make"
+                           `(,@(if parallel-build?
+                                   `("-j" ,(number->string
+                                            (parallel-job-count)))
+                                   '())
+                             "CSC=mcs"
+                             ,@make-flags))))))))))))
