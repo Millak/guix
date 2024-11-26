@@ -173,6 +173,26 @@ Ensembl.")
 @code{GenomeWideSnp_6} arrays using the @code{crlmm} package.")
     (license license:artistic2.0)))
 
+(define-public r-hgu95av2
+  (package
+    (name "r-hgu95av2")
+    (version "2.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "hgu95av2" version
+                              'annotation))
+       (sha256
+        (base32 "181bady90v89yx2gzwahhcl63aiypcx33pkfnjxkyq45qgb18bqi"))))
+    (properties `((upstream-name . "hgu95av2")))
+    (build-system r-build-system)
+    (home-page "https://bioconductor.org/packages/hgu95av2")
+    (synopsis "Affymetrix Human Genome U95 Set annotation data (hgu95av2)")
+    (description
+     "This package provides Affymetrix Human Genome U95 Set annotation
+data (hgu95av2) assembled using data from public data repositories.")
+    (license license:artistic2.0)))
+
 (define-public r-hgu95av2-db
   (package
     (name "r-hgu95av2-db")
