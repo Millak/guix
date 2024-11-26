@@ -2526,6 +2526,17 @@ testing tools.  @code{pytest-asyncio} provides useful fixtures and markers
 to make testing async code easier.")
     (license license:asl2.0)))
 
+(define-public python-pytest-asyncio-0.23
+  (package
+    (inherit python-pytest-asyncio)
+    (version "0.23.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest_asyncio" version))
+       (sha256
+        (base32 "1lz4h8y6m6hxnsl7kqh0rjxqp5q2wc2m5gd88371rikd7ari16vm"))))))
+
 (define-public python-cov-core
   (package
     (name "python-cov-core")
