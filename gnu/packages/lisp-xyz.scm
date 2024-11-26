@@ -22907,6 +22907,39 @@ ones.")
 (define-public ecl-nodgui
   (sbcl-package->ecl-package sbcl-nodgui))
 
+(define-public sbcl-nontrivial-gray-streams
+  (let ((commit "7ed842fe98f6ebafd472a5768e28d0c35f82114e")
+        (revision "0"))
+    (package
+      (name "sbcl-nontrivial-gray-streams")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/yitzchak/nontrivial-gray-streams")
+               (commit commit)))
+         (file-name (git-file-name "cl-nontrivial-gray-streams" commit))
+         (sha256
+          (base32 "1x5b2fw3kr1227vr4hab08cls5f7rzz7kf31xinvafbl5hpd2ynf"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-alexandria
+             sbcl-parachute))
+      (home-page "https://github.com/yitzchak/nontrivial-gray-streams")
+      (synopsis "Compatibility layer for Gray streams, including extensions")
+      (description
+       "@code{nontrivial-gray-streams} is a compatibility system for Gray
+streams, which is an extension to Common Lisp that makes it possible to
+implement Common Lisp streams using generic functions.")
+      (license license:expat))))
+
+(define-public cl-nontrivial-gray-streams
+  (sbcl-package->cl-source-package sbcl-nontrivial-gray-streams))
+
+(define-public ecl-nontrivial-gray-streams
+  (sbcl-package->ecl-package sbcl-nontrivial-gray-streams))
+
 (define-public sbcl-nsymbols
   (package
    (name "sbcl-nsymbols")
