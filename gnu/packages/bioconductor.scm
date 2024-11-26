@@ -7944,7 +7944,7 @@ experiments.")
            r-png
            r-rcolorbrewer))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-dendextend r-genomicranges r-gridtext r-knitr r-testthat))
     (home-page
      "https://github.com/jokergoo/ComplexHeatmap")
     (synopsis "Making Complex Heatmaps")
