@@ -1735,7 +1735,7 @@ conveniently.")
              r-magrittr
              r-tidyr
              r-xts))
-      (native-inputs (list r-knitr))
+      (native-inputs (list r-knitr r-testthat))
       (home-page "https://github.com/hrbrmstr/streamgraph")
       (synopsis "Htmlwidget for building streamgraph visualizations")
       (description
