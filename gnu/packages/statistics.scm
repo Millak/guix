@@ -6647,6 +6647,7 @@ multivariate case.")
            r-mass
            r-rcpp
            r-rcpparmadillo))
+    (native-inputs (list r-cluster r-mclust r-sn))
     (home-page "https://cran.r-project.org/web/packages/tclust")
     (synopsis "Robust trimmed clustering")
     (description
