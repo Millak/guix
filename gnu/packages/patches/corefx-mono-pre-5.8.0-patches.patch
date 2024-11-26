@@ -1,0 +1,1349 @@
+diff --git a/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/ExpressionTreeCallRewriter.cs b/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/ExpressionTreeCallRewriter.cs
+index aa8afa5a1b..3a2518246a 100644
+--- a/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/ExpressionTreeCallRewriter.cs
++++ b/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/ExpressionTreeCallRewriter.cs
+@@ -246,8 +246,9 @@ namespace Microsoft.CSharp.RuntimeBinder
+             ExprArrayInit arrinit;
+ 
+             ExprList list = (ExprList)pExpr.OptionalArguments;
+-            if (list.OptionalNextListNode is ExprList next)
++            if (list.OptionalNextListNode is ExprList)
+             {
++                ExprList next = (ExprList)list.OptionalNextListNode;
+                 methinfo = (ExprMethodInfo)next.OptionalElement;
+                 arrinit = (ExprArrayInit)next.OptionalNextListNode;
+             }
+@@ -382,8 +383,9 @@ namespace Microsoft.CSharp.RuntimeBinder
+             Expr nextNode = list.OptionalNextListNode;
+             ExprPropertyInfo propinfo;
+             ExprArrayInit arguments;
+-            if (nextNode is ExprList nextList)
++            if (nextNode is ExprList)
+             {
++                ExprList nextList = (ExprList)list.OptionalNextListNode;
+                 propinfo = nextList.OptionalElement as ExprPropertyInfo;
+                 arguments = nextList.OptionalNextListNode as ExprArrayInit;
+             }
+@@ -553,8 +555,9 @@ namespace Microsoft.CSharp.RuntimeBinder
+             list = (ExprList)list.OptionalNextListNode;
+             MethodInfo methodInfo;
+             bool bIsLifted = false;
+-            if (list.OptionalNextListNode is ExprList next)
++            if (list.OptionalNextListNode is ExprList)
+             {
++                ExprList next = (ExprList)list.OptionalNextListNode;
+                 ExprConstant isLifted = (ExprConstant)next.OptionalElement;
+                 Debug.Assert(isLifted != null);
+                 bIsLifted = isLifted.Val.Int32Val == 1;
+@@ -677,8 +680,9 @@ namespace Microsoft.CSharp.RuntimeBinder
+ 
+         private Expression GetExpression(Expr pExpr)
+         {
+-            if (pExpr is ExprWrap wrap)
++            if (pExpr is ExprWrap)
+             {
++                ExprWrap wrap = (ExprWrap) pExpr;
+                 return _DictionaryOfParameters[(ExprCall)wrap.OptionalExpression];
+             }
+             else if (pExpr is ExprConstant)
+@@ -875,20 +879,24 @@ namespace Microsoft.CSharp.RuntimeBinder
+         {
+             for (;;)
+             {
+-                if (pExpr is ExprCast cast)
++                if (pExpr is ExprCast)
+                 {
++                    ExprCast cast = (ExprCast) pExpr;
+                     pExpr = cast.Argument;
+                 }
+-                else if (pExpr is ExprTypeOf typeOf)
++                else if (pExpr is ExprTypeOf)
+                 {
++                    ExprTypeOf typeOf = (ExprTypeOf) pExpr;
+                     return typeOf.SourceType.Type.AssociatedSystemType;
+                 }
+-                else if (pExpr is ExprMethodInfo methodInfo)
++                else if (pExpr is ExprMethodInfo)
+                 {
++                    ExprMethodInfo methodInfo = (ExprMethodInfo) pExpr;
+                     return GetMethodInfoFromExpr(methodInfo);
+                 }
+-                else if (pExpr is ExprConstant constant)
++                else if (pExpr is ExprConstant)
+                 {
++                    ExprConstant constant = (ExprConstant) pExpr;
+                     ConstVal val = constant.Val;
+                     CType underlyingType = pExpr.Type;
+                     object objval;
+@@ -954,8 +962,9 @@ namespace Microsoft.CSharp.RuntimeBinder
+ 
+                     return pExpr.Type.isEnumType() ? Enum.ToObject(pExpr.Type.AssociatedSystemType, objval) : objval;
+                 }
+-                else if (pExpr is ExprZeroInit zeroInit)
++                else if (pExpr is ExprZeroInit)
+                 {
++                    ExprZeroInit zeroInit = (ExprZeroInit) pExpr;
+                     if ((pExpr = zeroInit.OptionalArgument) == null)
+                     {
+                         return Activator.CreateInstance(zeroInit.Type.AssociatedSystemType);
+@@ -981,8 +990,9 @@ namespace Microsoft.CSharp.RuntimeBinder
+                 Expr p = list;
+                 while (list != null)
+                 {
+-                    if (list is ExprList pList)
++                    if (list is ExprList)
+                     {
++                        ExprList pList = (ExprList) list;
+                         p = pList.OptionalElement;
+                         list = pList.OptionalNextListNode;
+                     }
+diff --git a/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/RuntimeBinder.cs b/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/RuntimeBinder.cs
+index a623bfc0bf..4a742156b9 100644
+--- a/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/RuntimeBinder.cs
++++ b/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/RuntimeBinder.cs
+@@ -189,7 +189,8 @@ namespace Microsoft.CSharp.RuntimeBinder
+             LocalVariableSymbol[] locals = PopulateLocalScope(payload, pScope, arguments, parameters);
+ 
+             // (1.5) - Check to see if we need to defer.
+-            if (DeferBinding(payload, arguments, args, locals, out DynamicMetaObject o))
++            DynamicMetaObject o;
++            if (DeferBinding(payload, arguments, args, locals, out o))
+             {
+                 deferredBinding = o;
+                 return null;
+@@ -1030,8 +1031,9 @@ namespace Microsoft.CSharp.RuntimeBinder
+ 
+         private static void CheckForConditionalMethodError(Expr pExpr)
+         {
+-            if (pExpr is ExprCall call)
++            if (pExpr is ExprCall)
+             {
++                ExprCall call = (ExprCall)pExpr;
+                 // This mimics the behavior of the native CompilerSymbolLoader in GetConditionalSymbols. Override
+                 // methods cannot have the conditional attribute, but implicitly acquire it from their slot.
+ 
+@@ -1064,8 +1066,9 @@ namespace Microsoft.CSharp.RuntimeBinder
+             ExprMemberGroup memgroup;
+             TypeArray typeArgs;
+ 
+-            if (pResult is ExprCall call)
++            if (pResult is ExprCall)
+             {
++                ExprCall call = (ExprCall) pResult;
+                 type = call.MethWithInst.Ats;
+                 methprop = call.MethWithInst.Meth();
+                 memgroup = call.MemberGroup;
+@@ -1132,12 +1135,15 @@ namespace Microsoft.CSharp.RuntimeBinder
+ 
+         private Expr StripNamedArgument(Expr pArg)
+         {
+-            if (pArg is ExprNamedArgumentSpecification named)
++            if (pArg is ExprNamedArgumentSpecification)
+             {
++                ExprNamedArgumentSpecification named =
++                    (ExprNamedArgumentSpecification) pArg;
+                 pArg = named.Value;
+             }
+-            else if (pArg is ExprArrayInit init)
++            else if (pArg is ExprArrayInit)
+             {
++                ExprArrayInit init = (ExprArrayInit) pArg;
+                 init.OptionalArguments = StripNamedArguments(init.OptionalArguments);
+             }
+ 
+@@ -1146,14 +1152,16 @@ namespace Microsoft.CSharp.RuntimeBinder
+ 
+         private Expr StripNamedArguments(Expr pArg)
+         {
+-            if (pArg is ExprList list)
++            if (pArg is ExprList)
+             {
++                ExprList list = (ExprList) pArg;
+                 for(;;)
+                 {
+                     list.OptionalElement = StripNamedArgument(list.OptionalElement);
+ 
+-                    if (list.OptionalNextListNode is ExprList next)
++                    if (list.OptionalNextListNode is ExprList)
+                     {
++                        ExprList next = (ExprList)list.OptionalNextListNode;
+                         list = next;
+                     }
+                     else
+diff --git a/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/Semantics/Binding/Better.cs b/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/Semantics/Binding/Better.cs
+index cebfcd94e1..179ac21620 100644
+--- a/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/Semantics/Binding/Better.cs
++++ b/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/Semantics/Binding/Better.cs
+@@ -157,8 +157,9 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
+             // We then go over the specified arguments and put the type for any named argument in the right position in the array.
+             for (int iParam = 0; iParam < args.carg; iParam++)
+             {
+-                if (prgexpr[iParam] is ExprNamedArgumentSpecification named)
++                if (prgexpr[iParam] is ExprNamedArgumentSpecification)
+                 {
++                    ExprNamedArgumentSpecification named = (ExprNamedArgumentSpecification)prgexpr[iParam];
+                     // We find the index of the type of the argument in the method parameter list and store that in a temp
+                     int index = FindName(methProp.ParameterNames, named.Name);
+                     CType tempType = pta[index];
+diff --git a/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/Semantics/Binding/ErrorReporting.cs b/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/Semantics/Binding/ErrorReporting.cs
+index c406af43de..0ea81ef21c 100644
+--- a/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/Semantics/Binding/ErrorReporting.cs
++++ b/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/Semantics/Binding/ErrorReporting.cs
+@@ -76,22 +76,25 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
+             {
+                 Debug.Assert(expr != null);
+ 
+-                if (expr is ExprLocal local && local.IsOK)
++                if (expr is ExprLocal && ((ExprLocal)expr).IsOK)
+                 {
++                    ExprLocal local = (ExprLocal)expr;
+                     ReportLocalError(local.Local, kind, isNested);
+                     return true;
+                 }
+ 
+                 Expr pObject = null;
+ 
+-                if (expr is ExprProperty prop)
++                if (expr is ExprProperty)
+                 {
++                    ExprProperty prop = (ExprProperty)expr;
+                     // We've already reported read-only-property errors.
+                     Debug.Assert(prop.MethWithTypeSet != null);
+                     pObject = prop.MemberGroup.OptionalObject;
+                 }
+-                else if (expr is ExprField field)
++                else if (expr is ExprField)
+                 {
++                    ExprField field = (ExprField)expr;
+                     if (field.FieldWithType.Field().isReadOnly)
+                     {
+                         ReportReadOnlyError(field, kind, isNested);
+@@ -105,8 +108,9 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
+ 
+                 if (pObject != null && pObject.Type.isStructOrEnum())
+                 {
+-                    if (pObject is IExprWithArgs withArgs)
++                    if (pObject is IExprWithArgs)
+                     {
++                        IExprWithArgs withArgs = (IExprWithArgs)pObject;
+                         // assigning to RHS of method or property getter returning a value-type on the stack or
+                         // passing RHS of method or property getter returning a value-type on the stack, as ref or out
+                         ErrorContext.Error(ErrorCode.ERR_ReturnNotLValue, withArgs.GetSymWithType());
+diff --git a/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/Semantics/Conversion.cs b/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/Semantics/Conversion.cs
+index 2756538770..99adf488b3 100644
+--- a/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/Semantics/Conversion.cs
++++ b/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/Semantics/Conversion.cs
+@@ -382,9 +382,10 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
+                 FUNDTYPE ftSrc = expr.Type.fundType();
+                 FUNDTYPE ftDest = dest.fundType();
+ 
+-                if (expr is ExprConstant constant && constant.IsOK &&
++                if (expr is ExprConstant && ((ExprConstant)expr).IsOK &&
+                     expr.Type.isSimpleType() && dest.isSimpleType())
+                 {
++                    ExprConstant constant = (ExprConstant) expr;
+                     if ((ftSrc == FUNDTYPE.FT_I4 && (ftDest <= FUNDTYPE.FT_LASTNONLONG || ftDest == FUNDTYPE.FT_U8)) ||
+                         (ftSrc == FUNDTYPE.FT_I8 && ftDest == FUNDTYPE.FT_U8))
+                     {
+@@ -412,8 +413,9 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
+                     ErrorContext.Error(dest is TypeParameterType ? ErrorCode.ERR_TypeVarCantBeNull : ErrorCode.ERR_ValueCantBeNull, dest);
+                 }
+ 
+-                else if (expr is ExprMemberGroup memGrp)
++                else if (expr is ExprMemberGroup)
+                 {
++                    ExprMemberGroup memGrp = (ExprMemberGroup) expr;
+                     BindGrpConversion(memGrp, dest, true);
+                 }
+                 else if (canCast(expr.Type, dest, flags))
+@@ -546,8 +548,9 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
+                     {
+                         ErrorContext.Error(ErrorCode.ERR_ValueCantBeNull, dest);
+                     }
+-                    else if (expr is ExprMemberGroup memGrp)
++                    else if (expr is ExprMemberGroup)
+                     {
++                        ExprMemberGroup memGrp = (ExprMemberGroup)expr;
+                         BindGrpConversion(memGrp, dest, true);
+                     }
+                     else
+@@ -1387,8 +1390,9 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
+             for (;;)
+             {
+                 Debug.Assert(pExpr != null);
+-                if (pExpr is ExprCall call)
++                if (pExpr is ExprCall)
+                 {
++                    ExprCall call = (ExprCall)pExpr;
+                     switch (call.NullableCallLiftKind)
+                     {
+                         case NullableCallLiftKind.NotLifted:
+@@ -1402,8 +1406,9 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
+                             continue;
+                     }
+                 }
+-                else if (pExpr is ExprUserDefinedConversion udc)
++                else if (pExpr is ExprUserDefinedConversion)
+                 {
++                    ExprUserDefinedConversion udc = (ExprUserDefinedConversion)pExpr;
+                     pExpr = udc.UserDefinedCall;
+                     continue;
+                 }
+diff --git a/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/Semantics/EXPRExtensions.cs b/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/Semantics/EXPRExtensions.cs
+index 075ed23a11..6408df4c36 100644
+--- a/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/Semantics/EXPRExtensions.cs
++++ b/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/Semantics/EXPRExtensions.cs
+@@ -33,8 +33,9 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
+             Expr exprCur = expr;
+             while (exprCur != null)
+             {
+-                if (exprCur is ExprList list)
++                if (exprCur is ExprList)
+                 {
++                    ExprList list = (ExprList)exprCur;
+                     yield return list.OptionalElement;
+                     exprCur = list.OptionalNextListNode;
+                 }
+@@ -61,12 +62,12 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
+         }
+         public static bool isNull(this Expr expr)
+         {
+-            return expr is ExprConstant constant && constant.IsOK && (expr.Type.fundType() == FUNDTYPE.FT_REF) && constant.Val.IsNullRef;
++            return expr is ExprConstant && ((ExprConstant)expr).IsOK && (expr.Type.fundType() == FUNDTYPE.FT_REF) && ((ExprConstant)expr).Val.IsNullRef;
+         }
+ 
+         public static bool IsZero(this Expr expr)
+         {
+-            return expr is ExprConstant constant && constant.IsOK && constant.IsZero;
++            return expr is ExprConstant && ((ExprConstant)expr).IsOK && ((ExprConstant)expr).IsZero;
+         }
+ 
+         private static Expr GetSeqVal(this Expr expr)
+diff --git a/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/Semantics/ExplicitConversion.cs b/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/Semantics/ExplicitConversion.cs
+index b55cf07078..9afeaac622 100644
+--- a/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/Semantics/ExplicitConversion.cs
++++ b/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/Semantics/ExplicitConversion.cs
+@@ -207,8 +207,9 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
+                             VSFAIL("BindExplicitConversion failed unexpectedly");
+                             return false;
+                         }
+-                        if (_exprDest is ExprUserDefinedConversion udc)
++                        if (_exprDest is ExprUserDefinedConversion)
+                         {
++                            ExprUserDefinedConversion udc = (ExprUserDefinedConversion)_exprDest;
+                             udc.Argument = _exprSrc;
+                         }
+                     }
+diff --git a/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/Semantics/ExprFactory.cs b/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/Semantics/ExprFactory.cs
+index 159f157f43..4a0e3cb479 100644
+--- a/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/Semantics/ExprFactory.cs
++++ b/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/Semantics/ExprFactory.cs
+@@ -17,33 +17,33 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
+             Debug.Assert(globalSymbolContext != null);
+             _globalSymbolContext = globalSymbolContext;
+         }
+-        private TypeManager Types => _globalSymbolContext.GetTypes();
++        private TypeManager Types { get { return _globalSymbolContext.GetTypes(); } }
+ 
+-        private BSYMMGR GlobalSymbols => _globalSymbolContext.GetGlobalSymbols();
++        private BSYMMGR GlobalSymbols { get { return _globalSymbolContext.GetGlobalSymbols(); } }
+ 
+-        public ExprCall CreateCall(EXPRFLAG flags, CType type, Expr arguments, ExprMemberGroup memberGroup, MethWithInst method) => 
+-            new ExprCall(type, flags, arguments, memberGroup, method);
++        public ExprCall CreateCall(EXPRFLAG flags, CType type, Expr arguments, ExprMemberGroup memberGroup, MethWithInst method) 
++        { return new ExprCall(type, flags, arguments, memberGroup, method); }
+ 
+-        public ExprField CreateField(CType type, Expr optionalObject, FieldWithType field, bool isLValue) => 
+-            new ExprField(type, optionalObject, field, isLValue);
++        public ExprField CreateField(CType type, Expr optionalObject, FieldWithType field, bool isLValue) 
++        { return new ExprField(type, optionalObject, field, isLValue); }
+ 
+-        public ExprFuncPtr CreateFunctionPointer(EXPRFLAG flags, CType type, Expr obj, MethWithInst method) => 
+-            new ExprFuncPtr(type, flags, obj, method);
++        public ExprFuncPtr CreateFunctionPointer(EXPRFLAG flags, CType type, Expr obj, MethWithInst method)
++        { return new ExprFuncPtr(type, flags, obj, method); }
+ 
+-        public ExprArrayInit CreateArrayInit(CType type, Expr arguments, Expr argumentDimensions, int[] dimSizes, int dimSize) => 
+-            new ExprArrayInit(type, arguments, argumentDimensions, dimSizes, dimSize);
++        public ExprArrayInit CreateArrayInit(CType type, Expr arguments, Expr argumentDimensions, int[] dimSizes, int dimSize)
++        { return new ExprArrayInit(type, arguments, argumentDimensions, dimSizes, dimSize); }
+ 
+-        public ExprProperty CreateProperty(CType type, Expr optionalObject) => 
+-            CreateProperty(type, null, null, CreateMemGroup(optionalObject, new MethPropWithInst()), null, null);
++        public ExprProperty CreateProperty(CType type, Expr optionalObject)
++        { return CreateProperty(type, null, null, CreateMemGroup(optionalObject, new MethPropWithInst()), null, null); }
+ 
+-        public ExprProperty CreateProperty(CType type, Expr optionalObjectThrough, Expr arguments, ExprMemberGroup memberGroup, PropWithType property, MethWithType setMethod) => 
+-            new ExprProperty(type, optionalObjectThrough, arguments, memberGroup, property, setMethod);
++        public ExprProperty CreateProperty(CType type, Expr optionalObjectThrough, Expr arguments, ExprMemberGroup memberGroup, PropWithType property, MethWithType setMethod)
++        { return new ExprProperty(type, optionalObjectThrough, arguments, memberGroup, property, setMethod); }
+ 
+-        public ExprEvent CreateEvent(CType type, Expr optionalObject, EventWithType eventWithType) => 
+-            new ExprEvent(type, optionalObject, eventWithType);
++        public ExprEvent CreateEvent(CType type, Expr optionalObject, EventWithType eventWithType)  
++        { return new ExprEvent(type, optionalObject, eventWithType); }
+ 
+-        public ExprMemberGroup CreateMemGroup(EXPRFLAG flags, Name name, TypeArray typeArgs, SYMKIND symKind, CType parentType, MethodOrPropertySymbol memberSymbol, Expr obj, CMemberLookupResults memberLookupResults) => 
+-            new ExprMemberGroup(Types.GetMethGrpType(), flags, name, typeArgs, symKind, parentType, memberSymbol, obj, memberLookupResults);
++        public ExprMemberGroup CreateMemGroup(EXPRFLAG flags, Name name, TypeArray typeArgs, SYMKIND symKind, CType parentType, MethodOrPropertySymbol memberSymbol, Expr obj, CMemberLookupResults memberLookupResults)
++        { return new ExprMemberGroup(Types.GetMethGrpType(), flags, name, typeArgs, symKind, parentType, memberSymbol, obj, memberLookupResults); }
+ 
+         public ExprMemberGroup CreateMemGroup(Expr obj, MethPropWithInst method)
+         {
+@@ -57,25 +57,25 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
+                 obj, new CMemberLookupResults(GlobalSymbols.AllocParams(1, new[] {type}), name));
+         }
+ 
+-        public ExprUserDefinedConversion CreateUserDefinedConversion(Expr arg, Expr call, MethWithInst method) => 
+-            new ExprUserDefinedConversion(arg, call, method);
++        public ExprUserDefinedConversion CreateUserDefinedConversion(Expr arg, Expr call, MethWithInst method)
++        { return new ExprUserDefinedConversion(arg, call, method); }
+ 
+         public ExprCast CreateCast(CType type, Expr argument) => CreateCast(0, CreateClass(type), argument);
+ 
+-        public ExprCast CreateCast(EXPRFLAG flags, ExprClass type, Expr argument) => new ExprCast(flags, type, argument);
++        public ExprCast CreateCast(EXPRFLAG flags, ExprClass type, Expr argument) { return new ExprCast(flags, type, argument); }
+ 
+-        public ExprReturn CreateReturn(Expr optionalObject) => new ExprReturn(optionalObject);
++        public ExprReturn CreateReturn(Expr optionalObject) { return new ExprReturn(optionalObject); }
+ 
+-        public ExprLocal CreateLocal(LocalVariableSymbol local) => new ExprLocal(local);
++        public ExprLocal CreateLocal(LocalVariableSymbol local) { return new ExprLocal(local); }
+ 
+-        public ExprBoundLambda CreateAnonymousMethod(AggregateType delegateType, Scope argumentScope) => 
+-            new ExprBoundLambda(delegateType, argumentScope);
++        public ExprBoundLambda CreateAnonymousMethod(AggregateType delegateType, Scope argumentScope)
++        { return new ExprBoundLambda(delegateType, argumentScope); }
+ 
+-        public ExprHoistedLocalExpr CreateHoistedLocalInExpression() => 
+-            new ExprHoistedLocalExpr(Types.GetOptPredefAgg(PredefinedType.PT_EXPRESSION).getThisType());
++        public ExprHoistedLocalExpr CreateHoistedLocalInExpression()
++        { return new ExprHoistedLocalExpr(Types.GetOptPredefAgg(PredefinedType.PT_EXPRESSION).getThisType()); }
+ 
+-        public ExprMethodInfo CreateMethodInfo(MethPropWithInst mwi) => 
+-            CreateMethodInfo(mwi.Meth(), mwi.GetType(), mwi.TypeArgs);
++        public ExprMethodInfo CreateMethodInfo(MethPropWithInst mwi)
++        { return CreateMethodInfo(mwi.Meth(), mwi.GetType(), mwi.TypeArgs); }
+ 
+         public ExprMethodInfo CreateMethodInfo(MethodSymbol method, AggregateType methodType, TypeArray methodParameters)
+         {
+@@ -84,19 +84,19 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
+                 method, methodType, methodParameters);
+         }
+ 
+-        public ExprPropertyInfo CreatePropertyInfo(PropertySymbol prop, AggregateType propertyType) => 
+-            new ExprPropertyInfo(Types.GetOptPredefAgg(PredefinedType.PT_PROPERTYINFO).getThisType(), prop, propertyType);
++        public ExprPropertyInfo CreatePropertyInfo(PropertySymbol prop, AggregateType propertyType)
++        { return new ExprPropertyInfo(Types.GetOptPredefAgg(PredefinedType.PT_PROPERTYINFO).getThisType(), prop, propertyType); }
+ 
+-        public ExprFieldInfo CreateFieldInfo(FieldSymbol field, AggregateType fieldType) => 
+-            new ExprFieldInfo(field, fieldType, Types.GetOptPredefAgg(PredefinedType.PT_FIELDINFO).getThisType());
++        public ExprFieldInfo CreateFieldInfo(FieldSymbol field, AggregateType fieldType)
++        { return new ExprFieldInfo(field, fieldType, Types.GetOptPredefAgg(PredefinedType.PT_FIELDINFO).getThisType()); }
+ 
+-        private ExprTypeOf CreateTypeOf(ExprClass sourceType) => 
+-            new ExprTypeOf(Types.GetReqPredefAgg(PredefinedType.PT_TYPE).getThisType(), sourceType);
++        private ExprTypeOf CreateTypeOf(ExprClass sourceType)
++        { return new ExprTypeOf(Types.GetReqPredefAgg(PredefinedType.PT_TYPE).getThisType(), sourceType); }
+ 
+-        public ExprTypeOf CreateTypeOf(CType sourceType) => CreateTypeOf(CreateClass(sourceType));
++        public ExprTypeOf CreateTypeOf(CType sourceType) { return CreateTypeOf(CreateClass(sourceType)); }
+ 
+-        public ExprUserLogicalOp CreateUserLogOp(CType type, Expr trueFalseCall, ExprCall operatorCall) => 
+-            new ExprUserLogicalOp(type, trueFalseCall, operatorCall);
++        public ExprUserLogicalOp CreateUserLogOp(CType type, Expr trueFalseCall, ExprCall operatorCall)
++        { return new ExprUserLogicalOp(type, trueFalseCall, operatorCall); }
+ 
+         public ExprUserLogicalOp CreateUserLogOpError(CType type, Expr trueFalseCall, ExprCall operatorCall)
+         {
+@@ -105,16 +105,16 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
+             return rval;
+         }
+ 
+-        public ExprConcat CreateConcat(Expr first, Expr second) => new ExprConcat(first, second);
++        public ExprConcat CreateConcat(Expr first, Expr second) { return new ExprConcat(first, second); }
+ 
+-        public ExprConstant CreateStringConstant(string str) => 
+-            CreateConstant(Types.GetReqPredefAgg(PredefinedType.PT_STRING).getThisType(), ConstVal.Get(str));
++        public ExprConstant CreateStringConstant(string str)
++        { return CreateConstant(Types.GetReqPredefAgg(PredefinedType.PT_STRING).getThisType(), ConstVal.Get(str)); }
+ 
+-        public ExprMultiGet CreateMultiGet(EXPRFLAG flags, CType type, ExprMulti multi) => 
+-            new ExprMultiGet(type, flags, multi);
++        public ExprMultiGet CreateMultiGet(EXPRFLAG flags, CType type, ExprMulti multi)
++        { return new ExprMultiGet(type, flags, multi); }
+ 
+-        public ExprMulti CreateMulti(EXPRFLAG flags, CType type, Expr left, Expr op) => 
+-            new ExprMulti(type, flags, left, op);
++        public ExprMulti CreateMulti(EXPRFLAG flags, CType type, Expr left, Expr op)
++        { return new ExprMulti(type, flags, left, op); }
+ 
+         ////////////////////////////////////////////////////////////////////////////////
+         //
+@@ -124,7 +124,7 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
+         //
+         // This returns a null for reference types and an EXPRZEROINIT for all others.
+ 
+-        public Expr CreateZeroInit(CType type) => CreateZeroInit(CreateClass(type), null, false);
++        public Expr CreateZeroInit(CType type) { return CreateZeroInit(CreateClass(type), null, false); }
+ 
+         private Expr CreateZeroInit(ExprClass typeExpr, Expr originalConstructorCall, bool isConstructor)
+         {
+@@ -187,15 +187,15 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
+             return new ExprZeroInit(type, originalConstructorCall, isConstructor, isError);
+         }
+ 
+-        public ExprConstant CreateConstant(CType type, ConstVal constVal) => new ExprConstant(type, constVal);
++        public ExprConstant CreateConstant(CType type, ConstVal constVal) { return new ExprConstant(type, constVal); }
+ 
+-        public ExprConstant CreateIntegerConstant(int x) =>
+-            CreateConstant(Types.GetReqPredefAgg(PredefinedType.PT_INT).getThisType(), ConstVal.Get(x));
++        public ExprConstant CreateIntegerConstant(int x)
++        { return CreateConstant(Types.GetReqPredefAgg(PredefinedType.PT_INT).getThisType(), ConstVal.Get(x)); }
+ 
+-        public ExprConstant CreateBoolConstant(bool b) => 
+-            CreateConstant(Types.GetReqPredefAgg(PredefinedType.PT_BOOL).getThisType(), ConstVal.Get(b));
++        public ExprConstant CreateBoolConstant(bool b)
++        { return CreateConstant(Types.GetReqPredefAgg(PredefinedType.PT_BOOL).getThisType(), ConstVal.Get(b)); }
+ 
+-        public ExprBlock CreateBlock(ExprStatement pOptionalStatements) => new ExprBlock(pOptionalStatements);
++        public ExprBlock CreateBlock(ExprStatement pOptionalStatements) { return new ExprBlock(pOptionalStatements); }
+ 
+         public ExprArrayIndex CreateArrayIndex(Expr array, Expr index)
+         {
+@@ -212,11 +212,11 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
+             return new ExprArrayIndex(type, array, index);
+         }
+ 
+-        public ExprBinOp CreateBinop(ExpressionKind exprKind, CType type, Expr left, Expr right) => 
+-            new ExprBinOp(exprKind, type, left, right);
++        public ExprBinOp CreateBinop(ExpressionKind exprKind, CType type, Expr left, Expr right) 
++        { return new ExprBinOp(exprKind, type, left, right); }
+ 
+-        public ExprUnaryOp CreateUnaryOp(ExpressionKind exprKind, CType type, Expr operand) => 
+-            new ExprUnaryOp(exprKind, type, operand);
++        public ExprUnaryOp CreateUnaryOp(ExpressionKind exprKind, CType type, Expr operand)
++        { return new ExprUnaryOp(exprKind, type, operand); }
+ 
+         public ExprOperator CreateOperator(ExpressionKind exprKind, CType type, Expr arg1, Expr arg2)
+         {
+@@ -228,12 +228,12 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
+         }
+ 
+ 
+-        public ExprBinOp CreateUserDefinedBinop(ExpressionKind exprKind, CType type, Expr left, Expr right, Expr call, MethPropWithInst userMethod) => 
+-            new ExprBinOp(exprKind, type, left, right, call, userMethod);
++        public ExprBinOp CreateUserDefinedBinop(ExpressionKind exprKind, CType type, Expr left, Expr right, Expr call, MethPropWithInst userMethod)
++        { return new ExprBinOp(exprKind, type, left, right, call, userMethod); }
+ 
+         // The call may be lifted, but we do not mark the outer binop as lifted.
+-        public ExprUnaryOp CreateUserDefinedUnaryOperator(ExpressionKind exprKind, CType type, Expr operand, ExprCall call, MethPropWithInst userMethod) => 
+-            new ExprUnaryOp(exprKind, type, operand, call, userMethod);
++        public ExprUnaryOp CreateUserDefinedUnaryOperator(ExpressionKind exprKind, CType type, Expr operand, ExprCall call, MethPropWithInst userMethod)
++        { return new ExprUnaryOp(exprKind, type, operand, call, userMethod); }
+ 
+         public ExprUnaryOp CreateNeg(EXPRFLAG flags, Expr operand)
+         {
+@@ -246,23 +246,22 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
+         ////////////////////////////////////////////////////////////////////////////////
+         // Create a node that evaluates the first, evaluates the second, results in the second.
+ 
+-        public ExprBinOp CreateSequence(Expr first, Expr second) =>
+-            CreateBinop(ExpressionKind.Sequence, second.Type, first, second);
++        public ExprBinOp CreateSequence(Expr first, Expr second)
++        { return CreateBinop(ExpressionKind.Sequence, second.Type, first, second); }
+ 
+         ////////////////////////////////////////////////////////////////////////////////
+         // Create a node that evaluates the first, evaluates the second, results in the first.
+ 
+-        public ExprBinOp CreateReverseSequence(Expr first, Expr second) =>
+-            CreateBinop(ExpressionKind.SequenceReverse, first.Type, first, second);
++        public ExprBinOp CreateReverseSequence(Expr first, Expr second)
++        { return CreateBinop(ExpressionKind.SequenceReverse, first.Type, first, second); }
+ 
+-        public ExprAssignment CreateAssignment(Expr left, Expr right) => new ExprAssignment(left, right);
++        public ExprAssignment CreateAssignment(Expr left, Expr right) { return new ExprAssignment(left, right); }
+ 
+         ////////////////////////////////////////////////////////////////////////////////
+ 
+-        public ExprNamedArgumentSpecification CreateNamedArgumentSpecification(Name name, Expr value) =>
+-            new ExprNamedArgumentSpecification(name, value);
++        public ExprNamedArgumentSpecification CreateNamedArgumentSpecification(Name name, Expr value) { return new ExprNamedArgumentSpecification(name, value); }
+ 
+-        public ExprWrap CreateWrap(Expr expression) => new ExprWrap(expression);
++        public ExprWrap CreateWrap(Expr expression) { return new ExprWrap(expression); }
+ 
+         public ExprBinOp CreateSave(ExprWrap wrap)
+         {
+@@ -272,7 +271,7 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
+             return expr;
+         }
+ 
+-        public ExprConstant CreateNull() => CreateConstant(Types.GetNullType(), default(ConstVal));
++        public ExprConstant CreateNull() { return CreateConstant(Types.GetNullType(), default(ConstVal)); }
+ 
+         public void AppendItemToList(
+             Expr newItem,
+@@ -306,14 +305,13 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
+             last = list.OptionalNextListNode;
+         }
+ 
+-        public ExprList CreateList(Expr op1, Expr op2) => new ExprList(op1, op2);
++        public ExprList CreateList(Expr op1, Expr op2) { return new ExprList(op1, op2); }
+ 
+-        public ExprList CreateList(Expr op1, Expr op2, Expr op3) => CreateList(op1, CreateList(op2, op3));
++        public ExprList CreateList(Expr op1, Expr op2, Expr op3) { return CreateList(op1, CreateList(op2, op3)); }
+ 
+-        public ExprList CreateList(Expr op1, Expr op2, Expr op3, Expr op4) =>
+-            CreateList(op1, CreateList(op2, CreateList(op3, op4)));
++        public ExprList CreateList(Expr op1, Expr op2, Expr op3, Expr op4) { return CreateList(op1, CreateList(op2, CreateList(op3, op4))); }
+ 
+-        public ExprClass CreateClass(CType type) => new ExprClass(type);
++        public ExprClass CreateClass(CType type) { return new ExprClass(type); }
+     }
+ }
+ 
+diff --git a/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/Semantics/ExpressionBinder.cs b/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/Semantics/ExpressionBinder.cs
+index ee75e7b38e..bd7c52f87e 100644
+--- a/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/Semantics/ExpressionBinder.cs
++++ b/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/Semantics/ExpressionBinder.cs
+@@ -601,10 +601,11 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
+             // Check if we have a compile time constant. If we do, create a constant for it and set the
+             // original tree to the cast.
+ 
+-            if (exprConst is ExprConstant constant && exprFlags == 0 &&
++            if (exprConst is ExprConstant && exprFlags == 0 &&
+                 exprSrc.Type.fundType() == typeDest.fundType() &&
+-                (!exprSrc.Type.isPredefType(PredefinedType.PT_STRING) || constant.Val.IsNullRef))
++                (!exprSrc.Type.isPredefType(PredefinedType.PT_STRING) || ((ExprConstant)exprConst).Val.IsNullRef))
+             {
++                ExprConstant constant = (ExprConstant)exprConst;
+                 ExprConstant expr = GetExprFactory().CreateConstant(typeDest, constant.Val);
+                 pexprDest = expr;
+                 return;
+@@ -1191,8 +1192,9 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
+             while (list != null)
+             {
+                 Expr arg;
+-                if (list is ExprList next)
++                if (list is ExprList)
+                 {
++                    ExprList next = (ExprList)list;
+                     arg = next.OptionalElement;
+                     list = next.OptionalNextListNode;
+                 }
+@@ -1265,8 +1267,9 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
+ 
+         private Expr UnwrapExpression(Expr pExpression)
+         {
+-            while (pExpression is ExprWrap wrap)
++            while (pExpression is ExprWrap)
+             {
++                ExprWrap wrap = (ExprWrap)pExpression;
+                 Expr wrapped = wrap.OptionalExpression;
+                 if (wrapped == null)
+                 {
+@@ -1344,8 +1347,9 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
+                 return false;
+             if (expr.isLvalue())
+             {
+-                if (expr is ExprProperty prop)
++                if (expr is ExprProperty)
+                 {
++                    ExprProperty prop = (ExprProperty)expr;
+                     CheckLvalueProp(prop);
+                 }
+                 markFieldAssigned(expr);
+@@ -1570,9 +1574,10 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
+ 
+                 // If we're invoking code on a struct-valued field, mark the struct as assigned (to
+                 // avoid warning CS0649).
+-                if (pObject is ExprField field && !field.FieldWithType.Field().isAssigned && !swt.Sym.IsFieldSymbol() &&
++                if (pObject is ExprField && !((ExprField)pObject).FieldWithType.Field().isAssigned && !swt.Sym.IsFieldSymbol() &&
+                     typeObj.isStructType() && !typeObj.isPredefined())
+                 {
++                    ExprField field = (ExprField) pObject;
+                     field.FieldWithType.Field().isAssigned = true;
+                 }
+ 
+@@ -1779,8 +1784,9 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
+ 
+                     Expr argument = indir;
+                     Expr rval;
+-                    if (argument is ExprNamedArgumentSpecification named)
++                    if (argument is ExprNamedArgumentSpecification)
+                     {
++                        ExprNamedArgumentSpecification named = (ExprNamedArgumentSpecification)argument;
+                         int index = 0;
+                         // If we're named, look for the type of the matching name.
+                         foreach (Name i in mostDerivedMethod.ParameterNames)
+@@ -1918,8 +1924,9 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
+                     Expr expr = it.Current();
+                     count++;
+ 
+-                    if (expr is ExprNamedArgumentSpecification named)
++                    if (expr is ExprNamedArgumentSpecification)
+                     {
++                        ExprNamedArgumentSpecification named = (ExprNamedArgumentSpecification)expr;
+                         named.Value = tryConvert(named.Value, elementType);
+                     }
+                     else
+@@ -1941,8 +1948,9 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
+ 
+         private void markFieldAssigned(Expr expr)
+         {
+-            if (0 != (expr.Flags & EXPRFLAG.EXF_LVALUE) && expr is ExprField field)
++            if (0 != (expr.Flags & EXPRFLAG.EXF_LVALUE) && expr is ExprField)
+             {
++                ExprField field = (ExprField) expr;
+                 FieldSymbol symbol;
+                 do
+                 {
+@@ -2009,8 +2017,9 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
+             for (Expr list = args; list != null; iarg++)
+             {
+                 Expr arg;
+-                if (list is ExprList next)
++                if (list is ExprList)
+                 {
++                    ExprList next = (ExprList)list;
+                     arg = next.OptionalElement;
+                     list = next.OptionalNextListNode;
+                 }
+@@ -2364,8 +2373,9 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
+             {
+                 Expr arg;
+ 
+-                if (list is ExprList next)
++                if (list is ExprList)
+                 {
++                    ExprList next = (ExprList)list;
+                     arg = next.OptionalElement;
+                     list = next.OptionalNextListNode;
+                 }
+diff --git a/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/Semantics/GroupToArgsBinder.cs b/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/Semantics/GroupToArgsBinder.cs
+index 25a8d40341..d17de3977d 100644
+--- a/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/Semantics/GroupToArgsBinder.cs
++++ b/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/Semantics/GroupToArgsBinder.cs
+@@ -510,7 +510,7 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
+                     // then let us through.
+                     if (methprop.isParamArray &&
+                         index < pArguments.carg &&
+-                        pArguments.prgexpr[index] is ExprArrayInit arrayInit && arrayInit.GeneratedForParamArray)
++                        pArguments.prgexpr[index] is ExprArrayInit && ((ExprArrayInit)pArguments.prgexpr[index]).GeneratedForParamArray)
+                     {
+                         paramArrayArgument = pArguments.prgexpr[index];
+                     }
+@@ -518,7 +518,7 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
+                     // Positional.
+                     if (index < pArguments.carg &&
+                         !(pArguments.prgexpr[index] is ExprNamedArgumentSpecification) &&
+-                        !(pArguments.prgexpr[index] is ExprArrayInit arrayInitPos && arrayInitPos.GeneratedForParamArray))
++                        !(pArguments.prgexpr[index] is ExprArrayInit && ((ExprArrayInit)pArguments.prgexpr[index]).GeneratedForParamArray))
+                     {
+                         pExprArguments[index] = pArguments.prgexpr[index++];
+                         continue;
+@@ -839,7 +839,7 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
+                 for (int i = 0; i < pArguments.carg; i++)
+                 {
+                     Expr expr = prgexpr[i];
+-                    if (expr is ExprNamedArgumentSpecification named && named.Name == pName)
++                    if (expr is ExprNamedArgumentSpecification && ((ExprNamedArgumentSpecification)expr).Name == pName)
+                     {
+                         return expr;
+                     }
+@@ -861,7 +861,8 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
+                 HashSet<Name> names = new HashSet<Name>();
+                 for (int i = 0; i < _pArguments.carg; i++)
+                 {
+-                    if (!(_pArguments.prgexpr[i] is ExprNamedArgumentSpecification named))
++                    ExprNamedArgumentSpecification named;
++                    if (!(_pArguments.prgexpr[i] is ExprNamedArgumentSpecification))
+                     {
+                         if (!currentPosition.IsEmpty())
+                         {
+@@ -869,6 +870,7 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
+                         }
+                         continue;
+                     }
++                    named = (ExprNamedArgumentSpecification) _pArguments.prgexpr[i];
+ 
+                     Name name = named.Name;
+                     if (!methprop.ParameterNames.Contains(name))
+@@ -1080,8 +1082,9 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
+                             Expr pArgument = _pArguments.prgexpr[ivar];
+ 
+                             // If we have a named argument, strip it to do the conversion.
+-                            if (pArgument is ExprNamedArgumentSpecification named)
++                            if (pArgument is ExprNamedArgumentSpecification)
+                             {
++                                ExprNamedArgumentSpecification named = (ExprNamedArgumentSpecification)pArgument;
+                                 pArgument = named.Value;
+                             }
+ 
+diff --git a/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/Semantics/ImplicitConversion.cs b/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/Semantics/ImplicitConversion.cs
+index c9eb5ae21d..cde533d750 100644
+--- a/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/Semantics/ImplicitConversion.cs
++++ b/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/Semantics/ImplicitConversion.cs
+@@ -172,8 +172,9 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
+                         VSFAIL("Bad type symbol kind");
+                         break;
+                     case TypeKind.TK_MethodGroupType:
+-                        if (_exprSrc is ExprMemberGroup memGrp)
++                        if (_exprSrc is ExprMemberGroup)
+                         {
++                            ExprMemberGroup memGrp = (ExprMemberGroup)_exprSrc;
+                             ExprCall outExpr;
+                             bool retVal = _binder.BindGrpConversion(memGrp, _typeDest, _needsExprDest, out outExpr, false);
+                             _exprDest = outExpr;
+@@ -737,10 +738,10 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
+                 // *   A constant-expression of type long can be converted to type ulong, provided the value of
+                 //     the constant-expression is not negative.
+                 // Note: Don't use GetConst here since the conversion only applies to bona-fide compile time constants.
+-                if (_exprSrc is ExprConstant constant && _exprSrc.IsOK &&
++                if (_exprSrc is ExprConstant && _exprSrc.IsOK &&
+                     ((ptSrc == PredefinedType.PT_INT && ptDest != PredefinedType.PT_BOOL && ptDest != PredefinedType.PT_CHAR) ||
+                     (ptSrc == PredefinedType.PT_LONG && ptDest == PredefinedType.PT_ULONG)) &&
+-                    isConstantInRange(constant, _typeDest))
++                    isConstantInRange(((ExprConstant)_exprSrc), _typeDest))
+                 {
+                     // Special case (CLR 6.1.6): if integral constant is in range, the conversion is a legal implicit conversion.
+                     convertKind = ConvKind.Implicit;
+diff --git a/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/Semantics/MethodTypeInferrer.cs b/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/Semantics/MethodTypeInferrer.cs
+index 52d354ac53..f43684690d 100644
+--- a/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/Semantics/MethodTypeInferrer.cs
++++ b/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/Semantics/MethodTypeInferrer.cs
+@@ -1063,10 +1063,11 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
+             // SPEC:   yields a single method with return CType U then a lower-bound
+             // SPEC:   inference is made from U to Tb.
+ 
+-            if (!(pSource is ExprMemberGroup memGrp))
++            if (!(pSource is ExprMemberGroup))
+             {
+                 return false;
+             }
++            ExprMemberGroup memGrp = (ExprMemberGroup)pSource;
+             pType = pType.GetDelegateTypeOfPossibleExpression();
+             if (!pType.isDelegateType())
+             {
+diff --git a/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/Semantics/Nullable.cs b/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/Semantics/Nullable.cs
+index b23fc44509..7dbe8227ca 100644
+--- a/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/Semantics/Nullable.cs
++++ b/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/Semantics/Nullable.cs
+@@ -29,8 +29,9 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
+         {
+             Debug.Assert(expr != null);
+ 
+-            if (expr is ExprCall pCall && pCall.MemberGroup.OptionalObject == null)
++            if (expr is ExprCall && ((ExprCall)expr).MemberGroup.OptionalObject == null)
+             {
++                ExprCall pCall = (ExprCall)expr;
+                 MethodSymbol meth = pCall.MethWithInst.Meth();
+                 if (meth != null && meth.IsNullableConstructor())
+                 {
+@@ -45,7 +46,8 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
+ 
+         public static Expr StripNullableConstructor(Expr pExpr)
+         {
+-            while (IsNullableConstructor(pExpr, out ExprCall call))
++            ExprCall call;
++            while (IsNullableConstructor(pExpr, out call))
+             {
+                 pExpr = call.OptionalArguments;
+                 Debug.Assert(pExpr != null && !(pExpr is ExprList));
+@@ -60,7 +62,8 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
+             Debug.Assert(exprSrc != null && exprSrc.Type.IsNullableType());
+ 
+             // For new T?(x), the answer is x.
+-            if (IsNullableConstructor(exprSrc, out ExprCall call))
++            ExprCall call;
++            if (IsNullableConstructor(exprSrc, out call))
+             {
+                 var args = call.OptionalArguments;
+                 Debug.Assert(args != null && !(args is ExprList));
+diff --git a/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/Semantics/Tree/ExpressionIterator.cs b/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/Semantics/Tree/ExpressionIterator.cs
+index 96ee032422..9397543de6 100644
+--- a/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/Semantics/Tree/ExpressionIterator.cs
++++ b/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/Semantics/Tree/ExpressionIterator.cs
+@@ -83,8 +83,9 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
+                 _pList = null;
+                 _pCurrent = null;
+             }
+-            else if (pExpr is ExprList pList)
++            else if (pExpr is ExprList)
+             {
++                ExprList pList = (ExprList)pExpr;
+                 _pList = pList;
+                 _pCurrent = pList.OptionalElement;
+             }
+diff --git a/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/Semantics/Tree/Visitors/ExprVisitorBase.cs b/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/Semantics/Tree/Visitors/ExprVisitorBase.cs
+index 2abac4cecc..84bc0e1d4c 100644
+--- a/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/Semantics/Tree/Visitors/ExprVisitorBase.cs
++++ b/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/Semantics/Tree/Visitors/ExprVisitorBase.cs
+@@ -21,8 +21,9 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
+                 return pResult;
+             }
+ 
+-            if (pExpr is ExprStatement statement)
++            if (pExpr is ExprStatement)
+             {
++                ExprStatement statement = (ExprStatement)pExpr;
+                 return CacheExprMapping(pExpr, DispatchStatementList(statement));
+             }
+ 
+@@ -275,11 +276,13 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
+                             return;
+                         }
+ 
+-                        if (!(nextNode is ExprList next))
++                        ExprList next;
++                        if (!(nextNode is ExprList))
+                         {
+                             list.OptionalNextListNode = Visit(nextNode);
+                             return;
+                         }
++                        next = (ExprList)nextNode;
+ 
+                         list = next;
+                     }
+diff --git a/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/Semantics/Tree/Visitors/ExpressionTreeRewriter.cs b/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/Semantics/Tree/Visitors/ExpressionTreeRewriter.cs
+index 96075b6d38..e0581fd14e 100644
+--- a/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/Semantics/Tree/Visitors/ExpressionTreeRewriter.cs
++++ b/src/Microsoft.CSharp/src/Microsoft/CSharp/RuntimeBinder/Semantics/Tree/Visitors/ExpressionTreeRewriter.cs
+@@ -50,8 +50,9 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
+             // For assignments, we either have a member assignment or an indexed assignment.
+             //Debug.Assert(assignment.GetLHS().isPROP() || assignment.GetLHS().isFIELD() || assignment.GetLHS().isARRAYINDEX() || assignment.GetLHS().isLOCAL());
+             Expr lhs;
+-            if (assignment.LHS is ExprProperty prop)
++            if (assignment.LHS is ExprProperty)
+             {
++                ExprProperty prop = (ExprProperty)assignment.LHS;
+                 if (prop.OptionalArguments== null)
+                 {
+                     // Regular property.
+@@ -304,8 +305,9 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
+                 // can handle in the general case all implicit boxing conversions. Right now it 
+                 // requires that all arguments to a call that need to be boxed be explicitly boxed.
+ 
+-                if (pObject != null && pObject is ExprCast cast && cast.IsBoxingCast)
++                if (pObject != null && pObject is ExprCast && ((ExprCast)pObject).IsBoxingCast)
+                 {
++                    ExprCast cast = (ExprCast) pObject;
+                     pObject = cast.Argument;
+                 }
+                 pObject = Visit(pObject);
+@@ -576,8 +578,9 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
+             if (udcall != null)
+             {
+                 Debug.Assert(udcall.Kind == ExpressionKind.Call || udcall.Kind == ExpressionKind.UserLogicalOp);
+-                if (udcall is ExprCall ascall)
++                if (udcall is ExprCall)
+                 {
++                    ExprCall ascall = (ExprCall)udcall;
+                     ExprList args = (ExprList)ascall.OptionalArguments;
+                     Debug.Assert(args.OptionalNextListNode.Kind != ExpressionKind.List);
+                     p1 = args.OptionalElement;
+@@ -708,8 +711,9 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
+             ExprBlock body = anonmeth.OptionalBody;
+ 
+             // The most likely case:
+-            if (body.OptionalStatements is ExprReturn ret)
++            if (body.OptionalStatements is ExprReturn)
+             {
++                ExprReturn ret = (ExprReturn)body.OptionalStatements;
+                 Debug.Assert(ret.OptionalObject != null);
+                 return Visit(ret.OptionalObject);
+             }
+@@ -831,8 +835,9 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
+                 Expr pUDConversion = call?.PConversions;
+                 if (pUDConversion != null)
+                 {
+-                    if (pUDConversion is ExprCall convCall)
++                    if (pUDConversion is ExprCall)
+                     {
++                        ExprCall convCall = (ExprCall)pUDConversion;
+                         Expr pUDConversionArgument = convCall.OptionalArguments;
+                         if (IsNullableValueAccess(pUDConversionArgument, pArgument))
+                         {
+@@ -1174,23 +1179,25 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
+         private bool IsNullableValueAccess(Expr pExpr, Expr pObject)
+         {
+             Debug.Assert(pExpr != null);
+-            return pExpr is ExprProperty prop && prop.MemberGroup.OptionalObject == pObject && pObject.Type.IsNullableType();
++            return pExpr is ExprProperty && ((ExprProperty)pExpr).MemberGroup.OptionalObject == pObject && pObject.Type.IsNullableType();
+         }
+ 
+         private bool IsDelegateConstructorCall(Expr pExpr)
+         {
+             Debug.Assert(pExpr != null);
+-            if (!(pExpr is ExprCall pCall))
++            ExprCall pCall;
++            if (!(pExpr is ExprCall))
+             {
+                 return false;
+             }
++            pCall = (ExprCall)pExpr;
+ 
+             return pCall.MethWithInst.Meth() != null &&
+                 pCall.MethWithInst.Meth().IsConstructor() &&
+                 pCall.Type.isDelegateType() &&
+                 pCall.OptionalArguments != null &&
+-                pCall.OptionalArguments is ExprList list &&
+-                list.OptionalNextListNode.Kind == ExpressionKind.FunctionPointer;
++                (pCall.OptionalArguments is ExprList) &&
++                ((ExprList)pCall.OptionalArguments).OptionalNextListNode.Kind == ExpressionKind.FunctionPointer;
+         }
+         private static bool isEnumToDecimalConversion(CType argtype, CType desttype)
+         {
+diff --git a/src/System.Collections/src/System/Collections/Generic/SortedSet.TreeSubSet.cs b/src/System.Collections/src/System/Collections/Generic/SortedSet.TreeSubSet.cs
+index 4eb817c0af..671636f428 100644
+--- a/src/System.Collections/src/System/Collections/Generic/SortedSet.TreeSubSet.cs
++++ b/src/System.Collections/src/System/Collections/Generic/SortedSet.TreeSubSet.cs
+@@ -352,7 +352,10 @@ namespace System.Collections.Generic
+                 throw new PlatformNotSupportedException();
+             }
+ 
+-            protected override void OnDeserialization(Object sender) => throw new PlatformNotSupportedException();
++            protected override void OnDeserialization(Object sender)
++            {
++                throw new PlatformNotSupportedException();
++            }
+         }
+     }
+ }
+diff --git a/src/System.Drawing.Common/src/System/Drawing/Brush.cs b/src/System.Drawing.Common/src/System/Drawing/Brush.cs
+index 089069ed64..b202ef7736 100644
+--- a/src/System.Drawing.Common/src/System/Drawing/Brush.cs
++++ b/src/System.Drawing.Common/src/System/Drawing/Brush.cs
+@@ -62,6 +62,6 @@ namespace System.Drawing
+             }
+         }
+ 
+-        ~Brush() => Dispose(false);
++        ~Brush() { Dispose(false); }
+     }
+ }
+diff --git a/src/System.Drawing.Common/src/System/Drawing/Design/CategoryNameCollection.cs b/src/System.Drawing.Common/src/System/Drawing/Design/CategoryNameCollection.cs
+index 065498c3ad..fcc4f8b2b6 100644
+--- a/src/System.Drawing.Common/src/System/Drawing/Design/CategoryNameCollection.cs
++++ b/src/System.Drawing.Common/src/System/Drawing/Design/CategoryNameCollection.cs
+@@ -16,34 +16,34 @@ namespace System.Drawing.Design
+         /// Initializes a new instance of <see cref='CategoryNameCollection'/> based on another
+         /// <see cref='CategoryNameCollection'/>.
+         /// </summary>
+-        public CategoryNameCollection(CategoryNameCollection value) => InnerList.AddRange(value);
++        public CategoryNameCollection(CategoryNameCollection value) { InnerList.AddRange(value); }
+ 
+         /// <summary>
+         /// Initializes a new instance of <see cref='CategoryNameCollection'/> containing any array of
+         /// <see cref='string'/> objects.
+         /// </summary>
+-        public CategoryNameCollection(string[] value) => InnerList.AddRange(value);
++        public CategoryNameCollection(string[] value) { InnerList.AddRange(value); }
+ 
+         /// <summary>
+         /// Represents the entry at the specified index of the <see cref='string'/>.
+         /// </summary>
+-        public string this[int index] => ((string)(InnerList[index]));
++        public string this[int index] { get { return ((string)(InnerList[index])); } }
+ 
+         /// <summary>
+         /// Gets a value indicating whether the  <see cref='CategoryNameCollection'/> contains the specified
+         /// <see cref='string'/>.
+         /// </summary>
+-        public bool Contains(string value) => InnerList.Contains(value);
++        public bool Contains(string value) { return InnerList.Contains(value); }
+ 
+         /// <summary>
+         /// Copies the <see cref='CategoryNameCollection'/> values to a one-dimensional <see cref='Array'/> instance
+         /// at the specified index.
+         /// </summary>
+-        public void CopyTo(string[] array, int index) => InnerList.CopyTo(array, index);
++        public void CopyTo(string[] array, int index) { InnerList.CopyTo(array, index); }
+ 
+         /// <summary>
+         /// Returns the index of a <see cref='string'/> in  the <see cref='CategoryNameCollection'/> .
+         /// </summary>
+-        public int IndexOf(string value) => InnerList.IndexOf(value);
++        public int IndexOf(string value) { return InnerList.IndexOf(value); }
+     }
+ }
+diff --git a/src/System.Drawing.Common/src/System/Drawing/Drawing2D/CustomLineCap.cs b/src/System.Drawing.Common/src/System/Drawing/Drawing2D/CustomLineCap.cs
+index 152474117d..d9769778c7 100644
+--- a/src/System.Drawing.Common/src/System/Drawing/Drawing2D/CustomLineCap.cs
++++ b/src/System.Drawing.Common/src/System/Drawing/Drawing2D/CustomLineCap.cs
+@@ -38,7 +38,7 @@ namespace System.Drawing.Drawing2D
+             SetNativeLineCap(nativeLineCap);
+         }
+ 
+-        internal CustomLineCap(IntPtr nativeLineCap) => SetNativeLineCap(nativeLineCap);
++        internal CustomLineCap(IntPtr nativeLineCap) { SetNativeLineCap(nativeLineCap); }
+ 
+         internal void SetNativeLineCap(IntPtr handle)
+         {
+@@ -72,7 +72,7 @@ namespace System.Drawing.Drawing2D
+             _disposed = true;
+         }
+ 
+-        ~CustomLineCap() => Dispose(false);
++        ~CustomLineCap() { Dispose(false); }
+ 
+         public object Clone()
+         {
+diff --git a/src/System.Drawing.Common/src/System/Drawing/Drawing2D/GraphicsPathIterator.cs b/src/System.Drawing.Common/src/System/Drawing/Drawing2D/GraphicsPathIterator.cs
+index cb9c34c62a..3b552f1baf 100644
+--- a/src/System.Drawing.Common/src/System/Drawing/Drawing2D/GraphicsPathIterator.cs
++++ b/src/System.Drawing.Common/src/System/Drawing/Drawing2D/GraphicsPathIterator.cs
+@@ -58,7 +58,7 @@ namespace System.Drawing.Drawing2D
+             }
+         }
+ 
+-        ~GraphicsPathIterator() => Dispose(false);
++        ~GraphicsPathIterator() { Dispose(false); }
+ 
+         public int NextSubpath(out int startIndex, out int endIndex, out bool isClosed)
+         {
+diff --git a/src/System.Drawing.Common/src/System/Drawing/Drawing2D/GraphicsState.cs b/src/System.Drawing.Common/src/System/Drawing/Drawing2D/GraphicsState.cs
+index c7d086756e..61de948b2d 100644
+--- a/src/System.Drawing.Common/src/System/Drawing/Drawing2D/GraphicsState.cs
++++ b/src/System.Drawing.Common/src/System/Drawing/Drawing2D/GraphicsState.cs
+@@ -8,7 +8,7 @@ namespace System.Drawing.Drawing2D
+     {
+         internal int nativeState;
+ 
+-        internal GraphicsState(int nativeState) => this.nativeState = nativeState;
++        internal GraphicsState(int nativeState) { this.nativeState = nativeState; }
+     }
+ }
+ 
+diff --git a/src/System.Drawing.Common/src/System/Drawing/Drawing2D/RegionData.cs b/src/System.Drawing.Common/src/System/Drawing/Drawing2D/RegionData.cs
+index 596b8622eb..dfa2446c87 100644
+--- a/src/System.Drawing.Common/src/System/Drawing/Drawing2D/RegionData.cs
++++ b/src/System.Drawing.Common/src/System/Drawing/Drawing2D/RegionData.cs
+@@ -6,7 +6,7 @@ namespace System.Drawing.Drawing2D
+ {
+     public sealed class RegionData
+     {
+-        internal RegionData(byte[] data) => Data = data;
++        internal RegionData(byte[] data) { Data = data; }
+ 
+         public byte[] Data { get; set; }
+     }
+diff --git a/src/System.Drawing.Common/src/System/Drawing/Text/FontCollection.cs b/src/System.Drawing.Common/src/System/Drawing/Text/FontCollection.cs
+index df2ac5c8c2..a451dc621d 100644
+--- a/src/System.Drawing.Common/src/System/Drawing/Text/FontCollection.cs
++++ b/src/System.Drawing.Common/src/System/Drawing/Text/FontCollection.cs
+@@ -14,7 +14,7 @@ namespace System.Drawing.Text
+     {
+         internal IntPtr _nativeFontCollection;
+ 
+-        internal FontCollection() => _nativeFontCollection = IntPtr.Zero;
++        internal FontCollection() { _nativeFontCollection = IntPtr.Zero; }
+ 
+         /// <summary>
+         /// Disposes of this <see cref='System.Drawing.Text.FontCollection'/>
+@@ -58,6 +58,6 @@ namespace System.Drawing.Text
+             }
+         }
+ 
+-        ~FontCollection() => Dispose(false);
++        ~FontCollection() { Dispose(false); }
+     }
+ }
+diff --git a/src/System.Linq.Expressions/src/System/Dynamic/Utils/TypeExtensions.cs b/src/System.Linq.Expressions/src/System/Dynamic/Utils/TypeExtensions.cs
+index c45caba093..ef9a25203d 100644
+--- a/src/System.Linq.Expressions/src/System/Dynamic/Utils/TypeExtensions.cs
++++ b/src/System.Linq.Expressions/src/System/Dynamic/Utils/TypeExtensions.cs
+@@ -65,7 +65,8 @@ namespace System.Dynamic.Utils
+         internal static ParameterInfo[] GetParametersCached(this MethodBase method)
+         {
+             CacheDict<MethodBase, ParameterInfo[]> pic = s_paramInfoCache;
+-            if (!pic.TryGetValue(method, out ParameterInfo[] pis))
++            ParameterInfo[] pis;
++            if (!pic.TryGetValue(method, out pis))
+             {
+                 pis = method.GetParameters();
+ 
+diff --git a/src/System.Linq.Expressions/src/System/Linq/Expressions/Compiler/LambdaCompiler.Expressions.cs b/src/System.Linq.Expressions/src/System/Linq/Expressions/Compiler/LambdaCompiler.Expressions.cs
+index d8b1c61f74..8cefbd4f19 100644
+--- a/src/System.Linq.Expressions/src/System/Linq/Expressions/Compiler/LambdaCompiler.Expressions.cs
++++ b/src/System.Linq.Expressions/src/System/Linq/Expressions/Compiler/LambdaCompiler.Expressions.cs
+@@ -952,8 +952,9 @@ namespace System.Linq.Expressions.Compiler
+         private void EmitMemberAssignment(MemberAssignment binding, Type objectType)
+         {
+             EmitExpression(binding.Expression);
+-            if (binding.Member is FieldInfo fi)
++            if (binding.Member is FieldInfo)
+             {
++                FieldInfo fi = (FieldInfo)binding.Member;
+                 _ilg.Emit(OpCodes.Stfld, fi);
+             }
+             else
+@@ -1097,7 +1098,7 @@ namespace System.Linq.Expressions.Compiler
+         private static Type GetMemberType(MemberInfo member)
+         {
+             Debug.Assert(member is FieldInfo || member is PropertyInfo);
+-            return member is FieldInfo fi ? fi.FieldType : (member as PropertyInfo).PropertyType;
++            return member is FieldInfo ? ((FieldInfo)member).FieldType : (member as PropertyInfo).PropertyType;
+         }
+ 
+         #endregion
+diff --git a/src/System.Linq.Expressions/src/System/Linq/Expressions/MemberAssignment.cs b/src/System.Linq.Expressions/src/System/Linq/Expressions/MemberAssignment.cs
+index 475a6c63cc..0787b10186 100644
+--- a/src/System.Linq.Expressions/src/System/Linq/Expressions/MemberAssignment.cs
++++ b/src/System.Linq.Expressions/src/System/Linq/Expressions/MemberAssignment.cs
+@@ -93,23 +93,23 @@ namespace System.Linq.Expressions
+ 
+             // Null paramName as there are two paths here with different parameter names at the API
+             TypeUtils.ValidateType(decType, null);
+-            switch (member)
++            if (member is PropertyInfo)
+             {
+-                case PropertyInfo pi:
+-                    if (!pi.CanWrite)
+-                    {
+-                        throw Error.PropertyDoesNotHaveSetter(pi, nameof(member));
+-                    }
+-
+-                    memberType = pi.PropertyType;
+-                    break;
+-
+-                case FieldInfo fi:
+-                    memberType = fi.FieldType;
+-                    break;
+-
+-                default:
+-                    throw Error.ArgumentMustBeFieldInfoOrPropertyInfo(nameof(member));
++                PropertyInfo pi = (PropertyInfo) member;
++                if (!pi.CanWrite)
++                {
++                    throw Error.PropertyDoesNotHaveSetter(pi, nameof(member));
++                }
++                memberType = pi.PropertyType;
++            }
++            else if (member is FieldInfo)
++            {
++                FieldInfo fi = (FieldInfo) member;
++                memberType = fi.FieldType;
++            }
++            else
++            {
++                throw Error.ArgumentMustBeFieldInfoOrPropertyInfo(nameof(member));
+             }
+         }
+     }
+diff --git a/src/System.Linq.Expressions/src/System/Linq/Expressions/MemberBinding.cs b/src/System.Linq.Expressions/src/System/Linq/Expressions/MemberBinding.cs
+index c1c5884618..43c0698f90 100644
+--- a/src/System.Linq.Expressions/src/System/Linq/Expressions/MemberBinding.cs
++++ b/src/System.Linq.Expressions/src/System/Linq/Expressions/MemberBinding.cs
+@@ -61,6 +61,9 @@ namespace System.Linq.Expressions
+             return ExpressionStringBuilder.MemberBindingToString(this);
+         }
+ 
+-        internal virtual void ValidateAsDefinedHere(int index) => throw Error.UnknownBindingType(index);
++        internal virtual void ValidateAsDefinedHere(int index)
++        {
++            throw Error.UnknownBindingType(index);
++        }
+     }
+ }
+diff --git a/src/System.Linq.Expressions/src/System/Linq/Expressions/MemberMemberBinding.cs b/src/System.Linq.Expressions/src/System/Linq/Expressions/MemberMemberBinding.cs
+index f3981a2b1f..75dd7141da 100644
+--- a/src/System.Linq.Expressions/src/System/Linq/Expressions/MemberMemberBinding.cs
++++ b/src/System.Linq.Expressions/src/System/Linq/Expressions/MemberMemberBinding.cs
+@@ -127,23 +127,24 @@ namespace System.Linq.Expressions
+ 
+             // Null paramName as there are several paths here with different parameter names at the API
+             TypeUtils.ValidateType(decType, null, allowByRef: true, allowPointer: true);
+-            switch (member)
++            if (member is PropertyInfo)
+             {
+-                case PropertyInfo pi:
+-                    if (!pi.CanRead)
+-                    {
+-                        throw Error.PropertyDoesNotHaveGetter(pi, nameof(member));
+-                    }
+-
+-                    memberType = pi.PropertyType;
+-                    break;
+-
+-                case FieldInfo fi:
+-                    memberType = fi.FieldType;
+-                    break;
++                PropertyInfo pi = (PropertyInfo)member;
++                if (!pi.CanRead)
++                {
++                    throw Error.PropertyDoesNotHaveGetter(pi, nameof(member));
++                }
+ 
+-                default:
+-                    throw Error.ArgumentMustBeFieldInfoOrPropertyInfo(nameof(member));
++                memberType = pi.PropertyType;
++            }
++            else if (member is FieldInfo)
++            {
++                FieldInfo fi = (FieldInfo)member;
++                memberType = fi.FieldType;
++            }
++            else
++            {
++                throw Error.ArgumentMustBeFieldInfoOrPropertyInfo(nameof(member));
+             }
+         }
+ 
+diff --git a/src/System.Linq/src/System/Linq/Reverse.cs b/src/System.Linq/src/System/Linq/Reverse.cs
+index e68a4f42ee..a6352779b0 100644
+--- a/src/System.Linq/src/System/Linq/Reverse.cs
++++ b/src/System.Linq/src/System/Linq/Reverse.cs
+@@ -103,19 +103,24 @@ namespace System.Linq
+             {
+                 if (onlyIfCheap)
+                 {
+-                    switch (_source)
++                    if (_source is IIListProvider<TSource>)
+                     {
+-                        case IIListProvider<TSource> listProv:
+-                            return listProv.GetCount(onlyIfCheap: true);
+-
+-                        case ICollection<TSource> colT:
+-                            return colT.Count;
+-
+-                        case ICollection col:
+-                            return col.Count;
+-
+-                        default:
+-                            return -1;
++                        IIListProvider<TSource> listProv = (IIListProvider<TSource>)_source;
++                        return listProv.GetCount(onlyIfCheap: true);
++                    }
++                    else if (_source is ICollection<TSource>)
++                    {
++                        ICollection<TSource> colT = (ICollection<TSource>) _source;
++                        return colT.Count;
++                    }
++                    else if (_source is ICollection)
++                    {
++                        ICollection col = (ICollection) _source;
++                        return col.Count;
++                    }
++                    else
++                    {
++                        return -1;
+                     }
+                 }
+ 
+diff --git a/src/System.Net.HttpListener/src/System/Net/WebSockets/HttpListenerWebSocketContext.cs b/src/System.Net.HttpListener/src/System/Net/WebSockets/HttpListenerWebSocketContext.cs
+index 5321578946..ff54677027 100644
+--- a/src/System.Net.HttpListener/src/System/Net/WebSockets/HttpListenerWebSocketContext.cs
++++ b/src/System.Net.HttpListener/src/System/Net/WebSockets/HttpListenerWebSocketContext.cs
+@@ -94,8 +94,9 @@ namespace System.Net.WebSockets
+                 if (!(user is WindowsPrincipal))
+                 {
+                     // AuthenticationSchemes.Basic.
+-                    if (user.Identity is HttpListenerBasicIdentity basicIdentity)
++                    if (user.Identity is HttpListenerBasicIdentity)
+                     {
++                        HttpListenerBasicIdentity basicIdentity = (HttpListenerBasicIdentity)user.Identity;
+                         return new GenericPrincipal(new HttpListenerBasicIdentity(basicIdentity.Name, basicIdentity.Password), null);
+                     }
+                 }

@@ -1223,3 +1223,82 @@ unused0:")))))
               (patches (search-patches "mono-5.4.0-patches.patch"))))
     (native-inputs (modify-inputs (package-native-inputs mono-5.2.0)
                      (replace "mono" mono-5.2.0)))))
+
+(define mono-pre-5.8.0-external-repo-specs
+  '(("api-doc-tools"               "d03e819838c6241f92f90655cb448cc47c9e8791"
+     "1riki79f3ig3cxigviss81dz601hn92a1gifglm0mzjbs76sf3fj"
+     #:recursive? #t)
+    ("api-snapshot"                "e790a9b77031ef1d8ebf093ef88840edea11ed73"
+     "1c4np2fqd9mpc1i1x8bsxnypacp58vkvgdwpnmvmlyjdvbj5ax6q")
+    ("aspnetwebstack"              "e77b12e6cc5ed260a98447f609e887337e44e299"
+     "0rks344qr4fmp3fs1264d2qkmm348m8d1kjd7z4l94iiirwn1fq1")
+    (("reference-assemblies" "binary-reference-assemblies")
+     "142cbeb62ffabf1dd9c1414d8dd76f93bcbed0c2"
+     "1wkd589hgb16m5zvmp9yb57agyyryaa1jj8vhl4w20i2hp22wad9")
+    ("bockbuild"                   "b445017309aac741a26d8c51bb0636234084bf23"
+     "1jzhvavd1j0n7sy1waczgjv0kmrbr35gkzd76fhlmqvsy0sr9695")
+    ("boringssl"                   "3e0770e18835714708860ba9fe1af04a932971ff"
+     "139a0gl91a52k2r6na6ialzkqykaj1rk88zjrkaz3sdxx7nmmg6y")
+    ("cecil"                       "c76ba7b410447fa37093150cb7bc772cba28a0ae"
+     "0ydi7rn8ajqyvnj9agyn74llb4qgd9kgdcg3gajdfyb2klxx6za8")
+    (("cecil" "cecil-legacy")      "33d50b874fd527118bc361d83de3d494e8bb55e1"
+     "1p4hl1796ib26ykyf5snl6cj0lx0v7mjh0xqhjw6qdh753nsjyhb")
+    ("corefx"                      "74ccd8aa00d7d271191ca3b9c4f818268dc36c28"
+     "0nm41qdpvj62r8bxnf92m7kimjm1i544ygdqz5a7pgc6zf99as6j"
+     #:patches ("corefx-mono-pre-5.8.0-patches.patch"))
+    ("corert"                      "48dba73801e804e89f00311da99d873f9c550278"
+     "1zw47jf4cwqmaixylisxi73xf6cap41bwf9vlmpxanzxaqklzsvk")
+    ("ikdasm"                      "3aef9cdd6013fc0620a1817f0b11d8fb90ed2e0f"
+     "078cai33x8c71969iwi7hmbqdfwpicpmam2ag3k2bklpva2vnszv")
+    (("ikvm-fork" "ikvm")          "847e05fced5c9a41ff0f24f1f9d40d5a8a5772c1"
+     "1fl9bm3lmzf8iqv3x4iqkz9fc54mwdvrxisxg2nvwwcsi4saffpi")
+    ("linker"                      "21e445c26c69ac3a2e1441befa02d0bd105ff849"
+     "1hx3ik0sg70ysc2y8jdjxm2ljql0069i05i8fp1lakx7s7z7bywc")
+    ("Newtonsoft.Json"             "471c3e0803a9f40a0acc8aeceb31de6ff93a52c4"
+     "0dgngd5hqk6yhlg40kabn6qdnknm32zcx9q6bm2w31csnsk5978s")
+    (("NuGet.BuildTasks" "nuget-buildtasks")
+     "8d307472ea214f2b59636431f771894dbcba7258"
+     "1h1frnj0x8k7b29ic4jisch0vlpmsmghjw554pz277f2nxaidljj")
+    (("NUnitLite" "nunit-lite")    "690603bea98aae69fca9a65130d88591bc6cabee"
+     "1f845ysjzs3yd9gcyww66dnkx484z5fknb8l0xz74sjmxk2mngwc")
+    ;; ("roslyn-binaries"          "80b86f340b7f6fb7afe84443214e1cbd7ff70620"
+    ;;  "")
+    ("rx"                          "b29a4b0fda609e0af33ff54ed13652b6ccf0e05e"
+     "1n1jwhmsbkcv2d806immcpzkb72rz04xy98myw355a8w5ah25yiv")
+    ;; ("xunit-binaries"           "d4433b0972f40cb3efaa3fbba52869bde5df8fa8"
+    ;;  "")
+    ))
+
+(define-public mono-pre-5.8.0
+  (let ((commit "d0f51b4e834042cfa593748ada942033b458cc40")
+        (version "5.4.0.201")
+        (revision "0"))
+    (package
+      (inherit mono-5.4.0)
+      (version (git-version version revision commit))
+      (name "mono")
+      (source (origin
+                (method git-fetch)
+                (uri
+                 (git-reference
+                  (url "https://gitlab.winehq.org/mono/mono.git")
+                  (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0az5syk1nn9gd5imkbmpb13qm9q6ibr2d2ksdzpwsarkfyp4ic53"))
+                (modules '((guix build utils)
+                           (ice-9 string-fun)))
+                (snippet #~(begin
+                             #$(add-external-repos
+                                mono-pre-5.8.0-external-repo-specs)
+                             #$@prepare-mono-source-0))
+                (patches
+                 (search-patches "mono-5.4.0-patches.patch"))))
+      (native-inputs (modify-inputs (package-native-inputs mono-5.4.0)
+                       (replace "mono" mono-5.4.0)))
+      (arguments
+       (substitute-keyword-arguments (package-arguments mono-5.4.0)
+         ((#:phases phases #~%standard-phases)
+          #~(modify-phases #$phases
+              (delete 'patch-sub-autogen.sh-shebang))))))))
