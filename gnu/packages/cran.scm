@@ -14932,6 +14932,49 @@ filtering functions, resampling routines, and visualization of filter models.
 It also includes interpolation functions.")
     (license license:gpl2)))
 
+(define-public r-simdesign
+  (package
+    (name "r-simdesign")
+    (version "2.17.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "SimDesign" version))
+       (sha256
+        (base32 "0anmnzxxw7mv9kykjf2kmgv6qwxkrg48g91q32r2ia4dw8n17782"))))
+    (properties `((upstream-name . "SimDesign")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-beepr
+                             r-dplyr
+                             r-future
+                             r-future-apply
+                             r-parallelly
+                             r-pbapply
+                             r-progressr
+                             r-r-utils
+                             r-rpushbullet
+                             r-sessioninfo
+                             r-snow
+                             r-testthat))
+    (native-inputs (list r-knitr))
+    (home-page "http://philchalmers.github.io/SimDesign/")
+    (synopsis "Structure for organizing Monte Carlo simulation designs")
+    (description
+     "This package provides tools to safely and efficiently organize and
+execute Monte Carlo simulation experiments in R.  The package controls the
+structure and back-end of Monte Carlo simulation experiments by utilizing a
+generate-analyse-summarise workflow.  The workflow safeguards against common
+simulation coding issues, such as automatically re-simulating non-convergent
+results, prevents inadvertently overwriting simulation files, catches error
+and warning messages during execution, implicitly supports parallel processing
+with high-quality random number generation, and provides tools for managing
+high-performance computing (HPC) array jobs submitted to schedulers such as
+SLURM. For a pedagogical introduction to the package see Sigal and Chalmers
+(2016) <doi:10.1080/10691898.2016.1246953>.  For a more in-depth overview of
+the package and its design philosophy see Chalmers and Adkins (2020)
+<doi:10.20982/tqmp.16.4.p248>.")
+    (license license:gpl2+)))
+
 (define-public r-simplermarkdown
   (package
     (name "r-simplermarkdown")
