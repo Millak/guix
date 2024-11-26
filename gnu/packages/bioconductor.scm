@@ -15996,7 +15996,7 @@ qPCR data, but could be used with other types as well.")
       (inputs
        (list zlib))
       (native-inputs
-       (list gfortran))
+       (list gfortran r-knitr r-testthat))
       (propagated-inputs
        (list r-igraph))
       (home-page "https://github.com/cole-trapnell-lab/leidenbase")
