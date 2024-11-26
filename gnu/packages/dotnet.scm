@@ -861,3 +861,143 @@ a C-style programming language from Microsoft that is very similar to Java.")
               license:mpl1.1
               ;; API Documentation
               license:cc-by4.0))))
+
+(define mono-5.0.1-external-repo-specs
+  '(("aspnetwebstack"              "e77b12e6cc5ed260a98447f609e887337e44e299"
+     "0rks344qr4fmp3fs1264d2qkmm348m8d1kjd7z4l94iiirwn1fq1")
+    ;; snippet in the actual package will delete all dlls and exes, so this
+    ;; should be rebuilt from scratch.
+    (("reference-assemblies" "binary-reference-assemblies")
+     "febc100f0313f0dc9d75dd1bcea45e87134b5b55"
+     "0lpj911m2lq23r22dpy4i02fy4ykf27dx8fvqpxsxknysj2jl6y4")
+    ("bockbuild"                   "512ba41a94bec35ff0c395eb71a180fda23da95c"
+     "16m00la8svx8v07sxy4zxbpq0cbq7d3nzy53w8kqml8b18h5dabg")
+    ("boringssl"                   "c06ac6b33d3e7442ad878488b9d1100127eff998"
+     "187zpi1rvh9i6jfccwzqq337rxxi1rgny6mjq79r08dlrh0lydzc")
+    ("buildtools"                  "9b6ee8686be55a983d886938165b6206cda50772"
+     "0sjw3swavcmijynmaxh647qpkjsbgihdr8lhkyzf8dsprhlq4fxd")
+    ("cecil"                       "7801534de1bfed97c844821c3244e05fc7ffcfb8"
+     "0dmfyzkm57n3lbgllx6ffz4g84x1slkib9hb4cfp3nhz852qim7b")
+    (("cecil" "cecil-legacy")      "33d50b874fd527118bc361d83de3d494e8bb55e1"
+     "1p4hl1796ib26ykyf5snl6cj0lx0v7mjh0xqhjw6qdh753nsjyhb")
+    ("corefx"                      "bd96ae5f1485ae8541fe476dfd944efde76bcd9c"
+     "0j51lc54dmwa4fzna2vjfj4pcd1lk1s5bp5dfix1aqcncyzivazi")
+    ("corert"                      "d87c966d80c1274373ddafe3375bf1730cd430ed"
+     "078v5ks7inm2g1hf96x19k42jnv1qhhh7r8jxrfc7jk4v4lgmqyf")
+    ("ikdasm"                      "e4deabf61c11999f200dcea6f6d6b42474cc2131"
+     "1frbf70y7n7l72j393avdiwk6153cvfwwpighkf2m46clqmq4han")
+    (("ikvm-fork" "ikvm")          "367864ef810859ae3ce652864233b35f2dd5fdbe"
+     "0ig99kbma4s0mzb13nzsk1vm200ygfr11q6mzgh6jj46s2fc35px")
+    ("linker"                      "e4d9784ac37b9ebf4757175c92bc7a3ec9fd867a"
+     "0ga7br9lqdsycz22dndkbiwbd0c60ml6nl22xlsnjr7lwdccfjvl")
+    ("Lucene.Net.Light"            "85978b7eb94738f516824341213d5e94060f5284"
+     "0d118i52m3a0vfjhfci81a2kc4qvnj23gs02hrvdrfpd1q92fyii")
+    ("Newtonsoft.Json"             "471c3e0803a9f40a0acc8aeceb31de6ff93a52c4"
+     "0dgngd5hqk6yhlg40kabn6qdnknm32zcx9q6bm2w31csnsk5978s")
+    (("NuGet.BuildTasks" "nuget-buildtasks")
+     "8d307472ea214f2b59636431f771894dbcba7258"
+     "1h1frnj0x8k7b29ic4jisch0vlpmsmghjw554pz277f2nxaidljj")
+    (("NUnitLite" "nunit-lite")    "690603bea98aae69fca9a65130d88591bc6cabee"
+     "1f845ysjzs3yd9gcyww66dnkx484z5fknb8l0xz74sjmxk2mngwc")
+    ;; ("roslyn-binaries"          "0d4198b1299bcb019973749da4d47e90f15a1e46"
+    ;;  "")
+    ("rx"                          "b29a4b0fda609e0af33ff54ed13652b6ccf0e05e"
+     "1n1jwhmsbkcv2d806immcpzkb72rz04xy98myw355a8w5ah25yiv")))
+
+(define-public mono-5.0.1
+  (package
+    (inherit mono-4.9.0)
+    (version "5.0.1")
+    (name "mono")
+    (source (origin
+              (method git-fetch)
+              (uri
+               (git-reference
+                (url "https://gitlab.winehq.org/mono/mono.git")
+                (commit "mono-5.0.1.1")))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "05z9bddljp8xwsw7qw3f7bic8i202wrc60pjb9fn4igwfz9278n5"))
+              (modules '((guix build utils)
+                         (ice-9 string-fun)))
+              (snippet #~(begin
+                           #$(add-external-repos
+                              mono-5.0.1-external-repo-specs)
+                           #$@prepare-mono-source-0))))
+    (native-inputs (modify-inputs (package-native-inputs mono-4.9.0)
+                     (replace "mono" mono-4.9.0)
+                     (append cmake-minimal)))
+    (arguments
+     (substitute-keyword-arguments (package-arguments mono-4.9.0)
+       ((#:make-flags _ #f)
+        ;; Build system is buggy here, it does some weird wildcard expansion
+        ;; that assumes there's only at most one file in a directory
+        #~(list "V=1" "SKIP_AOT=1"))
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (add-after 'unpack 'disable-roslyn-install
+              ;; For some reason there is no predefined way to persuade mono to
+              ;; not install the binary blobs it assumes are there.
+              (lambda _
+                (substitute* "mcs/packages/Makefile"
+                  (("^install-local:")
+                   (string-append "install-local:
+	echo \"Skipping blob install\"
+
+unused0:")))))
+            (delete 'use-old-mono-libraries)
+            (add-after 'build 'build-reference-assemblies
+              (lambda* (#:key make-flags parallel-build? #:allow-other-keys)
+                (let ((top (getcwd))
+                      ;; parallel-build? needs to be false for mono's build
+                      ;; phase, but it should work here.
+                      (parallel-build? #t))
+                  (with-directory-excursion "external/binary-reference-assemblies"
+                    ;; No clue why all these references are missing, just
+                    ;; power through I guess.
+                    (substitute* (find-files "." "^Makefile$")
+                      (("CSC_COMMON_ARGS := " all)
+                       (string-append all "-delaysign+ "))
+                      (("IBM\\.Data\\.DB2_REFS := " all)
+                       (string-append all "System.Xml "))
+                      (("Mono\\.Data\\.Sqlite_REFS := " all)
+                       (string-append all "System.Xml "))
+                      (("System\\.Data\\.DataSetExtensions_REFS := " all)
+                       (string-append all "System.Xml "))
+                      (("System\\.Data\\.OracleClient_REFS := " all)
+                       (string-append all "System.Xml "))
+                      (("System\\.IdentityModel_REFS := " all)
+                       (string-append all "System.Configuration "))
+                      (("System\\.Design_REFS := " all)
+                       (string-append all "Accessibility "))
+                      (("System\\.Web\\.Extensions\\.Design_REFS := " all)
+                       (string-append all "System.Windows.Forms System.Web "))
+                      (("System\\.ServiceModel\\.Routing_REFS := " all)
+                       (string-append all "System.Xml "))
+                      (("System\\.Web\\.Abstractions_REFS := " all)
+                       (string-append all "System "))
+                      (("System\\.Reactive\\.Windows\\.Forms_REFS := " all)
+                       (string-append all "System "))
+                      (("System\\.Windows\\.Forms\\.DataVisualization_REFS := " all)
+                       (string-append all "Accessibility "))
+                      (("Facades/System\\.ServiceModel\\.Primitives_REFS := " all)
+                       (string-append all "System.Xml "))
+                      (("Facades/System\\.Dynamic\\.Runtime_REFS := " all)
+                       (string-append all "System "))
+                      (("Facades/System\\.Xml\\.XDocument_REFS := " all)
+                       (string-append all "System.Xml "))
+                      (("Facades/System\\.Runtime\\.Serialization.Xml_REFS := " all)
+                       (string-append all "System.Xml ")))
+                    (apply invoke "make"
+                           `(,@(if parallel-build?
+                                   `("-j" ,(number->string
+                                            (parallel-job-count)))
+                                   '())
+                             ,(string-append "CSC=MONO_PATH="
+                                             top "/mcs/class/lib/build"
+                                             " "
+                                             top "/runtime/mono-wrapper"
+                                             " "
+                                             top "/mcs/class/lib/build/mcs.exe")
+                             ,@make-flags))))))))))))
