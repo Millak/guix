@@ -35715,7 +35715,7 @@ interesting features. iheatmapr uses the plotly library for interactivity.")
     (properties `((upstream-name . "productplots")))
     (build-system r-build-system)
     (propagated-inputs (list r-ggplot2 r-plyr))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-reshape2 r-testthat))
     (home-page "https://github.com/hadley/productplots")
     (synopsis "Product plots for R")
     (description
