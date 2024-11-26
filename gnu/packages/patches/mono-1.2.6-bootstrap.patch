@@ -1,0 +1,585 @@
+diff --git a/mcs/class/System/System.Diagnostics/ICollectData.cs b/mcs/class/System/System.Diagnostics/ICollectData.cs
+index c52f9871589..c66c1936d3d 100644
+--- a/mcs/class/System/System.Diagnostics/ICollectData.cs
++++ b/mcs/class/System/System.Diagnostics/ICollectData.cs
+@@ -41,7 +41,7 @@ namespace System.Diagnostics
+ #endif
+ 	public interface ICollectData {
+ 		void CloseData ();
+-		[return: MarshalAs(UnmanagedType.I4)]
++		//[return: MarshalAs(UnmanagedType.I4)]
+ 		void CollectData (
+ 			[In] [MarshalAs(UnmanagedType.I4)] int id, 
+ 			[In] [MarshalAs(UnmanagedType.SysInt)] IntPtr valueName, 
+diff --git a/mcs/class/System/System.Diagnostics/LocalFileEventLog.cs b/mcs/class/System/System.Diagnostics/LocalFileEventLog.cs
+index 280e6a97227..c41816dca24 100644
+--- a/mcs/class/System/System.Diagnostics/LocalFileEventLog.cs
++++ b/mcs/class/System/System.Diagnostics/LocalFileEventLog.cs
+@@ -140,6 +140,30 @@ namespace System.Diagnostics
+ 			file_watcher.EnableRaisingEvents = false;
+ 		}
+ 
++        void FileCreationWatcher(object o, FileSystemEventArgs e)
++        {
++            lock (this) {
++                if (_notifying)
++                    return;
++                _notifying = true;
++            }
++
++            // Process every new entry in one notification event.
++            try {
++                while (GetLatestIndex () > last_notification_index) {
++                    try {
++                        CoreEventLog.OnEntryWritten (GetEntry (last_notification_index++));
++                    } catch (Exception ex) {
++                        // FIXME: find some proper way to output this error
++                        Debug.WriteLine (ex);
++                    }
++                }
++                } finally {
++                lock (this)
++                    _notifying = false;
++            }
++        }
++
+ 		public override void EnableNotification ()
+ 		{
+ 			if (file_watcher == null) {
+@@ -149,28 +173,7 @@ namespace System.Diagnostics
+ 
+ 				file_watcher = new FileSystemWatcher ();
+ 				file_watcher.Path = logDir;
+-				file_watcher.Created += delegate (object o, FileSystemEventArgs e) {
+-					lock (this) {
+-						if (_notifying)
+-							return;
+-						_notifying = true;
+-					}
+-
+-					// Process every new entry in one notification event.
+-					try {
+-						while (GetLatestIndex () > last_notification_index) {
+-							try {
+-								CoreEventLog.OnEntryWritten (GetEntry (last_notification_index++));
+-							} catch (Exception ex) {
+-								// FIXME: find some proper way to output this error
+-								Debug.WriteLine (ex);
+-							}
+-						}
+-					} finally {
+-						lock (this)
+-							_notifying = false;
+-					}
+-				};
++				file_watcher.Created += new FileSystemEventHandler(FileCreationWatcher);
+ 			}
+ 			last_notification_index = GetLatestIndex ();
+ 			file_watcher.EnableRaisingEvents = true;
+diff --git a/mcs/class/System/System.IO/InotifyWatcher.cs b/mcs/class/System/System.IO/InotifyWatcher.cs
+index d8e7acce3a7..7b0907eebc1 100644
+--- a/mcs/class/System/System.IO/InotifyWatcher.cs
++++ b/mcs/class/System/System.IO/InotifyWatcher.cs
+@@ -423,19 +423,36 @@ namespace System.IO {
+ 			return 16 + len;
+ 		}
+ 
++        class ThingEnumerator : IEnumerator, IEnumerable
++        {
++            object thing;
++            int j;
++            public ThingEnumerator(object thing)
++            { this.thing = thing; j = -1; }
++
++            public IEnumerator GetEnumerator() { return this; }
++            public bool MoveNext()
++            {
++                if(thing == null) { return false; }
++                if(thing is ArrayList)
++                {
++                    ArrayList list = (ArrayList) thing;
++                    if(j+1 >= list.Count) { return false; }
++                    j++;
++                    return true;
++                }
++                if(j == -1) { j = 0; return true; }
++                return false;
++            }
++            public void Reset() { j = -1; }
++            public object Current
++            { get { if(thing is ArrayList) return ((ArrayList)thing)[j];
++                    return thing; }}
++        }
++
+ 		static IEnumerable GetEnumerator (object source)
+ 		{
+-			if (source == null)
+-				yield break;
+-
+-			if (source is InotifyData)
+-				yield return source;
+-
+-			if (source is ArrayList) {
+-				ArrayList list = (ArrayList) source;
+-				for (int i = 0; i < list.Count; i++)
+-					yield return list [i];
+-			}
++			return new ThingEnumerator(source);
+ 		}
+ 
+ 		/* Interesting events:
+diff --git a/mcs/class/System/System.Net/ServicePoint.cs b/mcs/class/System/System.Net/ServicePoint.cs
+index a884d90f507..e1c73b098c2 100644
+--- a/mcs/class/System/System.Net/ServicePoint.cs
++++ b/mcs/class/System/System.Net/ServicePoint.cs
+@@ -137,7 +137,7 @@ namespace System.Net
+ 			get {
+ 				return idleSince;
+ 			}
+-			internal set {
++			set {
+ 				lock (locker)
+ 					idleSince = value;
+ 			}
+diff --git a/mcs/class/System/System.Text.RegularExpressions/BaseMachine.cs-2 b/mcs/class/System/System.Text.RegularExpressions/BaseMachine.cs-2
+new file mode 100644
+index 00000000000..a685e2679b7
+--- /dev/null
++++ b/mcs/class/System/System.Text.RegularExpressions/BaseMachine.cs-2
+@@ -0,0 +1,168 @@
++//
++// BaseMachine.jvm.cs
++//
++// Author:
++// author:	Dan Lewis (dlewis@gmx.co.uk)
++//		(c) 2002
++// Copyright (C) 2005 Novell, Inc (http://www.novell.com)
++//
++
++//
++// Permission is hereby granted, free of charge, to any person obtaining
++// a copy of this software and associated documentation files (the
++// "Software"), to deal in the Software without restriction, including
++// without limitation the rights to use, copy, modify, merge, publish,
++// distribute, sublicense, and/or sell copies of the Software, and to
++// permit persons to whom the Software is furnished to do so, subject to
++// the following conditions:
++//
++// The above copyright notice and this permission notice shall be
++// included in all copies or substantial portions of the Software.
++//
++// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
++// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
++// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
++// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
++// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
++// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
++// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
++//
++
++using System;
++using System.Collections;
++using System.Collections.Specialized;
++
++namespace System.Text.RegularExpressions
++{
++	abstract class BaseMachine : IMachine
++	{
++		internal delegate void MatchAppendEvaluator (Match match, StringBuilder sb);
++
++		public virtual string Replace (Regex regex, string input, string replacement, int count, int startat)
++		{
++			ReplacementEvaluator ev = new ReplacementEvaluator (regex, replacement);
++			if (regex.RightToLeft)
++				return RTLReplace (regex, input, new MatchEvaluator (ev.Evaluate), count, startat);
++			else
++				return LTRReplace (regex, input, new MatchAppendEvaluator (ev.EvaluateAppend), count, startat);
++		}
++
++		virtual public string [] Split (Regex regex, string input, int count, int startat)
++		{
++			ArrayList splits = new ArrayList ();
++			if (count == 0)
++				count = Int32.MaxValue;
++
++			int ptr = startat;
++			Match m = null;
++			while (--count > 0) {
++				if (m != null)
++					m = m.NextMatch ();
++				else
++					m = regex.Match (input, ptr);
++
++				if (!m.Success)
++					break;
++
++				if (regex.RightToLeft)
++					splits.Add (input.Substring (m.Index + m.Length, ptr - m.Index - m.Length));
++				else
++					splits.Add (input.Substring (ptr, m.Index - ptr));
++
++				int gcount = m.Groups.Count;
++				for (int gindex = 1; gindex < gcount; gindex++) {
++					Group grp = m.Groups [gindex];
++					splits.Add (input.Substring (grp.Index, grp.Length));
++				}
++
++				if (regex.RightToLeft)
++					ptr = m.Index;
++				else
++					ptr = m.Index + m.Length;
++
++			}
++
++			if (regex.RightToLeft && ptr >= 0)
++				splits.Add (input.Substring (0, ptr));
++			if (!regex.RightToLeft && ptr <= input.Length)
++				splits.Add (input.Substring (ptr));
++
++			return (string []) splits.ToArray (typeof (string));
++		}
++
++		virtual public Match Scan (Regex regex, string text, int start, int end)
++		{
++			throw new NotImplementedException ("Scan method must be implemented in derived classes");
++		}
++
++		virtual public string Result (string replacement, Match match)
++		{
++			return ReplacementEvaluator.Evaluate (replacement, match);
++		}
++
++		internal static string LTRReplace (Regex regex, string input, MatchAppendEvaluator evaluator, int count, int startat)
++		{
++			Match m = regex.Match (input, startat);
++			if (!m.Success)
++				return input;
++
++			StringBuilder result = new StringBuilder ();
++			int ptr = startat;
++			int counter = count;
++
++			result.Append (input, 0, ptr);
++
++			do {
++				if (count != -1)
++					if (counter-- <= 0)
++						break;
++				if (m.Index < ptr)
++					throw new SystemException ("how");
++				result.Append (input, ptr, m.Index - ptr);
++				evaluator (m, result);
++
++				ptr = m.Index + m.Length;
++				m = m.NextMatch ();
++			} while (m.Success);
++
++			result.Append (input, ptr, input.Length - ptr);
++
++			return result.ToString ();
++		}
++
++		internal static string RTLReplace (Regex regex, string input, MatchEvaluator evaluator, int count, int startat)
++		{
++			Match m = regex.Match (input, startat);
++			if (!m.Success)
++				return input;
++
++			int ptr = startat;
++			int counter = count;
++			StringCollection pieces = new StringCollection ();
++			pieces.Add (input.Substring (ptr));
++
++			do {
++				if (count != -1)
++					if (counter-- <= 0)
++						break;
++				if (m.Index + m.Length > ptr)
++					throw new SystemException ("how");
++				pieces.Add (input.Substring (m.Index + m.Length, ptr - m.Index - m.Length));
++				pieces.Add (evaluator (m));
++
++				ptr = m.Index;
++				m = m.NextMatch ();
++			} while (m.Success);
++
++			StringBuilder result = new StringBuilder ();
++
++			result.Append (input, 0, ptr);
++			for (int i = pieces.Count; i > 0; )
++				result.Append (pieces [--i]);
++
++			pieces.Clear ();
++
++			return result.ToString ();
++		}
++	}
++}
+diff --git a/mcs/class/corlib/System.Runtime.Remoting.Messaging/MethodCall.cs b/mcs/class/corlib/System.Runtime.Remoting.Messaging/MethodCall.cs
+index 94069d1727e..042574178fa 100644
+--- a/mcs/class/corlib/System.Runtime.Remoting.Messaging/MethodCall.cs
++++ b/mcs/class/corlib/System.Runtime.Remoting.Messaging/MethodCall.cs
+@@ -272,6 +272,10 @@ namespace System.Runtime.Remoting.Messaging {
+ 			set { _uri = value; }
+ 		}
+ 
++        string IMethodMessage.Uri {
++			get { return Uri; }
++		}
++
+ 		string IInternalMessage.Uri {
+ 			get { return Uri; }
+ 			set { Uri = value; }
+diff --git a/mcs/class/corlib/System.Runtime.Remoting.Messaging/MethodResponse.cs b/mcs/class/corlib/System.Runtime.Remoting.Messaging/MethodResponse.cs
+index 1b1eab014b3..575e7e37dee 100644
+--- a/mcs/class/corlib/System.Runtime.Remoting.Messaging/MethodResponse.cs
++++ b/mcs/class/corlib/System.Runtime.Remoting.Messaging/MethodResponse.cs
+@@ -272,6 +272,10 @@ namespace System.Runtime.Remoting.Messaging {
+ 			}
+ 		}
+ 
++        string IMethodMessage.Uri {
++			get { return Uri; }
++		}
++
+ 		string IInternalMessage.Uri {
+ 			get { return Uri; }
+ 			set { Uri = value; }
+diff --git a/mcs/class/corlib/System.Runtime.Remoting.Messaging/ReturnMessage.cs b/mcs/class/corlib/System.Runtime.Remoting.Messaging/ReturnMessage.cs
+index aee39f5bb81..ec09b73c15d 100644
+--- a/mcs/class/corlib/System.Runtime.Remoting.Messaging/ReturnMessage.cs
++++ b/mcs/class/corlib/System.Runtime.Remoting.Messaging/ReturnMessage.cs
+@@ -166,6 +166,10 @@ namespace System.Runtime.Remoting.Messaging
+ 			}
+ 		}
+ 
++        string IMethodMessage.Uri {
++			get { return Uri; }
++		}
++
+ 		string IInternalMessage.Uri {
+ 			get { return Uri; }
+ 			set { Uri = value; }
+diff --git a/mcs/class/corlib/System/MulticastDelegate.cs b/mcs/class/corlib/System/MulticastDelegate.cs
+index b36aff33492..cf9134a33b3 100644
+--- a/mcs/class/corlib/System/MulticastDelegate.cs
++++ b/mcs/class/corlib/System/MulticastDelegate.cs
+@@ -262,16 +262,16 @@ namespace System
+ 
+ 		public static bool operator == (MulticastDelegate a, MulticastDelegate b)
+ 		{
+-			if (a == null)
+-		    		return b == null;
++			if ((object)a == null)
++                return (object)b == null;
+ 		    		
+ 			return a.Equals (b);
+ 		}
+ 		
+ 		public static bool operator != (MulticastDelegate a, MulticastDelegate b)
+ 		{
+-			if (a == null)
+-				return b != null;
++			if ((object)a == null)
++				return (object)b != null;
+ 		    	
+ 			return !a.Equals (b);
+ 		}
+diff --git a/mcs/class/corlib/System/Object.cs b/mcs/class/corlib/System/Object.cs
+index 6b0a03d2a31..694cbd454e1 100644
+--- a/mcs/class/corlib/System/Object.cs
++++ b/mcs/class/corlib/System/Object.cs
+@@ -40,7 +40,7 @@ using System.Runtime.ConstrainedExecution;
+ 
+ namespace System {
+ 
+-	[Serializable]
++	//[Serializable]
+ 	[ClassInterface (ClassInterfaceType.AutoDual)]
+ #if NET_2_0
+ 	[ComVisible (true)]
+@@ -47,6 +47,12 @@
+ #endif
+ 	public class Object {
+ 
++        // Default definition of the object finalizer.
++        #if NET_2_0
++		[ReliabilityContractAttribute (Consistency.WillNotCorruptState, Cer.Success)]
++        #endif
++        protected virtual void Finalize() {}
++
+ 		// <summary>
+ 		//   Compares this object to the specified object.
+ 		//   Returns true if they are equal, false otherwise.
+@@ -80,16 +86,6 @@ namespace System {
+ 		{
+ 		}
+ 
+-		// <summary>
+-		//   Object destructor. 
+-		// </summary>
+-#if NET_2_0
+-		[ReliabilityContractAttribute (Consistency.WillNotCorruptState, Cer.Success)]
+-#endif
+-		~Object ()
+-		{
+-		}
+-
+ 		// <summary>
+ 		//   Returns a hashcode for this object.  Each derived
+ 		//   class should return a hash code that makes sense
+diff --git a/mcs/mcs/codegen.cs b/mcs/mcs/codegen.cs
+index c94a61772f4..8546d671ec6 100644
+--- a/mcs/mcs/codegen.cs
++++ b/mcs/mcs/codegen.cs
+@@ -498,7 +498,7 @@ namespace Mono.CSharp {
+ 
+ 		// utility helper for CheckExpr, UnCheckExpr, Checked and Unchecked statements
+ 		// it's public so that we can use a struct at the callsite
+-		public struct FlagsHandle : IDisposable
++		public class FlagsHandle : IDisposable
+ 		{
+ 			EmitContext ec;
+ 			readonly Flags invmask, oldval;
+diff --git a/mcs/mcs/typemanager.cs b/mcs/mcs/typemanager.cs
+index 1e173de89d2..58477af41a3 100644
+--- a/mcs/mcs/typemanager.cs
++++ b/mcs/mcs/typemanager.cs
+@@ -629,18 +629,42 @@ namespace Mono.CSharp {
+ 		return CSharpName (GetFullName (t));
+     }
+ 
++    static bool StartsWithWord(string haystack, string check)
++    {
++        if(String.Compare(haystack, 0, check, 0, check.Length, false) != 0)
++        { return false; }
++        if(check.Length == haystack.Length) { return true; }
++        char c = haystack[check.Length];
++        return !(Char.IsLetter(c) || Char.IsDigit(c));
++    }
++        
+ 	public static string CSharpName (string name)
+ 	{
+ 		if (name.StartsWith (AnonymousTypeClass.ClassNamePrefix))
+ 				return AnonymousTypeClass.SignatureForError;
+-			
+-		return Regex.Replace (name,
+-			@"^System\." +
+-			@"(Int32|UInt32|Int16|UInt16|Int64|UInt64|" +
+-			@"Single|Double|Char|Decimal|Byte|SByte|Object|" +
+-			@"Boolean|String|Void|Null)" +
+-			@"(\W+|\b)",
+-			new MatchEvaluator (CSharpNameMatch)).Replace ('+', '.');
++
++        int l = "System.".Length;
++        if(name.StartsWith("System.") && name.Length > l)
++        {
++            string s2 = name.Substring(l).ToLower();
++            if(StartsWithWord(s2, "int32"))
++                return "int";
++            if(StartsWithWord(s2, "uint32"))
++                return "uint";
++            if(StartsWithWord(s2, "int16"))
++                return "short";
++            if(StartsWithWord(s2, "uint16"))
++                return "ushort";
++            if(StartsWithWord(s2, "int64"))
++                return "long";
++            if(StartsWithWord(s2, "uint64"))
++                return "ulong";
++            if(StartsWithWord(s2, "single"))
++                return "float";
++            if(StartsWithWord(s2, "boolean"))
++                return "bool";
++        }
++        return name;
+ 	}
+ 
+ 	static public string CSharpName (Type[] types)
+@@ -654,21 +678,6 @@ namespace Mono.CSharp {
+ 		return sb.ToString ();
+ 	}
+ 	
+-	static String CSharpNameMatch (Match match) 
+-	{
+-		string s = match.Groups [1].Captures [0].Value;
+-		return s.ToLower ().
+-		Replace ("int32", "int").
+-		Replace ("uint32", "uint").
+-		Replace ("int16", "short").
+-		Replace ("uint16", "ushort").
+-		Replace ("int64", "long").
+-		Replace ("uint64", "ulong").
+-		Replace ("single", "float").
+-		Replace ("boolean", "bool")
+-		+ match.Groups [2].Captures [0].Value;
+-	}
+-
+ 	// Used for error reporting to show symbolic name instead of underlying value
+ 	public static string CSharpEnumValue (Type t, object value)
+ 	{
+diff --git a/mono/io-layer/processes.c b/mono/io-layer/processes.c
+index cd6176cdda2..486087d3a1b 100644
+--- a/mono/io-layer/processes.c
++++ b/mono/io-layer/processes.c
+@@ -15,6 +15,7 @@
+ #include <sys/time.h>
+ #include <errno.h>
+ #include <sys/types.h>
++#include <sys/sysmacros.h>
+ #include <unistd.h>
+ #include <signal.h>
+ #include <sys/wait.h>
+diff --git a/mono/metadata/Makefile.am b/mono/metadata/Makefile.am
+index 6ff2368895b..b8ba66e8756 100644
+--- a/mono/metadata/Makefile.am
++++ b/mono/metadata/Makefile.am
+@@ -154,7 +154,6 @@ libmonoruntimeinclude_HEADERS = \
+ 	object.h	\
+ 	exception.h	\
+ 	profiler.h	\
+-	appdomain.h	\
+ 	mono-config.h	\
+ 	debug-helpers.h	\
+ 	mempool.h
+diff --git a/mono/metadata/class.c b/mono/metadata/class.c
+index f13f37632fe..128710337f4 100644
+--- a/mono/metadata/class.c
++++ b/mono/metadata/class.c
+@@ -2695,10 +2695,10 @@ initialize_object_slots (MonoClass *class)
+ 				finalize_slot = i;
+ 		}
+ 
+-		g_assert (ghc_slot > 0);
++		g_assert (ghc_slot >= 0);
+ 		default_ghc = class->vtable [ghc_slot];
+ 
+-		g_assert (finalize_slot > 0);
++		g_assert (finalize_slot >= 0);
+ 		default_finalize = class->vtable [finalize_slot];
+ 	}
+ }
+diff --git a/mono/metadata/object.c b/mono/metadata/object.c
+index 2b6f4909b34..ef4c8fd8b44 100644
+--- a/mono/metadata/object.c
++++ b/mono/metadata/object.c
+@@ -861,7 +861,7 @@ mono_class_compute_gc_descriptor (MonoClass *class)
+ 		mono_register_jit_icall (GC_local_gcj_fast_malloc, "GC_local_gcj_fast_malloc", mono_create_icall_signature ("object int ptr"), FALSE);
+ #endif
+ 		mono_register_jit_icall (GC_gcj_malloc, "GC_gcj_malloc", mono_create_icall_signature ("object int ptr"), FALSE);
+-		mono_register_jit_icall (GC_gcj_fast_malloc, "GC_gcj_fast_malloc", mono_create_icall_signature ("object int ptr"), FALSE);
++		mono_register_jit_icall (GC_gcj_malloc, "GC_gcj_fast_malloc", mono_create_icall_signature ("object int ptr"), FALSE);
+ #endif
+ 		gcj_inited = TRUE;
+ 		mono_loader_unlock ();
+diff --git a/runtime/Makefile.am b/runtime/Makefile.am
+index 779787b3ce3..b67957dcf16 100644
+--- a/runtime/Makefile.am
++++ b/runtime/Makefile.am
+@@ -1,6 +1,3 @@
+-# hack to prevent 'check' from depending on 'all'
+-AUTOMAKE_OPTIONS = cygnus
+-
+ tmpinst = _tmpinst
+ 
+ noinst_SCRIPTS = mono-wrapper monodis-wrapper semdel-wrapper

@@ -260,3 +260,140 @@ assembler, disassembler, and runtime engine.")
        "DotGNU Portable.NET Library contains an implementation of the C# library,
 for use with .NET-capable runtime engines and applications.")
       (license license:gpl2+))))
+
+(define prepare-mono-source-0
+  #~((when (file-exists? "configure")
+       (delete-file "configure"))
+     (when (file-exists? "libgc")
+       (delete-file-recursively "libgc"))
+     ;; just to be sure
+     (for-each delete-file
+               (find-files "." "\\.(dll|exe|DLL|EXE|so)$"))
+     ;; We deleted docs/AgilityPack.dll earlier (if it existed), and it's
+     ;; required for building the documentation, so skip building the
+     ;; documentation.  According to docs/README, "the sources to this DLL
+     ;; live in GNOME CVS module beagle/Filters/AgilityPack".
+     (substitute* "Makefile.am"
+       (("^(|DIST_|MOONLIGHT_|MONOTOUCH_)SUBDIRS =.*" all)
+        (string-replace-substring
+         (string-replace-substring
+          (string-replace-substring all " docs" "")
+          " $(libgc_dir)" "")
+         " libgc" "")))))
+
+;; A lot of the fixes are shared between many versions, and it doesn't hurt to
+;; apply them to versions before or after they are necessary, so just include
+;; them all.
+(define prepare-mono-source
+  #~(begin
+      #$@prepare-mono-source-0
+      (substitute* (filter file-exists?
+                           '("configure.in"
+                             "configure.ac"))
+        (("int f = isinf \\(1\\);")
+         "int f = isinf (1.0);"))
+      ;; makedev is in <sys/sysmacros.h> now.  Include it.
+      (substitute* "mono/io-layer/processes.c"
+        (("#ifdef HAVE_SYS_MKDEV_H") "#if 1")
+        (("sys/mkdev.h") "sys/sysmacros.h"))
+      (substitute* (filter file-exists? '("mono/metadata/boehm-gc.c"))
+        (("GC_set_finalizer_notify_proc")
+         "GC_set_await_finalize_proc")
+        (("GC_toggleref_register_callback")
+         "GC_set_toggleref_func"))
+      (substitute* (filter file-exists? '("mono/utils/mono-compiler.h"))
+        (("static __thread gpointer x MONO_TLS_FAST")
+         "static __thread gpointer x __attribute__((used))"))
+      ;; Since the time the old mono versions were written at, gcc has started
+      ;; removing more things it thinks are unused (for example because they
+      ;; are only referenced in inline assembly of some sort).
+      (substitute* (filter file-exists? '("mono/metadata/sgen-alloc.c"))
+        (("static __thread char \\*\\*tlab_next_addr")
+         "static __thread char **tlab_next_addr __attribute__((used))"))
+      (substitute* (filter file-exists? '("mono/utils/mono-compiler.h"))
+        (("#define MONO_TLS_FAST ")
+         "#define MONO_TLS_FAST __attribute__((used)) "))))
+
+(define-public mono-1.2.6
+  (package
+    (version "1.2.6")
+    (name "mono")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "http://download.mono-project.com/sources/mono/"
+                    "mono-" version ".tar.bz2"))
+              (sha256
+               (base32 "03sn7wyvrjkkkbrqajpmqifxfn83p30qprizpb3m6c5cdhwlzk14"))
+              (modules '((guix build utils)
+                         (ice-9 string-fun)))
+              (snippet #~(begin
+                           #$prepare-mono-source
+                           (with-directory-excursion
+                             "mcs/class/System/System.Text.RegularExpressions"
+                             (delete-file "BaseMachine.cs")
+                             ;; Can't patch a file with different line endings,
+                             ;; so the patch creates a new one, and we overwrite
+                             ;; the old one here.
+                             (rename-file "BaseMachine.cs-2"
+                                          "BaseMachine.cs"))))
+              (patches (search-patches "mono-1.2.6-bootstrap.patch"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list autoconf
+           automake
+           bison
+           libtool
+           pnet-git
+           pnetlib-git
+           pkg-config))
+    (inputs
+     (list glib
+           libgc
+           libx11
+           zlib))
+    (arguments
+     (list
+      #:configure-flags #~(list "--with-gc=boehm")
+      #:make-flags #~(list (string-append "EXTERNAL_MCS="
+                                          #+(this-package-native-input "pnet-git")
+                                          "/bin/cscc")
+                           (string-append "EXTERNAL_RUNTIME="
+                                          #+(this-package-native-input "pnet-git")
+                                          "/bin/ilrun")
+                           "CFLAGS=-O2 -g -DARG_MAX=500"
+                           #$(string-append "CC=" (cc-for-target))
+                           "V=1")
+      ;; build fails nondeterministically without this
+      #:parallel-build? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-env
+            (lambda _
+              ;; All tests under mcs/class fail trying to access $HOME
+              (setenv "HOME" "/tmp")
+              ;; ZIP files have "DOS time" which starts in Jan 1980.
+              (setenv "SOURCE_DATE_EPOCH" "315532800"))))
+      ;; System.Object isn't marked as serializable because it causes issues
+      ;; with compiling with pnet (circular class reference between Object and
+      ;; SerializableAttribute), and this causes tests to fail.
+      #:tests? #f))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "MONO_PATH")
+            (files (list "lib/mono")))))
+    (synopsis "Compiler and libraries for the C# programming language")
+    (description "Mono is a compiler, vm, debugger and set of libraries for C#
+a C-style programming language from Microsoft that is very similar to Java.")
+    (home-page "https://www.mono-project.com/")
+    ;; See ./LICENSE
+    (license (list
+              ;; most of mcs/tools, mono/man, most of mcs/class, tests by
+              ;; default, mono/eglib
+              license:x11
+              ;; mcs/mcs, mcs/gmcs, some of mcs/tools
+              license:gpl1+ ;; note: ./mcs/LICENSE.GPL specifies no version
+              ;; mono/mono (the mono VM, I think they meant mono/mini)
+              license:lgpl2.0+ ;; note: ./mcs/LICENSE.LGPL specifies no version
+              ;; mcs/jay
+              license:bsd-4))))
