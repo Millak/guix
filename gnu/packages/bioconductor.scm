@@ -14383,7 +14383,17 @@ determining dependencies between variables, code improvement suggestions.")
            r-universalmotif
            r-venndiagram))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-biomart
+           r-bsgenome-celegans-ucsc-ce10
+           r-bsgenome-drerio-ucsc-danrer7
+           r-bsgenome-hsapiens-ucsc-hg19
+           r-ensdb-hsapiens-v79
+           r-knitr
+           r-org-ce-eg-db
+           r-org-hs-eg-db
+           r-reactome-db
+           r-testthat
+           r-txdb-hsapiens-ucsc-hg38-knowngene))
     (home-page "https://bioconductor.org/packages/ChIPpeakAnno")
     (synopsis "Peaks annotation from ChIP-seq and ChIP-chip experiments")
     (description
