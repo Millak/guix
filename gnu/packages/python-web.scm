@@ -9305,7 +9305,7 @@ SendGrid Web API v3 endpoints, including the new v3 /mail/send.")
 (define-public python-starlette
   (package
     (name "python-starlette")
-    (version "0.25.0")
+    (version "0.41.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -9314,7 +9314,7 @@ SendGrid Web API v3 endpoints, including the new v3 /mail/send.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1mkkj15lphgycnp51dnrfxbyrx3dicjdcpsqvwc7yw55zyih6h5k"))))
+                "18lk9rzj0qpzmm7llmk4mx3dc58ylq9rh5rfyccv0ws8a4ggvdy4"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-anyio
                              python-typing-extensions
