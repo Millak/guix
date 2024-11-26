@@ -1915,6 +1915,29 @@ regulatory network.  In addition, this package provides a human normal B-cells
 dataset for the examples in package viper.")
     (license license:gpl2+)))
 
+(define-public r-biotmledata
+  (package
+    (name "r-biotmledata")
+    (version "1.30.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "biotmleData" version
+                              'experiment))
+       (sha256
+        (base32 "0bnjhn0xirv81lw83ymd4mcmllkrd19gya7fr4j7xq77hjrx1kl7"))))
+    (properties `((upstream-name . "biotmleData")))
+    (build-system r-build-system)
+    (home-page "https://bioconductor.org/packages/biotmleData")
+    (synopsis
+     "Example experimental microarray data set for the \"biotmle\" R package")
+    (description
+     "This package provides microarray data (from the Illumina Ref-8 BeadChips
+platform) and phenotype-level data from an epidemiological investigation of
+benzene exposure, packaged using @code{SummarizedExperiemnt}, for use as an
+example with the @code{biotmle} R package.")
+    (license license:expat)))
+
 (define-public r-bladderbatch
   (package
     (name "r-bladderbatch")
