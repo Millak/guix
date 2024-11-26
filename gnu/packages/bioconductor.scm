@@ -14585,7 +14585,7 @@ assessment, principal component analysis on codon coverage.")
            r-rsamtools
            r-s4vectors
            r-seqlogo))
-    (native-inputs (list r-runit))
+    (native-inputs (list r-biocstyle r-runit))
     (home-page "https://bioconductor.org/packages/riboSeqR/")
     (synopsis "Analysis of sequencing data from ribosome profiling experiments")
     (description
