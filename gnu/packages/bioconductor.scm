@@ -10706,6 +10706,8 @@ functionality of the @code{TxDb} packages (e.g.,
          "1xbwvpxcn23yvibsf12g9irxcmz6ckp87991zzmk449xckayavrx"))))
     (properties `((upstream-name . "OrganismDbi")))
     (build-system r-build-system)
+    ;; Tests need r-homo-sapiens, which needs this package.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-annotationdbi
            r-biobase
