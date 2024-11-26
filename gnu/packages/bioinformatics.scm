@@ -13555,7 +13555,7 @@ read counts derived from the physical mechanism of tag cross-contamination.")
       (properties `((upstream-name . "demuxmix")))
       (build-system r-build-system)
       (propagated-inputs (list r-ggplot2 r-gridextra r-mass r-matrix))
-      (native-inputs (list r-knitr))
+      (native-inputs (list r-knitr r-testthat))
       (home-page "https://github.com/huklein/demuxmix")
       (synopsis
        "Demultiplexing oligo-barcoded scRNA-seq data using regression mixture models")
