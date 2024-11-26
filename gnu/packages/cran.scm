@@ -7817,6 +7817,47 @@ work well on small screens.")
 so-called readr first edition parsing engine, now superseded by vroom.")
     (license license:expat)))
 
+(define-public r-mirt
+  (package
+    (name "r-mirt")
+    (version "1.43")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "mirt" version))
+       (sha256
+        (base32 "18lqlpcw16bs9qkxdzgbhp7r1mgihkn5798amall341bpym8y1lc"))))
+    (properties `((upstream-name . "mirt")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-dcurver
+                             r-deriv
+                             r-gparotation
+                             r-gridextra
+                             r-lattice
+                             r-matrix
+                             r-mgcv
+                             r-pbapply
+                             r-rcpp
+                             r-rcpparmadillo
+                             r-simdesign
+                             r-vegan))
+    (native-inputs (list r-knitr))
+    (home-page "https://philchalmers.github.io/mirt/")
+    (synopsis "Multidimensional item response theory")
+    (description
+     "This is a package for the analysis of discrete response data using
+unidimensional and multidimensional item analysis models under the Item
+Response Theory paradigm (Chalmers (2012) <doi:10.18637/jss.v048.i06>).
+Exploratory and confirmatory item factor analysis models are estimated with
+quadrature (EM) or stochastic (MHRM) methods.  Confirmatory bi-factor and
+two-tier models are available for modeling item testlets using dimension
+reduction EM algorithms, while multiple group analyses and mixed effects
+designs are included for detecting differential item, bundle, and test
+functioning, and for modeling item and person covariates.  Finally, latent
+class models such as the DINA, DINO, multidimensional latent class, mixture
+IRT models, and zero-inflated response models are supported.")
+    (license license:gpl3+)))
+
 (define-public r-feather
   (package
     (name "r-feather")
