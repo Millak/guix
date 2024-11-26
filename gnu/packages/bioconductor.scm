@@ -2937,6 +2937,28 @@ quantifiers were @code{Cufflinks}, @code{RSEM}, @code{kallisto}, @code{Salmon}
 and @code{Sailfish}.  Alevin example output is also included.")
     (license license:gpl2+)))
 
+(define-public r-zebrafishrnaseq
+  (package
+    (name "r-zebrafishrnaseq")
+    (version "1.26.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "zebrafishRNASeq" version
+                              'experiment))
+       (sha256
+        (base32 "0h9bgqbyrakpmp15fvwpygmf0yrf8wqyfg3fnr30k46xvn265axh"))))
+    (properties `((upstream-name . "zebrafishRNASeq")))
+    (build-system r-build-system)
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/zebrafishRNASeq")
+    (synopsis
+     "Zebrafish RNA-Seq experimental data from Ferreira et al. (2014)")
+    (description
+     "This package provides gene-level read counts from RNA-Seq for
+gallein-treated and control zebrafish.")
+    (license (list license:gpl2+ license:gpl3+))))
+
 
 
 ;;; Packages
