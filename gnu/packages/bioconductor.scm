@@ -1562,6 +1562,28 @@ is derived from the UCSC mm9 genome and based on the \"knownGene\" track.  The
 database is exposed as a @code{TxDb} object.")
     (license license:artistic2.0)))
 
+(define-public r-txdb-mmusculus-ucsc-mm10-ensgene
+  (package
+    (name "r-txdb-mmusculus-ucsc-mm10-ensgene")
+    (version "3.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "TxDb.Mmusculus.UCSC.mm10.ensGene" version
+                              'annotation))
+       (sha256
+        (base32 "0saxi1fdiwd38sfvy1rynd3v44rbp158jv6sjqcivvaqnd84zg9s"))))
+    (properties `((upstream-name . "TxDb.Mmusculus.UCSC.mm10.ensGene")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-annotationdbi r-genomicfeatures))
+    (home-page
+     "https://bioconductor.org/packages/TxDb.Mmusculus.UCSC.mm10.ensGene")
+    (synopsis "Annotation package for TxDb object(s)")
+    (description
+     "This package exposes an annotation databases generated from UCSC by
+exposing these as @code{TxDb} objects.")
+    (license license:artistic2.0)))
+
 (define-public r-txdb-mmusculus-ucsc-mm10-knowngene
   (package
     (name "r-txdb-mmusculus-ucsc-mm10-knowngene")
