@@ -11993,6 +11993,7 @@ discovered with your analysis script.")
                                r-purrr
                                r-stringr
                                r-tidyr))
+      (native-inputs (list r-testthat))
       (home-page "https://github.com/davidsjoberg/ggsankey")
       (synopsis "Sankey, Alluvial and Sankey bump plots")
       (description
