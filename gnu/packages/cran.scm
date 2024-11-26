@@ -14511,8 +14511,11 @@ fit into memory.")
         (base32
          "07yc819hkabpzzh0g0cbqza6bcfy67b2marrzz1lj97f9iba78ja"))))
     (build-system r-build-system)
+    ;; FIXME: Tests fail with: could not find function "context"
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-httr r-r-methodss3 r-r-oo))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/cBioPortal/cgdsr")
     (synopsis "R-based API for accessing the MSKCC Cancer Genomics Data Server")
     (description
