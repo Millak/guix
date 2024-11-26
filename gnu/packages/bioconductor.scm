@@ -22764,7 +22764,7 @@ objects from the @code{graph} package.")
            r-singlecellexperiment
            r-summarizedexperiment
            r-svmisc))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-data-table r-deseq2 r-knitr r-samr r-testthat))
     (home-page "https://github.com/mikelove/fishpond")
     (synopsis "Downstream methods and tools for expression data")
     (description
