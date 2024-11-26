@@ -506,3 +506,24 @@ a C-style programming language from Microsoft that is very similar to Java.")
               license:lgpl2.0+ ;; note: ./mcs/LICENSE.LGPL specifies no version
               ;; mcs/jay
               license:bsd-4))))
+
+(define-public mono-2.6.4
+  (package
+    (inherit mono-2.4.2)
+    (version "2.6.4")
+    (name "mono")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.winehq.org/mono/mono.git")
+                    (commit (string-append "mono-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "17977w45qh8jmfsl4bhi83si4fxd8s3x8b0pxnwdzjv3bqr54c85"))
+              (modules '((guix build utils)
+                         (ice-9 string-fun)))
+              (snippet prepare-mono-source)
+              (patches (search-patches "mono-2.6.4-fixes.patch"))))
+    (native-inputs (modify-inputs (package-native-inputs mono-2.4.2)
+                     (replace "mono" mono-2.4.2)))))
