@@ -40511,70 +40511,7 @@ discovery of differentially expressed genes and markers.")
 ;; Seurat5 is only available via the seurat5 branch.  It will replace r-seurat
 ;; eventually once it has been released to CRAN.
 (define-public r-seurat5
-  (let ((commit "9d59c02042b9ae4f182fbde84cc8b18c0873ef4d")
-        (revision "1"))
-    (package
-      (inherit r-seurat)
-      (name "r-seurat5")
-      (version (git-version "4.9.9.9044" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/satijalab/seurat")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0y4wl6aanq9scn2clazlxsar35g64v4sfy561j43fq1i85na7m4i"))))
-      (propagated-inputs (list r-cluster
-                               r-cowplot
-                               r-fastdummies
-                               r-fitdistrplus
-                               r-future
-                               r-future-apply
-                               r-generics
-                               r-ggplot2
-                               r-ggrepel
-                               r-ggridges
-                               r-httr
-                               r-ica
-                               r-igraph
-                               r-irlba
-                               r-jsonlite
-                               r-kernsmooth
-                               r-leiden
-                               r-lifecycle
-                               r-lmtest
-                               r-mass
-                               r-matrix
-                               r-matrixstats
-                               r-miniui
-                               r-patchwork
-                               r-pbapply
-                               r-plotly
-                               r-png
-                               r-progressr
-                               r-rann
-                               r-rcolorbrewer
-                               r-rcpp
-                               r-rcppannoy
-                               r-rcppeigen
-                               r-rcpphnsw
-                               r-rcppprogress
-                               r-reticulate
-                               r-rlang
-                               r-rocr
-                               r-rspectra
-                               r-rtsne
-                               r-scales
-                               r-scattermore
-                               r-sctransform
-                               r-seurat5object
-                               r-shiny
-                               r-spatstat-explore
-                               r-spatstat-geom
-                               r-tibble
-                               r-uwot)))))
+  (deprecated-package "r-seurat5" r-seurat))
 
 (define-public r-seuratdisk
   (let ((commit "877d4e18ab38c686f5db54f8cd290274ccdbe295")
