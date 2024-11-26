@@ -30999,15 +30999,15 @@ standard error channel (stderr) in your program.")
 (define-public python-anyio
   (package
     (name "python-anyio")
-    (version "3.6.2")
+    (version "4.6.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "anyio" version))
        (sha256
         (base32
-         "08bljjq5xq0l9id36q3vvjgygirq7g7q2bs41hdg82p379khvsi5"))))
-    (build-system python-build-system)
+         "0ir3n40gdcm1kd7qyn4c46pgdyyp36h49a0pifyv6lh7vnrpnapp"))))
+    (build-system pyproject-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -31058,15 +31058,17 @@ standard error channel (stderr) in your program.")
            python-typing-extensions))
     (native-inputs
      (list python-contextlib2
-           python-coverage
            python-hypothesis
            python-mock
+           python-psutil
            python-pytest
            python-pytest-mock
+           python-setuptools
            python-setuptools-scm
            python-trio
            python-trustme
-           python-uvloop))
+           python-uvloop
+           python-wheel))
     (home-page "https://github.com/agronholm/anyio")
     (synopsis "Compatibility layer for multiple asynchronous event loops")
     (description
