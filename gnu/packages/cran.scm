@@ -44945,7 +44945,8 @@ authenticated.")
            (sha256
             (base32
              "1pq0059aad7d2jv50nv9449p3w0gbkxkl0mhblc76m5d9qjqav2q"))))
-       ("r-knitr" ,r-knitr)))
+       ("r-knitr" ,r-knitr)
+       ("r-testthat" ,r-testthat)))
     (home-page "https://cran.r-project.org/web/packages/rbokeh/")
     (synopsis "R interface for the Bokeh visualization library")
     (description
