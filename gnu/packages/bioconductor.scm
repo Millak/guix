@@ -2857,6 +2857,31 @@ cultures from 4 patients at 2 time points over 3 conditions (DPN, OHT and contro
     ;; The author(s) mentions only LGPL without any specific version.
     (license license:lgpl2.1+)))
 
+(define-public r-rnaseqdata-hnrnpc-bam-chr14
+  (package
+    (name "r-rnaseqdata-hnrnpc-bam-chr14")
+    (version "0.44.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "RNAseqData.HNRNPC.bam.chr14" version
+                              'experiment))
+       (sha256
+        (base32 "1yhr798bbv3mc8wnalz4wag1np6kyq6akb0mbpvj47130ifi0wbx"))))
+    (properties `((upstream-name . "RNAseqData.HNRNPC.bam.chr14")))
+    (build-system r-build-system)
+    (home-page "https://www.ebi.ac.uk/arrayexpress/experiments/E-MTAB-1147/")
+    (synopsis
+     "Aligned reads from RNAseq experiment")
+    (description
+     "The package contains 8 BAM files, 1 per sequencing run.  Each BAM file
+was obtained by aligning the reads (paired-end) to the full hg19 genome with
+@code{TopHat2}, and then subsetting to keep only alignments on chr14.  See
+accession number E-MTAB-1147 in the @code{ArrayExpress} database for details
+about the experiment, including links to the published study (by Zarnack et
+al., 2012) and to the FASTQ files.")
+    (license license:lgpl2.0+)))
+
 (define-public r-rtcga-rnaseq
   (package
     (name "r-rtcga-rnaseq")
