@@ -631,18 +631,41 @@ using @url{https://github.com/saghul/pycares,pycares}.")
 (define-public python-aioquic
   (package
     (name "python-aioquic")
-    (version "0.9.21")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "aioquic" version))
-              (sha256
-               (base32
-                "1xbfa4gmlmyj6bihdl5p4mr7nd6z79rfi92wcqkmcy4f643frivr"))))
+    (version "1.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "aioquic" version))
+       (sha256
+        (base32 "16bigrn5b46c7nmpzxhnlhh4y03hwc7dbd0mi5f8r53i7yxn64pr"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-pytest python-setuptools python-wheel))
-    (inputs (list openssl))
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k" (string-join
+                    ;; AssertionError: AlertBadCertificate not raised
+                    (list "not test_verify_subject_no_subjaltname"
+                          ;; AttributeError: module
+                          ;; 'service_identity.cryptography' has no attribute
+                          ;; 'extract_patterns'
+                          "test_verify_subject_with_subjaltname"
+                          ;; AttributeError: module
+                          ;; 'service_identity.cryptography' has no attribute
+                          ;; 'extract_patterns'
+                          "test_verify_subject_with_subjaltname_ipaddress")
+                    " and not "))))
+    (native-inputs
+     (list nss-certs-for-test
+           python-pytest
+           python-setuptools
+           python-wheel))
+    (inputs
+     (list openssl))
     (propagated-inputs
-     (list python-certifi python-pylsqpack python-pyopenssl))
+     (list python-certifi
+           python-pylsqpack
+           python-pyopenssl
+           python-service-identity))
     (home-page "https://github.com/aiortc/aioquic")
     (synopsis "QUIC and HTTP3 implementation in Python")
     (description
