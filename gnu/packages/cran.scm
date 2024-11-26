@@ -3541,6 +3541,33 @@ set edges, set labels, and regions.  From version 1.0, it is possible to
 customize these components as you demand in ordinary @code{ggplot2} grammar.")
     (license license:gpl3)))
 
+(define-public r-laf
+  (package
+    (name "r-laf")
+    (version "0.8.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "LaF" version))
+       (sha256
+        (base32 "1mj010bl4ql0hm33vl0dd08s9dab11y9fa32nsqs6kbb22gjzk6p"))))
+    (properties `((upstream-name . "LaF")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-rcpp))
+    (native-inputs (list r-testthat r-yaml))
+    (home-page "https://github.com/djvanderlaan/LaF")
+    (synopsis "Fast access to large ASCII files")
+    (description
+     "This package provides methods for fast access to large ASCII files.
+Currently the following file formats are supported: comma separated
+format (CSV) and fixed width format.  It is assumed that the files are too
+large to fit into memory, although the package can also be used to efficiently
+access files that do fit into memory.  Methods are provided to access and
+process files blockwise.  Furthermore, an opened file can be accessed as one
+would an ordinary data.frame.  The @code{LaF} vignette gives an overview of
+the functionality provided.")
+    (license license:gpl3)))
+
 (define-public r-lbfgsb3c
   (package
     (name "r-lbfgsb3c")
