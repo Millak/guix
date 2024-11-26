@@ -8175,15 +8175,31 @@ elements to achieve a simple goal in the most complex way possible.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "06l39w3ggrzn8799dqll606by4f88kjr60r879w8j26csx1py76g"))))
+        (base32 "06l39w3ggrzn8799dqll606by4f88kjr60r879w8j26csx1py76g"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (substitute* "meson.build"
+                   (("'aarch64', 'x86_64'")
+                    (string-append "'aarch64', 'loongarch64', 'mips64', 'ppc64', "
+                                   "'riscv64', 'sparc64', 'x86_64'")))))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags (list (string-append
                                 "-Dworkaround_elusive_bzip2_include_dir="
-                                (assoc-ref %build-inputs "bzip2")))
-       ;; No install target
+                                (assoc-ref %build-inputs "bzip2"))
+                               ,@(if (this-package-input "lua")
+                                     `("-Dlua=lua-5.2"
+                                       "-Dworkaround_noncpp_lua=true")
+                                     '()))
        #:phases
        (modify-phases %standard-phases
+         ;; Our lua variants are named lua-<version>, not lua<version>.
+         (add-after 'unpack 'adjust-lua-variant-names
+           (lambda _
+             (substitute* '("meson.build"
+                            "meson_options.txt")
+               (("lua5\\.") "lua-5."))))
+         ;; No install target
          (replace 'install
            (lambda _
              (let* ((output (assoc-ref %outputs "out"))
@@ -8205,14 +8221,18 @@ elements to achieve a simple goal in the most complex way possible.")
                                 (string-append dir "/powdertoy-powder.png"))))
                  '("16" "32" "48"))))))))
     (native-inputs (list pkg-config))
-    (inputs (list bzip2
-                  curl
-                  fftwf
-                  jsoncpp
-                  libpng
-                  luajit
-                  sdl2
-                  zlib))
+    (inputs
+     (append
+       (list bzip2
+             curl
+             fftwf
+             jsoncpp
+             libpng)
+       (if (supported-package? luajit)
+           (list luajit)
+           (list lua-5.2))
+       (list sdl2
+             zlib)))
     (synopsis "Free physics sandbox game")
     (description
      "The Powder Toy is a free physics sandbox game, which simulates air
