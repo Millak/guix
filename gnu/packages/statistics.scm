@@ -6894,6 +6894,7 @@ can load multiple parameters to the current environment.")
                                r-scales
                                r-tibble
                                r-tidyr))
+      (native-inputs (list r-testthat))
       (home-page "https://github.com/tanaylab/tgutil")
       (synopsis "Simple utility functions for Tanay lab code")
       (description
