@@ -14792,8 +14792,11 @@ of DTU.")
           (base32
            "0sbzma49aiiyw8b0jpr7fnhzys9nsqmp4hy4hdz1gzyg1lhnca26"))))
       (build-system r-build-system)
+      ;; Tests make invalid assumption about test files and their locations.
+      (arguments (list #:tests? #false))
       (propagated-inputs
        (list r-ggplot2 r-rcolorbrewer r-gridextra r-gplots r-plyr))
+      (native-inputs (list r-data-table))
       (home-page "https://github.com/rajewsky-lab/dropbead")
       (synopsis "Basic exploration and analysis of Drop-seq data")
       (description "This package offers a quick and straight-forward way to
