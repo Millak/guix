@@ -24593,11 +24593,15 @@ to annotation.")
        (sha256
         (base32
          "1cay30y7cc6lpikcp4ncx69zjg4kyn152z5b8fhw159n6cb1z19n"))))
-    (properties `((upstream-name . "megadepth")))
+    (properties
+     `((upstream-name . "megadepth")
+       (updater-extra-propagated-inputs . ("megadepth"))))
     (build-system r-build-system)
-    (inputs (list))
+    ;; Tests attempt to install latest version of megadepth.
+    (arguments (list #:tests? #false))
     (propagated-inputs
-     (list r-cmdfun
+     (list megadepth
+           r-cmdfun
            r-dplyr
            r-fs
            r-genomicranges
