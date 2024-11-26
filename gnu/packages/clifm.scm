@@ -23,9 +23,10 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
   #:use-module ((guix licenses) #:prefix license:)
-  #:use-module (gnu packages readline)
   #:use-module (gnu packages acl)
-  #:use-module (gnu packages linux))
+  #:use-module (gnu packages file)
+  #:use-module (gnu packages linux)
+  #:use-module (gnu packages readline))
 
 (define-public clifm
   (package
@@ -50,7 +51,7 @@
                   (delete 'configure)
                   (delete 'build)
                   (delete 'check))))
-    (inputs (list readline acl libcap))
+    (inputs (list acl file libcap readline))
     (home-page "https://github.com/leo-arch/clifm")
     (synopsis "Command-line file manager")
     (description
