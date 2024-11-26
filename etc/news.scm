@@ -34,6 +34,14 @@
 
 (channel-news
  (version 0)
+ (entry (commit "335f07eb47f7f900a6f11576ea6156c70b562208")
+        (title
+         (en "Please take the first Guix user and contributor survey!"))
+        (body
+         (en "We're running our first user and contributor survey to gather
+views across the community.  If you'd like to take part, please go to
+@url{https://guix.limesurvey.net/}.  Submissions close at the end of Sunday,
+December 1st, 2024 (11:59pm UTC).")))
  (entry (commit "ccf72d5074b0c5ba793e686cbb1d6eaad39824bf")
         (title
          (de "Neues Format @samp{appimage} für den Befehl @command{guix pack}")
