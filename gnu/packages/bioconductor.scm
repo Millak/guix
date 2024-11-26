@@ -15977,6 +15977,8 @@ high-throughput analyses.")
          "0lwi8cxlzgnd59bcn5mxkxijb292y857phafyskfs9k7951lxznl"))))
     (properties `((upstream-name . "GEOquery")))
     (build-system r-build-system)
+    ;; Tests attempt to download data files.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-biobase
            r-curl
