@@ -13647,7 +13647,7 @@ posterior for individual coefficients.")
           r-rsamtools
           r-rtracklayer
           r-summarizedexperiment))
-   (native-inputs (list r-runit))
+   (native-inputs (list r-biocstyle r-runit))
    (home-page "https://bioconductor.org/packages/GreyListChIP")
    (synopsis "Greylist artefact regions based on ChIP inputs")
    (description "This package identifies regions of ChIP experiments with high
