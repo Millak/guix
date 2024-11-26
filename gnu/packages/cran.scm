@@ -21283,6 +21283,8 @@ analysing multivariate abundance data in community ecology.")
         (base32 "1869xqq2wd7yw23q4ma5qawcnbdp7myafk6rdxazqymqak7f0wc8"))))
     (properties `((upstream-name . "mvnfast")))
     (build-system r-build-system)
+    ;; FIXME Tests fail with: could not find function "context"
+    (arguments (list #:tests? #false))
     (propagated-inputs (list r-bh r-rcpp r-rcpparmadillo))
     (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/mfasiolo/mvnfast/")
