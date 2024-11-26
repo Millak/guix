@@ -12248,7 +12248,7 @@ Pore-C concatemers.")
                                r-r6
                                r-rlang
                                r-withr))
-      (native-inputs (list r-knitr))
+      (native-inputs (list r-knitr r-testthat))
       (home-page "https://github.com/stan-dev/cmdstanr")
       (synopsis "R interface to 'CmdStan'")
       (description
