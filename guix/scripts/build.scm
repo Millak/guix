@@ -63,6 +63,8 @@
             show-cross-build-options-help
             show-native-build-options-help
 
+            dependents
+
             guix-build
             register-root
             register-root*))

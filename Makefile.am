@@ -743,6 +743,7 @@ EXTRA_DIST +=						\
   etc/source-manifest.scm				\
   etc/system-tests.scm					\
   etc/time-travel-manifest.scm				\
+  etc/upgrade-manifest.scm				\
   scripts/guix.in					\
   tests/cve-sample.json					\
   tests/keys/civodul.pub				\
