@@ -10951,7 +10951,7 @@ comparisons of methods for differential expression.")
            r-truncdist
            r-vegan
            r-vgam))
-    (native-inputs (list r-knitr r-runit))
+    (native-inputs (list r-biocgenerics r-knitr r-runit))
     (home-page "https://bioconductor.org/packages/powerTCR")
     (synopsis "Model-based comparative analysis of the TCR repertoire")
     (description
