@@ -29564,6 +29564,8 @@ engine (Salmon et al., 2011) as provided by the package @code{sitmo}.")
          "0jvxkdhbc28a096hi0y6519cj4im4mnl1vz9s563dvb5g4vb7r7b"))))
     (properties `((upstream-name . "ingredients")))
     (build-system r-build-system)
+    ;; Tests need r-dalex, which depends on this package.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-ggplot2 r-gridextra r-scales))
     (native-inputs (list r-knitr r-testthat))
