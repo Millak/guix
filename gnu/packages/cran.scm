@@ -38510,6 +38510,28 @@ maximums, many t, F and G-square tests, many regressions (normal, logistic,
 Poisson), are some of the many fast functions.")
     (license license:gpl2+)))
 
+(define-public r-rferns
+  (package
+    (name "r-rferns")
+    (version "5.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "rFerns" version))
+       (sha256
+        (base32 "1yw3np5iamnr7f3nrd507dkyz76nxmzdpinwxncv87yw30g6gnkq"))))
+    (properties `((upstream-name . "rFerns")))
+    (build-system r-build-system)
+    (home-page "https://gitlab.com/mbq/rFerns")
+    (synopsis "Random ferns classifier")
+    (description
+     "This package provides the random ferns classifier by Ozuysal, Calonder,
+Lepetit and Fua (2009) <doi:10.1109/TPAMI.2009.23>, modified for generic and
+multi-label classification and featuring OOB error approximation and
+importance measure as introduced in Kursa (2014)
+<doi:10.18637/jss.v061.i10>.")
+    (license license:gpl2+)))
+
 (define-public r-rffc
   (package
    (name "r-rffc")
