@@ -22709,6 +22709,7 @@ translates between different variant encodings.")
              r-tidyr
              r-tidyselect
              r-vctrs))
+      (native-inputs (list r-testthat))
       (home-page "https://github.com/timoast/signac/")
       (synopsis "Analysis of single-cell chromatin data")
       (description
