@@ -34009,15 +34009,20 @@ process.")
 (define-public python-aiofiles
   (package
     (name "python-aiofiles")
-    (version "23.1.0")
+    (version "24.1.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "aiofiles" version))
         (sha256
           (base32
-            "0d8n79slihf1lkbh2m6yw51rlq6n6vssljsdacbdpq0rkbglglpd"))))
-    (build-system python-build-system)
+            "0v0namryb6acj9bkic5rcgbnb36njj601ws85q60z0d3wp4pb812"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-hatchling
+           python-hatch-vcs
+           python-pytest
+           python-pytest-asyncio))
     (home-page "https://github.com/Tinche/aiofiles")
     (synopsis "File support for @code{asyncio}")
     (description "@code{python-aiofiles} is a library for handling local
