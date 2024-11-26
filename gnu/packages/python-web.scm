@@ -6344,18 +6344,18 @@ hard or impossible to fix in cssselect.")
 (define-public python-uvloop
   (package
     (name "python-uvloop")
-    (version "0.16.0")
+    (version "0.21.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "uvloop" version))
        (sha256
-        (base32 "0a0jzwrhkszknh14alflrp1db6dyjp7ph730f9yc5lb7gc6c4jzp"))
+        (base32 "1qq46ym3ymzfn4j6fnykfmr1f4qnb7x7p15dlw37hi38v87jpw9v"))
        (modules '((guix build utils)))
         (snippet
          '(begin (delete-file-recursively "vendor")
                  (delete-file  "uvloop/loop.c")))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -6391,14 +6391,19 @@ hard or impossible to fix in cssselect.")
                               ;; It looks like pytest is preventing
                               ;; custom stdout/stderr redirection,
                               ;; even with -s.
-                              "and not test_process_streams_redirect "))))))))
+                              "and not test_process_streams_redirect "
+                              ;; FileNotFoundError: [Errno 2] No such file or
+                              ;; directory
+                              "and not test_process_env_2"))))))))
     (native-inputs
      (list python-aiohttp
-           python-cython
+           python-cython-3
            python-psutil
            python-pyopenssl
            python-pytest
-           python-pytest-timeout))
+           python-pytest-timeout
+           python-setuptools
+           python-wheel))
     (inputs
      (list libuv))
     (home-page "https://github.com/MagicStack/uvloop")
