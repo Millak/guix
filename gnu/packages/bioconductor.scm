@@ -10582,7 +10582,11 @@ Gao et al in Nature Biotechnology 2022}.")
            r-rsqlite
            r-s4vectors
            r-tibble))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs
+     (list r-knitr
+           r-testthat
+           r-txdb-hsapiens-ucsc-hg38-knowngene
+           r-txdb-mmusculus-ucsc-mm10-ensgene))
     (home-page "https://bioconductor.org/packages/Organism.dplyr")
     (synopsis "Dplyr-based access to Bioconductor annotation resources")
     (description
