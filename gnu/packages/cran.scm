@@ -39974,7 +39974,7 @@ Design} (SFD) and to test their quality.")
                 "0jfb2li6b93fkwgjkr4jwxnvv7zb0aqk9lkf2mnv2awzh0r16pdb"))))
     (properties `((upstream-name . "DiceKriging")))
     (build-system r-build-system)
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-numderiv r-testthat))
     (home-page "https://dicekrigingclub.github.io/www/")
     (synopsis "Kriging methods for computer experiments")
     (description "This is a package for the estimation, validation and
