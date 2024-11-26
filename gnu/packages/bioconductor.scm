@@ -478,6 +478,32 @@ on mapping using ORF identifiers from @acronym{SGD, Saccharomyces Genome
 Database}.")
     (license license:artistic2.0)))
 
+(define-public r-pd-mapping50k-hind240
+  (package
+    (name "r-pd-mapping50k-hind240")
+    (version "3.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "pd.mapping50k.hind240" version
+                              'annotation))
+       (sha256
+        (base32 "1whpjdr4aql846cm8nzgs613pi12qdqfixhqcfv8wrqyks27kq6s"))))
+    (properties `((upstream-name . "pd.mapping50k.hind240")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biostrings
+                             r-dbi
+                             r-iranges
+                             r-oligo
+                             r-oligoclasses
+                             r-rsqlite
+                             r-s4vectors))
+    (home-page "https://bioconductor.org/packages/pd.mapping50k.hind240")
+    (synopsis "Platform Design Info for Affymetrix Mapping50K_Hind240")
+    (description "This package provides platform design info for Affymetrix
+Mapping50K_Hind240.")
+    (license license:artistic2.0)))
+
 (define-public r-pd-mapping50k-xba240
   (package
     (name "r-pd-mapping50k-xba240")
