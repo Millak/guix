@@ -4285,7 +4285,7 @@ plants.  The method has been specifically designed to:
            r-speedglm
            r-stringr
            r-summarizedexperiment))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/alpine")
     (synopsis "Modeling and correcting fragment sequence bias")
     (description
