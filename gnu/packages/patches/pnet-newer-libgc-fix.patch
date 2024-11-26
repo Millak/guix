@@ -1,0 +1,45 @@
+diff --git a/support/hb_gc.c b/support/hb_gc.c
+index a5addb2d..41126963 100644
+--- a/support/hb_gc.c
++++ b/support/hb_gc.c
+@@ -104,12 +104,6 @@ static volatile int _FinalizersRunningSynchronously = 0;
+ 	#define GC_TRACE(a, b)
+ #endif
+ 
+-/*
+- * This is a internal global variable with the number of reclaimed bytes
+- * after a garbage collection.
+- */
+-extern GC_signed_word GC_bytes_found;
+-
+ /*
+  *	Main entry point for the finalizer thread.
+  */
+@@ -432,6 +426,7 @@ int ILGCFullCollection(int timeout)
+ {
+ 	int lastFinalizingCount;
+ 	int hasThreads;
++       struct GC_prof_stats_s stats;
+ 
+ 	hasThreads = _ILHasThreads();
+ 
+@@ -462,7 +457,8 @@ int ILGCFullCollection(int timeout)
+ 			GC_TRACE("Last finalizingCount = %i\n", lastFinalizingCount);
+ 
+ 			GC_gcollect();
+-			bytesCollected = GC_bytes_found;
++                       GC_get_prof_stats(&stats, sizeof(stats));
++			bytesCollected = stats.bytes_reclaimed_since_gc;
+ 
+ 			GC_TRACE("GC: bytes collected =  %i\n", bytesCollected);
+ 
+@@ -516,7 +512,8 @@ int ILGCFullCollection(int timeout)
+ 			GC_TRACE("Last finalizingCount = %i\n", lastFinalizingCount);
+ 
+ 			GC_gcollect();
+-			bytesCollected = GC_bytes_found;
++                       GC_get_prof_stats(&stats, sizeof(stats));
++			bytesCollected = stats.bytes_reclaimed_since_gc;
+ 
+ 			GC_TRACE("GC: bytes collected =  %i\n", bytesCollected);
+ 

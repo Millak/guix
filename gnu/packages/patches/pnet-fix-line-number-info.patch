@@ -1,0 +1,13 @@
+diff --git a/codegen/cg_coerce.c b/codegen/cg_coerce.c
+index 92d2f59a..c90ad5e2 100644
+--- a/codegen/cg_coerce.c
++++ b/codegen/cg_coerce.c
+@@ -1203,6 +1203,8 @@ int ILCoerce(ILGenInfo *info, ILNode *node, ILNode **parent,
+ 					!= ILMachineType_Void)
+ 	{
+ 		*parent = ILNode_CastSimple_create(node, constType);
++                yysetfilename(*parent, yygetfilename(node));
++		yysetlinenum(*parent, yygetlinenum(node));
+ 		return 1;
+ 	}
+ 	else if(indirect && GetIndirectConvertRules(info,fromType,toType,0, 

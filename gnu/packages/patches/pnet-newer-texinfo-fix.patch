@@ -1,0 +1,13 @@
+diff --git a/doc/pnettools.texi b/doc/pnettools.texi
+index 916d90bb..cdbe05cf 100644
+--- a/doc/pnettools.texi
++++ b/doc/pnettools.texi
+@@ -59,7 +59,7 @@ Copyright @copyright{} 2001, 2002, 2003 Southern Storm Software, Pty Ltd
+ @center @titlefont{Portable.NET Development Tools}
+ 
+ @vskip 0pt plus 1fill
+-@center{Copyright @copyright{} 2001, 2002, 2003 Southern Storm Software, Pty Ltd}
++@center Copyright @copyright{} 2001, 2002, 2003 Southern Storm Software, Pty Ltd
+ @end titlepage
+ 
+ @c -----------------------------------------------------------------------

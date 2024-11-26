@@ -1,0 +1,13 @@
+diff --git a/codegen/cg_genattr.c b/codegen/cg_genattr.c
+index 535852da..c3acc0dc 100644
+--- a/codegen/cg_genattr.c
++++ b/codegen/cg_genattr.c
+@@ -1532,7 +1532,7 @@ static int MarshalAsAttribute(ILGenInfo *info,
+ 			else
+ 			{
+ 				sizeParamIndex = attributeInfo->namedArgs[currentNamedArg].evalValue.un.i4Value;
+-				if(sizeParamIndex <= 0)
++				if(sizeParamIndex < 0)
+ 				{
+ 					CGErrorForNode(info, attributeInfo->namedArgs[currentNamedArg].node,
+ 						_("The size parameter index must be >= 0"));
