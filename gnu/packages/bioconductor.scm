@@ -272,6 +272,26 @@ descriptions can discover new relationships between genes and disease, and new
 functions for previous uncharacteried genes and alleles.")
     (license license:artistic2.0)))
 
+(define-public r-human370v1ccrlmm
+  (package
+    (name "r-human370v1ccrlmm")
+    (version "1.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "human370v1cCrlmm" version
+                              'annotation))
+       (sha256
+        (base32 "1fhvgc6phhy8fqrl8bwjyskjl95bwlc08jyrkhsivml3ngbsfdf7"))))
+    (properties `((upstream-name . "human370v1cCrlmm")))
+    (build-system r-build-system)
+    (home-page "https://bioconductor.org/packages/human370v1cCrlmm")
+    (synopsis "Metadata for fast genotyping with the 'crlmm' package")
+    (description
+     "This is a package with metadata for genotyping Illumina 370k arrays
+using the crlmm package.")
+    (license license:artistic2.0)))
+
 (define-public r-jaspar2020
   (package
     (name "r-jaspar2020")
