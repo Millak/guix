@@ -9206,6 +9206,7 @@ in main memory.")
                (("\\bSint ") "int ")))))))
     (propagated-inputs
      (list r-bit r-fastmatch r-ff))
+    (native-inputs (list r-laf r-testthat))
     (home-page "https://github.com/edwindj/ffbase")
     (synopsis "Basic statistical functions for package 'ff'")
     (description
