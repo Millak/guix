@@ -26476,6 +26476,8 @@ customizable sets, and intervals.")
         (base32
          "1kxiy1wl7dr39kyfg2y9hd67s32knd83r2jsb7j9p3vg8iqq7yqb"))))
     (build-system r-build-system)
+    ;; Vignettes fail because of a missing file.
+    (arguments (list #:test-types '(list "tests")))
     (propagated-inputs
      (list r-gmp r-mathjaxr r-polynom r-rdpack r-sets))
     (native-inputs (list r-testthat))
