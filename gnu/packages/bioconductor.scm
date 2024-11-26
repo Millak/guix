@@ -153,6 +153,26 @@ in @code{MaskedDNAString} objects.")
 Ensembl.")
     (license license:artistic2.0)))
 
+(define-public r-genomewidesnp6crlmm
+  (package
+    (name "r-genomewidesnp6crlmm")
+    (version "1.0.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "genomewidesnp6Crlmm" version
+                              'annotation))
+       (sha256
+        (base32 "16qcxa32fmbdcv5dck0grsnqyfcqql7wpxa1l6andv9hrvabv2jx"))))
+    (properties `((upstream-name . "genomewidesnp6Crlmm")))
+    (build-system r-build-system)
+    (home-page "https://bioconductor.org/packages/genomewidesnp6Crlmm")
+    (synopsis "Metadata for fast genotyping with the crlmm package")
+    (description
+     "This is a package with metadata for fast genotyping Affymetrix
+@code{GenomeWideSnp_6} arrays using the @code{crlmm} package.")
+    (license license:artistic2.0)))
+
 (define-public r-hgu95av2-db
   (package
     (name "r-hgu95av2-db")
