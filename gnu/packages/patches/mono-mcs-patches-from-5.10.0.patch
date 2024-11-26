@@ -1,0 +1,4218 @@
+Includes the following commits:
+6f5bfe5cf5a
+3812d1c13fc
+a80f3d0d87c
+b2f051f0b19
+2a202a8478b
+4d7d1606d73
+d9970305731
+94e80fc8d7f
+0b9280083a9
+07d1e5f36a5
+5f279f14aa2
+889421f3bef
+f4c0fd3dc11
+71df5c63b46
+d6e5bf16782
+207f5c2cd6d
+c512752a416
+9aca8d5fe4b
+diff --git a/mcs/class/Mono.CSharp/Test/Evaluator/TypesTest.cs b/mcs/class/Mono.CSharp/Test/Evaluator/TypesTest.cs
+index 97f9e047e6d..f8bf63455de 100644
+--- a/mcs/class/Mono.CSharp/Test/Evaluator/TypesTest.cs
++++ b/mcs/class/Mono.CSharp/Test/Evaluator/TypesTest.cs
+@@ -131,5 +131,17 @@ namespace MonoTests.EvaluatorTest
+ 		{
+ 			Evaluator.Run ("public class TestClass { private TestEnum _te; public string Get() { return _te.ToString(); } } public enum TestEnum { First, Second }");
+ 		}
++
++		[Test]
++		public void EnumTypeWithOrderDependency ()
++		{
++			Evaluator.Run ("public class TestClass { public enum TestEnum { Val1, Val2, Val3 } public TestEnum test; public TestClass() { test = TestEnum.Val3; } }");
++			object res = Evaluator.Evaluate ("new TestClass()");
++
++			var fields = res.GetType ().GetFields ();
++			foreach (var field in fields) {
++				Console.WriteLine ($"{field.Name} = {field.MemberType}");
++			}
++		}
+ 	}
+ }
+\ No newline at end of file
+diff --git a/mcs/errors/cs0023-30.cs b/mcs/errors/cs0023-30.cs
+new file mode 100644
+index 00000000000..fc19cc24e3e
+--- /dev/null
++++ b/mcs/errors/cs0023-30.cs
+@@ -0,0 +1,11 @@
++// CS0023: The `is' operator cannot be applied to operand of type `default'
++// Line: 9
++// Compiler options: -langversion:latest
++
++class C
++{
++	static void Main ()
++	{
++		bool d = default is C;
++	}
++}
+\ No newline at end of file
+diff --git a/mcs/errors/cs0029-39.cs b/mcs/errors/cs0029-39.cs
+new file mode 100644
+index 00000000000..0ed200036dc
+--- /dev/null
++++ b/mcs/errors/cs0029-39.cs
+@@ -0,0 +1,15 @@
++// CS0029: Cannot implicitly convert type `S' to `object'
++// Line: 13
++// Compiler options: -langversion:latest
++
++public ref struct S
++{
++}
++
++class Test
++{
++	public static void Main ()
++	{
++		object o = new S ();
++	}
++}
+\ No newline at end of file
+diff --git a/mcs/errors/cs0029-40.cs b/mcs/errors/cs0029-40.cs
+new file mode 100644
+index 00000000000..6d9167c31fa
+--- /dev/null
++++ b/mcs/errors/cs0029-40.cs
+@@ -0,0 +1,19 @@
++// CS0029: Cannot implicitly convert type `S' to `System.ValueType'
++// Line: 16
++// Compiler options: -langversion:latest
++
++using System;
++
++public ref struct S
++{
++}
++
++class Test
++{
++	public static void Main ()
++	{
++		var s = default (S);
++		ValueType s2 = s;
++		var res = default (S).ToString ();
++	}
++}
+\ No newline at end of file
+diff --git a/mcs/errors/cs0029-41.cs b/mcs/errors/cs0029-41.cs
+new file mode 100644
+index 00000000000..1a65f52f737
+--- /dev/null
++++ b/mcs/errors/cs0029-41.cs
+@@ -0,0 +1,12 @@
++// CS0029: Cannot implicitly convert type `System.TypedReference' to `object'
++// Line: 10
++
++using System;
++
++class Test
++{
++	public static void Main ()
++	{
++		var res = default (TypedReference).ToString ();
++	}
++}
+\ No newline at end of file
+diff --git a/mcs/errors/cs0029-42.cs b/mcs/errors/cs0029-42.cs
+new file mode 100644
+index 00000000000..c7671000c76
+--- /dev/null
++++ b/mcs/errors/cs0029-42.cs
+@@ -0,0 +1,10 @@
++// CS0029: Cannot implicitly convert type `string' to `int'
++// Line: 8
++
++class C
++{
++	void Exists (int _)
++	{
++		_ = "2";
++	}	
++}
+\ No newline at end of file
+diff --git a/mcs/errors/cs0030-17.cs b/mcs/errors/cs0030-17.cs
+new file mode 100644
+index 00000000000..b72b8bf71e5
+--- /dev/null
++++ b/mcs/errors/cs0030-17.cs
+@@ -0,0 +1,15 @@
++// CS0030: Cannot convert type `object' to `S'
++// Line: 13
++// Compiler options: -langversion:latest
++
++ref struct S
++{
++}
++
++class X
++{
++	public static void Foo (object o)
++	{
++		var res = (S) o;
++	}
++}
+\ No newline at end of file
+diff --git a/mcs/errors/cs0103-18.cs b/mcs/errors/cs0103-18.cs
+new file mode 100644
+index 00000000000..8cec755d23d
+--- /dev/null
++++ b/mcs/errors/cs0103-18.cs
+@@ -0,0 +1,10 @@
++// CS0103: The name `_' does not exist in the current context
++// Line: 8
++
++class C
++{
++	void Test ()
++	{
++		_.ToString ();
++	}
++}
+\ No newline at end of file
+diff --git a/mcs/errors/cs0123-10.cs b/mcs/errors/cs0123-10.cs
+new file mode 100644
+index 00000000000..43d5e5d6368
+--- /dev/null
++++ b/mcs/errors/cs0123-10.cs
+@@ -0,0 +1,18 @@
++// CS0123: A method or delegate `object.ToString()' parameters do not match delegate `System.Func<string>()' parameters
++// Line: 16
++// Compiler options: -langversion:latest
++
++using System;
++
++public ref struct S
++{
++}
++
++class Test
++{
++	public static void Main ()
++	{
++		var s = new S ();
++		Func<string> f = s.ToString;
++	}
++}
+\ No newline at end of file
+diff --git a/mcs/errors/cs0123-11.cs b/mcs/errors/cs0123-11.cs
+new file mode 100644
+index 00000000000..427b628c159
+--- /dev/null
++++ b/mcs/errors/cs0123-11.cs
+@@ -0,0 +1,12 @@
++// CS0123: A method or delegate `object.ToString()' parameters do not match delegate `System.Func<string>()' parameters
++// Line: 16
++
++using System;
++
++class Test
++{
++	public static void Main ()
++	{
++		Func<string> f = default (TypedReference).ToString;
++	}
++}
+\ No newline at end of file
+diff --git a/mcs/errors/cs0133-2.cs b/mcs/errors/cs0133-2.cs
+index b7a37182d73..48488876f7e 100644
+--- a/mcs/errors/cs0133-2.cs
++++ b/mcs/errors/cs0133-2.cs
+@@ -1,4 +1,4 @@
+-// CS0133: The expression being assigned to `c' must be constant
++// CS0133: The expression being assigned to `c' must be a constant or default value
+ // Line: 10
+ 
+ class C
+diff --git a/mcs/errors/cs0133-3.cs b/mcs/errors/cs0133-3.cs
+index caae3bde68c..2f7dac6880d 100644
+--- a/mcs/errors/cs0133-3.cs
++++ b/mcs/errors/cs0133-3.cs
+@@ -1,5 +1,5 @@
+-// CS0133: The expression being assigned to `Foo' must be constant
+-// Line: 12
++// CS0133: The expression being assigned to `Foo' must be a constant or default value
++// Line: 8
+ 
+ class T
+ {
+diff --git a/mcs/errors/cs0133-4.cs b/mcs/errors/cs0133-4.cs
+index 41fe639b446..54162d544ca 100644
+--- a/mcs/errors/cs0133-4.cs
++++ b/mcs/errors/cs0133-4.cs
+@@ -1,4 +1,4 @@
+-// CS0133: The expression being assigned to `S.pathName' must be constant
++// CS0133: The expression being assigned to `S.pathName' must be a constant or default value
+ // Line: 12
+ // Compiler options: -unsafe
+ 
+diff --git a/mcs/errors/cs0133-5.cs b/mcs/errors/cs0133-5.cs
+index a49f265c690..32e6bfdf416 100644
+--- a/mcs/errors/cs0133-5.cs
++++ b/mcs/errors/cs0133-5.cs
+@@ -1,4 +1,4 @@
+-// CS0133: The expression being assigned to `b' must be constant
++// CS0133: The expression being assigned to `b' must be a constant or default value
+ // Line: 8
+ 
+ class X
+diff --git a/mcs/errors/cs0133-6.cs b/mcs/errors/cs0133-6.cs
+index a523169cdbd..28448dd6de8 100644
+--- a/mcs/errors/cs0133-6.cs
++++ b/mcs/errors/cs0133-6.cs
+@@ -1,4 +1,4 @@
+-// CS0133: The expression being assigned to `o' must be constant
++// CS0133: The expression being assigned to `o' must be a constant or default value
+ // Line: 8
+ 
+ class X
+diff --git a/mcs/errors/cs0133-7.cs b/mcs/errors/cs0133-7.cs
+index 10d82d9fe5e..024bc148229 100644
+--- a/mcs/errors/cs0133-7.cs
++++ b/mcs/errors/cs0133-7.cs
+@@ -1,4 +1,4 @@
+-// CS0133: The expression being assigned to `o' must be constant
++// CS0133: The expression being assigned to `o' must be a constant or default value
+ // Line: 8
+ 
+ class X
+diff --git a/mcs/errors/cs0133.cs b/mcs/errors/cs0133.cs
+index 094194deabb..f0dda9ee3cb 100644
+--- a/mcs/errors/cs0133.cs
++++ b/mcs/errors/cs0133.cs
+@@ -1,5 +1,6 @@
+-// CS0133: The expression being assigned to `x' must be constant
+-// Line: 6
++// CS0133: The expression being assigned to `x' must be a constant or default value
++// Line: 7
++
+ class X {
+ 	X (int arg)
+ 	{
+diff --git a/mcs/errors/cs0306-4.cs b/mcs/errors/cs0306-4.cs
+new file mode 100644
+index 00000000000..4653512e55b
+--- /dev/null
++++ b/mcs/errors/cs0306-4.cs
+@@ -0,0 +1,15 @@
++// CS0306: The type `S' may not be used as a type argument
++// Line: 13
++// Compiler options: -langversion:latest
++
++public ref struct S
++{
++}
++
++class Test<T>
++{
++	public static void Foo ()
++	{
++		Test<S> local;
++	}
++}
+\ No newline at end of file
+diff --git a/mcs/errors/cs0611-3.cs b/mcs/errors/cs0611-3.cs
+new file mode 100644
+index 00000000000..6eda773dd24
+--- /dev/null
++++ b/mcs/errors/cs0611-3.cs
+@@ -0,0 +1,15 @@
++// CS0611: Array elements cannot be of type `S'
++// Line: 13
++// Compiler options: -langversion:latest
++
++public ref struct S
++{
++}
++
++class Test
++{
++	public static void Main ()
++	{
++		var x = new S[0];
++	}
++}
+\ No newline at end of file
+diff --git a/mcs/errors/cs0815-9.cs b/mcs/errors/cs0815-9.cs
+new file mode 100644
+index 00000000000..f54703349be
+--- /dev/null
++++ b/mcs/errors/cs0815-9.cs
+@@ -0,0 +1,11 @@
++// CS0815: An implicitly typed local variable declaration cannot be initialized with `default'
++// Line: 9
++// Compiler options: -langversion:latest
++
++static class X
++{
++	public static void Main ()
++	{
++		var x = default;
++	}
++}
+\ No newline at end of file
+diff --git a/mcs/errors/cs1502-11.cs b/mcs/errors/cs1502-11.cs
+deleted file mode 100644
+index 82dcb3a2c17..00000000000
+--- a/mcs/errors/cs1502-11.cs
++++ /dev/null
+@@ -1,11 +0,0 @@
+-// CS1502: The best overloaded method match for `string.String(char*)' has some invalid arguments
+-// Line: 8
+-
+-class C
+-{
+-	static string Prop {
+-		get {
+-			return new string ("s");
+-		}
+-    }
+-}
+diff --git a/mcs/errors/cs1599-2.cs b/mcs/errors/cs1599-2.cs
+index 941ff6bb0d6..28aa05b2ed3 100644
+--- a/mcs/errors/cs1599-2.cs
++++ b/mcs/errors/cs1599-2.cs
+@@ -1,4 +1,4 @@
+-// CS1599: Method or delegate cannot return type `System.ArgIterator'
++// CS1599: The return type of `System.ArgIterator' is not allowed
+ // Line: 8
+ 
+ using System;
+diff --git a/mcs/errors/cs1599-3.cs b/mcs/errors/cs1599-3.cs
+index e4869dcaf70..9d378099d82 100644
+--- a/mcs/errors/cs1599-3.cs
++++ b/mcs/errors/cs1599-3.cs
+@@ -1,4 +1,4 @@
+-// CS1599: Method or delegate cannot return type `System.ArgIterator'
++// CS1599: The return type of `System.ArgIterator' is not allowed
+ // Line: 8
+ 
+ using System;
+diff --git a/mcs/errors/cs1599-4.cs b/mcs/errors/cs1599-4.cs
+new file mode 100644
+index 00000000000..358eee59a13
+--- /dev/null
++++ b/mcs/errors/cs1599-4.cs
+@@ -0,0 +1,12 @@
++// CS1599: The return type of `System.TypedReference' is not allowed
++// Line: 8
++
++using System;
++
++public class Program
++{
++    public static TypedReference operator + (int a, Program b)
++    {
++    	throw new ApplicationException ();
++    }
++}
+\ No newline at end of file
+diff --git a/mcs/errors/cs1599.cs b/mcs/errors/cs1599.cs
+index 5cef32d7f97..871d9fb3e7a 100644
+--- a/mcs/errors/cs1599.cs
++++ b/mcs/errors/cs1599.cs
+@@ -1,4 +1,4 @@
+-// CS1599: Method or delegate cannot return type `System.TypedReference'
++// CS1599: The return type of `System.TypedReference' is not allowed
+ // Line: 8
+ 
+ using System;
+diff --git a/mcs/errors/cs1644-57.cs b/mcs/errors/cs1644-57.cs
+new file mode 100644
+index 00000000000..7ee98373080
+--- /dev/null
++++ b/mcs/errors/cs1644-57.cs
+@@ -0,0 +1,7 @@
++// CS1644: Feature `ref structs' cannot be used because it is not part of the C# 7.0 language specification
++// Line: 5
++// Compiler options: -langversion:7
++
++ref struct S
++{
++}
+\ No newline at end of file
+diff --git a/mcs/errors/cs1644-58.cs b/mcs/errors/cs1644-58.cs
+new file mode 100644
+index 00000000000..e994cf338bd
+--- /dev/null
++++ b/mcs/errors/cs1644-58.cs
+@@ -0,0 +1,8 @@
++// CS1644: Feature `default literal' cannot be used because it is not part of the C# 7.0 language specification
++// Line: 7
++// Compiler options: -langversion:7
++
++class X
++{
++	int i = default;
++}
+diff --git a/mcs/errors/cs1644-59.cs b/mcs/errors/cs1644-59.cs
+new file mode 100644
+index 00000000000..2f8aed6b958
+--- /dev/null
++++ b/mcs/errors/cs1644-59.cs
+@@ -0,0 +1,13 @@
++// CS1644: Feature `readonly references' cannot be used because it is not part of the C# 7.0 language specification
++// Line: 9
++// Compiler options: -langversion:7
++
++class X
++{
++	int i;
++
++	ref readonly int Test ()
++	{
++		return ref i;
++	}
++}
+diff --git a/mcs/errors/cs1644-60.cs b/mcs/errors/cs1644-60.cs
+new file mode 100644
+index 00000000000..ca9547bc561
+--- /dev/null
++++ b/mcs/errors/cs1644-60.cs
+@@ -0,0 +1,11 @@
++// CS1644: Feature `discards' cannot be used because it is not part of the C# 6.0 language specification
++// Line: 9
++// Compiler options: -langversion:6
++
++class X
++{
++	int Test ()
++	{
++		_ = 2;
++	}
++}
+diff --git a/mcs/errors/cs1738-2.cs b/mcs/errors/cs1738-2.cs
+index f59221f4c7a..44b3f6d1b14 100644
+--- a/mcs/errors/cs1738-2.cs
++++ b/mcs/errors/cs1738-2.cs
+@@ -1,4 +1,4 @@
+-// CS1738: Named arguments must appear after the positional arguments
++// CS1738: Named arguments must appear after the positional arguments when using language version older than 7.2
+ // Line: 13
+ 
+ using System;
+diff --git a/mcs/errors/cs1738-3.cs b/mcs/errors/cs1738-3.cs
+index 53c4efc3553..901ac0e5d59 100644
+--- a/mcs/errors/cs1738-3.cs
++++ b/mcs/errors/cs1738-3.cs
+@@ -1,4 +1,4 @@
+-// CS1738: Named arguments must appear after the positional arguments
++// CS1738: Named arguments must appear after the positional arguments when using language version older than 7.2
+ // Line: 14
+ 
+ class C
+diff --git a/mcs/errors/cs1738.cs b/mcs/errors/cs1738.cs
+index dab9a61160b..537bc17b917 100644
+--- a/mcs/errors/cs1738.cs
++++ b/mcs/errors/cs1738.cs
+@@ -1,4 +1,4 @@
+-// CS1738: Named arguments must appear after the positional arguments
++// CS1738: Named arguments must appear after the positional arguments when using language version older than 7.2
+ // Line: 12
+ 
+ class C
+diff --git a/mcs/errors/cs1983.cs b/mcs/errors/cs1983.cs
+index a2ef6c150d6..76d2db4e677 100644
+--- a/mcs/errors/cs1983.cs
++++ b/mcs/errors/cs1983.cs
+@@ -1,4 +1,4 @@
+-// CS1983: The return type of an async method must be void, Task, or Task<T>
++// CS1983: The return type of an async method must be void or task type
+ // Line: 6
+ 
+ class C
+diff --git a/mcs/errors/cs4012-3.cs b/mcs/errors/cs4012-3.cs
+new file mode 100644
+index 00000000000..fb3d1dc276f
+--- /dev/null
++++ b/mcs/errors/cs4012-3.cs
+@@ -0,0 +1,19 @@
++// CS4012: Parameters or local variables of type `S' cannot be declared in async methods or iterators
++// Line: 16
++// Compiler options: -langversion:latest
++
++using System;
++using System.Threading.Tasks;
++
++public ref struct S
++{
++}
++
++class C
++{
++	public async void Test ()
++	{
++		var tr = new S ();
++		await Task.Factory.StartNew (() => 6);
++	}
++}
+\ No newline at end of file
+diff --git a/mcs/errors/cs8175-2.cs b/mcs/errors/cs8175-2.cs
+new file mode 100644
+index 00000000000..27c4babf8bf
+--- /dev/null
++++ b/mcs/errors/cs8175-2.cs
+@@ -0,0 +1,19 @@
++// CS8175: Cannot use by-reference variable `s' inside an anonymous method, lambda expression, or query expression
++// Line: 17
++// Compiler options: -langversion:latest
++
++using System;
++
++public ref struct S
++{
++}
++
++class Test
++{
++	public static void Main ()
++	{
++		var s = new S ();
++
++		Action a = () => Console.WriteLine (s);
++	}
++}
+\ No newline at end of file
+diff --git a/mcs/errors/cs8183.cs b/mcs/errors/cs8183.cs
+new file mode 100644
+index 00000000000..f9e9004b737
+--- /dev/null
++++ b/mcs/errors/cs8183.cs
+@@ -0,0 +1,11 @@
++// CS8183: Cannot infer the type of implicitly-typed discard
++// Line: 9
++// Compiler options: -langversion:7.2
++
++class X
++{
++	public static void Main ()
++	{
++		_ = default;
++	}
++}
+\ No newline at end of file
+diff --git a/mcs/errors/cs8184.cs b/mcs/errors/cs8184.cs
+new file mode 100644
+index 00000000000..19a4685d7bd
+--- /dev/null
++++ b/mcs/errors/cs8184.cs
+@@ -0,0 +1,10 @@
++// CS8184: A deconstruction cannot mix declarations and expressions on the left-hand-side
++// Line: 8
++
++class X
++{
++	public static void Main ()
++	{
++		(int a, b) = (1, 2);
++	}
++}
+\ No newline at end of file
+diff --git a/mcs/errors/cs8207.cs b/mcs/errors/cs8207.cs
+new file mode 100644
+index 00000000000..31090948b45
+--- /dev/null
++++ b/mcs/errors/cs8207.cs
+@@ -0,0 +1,19 @@
++// CS8207: An expression tree cannot contain a discard
++// Line: 11
++
++using System;
++using System.Linq.Expressions;
++
++class X
++{
++	void Test ()
++	{
++		Expression<Func<bool>> e = () => TryGetValue (out _);
++	}
++
++	bool TryGetValue (out int arg)
++	{
++		arg = 3;
++		return true;
++	}
++}
+diff --git a/mcs/errors/cs8209.cs b/mcs/errors/cs8209.cs
+new file mode 100644
+index 00000000000..3a46a206c8e
+--- /dev/null
++++ b/mcs/errors/cs8209.cs
+@@ -0,0 +1,10 @@
++// CS8209: Cannot assign void to a discard
++// Line: 8
++
++class C
++{
++	public static void Main ()
++	{
++		_ = Main ();
++	}
++}
+\ No newline at end of file
+diff --git a/mcs/errors/cs8310.cs b/mcs/errors/cs8310.cs
+new file mode 100644
+index 00000000000..134624c03b7
+--- /dev/null
++++ b/mcs/errors/cs8310.cs
+@@ -0,0 +1,11 @@
++// CS8310: Operator `+' cannot be applied to operand `default'
++// Line: 9
++// Compiler options: -langversion:latest
++
++class C
++{
++	static void Main ()
++	{
++		int h = 1 + default;
++	}
++}
+\ No newline at end of file
+diff --git a/mcs/errors/cs8311.cs b/mcs/errors/cs8311.cs
+new file mode 100644
+index 00000000000..5b35229442d
+--- /dev/null
++++ b/mcs/errors/cs8311.cs
+@@ -0,0 +1,12 @@
++// CS8311: Cannot use a default literal as an argument to a dynamically dispatched operation
++// Line: 10
++// Compiler options: -langversion:latest
++
++class C
++{
++    static void Main ()
++    {
++        dynamic d = null;
++        d.M2 (default);
++    }
++}
+\ No newline at end of file
+diff --git a/mcs/errors/cs8312.cs b/mcs/errors/cs8312.cs
+new file mode 100644
+index 00000000000..d2ad3f52f02
+--- /dev/null
++++ b/mcs/errors/cs8312.cs
+@@ -0,0 +1,12 @@
++// CS8312: Use of default literal is not valid in this context
++// Line: 9
++// Compiler options: -langversion:latest
++
++class C
++{
++	static void Main ()
++	{
++		foreach (var x in default) {
++		}
++	}
++}
+\ No newline at end of file
+diff --git a/mcs/errors/cs8315.cs b/mcs/errors/cs8315.cs
+new file mode 100644
+index 00000000000..c40bf8613b4
+--- /dev/null
++++ b/mcs/errors/cs8315.cs
+@@ -0,0 +1,11 @@
++// CS8315: Operator `==' is ambiguous on operands `default' and `default'
++// Line: 9
++// Compiler options: -langversion:latest
++
++class C
++{
++	static void Main ()
++	{
++		bool d = default == default;
++	}
++}
+\ No newline at end of file
+diff --git a/mcs/errors/cs8323.cs b/mcs/errors/cs8323.cs
+new file mode 100644
+index 00000000000..c6c9309ec0d
+--- /dev/null
++++ b/mcs/errors/cs8323.cs
+@@ -0,0 +1,15 @@
++// CS8323: Named argument `str' is used out of position but is followed by positional argument
++// Line: 9
++// Compiler options: -langversion:7.2
++
++class X
++{
++	public static void Main ()
++	{
++		Test (str: "", "");
++	}
++
++	static void Test (int arg, string str)
++	{
++	}
++}
+\ No newline at end of file
+diff --git a/mcs/errors/cs8324.cs b/mcs/errors/cs8324.cs
+new file mode 100644
+index 00000000000..8a0be1aefb9
+--- /dev/null
++++ b/mcs/errors/cs8324.cs
+@@ -0,0 +1,12 @@
++// CS8324: Named argument specifications must appear after all fixed arguments have been specified in a dynamic invocation
++// Line: 10
++// Compiler options: -langversion:7.2
++
++class C
++{
++	void M ()
++	{
++		dynamic d = new object ();
++		d.M (arg: 1, "");
++	}
++}
+\ No newline at end of file
+diff --git a/mcs/errors/cs8343.cs b/mcs/errors/cs8343.cs
+new file mode 100644
+index 00000000000..b6aa8e83a09
+--- /dev/null
++++ b/mcs/errors/cs8343.cs
+@@ -0,0 +1,12 @@
++// CS8343: `S': ref structs cannot implement interfaces
++// Line: 7
++// Compiler options: -langversion:latest
++
++using System;
++
++public ref struct S : IDisposable
++{
++	public void Dispose ()
++	{			
++	}
++}
+diff --git a/mcs/errors/cs8345-2.cs b/mcs/errors/cs8345-2.cs
+new file mode 100644
+index 00000000000..3f6137b1b56
+--- /dev/null
++++ b/mcs/errors/cs8345-2.cs
+@@ -0,0 +1,12 @@
++// CS8345: Field or auto-implemented property cannot be of type `S' unless it is an instance member of a ref struct
++// Line: 11
++// Compiler options: -langversion:latest
++
++public ref struct S
++{
++}
++
++ref struct Test
++{
++	static S field;
++}
+\ No newline at end of file
+diff --git a/mcs/errors/cs8345.cs b/mcs/errors/cs8345.cs
+new file mode 100644
+index 00000000000..0b5bd05518f
+--- /dev/null
++++ b/mcs/errors/cs8345.cs
+@@ -0,0 +1,12 @@
++// CS8345: Field or auto-implemented property cannot be of type `S' unless it is an instance member of a ref struct
++// Line: 11
++// Compiler options: -langversion:latest
++
++public ref struct S
++{
++}
++
++struct Test
++{
++	S field;
++}
+\ No newline at end of file
+diff --git a/mcs/errors/cs8346.cs b/mcs/errors/cs8346.cs
+new file mode 100644
+index 00000000000..58e22a2ae7f
+--- /dev/null
++++ b/mcs/errors/cs8346.cs
+@@ -0,0 +1,13 @@
++// CS8346: Cannot convert a stackalloc expression of type `byte' to type `System.Span<int>'
++// Line: 11
++// Compiler options: -langversion:7.2
++
++using System;
++
++class X
++{
++	public static void Main ()
++	{
++		Span<int> stackSpan = stackalloc byte[1];
++	}
++}
+\ No newline at end of file
+diff --git a/mcs/mcs/argument.cs b/mcs/mcs/argument.cs
+index 8421b4dfbfc..5b1003dbadf 100644
+--- a/mcs/mcs/argument.cs
++++ b/mcs/mcs/argument.cs
+@@ -106,11 +106,6 @@ namespace Mono.CSharp
+ 
+ 		public virtual Expression CreateExpressionTree (ResolveContext rc)
+ 		{
+-			if (Type.Kind == MemberKind.ByRef) {
+-				rc.Report.Error (8153, Expr.Location, "An expression tree lambda cannot contain a call to a method, property, or indexer that returns by reference");
+-				return null;
+-			}
+-
+ 			if (ArgType == AType.Default)
+ 				rc.Report.Error (854, Expr.Location, "An expression tree cannot contain an invocation which uses optional parameter");
+ 
+diff --git a/mcs/mcs/assign.cs b/mcs/mcs/assign.cs
+index a07c8c0ef39..596623feae4 100644
+--- a/mcs/mcs/assign.cs
++++ b/mcs/mcs/assign.cs
+@@ -391,9 +391,21 @@ namespace Mono.CSharp {
+ 			return System.Linq.Expressions.Expression.Assign (target_object, source_object);
+ 		}
+ 
+-		protected virtual Expression ResolveConversions (ResolveContext ec)
++		protected virtual Expression ResolveConversions (ResolveContext rc)
+ 		{
+-			source = Convert.ImplicitConversionRequired (ec, source, target.Type, source.Location);
++			var ttype = target.Type;
++			var stackAlloc = source as StackAlloc;
++			if (stackAlloc != null && ttype.Arity == 1 && ttype.GetDefinition () == rc.Module.PredefinedTypes.SpanGeneric.TypeSpec &&
++			    rc.Module.Compiler.Settings.Version >= LanguageVersion.V_7_2) {
++
++				var etype = ttype.TypeArguments [0];
++				var stype = ((PointerContainer)source.Type).Element;
++				if (etype == stype && stackAlloc.ResolveSpanConversion (rc, ttype)) {
++					return this;
++				}
++			}
++
++			source = Convert.ImplicitConversionRequired (rc, source, ttype, source.Location);
+ 			if (source == null)
+ 				return null;
+ 
+diff --git a/mcs/mcs/async.cs b/mcs/mcs/async.cs
+index fd6499346e8..643aed5e568 100644
+--- a/mcs/mcs/async.cs
++++ b/mcs/mcs/async.cs
+@@ -628,58 +628,112 @@ namespace Mono.CSharp
+ 
+ 		protected override bool DoDefineMembers ()
+ 		{
+-			PredefinedType builder_type;
+-			PredefinedMember<MethodSpec> bf;
+-			PredefinedMember<MethodSpec> bs;
+-			PredefinedMember<MethodSpec> sr;
+-			PredefinedMember<MethodSpec> se;
+-			PredefinedMember<MethodSpec> sm;
++			TypeSpec bt;
+ 			bool has_task_return_type = false;
+-			var pred_members = Module.PredefinedMembers;
++			var istate_machine = Module.PredefinedTypes.IAsyncStateMachine;
++			MethodSpec set_statemachine;
+ 
+-			if (return_type.Kind == MemberKind.Void) {
+-				builder_type = Module.PredefinedTypes.AsyncVoidMethodBuilder;
+-				bf = pred_members.AsyncVoidMethodBuilderCreate;
+-				bs = pred_members.AsyncVoidMethodBuilderStart;
+-				sr = pred_members.AsyncVoidMethodBuilderSetResult;
+-				se = pred_members.AsyncVoidMethodBuilderSetException;
+-				sm = pred_members.AsyncVoidMethodBuilderSetStateMachine;
+-			} else if (return_type == Module.PredefinedTypes.Task.TypeSpec) {
+-				builder_type = Module.PredefinedTypes.AsyncTaskMethodBuilder;
+-				bf = pred_members.AsyncTaskMethodBuilderCreate;
+-				bs = pred_members.AsyncTaskMethodBuilderStart;
+-				sr = pred_members.AsyncTaskMethodBuilderSetResult;
+-				se = pred_members.AsyncTaskMethodBuilderSetException;
+-				sm = pred_members.AsyncTaskMethodBuilderSetStateMachine;
+-				task = pred_members.AsyncTaskMethodBuilderTask.Get ();
++			if (return_type.IsCustomTaskType ()) {
++				//
++				// TODO: Would be nice to cache all this on per-type basis
++				//
++				var btypes = Compiler.BuiltinTypes;
++				bt = return_type.MemberDefinition.GetAsyncMethodBuilder ();
++				TypeSpec bt_inflated;
++				if (return_type.IsGeneric) {
++					bt_inflated = bt.MakeGenericType (Module, bt.MemberDefinition.TypeParameters);
++				} else {
++					bt_inflated = bt;
++				}
++
++				var set_result_sign = MemberFilter.Method ("SetResult", 0, ParametersCompiled.CreateFullyResolved (bt.MemberDefinition.TypeParameters), btypes.Void);
++				set_result = new PredefinedMember<MethodSpec> (Module, bt, set_result_sign).Resolve (Location);
++
++				var set_exception_sign = MemberFilter.Method ("SetException", 0, ParametersCompiled.CreateFullyResolved (btypes.Exception), btypes.Void);
++				set_exception = new PredefinedMember<MethodSpec> (Module, bt, set_exception_sign).Resolve (Location);
++
++				var builder_factory_sign = MemberFilter.Method ("Create", 0, ParametersCompiled.EmptyReadOnlyParameters, bt_inflated);
++				builder_factory = new PredefinedMember<MethodSpec> (Module, bt, builder_factory_sign).Resolve (Location);
++				if (builder_factory?.IsStatic == false)
++					throw new NotImplementedException ("report better error message");
++
++				var builder_start_sign = MemberFilter.Method ("Start", 1, new ParametersImported (
++						new [] {
++								new ParameterData (null, Parameter.Modifier.REF),
++							},
++						new [] {
++								new TypeParameterSpec (0, null, SpecialConstraint.None, Variance.None, null),
++							}, false),
++					btypes.Void);
++				builder_start = new PredefinedMember<MethodSpec> (Module, bt, builder_start_sign).Resolve (Location);
++
++				if (!istate_machine.Define ())
++					return false;
++
++				var set_statemachine_sign = MemberFilter.Method ("SetStateMachine", 0, ParametersCompiled.CreateFullyResolved (istate_machine.TypeSpec), btypes.Void);
++				set_statemachine = new PredefinedMember<MethodSpec> (Module, bt, set_statemachine_sign).Resolve (Location); ;
++
++				var task_sign = MemberFilter.Property ("Task", return_type.MemberDefinition as TypeSpec);
++				task = new PredefinedMember<PropertySpec> (Module, bt, task_sign).Resolve (Location);
++
++				if (set_result == null || set_exception == null || builder_factory == null || builder_start == null || set_statemachine == null || task == null ||
++					!Module.PredefinedTypes.INotifyCompletion.Define ()) {
++					return false;
++				}
++
++				has_task_return_type = return_type.IsGeneric;
+ 			} else {
+-				builder_type = Module.PredefinedTypes.AsyncTaskMethodBuilderGeneric;
+-				bf = pred_members.AsyncTaskMethodBuilderGenericCreate;
+-				bs = pred_members.AsyncTaskMethodBuilderGenericStart;
+-				sr = pred_members.AsyncTaskMethodBuilderGenericSetResult;
+-				se = pred_members.AsyncTaskMethodBuilderGenericSetException;
+-				sm = pred_members.AsyncTaskMethodBuilderGenericSetStateMachine;
+-				task = pred_members.AsyncTaskMethodBuilderGenericTask.Get ();
+-				has_task_return_type = true;
+-			}
++				PredefinedType builder_type;
++				PredefinedMember<MethodSpec> bf;
++				PredefinedMember<MethodSpec> bs;
++				PredefinedMember<MethodSpec> sr;
++				PredefinedMember<MethodSpec> se;
++				PredefinedMember<MethodSpec> sm;
++				var pred_members = Module.PredefinedMembers;
++
++				if (return_type.Kind == MemberKind.Void) {
++					builder_type = Module.PredefinedTypes.AsyncVoidMethodBuilder;
++					bf = pred_members.AsyncVoidMethodBuilderCreate;
++					bs = pred_members.AsyncVoidMethodBuilderStart;
++					sr = pred_members.AsyncVoidMethodBuilderSetResult;
++					se = pred_members.AsyncVoidMethodBuilderSetException;
++					sm = pred_members.AsyncVoidMethodBuilderSetStateMachine;
++				} else if (return_type == Module.PredefinedTypes.Task.TypeSpec) {
++					builder_type = Module.PredefinedTypes.AsyncTaskMethodBuilder;
++					bf = pred_members.AsyncTaskMethodBuilderCreate;
++					bs = pred_members.AsyncTaskMethodBuilderStart;
++					sr = pred_members.AsyncTaskMethodBuilderSetResult;
++					se = pred_members.AsyncTaskMethodBuilderSetException;
++					sm = pred_members.AsyncTaskMethodBuilderSetStateMachine;
++					task = pred_members.AsyncTaskMethodBuilderTask.Get ();
++				} else {
++					builder_type = Module.PredefinedTypes.AsyncTaskMethodBuilderGeneric;
++					bf = pred_members.AsyncTaskMethodBuilderGenericCreate;
++					bs = pred_members.AsyncTaskMethodBuilderGenericStart;
++					sr = pred_members.AsyncTaskMethodBuilderGenericSetResult;
++					se = pred_members.AsyncTaskMethodBuilderGenericSetException;
++					sm = pred_members.AsyncTaskMethodBuilderGenericSetStateMachine;
++					task = pred_members.AsyncTaskMethodBuilderGenericTask.Get ();
++					has_task_return_type = true;
++				}
+ 
+-			set_result = sr.Get ();
+-			set_exception = se.Get ();
+-			builder_factory = bf.Get ();
+-			builder_start = bs.Get ();
++				set_result = sr.Get ();
++				set_exception = se.Get ();
++				builder_factory = bf.Get ();
++				builder_start = bs.Get ();
+ 
+-			var istate_machine = Module.PredefinedTypes.IAsyncStateMachine;
+-			var set_statemachine = sm.Get ();
+-
+-			if (!builder_type.Define () || !istate_machine.Define () || set_result == null || builder_factory == null ||
+-				set_exception == null || set_statemachine == null || builder_start == null ||
+-				!Module.PredefinedTypes.INotifyCompletion.Define ()) {
+-				Report.Error (1993, Location,
+-					"Cannot find compiler required types for asynchronous functions support. Are you targeting the wrong framework version?");
+-				return base.DoDefineMembers ();
+-			}
++				set_statemachine = sm.Get ();
++
++				if (!builder_type.Define () || !istate_machine.Define () || set_result == null || builder_factory == null ||
++					set_exception == null || set_statemachine == null || builder_start == null ||
++					!Module.PredefinedTypes.INotifyCompletion.Define ()) {
++					Report.Error (1993, Location,
++						"Cannot find compiler required types for asynchronous functions support. Are you targeting the wrong framework version?");
++					return base.DoDefineMembers ();
++				}
+ 
+-			var bt = builder_type.TypeSpec;
++				bt = builder_type.TypeSpec;
++			}
+ 
+ 			//
+ 			// Inflate generic Task types
+@@ -825,9 +879,26 @@ namespace Mono.CSharp
+ 				predefined = unsafeVersion ? pm.AsyncVoidMethodBuilderOnCompletedUnsafe : pm.AsyncVoidMethodBuilderOnCompleted;
+ 			} else if (return_type == Module.PredefinedTypes.Task.TypeSpec) {
+ 				predefined = unsafeVersion ? pm.AsyncTaskMethodBuilderOnCompletedUnsafe : pm.AsyncTaskMethodBuilderOnCompleted;
+-			} else {
++			} else if (return_type.IsGenericTask) {
+ 				predefined = unsafeVersion ? pm.AsyncTaskMethodBuilderGenericOnCompletedUnsafe : pm.AsyncTaskMethodBuilderGenericOnCompleted;
+ 				has_task_return_type = true;
++			} else {
++				var parameters = new ParametersImported (
++					new [] {
++								new ParameterData (null, Parameter.Modifier.REF),
++								new ParameterData (null, Parameter.Modifier.REF)
++						},
++					new [] {
++								new TypeParameterSpec (0, null, SpecialConstraint.None, Variance.None, null),
++								new TypeParameterSpec (1, null, SpecialConstraint.None, Variance.None, null)
++					}, false);
++
++				var on_completed_sign = unsafeVersion ?
++					MemberFilter.Method ("AwaitUnsafeOnCompleted", 2, parameters, Compiler.BuiltinTypes.Void) :
++				    MemberFilter.Method ("AwaitOnCompleted", 2, parameters, Compiler.BuiltinTypes.Void);
++				
++				predefined = new PredefinedMember<MethodSpec> (Module, return_type.MemberDefinition.GetAsyncMethodBuilder (), on_completed_sign);
++				has_task_return_type = return_type.IsGeneric;
+ 			}
+ 
+ 			var on_completed = predefined.Resolve (Location);
+@@ -887,11 +958,14 @@ namespace Mono.CSharp
+ 			// stateMachine.$builder.Start<{storey-type}>(ref stateMachine);
+ 			//
+ 			instance.AddressOf (ec, AddressOp.Store);
+-			ec.Emit (OpCodes.Ldflda, builder_field);
++
++			bool struct_builder = builder.MemberType.IsStruct;
++
++			ec.Emit (struct_builder ? OpCodes.Ldflda : OpCodes.Ldfld, builder_field);
+ 			if (Task != null)
+ 				ec.Emit (OpCodes.Dup);
+ 			instance.AddressOf (ec, AddressOp.Store);
+-			ec.Emit (OpCodes.Call, builder_start.MakeGenericMethod (Module, instance.Type));
++			ec.Emit (struct_builder ? OpCodes.Call : OpCodes.Callvirt, builder_start.MakeGenericMethod (Module, instance.Type));
+ 
+ 			//
+ 			// Emits return stateMachine.$builder.Task;
+@@ -1029,4 +1103,20 @@ namespace Mono.CSharp
+ 			EmitAssign (ec, new NullConstant (type, loc), false, false);
+ 		}
+ 	}
++
++	static class TypeSpecAsyncExtensions
++	{
++		public static bool IsCustomTaskType (this TypeSpec type)
++		{
++			// LAMESPEC: Arity is not mentioned
++			if (type.Arity > 1)
++				return false;
++			
++			var amb = type.MemberDefinition.GetAsyncMethodBuilder ();
++			if (amb == null)
++				return false;
++
++			return amb.Arity == type.Arity;
++		}
++	}
+ }
+diff --git a/mcs/mcs/attribute.cs b/mcs/mcs/attribute.cs
+index 3ff2d68ccb5..83d403118ad 100644
+--- a/mcs/mcs/attribute.cs
++++ b/mcs/mcs/attribute.cs
+@@ -789,6 +789,17 @@ namespace Mono.CSharp {
+ 			return ((BoolConstant) pos_args[0].Expr).Value;
+ 		}
+ 
++		public TypeSpec GetAsyncMethodBuilderValue ()
++		{
++			if (!arg_resolved)
++				Resolve ();
++
++			if (resolve_error)
++				return null;
++
++			return GetArgumentType ();
++		}
++
+ 		public TypeSpec GetCoClassAttributeValue ()
+ 		{
+ 			if (!arg_resolved)
+@@ -1754,9 +1765,11 @@ namespace Mono.CSharp {
+ 
+ 		// New in .NET 4.7
+ 		public readonly PredefinedTupleElementNamesAttribute TupleElementNames;
++		public readonly PredefinedAttribute AsyncMethodBuilder;
+ 
+ 		// New in .NET 4.7.1
+ 		public readonly PredefinedAttribute IsReadOnly;
++		public readonly PredefinedAttribute IsByRefLike;
+ 
+ 		//
+ 		// Optional types which are used as types and for member lookup
+@@ -1837,8 +1850,10 @@ namespace Mono.CSharp {
+ 			CallerLineNumberAttribute = new PredefinedAttribute (module, "System.Runtime.CompilerServices", "CallerLineNumberAttribute");
+ 			CallerFilePathAttribute = new PredefinedAttribute (module, "System.Runtime.CompilerServices", "CallerFilePathAttribute");
+ 
++			AsyncMethodBuilder = new PredefinedAttribute (module, "System.Runtime.CompilerServices", "AsyncMethodBuilderAttribute");
+ 			TupleElementNames = new PredefinedTupleElementNamesAttribute (module, "System.Runtime.CompilerServices", "TupleElementNamesAttribute");
+ 			IsReadOnly = new PredefinedAttribute (module, "System.Runtime.CompilerServices", "IsReadOnlyAttribute");
++			IsByRefLike = new PredefinedAttribute (module, "System.Runtime.CompilerServices", "IsByRefLikeAttribute");
+ 
+ 			// TODO: Should define only attributes which are used for comparison
+ 			const System.Reflection.BindingFlags all_fields = System.Reflection.BindingFlags.Public |
+diff --git a/mcs/mcs/class.cs b/mcs/mcs/class.cs
+index 9afb32c6fe5..6b1adc297a3 100644
+--- a/mcs/mcs/class.cs
++++ b/mcs/mcs/class.cs
+@@ -224,6 +224,24 @@ namespace Mono.CSharp
+ 			}
+ 		}
+ 
++		public void CloseContainerEarlyForReflectionEmit ()
++		{
++			if (containers != null) {
++				foreach (TypeContainer tc in containers) {
++					//
++					// SRE requires due to internal checks that any field of enum type is
++					// baked. We close all enum types before closing any other types to
++					// workaround this limitation
++					//
++					if (tc.Kind == MemberKind.Enum) {
++						tc.CloseContainer ();
++					} else {
++						tc.CloseContainerEarlyForReflectionEmit ();
++					}
++				}
++			}
++		}
++
+ 		public virtual void CreateMetadataName (StringBuilder sb)
+ 		{
+ 			if (Parent != null && Parent.MemberName != null)
+@@ -1102,6 +1120,18 @@ namespace Mono.CSharp
+ 				member.GenerateDocComment (builder);
+ 		}
+ 
++		public TypeSpec GetAsyncMethodBuilder ()
++		{
++			if (OptAttributes == null)
++				return null;
++
++			Attribute a = OptAttributes.Search (Module.PredefinedAttributes.AsyncMethodBuilder);
++			if (a == null)
++				return null;
++
++			return a.GetAsyncMethodBuilderValue ();
++		}
++
+ 		public TypeSpec GetAttributeCoClass ()
+ 		{
+ 			if (OptAttributes == null)
+@@ -2171,7 +2201,7 @@ namespace Mono.CSharp
+ 
+ 		public override void Emit ()
+ 		{
+-			if (Interfaces != null) {
++			if (Interfaces != null && (ModFlags & Modifiers.PRIVATE) == 0) {
+ 				foreach (var iface in Interfaces) {
+ 					if (iface.HasNamedTupleElement) {
+ 						throw new NotImplementedException ("named tuples for .interfaceimpl");
+@@ -3023,7 +3053,8 @@ namespace Mono.CSharp
+ 			Modifiers.INTERNAL  |
+ 			Modifiers.UNSAFE    |
+ 			Modifiers.PRIVATE   |
+-			Modifiers.READONLY;
++			Modifiers.READONLY  |
++			Modifiers.REF;
+ 
+ 		public Struct (TypeContainer parent, MemberName name, Modifiers mod, Attributes attrs)
+ 			: base (parent, name, attrs, MemberKind.Struct)
+@@ -3139,6 +3170,9 @@ namespace Mono.CSharp
+ 			if ((ModFlags & Modifiers.READONLY) != 0)
+ 				Module.PredefinedAttributes.IsReadOnly.EmitAttribute (TypeBuilder);
+ 
++			if ((ModFlags & Modifiers.REF) != 0)
++				Module.PredefinedAttributes.IsByRefLike.EmitAttribute (TypeBuilder);
++
+ 			CheckStructCycles ();
+ 
+ 			base.Emit ();
+@@ -3213,6 +3247,10 @@ namespace Mono.CSharp
+ 		protected override TypeSpec[] ResolveBaseTypes (out FullNamedExpression base_class)
+ 		{
+ 			var ifaces = base.ResolveBaseTypes (out base_class);
++			if (ifaces != null && (ModFlags & Modifiers.REF) != 0) {
++				Report.Error (8343, Location, "`{0}': ref structs cannot implement interfaces", GetSignatureForError ());
++			}
++
+ 			base_type = Compiler.BuiltinTypes.ValueType;
+ 			return ifaces;
+ 		}
+@@ -3915,7 +3953,7 @@ namespace Mono.CSharp
+ 
+ 		protected void IsTypePermitted ()
+ 		{
+-			if (MemberType.IsSpecialRuntimeType) {
++			if (MemberType.IsSpecialRuntimeType || MemberType.IsByRefLike) {
+ 				if (Parent is StateMachine) {
+ 					Report.Error (4012, Location,
+ 						"Parameters or local variables of type `{0}' cannot be declared in async methods or iterators",
+@@ -3924,6 +3962,19 @@ namespace Mono.CSharp
+ 					Report.Error (4013, Location,
+ 						"Local variables of type `{0}' cannot be used inside anonymous methods, lambda expressions or query expressions",
+ 						MemberType.GetSignatureForError ());
++				} else if (MemberType.IsByRefLike) {
++					if ((ModFlags & (Modifiers.ABSTRACT | Modifiers.EXTERN)) != 0)
++						return;
++
++					if ((ModFlags & Modifiers.AutoProperty) == 0 && this is Property)
++						return;
++
++					if ((ModFlags & Modifiers.STATIC) == 0 && (Parent.ModFlags & Modifiers.REF) != 0)
++						return;
++
++					Report.Error (8345, Location,
++						"Field or auto-implemented property cannot be of type `{0}' unless it is an instance member of a ref struct",
++						MemberType.GetSignatureForError ());
+ 				} else {
+ 					Report.Error (610, Location, 
+ 						"Field or property cannot be of type `{0}'", MemberType.GetSignatureForError ());
+diff --git a/mcs/mcs/const.cs b/mcs/mcs/const.cs
+index 046aec24c1b..658f15ec57a 100644
+--- a/mcs/mcs/const.cs
++++ b/mcs/mcs/const.cs
+@@ -206,7 +206,9 @@ namespace Mono.CSharp {
+ 					c = field.ConvertInitializer (rc, c);
+ 
+ 				if (c == null) {
+-					if (TypeSpec.IsReferenceType (field.MemberType))
++					if (expr is DefaultLiteralExpression) {
++						// It's handled bellow in New.Constantify
++					} else if (TypeSpec.IsReferenceType (field.MemberType))
+ 						Error_ConstantCanBeInitializedWithNullOnly (rc, field.MemberType, expr.Location, GetSignatureForError ());
+ 					else if (!(expr is Constant))
+ 						Error_ExpressionMustBeConstant (rc, expr.Location, GetSignatureForError ());
+diff --git a/mcs/mcs/convert.cs b/mcs/mcs/convert.cs
+index b11477c1043..ae153fc49e8 100644
+--- a/mcs/mcs/convert.cs
++++ b/mcs/mcs/convert.cs
+@@ -392,6 +392,9 @@ namespace Mono.CSharp {
+ 				if (!TypeSpec.IsValueType (expr_type))
+ 					return null;
+ 
++				if (expr_type.IsByRefLike)
++					return null;
++
+ 				return expr == null ? EmptyExpression.Null : new BoxedCast (expr, target_type);
+ 
+ 			case BuiltinTypeSpec.Type.Enum:
+@@ -816,7 +819,7 @@ namespace Mono.CSharp {
+ 			if (expr_type == target_type)
+ 				return true;
+ 
+-			if (expr_type == InternalType.ThrowExpr)
++			if (expr_type == InternalType.ThrowExpr || expr_type == InternalType.DefaultType)
+ 				return target_type.Kind != MemberKind.InternalCompilerType;
+ 
+ 			if (target_type.IsNullableType)
+@@ -1478,6 +1481,10 @@ namespace Mono.CSharp {
+ 				return target_type.Kind == MemberKind.InternalCompilerType ? null : EmptyCast.Create (expr, target_type);
+ 			}
+ 
++			if (expr_type == InternalType.DefaultType) {
++				return new DefaultValueExpression (new TypeExpression (target_type, expr.Location), expr.Location).Resolve (ec);
++			}
++
+ 			if (target_type.IsNullableType)
+ 				return ImplicitNulableConversion (ec, expr, target_type);
+ 
+@@ -1967,7 +1974,7 @@ namespace Mono.CSharp {
+ 			// From object or dynamic to any reference type or value type (unboxing)
+ 			//
+ 			if (source_type.BuiltinType == BuiltinTypeSpec.Type.Object || source_type.BuiltinType == BuiltinTypeSpec.Type.Dynamic) {
+-				if (target_type.IsPointer)
++				if (target_type.IsPointer || target_type.IsByRefLike)
+ 					return null;
+ 
+ 				return
+diff --git a/mcs/mcs/cs-parser.jay b/mcs/mcs/cs-parser.jay
+index 2868d2fd8f6..4d6fcb44c0d 100644
+--- a/mcs/mcs/cs-parser.jay
++++ b/mcs/mcs/cs-parser.jay
+@@ -169,7 +169,8 @@ namespace Mono.CSharp
+ %token CONST	
+ %token CONTINUE	
+ %token DECIMAL	
+-%token DEFAULT	
++%token DEFAULT
++%token DEFAULT_VALUE
+ %token DELEGATE	
+ %token DO	
+ %token DOUBLE	
+@@ -336,6 +337,7 @@ namespace Mono.CSharp
+ %token DEFAULT_COLON
+ %token OPEN_BRACKET_EXPR
+ %token OPEN_PARENS_DECONSTRUCT
++%token REF_STRUCT
+ 
+ // Make the parser go into eval mode parsing (statements and compilation units).
+ %token EVAL_STATEMENT_PARSER
+@@ -863,7 +865,7 @@ attribute_arguments
+ 		}
+ 		
+ 		Arguments args = ((Arguments) o [0]);
+-		if (args.Count > 0 && !($3 is NamedArgument) && args [args.Count - 1] is NamedArgument)
++		if (lang_version < LanguageVersion.V_7_2 && args.Count > 0 && !($3 is NamedArgument) && args [args.Count - 1] is NamedArgument)
+ 			Error_NamedArgumentExpected ((NamedArgument) args [args.Count - 1]);
+ 		
+ 		args.Add ((Argument) $3);
+@@ -1015,17 +1017,34 @@ primary_constructor_body
+ 	  }
+ 	;
+ 
++struct_keyword
++	: STRUCT
++	  {
++		$$ = null;
++	  }
++	| REF_STRUCT
++	  {
++		if (lang_version < LanguageVersion.V_7_2) {
++			FeatureIsNotAvailable (GetLocation ($1), "ref structs");
++		}
++
++		$$ = this;
++	  }
++	;
++
+ struct_declaration
+ 	: opt_attributes
+ 	  opt_modifiers
+ 	  opt_partial
+-	  STRUCT
++	  struct_keyword
+ 	  type_declaration_name
+ 	  {
+ 		var mods = (Modifiers) $2;
+ 		if ((mods & Modifiers.READONLY) != 0 && lang_version < LanguageVersion.V_7_2) {
+ 			FeatureIsNotAvailable (GetLocation ($4), "readonly structs");
+ 		}
++		if ($4 != null)
++			mods |= Modifiers.REF;
+ 
+ 		lexer.ConstraintsParsing = true;
+ 		valid_param_mod = ParameterModifierType.PrimaryConstructor;
+@@ -1071,7 +1090,7 @@ struct_declaration
+ 		}
+ 		$$ = pop_current_class ();
+ 	  }
+-	| opt_attributes opt_modifiers opt_partial STRUCT error
++	| opt_attributes opt_modifiers opt_partial struct_keyword error
+ 	  {
+ 		Error_SyntaxError (yyToken);
+ 	  }
+@@ -1384,6 +1403,18 @@ ref_member_type
+ 
+ 		$$ = new ReferenceTypeExpr ((FullNamedExpression) $3, GetLocation ($1));
+ 	  }
++	| REF READONLY
++	  {
++		lexer.parsing_generic_declaration = true;
++	  }
++	  type
++	  {
++		if (lang_version < LanguageVersion.V_7_2) {
++			FeatureIsNotAvailable (GetLocation ($2), "readonly references");
++		}
++
++		$$ = new ReferenceTypeExpr ((FullNamedExpression) $4, true, GetLocation ($1));
++	  }
+ 	;
+ 
+ method_header
+@@ -3448,6 +3479,7 @@ primary_expression
+ 	| anonymous_method_expression
+ 	| undocumented_expressions
+ 	| interpolated_string
++	| default_literal
+ 	;
+ 
+ type_name_expression
+@@ -3824,7 +3856,7 @@ argument_list
+ 	| argument_list COMMA argument
+ 	  {
+ 		Arguments list = (Arguments) $1;
+-		if (list [list.Count - 1] is NamedArgument)
++		if (lang_version < LanguageVersion.V_7_2 && list [list.Count - 1] is NamedArgument)
+ 			Error_NamedArgumentExpected ((NamedArgument) list [list.Count - 1]);
+ 		
+ 		list.Add ((Argument) $3);
+@@ -3969,7 +4001,7 @@ expression_list_arguments
+ 	| expression_list_arguments COMMA expression_list_argument
+ 	  {
+ 		Arguments args = (Arguments) $1;
+-		if (args [args.Count - 1] is NamedArgument && !($3 is NamedArgument))
++		if (lang_version < LanguageVersion.V_7_2 && args [args.Count - 1] is NamedArgument && !($3 is NamedArgument))
+ 			Error_NamedArgumentExpected ((NamedArgument) args [args.Count - 1]);
+ 	  
+ 		args.Add ((Argument) $3);
+@@ -4386,7 +4418,7 @@ anonymous_method_signature
+ 	;
+ 
+ default_value_expression
+-	: DEFAULT open_parens_any type CLOSE_PARENS
++	: DEFAULT_VALUE open_parens_any type CLOSE_PARENS
+ 	  {
+ 		if (lang_version < LanguageVersion.ISO_2)
+ 			FeatureIsNotAvailable (GetLocation ($1), "default value expression");
+@@ -4396,6 +4428,16 @@ default_value_expression
+ 	  }
+ 	;
+ 
++default_literal
++	: DEFAULT
++	  {
++		if (lang_version < LanguageVersion.V_7_1)
++			FeatureIsNotAvailable (GetLocation ($1), "default literal");
++
++		$$ = new DefaultLiteralExpression (GetLocation ($1));
++	  }
++	;
++
+ unary_expression
+ 	: primary_expression
+ 	| BANG prefixed_unary_expression
+@@ -4750,7 +4792,7 @@ pattern_list
+ 	| pattern_list COMMA pattern_argument
+ 	  {
+ 		Arguments args = (Arguments) $1;
+-		if (args [args.Count - 1] is NamedArgument && !($3 is NamedArgument))
++		if (lang_version < LanguageVersion.V_7_2 && args [args.Count - 1] is NamedArgument && !($3 is NamedArgument))
+ 			Error_NamedArgumentExpected ((NamedArgument) args [args.Count - 1]);
+ 
+ 		args.Add ((Argument) $3);
+@@ -5067,17 +5109,25 @@ assignment_expression
+ 		$$ = new CompoundAssign (Binary.Operator.ExclusiveOr, (Expression) $1, (Expression) $3);
+ 		lbag.AddLocation ($$, GetLocation ($2));
+ 	  }
+-	| OPEN_PARENS_DECONSTRUCT deconstruct_exprs CLOSE_PARENS ASSIGN expression
++	| OPEN_PARENS_DECONSTRUCT deconstruct_assignment CLOSE_PARENS ASSIGN expression
+ 	  {
+ 		if (lang_version < LanguageVersion.V_7)
+ 			FeatureIsNotAvailable (GetLocation ($1), "tuples");
+ 
+-	  	var exprs = (List<Expression>) $2;
++		var exprs = (List<Expression>) $2;
++		$$ = new TupleDeconstruct (exprs, (Expression) $5, GetLocation ($4));
++	  }
++	| OPEN_PARENS_DECONSTRUCT deconstruct_declaration CLOSE_PARENS ASSIGN expression
++	  {
++		if (lang_version < LanguageVersion.V_7)
++			FeatureIsNotAvailable (GetLocation ($1), "tuples");
++
++		var exprs = (List<BlockVariable>) $2;
+ 		$$ = new TupleDeconstruct (exprs, (Expression) $5, GetLocation ($4));
+ 	  }
+ 	;
+ 
+-deconstruct_exprs
++deconstruct_assignment
+ 	: expression COMMA expression
+ 	  {
+ 		$$ = new List<Expression> () {
+@@ -5085,7 +5135,7 @@ deconstruct_exprs
+ 			(Expression) $3
+ 	  	};
+ 	  }
+-	| deconstruct_exprs COMMA expression
++	| deconstruct_assignment COMMA expression
+ 	  {
+ 		var src = (List<Expression>) $1;
+ 		src.Add ((Expression) $3);
+@@ -5093,6 +5143,43 @@ deconstruct_exprs
+ 	  }
+ 	;
+ 
++deconstruct_declaration
++	: variable_type identifier_inside_body
++	  {
++		var lt = (LocatedToken) $2;
++		var li = new LocalVariable (current_block, lt.Value, lt.Location);
++		current_block.AddLocalName (li);
++		$$ = new List<BlockVariable> (2) {
++			new BlockVariable ((FullNamedExpression) $1, li)
++		};
++	  }
++	| deconstruct_declaration COMMA variable_type identifier_inside_body
++	  {
++		var lt = (LocatedToken) $4;
++		var li = new LocalVariable (current_block, lt.Value, lt.Location);
++		current_block.AddLocalName (li);
++
++		var src = (List<BlockVariable>) $1;
++		src.Add (new BlockVariable ((FullNamedExpression) $3, li));
++		$$ = src;
++	  }
++	| deconstruct_declaration COMMA identifier_inside_body
++	  {
++		var lt = (LocatedToken) $3;
++		var li = new LocalVariable (current_block, lt.Value, lt.Location);
++
++		if (lt.Value != "_") {
++			report.Error (8184, lt.Location, "A deconstruction cannot mix declarations and expressions on the left-hand-side");
++		} else {
++			li.Type = InternalType.Discard;
++		}
++
++		var src = (List<BlockVariable>) $1;
++		src.Add (new BlockVariable (new TypeExpression (li.Type, lt.Location), li));
++		$$ = src;
++	  }
++	;
++
+ lambda_parameter_list
+ 	: lambda_parameter
+ 	  {
+@@ -6008,6 +6095,28 @@ block_variable_declaration
+ 			lbag.AddLocation ($$, GetLocation ($7));
+ 		}
+ 	  }
++	| REF READONLY variable_type identifier_inside_body
++	  {
++		if (lang_version < LanguageVersion.V_7_2) {
++			FeatureIsNotAvailable (GetLocation ($2), "readonly references");
++		}
++
++		var lt = (LocatedToken) $4;
++		var li = new LocalVariable (current_block, lt.Value, LocalVariable.Flags.ByRef | LocalVariable.Flags.ReadonlyMask, lt.Location);
++		current_block.AddLocalName (li);
++		current_variable = new BlockVariable ((FullNamedExpression) $3, li);
++	  }
++	  opt_local_variable_initializer opt_variable_declarators SEMICOLON
++	  {
++		$$ = current_variable;
++		current_variable = null;
++		if ($6 != null) {
++			lbag.AddLocation ($$, PopLocation (), GetLocation ($8));
++		} else {
++			report.Error (8174, GetLocation ($3), "A declaration of a by-reference variable must have an initializer");
++			lbag.AddLocation ($$, GetLocation ($8));
++		}
++	  }
+ 	;
+ 
+ opt_local_variable_initializer
+@@ -7731,7 +7840,7 @@ void Warning_EmptyStatement (Location loc)
+ 
+ void Error_NamedArgumentExpected (NamedArgument a)
+ {
+-	report.Error (1738, a.Location, "Named arguments must appear after the positional arguments");
++	report.Error (1738, a.Location, "Named arguments must appear after the positional arguments when using language version older than 7.2");
+ }
+ 
+ void Error_MissingInitializer (Location loc)
+@@ -8255,6 +8364,7 @@ static string GetTokenName (int token)
+ 	case Token.CONTINUE:
+ 		return "continue";
+ 	case Token.DEFAULT:
++	case Token.DEFAULT_VALUE:
+ 		return "default";
+ 	case Token.DELEGATE:
+ 		return "delegate";
+@@ -8334,6 +8444,7 @@ static string GetTokenName (int token)
+ 	case Token.STATIC:
+ 		return "static";
+ 	case Token.STRUCT:
++	case Token.REF_STRUCT:
+ 		return "struct";
+ 	case Token.SWITCH:
+ 		return "switch";
+diff --git a/mcs/mcs/cs-tokenizer.cs b/mcs/mcs/cs-tokenizer.cs
+index d6d00d31400..37edb5c1224 100644
+--- a/mcs/mcs/cs-tokenizer.cs
++++ b/mcs/mcs/cs-tokenizer.cs
+@@ -716,9 +716,18 @@ namespace Mono.CSharp
+ 					res = Token.EXTERN_ALIAS;
+ 				break;
+ 			case Token.DEFAULT:
+-				if (peek_token () == Token.COLON) {
+-					token ();
+-					res = Token.DEFAULT_COLON;
++				switch (peek_token ()) {
++				case Token.COLON:
++					// Special case: foo == null ? default : 1;
++					if (current_token != Token.INTERR) {
++						token ();
++						res = Token.DEFAULT_COLON;
++					}
++					break;
++				case Token.OPEN_PARENS:
++				case Token.OPEN_PARENS_CAST:
++					res = Token.DEFAULT_VALUE;
++					break;
+ 				}
+ 				break;
+ 			case Token.WHEN:
+@@ -812,10 +821,12 @@ namespace Mono.CSharp
+ 				PushPosition ();
+ 
+ 				next_token = token ();
+-				bool ok = (next_token == Token.CLASS) ||
+-					(next_token == Token.STRUCT) ||
+-					(next_token == Token.INTERFACE) ||
+-					(next_token == Token.VOID);
++				bool ok =
++					next_token == Token.CLASS ||
++					next_token == Token.STRUCT ||
++					next_token == Token.INTERFACE ||
++					next_token == Token.VOID ||
++					next_token == Token.REF_STRUCT;
+ 
+ 				PopPosition ();
+ 
+@@ -903,6 +914,12 @@ namespace Mono.CSharp
+ 					break;
+ 				}
+ 
++				break;
++			case Token.REF:
++				if (peek_token () == Token.STRUCT) {
++					token ();
++					res = Token.REF_STRUCT;
++				}
+ 				break;
+ 			}
+ 
+@@ -1094,6 +1111,7 @@ namespace Mono.CSharp
+ 						case Token.UNCHECKED:
+ 						case Token.UNSAFE:
+ 						case Token.DEFAULT:
++						case Token.DEFAULT_VALUE:
+ 						case Token.AWAIT:
+ 
+ 						//
+@@ -1273,14 +1291,21 @@ namespace Mono.CSharp
+ 
+ 				return false;
+ 			case Token.OPEN_PARENS:
+-				if (!parsing_generic_declaration)
+-					return false;
+-				
++				int parens_count = 1;
+ 				while (true) {
+ 					switch (token ()) {
+ 					case Token.COMMA:
+ 						// tuple declaration after <
+-						return true;
++						if (parens_count == 1)
++							return true;
++						continue;
++					case Token.OPEN_PARENS:
++						++parens_count;
++						continue;
++					case Token.CLOSE_PARENS:
++						if (--parens_count <= 0)
++							return false;
++						continue;
+ 					case Token.OP_GENERICS_GT:
+ 					case Token.EOF:
+ 						return false;
+@@ -1380,6 +1405,7 @@ namespace Mono.CSharp
+ 			case Token.NEW:
+ 			case Token.INTERPOLATED_STRING:
+ 			case Token.THROW:
++			case Token.DEFAULT_COLON:
+ 				next_token = Token.INTERR;
+ 				break;
+ 				
+@@ -3502,6 +3528,7 @@ namespace Mono.CSharp
+ 						case Token.SWITCH:
+ 						case Token.USING:
+ 						case Token.DEFAULT:
++						case Token.DEFAULT_VALUE:
+ 						case Token.DELEGATE:
+ 						case Token.OP_GENERICS_GT:
+ 						case Token.REFVALUE:
+@@ -3963,26 +3990,29 @@ namespace Mono.CSharp
+ 		{
+ 			int d;
+ 
+-			// Save current position and parse next token.
+-			PushPosition ();
+-			int generic_dimension = 0;
+-			if (parse_less_than (ref generic_dimension)) {
+-				if (parsing_generic_declaration && (parsing_generic_declaration_doc || token () != Token.DOT)) {
+-					d = Token.OP_GENERICS_LT_DECL;
+-				} else {
+-					if (generic_dimension > 0) {
+-						val = generic_dimension;
+-						DiscardPosition ();
+-						return Token.GENERIC_DIMENSION;
+-					}
++			if (current_token != Token.OPERATOR) {
++				// Save current position and parse next token.
++				PushPosition ();
++				int generic_dimension = 0;
++				if (parse_less_than (ref generic_dimension)) {
++					if (parsing_generic_declaration && (parsing_generic_declaration_doc || token () != Token.DOT)) {
++						d = Token.OP_GENERICS_LT_DECL;
++					} else {
++						if (generic_dimension > 0) {
++							val = generic_dimension;
++							DiscardPosition ();
++							return Token.GENERIC_DIMENSION;
++						}
+ 
+-					d = Token.OP_GENERICS_LT;
++						d = Token.OP_GENERICS_LT;
++					}
++					PopPosition ();
++					return d;
+ 				}
++
+ 				PopPosition ();
+-				return d;
+ 			}
+ 
+-			PopPosition ();
+ 			parsing_generic_less_than = 0;
+ 
+ 			d = peek_char ();
+diff --git a/mcs/mcs/delegate.cs b/mcs/mcs/delegate.cs
+index 80eb7e265f1..52cee8f3455 100644
+--- a/mcs/mcs/delegate.cs
++++ b/mcs/mcs/delegate.cs
+@@ -188,8 +188,8 @@ namespace Mono.CSharp {
+ 
+ 			CheckProtectedModifier ();
+ 
+-			if (Compiler.Settings.StdLib && ret_type.IsSpecialRuntimeType) {
+-				Method.Error1599 (Location, ret_type, Report);
++			if (ret_type.IsSpecialRuntimeType && Compiler.Settings.StdLib) {
++				Method.Error_ReturnTypeCantBeRefAny (Location, ret_type, Report);
+ 				return false;
+ 			}
+ 
+@@ -338,6 +338,8 @@ namespace Mono.CSharp {
+ 					Module.PredefinedAttributes.Dynamic.EmitAttribute (CreateReturnBuilder ().Builder);
+ 				} else if (rtype.HasDynamicElement) {
+ 					Module.PredefinedAttributes.Dynamic.EmitAttribute (CreateReturnBuilder ().Builder, rtype, Location);
++				} else if (rtype is ReadOnlyReferenceContainer) {
++					Module.PredefinedAttributes.IsReadOnly.EmitAttribute (CreateReturnBuilder ().Builder);
+ 				}
+ 
+ 				if (rtype.HasNamedTupleElement) {
+@@ -603,8 +605,14 @@ namespace Mono.CSharp {
+ 			}
+ 
+ 			var expr = method_group.InstanceExpression;
+-			if (expr != null && (expr.Type.IsGenericParameter || !TypeSpec.IsReferenceType (expr.Type)))
++			if (expr != null && (expr.Type.IsGenericParameter || !TypeSpec.IsReferenceType (expr.Type))) {
++				if (expr.Type.IsByRefLike || expr.Type.IsSpecialRuntimeType) {
++					// CSC: Should be better error code
++					Error_ConversionFailed (ec, delegate_method, null);
++				}
++
+ 				method_group.InstanceExpression = new BoxedCast (expr, ec.BuiltinTypes.Object);
++			}
+ 
+ 			eclass = ExprClass.Value;
+ 			return this;
+diff --git a/mcs/mcs/dynamic.cs b/mcs/mcs/dynamic.cs
+index fd4662b2fed..f8314b2f3cd 100644
+--- a/mcs/mcs/dynamic.cs
++++ b/mcs/mcs/dynamic.cs
+@@ -279,11 +279,19 @@ namespace Mono.CSharp
+ 
+ 		protected bool DoResolveCore (ResolveContext rc)
+ 		{
++			int i = 0;
+ 			foreach (var arg in arguments) {
+ 				if (arg.Type == InternalType.VarOutType) {
+ 					// Should be special error message about dynamic dispatch
+ 					rc.Report.Error (8197, arg.Expr.Location, "Cannot infer the type of implicitly-typed out variable `{0}'", ((DeclarationExpression) arg.Expr).Variable.Name);
++				} else if (arg.Type == InternalType.DefaultType) {
++					rc.Report.Error (8311, arg.Expr.Location, "Cannot use a default literal as an argument to a dynamically dispatched operation");
+ 				}
++
++				// Forced limitation because Microsoft.CSharp needs to catch up
++				if (i > 0 && arguments [i - 1] is NamedArgument && !(arguments [i] is NamedArgument))
++					rc.Report.Error (8324, loc, "Named argument specifications must appear after all fixed arguments have been specified in a dynamic invocation");
++				++i;
+ 			}
+ 
+ 			if (rc.CurrentTypeParameters != null && rc.CurrentTypeParameters[0].IsMethodTypeParameter)
+diff --git a/mcs/mcs/ecore.cs b/mcs/mcs/ecore.cs
+index 34ff9a30dab..20ee9e73b19 100644
+--- a/mcs/mcs/ecore.cs
++++ b/mcs/mcs/ecore.cs
+@@ -255,7 +255,7 @@ namespace Mono.CSharp {
+ 
+ 		public void Error_ExpressionMustBeConstant (ResolveContext rc, Location loc, string e_name)
+ 		{
+-			rc.Report.Error (133, loc, "The expression being assigned to `{0}' must be constant", e_name);
++			rc.Report.Error (133, loc, "The expression being assigned to `{0}' must be a constant or default value", e_name);
+ 		}
+ 
+ 		public void Error_ConstantCanBeInitializedWithNullOnly (ResolveContext rc, TypeSpec type, Location loc, string name)
+@@ -2957,6 +2957,13 @@ namespace Mono.CSharp {
+ 				if ((restrictions & MemberLookupRestrictions.NameOfExcluded) == 0 && Name == "nameof")
+ 					return new NameOf (this);
+ 
++				if ((restrictions & MemberLookupRestrictions.ReadAccess) == 0 && Name == "_") {
++					if (rc.Module.Compiler.Settings.Version < LanguageVersion.V_7)
++						rc.Report.FeatureIsNotAvailable (rc.Module.Compiler, loc, "discards");
++
++					return new Discard (loc).Resolve (rc);
++				}
++
+ 				if (errorMode) {
+ 					if (variable_found) {
+ 						rc.Report.Error (841, loc, "A local variable `{0}' cannot be used before it is declared", Name);
+@@ -4029,6 +4036,13 @@ namespace Mono.CSharp {
+ 			return Methods.First ().GetSignatureForError ();
+ 		}
+ 
++		static MethodSpec CandidateDevirtualization (TypeSpec type, MethodSpec method)
++		{
++			// Assumes no generics get involved
++			var filter = new MemberFilter (method.Name, method.Arity, MemberKind.Method, method.Parameters, null);
++			return MemberCache.FindMember (type, filter, BindingRestriction.InstanceOnly | BindingRestriction.OverrideOnly | BindingRestriction.DeclaredOnly) as MethodSpec;
++		}
++
+ 		public override Expression CreateExpressionTree (ResolveContext ec)
+ 		{
+ 			if (best_candidate == null) {
+@@ -4177,6 +4191,22 @@ namespace Mono.CSharp {
+ 						}
+ 
+ 						InstanceExpression.Resolve (ec, ResolveFlags.VariableOrValue | ResolveFlags.MethodGroup | ResolveFlags.Type);
++
++						var expr_type = InstanceExpression.Type;
++						if ((expr_type.IsByRefLike || expr_type.IsSpecialRuntimeType) && best_candidate.DeclaringType != expr_type) {
++							MethodSpec devirt = null;
++							if ((best_candidate.Modifiers & (Modifiers.VIRTUAL | Modifiers.ABSTRACT | Modifiers.OVERRIDE)) != 0) {
++								devirt = CandidateDevirtualization (expr_type, best_candidate);
++							}
++
++							if (devirt == null) {
++								// CSC: Should be better error message
++								ec.Report.Error (29, InstanceExpression.Location, "Cannot implicitly convert type `{0}' to `{1}'",
++												 InstanceExpression.Type.GetSignatureForError (), best_candidate.DeclaringType.GetSignatureForError ());
++							} else {
++								best_candidate = devirt;
++							}
++						}
+ 					}
+ 				}
+ 
+@@ -5419,7 +5449,7 @@ namespace Mono.CSharp {
+ 				}
+ 
+ 				if (arg_type != parameter) {
+-					if (arg_type == InternalType.VarOutType)
++					if (arg_type == InternalType.VarOutType || arg_type == InternalType.Discard)
+ 						return 0;
+ 
+ 					var ref_arg_type = arg_type as ReferenceContainer;
+@@ -6028,6 +6058,11 @@ namespace Mono.CSharp {
+ 						continue;
+ 					}
+ 
++					if (arg_type == InternalType.Discard) {
++						a.Expr.Type = pt;
++						continue;
++					}
++
+ 					var ref_arg_type = arg_type as ReferenceContainer;
+ 					if (ref_arg_type != null) {
+ 						if (ref_arg_type.Element != pt)
+@@ -6061,9 +6096,15 @@ namespace Mono.CSharp {
+ 						else
+ 							ec.Report.SymbolRelatedToPreviousError (member);
+ 
+-						ec.Report.Error (1744, na.Location,
+-							"Named argument `{0}' cannot be used for a parameter which has positional argument specified",
+-							na.Name);
++						if (name_index > a_idx) {
++							ec.Report.Error (8323, na.Location,
++								"Named argument `{0}' is used out of position but is followed by positional argument",
++								na.Name);
++						} else {
++							ec.Report.Error (1744, na.Location,
++								"Named argument `{0}' cannot be used for a parameter which has positional argument specified",
++								na.Name);
++						}
+ 					}
+ 				}
+ 				
+@@ -7350,6 +7391,9 @@ namespace Mono.CSharp {
+ 			if (!ResolveGetter (ec))
+ 				return null;
+ 
++			if (type.Kind == MemberKind.ByRef)
++				return ByRefDereference.Create (this).Resolve (ec);
++
+ 			return this;
+ 		}
+ 
+@@ -7359,12 +7403,11 @@ namespace Mono.CSharp {
+ 				Error_NullPropagatingLValue (rc);
+ 
+ 			if (right_side == EmptyExpression.OutAccess) {
+-				if (best_candidate?.MemberType.Kind == MemberKind.ByRef) {
+-					if (Arguments?.ContainsEmitWithAwait () == true) {
+-						rc.Report.Error (8178, loc, "`await' cannot be used in an expression containing a call to `{0}' because it returns by reference",
+-							GetSignatureForError ());
+-					}
++				if (OverloadResolve (rc, null) == null)
++					return null;
+ 
++				if (best_candidate?.MemberType.Kind == MemberKind.ByRef) {
++					getter = CandidateToBaseOverride (rc, best_candidate.Get);
+ 					return this;
+ 				}
+ 
+@@ -7396,7 +7439,7 @@ namespace Mono.CSharp {
+ 
+ 				if (best_candidate.MemberType.Kind == MemberKind.ByRef) {
+ 					getter = CandidateToBaseOverride (rc, best_candidate.Get);
+-					return ByRefDereference.Create(this).Resolve(rc);
++					return ByRefDereference.Create (this).Resolve (rc);
+ 				}
+ 
+ 				rc.Report.Error (200, loc, "Property or indexer `{0}' cannot be assigned to (it is read-only)",
+diff --git a/mcs/mcs/eval.cs b/mcs/mcs/eval.cs
+index 60e0c6d64a0..075697bb1df 100644
+--- a/mcs/mcs/eval.cs
++++ b/mcs/mcs/eval.cs
+@@ -788,6 +788,7 @@ namespace Mono.CSharp
+ 				return null;
+ 			}
+ 
++			module.CloseContainerEarlyForReflectionEmit ();
+ 			module.CloseContainer ();
+ 			if (host != null)
+ 				host.CloseContainer ();
+diff --git a/mcs/mcs/expression.cs b/mcs/mcs/expression.cs
+index 732ee3ee934..518ccc8ef43 100644
+--- a/mcs/mcs/expression.cs
++++ b/mcs/mcs/expression.cs
+@@ -1220,6 +1220,7 @@ namespace Mono.CSharp
+ 				expr = expr.ResolveLValue (ec, expr);
+ 			} else {
+ 				ec.Report.Error (1059, loc, "The operand of an increment or decrement operator must be a variable, property or indexer");
++				return null;
+ 			}
+ 
+ 			//
+@@ -1477,6 +1478,11 @@ namespace Mono.CSharp
+ 				return null;
+ 			}
+ 
++			if (expr.Type == InternalType.DefaultType) {
++				Error_OperatorCannotBeApplied (rc, loc, OperatorName, expr.Type);
++				return null;
++			}
++
+ 			return this;
+ 		}
+ 
+@@ -4304,9 +4310,32 @@ namespace Mono.CSharp
+ 				CheckOutOfRangeComparison (ec, rc, left.Type);
+ 			}
+ 
+-			if (left.Type.BuiltinType == BuiltinTypeSpec.Type.Dynamic || right.Type.BuiltinType == BuiltinTypeSpec.Type.Dynamic)
++			var ltype = left.Type;
++			var rtype = right.Type;
++			if (ltype.BuiltinType == BuiltinTypeSpec.Type.Dynamic || rtype.BuiltinType == BuiltinTypeSpec.Type.Dynamic)
+ 				return DoResolveDynamic (ec);
+ 
++			//
++			// Only default with == and != is explicitly allowed
++			//
++			if (ltype == InternalType.DefaultType || rtype == InternalType.DefaultType) {
++				if ((Oper & Operator.EqualityMask) == 0) {
++					ec.Report.Error (8310, loc, "Operator `{0}' cannot be applied to operand `default'", OperName (Oper));
++					return null;
++				}
++
++				if (ltype == rtype) {
++					ec.Report.Error (8315, loc, "Operator `{0}' is ambiguous on operands `default' and `default'", OperName (Oper));
++					return null;
++				}
++
++				if (rtype == InternalType.DefaultType) {
++					right = new DefaultValueExpression (new TypeExpression (ltype, right.Location), right.Location).Resolve (ec);
++				} else {
++					left = new DefaultValueExpression (new TypeExpression (rtype, left.Location), left.Location).Resolve (ec);
++				}
++			}
++
+ 			return DoResolveCore (ec, left, right);
+ 		}
+ 
+@@ -6744,10 +6773,14 @@ namespace Mono.CSharp
+ 					ec.Report.Error (1764, loc,
+ 						"Cannot use fixed variable `{0}' inside an anonymous method, lambda expression or query expression",
+ 						GetSignatureForError ());
+-				} else if (local_info.IsByRef) {
+-					ec.Report.Error (8175, loc,
+-						"Cannot use by-reference variable `{0}' inside an anonymous method, lambda expression, or query expression",
+-						GetSignatureForError ());
++				} else if (local_info.IsByRef || local_info.Type.IsByRefLike) {
++					if (ec.CurrentAnonymousMethod is StateMachineInitializer) {
++						// It's reported later as 4012/4013
++					} else {
++						ec.Report.Error (8175, loc,
++							"Cannot use by-reference variable `{0}' inside an anonymous method, lambda expression, or query expression",
++							GetSignatureForError ());
++					}
+ 				}
+ 
+ 				if (ec.IsVariableCapturingRequired) {
+@@ -6783,7 +6816,9 @@ namespace Mono.CSharp
+ 				local_info.SetIsUsed ();
+ 
+ 			if (local_info.IsReadonly && !ec.HasAny (ResolveContext.Options.FieldInitializerScope | ResolveContext.Options.UsingInitializerScope)) {
+-				if (rhs == EmptyExpression.LValueMemberAccess) {
++				if (local_info.IsByRef) {
++					// OK because it cannot be reassigned
++				} else if (rhs == EmptyExpression.LValueMemberAccess) {
+ 					// CS1654 already reported
+ 				} else {
+ 					int code;
+@@ -7175,8 +7210,7 @@ namespace Mono.CSharp
+ 		{
+ 			var sn = expr as SimpleName;
+ 			if (sn != null && sn.Name == "var" && sn.Arity == 0 && arguments?.Count > 1) {
+-				var targets = new List<Expression> (arguments.Count);
+-				var variables = new List<LocalVariable> (arguments.Count);
++				var variables = new List<BlockVariable> (arguments.Count);
+ 				foreach (var arg in arguments) {
+ 					var arg_sn = arg.Expr as SimpleName;
+ 					if (arg_sn == null || arg_sn.Arity != 0) {
+@@ -7186,12 +7220,10 @@ namespace Mono.CSharp
+ 
+ 					var lv = new LocalVariable (rc.CurrentBlock, arg_sn.Name, arg.Expr.Location);
+ 					rc.CurrentBlock.AddLocalName (lv);
+-					variables.Add (lv);
+-
+-					targets.Add (new LocalVariableReference (lv, arg_sn.Location));
++					variables.Add (new BlockVariable (new VarExpr (lv.Location), lv));
+ 				}
+ 
+-				var res = new TupleDeconstruct (targets, variables, right_side, loc);
++				var res = new TupleDeconstruct (variables, right_side, loc);
+ 				return res.Resolve (rc);
+ 			}
+ 
+@@ -7306,15 +7338,8 @@ namespace Mono.CSharp
+ 			
+ 			eclass = ExprClass.Value;
+ 
+-			if (type.Kind == MemberKind.ByRef) {
+-				if (rhs == null && arguments?.ContainsEmitWithAwait () == true) {
+-					ec.Report.Error (8178, loc, "`await' cannot be used in an expression containing a call to `{0}' because it returns by reference",
+-						GetSignatureForError ());
+-				}
+-
+-				if (rhs != EmptyExpression.OutAccess)
+-					return ByRefDereference.Create (this).Resolve (ec);
+-			}
++			if (type.Kind == MemberKind.ByRef && rhs != EmptyExpression.OutAccess)
++				return ByRefDereference.Create (this).Resolve (ec);
+ 
+ 			return this;
+ 		}
+@@ -9034,7 +9059,7 @@ namespace Mono.CSharp
+ 			if (eclass == ExprClass.Unresolved)
+ 				ResolveBase (ec);
+ 
+-			if (type.IsClass || type.IsReadOnly) {
++			if (type.IsClass || (type.IsReadOnly && !ec.HasSet (ResolveContext.Options.ConstructorScope))) {
+ 				if (right_side == EmptyExpression.UnaryAddress)
+ 					ec.Report.Error (459, loc, "Cannot take the address of `this' because it is read-only");
+ 				else if (right_side == EmptyExpression.OutAccess)
+@@ -9908,7 +9933,7 @@ namespace Mono.CSharp
+ 		public static bool IsValidDotExpression (TypeSpec type)
+ 		{
+ 			const MemberKind dot_kinds = MemberKind.Class | MemberKind.Struct | MemberKind.Delegate | MemberKind.Enum |
+-				MemberKind.Interface | MemberKind.TypeParameter | MemberKind.ArrayType;
++				MemberKind.Interface | MemberKind.TypeParameter | MemberKind.ArrayType  | MemberKind.ByRef;
+ 
+ 			return (type.Kind & dot_kinds) != 0 || type.BuiltinType == BuiltinTypeSpec.Type.Dynamic;
+ 		}
+@@ -11614,7 +11639,7 @@ namespace Mono.CSharp
+ 			}
+ 
+ 			if (single_spec != null && single_spec.Dimension > 0) {
+-				if (type.IsSpecialRuntimeType) {
++				if (type.IsSpecialRuntimeType || type.IsByRefLike) {
+ 					ec.Module.Compiler.Report.Error (611, loc, "Array elements cannot be of type `{0}'", type.GetSignatureForError ());
+ 				} else if (type.IsStatic) {
+ 					ec.Module.Compiler.Report.SymbolRelatedToPreviousError (type);
+@@ -11650,6 +11675,13 @@ namespace Mono.CSharp
+ 	class ReferenceTypeExpr : TypeExpr
+ 	{
+ 		FullNamedExpression element;
++		readonly bool readOnly;
++
++		public ReferenceTypeExpr (FullNamedExpression element, bool readOnly, Location loc)
++			: this (element, loc)
++		{
++			this.readOnly = readOnly;
++		}
+ 
+ 		public ReferenceTypeExpr (FullNamedExpression element, Location loc)
+ 		{
+@@ -11664,14 +11696,17 @@ namespace Mono.CSharp
+ 				return null;
+ 
+ 			eclass = ExprClass.Type;
+-			type = ReferenceContainer.MakeType (mc.Module, type);
++			type = readOnly ?
++				ReadOnlyReferenceContainer.MakeType (mc.Module, type) :
++				ReferenceContainer.MakeType (mc.Module, type);
+ 
+ 			return type;
+ 		}
+ 
+ 		public override string GetSignatureForError ()
+ 		{
+-			return "ref " + element.GetSignatureForError ();
++			var prefix = readOnly ? "ref " : "ref readonly ";
++			return prefix + element.GetSignatureForError ();
+ 		}
+ 
+ 		public override object Accept (StructuralVisitor visitor)
+@@ -11783,6 +11818,7 @@ namespace Mono.CSharp
+ 		TypeSpec otype;
+ 		Expression texpr;
+ 		Expression count;
++		MethodSpec ctor;
+ 		
+ 		public StackAlloc (Expression type, Expression count, Location l)
+ 		{
+@@ -11852,6 +11888,11 @@ namespace Mono.CSharp
+ 			int size = BuiltinTypeSpec.GetSize (otype);
+ 
+ 			count.Emit (ec);
++			bool count_on_stack = false;
++			if (ctor != null && !ExpressionAnalyzer.IsInexpensiveLoad (count)) {
++				ec.Emit (OpCodes.Dup);
++				count_on_stack = true;
++			}
+ 
+ 			if (size == 0)
+ 				ec.Emit (OpCodes.Sizeof, otype);
+@@ -11860,6 +11901,19 @@ namespace Mono.CSharp
+ 
+ 			ec.Emit (OpCodes.Mul_Ovf_Un);
+ 			ec.Emit (OpCodes.Localloc);
++
++			if (ctor != null) {
++				if (!count_on_stack)
++					count.Emit (ec);
++				ec.Emit (OpCodes.Newobj, ctor);
++			}
++		}
++
++		public override void Error_ValueCannotBeConverted (ResolveContext rc, TypeSpec target, bool expl)
++		{
++			var etype = ((PointerContainer)type).Element;
++			rc.Report.Error (8346, loc, "Cannot convert a stackalloc expression of type `{0}' to type `{1}'",
++			                 etype.GetSignatureForError (), target.GetSignatureForError ());
+ 		}
+ 
+ 		protected override void CloneTo (CloneContext clonectx, Expression t)
+@@ -11873,6 +11927,16 @@ namespace Mono.CSharp
+ 		{
+ 			return visitor.Visit (this);
+ 		}
++
++		public bool ResolveSpanConversion (ResolveContext rc, TypeSpec spanType)
++		{
++			ctor = MemberCache.FindMember (spanType, MemberFilter.Constructor (ParametersCompiled.CreateFullyResolved (PointerContainer.MakeType (rc.Module, rc.Module.Compiler.BuiltinTypes.Void), rc.Module.Compiler.BuiltinTypes.Int)), BindingRestriction.DeclaredOnly) as MethodSpec;
++			if (ctor == null)
++				return false;
++			
++			this.type = spanType;
++			return true;
++		}
+ 	}
+ 
+ 	//
+@@ -13093,6 +13157,12 @@ namespace Mono.CSharp
+ 			expr.Emit (ec);
+ 		}
+ 
++		public override Expression CreateExpressionTree (ResolveContext rc)
++		{
++			rc.Report.Error (8153, Location, "An expression tree lambda cannot contain a call to a method, property, or indexer that returns by reference");
++			return null;
++		}
++
+ 		public void Emit (EmitContext ec, bool leave_copy)
+ 		{
+ 			Emit (ec);
+@@ -13133,6 +13203,11 @@ namespace Mono.CSharp
+ 
+ 		public override Expression DoResolveLValue (ResolveContext rc, Expression right_side)
+ 		{
++			if (expr.ContainsEmitWithAwait ()) {
++				rc.Report.Error (8178, loc, "`await' cannot be used in an expression containing a call to `{0}' because it returns by reference",
++					expr.GetSignatureForError ());
++			}
++
+ 			return DoResolve (rc);
+ 		}
+ 
+@@ -13149,4 +13224,98 @@ namespace Mono.CSharp
+ 			return visitor.Visit (this);
+ 		}
+ 	}
++
++	class DefaultLiteralExpression : Expression
++	{
++		public DefaultLiteralExpression (Location loc)
++		{
++			this.loc = loc;
++		}
++
++		public override Expression CreateExpressionTree (ResolveContext ec)
++		{
++			throw new NotImplementedException ();
++		}
++
++		protected override Expression DoResolve (ResolveContext rc)
++		{
++			type = InternalType.DefaultType;
++			eclass = ExprClass.Value;
++			return this;
++		}
++
++		public override void Emit (EmitContext ec)
++		{
++			throw new NotSupportedException ();
++		}
++	}
++
++	class Discard : Expression, IAssignMethod, IMemoryLocation
++	{
++		public Discard (Location loc)
++		{
++			this.loc = loc;
++		}
++
++		public override Expression CreateExpressionTree (ResolveContext rc)
++		{
++			rc.Report.Error (8207, loc, "An expression tree cannot contain a discard");
++			return null;
++		}
++
++		protected override Expression DoResolve (ResolveContext rc)
++		{
++			type = InternalType.Discard;
++			eclass = ExprClass.Variable;
++			return this;
++		}
++
++		public override Expression DoResolveLValue (ResolveContext rc, Expression right_side)
++		{
++			if (right_side.Type == InternalType.DefaultType) {
++				rc.Report.Error (8183, loc, "Cannot infer the type of implicitly-typed discard");
++				type = InternalType.ErrorType;
++				return this;
++			}
++
++			if (right_side.Type.Kind == MemberKind.Void) {
++				rc.Report.Error (8209, loc, "Cannot assign void to a discard");
++				type = InternalType.ErrorType;
++				return this;
++			}
++
++			if (right_side != EmptyExpression.OutAccess) {
++				type = right_side.Type;
++			}
++
++			return this;
++		}
++
++		public override void Emit (EmitContext ec)
++		{
++			throw new NotImplementedException ();
++		}
++
++		public void Emit (EmitContext ec, bool leave_copy)
++		{
++			throw new NotImplementedException ();
++		}
++
++		public void EmitAssign (EmitContext ec, Expression source, bool leave_copy, bool isCompound)
++		{
++			if (leave_copy)
++				source.Emit (ec);
++			else
++				source.EmitSideEffect (ec);
++		}
++
++		public void AddressOf (EmitContext ec, AddressOp mode)
++		{
++			var temp = ec.GetTemporaryLocal (type);
++			ec.Emit (OpCodes.Ldloca, temp);
++
++			// TODO: Should free it on next statement but don't have mechanism for that yet
++			// ec.FreeTemporaryLocal (temp, type);
++		}
++	}
+ }
+diff --git a/mcs/mcs/generic.cs b/mcs/mcs/generic.cs
+index 625cd0c773f..ec2965df63b 100644
+--- a/mcs/mcs/generic.cs
++++ b/mcs/mcs/generic.cs
+@@ -693,6 +693,11 @@ namespace Mono.CSharp {
+ 					GetSignatureForError (), mc.GetSignatureForError (), input_variance, gtype_variance, parameters);
+ 		}
+ 
++		public TypeSpec GetAsyncMethodBuilder ()
++		{
++			return null;
++		}
++
+ 		public TypeSpec GetAttributeCoClass ()
+ 		{
+ 			return null;
+@@ -2292,7 +2297,7 @@ namespace Mono.CSharp {
+ 					ok = false;
+ 				}
+ 
+-				if (te.IsPointer || te.IsSpecialRuntimeType) {
++				if (te.IsPointer || te.IsSpecialRuntimeType || te.IsByRefLike) {
+ 					ec.Module.Compiler.Report.Error (306, args[i].Location,
+ 						"The type `{0}' may not be used as a type argument",
+ 						te.GetSignatureForError ());
+@@ -3102,7 +3107,7 @@ namespace Mono.CSharp {
+ 			//
+ 			// Some types cannot be used as type arguments
+ 			//
+-			if ((bound.Type.Kind == MemberKind.Void && !voidAllowed) || bound.Type.IsPointer || bound.Type.IsSpecialRuntimeType ||
++			if ((bound.Type.Kind == MemberKind.Void && !voidAllowed) || bound.Type.IsPointer || bound.Type.IsSpecialRuntimeType || bound.Type.IsByRefLike ||
+ 			    bound.Type == InternalType.MethodGroup || bound.Type == InternalType.AnonymousMethod || bound.Type == InternalType.VarOutType ||
+ 			    bound.Type == InternalType.ThrowExpr)
+ 				return;
+@@ -3110,6 +3115,9 @@ namespace Mono.CSharp {
+ 			if (bound.Type.IsTupleType && TupleLiteral.ContainsNoTypeElement (bound.Type))
+ 				return;
+ 
++			if (bound.Type == InternalType.DefaultType)
++				return;
++
+ 			var a = bounds [index];
+ 			if (a == null) {
+ 				a = new List<BoundInfo> (2);
+diff --git a/mcs/mcs/import.cs b/mcs/mcs/import.cs
+index 1cddf7c01f4..f7c4fd74b08 100644
+--- a/mcs/mcs/import.cs
++++ b/mcs/mcs/import.cs
+@@ -975,6 +975,10 @@ namespace Mono.CSharp
+ 						mod |= Modifiers.READONLY;
+ 					}
+ 
++					if (HasAttribute (CustomAttributeData.GetCustomAttributes (type), "IsByRefLikeAttribute", CompilerServicesNamespace)) {
++						mod |= Modifiers.REF;
++					}
++
+ 					break;
+ 				}
+ 			}
+@@ -1401,6 +1405,7 @@ namespace Mono.CSharp
+ 			public string DefaultIndexerName;
+ 			public bool? CLSAttributeValue;
+ 			public TypeSpec CoClass;
++			public TypeSpec AsyncMethodBuilder;
+ 
+ 			static bool HasMissingType (ConstructorInfo ctor)
+ 			{
+@@ -1522,6 +1527,20 @@ namespace Mono.CSharp
+ 							bag.CoClass = importer.ImportType ((MetaType) a.ConstructorArguments[0].Value);
+ 							continue;
+ 						}
++
++						if (name == "AsyncMethodBuilderAttribute") {
++							if (dt.Namespace != "System.Runtime.CompilerServices")
++								continue;
++
++							if (HasMissingType (a.Constructor))
++								continue;
++
++							if (bag == null)
++								bag = new AttributesBag ();
++
++							bag.AsyncMethodBuilder = importer.ImportType ((MetaType)a.ConstructorArguments [0].Value);
++							continue;
++						}
+ 					}
+ 				}
+ 
+@@ -2129,6 +2148,14 @@ namespace Mono.CSharp
+ 			}
+ 		}
+ 
++		public TypeSpec GetAsyncMethodBuilder ()
++		{
++			if (cattrs == null)
++				ReadAttributes ();
++
++			return cattrs.AsyncMethodBuilder;
++		}
++
+ 		public TypeSpec GetAttributeCoClass ()
+ 		{
+ 			if (cattrs == null)
+@@ -2445,6 +2472,11 @@ namespace Mono.CSharp
+ 
+ 		#endregion
+ 
++		public TypeSpec GetAsyncMethodBuilder ()
++		{
++			return null;
++		}
++
+ 		public TypeSpec GetAttributeCoClass ()
+ 		{
+ 			return null;
+diff --git a/mcs/mcs/membercache.cs b/mcs/mcs/membercache.cs
+index eebf71b844b..ca05d2d7afc 100644
+--- a/mcs/mcs/membercache.cs
++++ b/mcs/mcs/membercache.cs
+@@ -309,7 +309,6 @@ namespace Mono.CSharp {
+ 				//
+ 				if (!BuiltinTypeSpec.IsPrimitiveType (dt) || dt.BuiltinType == BuiltinTypeSpec.Type.Char) {
+ 					switch (dt.BuiltinType) {
+-					case BuiltinTypeSpec.Type.String:
+ 					case BuiltinTypeSpec.Type.Delegate:
+ 					case BuiltinTypeSpec.Type.MulticastDelegate:
+ 						break;
+@@ -317,6 +316,9 @@ namespace Mono.CSharp {
+ 						if (name == Operator.GetMetadataName (Operator.OpType.Implicit) || name == Operator.GetMetadataName (Operator.OpType.Explicit)) {
+ 							state |= StateFlags.HasConversionOperator;
+ 						} else {
++							if (dt.BuiltinType == BuiltinTypeSpec.Type.String)
++								break;
++
+ 							state |= StateFlags.HasUserOperator;
+ 						}
+ 
+diff --git a/mcs/mcs/method.cs b/mcs/mcs/method.cs
+index ccd4898e91c..1fca10dd6d0 100644
+--- a/mcs/mcs/method.cs
++++ b/mcs/mcs/method.cs
+@@ -701,6 +701,10 @@ namespace Mono.CSharp {
+ 			if (MemberType.IsStatic) {
+ 				Error_StaticReturnType ();
+ 			}
++
++			if (MemberType.IsSpecialRuntimeType && Compiler.Settings.StdLib) {
++				Error_ReturnTypeCantBeRefAny (Location, ReturnType, Report);
++			}
+ 		}
+ 
+ 		public override void Emit ()
+@@ -716,6 +720,8 @@ namespace Mono.CSharp {
+ 				Module.PredefinedAttributes.Dynamic.EmitAttribute (CreateReturnBuilder ().Builder);
+ 			} else if (ReturnType.HasDynamicElement) {
+ 				Module.PredefinedAttributes.Dynamic.EmitAttribute (CreateReturnBuilder ().Builder, ReturnType, Location);
++			} else if (ReturnType is ReadOnlyReferenceContainer) {
++				Module.PredefinedAttributes.IsReadOnly.EmitAttribute (CreateReturnBuilder ().Builder);
+ 			}
+ 
+ 			if (ReturnType.HasNamedTupleElement) {
+@@ -764,6 +770,11 @@ namespace Mono.CSharp {
+ 				GetSignatureForError ());
+ 		}
+ 
++		public static void Error_ReturnTypeCantBeRefAny (Location loc, TypeSpec t, Report Report)
++		{
++			Report.Error (1599, loc, "The return type of `{0}' is not allowed", t.GetSignatureForError ());
++		}
++
+ 		public bool IsPartialDefinition {
+ 			get {
+ 				return (ModFlags & Modifiers.PARTIAL) != 0 && Block == null;
+@@ -1231,11 +1242,6 @@ namespace Mono.CSharp {
+ 					"Introducing `Finalize' method can interfere with destructor invocation. Did you intend to declare a destructor?");
+ 			}
+ 
+-			if (Compiler.Settings.StdLib && ReturnType.IsSpecialRuntimeType) {
+-				Error1599 (Location, ReturnType, Report);
+-				return false;
+-			}
+-
+ 			if (CurrentTypeParameters == null) {
+ 				if (base_method != null && !IsExplicitImpl) {
+ 					if (parameters.Count == 1 && ParameterTypes[0].BuiltinType == BuiltinTypeSpec.Type.Object && MemberName.Name == "Equals")
+@@ -1261,8 +1267,9 @@ namespace Mono.CSharp {
+ 				if ((ModFlags & Modifiers.ASYNC) != 0) {
+ 					if (ReturnType.Kind != MemberKind.Void &&
+ 						ReturnType != Module.PredefinedTypes.Task.TypeSpec &&
+-						!ReturnType.IsGenericTask) {
+-						Report.Error (1983, Location, "The return type of an async method must be void, Task, or Task<T>");
++						!ReturnType.IsGenericTask &&
++					    !ReturnType.IsCustomTaskType ()) {
++						Report.Error (1983, Location, "The return type of an async method must be void or task type");
+ 					}
+ 
+ 					block = (ToplevelBlock) block.ConvertToAsyncTask (this, Parent.PartialContainer, parameters, ReturnType, null, Location);
+@@ -1396,11 +1403,6 @@ namespace Mono.CSharp {
+ 			return base.EnableOverloadChecks (overload);
+ 		}
+ 
+-		public static void Error1599 (Location loc, TypeSpec t, Report Report)
+-		{
+-			Report.Error (1599, loc, "Method or delegate cannot return type `{0}'", t.GetSignatureForError ());
+-		}
+-
+ 		protected override bool ResolveMemberType ()
+ 		{
+ 			if (CurrentTypeParameters != null) {
+@@ -2467,6 +2469,8 @@ namespace Mono.CSharp {
+ 				Module.PredefinedAttributes.Dynamic.EmitAttribute (CreateReturnBuilder ().Builder);
+ 			} else if (ReturnType.HasDynamicElement) {
+ 				Module.PredefinedAttributes.Dynamic.EmitAttribute (CreateReturnBuilder ().Builder, ReturnType, Location);
++			} else if (ReturnType is ReadOnlyReferenceContainer) {
++				Module.PredefinedAttributes.IsReadOnly.EmitAttribute (CreateReturnBuilder ().Builder);
+ 			}
+ 
+ 			if (ReturnType.HasNamedTupleElement) {
+diff --git a/mcs/mcs/modifiers.cs b/mcs/mcs/modifiers.cs
+index bfae5985a03..926ab5d1848 100644
+--- a/mcs/mcs/modifiers.cs
++++ b/mcs/mcs/modifiers.cs
+@@ -53,6 +53,7 @@ namespace Mono.CSharp
+ 		DEBUGGER_HIDDEN			= 0x400000,
+ 		DEBUGGER_STEP_THROUGH	= 0x800000,
+ 		AutoProperty			= 0x1000000,
++		REF                     = 0x2000000,
+ 
+ 		AccessibilityMask = PUBLIC | PROTECTED | INTERNAL | PRIVATE,
+ 		AllowedExplicitImplFlags = UNSAFE | EXTERN,
+diff --git a/mcs/mcs/module.cs b/mcs/mcs/module.cs
+index 00afac6c604..2293d825b36 100644
+--- a/mcs/mcs/module.cs
++++ b/mcs/mcs/module.cs
+@@ -265,6 +265,7 @@ namespace Mono.CSharp
+ 		readonly Dictionary<ArrayContainer.TypeRankPair, ArrayContainer> array_types;
+ 		readonly Dictionary<TypeSpec, PointerContainer> pointer_types;
+ 		readonly Dictionary<TypeSpec, ReferenceContainer> reference_types;
++		readonly Dictionary<TypeSpec, ReadOnlyReferenceContainer> readonly_reference_types;
+ 		readonly Dictionary<TypeSpec, MethodSpec> attrs_cache;
+ 		readonly Dictionary<TypeSpec, AwaiterDefinition> awaiters;
+ 		readonly Dictionary<TypeSpec, TypeInfo> type_info_cache;
+@@ -301,6 +302,7 @@ namespace Mono.CSharp
+ 			array_types = new Dictionary<ArrayContainer.TypeRankPair, ArrayContainer> ();
+ 			pointer_types = new Dictionary<TypeSpec, PointerContainer> ();
+ 			reference_types = new Dictionary<TypeSpec, ReferenceContainer> ();
++			readonly_reference_types = new Dictionary<TypeSpec, ReadOnlyReferenceContainer> ();
+ 			attrs_cache = new Dictionary<TypeSpec, MethodSpec> ();
+ 			awaiters = new Dictionary<TypeSpec, AwaiterDefinition> ();
+ 			type_info_cache = new Dictionary<TypeSpec, TypeInfo> ();
+@@ -427,6 +429,12 @@ namespace Mono.CSharp
+ 			}
+ 		}
+ 
++		internal Dictionary<TypeSpec, ReadOnlyReferenceContainer> ReadonlyReferenceTypesCache {
++			get {
++				return readonly_reference_types;
++			}
++		}
++
+ 		internal Dictionary<TypeSpec, TypeInfo> TypeInfoCache {
+ 			get {
+ 				return type_info_cache;
+diff --git a/mcs/mcs/parameter.cs b/mcs/mcs/parameter.cs
+index 2bd2a498a91..cc10eee162b 100644
+--- a/mcs/mcs/parameter.cs
++++ b/mcs/mcs/parameter.cs
+@@ -1447,7 +1447,7 @@ namespace Mono.CSharp {
+ 
+ 			expr = Child;
+ 
+-			if (!(expr is Constant || expr is DefaultValueExpression || (expr is New && ((New) expr).IsGeneratedStructConstructor))) {
++			if (!(expr is Constant || expr is DefaultValueExpression || expr is DefaultLiteralExpression || (expr is New && ((New) expr).IsGeneratedStructConstructor))) {
+ 				if (!(expr is ErrorExpression)) {
+ 					rc.Report.Error (1736, Location,
+ 						"The expression being assigned to optional parameter `{0}' must be a constant or default value",
+diff --git a/mcs/mcs/statement.cs b/mcs/mcs/statement.cs
+index 58ba2795e4b..9c51128548f 100644
+--- a/mcs/mcs/statement.cs
++++ b/mcs/mcs/statement.cs
+@@ -1160,7 +1160,8 @@ namespace Mono.CSharp {
+ 				//
+ 				if (ec.CurrentAnonymousMethod is AsyncInitializer) {
+ 					var storey = (AsyncTaskStorey) ec.CurrentAnonymousMethod.Storey;
+-					if (storey.ReturnType == ec.Module.PredefinedTypes.Task.TypeSpec) {
++					var s_return_type = storey.ReturnType;
++					if (s_return_type == ec.Module.PredefinedTypes.Task.TypeSpec) {
+ 						//
+ 						// Extra trick not to emit ret/leave inside awaiter body
+ 						//
+@@ -1168,8 +1169,8 @@ namespace Mono.CSharp {
+ 						return true;
+ 					}
+ 
+-					if (storey.ReturnType.IsGenericTask)
+-						block_return_type = storey.ReturnType.TypeArguments[0];
++					if (s_return_type.IsGenericTask || (s_return_type.Arity == 1 && s_return_type.IsCustomTaskType ()))
++					    block_return_type = s_return_type.TypeArguments[0];
+ 				}
+ 
+ 				if (ec.CurrentIterator != null) {
+@@ -1220,7 +1221,7 @@ namespace Mono.CSharp {
+ 							return false;
+ 						}
+ 
+-						if (!async_type.IsGenericTask) {
++						if (!async_type.IsGeneric) {
+ 							if (this is ContextualReturn)
+ 								return true;
+ 
+@@ -2368,7 +2369,12 @@ namespace Mono.CSharp {
+ 			if (initializer == null)
+ 				return null;
+ 
+-			var c = initializer as Constant;
++			Constant c;
++			if (initializer.Type == InternalType.DefaultType)
++				c = New.Constantify (li.Type, initializer.Location);
++			else
++				c = initializer as Constant;
++
+ 			if (c == null) {
+ 				initializer.Error_ExpressionMustBeConstant (bc, initializer.Location, li.Name);
+ 				return null;
+@@ -2407,14 +2413,14 @@ namespace Mono.CSharp {
+ 			AddressTaken = 1 << 2,
+ 			CompilerGenerated = 1 << 3,
+ 			Constant = 1 << 4,
+-			ForeachVariable = 1 << 5,
+-			FixedVariable = 1 << 6,
+-			UsingVariable = 1 << 7,
++			ForeachVariable = 1 << 5 | ReadonlyMask,
++			FixedVariable = 1 << 6 | ReadonlyMask,
++			UsingVariable = 1 << 7 | ReadonlyMask,
+ 			IsLocked = 1 << 8,
+ 			SymbolFileHidden = 1 << 9,
+ 			ByRef = 1 << 10,
+ 
+-			ReadonlyMask = ForeachVariable | FixedVariable | UsingVariable
++			ReadonlyMask = 1 << 20
+ 		}
+ 
+ 		TypeSpec type;
+@@ -2534,7 +2540,7 @@ namespace Mono.CSharp {
+ 
+ 		public bool IsFixed {
+ 			get {
+-				return (flags & Flags.FixedVariable) != 0;
++				return (flags & Flags.FixedVariable) == Flags.FixedVariable;
+ 			}
+ 			set {
+ 				flags = value ? flags | Flags.FixedVariable : flags & ~Flags.FixedVariable;
+@@ -2672,7 +2678,7 @@ namespace Mono.CSharp {
+ 
+ 		public string GetReadOnlyContext ()
+ 		{
+-			switch (flags & Flags.ReadonlyMask) {
++			switch (flags & (Flags.ForeachVariable | Flags.FixedVariable | Flags.UsingVariable)) {
+ 			case Flags.FixedVariable:
+ 				return "fixed variable";
+ 			case Flags.ForeachVariable:
+@@ -8191,7 +8197,9 @@ namespace Mono.CSharp {
+ 				}
+ 
+ 				if (iface_candidate == null) {
+-					if (expr.Type != InternalType.ErrorType) {
++					if (expr.Type == InternalType.DefaultType) {
++						rc.Report.Error (8312, loc, "Use of default literal is not valid in this context");
++					} else if (expr.Type != InternalType.ErrorType) {
+ 						rc.Report.Error (1579, loc,
+ 							"foreach statement cannot operate on variables of type `{0}' because it does not contain a definition for `{1}' or is inaccessible",
+ 							expr.Type.GetSignatureForError (), "GetEnumerator");
+diff --git a/mcs/mcs/tuples.cs b/mcs/mcs/tuples.cs
+index bb7faf734df..901efdc9541 100644
+--- a/mcs/mcs/tuples.cs
++++ b/mcs/mcs/tuples.cs
+@@ -432,7 +432,7 @@ namespace Mono.CSharp
+ 	{
+ 		Expression source;
+ 		List<Expression> targetExprs;
+-		List<LocalVariable> variablesToInfer;
++		List<BlockVariable> variables;
+ 		Expression instance;
+ 
+ 		public TupleDeconstruct (List<Expression> targetExprs, Expression source, Location loc)
+@@ -442,10 +442,11 @@ namespace Mono.CSharp
+ 			this.loc = loc;
+ 		}
+ 
+-		public TupleDeconstruct (List<Expression> targetExprs, List<LocalVariable> variables, Expression source, Location loc)
+-			: this (targetExprs, source, loc)
++		public TupleDeconstruct (List<BlockVariable> variables, Expression source, Location loc)
+ 		{
+-			this.variablesToInfer = variables;
++			this.source = source;
++			this.variables = variables;
++			this.loc = loc;
+ 		}
+ 
+ 		public override Expression CreateExpressionTree (ResolveContext ec)
+@@ -469,9 +470,18 @@ namespace Mono.CSharp
+ 			var src_type = src.Type;
+ 
+ 			if (src_type.IsTupleType) {
+-				if (src_type.Arity != targetExprs.Count) {
++				int target_count;
++
++				if (targetExprs == null) {
++					target_count = variables.Count;
++					targetExprs = new List<Expression> (target_count);
++				} else {
++					target_count = targetExprs.Count;
++				}
++
++				if (src_type.Arity != target_count) {
+ 					rc.Report.Error (8132, loc, "Cannot deconstruct a tuple of `{0}' elements into `{1}' variables",
+-						src_type.Arity.ToString (), targetExprs.Count.ToString ());
++						src_type.Arity.ToString (CultureInfo.InvariantCulture), target_count.ToString (CultureInfo.InvariantCulture));
+ 					return null;
+ 				}
+ 
+@@ -482,27 +492,44 @@ namespace Mono.CSharp
+ 					instance = expr_variable.CreateReferenceExpression (rc, loc);
+ 				}
+ 
+-				for (int i = 0; i < targetExprs.Count; ++i) {
++				for (int i = 0; i < target_count; ++i) {
+ 					var tle = src_type.TypeArguments [i];
+ 
+-					var lv = variablesToInfer? [i];
+-					if (lv != null) {
+-						if (InternalType.HasNoType (tle)) {
+-							rc.Report.Error (8130, Location, "Cannot infer the type of implicitly-typed deconstruction variable `{0}'", lv.Name);
+-							lv.Type = InternalType.ErrorType;
++					if (variables != null) {
++						var variable = variables [i].Variable;
++
++						if (variable.Type == InternalType.Discard) {
++							variables [i] = null;
++							targetExprs.Add (EmptyExpressionStatement.Instance);
+ 							continue;
+ 						}
+ 
+-						lv.Type = tle;
+-						lv.PrepareAssignmentAnalysis ((BlockContext) rc);
+-					}
++						var variable_type = variables [i].TypeExpression;
++
++						targetExprs.Add (new LocalVariableReference (variable, variable.Location));
++
++						if (variable_type is VarExpr) {
++							if (InternalType.HasNoType (tle)) {
++								rc.Report.Error (8130, Location, "Cannot infer the type of implicitly-typed deconstruction variable `{0}'", variable.Name);
++								tle = InternalType.ErrorType;
++							}
+ 
++							variable.Type = tle;
++						} else {
++							variable.Type = variable_type.ResolveAsType (rc);
++						}
++
++						variable.PrepareAssignmentAnalysis ((BlockContext)rc);
++					}
+ 
+ 					var element_src = tupleLiteral == null ? new MemberAccess (instance, NamedTupleSpec.GetElementPropertyName (i)) : tupleLiteral.Elements [i].Expr;
+ 					targetExprs [i] = new SimpleAssign (targetExprs [i], element_src).Resolve (rc);
+ 				}
+ 
+ 				eclass = ExprClass.Value;
++
++				// TODO: The type is same only if there is no target element conversion
++				// var res = (/*byte*/ b, /*short*/ s) = (2, 4);
+ 				type = src.Type;
+ 				return this;
+ 			}
+@@ -527,11 +554,24 @@ namespace Mono.CSharp
+ 
+ 		public override void Emit (EmitContext ec)
+ 		{
+-			throw new NotImplementedException ();
++			if (instance != null)
++				((ExpressionStatement)source).EmitStatement (ec);
++
++			foreach (ExpressionStatement expr in targetExprs)
++				expr.Emit (ec);
++
++			var ctor = MemberCache.FindMember (type, MemberFilter.Constructor (null), BindingRestriction.DeclaredOnly | BindingRestriction.InstanceOnly) as MethodSpec;
++			ec.Emit (OpCodes.Newobj, ctor);
+ 		}
+ 
+ 		public override void EmitStatement (EmitContext ec)
+ 		{
++			if (variables != null) {
++				foreach (var lv in variables) {
++					lv?.Variable.CreateBuilder (ec);
++				}
++			}
++			
+ 			if (instance != null)
+ 				((ExpressionStatement) source).EmitStatement (ec);
+ 			
+@@ -549,9 +589,6 @@ namespace Mono.CSharp
+ 			if (leave_copy)
+ 				throw new NotImplementedException ();
+ 
+-			foreach (var lv in variablesToInfer)
+-				lv.CreateBuilder (ec);
+-
+ 			EmitStatement (ec);
+ 		}
+ 
+@@ -563,11 +600,11 @@ namespace Mono.CSharp
+ 
+ 		public void SetGeneratedFieldAssigned (FlowAnalysisContext fc)
+ 		{
+-			if (variablesToInfer == null)
++			if (variables == null)
+ 				return;
+ 
+-			foreach (var lv in variablesToInfer)
+-				fc.SetVariableAssigned (lv.VariableInfo);
++			foreach (var lv in variables)
++				fc.SetVariableAssigned (lv.Variable.VariableInfo);
+ 		}
+ 	}
+ }
+\ No newline at end of file
+diff --git a/mcs/mcs/typemanager.cs b/mcs/mcs/typemanager.cs
+index b6aff14e1c0..7a16cda2774 100644
+--- a/mcs/mcs/typemanager.cs
++++ b/mcs/mcs/typemanager.cs
+@@ -242,6 +242,7 @@ namespace Mono.CSharp
+ 
+ 		// C# 7.0
+ 		public readonly PredefinedType[] Tuples;
++		public readonly PredefinedType SpanGeneric;
+ 
+ 		public PredefinedTypes (ModuleContainer module)
+ 		{
+@@ -301,6 +302,8 @@ namespace Mono.CSharp
+ 			FormattableString = new PredefinedType (module, MemberKind.Class, "System", "FormattableString");
+ 			FormattableStringFactory = new PredefinedType (module, MemberKind.Class, "System.Runtime.CompilerServices", "FormattableStringFactory");
+ 
++			SpanGeneric = new PredefinedType (module, MemberKind.Struct, "System", "Span", 1);
++
+ 			//
+ 			// Define types which are used for comparison. It does not matter
+ 			// if they don't exist as no error report is needed
+@@ -348,6 +351,8 @@ namespace Mono.CSharp
+ 				if (pt.Define ())
+ 					pt.TypeSpec.IsTupleType = true;
+ 			}
++
++			SpanGeneric.Define ();
+ 		}
+ 	}
+ 
+@@ -430,6 +435,7 @@ namespace Mono.CSharp
+ 			ArrayEmpty = new PredefinedMember<MethodSpec> (module, types.Array,
+ 				MemberFilter.Method ("Empty", 1, ParametersCompiled.EmptyReadOnlyParameters, null));
+ 
++			// TODO: Must me static
+ 			AsyncTaskMethodBuilderCreate = new PredefinedMember<MethodSpec> (module, types.AsyncTaskMethodBuilder,
+ 				MemberFilter.Method ("Create", 0, ParametersCompiled.EmptyReadOnlyParameters, types.AsyncTaskMethodBuilder.TypeSpec));
+ 
+@@ -485,6 +491,7 @@ namespace Mono.CSharp
+ 			AsyncTaskMethodBuilderTask = new PredefinedMember<PropertySpec> (module, types.AsyncTaskMethodBuilder,
+ 				MemberFilter.Property ("Task", null));
+ 
++			// TODO: Must me static
+ 			AsyncTaskMethodBuilderGenericCreate = new PredefinedMember<MethodSpec> (module, types.AsyncTaskMethodBuilderGeneric,
+ 				MemberFilter.Method ("Create", 0, ParametersCompiled.EmptyReadOnlyParameters, types.AsyncVoidMethodBuilder.TypeSpec));
+ 
+@@ -542,6 +549,7 @@ namespace Mono.CSharp
+ 			AsyncTaskMethodBuilderGenericTask = new PredefinedMember<PropertySpec> (module, types.AsyncTaskMethodBuilderGeneric,
+ 				MemberFilter.Property ("Task", null));
+ 
++			// TODO: Must me static
+ 			AsyncVoidMethodBuilderCreate = new PredefinedMember<MethodSpec> (module, types.AsyncVoidMethodBuilder,
+ 				MemberFilter.Method ("Create", 0, ParametersCompiled.EmptyReadOnlyParameters, types.AsyncVoidMethodBuilder.TypeSpec));
+ 
+@@ -1006,9 +1014,6 @@ namespace Mono.CSharp
+ 
+ 		public T Resolve (Location loc)
+ 		{
+-			if (member != null)
+-				return member;
+-
+ 			if (Get () != null)
+ 				return member;
+ 
+diff --git a/mcs/mcs/typespec.cs b/mcs/mcs/typespec.cs
+index d14e1ead3e3..a58a0fe5178 100644
+--- a/mcs/mcs/typespec.cs
++++ b/mcs/mcs/typespec.cs
+@@ -225,6 +225,8 @@ namespace Mono.CSharp
+ 			}
+ 		}
+ 
++		public bool IsByRefLike => (modifiers & Modifiers.REF) != 0;
++
+ 		//
+ 		// Returns true for instances of System.Threading.Tasks.Task<T>
+ 		//
+@@ -1452,6 +1454,7 @@ namespace Mono.CSharp
+ 		int TypeParametersCount { get; }
+ 		TypeParameterSpec[] TypeParameters { get; }
+ 
++		TypeSpec GetAsyncMethodBuilder ();
+ 		TypeSpec GetAttributeCoClass ();
+ 		string GetAttributeDefaultMember ();
+ 		AttributeUsageAttribute GetAttributeUsage (PredefinedAttribute pa);
+@@ -1461,6 +1464,29 @@ namespace Mono.CSharp
+ 
+ 	class InternalType : TypeSpec, ITypeDefinition
+ 	{
++		sealed class InternalTypeAssembly : IAssemblyDefinition
++		{
++			public static readonly InternalTypeAssembly Instance = new InternalTypeAssembly ();
++
++			public string FullName => throw new NotImplementedException ();
++
++			public bool IsCLSCompliant => false;
++
++			public bool IsMissing => false;
++
++			public string Name => throw new NotImplementedException ();
++
++			public byte [] GetPublicKeyToken ()
++			{
++				throw new NotImplementedException ();
++			}
++
++			public bool IsFriendAssemblyTo (IAssemblyDefinition assembly)
++			{
++				return false;
++			}
++		}
++
+ 		public static readonly InternalType AnonymousMethod = new InternalType ("anonymous method");
+ 		public static readonly InternalType Arglist = new InternalType ("__arglist");
+ 		public static readonly InternalType MethodGroup = new InternalType ("method group");
+@@ -1470,6 +1496,8 @@ namespace Mono.CSharp
+ 		public static readonly InternalType ErrorType = new InternalType ("<error>");
+ 		public static readonly InternalType VarOutType = new InternalType ("var out");
+ 		public static readonly InternalType ThrowExpr = new InternalType ("throw expression");
++		public static readonly InternalType DefaultType = new InternalType ("default");
++		public static readonly InternalType Discard = new InternalType ("discard");
+ 
+ 		readonly string name;
+ 
+@@ -1494,7 +1522,7 @@ namespace Mono.CSharp
+ 
+ 		IAssemblyDefinition ITypeDefinition.DeclaringAssembly {
+ 			get {
+-				throw new NotImplementedException ();
++				return InternalTypeAssembly.Instance;
+ 			}
+ 		}
+ 
+@@ -1561,6 +1589,11 @@ namespace Mono.CSharp
+ 
+ 		#region ITypeDefinition Members
+ 
++		TypeSpec ITypeDefinition.GetAsyncMethodBuilder ()
++		{
++			return null;
++		}
++
+ 		TypeSpec ITypeDefinition.GetAttributeCoClass ()
+ 		{
+ 			return null;
+@@ -1614,7 +1647,7 @@ namespace Mono.CSharp
+ 
+ 		public static bool HasNoType (TypeSpec type)
+ 		{
+-			return type == AnonymousMethod || type == MethodGroup || type == NullLiteral || type == ThrowExpr;
++			return type == AnonymousMethod || type == MethodGroup || type == NullLiteral || type == ThrowExpr || type == DefaultType;
+ 		}
+ 	}
+ 
+@@ -1749,6 +1782,11 @@ namespace Mono.CSharp
+ 			}
+ 		}
+ 
++		public TypeSpec GetAsyncMethodBuilder ()
++		{
++			return null;
++		}
++
+ 		public TypeSpec GetAttributeCoClass ()
+ 		{
+ 			return Element.MemberDefinition.GetAttributeCoClass ();
+@@ -1996,9 +2034,10 @@ namespace Mono.CSharp
+ 	[System.Diagnostics.DebuggerDisplay("{DisplayDebugInfo()}")]
+ 	class ReferenceContainer : ElementTypeSpec
+ 	{
+-		ReferenceContainer (TypeSpec element)
++		protected ReferenceContainer (TypeSpec element)
+ 			: base (MemberKind.ByRef, element, null)
+ 		{
++			cache = null;
+ 		}
+ 
+ 		public override IList<TypeSpec> Interfaces {
+@@ -2039,6 +2078,39 @@ namespace Mono.CSharp
+ 
+ 			return pc;
+ 		}
++
++		protected override void InitializeMemberCache(bool onlyTypes)
++		{
++			cache = Element.MemberCache;
++		}
++	}
++
++	[System.Diagnostics.DebuggerDisplay ("{DisplayDebugInfo()}")]
++	class ReadOnlyReferenceContainer : ReferenceContainer
++	{
++		public ReadOnlyReferenceContainer (TypeSpec element)
++			: base (element)
++		{
++		}
++
++		string DisplayDebugInfo ()
++		{
++			return "ref readonly " + GetSignatureForError ();
++		}
++
++		public new static ReferenceContainer MakeType (ModuleContainer module, TypeSpec element)
++		{
++			if (element.Kind == MemberKind.ByRef)
++				throw new ArgumentException ();
++
++			ReadOnlyReferenceContainer pc;
++			if (!module.ReadonlyReferenceTypesCache.TryGetValue (element, out pc)) {
++				pc = new ReadOnlyReferenceContainer (element);
++				module.ReadonlyReferenceTypesCache.Add (element, pc);
++			}
++
++			return pc;
++		}
+ 	}
+ 
+ 	class PointerContainer : ElementTypeSpec
+diff --git a/mcs/tests/gtest-409.cs b/mcs/tests/gtest-409.cs
+index 8db59d7e48d..606ae3685d1 100644
+--- a/mcs/tests/gtest-409.cs
++++ b/mcs/tests/gtest-409.cs
+@@ -1,3 +1,4 @@
++// Compiler options: -langversion:latest
+ using System;
+ 
+ //
+@@ -175,6 +176,11 @@ public class ConditionalParsing
+ 		var x = args ?.2f : -.2f;
+ 	}
+ 
++	void Test_23 (string args)
++	{
++		var x = args == null ? default : 1;
++	}
++
+ 	static void Helper<T> (T arg)
+ 	{
+ 	}
+diff --git a/mcs/tests/test-948.cs b/mcs/tests/test-948.cs
+new file mode 100644
+index 00000000000..34b3ab9a0c4
+--- /dev/null
++++ b/mcs/tests/test-948.cs
+@@ -0,0 +1,16 @@
++// Compiler options: -langversion:7.2 -unsafe
++
++using System;
++
++class X
++{
++	public static void Main ()
++	{
++		Span<int> stackSpan = stackalloc int[100];
++	}
++
++	unsafe void Foo ()
++	{
++
++	}
++}
+\ No newline at end of file
+diff --git a/mcs/tests/test-async-94.cs b/mcs/tests/test-async-94.cs
+new file mode 100644
+index 00000000000..ce9a30409bb
+--- /dev/null
++++ b/mcs/tests/test-async-94.cs
+@@ -0,0 +1,127 @@
++using System;
++using System.Threading.Tasks;
++using System.Runtime.CompilerServices;
++
++[AsyncMethodBuilder (typeof(MyTaskMethodBuilder<>))]
++class MyTask<T>
++{
++}
++
++[AsyncMethodBuilder (typeof(MyTaskMethodBuilder))]
++class MyTask
++{
++}
++
++class MyTaskMethodBuilder
++{
++	public static MyTaskMethodBuilder Create()
++	{
++		return null;
++	}
++
++	public MyTask Task {
++		get {
++			return null;
++		}
++	}
++
++	public void SetException (Exception exception)
++	{
++
++	}
++
++	public void SetResult ()
++	{
++
++	}
++
++	public void AwaitOnCompleted<TAwaiter, TStateMachine> (ref TAwaiter awaiter, ref TStateMachine stateMachine) where TAwaiter : INotifyCompletion where TStateMachine : IAsyncStateMachine
++	{
++
++	}
++
++	public void AwaitUnsafeOnCompleted<TAwaiter, TStateMachine> (ref TAwaiter awaiter, ref TStateMachine stateMachine) where TAwaiter : ICriticalNotifyCompletion where TStateMachine : IAsyncStateMachine
++	{
++
++	}
++
++	public void Start<TStateMachine> (ref TStateMachine stateMachine) where TStateMachine : IAsyncStateMachine
++	{
++
++	}
++
++	public void SetStateMachine (IAsyncStateMachine stateMachine)
++	{
++
++	}	
++}
++
++class MyTaskMethodBuilder<T>
++{
++	public static MyTaskMethodBuilder<T> Create()
++	{
++		return null;
++	}
++
++	public MyTask<T> Task {
++		get {
++			return null;
++		}
++	}
++
++	public void SetException (Exception exception)
++	{
++
++	}
++
++	public void SetResult (T result)
++	{
++
++	}
++
++	public void AwaitOnCompleted<TAwaiter, TStateMachine> (ref TAwaiter awaiter, ref TStateMachine stateMachine) where TAwaiter : INotifyCompletion where TStateMachine : IAsyncStateMachine
++	{
++
++	}
++
++	public void AwaitUnsafeOnCompleted<TAwaiter, TStateMachine> (ref TAwaiter awaiter, ref TStateMachine stateMachine) where TAwaiter : ICriticalNotifyCompletion where TStateMachine : IAsyncStateMachine
++	{
++
++	}
++
++	public void Start<TStateMachine> (ref TStateMachine stateMachine) where TStateMachine : IAsyncStateMachine
++	{
++
++	}
++
++	public void SetStateMachine (IAsyncStateMachine stateMachine)
++	{
++
++	}
++}
++
++class X
++{
++	public async MyTask Test ()
++	{
++		await Task.Delay (1);
++	}
++
++	public async MyTask<int> Test2 ()
++	{
++		await Task.Delay (1);
++		return 2;
++	}
++
++	public async ValueTask<string> Test3 ()
++	{
++		await Task.Delay (1);
++		return "as";
++	}	
++
++	public static void Main ()
++	{
++		var x = new X ();
++		var r1 = x.Test3 ().Result;
++	}
++}
+\ No newline at end of file
+diff --git a/mcs/tests/test-default-01.cs b/mcs/tests/test-default-01.cs
+new file mode 100644
+index 00000000000..823e33c451b
+--- /dev/null
++++ b/mcs/tests/test-default-01.cs
+@@ -0,0 +1,52 @@
++// Compiler options: -langversion:latest
++
++static class X
++{
++	const int c1 = default;
++	const int c2 = default (int);
++
++	public static void Main ()
++	{
++		int a = default;
++		var b = (int) default;
++		const int c = default;
++		var d = new[] { 1, default };
++		dynamic e = default;
++		int f = checked (default);
++		(int a, int b) g = (1, default);
++		var h = 1 != default;
++		var i = default == M4 ();
++	}
++
++	static int M1 ()
++	{
++		return default;
++	}
++
++	static void M2 ()
++	{
++		try {
++			throw new System.Exception ();
++		} catch (System.Exception) when (default) {
++		}
++
++		if (default) {			
++		}
++	}
++
++	static void M3 (int x = default)
++	{
++	}
++
++	static System.Func<int> M4 ()
++	{
++		return () => default;
++	} 
++}
++/*
++enum E
++{
++	A = default,
++	B = default + 1
++}
++*/
+\ No newline at end of file
+diff --git a/mcs/tests/test-default-02.cs b/mcs/tests/test-default-02.cs
+new file mode 100644
+index 00000000000..0039782e5f2
+--- /dev/null
++++ b/mcs/tests/test-default-02.cs
+@@ -0,0 +1,33 @@
++// Compiler options: -langversion:latest
++
++class C
++{
++	static void Main()
++	{
++		M (default, 1);
++
++		M2 (default);
++		M2 (null);
++
++		var res = Test (default);
++	}
++
++
++	static void M<T> (T x, T y)
++	{
++	}
++
++	static void M2 (params object[] x)
++	{        
++	}
++
++	static byte[] Test (S<byte> x)
++	{
++		return null;
++	}
++}
++
++struct S<T>
++{
++
++}
+\ No newline at end of file
+diff --git a/mcs/tests/test-discards-01.cs b/mcs/tests/test-discards-01.cs
+new file mode 100644
+index 00000000000..54cf29779c6
+--- /dev/null
++++ b/mcs/tests/test-discards-01.cs
+@@ -0,0 +1,36 @@
++using System;
++
++class X
++{
++	public static void Main ()
++	{
++		string s = null;
++
++		_ = 1;
++		{
++			char _ = '4';
++		}
++
++		_ = TestValue ();
++
++		_ = _ = s;
++
++		byte k1;
++		var s1 = (k1, _) = (1, s);
++
++		Func<object> l1 = () => _ = (_, _) = (1, s);
++
++		TryGetValue (out _);
++	}
++
++	static bool TryGetValue (out int arg)
++	{
++		arg = 3;
++		return true;
++	}
++
++	static int TestValue ()
++	{
++		return 4;
++	}
++}
+\ No newline at end of file
+diff --git a/mcs/tests/test-named-11.cs b/mcs/tests/test-named-11.cs
+new file mode 100644
+index 00000000000..a01d2883b9c
+--- /dev/null
++++ b/mcs/tests/test-named-11.cs
+@@ -0,0 +1,13 @@
++// Compiler options: -langversion:7.2
++
++class X
++{
++	public static void Main ()
++	{
++		Test (arg: 1, "");
++	}
++
++	static void Test (int arg, string str)
++	{
++	}
++}
+\ No newline at end of file
+diff --git a/mcs/tests/test-readonly-02.cs b/mcs/tests/test-readonly-02.cs
+new file mode 100644
+index 00000000000..231b8cd8fda
+--- /dev/null
++++ b/mcs/tests/test-readonly-02.cs
+@@ -0,0 +1,27 @@
++// Compiler options: -langversion:latest
++using System;
++
++public delegate ref readonly int D (int x);
++
++class X
++{
++	public static void Main ()
++	{
++
++	}
++
++	Guid g;
++
++	ref readonly Guid TestMethod ()
++	{
++		return ref g;
++	}
++
++	ref readonly Guid TestProp {
++		get {
++			ref readonly var rg = ref g;
++			return ref rg;
++		}
++	}	
++
++}
+\ No newline at end of file
+diff --git a/mcs/tests/test-readonly-03.cs b/mcs/tests/test-readonly-03.cs
+new file mode 100644
+index 00000000000..14cb958b41a
+--- /dev/null
++++ b/mcs/tests/test-readonly-03.cs
+@@ -0,0 +1,16 @@
++// Compiler options: -langversion:latest
++using System;
++
++readonly struct S
++{
++	static S shared = new S ();
++
++	public S (int arg)
++	{
++		this = shared;
++	}
++
++	public static void Main ()
++	{
++	}
++}
+\ No newline at end of file
+diff --git a/mcs/tests/test-ref-07.cs b/mcs/tests/test-ref-07.cs
+new file mode 100644
+index 00000000000..4aa16579752
+--- /dev/null
++++ b/mcs/tests/test-ref-07.cs
+@@ -0,0 +1,30 @@
++// Compiler options: -langversion:latest
++
++public readonly partial ref struct Test
++{
++	public static void Main ()
++	{
++		var m = new Test ();
++		m.Method ();
++	}
++
++	Test Method ()
++	{
++		return new Test ();
++	}
++}
++
++ref struct Second
++{
++	Test field;
++}
++
++public abstract class P
++{
++	public abstract Test Span { get; }
++}
++
++public interface II
++{
++	Test Span { get; }
++}
+diff --git a/mcs/tests/test-ref-08.cs b/mcs/tests/test-ref-08.cs
+new file mode 100644
+index 00000000000..f4ff50f4c5c
+--- /dev/null
++++ b/mcs/tests/test-ref-08.cs
+@@ -0,0 +1,101 @@
++using System;
++
++namespace ClassLibrary1
++{
++	public class C
++	{
++
++		class B
++		{
++			int v;
++			public ref int this[int index]
++			{
++				get
++				{
++					return ref v;
++				}
++			}
++		}
++
++
++		class Gen<T> where T : struct
++		{
++			T v;
++			public ref T this[int index]
++			{
++				get
++				{
++					return ref v;
++				}
++			}
++		}
++
++		struct Val
++		{
++		}
++
++		class BB
++		{
++			Val v;
++			public ref Val this[int index]
++			{
++				get
++				{
++					return ref v;
++				}
++			}
++		}
++
++		void MM ()
++		{
++			var bbb = new BB();
++			Val v1 = bbb[0];
++			bbb[1] = v1;
++
++			ref Val v2 = ref bbb[2];
++			bbb[2] = v2;
++		}
++
++		static int[] a = new int[1];
++		public static void Main()
++		{
++			var bb = new B();
++			int b = 1;
++			bb[0] = b;
++			a[0] = Add2(ref b, 2);
++
++			var bbb = new BB();
++			bbb[0] = new Val();
++
++			var v = new Val();
++			bbb[1] = v;
++
++			var v2 = bbb[2];
++
++			bbb[3] = v2;
++
++
++			bbb[3] = bbb[2];
++
++
++
++			var ggg = new Gen<Val>();
++			ggg[0] = new Val();
++
++			var g = new Val();
++			ggg[1] = v;
++
++			var g2 = ggg[2];
++
++			ggg[3] = v2;
++
++
++			ggg[3] = ggg[2];
++		}
++
++		public static ref int Add2(ref int a, int b)
++		{
++			return ref a;
++		}
++	}
++}
+\ No newline at end of file
+diff --git a/mcs/tests/test-ref-09.cs b/mcs/tests/test-ref-09.cs
+new file mode 100644
+index 00000000000..5d0e89e5c1a
+--- /dev/null
++++ b/mcs/tests/test-ref-09.cs
+@@ -0,0 +1,12 @@
++struct rigidbody { public float x; }
++
++class Program
++{
++	static rigidbody a;
++	static ref rigidbody property_returning_struct_by_ref => ref a;
++
++	static void Main()
++	{
++		System.Console.WriteLine (property_returning_struct_by_ref.x);
++	}
++}
+\ No newline at end of file
+diff --git a/mcs/tests/test-ref-10.cs b/mcs/tests/test-ref-10.cs
+new file mode 100644
+index 00000000000..88e201d3174
+--- /dev/null
++++ b/mcs/tests/test-ref-10.cs
+@@ -0,0 +1,24 @@
++// Compiler options: -langversion:latest
++
++using System;
++
++ref struct ValueStringBuilder
++{
++	public override string ToString ()
++	{
++		return "aaa";
++	}
++}
++
++
++class X
++{
++	public static int Main ()
++	{
++		var s = new ValueStringBuilder ();
++		if (s.ToString () != "aaa")
++			return 1;
++
++		return 0;
++	}
++}
+\ No newline at end of file
+diff --git a/mcs/tests/test-tuple-07.cs b/mcs/tests/test-tuple-07.cs
+new file mode 100644
+index 00000000000..cc7ce5837ce
+--- /dev/null
++++ b/mcs/tests/test-tuple-07.cs
+@@ -0,0 +1,16 @@
++using System;
++using System.Collections.Generic;
++
++// Parser tests
++
++class ParserTest
++{
++	IEnumerable<(Object vertex, int distance)> Test ()
++	{
++		return null;
++	}
++
++	public static void Main ()
++	{		
++	}
++}
+\ No newline at end of file
+diff --git a/mcs/tests/test-tuple-09.cs b/mcs/tests/test-tuple-09.cs
+new file mode 100644
+index 00000000000..3f15cae6cf1
+--- /dev/null
++++ b/mcs/tests/test-tuple-09.cs
+@@ -0,0 +1,19 @@
++using System;
++
++class TupleDeconstructionDeclaration
++{
++	public static int Main ()
++	{
++		(string s, long l) = GetValues ();
++		(var vs, var vl) = GetValues ();
++		(object o, var vl2) = GetValues ();
++		(string ds, _) = GetValues ();
++
++		return 0;
++	}
++
++	static (string, long) GetValues ()
++	{
++		return ("a", 3);
++	}
++}
+\ No newline at end of file
+diff --git a/mcs/tests/ver-il-net_4_x.xml b/mcs/tests/ver-il-net_4_x.xml
+index c2c98123305..4dbc7042a8a 100644
+--- a/mcs/tests/ver-il-net_4_x.xml
++++ b/mcs/tests/ver-il-net_4_x.xml
+@@ -14659,6 +14659,9 @@
+       <method name="Void Test_22(Boolean)" attrs="129">
+         <size>24</size>
+       </method>
++      <method name="Void Test_23(System.String)" attrs="129">
++        <size>16</size>
++      </method>
+     </type>
+   </test>
+   <test name="gtest-410.cs">
+@@ -52808,6 +52811,19 @@
+       </method>
+     </type>
+   </test>
++  <test name="test-948.cs">
++    <type name="X">
++      <method name="Void Main()" attrs="150">
++        <size>16</size>
++      </method>
++      <method name="Void Foo()" attrs="129">
++        <size>2</size>
++      </method>
++      <method name="Void .ctor()" attrs="6278">
++        <size>7</size>
++      </method>
++    </type>
++  </test>
+   <test name="test-95.cs">
+     <type name="X">
+       <method name="Int32 Main()" attrs="150">
+@@ -66893,6 +66909,117 @@
+       </method>
+     </type>
+   </test>
++  <test name="test-async-94.cs">
++    <type name="MyTask`1[T]">
++      <method name="Void .ctor()" attrs="6278">
++        <size>7</size>
++      </method>
++    </type>
++    <type name="MyTask">
++      <method name="Void .ctor()" attrs="6278">
++        <size>7</size>
++      </method>
++    </type>
++    <type name="MyTaskMethodBuilder">
++      <method name="MyTaskMethodBuilder Create()" attrs="150">
++        <size>10</size>
++      </method>
++      <method name="MyTask get_Task()" attrs="2182">
++        <size>10</size>
++      </method>
++      <method name="Void SetException(System.Exception)" attrs="134">
++        <size>2</size>
++      </method>
++      <method name="Void SetResult()" attrs="134">
++        <size>2</size>
++      </method>
++      <method name="Void AwaitOnCompleted[TAwaiter,TStateMachine](TAwaiter ByRef, TStateMachine ByRef)" attrs="134">
++        <size>2</size>
++      </method>
++      <method name="Void AwaitUnsafeOnCompleted[TAwaiter,TStateMachine](TAwaiter ByRef, TStateMachine ByRef)" attrs="134">
++        <size>2</size>
++      </method>
++      <method name="Void Start[TStateMachine](TStateMachine ByRef)" attrs="134">
++        <size>2</size>
++      </method>
++      <method name="Void SetStateMachine(System.Runtime.CompilerServices.IAsyncStateMachine)" attrs="134">
++        <size>2</size>
++      </method>
++      <method name="Void .ctor()" attrs="6278">
++        <size>7</size>
++      </method>
++    </type>
++    <type name="MyTaskMethodBuilder`1[T]">
++      <method name="MyTaskMethodBuilder`1[T] Create()" attrs="150">
++        <size>10</size>
++      </method>
++      <method name="MyTask`1[T] get_Task()" attrs="2182">
++        <size>10</size>
++      </method>
++      <method name="Void SetException(System.Exception)" attrs="134">
++        <size>2</size>
++      </method>
++      <method name="Void SetResult(T)" attrs="134">
++        <size>2</size>
++      </method>
++      <method name="Void AwaitOnCompleted[TAwaiter,TStateMachine](TAwaiter ByRef, TStateMachine ByRef)" attrs="134">
++        <size>2</size>
++      </method>
++      <method name="Void AwaitUnsafeOnCompleted[TAwaiter,TStateMachine](TAwaiter ByRef, TStateMachine ByRef)" attrs="134">
++        <size>2</size>
++      </method>
++      <method name="Void Start[TStateMachine](TStateMachine ByRef)" attrs="134">
++        <size>2</size>
++      </method>
++      <method name="Void SetStateMachine(System.Runtime.CompilerServices.IAsyncStateMachine)" attrs="134">
++        <size>2</size>
++      </method>
++      <method name="Void .ctor()" attrs="6278">
++        <size>7</size>
++      </method>
++    </type>
++    <type name="X">
++      <method name="MyTask Test()" attrs="134">
++        <size>33</size>
++      </method>
++      <method name="MyTask`1[System.Int32] Test2()" attrs="134">
++        <size>33</size>
++      </method>
++      <method name="System.Threading.Tasks.ValueTask`1[System.String] Test3()" attrs="134">
++        <size>33</size>
++      </method>
++      <method name="Void Main()" attrs="150">
++        <size>23</size>
++      </method>
++      <method name="Void .ctor()" attrs="6278">
++        <size>7</size>
++      </method>
++    </type>
++    <type name="X+&lt;Test&gt;c__async0">
++      <method name="Void MoveNext()" attrs="486">
++        <size>157</size>
++      </method>
++      <method name="Void SetStateMachine(System.Runtime.CompilerServices.IAsyncStateMachine)" attrs="486">
++        <size>13</size>
++      </method>
++    </type>
++    <type name="X+&lt;Test2&gt;c__async1">
++      <method name="Void MoveNext()" attrs="486">
++        <size>165</size>
++      </method>
++      <method name="Void SetStateMachine(System.Runtime.CompilerServices.IAsyncStateMachine)" attrs="486">
++        <size>13</size>
++      </method>
++    </type>
++    <type name="X+&lt;Test3&gt;c__async2">
++      <method name="Void MoveNext()" attrs="486">
++        <size>169</size>
++      </method>
++      <method name="Void SetStateMachine(System.Runtime.CompilerServices.IAsyncStateMachine)" attrs="486">
++        <size>13</size>
++      </method>
++    </type>
++  </test>
+   <test name="test-cls-00.cs">
+     <type name="CLSCLass_6">
+       <method name="Void add_Disposed(Delegate)" attrs="2182">
+@@ -68527,6 +68654,47 @@
+       </method>
+     </type>
+   </test>
++  <test name="test-default-01.cs">
++    <type name="X">
++      <method name="Void Main()" attrs="150">
++        <size>53</size>
++      </method>
++      <method name="Int32 M1()" attrs="145">
++        <size>10</size>
++      </method>
++      <method name="Void M2()" attrs="145">
++        <size>31</size>
++      </method>
++      <method name="Void M3(Int32)" attrs="145">
++        <size>2</size>
++      </method>
++      <method name="System.Func`1[System.Int32] M4()" attrs="145">
++        <size>38</size>
++      </method>
++      <method name="Int32 &lt;M4&gt;m__0()" attrs="145">
++        <size>9</size>
++      </method>
++    </type>
++  </test>
++  <test name="test-default-02.cs">
++    <type name="C">
++      <method name="Void Main()" attrs="145">
++        <size>36</size>
++      </method>
++      <method name="Void M[T](T, T)" attrs="145">
++        <size>2</size>
++      </method>
++      <method name="Void M2(System.Object[])" attrs="145">
++        <size>2</size>
++      </method>
++      <method name="Void .ctor()" attrs="6278">
++        <size>7</size>
++      </method>
++      <method name="Byte[] Test(S`1[System.Byte])" attrs="145">
++        <size>10</size>
++      </method>
++    </type>
++  </test>
+   <test name="test-dictinit-01.cs">
+     <type name="Program">
+       <method name="Int32 Main()" attrs="145">
+@@ -68610,6 +68778,30 @@
+       </method>
+     </type>
+   </test>
++  <test name="test-discards-01.cs">
++    <type name="X">
++      <method name="Void Main()" attrs="150">
++        <size>63</size>
++      </method>
++      <method name="Boolean TryGetValue(Int32 ByRef)" attrs="145">
++        <size>13</size>
++      </method>
++      <method name="Int32 TestValue()" attrs="145">
++        <size>10</size>
++      </method>
++      <method name="Void .ctor()" attrs="6278">
++        <size>7</size>
++      </method>
++    </type>
++    <type name="X+&lt;Main&gt;c__AnonStorey0">
++      <method name="System.Object &lt;&gt;m__0()" attrs="131">
++        <size>25</size>
++      </method>
++      <method name="Void .ctor()" attrs="6278">
++        <size>7</size>
++      </method>
++    </type>
++  </test>
+   <test name="test-ex-filter-01.cs">
+     <type name="X">
+       <method name="Int32 Main()" attrs="150">
+@@ -70689,6 +70881,19 @@
+       </method>
+     </type>
+   </test>
++  <test name="test-named-11.cs">
++    <type name="X">
++      <method name="Void Main()" attrs="150">
++        <size>13</size>
++      </method>
++      <method name="Void Test(Int32, System.String)" attrs="145">
++        <size>2</size>
++      </method>
++      <method name="Void .ctor()" attrs="6278">
++        <size>7</size>
++      </method>
++    </type>
++  </test>
+   <test name="test-nameof-01.cs">
+     <type name="X">
+       <method name="Int32 Main()" attrs="150">
+@@ -72778,6 +72983,49 @@
+       </method>
+     </type>
+   </test>
++  <test name="test-readonly-02.cs">
++    <type name="D">
++      <method name="Int32&amp; Invoke(Int32)" attrs="454">
++        <size>0</size>
++      </method>
++      <method name="System.IAsyncResult BeginInvoke(Int32, System.AsyncCallback, System.Object)" attrs="454">
++        <size>0</size>
++      </method>
++      <method name="Int32&amp; EndInvoke(System.IAsyncResult)" attrs="454">
++        <size>0</size>
++      </method>
++      <method name="Void .ctor(Object, IntPtr)" attrs="6278">
++        <size>0</size>
++      </method>
++    </type>
++    <type name="X">
++      <method name="Void Main()" attrs="150">
++        <size>2</size>
++      </method>
++      <method name="System.Guid&amp; TestMethod()" attrs="129">
++        <size>15</size>
++      </method>
++      <method name="System.Guid&amp; get_TestProp()" attrs="2177">
++        <size>17</size>
++      </method>
++      <method name="Void .ctor()" attrs="6278">
++        <size>7</size>
++      </method>
++    </type>
++  </test>
++  <test name="test-readonly-03.cs">
++    <type name="S">
++      <method name="Void Main()" attrs="150">
++        <size>2</size>
++      </method>
++      <method name="Void .ctor(Int32)" attrs="6278">
++        <size>13</size>
++      </method>
++      <method name="Void .cctor()" attrs="6289">
++        <size>15</size>
++      </method>
++    </type>
++  </test>
+   <test name="test-ref-01.cs">
+     <type name="X">
+       <method name="Void Main()" attrs="150">
+@@ -72906,6 +73154,95 @@
+       </method>
+     </type>
+   </test>
++  <test name="test-ref-07.cs">
++    <type name="Test">
++      <method name="Void Main()" attrs="150">
++        <size>18</size>
++      </method>
++      <method name="Test Method()" attrs="129">
++        <size>18</size>
++      </method>
++    </type>
++    <type name="P">
++      <method name="Test get_Span()" attrs="3526">
++        <size>0</size>
++      </method>
++      <method name="Void .ctor()" attrs="6276">
++        <size>7</size>
++      </method>
++    </type>
++  </test>
++  <test name="test-ref-08.cs">
++    <type name="ClassLibrary1.C">
++      <method name="Void MM()" attrs="129">
++        <size>60</size>
++      </method>
++      <method name="Void Main()" attrs="150">
++        <size>245</size>
++      </method>
++      <method name="Int32&amp; Add2(Int32 ByRef, Int32)" attrs="150">
++        <size>10</size>
++      </method>
++      <method name="Void .ctor()" attrs="6278">
++        <size>7</size>
++      </method>
++      <method name="Void .cctor()" attrs="6289">
++        <size>12</size>
++      </method>
++    </type>
++    <type name="ClassLibrary1.C+B">
++      <method name="Int32&amp; get_Item(Int32)" attrs="2182">
++        <size>15</size>
++      </method>
++      <method name="Void .ctor()" attrs="6278">
++        <size>7</size>
++      </method>
++    </type>
++    <type name="ClassLibrary1.C+Gen`1[T]">
++      <method name="T&amp; get_Item(Int32)" attrs="2182">
++        <size>15</size>
++      </method>
++      <method name="Void .ctor()" attrs="6278">
++        <size>7</size>
++      </method>
++    </type>
++    <type name="ClassLibrary1.C+BB">
++      <method name="Val&amp; get_Item(Int32)" attrs="2182">
++        <size>15</size>
++      </method>
++      <method name="Void .ctor()" attrs="6278">
++        <size>7</size>
++      </method>
++    </type>
++  </test>
++  <test name="test-ref-09.cs">
++    <type name="Program">
++      <method name="rigidbody&amp; get_property_returning_struct_by_ref()" attrs="2193">
++        <size>13</size>
++      </method>
++      <method name="Void Main()" attrs="145">
++        <size>17</size>
++      </method>
++      <method name="Void .ctor()" attrs="6278">
++        <size>7</size>
++      </method>
++    </type>
++  </test>
++  <test name="test-ref-10.cs">
++    <type name="ValueStringBuilder">
++      <method name="System.String ToString()" attrs="198">
++        <size>14</size>
++      </method>
++    </type>
++    <type name="X">
++      <method name="Int32 Main()" attrs="150">
++        <size>47</size>
++      </method>
++      <method name="Void .ctor()" attrs="6278">
++        <size>7</size>
++      </method>
++    </type>
++  </test>
+   <test name="test-static-using-01.cs">
+     <type name="A.B.X">
+       <method name="Int32 Test()" attrs="150">
+@@ -73374,6 +73711,56 @@
+       </method>
+     </type>
+   </test>
++  <test name="test-tuple-07.cs">
++    <type name="ParserTest">
++      <method name="System.Collections.Generic.IEnumerable`1[System.ValueTuple`2[System.Object,System.Int32]] Test()" attrs="129">
++        <size>10</size>
++      </method>
++      <method name="Void Main()" attrs="150">
++        <size>2</size>
++      </method>
++      <method name="Void .ctor()" attrs="6278">
++        <size>7</size>
++      </method>
++    </type>
++  </test>
++  <test name="test-tuple-08.cs">
++    <type name="X">
++      <method name="Void Main()" attrs="150">
++        <size>19</size>
++      </method>
++      <method name="System.Threading.Tasks.Task Test()" attrs="129">
++        <size>41</size>
++      </method>
++      <method name="System.Threading.Tasks.Task`1[System.ValueTuple`2[System.Int32,System.Int32]] Waiting()" attrs="129">
++        <size>21</size>
++      </method>
++      <method name="Void .ctor()" attrs="6278">
++        <size>7</size>
++      </method>
++    </type>
++    <type name="X+&lt;Test&gt;c__async0">
++      <method name="Void MoveNext()" attrs="486">
++        <size>212</size>
++      </method>
++      <method name="Void SetStateMachine(System.Runtime.CompilerServices.IAsyncStateMachine)" attrs="486">
++        <size>13</size>
++      </method>
++    </type>
++  </test>
++  <test name="test-tuple-09.cs">
++    <type name="TupleDeconstructionDeclaration">
++      <method name="Int32 Main()" attrs="150">
++        <size>99</size>
++      </method>
++      <method name="System.ValueTuple`2[System.String,System.Int64] GetValues()" attrs="145">
++        <size>21</size>
++      </method>
++      <method name="Void .ctor()" attrs="6278">
++        <size>7</size>
++      </method>
++    </type>
++  </test>
+   <test name="test-var-01.cs">
+     <type name="Test">
+       <method name="Int32 Main()" attrs="150">

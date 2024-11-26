@@ -1279,10 +1279,9 @@ unused0:")))))
       (name "mono")
       (source (origin
                 (method git-fetch)
-                (uri
-                 (git-reference
-                  (url "https://gitlab.winehq.org/mono/mono.git")
-                  (commit commit)))
+                (uri (git-reference
+                      (url "https://gitlab.winehq.org/mono/mono.git")
+                      (commit commit)))
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
@@ -1293,8 +1292,7 @@ unused0:")))))
                              #$(add-external-repos
                                 mono-pre-5.8.0-external-repo-specs)
                              #$@prepare-mono-source-0))
-                (patches
-                 (search-patches "mono-5.4.0-patches.patch"))))
+                (patches (search-patches "mono-5.4.0-patches.patch"))))
       (native-inputs (modify-inputs (package-native-inputs mono-5.4.0)
                        (replace "mono" mono-5.4.0)))
       (arguments
@@ -1430,3 +1428,74 @@ unused0:")))))
                                              " "
                                              top "/mcs/class/lib/build/mcs.exe")
                              ,@make-flags))))))))))))
+
+(define mono-pre-5.10.0-external-repo-specs
+  '(("api-doc-tools"               "d03e819838c6241f92f90655cb448cc47c9e8791"
+     "1riki79f3ig3cxigviss81dz601hn92a1gifglm0mzjbs76sf3fj"
+     #:recursive? #t)
+    ("api-snapshot"                "627333cae84f02a36ee9ca605c96dac4557d9f35"
+     "0p9c6brxiwx38yvaf55jd0l1mxfj3b5ah0xas2hv6frkz80yrqdl")
+    ("aspnetwebstack"              "e77b12e6cc5ed260a98447f609e887337e44e299"
+     "0rks344qr4fmp3fs1264d2qkmm348m8d1kjd7z4l94iiirwn1fq1")
+    (("reference-assemblies" "binary-reference-assemblies")
+     "9c5cc7f051a0bba2e41341a5baebfc4d2c2133ef"
+     "14bfn1qvni8gyfxjwmvykyjjy3j5ng4fnbljdadi9dm4b9al0wg1")
+    ("bockbuild"                   "29022af5d8a94651b2eece93f910559b254ec3f0"
+     "0lclc1smmrj6xw32dll073mxw4ddiixv9arv02yw3w5h135ay7w4")
+    ("boringssl"                   "3e0770e18835714708860ba9fe1af04a932971ff"
+     "139a0gl91a52k2r6na6ialzkqykaj1rk88zjrkaz3sdxx7nmmg6y")
+    ("cecil"                       "bc11f472954694ebd92ae4956f110c1036a7c2e0"
+     "122nnp5pcnw18pj6amnqkqxlrmapd4vy9xs65hd0bqyqjh56bwnd")
+    (("cecil" "cecil-legacy")      "33d50b874fd527118bc361d83de3d494e8bb55e1"
+     "1p4hl1796ib26ykyf5snl6cj0lx0v7mjh0xqhjw6qdh753nsjyhb")
+    ("corefx"                      "cb1b049c95227465c1791b857cb5ba86385d9f29"
+     "1pr0qjlgxf63zs1g80gqd6x3qhlgb0wlcc8zm8z8am5aywrvgb53")
+    ("corert"                      "48dba73801e804e89f00311da99d873f9c550278"
+     "1zw47jf4cwqmaixylisxi73xf6cap41bwf9vlmpxanzxaqklzsvk")
+    ("ikdasm"                      "465c0815558fd43c0110f8d00fc186ac0044ac6a"
+     "0xir7pcgq04hb7s8g9wsqdrypb6l29raj3iz5rcqzdm0056k75w2")
+    (("ikvm-fork" "ikvm")          "847e05fced5c9a41ff0f24f1f9d40d5a8a5772c1"
+     "1fl9bm3lmzf8iqv3x4iqkz9fc54mwdvrxisxg2nvwwcsi4saffpi")
+    ("linker"                      "99354bf5c13b8055209cb082cddc50c8047ab088"
+     "05zlajnqf83xfvn2whh9nql6j85sq12aw26sqmyqz7zcpml171mj")
+    ("Newtonsoft.Json"             "471c3e0803a9f40a0acc8aeceb31de6ff93a52c4"
+     "0dgngd5hqk6yhlg40kabn6qdnknm32zcx9q6bm2w31csnsk5978s")
+    (("NuGet.BuildTasks" "nuget-buildtasks")
+     "b58ba4282377bcefd48abdc2d62ce6330e079abe"
+     "1say03fnqkjsx97zacany3sa5j4mhfk827hkwp23ib02q18f7lvp")
+    (("NUnitLite" "nunit-lite")    "764656cdafdb3acd25df8cb52a4e0ea14760fccd"
+     "0pc7lk3p916is8cn4ngaqvjlmlzv3vvjpyksy4pvb3qb5iiaw0vq")
+    ;; ("roslyn-binaries"          "1904c7d0682a878e2d25b4d49f3475d12fbb9cc6"
+    ;;  "")
+    ("rx"                          "b29a4b0fda609e0af33ff54ed13652b6ccf0e05e"
+     "1n1jwhmsbkcv2d806immcpzkb72rz04xy98myw355a8w5ah25yiv")
+    ;; ("xunit-binaries"           "d4433b0972f40cb3efaa3fbba52869bde5df8fa8"
+    ;;  "")
+    ))
+
+(define-public mono-pre-5.10.0
+  (let ((commit "3e9d7d6e9cf8dc33eb29c497c350a1cd7df3a057")
+        (version "5.8.0.129")
+        (revision "0"))
+    (package
+      (inherit mono-5.8.0)
+      (version (git-version version revision commit))
+      (name "mono")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://gitlab.winehq.org/mono/mono.git")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0m8i0zgzh0fgb3ssy95v9czk1c0rl76q0jj7834s5fjnkdj8l4jb"))
+                (modules '((guix build utils)
+                           (ice-9 string-fun)))
+                (snippet #~(begin
+                             #$(add-external-repos
+                                mono-pre-5.10.0-external-repo-specs)
+                             #$@prepare-mono-source-0))
+                (patches (search-patches "mono-mcs-patches-from-5.10.0.patch"))))
+      (native-inputs (modify-inputs (package-native-inputs mono-5.8.0)
+                       (replace "mono" mono-5.8.0))))))
