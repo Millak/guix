@@ -17206,7 +17206,7 @@ expression data sets.")
            r-shiny
            r-summarizedexperiment
            r-threejs))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-golubesets r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/MLInterfaces/")
     (synopsis "Interfaces to R machine learning procedures")
     (description
