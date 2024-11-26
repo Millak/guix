@@ -8797,6 +8797,13 @@ graphics packages that comes with the base installation.")
                 "0pjsfnl1v6a6cs6hny092jby750l5br7fdzws9lnly0iky1lf55g"))))
     (properties `((upstream-name . "ctrdata")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; Needed for vignettes
+         (add-after 'unpack 'set-HOME
+           (lambda _ (setenv "HOME" "/tmp"))))))
     (propagated-inputs
      (list r-clipr
            r-countrycode
