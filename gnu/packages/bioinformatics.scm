@@ -824,6 +824,8 @@ association testing, and pathway-level random effects models.")
                   "08l04iqf54b5995gc7rvqqd7w327fwqs7qjyhc9y5cqfj8yv4c48"))))
       (properties `((upstream-name . "bedtorch")))
       (build-system r-build-system)
+      ;; Some of the tests attempt to download files off the internet.
+      (arguments (list #:tests? #false))
       (propagated-inputs
        (list r-assertthat
              r-curl
@@ -840,6 +842,7 @@ association testing, and pathway-level random effects models.")
              r-s4vectors
              r-stringr
              r-tidyr))
+      (native-inputs (list r-testthat))
       (home-page "https://github.com/haizi-zh/bedtorch/")
       (synopsis "R package for fast BED-file manipulation")
       (description
