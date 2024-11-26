@@ -441,28 +441,21 @@ from protobuf specification files.")
 (define-public python-protobuf-5
   (package
     (name "python-protobuf")
-    (version "5.27.3")
+    (version "5.28.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "protobuf" version))
        (sha256
         (base32
-         "0b6qxb6hnhzmiz1wnjrjdmwxx2ddv9zr86p89vivgwj0wq1hjil2"))))
+         "0yzg3i40p7rbr51xr72avpvn72yin5xcxybkyc0y99c0j72dpfk4"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; FIXME: ImportError: 'testing_refleaks' module incorrectly imported from
-      ;; '/gnu/store/...-python-protobuf-5.27.3/lib/python3.10/site-packages/google/protobuf/internal'.
-      ;; Expected '/tmp/guix-build-python-protobuf-5.27.3.drv-0/protobuf-5.27.3/google/protobuf/internal'.
-      ;; Is this module globally installed?
-      #:tests? #f
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "python" "-m" "unittest" )))))))
+      #:tests? #f)) ; no tests provided for Python variant
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
     (inputs (list protobuf))
     (home-page "https://github.com/protocolbuffers/protobuf")
     (synopsis "Protocol buffers is a data interchange format")
