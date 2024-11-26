@@ -21717,7 +21717,7 @@ networks and estimated fluxes can be visualized with hypergraphs.")
     (propagated-inputs
      (list r-bigmemory))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/phaverty/bigmemoryExtras")
     (synopsis "Extension of the bigmemory package")
     (description
