@@ -13292,6 +13292,7 @@ colors to give chromosomes, and what points to label.")
            r-rsamtools
            r-rtracklayer
            r-tidyr))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/yuifu/millefy")
     (synopsis "Make millefy plot with single-cell RNA-seq data")
     (description "@code{Millefy} is a tool for visualizing read coverage of
