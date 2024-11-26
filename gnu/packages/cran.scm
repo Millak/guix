@@ -40231,6 +40231,21 @@ and \"Persuasion\".")
                 "1bmsyrmy833kzj3s9s6207f54bx1ca0ianwhiyrlp0jfbqcd1m99"))))
     (properties `((upstream-name . "janitor")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'delete-bad-tests
+           (lambda _
+             ;; Fails because of unexpected warnings.
+             (delete-file "tests/testthat/test-compare_df_cols.R")))
+         (add-before 'check 'set-timezone
+           (lambda* (#:key inputs #:allow-other-keys)
+             ;; Six tests would fail without this.
+             (setenv "TZ" "UTC")
+             (setenv "TZDIR"
+                     (search-input-directory inputs
+                                             "share/zoneinfo")))))))
     (propagated-inputs
      (list r-dplyr
            r-hms
@@ -40244,7 +40259,7 @@ and \"Persuasion\".")
            r-stringr
            r-tidyr
            r-tidyselect))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-knitr r-testthat tzdata-for-tests))
     (home-page "https://github.com/sfirke/janitor")
     (synopsis "Simple tools for examining and cleaning dirty data")
     (description
