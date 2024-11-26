@@ -629,6 +629,12 @@ values.")))))))))
       (for-each validate-type lst)
       lst))
 
+  (define (ensure-manifest x file)
+    (unless (manifest? x)
+      (raise (formatted-message (G_ "file '~a' does not return a manifest")
+                                file)))
+    x)
+
   (define system
     (or (assoc-ref opts 'system) (%current-system)))
 
@@ -701,9 +707,11 @@ values.")))))))))
           (loop tail 'regular
                 (append (map manifest-entry-item
                              (manifest-entries
-                              (load* manifest
-                                     (make-user-module '((guix profiles)
-                                                         (gnu))))))
+                              (ensure-manifest
+                               (load* manifest
+                                      (make-user-module '((guix profiles)
+                                                          (gnu))))
+                               manifest)))
                         result)))
          (('expression . str)
           (loop tail 'regular
