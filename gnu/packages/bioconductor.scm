@@ -7374,7 +7374,7 @@ used by @code{ensembldb}, @code{Organism.dplyr}, and other packages.")
            r-s4vectors
            r-xml))
     (native-inputs
-     (list r-knitr r-runit))
+     (list r-go-db r-knitr r-runit))
     (home-page "https://bioconductor.org/packages/AnnotationForge")
     (synopsis "Code for building annotation database packages")
     (description
