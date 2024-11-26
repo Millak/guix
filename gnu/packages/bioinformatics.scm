@@ -18063,7 +18063,7 @@ Mixtures.")
              r-withr
              r-xml2
              r-yaml))
-      (native-inputs (list r-knitr))
+      (native-inputs (list r-knitr r-testthat))
       (home-page "https://github.com/saezlab/omnipathr")
       (synopsis "OmniPath web service client and more")
       (description
