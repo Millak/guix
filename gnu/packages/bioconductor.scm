@@ -8740,6 +8740,16 @@ alignments.")
                 "1vw4lsh3bkmghk4f5rqds0awvl0f5dkafz51iw3s6lqaviq5wkx3"))))
     (properties `((upstream-name . "GenomicDataCommons")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'delete-bad-tests
+           (lambda _
+             ;; These tests attempt to download files.
+             (for-each delete-file
+                       '("tests/testthat/test_api.R"
+                         "tests/testthat/test_data.R")))))))
     (propagated-inputs (list r-dplyr
                              r-genomicranges
                              r-httr
