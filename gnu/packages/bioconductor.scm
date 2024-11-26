@@ -12737,7 +12737,7 @@ additional column data sets.")
                              r-structstrings
                              r-trna
                              r-xml2))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-httptest r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/tRNAdbImport")
     (synopsis "Importing from tRNAdb and mitotRNAdb as GRanges objects")
     (description
