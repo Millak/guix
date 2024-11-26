@@ -25355,8 +25355,12 @@ transcription factor binding consensus by heuristic search.")
     (properties `((upstream-name . "biocthis")))
     (build-system r-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
+     (list
+      ;; Tests only attempt to check R and Bioc versions.  Looks like this is
+      ;; really only meant for actual Bioconductor infrastructure.
+      #:tests? #false
+      #:phases
+      '(modify-phases %standard-phases
          (add-after 'unpack 'set-HOME
            (lambda _ (setenv "HOME" "/tmp"))))))
     (propagated-inputs
