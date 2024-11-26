@@ -19244,7 +19244,7 @@ graphics.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-igraph r-matrix r-rtsne r-slam))
-    (native-inputs (list r-runit))
+    (native-inputs (list r-biocgenerics r-runit))
     (home-page "https://bioconductor.org/packages/release/bioc/html/BiRewire.html")
     (synopsis "Tools for randomization of bipartite graphs")
     (description
