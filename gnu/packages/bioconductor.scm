@@ -11289,6 +11289,16 @@ with a single RCy3 function.")
          "1226wljfndqs11p61a79b0rm66jzwljzzi8w9lhx9g165jy3xxay"))))
     (properties `((upstream-name . "regioneR")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'delete-bad-tests
+           (lambda _
+             ;; These tests require internet access.
+             (for-each delete-file
+                       '("tests/testthat/test_randomizationFunctions.R"
+                         "tests/testthat/test_toGRanges.R")))))))
     (propagated-inputs
      (list r-biostrings
            r-bsgenome
@@ -11299,7 +11309,7 @@ with a single RCy3 function.")
            r-rtracklayer
            r-s4vectors))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-biocmanager r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/regioneR/")
     (synopsis "Association analysis of genomic regions")
     (description "This package offers a statistical framework based on
