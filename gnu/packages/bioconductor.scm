@@ -2942,6 +2942,32 @@ currently supports human array (HM27, HM450, EPIC), mouse array (MM285) and
 the @code{HorvathMethylChip40} (Mammal40) array.")
     (license license:artistic2.0)))
 
+(define-public r-systempiperdata
+  (package
+    (name "r-systempiperdata")
+    (version "2.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "systemPipeRdata" version
+                              'experiment))
+       (sha256
+        (base32 "0276cyzcd9pzma9s4f300snlkyq2xlnavbwm8rwvn22dpgzapskd"))))
+    (properties `((upstream-name . "systemPipeRdata")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biocgenerics r-biostrings r-jsonlite r-remotes))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/tgirke/systemPipeRdata")
+    (synopsis "Workflow templates and sample data")
+    (description
+     "@code{systemPipeRdata} complements the @code{systemPipeR} workflow
+management system (WMS) by offering a collection of pre-designed data analysis
+workflow templates.  These templates are easily accessible and can be readily
+loaded onto a user's system with a single command.  Once loaded, the WMS can
+immediately utilize these templates for efficient end-to-end analysis, serving
+a wide range of data analysis needs.")
+    (license license:artistic2.0)))
+
 (define-public r-tcgabiolinksgui-data
   (package
     (name "r-tcgabiolinksgui-data")
