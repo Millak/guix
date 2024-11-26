@@ -158,6 +158,7 @@
 ;;; Copyright © 2024 Peter Kannewitz <petre-vps@posteo.net>
 ;;; Copyright © 2024 Aaron Covrig <aaron.covrig.us@ieee.org>
 ;;; Copyright © 2024 Evgeny Pisemsky <mail@pisemsky.site>
+;;; Copyright © 2024 Markku Korkeala <markku.korkeala@iki.fi>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -480,6 +481,32 @@ package.  It is not useful on its own, only as a dependency for awkward.")
 including arbitrary-length lists, records, mixed types, and missing data,
 using NumPy-like idioms.")
     (license license:bsd-3)))
+
+(define-public python-jsonpath-ng
+  (package
+    (name "python-jsonpath-ng")
+    (version "1.7.0" )
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "jsonpath-ng" version))
+       (sha256
+        (base32 "0g5bpq02pl9mv7mbqixvnagq8f9v0jab6wqmbxw9rxsz9vyzgxgn"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-ply))
+    (home-page "https://github.com/h2non/jsonpath-ng")
+    (synopsis "JSONPath Next-Generation")
+    (description
+     "This package provides a final implementation of @code{JSONPath} for
+Python that aims to be standard compliant, including arithmetic and binary
+comparison operators, as defined in the original
+@url{http://goessner.net/articles/JsonPath/, JSONPath} proposal.")
+    (license license:asl2.0)))
 
 (define-public python-xmldiff
   (package
