@@ -29604,6 +29604,8 @@ feature effects.  Key functions are:
          "1qacvfzknchfm27mhl7a357fnb6lzjkj4vh8lch5aljz82sdmdaf"))))
     (properties `((upstream-name . "iBreakDown")))
     (build-system r-build-system)
+    ;; Tests need r-dalex, which depends on this package.
+    (arguments (list #:tests? #false))
     (propagated-inputs (list r-ggplot2))
     (native-inputs (list r-knitr r-testthat))
     (home-page "https://ModelOriented.github.io/iBreakDown/")
