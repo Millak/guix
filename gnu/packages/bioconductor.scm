@@ -4556,6 +4556,8 @@ sequencing data.")
                 "1v1lzd0lbg21z1gyca1p45p50akznjlq0b3999sny7hfh20954fr"))))
     (properties `((upstream-name . "ANF")))
     (build-system r-build-system)
+    ;; Tests attempt to download data files.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-biobase
            r-igraph
