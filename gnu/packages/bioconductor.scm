@@ -25212,7 +25212,7 @@ Bioconductor-friendly.")
            r-memoise
            r-readr
            r-whisker))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/BiocDockerManager")
     (synopsis "Access and manage Bioconductor Docker images")
     (description
