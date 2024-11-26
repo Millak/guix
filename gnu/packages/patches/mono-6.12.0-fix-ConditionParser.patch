@@ -1,0 +1,46 @@
+diff --git a/mcs/class/Microsoft.Build.Engine/Microsoft.Build.BuildEngine/ConditionParser.cs b/mcs/class/Microsoft.Build.Engine/Microsoft.Build.BuildEngine/ConditionParser.cs
+index b5e2e809ae4..757492d15e4 100644
+--- a/mcs/class/Microsoft.Build.Engine/Microsoft.Build.BuildEngine/ConditionParser.cs
++++ b/mcs/class/Microsoft.Build.Engine/Microsoft.Build.BuildEngine/ConditionParser.cs
+@@ -205,19 +205,30 @@ ConditionExpression ParseFunctionExpression (string function_name)
+ 		{
+ 			List <ConditionFactorExpression> list = new List <ConditionFactorExpression> ();
+ 			ConditionFactorExpression e;
+-			
++
++            /* starts looking at the open paren, move past it */
++            tokenizer.GetNextToken ();
++            if (tokenizer.Token.Type == TokenType.RightParen) {
++                /* leave us looking past the end of the argument list */
++                tokenizer.GetNextToken ();
++                return list;
++            }
+ 			while (true) {
+-				tokenizer.GetNextToken ();
+-				if (tokenizer.Token.Type == TokenType.RightParen) {
+-					tokenizer.GetNextToken ();
+-					break;
+-				}
+-				if (tokenizer.Token.Type == TokenType.Comma)
++                e = (ConditionFactorExpression) ParseFactorExpression ();
++                list.Add (e);
++                /* ParseFactorExpression leaves us looking at what follows the
++                 * expression */
++                if (tokenizer.Token.Type == TokenType.RightParen) {
++                    /* leave us looking past the end of the argument list */
++                    tokenizer.GetNextToken ();
++                    break;
++                }
++                if (tokenizer.Token.Type == TokenType.Comma) {
++                    tokenizer.GetNextToken ();
+ 					continue;
+-					
+-				tokenizer.Putback (tokenizer.Token);
+-				e = (ConditionFactorExpression) ParseFactorExpression ();
+-				list.Add (e);
++                }
++
++                throw new ExpressionParseException (String.Format ("Unexpected token {0} in argument list while parsing condition \"{1}\"", tokenizer.Token, conditionStr));
+ 			}
+ 			
+ 			return list;

@@ -1669,3 +1669,197 @@ GDI+-compatible API on non-Windows operating systems.  It uses Cairo to do
 most of the heavy lifting.")
     (home-page "https://github.com/mono/libgdiplus")
     (license license:expat)))
+
+(define mono-6.12.0-external-repo-specs
+  '(("api-doc-tools"               "5da8127af9e68c9d58a90aa9de21f57491d81261"
+     "0rq8dxmy5av36nd298k60d8s386zhqlw63yn2ywc0416xsflscg4"
+     #:recursive? #t)
+    ("api-snapshot"                "808e8a9e4be8d38e097d2b0919cac37bc195844a"
+     "1i5migdw649bmxqii99q2hd6vka11wlcphfrm98kb7pprz4k401a")
+    ("aspnetwebstack"              "e77b12e6cc5ed260a98447f609e887337e44e299"
+     "0rks344qr4fmp3fs1264d2qkmm348m8d1kjd7z4l94iiirwn1fq1")
+    ;; (("https://github.com/Unity-Technologies/bdwgc" "bdwgc")
+    ;;  "a27eddb837d613cb4cf436405c23ce39ed16a86d"
+    ;;  "")
+    (("reference-assemblies" "binary-reference-assemblies")
+     "e68046d5106aa0349c23f95821456955fc15b96b"
+     "1mqpz274qdhl84y6x8bazrfmajcf6qagiks2g0gyg4qyqwgrp490")
+    ("bockbuild"                   "3bd44f6784b85b1ece8b00b13d12cf416f5a87e7"
+     "0z3d8qylfwnlklpcvsmsgy5n248gcff5vmzqjzalfj7d1h7vcjxs")
+    ("boringssl"                   "296137cf989688b03ed89f72cd7bfd86d470441e"
+     "11ghdayfcvysnh1617bj478hxrg7b43jpk7vgafm6jb7ykpxl8fa")
+    ("cecil"                       "8021f3fbe75715a1762e725594d8c00cce3679d8"
+     "0j19lwbs30y2xz8myk0fbxs4hbal1p8vqjmnkvn301v0xxacynxm")
+    (("cecil" "cecil-legacy")      "33d50b874fd527118bc361d83de3d494e8bb55e1"
+     "1p4hl1796ib26ykyf5snl6cj0lx0v7mjh0xqhjw6qdh753nsjyhb")
+    ("corefx"                      "c4eeab9fc2faa0195a812e552cd73ee298d39386"
+     "03530pf6dddqlihvb83m9z34bark8mzrffnrclq726gndfg4vqs8")
+    ("corert"                      "11136ad55767485063226be08cfbd32ed574ca43"
+     "1g0q83fff13237nwsfcmk7fmzwx0kv93zsqqybcigwip5x6ani8f")
+    ("helix-binaries"              "64b3a67631ac8a08ff82d61087cfbfc664eb4af8"
+     "1f6kkpbzj3bx9p1hb36kzjq0ppckk4rpmjnr82hyq7y18fwikfd7")
+    ("ikdasm"                      "f0fd66ea063929ef5d51aafdb10832164835bb0f"
+     "0313pvmmjh01h9b306jd6cd6fcbnbxaglaj81m0l0acf4yn7zb10")
+    (("ikvm-fork" "ikvm")          "08266ac8c0b620cc929ffaeb1f23ac37629ce825"
+     "1g0v1v8nvxkwq7w9qyqhf9kgmxq3qm6rsw4al8x0w3dmbgxjhqjv")
+    ("illinker-test-assets"       "ec9eb51af2eb07dbe50a2724db826bf3bfb930a6"
+     "1b4vq4jbgnl4lzffg02n5w1sppg2k6bfks0150pj403sbnml85gl")
+    ("linker"                      "ed4a9413489aa29a70e41f94c3dac5621099f734"
+     "16rdpch9anarnhczi441a9zna4rz93jwpb31x0dzrb4j03cxajg2")
+    ;; (("https://github.com/dotnet/llvm-project" "llvm-project")
+    ;;  "7dfdea1267f0a40955e02567dcbcd1bcb987e825"
+    ;;  "")
+    ("Newtonsoft.Json"             "471c3e0803a9f40a0acc8aeceb31de6ff93a52c4"
+     "0dgngd5hqk6yhlg40kabn6qdnknm32zcx9q6bm2w31csnsk5978s")
+    (("NuGet.BuildTasks" "nuget-buildtasks")
+     "99558479578b1d6af0f443bb411bc3520fcbae5c"
+     "1434m6z9sb7bvki9ba6iinqpmh4a4iyld76jz10qz07sycklflq3")
+    (("NUnitLite" "nunit-lite")    "a977ca57572c545e108b56ef32aa3f7ff8287611"
+     "02zwdfpw8pazllwbp4hkzqwfql98g4854diykqdb9wa0vrb8w4sj")
+    ;; ("roslyn-binaries"             "1c6482470cd219dcc7503259a20f26a1723f20ec"
+    ;;  "")
+    ("rx"                          "b29a4b0fda609e0af33ff54ed13652b6ccf0e05e"
+     "1n1jwhmsbkcv2d806immcpzkb72rz04xy98myw355a8w5ah25yiv")
+    ;; ("xunit-binaries"              "8f6e62e1c016dfb15420852e220e07091923734a"
+    ;;  "")
+    ))
+
+(define-public mono-6.12.0
+  (package
+    (inherit mono-5.10.0)
+    (version "6.12.0.206")
+    (name "mono")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.winehq.org/mono/mono.git")
+                    (commit (string-append "mono-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1cw9v53bgbc6v7xmp5ij76y6inb6sz1g1zx2jk825rxshq96alvk"))
+              (modules '((guix build utils)
+                         (ice-9 string-fun)))
+              (snippet #~(begin
+                           #$(add-external-repos
+                              mono-6.12.0-external-repo-specs)
+                           #$@prepare-mono-source-0))
+              (patches (search-patches "mono-6.12.0-fix-ConditionParser.patch"
+                                       "mono-6.12.0-add-runpath.patch"
+                                       "mono-6.12.0-fix-AssemblyResolver.patch"))))
+    (native-inputs (modify-inputs (package-native-inputs mono-5.10.0)
+                     (replace "mono" mono-5.10.0)))
+    (inputs (modify-inputs (package-inputs mono-5.10.0)
+              (append libgdiplus)))
+    (arguments
+     (substitute-keyword-arguments
+       (strip-keyword-arguments (list #:parallel-build?)
+         (package-arguments mono-5.10.0))
+       ((#:make-flags make-flags #~'())
+        #~(append #$make-flags
+                  (list
+                   (string-append "PLATFORM_DISABLED_TESTS="
+                                  ;; segfaults (!), reason unknown
+                                  "safehandle.2.exe"
+                                  ;; unclear why these fail
+                                  "bug-10834.exe"
+                                  "bug-60848.exe"
+                                  ;; these are tests of microsoft
+                                  ;; telemetry.  They fail because
+                                  ;; microsoft telemetry is only
+                                  ;; enabled on OSX.  No idea why
+                                  ;; these tests are run by default.
+                                  "merp-crash-test.exe"
+                                  "merp-json-valid.exe"))))
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (delete 'patch-sub-autogen.sh-shebang)
+            ;; Our 5.10.0 compiler has been rather souped up.
+            (add-after 'unpack 'disable-profile-version-check
+              (lambda _
+                (substitute* "mcs/build/common/basic-profile-check.cs"
+                  (("min_mono_version = .*")
+                   "min_mono_version = new Version (0, 0);\n"))))
+            (add-after 'unpack 'disable-c#-8.0-tests
+              ;; These aren't compilable by mcs
+              (lambda _
+                (substitute* "mono/mini/Makefile.am.in"
+                  (("-langversion:8\\.0")
+                   ""))
+                (substitute* "mono/tests/Makefile.am"
+                  (("	(dim-generic|dim-issue-18917|interface-2|delegate18|generic-unmanaged-constraint|async-generic-enum)\\.cs.*")
+                   ""))))
+            (add-after 'unpack 'disable-verification-error
+              (lambda _
+                ;; For some reason verification fails complaining about a bunch
+                ;; of missing icalls.
+                (substitute* "runtime/Makefile.am"
+                  (("	    fi; done; done;")
+                   "	    fi; done; done; ok=:;"))))
+            ;; This requires binary blobs to be used, it doesn't provide a
+            ;; clear way to regenerate them and no corresponding source is
+            ;; linked, plus from what little I know of it it sounds like it's
+            ;; not something we need at all?
+            (add-after 'unpack 'disable-helix-client
+              (lambda _
+                (substitute* "mcs/tools/Makefile"
+                  (("mono-helix-client")
+                   ""))))
+            (replace 'build-reference-assemblies
+              (lambda* (#:key make-flags #:allow-other-keys)
+                (let ((top (getcwd)))
+                  (with-directory-excursion
+                      "external/binary-reference-assemblies"
+                    (substitute* (find-files "." "^Makefile$")
+                      (("CSC_COMMON_ARGS := " all)
+                       (string-append all "-delaysign+ "))
+                      (("IBM\\.Data\\.DB2_REFS := " all)
+                       (string-append all "System.Xml "))
+                      (("Mono\\.Data\\.Sqlite_REFS := " all)
+                       (string-append all "System.Xml "))
+                      (("System\\.Data\\.DataSetExtensions_REFS := " all)
+                       (string-append all "System.Xml "))
+                      (("System\\.Data\\.OracleClient_REFS := " all)
+                       (string-append all "System.Xml "))
+                      (("System\\.IdentityModel_REFS := " all)
+                       (string-append all "System.Configuration "))
+                      (("System\\.Design_REFS := " all)
+                       (string-append all "Accessibility "))
+                      (("System\\.Web\\.Extensions\\.Design_REFS := " all)
+                       (string-append all "System.Windows.Forms System.Web "))
+                      (("System\\.ServiceModel\\.Routing_REFS := " all)
+                       (string-append all "System.Xml "))
+                      (("System\\.Web\\.Abstractions_REFS := " all)
+                       (string-append all "System "))
+                      (("System\\.Reactive\\.Windows\\.Forms_REFS := " all)
+                       (string-append all "System "))
+                      (("System\\.Windows\\.Forms\\.DataVisualization_REFS := " all)
+                       (string-append all "Accessibility "))
+                      (("Facades/System\\.ServiceModel\\.Primitives_REFS := " all)
+                       (string-append all "System.Xml "))
+                      (("Facades/System\\.Dynamic\\.Runtime_REFS := " all)
+                       (string-append all "System "))
+                      (("Facades/System\\.Xml\\.XDocument_REFS := " all)
+                       (string-append all "System.Xml "))
+                      (("Facades/System\\.Runtime\\.Serialization.Xml_REFS := " all)
+                       (string-append all "System.Xml "))
+                      (("Facades/System\\.Data\\.Common_REFS := " all)
+                       (string-append all "System System.Xml ")))
+                    (substitute* "build/monodroid/Makefile"
+                      (("ECMA_KEY := \\.\\./\\.\\./\\.\\./\\.\\./\\.\\./mono/")
+                       ;; it should only be 4 directories up, and it's in
+                       ;; mcs/, not mono/mcs/
+                       "ECMA_KEY := ../../../../"))
+                    (apply invoke "make" "-j" (number->string
+                                               (parallel-job-count))
+                           "CSC=mcs" make-flags)))))
+            (replace 'check
+              (lambda* (#:key tests? (make-flags '()) #:allow-other-keys)
+                (when tests?
+                  ;; There are more tests than these, but they depend on
+                  ;; external/xunit-binaries, so we limit ourselves to the
+                  ;; tests that debian runs.
+                  (with-directory-excursion "mono/mini"
+                    (apply invoke "make" "check" make-flags))
+                  (with-directory-excursion "mono/tests"
+                    (apply invoke "make" "check" make-flags)))))))))))

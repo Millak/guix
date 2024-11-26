@@ -1,0 +1,236 @@
+diff --git a/mcs/class/Microsoft.Build.Tasks/Microsoft.Build.Tasks/AssemblyResolver.cs b/mcs/class/Microsoft.Build.Tasks/Microsoft.Build.Tasks/AssemblyResolver.cs
+index 5e0ec480956..9daf9d6920b 100644
+--- a/mcs/class/Microsoft.Build.Tasks/Microsoft.Build.Tasks/AssemblyResolver.cs
++++ b/mcs/class/Microsoft.Build.Tasks/Microsoft.Build.Tasks/AssemblyResolver.cs
+@@ -67,54 +67,56 @@ public void ResetSearchLogger ()
+ 				search_log.Clear ();
+ 		}
+ 
+-		string GetGacPath ()
++		string[] GetGacPaths ()
+ 		{
+ 			// NOTE: code from mcs/tools/gacutil/driver.cs
+-			PropertyInfo gac = typeof (System.Environment).GetProperty ("GacPath", BindingFlags.Static | BindingFlags.NonPublic);
++			PropertyInfo gacs = typeof (System.Environment).GetProperty ("GacPaths", BindingFlags.Static | BindingFlags.NonPublic);
+ 
+-			if (gac == null)
++			if (gacs == null)
+ 				return null;
+ 
+-			MethodInfo get_gac = gac.GetGetMethod (true);
+-			return (string) get_gac.Invoke (null, null);
++			MethodInfo get_gacs = gacs.GetGetMethod (true);
++			return (string[]) get_gacs.Invoke (null, null);
+ 		}
+ 
+ 		void GatherGacAssemblies ()
+ 		{
+-			string gac_path = GetGacPath ();
+-			if (gac_path == null)
+-				throw new InvalidOperationException ("XBuild must be run on Mono runtime");
+-			if (!Directory.Exists (gac_path))
+-				return; // in case mono isn't "installed".
+-
+-			Version version;
+-			DirectoryInfo version_info, assembly_info;
+-
+-			foreach (string assembly_name in Directory.GetDirectories (gac_path)) {
+-				assembly_info = new DirectoryInfo (assembly_name);
+-				foreach (string version_token in Directory.GetDirectories (assembly_name)) {
+-					foreach (string file in Directory.GetFiles (version_token, "*.dll")) {
+-						version_info = new DirectoryInfo (version_token);
+-						version = new Version (version_info.Name.Split (
+-							new char [] {'_'}, StringSplitOptions.RemoveEmptyEntries) [0]);
+-
+-						Dictionary<Version, string> assembliesByVersion = new Dictionary <Version, string> ();
+-						if (!gac.TryGetValue (assembly_info.Name, out assembliesByVersion)) {
+-							assembliesByVersion = new Dictionary <Version, string> ();
+-							gac.Add (assembly_info.Name, assembliesByVersion);
+-						}
+-
+-						string found_file;
+-						if (assembliesByVersion.TryGetValue (version, out found_file) &&
+-							File.GetLastWriteTime (file) <= File.GetLastWriteTime (found_file))
+-								// Duplicate found, take the newer file
+-								continue;
+-
+-						assembliesByVersion [version] = file;
+-					}
+-				}
+-			}
+-		}
++            string[] gac_paths = GetGacPaths ();
++            if (gac_paths == null)
++                throw new InvalidOperationException ("XBuild must be run on Mono runtime");
++            if (gac_paths.Length == 0 || !Directory.Exists (gac_paths[0]))
++                return; // in case mono isn't "installed".
++
++            Version version;
++            DirectoryInfo version_info, assembly_info;
++
++            foreach (string gac_path in gac_paths) {
++                foreach (string assembly_name in Directory.GetDirectories (gac_path)) {
++                    assembly_info = new DirectoryInfo (assembly_name);
++                    foreach (string version_token in Directory.GetDirectories (assembly_name)) {
++                        foreach (string file in Directory.GetFiles (version_token, "*.dll")) {
++                            version_info = new DirectoryInfo (version_token);
++                            version = new Version (version_info.Name.Split (
++                                                       new char [] {'_'}, StringSplitOptions.RemoveEmptyEntries) [0]);
++
++                            Dictionary<Version, string> assembliesByVersion = new Dictionary <Version, string> ();
++                            if (!gac.TryGetValue (assembly_info.Name, out assembliesByVersion)) {
++                                assembliesByVersion = new Dictionary <Version, string> ();
++                                gac.Add (assembly_info.Name, assembliesByVersion);
++                            }
++
++                            string found_file;
++                            if (assembliesByVersion.TryGetValue (version, out found_file) &&
++                                File.GetLastWriteTime (file) <= File.GetLastWriteTime (found_file))
++                                // Duplicate found, take the newer file
++                                continue;
++
++                            assembliesByVersion [version] = file;
++                        }
++                    }
++                }
++            }
++        }
+ 
+ 		public ResolvedReference FindInTargetFramework (ITaskItem reference, string framework_dir, bool specific_version)
+ 		{
+diff --git a/mcs/class/corlib/System/Environment.cs b/mcs/class/corlib/System/Environment.cs
+index fd936ab21a4..b5a5c77c1a3 100644
+--- a/mcs/class/corlib/System/Environment.cs
++++ b/mcs/class/corlib/System/Environment.cs
+@@ -984,9 +984,18 @@ private static string GacPath {
+ 				return Path.Combine (Path.Combine (internalGetGacPath (), "mono"), "gac");
+ 			}
+ 		}
++
++        private static string[] GacPaths {
++            get {
++                return internalGetGacPaths ();
++            }
++        }
+ #pragma warning restore 169
+ 		[MethodImplAttribute (MethodImplOptions.InternalCall)]
+ 		internal extern static string internalGetGacPath ();
++
++        [MethodImplAttribute (MethodImplOptions.InternalCall)]
++		internal extern static string [] internalGetGacPaths ();
+ #endif
+ 		[MethodImplAttribute (MethodImplOptions.InternalCall)]
+ 		internal extern static string [] GetLogicalDrivesInternal ();
+diff --git a/mono/metadata/assembly.c b/mono/metadata/assembly.c
+index 8c71ad0eb95..759d5aefbcf 100644
+--- a/mono/metadata/assembly.c
++++ b/mono/metadata/assembly.c
+@@ -854,6 +854,11 @@ mono_assembly_getrootdir (void)
+ 	return default_path [0];
+ }
+ 
++char **mono_assembly_get_extra_gac_paths()
++{
++    return extra_gac_paths;
++}
++
+ /**
+  * mono_native_getrootdir:
+  * 
+diff --git a/mono/metadata/assembly.h b/mono/metadata/assembly.h
+index e9c02ee26f5..e5f060e8238 100644
+--- a/mono/metadata/assembly.h
++++ b/mono/metadata/assembly.h
+@@ -50,6 +50,7 @@ MONO_API MONO_RT_EXTERNAL_ONLY MonoImage*    mono_assembly_load_module (MonoAsse
+ MONO_API void          mono_assembly_close      (MonoAssembly *assembly);
+ MONO_API void          mono_assembly_setrootdir (const char *root_dir);
+ MONO_API MONO_CONST_RETURN char *mono_assembly_getrootdir (void);
++MONO_API char **mono_assembly_get_extra_gac_paths (void);
+ MONO_API char         *mono_native_getrootdir (void);
+ MONO_API void	       mono_assembly_foreach    (MonoFunc func, void* user_data);
+ MONO_API void          mono_assembly_set_main   (MonoAssembly *assembly);
+diff --git a/mono/metadata/icall-decl.h b/mono/metadata/icall-decl.h
+index a77fcf38598..3f0f1758ec2 100644
+--- a/mono/metadata/icall-decl.h
++++ b/mono/metadata/icall-decl.h
+@@ -152,6 +152,7 @@ ICALL_EXPORT gint32 ves_icall_System_Environment_get_TickCount (void);
+ #if ENABLE_NETCORE
+ ICALL_EXPORT gint64 ves_icall_System_Environment_get_TickCount64 (void);
+ #endif
++ICALL_EXPORT MonoArray *ves_icall_System_Environment_GetGacPaths (void);
+ ICALL_EXPORT gint64 ves_icall_System_DateTime_GetSystemTimeAsFileTime (void);
+ ICALL_EXPORT gint64 ves_icall_System_Diagnostics_Process_GetProcessData (int, gint32, MonoProcessError*);
+ ICALL_EXPORT gint64 ves_icall_System_Diagnostics_Stopwatch_GetTimestamp (void);
+diff --git a/mono/metadata/icall-def.h b/mono/metadata/icall-def.h
+index 0a44729674b..59c803ba488 100644
+--- a/mono/metadata/icall-def.h
++++ b/mono/metadata/icall-def.h
+@@ -327,6 +327,7 @@ HANDLES(ENV_16b, "get_bundled_machine_config", ves_icall_System_Environment_get_
+ HANDLES(ENV_16m, "internalBroadcastSettingChange", ves_icall_System_Environment_BroadcastSettingChange, void, 0, ())
+ HANDLES(ENV_17, "internalGetEnvironmentVariable_native", ves_icall_System_Environment_GetEnvironmentVariable_native, MonoString, 1, (const_char_ptr))
+ HANDLES(ENV_18, "internalGetGacPath", ves_icall_System_Environment_GetGacPath, MonoString, 0, ())
++NOHANDLES(ICALL(ENV_18_1, "internalGetGacPaths", ves_icall_System_Environment_GetGacPaths))
+ HANDLES(ENV_19, "internalGetHome", ves_icall_System_Environment_InternalGetHome, MonoString, 0, ())
+ NOHANDLES(ICALL(ENV_20, "set_ExitCode", mono_environment_exitcode_set))
+ ICALL_TYPE(GC, "System.GC", GC_10)
+diff --git a/mono/metadata/icall.c b/mono/metadata/icall.c
+index 6d16b9c3540..1e592c30e27 100644
+--- a/mono/metadata/icall.c
++++ b/mono/metadata/icall.c
+@@ -7781,6 +7781,56 @@ ves_icall_System_Environment_GetGacPath (MonoError *error)
+ }
+ #endif
+ 
++ICALL_EXPORT MonoArray *
++ves_icall_System_Environment_GetGacPaths ()
++{
++    char **extra_gac_paths = mono_assembly_get_extra_gac_paths();
++    const char *rootdir = mono_assembly_getrootdir ();
++    char **e;
++    int n;
++    MonoDomain *domain;
++    MonoArray *out;
++    MonoString *str;
++    gchar *tmp;
++    MonoError error;
++    n = 0;
++    if (rootdir) n++;
++    if (extra_gac_paths) {
++        for (e = extra_gac_paths; *e != 0; e++);
++        n += (e - extra_gac_paths);
++    }
++
++    domain = mono_domain_get ();
++    out = mono_array_new_checked (domain, mono_defaults.string_class, n, &error);
++
++    if (mono_error_set_pending_exception (&error))
++        return NULL;
++
++    n = 0;
++    if (rootdir) {
++        tmp = g_build_path (G_DIR_SEPARATOR_S, rootdir, "mono", "gac", NULL);
++        str = mono_string_new_checked (domain, tmp, &error);
++        g_free (tmp);
++        if (mono_error_set_pending_exception (&error))
++            return NULL;
++        mono_array_setref_internal (out, n, str);
++        n++;
++    }
++    if (extra_gac_paths) {
++        for (e = extra_gac_paths; *e != 0; e++) {
++            tmp = g_build_path (G_DIR_SEPARATOR_S, *e, "lib", "mono", "gac", NULL);
++            str = mono_string_new_checked (domain, tmp, &error);
++            g_free (tmp);
++            if (mono_error_set_pending_exception (&error))
++                return NULL;
++            mono_array_setref_internal (out, n, str);
++            n++;
++        }
++    }
++
++    return out;
++}
++
+ #ifndef HOST_WIN32
+ static inline MonoStringHandle
+ mono_icall_get_windows_folder_path (int folder, MonoError *error)
