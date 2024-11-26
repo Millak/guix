@@ -8896,19 +8896,36 @@ library for accessing the Twitter API.")
 (define-public python-quart
   (package
     (name "python-quart")
-    (version "0.17.0")
+    (version "0.19.9")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "Quart" version))
+       (method git-fetch)               ; no tests in PyPI release
+       (uri (git-reference
+             (url "https://github.com/pallets/quart")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0h4n2dwzmqifya1razp9s7ppr4ra23ljac9v7sl039rzp3c17wic"))))
-    (build-system python-build-system)
+        (base32 "1h5ifv8g9dc9m07vj4v7dfalam83v38545d845vvgys1gan1pscd"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-coverage-pytest-options
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("--no-cov-on-fail") "")))))))
+    (native-inputs
+     (list python-poetry-core
+           python-pytest
+           python-pytest-asyncio))
     (propagated-inputs
      (list hypercorn
            python-aiofiles
            python-blinker
            python-click
+           python-dotenv
+           python-flask
            python-itsdangerous
            python-jinja2
            python-markupsafe
