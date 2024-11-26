@@ -12420,7 +12420,7 @@ of microbiome data that existing correction methods have ignored so far.")
              r-stringr
              r-summarizedexperiment
              r-topgo))
-      (native-inputs (list r-knitr))
+      (native-inputs (list r-knitr r-testthat))
       (home-page "https://github.com/wmacnair/psupertime")
       (synopsis
        "Psupertime is supervised pseudotime for single cell RNAseq data")
