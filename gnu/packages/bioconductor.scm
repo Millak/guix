@@ -21925,7 +21925,7 @@ available bioactivity data.")
     (propagated-inputs
      (list r-biobase r-broom r-dplyr r-tidyr))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-deseq2 r-edger r-knitr r-testthat))
     (home-page "https://github.com/StoreyLab/biobroom")
     (synopsis "Turn Bioconductor objects into tidy data frames")
     (description
