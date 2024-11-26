@@ -21951,9 +21951,11 @@ visualize bioinformatics analyses.")
          "0ayqhz94qri62m0rs1x7q59s7wl4winqlahrwwd0k8qylgz9yx6b"))))
     (properties `((upstream-name . "graphite")))
     (build-system r-build-system)
+    ;; Tests need internet access.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-annotationdbi r-graph r-httr r-purrr r-rappdirs r-rlang))
-    (native-inputs (list r-r-rsp r-testthat))
+    (native-inputs (list r-checkmate r-r-rsp r-testthat))
     (home-page "https://bioconductor.org/packages/graphite/")
     (synopsis "Networks from pathway databases")
     (description
