@@ -1625,3 +1625,47 @@ unused0:")))))
                                    '())
                              "CSC=mcs"
                              ,@make-flags))))))))))))
+
+(define-public libgdiplus
+  (package
+    (name "libgdiplus")
+    (version "6.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mono/libgdiplus.git")
+             ;; The releases aren't tagged.
+             (commit "94a49875487e296376f209fe64b921c6020f74c0")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1gwmhrddr8kdlfprjqcd6gqiy8p5v8sl9215dbd949j1l76szl9v"))
+       (modules '((guix build utils)))
+       (snippet #~(substitute* "./Makefile.am"
+                    (("\\./update_submodules\\.sh")
+                     ":")))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list automake
+           autoconf
+           googletest-1.8
+           libtool
+           pkg-config
+           which))
+    (inputs (list cairo
+                  freetype
+                  fontconfig
+                  gettext-minimal
+                  giflib
+                  glib
+                  libexif
+                  libjpeg-turbo
+                  libpng
+                  libtiff
+                  libx11))
+    (synopsis "Open Source implementation of the GDI+ API")
+    (description "Libgdiplus is the Mono library that provides a
+GDI+-compatible API on non-Windows operating systems.  It uses Cairo to do
+most of the heavy lifting.")
+    (home-page "https://github.com/mono/libgdiplus")
+    (license license:expat)))
