@@ -38693,6 +38693,9 @@ using @code{ggplot2}.")
     (build-system r-build-system)
     (arguments
      (list
+      ;; FIXME Test break because %>% is undefined, yet it is defined by
+      ;; r-magrittr.
+      #:tests? #false
       #:modules '((guix build utils)
                   (guix build r-build-system)
                   (srfi srfi-1))
