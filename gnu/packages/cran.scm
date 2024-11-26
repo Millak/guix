@@ -35046,9 +35046,17 @@ space models and automatic ARIMA modelling.")
                 "1k1d42am2mqz9s6knqqyrgp5ph8md77bxxjfv1q1bdqmn1k44sbz"))))
     (properties `((upstream-name . "forestplot")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'delete-bad-tests
+           (lambda _
+             ;; This depends on r-greg, which depends on this package.
+             (delete-file "tests/test_visual_with_Greg.R"))))))
     (propagated-inputs
      (list r-abind r-checkmate))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-dplyr r-knitr r-testthat r-tidyr))
     (home-page "https://gforge.se/packages/")
     (synopsis "Advanced forest plot using @code{grid} graphics")
     (description
