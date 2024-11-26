@@ -2481,23 +2481,30 @@ behavior-driven development (TDD and BDD).")
 (define-public python-slotscheck
   (package
     (name "python-slotscheck")
-    (version "0.17.0")
-    (home-page "https://github.com/ariebovenberg/slotscheck")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference (url home-page)
-                                  (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0k5jjabd219ndlssfqcdb5sn891ffrxzw84l5r8pirzy74i7znr4"))))
+    (version "0.19.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ariebovenberg/slotscheck")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1lakwgk20aq92sqdwsswnll2w3y6p42x8abb9q8fc2qvw3xhw2vh"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; Optional: ModuleNotFoundError: No module named 'mypyc'
+      #:test-flags #~(list "-k" "not test_extension_package")))
     (native-inputs
      (list python-poetry-core
-           python-pydantic
            python-pytest
-           python-pytest-mock))
-    (propagated-inputs (list python-click python-tomli))
+           python-pytest-mock
+           python-ujson))
+    (propagated-inputs
+     (list python-click
+           python-tomli))
+    (home-page "https://github.com/ariebovenberg/slotscheck")
     (synopsis "Ensure @code{__slots__} are working properly")
     (description
      "@code{slotscheck} is a tool to validate Python class @code{__slots__}.")
