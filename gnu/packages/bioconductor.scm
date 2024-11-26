@@ -19539,6 +19539,8 @@ datasets.")
         (base32
          "11j633mhm4b0ndl6mbqqwgz7rsggb7gzr3yhvamrnvag7l4wzvss"))))
     (build-system r-build-system)
+    ;; 5 tests need internet access.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-annotationdbi
            r-annotationhub
