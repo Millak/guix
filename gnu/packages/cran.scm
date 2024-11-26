@@ -26280,7 +26280,7 @@ utilities for sequence data management under the ACNUC system.")
     (build-system r-build-system)
     (inputs (list cairo fontconfig freetype libpng zlib))
     (propagated-inputs (list r-cpp11 r-systemfonts))
-    (native-inputs (list pkg-config r-knitr r-testthat))
+    (native-inputs (list pkg-config r-knitr r-testthat r-xml2))
     (home-page "https://github.com/nx10/unigd")
     (synopsis "Universal graphics device")
     (description
