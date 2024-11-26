@@ -7491,6 +7491,8 @@ databases.  Packages produced are intended to be used with AnnotationDbi.")
          "1l0wjc6kapkvj047g11755ardsg12jmlmvb6bq3jvp34ida7j8in"))))
     (properties `((upstream-name . "AnnotationHub")))
     (build-system r-build-system)
+    ;; Many tests try to download files.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-annotationdbi
            r-biocfilecache
