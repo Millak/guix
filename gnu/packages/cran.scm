@@ -19339,6 +19339,13 @@ console, resulting in an interactive editing environment.")
         (base32
          "1ggisal5g16p3n03bch7ymawd4hig3fmm02nhxy1z5zh48qhyjla"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; This is needed for vignettes.
+         (add-after 'unpack 'set-HOME
+           (lambda _ (setenv "HOME" "/tmp"))))))
     (propagated-inputs
      (list r-lattice
            r-matrix
@@ -19348,7 +19355,7 @@ console, resulting in an interactive editing environment.")
            r-rcpp
            r-rcpparmadillo
            r-survival))
-    (native-inputs (list r-r-rsp))
+    (native-inputs (list r-aer r-mass r-r-rsp r-rsqlite))
     (home-page "https://r-survey.r-forge.r-project.org/survey/")
     (synopsis "Analysis of complex survey samples")
     (description
