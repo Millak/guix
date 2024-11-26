@@ -15342,8 +15342,11 @@ maps.")
          "13wiw7isdmpwhynxjrhimy9yglcz1108k7nwa98vq9czq49zpada"))))
     (properties `((upstream-name . "savR")))
     (build-system r-build-system)
+    ;; Disable vignettes because they use a removed function in r-ggplot2.
+    (arguments (list #:test-types '(list "tests")))
     (propagated-inputs
      (list r-ggplot2 r-gridextra r-reshape2 r-scales r-xml))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/bcalder/savR")
     (synopsis "Parse and analyze Illumina SAV files")
     (description
