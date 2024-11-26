@@ -19880,6 +19880,41 @@ cross-sectional, time series, clustered, panel, and longitudinal data.")
 packages maintained by Torsten Hothorn.")
     (license license:gpl3)))
 
+(define-public r-themis
+  (package
+    (name "r-themis")
+    (version "1.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "themis" version))
+       (sha256
+        (base32 "1qg1kxax866s84rgjlp2c153793j45lrvay8bqfjnc2cj04h2dgi"))))
+    (properties `((upstream-name . "themis")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-dplyr
+                             r-generics
+                             r-glue
+                             r-gower
+                             r-hardhat
+                             r-lifecycle
+                             r-purrr
+                             r-rann
+                             r-recipes
+                             r-rlang
+                             r-rose
+                             r-tibble
+                             r-vctrs
+                             r-withr))
+    (native-inputs (list r-modeldata r-testthat))
+    (home-page "https://github.com/tidymodels/themis")
+    (synopsis "Extra recipes steps for dealing with unbalanced data")
+    (description
+     "This package provides a dataset with an uneven number of cases in each
+class is said to be unbalanced.  Many models produce a subpar performance on
+unbalanced datasets.")
+    (license license:expat)))
+
 (define-public r-multcomp
   (package
     (name "r-multcomp")
