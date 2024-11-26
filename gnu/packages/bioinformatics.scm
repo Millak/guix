@@ -20586,6 +20586,7 @@ might be caused by ATAC-seq library prep or sequencing.  The main program,
            r-readr
            r-magrittr
            r-ggplot2))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/kcha/psiplot")
     (synopsis "Plot percent spliced-in values of alternatively-spliced exons")
     (description
