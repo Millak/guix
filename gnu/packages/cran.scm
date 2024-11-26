@@ -241,6 +241,29 @@ a recent compiler).  Asio is written and maintained by Christopher
 M. Kohlhoff, and released under the Boost Software License', Version 1.0.")
     (license license:boost1.0)))
 
+(define-public r-beepr
+  (package
+    (name "r-beepr")
+    (version "2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "beepr" version))
+       (sha256
+        (base32 "0xq4qs06f61m1q6gb157n4c3j7pf7wanh27nr2lr228s7k4mw3k2"))))
+    (properties `((upstream-name . "beepr")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-audio))
+    (native-inputs (list r-testthat))
+    (home-page "https://github.com/rasmusab/beepr")
+    (synopsis "Easily play notification sounds on any platform")
+    (description
+     "The main function of this package is @code{beep()}, with the purpose to
+make it easy to play notification sounds on whatever platform you are on.  It
+is intended to be useful, for example, if you are running a long analysis in
+the background and want to know when it is ready.")
+    (license license:gpl3)))
+
 (define-public r-betareg
   (package
     (name "r-betareg")
