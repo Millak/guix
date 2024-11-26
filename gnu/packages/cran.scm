@@ -37145,7 +37145,7 @@ applications in geographic information systems.")
     (propagated-inputs
      (list r-httr r-rcurl r-tibble))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://cran.r-project.org/web/packages/Rxnat/")
     (synopsis "Queries and extracts images from neuroimaging datasets")
     (description
