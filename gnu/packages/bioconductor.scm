@@ -16295,6 +16295,17 @@ Bayes Analyses of Microarrays} (EBAM).")
         (base32
          "185kxkx7lcnylfwp6c9hnnxarwa3rrwb1q45c5z6hl3wj7d74154"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'delete-bad-tests
+           (lambda _
+             ;; This test attempts to download a data file.
+             (delete-file "tests/testthat/test_annotation.R")
+             ;; This file attempts to run the testthat tests, which we just
+             ;; deleted.
+             (delete-file "tests/test-all.R"))))))
     (propagated-inputs
      (list r-annotationdbi
            r-biocgenerics
@@ -16309,7 +16320,11 @@ Bayes Analyses of Microarrays} (EBAM).")
            r-locfit
            r-matrixstats
            r-s4vectors))
-    (native-inputs (list r-testthat))
+    (native-inputs
+     (list r-doparallel
+           r-runit
+           r-testthat
+           r-txdb-hsapiens-ucsc-hg19-knowngene))
     (home-page "https://github.com/ririzarr/bumphunter")
     (synopsis "Find bumps in genomic data")
     (description
