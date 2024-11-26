@@ -28347,6 +28347,27 @@ learning benchmark problems, including, e.g., several data sets from the UCI
 repository.")
     (license license:gpl2)))
 
+(define-public r-mlmetrics
+  (package
+    (name "r-mlmetrics")
+    (version "1.1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "MLmetrics" version))
+       (sha256
+        (base32 "11dgpw6lzs3vrfa3v9kf8x2rph3vpicxbw5af89afa175by3amrc"))))
+    (properties `((upstream-name . "MLmetrics")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-rocr))
+    (home-page "https://github.com/yanyachen/MLmetrics")
+    (synopsis "Machine learning evaluation metrics")
+    (description
+     "This package provides a collection of evaluation metrics, including
+loss, score and utility functions, that measure regression, classification and
+ranking performance.")
+    (license license:gpl2)))
+
 (define-public r-mpm
   (package
     (name "r-mpm")
