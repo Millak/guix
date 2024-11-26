@@ -15055,6 +15055,13 @@ contain lags, diffs and missing values.")
          "095jqn1rd83qm3ayca9hmv6bhlaa2c338020l46vniq8n38kbnra"))))
     (properties `((upstream-name . "dyngen")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; For vignette builder.
+         (add-after 'unpack 'set-HOME
+           (lambda _ (setenv "HOME" "/tmp"))))))
     (propagated-inputs
      (list r-assertthat
            r-dplyr
