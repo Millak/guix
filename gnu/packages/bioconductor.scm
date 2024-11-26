@@ -401,6 +401,28 @@ Using the same principle to diseases can identify genetic associations and
 even help to identify disease associations that are not obvious.")
     (license license:artistic2.0)))
 
+(define-public r-oligodata
+  (package
+    (name "r-oligodata")
+    (version "1.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "oligoData" version
+                              'annotation))
+       (sha256
+        (base32 "1d1yfms3jv2c4s255xnh8yxwijrj35skw3nxds7l46y88lg3qn8y"))))
+    (properties `((upstream-name . "oligoData")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-oligo))
+    (home-page "https://bioconductor.org/packages/oligoData")
+    (synopsis "Dataset samples for the oligo package")
+    (description
+     "This package provides dataset samples (Affymetrix: Expression, Gene,
+Exon, SNP; @code{NimbleGen}: Expression, Tiling) to be used with the
+@code{oligo} package.")
+    (license license:lgpl2.0+)))
+
 (define-public r-org-eck12-eg-db
   (package
     (name "r-org-eck12-eg-db")
