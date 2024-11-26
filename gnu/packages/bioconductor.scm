@@ -19795,6 +19795,8 @@ interact with gated cytometry data.")
          "0zbxlwij9nc2fpsx5hg2q9inn1g5c0i34bmvbn6n56y3i0vzm8xj"))))
     (properties `((upstream-name . "flowCore")))
     (build-system r-build-system)
+    ;; Tests need r-flowstats, which depends on this package
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-bh
            r-biobase
