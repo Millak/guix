@@ -29199,6 +29199,23 @@ colored by the number of neighboring points.  This is useful to visualize the
          "0pp7rllpmdwsx0idqhfg4lv96cvdj6pbnypnlrr835jqv7sxn502"))))
     (properties `((upstream-name . "arrow")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'delete-bad-tests
+           (lambda _
+             ;; Two tests fail with "Cannot locate timezone"
+             (delete-file "tests/testthat/test-dataset-dplyr.R")))
+         ;; Some test fail when the current locale is the C locale.
+         (add-before 'check 'set-test-locale
+           (lambda _ (setenv "LC_ALL" "en_US.UTF-8")))
+         (add-before 'check 'set-timezone
+           (lambda* (#:key inputs #:allow-other-keys)
+             (setenv "TZ" "UTC+1")
+             (setenv "TZDIR"
+                     (search-input-directory inputs
+                                             "share/zoneinfo")))))))
     (inputs
      (list `(,apache-arrow "lib") zlib))
     (propagated-inputs
@@ -29212,7 +29229,15 @@ colored by the number of neighboring points.  This is useful to visualize the
            r-tidyselect
            r-vctrs))
     (native-inputs
-     (list pkg-config r-testthat))
+     (list glibc-utf8-locales
+           pkg-config
+           r-dplyr
+           r-hms
+           r-lubridate
+           r-stringr
+           r-testthat
+           r-tibble
+           tzdata-for-tests))
     (home-page "https://github.com/apache/arrow/")
     (synopsis "R integration to Apache Arrow")
     (description
