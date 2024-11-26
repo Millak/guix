@@ -12890,7 +12890,8 @@ of risk prediction (survival) models.")
            r-limma
            r-matrixstats
            r-mgcv))
-    (native-inputs (list r-testthat))
+    (native-inputs
+     (list r-biocstyle r-bladderbatch r-pamr r-testthat r-zebrafishrnaseq))
     (home-page "https://bioconductor.org/packages/sva")
     (synopsis "Surrogate variable analysis")
     (description
