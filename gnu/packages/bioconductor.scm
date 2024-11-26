@@ -9210,6 +9210,8 @@ manner.")
         (base32 "1qyb90r5qji9r0hy986891dyjqmryyszjp2v27q054mimwbgwskk"))))
     (properties `((upstream-name . "gypsum")))
     (build-system r-build-system)
+    ;; Some tests need internet access.
+    (arguments (list #:tests? #false))
     (propagated-inputs (list r-filelock r-httr2 r-jsonlite r-rappdirs))
     (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/ArtifactDB/gypsum-R")
