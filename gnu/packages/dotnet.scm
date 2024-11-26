@@ -176,3 +176,87 @@ code to handle abstract syntax trees and operations upon the trees.")
 to build and execute .NET applications, including a C# compiler,
 assembler, disassembler, and runtime engine.")
       (license license:gpl2+))))
+
+(define-public pnetlib-git
+  (let ((version "0.8.0")
+        (commit "c3c12b8b0c65f5482d03d6a4865f7670e98baf4c")
+        (revision "0"))
+    (package
+      (name "pnetlib-git")
+      (version (git-version version revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url
+                       "https://git.savannah.gnu.org/git/dotgnu-pnet/pnetlib.git")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "04dikki3lr3m1cacirld90rpi95656b2y2mc5rkycb7s0yfdz1nk"))
+                (modules '((guix build utils)))
+                (snippet
+                 #~(begin
+                     (for-each delete-file
+                               (append (filter file-exists?
+                                               '("configure"
+                                                 "config.guess"
+                                                 "config.sub"
+                                                 "install-sh"
+                                                 "ltmain.sh"))
+                                       (find-files "." "Makefile(\\.in)?$")))
+                     (substitute* (find-files "tests" "^Makefile\\.am$")
+                       (("TESTS_ENVIRONMENT.*")
+                        (string-append
+                         "LOG_COMPILER = $(SHELL)\n"
+                         "AM_LOG_FLAGS = $(top_builddir)/tools/run_test.sh"
+                         " $(top_builddir)")))
+                     (substitute* "tools/run_test.sh.in"
+                       (("en_US") "en_US.utf8"))
+                     (substitute* "tools/wrapper.sh.in"
+                       (("exec .LN_S clrwrap ..1.")
+                        (string-append
+                         "echo '#!@SHELL@' >> $1\n"
+                         "echo exec $CLRWRAP"
+                         " $(dirname $(dirname $1))"
+                         "/lib/cscc/lib/$(basename $1).exe >> $1\n"
+                         "chmod +x $1")))))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:make-flags #~(list "CFLAGS=-O2 -g -Wno-pointer-to-int-cast")
+        #:tests? (and (not (%current-target-system))
+                      (not (target-aarch64?)))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'disable-x11-tests
+              (lambda _
+                (substitute* "tests/Makefile.am"
+                  ;; This actually always fails, for a number of
+                  ;; reasons:
+                  ;; 1. We have no libx11 present, nor do we have an X display
+                  ;;    present.  This will cause libXsharpSupport.so to be
+                  ;;    built with only shims that fail at runtime.
+                  ;; 2. No mechanism is provided for
+                  ;;    tests/System.Windows.Forms/TestForms.dll to find
+                  ;;    libXsharpSupport.so, which seems to sit at
+                  ;;    Xsharp/.libs/libXsharpSupport.so.
+                  ;; With a libjit pnet,
+                  ;; System.Drawing.Toolkit.ToolkitHandler.CreateDefaultToolkit
+                  ;; throws ArgumentNullException when invoking Assembly.Load,
+                  ;; while a cvm pnet instead succeeds temporarily, but then
+                  ;; fails when invoking
+                  ;; System.Drawing.Toolkit.DrawingToolkit..ctor.  For some
+                  ;; reason this results in csunit passing the former and
+                  ;; failing the latter.
+                  (("System\\.Windows\\.Forms") "")))))))
+      (native-inputs
+       (list autoconf automake libtool treecc))
+      (inputs
+       (list pnet-git))
+      (home-page "http://www.gnu.org/software/dotgnu/html2.0/pnet.html")
+      (synopsis "Libraries for the C# programming language")
+      (description
+       "DotGNU Portable.NET Library contains an implementation of the C# library,
+for use with .NET-capable runtime engines and applications.")
+      (license license:gpl2+))))
