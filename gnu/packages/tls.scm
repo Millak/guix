@@ -1179,7 +1179,7 @@ compatibility is also supported.")
 (define-public wolfssl
   (package
     (name "wolfssl")
-    (version "5.7.2")
+    (version "5.7.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1188,7 +1188,7 @@ compatibility is also supported.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "06ani81s99vk0bkdscavcmhr1p2dnc8ry2p1smqalbw32j01acsm"))))
+                "0k7bdr5r9x8sb9qxvgmvhj1rb7rb1r0rap4bp82g8qbh9pa5dnzx"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags
