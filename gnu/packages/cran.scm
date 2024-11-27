@@ -27319,6 +27319,13 @@ include
          "1h6r6ddhff75n9brh1pxpqc0s7xn36ly1c3nhlnjipy0k77kxdrg"))))
     (properties `((upstream-name . "haplo.stats")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      ;; Needed by r-r-rsp.
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'set-HOME
+           (lambda _ (setenv "HOME" "/tmp"))))))
     (propagated-inputs
      (list r-arsenal r-rms))
     (native-inputs
