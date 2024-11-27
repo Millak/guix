@@ -29961,7 +29961,7 @@ been used in the call to @code{aov}.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-ggplot2 r-ibreakdown r-ingredients))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-gower r-ranger r-testthat))
     (home-page "https://pbiecek.github.io/DALEX/")
     (synopsis "Descriptive machine learning explanations")
     (description
