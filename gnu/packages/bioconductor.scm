@@ -2203,6 +2203,28 @@ display copy number variation.  Files are stored as GRanges objects from the
 GenomicRanges Bioconductor package.")
     (license license:gpl2)))
 
+(define-public r-derfinderdata
+  (package
+    (name "r-derfinderdata")
+    (version "2.24.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "derfinderData" version
+                              'experiment))
+       (sha256
+        (base32 "0rkc54gh3yasms4nrayi58ly2raad0ksid3wmzbmhy22zib4n9hy"))))
+    (properties `((upstream-name . "derfinderData")))
+    (build-system r-build-system)
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/leekgroup/derfinderData")
+    (synopsis "Processed BigWigs from BrainSpan for examples")
+    (description
+     "This package provides processed 22 samples from @code{BrainSpan} keeping
+only the information for chromosome 21.  Data is stored in the @code{BigWig}
+format and is used for examples in other packages.")
+    (license license:artistic2.0)))
+
 (define-public r-flowsorted-blood-450k
   (package
     (name "r-flowsorted-blood-450k")
