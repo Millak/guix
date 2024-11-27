@@ -2726,6 +2726,28 @@ timecourse of mouse gastrulation and early organogenesis.")
 methylation arrays.")
     (license license:artistic2.0)))
 
+(define-public r-minfidataepic
+  (package
+    (name "r-minfidataepic")
+    (version "1.32.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "minfiDataEPIC" version
+                              'experiment))
+       (sha256
+        (base32 "0xqciawmlfxcb0s60d0dk9mc9jga12dmm7qx3dqs1i6p69lmdbiy"))))
+    (properties `((upstream-name . "minfiDataEPIC")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-illuminahumanmethylationepicanno-ilm10b2-hg19
+                             r-illuminahumanmethylationepicmanifest r-minfi))
+    (home-page "https://bioconductor.org/packages/minfiDataEPIC")
+    (synopsis "Example data for the Illumina Methylation EPIC array")
+    (description
+     "This package provides data from 3 technical replicates of the cell line
+GM12878 from the EPIC methylation array.")
+    (license license:artistic2.0)))
+
 (define-public r-minionsummarydata
   (package
     (name "r-minionsummarydata")
