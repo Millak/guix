@@ -2328,6 +2328,9 @@ JSON Schema Specification Draft 2020-12.
                           "-k" "not example")
       #:phases
       #~(modify-phases %standard-phases
+          ;; Requirement.parse('jsonschema-specifications<2024.0.0,>=2023.5.2'),
+          ;; {'openapi-schema-validator'})
+          (delete 'sanity-check)
           (add-after 'unpack 'remove-coverage-pytest-options
             (lambda _
               (substitute* "pyproject.toml"
