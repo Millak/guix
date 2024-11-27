@@ -2092,6 +2092,8 @@ cancer study published in Wang et al. 2005 and Minn et al 2007.")
         (base32 "0kn1mdnbiiag29n52gar2ymihx5q9hrjfjc6qssxm0m7ns9gm4hm"))))
     (properties `((upstream-name . "celldex")))
     (build-system r-build-system)
+    ;; Tests access the internet via r-gypsum.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-alabaster-base
            r-alabaster-matrix
