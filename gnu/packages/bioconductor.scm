@@ -24923,6 +24923,8 @@ methods based on resistant statistics.")
         (base32 "0j7r239qvcb36025if4lqqjzxajfdjggp3cdy0h7yqziijz12kq8"))))
     (properties `((upstream-name . "pathview")))
     (build-system r-build-system)
+    ;; Vignettes attempt to connect to the internet.
+    (arguments (list #:test-types '(list "tests")))
     (propagated-inputs
      (list r-annotationdbi
            r-graph
