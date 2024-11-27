@@ -696,61 +696,61 @@ single-instruction multiple-data (SIMD) intrinsics.")
 
 (define-public openpmix
   (package
-   (name "openpmix")
-   (version "4.2.8")
-   (source (origin
-            (method url-fetch)
-            (uri (string-append
-                  "https://github.com/openpmix/openpmix/releases/download/v"
-                  version "/pmix-" version ".tar.bz2"))
-            (sha256
-             (base32
-              "1j9xlhqrrmgjdkwakamn78y5gj756adi53hn25zksgr3is3l5d09"))))
-   (build-system gnu-build-system)
-   (arguments
-    (list #:configure-flags
-          #~(list (string-append "--with-hwloc="
-                                 (ungexp (this-package-input "hwloc") "lib"))
-                  "--enable-python-bindings") ;disabled by default
+    (name "openpmix")
+    (version "4.2.8")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/openpmix/openpmix/releases/download/v"
+                    version "/pmix-" version ".tar.bz2"))
+              (sha256
+               (base32
+                "1j9xlhqrrmgjdkwakamn78y5gj756adi53hn25zksgr3is3l5d09"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list (string-append "--with-hwloc="
+                             (ungexp (this-package-input "hwloc") "lib"))
+              "--enable-python-bindings") ;disabled by default
 
-          ;; Don't keep a reference to GCC.
-          #:disallowed-references (and (not (%current-target-system))
-                                       (list (canonical-package gcc)))
-          #:phases
-          #~(modify-phases %standard-phases
-              (add-after 'unpack 'set-LDFLAGS
-                (lambda _
-                  ;; The Cython-compiled shared library would fail the
-                  ;; validate-runpath phase otherwise.
-                  (setenv "LDFLAGS"
-                          (string-append "-Wl,-rpath=" #$output "/lib"))))
-              (add-before 'configure 'strip-pmix-cc-absolute
-                (lambda _
-                  ;; The 'pmix_info' program prints the 'configure' command
-                  ;; line, compiler absolute file name, etc., which causes it
-                  ;; to keep references to many build-time packages.  Scrub
-                  ;; these.
-                  (substitute* "configure"
-                    (("PMIX_CC_ABSOLUTE=\"(.*)\"" _ cc)
-                     (string-append "PMIX_CC_ABSOLUTE=\"$(basename \""
-                                    cc "\")\"\n")))))
-              (add-after 'configure 'strip-pmix-config-header
-                (lambda _
-                  (substitute* "src/include/pmix_config.h"
-                    (("#define PMIX_CONFIGURE_CLI .*")
-                     "#define PMIX_CONFIGURE_CLI \"[scrubbed]\"\n")))))))
-   (inputs (list libevent `(,hwloc "lib") zlib))
-   (native-inputs (list perl python python-cython))
-   (synopsis "PMIx library")
-   (description
-    "PMIx is an application programming interface standard that provides
+      ;; Don't keep a reference to GCC.
+      #:disallowed-references (and (not (%current-target-system))
+                                   (list (canonical-package gcc)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-LDFLAGS
+            (lambda _
+              ;; The Cython-compiled shared library would fail the
+              ;; validate-runpath phase otherwise.
+              (setenv "LDFLAGS"
+                      (string-append "-Wl,-rpath=" #$output "/lib"))))
+          (add-before 'configure 'strip-pmix-cc-absolute
+            (lambda _
+              ;; The 'pmix_info' program prints the 'configure' command line,
+              ;; compiler absolute file name, etc., which causes it to keep
+              ;; references to many build-time packages.  Scrub these.
+              (substitute* "configure"
+                (("PMIX_CC_ABSOLUTE=\"(.*)\"" _ cc)
+                 (string-append "PMIX_CC_ABSOLUTE=\"$(basename \""
+                                cc "\")\"\n")))))
+          (add-after 'configure 'strip-pmix-config-header
+            (lambda _
+              (substitute* "src/include/pmix_config.h"
+                (("#define PMIX_CONFIGURE_CLI .*")
+                 "#define PMIX_CONFIGURE_CLI \"[scrubbed]\"\n")))))))
+    (inputs (list libevent `(,hwloc "lib") zlib))
+    (native-inputs (list perl python python-cython))
+    (synopsis "PMIx library")
+    (description
+     "PMIx is an application programming interface standard that provides
 libraries and programming models with portable and well-defined access to
 commonly needed services in distributed and parallel computing systems.")
-   (home-page "https://pmix.org/")
-   ;; configure: WARNING: PMIx does not support 32 bit builds.
-   (supported-systems %64bit-supported-systems)
-   ;; The provided license is kind of BSD-style but specific.
-   (license (license:fsf-free "https://github.com/openpmix/openpmix?tab=License-1-ov-file#License-1-ov-file"))))
+    (home-page "https://pmix.org/")
+    ;; configure: WARNING: PMIx does not support 32 bit builds.
+    (supported-systems %64bit-supported-systems)
+    ;; The provided license is kind of BSD-style but specific.
+    (license (license:fsf-free "https://github.com/openpmix/openpmix?tab=License-1-ov-file#License-1-ov-file"))))
 
 (define-public prrte
   (package
