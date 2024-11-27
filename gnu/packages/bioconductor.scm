@@ -4260,6 +4260,12 @@ to understand their data better and discover new insights.")
      (list
       #:phases
       '(modify-phases %standard-phases
+         (add-after 'unpack 'delete-bad-tests
+           (lambda _
+             ;; These tests require internet access.
+             (for-each delete-file
+                       '("inst/unitTests/test_recipe.R"
+                         "inst/unitTests/test_webAccessFunctions.R"))))
          (add-before 'install 'set-home
            (lambda _ (setenv "HOME" "/tmp"))))))
     (propagated-inputs
