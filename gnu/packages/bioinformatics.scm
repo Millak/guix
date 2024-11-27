@@ -12462,6 +12462,8 @@ differently labelled data.")
     (build-system r-build-system)
     (arguments
      (list
+      ;; The test file data/test_seurat.rds is not included.
+      #:tests? #false
       #:phases
       '(modify-phases %standard-phases
          (add-after 'unpack 'loosen-requirements
@@ -12491,7 +12493,12 @@ differently labelled data.")
            r-tidygraph
            r-tidyverse
            r-uwot))
-    (native-inputs (list r-knitr))
+    (native-inputs
+     (list r-bsgenome-hsapiens-ucsc-hg38
+           r-devtools
+           r-doparallel
+           r-ensdb-hsapiens-v86
+           r-knitr))
     (home-page "https://github.com/quadbiolab/Pando")
     (synopsis "Infer regulomes from multi-modal single-cell genomics data")
     (description
