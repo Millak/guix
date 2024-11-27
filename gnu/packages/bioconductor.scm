@@ -20075,8 +20075,19 @@ change point detection.")
        (sha256
         (base32
          "16djrka94dhj041sd52ni9r5283fpnj5h5ljzzjqfik10fc9k5z5"))))
-    (properties `((upstream-name . "ncdfFlow")))
+    (properties
+     `((upstream-name . "ncdfFlow")
+       ;; Avoid dependency cycle.
+       (updater-ignored-native-inputs . ("r-flowstats"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'delete-bad-tests
+           (lambda _
+             ;; Avoid dependency cycle.
+             (delete-file "tests/testthat/test_ncdfFlowSet_accessor.R"))))))
     (propagated-inputs
      (list r-bh
            r-biobase
