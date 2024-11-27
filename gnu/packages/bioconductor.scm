@@ -20187,8 +20187,14 @@ statistics to the plot.")
        (sha256
         (base32
          "1ymqx5zasrr5snmg71p58hk526yxpvs4d78df2hgxfah5w6vxd6w"))))
-    (properties `((upstream-name . "flowViz")))
+    (properties
+     `((upstream-name . "flowViz")
+       ;; Avoid dependency cycle.
+       (updater-ignored-native-inputs . ("r-flowstats"))))
     (build-system r-build-system)
+    ;; There is only one test file and it depends on r-flowstats, which
+    ;; depends on this package.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-biobase
            r-flowcore
@@ -20200,7 +20206,7 @@ statistics to the plot.")
            r-mass
            r-rcolorbrewer))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-knitr r-ncdfflow r-testthat))
     (home-page "https://bioconductor.org/packages/flowViz/")
     (synopsis "Visualization for flow cytometry")
     (description
