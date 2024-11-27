@@ -26556,9 +26556,11 @@ standard regular expressions.")
         (base32
          "1v0c43shqn7nmzzrf3yx740xjwrn4djll438p5gf31ny0q0hlgzb"))))
     (build-system r-build-system)
+    ;; Disable vignettes because of missing files.
+    (arguments (list #:test-types '(list "tests")))
     (propagated-inputs
      (list r-brobdingnag r-partitions r-polynom))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-testthat r-vdiffr))
     (home-page "https://github.com/RobinHankin/untb.git")
     (synopsis "Ecological drift under the UNTB")
     (description
