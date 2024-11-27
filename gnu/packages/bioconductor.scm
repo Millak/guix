@@ -10522,6 +10522,40 @@ function for pretty-printing multiple sequence alignments using the LaTeX
 package TeXshade.")
     (license license:gpl2+)))
 
+(define-public r-msbackendsql
+  (package
+    (name "r-msbackendsql")
+    (version "1.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "MsBackendSql" version))
+       (sha256
+        (base32 "0hs4nh3bij5jzscdjjfkq2agcpysyy7ziv40713z7p7ai6wkppyj"))))
+    (properties `((upstream-name . "MsBackendSql")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biocgenerics
+                             r-biocparallel
+                             r-data-table
+                             r-dbi
+                             r-iranges
+                             r-mscoreutils
+                             r-progress
+                             r-protgenerics
+                             r-s4vectors
+                             r-spectra))
+    (native-inputs (list r-knitr r-msdata r-mzr r-rsqlite r-testthat))
+    (home-page "https://github.com/RforMassSpectrometry/MsBackendSql")
+    (synopsis "SQL-based mass spectrometry data backend")
+    (description
+     "This package provides an SQL-based mass spectrometry (MS) data backend
+supporting also storage and handling of very large data sets.  Objects from
+this package are supposed to be used with the Spectra Bioconductor package.
+Through the @code{MsBackendSql} with its minimal memory footprint, this
+package thus provides an alternative MS data representation for very large or
+remote MS data sets.")
+    (license license:artistic2.0)))
+
 (define-public r-msnbase
   (package
     (name "r-msnbase")
