@@ -173,6 +173,28 @@ Ensembl.")
 @code{GenomeWideSnp_6} arrays using the @code{crlmm} package.")
     (license license:artistic2.0)))
 
+(define-public r-hgu95a-db
+  (package
+    (name "r-hgu95a-db")
+    (version "3.13.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "hgu95a.db" version
+                              'annotation))
+       (sha256
+        (base32 "1krmnl5kqfvb4jvrqy72x0s8z7rha96d5nwcbnarpflf12k4hrha"))))
+    (properties `((upstream-name . "hgu95a.db")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-annotationdbi r-org-hs-eg-db))
+    (native-inputs (list r-runit))
+    (home-page "https://bioconductor.org/packages/hgu95a.db")
+    (synopsis "Affymetrix HG_U95A Array annotation data (chip hgu95a)")
+    (description
+     "This package provides Affymetrix HG_U95A Array annotation data (chip
+hgu95a) assembled using data from public repositories.")
+    (license license:artistic2.0)))
+
 (define-public r-hgu95av2
   (package
     (name "r-hgu95av2")
