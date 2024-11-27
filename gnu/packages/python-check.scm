@@ -3167,13 +3167,20 @@ unused.")
        (sha256
         (base32 "1cd62nbn5dvlpnsyplp6cb24wd230san8dpm6pnl99n2kwzpq1m4"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags #~(list "-vr" "green")
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (when tests?
+                (apply invoke "python" "-m" "green" test-flags)))))))
     (native-inputs
-     (list python-black
-           python-django
-           python-mypy
-           python-testtools))
-    ;; The python-coverage dependency appears both in requirements.txt and
-    ;; requirements-dev.txt.
+     (list python-mypy
+           python-setuptools
+           python-testtools
+           python-wheel))
     (propagated-inputs
      (list python-colorama
            python-coverage
