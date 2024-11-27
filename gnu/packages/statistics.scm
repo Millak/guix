@@ -1564,7 +1564,7 @@ supported via Andre Simon's highlight package.")
       (properties `((upstream-name . "httpgd")))
       (build-system r-build-system)
       (propagated-inputs (list r-asioheaders r-cpp11 r-unigd))
-      (native-inputs (list r-knitr))
+      (native-inputs (list r-knitr r-testthat))
       (home-page "https://github.com/nx10/httpgd")
       (synopsis "'HTTP' Server Graphics Device")
       (description
