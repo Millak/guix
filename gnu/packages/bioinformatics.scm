@@ -12332,6 +12332,8 @@ on Illumina DNAm arrays.")
                   "02cvibyc2nwc4037ramm5cskjwyrb9ib9hkrfhmvhbslkn5ixz1v"))))
       (properties `((upstream-name . "DoubletCollection")))
       (build-system r-build-system)
+      ;; There are no tests.
+      (arguments (list #:tests? #false))
       (propagated-inputs (list r-biocgenerics
                                r-doubletfinder
                                r-gam
@@ -12351,6 +12353,7 @@ on Illumina DNAm arrays.")
                                python
                                python-scrublet
                                python-doubletdetection))
+      (native-inputs (list r-testthat))
       (home-page "https://github.com/xnnba1984/DoubletCollection")
       (synopsis "Tool for finding doublets in scRNA-seq data")
       (description
