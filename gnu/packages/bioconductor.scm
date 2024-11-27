@@ -2330,6 +2330,33 @@ of provenance unknown to the maintainer at present; it now employs
 @code{ExpressionSet} format.")
     (license license:lgpl2.0+)))
 
+(define-public r-gsvadata
+  (package
+    (name "r-gsvadata")
+    (version "1.42.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "GSVAdata" version
+                              'experiment))
+       (sha256
+        (base32 "160k1vsxcbjqwpfkdkhd7dsvnaasjbs270gnfdwdbnl0c6d24348"))))
+    (properties `((upstream-name . "GSVAdata")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biobase r-gseabase r-hgu95a-db
+                             r-summarizedexperiment))
+    (home-page "https://bioconductor.org/packages/GSVAdata")
+    (synopsis "Data employed in the vignette of the GSVA package")
+    (description
+     "This package stores the data employed in the vignette of the GSVA package.
+These data belong to the following publications: Armstrong et al. Nat Genet
+30:41-47, 2002; Cahoy et al. J Neurosci 28:264-278, 2008; Carrel and Willard,
+Nature, 434:400-404, 2005; Huang et al. PNAS, 104:9758-9763, 2007; Pickrell et
+al. Nature, 464:768-722, 2010; Skaletsky et al. Nature, 423:825-837; Verhaak
+et al. Cancer Cell 17:98-110, 2010; Costa et al. FEBS J, 288:2311-2331,
+2021.")
+    (license license:artistic2.0)))
+
 (define-public r-hdcytodata
   (package
     (name "r-hdcytodata")
