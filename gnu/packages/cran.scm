@@ -40472,18 +40472,10 @@ analysis using @code{dplyr}, @code{ggplot2}, and other Tidy tools.")
          "04l5368f8cda3bl80mczmszx65ihgm6wy018kvc7hplrrrpyv2iy"))))
     (properties `((upstream-name . "parsnip")))
     (build-system r-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'delete-bad-tests
-           (lambda _
-             ;; Two tests require r-earth.
-             (delete-file "tests/testthat/test_packages.R")
-             (delete-file "tests/testthat/test_misc.R"))))))
     (propagated-inputs
      (list r-cli
            r-dplyr
+           r-earth
            r-generics
            r-ggplot2
            r-globals
