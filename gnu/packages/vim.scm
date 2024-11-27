@@ -86,7 +86,7 @@
 (define-public vim
   (package
     (name "vim")
-    (version "9.1.0744")
+    (version "9.1.0889")
     (source (origin
              (method git-fetch)
              (uri (git-reference
@@ -95,7 +95,7 @@
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "0izx8ckjbpavp3bpw7lzdga5mmpcdssvzhlnz18n4bfzpfhg5knr"))))
+               "1ma8g9zqqbr7pkwkb9zl62n80av18cb7yswq51fciwq3gb2hww5m"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
@@ -133,6 +133,10 @@
              (with-fluids ((%default-port-encoding #f))
                (substitute* "src/testdir/test_writefile.vim"
                  (("!has\\('bsd'\\)") "0")))
+
+             ;; These tests crash the build environment.
+             (substitute* "src/testdir/Make_all.mak"
+               ((".*test_glvs.*") ""))
 
              ;; These tests check how the terminal looks after executing some
              ;; actions.  The path of the bash binary is shown, which results in
