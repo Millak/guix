@@ -23,6 +23,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (guix import cran)
+  #:use-module (ice-9 ftw)
   #:use-module (ice-9 match)
   #:use-module (ice-9 regex)
   #:use-module (ice-9 popen)
@@ -551,6 +552,90 @@ referenced in build system files."
     (set)
     (find-files dir "(Makevars(.in.*)?|configure.*)"))))
 
+;; A pattern matching "library" or "require" statements, capturing the first
+;; argument.
+(define import-pattern
+  (make-regexp "^ *(require|library)\\(\"?([^, \")]+)"))
+
+(define (needed-test-inputs-in-directory dir)
+  "Return a set of R package names that are found in library import
+statements in files in the directory DIR."
+  (if (getenv "GUIX_CRAN_IGNORE_TEST_INPUTS")
+      (set)
+      (match (scandir dir (negate (cute member <> '("." ".."))))
+        ((package-directory-name . rest)
+         (let* ((test-directories
+                 (filter file-exists?
+                         (list (string-append dir "/" package-directory-name "/tests")
+                               (string-append dir "/" package-directory-name "/Tests")
+                               (string-append dir "/" package-directory-name "/inst/unitTests")
+                               (string-append dir "/" package-directory-name "/inst/UnitTests"))))
+                (imported-packages
+                 (fold (lambda (file packages)
+                         (call-with-input-file file
+                           (lambda (port)
+                             (let loop ((packages packages))
+                               (let ((line (read-line port)))
+                                 (cond
+                                  ((eof-object? line) packages)
+                                  (else
+                                   (loop
+                                    (fold (lambda (match acc)
+                                            (let ((imported (match:substring match 2)))
+                                              (if (or (string=? imported package-directory-name)
+                                                      (member imported default-r-packages))
+                                                  acc
+                                                  (set-insert imported acc))))
+                                          packages
+                                          (list-matches import-pattern line))))))))))
+                       (set)
+                       (append-map (lambda (directory)
+                                     (find-files directory "\\.(R|Rmd)"))
+                                   test-directories))))
+
+           ;; Special case for BiocGenerics + RUnit.
+           (if (any (lambda (directory)
+                      (files-match-pattern? directory "BiocGenerics:::testPackage"
+                                            "\\.R"))
+                    test-directories)
+               (set-insert "RUnit"
+                           (set-insert "BiocGenerics" imported-packages))
+               imported-packages)))
+        (_ (set)))))
+
+(define (needed-vignettes-inputs-in-directory dir)
+  "Return a set of R package names that are found in library import statements
+in vignette files in the directory DIR."
+  (if (getenv "GUIX_CRAN_IGNORE_VIGNETTE_INPUTS")
+      (set)
+      (match (scandir dir (negate (cute member <> '("." ".."))))
+        ((package-directory-name . rest)
+         (let ((vignettes-directories
+                (filter file-exists?
+                        (list (string-append dir "/" package-directory-name "/vignettes")))))
+           (fold (lambda (file packages)
+                   (call-with-input-file file
+                     (lambda (port)
+                       (let loop ((packages packages))
+                         (let ((line (read-line port)))
+                           (cond
+                            ((eof-object? line) packages)
+                            (else
+                             (loop
+                              (fold (lambda (match acc)
+                                      (let ((imported (match:substring match 2)))
+                                        (if (or (string=? imported package-directory-name)
+                                                (member imported default-r-packages))
+                                            acc
+                                            (set-insert imported acc))))
+                                    packages
+                                    (list-matches import-pattern line))))))))))
+                 (set)
+                 (append-map (lambda (directory)
+                               (find-files directory "\\.Rnw"))
+                             vignettes-directories))))
+        (_ (set)))))
+
 (define (directory-needs-pkg-config? dir)
   "Return #T if any of the Makevars files in the src directory DIR reference
 the pkg-config tool."
@@ -572,6 +657,14 @@ in DIR."
                   (name name)
                   (downstream-name name)))
                (needed-libraries-in-directory dir))
+          (map (lambda (name)
+                 (upstream-input
+                  (name name)
+                  (downstream-name (cran-guix-name name))
+                  (type 'native)))
+               (set->list
+                (set-union (needed-test-inputs-in-directory dir)
+                           (needed-vignettes-inputs-in-directory dir))))
           (if (directory-needs-esbuild? dir)
               (list (native "esbuild"))
               '())
@@ -653,25 +746,40 @@ of META, a package in REPOSITORY."
                                         ((assoc-ref meta 'hg) 'hg)
                                         (else #f))))
          (tarball? (not (or (assoc-ref meta 'git)
-                            (assoc-ref meta 'hg)))))
+                            (assoc-ref meta 'hg))))
+         (compare-upstream-inputs
+          (lambda (input1 input2)
+            (string<? (upstream-input-downstream-name input1)
+                      (upstream-input-downstream-name input2))))
+         (upstream-inputs-equal?
+          (lambda (input1 input2)
+            (string=? (upstream-input-downstream-name input1)
+                      (upstream-input-downstream-name input2))))
+         (r-inputs
+          (append (cran-package-propagated-inputs meta)
+                  (vignette-builders meta)))
+         (source-derived-inputs
+          ;; Only keep new inputs
+          (lset-difference upstream-inputs-equal?
+                           (source->dependencies source tarball?)
+                           r-inputs))
+         (system-inputs
+          (filter-map (lambda (name)
+                        (and (not (member name invalid-packages))
+                             (upstream-input
+                              (name name)
+                              (downstream-name
+                               (transform-sysname name)))))
+                      (map string-downcase
+                           (listify meta "SystemRequirements")))))
     (sort (filter
            ;; Prevent tight cycles.
            (lambda (input)
              ((negate string=?) name (upstream-input-name input)))
-           (append (source->dependencies source tarball?)
-                   (filter-map (lambda (name)
-                                 (and (not (member name invalid-packages))
-                                      (upstream-input
-                                       (name name)
-                                       (downstream-name
-                                        (transform-sysname name)))))
-                               (map string-downcase
-                                    (listify meta "SystemRequirements")))
-                   (cran-package-propagated-inputs meta)
-                   (vignette-builders meta)))
-          (lambda (input1 input2)
-            (string<? (upstream-input-downstream-name input1)
-                      (upstream-input-downstream-name input2))))))
+           (append source-derived-inputs
+                   system-inputs
+                   r-inputs))
+          compare-upstream-inputs)))
 
 (define (phases-for-inputs input-names)
   "Generate a list of build phases based on the provided INPUT-NAMES, a list
