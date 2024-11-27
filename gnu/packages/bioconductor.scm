@@ -2731,7 +2731,9 @@ files for various search engines.")
        (uri (bioconductor-uri "MsExperiment" version))
        (sha256
         (base32 "15vxwvgimliyzj0rb06s7rpm3wrz3gc1n0wdgs0jd4flwp152g9h"))))
-    (properties `((upstream-name . "MsExperiment")))
+    (properties
+     `((upstream-name . "MsExperiment")
+       (updater-extra-native-inputs . ("r-mzr"))))
     (build-system r-build-system)
     (propagated-inputs (list r-biocgenerics
                              r-dbi
@@ -2741,7 +2743,15 @@ files for various search engines.")
                              r-s4vectors
                              r-spectra
                              r-summarizedexperiment))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-knitr
+                         r-msbackendsql
+                         r-msdata
+                         r-mzr
+                         r-rsqlite
+                         r-s4vectors
+                         r-spectra
+                         r-summarizedexperiment
+                         r-testthat))
     (home-page "https://github.com/RforMassSpectrometry/MsExperiment")
     (synopsis "Infrastructure for Mass Spectrometry experiments")
     (description
