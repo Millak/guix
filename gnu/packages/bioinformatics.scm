@@ -797,7 +797,7 @@ directly access various slots (e.g. X, obs, var), or convert the data into
                                r-stringr
                                r-tibble
                                r-tidyselect))
-      (native-inputs (list r-knitr))
+      (native-inputs (list r-knitr r-testthat))
       (home-page "https://github.com/biobakery/anpan")
       (synopsis "Quantifying microbial strain-host associations")
       (description
