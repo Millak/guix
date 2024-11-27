@@ -10250,7 +10250,9 @@ profiles than cells of different types.")
       (uri (bioconductor-uri "MethylAid" version))
       (sha256
         (base32 "0iq4ba4hsf7zwb063gqf00al031lydpg0yhlxwx8aczmyly00a9q"))))
-    (properties `((upstream-name . "MethylAid")))
+    (properties
+     `((upstream-name . "MethylAid")
+       (updater-ignored-native-inputs . ("r-methylaiddata"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biobase
@@ -10264,7 +10266,11 @@ profiles than cells of different types.")
            r-rcolorbrewer
            r-shiny
            r-summarizedexperiment))
-    (native-inputs (list r-knitr r-runit))
+    (native-inputs (list r-geoquery
+                         r-knitr
+                         r-minfidata
+                         r-minfidataepic
+                         r-runit))
     (home-page "https://git.bioconductor.org/packages/MethylAid")
     (synopsis
      "Quality control of large Illumina DNA Methylation array data sets")
