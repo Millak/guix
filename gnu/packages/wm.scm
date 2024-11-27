@@ -76,6 +76,7 @@
 ;;; Copyright © 2024 dan <i@dan.games>
 ;;; Copyright © 2024 Wamm K. D. <jaft.r@outlook.com>
 ;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2024 Josep Bigorra <jjbigorra@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3968,4 +3969,33 @@ battery efficient---polling is only done when absolutely necessary.")
     (description "The package provides a library for managing the
 configuration files of Wayifre.  It can set key and mouse bindings,
 configure input, and customize Wayfire plugins.")
+    (license license:expat)))
+
+(define-public scenefx
+  (package
+    (name "scenefx")
+    (version "0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/wlrfx/scenefx")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1r7f8bprsn0mwlkmc8d14nr3iibljfyxypb4i06v66ghlngaw6dw"))))
+    (build-system meson-build-system)
+    (native-inputs (list pkg-config
+                         ;; for wayland-scanner.
+                         wayland))
+    (inputs (list pixman
+                  mesa
+                  libxkbcommon
+                  libdrm
+                  wlroots-0.17))
+    (home-page "https://github.com/wlrfx/scenefx")
+    (synopsis "Drop-in replacement for the wlroots scene API")
+    (description
+     "A drop-in replacement for the wlroots scene API that allows wayland
+compositors to render surfaces with eye-candy effects.")
     (license license:expat)))
