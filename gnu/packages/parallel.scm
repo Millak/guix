@@ -16,6 +16,7 @@
 ;;; Copyright © 2024 David Elsing <david.elsing@posteo.net>
 ;;; Copyright © 2024 Romain Garbage <romain.garbage@inria.fr>
 ;;; Copyright © 2024 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -709,14 +710,20 @@ single-instruction multiple-data (SIMD) intrinsics.")
    (arguments
     (list #:configure-flags
           #~(list (string-append "--with-hwloc="
-                                 (ungexp (this-package-input "hwloc") "lib")))
+                                 (ungexp (this-package-input "hwloc") "lib"))
+                  "--enable-python-bindings") ;disabled by default
 
           ;; Don't keep a reference to GCC.
           #:disallowed-references (and (not (%current-target-system))
                                        (list (canonical-package gcc)))
-
           #:phases
           #~(modify-phases %standard-phases
+              (add-after 'unpack 'set-LDFLAGS
+                (lambda _
+                  ;; The Cython-compiled shared library would fail the
+                  ;; validate-runpath phase otherwise.
+                  (setenv "LDFLAGS"
+                          (string-append "-Wl,-rpath=" #$output "/lib"))))
               (add-before 'configure 'strip-pmix-cc-absolute
                 (lambda _
                   ;; The 'pmix_info' program prints the 'configure' command
@@ -733,7 +740,7 @@ single-instruction multiple-data (SIMD) intrinsics.")
                     (("#define PMIX_CONFIGURE_CLI .*")
                      "#define PMIX_CONFIGURE_CLI \"[scrubbed]\"\n")))))))
    (inputs (list libevent `(,hwloc "lib") zlib))
-   (native-inputs (list perl python))
+   (native-inputs (list perl python python-cython))
    (synopsis "PMIx library")
    (description
     "PMIx is an application programming interface standard that provides
