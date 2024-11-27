@@ -20981,7 +20981,7 @@ directories or URLs with their associated programs.")
            r-sessioninfo
            r-withr
            r-xopen))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-mockery r-testthat r-webfakes))
     (home-page "https://github.com/r-Lib/rcmdcheck#readme")
     (synopsis "Run R CMD check from R and capture results")
     (description
