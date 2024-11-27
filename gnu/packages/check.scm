@@ -3915,6 +3915,11 @@ pre-condition.")
                    (call-with-output-file "tests/test-umockdev.c"
                      (lambda (port)
                        (format port "int main(void) { return 0; }")))))
+               ;; https://github.com/martinpitt/umockdev/issues/228#issuecomment-1968397286
+               (add-after 'unpack 'compat-with-meson-1.4
+                 (lambda _
+                   (substitute* "meson.build"
+                     (("-Werror=unused-variable") "-Wno-error=unused-variable"))))
                ;; Avoid having to set 'LD_LIBRARY_PATH' to use umockdev
                ;; via introspection.
                (add-after 'unpack 'absolute-introspection-library
