@@ -201,7 +201,7 @@ seamlessly with your desktop environment.")
 (define-public snac2
   (package
     (name "snac")
-    (version "2.63")
+    (version "2.65")
     (source
      (origin
        (method git-fetch)
@@ -210,7 +210,7 @@ seamlessly with your desktop environment.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "040pa0cg8l22xdr2nvgxlcm1i9wgbyhvzlmkw35rvjbc8j3d0m69"))))
+        (base32 "06npcsf8jkcygsh586wnsq6cr1cn46n3s8zx3inbjgh99sc24fcg"))))
     (build-system gnu-build-system)
     (inputs (list curl openssl))
     (arguments
