@@ -12108,6 +12108,7 @@ BAM files.")
              r-rcurl
              r-rtracklayer
              r-s4vectors))
+      (native-inputs (list r-testthat))
       (home-page "https://github.com/mskilab/gTrack/")
       (synopsis "Plot tracks of complex genomic data across multiple genomic windows")
       (description
