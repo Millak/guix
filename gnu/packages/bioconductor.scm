@@ -15996,6 +15996,17 @@ single cell assay data.")
         (base32
          "1qxf83zblihxm3fs5zrzf1spzhnm332n6nbzbzaid69l7xmgl5x0"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      ;; Test files are not included.
+      #:tests? #false
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'patch-tests
+           (lambda _
+             (substitute* "inst/tests/basic_tests.R"
+               (("^load_small_test" m)
+                (string-append "library(testthat)\n" m))))))))
     (propagated-inputs
      (list r-biobase
            r-biocgenerics
