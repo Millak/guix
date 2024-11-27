@@ -15741,7 +15741,7 @@ to install interface to SYMPHONY.")
     (propagated-inputs
      (list r-biocgenerics r-fdrtool r-lpsymphony r-slam))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-ggplot2 r-knitr r-scales r-testthat))
     (home-page "https://bioconductor.org/packages/IHW")
     (synopsis "Independent hypothesis weighting")
     (description
