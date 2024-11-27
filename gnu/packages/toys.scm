@@ -508,39 +508,41 @@ of the Nyan Cat / Poptart Cat animation.")
     (license license:ncsa)))
 
 (define-public cbonsai
-  (package
-    (name "cbonsai")
-    (version "1.3.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://gitlab.com/jallbrit/cbonsai.git")
-                     (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1krsrf7gilmpnba6hjgz8mk32vs55b4i1rxlp7ajrw0v487blljw"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:tests? #f ; No test suite
-       #:make-flags
-       (list (string-append "CC=" ,(cc-for-target))
-             (string-append "PREFIX=" (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure) ; No ./configure script
-         (add-after 'install 'install-doc
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (doc (string-append out "/share/doc/" ,name "-"
-                                        ,(package-version this-package))))
-               (install-file "README.md" doc)))))))
-    (native-inputs
-     (list pkg-config scdoc))
-    (inputs
-     (list ncurses))
-    (home-page "https://gitlab.com/jallbrit/cbonsai")
-    (synopsis "Grow bonsai trees in a terminal")
-    (description "Cbonsai is a bonsai tree generator using ASCII art.  It
+  (let ((commit "50fe627c84036e3be4115b02be04d17f58480199")
+        (revision "0"))
+    (package
+      (name "cbonsai")
+      (version (git-version "1.3.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url "https://gitlab.com/jallbrit/cbonsai.git")
+                       (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "15bzp99gb1qadp6b6fr2bg0adsvcp04ag83af7cl9lwhpznmid5x"))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:tests? #f ; No test suite
+         #:make-flags
+         (list (string-append "CC=" ,(cc-for-target))
+               (string-append "PREFIX=" (assoc-ref %outputs "out")))
+         #:phases
+         (modify-phases %standard-phases
+           (delete 'configure) ; No ./configure script
+           (add-after 'install 'install-doc
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let* ((out (assoc-ref outputs "out"))
+                      (doc (string-append out "/share/doc/" ,name "-"
+                                          ,(package-version this-package))))
+                 (install-file "README.md" doc)))))))
+      (native-inputs
+       (list pkg-config scdoc))
+      (inputs
+       (list ncurses))
+      (home-page "https://gitlab.com/jallbrit/cbonsai")
+      (synopsis "Grow bonsai trees in a terminal")
+      (description "Cbonsai is a bonsai tree generator using ASCII art.  It
 creates, colors, and positions a bonsai tree, and is configurable.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
