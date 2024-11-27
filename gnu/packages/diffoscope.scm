@@ -53,6 +53,7 @@
   #:use-module (gnu packages patchutils)
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages perl)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
@@ -65,6 +66,7 @@
   #:use-module (gnu packages vim)
   #:use-module (gnu packages web)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
@@ -263,36 +265,43 @@ install.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "06jm82w05qsx3wskch3fm5mpkpj5jmq7r4yram4ixprxc5j8flg8"))))
-    (inputs
-     (list python-debian python-distro python-libarchive-c python-rstr))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; TODO: all tests failed during creation: PermissionError: [Errno 13]
+      ;; Permission denied.
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-doc
+            (lambda _
+              (let* ((mandir1 (string-append
+                               #$output "/share/man/man1"))
+                     (docdir (string-append
+                              #$output "/share/doc/" #$name "-" #$version)))
+                (invoke "make" "-C" "doc")
+                (mkdir-p mandir1)
+                (install-file "doc/reprotest.1" mandir1)
+                (mkdir-p docdir)
+                (install-file "./README.rst" docdir)
+                (install-file "./README-dev.rst" docdir)))))))
     (native-inputs
      (list diffoscope
            help2man
            libfaketime
-           python-coverage
            python-docutils
            python-magic
            python-pytest
+           python-setuptools
            python-tlsh
-           python-tox
+           python-wheel
            unzip
            xxd))
-    (build-system python-build-system)
-    (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'install 'install-doc
-                 (lambda _
-                   (let* ((mandir1 (string-append
-                                    #$output "/share/man/man1"))
-                          (docdir (string-append
-                                   #$output "/share/doc/" #$name "-" #$version)))
-                     (invoke "make" "-C" "doc")
-                     (mkdir-p mandir1)
-                     (install-file "doc/reprotest.1" mandir1)
-                     (mkdir-p docdir)
-                     (install-file "./README.rst" docdir)
-                     (install-file "./README-dev.rst" docdir)))))))
+    (propagated-inputs
+     (list python-debian
+           python-distro
+           python-libarchive-c
+           python-rstr))
     (home-page "https://salsa.debian.org/reproducible-builds/reprotest")
     (synopsis "Build software and check it for reproducibility")
     (description "Reprotest builds the same source code twice in different
