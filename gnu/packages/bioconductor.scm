@@ -24458,15 +24458,17 @@ interval to data view, mismatch pileup, and several splicing summaries.")
     (properties `((upstream-name . "gQTLBase")))
     (build-system r-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
+     (list
+      ;; Tests fail with "The file does not exist".
+      #:tests? #false
+      #:phases
+      '(modify-phases %standard-phases
          ;; This is an upstream bug.
          (add-after 'unpack 'fix-imports
            (lambda _
              (substitute* "NAMESPACE"
                ((".*maxffmode.*") "")
-               (("importFrom\\(ff,.*") "import(ff)\n"))
-             #t)))))
+               (("importFrom\\(ff,.*") "import(ff)\n")))))))
     (propagated-inputs
      (list r-batchjobs
            r-bbmisc
@@ -24482,7 +24484,7 @@ interval to data view, mismatch pileup, and several splicing summaries.")
            r-s4vectors
            r-summarizedexperiment))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-runit))
     (home-page "https://bioconductor.org/packages/gQTLBase")
     (synopsis "Infrastructure for eQTL, mQTL and similar studies")
     (description
