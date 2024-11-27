@@ -35858,7 +35858,7 @@ Complete access to optimized C functions is made available with
            r-rcppparallel
            r-rpf
            r-stanheaders))
-    (native-inputs (list gfortran r-knitr r-testthat))
+    (native-inputs (list gfortran r-knitr r-numderiv r-testthat))
     (home-page "http://openmx.ssri.psu.edu")
     (synopsis "Extended structural equation modelling")
     (description
