@@ -1061,7 +1061,13 @@ simultaneously considered.")
              r-illuminaio
              r-mblm
              r-quadprog))
-      (native-inputs (list r-knitr))
+      (native-inputs
+       (list r-enmix
+             r-illuminahumanmethylationepicanno-ilm10b4-hg19
+             r-knitr
+             r-minfi
+             r-stringi
+             r-testthat))
       (home-page "https://github.com/hhhh5/ewastools/")
       (synopsis
        "Quality control toolset for the Illumina Infinium DNA methylation")
