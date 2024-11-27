@@ -1259,7 +1259,9 @@ with DNA methylation micro-array data.")
                (file-name (string-append "js-headroom-jquery-" version ".js"))
                (sha256
                 (base32
-                 "1jz1ampd9k8p32m6bid4yrr66bkngd8blj2q0774hl91rszhjqrv")))))))
+                 "1jz1ampd9k8p32m6bid4yrr66bkngd8blj2q0774hl91rszhjqrv")))))
+         ("r-devtools" ,r-devtools)
+         ("r-testthat" ,r-testthat)))
       (home-page "https://github.com/smorabit/hdWGCNA")
       (synopsis "Weighted gene co-expression network analysis")
       (description
