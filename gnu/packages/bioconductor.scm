@@ -14739,7 +14739,7 @@ datasets.")
            r-s4vectors
            r-sqldf))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-knitr r-testthat r-txdb-hsapiens-ucsc-hg19-knowngene))
     (home-page "https://bioconductor.org/packages/RiboProfiling/")
     (synopsis "Ribosome profiling data analysis")
     (description "Starting with a BAM file, this package provides the
