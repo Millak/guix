@@ -4406,6 +4406,29 @@ does not use formula input or special syntax, but can be used in combination
 with default R plot functions.")
     (license license:gpl2+)))
 
+(define-public r-plotmo
+  (package
+    (name "r-plotmo")
+    (version "3.6.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "plotmo" version))
+       (sha256
+        (base32 "0wl2xlidib4r54nm1q5zndr9iilagpyc3xlxs0cpd487hdh3zcn8"))))
+    (properties `((upstream-name . "plotmo")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-formula r-plotrix))
+    (native-inputs (list r-rpart))
+    (home-page "http://www.milbo.users.sonic.net")
+    (synopsis
+     "Plot a model's residuals, response, and partial dependence plots")
+    (description
+     "This package lets you plot model surfaces for a wide variety of models
+using partial dependence plots and other techniques.  Also plot model
+residuals and other information on the model.")
+    (license license:gpl3)))
+
 (define-public r-plumber
   (package
     (name "r-plumber")
