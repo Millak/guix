@@ -20249,6 +20249,8 @@ for other R packages to compile and link against.")
          "0mjf3kzsmrrlg5asam96kjj8kqv12wn9xqbmf9pywgr5k6c045i7"))))
     (properties `((upstream-name . "flowWorkspace")))
     (build-system r-build-system)
+    ;; Tests fail with: 'NA' is not a valid file
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-bh
            r-biobase
