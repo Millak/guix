@@ -24970,7 +24970,7 @@ the earlier snpMatrix package, allowing for uncertainty in genotypes.")
            r-reshape2
            r-rsamtools
            r-s4vectors))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/ataudt/chromstaR")
     (synopsis "Chromatin state analysis for ChIP-Seq data")
     (description
