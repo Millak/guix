@@ -13062,6 +13062,8 @@ Biology at
         (base32 "118n30lq01xp7irdxffc5hmym7wini8pfsk2xszh8lwf9ii0l5z9"))))
     (properties `((upstream-name . "STRINGdb")))
     (build-system r-build-system)
+    ;; Tests attempt to connect to string-db.org website.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-gplots
            r-hash
@@ -13072,7 +13074,7 @@ Biology at
            r-png
            r-rcolorbrewer
            r-sqldf))
-    (native-inputs (list r-runit))
+    (native-inputs (list r-biocgenerics r-runit))
     (home-page "https://git.bioconductor.org/packages/STRINGdb")
     (synopsis "Search tool for the retrieval of interacting proteins database")
     (description
