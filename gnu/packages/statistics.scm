@@ -3281,7 +3281,7 @@ informative error messages when it's not available.")
            r-usethis
            r-withr))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-knitr r-mockery r-testthat))
     (home-page "https://github.com/hadley/devtools")
     (synopsis "Tools to make developing R packages easier")
     (description "The devtools package is a collection of package development
