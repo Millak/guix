@@ -32750,32 +32750,33 @@ files in Elisp.")
       (license license:gpl3+))))
 
 (define-public emacs-lsp-java
-  (package
-    (name "emacs-lsp-java")
-    (version "3.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/emacs-lsp/lsp-java")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1h0hqgjpk5mbylma1fkva0vx45achf0k7ab2c5y8a2449niww90h"))))
-    (build-system emacs-build-system)
-    (propagated-inputs
-     (list emacs-dap-mode
-           emacs-lsp-mode
-           emacs-markdown-mode
-           emacs-dash
-           emacs-f
-           emacs-ht
-           emacs-request
-           emacs-treemacs))
-    (home-page "https://github.com/emacs-lsp/lsp-java/")
-    (synopsis "Java support for lsp-mode")
-    (description "Emacs Java IDE using Eclipse JDT Language Server.")
-    (license license:gpl3+)))
+  (let ((commit "4909c14b9012eed669a9c3f11a8df055d5bb8a0e")
+        (revision "1"))
+    (package
+      (name "emacs-lsp-java")
+      (version (git-version "3.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/emacs-lsp/lsp-java")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0qw824vdqk92r8hrrjsi7pd00rw60wf5jfjk1x3nhs06hijs0x0s"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-dap-mode
+                               emacs-lsp-mode
+                               emacs-markdown-mode
+                               emacs-dash
+                               emacs-f
+                               emacs-ht
+                               emacs-request
+                               emacs-treemacs))
+      (home-page "https://github.com/emacs-lsp/lsp-java/")
+      (synopsis "Java support for lsp-mode")
+      (description "Emacs Java IDE using Eclipse JDT Language Server.")
+      (license license:gpl3+))))
 
 (define-public emacs-lsp-metals
   (let ((commit "01060e9df33bb077ba6bb56ccfebc140aef8f8f3")
