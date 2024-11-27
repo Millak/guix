@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2017, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2017, 2022, 2023, 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
@@ -64,6 +64,10 @@ Differences are hard to spot, e.g. in CLOS vs. GOOPS."))
 (test-equal "beautify-description: do not include punctuation when wrapping in @code"
   "Code (@code{DelayedMatrix}, @code{MaMa}, or @code{MeMe}) should be wrapped."
   (beautify-description "Code (DelayedMatrix, MaMa, or MeMe) should be wrapped."))
+
+(test-equal "beautify-description: wrap function names in @code"
+  "The main functions are: @code{haplo.em()} and @code{haplo.power()}; FYI."
+  (beautify-description "The main functions are: haplo.em() and haplo.power(); FYI."))
 
 (test-equal "license->symbol"
   'license:lgpl2.0

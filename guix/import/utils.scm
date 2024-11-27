@@ -2,7 +2,7 @@
 ;;; Copyright © 2012, 2013, 2018, 2019, 2020, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Jelle Licht <jlicht@fsfe.org>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
-;;; Copyright © 2017, 2019, 2020, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2017, 2019, 2020, 2022, 2023, 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2019 Robert Vollmert <rob@vllmrt.net>
 ;;; Copyright © 2020 Helio Machado <0x2b3bfa0+guix@googlemail.com>
@@ -338,15 +338,21 @@ LENGTH characters."
                    ;; Escape single @ to prevent it from being understood as
                    ;; invalid Texinfo syntax.
                    (cut regexp-substitute/global #f "@" <> 'pre "@@" 'post)
-                   ;; Wrap camelCase or PascalCase words in @code{...}.
+                   ;; Wrap camelCase or PascalCase words or text followed
+                   ;; immediately by "()" in @code{...}.
                    (lambda (word)
-                     (let ((pattern (make-regexp "([A-Z][a-z]+[A-Z]|[a-z]+[A-Z])")))
+                     (let ((pattern
+                            (make-regexp
+                             "([A-Z][a-z]+[A-Z]|[a-z]+[A-Z]|.+\\(\\))")))
                        (match (list-matches pattern word)
                          (() word)
                          ((m . rest)
-                          ;; Do not include leading or trailing punctuation.
-                          (let* ((last-text (or (and=> (string-skip-right word char-set:punctuation) 1+)
-                                                (string-length word)))
+                          ;; Do not include leading or trailing punctuation,
+                          ;; unless its "()".
+                          (let* ((last-text (if (string-suffix? "()" (match:substring m 1))
+                                                (string-length (match:substring m 1))
+                                                (or (and=> (string-skip-right word char-set:punctuation) 1+)
+                                                    (string-length word))))
                                  (inner (substring word (match:start m) last-text))
                                  (pre (string-take word (match:start m)))
                                  (post (substring word last-text (string-length word))))
