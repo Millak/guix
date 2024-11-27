@@ -1251,6 +1251,29 @@ by Luis Torgo, published by CRC Press.")
 series.  These are used for identifying nearby critical transitions.")
     (license license:bsd-2)))
 
+(define-public r-earth
+  (package
+    (name "r-earth")
+    (version "5.3.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "earth" version))
+       (sha256
+        (base32 "1g6ywsmdp7qlp0rql6f07j9hih45w9jm7b90sgkjpylqan94zy9s"))))
+    (properties `((upstream-name . "earth")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-formula r-plotmo))
+    (native-inputs (list gfortran))
+    (home-page "http://www.milbo.users.sonic.net/earth/")
+    (synopsis "Multivariate adaptive regression splines")
+    (description
+     "This package lets you build regression models using the techniques in
+Friedman's papers \"Fast MARS\" and \"Multivariate Adaptive Regression
+Splines\" <doi:10.1214/aos/1176347963>. The term \"MARS\" is trademarked and
+thus not used in the name of the package.")
+    (license license:gpl3)))
+
 (define-public r-embedsom
   (package
     (name "r-embedsom")
