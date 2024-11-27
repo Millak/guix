@@ -5939,7 +5939,7 @@ factorial microarray data.")
            r-stringr
            r-summarizedexperiment
            r-variantannotation))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-bsgenome-hsapiens-ucsc-hg19 r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/DAMEfinder")
     (synopsis "Differential allelicly methylated regions")
     (description
