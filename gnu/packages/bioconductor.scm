@@ -7999,8 +7999,20 @@ genome data packages and support for efficient SNP representation.")
        (sha256
         (base32
          "0s65rfk9sw02qdqk7jhbkjybx1sm0hq0impdcxyypxbg77db5wk2"))))
-    (properties `((upstream-name . "Category")))
+    (properties
+     `((upstream-name . "Category")
+       (updater-ignored-native-inputs . ("r-gostats"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      ;; Vignettes attempt to connect to rest.kegg.jp.
+      #:test-types '(list "tests")
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'delete-bad-tests
+           (lambda _
+             ;; These tests need r-gostats, which depends on this package.
+             (delete-file "inst/UnitTests/hyperGTest_test.R"))))))
     (propagated-inputs
      (list r-annotate
            r-annotationdbi
@@ -8012,7 +8024,16 @@ genome data packages and support for efficient SNP representation.")
            r-gseabase
            r-matrix
            r-rbgl))
-    (native-inputs (list r-runit))
+    (native-inputs (list r-all
+                         r-geneplotter
+                         r-hgu95av2-db
+                         r-karyoploter
+                         r-keggrest
+                         r-lattice
+                         r-limma
+                         r-org-sc-sgd-db
+                         r-rcolorbrewer
+                         r-runit))
     (home-page "https://bioconductor.org/packages/Category")
     (synopsis "Category analysis")
     (description
