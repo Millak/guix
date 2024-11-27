@@ -2644,6 +2644,30 @@ motif lists, and novel data visualizations.  Memes functions and data
 structures are amenable to both base R and tidyverse workflows.")
       (license license:expat))))
 
+(define-public r-methylaiddata
+  (package
+    (name "r-methylaiddata")
+    (version "1.38.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "MethylAidData" version
+                              'experiment))
+       (sha256
+        (base32 "1y8kcbbi76cfw379g2wlml2adkf0vn1bmyhqq8vp70vdc23n9vr1"))))
+    (properties `((upstream-name . "MethylAidData")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-methylaid))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/MethylAidData")
+    (synopsis
+     "MethylAid-summarized data for 2800 Illumina 450k array samples and 2620 EPIC array samples")
+    (description
+     "This package provides a data package containing summarized Illumina 450k
+array data on 2800 samples and summarized EPIC data for 2620 samples.  The
+data can be use as a background data set in the interactive application.")
+    (license license:gpl2+)))
+
 (define-public r-methylclockdata
   (package
     (name "r-methylclockdata")
