@@ -334,6 +334,27 @@ functions for previous uncharacteried genes and alleles.")
 using the crlmm package.")
     (license license:artistic2.0)))
 
+(define-public r-illuminahumanmethylationepicanno-ilm10b2-hg19
+  (package
+    (name "r-illuminahumanmethylationepicanno-ilm10b2-hg19")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "IlluminaHumanMethylationEPICanno.ilm10b2.hg19"
+                              version
+                              'annotation))
+       (sha256
+        (base32 "0sfdx0lpiw3l4passx93pjfswd0iv3hxdc7ciazh53baib3xpv2d"))))
+    (properties `((upstream-name . "IlluminaHumanMethylationEPICanno.ilm10b2.hg19")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-minfi))
+    (home-page "https://bitbucket.com/kasperdanielhansen/Illumina_EPIC")
+    (synopsis "Annotation for Illumina's EPIC methylation arrays")
+    (description
+     "This is an annotation package for Illumina's EPIC methylation arrays.")
+    (license license:artistic2.0)))
+
 (define-public r-jaspar2020
   (package
     (name "r-jaspar2020")
