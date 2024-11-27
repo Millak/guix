@@ -14346,6 +14346,7 @@ factors bound at the specific regions.")
                                r-sf
                                r-spatialexperiment
                                r-summarizedexperiment))
+      (native-inputs (list r-testthat))
       (home-page "https://github.com/JEFworks-Lab/SEraster")
       (synopsis
        "Rasterization framework for scalable spatial omics data analysis")
