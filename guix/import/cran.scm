@@ -679,7 +679,7 @@ of package names for all input packages."
   (let ((rules
          (list (lambda ()
                  (and (any (lambda (name)
-                             (member name '("styler" "ExperimentHub")))
+                             (member name '("styler" "ExperimentHub" "R.rsp")))
                            input-names)
                       '(add-after 'unpack 'set-HOME
                          (lambda _ (setenv "HOME" "/tmp")))))
