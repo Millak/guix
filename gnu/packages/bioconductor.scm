@@ -11217,7 +11217,7 @@ chromosome.  Both tumor-normal paired and tumor-only analyses are supported.")
                              r-protgenerics
                              r-qfeatures
                              r-s4vectors))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-knitr r-msdata r-mzid r-mzr r-spectra r-testthat))
     (home-page "https://github.com/RforMassSpectrometry/PSM")
     (synopsis "Handling and managing peptide spectrum matches")
     (description
