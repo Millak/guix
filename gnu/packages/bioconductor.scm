@@ -16612,6 +16612,8 @@ model.")
         (base32
          "1n63pzyn153w24l6ydblah046dqv6fpcz4wi25j14myk12kwx1x0"))))
     (build-system r-build-system)
+    ;; Tests require r-minfidata, which depends on this package.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-beanplot
            r-biobase
