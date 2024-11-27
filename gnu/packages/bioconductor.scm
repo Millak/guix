@@ -22610,6 +22610,8 @@ gene selection, testing relationships, and so on.")
     (build-system r-build-system)
     (arguments
      (list
+      ;; Tests attempt to connect to the internet.
+      #:tests? #false
       #:modules '((guix build utils)
                   (guix build r-build-system)
                   (srfi srfi-1))
