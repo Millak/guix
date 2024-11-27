@@ -37965,7 +37965,7 @@ across a wide array of bioinformatic R packages.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-openssl r-phylogram r-rcpp))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/shaunpwilkinson/kmer/")
     (synopsis "Fast K-Mer counting and clustering for biological sequence analysis")
     (description
