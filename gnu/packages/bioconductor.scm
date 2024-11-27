@@ -3701,6 +3701,8 @@ but which also provides utilities which may be useful for other platforms.")
                 "0946x9a2y7yrbgbcn7fmwhkm0caraahl9wcz09aj02gnm5zvlxxs"))))
     (properties `((upstream-name . "adductomicsR")))
     (build-system r-build-system)
+    ;; Tests connect to the internet via r-experimenthub.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-adductdata
            r-ade4
