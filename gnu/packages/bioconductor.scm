@@ -2045,6 +2045,8 @@ example with the @code{biotmle} R package.")
     (build-system r-build-system)
     (arguments
      (list
+      ;; Tests fail with: could not find function "bodymapRat"
+      #:tests? #false
       #:phases
       '(modify-phases %standard-phases
          (add-after 'unpack 'set-HOME
