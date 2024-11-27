@@ -3888,11 +3888,13 @@ stack-machine, written in ANSI C.  Graphical output is implemented using SDL2.")
        (uri (pypi-uri "keystone-engine" version))
        (sha256
         (base32 "1xahdr6bh3dw5swrc2r8kqa8ljhqlb7k2kxv5mrw5rhcmcnzcyig"))))
-    (native-inputs (list cmake))
     (build-system pyproject-build-system)
+    (native-inputs
+     (list cmake
+           python-setuptools
+           python-wheel))
     (home-page "https://www.keystone-engine.org")
-    (synopsis
-     "Lightweight multi-platform, multi-architecture assembler framework")
+    (synopsis "Lightweight multi-platform, multi-architecture assembler framework")
     (description
      "Keystone is a lightweight multi-platform, multi-architecture
 assembler framework.  It supports a wide-range of different architectures
