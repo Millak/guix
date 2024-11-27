@@ -2908,7 +2908,7 @@ yeast are also included.")
            r-multiassayexperiment
            r-s4vectors
            r-summarizedexperiment))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/curatedTCGAData/")
     (synopsis "Curated data from The Cancer Genome Atlas")
     (description
