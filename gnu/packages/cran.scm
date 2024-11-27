@@ -34030,7 +34030,14 @@ classification and regression models.")
                              r-patchwork
                              r-pbapply
                              r-rlang))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs
+     (list r-catools
+           r-earth
+           r-glmnet
+           r-knitr
+           r-mlbench
+           r-randomforest
+           r-testthat))
     (home-page "https://github.com/zachmayer/caretEnsemble")
     (synopsis "Ensembles of caret models")
     (description
