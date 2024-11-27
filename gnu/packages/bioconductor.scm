@@ -20006,7 +20006,7 @@ cluster count and membership by stability evidence in unsupervised analysis.")
              r-sva
              r-tibble
              r-tidyr))
-      (native-inputs (list r-knitr))
+      (native-inputs (list r-knitr r-testthat))
       (home-page "https://github.com/biosurf/cyCombine")
       (synopsis "Integration of single-cell cytometry datasets")
       (description
