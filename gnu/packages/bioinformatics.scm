@@ -18151,7 +18151,7 @@ interaction inference from scRNA-seq data.")
            r-stringr
            r-summarizedexperiment))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/BIMSBbioinfo/ciRcus")
     (synopsis "Annotation, analysis and visualization of circRNA data")
     (description "Circus is an R package for annotation, analysis and
