@@ -201,8 +201,13 @@ builder.build_wheel(sys.argv[3], config_settings=config_settings)"
                   (format #t "~a/~a -> ~a/~a~%"
                           source file destination file)
                   (mkdir-p destination)
-                  (rename-file (string-append source "/" file)
-                               (string-append destination "/" file))
+                  ;; Use 'copy-recursively' rather than 'rename-file' to guard
+                  ;; against the odd case where DESTINATION is a non-empty
+                  ;; directory, which may happen when using hybrid Python
+                  ;; build systems.
+                  (copy-recursively (string-append source "/" file)
+                                    (string-append destination "/" file))
+                  (delete-file-recursively (string-append source "/" file))
                   (when post-move
                     (post-move file)))
                 (scandir source
