@@ -1582,6 +1582,35 @@ tools.")
      (modify-inputs (package-propagated-inputs go-github-com-cheggaaa-pb)
        (append go-github-com-vividcortex-ewma)))))
 
+(define-public go-github-com-charmbracelet-lipgloss
+  (package
+    (name "go-github-com-charmbracelet-lipgloss")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/charmbracelet/lipgloss")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0d1aqzsjy0mcliydbfbg223xxpf9646frbj35ac4fisdy3w3n142"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/charmbracelet/lipgloss"))
+    (propagated-inputs
+     (list go-github-com-aymanbagabas-go-udiff
+           go-github-com-charmbracelet-x-ansi
+           go-github-com-charmbracelet-x-exp-golden
+           go-github-com-muesli-termenv
+           go-github-com-rivo-uniseg))
+    (home-page "https://github.com/charmbracelet/lipgloss")
+    (synopsis "Style definitions for nice terminal layouts")
+    (description
+     "Style definitions for nice terminal layouts.  Built with TUIs in mind.")
+    (license license:expat)))
+
 (define-public go-github-com-charmbracelet-x-ansi
   (package
     (name "go-github-com-charmbracelet-x-ansi")
