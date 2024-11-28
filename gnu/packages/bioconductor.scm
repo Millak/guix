@@ -374,6 +374,34 @@ using the crlmm package.")
 utilize the TFBSTools package (version 1.23.1 or higher).")
     (license license:gpl2)))
 
+(define-public r-mafdb-1kgenomes-phase1-hs37d5
+  (package
+    (name "r-mafdb-1kgenomes-phase1-hs37d5")
+    (version "3.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "MafDb.1Kgenomes.phase1.hs37d5" version
+                              'annotation))
+       (sha256
+        (base32 "0vsjik59qa36w402bcrd5z27wc9vyp4gl0ffcwskd9iwjqim0phi"))))
+    (properties `((upstream-name . "MafDb.1Kgenomes.phase1.hs37d5")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-bsgenome
+                             r-genomeinfodb
+                             r-genomicranges
+                             r-genomicscores
+                             r-iranges
+                             r-s4vectors))
+    (home-page
+     "https://bioconductor.org/packages/MafDb.1Kgenomes.phase1.hs37d5")
+    (synopsis
+     "Minor allele frequency data from 1000 Genomes Phase 1 for hs37d5")
+    (description
+     "Store minor allele frequency data from the Phase 1 of the 1000 Genomes
+Project for the human genome version hs37d5.")
+    (license license:artistic2.0)))
+
 (define-public r-mafh5-gnomad-v3-1-2-grch38
   (package
     (name "r-mafh5-gnomad-v3-1-2-grch38")
