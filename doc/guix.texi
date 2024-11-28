@@ -8334,7 +8334,7 @@ retrieve.
 The URL of the Mercurial repository to clone.
 
 @item @code{changeset}
-This string denotes changeset to fetch.
+This string denotes the changeset to fetch.
 @end table
 @end deftp
 
@@ -27404,7 +27404,7 @@ user part in user@@domain, same as %u if there's no domain
 @item %d
 domain part in user@@domain, empty if there's no domain
 @item %h
-home director
+home directory
 @end table
 
 See doc/wiki/Variables.txt for full list.  Some examples:
