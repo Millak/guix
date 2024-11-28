@@ -3667,7 +3667,7 @@ which do not support it.")
 (define-public wlogout
   (package
     (name "wlogout")
-    (version "1.1.1")
+    (version "1.2.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3676,7 +3676,7 @@ which do not support it.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1swhzkqkzli59c89pvrakfvicd00x7ga860c3x2pbb4y3xziqfvi"))))
+                "0pzgpfnfzpkc6y14x4g5wv5ldm67vshcp893i4rszfx4kv5ikmpy"))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config scdoc))
