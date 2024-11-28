@@ -3,6 +3,7 @@
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
+;;; Copyright © 2024 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -239,7 +240,7 @@ not work."
             (if system?
                 (prettify-system-dependency name)
                 (maybe-symbol->string name)))
-          
+
           (let ((name (prettify-name (extract-name name))))
             ;; Dependencies are sometimes specified as symbols and sometimes
             ;; as strings
@@ -322,8 +323,9 @@ not work."
 (define* (egg-recursive-import package-name #:optional version)
   (recursive-import package-name
                     #:version version
-                    #:repo->guix-package (lambda* (name #:key version repo)
-                                           (egg->guix-package/m name version))
+                    #:repo->guix-package
+                    (lambda* (name #:key version repo #:allow-other-keys)
+                             (egg->guix-package/m name version))
                     #:guix-name egg-name->guix-name))
 
 
