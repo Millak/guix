@@ -6689,6 +6689,32 @@ logging.")
      "This package implements column-formatted output for Golang.")
     (license license:expat)))
 
+(define-public go-github-com-sahilm-fuzzy
+  (package
+    (name "go-github-com-sahilm-fuzzy")
+    (version "0.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sahilm/fuzzy")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "15j95gm7hcmg09x1b39vc4il8bryv4v0yljvvyq5vyc6iq66qrbz"))))
+    (build-system go-build-system)
+    (native-inputs
+     (list go-github-com-kylelemons-godebug
+           go-github-com-kylelemons-godebug-pretty))
+    (arguments
+     (list #:import-path "github.com/sahilm/fuzzy"))
+    (home-page "https://github.com/sahilm/fuzzy")
+    (synopsis "Fuzzy string matching for Golang")
+    (description
+     "@code{fuzzy} provides fuzzy string matching optimized for filenames and code
+symbols in the style of Sublime Text, VSCode, @code{IntelliJ} IDEA et al.")
+    (license license:expat)))
+
 (define-public go-github-com-schollz-progressbar-v3
   (package
     (name "go-github-com-schollz-progressbar-v3")
