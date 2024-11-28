@@ -385,34 +385,28 @@ the command line.")
 (define-public python-praw
   (package
     (name "python-praw")
-    (version "7.6.1")
+    (version "7.8.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "praw" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/praw-dev/praw")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "17pvdlcasr08p5hb1x7shjh8yvn621lzm0bvnwd3b1r1qpzrbz07"))))
-    (build-system python-build-system)
+        (base32 "05qq43l4334cq8r8k731qnb45nq12vvfdxwbr6q84a1hafp7n4cg"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'disable-failing-tests
-           (lambda _
-             (with-directory-excursion "tests"
-               ;; Integration tests depend on files that are not included.
-               (for-each delete-file-recursively
-                         '("integration/models" "unit/models"))
-               ;; The configuration file does not seem to exist.
-               (delete-file "unit/test_config.py"))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-k"
-                       ;; These tests depend on test files that don't exist.
-                       (string-append "not test_bad_request_without_json_text_plain_response"
-                                      " and not test_bad_request_without_json_text_html_response"))))))))
+     (list #:test-flags
+           #~(list "--ignore=tests/units/models"
+                   "--ignore=tests/integration/models"
+                   "--ignore=tests/unit/test_config.py"
+                   "--ignore=tests/integration/test_reddit.py")))
     (native-inputs
-     (list python-betamax python-betamax-matchers python-pytest))
+     (list python-betamax
+           python-betamax-matchers
+           python-flit-core
+           python-pytest))
     (propagated-inputs
      (list python-prawcore python-update-checker python-websocket-client))
     (synopsis "Python Reddit API Wrapper")
