@@ -12628,7 +12628,10 @@ less than 2bp on both sides of indel region.")
        (uri (bioconductor-uri "simona" version))
        (sha256
         (base32 "13qkca6ch7ppdf1clgzgnygh9zb05163bm5a402pya7wbq2vkdzx"))))
-    (properties `((upstream-name . "simona")))
+    (properties
+     `((upstream-name . "simona")
+       (updater-extra-native-inputs
+        . ("r-go-db" "r-org-hs-eg-db" "r-proxyc"))))
     (build-system r-build-system)
     (inputs (list openjdk perl))
     (propagated-inputs (list r-circlize
@@ -12642,7 +12645,7 @@ less than 2bp on both sides of indel region.")
                              r-s4vectors
                              r-shiny
                              r-xml2))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-go-db r-knitr r-org-hs-eg-db r-proxyc r-testthat))
     (home-page "https://github.com/jokergoo/simona")
     (synopsis "Semantic similarity on bio-ontologies")
     (description
