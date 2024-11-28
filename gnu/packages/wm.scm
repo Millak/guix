@@ -1183,20 +1183,17 @@ particular, it displays commonly-chosen options before uncommon ones.")
 (define-public ghc-xmonad-contrib
   (package
     (name "ghc-xmonad-contrib")
-    (version "0.17.1")
+    (version "0.18.1")
     (source (origin
               (method url-fetch)
               (uri (hackage-uri "xmonad-contrib" version))
               (sha256
                (base32
-                "0lwj8xkyaw6h0rv3lz2jdqrwzz7yghfmnhpndygkb3wgyhvq6dxb"))))
+                "0ck4hq9yhdzggrs3q4ji6nbg6zwhmhc0ckf9vr9d716d98h9swq5"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "xmonad-contrib")))
     (inputs (list ghc-random ghc-x11 xmonad ghc-utf8-string ghc-x11-xft))
     (native-inputs (list ghc-quickcheck ghc-hspec))
-    (arguments
-     `(#:cabal-revision ("1"
-                         "0dc9nbn0kaw98rgpi1rq8np601zjhdr1y0ydg6yb82wwaqawql6z")))
     (home-page "https://xmonad.org/")
     (synopsis "Third party extensions for xmonad")
     (description
