@@ -19604,7 +19604,9 @@ index.")
        (sha256
         (base32
          "14c923hhk9pn2a6kslcw5ai5xn50bba43fp9b5p9viaqikgr2nby"))))
-    (properties `((upstream-name . "QuasR")))
+    (properties
+     `((upstream-name . "QuasR")
+       (updater-extra-native-inputs . ("r-rhisat2"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-annotationdbi
@@ -19626,7 +19628,7 @@ index.")
            r-shortread
            r-txdbmaker))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-genomicalignments r-knitr r-rhisat2 r-testthat))
     (home-page "https://bioconductor.org/packages/QuasR/")
     (synopsis "Quantify and annotate short reads in R")
     (description
