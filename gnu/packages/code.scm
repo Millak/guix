@@ -786,7 +786,7 @@ independent targets.")
 (define-public uncrustify
   (package
     (name "uncrustify")
-    (version "0.77.1")
+    (version "0.80.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -795,7 +795,7 @@ independent targets.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "17x9p5pqgzjchi9xhskp4kq7ag4chmsgbkvwym5m2b9zwm6qykpm"))))
+                "1n7ifr4i35ii5zaia61jdd61virbygc00anhc9iq3p5gzjlfxhsa"))))
     (build-system cmake-build-system)
     (native-inputs (list python-wrapper))
     (arguments
