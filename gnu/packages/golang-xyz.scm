@@ -1159,6 +1159,34 @@ strategies, such as fixed delay, backoff delay, and random delay.")
 clipboard.")
     (license license:expat)))
 
+(define-public go-github-com-aymanbagabas-go-udiff
+  (package
+    (name "go-github-com-aymanbagabas-go-udiff")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/aymanbagabas/go-udiff")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09p17r8s5flhq6p69z08345q0y99dpb0yyashlwpgxn45xir7y6g"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/aymanbagabas/go-udiff"))
+    (home-page "https://github.com/aymanbagabas/go-udiff")
+    (synopsis "Diffing library for Golang")
+    (description
+     "@code{udiff} (micro-diff, or µDiff) is a library that implements the
+@url{http://www.xmailserver.org/diff2.pdf, Myers' diffing algorithm}.  It aims to
+provide a minimal API to compute and apply diffs with zero dependencies.  It also
+supports generating diffs in the
+@url{https://www.gnu.org/software/diffutils/manual/html_node/Unified-Format.html,
+Unified Format}.")
+    (license license:expat)))
+
 (define-public go-github-com-benbjohnson-clock
   (package
     (name "go-github-com-benbjohnson-clock")
