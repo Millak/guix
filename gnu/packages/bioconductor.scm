@@ -19023,7 +19023,7 @@ sites and alignments obtained from standard RNA-seq experiments.")
            r-pracma
            r-roar))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/Liuy12/XBSeq")
     (synopsis "Test for differential expression for RNA-seq data")
     (description
