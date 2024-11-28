@@ -10968,6 +10968,7 @@ previously been used in XCMS.")
                              r-tidyr
                              r-vcfr
                              r-zoo))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/kharchenkolab/numbat")
     (synopsis "Haplotype-aware CNV analysis from scRNA-Seq")
     (description
