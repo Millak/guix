@@ -1612,6 +1612,48 @@ tools.")
 ECMA-48} specs.")
     (license license:expat)))
 
+(define-public go-github-com-charmbracelet-x-exp-golden
+  (package
+    (name "go-github-com-charmbracelet-x-exp-golden")
+    (version "0.0.0-20241121171228-5bc00623ea2f")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/charmbracelet/x")
+             (commit (go-version->git-ref version
+                                          #:subdir "exp/golden"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "016s67690dr3w3an6m24q6f4vrmwpk0qd4akvvh1dzpfyf4khxd4"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/charmbracelet/x/exp/golden"
+      #:unpack-path "github.com/charmbracelet/x/"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda* (#:key import-path #:allow-other-keys)
+              ;; Tests need to write to that files.
+              (with-directory-excursion (string-append "src/" import-path)
+                (make-file-writable "testdata/TestRequireEqualUpdate.golden")
+                (make-file-writable "testdata/TestRequireEqualNoUpdate.golden"))))
+          (add-after 'check 'post-check
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                ;; Remove modified testdata just in case.
+                (delete-file-recursively "testdata")))))))
+    (propagated-inputs
+     (list go-github-com-aymanbagabas-go-udiff))
+    (home-page "https://github.com/charmbracelet/x")
+    (synopsis "Verify @code{.golden} file equality")
+    (description
+     "Golden files (@code{.golden}) contain the raw expected output of
+tests,which can contain control codes and escape sequences.  @code{golden}
+package provides an API for comparing Golden files.")
+    (license license:expat)))
+
 (define-public go-github-com-chzyer-logex
   (package
     (name "go-github-com-chzyer-logex")
