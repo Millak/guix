@@ -20480,7 +20480,14 @@ matches the flowJo analysis.")
            r-ncdfflow
            r-rcolorbrewer
            r-rrcov))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-devtools
+                         r-ggcyto
+                         r-ggridges
+                         r-gridextra
+                         r-opencyto
+                         r-scales
+                         r-testthat
+                         r-xtable))
     (home-page "http://www.github.com/RGLab/flowStats")
     (synopsis "Statistical methods for the analysis of flow cytometry data")
     (description
