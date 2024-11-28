@@ -17614,114 +17614,114 @@ developed separately, both serve the same purpose: provide Python bindings for
 libmagic.")))
 
 (define-public python-pydevd
-    (package
-      (name "python-pydevd")
-      (version "3.2.3")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/fabioz/PyDev.Debugger")
-               (commit (string-append
-                        "pydev_debugger_"
-                        (string-join (string-split version #\.) "_")))))
-         (modules '((guix build utils)))
-         (snippet '(begin
-                     ;; Delete pre-built binaries.
-                     (for-each delete-file (find-files "." "\\.(so|dylib|dll)"))
-                     ;; This source is generated via Cython.
-                     (delete-file "_pydevd_bundle/pydevd_cython.c")))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "0a40574f0rx23gissxmrpjq9cimhjxqsq9wbv5l7620h3blb5510"))))
-      (build-system pyproject-build-system)
-      (arguments
-       (list
-        #:test-flags
-        #~(list "-n" "0" ; fails: (number->string (parallel-job-count))
-                "-k"
-                (string-append
-                 ;; The two "break_01" tests have been failing on
-                 ;; Python 3.10:
-                 ;; <https://github.com/fabioz/PyDev.Debugger/issues/222>.
-                 "not test_set_pydevd_break_01 "
-                 ;; the GUI event loop requires an X server.
-                 "and not test_gui_event_loop_custom "
-                 ;; This test validates that 'pydevd' is not in the
-                 ;; exception message, but it is due to being part
-                 ;; of the build file name present in the message.
-                 "and not test_evaluate_exception_trace "
-                 ;; This test fail with TimeoutError, no message on stderr.
-                 "and not test_soft_terminate "))
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'unpack 'fix-tests
-              (lambda _
-                (substitute* "tests_python/test_convert_utilities.py"
-                  ;; Add missing trailing '/'.
-                  (("\"\\\\\\\\usr\\\\\\\\bin\\\\\\\\\") == \"/usr/bin" all)
-                   (string-append all "/")))
-                ;; pytest-xdist's parallel tests would fail that test.
-                ;; So we disabled parallel tests.
-                ;(delete-file "tests_python/test_utilities.py") ; test_is_main_thread
-                ;; TODO: fix.
-                (delete-file "tests_python/test_debugger_json.py"))) ; test_soft_terminate timeout
-            (add-after 'unpack 'patch-command-paths
-              (lambda* (#:key inputs #:allow-other-keys)
-                (substitute* "_pydevd_bundle/pydevd_api.py"
-                  (("'kill'")
-                   (format #f "~s" (search-input-file inputs "bin/kill")))
-                  (("'pgrep'")
-                   (format #f "~s" (search-input-file inputs "bin/pgrep"))))))
-            (add-after 'unpack 'generate-sources
-              (lambda _
-                (setenv "PYTHONPATH" (getcwd))
-                (invoke "python" "build_tools/build.py")))
-            (add-after 'unpack 'adjust-attach-binary-name
-              (lambda _
-                (substitute*
-                    '("pydevd_tracing.py"
-                      "pydevd_attach_to_process/add_code_to_python_process.py")
-                  (("def get_(target|python_helper_lib)_filename.*" all)
-                   (format #f "~a    return ~s~%" all
-                           (string-append #$output "/lib/attach.so"))))))
-            (add-after 'unpack 'patch-gdb
-              (lambda* (#:key inputs #:allow-other-keys)
-                (substitute*
-                    "pydevd_attach_to_process/add_code_to_python_process.py"
-                  (("'gdb',")
-                   (format #f "~s," (search-input-file inputs "bin/gdb"))))))
-            (add-after 'build 'build-attach-linux-binary
-              (lambda _
-                (invoke #+(cxx-for-target) "-shared" "-o" "attach.so"
-                        "-fPIC" "-nostartfiles"
-                        "pydevd_attach_to_process/linux_and_mac/attach.cpp")))
-            (add-before 'check 'pre-check
-              (lambda* (#:key tests? #:allow-other-keys)
-                (when tests?
-                  (setenv "PYDEVD_USE_CYTHON" "YES"))))
-            (add-after 'install 'install-attach-binary
-              (lambda _
-                (install-file "attach.so"
-                              (string-append #$output "/lib"))))
-            ;; Some modules aren't designed to be loadable by themselves, such
-            ;; as 'pydev_app_engine_debug_startup' and fail.
-            (delete 'sanity-check))))
-      (native-inputs
-       (list python-cython
-             python-numpy
-             python-psutil
-             python-pytest
-             python-pytest-xdist
-             python-trio
-             python-untangle))
-      (inputs (list coreutils gdb/pinned procps))
-      (home-page "https://github.com/fabioz/PyDev.Debugger/")
-      (synopsis "Python debugger")
-      (description "PyDev.Debugger is a capable Python debugger used in PyDev
+  (package
+    (name "python-pydevd")
+    (version "3.2.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/fabioz/PyDev.Debugger")
+             (commit (string-append
+                      "pydev_debugger_"
+                      (string-join (string-split version #\.) "_")))))
+       (modules '((guix build utils)))
+       (snippet '(begin
+                   ;; Delete pre-built binaries.
+                   (for-each delete-file (find-files "." "\\.(so|dylib|dll)"))
+                   ;; This source is generated via Cython.
+                   (delete-file "_pydevd_bundle/pydevd_cython.c")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0a40574f0rx23gissxmrpjq9cimhjxqsq9wbv5l7620h3blb5510"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-n" "0" ; fails: (number->string (parallel-job-count))
+              "-k"
+              (string-append
+               ;; The two "break_01" tests have been failing on
+               ;; Python 3.10:
+               ;; <https://github.com/fabioz/PyDev.Debugger/issues/222>.
+               "not test_set_pydevd_break_01 "
+               ;; the GUI event loop requires an X server.
+               "and not test_gui_event_loop_custom "
+               ;; This test validates that 'pydevd' is not in the
+               ;; exception message, but it is due to being part
+               ;; of the build file name present in the message.
+               "and not test_evaluate_exception_trace "
+               ;; This test fail with TimeoutError, no message on stderr.
+               "and not test_soft_terminate "))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-tests
+            (lambda _
+              (substitute* "tests_python/test_convert_utilities.py"
+                ;; Add missing trailing '/'.
+                (("\"\\\\\\\\usr\\\\\\\\bin\\\\\\\\\") == \"/usr/bin" all)
+                 (string-append all "/")))
+              ;; pytest-xdist's parallel tests would fail that test.
+              ;; So we disabled parallel tests.
+              ;(delete-file "tests_python/test_utilities.py") ; test_is_main_thread
+              ;; TODO: fix.
+              (delete-file "tests_python/test_debugger_json.py"))) ; test_soft_terminate timeout
+          (add-after 'unpack 'patch-command-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "_pydevd_bundle/pydevd_api.py"
+                (("'kill'")
+                 (format #f "~s" (search-input-file inputs "bin/kill")))
+                (("'pgrep'")
+                 (format #f "~s" (search-input-file inputs "bin/pgrep"))))))
+          (add-after 'unpack 'generate-sources
+            (lambda _
+              (setenv "PYTHONPATH" (getcwd))
+              (invoke "python" "build_tools/build.py")))
+          (add-after 'unpack 'adjust-attach-binary-name
+            (lambda _
+              (substitute*
+                  '("pydevd_tracing.py"
+                    "pydevd_attach_to_process/add_code_to_python_process.py")
+                (("def get_(target|python_helper_lib)_filename.*" all)
+                 (format #f "~a    return ~s~%" all
+                         (string-append #$output "/lib/attach.so"))))))
+          (add-after 'unpack 'patch-gdb
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute*
+                  "pydevd_attach_to_process/add_code_to_python_process.py"
+                (("'gdb',")
+                 (format #f "~s," (search-input-file inputs "bin/gdb"))))))
+          (add-after 'build 'build-attach-linux-binary
+            (lambda _
+              (invoke #+(cxx-for-target) "-shared" "-o" "attach.so"
+                      "-fPIC" "-nostartfiles"
+                      "pydevd_attach_to_process/linux_and_mac/attach.cpp")))
+          (add-before 'check 'pre-check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "PYDEVD_USE_CYTHON" "YES"))))
+          (add-after 'install 'install-attach-binary
+            (lambda _
+              (install-file "attach.so"
+                            (string-append #$output "/lib"))))
+          ;; Some modules aren't designed to be loadable by themselves, such
+          ;; as 'pydev_app_engine_debug_startup' and fail.
+          (delete 'sanity-check))))
+    (native-inputs
+     (list python-cython
+           python-numpy
+           python-psutil
+           python-pytest
+           python-pytest-xdist
+           python-trio
+           python-untangle))
+    (inputs (list coreutils gdb/pinned procps))
+    (home-page "https://github.com/fabioz/PyDev.Debugger/")
+    (synopsis "Python debugger")
+    (description "PyDev.Debugger is a capable Python debugger used in PyDev
 and other @acronym{IDEs, Integrated Development Environments}.")
-      (license license:epl1.0)))
+    (license license:epl1.0)))
 
 (define-public python-debugpy
   (package
