@@ -17082,7 +17082,9 @@ and Infinium HD arrays are also included.")
               (sha256
                (base32
                 "1kq64150kjcqfqrnj1vpn83345xpvnxw3kddg5c36hwww3bh2mpj"))))
-    (properties `((upstream-name . "lefser")))
+    (properties
+     `((upstream-name . "lefser")
+       (updater-extra-native-inputs . ("r-mia"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-coin
@@ -17097,7 +17099,7 @@ and Infinium HD arrays are also included.")
            r-testthat
            r-tibble
            r-tidyr))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-knitr r-mia r-withr))
     (home-page "https://github.com/waldronlab/lefser")
     (synopsis "LEfSE method for microbiome biomarker discovery")
     (description
