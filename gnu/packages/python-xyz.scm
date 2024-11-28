@@ -6889,19 +6889,22 @@ bookmarks using a declarative input in the form of a markdown file.")
 (define-public python-joblib
   (package
     (name "python-joblib")
-    (version "1.3.2")
+    (version "1.4.2")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "joblib" version))
               (sha256
                (base32
-                "1cbjjzsh9hzaqr2cqja95673p7j88b8bd02hjpkq8xz147k6by4j"))))
+                "03izdcvc3fa355cclzgvzmjnfwylvblz9q091b9gndi6df0wb0i3"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags  ; disabled to avoid having to depend on ipython/jupyter
-      #~(list "-k" "not test_parallel_call_cached_function_defined_in_jupyter")))
-    (native-inputs (list python-pytest python-setuptools python-wheel))
+      #~(list
+         "--numprocesses" (number->string (parallel-job-count))
+         "-k" "not test_parallel_call_cached_function_defined_in_jupyter")))
+    (native-inputs
+     (list python-pytest python-pytest-xdist python-setuptools python-wheel))
     (propagated-inputs (list python-psutil))
     (home-page "https://joblib.readthedocs.io/")
     (synopsis "Using Python functions as pipeline jobs")
@@ -6911,7 +6914,6 @@ In particular, joblib offers: transparent disk-caching of the output values
 and lazy re-evaluation (memoize pattern), easy simple parallel computing
 logging and tracing of the execution.")
     (license license:bsd-3)))
-
 
 (define-public python-daemon
   (package
