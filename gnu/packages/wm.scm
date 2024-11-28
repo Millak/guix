@@ -1082,13 +1082,13 @@ tiled on several screens.")
 (define-public ghc-xmobar
   (package
     (name "ghc-xmobar")
-    (version "0.46")
+    (version "0.48.1")
     (source (origin
               (method url-fetch)
               (uri (hackage-uri "xmobar" version))
               (sha256
                (base32
-                "0glpiq7c0qwfcxnc2flgzj7afm5m1a9ghzwwcq7f8q27m21kddrd"))))
+                "1infcisv7l00a4z4byjwjisg4yndk0cymibfii1c7yzyzrlvavhl"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "xmobar")))
     (native-inputs
@@ -1097,6 +1097,7 @@ tiled on several screens.")
      (list ghc-alsa-core
            ghc-alsa-mixer
            ghc-dbus
+           ghc-extra
            ghc-hinotify
            ghc-http-client-tls
            ghc-http-conduit
@@ -1130,7 +1131,7 @@ tiled on several screens.")
            (lambda _
              (substitute* "src/Xmobar/X11/CairoSurface.hsc"
                (("cairo/cairo-xlib.h") "cairo-xlib.h")))))))
-    (home-page "https://xmobar.org")
+    (home-page "https://codeberg.org/xmobar/xmobar")
     (synopsis "Haskell library for minimalistic text based status bars")
     (description
      "@code{ghc-xmobar} is the haskell library that @code{xmobar} is based on.
