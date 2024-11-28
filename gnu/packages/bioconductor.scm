@@ -10459,7 +10459,7 @@ time-series data (including a graphical user interface).")
            r-metafor
            r-stringr
            r-tidyr))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/MMUPHin")
     (synopsis "Meta-analysis with uniform pipeline for heterogeneity in microbiome")
     (description
