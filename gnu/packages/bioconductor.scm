@@ -20258,7 +20258,11 @@ manipulation of flow cytometry data.")
        (sha256
         (base32
          "0a74lb36482djxfr77akyqqa7wnj9y3g4fkn8ain2gsbb3l6kcbk"))))
-    (properties `((upstream-name . "ggcyto")))
+    (properties
+     `((upstream-name . "ggcyto")
+       ;; Avoid dependency cycle.
+       (updater-ignored-native-inputs . ("r-flowstats"))
+       (updater-extra-native-inputs . ("r-flowworkspacedata"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-data-table
@@ -20273,7 +20277,7 @@ manipulation of flow cytometry data.")
            r-rlang
            r-scales))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-flowworkspacedata r-knitr r-opencyto r-testthat r-vdiffr))
     (home-page "https://github.com/RGLab/ggcyto/issues")
     (synopsis "Visualize Cytometry data with ggplot")
     (description
