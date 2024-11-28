@@ -565,12 +565,7 @@ design}.")
                                                       " and not "))))))))))
     (native-inputs
      (list git-minimal/pinned
-           pre-commit
-           python-autopep8
-           python-black
-           python-flake8
            python-gitpython
-           python-isort
            python-ipython-genutils
            python-jupyter-server
            python-pyaml
