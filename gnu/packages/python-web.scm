@@ -6925,7 +6925,7 @@ Some things HTTP Core does do:
 (define-public python-httpx
   (package
     (name "python-httpx")
-    (version "0.24.1")
+    (version "0.27.2")
     (source
      (origin
        ;; PyPI tarball does not contain tests.
@@ -6935,7 +6935,7 @@ Some things HTTP Core does do:
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "121cnzp5jq638wrvfmxa9q0rwank7q6v5fi1lnih50fd5219yvm8"))))
+        (base32 "1jd5w3nhpvrbj66nk2njvfnk0g1mkxivwa52j2yyhcna1xafsk1p"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -6967,7 +6967,8 @@ Some things HTTP Core does do:
            python-trustme
            python-uvicorn
            python-setuptools
-           python-wheel))
+           python-wheel
+           python-zstandard))
     (propagated-inputs
      (list python-charset-normalizer
            python-brotli
