@@ -85,7 +85,9 @@
   #:use-module (gnu packages golang-maths)
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages linux)
-  #:use-module (gnu packages specifications))
+  #:use-module (gnu packages specifications)
+  #:use-module (gnu packages xdisorg)
+  #:use-module (gnu packages xorg))
 
 ;;; Commentary:
 ;;;
@@ -980,6 +982,39 @@ for Go.")
 collections.  It was based on
 @url{https://github.com/chriso/validator.js,validator.js}.")
     (license license:expat)))
+
+(define-public go-github-com-atotto-clipboard
+  (package
+    (name "go-github-com-atotto-clipboard")
+    (version "0.1.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/atotto/clipboard")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ycd8zkgsq9iil9svhlwvhcqwcd7vik73nf8rnyfnn10gpjx97k5"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/atotto/clipboard"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'start-xorg-server
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; The test suite requires a running X server.
+              (system "Xvfb :1 &")
+              (setenv "DISPLAY" ":1"))))))
+    (native-inputs
+     (list xorg-server-for-tests))
+    (propagated-inputs (list xclip))
+    (home-page "https://github.com/atotto/clipboard")
+    (synopsis "Clipboard for Golang")
+    (description
+     "@code{clipboard} provides copying and pasting to the clipboard for Go.")
+    (license license:bsd-3)))
 
 (define-public go-github-com-audriusbutkevicius-recli
   (package
