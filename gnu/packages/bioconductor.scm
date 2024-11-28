@@ -25371,6 +25371,8 @@ real numbers.")
         (base32
          "13lhps2dswd29rxr08yhpd9aqbdcvcgq5kfbymmrgr5ampl9dk29"))))
     (properties `((upstream-name . "BgeeCall")))
+    ;; Tests need internet access.
+    (arguments (list #:tests? #false))
     (build-system r-build-system)
     (propagated-inputs
      (list kallisto
@@ -25386,7 +25388,7 @@ real numbers.")
            r-sjmisc
            r-txdbmaker
            r-tximport))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-annotationhub r-httr r-knitr r-testthat))
     (home-page "https://github.com/BgeeDB/BgeeCall")
     (synopsis "RNA-Seq present/absent gene expression calls generation")
     (description
