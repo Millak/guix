@@ -347,18 +347,31 @@ the command line.")
 (define-public python-prawcore
   (package
     (name "python-prawcore")
-    (version "2.3.0")
+    (version "2.4.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "prawcore" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/praw-dev/prawcore")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0vgmhjddqxnz5vy70dyqvakak51fg1nk6j3xavkc83d8nzacrwfs"))))
-    (build-system python-build-system)
+        (base32 "1y7gh7kk002b2h1ppkr1llb2gjfnby28zvx11j4ji0wm3r3rjh5l"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; XXX: These tests fail with an incomplete request response.
+     (list #:test-flags
+           #~'("-k" #$(string-append
+                       "not test_revoke__access_token_with_refresh_set"
+                       " and not test_revoke__access_token_without_refresh_set"
+                       " and not test_revoke__refresh_token_with_access_set"
+                       " and not test_refresh__with_scopes"
+                       " and not test_request__patch"))))
     (native-inputs
      (list python-betamax
            python-betamax-matchers
            python-betamax-serializers
+           python-flit-core
            python-mock
            python-pytest
            python-testfixtures))
