@@ -11060,7 +11060,7 @@ directly by @code{make localmodconfig} as described above.")
 (define-public kernel-hardening-checker
   (package
     (name "kernel-hardening-checker")
-    (version "0.6.6")
+    (version "0.6.10")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -11069,7 +11069,7 @@ directly by @code{make localmodconfig} as described above.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1w9xx3xvx4wrfdkdwkfzjlfichgkvacil9b8s1fcgla63z65m5f6"))))
+                "01p5wcyj4w5c4264abymhvpai7bvfy8ivspgqnrmg33qplwxl443"))))
     (build-system python-build-system)
     (home-page "https://github.com/a13xp0p0v/kernel-hardening-checker")
     (synopsis
