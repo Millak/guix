@@ -329,7 +329,7 @@ from ~a: ~a (~a)~%")
                           (and (latest-bioconductor-package-version name 'experiment) 'experiment)))
                 ;; TODO: Honor VERSION.
                 (version (latest-bioconductor-package-version name type))
-                (url     (car (bioconductor-uri name version type)))
+                (url     (bioconductor-uri name version type))
                 (meta    (fetch-description-from-tarball
                           url #:download (or replacement-download
                                              download))))
@@ -740,11 +740,11 @@ META."
 of META, a package in REPOSITORY."
   (let* ((url    (cran-package-source-url meta repository))
          (name   (assoc-ref meta "Package"))
-         (source (download-source url
-                                  #:method
-                                  (cond ((assoc-ref meta 'git) 'git)
-                                        ((assoc-ref meta 'hg) 'hg)
-                                        (else #f))))
+         (source (apply download-source url
+                        (cond
+                         ((assoc-ref meta 'git) '(#:method git))
+                         ((assoc-ref meta 'hg) '(#:method hg))
+                         (else '()))))
          (tarball? (not (or (assoc-ref meta 'git)
                             (assoc-ref meta 'hg))))
          (compare-upstream-inputs
@@ -857,10 +857,11 @@ from the alist META, which was derived from the R package's DESCRIPTION file."
          (source-url (cran-package-source-url meta repository))
          (git?       (if (assoc-ref meta 'git) #true #false))
          (hg?        (if (assoc-ref meta 'hg) #true #false))
-         (source     (download-source source-url #:method (cond
-                                                           (git? 'git)
-                                                           (hg? 'hg)
-                                                           (else #f))))
+         (source     (apply download-source source-url
+                            (cond
+                             (git? '(#:method git))
+                             (hg? '(#:method hg))
+                             (else '()))))
          (uri-helper (uri-helper repository))
          (inputs     (cran-package-inputs meta repository
                                           #:download-source download-source))
