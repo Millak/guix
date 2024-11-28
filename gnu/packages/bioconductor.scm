@@ -687,6 +687,27 @@ sapiens @code{dbSNP} build 131.")
 database, assembled using data from REACTOME.")
     (license license:cc-by4.0)))
 
+(define-public r-sift-hsapiens-dbsnp137
+  (package
+    (name "r-sift-hsapiens-dbsnp137")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "SIFT.Hsapiens.dbSNP137" version
+                              'annotation))
+       (sha256
+        (base32 "1472abqanbwziyynr851xzhg7ck8w1n98ymmggg7s46hzix5mlj8"))))
+    (properties `((upstream-name . "SIFT.Hsapiens.dbSNP137")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-annotationdbi r-rsqlite r-variantannotation))
+    (home-page "https://bioconductor.org/packages/SIFT.Hsapiens.dbSNP137")
+    (synopsis "PROVEAN/SIFT predictions for Homo sapiens dbSNP build 137")
+    (description
+     "This package provides a database of PROVEAN/SIFT predictions for Homo
+sapiens @code{dbSNP} build 137.")
+    (license license:artistic2.0)))
+
 (define-public r-bsgenome-btaurus-ucsc-bostau8
   (package
     (name "r-bsgenome-btaurus-ucsc-bostau8")
