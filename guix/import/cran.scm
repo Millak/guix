@@ -941,7 +941,8 @@ from the alist META, which was derived from the R package's DESCRIPTION file."
           ,package))
       (else package))
      (filter-map (lambda (input)
-                   (and (eq? 'propagated (upstream-input-type input))
+                   (and (string-prefix? "r-"
+                                        (upstream-input-downstream-name input))
                         (upstream-input-name input)))
                  inputs))))
 
