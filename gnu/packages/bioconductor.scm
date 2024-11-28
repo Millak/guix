@@ -3188,8 +3188,13 @@ snapshot.")
               (sha256
                (base32
                 "1dgf9qi27rc98mwlyax0v86h7fmwbnp0xna1c0ppsj0fpwbmj50y"))))
-    (properties `((upstream-name . "sesameData")))
+    (properties
+     `((upstream-name . "sesameData")
+       ;; Avoid dependency cycle.
+       (updater-ignored-native-inputs . ("r-sesame"))))
     (build-system r-build-system)
+    ;; Tests need r-sesame.
+    (arguments (list #:tests? #false))
     (propagated-inputs (list r-annotationhub
                              r-experimenthub
                              r-genomeinfodb
