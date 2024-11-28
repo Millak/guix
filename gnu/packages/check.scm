@@ -2441,34 +2441,43 @@ have failed since the last commit or what tests are currently failing.")))
 (define-public python-coverage
   (package
     (name "python-coverage")
-    (version "7.6.7")
+    (version "7.6.8")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "coverage" version))
        (sha256
         (base32
-         "094x8fsqfp7blrz3wh823p5vvzdrri5mw17z32hwjh8lwhk4i7fp"))))
+         "1z3wycig8hy7iq9nxwiiiyxn01yblnj69yl2dp424s5hxl1qaawb"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      #~(list "--numprocesses=auto"
-              ;; XXX: Tests fail for multiple assertion reasons or missing
-              ;; fake modules.
-              "--ignore=tests/test_venv.py"
-              "--ignore=tests/test_report.py"
-              "--ignore=tests/test_plugins.py"
-              "--ignore=tests/test_debug.py"
-              "--ignore=tests/test_xml.py"
-              "--ignore=tests/test_python.py"
-              "--ignore=tests/test_concurrency.py"
-              "--ignore=tests/test_process.py"
-              "--deselect=tests/test_annotate.py::AnnotationGoldTest::test_multi"
-              "--deselect=tests/test_cmdline.py::CmdLineStdoutTest::test_version"
-              "--deselect=tests/test_api.py::RelativePathTest::test_files_up_one_level"
-              "--deselect=tests/test_filereporter.py::FileReporterTest::test_zipfile"
-              "--deselect=tests/test_oddball.py::DoctestTest::test_doctest")
+      #~(list
+         "--numprocesses" (number->string (parallel-job-count))
+         ;; XXX: Unable to properly compare reports.
+         "--ignore=tests/test_report.py"
+         ;; XXX: PyTracer or missing dependencies.
+         "--ignore=tests/test_venv.py"
+         "--ignore=tests/test_plugins.py"
+         "--ignore=tests/test_debug.py"
+         ;; XXX: Unclear why these fail.
+         "--ignore=tests/test_python.py"
+         "--deselect=tests/test_concurrency.py\
+::SigtermTest::test_sigterm_multiprocessing_saves_data"
+         ;; XXX: Unexpected paths order.
+         "--ignore=tests/test_process.py"
+         ;; XXX: PermissionError
+         "--deselect=tests/test_annotate.py::AnnotationGoldTest::test_multi"
+         ;; XXX: Needs C extension
+         "--deselect=tests/test_cmdline.py::CmdLineStdoutTest::test_version"
+         ;; XXX: Finds more files at toplevel
+         "--deselect=tests/test_api.py::RelativePathTest::test_files_up_one_level"
+         "--deselect=tests/test_xml.py::XmlReportTest::test_no_duplicate_packages"
+         ;; XXX: zip1 module missing.
+         "--deselect=tests/test_filereporter.py::FileReporterTest::test_zipfile"
+         ;; XXX: Checking coverage for too much files, not only the target one.
+         "--deselect=tests/test_oddball.py::DoctestTest::test_doctest")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-pyproject
