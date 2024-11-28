@@ -705,7 +705,11 @@ single-instruction multiple-data (SIMD) intrinsics.")
                     version "/pmix-" version ".tar.bz2"))
               (sha256
                (base32
-                "1j9xlhqrrmgjdkwakamn78y5gj756adi53hn25zksgr3is3l5d09"))))
+                "1j9xlhqrrmgjdkwakamn78y5gj756adi53hn25zksgr3is3l5d09"))
+              (snippet
+               '(begin (use-modules (guix build utils))
+                       ;; Remove ~5 MiB of pre-built HTML doc.
+                       (delete-file-recursively "docs/_build/html")))))
     (build-system gnu-build-system)
     (arguments
      (list
