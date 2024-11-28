@@ -2313,6 +2313,29 @@ Christensen and colleagues; for details see Salas et al. 2018.
 https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE110554.")
     (license license:gpl3)))
 
+(define-public r-flowworkspacedata
+  (package
+    (name "r-flowworkspacedata")
+    (version "3.18.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "flowWorkspaceData" version
+                              'experiment))
+       (sha256
+        (base32 "1bwykpv1y76iq0qhnn24snwymy0wirip7xwq1wqj1flbainzmv6g"))))
+    (properties `((upstream-name . "flowWorkspaceData")))
+    (build-system r-build-system)
+    (home-page "https://bioconductor.org/packages/flowWorkspaceData")
+    (synopsis "Data for flowWorkspace tests and vignettes")
+    (description
+     "The necessary external data to run the @code{flowWorkspace} and
+@code{openCyto} vignette is found in this package.  This data package contains
+two flowJo, one diva xml workspace and the associated @code{fcs} files as well
+as three @code{GatingSets} for testing the @code{flowWorkspace},
+@code{openCyto} and @code{CytoML} packages.")
+    (license license:gpl2)))
+
 (define-public r-genelendatabase
   (package
     (name "r-genelendatabase")
