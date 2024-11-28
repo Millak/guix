@@ -1612,6 +1612,39 @@ tools.")
 ECMA-48} specs.")
     (license license:expat)))
 
+(define-public go-github-com-charmbracelet-x-term
+  (package
+    (name "go-github-com-charmbracelet-x-term")
+    (version "0.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/charmbracelet/x")
+             (commit (go-version->git-ref version
+                                          #:subdir "term"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1shw55110fnn4xz80wmgr18czmiil6z1j064m90iw8c7j9llfzn5"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/charmbracelet/x/term"
+      #:unpack-path "github.com/charmbracelet/x"))
+    (propagated-inputs (list go-github-com-rivo-uniseg
+                             go-golang-org-x-sys))
+    (home-page "https://github.com/charmbracelet/x")
+    (synopsis "Terminal utilities and helpers")
+    (description
+     "@code{term} provides an API for working with terminals that includes:
+@itemize
+@item Switching a terminal to the raw mode.
+@item Getting, setting and restoring the state of a terminal.
+@item Getting size of a terminal.
+@item Reading passwords from a terminal without a local echo.
+@end itemize")
+    (license license:expat)))
+
 (define-public go-github-com-charmbracelet-x-exp-golden
   (package
     (name "go-github-com-charmbracelet-x-exp-golden")
