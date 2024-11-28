@@ -180,8 +180,9 @@ builder.build_wheel(sys.argv[3], config_settings=config_settings)"
       (format #t "test suite not run~%")))
 
 (define* (install #:key inputs outputs #:allow-other-keys)
-  "Install a wheel file according to PEP 427"
-  ;; See https://www.python.org/dev/peps/pep-0427/#installing-a-wheel-distribution-1-0-py32-none-any-whl
+  "Install a wheel file according to PEP 427."
+  ;; See <https://packaging.python.org/en/latest/specifications/\
+  ;; binary-distribution-format/#binary-distribution-format>.
   (let ((site-dir (site-packages inputs outputs))
         (python (assoc-ref inputs "python"))
         (out (assoc-ref outputs "out")))
