@@ -55274,14 +55274,14 @@ in Rust.")
 (define-public rust-peg-macros-0.8
   (package
     (name "rust-peg-macros")
-    (version "0.8.2")
+    (version "0.8.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "peg-macros" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "141c76na4n9mfs1y22az59yanaz9kw5aabgnj28d2xlvhp71rrj6"))))
+        (base32 "09nlm6lw5zdpv9wnfr08836snsjnypaibr1cb1cs05pikhfnmbdx"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-peg-runtime" ,rust-peg-runtime-0.8)
