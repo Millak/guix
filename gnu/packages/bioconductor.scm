@@ -18503,7 +18503,7 @@ annotations and ontologies.")
            r-gtools
            r-rcpp))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/ABAEnrichment/")
     (synopsis "Gene expression enrichment in human brain regions")
     (description
