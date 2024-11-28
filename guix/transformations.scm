@@ -848,9 +848,20 @@ additional patches."
         (rewrite obj)
         obj)))
 
-(define* (package-with-upstream-version p #:optional version)
+(define* (upstream-fetch source hash-algo hash
+                         #:optional name
+                         #:key (system (%current-system))
+                         (guile (default-guile))
+                         executable?)
+  "This origin method simply downloads SOURCE, an <upstream-source> record."
+  (lower-object source system))
+
+(define* (package-with-upstream-version p #:optional version
+                                        #:key (preserve-patches? #f))
   "Return package P changed to use the given upstream VERSION or, if VERSION
-is #f, the latest known upstream version."
+is #f, the latest known upstream version.  When PRESERVE-PATCHES? is true,
+preserve patches and snippets found in the source of P, provided it's an
+origin."
   (let ((source (package-latest-release p #:version version)))
     (cond ((not source)
            (if version
@@ -885,7 +896,15 @@ version (~a)~%")
            (package
              (inherit p)
              (version (upstream-source-version source))
-             (source source))))))
+             (source (if (and preserve-patches?
+                              (origin? (package-source p)))
+                         ;; Inherit P's origin so snippets and patches are
+                         ;; applied as if we had run 'guix refresh -u'.
+                         (origin
+                           (inherit (package-source p))
+                           (method upstream-fetch)
+                           (uri source))
+                         source)))))))
 
 (define (transform-package-latest specs)
   "Return a procedure that rewrites package graphs such that those in SPECS

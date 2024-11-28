@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016-2017, 2019-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2017, 2019-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Marius Bakke <marius@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -496,6 +496,35 @@
                (without-tests . "does-not-exist")))))
     (let ((new (t coreutils)))
       (assq-ref (package-properties new) 'transformations))))
+
+(test-equal "package-with-upstream-version"
+  '("42.0" "42.0"
+    ("http://example.org")
+    ("a" "b") (do something))
+  (mock ((guix upstream) %updaters
+         (delay (list (upstream-updater
+                       (name 'dummy)
+                       (pred (const #t))
+                       (description "")
+                       (import (const (upstream-source
+                                       (package "foo")
+                                       (version "42.0")
+                                       (urls '("http://example.org")))))))))
+        (let* ((old (dummy-package "foo" (version "1.0")
+                                   (source (dummy-origin
+                                            (patches '("a" "b"))
+                                            (snippet '(do something))))))
+               (new (package-with-upstream-version old))
+               (new+patches (package-with-upstream-version
+                             old #:preserve-patches? #t)))
+          (list (package-version new) (package-version new+patches)
+
+                ;; Source of NEW is directly an <upstream-source>.
+                (upstream-source-urls (package-source new))
+
+                ;; Check that #:preserve-patches? #t gave us an origin.
+                (origin-patches (package-source new+patches))
+                (origin-snippet (package-source new+patches))))))
 
 (test-equal "options->transformation, with-latest"
   "42.0"
