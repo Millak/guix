@@ -6863,7 +6863,7 @@ and serve updated contents upon changes to the directory.")
 (define-public python-httpcore
   (package
     (name "python-httpcore")
-    (version "0.17.0")
+    (version "1.0.7")
     (source
      (origin
        ;; PyPI tarball does not contain tests.
@@ -6873,39 +6873,19 @@ and serve updated contents upon changes to the directory.")
              (commit  version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qf2w6sgn51jd41a4k230jincrk6rchgc0k1bclxhyyzv44q4q8c"))))
+        (base32 "1wz54snks59m1mz2mv0i4p37zz2rrzd99gpg8sh3qkpck5h8lhc4"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      '(list "--override-ini=asyncio_mode=auto"
-             "-k"
-             (string-join '("not test_ssl_request"
-                            ;; PytestUnraisableExceptionWarning
-                            "test_authenticated_socks5_request"
-                            "test_socks5_request"
-                            "test_socks5_request_connect_failed"
-                            "test_socks5_request_failed_to_provide_auth"
-                            "test_socks5_request_incorrect_auth"
-                            ;; marked with @pytest.mark.asyncio but it is not an async function
-                            "test_connection_pool_concurrency"
-                            "test_connection_pool_concurrency_same_domain_keepalive"
-                            "test_response_async_read"
-                            "test_response_async_streaming"
-                            ;; SSL connection has been closed
-                            "test_extra_info")
-                          " and not "))))
     (native-inputs
      (list nss-certs-for-test
+           python-hatch-fancy-pypi-readme
+           python-hatchling
            python-pytest
            python-pytest-asyncio
            python-pytest-cov
            python-pytest-httpbin
            python-pytest-trio
            python-uvicorn
-           python-setuptools
-           python-trustme
-           python-wheel))
+           python-trustme))
     (propagated-inputs
      (list python-anyio
            python-certifi
@@ -6939,7 +6919,8 @@ Some things HTTP Core does do:
    (package/inherit python-httpcore
      (name "python-httpcore-bootstrap")
      (arguments (list #:tests? #f))
-     (native-inputs (list python-setuptools python-wheel)))))
+     (native-inputs (list python-hatchling
+                          python-hatch-fancy-pypi-readme)))))
 
 (define-public python-httpx
   (package
