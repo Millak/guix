@@ -1878,16 +1878,16 @@ region on the fly.
 (define-public wmenu
   (package
     (name "wmenu")
-    (version "0.1.7")
+    (version "0.1.9")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://git.sr.ht/~adnano/wmenu")
+                    (url "https://codeberg.org/adnano/wmenu")
                     (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0wjn68r5cx4zvw7sby6sk2ip5h4fn0jbgb1nasm9nsgjpv63pnpm"))))
+                "1f46v4zbywh7fsz5dgkhaa62lmv7gydybwr7qym37gg10jz42pjc"))))
     (build-system meson-build-system)
     (native-inputs (append (if (%current-target-system)
                                ;; for wayland-scanner
@@ -1896,7 +1896,7 @@ region on the fly.
                                '())
                            (list pkg-config scdoc)))
     (inputs (list cairo pango wayland libxkbcommon wayland-protocols))
-    (home-page "https://git.sr.ht/~adnano/wmenu")
+    (home-page "https://codeberg.org/adnano/wmenu")
     (synopsis "Dynamic menu for Wayland")
     (description "@command{wmenu} is a dynamic menu for Wayland, which reads a list
 of newline-separated items from stdin.  When the user selects an item and presses
