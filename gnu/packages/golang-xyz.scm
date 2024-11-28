@@ -1582,6 +1582,36 @@ tools.")
      (modify-inputs (package-propagated-inputs go-github-com-cheggaaa-pb)
        (append go-github-com-vividcortex-ewma)))))
 
+(define-public go-github-com-charmbracelet-x-ansi
+  (package
+    (name "go-github-com-charmbracelet-x-ansi")
+    (version "0.5.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/charmbracelet/x")
+             (commit (go-version->git-ref version
+                                          #:subdir "ansi"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "016s67690dr3w3an6m24q6f4vrmwpk0qd4akvvh1dzpfyf4khxd4"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/charmbracelet/x/ansi"
+      #:unpack-path "github.com/charmbracelet/x"))
+    (propagated-inputs
+     (list go-github-com-lucasb-eyer-go-colorful
+           go-github-com-rivo-uniseg))
+    (home-page "https://github.com/charmbracelet/x")
+    (synopsis "ANSI escape sequence parser and definitions")
+    (description
+     "@code{ansi} defines common ANSI escape sequences based on the
+@url{https://ecma-international.org/publications-and-standards/standards/ecma-48/,
+ECMA-48} specs.")
+    (license license:expat)))
+
 (define-public go-github-com-chzyer-logex
   (package
     (name "go-github-com-chzyer-logex")
