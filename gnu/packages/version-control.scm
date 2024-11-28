@@ -518,7 +518,8 @@ everything from small to very large projects with speed and efficiency.")
                                       "CVE-2022-30949"
                                       "CVE-2022-36882"
                                       "CVE-2022-36883"
-                                      "CVE-2022-36884"))))
+                                      "CVE-2022-36884"))
+                  (upstream-name . "git")))
     (license license:gpl2)
     (home-page "https://git-scm.com/")))
 
