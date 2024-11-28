@@ -18108,7 +18108,7 @@ activity prediction from transcriptomics data, and its R implementation
              r-tibble
              r-tidyr
              r-tidyselect))
-      (native-inputs (list r-knitr))
+      (native-inputs (list r-knitr r-testthat))
       (home-page "https://github.com/saezlab/liana/")
       (synopsis "LIANA: a LIgand-receptor ANalysis frAmework")
       (description
