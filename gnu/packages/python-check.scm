@@ -3045,7 +3045,7 @@ parametrize.  This plugin allows you to use all four.")
 (define-public python-pytest-httpx
   (package
     (name "python-pytest-httpx")
-    (version "0.22.0")
+    (version "0.34.0")
     (source
      (origin
        ;; pypi package doesn't include the tests
@@ -3055,7 +3055,7 @@ parametrize.  This plugin allows you to use all four.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ncpd74hmsz4sadvjg99fnfscxpgh3mc2siini0dhxzwgwdkk5i7"))))
+        (base32 "0dk1z9zy483nffbmn883mcjrlwkn79c3sqlxf6qnwcgrvdw1w9zz"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
