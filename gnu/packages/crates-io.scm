@@ -55214,14 +55214,14 @@ the @code{take_while} predicate returned false after dropping the @code{by_ref}.
 (define-public rust-peg-0.8
   (package
     (name "rust-peg")
-    (version "0.8.2")
+    (version "0.8.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "peg" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0qbgchzj0ajpgmasbxk65lqx9fwvxda21k6pifzqmhqrsavwl2s0"))))
+        (base32 "13qfwkmlmm3wbwzsrc3bkb16m1xjd5w7aah5cvpx2ipk5nq86li9"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-peg-macros" ,rust-peg-macros-0.8)
