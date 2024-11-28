@@ -55315,14 +55315,14 @@ procedural macros for rust-peg.  To use rust-peg, see the peg package.")
 (define-public rust-peg-runtime-0.8
   (package
     (name "rust-peg-runtime")
-    (version "0.8.2")
+    (version "0.8.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "peg-runtime" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "08l9sad4mh5f0niizjk1k44n2z2s9cn8pfbq8v79h8zsc0nfkfin"))))
+        (base32 "0fmasxbncm503dcakq8qwkcbjihz4jklkrjy0v1190q79ksvibp3"))))
     (build-system cargo-build-system)
     (home-page "https://github.com/kevinmehall/rust-peg")
     (synopsis "Runtime support for rust-peg grammars")
