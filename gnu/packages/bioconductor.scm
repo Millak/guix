@@ -10515,7 +10515,10 @@ location information (and the reverse operation) is implemented as well.")
        (uri (bioconductor-uri "mosdef" version))
        (sha256
         (base32 "0y2hniyb1y5hxlsm339059kb4n3l21fzb3xx112igsbk7zd0r258"))))
-    (properties `((upstream-name . "mosdef")))
+    (properties
+     `((upstream-name . "mosdef")
+       ;; Avoid dependency cycle.
+       (updater-ignored-native-inputs . ("r-pcaexplorer"))))
     (build-system r-build-system)
     (propagated-inputs (list r-annotationdbi
                              r-clusterprofiler
@@ -10533,7 +10536,7 @@ location information (and the reverse operation) is implemented as well.")
                              r-scales
                              r-summarizedexperiment
                              r-topgo))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-knitr r-macrophage r-org-hs-eg-db r-testthat))
     (home-page "https://github.com/imbeimainz/mosdef")
     (synopsis "Frequently used and useful differential expression functions")
     (description
