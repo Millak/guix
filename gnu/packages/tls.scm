@@ -300,7 +300,11 @@ protocols, as well as to parse and write X.509, PKCS #12, OpenPGP and other
 required structures.")
     (license license:lgpl2.1+)
     (properties
-     '((release-monitoring-url . "https://gnutls.org/download.html")))))
+     ;; Since gnutls.org doesn't have a page with a direct link to the
+     ;; tarball, defer to fellow LFS hackers.
+     '((release-monitoring-url
+        . "https://www.linuxfromscratch.org/blfs/view/svn/postlfs/gnutls.html")
+       (upstream-name . "gnutls")))))
 
 (define-deprecated/public-alias gnutls-latest gnutls)
 
