@@ -1519,6 +1519,7 @@ model-fitting photometry or morphological analyses.")
     (native-inputs
      (list nss-certs-for-test
            python-httpretty
+           python-pytest
            python-setuptools
            python-wheel))
     (propagated-inputs
