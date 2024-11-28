@@ -6577,7 +6577,7 @@ Bluetooth audio output devices like headphones or loudspeakers.")
 (define-public bluez
   (package
     (name "bluez")
-    (version "5.72")
+    (version "5.79")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -6585,7 +6585,7 @@ Bluetooth audio output devices like headphones or loudspeakers.")
                     version ".tar.xz"))
               (sha256
                (base32
-                "0vjk4ihywzv8k07bxq7clqgi2afrw54nfp0gcnxw35m98nipz7a9"))))
+                "12pal1m4xlr8k7kxb6isv5lbaca2wc5zcgy0907wfwcz78qaar21"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -6609,6 +6609,18 @@ Bluetooth audio output devices like headphones or loudspeakers.")
             (lambda _
               (substitute* "unit/test-gatt.c"
                 (("tester_init\\(&argc, &argv\\);") "return 77;"))))
+          (replace 'install
+            (lambda* (#:key make-flags #:allow-other-keys #:rest args)
+              ;; Override the sysconfdir and localstatedir locations only for
+              ;; the installation phase.  Otherwise, the installation fails when
+              ;; it tries to write to /etc/bluetooth and /var.
+              (define make-flags*
+                (append make-flags (list (string-append "sysconfdir="
+                                                        #$output "/etc")
+                                         (string-append "localstatedir="
+                                                        #$output "/var"))))
+              (apply (assoc-ref %standard-phases 'install)
+                     (append args (list #:make-flags make-flags*)))))
           (add-after 'install 'post-install
             (lambda* (#:key inputs outputs #:allow-other-keys)
               (let* ((servicedir (string-append #$output
