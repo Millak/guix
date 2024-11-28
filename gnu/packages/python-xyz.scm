@@ -3566,7 +3566,7 @@ inter-process communication.")
     (build-system pyproject-build-system)
     (native-inputs (list python-pytest python-setuptools-scm
                          python-setuptools python-wheel))
-    (home-page "https://github.com/tox-dev/py-filelock")
+    (home-page "https://github.com/tox-dev/filelock")
     (synopsis "Platform independent file lock")
     (description "@code{filelock} contains a single module implementing
 a platform independent file lock in Python, which provides a simple way of
