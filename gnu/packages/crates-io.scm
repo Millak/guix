@@ -60228,6 +60228,27 @@ progress-bars for Rust.")
     (description "Resolve project origins and kinds from a path.")
     (license license:asl2.0)))
 
+(define-public rust-promptly-0.3
+  (package
+    (name "rust-promptly")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "promptly" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1fl0548ww11gpja8hlsfc8jgxk00rdd48n1g6icgwadhlp2wdjws"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-rustyline" ,rust-rustyline-9)
+        ("rust-url" ,rust-url-2))))
+    (home-page "https://github.com/anowell/promptly")
+    (synopsis "Opinionated CLI prompting helper")
+    (description "This package provides opinionated CLI prompting helper.")
+    (license license:expat)))
+
 (define-public rust-propfuzz-0.0.1
   (package
     (name "rust-propfuzz")
