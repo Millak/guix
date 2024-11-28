@@ -1582,6 +1582,43 @@ tools.")
      (modify-inputs (package-propagated-inputs go-github-com-cheggaaa-pb)
        (append go-github-com-vividcortex-ewma)))))
 
+(define-public go-github-com-charmbracelet-bubbles
+  (package
+    (name "go-github-com-charmbracelet-bubbles")
+    (version "0.20.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/charmbracelet/bubbles")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qdcln01bq9lk6r33b8p5d5x850wgd8ddq57n4bg3xn76z2fd657"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/charmbracelet/bubbles"))
+    (propagated-inputs
+     (list go-github-com-atotto-clipboard
+           go-github-com-charmbracelet-bubbletea
+           go-github-com-charmbracelet-harmonica
+           go-github-com-charmbracelet-lipgloss
+           go-github-com-charmbracelet-x-ansi
+           go-github-com-charmbracelet-x-exp-golden
+           go-github-com-dustin-go-humanize
+           go-github-com-lucasb-eyer-go-colorful
+           go-github-com-makenowjust-heredoc
+           go-github-com-mattn-go-runewidth
+           go-github-com-muesli-termenv
+           go-github-com-rivo-uniseg
+           go-github-com-sahilm-fuzzy))
+    (home-page "https://github.com/charmbracelet/bubbles")
+    (synopsis "TUI components for Bubble Tea library")
+    (description
+     "@code{bubbles} is a library that provide components for
+@@url{https://github.com/charmbracelet/bubbletea, Bubble Tea} applications.")
+    (license license:expat)))
+
 (define-public go-github-com-charmbracelet-lipgloss
   (package
     (name "go-github-com-charmbracelet-lipgloss")
