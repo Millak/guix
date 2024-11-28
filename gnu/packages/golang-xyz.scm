@@ -5754,6 +5754,31 @@ Authentication Modules, PAM} application API.")
        ((#:import-path _ "github.com/msteinert/pam")
         "github.com/msteinert/pam/v2")))))
 
+(define-public go-github-com-muesli-ansi
+  (package
+    (name "go-github-com-muesli-ansi")
+    (version "0.0.0-20230316100256-276c6243b2f6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/muesli/ansi")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1jr8kgn3vb72jmf4a8n52g876mfpbvk3310p8gsg7jkn338af4m9"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/muesli/ansi"))
+    (propagated-inputs
+     (list go-github-com-mattn-go-runewidth
+           go-github-com-rivo-uniseg))
+    (home-page "https://github.com/muesli/ansi")
+    (synopsis "Raw ANSI sequence helpers")
+    (description
+     "ANSI sequence helpers for working with raw ANSI sequences.")
+    (license license:expat)))
+
 (define-public go-github-com-muesli-cancelreader
   (package
     (name "go-github-com-muesli-cancelreader")
