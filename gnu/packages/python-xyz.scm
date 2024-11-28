@@ -543,26 +543,24 @@ design}.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "0bgf0c4py22ip7qfla8mrmypfh3bg151c8awsr1gvcbw7m4ni01k"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags
+      #~(list "--ignore-glob=tests/test_pre_commit_*.py"
+              "-k" (string-join
+                    (list "not test_create_header_with_set_formats"
+                          "test_pre_commit_hook"
+                          "test_sync_with_pre_commit_hook")
+                    " and not "))
       #:phases
       #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
+          (add-before 'check 'pre-check
+            (lambda _
               ;; some tests fail when HOME=/homeless-shelter.
               (setenv "HOME" "/tmp")
               ;; OSError: [Errno 18] Invalid cross-device link
-              (setenv "TMPDIR" "/tmp")
-              (when tests?
-                (let ((disabled-tests
-                       (list "test_create_header_with_set_formats"
-                             "test_pre_commit_hook"
-                             "test_sync_with_pre_commit_hook")))
-                  (invoke "pytest" "-vv" "-k"
-                          (string-append "not "
-                                         (string-join disabled-tests
-                                                      " and not "))))))))))
+              (setenv "TMPDIR" "/tmp"))))))
     (native-inputs
      (list git-minimal/pinned
            python-gitpython
