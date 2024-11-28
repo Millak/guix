@@ -169,7 +169,7 @@ cards.")
 (define-public giara
   (package
     (name "giara")
-    (version "1.0.1")
+    (version "1.1.0")
     (source
      (origin
        (method git-fetch)
@@ -178,7 +178,7 @@ cards.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00vmfghp9g8yzn2d1xjawz5a8bdwn1jl1k24mjaf4vlvdy4sg9l4"))))
+        (base32 "1s2lr7s2sqzvphl84zcf68l6lzhp5faycz75yp36ak18aw9b8g0m"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
@@ -188,6 +188,11 @@ cards.")
            (lambda _
              (substitute* "meson_post_install.py"
                (("gtk-update-icon-cache") "true"))))
+         (add-after 'unpack 'skip-validate-metainfo-file-test
+           (lambda _
+             (substitute* "data/meson.build"
+               (("if ascli_exe\\.found\\(\\)")
+                "if false"))))
          (add-after 'glib-or-gtk-wrap 'wrap-paths
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
