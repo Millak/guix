@@ -12,7 +12,7 @@
 ;;; Copyright © 2020 André Batista <nandre@riseup.net>
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2020 Antoine Côté <antoine.cote@posteo.net>
-;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021-2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 aecepoglu <aecepoglu@fastmail.fm>
 ;;; Copyright © 2021, 2022 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2021 Alexandru-Sergiu Marton <brown121407@posteo.ro>
@@ -39899,6 +39899,47 @@ values of all the exported APIs match the platform that libc is compiled for.")
     (description "This package provices @code{println!} and @code{eprintln!}
 macros on libc without stdlib.")
     (license (list license:asl2.0 license:expat))))
+
+(define-public rust-libcst-1
+  (package
+    (name "rust-libcst")
+    (version "1.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libcst" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0xdh02bz1gm9hlpz02r7mk90zk3ki74pypsama33vflck9bn0gps"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       (list "--release" "--"
+             ;; The roundtrip_fixtures fail due to a missing file in the crate
+             ;; (see: https://github.com/Instagram/LibCST/issues/1249).
+             "--skip=roundtrip_fixtures")
+       #:cargo-inputs (("rust-chic" ,rust-chic-1)
+                       ("rust-libcst-derive" ,rust-libcst-derive-1)
+                       ("rust-memchr" ,rust-memchr-2)
+                       ("rust-paste" ,rust-paste-1)
+                       ("rust-peg" ,rust-peg-0.8)
+                       ("rust-pyo3" ,rust-pyo3-0.20)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.5)
+                                   ("rust-difference" ,rust-difference-2)
+                                   ("rust-itertools" ,rust-itertools-0.13)
+                                   ("rust-rayon" ,rust-rayon-1))
+       #:phases (modify-phases %standard-phases
+                  ;; Avoid keeping a reference to python-minimal in a test
+                  ;; file installed as source.
+                  (delete 'patch-source-shebangs))))
+    (native-inputs (list python-minimal))
+    (home-page "https://github.com/Instagram/LibCST")
+    (synopsis "Python parser and Concrete Syntax Tree library.")
+    (description
+     "This package provides a Python parser and Concrete Syntax Tree library.")
+    (license (list license:expat license:psfl))))
 
 (define-public rust-libcst-derive-1
   (package
