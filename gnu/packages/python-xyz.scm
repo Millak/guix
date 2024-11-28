@@ -26598,25 +26598,26 @@ ignoring formatting changes.")
 (define-public python-tqdm
   (package
     (name "python-tqdm")
-    (version "4.64.1")
+    (version "4.67.1")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "tqdm" version))
          (sha256
-           (base32
-             "1r7i9kswpnrx4ppfvzz6discb04j1rqkqxdwa2sc2la900m6hksz"))))
-    (build-system python-build-system)
+           (base32 "1wi7cql2fc76b5z9v1sr96ix2gxcb974z8qfydjkmh885k2zkbpq"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda _
-                      (invoke "pytest" "-vv"
-                              "-o" "asyncio_mode=auto"
-                              "-k" "not perf"))))))
+     (list #:test-flags
+           '(list "-o" "asyncio_mode=auto"
+                  "-k" "not perf and not test_rlock_creation")))
     (native-inputs
-     (list python-pytest python-pytest-asyncio python-pytest-timeout
-           python-setuptools-scm python-toml))
+     (list python-pytest
+           python-pytest-asyncio
+           python-pytest-timeout
+           python-setuptools
+           python-setuptools-scm
+           python-toml
+           python-wheel))
     (home-page "https://github.com/tqdm/tqdm")
     (synopsis "Fast, extensible progress meter")
     (description
