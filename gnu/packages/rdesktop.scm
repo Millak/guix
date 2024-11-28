@@ -230,7 +230,7 @@ variety of RDP clients:
 (define-public xorgxrdp
   (package
     (name "xorgxrdp")
-    (version "0.9.19")
+    (version "0.10.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -238,7 +238,7 @@ variety of RDP clients:
                     version "/xorgxrdp-" version ".tar.gz"))
               (sha256
                (base32
-                "0m8lvdnhfvwwqrr56difgy3mblplp23x6iy12kl4r8i87ic4rky1"))))
+                "125zn8xzppmf07wgdm4kw2w8ri4fbraca8r59fgibb1m6dqggsxm"))))
     (build-system gnu-build-system)
     (inputs (list check
                   imlib2
