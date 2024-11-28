@@ -23508,6 +23508,9 @@ It also handles cell type-specific differential expression.")
            "0g38grrhbqqa4bmcilvdyawbkcnax6k4vffx2giywp18mbirmj0x"))))
       (properties `((upstream-name . "Spectre")))
       (build-system r-build-system)
+      ;; Tests attempt to install Spectre from Github, from the add_fitsne
+      ;; branch.
+      (arguments (list #:tests? #false))
       (propagated-inputs
        (list r-biobase
              r-biocmanager
