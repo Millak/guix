@@ -20496,7 +20496,9 @@ package.")
        (sha256
         (base32
          "07n5vv5jl34lc0l7ix952vararf6zwz3f64w1p32xnnkzvszpmiw"))))
-    (properties `((upstream-name . "openCyto")))
+    (properties
+     `((upstream-name . "openCyto")
+       (updater-extra-native-inputs . ("r-flowworkspacedata"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-bh
@@ -20513,7 +20515,7 @@ package.")
            r-rbgl
            r-rcolorbrewer))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-flowworkspacedata r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/openCyto")
     (synopsis "Hierarchical gating pipeline for flow cytometry data")
     (description
