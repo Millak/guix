@@ -10037,7 +10037,7 @@ different technologies, including microarrays, RNA-seq, and quantitative PCR.")
            r-robustbase
            r-tibble
            r-vegan))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "http://huttenhower.sph.harvard.edu/maaslin2")
     (synopsis
      "Multivariable association discovery in population-scale meta-omics studies")
