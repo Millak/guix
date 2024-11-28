@@ -106,6 +106,7 @@
   #:use-module (gnu packages onc-rpc)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages popt)
@@ -1319,7 +1320,9 @@ library.")
            python-pytest
            python-pytest-cov
            python-pytest-runner
-           python-testfixtures))
+           python-setuptools
+           python-testfixtures
+           python-wheel))
     (home-page "https://github.com/cpplint/cpplint")
     (synopsis "Static code checker for C++")
     (description "@code{cpplint} is a command-line tool to check C/C++ files
