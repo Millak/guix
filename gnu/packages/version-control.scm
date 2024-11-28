@@ -3239,7 +3239,7 @@ email header.")
                ;; This ensures git is present when called.
                (add-after 'unpack 'hardcode-git-bin
                  (lambda* (#:key inputs #:allow-other-keys)
-                   (substitute* (find-files "b4" "\\.py$")
+                   (substitute* (find-files "src/b4" "\\.py$")
                      (("\\['git'")
                       (string-append
                        "['" (search-input-file inputs "bin/git") "'"))))))))
