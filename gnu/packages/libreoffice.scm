@@ -13,7 +13,7 @@
 ;;; Copyright © 2018, 2020 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2019 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2020 Marcin Karpezo <sirmacik@wioo.waw.pl>
-;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2023, 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -63,6 +63,7 @@
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages game-development)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
@@ -80,6 +81,7 @@
   #:use-module (gnu packages maths)
   #:use-module (gnu packages nss)
   #:use-module (gnu packages openldap)
+  #:use-module (gnu packages password-utils)
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages perl-compression)
@@ -891,16 +893,20 @@ commonly called @code{ftoa} or @code{dtoa}.")
 (define-public libreoffice
   (package
     (name "libreoffice")
-    (version "7.6.7.2")               ;keep in sync with hunspell dictionaries
+    (version "24.8.3.2")               ;keep in sync with hunspell dictionaries
     (source
      (origin
        (method url-fetch)
        (uri
-        (string-append
-         "https://download.documentfoundation.org/libreoffice/src/"
-         (version-prefix version 3) "/libreoffice-" version ".tar.xz"))
+        (list
+         (string-append
+          "https://download.documentfoundation.org/libreoffice/src/"
+          (version-prefix version 3) "/libreoffice-" version ".tar.xz")
+         (string-append
+          "https://downloadarchive.documentfoundation.org/libreoffice/old/"
+          version "/src/libreoffice-" version ".tar.xz")))
        (sha256
-        (base32 "159vbv4zhibfd4xjdamcqs4h0p3h5y79kcjwrmshvjhs23p55l3m"))))
+        (base32 "1sa7bxxh7v26p77vj1mspynhn2l2b1vnz1mpyczhnmcxcan9nw2x"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      (list
@@ -908,6 +914,8 @@ commonly called @code{ftoa} or @code{dtoa}.")
                            ,@%glib-or-gtk-build-system-modules)
       #:modules `(((guix build python-build-system) #:select (python-version))
                   (ice-9 textual-ports)
+                  (srfi srfi-1)
+                  (srfi srfi-26)
                   ,@%glib-or-gtk-build-system-modules)
       #:tests? #f                       ; Building the tests already fails.
       #:phases
@@ -961,7 +969,29 @@ commonly called @code{ftoa} or @code{dtoa}.")
                              "shell/source/unix/misc/senddoc.sh")
                 (("/usr/bin/xdg-open")
                  (search-input-file inputs "/bin/xdg-open")))
-              (setenv "CPPFLAGS" "-std=c++17")))
+
+              ;; https://issues.guix.gnu.org/43579
+              (substitute* '("sal/rtl/math.cxx"
+                               "sc/source/core/tool/math.cxx")
+                  (("std::(fe[gs]etround|feclearexcept|fetestexcept)" all suffix)
+                   suffix))
+              (let ((gcc-11-dir (dirname
+                                 (dirname
+                                  (dirname
+                                   (search-input-directory
+                                    inputs "share/doc/gcc-11.4.0"))))))
+                (setenv
+                 "CPLUS_INCLUDE_PATH"
+                 (string-join
+                  (remove
+                   (cut member <>
+                        (list
+                         (string-append gcc-11-dir "/include/c++")
+                         (string-append gcc-11-dir "/include")))
+                   (string-split (getenv "CPLUS_INCLUDE_PATH") #\:))
+                  ":")))
+
+              (setenv "CPPFLAGS" "-std=c++20")))
           (add-after 'install 'reset-zip-timestamps
             (lambda _
               (for-each (lambda (file)
@@ -1077,18 +1107,26 @@ commonly called @code{ftoa} or @code{dtoa}.")
          "--enable-lto"
          ;; Avoid errors rebuilding the Gtk icon cache, at least on i686-linux.
          "--without-galleries"
-         "--enable-build-opensymbol")))
+         "--enable-build-opensymbol"
+         ;; Avoid CVE tests.
+         "--disable-cve-tests"
+         ;; Do not try to write to the store.
+         "--enable-readonly-installset"
+         ;; XXX: This flag should speed-up builds.
+         "--disable-dependency-tracking")))
     (native-inputs
      (list bison
            cppunit
            flex
            frozen                       ;header-only library
+           gcc-12
            pkg-config
            python-wrapper
            which
            ziptime))
     (inputs
-     (list bluez
+     (list argon2
+           bluez
            boost
            box2d
            clucene
@@ -1168,6 +1206,7 @@ commonly called @code{ftoa} or @code{dtoa}.")
            xdg-utils
            xmlsec-nss
            zip
+           zxcvbn-c
            zxing-cpp))
     (home-page "https://www.libreoffice.org/")
     (synopsis "Office suite")
