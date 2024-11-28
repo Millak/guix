@@ -1435,14 +1435,14 @@ doctest.")
        (method url-fetch)
        (uri (pypi-uri "mock" version))
        (sha256
-        (base32
-         "0zbnp1kmf7ykc9bvlxamsp15rxsd0ar99v99lbh1hiysrkasm5jy"))))
+        (base32 "0zbnp1kmf7ykc9bvlxamsp15rxsd0ar99v99lbh1hiysrkasm5jy"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-six))
-    (build-system python-build-system)
-    (arguments
-     ;; FIXME: Tests require "pytest", which depends on this package.
-     '(#:tests? #f))
     (home-page "https://github.com/testing-cabal/mock")
     (synopsis "Python mocking and patching library for testing")
     (description
