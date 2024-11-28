@@ -644,6 +644,27 @@ Mapping50K_Hind240.")
 Mapping50K_Xba240 (pd.mapping50k.xba240).")
     (license license:artistic2.0)))
 
+(define-public r-polyphen-hsapiens-dbsnp131
+  (package
+    (name "r-polyphen-hsapiens-dbsnp131")
+    (version "1.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "PolyPhen.Hsapiens.dbSNP131" version
+                              'annotation))
+       (sha256
+        (base32 "1kikygkli41sn3rqihz0924prmqg2264ifj29vmg1a7qccm0kf7c"))))
+    (properties `((upstream-name . "PolyPhen.Hsapiens.dbSNP131")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-annotationdbi r-rsqlite r-variantannotation))
+    (home-page "https://bioconductor.org/packages/PolyPhen.Hsapiens.dbSNP131")
+    (synopsis "PolyPhen predictions for Homo sapiens dbSNP build 131")
+    (description
+     "This package provides a database of @code{PolyPhen} predictions for Homo
+sapiens @code{dbSNP} build 131.")
+    (license license:artistic2.0)))
+
 (define-public r-reactome-db
   (package
     (name "r-reactome-db")
