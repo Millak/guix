@@ -7007,7 +7007,7 @@ parser.")
 (define-public go-github-com-charmbracelet-bubbletea
   (package
     (name "go-github-com-charmbracelet-bubbletea")
-    (version "0.13.2")
+    (version "1.2.3")
     (source
      (origin
        (method git-fetch)
@@ -7017,28 +7017,47 @@ parser.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1105cggi5fwqx69m0vrhgwx6kaw82w4ahn58sj0a81603c4yvrk0"))))
+         "0ggkl29qixgin5av1mbnwfbb31kmwpczh8pgpjsx9z277fs55mph"))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/charmbracelet/bubbletea"
-      #:phases #~(modify-phases %standard-phases
-                   (add-after 'unpack 'remove-examples
-                     (lambda* (#:key import-path #:allow-other-keys)
-                       (with-directory-excursion (string-append "src/" import-path)
-                         (for-each delete-file-recursively
-                                   '("examples" "tutorials"))))))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (for-each delete-file-recursively
+                          '("examples" "tutorials")))))
+          (add-before 'check 'fix-tests
+            (lambda _
+              ;; XXX: The package requires
+              ;; "go-github-com-charmbracelet-x-ansi" version 0.4.5; with the
+              ;; newer version of "ansi", some "bubbletea" screen tests fail
+              ;; as "ansi" 0.5.2 handles escape sequences a little bit
+              ;; differently.
+              (substitute* "src/github.com/charmbracelet/bubbletea/screen_test.go"
+                (("x1b\\[0K")
+                 "x1b[K")
+                (("x1b\\[2;0H")
+                 "x1b[2;H")))))))
     (propagated-inputs
-     (list go-github-com-mattn-go-isatty
-           go-github-com-muesli-termenv
-           go-github-com-mattn-go-runewidth
-           go-github-com-muesli-reflow
-           go-github-com-lucasb-eyer-go-colorful
+     (list go-github-com-charmbracelet-lipgloss
+           go-github-com-charmbracelet-x-ansi
+           go-github-com-charmbracelet-x-term
            go-github-com-containerd-console
+           go-github-com-lucasb-eyer-go-colorful
+           go-github-com-mattn-go-isatty
+           go-github-com-mattn-go-isatty
+           go-github-com-mattn-go-runewidth
+           go-github-com-muesli-ansi
+           go-github-com-muesli-cancelreader
+           go-github-com-muesli-reflow
+           go-github-com-muesli-termenv
            go-golang-org-x-crypto
+           go-golang-org-x-sync
            go-golang-org-x-sys
-           go-golang-org-x-term
-           go-github-com-mattn-go-isatty))
+           go-golang-org-x-term))
     (home-page "https://github.com/charmbracelet/bubbletea")
     (synopsis "Powerful little TUI framework")
     (description
