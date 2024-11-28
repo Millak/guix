@@ -12133,6 +12133,26 @@ file formats, and ffTrack objects in multi-track panels.")
                   "105wgi5w2fhwq1grsvj6zjigwg0sny3z7zr577q8ki3qffjwdkj0"))))
       (properties `((upstream-name . "gChain")))
       (build-system r-build-system)
+      (arguments
+       (list
+        #:phases
+        '(modify-phases %standard-phases
+           (add-after 'unpack 'skip-bad-tests
+             (lambda _
+               (substitute* "tests/testthat/test_gChain.R"
+                 ;; C stack usage  7973568 is too close to the limit
+                 ((".*'testing lift\\(\\) works'.*" m)
+                  (string-append m "skip('guix')"))
+                 ;; C stack usage  7973568 is too close to the limit
+                 ((".*'testing \"\\*\" works'.*" m)
+                  (string-append m "skip('guix')"))
+                 ;; Accuracy problem
+                 ((".*'testing cgChain\\(\\) works'.*" m)
+                  (string-append m "skip('guix')"))
+                 ;; unable to find an inherited method for function ‘strand<-’
+                 ;; for signature ‘x = "GRangesList", value = "character"’
+                 ((".*'testing permute\\(\\) works'.*" m)
+                  (string-append m "skip('guix')"))))))))
       (propagated-inputs
        (list r-bamutils
              r-biostrings
@@ -12143,6 +12163,7 @@ file formats, and ffTrack objects in multi-track panels.")
              r-gutils
              r-matrix
              r-rtracklayer))
+      (native-inputs (list r-pwalign r-testthat))
       (home-page "https://github.com/mskilab/gChain/")
       (synopsis "Additional capabilities and speed for GenomicRanges operations")
       (description
