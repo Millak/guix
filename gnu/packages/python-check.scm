@@ -1556,7 +1556,7 @@ testing framework.")
            python-pytest-shutil
            python-pytest-fixture-config
            python-virtualenv))
-    (home-page "https://github.com/manahl/pytest-plugins")
+    (home-page "https://github.com/man-group/pytest-plugins")
     (synopsis "Virtualenv fixture for py.test")
     (description "This package provides a virtualenv fixture for the py.test
 framework.")
