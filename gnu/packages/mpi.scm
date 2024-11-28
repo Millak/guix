@@ -325,6 +325,31 @@ software vendors, application developers and computer science researchers.")
        (uri (string-append "https://www.open-mpi.org/software/ompi/v"
                            (version-major+minor version)
                            "/downloads/openmpi-" version ".tar.bz2"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        '(begin
+           ;; XXX: 'delete-all-but' is copied from the turbovnc package.
+           (define (delete-all-but directory . preserve)
+             (define (directory? x)
+               (and=> (stat x #f)
+                      (compose (cut eq? 'directory <>) stat:type)))
+             (with-directory-excursion directory
+               (let* ((pred
+                       (negate (cut member <> (append '("." "..") preserve))))
+                      (items (scandir "." pred)))
+                 (for-each (lambda (item)
+                             (if (directory? item)
+                                 (delete-file-recursively item)
+                                 (delete-file item)))
+                           items))))
+           ;; Delete as many bundled libraries as permitted by the build
+           ;; system.
+           (delete-all-but "3rd-party" "treematch" "Makefile.in" "Makefile.am")
+           ;; Do not install 64 MiB worth fo pre-generated HTML
+           ;; documentation.
+           (delete-file-recursively "docs/html")))
        (sha256
         (base32 "0mw1z4ppnlvxngwd58kl5q26qmvf3bgjkd4r8wjpqis3pky86hdx"))))
 
