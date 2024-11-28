@@ -2660,7 +2660,7 @@ SVCD, DVD, 3ivx, DivX 3/4/5, WMV and H.264 movies.")
 (define-public mpv
   (package
     (name "mpv")
-    (version "0.38.0")
+    (version "0.39.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2668,7 +2668,7 @@ SVCD, DVD, 3ivx, DivX 3/4/5, WMV and H.264 movies.")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "11l8b9cka81xwrcc148g6avj7jcz8khz3h3xpyadm5265afa6mkl"))))
+               (base32 "18v9hpnf3r3gii7m13gw04fiwps8lcdgjqc83rmvhfsk03ws3q84"))))
     (build-system meson-build-system)
     (arguments
      (list
