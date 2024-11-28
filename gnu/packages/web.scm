@@ -67,6 +67,7 @@
 ;;; Copyright © 2023 Evgeny Pisemsky <mail@pisemsky.site>
 ;;; Copyright © 2024 Tomas Volf <~@wolfsden.cz>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -5626,7 +5627,9 @@ processor.")
     (arguments
      (ensure-keyword-arguments
       (package-arguments go-github-com-itchyny-gojq)
-      (list #:install-source? #f)))))
+      (list #:import-path "github.com/itchyny/gojq/cmd/gojq"
+            #:unpack-path "github.com/itchyny/gojq"
+            #:install-source? #f)))))
 
 (define-public pup
   (let ((revision "1")
