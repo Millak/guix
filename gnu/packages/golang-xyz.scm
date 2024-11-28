@@ -4916,6 +4916,30 @@ Printf/Sprintf etc.")
     (native-inputs
      (list go-github-com-stretchr-testify))))
 
+(define-public go-github-com-makenowjust-heredoc
+  (package
+    (name "go-github-com-makenowjust-heredoc")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/makenowjust/heredoc")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "18f21zm8n2wlnkz1ylw8rcxmqxyv2rlz8749yfqggm2m0m2884pj"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/MakeNowJust/heredoc"))
+    (home-page "https://github.com/MakeNowJust/heredoc")
+    (synopsis "Here-documents with indent")
+    (description
+     "This package implements a functionality of creating here-documents from
+raw strings.")
+    (license license:expat)))
+
 (define-public go-github-com-marcinbor85-gohex
   ;; No release, see <https://github.com/marcinbor85/gohex/issues/5>.
   (let ((commit "baab2527a9a2a4abb3dc06baabedfa5e0268b8d8")
