@@ -1040,36 +1040,33 @@ manager and a system tray.")
 (define-public xmonad
   (package
     (name "xmonad")
-    (version "0.17.2")
+    (version "0.18.0")
     (source
      (origin
        (method url-fetch)
        (uri (hackage-uri "xmonad" version))
        (sha256
-        (base32 "19qz9a23377nzc0qq8nca45s745mfncd4i2vwba14gi7ipipfcil"))))
+        (base32 "1ysxxjkkx2l160nlj1h8ysxrfhxjlmbws2nm0wyiivmjgn20xs11"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "xmonad")))
     (arguments
-      (list
-       #:phases
-       #~(modify-phases %standard-phases
-           (add-after 'install 'install-xsession
-             (lambda _
-               (let* ((xsessions (string-append #$output "/share/xsessions"))
-                      (entry     (string-append xsessions "/xmonad.desktop")))
-                 (mkdir-p xsessions)
-                 (call-with-output-file
-                  entry
-                  (lambda (port)
-                    (format port "~
-                      [Desktop Entry]~@
-                      Name=xmonad~@
-                      Comment=xmonad window manager~@
-                      Exec=~a/bin/xmonad~@
-                      Type=Application~%" #$output)))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-xsession
+            (lambda _
+              (let* ((xsessions (string-append #$output "/share/xsessions"))
+                     (entry     (string-append xsessions "/xmonad.desktop")))
+                (mkdir-p xsessions)
+                (make-desktop-entry-file
+                 (string-append xsessions "/xmonad.desktop")
+                 #:name "xmonad"
+                 #:exec (string-append #$output "/bin/xmonad")
+                 #:comment '((#f "xmonad window manager"))
+                 #:type "Application")))))))
     (inputs (list ghc-x11 ghc-data-default-class ghc-setlocale))
     (native-inputs (list ghc-quickcheck ghc-quickcheck-classes))
-    (home-page "http://xmonad.org")
+    (home-page "https://xmonad.org")
     (synopsis "Tiling window manager")
     (description
      "Xmonad is a tiling window manager for X.  Windows are arranged
