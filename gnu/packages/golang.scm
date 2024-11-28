@@ -4722,6 +4722,16 @@ structure.  It can also produce a much more verbose, one-item-per-line
 representation suitable for computing diffs.")
     (license license:asl2.0)))
 
+;; TODO: Merge with go-github-com-kylelemons-godebug and provide both module;
+;; for go-team.
+(define-public go-github-com-kylelemons-godebug-pretty
+  (package
+    (inherit go-github-com-kylelemons-godebug)
+    (name "go-github-com-kylelemons-godebug-pretty")
+    (arguments
+     '(#:import-path "github.com/kylelemons/godebug/pretty"
+       #:unpack-path "github.com/kylelemons/godebug"))))
+
 (define-public go-github-com-kr-text
   (package
     (name "go-github-com-kr-text")
