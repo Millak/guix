@@ -39,6 +39,7 @@
   #:use-module (guix utils)
   #:use-module (guix diagnostics)
   #:use-module (guix i18n)
+  #:autoload   (guix combinators) (fold2)
   #:use-module (guix memoization)
   #:use-module (guix records)
   #:use-module (guix upstream)
@@ -483,19 +484,33 @@ hosted on ftp.gnu.org, or not under that name (this is the case for
 
 (define (html-links sxml)
   "Return the list of links found in SXML, the SXML tree of an HTML page."
-  (let loop ((sxml sxml)
-             (links '()))
-    (match sxml
-      (('a ('@ attributes ...) body ...)
-       (match (assq 'href attributes)
-         (#f          (fold loop links body))
-         (('href url) (fold loop (cons url links) body))))
-      ((tag ('@ _ ...) body ...)
-       (fold loop links body))
-      ((tag body ...)
-       (fold loop links body))
-      (_
-       links))))
+  (define-values (links base)
+    (let loop ((sxml sxml)
+               (links '())
+               (base #f))
+      (match sxml
+        (('a ('@ attributes ...) body ...)
+         (match (assq 'href attributes)
+           (#f          (fold2 loop links base body))
+           (('href url) (fold2 loop (cons url links) base body))))
+        (('base ('@ ('href new-base)))
+         ;; The base against which relative URL paths must be resolved.
+         (values links new-base))
+        ((tag ('@ _ ...) body ...)
+         (fold2 loop links base body))
+        ((tag body ...)
+         (fold2 loop links base body))
+        (_
+         (values links base)))))
+
+  (if base
+      (map (lambda (link)
+             (let ((uri (string->uri link)))
+               (if (or uri (string-prefix? "/" link))
+                   link
+                   (in-vicinity base link))))
+           links)
+      links))
 
 (define (url->links url)
   "Return the unique links on the HTML page accessible at URL."
