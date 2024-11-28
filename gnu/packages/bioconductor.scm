@@ -24773,7 +24773,7 @@ family of feature/genome hypotheses.")
            r-s4vectors
            r-xvector))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-bsgenome-hsapiens-ucsc-hg19 r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/Gviz")
     (synopsis "Plotting data and annotation information along genomic coordinates")
     (description
