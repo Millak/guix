@@ -39900,6 +39900,27 @@ values of all the exported APIs match the platform that libc is compiled for.")
 macros on libc without stdlib.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-libcst-derive-1
+  (package
+    (name "rust-libcst-derive")
+    (version "1.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libcst_derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1lcwnpbr1l9ybll6jr172s0jbcvlbhrcax94qmbcs89jas5nw5cq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))
+       #:cargo-development-inputs (("rust-trybuild" ,rust-trybuild-1))))
+    (home-page "https://github.com/Instagram/LibCST")
+    (synopsis "Proc macro helpers for libcst")
+    (description "This package provides Proc macro helpers for libcst.")
+    (license license:expat)))
+
 (define-public rust-libdbus-sys-0.2
   (package
     (name "rust-libdbus-sys")
