@@ -18339,6 +18339,31 @@ framework.  It aims to represent an intuitive and interactive approach to
 analysing cytometry data in R.")
       (license license:gpl2))))
 
+(define-public r-cytoexplorerdata
+  (let ((commit "488edf083092247ad547172906efe6f8c2aa8700")
+        (revision "1"))
+    (package
+      (name "r-cytoexplorerdata")
+      (version (git-version "1.0.3" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/DillonHammill/CytoExploreRData")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0mp3d8cv57psz5zjp7a1f07fxw9dw0w0x9fv32k46a566k1073p3"))))
+      (properties `((upstream-name . "CytoExploreRData")))
+      (build-system r-build-system)
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/DillonHammill/CytoExploreRData")
+      (synopsis "Flow Cytometry Data for CytoExploreR")
+      (description
+       "This package contains @code{gatingTemplates}, example fcs files and compensation
+controls for use in @code{CytoExploreR}.")
+      (license license:gpl2))))
+
 (define-public r-giotto
   (let ((commit "3c8067cedbf6e3112edcac2ae796de05fd9d6fe4")
         (revision "1"))
