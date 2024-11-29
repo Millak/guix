@@ -24014,25 +24014,31 @@ numbers, real numbers, mixed types and more, and comes with a shell command
      between the different Python versions.")
     (license license:psfl)))
 
+;; XXX: The last time updated in 2015, consider to remove it when nothing is
+;; depend on it.
 (define-public python-snowballstemmer
   (package
     (name "python-snowballstemmer")
-    (version "2.0.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "snowballstemmer" version))
-              (sha256
-               (base32
-                "0ligk61idlz8kkgd5hpip5whm172riwglb6xydii7h62yhysqfyz"))))
-    (build-system python-build-system)
+    (version "2.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "snowballstemmer" version))
+       (sha256
+        (base32 "1ccwy75i0f5yi1vy6fyvr1gf43ydhjani45mswm43ls7hpmnvc89"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(;; No tests exist
-       #:tests? #f))
+     (list
+      #:tests? #f)) ; no tests
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
     (home-page "https://github.com/shibukawa/snowball_py")
     (synopsis "Snowball stemming library collection for Python")
-    (description "This package provides 16 word stemmer algorithms generated
-     from Snowball algorithms.  It includes the 15 original ones plus the Poerter
-     English stemmer.")
+    (description
+     "This package provides 16 word stemmer algorithms generated from Snowball
+algorithms.  It includes the 15 original ones plus the Poerter English
+stemmer.")
     (license license:bsd-3)))
 
 (define-public python-setproctitle
