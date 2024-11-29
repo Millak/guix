@@ -9882,6 +9882,29 @@ of other R packages who wish to make use of HTSlib.")
 DNA methylation data at the genome scale.")
     (license license:gpl3)))
 
+(define-public r-rpx
+  (package
+    (name "r-rpx")
+    (version "2.14.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "rpx" version))
+       (sha256
+        (base32 "0w2nxcd2v8rc3spi0rb96d3r7hp2dh7f7k50n0mik626fy1i0yc5"))))
+    (properties `((upstream-name . "rpx")))
+    (build-system r-build-system)
+    ;; Tests require Internet access.
+    (arguments (list #:tests? #false))
+    (propagated-inputs (list r-biocfilecache r-curl r-jsonlite r-rcurl r-xml2))
+    (native-inputs (list r-biostrings r-knitr r-testthat r-tibble))
+    (home-page "https://github.com/lgatto/rpx")
+    (synopsis "R interface to the ProteomeXchange Repository")
+    (description
+     "The rpx package implements an interface to proteomics data submitted to
+the @code{ProteomeXchange} consortium.")
+    (license license:gpl2)))
+
 (define-public r-impute
   (package
     (name "r-impute")
