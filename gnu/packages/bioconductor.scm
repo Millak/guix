@@ -3822,8 +3822,12 @@ limma packages.")
        (uri (bioconductor-uri "affyPLM" version))
        (sha256
         (base32 "182zym9g8rzyrmj78yzpdh44av616x6228xzxwa45wz2spg9bj47"))))
-    (properties `((upstream-name . "affyPLM")))
+    (properties
+     `((upstream-name . "affyPLM")
+       (updater-extra-native-inputs . ("r-hgu95av2cdf"))))
     (build-system r-build-system)
+    ;; Tests fail with: return code from pthread_create() is 22
+    (arguments (list #:tests? #false))
     (inputs (list zlib))
     (propagated-inputs
      (list r-affy
@@ -3832,6 +3836,7 @@ limma packages.")
            r-gcrma
            r-preprocesscore
            r-zlibbioc))
+    (native-inputs (list r-affydata r-hgu95av2cdf))
     (home-page "https://github.com/bmbolstad/affyPLM")
     (synopsis "Methods for fitting probe-level models")
     (description
