@@ -13875,26 +13875,27 @@ interfaces in an easy and portable manner.")
 (define-public python-networkx
   (package
     (name "python-networkx")
-    (version "2.8.6")
+    (version "3.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "networkx" version))
        (sha256
-        (base32 "19h18f5j79l7kmwm5cvm75fadjgmkzw5m3pyvb9cnq0860q7faxx"))))
-    (build-system python-build-system)
+        (base32 "1qaks3c3h5qlw25z949q3plw8iwgm9h152kwnam64lwc89lkcz1h"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (if tests?
-                          (invoke "pytest" "-vv" "--pyargs" "networkx")
-                          (format #t "test suite not run~%")) #t)))))
-    (propagated-inputs (list python-decorator))
-    (native-inputs (list python-pytest))
+     (list
+      #:test-flags
+      #~(list "--numprocesses" (number->string (parallel-job-count)))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-xdist
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-decorator))
     (home-page "https://networkx.github.io/")
-    (synopsis
-     "Python module for creating and manipulating graphs and networks")
+    (synopsis "Python module for creating and manipulating graphs and networks")
     (description
      "NetworkX is a Python package for the creation, manipulation, and study
 of the structure, dynamics, and functions of complex networks.")
