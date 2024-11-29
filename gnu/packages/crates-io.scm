@@ -46,6 +46,7 @@
 ;;; Copyright © 2024 Nguyễn Gia Phong <mcsinyx@disroot.org>
 ;;; Copyright © 2024 Jordan Moore <lockbox@struct.foo>
 ;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2024 Murilo <murilo@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -43136,6 +43137,28 @@ Server Protocol.")
     (synopsis "Rust LZ4 sys package")
     (description "This is the Rust LZ4 sys package.")
     (license license:expat)))
+
+(define-public rust-nucleo-0.2
+  (package
+    (name "rust-nucleo")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "nucleo" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1wzx32bz4n68dcd3yw57195sz49hdhv9b75jikr5qiyfpks32lxf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-nucleo-matcher" ,rust-nucleo-matcher-0.2)
+                       ("rust-parking-lot" ,rust-parking-lot-0.12)
+                       ("rust-rayon" ,rust-rayon-1))))
+    (home-page "https://github.com/helix-editor/nucleo")
+    (synopsis "Plug and play high performance fuzzy matcher")
+    (description
+     "This package provides plug and play high performance fuzzy matcher.")
+    (license license:mpl2.0)))
 
 (define-public rust-rust-lzma-0.5
   (package
