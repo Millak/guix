@@ -24112,8 +24112,16 @@ who want to include run-time testing features in their own packages.")
     (properties
      `((upstream-name . "assertive.files")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; Needed for one test.
+         (add-before 'check 'set-HOME
+           (lambda _ (setenv "HOME" "/tmp"))))))
     (propagated-inputs
      (list r-assertive-base r-assertive-numbers))
+    (native-inputs (list r-testthat))
     (home-page "https://bitbucket.org/richierocks/assertive.files")
     (synopsis "Assertions to check properties of files")
     (description
