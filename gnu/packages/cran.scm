@@ -39141,7 +39141,7 @@ of K.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-bh r-rcpp r-rcppeigen))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-rann r-testthat))
     (home-page "https://cran.r-project.org/web/packages/nabor/")
     (synopsis "Wrapper for K nearest neighbour library for low dimensions")
     (description
