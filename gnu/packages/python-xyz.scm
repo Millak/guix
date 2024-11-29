@@ -35686,23 +35686,33 @@ Generalized Mark-up Language}.")
 (define-public python-cwcwidth
   (package
     (name "python-cwcwidth")
-    (version "0.1.4")
+    (version "0.1.9")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "cwcwidth" version))
        (sha256
-        (base32
-         "1azrphpkcyggg38xvkfb9dpc4xmmm90p02kf8dkqd4d6j5w96aj8"))))
-    (build-system python-build-system)
+        (base32 "1f3nvc4f2icg0c285bl6l4ak9km8pj9nxjb4s2n8qjld2jh137gi"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'build-extensions
+            (lambda _
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
     (native-inputs
-     (list python-cython python-pytest python-setuptools-scm python-toml
+     (list python-cython
+           python-pytest
+           python-setuptools
+           python-setuptools-scm
+           python-toml
            python-wheel))
-    (home-page
-     "https://github.com/sebastinas/cwcwidth")
+    (home-page "https://github.com/sebastinas/cwcwidth")
     (synopsis "Python bindings for wc(s)width")
-    (description "This package provides bindings for wcwidth and wcswidth
-functions defined in POSIX.1-2001 and POSIX.1-2008.")
+    (description
+     "This package provides bindings for wcwidth and wcswidth functions
+defined in POSIX.1-2001 and POSIX.1-2008.")
     (license license:expat)))
 
 (define-public python-pyan3
