@@ -845,7 +845,7 @@ Extensions} (DNSSEC).")
 (define-public knot
   (package
     (name "knot")
-    (version "3.4.1")
+    (version "3.4.2")
     (source
      (origin
        (method git-fetch)
@@ -854,7 +854,7 @@ Extensions} (DNSSEC).")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0iqzqfjk60lxzbjgkjsf1l8vqnv6rgz1z0p1zyhdqnp037123d4j"))
+        (base32 "1gvkwxy8jq017vmnd14wvnm5b6ql7ahrjp71gkbplz560h3kknpw"))
        (patches
         (search-patches "knot-remove-runtime-deps.patch"))
        (modules '((guix build utils)))
@@ -960,6 +960,7 @@ Extensions} (DNSSEC).")
            libelf
            libidn
            libmnl
+           ngtcp2
            `(,nghttp2 "lib")
            liburcu
            lmdb
