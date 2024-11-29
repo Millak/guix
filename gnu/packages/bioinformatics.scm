@@ -12179,6 +12179,7 @@ tasks.")
              r-plyr
              r-r6
              r-zoo))
+      (native-inputs (list r-testthat))
       (home-page "https://github.com/mskilab/chromunity")
       (synopsis "Discovery of communities in Pore-C concatemers")
       (description "This is a package for the discovery of communities in
