@@ -690,7 +690,7 @@ as logic programs.")
 (define-public python-clinguin
   (package
    (name "python-clinguin")
-   (version "1.0.0-beta")
+   (version "2.1.1")
    (source (origin
             (method git-fetch)
             (uri (git-reference
@@ -699,7 +699,7 @@ as logic programs.")
             (file-name (git-file-name name version))
             (sha256
              (base32
-              "032fnzxv6wl01sdq7n2k0ikajpmkg8ihjh5mck1mwjvmis8z16d4"))
+              "0wfgrs8h5i5mmd5sbzca2xw57f3d3ni75775wjkaq6sg0zm9sqjs"))
             (modules '((guix build utils)))
             (snippet
              #~(begin
@@ -708,11 +708,14 @@ as logic programs.")
                    ;; some typo squatter hosted
                    ;; a package named tk
                    (("tk") "")
-                   (("typing") "typing;python_version<\"3.5\""))))))
+                   ;; XXX: python-clingo-dl installs clingodl instead…
+                   (("clingo-dl") "clingodl"))))))
    (build-system pyproject-build-system)
    (propagated-inputs
     (list python-clingo
+          python-clingo-dl
           python-clorm
+          python-clingexplaid
           python-clingraph
           python-fastapi
           python-httpx
