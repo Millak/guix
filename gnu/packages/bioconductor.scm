@@ -11776,6 +11776,21 @@ the graph algorithms contained in the Boost library.")
                 "0sg3ngb7jwh8gyhmmm7fkxn9ixj590j47rfcfdcnbbk9pwd9y07p"))))
     (properties `((upstream-name . "RCAS")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'set-HOME
+           (lambda _ (setenv "HOME" "/tmp")))
+         (add-after 'unpack 'skip-bad-tests
+           (lambda _
+             ;; These tests need Internet access.
+             (with-directory-excursion "tests/testthat"
+               (substitute* "test_database_functions.R"
+                 ((".*Testing createDB function.*" m)
+                  (string-append m "skip('guix')\n")))
+               (delete-file "test_report.R")
+               (delete-file "test_motif.R")))))))
     (inputs (list pandoc))
     (propagated-inputs
      (list r-biocgenerics
@@ -11806,7 +11821,7 @@ the graph algorithms contained in the Boost library.")
            r-seqlogo
            r-txdbmaker))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-biocmanager r-knitr r-testthat))
     (synopsis "RNA-centric annotation system")
     (description
      "RCAS aims to be a standalone RNA-centric annotation system that provides
