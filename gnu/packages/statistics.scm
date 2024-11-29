@@ -8129,6 +8129,7 @@ Neyman, 1936; cf.  Spiller et al., 2012), etc.")
     (properties `((upstream-name . "MuMIn")))
     (build-system r-build-system)
     (propagated-inputs (list r-insight r-matrix r-nlme))
+    (native-inputs (list r-mgcv r-survival))
     (home-page "https://cran.r-project.org/package=MuMIn")
     (synopsis "Multi-Model Inference")
     (description
