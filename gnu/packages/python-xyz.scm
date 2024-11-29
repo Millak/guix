@@ -15289,27 +15289,26 @@ complexity of Python source code.")
 (define-public python-flake8
   (package
     (name "python-flake8")
-    (version "4.0.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "flake8" version))
-              (sha256
-               (base32
-                "03c7mnk34wfz7a0m5zq0273y94awz69fy5iww8alh4a4v96h6vl0"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (when tests?
-                        (invoke "pytest" "-v")))))))
+    (version "7.1.1")
+    (source
+     (origin
+       (method git-fetch)   ; no tests data in PyPi package
+       (uri (git-reference
+             (url "https://github.com/pycqa/flake8")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0qbj2m1ljyvpnncnkbm1cscy726c1if4n2c9ysfpmd2zm88rj87a"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
     (propagated-inputs
-     (list python-entrypoints
-           python-mccabe
+     (list python-mccabe
            python-pycodestyle
            python-pyflakes))
-    (native-inputs (list python-pytest))
-    (home-page "https://gitlab.com/pycqa/flake8")
+    (home-page "https://flake8.pycqa.org/en/latest/")
     (synopsis "The modular source code checker: pep8, pyflakes and co")
     (description
      "Flake8 is a wrapper around PyFlakes, pep8 and python-mccabe.")
