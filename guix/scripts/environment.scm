@@ -1140,8 +1140,8 @@ command-line option processing with 'parse-command-line'."
       (when (pair? symlinks)
         (leave (G_ "'--symlink' cannot be used without '--container'~%"))))
 
-    (with-store/maybe store
-      (with-status-verbosity (assoc-ref opts 'verbosity)
+    (with-status-verbosity (assoc-ref opts 'verbosity)
+      (with-store/maybe store
         (define manifest-from-opts
           (options/resolve-packages store opts))
 
