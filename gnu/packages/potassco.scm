@@ -756,3 +756,36 @@ but also works fine along custom-built test.  Clintest monitors the test
 outcome while solving to abort the search for solutions once the outcome is
 certain.")
     (license license:expat)))
+
+(define-public python-clingexplaid
+  (package
+    (name "python-clingexplaid")
+    (version "1.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/potassco/clingo-explaid")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "1s80cs3clvz26r7cvjprlk6zip7yqswwhzzwmmrv5mf5p89ymrgm"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-flags #~(list "-k" "not test_main")
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'fix-pyproject-toml
+                          (lambda _
+                            (substitute* "pyproject.toml"
+                              (("dynamic = .*" all)
+                               (string-append "version = \""
+                                              #$version
+                                              "\"\n"))
+                              (("\"autoflake\",") "")))))))
+    (propagated-inputs (list python-clingo))
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/potassco/clingo-explaid")
+    (synopsis "Develop explanation systems with Clingo")
+    (description "This package provides tools to develop explanation systems
+with clingo.  It allows extracting minimal unsatisfiable subsets and
+unsatisfiable constraints.")
+    (license license:expat)))
