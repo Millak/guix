@@ -2262,6 +2262,28 @@ single-cell data or deconvolution of bulk RNA-seq.")
 and blood controls for CNA analysis.")
     (license license:gpl3)))
 
+(define-public r-chipexoqualexample
+  (package
+    (name "r-chipexoqualexample")
+    (version "1.30.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "ChIPexoQualExample" version
+                              'experiment))
+       (sha256
+        (base32 "0c6lxl79j65pqy6sgnwaqz83r9fwh0m10xmnj9zcp8s0j1cxn5xq"))))
+    (properties `((upstream-name . "ChIPexoQualExample")))
+    (build-system r-build-system)
+    (native-inputs (list r-knitr))
+    (home-page "https://www.github.com/keleslab/ChIPexoQualExample")
+    (synopsis "Example data for the ChIPexoQual package")
+    (description
+     "This package contains data for the @code{ChIPexoQual} package,
+consisting of 3 chromosome 1 aligned reads from a @code{ChIP-exo} experiment
+for @code{FoxA1} in mouse liver cell lines aligned to the mm9 genome.")
+    (license license:gpl2+)))
+
 (define-public r-chromstardata
   (package
     (name "r-chromstardata")
