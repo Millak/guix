@@ -12138,6 +12138,7 @@ GenomicRanges operations.")
              r-s4vectors
              r-stringr
              r-variantannotation))
+      (native-inputs (list r-bsgenome-hsapiens-ucsc-hg19))
       (home-page "https://github.com/mskilab/skitools/")
       (synopsis "Various mskilab R utilities")
       (description
