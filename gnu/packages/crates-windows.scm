@@ -15,6 +15,7 @@
 ;;; Copyright © 2023 Daniel Ziltener <dziltener@lyrion.ch>
 ;;; Copyright © 2024 Tomas Volf <~@wolfsden.cz>
 ;;; Copyright © 2024 Jordan Moore <lockbox@struct.foo>
+;;; Copyright © 2024 Murilo <murilo@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -167,14 +168,14 @@ Windows Credential Manager.")
 (define-public rust-clipboard-win-5
   (package
     (name "rust-clipboard-win")
-    (version "5.2.0")
+    (version "5.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "clipboard-win" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "15x28184cw6r8hx30farqvcir0kz151dfbfms4avl9q11rqa1y8j"))))
+        (base32 "14n87fc0vzbd0wdhqzvcs1lqgafsncplzcanhpik93xhhalfgvqm"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f  ; unresolved import `clipboard_win::raw`
