@@ -17381,6 +17381,20 @@ intrinsics.")
     (description "This package provides a Manual coverage marks.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-cov-mark-1
+  (package
+    (inherit rust-cov-mark-2)
+    (name "rust-cov-mark")
+    (version "1.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cov-mark" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1wv75ylrai556m388a40d50fxiyacmvm6qqz6va6qf1q04z3vylz"))))
+    (arguments `())))
+
 (define-public rust-count-instructions-0.1
   (package
     (name "rust-count-instructions")
@@ -43138,28 +43152,6 @@ Server Protocol.")
     (description "This is the Rust LZ4 sys package.")
     (license license:expat)))
 
-(define-public rust-nucleo-0.2
-  (package
-    (name "rust-nucleo")
-    (version "0.2.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "nucleo" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1wzx32bz4n68dcd3yw57195sz49hdhv9b75jikr5qiyfpks32lxf"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-nucleo-matcher" ,rust-nucleo-matcher-0.2)
-                       ("rust-parking-lot" ,rust-parking-lot-0.12)
-                       ("rust-rayon" ,rust-rayon-1))))
-    (home-page "https://github.com/helix-editor/nucleo")
-    (synopsis "Plug and play high performance fuzzy matcher")
-    (description
-     "This package provides plug and play high performance fuzzy matcher.")
-    (license license:mpl2.0)))
-
 (define-public rust-rust-lzma-0.5
   (package
     (name "rust-rust-lzma")
@@ -50301,6 +50293,28 @@ macros used in ntest.")
     (synopsis "Types and traits for working with bytes (bytes crate fork)")
     (description "Types and traits for working with bytes (bytes crate fork)")
     (license license:expat)))
+
+(define-public rust-nucleo-0.2
+  (package
+    (name "rust-nucleo")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "nucleo" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1wzx32bz4n68dcd3yw57195sz49hdhv9b75jikr5qiyfpks32lxf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-nucleo-matcher" ,rust-nucleo-matcher-0.2)
+                       ("rust-parking-lot" ,rust-parking-lot-0.12)
+                       ("rust-rayon" ,rust-rayon-1))))
+    (home-page "https://github.com/helix-editor/nucleo")
+    (synopsis "Plug and play high performance fuzzy matcher")
+    (description
+     "This package provides plug and play high performance fuzzy matcher.")
+    (license license:mpl2.0)))
 
 (define-public rust-num-0.4
   (package
