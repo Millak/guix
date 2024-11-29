@@ -10923,8 +10923,39 @@ remote MS data sets.")
        (sha256
         (base32
          "0cykb5kk524i3ssps798c7wfpa3f8svdgxa8sfvc1pxm0fxypfgb"))))
-    (properties `((upstream-name . "MSnbase")))
+    (properties
+     `((upstream-name . "MSnbase")
+       ;; Avoid dependency cycle.
+       (updater-ignored-native-inputs . ("r-prolocdata"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'set-HOME
+           (lambda _ (setenv "HOME" "/tmp")))
+         (add-after 'unpack 'delete-bad-tests
+           (lambda _
+             ;; Needs r-prolocdata
+             (for-each delete-file
+                       '("tests/testthat/test_average.R"
+                         "tests/testthat/test_fdata-selection.R"
+                         "tests/testthat/test_foi.R"
+                         "tests/testthat/test_nadata.R"
+                         "tests/testthat/test_trimws.R"
+                         "tests/testthat/test_MSnSet.R"))
+             ;; Attempts to run "hostname"
+             (delete-file "tests/testthat/test_readMSData2.R")
+             ;; Needs Internet access
+             (for-each delete-file
+                       '("tests/testthat/test_fileNames.R"
+                         "tests/testthat/test_MSmap.R"
+                         "tests/testthat/test_MzTab.R"
+                         "tests/testthat/test_MzTab_09.R"))
+             ;; Fails with: object 'hyperLOPIT2015' not found
+             (delete-file "tests/testthat/test_utils.R")
+             ;; Fails with: invalid 'description' argument
+             (delete-file "tests/testthat/test_io.R"))))))
     (propagated-inputs
      (list r-affy
            r-biobase
@@ -10949,7 +10980,12 @@ remote MS data sets.")
            r-scales
            r-vsn))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-knitr
+           r-msdata
+           r-rpx
+           r-summarizedexperiment
+           r-testthat
+           r-xml))
     (home-page "https://github.com/lgatto/MSnbase")
     (synopsis "Base functions and classes for MS-based proteomics")
     (description
