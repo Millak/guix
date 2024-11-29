@@ -84354,14 +84354,14 @@ unstable language features.")
 (define-public rust-textwrap-0.16
   (package
     (name "rust-textwrap")
-    (version "0.16.0")
+    (version "0.16.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "textwrap" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0gbwkjf15l6p3x2rkr75fa4cpcs1ly4c8pmlfx5bl6zybcm24ai2"))))
+        (base32 "1fgqn3mg9gdbjxwfxl76fg0qiq53w3mk4hdh1x40jylnz39k9m13"))))
     (build-system cargo-build-system)
     (arguments
      (list #:skip-build? #t
