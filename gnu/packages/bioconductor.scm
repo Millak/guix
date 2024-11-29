@@ -18579,6 +18579,8 @@ position-specific scores within R and Bioconductor.")
         (base32 "1r7z3n6wyrd2cclj5b7sg15wpmjdh9k5b1hjlw7jjx8j384l7l1h"))))
     (properties `((upstream-name . "GenomicState")))
     (build-system r-build-system)
+    ;; Tests require Internet access.
+    (arguments (list #:tests? #false))
     (propagated-inputs (list r-annotationdbi
                              r-annotationhub
                              r-bumphunter
