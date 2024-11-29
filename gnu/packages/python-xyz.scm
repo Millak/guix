@@ -15236,21 +15236,28 @@ use of the Meson build system.")
 (define-public python-mccabe
   (package
     (name "python-mccabe")
-    (version "0.6.1")
+    (version "0.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "mccabe" version))
        (sha256
-        (base32
-         "07w3p1qm44hgxf3vvwz84kswpsx6s7kvaibzrsx5dzm0hli1i3fx"))))
-    (build-system python-build-system)
+        (base32 "09b34c7jj2a0yya7fp3x7lncna4zj7pr4caj9vgvnq1vqd0053il"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; Test fixtures are not released yet, see
+      ;; <https://github.com/PyCQA/mccabe/issues/93>
+      #:tests? #f))
     (native-inputs
-     (list python-toml python-pytest-bootstrap python-pytest-runner))
+     (list python-toml
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/PyCQA/mccabe")
     (synopsis "McCabe checker, plugin for flake8")
-    (description "This package provides a Flake8 plug-in to compute the McCabe
-cyclomatic complexity of Python source code.")
+    (description
+     "This package provides a Flake8 plug-in to compute the McCabe cyclomatic
+complexity of Python source code.")
     (license license:expat)))
 
 (define-public python-autoflake8
