@@ -21438,7 +21438,7 @@ with multiple R processes supported by the package @code{parallel}.")
            r-methylumi
            r-minfi
            r-watermelon))
-    (native-inputs (list r-runit))
+    (native-inputs (list r-biocstyle r-knitr r-runit))
     (home-page "https://bioconductor.org/packages/bigmelon/")
     (synopsis "Illumina methylation array analysis for large experiments")
     (description
