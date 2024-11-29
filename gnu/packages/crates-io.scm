@@ -51932,14 +51932,14 @@ contents.")
 (define-public rust-open-5
   (package
     (name "rust-open")
-    (version "5.1.2")
+    (version "5.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "open" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0ciy22dh82rdgmmsiai2wksx7sj9abb4ddnmxpqxnpfqapw0z7s4"))))
+        (base32 "177npnl443gln9ypzcpsj5fjw0yyslg2bai093740p6ip3q55k9y"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-is-wsl" ,rust-is-wsl-0.4)
