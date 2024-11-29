@@ -20640,7 +20640,10 @@ sequential way to mimic the manual gating strategy.")
        (sha256
         (base32
          "039rs6l92gjgvgh1nb8hfdg7h6dvak9hb5pjinli8x09iw08c463"))))
-    (properties `((upstream-name . "CytoML")))
+    (properties
+     `((upstream-name . "CytoML")
+       (updater-extra-native-inputs . ("r-flowworkspacedata"))
+       (updater-ignored-native-inputs . ("r-old" "r-table"))))
     (build-system r-build-system)
     (inputs
      (list libxml2))
@@ -20665,7 +20668,12 @@ sequential way to mimic the manual gating strategy.")
            r-xml
            r-yaml))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-devtools
+           r-flowclust
+           r-flowstats
+           r-flowworkspacedata
+           r-knitr
+           r-testthat))
     (home-page "https://github.com/RGLab/CytoML")
     (synopsis "GatingML interface for cross platform cytometry data sharing")
     (description
