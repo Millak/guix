@@ -3552,27 +3552,6 @@ a platform independent file lock in Python, which provides a simple way of
 inter-process communication.")
     (license license:unlicense)))
 
-(define-public python-filelock-3.5
-  (package
-    (name "python-filelock")
-    (version "3.5.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "filelock" version))
-       (sha256
-        (base32
-         "058av1r760ws7z6qffsjpqa39fmdxw0s1wnyr7p50y3zclg6cyqk"))))
-    (build-system pyproject-build-system)
-    (native-inputs (list python-pytest python-setuptools-scm
-                         python-setuptools python-wheel))
-    (home-page "https://github.com/tox-dev/filelock")
-    (synopsis "Platform independent file lock")
-    (description "@code{filelock} contains a single module implementing
-a platform independent file lock in Python, which provides a simple way of
-inter-process communication.")
-    (license license:unlicense)))
-
 (define-public python-semantic-version
   (package
     (name "python-semantic-version")

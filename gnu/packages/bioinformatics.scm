@@ -8082,9 +8082,7 @@ high-throughput sequencing (HTS) assays")
                              python-click
                              python-colorama
                              python-diskcache
-                             ;; We cannot use an older filelock, because the
-                             ;; @lock annotation is used here.
-                             python-filelock-3.5
+                             python-filelock
                              python-loguru
                              python-mygene
                              python-mysql-connector-python
