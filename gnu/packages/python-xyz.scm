@@ -8495,22 +8495,42 @@ in Markdown format.  Instead of executing your Python code like so many other
 documentation tools, it parses it using docspec instead.")
     (license license:expat)))
 
+;; XXX: The project is deprecated upstream, still in use by some packages,
+;; consider to remove when nothing depends on it.
 (define-public python-pydocstyle
   (package
     (name "python-pydocstyle")
-    (version "3.0.0")
+    (version "6.3.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pydocstyle" version))
+       (method git-fetch)               ;no tests in PyPI archive
+       (uri (git-reference
+             (url "https://github.com/PyCQA/pydocstyle")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1m1xv9clkg9lgzyza6dnj359z04vh5g0h49nhzghv7lg81gchhap"))))
-    (build-system python-build-system)
+        (base32 "1aabvnxmy939y5b7jpnygpnkgbi4id9j461v7bwzxwdmdffnnd1j"))
+       (patches (search-patches
+                 "python-pydocstyle-add-support-for-pep701.patch"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; It tries to install with pip.
+      #:test-flags #~(list "--ignore=src/tests/test_integration.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("0.0.0-dev") #$version)))))))
+    (native-inputs
+     (list python-poetry-core
+           python-pytest
+           python-tomli))
     (propagated-inputs
-     (list python-six python-snowballstemmer))
-    (home-page
-     "https://github.com/PyCQA/pydocstyle/")
+     (list python-six
+           python-snowballstemmer))
+    (home-page "https://github.com/PyCQA/pydocstyle/")
     (synopsis "Python docstring style checker")
     (description
      "This package provides a style checker for the Python Language
