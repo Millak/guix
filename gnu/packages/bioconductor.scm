@@ -15959,7 +15959,7 @@ Viewer (SAV) files, access data, and generate QC plots.")
            r-scales
            r-viridis))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-chipexoqualexample r-knitr r-testthat))
     (home-page "https://github.com/keleslab/ChIPexoQual")
     (synopsis "Quality control pipeline for ChIP-exo/nexus data")
     (description
