@@ -3038,6 +3038,29 @@ GSM461181.  It also contains the DNA sequence for fly chromosome 4 to which
 the reads can be mapped.")
     (license license:lgpl2.0+)))
 
+(define-public r-prolocdata
+  (package
+    (name "r-prolocdata")
+    (version "1.44.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "pRolocdata" version
+                              'experiment))
+       (sha256
+        (base32 "0dh5zgwr248gnlygja7ly66dyhh4b4xf72n9ycp0xa02xdl0mwi3"))))
+    (properties `((upstream-name . "pRolocdata")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biobase r-msnbase))
+    (native-inputs (list r-testthat))
+    (home-page "https://github.com/lgatto/pRolocdata")
+    (synopsis "Data accompanying the pRoloc package")
+    (description
+     "This package provides mass-spectrometry based spatial proteomics data
+sets and protein complex separation data.  It also contains the time course
+expression experiment from Mulvey et al. (2015).")
+    (license license:gpl2)))
+
 (define-public r-hsmmsinglecell
   (package
     (name "r-hsmmsinglecell")
