@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix manual checkout\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2024-09-10 03:18+0000\n"
-"PO-Revision-Date: 2024-10-31 14:52+0000\n"
+"POT-Creation-Date: 2024-11-01 03:18+0000\n"
+"PO-Revision-Date: 2024-11-23 07:18+0000\n"
 "Last-Translator: Florian Pelz <pelzflorian@pelzflorian.de>\n"
 "Language-Team: Portuguese (Brazil) <https://translate.fedoraproject.org/projects/guix/documentation-cookbook/pt_BR/>\n"
 "Language: pt_BR\n"
@@ -22,7 +22,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.7.2\n"
+"X-Generator: Weblate 5.8.2\n"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:7
@@ -1508,7 +1508,7 @@ msgstr "Assim como na sinopse, não há problema em reutilizar a descrição do 
 #: guix-git/doc/guix-cookbook.texi:639
 #, no-wrap
 msgid "home-page"
-msgstr "página inicial"
+msgstr "home-page"
 
 #. type: table
 #: guix-git/doc/guix-cookbook.texi:641
@@ -2322,7 +2322,7 @@ msgstr "Trechos"
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1119
 msgid "Snippets are quoted (i.e. non-evaluated) Scheme code that are a means of patching the source.  They are a Guix-y alternative to the traditional @file{.patch} files.  Because of the quote, the code in only evaluated when passed to the Guix daemon for building.  There can be as many snippets as needed."
-msgstr "Os trechos (\"Snippets\" ) são códigos de Scheme citados (ou seja, não avaliados) que são um meio de corrigir a fonte. Eles são uma alternativa Guix-y aos arquivos @file{.patch} tradicionais. Por causa da citação, o código só é avaliado quando passado para o daemon Guix para construção. Pode haver quantos trechos forem necessários."
+msgstr "Os trechos (\"Snippets\" ) são códigos de Scheme marcado como literal (ou seja, não avaliados) que são um meio de corrigir a fonte. Eles são uma alternativa Guix-y aos arquivos @file{.patch} tradicionais. Por causa da marcação, o código só é avaliado quando passado para o daemon Guix para construção. Pode haver quantos trechos forem necessários."
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1122
@@ -2718,7 +2718,7 @@ msgstr "Preparação de código"
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1343
 msgid "The astute reader may have noticed the quasi-quote and comma syntax in the argument field.  Indeed, the build code in the package declaration should not be evaluated on the client side, but only when passed to the Guix daemon.  This mechanism of passing code around two running processes is called @uref{https://arxiv.org/abs/1709.00833, code staging}."
-msgstr "O leitor astuto deve ter notado a sintaxe de quase aspas e vírgula no campo do argumento. Na verdade, o código de construção na declaração do pacote não deve ser avaliado no lado do cliente, mas apenas quando passado para o daemon Guix. Esse mecanismo de passagem de código entre dois processos em execução é chamado @uref{https://arxiv.org/abs/1709.00833, preparação de código}."
+msgstr "O leitor astuto deve ter notado a sintaxe de crase e vírgula no campo do argumento. Na verdade, o código de construção na declaração do pacote não deve ser avaliado no lado do cliente, mas apenas quando passado para o daemon Guix. Esse mecanismo de passagem de código entre dois processos em execução é chamado @uref{https://arxiv.org/abs/1709.00833, preparação de código}."
 
 #. type: subsubsection
 #: guix-git/doc/guix-cookbook.texi:1344
@@ -7591,7 +7591,7 @@ msgstr "guix package --search-paths=prefix --profile=$my_profile\"\n"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:4164
-msgid "Once again, see @ref{Invoking guix package,,, guix, GNU Guix Reference Manual}) for the command line options."
+msgid "Once again, see @ref{Invoking guix package,,, guix, GNU Guix Reference Manual} for the command line options."
 msgstr "Mais uma vez, veja @ref{Invocando guix package,,, guix.pt_BR, Manual de Referência do GNU Guix} para as opções de linha de comando."
 
 #. type: Plain text
@@ -7774,7 +7774,7 @@ msgstr "Conforme mencionado acima, manifestos permitem perfis reproduzíveis, en
 #. type: itemize
 #: guix-git/doc/guix-cookbook.texi:4302
 msgid "Manifest specifications are usable by other @samp{guix} commands.  For example, you can run @code{guix weather -m manifest.scm} to see how many substitutes are available, which can help you decide whether you want to try upgrading today or wait a while.  Another example: you can run @code{guix pack -m manifest.scm} to create a pack containing all the packages in the manifest (and their transitive references)."
-msgstr "As especificações do manifesto podem ser usadas por outros comandos @samp{guix}. Por exemplo, você pode executar @code{guix weather -m manifest.scm} para ver quantos substitutos estão disponíveis, o que pode ajudar você a decidir se quer tentar atualizar hoje ou esperar um pouco. Outro exemplo: você pode executar @code{guix pack -m manifest.scm} para criar um pacote contendo todos os pacotes no manifesto (e suas referências transitivas)."
+msgstr "As especificações do manifesto podem ser usadas por outros comandos @samp{guix}. Por exemplo, você pode executar @code{guix weather -m manifest.scm} para ver quantos substitutos estão disponíveis, o que pode ajudar você a decidir se quer tentar atualizar hoje ou esperar um pouco. Outro exemplo: você pode executar @code{guix pack -m manifest.scm} para criar uma embalagem contenda todos os pacotes no manifesto (e suas referências transitivas)."
 
 #. type: itemize
 #: guix-git/doc/guix-cookbook.texi:4306
@@ -9669,7 +9669,7 @@ msgstr "(Caso você esteja se perguntando, isso é mais de 320@ MiB de código-f
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:5434
 msgid "We can then make a big archive containing all of this (@pxref{Invoking guix archive,,, guix, GNU Guix Reference Manual}):"
-msgstr "Podemos então criar um grande arquivo contendo tudo isso (@pxref{Invocando guix archive,,, guix.pt_BR, Manual de Referência GNU Guix}):"
+msgstr "Podemos então criar um grande arquivamento contendo tudo isso (@pxref{Invocando guix archive,,, guix.pt_BR, Manual de Referência GNU Guix}):"
 
 #. type: verbatim
 #: guix-git/doc/guix-cookbook.texi:5439
@@ -9686,7 +9686,7 @@ msgstr ""
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:5443
 msgid "@dots{} and we can eventually transfer that archive to the cluster on removable storage and unpack it there:"
-msgstr "@dots{} e podemos eventualmente transferir esse arquivo para o cluster em armazenamento removível e descompactá-lo lá:"
+msgstr "@dots{} e podemos eventualmente transferir esse arquivamento para o cluster em armazenamento removível e descompactá-lo lá:"
 
 #. type: verbatim
 #: guix-git/doc/guix-cookbook.texi:5446

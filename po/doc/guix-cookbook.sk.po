@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix manual checkout\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2024-09-10 03:18+0000\n"
-"PO-Revision-Date: 2024-10-20 12:37+0000\n"
+"POT-Creation-Date: 2024-11-01 03:18+0000\n"
+"PO-Revision-Date: 2024-11-28 11:34+0000\n"
 "Last-Translator: Florian Pelz <pelzflorian@pelzflorian.de>\n"
 "Language-Team: Slovak <https://translate.fedoraproject.org/projects/guix/documentation-cookbook/sk/>\n"
 "Language: sk\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Weblate 5.7.2\n"
+"X-Generator: Weblate 5.8.2\n"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:7
@@ -2357,7 +2357,7 @@ msgstr "Vyžadované pri zostavovaní ale nie pri spúšťaní. V prípade inšt
 #: guix-git/doc/guix-cookbook.texi:1131
 #, no-wrap
 msgid "inputs"
-msgstr "vstupy"
+msgstr "inputs"
 
 #. type: table
 #: guix-git/doc/guix-cookbook.texi:1134

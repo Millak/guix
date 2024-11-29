@@ -15,13 +15,15 @@
 # Sapphire RainSlide <RainSlide@outlook.com>, 2023.
 # Jingge Chen <mariocanfly@hotmail.com>, 2023, 2024.
 # Florian Pelz <pelzflorian@pelzflorian.de>, 2023, 2024.
+# Celestial y <clsty@celestialy.top>, 2024.
+# voyage 200 <hello_cmd@outlook.com>, 2024.
 #: guix/diagnostics.scm:159
 msgid ""
 msgstr ""
 "Project-Id-Version: guix 0.14.0\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2024-01-29 03:18+0000\n"
-"PO-Revision-Date: 2024-09-04 09:38+0000\n"
+"PO-Revision-Date: 2024-11-28 09:22+0000\n"
 "Last-Translator: Florian Pelz <pelzflorian@pelzflorian.de>\n"
 "Language-Team: Chinese (Simplified) <https://translate.fedoraproject.org/projects/guix/guix/zh_CN/>\n"
 "Language: zh_CN\n"
@@ -29,7 +31,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.7.1\n"
+"X-Generator: Weblate 5.8.2\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 
 #: gnu.scm:81
@@ -818,8 +820,9 @@ msgid ""
 msgstr ""
 
 #: gnu/services/samba.scm:266
+#, fuzzy
 msgid "Web Service Discovery Daemon"
-msgstr ""
+msgstr "Web服务"
 
 #: gnu/services/version-control.scm:178
 msgid ""
@@ -2396,6 +2399,9 @@ msgid ""
 "\n"
 " There are no security risks: only genuine substitutes may be retrieved from those servers.  However, eavesdroppers on your LAN may be able to see what software you are installing."
 msgstr ""
+" 通过启用此选项，你允许 Guix 在安装过程中除了从官方服务器外，还从你本地网络 (LAN) 上发现的服务器获取替代品（预构建的二进制文件）。这可以提高下载吞吐量。\n"
+"\n"
+" 没有安全风险：这些服务器只能提供真实的替代品。   然而，局域网中的窃听者可能能够看到你正在安装的软件。"
 
 #: gnu/installer/newt/timezone.scm:59
 msgid "Please select a timezone."
@@ -8022,7 +8028,7 @@ msgstr ""
 
 #: guix/ui.scm:1567
 msgid "documentation"
-msgstr ""
+msgstr "documentation"
 
 #: guix/ui.scm:1568
 msgid "shared libraries"
@@ -9133,6 +9139,15 @@ msgid ""
 "or @option{-C} option.  That will give you a fully isolated environment\n"
 "running in a \"container\", immune to the issue described above."
 msgstr ""
+"一个或多个环境变量在 shell 中的值与我们设置的不同。这意味着你可能会在一个与 Guix 准备的环境不同的环境中运行代码。\n"
+"这通常表示你的 shell 启动文件意外地修改了这些环境变量。例如，如果你使用的是 Bash，确保环境变量是在 @file{~/.bash_profile} 中设置或修改，而 @emph{不是} 在 @file{~/.bashrc} 中。\n"
+"欲了解有关 Bash 启动文件的更多信息，请运行：\n"
+"\n"
+"@example\n"
+"info \"(bash) Bash Startup Files\"\n"
+"@end example\n"
+"\n"
+"另外，你可以通过传递 @option{--container} 或 @option{-C} 选项来避免此问题。这将为你提供一个完全隔离的环境，在一个“容器”中运行，免受上述问题的影响。"
 
 #: guix/scripts/environment.scm:688
 #, scheme-format
@@ -10456,9 +10471,8 @@ msgid "disable compression of the build logs"
 msgstr "禁用构建日志压缩"
 
 #: nix/nix-daemon/guix-daemon.cc:132
-#, fuzzy
 msgid "use the specified compression type for build logs"
-msgstr "禁用构建日志压缩"
+msgstr "对构建日志使用指定的压缩类型"
 
 #: nix/nix-daemon/guix-daemon.cc:134
 msgid "use substitute servers discovered on the local network"
@@ -10466,19 +10480,20 @@ msgstr ""
 
 #: nix/nix-daemon/guix-daemon.cc:139
 msgid "disable automatic file \"deduplication\" in the store"
-msgstr ""
+msgstr "禁用自动删除store中的重复文件（deduplication）功能"
 
 #: nix/nix-daemon/guix-daemon.cc:149
 msgid "impersonate Linux 2.6"
 msgstr "模拟 Linux 2.6"
 
 #: nix/nix-daemon/guix-daemon.cc:153
+#, fuzzy
 msgid "tell whether the GC must keep outputs of live derivations"
-msgstr ""
+msgstr "告知垃圾收集器 (GC) 是否必须保留实时派生的输出"
 
 #: nix/nix-daemon/guix-daemon.cc:156
 msgid "tell whether the GC must keep derivations corresponding to live outputs"
-msgstr ""
+msgstr "告知垃圾收集器 (GC) 是否必须保留与活动输出相对应的派生"
 
 #: nix/nix-daemon/guix-daemon.cc:159
 msgid "SOCKET"

@@ -19,7 +19,7 @@ msgstr ""
 "Project-Id-Version: guix 1.2.0-pre1\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2024-01-29 03:18+0000\n"
-"PO-Revision-Date: 2024-10-31 18:01+0000\n"
+"PO-Revision-Date: 2024-11-28 09:22+0000\n"
 "Last-Translator: Florian Pelz <pelzflorian@pelzflorian.de>\n"
 "Language-Team: Portuguese (Brazil) <https://translate.fedoraproject.org/projects/guix/guix/pt_BR/>\n"
 "Language: pt_BR\n"
@@ -27,7 +27,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.7.2\n"
+"X-Generator: Weblate 5.8.2\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 
 #: gnu.scm:81
@@ -7378,7 +7378,7 @@ msgid ""
 "Create a bundle of PACKAGE.\n"
 msgstr ""
 "Uso: guix pack [OPÇÃO]... PACOTE...\n"
-"Cria um pacote de PACOTE.\n"
+"Cria uma embalagem de PACOTE.\n"
 
 #: guix/scripts/pack.scm:1520
 msgid ""
@@ -7386,7 +7386,7 @@ msgid ""
 "  -f, --format=FORMAT    build a pack in the given FORMAT"
 msgstr ""
 "\n"
-"  -f, --format=FORMATO   compila um pacote no FORMATO dado"
+"  -f, --format=FORMATO   compila uma embalagem no FORMATO dado"
 
 #: guix/scripts/pack.scm:1522
 msgid ""
@@ -7427,7 +7427,7 @@ msgid ""
 "  -m, --manifest=FILE    create a pack with the manifest from FILE"
 msgstr ""
 "\n"
-"  -m, --manifest=ARQUIVO cria um pacote com o manifesto do ARQUIVO"
+"  -m, --manifest=ARQUIVO cria uma embalagem com o manifesto do ARQUIVO"
 
 #: guix/scripts/pack.scm:1534
 msgid ""
@@ -7437,7 +7437,7 @@ msgid ""
 msgstr ""
 "\n"
 "      --entry-point=PROGRAMA\n"
-"                         usa PROGRAMA como o ponto de entrada do pacote"
+"                         usa PROGRAMA como o ponto de entrada da embalagem"
 
 #: guix/scripts/pack.scm:1539
 msgid ""
@@ -7445,7 +7445,7 @@ msgid ""
 "      --localstatedir    include /var/guix in the resulting pack"
 msgstr ""
 "\n"
-"      --localstatedir    inclui /var/guix no pacote resultante"
+"      --localstatedir    inclui /var/guix na embalagem resultante"
 
 #: guix/scripts/pack.scm:1541
 msgid ""
@@ -7463,7 +7463,7 @@ msgid ""
 "  -d, --derivation       return the derivation of the pack"
 msgstr ""
 "\n"
-"  -d, --derivation       retorna a derivação do pacote"
+"  -d, --derivation       retorna a derivação da embalagem"
 
 #: guix/scripts/pack.scm:1551
 msgid ""
@@ -7472,11 +7472,11 @@ msgid ""
 msgstr ""
 "\n"
 "      --bootstrap        usa os executáveis de inicialização para compilar\n"
-"                         o pacote"
+"                         a embalagem"
 
 #: guix/scripts/pack.scm:1568
 msgid "create application bundles"
-msgstr "criar pacotes de aplicativos"
+msgstr "criar embalagens de aplicativos"
 
 #: guix/scripts/pack.scm:1606
 #, scheme-format
@@ -8884,7 +8884,7 @@ msgstr "informações de depuração"
 
 #: guix/ui.scm:1567
 msgid "documentation"
-msgstr "documentação"
+msgstr "documentation"
 
 #: guix/ui.scm:1568
 msgid "shared libraries"
@@ -9021,7 +9021,7 @@ msgstr "compilando cache de pacotes de GHC..."
 
 #: guix/status.scm:390
 msgid "building CA certificate bundle..."
-msgstr "compilando pacote de certificados de AC..."
+msgstr "compilando empacotamento de certificados de AC..."
 
 #: guix/status.scm:392
 msgid "listing Emacs sub-directories..."

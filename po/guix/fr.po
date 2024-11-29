@@ -13,6 +13,7 @@
 # William Modave <willymdv@gmail.com>, 2024.
 # Weblate Translation Memory <noreply-mt-weblate-translation-memory@weblate.org>, 2024.
 # Noe Lopez <noelopez@free.fr>, 2024.
+# Léane GRASSER <leane.grasser@proton.me>, 2024.
 #
 # Note de Frédéric Marchal: Le nom « shepherd » est le nom d'un démon (voir
 # https://www.gnu.org/software/shepherd/). Je ne l'ai pas traduit dans les
@@ -28,7 +29,7 @@ msgstr ""
 "Project-Id-Version: guix 1.2.0-pre3\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2024-01-29 03:18+0000\n"
-"PO-Revision-Date: 2024-10-16 10:52+0000\n"
+"PO-Revision-Date: 2024-11-08 17:38+0000\n"
 "Last-Translator: Florian Pelz <pelzflorian@pelzflorian.de>\n"
 "Language-Team: French <https://translate.fedoraproject.org/projects/guix/guix/fr/>\n"
 "Language: fr\n"
@@ -36,7 +37,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.7.2\n"
+"X-Generator: Weblate 5.8.2\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 
 #: gnu.scm:81
@@ -1448,7 +1449,7 @@ msgstr "Utilisez l'option @code{subvol} du système de fichiers Btrfs."
 
 #: gnu/system/image.scm:350
 msgid "image lacks a partition with the 'boot' flag"
-msgstr "l'image n'a pas de partition avec le drapeau d'amorçage"
+msgstr "il manque une partition avec le flag 'boot' dans l'image"
 
 #: gnu/system/image.scm:394
 #, scheme-format
@@ -2867,7 +2868,7 @@ msgstr "Type de système de fichier : ~a"
 #: gnu/installer/parted.scm:649
 #, scheme-format
 msgid "Bootable flag: ~:[off~;on~]"
-msgstr "Drapeau d'amorçage : ~:[non~;oui~]"
+msgstr "Flag bootable : ~:[désactivé~;activé~]"
 
 #: gnu/installer/parted.scm:653
 #, scheme-format
@@ -3109,7 +3110,7 @@ msgstr "une erreur a eu lieu lors de la mise à jour des services sur « ~a » :
 #: gnu/machine/ssh.scm:551
 #, scheme-format
 msgid "failed to install bootloader on '~a':~%~{~s ~}~%"
-msgstr "impossible d'installer le chargeur de démarrage sur « ~a » :~%~{~s ~}~%"
+msgstr "impossible d'installer le chargeur de démarrage sur « ~a » :~%~{~s ~}~%"
 
 #: gnu/machine/ssh.scm:584
 msgid "could not roll-back machine"
@@ -5861,7 +5862,7 @@ msgstr "  étiquette : ~a~%"
 #: guix/scripts/system.scm:512
 #, scheme-format
 msgid "  bootloader: ~a~%"
-msgstr "  chargeur de démarrage : ~a~%"
+msgstr "  chargeur de démarrage : ~a~%"
 
 #. TRANSLATORS: The '~[', '~;', and '~]' sequences in this string must
 #. be preserved.  They denote conditionals, such that the result will

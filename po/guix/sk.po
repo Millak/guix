@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: GNU guix\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2024-01-29 03:18+0000\n"
-"PO-Revision-Date: 2024-09-04 09:38+0000\n"
+"PO-Revision-Date: 2024-11-28 09:22+0000\n"
 "Last-Translator: Florian Pelz <pelzflorian@pelzflorian.de>\n"
 "Language-Team: Slovak <https://translate.fedoraproject.org/projects/guix/guix/sk/>\n"
 "Language: sk\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Weblate 5.7.1\n"
+"X-Generator: Weblate 5.8.2\n"
 
 #: gnu.scm:81
 #, scheme-format
@@ -8875,7 +8875,7 @@ msgstr "údaje ladenia"
 
 #: guix/ui.scm:1567
 msgid "documentation"
-msgstr "návod"
+msgstr "documentation"
 
 #: guix/ui.scm:1568
 msgid "shared libraries"
