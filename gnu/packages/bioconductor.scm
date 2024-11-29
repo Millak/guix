@@ -238,6 +238,27 @@ data (hgu95av2) assembled using data from public data repositories.")
 data (chip hgu95av2) assembled using data from public repositories.")
     (license license:artistic2.0)))
 
+(define-public r-hgu95av2cdf
+  (package
+    (name "r-hgu95av2cdf")
+    (version "2.18.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "hgu95av2cdf" version
+                              'annotation))
+       (sha256
+        (base32 "1zp1y5awnkprkmk01rmn881y50bslfi8s33i8bws39am5xma0jfl"))))
+    (properties `((upstream-name . "hgu95av2cdf")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-annotationdbi))
+    (home-page "https://bioconductor.org/packages/hgu95av2cdf")
+    (synopsis "hgu95av2cdf")
+    (description
+     "This package provides a package containing an environment representing
+the HG_U95Av2.CDF file.")
+    (license license:lgpl2.0+)))
+
 (define-public r-hgu133a-db
   (package
     (name "r-hgu133a-db")
