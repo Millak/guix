@@ -27,16 +27,19 @@
   #:use-module ((guix licenses) #:select (gpl2 gpl2+ gpl3+ clarified-artistic))
   #:use-module (guix build-system gnu)
   #:use-module (guix download)
+  #:use-module (guix git-download)
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages bison)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages gperf)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages libidn)
   #:use-module (gnu packages linux)
@@ -52,27 +55,51 @@
 (define-public lftp
   (package
     (name "lftp")
-    (version "4.9.2")
+    (version "4.9.3")
     (source (origin
-              (method url-fetch)
-              ;; See https://lftp.tech/get.html for mirrors.
-              (uri (list (string-append "https://lftp.tech/ftp/lftp-"
-                                        version ".tar.xz")
-                         (string-append "https://lftp.tech/ftp/old/lftp-"
-                                        version ".tar.xz")
-                         (string-append "ftp://ftp.st.ryukoku.ac.jp/pub/network/"
-                                        "ftp/lftp/lftp-" version ".tar.xz")))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/lavv17/lftp")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "03b7y0h3mf4jfq5y8zw6hv9v44z3n6i8hc1iswax96y3z7sc85y5"))))
+                "1hzy2g426az6y5gh2pzkz8bd0z744ibnvs72iqwy902y7lhdil0f"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list pkg-config))
+     `(("autoconf" ,autoconf-2.71)
+       ("automake" ,automake)
+       ("gettext-minimal" ,gettext-minimal)
+       ;; required by gnulib to fix parse-datetime.c compilation error
+       ("bison" ,bison)
+       ("gnulib"
+        ,(let ((commit "949989513e631b61196f11fd8d647d4dc77d7f40"))
+           (origin
+             (method git-fetch)
+             (uri (git-reference
+                   (url "git://git.savannah.gnu.org/gnulib.git")
+                   (commit commit)))
+             (sha256
+              (base32 "0jk336yxfzldi0nsni0q3cxa7lqxb8lzmiisrr594v8cfvcprqn9"))
+             (file-name (git-file-name "gnulib" commit)))))
+       ("gperf" ,gperf)
+       ("libtool" ,libtool)
+       ("pkg-config" ,pkg-config)))
     (inputs
      (list zlib readline gnutls))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'unpack-gnulib
+           (lambda* (#:key inputs #:allow-other-keys)
+             (copy-recursively (assoc-ref inputs "gnulib")
+                               "gnulib")))
+         (delete 'bootstrap)
+         (add-after 'patch-source-shebangs 'bootstrap
+           (lambda _
+             (invoke "sh" "bootstrap"
+                     "--no-git"
+                     "--gnulib-srcdir=gnulib")))
          ;; Disable tests that require network access, which is most of them.
          (add-before 'check 'disable-impure-tests
                      (lambda _
@@ -83,7 +110,7 @@
        #:configure-flags
        (list (string-append "--with-readline="
                             (assoc-ref %build-inputs "readline")))))
-    (home-page "https://lftp.tech/")
+    (home-page "https://lftp.yar.ru/")
     (synopsis "Command-line file transfer program")
     (description
      "LFTP is a sophisticated FTP/HTTP client, and a file transfer program
