@@ -23018,52 +23018,6 @@ classes for individual assays, and allowing subsetting by genomic ranges or
 rownames.")
     (license license:artistic2.0)))
 
-(define-public r-bioconcotk
-  (package
-    (name "r-bioconcotk")
-    (version "1.24.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (bioconductor-uri "BiocOncoTK" version))
-       (sha256
-        (base32
-         "0h4cr7lrmbyx7kdj81s7ff75svr01rvzn54svqi93vjilawmpbm3"))))
-    (properties `((upstream-name . "BiocOncoTK")))
-    (build-system r-build-system)
-    (propagated-inputs
-     (list r-bigrquery
-           r-car
-           r-complexheatmap
-           r-curatedtcgadata
-           r-dbi
-           r-dplyr
-           r-dt
-           r-genomicfeatures
-           r-genomicranges
-           r-ggplot2
-           r-ggpubr
-           r-graph
-           r-httr
-           r-iranges
-           r-magrittr
-           r-mass
-           r-plyr
-           r-rgraphviz
-           r-rjson
-           r-s4vectors
-           r-scales
-           r-shiny
-           r-summarizedexperiment))
-    (native-inputs
-     (list r-knitr))
-    (home-page "https://bioconductor.org/packages/BiocOncoTK")
-    (synopsis "Bioconductor components for general cancer genomics")
-    (description
-     "The purpose of this package is to provide a central interface to various
-tools for genome-scale analysis of cancer studies.")
-    (license license:artistic2.0)))
-
 (define-public r-biocor
   (package
     (name "r-biocor")
