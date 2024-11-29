@@ -21457,8 +21457,25 @@ provides methods for retrieving enriched pathways.")
         (base32
          "0839ljb4fh1qrjk1xm89q2hwnbbxi2slaw3l36dk8kmpifhqqi16"))))
     (properties
-     `((upstream-name . "VariantFiltering")))
+     `((upstream-name . "VariantFiltering")
+       (updater-extra-native-inputs
+        . ("r-biocstyle"
+           "r-bsgenome-hsapiens-1000genomes-hs37d5"
+           "r-org-hs-eg-db"
+           "r-txdb-hsapiens-ucsc-hg19-knowngene"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      ;; Vignettes require an obscene amount of humongous annotation packages
+      ;; and *still* attempt to download additional files off the Internet.
+      ;; Enough is enough.
+      #:test-types '(list "tests")
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'delete-bad-tests
+           (lambda _
+             ;; One test tries to connect to a website.
+             (delete-file "inst/unitTests/test_location-methods.R"))))))
     (propagated-inputs
      (list r-annotationdbi
            r-biobase
@@ -21484,7 +21501,12 @@ provides methods for retrieving enriched pathways.")
            r-summarizedexperiment
            r-variantannotation
            r-xvector))
-    (native-inputs (list r-runit))
+    (native-inputs
+     (list r-biocstyle
+           r-bsgenome-hsapiens-1000genomes-hs37d5
+           r-org-hs-eg-db
+           r-runit
+           r-txdb-hsapiens-ucsc-hg19-knowngene))
     (home-page "https://github.com/rcastelo/VariantFiltering")
     (synopsis "Filtering of coding and non-coding genetic variants")
     (description
