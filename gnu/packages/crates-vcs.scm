@@ -6,6 +6,7 @@
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
 ;;; Copyright © 2023 Steve George <steve@futurile.net>
+;;; Copyright © 2024 Murilo <murilo@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -6323,6 +6324,27 @@ implementation of Git.")
     (arguments
      `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
                        ("rust-gix-config" ,rust-gix-config-0.38)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-pathspec" ,rust-gix-pathspec-0.7)
+                       ("rust-gix-refspec" ,rust-gix-refspec-0.23)
+                       ("rust-gix-url" ,rust-gix-url-0.27)
+                       ("rust-thiserror" ,rust-thiserror-1))))))
+
+(define-public rust-gix-submodule-0.11
+  (package
+    (inherit rust-gix-submodule-0.14)
+    (name "rust-gix-submodule")
+    (version "0.11.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-submodule" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1b304hkx2r2b619n3lksvj08fkd7pdxzpr923dhvc55c4jcx874j"))))
+    (arguments
+     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-gix-config" ,rust-gix-config-0.37)
                        ("rust-gix-path" ,rust-gix-path-0.10)
                        ("rust-gix-pathspec" ,rust-gix-pathspec-0.7)
                        ("rust-gix-refspec" ,rust-gix-refspec-0.23)
