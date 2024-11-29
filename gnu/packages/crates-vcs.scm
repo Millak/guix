@@ -1809,6 +1809,36 @@ Gitoxide project.  Gitoxide is a pure Rust implementation of Git.")
                        ("rust-winnow" ,rust-winnow-0.6))
        #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.5))))))
 
+(define-public rust-gix-config-0.37
+  (package
+    (inherit rust-gix-config-0.40)
+    (name "rust-gix-config")
+    (version "0.37.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-config" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0h680yjj90hqch8x2bgnybx01smff2yvcrja6n7dj4byjm1gxyjk"))))
+    (arguments
+     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-config-value" ,rust-gix-config-value-0.14)
+                       ("rust-gix-features" ,rust-gix-features-0.38)
+                       ("rust-gix-glob" ,rust-gix-glob-0.16)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-ref" ,rust-gix-ref-0.44)
+                       ("rust-gix-sec" ,rust-gix-sec-0.10)
+                       ("rust-memchr" ,rust-memchr-2)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-unicode-bom" ,rust-unicode-bom-2)
+                       ("rust-winnow" ,rust-winnow-0.6))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.5))))))
+
 (define-public rust-gix-config-0.33
   (package
     (inherit rust-gix-config-0.40)
