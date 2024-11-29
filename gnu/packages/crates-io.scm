@@ -50316,6 +50316,29 @@ macros used in ntest.")
      "This package provides plug and play high performance fuzzy matcher.")
     (license license:mpl2.0)))
 
+(define-public rust-nucleo-matcher-0.2
+  (package
+    (name "rust-nucleo-matcher")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "nucleo-matcher" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0mxxz58acszkgxha4wy459fkcx6f8sh55d803wnid1p25x02nw0v"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cov-mark" ,rust-cov-mark-1)
+                       ("rust-memchr" ,rust-memchr-2)
+                       ("rust-unicode-segmentation" ,rust-unicode-segmentation-1))
+       #:cargo-development-inputs (("rust-cov-mark" ,rust-cov-mark-1))))
+    (home-page "https://github.com/helix-editor/nucleo")
+    (synopsis "Plug and play high performance fuzzy matcher")
+    (description
+     "This package provides plug and play high performance fuzzy matcher.")
+    (license license:mpl2.0)))
+
 (define-public rust-num-0.4
   (package
     (name "rust-num")
