@@ -27667,38 +27667,42 @@ with PEP 484 argument (and return) type annotations.")
        (uri (pypi-uri "bpython" version))
        (sha256
         (base32 "1g9xzl49skghd9q2a8b71gg1n97lfnj9in2kzcmzsj4cgbynywwq"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'remove-failing-test
-           (lambda _
-             ;; Remove failing test. FIXME: make it pass
-             (delete-file "bpython/test/test_args.py")
-             #t))
-         (add-after 'wrap 'add-aliases
-           ;; for symmetry to bpython2, add symlinks bypthon3, bpdb3, etc.
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (for-each
-                (lambda (old new)
-                  (symlink old (string-append out "/bin/" new)))
-                '("bpython" "bpython-curses" "bpython-urwid" "bpdb")
-                '("bpython3" "bpython3-curses" "bpython3-urwid" "bpdb3")))
-             #t)))))
-    (propagated-inputs
-     (list python-pygments
-           python-requests
-           python-curtsies
-           python-greenlet
-           python-cwcwidth
-           python-pyxdg
-           ;; optional dependencies
-           python-urwid ; for bpython-urwid only
-           python-watchdog
-           python-jedi))
+     (list
+      #:test-flags
+      ;; Tests can't import curtsies, pygments and urwid.
+      #~(list "-k" (string-join
+                    (list "not test_issue108"
+                          "test_issue133")
+                    " and not " ))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'wrap 'add-aliases
+            ;; For symmetry to bpython2, add symlinks bypthon3, bpdb3, etc.
+            (lambda _
+              (for-each
+               (lambda (old new)
+                 (symlink old (string-append #$output "/bin/" new)))
+               '("bpython" "bpython-curses" "bpython-urwid" "bpdb")
+               '("bpython3" "bpython3-curses" "bpython3-urwid" "bpdb3")))))))
     (native-inputs
-     (list python-sphinx python-mock python-tox python-wheel))
+     (list python-mock
+           python-pytest
+           python-setuptools
+           python-sphinx
+           python-wheel))
+    (propagated-inputs
+     (list python-curtsies
+           python-cwcwidth
+           python-greenlet
+           python-jedi
+           python-pygments
+           python-pyxdg
+           python-requests
+           python-typing-extensions
+           python-urwid
+           python-watchdog))
     (home-page "https://bpython-interpreter.org/")
     (synopsis "Fancy interface to the Python interpreter")
     (description "Bpython is a fancy interface to the Python
