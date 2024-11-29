@@ -6180,6 +6180,35 @@ Gitoxide is a pure Rust implementation of Git.")
                        ("rust-portable-atomic" ,rust-portable-atomic-1)
                        ("rust-thiserror" ,rust-thiserror-1))))))
 
+(define-public rust-gix-status-0.10
+  (package
+    (inherit rust-gix-status-0.13)
+    (name "rust-gix-status")
+    (version "0.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-status" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1j5z44b80ybaxy34valibksasrd5gny52vqk9mahjf3ii7cp6hrg"))))
+    (arguments
+     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-filetime" ,rust-filetime-0.2)
+                       ("rust-gix-diff" ,rust-gix-diff-0.44)
+                       ("rust-gix-dir" ,rust-gix-dir-0.5)
+                       ("rust-gix-features" ,rust-gix-features-0.38)
+                       ("rust-gix-filter" ,rust-gix-filter-0.11)
+                       ("rust-gix-fs" ,rust-gix-fs-0.11)
+                       ("rust-gix-hash" ,rust-gix-hash-0.14)
+                       ("rust-gix-index" ,rust-gix-index-0.33)
+                       ("rust-gix-object" ,rust-gix-object-0.42)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-pathspec" ,rust-gix-pathspec-0.7)
+                       ("rust-gix-worktree" ,rust-gix-worktree-0.34)
+                       ("rust-thiserror" ,rust-thiserror-1))))))
+
 (define-public rust-gix-status-0.4
   (package
     (inherit rust-gix-status-0.13)
