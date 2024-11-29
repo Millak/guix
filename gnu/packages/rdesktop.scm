@@ -232,13 +232,14 @@ variety of RDP clients:
     (name "xorgxrdp")
     (version "0.10.2")
     (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://github.com/neutrinolabs/xorgxrdp/releases/download/v"
-                    version "/xorgxrdp-" version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/neutrinolabs/xorgxrdp")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "125zn8xzppmf07wgdm4kw2w8ri4fbraca8r59fgibb1m6dqggsxm"))))
+                "1dcxn0v88426j4n7irhy6h3qb21202v5xs1vr7j8xvs3sxihc2f7"))))
     (build-system gnu-build-system)
     (inputs (list check
                   imlib2
@@ -254,8 +255,11 @@ variety of RDP clients:
                   xdpyinfo
                   xorg-server
                   xrdp))
-    (native-inputs (list nasm
+    (native-inputs (list autoconf
+                         automake
                          intltool
+                         libtool
+                         nasm
                          pkg-config
                          pixman))
     (arguments
