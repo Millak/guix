@@ -21500,11 +21500,13 @@ parallel calculations across cluster nodes.")
        (sha256
         (base32
          "0f6ilq9pbb6mgvclp6ksbaw8353wf114p1xqhlmkwgsfh2bg63xg"))))
-    (properties `((upstream-name . "chk")))
+    (properties
+     `((upstream-name . "chk")
+       (updater-extra-native-inputs . ("tzdata-for-tests"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-lifecycle r-rlang))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-knitr r-testthat tzdata-for-tests))
     (home-page "https://github.com/poissonconsulting/chk")
     (synopsis "Check user-supplied function arguments")
     (description
