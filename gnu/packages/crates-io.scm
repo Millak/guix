@@ -33172,14 +33172,14 @@ already-hashed or hash-like data.")
   (package
     (inherit rust-hashbrown-0.15)
     (name "rust-hashbrown")
-    (version "0.14.3")
+    (version "0.14.5")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "hashbrown" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "012nywlg0lj9kwanh69my5x67vjlfmzfi9a0rq4qvis2j8fil3r9"))
+                "1wa1vy1xs3mp11bn3z9dv0jricgr6a2j0zkf1g19yz3vw4il89z5"))
               (modules '((guix build utils)))
               (snippet
                '(begin
