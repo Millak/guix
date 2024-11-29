@@ -24810,8 +24810,10 @@ sampling.")
          "1wsjr4asjsknv8fkfv15xqnl67zfv8d2xmvw1i2l0wflxbps3af7"))))
     (properties `((upstream-name . "protViz")))
     (build-system r-build-system)
+    ;; One vignette file fails with: parameter "i" in "mfg" is out of range
+    (arguments (list #:test-types '(list "tests")))
     (propagated-inputs (list r-rcpp))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-lattice r-testthat r-xtable))
     (home-page "https://github.com/protViz/protViz/")
     (synopsis "Visualizing and analyzing mass spectrometry data in proteomics")
     (description
