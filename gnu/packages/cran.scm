@@ -24089,6 +24089,7 @@ want to include run-time testing features in their own packages.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-assertive-base r-assertive-properties r-codetools))
+    (native-inputs (list r-testthat))
     (home-page "https://bitbucket.org/richierocks/assertive.types")
     (synopsis "Assertions to check types of variables")
     (description
