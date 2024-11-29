@@ -1166,30 +1166,28 @@ than a terminal.")
 (define-public python-curtsies
   (package
     (name "python-curtsies")
-    (version "0.4.1")
+    (version "0.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "curtsies" version))
        (sha256
-        (base32 "1c122vgfsvksxkd41g2vij6hjsz97ikg59snclq4af2mkhs0zlb2"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "nosetests" "-v"))))))
-    (propagated-inputs
-     (list python-blessed python-cwcwidth))
+        (base32 "03kn093lr84qg8fmqrn1jb0zak6a1ir9q106lm8jijfpbchk7gkf"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pyte python-nose))
+     (list python-pyte
+           python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-blessed
+           python-cwcwidth))
     (home-page "https://github.com/bpython/curtsies")
-    (synopsis "Library for curses-like terminal interaction with colored
-strings")
-    (description "Curtsies is a Python library for interacting with the
-terminal.  It features string-like objects which carry formatting information,
-per-line fullscreen terminal rendering, and keyboard input event reporting.")
+    (synopsis "Library for curses-like terminal interaction with colored strings")
+    (description
+     "Curtsies is a Python library for interacting with the terminal.  It
+features string-like objects which carry formatting information, per-line
+fullscreen terminal rendering, and keyboard input event reporting.")
     (license license:expat)))
 
 (define-public python-halo
