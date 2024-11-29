@@ -5166,6 +5166,7 @@ character vector.")
            r-tibble
            r-tidyr
            r-xml2))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/jennybc/googlesheets")
     (synopsis "Manage Google spreadsheets from R")
     (description "This package provides tools to interact with Google Sheets
