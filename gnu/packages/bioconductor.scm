@@ -3221,6 +3221,27 @@ about the experiment, including links to the published study (by Zarnack et
 al., 2012) and to the FASTQ files.")
     (license license:lgpl2.0+)))
 
+(define-public r-rnbeads-hg19
+  (package
+    (name "r-rnbeads-hg19")
+    (version "1.38.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "RnBeads.hg19" version
+                              'experiment))
+       (sha256
+        (base32 "0hvsf3nvyl72rqrwvx54vpca1c445vfchz9h74kd90fgh8crydcm"))))
+    (properties `((upstream-name . "RnBeads.hg19")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-genomicranges))
+    (home-page "https://bioconductor.org/packages/RnBeads.hg19")
+    (synopsis "RnBeads annotation package for hg19 assembly")
+    (description
+     "This package is an automatically generated @code{RnBeads} annotation
+package for the assembly hg19.")
+    (license license:gpl3)))
+
 (define-public r-rtcga-rnaseq
   (package
     (name "r-rtcga-rnaseq")
