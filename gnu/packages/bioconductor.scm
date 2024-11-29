@@ -24962,6 +24962,8 @@ and more.")
          "1h78l23idf867djmdk97b02jxgmz4vfr2dai01fp648d0lsx5mkl"))))
     (properties `((upstream-name . "gQTLstats")))
     (build-system r-build-system)
+    ;; Tests require geuvPack, which has been removed from Bioconductor.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-annotationdbi
            r-batchjobs
@@ -24994,7 +24996,7 @@ and more.")
            r-summarizedexperiment
            r-variantannotation))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-runit))
     (home-page "https://bioconductor.org/packages/gQTLstats")
     (synopsis "Computationally efficient analysis for eQTL and allied studies")
     (description
