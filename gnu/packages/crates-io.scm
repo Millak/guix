@@ -75986,14 +75986,14 @@ functions.")
 (define-public rust-slotmap-1
   (package
     (name "rust-slotmap")
-    (version "1.0.6")
+    (version "1.0.7")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "slotmap" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0hhkvsc3x79c7fh97b3padjhssd19hzdyyiv291mr3qf3lk8xq71"))))
+                "0amqb2fn9lcy1ri0risblkcp88dl0rnfmynw7lx0nqwza77lmzyv"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
