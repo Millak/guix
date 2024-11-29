@@ -86930,14 +86930,14 @@ Rust.")
 (define-public rust-tokio-stream-0.1
   (package
     (name "rust-tokio-stream")
-    (version "0.1.14")
+    (version "0.1.16")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tokio-stream" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0hi8hcwavh5sdi1ivc9qc4yvyr32f153c212dpd7sb366y6rhz1r"))))
+        (base32 "1wc65gprcsyzqlr0k091glswy96kph90i32gffi4ksyh03hnqkjg"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #false      ; unresolved import `tokio_test`
