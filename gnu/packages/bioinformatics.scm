@@ -13345,14 +13345,12 @@ analyze genomic data resulting from various experiments.")
              r-doparallel
              r-dplyr
              r-foreach
-             ;;r-grid ;; listed in DESCRIPTION
              r-gridextra
              r-ggplot2
              r-gtable
              r-htmlwidgets
              r-igraph
              r-matrix
-             ;;r-methods ;; listed in DESCRIPTION
              r-org-hs-eg-db
              r-psych
              r-rcolorbrewer
