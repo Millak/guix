@@ -2493,6 +2493,35 @@ directory walking.")
        #:cargo-development-inputs
        (("rust-pretty-assertions" ,rust-pretty-assertions-1))))))
 
+(define-public rust-gix-dir-0.5
+  (package
+    (inherit rust-gix-dir-0.8)
+    (name "rust-gix-dir")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-dir" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0x29x6qdj4nwma01qgqadi0dwix3rnv0mlj1wnmn7gasaj69zjb0"))))
+    (arguments
+     `(#:tests? #f ;looking for undeclared gix-testtools
+       #:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-gix-discover" ,rust-gix-discover-0.32)
+                       ("rust-gix-fs" ,rust-gix-fs-0.11)
+                       ("rust-gix-ignore" ,rust-gix-ignore-0.11)
+                       ("rust-gix-index" ,rust-gix-index-0.33)
+                       ("rust-gix-object" ,rust-gix-object-0.42)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-pathspec" ,rust-gix-pathspec-0.7)
+                       ("rust-gix-trace" ,rust-gix-trace-0.1)
+                       ("rust-gix-utils" ,rust-gix-utils-0.1)
+                       ("rust-gix-worktree" ,rust-gix-worktree-0.34)
+                       ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs
+       (("rust-pretty-assertions" ,rust-pretty-assertions-1))))))
+
 (define-public rust-gix-discover-0.35
   (package
     (name "rust-gix-discover")
