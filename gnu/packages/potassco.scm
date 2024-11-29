@@ -726,7 +726,7 @@ as logic programs.")
           python-sphinx-rtd-theme
           python-traitlets
           python-uvicorn))
-   (home-page "https://github.com/potassco/clingraph")
+   (home-page "https://github.com/potassco/clinguin")
    (synopsis "Clingo-based interactive UI")
    (description "Clinguin is a graphical user interface toolkit for clingo,
 which allows user interfaces to be specified entirely as a logic program.")
