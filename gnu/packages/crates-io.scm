@@ -61166,8 +61166,37 @@ This library takes great pride in supporting everything that
 in codeblocks, while assuring quality with a powerful test suite.")
     (license license:asl2.0)))
 
+(define-public rust-pulldown-cmark-0.11
+  (package
+    (name "rust-pulldown-cmark")
+    (version "0.11.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pulldown-cmark" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "09a6q582pblnj8xflbx6zb29zgnwg0r6rg9wi54wdikq5k9434v7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-getopts" ,rust-getopts-0.2)
+                       ("rust-memchr" ,rust-memchr-2)
+                       ("rust-pulldown-cmark-escape" ,rust-pulldown-cmark-escape-0.11)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-unicase" ,rust-unicase-2))
+       #:cargo-development-inputs (("rust-bincode" ,rust-bincode-1)
+                                   ("rust-lazy-static" ,rust-lazy-static-1)
+                                   ("rust-regex" ,rust-regex-1)
+                                   ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/pulldown-cmark/pulldown-cmark")
+    (synopsis "Pull parser for CommonMark")
+    (description "This package provides a pull parser for CommonMark.")
+    (license license:expat)))
+
 (define-public rust-pulldown-cmark-0.9
   (package
+    (inherit rust-pulldown-cmark-0.11)
     (name "rust-pulldown-cmark")
     (version "0.9.3")
     (source (origin
@@ -61177,7 +61206,6 @@ in codeblocks, while assuring quality with a powerful test suite.")
               (sha256
                (base32
                 "166rhmwk42ffirrzhv7lmsh9f3my6xv1ggmb66fgzv57y3qs58bp"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-1)
@@ -61193,16 +61221,11 @@ in codeblocks, while assuring quality with a powerful test suite.")
         ("rust-markup5ever-rcdom" ,rust-markup5ever-rcdom-0.2)
         ("rust-regex" ,rust-regex-1)
         ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-tendril" ,rust-tendril-0.4))))
-    (home-page "https://github.com/raphlinus/pulldown-cmark")
-    (synopsis "Pull parser for CommonMark")
-    (description
-     "This package provides a pull parser for CommonMark.")
-    (license license:expat)))
+        ("rust-tendril" ,rust-tendril-0.4))))))
 
 (define-public rust-pulldown-cmark-0.8
   (package
-    (inherit rust-pulldown-cmark-0.9)
+    (inherit rust-pulldown-cmark-0.11)
     (name "rust-pulldown-cmark")
     (version "0.8.0")
     (source
@@ -61254,7 +61277,7 @@ in codeblocks, while assuring quality with a powerful test suite.")
 
 (define-public rust-pulldown-cmark-0.4
   (package
-    (inherit rust-pulldown-cmark-0.8)
+    (inherit rust-pulldown-cmark-0.11)
     (name "rust-pulldown-cmark")
     (version "0.4.1")
     (source
