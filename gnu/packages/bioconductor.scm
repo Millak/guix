@@ -9822,9 +9822,32 @@ of other R packages who wish to make use of HTSlib.")
        (method url-fetch)
        (uri (bioconductor-uri "RnBeads" version))
        (sha256
-        (base32 "006kmfg1lysa9z9cbc507l54xh1apslrxxk41w65zp7bqkhs2zj9"))))
-    (properties `((upstream-name . "RnBeads")))
+        (base32 "006kmfg1lysa9z9cbc507l54xh1apslrxxk41w65zp7bqkhs2zj9"))
+       (modules '((guix build utils)))
+       (snippet
+        '(delete-file-recursively "inst/bin"))))
+    (properties
+     `((upstream-name . "RnBeads")
+       (updater-extra-inputs . ("kentutils"))
+       (updater-extra-native-inputs
+        . ("r-impute" "r-missmethyl" "r-doparallel" "r-qvalue" "ghostscript"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      ;; Vignette ‘RnBeads.Rnw’ overwrites the following ‘tangle’ output by
+      ;; vignette ‘RnBeads_Annotations.Rnw’: RnBeads_Annotations.R
+      #:test-types '(list "tests")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'link-to-executables
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((bin (string-append #$output
+                                        "/site-library/RnBeads/bin/linux_x86.64")))
+                (mkdir-p bin)
+                (symlink (search-input-file inputs "/bin/bedToBigBed")
+                         (string-append bin "/bedToBigBed"))
+                (symlink (search-input-file inputs "/bin/bedGraphToBigWig")
+                         (string-append bin "/bedGraphToBigWig"))))))))
     (propagated-inputs
      (list r-biocgenerics
            r-cluster
@@ -9842,12 +9865,21 @@ of other R packages who wish to make use of HTSlib.")
            r-methylumi
            r-plyr
            r-s4vectors))
-    (native-inputs (list r-runit))
+    (inputs (list kentutils))
+    (native-inputs
+     (list ghostscript
+           r-doparallel
+           r-impute
+           r-missmethyl
+           r-qvalue
+           r-rnbeads-hg19
+           r-rtracklayer
+           r-runit))
     (home-page "https://bioconductor.org/packages/RnBeads")
     (synopsis "RnBeads")
     (description
-     "@code{RnBeads} facilitates comprehensive analysis of various types of DNA
-methylation data at the genome scale.")
+     "@code{RnBeads} facilitates comprehensive analysis of various types of
+DNA methylation data at the genome scale.")
     (license license:gpl3)))
 
 (define-public r-impute
