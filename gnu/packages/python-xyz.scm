@@ -10270,24 +10270,28 @@ a simple netcat replacement with chaining support.")
 (define-public python-pycodestyle
   (package
     (name "python-pycodestyle")
-    (version "2.8.0")
+    (version "2.12.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pycodestyle" version))
        (sha256
-        (base32
-         "0zxyrg8029lzjhima6l5nk6y0z6lm5wfp9qchz3s33j3xx3mipgd"))))
-    (build-system python-build-system)
+        (base32 "089mszv65gwnz4nq8vryxqanlqk3bh3p4maxrnngdr5wighflf38"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-vv")))))))
+     (list
+      #:test-flags #~(list "-m" "pycodestyle" "--statistics" "pycodestyle.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Taken from Tox config
+          ;; <https://github.com/PyCQA/pycodestyle/blob/2.11.0/tox.ini#L16>.
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (when tests?
+                  (apply invoke "python" "-v" test-flags)))))))
     (native-inputs
-     (list python-pytest))
+     (list python-setuptools
+           python-wheel))
     (home-page "https://pycodestyle.readthedocs.io/")
     (synopsis "Python style guide checker")
     (description "@code{pycodestyle} (formerly pep8) is a tool to check
