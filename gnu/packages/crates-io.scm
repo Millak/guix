@@ -65589,6 +65589,34 @@ uses finite automata and guarantees linear time matching on all inputs.")
         ("rust-serde-derive" ,rust-serde-derive-1)
         ("rust-toml" ,rust-toml-0.5)))))) ; 0.4
 
+(define-public rust-regex-cursor-0.1
+  (package
+    (name "rust-regex-cursor")
+    (version "0.1.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "regex-cursor" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0sbi1xr9201hd5c40779gfnmlnmrb4yqs4jj07d6zbp3znsjfhxf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Not all files included.
+       #:cargo-inputs (("rust-log" ,rust-log-0.4)
+                       ("rust-memchr" ,rust-memchr-2)
+                       ("rust-regex-automata" ,rust-regex-automata-0.4)
+                       ("rust-regex-syntax" ,rust-regex-syntax-0.8)
+                       ("rust-ropey" ,rust-ropey-1))
+       #:cargo-development-inputs (("rust-anyhow" ,rust-anyhow-1)
+                                   ("rust-proptest" ,rust-proptest-1)
+                                   ("rust-regex-test" ,rust-regex-test-0.1))))
+    (home-page "https://github.com/pascalkuthe/regex-cursor")
+    (synopsis "Regex fork that can search discontiguous haystacks")
+    (description
+     "This package provides regex fork that can search discontiguous haystacks.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-regex-lite-0.1
   (package
     (name "rust-regex-lite")
