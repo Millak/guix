@@ -920,6 +920,8 @@ storage savings and increased read speeds.")
                   "0bca593dnxz6xdywpdi0ipli0paln2b3bfxxj0csnmj55ryrz428"))))
       (properties `((upstream-name . "btools")))
       (build-system r-build-system)
+      ;; There are no tests.
+      (arguments (list #:tests? #false))
       (propagated-inputs
        (list r-biomformat
              r-coin
