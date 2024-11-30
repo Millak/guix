@@ -1563,10 +1563,13 @@ supported via Andre Simon's highlight package.")
           (base32 "14i7mhbv1vcz2886w9lii9zhgr4zhhc844349syb989nhhzg552n"))))
       (properties `((upstream-name . "httpgd")))
       (build-system r-build-system)
+      ;; XXX On the build farm the tests fail with "Too many open files".  It
+      ;; works fine on my laptop.
+      (arguments (list #:tests? #false))
       (propagated-inputs (list r-asioheaders r-cpp11 r-unigd))
       (native-inputs (list r-knitr r-testthat))
       (home-page "https://github.com/nx10/httpgd")
-      (synopsis "'HTTP' Server Graphics Device")
+      (synopsis "HTTP server graphics device")
       (description
        "This package provides a graphics device for R that is accessible via
 network protocols.  This package was created to make it easier to embed live R
