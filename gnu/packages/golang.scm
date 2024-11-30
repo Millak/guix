@@ -6524,29 +6524,27 @@ error messages.")
     (license license:bsd-3)))
 
 (define-public go-github-com-arceliar-phony
-  (let ((commit "d0c68492aca0bd4b5c5c8e0452c9b4c8af923eaf")
-        (revision "0"))
-    (package
-      (name "go-github-com-arceliar-phony")
-      (version (git-version "0.0.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/Arceliar/phony")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "0876y0hlb1zh8hn0pxrb5zfdadvaqmqwlr66p19yl2a76galz992"))))
-      (arguments
-       '(#:import-path "github.com/Arceliar/phony"))
-      (build-system go-build-system)
-      (home-page "https://github.com/Arceliar/phony")
-      (synopsis "Very minimal actor model library")
-      (description "Phony is a very minimal actor model library for Go,
+  (package
+    (name "go-github-com-arceliar-phony")
+    (version "v0.0.0-20220903101357-530938a4b13d")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Arceliar/phony")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1ww3issk2jg9nzijmz1xncdhd0mh553nixns34s3yjm4mb8c5s93"))))
+    (arguments
+     '(#:import-path "github.com/Arceliar/phony"))
+    (build-system go-build-system)
+    (home-page "https://github.com/Arceliar/phony")
+    (synopsis "Very minimal actor model library")
+    (description "Phony is a very minimal actor model library for Go,
 inspired by the causal messaging system in the Pony programming language.")
-      (license license:expat))))
+    (license license:expat)))
 
 (define-public go-github-com-gologme-log
   ;; this is the same as v1.2.0, only the LICENSE file changed
