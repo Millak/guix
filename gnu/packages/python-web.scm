@@ -9441,6 +9441,27 @@ Interface) framework/toolkit for building async web services in Python.")
 and FastAPI.")
     (license license:expat)))
 
+(define-public python-suds
+  (package
+    (name "python-suds")
+    (version "1.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "suds" version))
+       (sha256
+        (base32 "1byyg7b2ixpr8hc849a6dd0qn5daxqawz6lb3php8lrmsb1n5cc3"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (home-page "https://github.com/suds-community/suds")
+    (synopsis "Lightweight SOAP python client for consuming Web Services")
+    (description
+     "Suds is a lightweight SOAP-based web service client for Python.")
+    (license license:lgpl3+)))
+
 (define-public python-fastapi
   (package
     (name "python-fastapi")
