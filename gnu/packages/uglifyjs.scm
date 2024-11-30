@@ -25,7 +25,7 @@
 (define-public node-uglify-js
   (package
     (name "node-uglify-js")
-    (version "3.14.2")
+    (version "3.19.3")
     (source
      (origin
        (method git-fetch)
@@ -34,7 +34,7 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1jraqpwzga4vbgq3xcn08jcfc87pm6nik7vpxvxa4rfjvz70a6k7"))))
+        (base32 "0a3pyf6wnix7v0vdjhag3dd32l4fm2hxhxpjdgr1zfvy3m4d1hmh"))))
     (build-system node-build-system)
     (native-inputs
      (list node-acorn node-semver))
