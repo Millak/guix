@@ -6772,6 +6772,7 @@ data and settings.")
     (native-inputs
      (list (texlive-updmap.cfg
             (list texlive-doi
+                  texlive-etoolbox
                   texlive-examplep
                   texlive-forloop
                   texlive-listofitems
