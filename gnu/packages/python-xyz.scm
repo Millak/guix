@@ -23139,20 +23139,17 @@ etc.")
         (sha256
           (base32
             "1nyd4m4mnrz8scbfqn4zpq8gnbl4x42w5zz62vcgpzqd2waf0xrw"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:tests? #f)) ; FIXME: 3/49 tests are failing.
-       ;; #:phases
-       ;; (modify-phases %standard-phases
-       ;;   (replace 'check
-       ;;     (lambda _
-       ;;       (zero? (system* "python" "test/run_all_tests.py" "loop://")))))))
-    (home-page
-      "https://github.com/pyserial/pyserial")
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (home-page "https://github.com/pyserial/pyserial")
     (synopsis "Python Serial Port Bindings")
-    (description "@code{pyserial} provide serial port bindings for Python.  It
-     supports different byte sizes, stop bits, parity and flow control with RTS/CTS
-     and/or Xon/Xoff.  The port is accessed in RAW mode.")
+    (description
+     "@code{pyserial} provide serial port bindings for Python.  It supports
+different byte sizes, stop bits, parity and flow control with RTS/CTS and/or
+Xon/Xoff.  The port is accessed in RAW mode.")
     (license license:bsd-3)))
 
 (define-public python-pyserial-asyncio
