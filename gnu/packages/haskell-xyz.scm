@@ -16683,6 +16683,41 @@ serving them .  You can learn about the basics in the
 CHANGELOG>")
     (license license:bsd-3)))
 
+(define-public ghc-servant-client-core
+  (package
+    (name "ghc-servant-client-core")
+    (version "0.19")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hackage-uri "servant-client-core" version))
+       (sha256
+        (base32 "0cisc5cyl367cwrch1gr812aspd36a21hkwi6mwj708rpspwvrmc"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "servant-client-core")))
+    (inputs (list ghc-constraints
+                  ghc-servant
+                  ghc-aeson
+                  ghc-base-compat
+                  ghc-base64-bytestring
+                  ghc-free
+                  ghc-http-media
+                  ghc-http-types
+                  ghc-network-uri
+                  ghc-safe
+                  ghc-sop-core))
+    (native-inputs (list ghc-hspec ghc-hspec-discover ghc-quickcheck))
+    (arguments
+     `(#:cabal-revision ("5"
+                         "147ws71hwp8zck7ph8kcyh18524s8g0b7qvxjsvsm1yvw77c60gh")))
+    (home-page "http://docs.servant.dev/")
+    (synopsis
+     "Core functionality and class for client function generation for servant APIs")
+    (description
+     "This library provides backend-agnostic generation of client functions.  For more
+information, see the README.")
+    (license license:bsd-3)))
+
 (define-public ghc-servant-server
   (package
     (name "ghc-servant-server")
