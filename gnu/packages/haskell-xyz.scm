@@ -17051,6 +17051,34 @@ such as ala'.")
      "Lighweight pure data validation based on Applicative and Selective functors.")
     (license license:mpl2.0)))
 
+(define-public ghc-tdigest
+  (package
+    (name "ghc-tdigest")
+    (version "0.2.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hackage-uri "tdigest" version))
+       (sha256
+        (base32 "1dvkf7cs8dcr13wza5iyq2qgvz75r33mzgfmhdihw62xzxsqb6d3"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "tdigest")))
+    (inputs (list ghc-base-compat ghc-reducers ghc-semigroupoids ghc-vector
+                  ghc-vector-algorithms))
+    (native-inputs (list ghc-semigroups ghc-tasty ghc-tasty-quickcheck))
+    (arguments
+     `(#:cabal-revision ("3"
+                         "0a39vwf37hkh06rn79blr3bw7ij05pgpxrkc9cldgdd5p4gvn1qn")))
+    (home-page "https://github.com/phadej/haskell-tdigest#readme")
+    (synopsis "On-line accumulation of rank-based statistics")
+    (description
+     "This package provides a new data structure for accurate on-line accumulation of
+rank-based statistics such as quantiles and trimmed means. .  See original
+paper: \"Computing extremely accurate quantiles using t-digest\" by Ted Dunning
+and Otmar Ertl for more details
+<https://github.com/tdunning/t-digest/blob/07b8f2ca2be8d0a9f04df2feadad5ddc1bb73c88/docs/t-digest-paper/histo.pdf>.")
+    (license license:bsd-3)))
+
 (define-public ghc-tomland
   (package
     (name "ghc-tomland")
