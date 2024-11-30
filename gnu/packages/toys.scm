@@ -52,7 +52,7 @@
 (define-public daikichi
   (package
     (name "daikichi")
-    (version "0.3.0")
+    (version "0.3.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -61,7 +61,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1y35f1qpxl743s0s83dg5ivkvprv19mqn0azm14k3y8pmp6cs52z"))))
+                "139kjf14ayqrwzd0hzw2qhfp47ngyimibzgfyqy6i7y8lhwsjs1v"))))
     (build-system meson-build-system)
     (arguments
      (list #:phases
