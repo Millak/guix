@@ -16683,6 +16683,57 @@ serving them .  You can learn about the basics in the
 CHANGELOG>")
     (license license:bsd-3)))
 
+(define-public ghc-servant-client
+  (package
+    (name "ghc-servant-client")
+    (version "0.19")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hackage-uri "servant-client" version))
+       (sha256
+        (base32 "1bdapsr6il0f019ss8wsxndpc8cd5czj40xczay5qhl7fqnxg5pa"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "servant-client")))
+    (inputs (list ghc-servant
+                  ghc-servant-client-core
+                  ghc-base-compat
+                  ghc-http-client
+                  ghc-http-media
+                  ghc-http-types
+                  ghc-kan-extensions
+                  ghc-monad-control
+                  ghc-semigroupoids
+                  ghc-transformers-base
+                  ghc-transformers-compat))
+    (native-inputs (list ghc-aeson
+                         ghc-http-api-data
+                         ghc-sop-core
+                         ghc-wai
+                         ghc-warp
+                         ghc-entropy
+                         ghc-hspec
+                         ghc-hspec-discover
+                         ghc-hunit
+                         ghc-network
+                         ghc-quickcheck
+                         ghc-servant-server
+                         ghc-tdigest
+                         ghc-markdown-unlit))
+    (arguments
+     `(#:cabal-revision ("6"
+                         "0lakjnpvsiai08c5nddgzrnr0a139rr37cyq31hqcbwnsy553l1y")))
+    (home-page "http://docs.servant.dev/")
+    (synopsis "Automatic derivation of querying functions for servant")
+    (description
+     "This library lets you derive automatically Haskell functions that let you query
+each endpoint of a <http://hackage.haskell.org/package/servant servant>
+webservice. .  See <http://docs.servant.dev/en/stable/tutorial/Client.html the
+client section of the tutorial>. .
+<https://github.com/haskell-servant/servant/blob/master/servant-client/CHANGELOG.md
+CHANGELOG>.")
+    (license license:bsd-3)))
+
 (define-public ghc-servant-client-core
   (package
     (name "ghc-servant-client-core")
