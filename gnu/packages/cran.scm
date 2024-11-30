@@ -24147,6 +24147,7 @@ packages.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-assertive-base r-assertive-properties r-assertive-types))
+    (native-inputs (list r-testthat))
     (home-page "https://bitbucket.org/richierocks/assertive.code")
     (synopsis "Assertions to check properties of code")
     (description
