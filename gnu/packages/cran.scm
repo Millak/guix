@@ -2711,6 +2711,7 @@ for authoring journal articles and conference submissions.")
     (properties `((upstream-name . "rtk")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp zlib))
+    (native-inputs (list r-testthat))
     (home-page "https://cran.r-project.org/package=rtk")
     (synopsis "Rarefaction tool kit")
     (description "This package lets you rarefy data, calculate diversity and
