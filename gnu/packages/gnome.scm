@@ -5104,7 +5104,7 @@ libxml to ease remote use of the RESTful API.")
 (define-public libshumate
   (package
     (name "libshumate")
-    (version "1.2.1")
+    (version "1.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -5112,7 +5112,7 @@ libxml to ease remote use of the RESTful API.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "04cwakbdr68nw4kh956xhf447fawz8badpyd76hg4ir1gq3yw18i"))))
+                "1m3mvk38cjlkxmhkq0zg75msckylc0vzizll50ii5phw53lac9w2"))))
     (build-system meson-build-system)
     (arguments
      (list #:phases
