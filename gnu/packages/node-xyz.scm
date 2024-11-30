@@ -40,7 +40,7 @@
 (define-public node-acorn
   (package
     (name "node-acorn")
-    (version "8.4.1")
+    (version "8.7.1")
     (source
      (origin
        (method git-fetch)
@@ -49,7 +49,7 @@
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "068h5gysz8bbslq31dva8f223rdf8l7w6nxcxjnv4zdprwkzkhaa"))))
+        (base32  "10lpqbq4wvndx13mh7yjqgpcp3ac81b9zmrn4qb1qpzgy462fa92"))))
     (build-system node-build-system)
     (arguments
      '(#:tests? #f
