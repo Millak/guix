@@ -333,7 +333,7 @@ security standards.")
   (package
    (inherit nss)
    (name "nss-rapid")
-   (version "3.105")
+   (version "3.107")
    (source (origin
              (inherit (package-source nss))
              (uri (let ((version-with-underscores
@@ -344,7 +344,7 @@ security standards.")
                      "nss-" version ".tar.gz")))
              (sha256
               (base32
-               "06an746lrnmp7mnr866cjxngkrw8c5ngdykw425q4p6ai264r3lf"))))
+               "0ab7kpyg54aha86aw0ak70ckmfj1ih7d9x8mlrqhf59q7r3rczkz"))))
    (arguments
     (substitute-keyword-arguments (package-arguments nss)
       ((#:phases phases)
@@ -376,7 +376,7 @@ security standards.")
                      ;; leading to test failures:
                      ;; <https://bugzilla.mozilla.org/show_bug.cgi?id=609734>.  To
                      ;; work around that, set the time to roughly the release date.
-                     (invoke "faketime" "2024-09-2" "./nss/tests/all.sh"))
+                     (invoke "faketime" "2024-11-29" "./nss/tests/all.sh"))
                    (format #t "test suite not run~%"))))))))
    (synopsis "Network Security Services (Rapid Release)")
    (description
