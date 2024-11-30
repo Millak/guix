@@ -24315,7 +24315,7 @@ features in their own packages.")
            r-assertive-types
            r-knitr))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://bitbucket.org/richierocks/assertive")
     (synopsis "Readable check functions to ensure code integrity")
     (description
