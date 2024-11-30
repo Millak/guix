@@ -38842,18 +38842,23 @@ markdown-compliant strings.")
 (define-public python-yattag
   (package
     (name "python-yattag")
-    (version "1.15.1")
+    (version "1.16.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "yattag" version))
        (sha256
-        (base32 "05p4dgdp8wwvnsvcv7n4zn8k602w345kw4vq67s9d792w55sa3wn"))))
-    (build-system python-build-system)
+        (base32 "1x2is0lkpywvqaayc21n1cvfbq0havzx46i83033wpgawxag5a5s"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (home-page "https://www.yattag.org/")
     (synopsis "HTML or XML generator for Python")
     (description
-     "Yattag is a Python library for generating HTML or XML in a pythonic way.")
-    (home-page "https://www.yattag.org/")
+     "Yattag is a Python library for generating HTML or XML in a pythonic
+way.")
     (license license:lgpl2.1)))
 
 (define-public python-zbarlight
