@@ -11138,7 +11138,10 @@ functionality and behavior.")
                 "1hj9brran2azy3scyf913svhxjrmya83fi7x239h33rp7vxnljlm"))))
     (build-system meson-build-system)
     (arguments
-     '(#:phases
+     '(;; Tests are broken since GLib 2.80
+       ;; See <https://gitlab.gnome.org/GNOME/folks/-/issues/140>.
+       #:tests? #f
+       #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'skip-gtk-update-icon-cache
            ;; Don't create 'icon-theme.cache'.
