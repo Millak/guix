@@ -27,6 +27,7 @@
   #:use-module ((guix licenses) #:select (gpl2 gpl2+ gpl3+ clarified-artistic))
   #:use-module (guix build-system gnu)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix packages)
   #:use-module (guix utils)
@@ -88,28 +89,27 @@
     (inputs
      (list zlib readline gnutls))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'unpack-gnulib
-           (lambda* (#:key inputs #:allow-other-keys)
-             (copy-recursively (assoc-ref inputs "gnulib")
-                               "gnulib")))
-         (delete 'bootstrap)
-         (add-after 'patch-source-shebangs 'bootstrap
-           (lambda _
-             (invoke "sh" "bootstrap"
-                     "--no-git"
-                     "--gnulib-srcdir=gnulib")))
-         ;; Disable tests that require network access, which is most of them.
-         (add-before 'check 'disable-impure-tests
-                     (lambda _
-                       (substitute* "tests/Makefile"
-                         (("(ftp-cls-l|ftp-list|http-get)\\$\\(EXEEXT\\)") "")
-                         (("lftp-https-get ") ""))
-                       #t)))
-       #:configure-flags
-       (list (string-append "--with-readline="
-                            (assoc-ref %build-inputs "readline")))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'unpack-gnulib
+                 (lambda _
+                   (copy-recursively #$(this-package-native-input "gnulib")
+                                     "gnulib")))
+               (delete 'bootstrap)
+               (add-after 'patch-source-shebangs 'bootstrap
+                 (lambda _
+                   (invoke "sh" "bootstrap"
+                           "--no-git"
+                           "--gnulib-srcdir=gnulib")))
+               ;; Disable tests that require network access, which is most of them.
+               (add-before 'check 'disable-impure-tests
+                 (lambda _
+                   (substitute* "tests/Makefile"
+                     (("(ftp-cls-l|ftp-list|http-get)\\$\\(EXEEXT\\)") "")
+                     (("lftp-https-get ") "")))))
+           #:configure-flags
+           #~(list (string-append "--with-readline="
+                                  #$(this-package-input "readline")))))
     (home-page "https://lftp.yar.ru/")
     (synopsis "Command-line file transfer program")
     (description
