@@ -24223,6 +24223,7 @@ who want to include run-time testing features in their own packages.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-assertive-base r-assertive-strings))
+    (native-inputs (list r-testthat))
     (home-page "https://bitbucket.org/richierocks/assertive.data.us")
     (synopsis "Assertions to check properties of strings")
     (description
