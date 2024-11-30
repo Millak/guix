@@ -24172,6 +24172,7 @@ who want to include run-time testing features in their own packages.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-assertive-base r-assertive-types))
+    (native-inputs (list r-testthat))
     (home-page "https://bitbucket.org/richierocks/assertive.datetimes")
     (synopsis "Assertions to check properties of dates and times")
     (description
