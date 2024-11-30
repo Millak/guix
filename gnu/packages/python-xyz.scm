@@ -17292,7 +17292,7 @@ and other @acronym{IDEs, Integrated Development Environments}.")
 (define-public python-debugpy
   (package
     (name "python-debugpy")
-    (version "1.6.0")
+    (version "1.8.9")
     (source
      (origin
        (method git-fetch)
@@ -17307,7 +17307,7 @@ and other @acronym{IDEs, Integrated Development Environments}.")
        (patches (search-patches "python-debugpy-unbundle-pydevd.patch"))
        (sha256
         (base32
-         "1dpfzs3p51648i7f3fz8dw5d0vrj39iwn1jhn0226idc02ybyqih"))))
+         "0rq9ndsg4za0np5lnlkdwaqlizay8ndm8ki2m7r7awji262dzzlx"))))
     (build-system python-build-system)
     (arguments
      (list
