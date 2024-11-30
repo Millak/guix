@@ -25007,6 +25007,8 @@ lasso, adaptive lasso and Ridge regression based on cross-validation.")
         (base32
          "19vfh868lr4a491gc2x2b2xs83gldw294zbl4bqsgs2q9c6l81ka"))))
     (build-system r-build-system)
+    ;; XXX On the build farm the vignettes time out.
+    (arguments (list #:test-types '(list "tests")))
     (native-inputs (list r-iso r-xtable))
     (home-page "https://www.stat.umn.edu/geyer/mcmc/")
     (synopsis "Markov chain Monte Carlo")
