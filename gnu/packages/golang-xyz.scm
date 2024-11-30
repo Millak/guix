@@ -876,6 +876,29 @@ JSONMarshal/JSONUnmarshal to store/reload the Bloom filter.")
 commands.")
     (license license:expat)))
 
+(define-public go-github-com-arceliar-phony
+  (package
+    (name "go-github-com-arceliar-phony")
+    (version "v0.0.0-20220903101357-530938a4b13d")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Arceliar/phony")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1ww3issk2jg9nzijmz1xncdhd0mh553nixns34s3yjm4mb8c5s93"))))
+    (arguments
+     '(#:import-path "github.com/Arceliar/phony"))
+    (build-system go-build-system)
+    (home-page "https://github.com/Arceliar/phony")
+    (synopsis "Very minimal actor model library")
+    (description "Phony is a very minimal actor model library for Go,
+inspired by the causal messaging system in the Pony programming language.")
+    (license license:expat)))
+
 (define-public go-github-com-armon-go-radix
   (package
     (name "go-github-com-armon-go-radix")
