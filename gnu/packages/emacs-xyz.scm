@@ -38448,6 +38448,37 @@ only requirement is that every Org file must have a @samp{title} and
 a @samp{date} keywords, and optionally, a @samp{filetags} keyword.")
     (license license:bsd-3)))
 
+(define-public emacs-weblorg
+  (let ((commit "0db218bd6b2e083546d3a69a022dfb1a08900acd")
+        (revision "0"))
+    (package
+      (name "emacs-weblorg")
+      (version (git-version "0.1.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/emacs-love/weblorg")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0fijrzc96p3jkq53i65bzhmxqyg28a49n21glkzb5b21agy0cdqh"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #t
+        #:test-command #~(list "emacs" "--quick" "--batch"
+                               "-l" "t/weblorg-tests.el"
+                               "-f" "ert-run-tests-batch-and-exit")))
+      (propagated-inputs (list emacs-templatel))
+      (home-page "https://emacs.love/weblorg/")
+      (synopsis "Static site generator for Org mode")
+      (description
+       "Weblorg is a static site generator particularly suitable for blogs,
+written in Emacs Lisp and with support for templates and themes.  It
+requires no external dependencies.")
+      (license license:gpl3+))))
+
 (define-public emacs-ddskk
   (let ((commit "8c47f46e38a29a0f3eabcd524268d20573102467")
         (revision "0"))
