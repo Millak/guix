@@ -24196,6 +24196,7 @@ packages.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-assertive-base r-assertive-types r-stringi))
+    (native-inputs (list r-testthat))
     (home-page "https://bitbucket.org/richierocks/assertive.strings")
     (synopsis "Assertions to check properties of strings")
     (description
