@@ -916,6 +916,10 @@ dynamic library for the C language implementation of HEALPix.")
        (sha256
         (base32 "13kqvl9ay4x0ia7iikxbhg96pp46f1awr382p05gxdvsxksq900v"))))
     (build-system cmake-build-system)
+    (arguments
+     (list
+      ;; See <https://github.com/GreatAttractor/imppg/issues/28>.
+      #:tests? (target-x86-64?)))
     (native-inputs
      (list boost pkg-config))
     (inputs
