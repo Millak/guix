@@ -199,17 +199,17 @@
 ;; Update this id with every update to its release date.
 ;; It's used for cache validation and therefore can lead to strange bugs.
 ;; ex: date '+%Y%m%d%H%M%S'
-(define %librewolf-build-id "20241119164012")
+(define %librewolf-build-id "20241130102406")
 
 (define-public librewolf
   (package
     (name "librewolf")
-    (version "132.0.2-1")
+    (version "133.0-1")
     (source
      (make-librewolf-source
       #:version version
-      #:firefox-hash "1s8h4sf78i5ybzv5pvdpx09fb04gdly7pzgivh8kzqdlyij1g7ij"
-      #:librewolf-hash "0qyi0w92vj5yqljrkzcif2jiz3ispyglg4awywyiqd874i0p8c7c"))
+      #:firefox-hash "0q6cqfnwc2x09frdvsndmhck8ixrnbl281j9rqw5w8bd7fd2qas9"
+      #:librewolf-hash "1xf7gx3xm3c7dhch9gwpb0xp11lcyim1nrbm8sjljxdcs7iq9jy4"))
     (build-system gnu-build-system)
     (arguments
      (list
