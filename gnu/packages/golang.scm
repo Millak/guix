@@ -7086,54 +7086,6 @@ full-window, or a mix of both.")
 dependencies and a simple API.")
     (license license:asl2.0)))
 
-(define-public go-github-com-arceliar-ironwood
-  (package
-    (name "go-github-com-arceliar-ironwood")
-    (version "v0.0.0-20241122002527-75a6e82fa380")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/Arceliar/ironwood")
-             (commit (go-version->git-ref version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1xrdy5yn2y8q147n6fafc8cqjf6my06wzlhghv0c5ra9rqg1dii7"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/Arceliar/ironwood"
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'remove-examples
-            (lambda* (#:key import-path #:allow-other-keys)
-              (delete-file-recursively
-               (string-append "src/" import-path "/cmd/ironwood-example"))))
-          ;; XXX: Replace when go-build-system supports nested path.
-          (delete 'build)
-          (replace 'check
-            (lambda* (#:key import-path tests? #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion (string-append "src/" import-path)
-                  (invoke "go" "test" "-v" "./..."))))))))
-    (propagated-inputs
-     (list go-github-com-arceliar-phony
-           go-github-com-bits-and-blooms-bitset
-           go-github-com-bits-and-blooms-bloom-v3
-           go-golang-org-x-crypto))
-    (home-page "https://github.com/Arceliar/ironwood")
-    (synopsis "Experimental network routing library")
-    (description
-     "Ironwood is a routing library with a @code{net.PacketConn}-compatible
-interface using @code{ed25519.PublicKey}s as addresses.  Basically, you use it
-when you want to communicate with some other nodes in a network, but you can't
-guarantee that you can directly connect to every node in that network.  It was
-written to test improvements to / replace the routing logic in
-@url{https://github.com/yggdrasil-network/yggdrasil-go,Yggdrasil}, but it may
-be useful for other network applications.")
-    (license license:mpl2.0)))
-
 (define-public go-github-com-mtibben-percent
   (package
     (name "go-github-com-mtibben-percent")
