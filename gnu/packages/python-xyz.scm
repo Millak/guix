@@ -24709,25 +24709,27 @@ creating a tag.")
 (define-public python-ddt
   (package
     (name "python-ddt")
-    (version "1.4.2")
+    (version "1.7.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ddt" version))
        (sha256
-        (base32
-         "0y2k756qjz1rhpivi60hy29b4bf0bh3wck39i1mn6pkil9k779k4"))))
-    (build-system python-build-system)
+        (base32 "0jz0lglz5z5clsbralbpmd1hxs4ndb6ls7lvl7216c4nhfqdc5fj"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest))
+     (list python-aiounittest
+           python-pytest
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-pyyaml))
     (home-page "https://github.com/datadriventests/ddt")
     (synopsis "Data-Driven Tests")
     (description
      "Data-Driven Tests (@dfn{DDT}) allow you to multiply one test case by
-     running it with different test data, and make it appear as multiple test
-     cases.")
+running it with different test data, and make it appear as multiple test
+cases.")
     (license license:expat)))
 
 (define-public python-pycountry
