@@ -9473,7 +9473,7 @@ properties, screen resolution, and other GNOME parameters.")
 (define-public gnome-shell
   (package
     (name "gnome-shell")
-    (version "44.10")
+    (version "46.7")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -9481,7 +9481,7 @@ properties, screen resolution, and other GNOME parameters.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "01pw9qnnvh64x56z1gqh0qk6vfn0ihh4zijq23f4bpz9wszlbpwf"))))
+                "0n19160ab6chcnxmwwv4m0kfz856n7851dv4ck0p08mfp39wzwhw"))))
     (build-system meson-build-system)
     (arguments
      (let ((disallowed-references
@@ -9496,8 +9496,7 @@ properties, screen resolution, and other GNOME parameters.")
         #~(list "-Dsystemd=false"
                 ;; Otherwise, the RUNPATH will lack the final path component.
                 (string-append "-Dc_link_args=-Wl,-rpath="
-                               #$output "/lib/gnome-shell")
-                "-Dsoup2=false")
+                               #$output "/lib/gnome-shell"))
         #:modules '((guix build meson-build-system)
                     (guix build utils)
                     (ice-9 match)
@@ -9519,11 +9518,11 @@ properties, screen resolution, and other GNOME parameters.")
                 (substitute* "meson.build"
                   (("gtk_update_icon_cache: true")
                    "gtk_update_icon_cache: false"))))
-            (add-after 'unpack 'unbreak-perf-tests
+            (add-after 'unpack 'unbreak-shell-tests
               (lambda _
                 ;; Lest non-fatal dbus warnings be made fatal again…
                 (substitute* "tests/meson.build"
-                  (("perf_testenv\\.set\\('G_DEBUG'" all)
+                  (("shell_testenv\\.set\\('G_DEBUG'" all)
                    (string-append "# " all)))))
             (add-before 'configure 'record-absolute-file-names
               (lambda* (#:key inputs #:allow-other-keys)
@@ -9563,7 +9562,7 @@ properties, screen resolution, and other GNOME parameters.")
                    (lambda (prog)
                      (wrap-program (string-append #$output "/bin/" prog)
                        `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))))
-                   '("gnome-shell" "gnome-extensions-app"))
+                   '("gnome-shell" "gnome-extensions" "gnome-extensions-app"))
                   (substitute* (string-append #$output "/share/gnome-shell/"
                                               "org.gnome.Shell.Extensions")
                     (("imports\\.package\\.start" all)
@@ -9583,13 +9582,7 @@ properties, screen resolution, and other GNOME parameters.")
                                     "[imports.gi.GLib.getenv('GST_PLUGIN_SYSTEM_PATH'),"
                                     "'" gst-plugin-path "'].filter(v => v).join(':'),"
                                     "true);\n"
-                                    all)))
-                  (for-each
-                   (lambda (prog)
-                     (wrap-program (string-append #$output "/bin/" prog)
-                       `("GUIX_PYTHONPATH"      ":" prefix (,python-path))
-                       `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))))
-                   '("gnome-shell-perf-tool")))))
+                                    all))))))
             (add-after 'install 'rewire
               (lambda* (#:key inputs #:allow-other-keys)
                 (for-each
