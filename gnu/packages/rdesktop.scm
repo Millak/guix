@@ -195,14 +195,18 @@ of parts of the Windows API.")
                   pixman
                   python
                   python-libxml2))
-    (native-inputs (list bison
-                         cmocka
-                         flex
-                         gettext-minimal
-                         intltool
-                         nasm
-                         pkg-config
-                         pixman))
+    (native-inputs
+     (append
+       (list bison
+             cmocka
+             flex
+             gettext-minimal
+             intltool)
+       (if (target-x86?)
+           (list nasm)
+           '())
+       (list pkg-config
+             pixman)))
     (arguments
      (list #:configure-flags #~(list "--enable-strict-locations=yes"
                                      "--enable-fuse=yes"
