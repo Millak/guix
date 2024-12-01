@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014, 2015, 2016, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2016, 2021, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016, 2017, 2018, 2020-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2017, 2018, 2019, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
@@ -9,6 +9,7 @@
 ;;; Copyright © 2019 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2020 Lu hux <luhux@outlook.com>
 ;;; Copyright © 2022 ROCKTAKEY <rocktakey@gmail.com>
+;;; Copyright © 2022 Runciter <runciter@whispers-vpn.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -519,3 +520,47 @@ targets that build dictionaries in dictd format are retained when this
 Guix package is installed.")
     (home-page "https://freedict.org")
     (license license:gpl2+)))
+
+(define-public freedict-dictionaries
+  (let ((commit "914b5f754b695e9422bf951837b0682a077e244e")
+        (revision "0"))
+    (package
+      (name "freedict-dictionaries")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/freedict/fd-dictionaries")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0a8k5rq94rl1nmz0354sx2gmyqica0yjavirh5v5wdybkfq8nv83"))))
+      (inputs (list espeak-ng libxslt dictd perl-libxml freedict-tools))
+      (native-inputs (list python perl))
+      (arguments
+       (list
+        ;; "validation" target fails because of hardcoded
+        ;; path /usr/bin/xmllint in freedict-tools
+        #:tests? #f
+        #:make-flags #~(list (string-append "PREFIX="
+                                            #$output))
+        #:phases #~(modify-phases %standard-phases
+                     (delete 'configure)
+                     (add-before 'build 'set-tools-prefix-in-makefile
+                       (lambda* (#:key inputs #:allow-other-keys)
+                         (substitute* "Makefile"
+                           (("FREEDICT_TOOLS \\?= ../tools")
+                            (string-append "export FREEDICT_TOOLS = "
+                                           #$(file-append
+                                              (this-package-input "freedict-tools")
+                                              "/share/freedict")))))))))
+      (build-system gnu-build-system)
+      (synopsis "Multilingual dictionaries compiled to the DICT format")
+      (description
+       "FreeDict is a project that offers over 140 free
+ dictionaries in about 45 languages, with the right to study, change and
+ modify them.  You can use them offline on your computer or mobile phone
+ and export them to any format and application.")
+      (home-page "https://freedict.org")
+      (license license:gpl2+))))
