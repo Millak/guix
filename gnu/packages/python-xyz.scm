@@ -15853,15 +15853,28 @@ checksums.  It implement more than a hundred checksum routines.")
     (version "1.0.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "stdio-mgr" version))
+       (method git-fetch) ; no tests data in PyPi package
+       (uri (git-reference
+             (url "https://github.com/bskinn/stdio-mgr")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "11j1kxxrp76vm6l8wvfnw50fb6lmckxf25nkra70jpiacd8kn73q"))))
+        (base32 "0xb6779s7j162xhig6vc63f9nn3v406fvjh1zqbqbf8zcl17ific"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-attrs))
+    (arguments
+     (list
+      ;; Do not run doctests requiring sphinx.
+      #:test-flags #~(list "--ignore=README.rst")))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-attrs))
     (home-page "https://github.com/bskinn/stdio-mgr")
     (synopsis "Context manager for mocking/wrapping stdin/stdout/stderr")
-    (description "This package contains a context manager for mocking/wrapping
+    (description
+     "This package contains a context manager for mocking/wrapping
 stdin/stdout/stderr.")
     (license license:expat)))
 
