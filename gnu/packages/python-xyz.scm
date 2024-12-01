@@ -26262,6 +26262,9 @@ input.")
 to and from native Python datatypes.")
     (license license:expat)))
 
+;; XXX: Deprecated upstream: This repository has been archived by the owner on
+;; Jun 6, 2024. It is now read-only.
+;; Consider to remove when nothing is depend on it.
 (define-public python-marshmallow-jsonapi
   (package
     (name "python-marshmallow-jsonapi")
@@ -26272,23 +26275,21 @@ to and from native Python datatypes.")
        (uri (pypi-uri "marshmallow-jsonapi" version))
        (sha256
         (base32 "1d9pxcgmln4gls99vwj1h24qv0lz7fb2jqmqrsiv1pid1snc125x"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-marshmallow))
+    (build-system pyproject-build-system)
     (native-inputs
      (list python-faker
-           python-flake8
-           python-flake8-bugbear
            python-flask
-           python-mock
            python-pytest
-           python-tox))
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-marshmallow))
     (home-page "https://github.com/marshmallow-code/marshmallow-jsonapi")
     (synopsis "JSON:API 1.0 formatting with Marshmallow")
     (description
      "The marshmallow-jsonapi package provides a simple way to produce
-     @uref{https://jsonapi.org, JSON:API}-compliant data in any Python Web framework.
-     It includes optional utilities to integrate with Flask.")
+@uref{https://jsonapi.org, JSON:API}-compliant data in any Python Web
+framework.  It includes optional utilities to integrate with Flask.")
     (license license:expat)))
 
 (define-public python-apispec
