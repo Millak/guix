@@ -21747,70 +21747,59 @@ patterns.")
       (license license:gpl3))))
 
 (define-public r-voltron
-  (let ((commit "5057b703479239a9aaba761f07e65d849f6111f8")
+  (let ((commit "9f9415c72e9347f578a166981842d33e43b0466d")
         (revision "1"))
     (package
       (name "r-voltron")
-      (version (git-version "1.0.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/BIMSBbioinfo/VoltRon")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1nximl4708a7fdwn8ysxpni3mp6dx33cphavlay7hh1pa55pnzgn"))
-                (modules '((guix build utils)))
-                ;; The tripack package is not available under a free license,
-                ;; but interp provides free implementations of "tri.mesh" and
-                ;; "neighbours".
-                (snippet
-                 '(substitute* '("DESCRIPTION" "NAMESPACE" "R/spatial.R")
-                    (("tripack") "interp")))))
+      (version (git-version "0.2.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/BIMSBbioinfo/VoltRon")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0bvvpj96ix2ij6034dfrh7za1lvf73qxqsdvbs2wrpc931s18q32"))))
       (properties `((upstream-name . "VoltRon")))
       (build-system r-build-system)
-      (inputs (list opencv tbb zlib))
-      (propagated-inputs (list r-anndata
+      (inputs (list opencv zlib))
+      (propagated-inputs (list r-basilisk
                                r-data-table
                                r-dplyr
                                r-ebimage
-                               r-fastdummies
-                               r-fnn
-                               r-ggforce
                                r-ggplot2
                                r-ggpubr
                                r-ggrepel
-                               r-hdf5r
-                               r-htmltools
+                               r-ids
                                r-igraph
-                               r-interp
                                r-irlba
                                r-magick
                                r-matrix
-                               r-morpho
-                               r-raster
+                               r-rann
+                               r-rcdt
                                r-rcpp
+                               r-rcppannoy
+                               r-rcpparmadillo
                                r-reshape2
+                               r-reticulate
                                r-rjson
                                r-rlang
-                               r-s4vectors
-                               r-scales
+                               r-s4arrays
                                r-shiny
                                r-shinyjs
+                               r-sp
                                r-stringr
-                               r-terra
-                               r-umap
-                               r-xml))
-      (native-inputs (list pkg-config))
+                               r-uwot))
+      (native-inputs (list pkg-config r-testthat))
       (home-page "https://github.com/BIMSBbioinfo/VoltRon")
-      (synopsis "VoltRon for Spatial Data Integration and Analysis")
+      (synopsis "VoltRon for spatial data integration and analysis")
       (description
-       "@code{VoltRon} is a toolbox for spatial data analysis, multi-omics
-integration using spatial image registration.  @code{VoltRon} is capable of
-analyzing multiple types and modalities of spatially-aware datasets.
-@code{VoltRon} visualizes and analyzes regions of interests (ROIs), spots,
-cells and even molecules.")
+       "@code{VoltRon} is a novel spatial omic analysis toolbox for
+multi-omics integration using spatial image registration.  @code{VoltRon} is
+capable of analyzing multiple types and modalities of spatially-aware
+datasets.  @code{VoltRon} visualizes and analyzes regions of interests (ROIs),
+spots, cells and even molecules.")
       (license license:expat))))
 
 (define-public methyldackel
