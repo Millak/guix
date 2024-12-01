@@ -15543,15 +15543,18 @@ lints.")
 (define-public python-flake8-quotes
   (package
     (name "python-flake8-quotes")
-    (version "3.2.0")
+    (version "3.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "flake8-quotes" version))
        (sha256
-        (base32
-         "0ph5s6lxgpzz4an0ax6s5xjqypqmngwr5b1i0h9pqhzghplic49z"))))
-    (build-system python-build-system)
+        (base32 "0v1762x0819xqha7w4l4hh66bpi82imgiib8pvmd78hhnwplkn5a"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-flake8))
     (home-page "https://github.com/zheller/flake8-quotes/")
