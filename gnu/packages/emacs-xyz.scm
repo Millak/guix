@@ -18884,7 +18884,7 @@ are common in Chromium-derived projects.")
 (define-public emacs-gnosis
   (package
     (name "emacs-gnosis")
-    (version "0.4.3")
+    (version "0.4.8")
     (source
      (origin
        (method git-fetch)
@@ -18893,14 +18893,14 @@ are common in Chromium-derived projects.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0kp4vwzldcyf7c8dqjrfrqgwkfysiy8n8zc4c1j1p72p0m4rxwv8"))))
+        (base32 "1y9f5ms7aivwjfc951m68jfmwncfq5f4h876xvivxhfph4xnc76y"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-compat emacs-emacsql))
-    (home-page "https://thanosapollo.org/projects/gnosis")
-    (synopsis "Spaced repetition system for GNU Emacs.")
+    (home-page "https://thanosapollo.org/projects/gnosis/")
+    (synopsis "Spaced repetition system for GNU Emacs")
     (description
      "Gnosis is a spaced repetition system for note-taking and self-testing
-where notes are formatted as Question/Answer/Explanation. Notes are reviewed
+where notes are formatted as Question/Answer/Explanation.  Notes are reviewed
 at spaced intervals based on the success or failure in recalling the answer to
 each question.")
     (license license:gpl3+)))
