@@ -15468,24 +15468,36 @@ files.")
 (define-public python-flake8-pyi
   (package
     (name "python-flake8-pyi")
-    (version "20.10.0")
+    (version "24.9.0")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "flake8-pyi" version))
+       (uri (pypi-uri "flake8_pyi" version))
        (sha256
-        (base32
-         "0b27n2pmrxcc7nva4wp2i7mrag0fnq0firvhg1ljq593a45b5qyf"))))
-    (build-system python-build-system)
+        (base32 "1n8cqbqq9cfyn952kwqqs4s7lcyycgr829ymxnplg0cm49877yv4"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              ;; Prevent full threads utilization.
+              (substitute* "pyproject.toml"
+                (("-nauto") "")))))))
+    (native-inputs
+     (list python-hatchling
+           python-pytest))
     (propagated-inputs
-     (list python-attrs python-flake8 python-pyflakes))
+     (list python-attrs
+           python-flake8
+           python-pyflakes))
     (home-page "https://github.com/ambv/flake8-pyi")
-    (synopsis
-      "Flake8 plugin that provides specializations for type hinting stub files")
+    (synopsis "Flake8 plugin that provides specializations for type hinting stub files")
     (description
-     "This package contains a plugin that provides specializations for
-type hinting stub files, especially interesting for linting typeshed.  It
-adds the @file{.pyi} extension to the default value of the @code{--filename}
+     "This package contains a plugin that provides specializations for type
+hinting stub files, especially interesting for linting typeshed.  It adds the
+@file{.pyi} extension to the default value of the @code{--filename}
 command-line argument to Flake8.  This means stubs are linted by default with
 this plugin enabled, without needing to explicitly list every file.  It
 modifies PyFlakes runs for @file{.pyi} files to defer checking type annotation
