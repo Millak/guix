@@ -26137,30 +26137,33 @@ in pure Python.")
 (define-public python-validators
   (package
     (name "python-validators")
-    (version "0.18.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "validators" version))
-              (sha256
-               (base32
-                "19lypf7hm7p203ay3v8zmckc5rv6889zkfdm16nki1972f99mk9p"))))
-    (build-system python-build-system)
+    (version "0.34.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "validators" version))
+       (sha256
+        (base32 "07vq3s77f5yndn7jfx39jbsaq5m8wqc3p52v4i6sgyasnh3y8zv4"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda _
-                      (invoke "pytest" "-vv"))))))
-    (propagated-inputs
-     (list python-decorator python-six))
+     (list
+      ;; python-eth-hash is not packed yet.
+      #:test-flags #~(list "--ignore=tests/crypto_addresses/test_eth_address.py")))
     (native-inputs
-     (list python-flake8 python-isort python-pytest))
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-decorator
+           ;; python-eth-hash ; optional, not packed yet.
+           python-six))
     (home-page "https://github.com/kvesteri/validators")
     (synopsis "Data validation library")
     (description
      "This package contains validators for different things such as email
-     addresses, IP addresses, URLs, hashes and more.  It has been designed to
-     be easy to use and not require defining a schema or form just to validate
-     some input.")
+addresses, IP addresses, URLs, hashes and more.  It has been designed to be
+easy to use and not require defining a schema or form just to validate some
+input.")
     (license license:expat)))
 
 (define-public python-validate-email
