@@ -565,6 +565,26 @@ Shiny applications.")
     (license (list license:gpl3
                    license:isc)))) ;for bundled d3js
 
+(define-public r-colorsgen
+  (package
+    (name "r-colorsgen")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "colorsGen" version))
+       (sha256
+        (base32 "0w4qkl4fw7pjfcd2z3nhpkxh8kv3bbq19bi2cg0ivfr83kxa44fj"))))
+    (properties `((upstream-name . "colorsGen")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-colorspace))
+    (home-page "https://github.com/stla/colorsGen")
+    (synopsis "Generation of random colors")
+    (description
+     "This package lets you generate random colors, possibly with a given hue
+or a given luminosity.")
+    (license license:cc0)))
+
 (define-public r-consort
   (package
     (name "r-consort")
