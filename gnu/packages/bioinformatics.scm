@@ -17248,7 +17248,7 @@ methylation and segmentation.")
 (define-public pigx-scrnaseq
   (package
     (name "pigx-scrnaseq")
-    (version "1.1.9")
+    (version "1.1.10")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/BIMSBbioinfo/pigx_scrnaseq/"
@@ -17256,11 +17256,12 @@ methylation and segmentation.")
                                   "/pigx_scrnaseq-" version ".tar.gz"))
               (sha256
                (base32
-                "0adx7877c3lhlrzfid76i8bc829wcmzvrm0jx47gyid8mxqb7vqs"))))
+                "082im1j6qpd2y8ax4msxw7mfc40zxpl29hx92skqdd55745f58z8"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
+     (list
+      #:phases
+      '(modify-phases %standard-phases
          (add-before 'configure 'set-additional-environment-variables
            (lambda _
              ;; Needed because of loompy
