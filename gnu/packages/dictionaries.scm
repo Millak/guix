@@ -28,6 +28,7 @@
 (define-module (gnu packages dictionaries)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
+  #:use-module (guix gexp)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
@@ -55,7 +56,10 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages web)
-  #:use-module (gnu packages xml))
+  #:use-module (gnu packages xml)
+  #:use-module (gnu packages dictd)
+  #:use-module (gnu packages speech)
+  #:use-module (gnu packages perl))
 
 
 (define-public vera
@@ -466,3 +470,52 @@ in StarDict's format.")
 for SKK Japanese input systems, and various dictionary files.
 @file{SKK-JISYO.L} can be used with @code{emacs-ddskk} or @code{uim} package.")
       (license license:gpl2+))))
+
+(define-public freedict-tools
+  (package
+    (name "freedict-tools")
+    (version "0.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/freedict/tools")
+             (commit "3596640e6e0582cc5fb76a342e5d8e7413aa4b34"))) ;"0.6.0" tag
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1raayynvn1j8x0ck8pnbbljl6zxnsyzzil7y54xz03dpj7k9w7mk"))))
+    (inputs (list espeak-ng
+                  python
+                  perl
+                  gzip
+                  tar
+                  libxslt
+                  dictd
+                  perl-libxml))
+    (arguments
+     (list
+      #:tests? #f
+      #:phases #~(modify-phases %standard-phases
+                   (delete 'configure)
+                   (add-before 'build 'set-prefix-in-makefile
+                     (lambda* (#:key inputs #:allow-other-keys)
+                       (substitute* "Makefile"
+                         (("PREFIX \\?=.*")
+                          (string-append "PREFIX = "
+                                         #$output "\n")))
+                       (substitute* "mk/dicts.mk"
+                         (("available_platforms := src dictd slob")
+                          "available_platforms := dictd")))))))
+    (build-system gnu-build-system)
+    (synopsis "Build and manage FreeDict dictionaries")
+    (description
+     "FreeDict is a project that offers over 140 free
+dictionaries in about 45 languages, with the right to study, change and
+modify them.  You can use them offline on your computer or mobile phone
+and export them to any format and application.
+
+In order to limit store size and build complexity, only the build
+targets that build dictionaries in dictd format are retained when this
+Guix package is installed.")
+    (home-page "https://freedict.org")
+    (license license:gpl2+)))
