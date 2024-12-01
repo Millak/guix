@@ -25440,21 +25440,27 @@ which make common patterns shorter and easier.")
 (define-public python-diff-cover
   (package
     (name "python-diff-cover")
-    (version "7.5.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "diff_cover" version))
-              (sha256
-               (base32
-                "1z7bxnij2sqsiz9313nwcak7nshakpq4b6c05v13hkqyhd505cx4"))))
+    (version "9.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "diff_cover" version))
+       (sha256
+        (base32 "0dms5f3axwkjpcck4mlglfn0pga5nmskyc7ahyg8yrxvxd9v7845"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      ;; missing fixture 'datadir'.
-      '(list "--ignore=tests/test_clover_violations_reporter.py"
-             ;; Difference in line breaks
-             "-k" "not test_html_with_external_css")))
+      ;; Dropp check of flake8 in tests.
+      #~(list "-k" "not test_file_does_not_exist")))
+    (native-inputs
+     (list python-pycodestyle
+           python-poetry-core
+           python-pyflakes
+           python-pylint
+           python-pytest
+           python-pytest-datadir
+           python-pytest-mock))
     (propagated-inputs
      (list python-chardet
            python-jinja2
@@ -25462,19 +25468,13 @@ which make common patterns shorter and easier.")
            python-pygments
            python-setuptools ; For pkg_resources.
            python-tomli))
-    (native-inputs
-     (list python-flake8
-           python-poetry-core
-           python-pylint
-           python-pytest
-           python-pytest-flake8
-           python-pytest-mock))
     (home-page "https://github.com/Bachmann1234/diff-cover")
     (synopsis "Run coverage and linting reports on diffs")
-    (description "Automatically find diff lines that need test coverage.  It
-also finds diff lines that have violations (according to tools such as
-pycodestyle, pyflakes, flake8, or pylint).  This is used as a code quality
-metric during code reviews.")
+    (description
+     "Automatically find diff lines that need test coverage.  It also finds
+diff lines that have violations (according to tools such as pycodestyle,
+pyflakes, flake8, or pylint).  This is used as a code quality metric during
+code reviews.")
     (license license:asl2.0)))
 
 (define-public python-diff-match-patch
