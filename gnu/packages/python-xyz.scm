@@ -15442,16 +15442,22 @@ unnecessary plus operators for explicit string literal concatenation.")
 (define-public python-flake8-print
   (package
     (name "python-flake8-print")
-    (version "4.0.0")
+    (version "5.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "flake8-print" version))
        (sha256
-        (base32 "05k5kkvyk6fdmvnacxfzypk74vbl3pmva13dqg1aljfwnxsc7yjs"))))
-    (build-system python-build-system)
+        (base32 "1ydx92xck090ajp8vk2378fm0f4wj3mikhinjs3w1hcw70m5m4bn"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f)) ; no tests in PiPY or git checkout
+    (native-inputs
+     (list python-poetry-core))
     (propagated-inputs
-     (list python-flake8 python-pycodestyle python-six))
+     (list python-flake8
+           python-pycodestyle))
     (home-page "https://github.com/jbkahn/flake8-print")
     (synopsis "Print statement checker plugin for Flake8")
     (description
