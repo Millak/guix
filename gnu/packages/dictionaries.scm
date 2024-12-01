@@ -484,7 +484,8 @@ for SKK Japanese input systems, and various dictionary files.
              (commit "3596640e6e0582cc5fb76a342e5d8e7413aa4b34"))) ;"0.6.0" tag
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1raayynvn1j8x0ck8pnbbljl6zxnsyzzil7y54xz03dpj7k9w7mk"))))
+        (base32 "1raayynvn1j8x0ck8pnbbljl6zxnsyzzil7y54xz03dpj7k9w7mk"))
+       (patches (search-patches "freedict-tools-fix-determinism.patch"))))
     (inputs (list espeak-ng
                   python
                   perl

@@ -1,0 +1,22 @@
+The compression utility dictzip writes the compressed file's mtime in a header
+of the compressed file. No command-line switch is documented to control or
+suppress this behavior. This makes the build of packages relying on
+freedict-tools such as freedict-dictionaries non-deterministic.
+
+This patch sets the mtime of the .dict file to be compressed by dictzip to the
+start of the epoch on the Greenwich meridian, restoring build determinism.
+
+diff --git a/mk/dicts.mk b/mk/dicts.mk
+index 08e8923..e671cf3 100644
+--- a/mk/dicts.mk
++++ b/mk/dicts.mk
+@@ -265,7 +265,8 @@ $(BUILD_DICTD)/%.dict $(BUILD_DICTD)/%.index: $(BUILD_DICTD)/%.c5 query-dictd
+ 		dictfmt --without-time -t --headword-separator %%% $(DICTFMTFLAGS) $* < $(notdir $<)
+ 
+ $(BUILD_DICTD)/%.dict.dz: $(BUILD_DICTD)/%.dict
+-	dictzip -k $<
++	touch -m -d "$$(date -u -R -d @0)" $< && \
++		dictzip -k $<
+ 
+ # prevent make from removing our precious file
+ .PRECIOUS: $(BUILD_DICTD)/$(dictname).dict
