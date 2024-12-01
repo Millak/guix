@@ -26241,30 +26241,28 @@ input.")
 (define-public python-marshmallow
   (package
     (name "python-marshmallow")
-    (version "3.19.0")
+    ;; XXX: The latest version requires missing timezones from python-pytz
+    ;; which needs to be updated.
+    (version "3.22.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "marshmallow" version))
        (sha256
-        (base32
-         "0y6vpq2p5841kcw2qil68la0rx9z1vmxzj3dxjv99kjhsq7jq0wh"))))
+        (base32 "0gl2qmq5sqf1b3f84zd7yzkznaknr6j5lnbxcfw0n8ja20lzawj9"))))
     (build-system pyproject-build-system)
-    (propagated-inputs
-     (list python-packaging))
     (native-inputs
-     (list python-flake8
-           python-flake8-bugbear
-           python-mypy
-           python-pytest
+     (list python-pytest
            python-pytz
            python-simplejson
-           python-setuptools
-           python-wheel))
+           python-flit-core))
+    (propagated-inputs
+     (list python-packaging))
     (home-page "https://github.com/marshmallow-code/marshmallow")
     (synopsis "Convert complex datatypes to and from native Python datatypes")
-    (description "@code{marshmallow} provides a library for converting complex
-datatypes to and from native Python datatypes.")
+    (description
+     "@code{marshmallow} provides a library for converting complex datatypes
+to and from native Python datatypes.")
     (license license:expat)))
 
 (define-public python-marshmallow-jsonapi
