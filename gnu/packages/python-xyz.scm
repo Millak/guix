@@ -15099,21 +15099,32 @@ PEP 8.")
 (define-public python-pep8-naming
   (package
     (name "python-pep8-naming")
-    (version "0.13.0")
+    (version "0.14.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pep8-naming" version))
        (sha256
-        (base32
-         "1dc0b6xw1cxp01v9zsv4ryk49rfs1lngfpvzsixgp8b7z3ffcf4z"))))
-    (build-system python-build-system)
-    (propagated-inputs (list python-flake8))
+        (base32 "0dlapswhvzkkyw9gmjngc4rbzasdxnpxwj8mdkmmfmc7h2p2iwhy"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "python" "run_tests.py")))))))
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-flake8))
     (home-page "https://github.com/PyCQA/pep8-naming")
     (synopsis "Check PEP-8 naming conventions")
     (description
-     "This package provides the @code{pep8-naming} Python module, a
-plugin for flake8 to check PEP-8 naming conventions.")
+     "This package provides the @code{pep8-naming} Python module, a plugin for
+flake8 to check PEP-8 naming conventions.")
     (license license:expat)))
 
 (define-public python-pep440
