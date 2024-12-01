@@ -25392,31 +25392,35 @@ point is the point of maximum curvature.")
 (define-public python-utils
   (package
     (name "python-utils")
-    (version "2.4.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "python-utils" version))
-              (sha256
-               (base32
-                "12c0glzkm81ljgf6pwh0d4rmdm1r7vvgg3ifzp8yp9cfyngw07zj"))))
-    (build-system python-build-system)
+    (version "3.9.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "python_utils" version))
+       (sha256
+        (base32 "18292j4p1bvlpbrfj2cgkdby6dpgnl5gbjwly0qb4pj1j914nmzb"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             (delete-file "pytest.ini")
-             (invoke "pytest" "-vv"))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              ;; Drop test coverage requirements.
+              (substitute* "pytest.ini"
+                ((".*--cov.*") "")))))))
     (native-inputs
-     `(("pytest-runner" ,python-pytest-runner)
-       ("pytest" ,python-pytest)
-       ("six" ,python-six)))
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-loguru
+           python-typing-extensions))
     (home-page "https://github.com/WoLpH/python-utils")
     (synopsis "Convenient utilities not included with the standard Python install")
     (description
-      "Python Utils is a collection of small Python functions and classes which
-     make common patterns shorter and easier.")
+     "Python Utils is a collection of small Python functions and classes
+which make common patterns shorter and easier.")
     (license license:bsd-2)))
 
 (define-public python-diff-cover
