@@ -21763,7 +21763,23 @@ patterns.")
           (base32 "0bvvpj96ix2ij6034dfrh7za1lvf73qxqsdvbs2wrpc931s18q32"))))
       (properties `((upstream-name . "VoltRon")))
       (build-system r-build-system)
-      (inputs (list opencv zlib))
+      (inputs
+       (list opencv
+             ;; These Python inputs would be fetched by Basilisk via Conda.
+             ;; We add these inputs in anticipation of an upstream change to
+             ;; allow for a Conda-free use of the package.
+             python
+             python-numpy
+             python-pandas
+             python-anndata
+             python-h5py
+             python-natsort
+             python-numcodecs
+             python-packaging
+             python-scipy
+             python-tifffile
+             python-zarr
+             zlib))
       (propagated-inputs (list r-basilisk
                                r-data-table
                                r-dplyr
