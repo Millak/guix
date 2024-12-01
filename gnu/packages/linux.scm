@@ -9032,6 +9032,8 @@ comparing system environments.")
 the Linux driver and by user-space applications for the Cassini/Slingshot
 high-speed network interconnect made by HPE (formerly Cray).  User-land
 software uses @file{cxi_prov_hw.h} from this package.")
+      ;; As per include/cxi_prov_hw.h it is __aarch64__ or __x86_64__ only.
+      (supported-systems '("x86_64-linux" "aarch64-linux"))
       (license (list license:gpl2 license:bsd-2))))) ;dual-licensed
 
 (define-public cxi-driver
