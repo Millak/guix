@@ -9134,11 +9134,11 @@ known as Slingshot.")
         (base32 "1znmw83rmippv0fwz0x7lgylfk17dr9ckll8lrm4z7kclspnqpj8"))))
     (build-system gnu-build-system)
     (inputs
-     (let ((if-supported                          ;XXX: copied from openmpi
+     (let ((if-supported                          ;XXX: modified from openmpi
             (lambda (package . extra)
               (if (and (not (%current-target-system))
                        (member (%current-system)
-                               (package-supported-systems package)))
+                               (package-transitive-supported-systems package)))
                   (cons package extra)
                   '()))))
        (append (list rdma-core libnl)
