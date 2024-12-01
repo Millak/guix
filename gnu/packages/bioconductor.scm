@@ -11946,7 +11946,10 @@ region sets and other genomic features.")
        (snippet
         '(delete-file "inst/extdata/jslib/jquery-1.8.0.min.js"))))
     (properties
-     `((upstream-name . "ReportingTools")))
+     `((upstream-name . "ReportingTools")
+       ;; This is mentioned in microarrayAnalysis.Rnw, but the package doesn't
+       ;; exist and apparently isn't needed after all.
+       (updater-ignored-native-inputs . ("r-gsealm"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -11987,7 +11990,17 @@ region sets and other genomic features.")
            r-r-utils
            r-xml))
     (native-inputs
-     (list esbuild r-rmarkdown r-runit
+     (list esbuild
+           r-all
+           r-genefilter
+           r-hgu95av2-db
+           r-org-hs-eg-db
+           r-org-mm-eg-db
+           r-org-sc-sgd-db
+           r-pasilla
+           r-rmarkdown
+           r-runit
+           r-shiny
            (origin
              (method url-fetch)
              (uri "https://code.jquery.com/jquery-1.8.0.js")
