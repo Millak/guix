@@ -185,22 +185,17 @@ testing InfiniBand networks.")
 (define-public ucx
   (package
     (name "ucx")
-    (version "1.17.0")
+    (version "1.15.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/openucx/ucx")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
+              (patches (search-patches "ucx-tcp-iface-ioctl.patch"))
               (sha256
                (base32
-                "09182kx60kq7iyjyz3mpcrgp1mm0lnpc0f4hd4hlw5yyabkxrpa1"))
-              (snippet
-               ;; As seen in commit b0a275a5492125a13020cd095fe9934e0b5e7c6a.
-               #~(begin (use-modules (guix build utils))
-                        (substitute* "src/ucs/time/time.h"
-                          (("#include <limits.h>")
-                           "#include <limits.h>\n#include <math.h>"))))))
+                "1mk46vyfp8hsivk88s8gv0nf458jfs59fczpf66wwa3a9yp324jp"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -241,7 +236,6 @@ memory mechanisms for efficient intra-node communication.")
     (home-page "https://www.openucx.org/")
     (license bsd-3)
 
-    ;; <ucm/bistro/bistro.h> lists only PowerPC64, AArch64, RISC-V
-    ;; and x86_64 as supported.
-    (supported-systems '("x86_64-linux" "aarch64-linux" "powerpc64le-linux"
-                         "riscv64-linux"))))
+    ;; <ucm/bistro/bistro.h> lists only PowerPC64, AArch64, and x86_64 as
+    ;; supported.
+    (supported-systems '("x86_64-linux" "aarch64-linux" "powerpc64le-linux"))))
