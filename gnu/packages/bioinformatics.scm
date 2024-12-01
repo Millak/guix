@@ -17176,7 +17176,7 @@ in an easily configurable manner.")
 (define-public pigx-bsseq
   (package
     (name "pigx-bsseq")
-    (version "0.1.8")
+    (version "0.1.10")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/BIMSBbioinfo/pigx_bsseq/"
@@ -17184,14 +17184,15 @@ in an easily configurable manner.")
                                   "/pigx_bsseq-" version ".tar.gz"))
               (sha256
                (base32
-                "1s8zgrqxabrawrgkga5rmgb0gyzj7ck47p3rkicjkfv7r2yjy0d7"))))
+                "1vy3mhbrfdnjbhikwg3mgkfnwnzk96a1n27cxrr7gsffpmz9q6wa"))))
     (build-system gnu-build-system)
     (arguments
-     `(;; TODO: tests currently require 12+GB of RAM.  See
-       ;; https://github.com/BIMSBbioinfo/pigx_bsseq/issues/164
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
+     (list
+      ;; TODO: tests currently require 12+GB of RAM.  See
+      ;; https://github.com/BIMSBbioinfo/pigx_bsseq/issues/164
+      #:tests? #f
+      #:phases
+      '(modify-phases %standard-phases
          (add-before 'configure 'set-PYTHONPATH
            (lambda _
              (setenv "PYTHONPATH" (getenv "GUIX_PYTHONPATH"))))
@@ -17203,7 +17204,7 @@ in an easily configurable manner.")
                      (search-input-directory inputs
                                              "share/zoneinfo")))))))
     (native-inputs
-     (list tzdata))
+     (list tzdata-for-tests))
     (inputs
      (list coreutils
            sed
