@@ -11457,7 +11457,7 @@ insertion module to recover the base cycle order for each oscillator group.")
            r-threejs
            r-tidyr
            r-topgo))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-airway r-knitr r-org-hs-eg-db r-testthat))
     (home-page "https://github.com/federicomarini/pcaExplorer")
     (synopsis
      "Interactive Visualization of RNA-seq Data Using a Principal Components Approach")
