@@ -92,7 +92,7 @@
 
 ;; See browser/locales/l10n-changesets.json for the commit.
 (define firefox-locales
-  (let ((commit "d8d587117c7b9dcc6a4fbc38407ed2c831bb008f")
+  (let ((commit "f75c1e6a305e68161037337767ece88e9de940b9")
         (revision "0"))
     (package
       (name "firefox-locales")
@@ -106,7 +106,7 @@
           (file-name (git-file-name name version))
           (sha256
            (base32
-            "0a2ly29lli02jflqw78zjk7bp7h18fz935cc9csavi0cpdiixjv1"))))
+            "0ybi3n9mw9wnbi8dv01dllpvcdfwjmyn4q6njzhn8vg7jkmpha2s"))))
       (build-system copy-build-system)
       (home-page "https://github.com/mozilla-l10n/firefox-l10n")
       (synopsis "Firefox Locales")
@@ -116,16 +116,16 @@ Firefox locales.")
 
 ;; We copy the official build id, which is defined at
 ;; tor-browser-build/rbm.conf (browser_release_date).
-(define %torbrowser-build-date "20241008182800")
+(define %torbrowser-build-date "20241125154204")
 
 ;; To find the last version, look at https://www.torproject.org/download/.
-(define %torbrowser-version "13.5.7")
+(define %torbrowser-version "14.0.3")
 
 ;; To find the last Firefox version, browse
 ;; https://archive.torproject.org/tor-package-archive/torbrowser/<%torbrowser-version>
 ;; There should be only one archive that starts with
 ;; "src-firefox-tor-browser-".
-(define %torbrowser-firefox-version "115.16.0esr-13.5-1-build3")
+(define %torbrowser-firefox-version "128.5.0esr-14.0-1-build2")
 
 ;; See tor-browser-build/rbm.conf for the list.
 (define %torbrowser-locales (list "ar" "ca" "cs" "da" "de" "el" "es-ES" "fa" "fi" "fr"
@@ -139,11 +139,11 @@ Firefox locales.")
     (method git-fetch)
     (uri (git-reference
           (url "https://gitlab.torproject.org/tpo/translation.git")
-          (commit "ceb66dd0937da14962cb535699242b2526e11f02")))
+          (commit "caa431bbea1a76d7ad61eeda94086a1513762605")))
     (file-name "translation-base-browser")
     (sha256
      (base32
-      "04ciw4rnl0cj7vz4pqbs1aca8fhva346bp0vahfcxv3isn1nwyy4"))))
+      "0zdkcykzh8m1rv6valx0mk6yvh2q4jrj2qxk0frh7nwxwc509b5c"))))
 
 ;; See tor-browser-build/projects/translation/config.
 (define torbrowser-translation-specific
@@ -151,11 +151,11 @@ Firefox locales.")
     (method git-fetch)
     (uri (git-reference
           (url "https://gitlab.torproject.org/tpo/translation.git")
-          (commit "dbf1454fdbd3256d65985cc1c46391ce0ec159e7")))
+          (commit "4314d0a7ce780ffdf82b84e324bfbc437198f993")))
     (file-name "translation-tor-browser")
     (sha256
      (base32
-      "09zhl6fk0z69qy82l050fm02h0dyb3f8j38fbazmkwnd8x3z6jv0"))))
+      "04dx6mjcgfmarnaxxkmrlgwgxdr37frgz5j3wakp9wixys6p6cdv"))))
 
 (define torbrowser-assets
   ;; This is a prebuilt Torbrowser from which we take the assets we need.
@@ -171,7 +171,7 @@ Firefox locales.")
          version "/tor-browser-linux-x86_64-" version ".tar.xz"))
        (sha256
         (base32
-         "1mdi6x0dvdvlk957fws1pw55z9hwkd5x05rv8k2g1vzy9qkvgrf3"))))
+         "01mzc1d3vad3i8mwqmk2s17ynfhr45sfxgqcy5g9f5ahk6rl7msr"))))
     (arguments
      (list
       #:install-plan
@@ -213,7 +213,7 @@ Browser.")
          ".tar.xz"))
        (sha256
         (base32
-         "0v4hkxcz7cahbhwwafmspcl67ih2rnkmamcvp06kyx64xvpad00i"))))
+         "1nnsmz6v8xnp67ih0jgail27c4cg6zfdax8qkd6hcn8i7pscgc72"))))
     (build-system mozilla-build-system)
     (inputs
      (list go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-lyrebird
@@ -385,7 +385,7 @@ Browser.")
               (for-each
                (lambda (file) (invoke "patch" "--force" "-p1" "-i" file))
                '(#$(local-file
-                    (search-patch "icecat-compare-paths.patch"))
+                    (search-patch "torbrowser-compare-paths.patch"))
                  #$(local-file
                     (search-patch "icecat-use-system-wide-dir.patch"))))))
           (add-after 'apply-guix-specific-patches 'remove-bundled-libraries
@@ -499,7 +499,7 @@ Browser.")
               ;; complain that it's not able to change Cargo.lock.
               ;; https://bugzilla.mozilla.org/show_bug.cgi?id=1726373
               (substitute* "build/RunCbindgen.py"
-                (("\"--frozen\",") ""))))
+                (("args.append\\(\"--frozen\"\\)") "pass"))))
           (delete 'bootstrap)
           (add-before 'configure 'setenv
             (lambda _

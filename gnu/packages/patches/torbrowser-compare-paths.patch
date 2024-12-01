@@ -1,0 +1,24 @@
+See comment in gnu/build/icecat-extension.scm.
+This is only needed while icecat and torbrowser remain on
+different ESR versions as the patched file has changed its
+name.
+
+--- a/toolkit/mozapps/extensions/internal/XPIDatabase.sys.mjs
++++ b/toolkit/mozapps/extensions/internal/XPIDatabase.sys.mjs
+@@ -3606,6 +3606,7 @@
+     if (
+       newAddon ||
+       oldAddon.updateDate != xpiState.mtime ||
++      oldAddon.path != xpiState.path ||
+       (aUpdateCompatibility && this.isAppBundledLocation(installLocation))
+     ) {
+       newAddon = this.updateMetadata(
+@@ -3614,8 +3615,6 @@
+         xpiState,
+         newAddon
+       );
+-    } else if (oldAddon.path != xpiState.path) {
+-      newAddon = this.updatePath(installLocation, oldAddon, xpiState);
+     } else if (aUpdateCompatibility || aSchemaChange) {
+       newAddon = this.updateCompatibility(
+         installLocation,
