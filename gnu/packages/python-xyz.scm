@@ -17481,24 +17481,14 @@ a hash value.")
 (define-public python-termcolor
   (package
     (name "python-termcolor")
-    (version "2.4.0")
+    (version "2.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "termcolor" version))
        (sha256
-        (base32
-         "0ykvmjrsjr5w4h63x7qmx6rsdb1p5a4nv8wgg7nl3b688xhfbfda"))))
+        (base32 "0vwaxyr2vk8gi7s1slq74nb0ssbb0wcn208ziqp48j3dv8kqv3cr"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'fix-pyproject
-           (lambda _
-             ;; The build system doesn't like to hear of Python 3.13.
-             (substitute* "pyproject.toml"
-               (("  \"Programming Language .*") "")))))))
     (native-inputs
      (list python-hatch-vcs
            python-hatchling
