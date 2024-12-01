@@ -11110,8 +11110,12 @@ of mass spectrometry based proteomics data.")
     (properties `((upstream-name . "MSnID")))
     (build-system r-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
+     (list
+      ;; Disable vignettes because they need Internet access.
+      #:test-types '(list "tests")
+      #:phases
+      '(modify-phases %standard-phases
+         ;; Needed for r-r-cache
          (add-after 'unpack 'set-HOME
            (lambda _ (setenv "HOME" "/tmp"))))))
     (propagated-inputs
