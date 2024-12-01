@@ -2019,6 +2019,37 @@ of modifications to @dfn{oxidized cysteine} (Cys) 34 in @dfn{human serum
 albumin} (HSA).")
     (license license:artistic2.0)))
 
+(define-public r-airway
+  (package
+    (name "r-airway")
+    (version "1.26.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "airway" version
+                              'experiment))
+       (sha256
+        (base32 "0cj8s2pxydq7n644lf07vb9g89gqbd91s3m0d0x1qvbp1sskp536"))))
+    (properties `((upstream-name . "airway")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/airway")
+    (synopsis
+     "RangedSummarizedExperiment for RNA-Seq in airway smooth muscle cells")
+    (description
+     "This package provides a @code{RangedSummarizedExperiment} object of read
+counts in genes for an RNA-Seq experiment on four human airway smooth muscle
+cell lines treated with dexamethasone.  Details on the gene model and read
+counting procedure are provided in the package vignette.  The citation for the
+experiment is: Himes BE, Jiang X, Wagner P, Hu R, Wang Q, Klanderman B,
+Whitaker RM, Duan Q, Lasky-Su J, Nikolos C, Jester W, Johnson M, Panettieri R
+Jr, Tantisira KG, Weiss ST, Lu Q. RNA-Seq Transcriptome Profiling Identifies
+CRISPLD2 as a Glucocorticoid Responsive Gene that Modulates Cytokine Function
+in Airway Smooth Muscle Cells.  P@code{LoS} One.  2014 Jun 13;9(6):e99625.
+PMID: 24926665.  GEO: GSE52778.")
+    (license license:lgpl2.0+)))
+
 (define-public r-aneufinderdata
   (package
    (name "r-aneufinderdata")
