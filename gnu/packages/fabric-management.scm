@@ -242,6 +242,7 @@ memory mechanisms for efficient intra-node communication.")
     (home-page "https://www.openucx.org/")
     (license bsd-3)
 
-    ;; <ucm/bistro/bistro.h> lists only PowerPC64, AArch64, and x86_64 as
-    ;; supported.
-    (supported-systems '("x86_64-linux" "aarch64-linux" "powerpc64le-linux"))))
+    ;; <ucm/bistro/bistro.h> lists only PowerPC64, AArch64, RISC-V
+    ;; and x86_64 as supported.
+    (supported-systems '("x86_64-linux" "aarch64-linux" "powerpc64le-linux"
+                         "riscv64-linux"))))
