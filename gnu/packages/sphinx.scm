@@ -96,13 +96,10 @@
            python-colorama
            python-docutils
            python-filelock
-           python-flake8
            python-html5lib
            python-imagesize
            python-importlib-metadata
-           python-isort
            python-jinja2
-           python-mypy
            python-packaging
            python-pygments
            python-requests
