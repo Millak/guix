@@ -195,7 +195,13 @@ testing InfiniBand networks.")
               (patches (search-patches "ucx-tcp-iface-ioctl.patch"))
               (sha256
                (base32
-                "09182kx60kq7iyjyz3mpcrgp1mm0lnpc0f4hd4hlw5yyabkxrpa1"))))
+                "09182kx60kq7iyjyz3mpcrgp1mm0lnpc0f4hd4hlw5yyabkxrpa1"))
+              (snippet
+               ;; As seen in commit b0a275a5492125a13020cd095fe9934e0b5e7c6a.
+               #~(begin (use-modules (guix build utils))
+                        (substitute* "src/ucs/time/time.h"
+                          (("#include <limits.h>")
+                           "#include <limits.h>\n#include <math.h>"))))))
     (build-system gnu-build-system)
     (arguments
      (list
