@@ -332,7 +332,6 @@ software vendors, application developers and computer science researchers.")
               ;; As of Open MPI 5.0.X, PMIx is used to communicate
               ;; with SLURM, so SLURM'S PMI is no longer needed.
               (delete "slurm")
-              (append ucx)              ;for Infiniband support
               (append openpmix)         ;for PMI support (launching via "srun")
               (append prrte)))          ;for PMI support (launching via "srun")
     (native-inputs (modify-inputs (package-native-inputs openmpi)
@@ -365,7 +364,9 @@ software vendors, application developers and computer science researchers.")
 
                    ;; Since 5.x, Infiniband support is provided by ucx.
                    ;; See https://docs.open-mpi.org/en/main/release-notes/networks.html#miscellaneous-network-notes
-                   (string-append "--with-ucx=" #$(this-package-input "ucx")))
+                   #$@(if (package? (this-package-input "ucx"))
+                          #~((string-append "--with-ucx=" #$(this-package-input "ucx")))
+                          #~()))
 
            #:phases
            #~(modify-phases %standard-phases
