@@ -552,10 +552,23 @@ referenced in build system files."
     (set)
     (find-files dir "(Makevars(.in.*)?|configure.*)"))))
 
-;; A pattern matching "library" or "require" statements, capturing the first
-;; argument.
+;; A pattern matching package imports.  It detects uses of "library" or
+;; "require", capturing the first argument; it also detects direct access of
+;; namespaces via "::" or ":::", capturing the namespace.
 (define import-pattern
-  (make-regexp "^ *(require|library)\\(\"?([^, \")]+)"))
+  (make-regexp
+   (string-append
+    ;; Ignore leading spaces, but don't capture commented expressions.
+    "(^ *"
+    ;; Quiet imports
+    "(suppressPackageStartupMessages\\()?"
+    ;; the actual import statement.
+    "(require|library)\\(\"?([^, \")]+)"
+    ;; Or perhaps...
+    "|"
+    ;; ...direct namespace access.
+    " *([A-Za-z0-9]+):::?"
+    ")")))
 
 (define (needed-test-inputs-in-directory dir)
   "Return a set of R package names that are found in library import
@@ -581,8 +594,10 @@ statements in files in the directory DIR."
                                   (else
                                    (loop
                                     (fold (lambda (match acc)
-                                            (let ((imported (match:substring match 2)))
-                                              (if (or (string=? imported package-directory-name)
+                                            (let ((imported (or (match:substring match 4)
+                                                                (match:substring match 5))))
+                                              (if (or (not imported)
+                                                      (string=? imported package-directory-name)
                                                       (member imported default-r-packages))
                                                   acc
                                                   (set-insert imported acc))))
@@ -623,8 +638,9 @@ in vignette files in the directory DIR."
                             (else
                              (loop
                               (fold (lambda (match acc)
-                                      (let ((imported (match:substring match 2)))
-                                        (if (or (string=? imported package-directory-name)
+                                      (let ((imported (match:substring match 4)))
+                                        (if (or (not imported)
+                                                (string=? imported package-directory-name)
                                                 (member imported default-r-packages))
                                             acc
                                             (set-insert imported acc))))
