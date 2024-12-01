@@ -2369,6 +2369,30 @@ only the information for chromosome 21.  Data is stored in the @code{BigWig}
 format and is used for examples in other packages.")
     (license license:artistic2.0)))
 
+(define-public r-faahko
+  (package
+    (name "r-faahko")
+    (version "1.46.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "faahKO" version
+                              'experiment))
+       (sha256
+        (base32 "1i52f5anjvag3n6hn1w6wyjc81h81rfb5a7w1lcnkg4q87g149nm"))))
+    (properties `((upstream-name . "faahKO")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-xcms))
+    (home-page "http://dx.doi.org/10.1021/bi0480335")
+    (synopsis "Saghatelian et al. (2004) FAAH knockout LC/MS data")
+    (description
+     "This package includes positive ionization mode data in @code{NetCDF}
+file format.  Centroided subset from 200-600 m/z and 2500-4500 seconds.  Data
+originally reported in \"Assignment of Endogenous Substrates to Enzymes by
+Global Metabolite Profiling\" Biochemistry; 2004; 43(45).  It also includes
+detected peaks in an @code{xcmsSet}.")
+    (license license:lgpl2.0+)))
+
 (define-public r-flowsorted-blood-450k
   (package
     (name "r-flowsorted-blood-450k")
