@@ -20874,35 +20874,43 @@ checking library.")
 (define-public python-codespell
   (package
     (name "python-codespell")
-    (version "2.2.5")
+    (version "2.3.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "codespell" version))
         (sha256
-          (base32 "0mmynpblhwbja0vmzbmbb9cgpxdl7b0lxaf9h2zr5dpddvgsv7vd"))))
+          (base32 "07s72zfxkznigqdc23k7jp9saq0hgq0gf2kjmmxzcrayyw87s31n"))))
     (build-system pyproject-build-system)
-    (inputs
-      (list python-chardet))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              ;; Drop test coverage requirements.
+              (substitute* "pyproject.toml"
+                (("\"--cov=codespell_lib\",") "")
+                (("\"--cov-report=\",") "")))))))
     (native-inputs
-      (list python-flake8
-            python-pygments
+      (list python-pygments
             python-pytest
-            python-pytest-cov
             python-pytest-dependency
             python-tomli
             python-setuptools
             python-wheel))
+    (propagated-inputs
+      (list python-chardet))
     (home-page "https://github.com/codespell-project/codespell/")
     (synopsis "Spellchecker for code")
-    (description "Codespell fixes common misspellings in text files.
-It's designed primarily for checking misspelled words in source code,
-but it can be used with other files as well.  It does not check for word
-membership in a complete dictionary, but instead looks for a set of
-common misspellings.  Therefore it should catch errors like \"adn\", but
-it will not catch \"adnasdfasdf\".  This also means it shouldn't
-generate false-positives when you use a niche term it doesn't know
-about.")
+    (description
+     "Codespell fixes common misspellings in text files.  It's designed
+primarily for checking misspelled words in source code, but it can be used
+with other files as well.  It does not check for word membership in a complete
+dictionary, but instead looks for a set of common misspellings. Therefore it
+should catch errors like \"adn\", but it will not catch \"adnasdfasdf\".  This
+also means it shouldn't generate false-positives when you use a niche term it
+doesn't know about.")
     (license
       (list
         ; for codespell and codespell_lib
