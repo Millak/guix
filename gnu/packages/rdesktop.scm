@@ -2,7 +2,7 @@
 ;;; Copyright © 2015 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Thomas Danckaert <post@thomasdanckaert.be>
 ;;; Copyright © 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2018 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2018, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2019 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -255,13 +255,17 @@ variety of RDP clients:
                   xdpyinfo
                   xorg-server
                   xrdp))
-    (native-inputs (list autoconf
-                         automake
-                         intltool
-                         libtool
-                         nasm
-                         pkg-config
-                         pixman))
+    (native-inputs
+     (append
+       (list autoconf
+             automake
+             intltool
+             libtool)
+       (if (target-x86?)
+           (list nasm)
+           '())
+       (list pkg-config
+             pixman)))
     (arguments
      (list #:configure-flags #~(list "--enable-strict-locations=yes"
                                      (string-append "XRDP_CFLAGS=-I"
