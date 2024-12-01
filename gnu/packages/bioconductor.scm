@@ -19365,7 +19365,13 @@ based on @dfn{Continuous Wavelet Transform} (CWT).")
        (sha256
         (base32
          "1i9xiilrwvnzkdbzrdnbsw0sbwplfaklbsk3wz8kzv87ivipybh5"))))
+    (properties
+     '((upstream-name . "xcms")
+       ;; Avoid dependency cycle.
+       (updater-ignored-native-inputs . ("r-faahko"))))
     (build-system r-build-system)
+    ;; Tests require faahKO, which depends on this package.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-biobase
            r-biocgenerics
@@ -19386,7 +19392,7 @@ based on @dfn{Continuous Wavelet Transform} (CWT).")
            r-spectra
            r-summarizedexperiment))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-knitr r-msdata r-testthat))
     (home-page "https://bioconductor.org/packages/xcms/")
     (synopsis "LC/MS and GC/MS mass spectrometry data analysis")
     (description
