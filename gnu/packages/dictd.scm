@@ -23,7 +23,10 @@
   #:use-module (guix download)
   #:use-module (guix build-system gnu)
   #:use-module (gnu packages)
-  #:use-module (gnu packages autotools))
+  #:use-module (gnu packages autotools)
+  #:use-module (gnu packages bison)
+  #:use-module (gnu packages flex)
+  #:use-module (gnu packages compression))
 
 (define-public libmaa
   (package
@@ -59,5 +62,39 @@ wide range of programming problems.
 
 The memory management routines are especially helpful for improving the
 performance of memory-intensive applications.")
+    (home-page "https://sourceforge.net/projects/dict/")
+    (license gpl2+)))
+
+(define-public dictd
+  (package
+    (name "dictd")
+    (version "1.13.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://sourceforge/dict/dictd/"
+                           "dictd-"
+                           version
+                           "/dictd-"
+                           version
+                           ".tar.gz"))
+       (sha256
+        (base32 "06racmv25ihwgwf67fgj2703ik0m5i2cjzcxasa88kc92rysdwg4"))))
+    (inputs (list libmaa zlib))
+    (native-inputs (list libtool bison flex))
+    (arguments
+     (list
+      #:test-target "test"))
+    (build-system gnu-build-system)
+    (synopsis "@command{dict}, @command{dictd} and @command{dictfmt} programs")
+    (description
+     "The DICT Interchange Format (DICF) is a human-readable
+ format for the interchange of dictionary databases for the use with
+DICT protocol client/server software.
+
+This package provides a client @command{dict} and a server program
+@command{dictd} for the DICT protocol, as well as a utility
+@command{dictfmt} to convert various dictionary formats into
+dictionaries that can be served by @command{dictd} or Dico.")
     (home-page "https://sourceforge.net/projects/dict/")
     (license gpl2+)))
