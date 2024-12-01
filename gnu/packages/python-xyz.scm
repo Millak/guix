@@ -15412,24 +15412,22 @@ and @code{InteractiveShellEmbed()()}.")
 (define-public python-flake8-implicit-str-concat
   (package
     (name "python-flake8-implicit-str-concat")
-    (version "0.2.0")
+    (version "0.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "flake8_implicit_str_concat" version))
        (sha256
-        (base32 "1v0y29xlmbr2q12a4nnpm1dm9aw1mjiys1x8jif4z8c90d63cqm6"))))
-    (build-system python-build-system)
+        (base32 "1s59w4x053j4794n6h9c7hafa8jjjymx6aar5q23pjw4vrdis7hh"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:tests? #f         ;no tests
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'loosen-requirements
-                    (lambda _
-                      ;; Permit newer versions of attrs.  Remove for >0.2.
-                      (substitute* "setup.py"
-                        ((", <21") "")))))))
+     (list
+      #:tests? #f)) ; no tests in PiPY or git checkout
+    (native-inputs
+     (list python-hatchling))
     (propagated-inputs
-     (list python-attrs python-more-itertools))
+     (list python-attrs
+           python-more-itertools))
     (home-page "https://github.com/keisheiled/flake8-implicit-str-concat")
     (synopsis "Flake8 plugin to encourage correct string literal concatenation")
     (description
