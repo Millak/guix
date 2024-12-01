@@ -68,6 +68,7 @@
 # Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
 # Copyright © 2024 Fabio Natali <me@fabionatali.com>
 # Copyright © 2024 Noé Lopez <noelopez@free.fr>
+# Copyright © 2024 Runciter <runciter@whispers-vpn.org>
 #
 # This file is part of GNU Guix.
 #
@@ -241,6 +242,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/decker.scm			\
   %D%/packages/dhall.scm			\
   %D%/packages/dico.scm				\
+  %D%/packages/dictd.scm			\
   %D%/packages/dictionaries.scm			\
   %D%/packages/diffoscope.scm			\
   %D%/packages/digest.scm			\
