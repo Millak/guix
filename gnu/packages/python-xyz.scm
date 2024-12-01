@@ -13987,26 +13987,25 @@ solve linear problems.")
 (define-public python-py-partiql-parser
   (package
     (name "python-py-partiql-parser")
-    (version "0.3.7")
+    (version "0.5.6")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "py-partiql-parser" version))
+       (method git-fetch)   ; no tests data in PyPi package
+       (uri (git-reference
+             (url "https://github.com/getmoto/py-partiql-parser")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1cnbp1pk1ydgyrqdvdg5aa83qdd6ljrigz40r7kxpmdxqfnz2hak"))))
+        (base32 "0xa1plsi2nkd3fwvkjw9c8b3bzvr6ml83x5gd22sf1cvimqn0jmq"))))
     (build-system pyproject-build-system)
-    ;; There are no tests.
-    (arguments (list #:tests? #false))
     (native-inputs
-     (list python-black
-           python-flake8
-           python-hatchling
-           python-mypy
+     (list python-hatchling
            python-pytest))
     (home-page "https://pypi.org/project/py-partiql-parser/")
     (synopsis "Pure Python PartiQL Parser")
-    (description "This package provides a tokenizer/parser/executor for the
-PartiQL language, in Python.")
+    (description
+     "This package provides a tokenizer/parser/executor for the PartiQL
+language, in Python.")
     (license license:expat)))
 
 (define-public python-py-tes
