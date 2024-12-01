@@ -19481,27 +19481,33 @@ character, and suffix.")
 (define-public python-progressbar2
   (package
     (name "python-progressbar2")
-    (version "3.51.3")
+    (version "4.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "progressbar2" version))
        (sha256
-        (base32
-         "0b2v3mim90rmfvixkaniz2qrs650sk230rzgd5zhcjfldmlqgxpc"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-six python-utils))
+        (base32 "1yw8j3sz9y3nw2x1ffiqqzml8l9vb0kixxnsjkmk3vc691icnqk6"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags #~(list "--pyargs" "progressbar" "tests")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              ;; Drop test coverage requirements.
+              (substitute* "pytest.ini"
+                ((".*-cov.*") "")))))))
     (native-inputs
-     (list python-flake8
-           python-freezegun
-           python-pycodestyle
+     (list python-dill
            python-pytest
-           python-pytest-cache
-           python-pytest-cov
-           python-pytest-flakes
-           python-pytest-pep8
-           python-sphinx))
+           python-freezegun
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (list python-utils))
     (home-page "https://github.com/WoLpH/python-progressbar")
     (synopsis "Text progress bar library for Python")
     (description
