@@ -35062,6 +35062,36 @@ and redundant generator elimination.  All functions can use exact
 infinite-precision rational arithmetic.")
     (license license:gpl2)))
 
+(define-public r-rcdt
+  (package
+    (name "r-rcdt")
+    (version "1.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "RCDT" version))
+       (sha256
+        (base32 "1k27kydqzxqdhjbygq5a8mdhwlvbc32j1hg4vr223rwwc94864w6"))))
+    (properties `((upstream-name . "RCDT")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-bh
+                             r-colorsgen
+                             r-gplots
+                             r-polychrome
+                             r-rcpp
+                             r-rcpparmadillo
+                             r-rgl
+                             r-rvcg))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/stla/RCDT")
+    (synopsis "Fast 2D constrained Delaunay triangulation")
+    (description
+     "This package performs 2D Delaunay triangulation, constrained or
+unconstrained, with the help of the C++ library CDT.  A function to plot the
+triangulation is provided.  The constrained Delaunay triangulation has
+applications in geographic information systems.")
+    (license license:gpl3)))
+
 (define-public r-rxnat
   (package
     (name "r-rxnat")
