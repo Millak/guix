@@ -15586,19 +15586,26 @@ TODO notes checker plugin for flake8.")
 (define-public python-flake8-isort
   (package
     (name "python-flake8-isort")
-    (version "6.1.0")
+    (version "6.1.1")
     (source
       (origin
         (method url-fetch)
-        (uri (pypi-uri "flake8-isort" version))
+        (uri (pypi-uri "flake8_isort" version))
         (sha256
-          (base32 "0gk4q504v42hdzpkndczc0kkwnr85jn1h5pvb561jh65p91r6qyl"))))
+          (base32 "1cvh0d18scgq36gqa2vqbifjarln1r3axgq93lzc303ay0y2zy61"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-flake8 python-isort))
-    (native-inputs (list python-pytest))
+    (arguments
+     (list
+      #:tests? #f)) ; no tests in PiPY or git checkout
+    (native-inputs
+     (list python-hatchling))
+    (propagated-inputs
+     (list python-flake8
+           python-isort))
     (home-page "https://github.com/gforcada/flake8-isort")
     (synopsis "Flake8 plugin integrating isort")
-    (description "This package provides a flake8 plugin that integrates isort,
+    (description
+     "This package provides a flake8 plugin that integrates isort,
 extending flake8 so that it can warn about badly sorted Python import
 directives.")
     (license license:gpl2+)))
