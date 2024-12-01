@@ -15505,17 +15505,34 @@ expressions after the entire file has been read.  This enables support for
 first-class forward references that stub files use.")
     (license license:expat)))
 
+;; XXX: Deprecated in upstream: This repository has been archived by the owner
+;; on Nov 30, 2024. It is now read-only.
+;; Consider to remove when nothing is depend on it.
 (define-public python-flake8-pie
   (package
     (name "python-flake8-pie")
-    (version "0.5.0")
+    (version "0.16.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "flake8-pie" version))
        (sha256
-        (base32 "0kgipl5gljlp7aa7ykx15pswpzkd0d0qiznihb2z0d9a73181dyd"))))
-    (build-system python-build-system)
+        (base32 "1fhmwm8blimnfmi1cj8q0kqd77vskgjb794jbp837yh64ywvgp5q"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k" "not test_examples and not test_prefer_simple_any_all")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-poetry-core
+            (lambda _
+              ;; Patch to use the core poetry API.
+              (substitute* "pyproject.toml"
+                (("poetry.masonry.api") "poetry.core.masonry.api")))))))
+    (native-inputs
+     (list python-poetry-core
+           python-pytest))
     (home-page "https://github.com/sbdchd/flake8-pie")
     (synopsis "Flake8 extension that implements lints")
     (description
