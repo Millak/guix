@@ -91109,6 +91109,24 @@ Unicode and Internationalization Crates (UNIC) project.")
 membership for characters in Rust.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-unicode-general-category-0.6
+  (package
+    (name "rust-unicode-general-category")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "unicode-general-category" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1rv9715c94gfl0hzy4f2a9lw7i499756bq2968vqwhr1sb0wi092"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/yeslogic/unicode-general-category")
+    (synopsis "Fast lookup of the Unicode General Category property for char")
+    (description "This package provides Fast lookup of the Unicode General
+Category property for char.")
+    (license license:asl2.0)))
+
 (define-public rust-unicode-id-0.3
   (package
     (name "rust-unicode-id")
