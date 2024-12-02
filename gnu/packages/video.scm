@@ -1681,9 +1681,7 @@ operate properly.")
     (build-system gnu-build-system)
     (inputs
      (append
-      ;; XXX: rav1e depends on rust, which currently only works on x86_64.
-      ;; See also the related configure flag when changing this.
-      (if (target-x86-64?) (list rav1e) '())
+      (if (supported-package? rav1e) (list rav1e) '())
       (list dav1d
             fontconfig
             freetype
@@ -1796,7 +1794,7 @@ operate properly.")
          "--enable-libmp3lame"
          "--enable-libopus"
          "--enable-libpulse"
-         #$@(if (target-x86-64?)
+         #$@(if (this-package-input "rav1e")
                 '("--enable-librav1e")
                 '())
          "--enable-libsoxr"
@@ -6122,7 +6120,7 @@ and audio capture, network stream playback, and many more.")
 (define-public dav1d
   (package
     (name "dav1d")
-    (version "1.3.0")
+    (version "1.5.0")
     (source
       (origin
         (method git-fetch)
@@ -6131,7 +6129,7 @@ and audio capture, network stream playback, and many more.")
                (commit version)))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "17r6qdijdnqfciqa0ia2y4gyhaav6y5gc4d9xj4dg9h7xnpyxc3k"))))
+         (base32 "0rn8zvmqapjq4r9s9hlpz1866war4ap7hzp5h8qhm5igry7i1qvq"))))
     (build-system meson-build-system)
     (native-inputs
      (if (target-x86?)
@@ -6479,7 +6477,40 @@ result in several formats:
                (invoke "cargo" "cinstall" "--release"
                        ;; Only build the dynamic library.
                        "--library-type" "cdylib"
-                       (string-append "--prefix=" out))))))))
+                       (string-append "--prefix=" out)))))
+         (add-after 'install 'install-completions
+           (lambda* (#:key native-inputs outputs #:allow-other-keys)
+             (unless ,(%current-target-system)
+               (let* ((out (assoc-ref outputs "out"))
+                      (share (string-append out "/share"))
+                      (bash-completions-dir
+                        (string-append out "/etc/bash_completion.d"))
+                      (zsh-completions-dir
+                        (string-append share "/zsh/site-functions"))
+                      (fish-completions-dir
+                        (string-append share "/fish/vendor_completions.d"))
+                      (elvish-completions-dir
+                        (string-append share "/elvish/lib"))
+                      (rav1e (string-append out "/bin/rav1e"))
+                      (common-flags '("-" "-o" "-" "advanced" "--completion")))
+                 (mkdir-p bash-completions-dir)
+                 (with-output-to-file
+                   (string-append bash-completions-dir "/rav1e")
+                   (lambda _ (apply invoke rav1e (append common-flags '("bash")))))
+                 (mkdir-p zsh-completions-dir)
+                 ;; This one currently fails to build.
+                 ;(with-output-to-file
+                 ;  (string-append zsh-completions-dir "/_rav1e")
+                 ;  (lambda _ (apply invoke rav1e (append common-flags '("zsh")))))
+                 (mkdir-p fish-completions-dir)
+                 (with-output-to-file
+                   (string-append fish-completions-dir "/rav1e.fish")
+                   (lambda _ (apply invoke rav1e (append common-flags '("fish")))))
+                 (mkdir-p elvish-completions-dir)
+                 (with-output-to-file
+                   (string-append elvish-completions-dir "/rav1e")
+                   (lambda _
+                     (apply invoke rav1e (append common-flags '("elvish"))))))))))))
     (native-inputs
      (append (if (target-x86?)
                  (list nasm)

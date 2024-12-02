@@ -1,0 +1,40 @@
+From 99e6a28804eac57faa37134d61a2bb17069996a2 Mon Sep 17 00:00:00 2001
+From: Nicholas Bishop <nicholasbishop@google.com>
+Date: Thu, 30 May 2024 18:32:46 -0400
+Subject: [PATCH] Add f16/f128 handling in a couple places
+
+---
+ compiler/rustc_codegen_llvm/src/abi.rs    | 2 ++
+ compiler/rustc_target/src/abi/call/mod.rs | 2 ++
+ 2 files changed, 4 insertions(+)
+
+diff --git a/compiler/rustc_codegen_llvm/src/abi.rs b/compiler/rustc_codegen_llvm/src/abi.rs
+index a6a3f0f964611..2e52d3f426a83 100644
+--- a/compiler/rustc_codegen_llvm/src/abi.rs
++++ b/compiler/rustc_codegen_llvm/src/abi.rs
+@@ -121,8 +121,10 @@ impl LlvmType for Reg {
+         match self.kind {
+             RegKind::Integer => cx.type_ix(self.size.bits()),
+             RegKind::Float => match self.size.bits() {
++                16 => cx.type_f16(),
+                 32 => cx.type_f32(),
+                 64 => cx.type_f64(),
++                128 => cx.type_f128(),
+                 _ => bug!("unsupported float: {:?}", self),
+             },
+             RegKind::Vector => cx.type_vector(cx.type_i8(), self.size.bytes()),
+diff --git a/compiler/rustc_target/src/abi/call/mod.rs b/compiler/rustc_target/src/abi/call/mod.rs
+index fc79c9232d1bd..f83d0492004a2 100644
+--- a/compiler/rustc_target/src/abi/call/mod.rs
++++ b/compiler/rustc_target/src/abi/call/mod.rs
+@@ -236,8 +236,10 @@ impl Reg {
+                 _ => panic!("unsupported integer: {self:?}"),
+             },
+             RegKind::Float => match self.size.bits() {
++                16 => dl.f16_align.abi,
+                 32 => dl.f32_align.abi,
+                 64 => dl.f64_align.abi,
++                128 => dl.f128_align.abi,
+                 _ => panic!("unsupported float: {self:?}"),
+             },
+             RegKind::Vector => dl.vector_align(self.size).abi,

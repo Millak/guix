@@ -63,8 +63,30 @@
 extension of blocks.")
     (license license:expat)))
 
+(define-public rust-block2-0.5
+  (package
+    (name "rust-block2")
+    (version "0.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "block2" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0pyiha5his2grzqr3mynmq244laql2j20992i59asp0gy7mjw4rc"))))
+    (build-system cargo-build-system)
+    (arguments
+     ;; Must specify the desired runtime using Cargo features on non-Apple platforms
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-objc2" ,rust-objc2-0.5))))
+    (home-page "https://github.com/madsmtm/objc2")
+    (synopsis "Apple's C language extension of blocks")
+    (description "This package contains Apple's C language extension of blocks.")
+    (license license:expat)))
+
 (define-public rust-block2-0.3
   (package
+    (inherit rust-block2-0.5)
     (name "rust-block2")
     (version "0.3.0")
     (source
@@ -74,15 +96,10 @@ extension of blocks.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0s2ywcis2xf9444vmdgzr7ankrrkpchn8zimaw950cszm1imdd8m"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t ; link kind `framework` is only supported on Apple targets
        #:cargo-inputs (("rust-block-sys" ,rust-block-sys-0.2)
-                       ("rust-objc2" ,rust-objc2-0.4))))
-    (home-page "https://github.com/madsmtm/objc2")
-    (synopsis "Apple's C language extension of blocks")
-    (description "This package contains Apple's C language extension of blocks.")
-    (license license:expat)))
+                       ("rust-objc2" ,rust-objc2-0.4))))))
 
 (define-public rust-block2-0.2
   (package
@@ -143,14 +160,14 @@ extension of blocks.")
 (define-public rust-cargo-credential-macos-keychain-0.4
   (package
     (name "rust-cargo-credential-macos-keychain")
-    (version "0.4.3")
+    (version "0.4.8")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "cargo-credential-macos-keychain" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1ls1ak7xmjw5h04h1sqxz8fyiq7w6xva5kavfkrs7rgplgh0049n"))))
+        (base32 "1mb5ckal65llh7c0p2a3ivwbv8802s9ysrr0wsjn82fj8jv05kla"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-cargo-credential" ,rust-cargo-credential-0.4)
@@ -462,8 +479,31 @@ CommonCrypto library.")
      "Bindings for Apple's CoreAudio frameworks generated via rust-bindgen.")
     (license license:expat)))
 
+(define-public rust-core-foundation-0.10
+  (package
+    (name "rust-core-foundation")
+    (version "0.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "core-foundation" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0qscay14s2rwkg8nd8ljhiaf149hj8sfy95d70zssy64r3jp2lmm"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; link kind `framework` is only supported on Apple targets
+       #:cargo-inputs (("rust-core-foundation-sys" ,rust-core-foundation-sys-0.8)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-uuid" ,rust-uuid-1))))
+    (home-page "https://github.com/servo/core-foundation-rs")
+    (synopsis "Bindings to Core Foundation for macOS")
+    (description "This package provides bindings to Core Foundation for macOS.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-core-foundation-0.9
   (package
+    (inherit rust-core-foundation-0.10)
     (name "rust-core-foundation")
     (version "0.9.4")
     (source
@@ -473,18 +513,13 @@ CommonCrypto library.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "13zvbbj07yk3b61b8fhwfzhy35535a583irf23vlcg59j7h9bqci"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f             ;tests fail with a lot of "undefined reference"
        #:cargo-inputs
        (("rust-chrono" ,rust-chrono-0.4)
         ("rust-core-foundation-sys" ,rust-core-foundation-sys-0.8)
         ("rust-libc" ,rust-libc-0.2)
-        ("rust-uuid" ,rust-uuid-0.5))))
-    (home-page "https://github.com/servo/core-foundation-rs")
-    (synopsis "Bindings to Core Foundation for macOS")
-    (description "This package provides bindings to Core Foundation for macOS.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-uuid" ,rust-uuid-0.5))))))
 
 (define-public rust-core-foundation-0.7
   (package
@@ -551,14 +586,14 @@ CommonCrypto library.")
 (define-public rust-core-foundation-sys-0.8
   (package
     (name "rust-core-foundation-sys")
-    (version "0.8.6")
+    (version "0.8.7")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "core-foundation-sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "13w6sdf06r0hn7bx2b45zxsg1mm2phz34jikm6xc5qrbr6djpsh6"))))
+        (base32 "12w8j73lazxmr1z0h98hf3z623kl8ms7g07jch7n4p8f9nwlhdkp"))))
     (build-system cargo-build-system)
     (home-page "https://github.com/servo/core-foundation-rs")
     (synopsis "Bindings to Core Foundation for macOS")
@@ -1055,17 +1090,18 @@ Foundation framework.")
 (define-public rust-objc-sys-0.3
   (package
     (name "rust-objc-sys")
-    (version "0.3.2")
+    (version "0.3.5")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "objc-sys" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0nbl4p4dmajhm0ji1z09jrlrxhqs4jfkvj1zjschh38qwhj17iy7"))))
+                "0423gry7s3rmz8s3pzzm1zy5mdjif75g6dbzc2lf2z0c77fipffd"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t         ; Needs gcc-objc
+     ;; Must specify the desired runtime using Cargo features on non-Apple platforms
+     `(#:skip-build? #t
        #:cargo-inputs (("rust-cc" ,rust-cc-1))))
     (home-page "https://github.com/madsmtm/objc2")
     (synopsis "Raw bindings to the Objective-C runtime and ABI")
@@ -1114,8 +1150,40 @@ Foundation framework.")
      "This package provides utilities for testing Objective-C interop.")
     (license license:expat)))
 
+(define-public rust-objc2-0.5
+  (package
+    (name "rust-objc2")
+    (version "0.5.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "objc2" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "015qa2d3vh7c1j2736h5wjrznri7x5ic35vl916c22gzxva8b9s6"))))
+    (build-system cargo-build-system)
+    (arguments
+     ;; Must specify the desired runtime using Cargo features on non-Apple platforms
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-malloc-buf" ,rust-malloc-buf-1)
+                       ("rust-objc-sys" ,rust-objc-sys-0.3)
+                       ("rust-objc2-encode" ,rust-objc2-encode-4)
+                       ("rust-objc2-proc-macros" ,rust-objc2-proc-macros-0.1))
+       #:cargo-development-inputs
+       (("rust-core-foundation" ,rust-core-foundation-0.9)
+        ("rust-iai" ,rust-iai-0.1)
+        ("rust-memoffset" ,rust-memoffset-0.9)
+        ("rust-static-assertions" ,rust-static-assertions-1))))
+    (home-page "https://github.com/madsmtm/objc2")
+    (synopsis
+     "Objective-C interface and bindings to the Cocoa Foundation framework")
+    (description "This package provides Objective-C interface and bindings to
+the Cocoa Foundation framework.")
+    (license license:expat)))
+
 (define-public rust-objc2-0.4
   (package
+    (inherit rust-objc2-0.5)
     (name "rust-objc2")
     (version "0.4.1")
     (source
@@ -1125,7 +1193,6 @@ Foundation framework.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "13gr3zqv8gzlylff5d4za91f50asb7vsrkpv8kiva3nkzm05m72m"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t ; link kind `framework` is only supported on Apple targets
        #:cargo-inputs (("rust-malloc-buf" ,rust-malloc-buf-1)
@@ -1134,13 +1201,7 @@ Foundation framework.")
                        ("rust-objc2-proc-macros" ,rust-objc2-proc-macros-0.1))
        #:cargo-development-inputs
        (("rust-iai" ,rust-iai-0.1)
-        ("rust-static-assertions" ,rust-static-assertions-1))))
-    (home-page "https://github.com/madsmtm/objc2")
-    (synopsis
-     "Objective-C interface and bindings to the Cocoa Foundation framework")
-    (description "This package provides Objective-C interface and bindings to
-the Cocoa Foundation framework.")
-    (license license:expat)))
+        ("rust-static-assertions" ,rust-static-assertions-1))))))
 
 (define-public rust-objc2-0.3
   (package
@@ -1163,8 +1224,180 @@ the Cocoa Foundation framework.")
         ("rust-objc2-proc-macros" ,rust-objc2-proc-macros-0.1)
         ("rust-uuid" ,rust-uuid-1))))))
 
+(define-public rust-objc2-app-kit-0.2
+  (package
+    (name "rust-objc2-app-kit")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "objc2-app-kit" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1zqyi5l1bm26j1bgmac9783ah36m5kcrxlqp5carglnpwgcrms74"))))
+    (build-system cargo-build-system)
+    (arguments
+     ;; Must specify the desired runtime using Cargo features on non-Apple platforms
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-block2" ,rust-block2-0.5)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-objc2" ,rust-objc2-0.5)
+                       ("rust-objc2-core-data" ,rust-objc2-core-data-0.2)
+                       ("rust-objc2-core-image" ,rust-objc2-core-image-0.2)
+                       ("rust-objc2-foundation" ,rust-objc2-foundation-0.2)
+                       ("rust-objc2-quartz-core" ,rust-objc2-quartz-core-0.2))))
+    (home-page "https://github.com/madsmtm/objc2")
+    (synopsis "Bindings to the AppKit framework")
+    (description
+     "This package provides bindings to the @code{AppKit} framework.")
+    (license license:expat)))
+
+(define-public rust-objc2-cloud-kit-0.2
+  (package
+    (name "rust-objc2-cloud-kit")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "objc2-cloud-kit" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "02dhjvmcq8c2bwj31jx423jygif1scs9f0lmlab0ayhw75b3ppbl"))))
+    (build-system cargo-build-system)
+    (arguments
+     ;; Must specify the desired runtime using Cargo features on non-Apple platforms
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-block2" ,rust-block2-0.5)
+                       ("rust-objc2" ,rust-objc2-0.5)
+                       ("rust-objc2-core-location" ,rust-objc2-core-location-0.2)
+                       ("rust-objc2-foundation" ,rust-objc2-foundation-0.2))))
+    (home-page "https://github.com/madsmtm/objc2")
+    (synopsis "Bindings to the CloudKit framework")
+    (description
+     "This package provides bindings to the @code{CloudKit} framework.")
+    (license license:expat)))
+
+(define-public rust-objc2-contacts-0.2
+  (package
+    (name "rust-objc2-contacts")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "objc2-contacts" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "12a8m927xrrxa54xhqhqnkkl1a6l07pyrpnqfk9jz09kkh755zx5"))))
+    (build-system cargo-build-system)
+    (arguments
+     ;; Must specify the desired runtime using Cargo features on non-Apple platforms
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-block2" ,rust-block2-0.5)
+                       ("rust-objc2" ,rust-objc2-0.5)
+                       ("rust-objc2-foundation" ,rust-objc2-foundation-0.2))))
+    (home-page "https://github.com/madsmtm/objc2")
+    (synopsis "Bindings to the Contacts framework")
+    (description "This package provides bindings to the Contacts framework.")
+    (license license:expat)))
+
+(define-public rust-objc2-core-data-0.2
+  (package
+    (name "rust-objc2-core-data")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "objc2-core-data" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1vvk8zjylfjjj04dzawydmqqz5ajvdkhf22cnb07ihbiw14vyzv1"))))
+    (build-system cargo-build-system)
+    (arguments
+     ;; Must specify the desired runtime using Cargo features on non-Apple platforms
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-block2" ,rust-block2-0.5)
+                       ("rust-objc2" ,rust-objc2-0.5)
+                       ("rust-objc2-foundation" ,rust-objc2-foundation-0.2))))
+    (home-page "https://github.com/madsmtm/objc2")
+    (synopsis "Bindings to the CoreData framework")
+    (description
+     "This package provides bindings to the @code{CoreData} framework.")
+    (license license:expat)))
+
+(define-public rust-objc2-core-image-0.2
+  (package
+    (name "rust-objc2-core-image")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "objc2-core-image" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "102csfb82zi2sbzliwsfd589ckz0gysf7y6434c9zj97lmihj9jm"))))
+    (build-system cargo-build-system)
+    (arguments
+     ;; Must specify the desired runtime using Cargo features on non-Apple platforms
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-block2" ,rust-block2-0.5)
+                       ("rust-objc2" ,rust-objc2-0.5)
+                       ("rust-objc2-foundation" ,rust-objc2-foundation-0.2)
+                       ("rust-objc2-metal" ,rust-objc2-metal-0.2))))
+    (home-page "https://github.com/madsmtm/objc2")
+    (synopsis "Bindings to the CoreImage framework")
+    (description
+     "This package provides bindings to the @code{CoreImage} framework.")
+    (license license:expat)))
+
+(define-public rust-objc2-core-location-0.2
+  (package
+    (name "rust-objc2-core-location")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "objc2-core-location" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "10apgsrigqryvi4rcc0f6yfjflvrl83f4bi5hkr48ck89vizw300"))))
+    (build-system cargo-build-system)
+    (arguments
+     ;; Must specify the desired runtime using Cargo features on non-Apple platforms
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-block2" ,rust-block2-0.5)
+                       ("rust-objc2" ,rust-objc2-0.5)
+                       ("rust-objc2-contacts" ,rust-objc2-contacts-0.2)
+                       ("rust-objc2-foundation" ,rust-objc2-foundation-0.2))))
+    (home-page "https://github.com/madsmtm/objc2")
+    (synopsis "Bindings to the CoreLocation framework")
+    (description
+     "This package provides bindings to the @code{CoreLocation} framework.")
+    (license license:expat)))
+
+(define-public rust-objc2-encode-4
+  (package
+    (name "rust-objc2-encode")
+    (version "4.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "objc2-encode" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1y7hjg4k828zhn4fjnbidrz3vzw4llk9ldy92drj47ydjc9yg4bq"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/madsmtm/objc2")
+    (synopsis "Objective-C type-encoding representation and parsing")
+    (description
+     "This package provides Objective-C type-encoding representation and parsing.")
+    (license license:expat)))
+
 (define-public rust-objc2-encode-3
   (package
+    (inherit rust-objc2-encode-4)
     (name "rust-objc2-encode")
     (version "3.0.0")
     (source
@@ -1173,13 +1406,7 @@ the Cocoa Foundation framework.")
        (uri (crate-uri "objc2-encode" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0rknhkcnyj4qv1pzqp5j8l80726phz8fcxpsbpz9nhmg6xdq8yfh"))))
-    (build-system cargo-build-system)
-    (home-page "https://github.com/madsmtm/objc2")
-    (synopsis "Objective-C type-encoding representation and parsing")
-    (description "This package provides objective-C type-encoding
-representation and parsing.")
-    (license license:expat)))
+        (base32 "0rknhkcnyj4qv1pzqp5j8l80726phz8fcxpsbpz9nhmg6xdq8yfh"))))))
 
 (define-public rust-objc2-encode-2
   (package
@@ -1197,21 +1424,230 @@ representation and parsing.")
      `(#:tests? #f      ; Test suite wants gcc-objc
        #:cargo-inputs (("rust-objc-sys" ,rust-objc-sys-0.2))))))
 
+(define-public rust-objc2-foundation-0.2
+  (package
+    (name "rust-objc2-foundation")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "objc2-foundation" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1a6mi77jsig7950vmx9ydvsxaighzdiglk5d229k569pvajkirhf"))))
+    (build-system cargo-build-system)
+    (arguments
+     ;; Must specify the desired runtime using Cargo features on non-Apple platforms
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-block2" ,rust-block2-0.5)
+                       ("rust-dispatch" ,rust-dispatch-0.2)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-objc2" ,rust-objc2-0.5))
+       #:cargo-development-inputs
+       (("rust-static-assertions" ,rust-static-assertions-1))))
+    (home-page "https://github.com/madsmtm/objc2")
+    (synopsis "Bindings to the Foundation framework")
+    (description "This package provides bindings to the Foundation framework.")
+    (license license:expat)))
+
+(define-public rust-objc2-link-presentation-0.2
+  (package
+    (name "rust-objc2-link-presentation")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "objc2-link-presentation" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "160k4qh00yrx57dabn3hzas4r98kmk9bc0qsy1jvwday3irax8d1"))))
+    (build-system cargo-build-system)
+    (arguments
+     ;; Must specify the desired runtime using Cargo features on non-Apple platforms
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-block2" ,rust-block2-0.5)
+                       ("rust-objc2" ,rust-objc2-0.5)
+                       ("rust-objc2-app-kit" ,rust-objc2-app-kit-0.2)
+                       ("rust-objc2-foundation" ,rust-objc2-foundation-0.2))))
+    (home-page "https://github.com/madsmtm/objc2")
+    (synopsis "Bindings to the LinkPresentation framework")
+    (description
+     "This package provides bindings to the @code{LinkPresentation} framework.")
+    (license license:expat)))
+
+(define-public rust-objc2-metal-0.2
+  (package
+    (name "rust-objc2-metal")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "objc2-metal" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1mmdga66qpxrcfq3gxxhysfx3zg1hpx4z886liv3j0pnfq9bl36x"))))
+    (build-system cargo-build-system)
+    (arguments
+     ;; Must specify the desired runtime using Cargo features on non-Apple platforms
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-block2" ,rust-block2-0.5)
+                       ("rust-objc2" ,rust-objc2-0.5)
+                       ("rust-objc2-foundation" ,rust-objc2-foundation-0.2))))
+    (home-page "https://github.com/madsmtm/objc2")
+    (synopsis "Bindings to the Metal framework")
+    (description "This package provides bindings to the Metal framework.")
+    (license license:expat)))
+
 (define-public rust-objc2-proc-macros-0.1
   (package
     (name "rust-objc2-proc-macros")
-    (version "0.1.1")
+    (version "0.1.3")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "objc2-proc-macros" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "07j3snswvj6532x32zgn4llc2xaf31rj4iw18n6dsrf2p0jvh1xr"))))
+                "1w335fj58k76z94d242xq18qkj7iw082lpy3kxnisaa5r7q4aaa6"))))
     (build-system cargo-build-system)
     (home-page "https://github.com/madsmtm/objc2")
     (synopsis "Procedural macros for the objc2 project")
     (description "This package provides procedural macros for the objc2 project.")
+    (license license:expat)))
+
+(define-public rust-objc2-quartz-core-0.2
+  (package
+    (name "rust-objc2-quartz-core")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "objc2-quartz-core" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ynw8819c36l11rim8n0yzk0fskbzrgaqayscyqi8swhzxxywaz4"))))
+    (build-system cargo-build-system)
+    (arguments
+     ;; Must specify the desired runtime using Cargo features on non-Apple platforms
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-block2" ,rust-block2-0.5)
+                       ("rust-objc2" ,rust-objc2-0.5)
+                       ("rust-objc2-foundation" ,rust-objc2-foundation-0.2)
+                       ("rust-objc2-metal" ,rust-objc2-metal-0.2))))
+    (home-page "https://github.com/madsmtm/objc2")
+    (synopsis "Bindings to the QuartzCore/CoreAnimation framework")
+    (description
+     "This package provides bindings to the @code{QuartzCore/CoreAnimation}
+framework.")
+    (license license:expat)))
+
+(define-public rust-objc2-ui-kit-0.2
+  (package
+    (name "rust-objc2-ui-kit")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "objc2-ui-kit" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0vrb5r8z658l8c19bx78qks8c5hg956544yirf8npk90idwldfxq"))))
+    (build-system cargo-build-system)
+    (arguments
+     ;; Must specify the desired runtime using Cargo features on non-Apple platforms
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-2)
+        ("rust-block2" ,rust-block2-0.5)
+        ("rust-objc2" ,rust-objc2-0.5)
+        ("rust-objc2-cloud-kit" ,rust-objc2-cloud-kit-0.2)
+        ("rust-objc2-core-data" ,rust-objc2-core-data-0.2)
+        ("rust-objc2-core-image" ,rust-objc2-core-image-0.2)
+        ("rust-objc2-core-location" ,rust-objc2-core-location-0.2)
+        ("rust-objc2-foundation" ,rust-objc2-foundation-0.2)
+        ("rust-objc2-link-presentation" ,rust-objc2-link-presentation-0.2)
+        ("rust-objc2-quartz-core" ,rust-objc2-quartz-core-0.2)
+        ("rust-objc2-symbols" ,rust-objc2-symbols-0.2)
+        ("rust-objc2-uniform-type-identifiers" ,rust-objc2-uniform-type-identifiers-0.2)
+        ("rust-objc2-user-notifications" ,rust-objc2-user-notifications-0.2))))
+    (home-page "https://github.com/madsmtm/objc2")
+    (synopsis "Bindings to the UIKit framework")
+    (description "This package provides bindings to the UIKit framework.")
+    (license license:expat)))
+
+(define-public rust-objc2-symbols-0.2
+  (package
+    (name "rust-objc2-symbols")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "objc2-symbols" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1p04hjkxan18g2b7h9n2n8xxsvazapv2h6mfmmdk06zc7pz4ws0a"))))
+    (build-system cargo-build-system)
+    (arguments
+     ;; Must specify the desired runtime using Cargo features on non-Apple platforms
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-objc2" ,rust-objc2-0.5)
+                       ("rust-objc2-foundation" ,rust-objc2-foundation-0.2))))
+    (home-page "https://github.com/madsmtm/objc2")
+    (synopsis "Bindings to the Symbols framework")
+    (description "This package Provides Bindings to the Symbols framework.")
+    (license license:expat)))
+
+(define-public rust-objc2-uniform-type-identifiers-0.2
+  (package
+    (name "rust-objc2-uniform-type-identifiers")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "objc2-uniform-type-identifiers" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ziv4wkbxcaw015ypg0q49ycl7m14l3x56mpq2k1rznv92bmzyj4"))))
+    (build-system cargo-build-system)
+    (arguments
+     ;; Must specify the desired runtime using Cargo features on non-Apple platforms
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-block2" ,rust-block2-0.5)
+                       ("rust-objc2" ,rust-objc2-0.5)
+                       ("rust-objc2-foundation" ,rust-objc2-foundation-0.2))))
+    (home-page "https://github.com/madsmtm/objc2")
+    (synopsis "Bindings to the UniformTypeIdentifiers framework")
+    (description
+     "This package provides bindings to the @code{UniformTypeIdentifiers} framework.")
+    (license license:expat)))
+
+(define-public rust-objc2-user-notifications-0.2
+  (package
+    (name "rust-objc2-user-notifications")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "objc2-user-notifications" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1cscv2w3vxzaslz101ddv0z9ycrrs4ayikk4my4qd3im8bvcpkvn"))))
+    (build-system cargo-build-system)
+    (arguments
+     ;; Must specify the desired runtime using Cargo features on non-Apple platforms
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-block2" ,rust-block2-0.5)
+                       ("rust-objc2" ,rust-objc2-0.5)
+                       ("rust-objc2-core-location" ,rust-objc2-core-location-0.2)
+                       ("rust-objc2-foundation" ,rust-objc2-foundation-0.2))))
+    (home-page "https://github.com/madsmtm/objc2")
+    (synopsis "Bindings to the UserNotifications framework")
+    (description
+     "This package provides bindings to the @code{UserNotifications} framework.")
     (license license:expat)))
 
 (define-public rust-readkey-0.1
@@ -1237,19 +1673,19 @@ currently pressed on macOS.")
 (define-public rust-security-framework-2
   (package
     (name "rust-security-framework")
-    (version "2.9.2")
+    (version "2.11.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "security-framework" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1pplxk15s5yxvi2m1sz5xfmjibp96cscdcl432w9jzbk0frlzdh5"))))
+        (base32 "00ldclwx78dm61v7wkach9lcx76awlrv0fdgjdwch4dmy12j4yw9"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f                      ;missing files
+     `(#:tests? #f      ; unresolved import `security_framework::secure_transport`
        #:cargo-inputs
-       (("rust-bitflags" ,rust-bitflags-1)
+       (("rust-bitflags" ,rust-bitflags-2)
         ("rust-core-foundation" ,rust-core-foundation-0.9)
         ("rust-core-foundation-sys" ,rust-core-foundation-sys-0.8)
         ("rust-libc" ,rust-libc-0.2)
@@ -1261,7 +1697,7 @@ currently pressed on macOS.")
         ("rust-hex" ,rust-hex-0.4)
         ("rust-tempdir" ,rust-tempdir-0.3)
         ("rust-time" ,rust-time-0.3)
-        ("rust-x509-parser" ,rust-x509-parser-0.15))))
+        ("rust-x509-parser" ,rust-x509-parser-0.16))))
     (home-page "https://lib.rs/crates/security_framework")
     (synopsis "@code{Security.framework} bindings for macOS and iOS")
     (description "This package provides @code{Security.framework} bindings for
@@ -1349,14 +1785,14 @@ macOS and iOS.")
 (define-public rust-security-framework-sys-2
   (package
     (name "rust-security-framework-sys")
-    (version "2.9.1")
+    (version "2.12.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "security-framework-sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0yhciwlsy9dh0ps1gw3197kvyqx1bvc4knrhiznhid6kax196cp9"))))
+        (base32 "18pafp0bn41bcbm66qrhb3pg4c8dddvc28jdr51mb2y57lqcffgs"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs

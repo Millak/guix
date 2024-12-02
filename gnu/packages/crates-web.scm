@@ -2812,14 +2812,14 @@ transfer coding.")
 (define-public rust-hickory-client-0.24
   (package
     (name "rust-hickory-client")
-    (version "0.24.0")
+    (version "0.24.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "hickory-client" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0bj6g69h86d7mbclrwaj7cgl1plr6pvllv8qn69xmpgh9h90hgkz"))))
+        (base32 "0m8vnqgqg9vaanpphqccm9p8iqc0bm2kc0kvhmx9by6q10xnifds"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
@@ -2860,14 +2860,14 @@ into other software that also use those libraries.")
 (define-public rust-hickory-proto-0.24
   (package
     (name "rust-hickory-proto")
-    (version "0.24.0")
+    (version "0.24.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "hickory-proto" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1kxvdzmwwi1d6wsp9bcs91ipmwxcyhpwbvz3an9h0q28ryy6y6h9"))))
+        (base32 "04p5jqp4mb1cp0vxgfwqlgrgpn45xjcsjss3g92ddw724228ns87"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-async-trait" ,rust-async-trait-0.1)
@@ -2925,14 +2925,14 @@ DNS protocol library for all Hickory DNS projects.")
 (define-public rust-hickory-recursor-0.24
   (package
     (name "rust-hickory-recursor")
-    (version "0.24.0")
+    (version "0.24.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "hickory-recursor" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "146ifrml22hjydrw16qgfw32kv3v9wvvl4dqh45pg6fymxvw8xgi"))))
+        (base32 "1a44l02v2ymxj10zkf46iak4y872zgwi9wyjp0710655jp1wgpg2"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-async-recursion" ,rust-async-recursion-1)
@@ -2968,14 +2968,14 @@ performing recursive lookups.")
 (define-public rust-hickory-resolver-0.24
   (package
     (name "rust-hickory-resolver")
-    (version "0.24.0")
+    (version "0.24.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "hickory-resolver" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1s3486qczv9gaw8dap06c0bwb2bpqm23a0ihj169hsjf2qhz1f1m"))))
+        (base32 "0hzjn5wpchljcsk51c1156rk3f15iinmwh7h9hjqzjbmm8ipyx98"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
@@ -2996,25 +2996,25 @@ performing recursive lookups.")
          "--skip=resolver::tests::test_lookup"
          "--skip=system_conf::unix::tests::test_read_resolv_conf")
          #:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1)
-                       ("rust-futures-util" ,rust-futures-util-0.3)
-                       ("rust-hickory-proto" ,rust-hickory-proto-0.24)
-                       ("rust-ipconfig" ,rust-ipconfig-0.3)
-                       ("rust-lru-cache" ,rust-lru-cache-0.1)
-                       ("rust-once-cell" ,rust-once-cell-1)
-                       ("rust-parking-lot" ,rust-parking-lot-0.12)
-                       ("rust-rand" ,rust-rand-0.8)
-                       ("rust-resolv-conf" ,rust-resolv-conf-0.7)
-                       ("rust-rustls" ,rust-rustls-0.21)
-                       ("rust-rustls-native-certs" ,rust-rustls-native-certs-0.6)
-                       ("rust-serde" ,rust-serde-1)
-                       ("rust-smallvec" ,rust-smallvec-1)
-                       ("rust-thiserror" ,rust-thiserror-1)
-                       ("rust-tokio" ,rust-tokio-1)
-                       ("rust-tokio-native-tls" ,rust-tokio-native-tls-0.3)
-                       ("rust-tokio-openssl" ,rust-tokio-openssl-0.6)
-                       ("rust-tokio-rustls" ,rust-tokio-rustls-0.24)
-                       ("rust-tracing" ,rust-tracing-0.1)
-                       ("rust-webpki-roots" ,rust-webpki-roots-0.25))
+                         ("rust-futures-util" ,rust-futures-util-0.3)
+                         ("rust-hickory-proto" ,rust-hickory-proto-0.24)
+                         ("rust-ipconfig" ,rust-ipconfig-0.3)
+                         ("rust-lru-cache" ,rust-lru-cache-0.1)
+                         ("rust-once-cell" ,rust-once-cell-1)
+                         ("rust-parking-lot" ,rust-parking-lot-0.12)
+                         ("rust-rand" ,rust-rand-0.8)
+                         ("rust-resolv-conf" ,rust-resolv-conf-0.7)
+                         ("rust-rustls" ,rust-rustls-0.21)
+                         ("rust-rustls-native-certs" ,rust-rustls-native-certs-0.6)
+                         ("rust-serde" ,rust-serde-1)
+                         ("rust-smallvec" ,rust-smallvec-1)
+                         ("rust-thiserror" ,rust-thiserror-1)
+                         ("rust-tokio" ,rust-tokio-1)
+                         ("rust-tokio-native-tls" ,rust-tokio-native-tls-0.3)
+                         ("rust-tokio-openssl" ,rust-tokio-openssl-0.6)
+                         ("rust-tokio-rustls" ,rust-tokio-rustls-0.24)
+                         ("rust-tracing" ,rust-tracing-0.1)
+                         ("rust-webpki-roots" ,rust-webpki-roots-0.25))
        #:cargo-development-inputs
        (("rust-futures-executor" ,rust-futures-executor-0.3)
         ("rust-tokio" ,rust-tokio-1)
@@ -3032,14 +3032,14 @@ intended to be a high-level library for any DNS record resolution, see
 (define-public rust-hickory-server-0.24
   (package
     (name "rust-hickory-server")
-    (version "0.24.0")
+    (version "0.24.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "hickory-server" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1dbwsrmxgf9nxkn3cp5fpjw96wywrzihbirjax25dd6wqidv9fsg"))))
+        (base32 "0dqcwk7vy87517l3v7j109fjg8jk46isjwbwdkdkz6vbalyf9q4v"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
@@ -3081,7 +3081,7 @@ intended to be a high-level library for any DNS record resolution, see
                        ("rust-hickory-resolver" ,rust-hickory-resolver-0.24)
                        ("rust-http" ,rust-http-0.2)
                        ("rust-openssl" ,rust-openssl-0.10)
-                       ("rust-rusqlite" ,rust-rusqlite-0.29)
+                       ("rust-rusqlite" ,rust-rusqlite-0.31)
                        ("rust-rustls" ,rust-rustls-0.21)
                        ("rust-serde" ,rust-serde-1)
                        ("rust-thiserror" ,rust-thiserror-1)
@@ -4685,14 +4685,14 @@ in the Rust programming language.")
   (package
     (inherit rust-reqwest-0.12)
     (name "rust-reqwest")
-    (version "0.11.23")
+    (version "0.11.27")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "reqwest" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0hgvzb7r46656r9vqhl5qk1kbr2xzjb91yr2cb321160ka6sxc9p"))))
+        (base32 "0qjary4hpplpgdi62d2m0xvbn6lnzckwffm0rgkm2x51023m6ryx"))))
     (arguments
      `(#:cargo-test-flags
        '("--release" "--"
@@ -4707,8 +4707,8 @@ in the Rust programming language.")
        (("rust-async-compression" ,rust-async-compression-0.4)
         ("rust-base64" ,rust-base64-0.21)
         ("rust-bytes" ,rust-bytes-1)
-        ("rust-cookie" ,rust-cookie-0.16)
-        ("rust-cookie-store" ,rust-cookie-store-0.16)
+        ("rust-cookie" ,rust-cookie-0.17)
+        ("rust-cookie-store" ,rust-cookie-store-0.20)
         ("rust-encoding-rs" ,rust-encoding-rs-0.8)
         ("rust-futures-channel" ,rust-futures-channel-0.3)
         ("rust-futures-core" ,rust-futures-core-0.3)
@@ -4716,6 +4716,7 @@ in the Rust programming language.")
         ("rust-h2" ,rust-h2-0.3)
         ("rust-h3" ,rust-h3-0.0.3)
         ("rust-h3-quinn" ,rust-h3-quinn-0.0.4)
+        ("rust-hickory-resolver" ,rust-hickory-resolver-0.24)
         ("rust-http" ,rust-http-0.2)
         ("rust-http-body" ,rust-http-body-0.4)
         ("rust-hyper" ,rust-hyper-0.14)
@@ -4737,6 +4738,7 @@ in the Rust programming language.")
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-serde-urlencoded" ,rust-serde-urlencoded-0.7)
+        ("rust-sync-wrapper" ,rust-sync-wrapper-0.1)
         ("rust-system-configuration" ,rust-system-configuration-0.5)
         ("rust-tokio" ,rust-tokio-1)
         ("rust-tokio-native-tls" ,rust-tokio-native-tls-0.3)
@@ -4744,18 +4746,18 @@ in the Rust programming language.")
         ("rust-tokio-socks" ,rust-tokio-socks-0.5)
         ("rust-tokio-util" ,rust-tokio-util-0.7)
         ("rust-tower-service" ,rust-tower-service-0.3)
-        ("rust-trust-dns-resolver" ,rust-trust-dns-resolver-0.23)
         ("rust-url" ,rust-url-2)
         ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
         ("rust-wasm-bindgen-futures" ,rust-wasm-bindgen-futures-0.4)
-        ("rust-wasm-streams" ,rust-wasm-streams-0.3)
+        ("rust-wasm-streams" ,rust-wasm-streams-0.4)
         ("rust-web-sys" ,rust-web-sys-0.3)
         ("rust-webpki-roots" ,rust-webpki-roots-0.25)
         ("rust-winreg" ,rust-winreg-0.50))
        #:cargo-development-inputs
        (("rust-brotli" ,rust-brotli-3)
         ("rust-doc-comment" ,rust-doc-comment-0.3)
-        ("rust-env-logger" ,rust-env-logger-0.8)
+        ("rust-env-logger" ,rust-env-logger-0.10)
+        ("rust-futures-util" ,rust-futures-util-0.3)
         ("rust-hyper" ,rust-hyper-0.14)
         ("rust-libflate" ,rust-libflate-1)
         ("rust-serde" ,rust-serde-1)

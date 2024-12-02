@@ -775,7 +775,7 @@ variable defined below.  It requires guile-json to be installed."
       ;;  ,(search-patch "icecat-use-system-media-libs.patch"))
       rust
       `(,rust "cargo")
-      rust-cbindgen
+      rust-cbindgen-0.24
       llvm-17
       clang-17
       perl
@@ -815,7 +815,8 @@ variable defined below.  It requires guile-json to be installed."
          "--disable-debug"
          "--disable-debug-symbols"
 
-         "--enable-rust-simd"
+         ;; TODO: Re-enable after updating to the 128 ESR.
+         ;"--enable-rust-simd"
          "--enable-release"
          "--enable-optimize"
          "--enable-strip"
@@ -1588,7 +1589,7 @@ ca495991b7852b855"))
            pkg-config
            python-wrapper
            rust
-           rust-cbindgen
+           rust-cbindgen-0.24
            which
            yasm))
     (home-page "https://www.thunderbird.net")

@@ -1,0 +1,29 @@
+From ce49a9d9e52ca6062fe0894e72d954511fa8820f Mon Sep 17 00:00:00 2001
+From: Shmuel Hazan <ShmuelHazan0@gmail.com>
+Date: Sat, 1 Jun 2024 08:49:44 +0300
+Subject: [PATCH] Add UWTable attr to functions with a personality function
+
+Adding a personality function forces LLVM to generate unwinding info that might be incorrect.
+To solve it, always apply the UWTable attribute when setting a personality function.
+
+Fixes #123733
+---
+ compiler/rustc_codegen_llvm/src/builder.rs | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/compiler/rustc_codegen_llvm/src/builder.rs b/compiler/rustc_codegen_llvm/src/builder.rs
+index 72ff9ea118e28..668f0a33a4e80 100644
+--- a/compiler/rustc_codegen_llvm/src/builder.rs
++++ b/compiler/rustc_codegen_llvm/src/builder.rs
+@@ -1029,6 +1029,11 @@ impl<'a, 'll, 'tcx> BuilderMethods<'a, 'tcx> for Builder<'a, 'll, 'tcx> {
+     }
+ 
+     fn set_personality_fn(&mut self, personality: &'ll Value) {
++        // Work around for https://github.com/rust-lang/rust/issues/123733
++        // add the UWTable attribute to every function with a personality function.
++        let uwtable = attributes::uwtable_attr(self.llcx, None);
++        attributes::apply_to_llfn(self.llfn(), llvm::AttributePlace::Function, &[uwtable]);
++
+         unsafe {
+             llvm::LLVMSetPersonalityFn(self.llfn(), personality);
+         }

@@ -228,14 +228,14 @@ cards.")
 (define-public newsboat
   (package
     (name "newsboat")
-    (version "2.35")
+    (version "2.36.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://newsboat.org/releases/" version
                            "/newsboat-" version ".tar.xz"))
        (sha256
-        (base32 "1i5nil0lwa621ixxp1vwkic56sxsqp46pyq1xw7lrr1qrbv07w7l"))))
+        (base32 "1pgi19y1ym5dhh0szs0w0cjbvx83bzq30af24h73nwdalkwb3nhl"))))
     (build-system cargo-build-system)
     (native-inputs
      `(("gettext" ,gettext-minimal)
@@ -278,7 +278,7 @@ cards.")
        #:cargo-development-inputs
        (("rust-tempfile" ,rust-tempfile-3)
         ("rust-proptest" ,rust-proptest-1)
-        ("rust-section-testing" ,rust-section-testing-0.0))
+        ("rust-section-testing" ,rust-section-testing-0.0.5))
        #:phases
        (modify-phases %standard-phases
          ,@(if (not (assoc-ref inputs "asciidoctor"))

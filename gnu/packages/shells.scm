@@ -1159,18 +1159,18 @@ of commands called a ``pipeline''.")
 (define-public rust-nu-ansi-term-0.50
   (package
     (name "rust-nu-ansi-term")
-    (version "0.50.0")
+    (version "0.50.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "nu-ansi-term" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "057zhc62hcaxc73zfjwq7gir5bfilmx652hnh9krdp0babhh0a6x"))))
+        (base32 "16a3isvbxx8pa3lk71h3cq2fsx2d17zzq42j4mhpxy81gl2qx8nl"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-serde" ,rust-serde-1)
-                       ("rust-windows-sys" ,rust-windows-sys-0.48))
+                       ("rust-windows-sys" ,rust-windows-sys-0.52))
        #:cargo-development-inputs (("rust-doc-comment" ,rust-doc-comment-0.3)
                                    ("rust-serde-json" ,rust-serde-json-1))))
     (home-page "https://github.com/nushell/nu-ansi-term")

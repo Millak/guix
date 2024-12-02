@@ -1327,7 +1327,7 @@ into dataclasses.")
     (propagated-inputs
      (list python-numpy))
     (native-inputs
-     (list cmake
+     (list cmake-minimal
            meson-python
            pkg-config
            pybind11

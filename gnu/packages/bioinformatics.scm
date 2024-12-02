@@ -3960,7 +3960,9 @@ compressed files.")
          "0wg1s927g32k25j967kfr8l30nmr4c0p4zvy5igvy7cs6chd60lh"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:phases
+     `(#:tests? #f
+       #:install-source? #f
+       #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'make-writable
            (lambda _

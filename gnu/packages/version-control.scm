@@ -1823,7 +1823,7 @@ lot easier.")
 (define-public stgit-2
   (package
     (name "stgit")
-    (version "2.4.0")
+    (version "2.4.12")
     (source
      (origin
        (method git-fetch)
@@ -1832,7 +1832,7 @@ lot easier.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0cgv7chxqkjaqmzi4691in26j2fm8r0vanw8xzb9cqnz6350wvvj"))
+        (base32 "0kp3gwmxcjvphg1s0san0vyis8dsdaf02xsflc2b7kkg8m0r0mi3"))
        (modules '((guix build utils)))
        (snippet
         '(begin (substitute* (find-files "." "^Cargo\\.toml$")
@@ -1849,10 +1849,10 @@ lot easier.")
                        ("rust-curl" ,rust-curl-0.4)
                        ("rust-encoding_rs" ,rust-encoding-rs-0.8)
                        ("rust-flate2" ,rust-flate2-1)
-                       ("rust-gix" ,rust-gix-0.54)
+                       ("rust-gix" ,rust-gix-0.66)
                        ("rust-indexmap" ,rust-indexmap-2)
                        ("rust-is-terminal" ,rust-is-terminal-0.4)
-                       ("rust-nom" ,rust-nom-7)
+                       ("rust-jiff" ,rust-jiff-0.1)
                        ("rust-serde" ,rust-serde-1)
                        ("rust-serde-json" ,rust-serde-json-1)
                        ("rust-strsim" ,rust-strsim-0.10)
@@ -1860,7 +1860,7 @@ lot easier.")
                        ("rust-tempfile" ,rust-tempfile-3)
                        ("rust-termcolor" ,rust-termcolor-1)
                        ("rust-thiserror" ,rust-thiserror-1)
-                       ("rust-time" ,rust-time-0.3))
+                       ("rust-winnow" ,rust-winnow-0.6))
        #:install-source? #f
        #:phases
        (modify-phases %standard-phases
