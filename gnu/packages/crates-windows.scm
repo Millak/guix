@@ -989,7 +989,7 @@ i686-pc-windows-gnu target.  Please don't use this crate directly, depend on
 (define-public rust-winapi-util-0.1
   (package
     (name "rust-winapi-util")
-    (version "0.1.6")
+    (version "0.1.9")
     (source
       (origin
         (method url-fetch)
@@ -997,10 +997,10 @@ i686-pc-windows-gnu target.  Please don't use this crate directly, depend on
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "15i5lm39wd44004i9d5qspry2cynkrpvwzghr6s2c3dsk28nz7pj"))))
+          "1fqhkcl9scd230cnfj8apfficpf5c9vhwnk4yy9xfc1sw69iq8ng"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-winapi" ,rust-winapi-0.3))))
+     `(#:cargo-inputs (("rust-windows-sys" ,rust-windows-sys-0.48))))
     (home-page "https://github.com/BurntSushi/winapi-util")
     (synopsis "Dumping ground for high level safe wrappers over winapi")
     (description
