@@ -109,7 +109,7 @@
 		  '(semver ranges) '(string->semver-range semver-range-contains?))
 
 (define (lookup-crate name)
-  "Look up NAME on https://crates.io and return the corresopnding <crate>
+  "Look up NAME on https://crates.io and return the corresponding <crate>
 record or #f if it was not found."
   (let ((json (json-fetch (string-append (%crate-base-url) "/api/v1/crates/"
                                          name))))
