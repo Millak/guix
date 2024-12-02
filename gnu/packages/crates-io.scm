@@ -33136,14 +33136,14 @@ already-hashed or hash-like data.")
 (define-public rust-hashbrown-0.15
   (package
     (name "rust-hashbrown")
-    (version "0.15.1")
+    (version "0.15.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "hashbrown" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1czsvasi3azv2079fcvbhvpisa16w6fi1mfk8zm2c5wbyqdgr6rs"))))
+        (base32 "12dj0yfn59p3kh3679ac0w1fagvzf4z2zp87a13gbbqbzw0185dz"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
