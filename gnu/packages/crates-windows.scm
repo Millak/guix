@@ -760,7 +760,7 @@ for MinGW-w64 and MSVC (cross-)compile targets.")
 (define-public rust-schannel-0.1
   (package
     (name "rust-schannel")
-    (version "0.1.21")
+    (version "0.1.27")
     (source
       (origin
         (method url-fetch)
@@ -768,12 +768,11 @@ for MinGW-w64 and MSVC (cross-)compile targets.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "1cxivcbczzfv4295pqi5s80kr7nhs7xc0i40zf43b7q5qw3gng3i"))))
+          "0gbbhy28v72kd5iina0z2vcdl3vz63mk5idvkzn5r52z6jmfna8z"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-windows-sys" ,rust-windows-sys-0.42))))
+     `(#:cargo-inputs (("rust-windows-sys" ,rust-windows-sys-0.59))
+       #:cargo-development-inputs (("rust-windows-sys" ,rust-windows-sys-0.59))))
     (home-page "https://github.com/steffengy/schannel-rs")
     (synopsis "Rust bindings to the Windows SChannel APIs")
     (description
