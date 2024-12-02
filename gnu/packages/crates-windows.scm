@@ -337,6 +337,27 @@ inclusion of Windows resources in the most resilient fashion imaginable.")
         ("rust-vswhom" ,rust-vswhom-0.1)
         ("rust-winreg" ,rust-winreg-0.10))))))
 
+(define-public rust-fs-set-times-0.20
+  (package
+    (name "rust-fs-set-times")
+    (version "0.20.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "fs-set-times" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1yxqkl8khk1593ribn4s9v60vf375gi9sgw9hq6nk5svf9yk6fq3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-io-lifetimes" ,rust-io-lifetimes-2)
+                       ("rust-rustix" ,rust-rustix-0.38)
+                       ("rust-windows-sys" ,rust-windows-sys-0.52))))
+    (home-page "https://github.com/bytecodealliance/fs-set-times")
+    (synopsis "Set filesystem timestamps")
+    (description "This package provides set filesystem timestamps.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-gdi32-sys-0.2
   (package
     (name "rust-gdi32-sys")
