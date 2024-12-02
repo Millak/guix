@@ -337,6 +337,38 @@ inclusion of Windows resources in the most resilient fashion imaginable.")
         ("rust-vswhom" ,rust-vswhom-0.1)
         ("rust-winreg" ,rust-winreg-0.10))))))
 
+(define-public rust-fs-at-0.2
+  (package
+    (name "rust-fs-at")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "fs_at" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0dn0hi9inmppk3mypvnaimjcdrxr0f3pi8d2p8jxn9gajjb6rbql"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-aligned" ,rust-aligned-0.4)
+                       ("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-cvt" ,rust-cvt-0.1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-nix" ,rust-nix-0.29)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-windows-sys" ,rust-windows-sys-0.52))
+       #:cargo-development-inputs (("rust-env-logger" ,rust-env-logger-0.11)
+                                   ("rust-fs-set-times" ,rust-fs-set-times-0.20)
+                                   ("rust-rayon" ,rust-rayon-1)
+                                   ("rust-tempfile" ,rust-tempfile-3)
+                                   ("rust-test-log" ,rust-test-log-0.2))))
+    (home-page "https://github.com/rbtcollins/fs_at.git")
+    (synopsis "Implementation of 'at' functions for various platforms")
+    (description
+     "This package provides an implementation of at functions for various platforms.")
+    (license license:asl2.0)))
+
 (define-public rust-fs-set-times-0.20
   (package
     (name "rust-fs-set-times")
