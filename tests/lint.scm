@@ -11,6 +11,7 @@
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021, 2023 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2024 Gabriel Wicki <gabriel@erlikon.ch>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -130,6 +131,30 @@
   '()
   (let ((pkg (dummy-package "x"
                             (description "x is a dummy package."))))
+    (check-description-style pkg)))
+
+(test-equal "description: may start with beginning of package name"
+  '()
+  (let ((pkg (dummy-package "xyz-0.1"
+                            (description "xyz is a dummy package."))))
+    (check-description-style pkg)))
+
+(test-equal "description: may start with end of package name"
+  '()
+  (let ((pkg (dummy-package "foobar-xyz"
+                            (description "xyz is a dummy package."))))
+    (check-description-style pkg)))
+
+(test-equal "description: may start with non-hyphenated package name"
+  '()
+  (let ((pkg (dummy-package "foobar-xyz-minimal"
+                            (description "foobar_xyz is a dummy package."))))
+    (check-description-style pkg)))
+
+(test-equal "description: may start with end of package name"
+  '()
+  (let ((pkg (dummy-package "foo-bar"
+                            (description "bar is some thing in foo."))))
     (check-description-style pkg)))
 
 (test-equal "description: two spaces after end of sentence"

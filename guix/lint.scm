@@ -14,6 +14,7 @@
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021-2023 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
+;;; Copyright © 2024 Gabriel Wicki <gabriel@erlikon.ch>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -437,15 +438,23 @@ trademark sign '~a' at ~d")
         '()))
 
   (define (check-proper-start description)
-    (if (or (string-null? description)
-            (properly-starts-sentence? description)
-            (string-prefix-ci? (package-name package) description))
-        '()
-        (list
-         (make-warning
-          package
-          (G_ "description should start with an upper-case letter or digit")
-          #:field 'description))))
+    (let* ((initial
+            (string-take description
+                         (or (string-index description #\space)
+                             0)))
+           (first-word
+            (regexp-substitute/global #f "_" initial
+                                      'pre "-" 'post)))
+      (if (or (string-null? description)
+              (properly-starts-sentence? description)
+              (string-prefix-ci? first-word (package-name package))
+              (string-suffix-ci? first-word (package-name package)))
+          '()
+          (list
+           (make-warning
+            package
+            (G_ "description should start with an upper-case letter or digit")
+            #:field 'description)))))
 
   (define (check-end-of-sentence-space description)
     "Check that an end-of-sentence period is followed by two spaces."
