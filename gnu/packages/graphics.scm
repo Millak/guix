@@ -29,7 +29,7 @@
 ;;; Copyright © 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2022, 2023, 2024 John Kehayias <john.kehayias@protonmail.com>
-;;; Copyright © 2022 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2022, 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2022 Tobias Kortkamp <tobias.kortkamp@gmail.com>
 ;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2022 dan <i@dan.games>
@@ -2554,16 +2554,17 @@ and enables interoperable use of content across the industry.")
 (define-public monado
   (package
     (name "monado")
-    (version "21.0.0")
+    (version "24.0.0")
     (source (origin
-          (method url-fetch)
-          (uri (string-append "https://gitlab.freedesktop.org/" name "/"
-                              name "/-/archive/v" version "/"
-                              name "-v" version ".tar.bz2"))
-          (sha256
-           (base32
-            "0n04k7a8b0i8ga0kbzh7qxmvni1ijawgk98s83519vxg4d0yyjbq"))))
-    (build-system meson-build-system)
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.freedesktop.org/monado/monado")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1ix52kr4av259g4n06338qjrlfssi1v2dnb4pfr863wbyrbb8p4l"))))
+    (build-system cmake-build-system)
     (inputs
      (list ffmpeg
            glslang
@@ -2577,9 +2578,6 @@ and enables interoperable use of content across the industry.")
            vulkan-loader))
     (native-inputs
      (list eigen pkg-config vulkan-headers))
-    (arguments
-     `(#:configure-flags
-       (list "-Dinstall-active-runtime=false")))
     (home-page "https://monado.freedesktop.org/")
     (synopsis "OpenXR runtime")
     (description "Monado is an OpenXR runtime delivering immersive experiences
