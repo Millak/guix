@@ -121,6 +121,11 @@
                              (description "bad description."))))
      (check-description-style pkg))))
 
+(test-equal "description: may start with texinfo markup"
+  '()
+  (check-description-style
+   (dummy-package "x" (description "@emph{Maxwell Equations of Software}"))))
+
 (test-equal "description: may start with a digit"
   '()
   (let ((pkg (dummy-package "x"

@@ -370,6 +370,9 @@ superfluous when building natively and incorrect when cross-compiling."
 (define (properly-starts-sentence? s)
   (string-match "^[(\"'`[:upper:][:digit:]]" s))
 
+(define (starts-with-texinfo-markup? s)
+  (string-match "^@(acronym|dfn|code|command|emph|file|quotation|samp|uref|url)\\{.*?\\}" s))
+
 (define (starts-with-abbreviation? s)
   "Return #t if S starts with what looks like an abbreviation or acronym."
   (string-match "^[A-Z][A-Z0-9]+\\>" s))
@@ -447,6 +450,7 @@ trademark sign '~a' at ~d")
                                       'pre "-" 'post)))
       (if (or (string-null? description)
               (properly-starts-sentence? description)
+              (starts-with-texinfo-markup? description)
               (string-prefix-ci? first-word (package-name package))
               (string-suffix-ci? first-word (package-name package)))
           '()
@@ -513,7 +517,9 @@ by two spaces; possible infraction~p at ~{~a~^, ~}")
          (match (check-texinfo-markup description)
            ((and warning (? lint-warning?)) (list warning))
            (plain-description
-            (check-proper-start plain-description))))
+            (if (string-prefix? "@" description)
+                '()
+                (check-proper-start plain-description)))))
         (list
          (make-warning package
                        (G_ "invalid description: ~s")
