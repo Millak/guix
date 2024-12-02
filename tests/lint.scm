@@ -219,11 +219,17 @@
      (check-description-style pkg))))
 
 (test-equal "description: grammar 'allows to'"
-  "description contains typo 'allows to'"
+  "description contains typo 'allows to '"
   (single-lint-warning-message
    (let ((pkg (dummy-package "x"
                              (description "This package allows to do stuff."))))
      (check-description-style pkg))))
+
+(test-equal "description: grammar 'allows to' 2"
+  '()
+  (let ((pkg (dummy-package "x"
+                            (description "This package allows tokenization."))))
+    (check-description-style pkg)))
 
 (test-equal "synopsis: not a string"
   "invalid synopsis: #f"

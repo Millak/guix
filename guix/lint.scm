@@ -507,8 +507,8 @@ by two spaces; possible infraction~p at ~{~a~^, ~}")
          (check-trademarks description)
          (check-description-typo description '(("This packages" . "This package")
                                                ("This modules" . "This module")
-                                               ("allows to" . #f)
-                                               ("permits to" . #f)))
+                                               ("allows to " . #f)
+                                               ("permits to " . #f)))
          ;; Use raw description for this because Texinfo rendering
          ;; automatically fixes end of sentence space.
          (check-end-of-sentence-space description)
