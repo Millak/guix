@@ -171,14 +171,14 @@
   "description contains leading whitespace"
   (single-lint-warning-message
    (let ((pkg (dummy-package "x"
-                              (description " Whitespace."))))
+                             (description " Whitespace."))))
      (check-description-style pkg))))
 
 (test-equal "description: trailing whitespace"
   "description contains trailing whitespace"
   (single-lint-warning-message
    (let ((pkg (dummy-package "x"
-                              (description "Whitespace. "))))
+                             (description "Whitespace. "))))
      (check-description-style pkg))))
 
 (test-equal "description: pluralized 'This package'"
@@ -359,18 +359,18 @@
   '()
   (check-compiler-for-target
    (dummy-package "x"
-		  (arguments
-		   (list #:make-flags
-			 #~(list (string-append "CC=" (cc-for-target))))))))
+                  (arguments
+                   (list #:make-flags
+                         #~(list (string-append "CC=" (cc-for-target))))))))
 
 (test-equal "compiler-for-target: CC=gcc is acceptable when target=#false"
   '()
   (check-compiler-for-target
    ;; This (dummy) package consists purely of architecture-independent data.
    (dummy-package "tzdata"
-		  (arguments
-		   (list #:target #false
-			 #:make-flags #~(list "CC=gcc"))))))
+                  (arguments
+                   (list #:target #false
+                         #:make-flags #~(list "CC=gcc"))))))
 
 ;; The emacs-build-system sets #:tests? #f by default.
 (test-equal "tests-true: #:tests? #t acceptable for emacs packages"

@@ -737,7 +737,7 @@ the synopsis")
 
   (define (check-start-with-package-name synopsis)
     (if (and (regexp-exec (package-name-regexp package) synopsis)
-               (not (starts-with-abbreviation? synopsis)))
+             (not (starts-with-abbreviation? synopsis)))
         (list
          (make-warning package
                        (G_ "synopsis should not start with the package name")
