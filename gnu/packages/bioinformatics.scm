@@ -9193,6 +9193,51 @@ resolution of binding sites through combining the information of both
 sequencing tag position and orientation.")
     (license license:bsd-3)))
 
+(define-public macs-3
+  (package
+    (name "macs")
+    (version "3.0.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/macs3-project/MACS")
+                    (commit (string-append "v" version))
+                    (recursive? #true)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0x5iz6iq694z3m9zx7zdw0js2l2l40lf1as9k3jy0q4mvz02a3aw"))))
+    (properties
+     '((updater-extra-inputs . ("zlib"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; FIXME: our version of numpy is a little too old.
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* '("pyproject.toml" "requirements.txt" "setup.py")
+               (("numpy.*=1.25") "numpy>=1.23")))))))
+    (propagated-inputs
+     (list python-cykhash
+           python-hmmlearn
+           python-numpy
+           python-scikit-learn
+           python-scipy))
+    (native-inputs
+     (list python-cython-3 python-pytest python-setuptools zlib))
+    (home-page "https://github.com/macs3-project/MACS")
+    (synopsis "Model based analysis for ChIP-Seq data")
+    (description
+     "MACS is an implementation of a ChIP-Seq analysis algorithm for
+identifying transcript factor binding sites named Model-based Analysis of
+ChIP-Seq (MACS).  MACS captures the influence of genome complexity to evaluate
+the significance of enriched ChIP regions and it improves the spatial
+resolution of binding sites through combining the information of both
+sequencing tag position and orientation.")
+    (license license:bsd-3)))
+
 (define-public maffilter
   (package
     (name "maffilter")
