@@ -114,7 +114,7 @@ architecture supporting plugins.")
 (define-public node-addon-api
   (package
     (name "node-addon-api")
-    (version "4.2.0")
+    (version "8.3.0")
     (source
      (origin
        (method git-fetch)
@@ -123,7 +123,7 @@ architecture supporting plugins.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1bhvfi2m9nxfz418s619914vmidcnrzbjv6l9nid476c3zlpazch"))))
+        (base32 "1swvhdss2w636l24bnssnwb1rqh7i6lhpkk4knbrvpspqf80kagc"))))
     (inputs
      (list python node-safe-buffer))
     (build-system node-build-system)
@@ -148,8 +148,10 @@ architecture supporting plugins.")
                 "eslint-plugin-node"
                 "eslint-plugin-promise"
                 "fs-extra"
+                "neostandard"
                 "path"
-                "pre-commit"))))
+                "pre-commit"
+                "semver"))))
          (add-after 'unpack 'skip-js-tests
            ;; We can't run the js-based tests,
            ;; but we can still do the C++ parts
