@@ -1586,14 +1586,14 @@ commit-graph files.")
 (define-public rust-gix-command-0.3
   (package
     (name "rust-gix-command")
-    (version "0.3.9")
+    (version "0.3.10")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gix-command" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1rwjxaw0lyiipr8f879i39amdzd3dh006267hs9g1g3bnf9fdwnz"))))
+        (base32 "0ijqxwlnl7ikmhkhfp5yfhnxj7kmdyb0mz9qcrd3dqncx6wx40f2"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; use of undeclared crate or module `gix_testtools`
