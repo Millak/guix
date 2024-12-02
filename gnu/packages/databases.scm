@@ -4341,7 +4341,7 @@ parsing code in hiredis.  It primarily speeds up parsing of multi bulk replies."
 (define-public python-fakeredis
   (package
     (name "python-fakeredis")
-    (version "2.10.1")
+    (version "2.26.1")
     (source (origin
               (method git-fetch)        ;for tests
               (uri (git-reference
@@ -4350,18 +4350,36 @@ parsing code in hiredis.  It primarily speeds up parsing of multi bulk replies."
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1imsi9dswvkda894sm53lfzdsna0qlrgxszczlq2sam68zn4hfz6"))))
+                "10f9qwpc9vlcd2411c398n9kwjsk399vk1pjd9dbczlhvsn9s5bq"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (add-after 'unpack 'relax-requirements
-                          (lambda _
-                            (substitute* "pyproject.toml"
-                              (("sortedcontainers = \"\\^2\\.4\"")
-                               "sortedcontainers = \"^2.1\"")))))))
+     (list
+      #:test-flags '(list "-m" "not slow")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'poetry-compatibility
+            (lambda _
+              ;; Our version of poetry does not understand "to".
+              (substitute* "pyproject.toml"
+                ((", to = \"fakeredis\" ") ""))))
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("sortedcontainers = \"\\^2\\.4\"")
+                 "sortedcontainers = \"^2.1\""))))
+          ;; Tests require a running Redis server.
+          (add-before 'check 'start-redis
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "redis-server" "--daemonize" "yes"
+                        "--port" "6390")))))))
     (native-inputs (list python-poetry-core python-pytest
-                         python-pytest-asyncio python-pytest-mock))
-    (propagated-inputs (list python-redis python-sortedcontainers))
+                         python-pytest-asyncio python-pytest-mock
+                         redis))
+    (propagated-inputs
+     (list python-redis
+           python-sortedcontainers
+           python-typing-extensions))
     (home-page "https://github.com/cunla/fakeredis-py")
     (synopsis "Fake implementation of redis API for testing purposes")
     (description
