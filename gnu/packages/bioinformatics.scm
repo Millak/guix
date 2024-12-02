@@ -7959,6 +7959,8 @@ indexing scheme is called a @dfn{Hierarchical Graph FM index} (HGFM).")
               (mkdir-p (string-append #$output "/bin"))
               (symlink (string-append #$output "/share/homer/bin/homer2")
                        (string-append #$output "/bin/homer2"))
+              (symlink (string-append #$output "/share/homer/bin/homer")
+                       (string-append #$output "/bin/homer"))
               (for-each patch-shebang
                         (find-files (string-append #$output "/share/homer/bin")
                                     "\\.pl$")))))))
