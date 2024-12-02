@@ -556,6 +556,9 @@ expressions, and its ability to generate emacs-style TAGS files.")
      '(#:test-target "test"
        #:make-flags (list (string-append "PREFIX="
                                          (assoc-ref %outputs "out")))
+       ;; This test suite has race conditions in its scripts which make it
+       ;; unreliable when run in parallel.
+       #:parallel-tests? #f
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-references-to-commands
