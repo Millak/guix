@@ -5422,32 +5422,34 @@ Python.")
 (define-public python-hmmlearn
   (package
     (name "python-hmmlearn")
-    (version "0.2.8")
+    (version "0.3.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "hmmlearn" version))
        (sha256
         (base32
-         "1yd5l9ra37mks41mn5bigav7xpb161a9yqlcnz4ir076vkik2sb9"))))
-    (build-system python-build-system)
+         "1v24rkqjjf67w2rys25qxa3vk30bf23m7zn1ilihqzi5qp25sg0x"))))
+    (properties
+     '((updater-extra-native-inputs . ("pybind11" "python-setuptools-scm"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion (string-append #$output "/lib")
-                  (invoke "python" "-m" "pytest"))))))))
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'set-core-count
+           (lambda _
+             ;; "Could not find the number of physical cores", so we tell it
+             ;; how many cores to use.
+             (setenv "LOKY_MAX_CPU_COUNT" "1")))
+         (add-before 'check 'build-extensions
+           (lambda _
+             (invoke "python" "setup.py" "build_ext" "--inplace"))))))
     (propagated-inputs
-     (list pybind11
-           python-numpy
-           python-scikit-learn
-           python-scipy
-           python-setuptools-scm))
+     (list python-numpy python-scikit-learn python-scipy))
     (native-inputs
-     (list python-pytest))
+     (list pybind11 python-pytest python-setuptools-scm
+           util-linux)) ;for lscpu
     (home-page "https://github.com/hmmlearn/hmmlearn")
     (synopsis "Hidden Markov Models with scikit-learn like API")
     (description
