@@ -1544,14 +1544,14 @@ package provides a way to identify Git actors.")
 (define-public rust-gix-bitmap-0.2
   (package
     (name "rust-gix-bitmap")
-    (version "0.2.11")
+    (version "0.2.12")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gix-bitmap" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1bl7gqqlsdwngvvpgj6cby07cwidf7m0yk6wv473zqflrdkdnwd3"))))
+        (base32 "1yifqwnvj1jw19ndi1hrg7mz9ja2qg5jxg2xpr921l4b50987xqh"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-thiserror" ,rust-thiserror-1))))
