@@ -4377,7 +4377,7 @@ reasonable substitute.")
 (define-public python-redis
   (package
     (name "python-redis")
-    (version "4.5.4")
+    (version "5.2.0")
     (source (origin
               ;; The PyPI archive lacks some test resources such as the TLS
               ;; certificates under docker/stunnel/keys.
@@ -4388,7 +4388,7 @@ reasonable substitute.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0s5pswykjcyqbx471ib3gwy29xxa5ckgch9hy476x2s4pvhkbgmr"))))
+                "0f38s704gpm8ra6vdrqhicfq7m77in60kbgcmhvmviq9qj6v3505"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -4399,7 +4399,8 @@ reasonable substitute.")
               ;; .github/workflows/install_and_test.sh).
               (string-append "not onlycluster "
                              "and not redismod "
-                             "and not ssl")
+                             "and not ssl "
+                             "and not graph")
               "-k" (string-append
                     ;; The autoclaim test fails with "AssertionError: assert
                     ;; [b'0-0', [], []] == [b'0-0', []]".
@@ -4408,9 +4409,21 @@ reasonable substitute.")
                     ;; connecting to localhost:6380. Connection refused."
                     ;; (see: https://github.com/redis/redis-py/issues/2109).
                     "and not test_sync "
-                    "and not test_psync"))
+                    "and not test_psync "
+                    ;; Same with: "Error 111 connecting to
+                    ;; localhost:6479. Connection refused."
+                    "and not test_tfcall "
+                    "and not test_tfunction_load_delete "
+                    "and not test_tfunction_list"))
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              ;; FIXME Our version of python-async-timeout is just a little
+              ;; too old, but upgrading it would cause close to 1000 rebuilds.
+              (substitute* '("requirements.txt" "setup.py")
+                (("async-timeout>=4.0.3")
+                 "async-timeout>=4.0.2"))))
           ;; Tests require a running Redis server.
           (add-before 'check 'start-redis
             (lambda* (#:key tests? #:allow-other-keys)
@@ -4419,7 +4432,8 @@ reasonable substitute.")
                         "--enable-debug-command" "yes"
                         "--enable-module-command" "local")))))))
     (native-inputs
-     (list python-pytest
+     (list python-numpy
+           python-pytest
            python-pytest-asyncio
            python-pytest-timeout
            redis))
