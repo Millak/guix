@@ -48150,6 +48150,9 @@ The WirePlumber package to use.
 @item @code{enable-pulseaudio?} (default: @code{#t}) (type: boolean)
 When true, enable PipeWire's PulseAudio emulation support, allowing
 PulseAudio clients to use PipeWire transparently.
+
+@item @code{extra-content} (default: @code{""}) (type: string)
+Extra content to add to the end of @file{~/.config/alsa/asoundrc}.
 @end table
 @end deftp
 

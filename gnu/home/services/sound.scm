@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2023 Brian Cully <bjc@spork.org>
+;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -49,7 +50,10 @@
   (enable-pulseaudio?
    (boolean #t)
    "When true, enable PipeWire's PulseAudio emulation support, allowing
-PulseAudio clients to use PipeWire transparently."))
+PulseAudio clients to use PipeWire transparently.")
+  (extra-content
+   (string "")
+   "Extra content to add to the end of @file{~/.config/alsa/asoundrc}."))
 
 (define (home-pipewire-shepherd-service config)
   (shepherd-service
@@ -93,7 +97,7 @@ PulseAudio clients to use PipeWire transparently."))
 
 (define (home-pipewire-asoundrc config)
   (match-record config <home-pipewire-configuration>
-                (pipewire)
+                (pipewire extra-content)
     (mixed-text-file
      "asoundrc"
      "<" pipewire "/share/alsa/alsa.conf.d/50-pipewire.conf>\n"
@@ -103,7 +107,8 @@ PulseAudio clients to use PipeWire transparently."))
      "}\n"
      "ctl_type.pipewire {\n"
      "  lib \"" pipewire "/lib/alsa-lib/libasound_module_ctl_pipewire.so\"\n"
-     "}\n")))
+     "}\n"
+     extra-content)))
 
 (define home-pipewire-disable-pulseaudio-auto-start
   (plain-file "client.conf" "autospawn = no"))
