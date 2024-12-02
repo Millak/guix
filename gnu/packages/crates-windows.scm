@@ -293,21 +293,22 @@ programs.")
 (define-public rust-embed-resource-2
   (package
     (name "rust-embed-resource")
-    (version "2.4.0")
+    (version "2.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "embed-resource" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1cicrqlblz5xf4ns7yk4aifpskbvvvg436ls4c93h77f4zlc6k7m"))))
+        (base32 "0yb3kbw3xpghiwf69769jpng725kwa2cxm27qj5s7dm0cfgnz2xn"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-cc" ,rust-cc-1)
+                       ("rust-memchr" ,rust-memchr-2)
                        ("rust-rustc-version" ,rust-rustc-version-0.4)
                        ("rust-toml" ,rust-toml-0.8)
                        ("rust-vswhom" ,rust-vswhom-0.1)
-                       ("rust-winreg" ,rust-winreg-0.51))))
+                       ("rust-winreg" ,rust-winreg-0.52))))
     (home-page "https://github.com/nabijaczleweli/rust-embed-resource")
     (synopsis
      "Cargo library to handle compilation and inclusion of Windows resources")
