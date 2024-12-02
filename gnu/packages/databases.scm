@@ -2597,6 +2597,8 @@ Redis, CouchDB, etc., as well as a standard key/value store
 similar to BerkeleyDB, LevelDB, etc.")
     (license license:bsd-2)))
 
+;; NOTE: When upgrading redis, make sure that redis is still released
+;; under a Free Software license.
 (define-public redis
   (package
     (name "redis")
