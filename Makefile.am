@@ -751,6 +751,7 @@ EXTRA_DIST +=						\
   etc/manifests/source.scm				\
   etc/manifests/system-tests.scm			\
   etc/manifests/time-travel.scm				\
+  etc/manifests/ungraft.scm				\
   etc/manifests/upgrade.scm				\
   scripts/guix.in					\
   tests/cve-sample.json					\
