@@ -1754,33 +1754,33 @@ macOS and iOS.")
        (("rust-hex" ,rust-hex-0.4)
         ("rust-tempdir" ,rust-tempdir-0.3))))))
 
-(define-public rust-security-framework-0.2
+(define-public rust-security-framework-0.2.4-yanked
   (package
     (inherit rust-security-framework-0.3)
     (name "rust-security-framework")
-    (version "0.2.4")
+    (version "0.2.4") ;This version was yanked!
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "security-framework" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version "-yanked.tar.gz"))
        (sha256
-        (base32
-         "0gw3xxg8yzbjb4ny5cy07gky177c1nbgpxqjsw3hfzpfgrxji9bz"))))
+        (base32 "0gw3xxg8yzbjb4ny5cy07gky177c1nbgpxqjsw3hfzpfgrxji9bz"))))
     (arguments
-     `(#:skip-build? #t ; MacOS specific
+     `(#:skip-build? #t ;MacOS specific
        #:cargo-inputs
-       (("rust-core-foundation"
-         ,rust-core-foundation-0.6)
-        ("rust-core-foundation-sys"
-         ,rust-core-foundation-sys-0.6)
+       (("rust-core-foundation" ,rust-core-foundation-0.6)
+        ("rust-core-foundation-sys" ,rust-core-foundation-sys-0.6)
         ("rust-libc" ,rust-libc-0.2)
-        ("rust-security-framework-sys"
-         ,rust-security-framework-sys-0.2))
-       #:cargo-development-inputs
-       (("rust-hex" ,rust-hex-0.3)
-        ("rust-tempdir" ,rust-tempdir-0.3))))))
+        ("rust-security-framework-sys" ,rust-security-framework-sys-0.2))
+       #:cargo-development-inputs (("rust-hex" ,rust-hex-0.3)
+                                   ("rust-tempdir" ,rust-tempdir-0.3))))
+    (properties '((crate-version-yanked? . #t)))))
+
+(define-public rust-security-framework-0.2
+  ;; There are no non-yanked versions of this semver.
+  (deprecated-package "rust-security-framework"
+                      rust-security-framework-0.2.4-yanked))
 
 (define-public rust-security-framework-sys-2
   (package
