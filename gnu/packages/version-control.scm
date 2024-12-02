@@ -4171,7 +4171,7 @@ If several repos are related, it helps to see their status together.")
 (define-public ghq
   (package
     (name "ghq")
-    (version "1.6.2")
+    (version "1.7.1")
     (home-page "https://github.com/x-motemen/ghq")
     (source (origin
               (method git-fetch)
@@ -4181,7 +4181,7 @@ If several repos are related, it helps to see their status together.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "00rrm0gykmj60i0lnr4js6d4193c92zm3cimimb03xva4n9frvxw"))))
+                "0ai3klp3fm5r0idnml5pm55wcvkav3w0s11snlmr0ab1ki8m9sg5"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -4204,13 +4204,14 @@ If several repos are related, it helps to see their status together.")
     (native-inputs
      (list git-minimal))
     (inputs
-     (list go-github-com-songmu-gitconfig
-           go-github-com-mattn-go-isatty
+     (list go-github-com-mattn-go-isatty
            go-github-com-motemen-go-colorine
            go-github-com-saracen-walker
+           go-github-com-songmu-gitconfig
            go-github-com-urfave-cli-v2
            go-golang-org-x-net
-           go-golang-org-x-sync))
+           go-golang-org-x-sync
+           go-golang-org-x-text))
     (synopsis "Manage remote repository clones")
     (description
      "@code{ghq} provides a way to organize remote repository clones, like
