@@ -24,7 +24,7 @@
              (guix base16)
              (gnu packages))
 
-(include "source-manifest.scm")
+(include "source.scm")
 
 (define (tarball-origin? origin)
   (match (origin-actual-file-name origin)

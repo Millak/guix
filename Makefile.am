@@ -694,7 +694,7 @@ endif !CAN_RUN_TESTS
 
 check-system: $(GOBJECTS)
 	$(AM_V_at)$(top_builddir)/pre-inst-env			\
-	  guix build -m $(top_srcdir)/etc/system-tests.scm -K
+	  guix build -m $(top_srcdir)/etc/manifests/system-tests.scm -K
 
 # Public keys used to sign substitutes.
 dist_pkgdata_DATA =				\
@@ -741,17 +741,17 @@ EXTRA_DIST +=						\
   build-aux/update-guix-package.scm			\
   build-aux/xgettext.scm				\
   doc/build.scm						\
-  etc/disarchive-manifest.scm				\
   etc/guix-install.sh					\
   etc/historical-authorizations				\
   etc/news.scm						\
-  etc/hurd-manifest.scm					\
-  etc/kernels-manifest.scm				\
-  etc/release-manifest.scm				\
-  etc/source-manifest.scm				\
-  etc/system-tests.scm					\
-  etc/time-travel-manifest.scm				\
-  etc/upgrade-manifest.scm				\
+  etc/manifests/disarchive.scm				\
+  etc/manifests/hurd.scm				\
+  etc/manifests/kernels.scm				\
+  etc/manifests/release.scm				\
+  etc/manifests/source.scm				\
+  etc/manifests/system-tests.scm			\
+  etc/manifests/time-travel.scm				\
+  etc/manifests/upgrade.scm				\
   scripts/guix.in					\
   tests/cve-sample.json					\
   tests/keys/civodul.pub				\
@@ -1202,7 +1202,7 @@ assert-no-store-file-names:
 # server so that '--display-missing' doesn't print two lists.
 assert-binaries-available: $(GOBJECTS)
 	$(AM_V_at)$(top_builddir)/pre-inst-env				\
-	  guix weather -m "$(top_srcdir)/etc/release-manifest.scm"	\
+	  guix weather -m "$(top_srcdir)/etc/manifests/release.scm"	\
 	                --substitute-urls="https://ci.guix.gnu.org"	\
 	                --display-missing
 
