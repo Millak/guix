@@ -605,7 +605,7 @@
                          (substitute* desktop-file
                            (("^Exec=@MOZ_APP_NAME@")
                             (string-append "Exec="
-                                           #$output "/bin/librewolf"))
+                                           #$output "/bin/librewolf %u"))
                            (("@MOZ_APP_DISPLAYNAME@")
                             "LibreWolf")
                            (("@MOZ_APP_REMOTINGNAME@")
