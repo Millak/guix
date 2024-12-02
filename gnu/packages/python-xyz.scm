@@ -21575,6 +21575,18 @@ pseudo-concurrently (typically in a single or a few OS-level threads) and
 are synchronized with data exchanges on \"channels\".")
     (license (list license:psfl license:expat))))
 
+(define-public python-greenlet-2
+  (hidden-package
+   (package
+     (inherit python-greenlet)
+     (version "2.0.2")
+     (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "greenlet" version))
+        (sha256
+         (base32 "1h1l1mll5s4y1b09asf2jps0m7wyshnis1aassz9gc3xmw9xrj77")))))))
+
 (define-public python-objgraph
   (package
     (name "python-objgraph")
