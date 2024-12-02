@@ -564,8 +564,8 @@ must be one of 'package', 'all', or 'transitive'~%")
                  %standard-cross-build-options
                  %standard-native-build-options)))
 
-(define (dependents store packages max-depth)
-  "List all the things that would need to be rebuilt if PACKAGES are changed."
+(define* (dependents store packages #:optional (max-depth +inf.0))
+  "Return the list of dependents of all of PACKAGES up to distance MAX-DEPTH."
   ;; Using %BAG-NODE-TYPE is more accurate than using %PACKAGE-NODE-TYPE
   ;; because it includes implicit dependencies.
   (define (get-dependents packages edges)
