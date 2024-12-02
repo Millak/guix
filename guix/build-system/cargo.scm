@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2016, 2019, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2016, 2019, 2021, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
@@ -227,24 +227,22 @@ do not extract the conventional inputs)."
   (let loop ((inputs     inputs)
              (result     '())
              (propagated '())
-             (first?     #t)
              (seen       vlist-null))
     (match inputs
       (()
        (if (null? propagated)
            (reverse result)
-           (loop (reverse (concatenate propagated)) result '() #f seen)))
+           (loop (reverse (concatenate propagated)) result '() seen)))
       (((and input (label (? package? package))) rest ...)
-       (if (and (not first?) (seen? seen package))
-           (loop rest result propagated first? seen)
+       (if (seen? seen package)
+           (loop rest result propagated seen)
            (loop rest
                  (cons input result)
                  (cons (package-cargo-inputs package)
                        propagated)
-                 first?
                  (vhash-consq package package seen))))
       ((input rest ...)
-       (loop rest (cons input result) propagated first? seen)))))
+       (loop rest (cons input result) propagated seen)))))
 
 (define (expand-crate-sources cargo-inputs cargo-development-inputs)
   "Extract all transitive sources for CARGO-INPUTS and CARGO-DEVELOPMENT-INPUTS
