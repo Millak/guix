@@ -3572,20 +3572,26 @@ e.g. microbiome samples, genomes, metagenomes.")
 (define-public python-pairtools
   (package
     (name "python-pairtools")
-    (version "1.0.2")
+    (version "1.1.0-fix")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/open2c/pairtools")
-                    (commit (string-append "v" version))))
+                    (commit (string-append "pairtools-v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0xn4cg4jq3rfn42h8rfwg0k6xkvihjrv32gwldb9y0jp05lzw9cs"))))
-    (build-system python-build-system)
+                "0983vw4kb6frjncsnml4ahw3l7sixg1paz80s119iah2i086cw06"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'patch-setup.py
+           (lambda _
+             ;; __NUMPY_SETUP__ is undefined.
+             (substitute* "setup.py"
+               ((".*__builtins__.__NUMPY_SETUP.*") ""))))
          (add-after 'unpack 'fix-references
            (lambda _
              (substitute* '("pairtools/cli/header.py"
@@ -3598,7 +3604,11 @@ e.g. microbiome samples, genomes, metagenomes.")
                (with-directory-excursion "/tmp"
                  (invoke "pytest" "-v"))))))))
     (native-inputs
-     (list python-cython python-pytest))
+     (list python-cython
+           python-pytest
+           python-pytest-cov
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list htslib ; for bgzip, looked up in PATH
            samtools ; looked up in PATH
