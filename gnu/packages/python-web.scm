@@ -8388,6 +8388,12 @@ Python.")
        (sha256
         (base32 "0vkkngiybx5372j9vc9p4wn6hakpv99l0ipsf4kw7ccazss4p05k"))))
     (build-system pyproject-build-system)
+    ;; To activate tests python-pytest is required and missing
+    ;; <https://raw.githubusercontent.com/Azure/azure-sdk-for-python/refs/
+    ;; heads/main/tools/azure-sdk-tools/devtools_testutils/README.md>
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-azure-core
            python-cryptography
