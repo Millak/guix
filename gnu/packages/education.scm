@@ -320,7 +320,8 @@ Currently available boards include:
                  (with-directory-excursion bin
                    (rename-file "v1" "gotypist"))))))))
       (native-inputs
-       (list go-github-com-gizak-termui go-github-com-stretchr-testify))
+       (list go-github-com-gizak-termui-v3
+             go-github-com-stretchr-testify))
       (home-page "https://github.com/KappaDistributive/gotypist")
       (synopsis "Simple typing trainer for text terminals")
       (description

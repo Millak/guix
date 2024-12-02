@@ -2413,9 +2413,9 @@ for speed on short messages.")
 your Go binary to be later served from an http.FileSystem.")
     (license license:asl2.0)))
 
-(define-public go-github-com-gizak-termui
+(define-public go-github-com-gizak-termui-v3
   (package
-    (name "go-github-com-gizak-termui")
+    (name "go-github-com-gizak-termui-v3")
     (version "3.1.0")
     (source
      (origin
