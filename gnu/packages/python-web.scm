@@ -8326,13 +8326,13 @@ Python.")
 (define-public python-azure-core
   (package
     (name "python-azure-core")
-    (version "1.28.0")
+    (version "1.32.0")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "azure-core" version ".zip"))
+       (uri (pypi-uri "azure_core" version))
        (sha256
-        (base32 "1g9nv5pcjkskv37vsjgsm7am81y629flwkghnvd5dphzzikgrvp9"))))
+        (base32 "1r9hqyqr5fxiiai0irr0n98gwgzj5f8y46vc1yci9bidddfw7cr2"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -8369,7 +8369,8 @@ Python.")
            python-pytest-aiohttp
            python-pytest-asyncio
            python-pytest-trio
-           unzip))
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/Azure/azure-sdk-for-python")
     (synopsis "Microsoft Azure Core library for Python")
     (description "This package provides the Microsoft Azure Core library for
