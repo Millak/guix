@@ -1176,17 +1176,19 @@ Interchange Format (SARIF)} file format.")
        (sha256
         (base32
          "17k31d8avl63xsr6fzvmkxcsm7gnz5dqpgsz65psm1lpc38c79k3"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
+     (list
+      #:test-flags
+      '(list "--ignore-glob=examples/*" "--ignore-glob=bench/*" "tests")
+      #:phases
+      '(modify-phases %standard-phases
+         (add-before 'check 'set-HOME
+           (lambda _ (setenv "HOME" "/tmp")))
          (replace 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             ;; Skip orjson, which requires rust to build.
-             (substitute* "tests/test_media_handlers.py"
-               (("== 'CPython") "!= 'CPython"))
-             (setenv "HOME" "/tmp")
-             (invoke "pytest" "-vv" "tests"))))))
+           (lambda* (#:key tests? test-flags #:allow-other-keys)
+             (when tests?
+               (apply invoke "pytest" "-vv" test-flags)))))))
     (propagated-inputs
      (list python-mimeparse))
     (native-inputs
@@ -1197,6 +1199,7 @@ Interchange Format (SARIF)} file format.")
            python-httpx
            python-mujson
            python-msgpack
+           python-orjson
            python-pecan
            python-pillow
            python-pytest
