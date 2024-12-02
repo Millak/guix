@@ -29,6 +29,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages man)
+  #:use-module (gnu packages linux)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages wm)
@@ -108,6 +109,37 @@ directly from a tty using KMS/DRM.")
 mission-critical safety and performance for financial services.")
     (home-page "https://github.com/tigerbeetledb/tigerbeetle")
     (license license:asl2.0)))
+
+(define-public waylock
+  (package
+    (name "waylock")
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/ifreund/waylock")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0jlq23cb5069sa5ipshhj82a9rn30frflwi9skp2kplqpxm15wwd"))))
+    (build-system zig-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      ;; No tests.
+      #:tests? #f
+      #:zig-release-type "safe"
+      #:zig-build-flags
+      #~(list "-Dpie")))
+    (inputs (list linux-pam zig-wayland zig-xkbcommon))
+    (native-inputs (list pkg-config scdoc))
+    (home-page "https://codeberg.org/ifreund/waylock")
+    (synopsis "Wayland screen locker")
+    (description
+     "Waylock is a small screen locker for Wayland compositors implementing the
+@code{ext-session-lock-v1} protocol.")
+    (license license:expat)))
 
 (define-public zig-pixman
   (package
