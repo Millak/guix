@@ -473,7 +473,7 @@ trademark sign '~a' at ~d")
                               (string-match "[A-Z]$" pre) ;; Initial found
                               (find (lambda (s)
                                       (string-suffix-ci? s pre))
-                                    '("i.e" "e.g" "a.k.a" "resp")))
+                                    '("i.e" "e.g" "a.k.a" "resp" "cf" "al")))
                              r
                              (cons (match:start m) r))))))))
       (if (null? infractions)
