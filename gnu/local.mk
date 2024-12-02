@@ -1523,7 +1523,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/guile-lzlib-hurd64.patch			\
   %D%/packages/patches/guile-present-coding.patch		\
   %D%/packages/patches/guile-rsvg-pkgconfig.patch		\
-  %D%/packages/patches/guile-ssh-rename-bool.patch		\
   %D%/packages/patches/guile-emacs-build-fixes.patch		\
   %D%/packages/patches/gtk2-fix-builder-test.patch		\
   %D%/packages/patches/gtk2-harden-list-store.patch		\
