@@ -12466,27 +12466,26 @@ releases.")
 (define-public python-jaraco-test
   (package
     (name "python-jaraco-test")
-    (version "5.3.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "jaraco.test" version))
-              (sha256
-               (base32
-                "0h0x8qmvfkfqvwdx2m7kwhn53sg26k8gkaas7s1730ak772zqrvz"))))
+    (version "5.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "jaraco_test" version))
+       (sha256
+        (base32 "0xfkly5w4i4npi4pq1g32y8q8iijkq4pfcfs8wcjhfn4amj6212c"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:test-flags '(list "-k" "http")))
-    (propagated-inputs (list python-jaraco-context python-jaraco-functools))
-    (native-inputs (list python-flake8
-                         python-pytest
-                         python-pytest-black
-                         python-pytest-checkdocs
-                         python-pytest-cov
-                         python-pytest-enabler
-                         python-pytest-flake8
-                         python-pytest-mypy
-                         python-setuptools
-                         python-wheel))
+    (native-inputs
+     (list python-jaraco-collections
+           python-pytest
+           python-pytest-checkdocs
+           python-pytest-enabler
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-jaraco-context
+           python-jaraco-functools))
     (home-page "https://github.com/jaraco/jaraco.test")
     (synopsis "Testing support by jaraco")
     (description "This package provides testing support by jaraco.")
