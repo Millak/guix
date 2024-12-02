@@ -466,11 +466,16 @@ trademark sign '~a' at ~d")
            (reverse (fold-matches
                      "\\. [A-Z]" description '()
                      (lambda (m r)
-                       ;; Filter out matches of common abbreviations.
-                       (if (find (lambda (s)
-                                   (string-suffix-ci? s (match:prefix m)))
-                                 '("i.e" "e.g" "a.k.a" "resp"))
-                           r (cons (match:start m) r)))))))
+                       ;; Filter out matches of common abbreviations and
+                       ;; initials.
+                       (let ((pre (match:prefix m)))
+                         (if (or
+                              (string-match "[A-Z]$" pre) ;; Initial found
+                              (find (lambda (s)
+                                      (string-suffix-ci? s pre))
+                                    '("i.e" "e.g" "a.k.a" "resp")))
+                             r
+                             (cons (match:start m) r))))))))
       (if (null? infractions)
           '()
           (list

@@ -173,7 +173,7 @@
   '()
   (let ((pkg (dummy-package "x"
                             (description
-                             "E.g. Foo, i.e. Bar resp. Baz (a.k.a. DVD)."))))
+                             "E.g. Foo, i.e. Bar resp. Baz (a.k.a. DVD).  Name O. Person"))))
     (check-description-style pkg)))
 
 (test-equal "description: may not contain trademark signs: ™"
