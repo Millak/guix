@@ -705,7 +705,7 @@ a string consisting of a number and a time unit is converted to milliseconds.")
 (define-public node-nan
   (package
     (name "node-nan")
-    (version "2.15.0")
+    (version "2.22.0")
     (source
      (origin
        (method git-fetch)
@@ -714,7 +714,7 @@ a string consisting of a number and a time unit is converted to milliseconds.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "18xslh9va5ld872scrp5y4251ax9s3c6qh0lnl1200lpzbsxy7yd"))))
+        (base32 "02gqm23x26glffvyxrnk610hy3hg0kwh2v58dhnb032l0jhjzqvp"))))
     (build-system node-build-system)
     (arguments
      `(#:phases
