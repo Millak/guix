@@ -258,18 +258,26 @@ is guaranteed to never traverse the same package twice."
   (mlambda ()
     "Return the list of all public packages, including replacements and hidden
 packages, excluding superseded packages."
-    (delete-duplicates
-     (fold-packages (lambda (package result)
-                      (match (package-replacement package)
-                        ((? package? replacement)
-                         (cons* replacement package result))
-                        (#f
-                         (cons package result))))
-                    '()
+    ;; Note: 'fold-packages' never traverses the same package twice but
+    ;; replacements break that (they may or may not be visible to
+    ;; 'fold-packages'), hence this hash table to track visited packages.
+    (define visited (make-hash-table))
 
-                    ;; Dismiss deprecated packages but keep hidden packages.
-                    #:select? (negate package-superseded))
-     eq?)))
+    (fold-packages (lambda (package result)
+                     (if (hashq-ref visited package)
+                         result
+                         (begin
+                           (hashq-set! visited package #t)
+                           (match (package-replacement package)
+                             ((? package? replacement)
+                              (hashq-set! visited replacement #t)
+                              (cons* replacement package result))
+                             (#f
+                              (cons package result))))))
+                   '()
+
+                   ;; Dismiss deprecated packages but keep hidden packages.
+                   #:select? (negate package-superseded))))
 
 (define %package-cache-file
   ;; Location of the package cache.
