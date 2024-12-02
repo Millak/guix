@@ -283,23 +283,44 @@ unpacking."
                 (_ #f))
               inputs))))
 
-(define* (build #:key import-path build-flags (parallel-build? #t)
+(define* (build #:key
+                build-flags
+                import-path
+                (parallel-build? #t)
+                (verbosity 1)
                 #:allow-other-keys)
   "Build the package named by IMPORT-PATH."
-  (let* ((njobs (if parallel-build? (parallel-job-count) 1)))
+  (let* ((njobs (if parallel-build? (parallel-job-count) 1))
+         ;; Utilizing GOFLAGS for flexible build options passthrough, refer
+         ;; for more examples to online documentation of Golang
+         ;; <https://go.dev/src/cmd/go/testdata/script/goflags.txt>.
+         (goflags (string-join
+                   (list
+                    ;; Print the name of packages (pathes) as they are compiled.
+                    "-v"
+                    ;; Print each command as it is invoked. When enabled, it
+                    ;; generates a lot of noisy logs which makes identifying
+                    ;; build failures harder to determine.
+                    (if (> verbosity 1) "-x" ""))
+                   " ")))
+    (setenv "GOFLAGS" goflags)
     (setenv "GOMAXPROCS" (number->string njobs)))
 
   (with-throw-handler
     #t
     (lambda _
       (apply invoke "go" "install"
-              "-v" ; print the name of packages as they are compiled
-              "-x" ; print each command as it is invoked
-              ;; Respectively, strip the symbol table and debug
-              ;; information, and the DWARF symbol table.
-              "-ldflags=-s -w"
-              "-trimpath"
-              `(,@build-flags ,import-path)))
+             ;; Respectively, strip the symbol table and debug information,
+             ;; and the DWARF symbol table.
+             "-ldflags=-s -w"
+             ;; Remove all file system paths from the resulting executable.
+             ;; Instead of absolute file system paths, the recorded file names
+             ;; will begin either a module path@version (when using modules),
+             ;; or a plain import path (when using the standard library, or
+             ;; GOPATH).
+             "-trimpath"
+             `(,@build-flags ,import-path)))
+
     (lambda (key . args)
       (display (string-append "Building '" import-path "' failed.\n"
                               "Here are the results of `go env`:\n"))
