@@ -226,19 +226,17 @@ Windows Credential Manager.")
 (define-public rust-codepage-0.1
   (package
     (name "rust-codepage")
-    (version "0.1.1")
+    (version "0.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "codepage" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1sdxp0f8dy2rscln646326lny9i0jm7ncgyp4yncdwndq0i943lb"))))
+        (base32 "1d0qr4wqc4yrab7halsa3r6akb2i2bk2cqr04vl8m0n23c38vxj8"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-encoding-rs" ,rust-encoding-rs-0.8))))
+     `(#:cargo-inputs (("rust-encoding-rs" ,rust-encoding-rs-0.8))))
     (home-page "https://docs.rs/codepage/")
     (synopsis "Mapping between Windows code page and @code{encoding_rs}")
     (description
