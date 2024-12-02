@@ -5,7 +5,7 @@
 ;;; Copyright © 2016 David Craven <david@craven.ch>
 ;;; Copyright © 2019 Ivan Petkov <ivanppetkov@gmail.com>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
-;;; Copyright © 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2021, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -29,6 +29,7 @@
   #:use-module (guix gexp)
   #:use-module (guix monads)
   #:use-module (guix packages)
+  #:use-module (guix platform)
   #:use-module (guix build-system)
   #:use-module (guix build-system gnu)
   #:use-module (ice-9 match)
@@ -66,6 +67,11 @@ to NAME and VERSION."
   ;; Lazily resolve the binding to avoid a circular dependency.
   (let ((module (resolve-interface '(gnu packages rust))))
     (module-ref module 'make-rust-sysroot)))
+
+(define (cargo-triplet target)
+  (false-if-exception
+    (platform-rust-target
+      (lookup-platform-by-target-or-system target))))
 
 (define %cargo-utils-modules
   ;; Build-side modules imported by default.
@@ -113,6 +119,7 @@ to NAME and VERSION."
                        #:cargo-build-flags #$(sexp->gexp cargo-build-flags)
                        #:cargo-test-flags #$(sexp->gexp cargo-test-flags)
                        #:cargo-package-flags #$(sexp->gexp cargo-package-flags)
+                       #:cargo-target #$(cargo-triplet system)
                        #:features #$(sexp->gexp features)
                        #:skip-build? #$skip-build?
                        #:install-source? #$install-source?
@@ -142,6 +149,7 @@ to NAME and VERSION."
                             (cargo-build-flags ''("--release"))
                             (cargo-test-flags ''("--release"))
                             (cargo-package-flags ''("--no-metadata" "--no-verify"))
+                            (cargo-target (cargo-triplet (or target system)))
                             (features ''())
                             (skip-build? #f)
                             (install-source? (not (target-mingw? target)))
@@ -170,6 +178,7 @@ to NAME and VERSION."
                        #:cargo-build-flags #$(sexp->gexp cargo-build-flags)
                        #:cargo-test-flags #$(sexp->gexp cargo-test-flags)
                        #:cargo-package-flags #$(sexp->gexp cargo-package-flags)
+                       #:cargo-target #$(cargo-triplet (or target system))
                        #:features #$(sexp->gexp features)
                        #:skip-build? #$skip-build?
                        #:install-source? #$install-source?
@@ -313,7 +322,7 @@ any dependent crates. This can be a benefits:
   (define private-keywords
     `(#:rust #:inputs #:native-inputs #:outputs
       #:cargo-inputs #:cargo-development-inputs
-      #:rust-sysroot
+      #:rust-sysroot #:cargo-target
       ,@(if target '() '(#:target))))
 
   (bag

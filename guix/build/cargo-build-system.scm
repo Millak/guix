@@ -120,6 +120,7 @@ libraries or executables."
 
 (define* (configure #:key inputs
                     target system
+                    cargo-target
                     (vendor-dir "guix-vendor")
                     #:allow-other-keys)
   "Vendor Cargo.toml dependencies as guix inputs."
@@ -149,24 +150,7 @@ libraries or executables."
 
   ;; For cross-building
   (when target
-    (setenv "CARGO_BUILD_TARGET"
-            ;; Can this be replaced with platform-rust-architecture?
-            ;; Keep this synchronized with (guix platforms *)
-            (match target
-                   ("aarch64-linux-gnu" "aarch64-unknown-linux-gnu")
-                   ("arm-linux-gnueabihf" "armv7-unknown-linux-gnueabihf")
-                   ("i686-linux-gnu" "i686-unknown-linux-gnu")
-                   ("mips64el-linux-gnu" "mips64el-unknown-linux-gnuabi64")
-                   ("powerpc-linux-gnu" "powerpc-unknown-linux-gnu")
-                   ("powerpc64-linux-gnu" "powerpc64-unknown-linux-gnu")
-                   ("powerpc64le-linux-gnu" "powerpc64le-unknown-linux-gnu")
-                   ("riscv64-linux-gnu" "riscv64gc-unknown-linux-gnu")
-                   ("x86_64-linux-gnu" "x86_64-unknown-linux-gnu")
-                   ("x86_64-linux-gnux32" "x86_64-unknown-linux-gnux32")
-                   ("i586-pc-gnu" "i686-unknown-hurd-gnu")
-                   ("i686-w64-mingw32" "i686-pc-windows-gnu")
-                   ("x86_64-w64-mingw32" "x86_64-pc-windows-gnu")
-                   (else #f)))
+    (setenv "CARGO_BUILD_TARGET" cargo-target)
     (setenv "RUSTFLAGS" (string-append
                           (or (getenv "RUSTFLAGS") "")
                           " --sysroot " (assoc-ref inputs "rust-sysroot")))
