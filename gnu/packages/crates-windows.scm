@@ -704,32 +704,30 @@ for MinGW-w64 and MSVC (cross-)compile targets.")
 (define-public rust-remove-dir-all-0.8
   (package
     (name "rust-remove-dir-all")
-    (version "0.8.2")
+    (version "0.8.4")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "remove_dir_all" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0ay0mi06ak1n5gw3yjgp0hvzl59nj31ahxpdqvczw5qrvkx5r293"))))
+                "0jpbki3idrzinspdypcczjqx6nazwmfixk7n4w8la11ixghgk556"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-aligned" ,rust-aligned-0.4)
-        ("rust-cfg-if" ,rust-cfg-if-1)
+       (("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-clap" ,rust-clap-4)
         ("rust-cvt" ,rust-cvt-0.1)
-        ("rust-env-logger" ,rust-env-logger-0.10)
-        ("rust-fs-at" ,rust-fs-at-0.1)
-        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-env-logger" ,rust-env-logger-0.11)
+        ("rust-fs-at" ,rust-fs-at-0.2)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-log" ,rust-log-0.4)
         ("rust-normpath" ,rust-normpath-1)
         ("rust-rayon" ,rust-rayon-1)
-        ("rust-windows-sys" ,rust-windows-sys-0.45))
+        ("rust-windows-sys" ,rust-windows-sys-0.59))
        #:cargo-development-inputs
        (("rust-doc-comment" ,rust-doc-comment-0.3)
-        ("rust-env-logger" ,rust-env-logger-0.10)
+        ("rust-env-logger" ,rust-env-logger-0.11)
         ("rust-log" ,rust-log-0.4)
         ("rust-tempfile" ,rust-tempfile-3)
         ("rust-test-log" ,rust-test-log-0.2))))
