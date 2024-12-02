@@ -67,20 +67,18 @@
   (package
     (inherit rust-anstyle-wincon-3)
     (name "rust-anstyle-wincon")
-    (version "1.0.1")
+    (version "1.0.2")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "anstyle-wincon" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "12714vwjf4c1wm3qf49m5vmd93qvq2nav6zpjc0bxbh3ayjby2hq"))))
+                "0k6gcx8qih4gzb5glrl37rqvj5qc893cvkkssdnjjm4iw02snxy6"))))
     (arguments
-     `(#:cargo-inputs
-       (("rust-anstyle" ,rust-anstyle-1)
-        ("rust-windows-sys" ,rust-windows-sys-0.48))
-       #:cargo-development-inputs
-       (("rust-lexopt" ,rust-lexopt-0.3))))))
+     `(#:cargo-inputs (("rust-anstyle" ,rust-anstyle-1)
+                       ("rust-windows-sys" ,rust-windows-sys-0.48))
+       #:cargo-development-inputs (("rust-lexopt" ,rust-lexopt-0.3))))))
 
 (define-public rust-anstyle-wincon-0.2
   (package
