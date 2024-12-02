@@ -743,7 +743,8 @@ the synopsis")
         '()))
 
   (define (check-proper-start synopsis)
-    (if (properly-starts-sentence? synopsis)
+    (if (or (properly-starts-sentence? synopsis)
+            (starts-with-texinfo-markup? synopsis))
         '()
         (list
          (make-warning package

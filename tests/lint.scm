@@ -307,6 +307,12 @@
       (check-synopsis-style pkg)))
    string<?))
 
+(test-equal "synopsis: starts with texinfo markup"
+  '()
+  (let ((pkg (dummy-package "x"
+                            (synopsis "@code{help}"))))
+    (check-synopsis-style pkg)))
+
 (test-equal "synopsis: too long"
   "synopsis should be less than 80 characters long"
   (single-lint-warning-message
