@@ -124,5 +124,14 @@
                 (name (string-append (package-name package) "-full-upgrade"))))
             (dependents store security-packages 2))))))
 
+;; Install a UTF-8 locale so that file names in Git checkouts are interpreted
+;; as UTF-8 (the libgit2 source tree contains non-ASCII file names, for
+;; instance).  XXX: This works around the fact that 'cuirass register' and
+;; thus 'cuirass evaluate' may not be running with a UTF-8 locale.
+(unless (string-suffix? ".UTF-8" (setlocale LC_ALL))
+  (or (false-if-exception (setlocale LC_ALL "C.UTF-8"))
+      (false-if-exception (setlocale LC_ALL "en_US.UTF-8"))
+      (format (current-error-port) "warning: failed to install UTF-8 locale~%")))
+
 (concatenate-manifests
  (list individual-security-upgrades joint-security-upgrades))
