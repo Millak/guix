@@ -84364,15 +84364,15 @@ unstable language features.")
         (base32 "1fgqn3mg9gdbjxwfxl76fg0qiq53w3mk4hdh1x40jylnz39k9m13"))))
     (build-system cargo-build-system)
     (arguments
-     (list #:skip-build? #t
-           #:cargo-inputs
+     (list #:cargo-inputs
            `(("rust-hyphenation" ,rust-hyphenation-0.8)
              ("rust-smawk" ,rust-smawk-0.3)
              ("rust-terminal-size" ,rust-terminal-size-0.2)
-             ("rust-termion" ,rust-termion-2)
-             ("rust-unic-emoji-char" ,rust-unic-emoji-char-0.9)
              ("rust-unicode-linebreak" ,rust-unicode-linebreak-0.1)
-             ("rust-unicode-width" ,rust-unicode-width-0.1)
+             ("rust-unicode-width" ,rust-unicode-width-0.1))
+           #:cargo-development-inputs
+           `(("rust-termion" ,rust-termion-2)
+             ("rust-unic-emoji-char" ,rust-unic-emoji-char-0.9)
              ("rust-version-sync" ,rust-version-sync-0.9))))
     (home-page "https://github.com/mgeisler/textwrap")
     (synopsis "Library for word wrapping, indenting, and dedenting strings")
