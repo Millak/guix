@@ -440,22 +440,21 @@ module definition file.")
 (define-public rust-ipconfig-0.3
   (package
     (name "rust-ipconfig")
-    (version "0.3.1")
+    (version "0.3.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "ipconfig" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1gn5j5sp58mz0630dhs1b8by7j0jqagldbd5iyln690gp7qjlc5x"))))
+        (base32 "0zwr0x3jnqmjdqqbzhb0nid011qyhcyfdfqv32cdw85pjqpvk3dm"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-socket2" ,rust-socket2-0.4)
-        ("rust-widestring" ,rust-widestring-0.5)
-        ("rust-winapi" ,rust-winapi-0.3)
-        ("rust-winreg" ,rust-winreg-0.10))))
+     `(#:tests? #f  ; failed to resolve: could not find `computer` in `ipconfig`
+       #:cargo-inputs (("rust-socket2" ,rust-socket2-0.5)
+                       ("rust-widestring" ,rust-widestring-1)
+                       ("rust-windows-sys" ,rust-windows-sys-0.48)
+                       ("rust-winreg" ,rust-winreg-0.50))))
     (home-page "https://github.com/liranringel/ipconfig")
     (synopsis "Get network adapters and configuration information for Windows")
     (description "This package lets you get network adapters information and
