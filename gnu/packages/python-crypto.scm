@@ -89,22 +89,19 @@
        (method url-fetch)
        (uri (pypi-uri "base58" version))
        (sha256
-        (base32
-         "1317ly0db7nnjg5k58f6nqa0svfcvn446xd5bpiyi0bfbczwpl65"))))
+        (base32 "1317ly0db7nnjg5k58f6nqa0svfcvn446xd5bpiyi0bfbczwpl65"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests? (invoke "pytest" "-vv")))))))
     (native-inputs
-     (list python-pyhamcrest python-pytest python-pytest-benchmark))
+     (list python-pyhamcrest
+           python-pytest
+           python-pytest-benchmark
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/keis/base58")
     (synopsis "Base58 and Base58Check implementation")
-    (description "Base58 and Base58Check implementation compatible
-with what is used by the Bitcoin network.")
+    (description
+     "Base58 and Base58Check implementation compatible with what is used by
+the Bitcoin network.")
     (license license:expat)))
 
 (define-public python-bcrypt
