@@ -517,19 +517,19 @@ libcurl, which is intended to be used with the @code{git2} crate.")
 (define-public rust-git2-hooks-0.3
   (package
     (name "rust-git2-hooks")
-    (version "0.3.1")
+    (version "0.3.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "git2-hooks" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1grq79ggjp2b10yxl205kjkfqcijmmncnf47az3g1g713irpzgwx"))))
+        (base32 "0gr08zl1g0ll16smanqq8rxmwn8i5fikk7manch2022bh3lhw09y"))))
     (native-inputs (list pkg-config))
     (inputs (list libgit2-1.7 libssh2 openssl zlib))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f ; missing git2_testing
+     `(#:tests? #f      ; unresolved import `git2_testing`
        #:cargo-inputs (("rust-git2" ,rust-git2-0.17)
                        ("rust-log" ,rust-log-0.4)
                        ("rust-shellexpand" ,rust-shellexpand-3)
