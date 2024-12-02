@@ -5334,14 +5334,14 @@ Rust implementation of Git.")
 (define-public rust-gix-quote-0.4
   (package
     (name "rust-gix-quote")
-    (version "0.4.12")
+    (version "0.4.13")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gix-quote" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1zyrl6qchw2f6j25ian699ifzas3a5a2zrhflwjpmym3ksdlzzyb"))))
+        (base32 "0jcf59cbkw84c7yc341bry9rvl5hbagr7sl2w8wrdzfw4larm7zq"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
