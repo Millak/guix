@@ -7939,9 +7939,11 @@ indexing scheme is called a @dfn{Hierarchical Graph FM index} (HGFM).")
       #:phases
       #~(modify-phases %standard-phases
           (replace 'configure
-            (lambda _
+            (lambda* (#:key inputs #:allow-other-keys)
               (let ((share (string-append #$output "/share/homer")))
                 (mkdir-p share)
+                (copy-file (assoc-ref inputs "config.txt")
+                           (string-append share "/config.txt"))
                 (substitute* "configureHomer.pl"
                   (("my \\$homeDir = \\$1;")
                    (string-append "my $homeDir = \"" share "\";"))))))
@@ -7963,11 +7965,23 @@ indexing scheme is called a @dfn{Hierarchical Graph FM index} (HGFM).")
                        (string-append #$output "/bin/homer"))
               (for-each patch-shebang
                         (find-files (string-append #$output "/share/homer/bin")
-                                    "\\.pl$")))))))
+                                    "\\.pl$"))
+              ;; Also load config file from user's home directory.
+              (substitute* (string-append #$output "/share/homer/bin/HomerConfig.pm")
+                (("#parseConfigFile") "parseConfigFile")))))))
     (inputs
      (list perl))
     (native-inputs
-     (list perl unzip))
+     `(("perl" ,perl)
+       ("unzip" ,unzip)
+       ("config.txt"
+        ,(origin
+           (method url-fetch)
+           (uri (string-append "https://web.archive.org/web/20200531014112id_/"
+                               "http://homer.ucsd.edu/homer/update.txt"))
+           (sha256
+            (base32
+             "1hf17pk8r6b297ysd27bvxzyn8pxdhxd8wj8g0lqlifbid9fw04h"))))))
     (home-page "http://homer.ucsd.edu/homer")
     (synopsis "Motif discovery and next generation sequencing analysis")
     (description
