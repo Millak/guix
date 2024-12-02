@@ -3836,8 +3836,13 @@ summation in K-fold precision.")
            (lambda _
              (invoke "python" "setup.py" "build_ext" "--inplace"
                      "-j" (number->string (parallel-job-count))))))))
-    (propagated-inputs (list python-numpy))
-    (native-inputs (list python-cython python-pytest))
+    (propagated-inputs
+     (list python-numpy))
+    (native-inputs
+     (list python-cython
+           python-pytest
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/explosion/cython-blis")
     (synopsis "Blis as a self-contained C-extension for Python")
     (description
