@@ -868,20 +868,19 @@ for computer graphics.")
   (package
     (inherit rust-core-graphics-types-0.2)
     (name "rust-core-graphics-types")
-    (version "0.1.1")
+    (version "0.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "core-graphics-types" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "12vqf0n5mjjcqjksdd82n2zh8hfda2zpiiqsr522c2266j5vcs1s"))))
+        (base32 "1bxg8nxc8fk4kxnqyanhf36wq0zrjr552c58qy6733zn2ihhwfa5"))))
     (arguments
-     `(#:skip-build? #t
+     `(#:skip-build? #t ; link kind `framework` is only supported on Apple targets
        #:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-1)
         ("rust-core-foundation" ,rust-core-foundation-0.9)
-        ("rust-foreign-types" ,rust-foreign-types-0.3)
         ("rust-libc" ,rust-libc-0.2))))))
 
 (define-public rust-core-video-sys-0.1
