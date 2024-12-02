@@ -2073,23 +2073,26 @@ wrappers, to be used for optional gitolite extensions."
                (delete 'configure)
                (delete 'build)
                (add-before 'install 'patch-scripts
-                 (lambda* _
+                 (lambda* (#:key inputs #:allow-other-keys)
                    ;; This seems to take care of every shell script that
                    ;; invokes Perl.
                    (substitute* (find-files ".")
                      ((" perl -")
-                      (string-append " " #$perl "/bin/perl" " -")))
+                      (string-append
+                       " " (search-input-file inputs "bin/perl") " -")))
 
                    (substitute* (find-files "src/triggers" ".*")
                      ((" sed ")
-                      (string-append " " #$sed "/bin/sed" " ")))
+                      (string-append
+                       " " (search-input-file inputs "bin/sed") " ")))
 
                    (substitute*
                        '("src/triggers/post-compile/update-gitweb-access-list"
                          "src/triggers/post-compile/ssh-authkeys-split"
                          "src/triggers/upstream")
                      ((" grep ")
-                      (string-append " " #$grep "/bin/grep" " ")))
+                      (string-append
+                       " " (search-input-file inputs "bin/grep") " ")))
 
                    ;; Avoid references to the store in authorized_keys.
                    ;; This works because gitolite-shell is in the PATH.
@@ -2097,25 +2100,29 @@ wrappers, to be used for optional gitolite extensions."
                      (("\\$glshell \\$user")
                       "gitolite-shell $user"))))
                (add-before 'install 'patch-source
-                 (lambda* _
+                 (lambda* (#:key inputs #:allow-other-keys)
                    ;; Gitolite uses cat to test the readability of the
                    ;; pubkey
                    (substitute* "src/lib/Gitolite/Setup.pm"
                      (("\"cat ")
-                      (string-append "\"" #$coreutils "/bin/cat" " "))
+                      (string-append
+                       "\"" (search-input-file inputs "bin/cat") " "))
                      (("\"ssh-keygen")
-                      (string-append "\"" #$openssh "/bin/ssh-keygen")))
+                      (string-append
+                       "\"" (search-input-file inputs "bin/ssh-keygen"))))
 
                    (substitute* '("src/lib/Gitolite/Hooks/PostUpdate.pm"
                                   "src/lib/Gitolite/Hooks/Update.pm")
                      (("/usr/bin/perl")
-                      (string-append #$perl "/bin/perl")))
+                      (search-input-file inputs "bin/perl")))
 
                    (substitute* "src/lib/Gitolite/Common.pm"
                      (("\"ssh-keygen")
-                      (string-append "\"" #$openssh "/bin/ssh-keygen"))
+                      (string-append
+                       "\"" (search-input-file inputs "bin/ssh-keygen")))
                      (("\"logger\"")
-                      (string-append "\"" #$inetutils "/bin/logger\"")))
+                      (string-append
+                       "\"" (search-input-file inputs "bin/logger") "\"")))
 
                    (substitute* "src/lib/Gitolite/Cache.pm"
                      (("/usr/sbin/redis-server") "redis-server"))
@@ -2135,17 +2142,23 @@ wrappers, to be used for optional gitolite extensions."
                                           (string-append bindir "/" script)))
                                '("gitolite" "gitolite-shell")))))
                (add-after 'install 'wrap-scripts
-                 (lambda* _
+                 (lambda* (#:key inputs #:allow-other-keys)
                    (for-each (lambda (file-name)
                                (wrap-program (string-append #$output file-name)
                                  `("PATH" ":" prefix
-                                   ,(map (lambda (dir)
+                                   ,(append
+                                     (map (lambda (command)
+                                            (dirname
+                                             (search-input-file
+                                              inputs
+                                              (string-append "bin/" command))))
+                                          '("chmod" ;coreutils
+                                            "find"
+                                            "git"))
+                                     (map (lambda (dir)
                                            (string-append dir "/bin"))
                                          (list #$output
-                                               #$coreutils
-                                               #$findutils
-                                               #$git
-                                               #$@extra-inputs)))))
+                                               #$@extra-inputs))))))
                              '("/bin/gitolite" "/bin/gitolite-shell")))))))
     (inputs
      (append (list bash-minimal coreutils findutils git inetutils openssh perl)
