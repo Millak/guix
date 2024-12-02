@@ -4946,16 +4946,6 @@ structure.  It can also produce a much more verbose, one-item-per-line
 representation suitable for computing diffs.")
     (license license:asl2.0)))
 
-;; TODO: Merge with go-github-com-kylelemons-godebug and provide both module;
-;; for go-team.
-(define-public go-github-com-kylelemons-godebug-pretty
-  (package
-    (inherit go-github-com-kylelemons-godebug)
-    (name "go-github-com-kylelemons-godebug-pretty")
-    (arguments
-     '(#:import-path "github.com/kylelemons/godebug/pretty"
-       #:unpack-path "github.com/kylelemons/godebug"))))
-
 (define-public go-github-com-lestrrat-go-envload
   (package
     (name "go-github-com-lestrrat-go-envload")
@@ -7224,8 +7214,7 @@ logging.")
         (base32 "15j95gm7hcmg09x1b39vc4il8bryv4v0yljvvyq5vyc6iq66qrbz"))))
     (build-system go-build-system)
     (native-inputs
-     (list go-github-com-kylelemons-godebug
-           go-github-com-kylelemons-godebug-pretty))
+     (list go-github-com-kylelemons-godebug))
     (arguments
      (list #:import-path "github.com/sahilm/fuzzy"))
     (home-page "https://github.com/sahilm/fuzzy")
