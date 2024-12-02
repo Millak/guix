@@ -1840,24 +1840,28 @@ macOS and iOS.")
      `(#:cargo-inputs
        (("rust-core-foundation-sys" ,rust-core-foundation-sys-0.6))))))
 
-(define-public rust-security-framework-sys-0.2
+(define-public rust-security-framework-sys-0.2.4-yanked
   (package
     (inherit rust-security-framework-sys-0.3)
     (name "rust-security-framework-sys")
-    (version "0.2.4")
+    (version "0.2.4") ;This version was yanked!
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "security-framework-sys" version))
-       (file-name (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version "-yanked.tar.gz"))
        (sha256
-        (base32
-         "07zv0szz2kfy1hn251h0qsq0q9i1zia768d8vzril1g6xarj7mcj"))))
+        (base32 "07zv0szz2kfy1hn251h0qsq0q9i1zia768d8vzril1g6xarj7mcj"))))
     (arguments
-     `(#:skip-build? #t ; MacOS specific
-       #:cargo-inputs
-       (("rust-core-foundation-sys" ,rust-core-foundation-sys-0.6)
-        ("rust-libc" ,rust-libc-0.2))))))
+     `(#:skip-build? #t ;MacOS specific
+       #:cargo-inputs (("rust-core-foundation-sys" ,rust-core-foundation-sys-0.6)
+                       ("rust-libc" ,rust-libc-0.2))))
+    (properties '((crate-version-yanked? . #t)))))
+
+(define-public rust-security-framework-sys-0.2
+  ;; There are no non-yanked versions of this semver.
+  (deprecated-package "rust-security-framework-sys"
+                      rust-security-framework-sys-0.2.4-yanked))
 
 (define-public rust-system-configuration-0.5
   (package
