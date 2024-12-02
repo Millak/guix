@@ -271,14 +271,14 @@ Windows Credential Manager.")
 (define-public rust-dunce-1
   (package
     (name "rust-dunce")
-    (version "1.0.4")
+    (version "1.0.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "dunce" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0fqcbwfclldbknmawi69l6zyncaiqzxkpbybcb2cc7jmlxnqrkjn"))))
+        (base32 "04y8wwv3vvcqaqmqzssi6k0ii9gs6fpz96j5w9nky2ccsl23axwj"))))
     (build-system cargo-build-system)
     (home-page "https://gitlab.com/kornelski/dunce")
     (synopsis "Normalize Windows paths to the most compatible format")
