@@ -3840,18 +3840,37 @@ this library provides functions to facilitate such comparisons.")
 (define-public python-alembic
   (package
     (name "python-alembic")
-    (version "1.7.5")
+    (version "1.14.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "alembic" version))
        (sha256
-        (base32 "0lxi2g2025lz5k7k5dd5fc1lfijqi2yw6qqyjzp073z6laa8cckw"))))
+        (base32 "0jrh9q4h2jv2bafpd6isx2dvc90rpx6j7fpdvfwd0hin7fsr425h"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--ignore=tests/integration"
+              "-k" (string-join
+                    ;; XXX: Tests require fresh python-pytz timezones, remove
+                    ;; when updated.
+                    (list "not test_custom_tz"
+                          "test_custom_tz_lowercase"
+                          "test_custom_tz_utc"
+                          "test_custom_tzdata_tz")
+                    " and not "))))
     (native-inputs
-     (list python-mock python-pytest-cov))
+     (list python-mock
+           python-pytest
+           python-setuptools
+           python-wheel))
     (propagated-inputs
-     (list python-dateutil python-sqlalchemy python-mako python-editor))
+     (list python-dateutil
+           python-editor
+           python-mako
+           python-sqlalchemy
+           python-typing-extensions))
     (home-page "https://bitbucket.org/zzzeek/alembic")
     (synopsis "Database migration tool for SQLAlchemy")
     (description
