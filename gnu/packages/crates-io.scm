@@ -25397,17 +25397,20 @@ compact sets of enums.")
 (define-public rust-env-logger-0.11
   (package
     (name "rust-env-logger")
-    (version "0.11.2")
+    (version "0.11.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "env_logger" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "07932957jds3h7vh2bddhvfffax78dw6jlyx4k2fy1gnlwk2l0bc"))))
+        (base32 "13812wq68kybv2vj6rpnhbl7ammlhggcb7vq68bkichzp4cscgz1"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-anstream" ,rust-anstream-0.6)
+     `(#:cargo-test-flags '("--release" "--"
+                            ;; Doc tests fail.
+                            "--skip=src/lib.rs")
+       #:cargo-inputs (("rust-anstream" ,rust-anstream-0.6)
                        ("rust-anstyle" ,rust-anstyle-1)
                        ("rust-env-filter" ,rust-env-filter-0.1)
                        ("rust-humantime" ,rust-humantime-2)
