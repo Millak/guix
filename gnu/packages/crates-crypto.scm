@@ -6212,6 +6212,38 @@ OIDs)")
         (base32 "0ckgkcg6db5y94dqhmyikgn8yrsah6pyf4j197hv1c51bp0s00aw"))))
     (arguments `(#:skip-build? #t #:cargo-inputs (("rust-der" ,rust-der-0.4))))))
 
+(define-public rust-ssh-cipher-0.2
+  (package
+    (name "rust-ssh-cipher")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ssh-cipher" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0kvq113x9fcy2jcxp00xk472zxm8d9zxxz2vyqx3rlzh88ki7b6a"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-aes" ,rust-aes-0.8)
+                       ("rust-aes-gcm" ,rust-aes-gcm-0.10)
+                       ("rust-cbc" ,rust-cbc-0.1)
+                       ("rust-chacha20" ,rust-chacha20-0.9)
+                       ("rust-cipher" ,rust-cipher-0.4)
+                       ("rust-ctr" ,rust-ctr-0.9)
+                       ("rust-des" ,rust-des-0.8)
+                       ("rust-poly1305" ,rust-poly1305-0.8)
+                       ("rust-ssh-encoding" ,rust-ssh-encoding-0.2)
+                       ("rust-subtle" ,rust-subtle-2))))
+    (home-page "https://github.com/RustCrypto/SSH/tree/master/ssh-cipher")
+    (synopsis "Pure Rust implementation of SSH symmetric encryption")
+    (description
+     "This package provides Pure Rust implementation of SSH symmetric encryption
+including support for the modern aes128-gcm@@openssh.com/aes256-gcm@@openssh.com
+and chacha20-poly1305@@openssh.com algorithms as well as legacy support for
+older ciphers.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-ssh-encoding-0.2
   (package
     (name "rust-ssh-encoding")
