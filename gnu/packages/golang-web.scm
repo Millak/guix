@@ -5560,6 +5560,33 @@ per host/process
 support.")
     (license license:expat)))
 
+(define-public go-github-com-shurcool-githubv4
+  (package
+    (name "go-github-com-shurcool-githubv4")
+    (version "0.0.0-20240429030203-be2daab69064")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/shurcooL/githubv4")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0kkvqwv0waa8hj1jr9b4nvz8rmslqpchidl7gs9bplrkl3fvsxn6"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/shurcooL/githubv4"))
+    (propagated-inputs
+     (list go-github-com-shurcool-graphql
+           go-golang-org-x-oauth2))
+    (home-page "https://github.com/shurcooL/githubv4")
+    (synopsis "Client library for GitHub GraphQL API v4")
+    (description
+     "Package githubv4 is a client library for accessing GitHub @code{GraphQL}
+API v4.")
+    (license license:expat)))
+
 (define-public go-github-com-shurcool-graphql
   (package
     (name "go-github-com-shurcool-graphql")
