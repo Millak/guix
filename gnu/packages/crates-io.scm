@@ -88818,14 +88818,14 @@ serializing Rust structures.")
 (define-public rust-toml-edit-0.22
   (package
     (name "rust-toml-edit")
-    (version "0.22.21")
+    (version "0.22.22")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "toml_edit" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1ky5dncf4g4l8hpqizws2ccp37rsvvc2pwynzwvacjf4fgp2q1rv"))))
+        (base32 "1xf7sxfzmnc45f75x302qrn5aph52vc8w226v59yhrm211i8vr2a"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-indexmap" ,rust-indexmap-2)
