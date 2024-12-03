@@ -3007,6 +3007,37 @@ specified in @url{https://datatracker.ietf.org/doc/html/rfc6350, RFC 6350}.")
 @url{https://tools.ietf.org/html/rfc6352, RFC 6352} specifications.")
     (license license:expat)))
 
+(define-public go-github-com-erikgeiser-coninput
+  (package
+    (name "go-github-com-erikgeiser-coninput")
+    (version "0.0.0-20211004153227-1c3628e74d0f")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/erikgeiser/coninput")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1x8yw15ngyg4vlcdv5wsgpr6w5kavjv7bmk5mpvvx848bwvslr1r"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/erikgeiser/coninput"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key import-path #:allow-other-keys)
+              (delete-file-recursively
+               (string-append "src/" import-path "/example")))))))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
+    (home-page "https://github.com/erikgeiser/coninput")
+    (synopsis "Input handling with Windows Console API")
+    (description
+     "Go library for input handling using Windows Console API.")
+    (license license:expat)))
+
 (define-public go-github-com-errata-ai-ini
   (package
     (name "go-github-com-errata-ai-ini")
