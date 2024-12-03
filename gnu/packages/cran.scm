@@ -37532,7 +37532,7 @@ infinite-precision rational arithmetic.")
                              r-rcpparmadillo
                              r-rgl
                              r-rvcg))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/stla/RCDT")
     (synopsis "Fast 2D constrained Delaunay triangulation")
     (description
