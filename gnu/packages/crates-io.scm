@@ -2527,14 +2527,14 @@ on every platform.")
 (define-public rust-approx-0.5
   (package
     (name "rust-approx")
-    (version "0.5.0")
+    (version "0.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "approx" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "17p9g3yl061zdlrqj10npybmng81jz71dzmcanmjgcb35qhgfb87"))))
+        (base32 "1ilpv3dgd58rasslss0labarq7jawxmivk17wsh8wmkdm3q15cfa"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
