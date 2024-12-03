@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014, 2015, 2016, 2017 Manolis Fragkiskos Ragkousis <manolis837@gmail.com>
-;;; Copyright © 2018, 2020-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2018, 2020-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020, 2022, 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
@@ -636,7 +636,11 @@ implementing them.")
                               ((? target-x86-32?)
                                "x86")
                               ((? target-x86-64?)
-                               "amd64"))))
+                               "amd64")
+                              (_
+                               ;; XXX: Cross-compiling this package to an
+                               ;; unsupported system.
+                               "UNSUPPORTED_SYSTEM"))))
                  (string-append "ARCH=" arch)))
          #:configure-flags
          ,#~(list (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib"))
