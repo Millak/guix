@@ -475,7 +475,11 @@ exec ${system}/rc \"$@\"
                            ((? target-x86-32?)
                             "x86")
                            ((? target-x86-64?)
-                            "amd64"))))
+                            "amd64")
+                           (_
+                            ;; XXX: Cross-compiling this package to an
+                            ;; unsupported system.
+                            "UNSUPPORTED_SYSTEM"))))
               (when ,(target-hurd64?)
                 (let ((dir "libdde_linux26/build/include"))
                   (mkdir-p (string-append dir "/x86"))
@@ -513,7 +517,11 @@ exec ${system}/rc \"$@\"
                             ((? target-x86-32?)
                              "x86")
                             ((? target-x86-64?)
-                             "amd64")))
+                             "amd64")
+                            (_
+                             ;; XXX: Cross-compiling this package to an
+                             ;; unsupported system.
+                             "UNSUPPORTED_SYSTEM")))
                    (dir (string-append out "/share/libdde_linux26/build/include")))
               (mkdir-p dir)
               (when ,(target-hurd64?)
