@@ -53144,8 +53144,33 @@ PartialOrd types, like floats.")
                        ("rust-serde" ,rust-serde-1))
        #:cargo-development-inputs (("rust-serde-test" ,rust-serde-test-1))))))
 
+(define-public rust-ordered-multimap-0.7
+  (package
+    (name "rust-ordered-multimap")
+    (version "0.7.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ordered-multimap" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ygg08g2h381r3zbclba4zx4amm25zd2hsqqmlxljc00mvf3q829"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-dlv-list" ,rust-dlv-list-0.5)
+                       ("rust-hashbrown" ,rust-hashbrown-0.14)
+                       ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-coverage-helper" ,rust-coverage-helper-0.2)
+                                   ("rust-serde-test" ,rust-serde-test-1))))
+    (home-page "https://github.com/sgodwincs/ordered-multimap-rs")
+    (synopsis "Insertion ordered multimap")
+    (description "This crate provides a multimap type object that maintains
+insertion order across all keys and values.")
+    (license license:expat)))
+
 (define-public rust-ordered-multimap-0.4
   (package
+    (inherit rust-ordered-multimap-0.7)
     (name "rust-ordered-multimap")
     (version "0.4.3")
     (source
@@ -53155,16 +53180,10 @@ PartialOrd types, like floats.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0jljv1257pfyf855jlwwas5mqkzk40b9lqfx40f73qbpf7ildmyc"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-dlv-list" ,rust-dlv-list-0.3)
                        ("rust-hashbrown" ,rust-hashbrown-0.12)
-                       ("rust-serde" ,rust-serde-1))))
-    (home-page "https://github.com/sgodwincs/ordered-multimap-rs")
-    (synopsis "Insertion ordered multimap")
-    (description "This crate provides a multimap type object that maintains
-insertion order across all keys and values.")
-    (license license:expat)))
+                       ("rust-serde" ,rust-serde-1))))))
 
 (define-public rust-ordered-multimap-0.3
   (package
