@@ -33460,17 +33460,17 @@ their key-value pairs in a user controllable order.")
   (package
     (inherit rust-hashlink-0.9)
     (name "rust-hashlink")
-    (version "0.8.2")
+    (version "0.8.4")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "hashlink" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1ap6ar5jlqq6ln7d9r2j5079mbx0zg8643xacqyjwkqw96ws2q87"))))
+                "1xy8agkyp0llbqk9fcffc1xblayrrywlyrm2a7v93x8zygm4y2g8"))))
     (arguments
      `(#:cargo-inputs
-       (("rust-hashbrown" ,rust-hashbrown-0.13)
+       (("rust-hashbrown" ,rust-hashbrown-0.14)
         ("rust-serde" ,rust-serde-1))
        #:cargo-development-inputs
        (("rust-rustc-hash" ,rust-rustc-hash-1)
