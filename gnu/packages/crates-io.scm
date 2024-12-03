@@ -82650,6 +82650,36 @@ well.")
        #:cargo-development-inputs
        (("rust-itertools" ,rust-itertools-0.9))))))
 
+(define-public rust-systemstat-0.2
+  (package
+    (name "rust-systemstat")
+    (version "0.2.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "systemstat" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1lhbbgywmhfdb2vjaxzl9g3dbbz2nyfyzqr8kacq6b1im4jfqjm2"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--release" "--"
+                            ;; Missing file
+                            "--skip=platform::tests::test_on_ac_power")
+       #:cargo-inputs (("rust-bytesize" ,rust-bytesize-1)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-nom" ,rust-nom-7)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-time" ,rust-time-0.3)
+                       ("rust-winapi" ,rust-winapi-0.3))))
+    (home-page "https://github.com/valpackett/systemstat")
+    (synopsis "Get system information/statistics in a cross-platform way")
+    (description
+     "This package provides a way to get system information/statistics in a
+cross-platform way.")
+    (license license:unlicense)))
+
 (define-public rust-tabled-0.15
   (package
     (name "rust-tabled")
