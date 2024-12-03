@@ -79564,16 +79564,16 @@ framework in pure Rust.")
 (define-public rust-strsim-0.11
   (package
     (name "rust-strsim")
-    (version "0.11.0")
+    (version "0.11.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "strsim" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "00gsdp2x1gkkxsbjxgrjyil2hsbdg49bwv8q2y1f406dwk4p7q2y"))))
+        (base32 "0kzvqlw8hxqb7y598w1s0hxlnmi84sg5vsipp3yg5na5d1rvba3x"))))
     (build-system cargo-build-system)
-    (home-page "https://github.com/dguo/strsim-rs")
+    (home-page "https://github.com/rapidfuzz/strsim-rs")
     (synopsis "Rust implementations of string similarity metrics")
     (description "This crate includes implementations of string similarity
 metrics.  It includes Hamming, Levenshtein, OSA, Damerau-Levenshtein, Jaro,
