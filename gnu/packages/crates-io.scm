@@ -50316,6 +50316,52 @@ notification library.")
      "This package provides a notify event debouncer optimized for ease of use.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-notify-rust-4
+  (package
+    (name "rust-notify-rust")
+    (version "4.11.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "notify-rust" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "18ykiijr0c452hxlpvciac0wqvsan4dfh08vz2zpicbhqlnsfd2i"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--release" "--"
+                            ;; Missing test files
+                            "--skip=realworld::burst"
+                            "--skip=realworld::capabilities"
+                            "--skip=realworld::category"
+                            "--skip=realworld::closing"
+                            "--skip=realworld::init"
+                            "--skip=realworld::persistent"
+                            "--skip=realworld::urgency")
+       #:cargo-inputs
+       (("rust-chrono" ,rust-chrono-0.4)
+        ("rust-dbus" ,rust-dbus-0.9)
+        ("rust-env-logger" ,rust-env-logger-0.11)
+        ("rust-image" ,rust-image-0.25)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-mac-notification-sys" ,rust-mac-notification-sys-0.6)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-tauri-winrt-notification" ,rust-tauri-winrt-notification-0.2)
+        ("rust-zbus" ,rust-zbus-4))
+       #:cargo-development-inputs
+       (("rust-async-std" ,rust-async-std-1)
+        ("rust-color-backtrace" ,rust-color-backtrace-0.6)
+        ("rust-ctor" ,rust-ctor-0.2)
+        ("rust-maplit" ,rust-maplit-1))))
+    (home-page "https://github.com/hoodie/notify-rust")
+    (synopsis "Show desktop notifications (linux, bsd, mac). Pure Rust dbus
+client and server")
+    (description
+     "This package provides Show desktop notifications (linux, bsd, mac).  Pure
+Rust dbus client and server.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-notmuch-0.8
   (package
     (name "rust-notmuch")
