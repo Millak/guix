@@ -62,7 +62,7 @@
 (define-public go-github-com-golang-glog
   (package
     (name "go-github-com-golang-glog")
-    (version "1.2.2")
+    (version "1.2.3")
     (source
      (origin
        (method git-fetch)
@@ -71,11 +71,13 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1a9ybpgp6grlpbhg2559sh54pxc9qfkhr4zvylw8qv1bny8c90q0"))))
+        (base32 "1sfgcf18wg4glcamgq9njmbny17xq0dd14g3094sj5c1cwjij982"))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/golang/glog"))
+    (native-inputs
+     (list go-github-com-google-go-cmp))
     (home-page "https://github.com/golang/glog")
     (synopsis "Leveled execution logs for Golang")
     (description
