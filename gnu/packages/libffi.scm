@@ -65,7 +65,9 @@
        ;; compiler.  See "ax_cc_maxopt.m4" and "ax_gcc_archflag.m4".
        #:configure-flags '("--enable-portable-binary"
                            "--without-gcc-arch"
-                           ,@(if (or (target-hurd64?) (%current-target-system))
+                           ,@(if (or (target-hurd64?)
+                                     (%current-target-system)
+                                     (and (target-x86-64?) (target-linux?)))
                                  (list (string-append
                                         "CFLAGS=-g -O2"
                                         " -Wno-implicit-function-declaration"))
