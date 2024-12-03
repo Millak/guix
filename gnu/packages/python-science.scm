@@ -600,6 +600,54 @@ implements several methods for sequential model-based optimization.
 @code{skopt} aims to be accessible and easy to use in many contexts.")
     (license license:bsd-3)))
 
+(define-public python-scikit-surprise
+  (package
+    (name "python-scikit-surprise")
+    (version "1.1.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/NicolasHug/Surprise")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "15ckx2i41vs21sa3yqyj12zr0h4zrcdf3lrwcy2c1cq2bjq7mnvz"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-home
+            (lambda _
+              ;; Change from /homeless-shelter to /tmp for write
+              ;; permission.
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list python-cython-3
+           python-pandas
+           python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-joblib
+           python-numpy
+           python-scikit-learn))
+    (home-page "https://surpriselib.com/")
+    (synopsis "Recommender system library for Scikit-learn")
+    (description
+     "This package provides a Python library for building and analyzing
+recommender systems that deal with explicit rating data.  It was designed with
+the following purposes in mind:
+@itemize
+@item Provide tools to handle downloaded or user-provided datasets.
+@item Provide ready-to-use prediction algorithms and similarity measures.
+@item Provide a base for creating custom algorithims.
+@item Provide tools to evaluate, analyse and compare algorithm performance.
+@item Provide documentation with precise details regarding library algorithms.
+@end itemize")
+    (license license:bsd-3)))
+
 (define-public python-scikit-survival
   (let ((revision "1")
         ;; We need a later commit for support of a more recent sklearn and
