@@ -1497,20 +1497,19 @@ bar.  It is also compatible with sway.")
 (define-public just
   (package
     (name "just")
-    (version "1.35.0")
+    (version "1.37.0")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "just" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
-               (base32 "0q5a94wrkvb01q0rcz59w0qzsdh7wp698nk0crdqn0j1vwwy7r50"))))
+               (base32 "1lx9avys0ipvdabgvwp5xrwxp7wfg1z0jrf1v6ax23k2a1xzvmpr"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
        '("--release" "--"
          "--skip=backticks::trailing_newlines_are_stripped"
          "--skip=completions::bash"
-         "--skip=completions::replacements"
          "--skip=functions::env_var_functions"
          "--skip=string::shebang_backtick")
        #:install-source? #f
@@ -1523,7 +1522,7 @@ bar.  It is also compatible with sway.")
         ("rust-clap-complete" ,rust-clap-complete-4)
         ("rust-clap-mangen" ,rust-clap-mangen-0.2)
         ("rust-ctrlc" ,rust-ctrlc-3)
-        ("rust-derivative" ,rust-derivative-2)
+        ("rust-derive-where" ,rust-derive-where-1)
         ("rust-dirs" ,rust-dirs-5)
         ("rust-dotenvy" ,rust-dotenvy-0.15)
         ("rust-edit-distance" ,rust-edit-distance-2)
@@ -1546,13 +1545,13 @@ bar.  It is also compatible with sway.")
         ("rust-target" ,rust-target-2)
         ("rust-tempfile" ,rust-tempfile-3)
         ("rust-typed-arena" ,rust-typed-arena-2)
-        ("rust-unicode-width" ,rust-unicode-width-0.1)
+        ("rust-unicode-width" ,rust-unicode-width-0.2)
         ("rust-uuid" ,rust-uuid-1))
        #:cargo-development-inputs
        (("rust-executable-path" ,rust-executable-path-1)
         ("rust-pretty-assertions" ,rust-pretty-assertions-1)
         ("rust-temptree" ,rust-temptree-0.2)
-        ("rust-which" ,rust-which-6))
+        ("rust-which" ,rust-which-7))
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'replace-hardcoded-paths
