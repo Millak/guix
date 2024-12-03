@@ -789,6 +789,10 @@ GLib/GIO, GTK, GStreamer and Webkit."
                        "nandre@riseup.net")
   mozilla)
 
+(define-member (person "Janneke Nieuwenhuizen"
+                       "janneke@gnu.org")
+  bootstrap core-packages home hurd installer)
+
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
