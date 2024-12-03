@@ -97074,6 +97074,31 @@ Read/Write streams as well as low-level in-memory encoding and decoding.")
        (("rust-clippy" ,rust-clippy-0.0)
         ("rust-linked-hash-map" ,rust-linked-hash-map-0.3))))))
 
+(define-public rust-yaml-rust2-0.9
+  (package
+    (name "rust-yaml-rust2")
+    (version "0.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "yaml-rust2" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "13ay8jdlk1192p6hhb53dx601b139ycizipqpnikhcw2r45iq6ia"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-arraydeque" ,rust-arraydeque-0.5)
+                       ("rust-encoding-rs" ,rust-encoding-rs-0.8)
+                       ("rust-hashlink" ,rust-hashlink-0.9))
+       #:cargo-development-inputs (("rust-libtest-mimic" ,rust-libtest-mimic-0.4)
+                                   ("rust-quickcheck" ,rust-quickcheck-1))))
+    (home-page "https://github.com/Ethiraric/yaml-rust2")
+    (synopsis "Fully YAML 1.2 compliant YAML parser")
+    (description
+     "This package provides a fully YAML 1.2 compliant YAML parser written in
+pure rust.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-yansi-1
   (package
     (name "rust-yansi")
