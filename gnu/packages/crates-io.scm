@@ -90623,6 +90623,31 @@ multi-line text editor can be easily put as part of your TUI application.")
     (description "This package provides a TUN/TAP interface wrapper.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-two-face-0.4
+  (package
+    (name "rust-two-face")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "two-face" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0s225f05v590wk13qnkkky5asyv5x40awv61x6gn0703x91lik8c"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-syntect" ,rust-syntect-5))
+       #:cargo-development-inputs (("rust-insta" ,rust-insta-1)
+                                   ("rust-strum" ,rust-strum-0.25)
+                                   ("rust-syntect" ,rust-syntect-5))))
+    (home-page "https://github.com/CosmicHorrorDev/two-face")
+    (synopsis "Extra syntax and theme definitions for syntect")
+    (description
+     "This package provides extra syntax and theme definitions for syntect.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-twoway-0.2
   (package
     (name "rust-twoway")
