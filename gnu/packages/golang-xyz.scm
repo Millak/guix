@@ -1536,6 +1536,30 @@ don't require a full database server such as Postgres or MySQL.")
 indicator to any terminal application.")
     (license license:asl2.0)))
 
+(define-public go-github-com-buildkite-shellwords
+  (package
+    (name "go-github-com-buildkite-shellwords")
+    (version "0.0.0-20180315110454-59467a9b8e10")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/buildkite/shellwords")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1kx6wxbdznarmnifwzmxxcd86bgn27rwpfnw2y2gd0j8zg9g1682"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/buildkite/shellwords"))
+    (home-page "https://github.com/buildkite/shellwords")
+    (synopsis "Split command-line strings into words")
+    (description
+     "This package provides a golang library for splitting command-line
+strings into words like a POSIX or Windows shell would.")
+    (license license:expat)))
+
 (define-public go-github-com-burntsushi-toml
   (package
     (name "go-github-com-burntsushi-toml")
