@@ -46238,20 +46238,20 @@ possible over the OS abstractions.")
 (define-public rust-mockall-double-0.3
   (package
     (name "rust-mockall-double")
-    (version "0.3.0")
+    (version "0.3.1")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "mockall_double" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1xk6hjr7m73zly4hg3zmma437vqvrwnjxy2wfxy1hxbk52xwfwdf"))))
+                "1s0k85929bf8afvdgq8m2vs8haqpkg9ysdimw7inl99mmkjrdjpi"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1)
                        ("rust-proc-macro2" ,rust-proc-macro2-1)
                        ("rust-quote" ,rust-quote-1)
-                       ("rust-syn" ,rust-syn-1))))
+                       ("rust-syn" ,rust-syn-2))))
     (home-page "https://github.com/asomers/mockall")
     (synopsis "Double test adapter that works well with Mockall")
     (description
