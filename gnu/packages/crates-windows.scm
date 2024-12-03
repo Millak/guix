@@ -2972,6 +2972,27 @@ windows crate.")
                (base32
                 "1rrqbxjkyk6h6p6jjzbcxr0mhqbz0yfndd2s2dsgmbl75f4yy7gn"))))))
 
+(define-public rust-windows-version-0.1
+  (package
+    (name "rust-windows-version")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "windows-version" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "05a5hia3d2vxd16vj2hxiyicxaqdjcm9sgpip4pzza4vgi2sm639"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-windows-targets" ,rust-windows-targets-0.52))
+       #:cargo-development-inputs
+       (("rust-windows-bindgen" ,rust-windows-bindgen-0.56))))
+    (home-page "https://github.com/microsoft/windows-rs")
+    (synopsis "Windows version information")
+    (description "This package provides Windows version information.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-windows-win-3
   (package
     (name "rust-windows-win")
