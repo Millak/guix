@@ -91796,8 +91796,32 @@ boundaries according to Unicode Standard Annex #29 rules.")
 in terms of displayed width.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-unicode-width-0.2
+  (package
+    (name "rust-unicode-width")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "unicode-width" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1zd0r5vs52ifxn25rs06gxrgz8cmh4xpra922k0xlmrchib1kj0z"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
+                       ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1)
+                       ("rust-rustc-std-workspace-std" ,rust-rustc-std-workspace-std-1))))
+    (home-page "https://github.com/unicode-rs/unicode-width")
+    (synopsis "Determine displayed width according to Unicode rules")
+    (description
+     "This crate allows you to determine displayed width of
+@code{char} and @code{str} types according to Unicode Standard Annex #11 rules.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-unicode-width-0.1
   (package
+    (inherit rust-unicode-width-0.2)
     (name "rust-unicode-width")
     (version "0.1.13")
     (source
@@ -91808,18 +91832,11 @@ in terms of displayed width.")
         (sha256
          (base32
           "0p92vl8n7qc8mxz45xn6qbgi0259z96n32a158l6vj5bywwdadh3"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
         ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1)
-        ("rust-rustc-std-workspace-std" ,rust-rustc-std-workspace-std-1))))
-    (home-page "https://github.com/unicode-rs/unicode-width")
-    (synopsis "Determine displayed width according to Unicode rules")
-    (description "This crate allows you to determine displayed width of
-@code{char} and @code{str} types according to Unicode Standard Annex #11 rules.")
-    (license (list license:asl2.0
-                   license:expat))))
+        ("rust-rustc-std-workspace-std" ,rust-rustc-std-workspace-std-1))))))
 
 (define-public rust-unicode-xid-0.2
   (package
