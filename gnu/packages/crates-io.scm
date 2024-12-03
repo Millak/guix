@@ -14902,8 +14902,30 @@ diagnostics easy and relatively painless for everyone!")
 sets of intervals.")
     (license license:expat)))
 
+(define-public rust-color-backtrace-0.6
+  (package
+    (name "rust-color-backtrace")
+    (version "0.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "color-backtrace" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "183y2b0b4q14zq1nr2mc9sxld9xnvq28531qkwvp21hc4w5dh3qm"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-backtrace" ,rust-backtrace-0.3)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-termcolor" ,rust-termcolor-1))))
+    (home-page "https://github.com/athre0z/color-backtrace")
+    (synopsis "Colorful panic backtraces")
+    (description "This package provides colorful panic backtraces.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-color-backtrace-0.5
   (package
+    (inherit rust-color-backtrace-0.6)
     (name "rust-color-backtrace")
     (version "0.5.1")
     (source
@@ -14912,17 +14934,19 @@ sets of intervals.")
        (uri (crate-uri "color-backtrace" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "11fn3snykx90w3nznzrcf4r164zmhk790asx0kzryf4r7i308v6d"))))
-    (build-system cargo-build-system)
+        (base32 "11fn3snykx90w3nznzrcf4r164zmhk790asx0kzryf4r7i308v6d"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 ;; https://github.com/eyre-rs/eyre/pull/175
+                 ;; gimli-symbolize was deprecated in backtrace in ~2022
+                 ;; and was folded into backtrace's std feature set.
+                 (substitute* "Cargo.toml"
+                   ((".*gimli-symbolize.*") ""))))))
     (arguments
      `(#:cargo-inputs (("rust-atty" ,rust-atty-0.2)
                        ("rust-backtrace" ,rust-backtrace-0.3)
                        ("rust-regex" ,rust-regex-1)
-                       ("rust-termcolor" ,rust-termcolor-1))))
-    (home-page "https://github.com/athre0z/color-backtrace")
-    (synopsis "Colorful panic backtraces")
-    (description "This package provides colorful panic backtraces.")
-    (license (list license:expat license:asl2.0))))
+                       ("rust-termcolor" ,rust-termcolor-1))))))
 
 (define-public rust-color-eyre-0.6
   (package
