@@ -56121,7 +56121,7 @@ algorithm.")
 (define-public rust-pest-derive-2
   (package
     (name "rust-pest-derive")
-    (version "2.6.0")
+    (version "2.7.14")
     (source
      (origin
        (method url-fetch)
@@ -56130,7 +56130,7 @@ algorithm.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1yzv982pypxrr2zwhd08xv40plr474p155i26aj2anl63k3x8ybb"))))
+         "1p82kbjm5dvflxgj9vl3q78n2v4l9khh2cwizm3kl4ibcdgkc56j"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
