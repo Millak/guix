@@ -2407,7 +2407,12 @@ parameters.")
         (base32 "048qwm2n0wrpql4qqgd7jyynn3gk069yvqbxnshlayzmbhf87ls4"))))
     (build-system go-build-system)
     (arguments
-     (list #:import-path "github.com/google/gopacket"))
+     (list
+      #:import-path "github.com/google/gopacket"))
+    (propagated-inputs
+     (list go-github-com-vishvananda-netlink
+           go-golang-org-x-net
+           go-golang-org-x-sys))
     (home-page "https://github.com/google/gopacket")
     (synopsis "Packet processing capabilities library")
     (description
