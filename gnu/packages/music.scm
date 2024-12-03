@@ -5288,6 +5288,7 @@ and more.  Full API documentation and examples are included.")
            freetype
            jack-2
            ladspa
+           lame
            libogg
            libsamplerate
            libsndfile
