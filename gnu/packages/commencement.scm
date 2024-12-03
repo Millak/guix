@@ -2429,6 +2429,15 @@ exec " gcc "/bin/" program
                                            char-set:letter)
                                         #$(package-name lib)))
                            (list gmp-6.0 mpfr mpc)))))
+             #$@(if (and (target-linux?) (target-x86?))
+                    #~((add-after 'unpack 'patch-system.h
+                         (lambda _
+                           ;; Avoid: missing binary operator before token "("
+                           (substitute* "gcc/system.h"
+                             (("#ifndef SIZE_MAX" all)
+                              (string-append "#define SIZE_MAX (ULONG_MAX)\n"
+                                             all))))))
+                    #~())
              #$@(if (target-hurd64?)
                     #~((add-after 'unpack 'patch-libcc1-static
                          (lambda _
