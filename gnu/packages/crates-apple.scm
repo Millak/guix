@@ -11,6 +11,7 @@
 ;;; Copyright © 2023 Steve George <steve@futurile.net>
 ;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
 ;;; Copyright © 2024 Wilko Meyer <w@wmeyer.eu>
+;;; Copyright © 2024 Jordan Moore <lockbox@struct.foo>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -882,6 +883,31 @@ macOS API for file changes notifications")
     (home-page "https://github.com/madsmtm/objc2")
     (synopsis "Bindings to Apple's frameworks")
     (description "This package provides bindings to Apple's frameworks.")
+    (license license:expat)))
+
+(define-public rust-mac-notification-sys-0.6
+  (package
+    (name "rust-mac-notification-sys")
+    (version "0.6.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "mac-notification-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "14cgvhb2790fzsilwdw720m2pc2zzk0zcgbjgqbkgahp6x7z7s6w"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t ;Requires OSX to build framework "Foundation"
+       #:cargo-inputs (("rust-cc" ,rust-cc-1)
+                       ("rust-dirs-next" ,rust-dirs-next-2)
+                       ("rust-objc-foundation" ,rust-objc-foundation-0.1)
+                       ("rust-objc-id" ,rust-objc-id-0.1)
+                       ("rust-time" ,rust-time-0.3))))
+    (home-page "https://github.com/h4llow3En/mac-notification-sys")
+    (synopsis "Thin wrapper around macOS Notifications")
+    (description
+     "This package provides Thin wrapper around @code{macOS} Notifications.")
     (license license:expat)))
 
 (define-public rust-mach-0.3
