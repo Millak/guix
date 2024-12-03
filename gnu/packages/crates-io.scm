@@ -84183,6 +84183,51 @@ return values to @code{std::io::Result} to indicate success or failure.")
                                    ("rust-k9" ,rust-k9-0.11)
                                    ("rust-varbincode" ,rust-varbincode-0.1))))))
 
+(define-public rust-termwiz-0.15
+  (package
+    (inherit rust-termwiz-0.20)
+    (name "rust-termwiz")
+    (version "0.15.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "termwiz" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ig83sldqnbmy95kb4ixhrjn63qym7dssxy3p2rsjj03rj96ivri"))))
+    (arguments
+     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-base64" ,rust-base64-0.13)
+                       ("rust-bitflags" ,rust-bitflags-1)
+                       ("rust-cassowary" ,rust-cassowary-0.3)
+                       ("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-filedescriptor" ,rust-filedescriptor-0.8)
+                       ("rust-fnv" ,rust-fnv-1)
+                       ("rust-hex" ,rust-hex-0.4)
+                       ("rust-image" ,rust-image-0.23)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-memmem" ,rust-memmem-0.1)
+                       ("rust-num-derive" ,rust-num-derive-0.3)
+                       ("rust-num-traits" ,rust-num-traits-0.2)
+                       ("rust-ordered-float" ,rust-ordered-float-2)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-semver" ,rust-semver-0.11)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-sha2" ,rust-sha2-0.9)
+                       ("rust-signal-hook" ,rust-signal-hook-0.1)
+                       ("rust-terminfo" ,rust-terminfo-0.7)
+                       ("rust-termios" ,rust-termios-0.3)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-ucd-trie" ,rust-ucd-trie-0.1)
+                       ("rust-unicode-segmentation" ,rust-unicode-segmentation-1)
+                       ("rust-vtparse" ,rust-vtparse-0.6)
+                       ("rust-winapi" ,rust-winapi-0.3))
+       #:cargo-development-inputs
+       (("rust-pretty-assertions" ,rust-pretty-assertions-0.6)
+        ("rust-varbincode" ,rust-varbincode-0.1))))))
+
 (define-public rust-test-assembler-0.1
   (package
     (name "rust-test-assembler")
