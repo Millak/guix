@@ -7335,6 +7335,35 @@ detect the number of bytes written to a stream, so you can use it as a
 is undetermined, a customizable spinner is shown.")
     (license license:expat)))
 
+(define-public go-github-com-sebdah-goldie-v2
+  (package
+    (name "go-github-com-sebdah-goldie-v2")
+    (version "2.5.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sebdah/goldie")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12gji9p6b6zlkisbd3ww103zwd5chlwkb6h5dppfrmgxim84n5n0"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/sebdah/goldie/v2"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-pmezard-go-difflib
+           go-github-com-sergi-go-diff))
+    (home-page "https://github.com/sebdah/goldie")
+    (synopsis "Golden test utility")
+    (description
+     "Package goldie provides test assertions based on golden files.
+It's typically used for testing responses with larger data bodies.")
+    (license license:expat)))
+
 (define-public go-github-com-sergi-go-diff
   (package
     (name "go-github-com-sergi-go-diff")
