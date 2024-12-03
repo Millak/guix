@@ -35,6 +35,7 @@
 ;;; Copyright © 2024 Dominic Martinez <dom@dominicm.dev>
 ;;; Copyright © 2024 Jesse Eisses <jesse@eisses.email>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
+;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -5557,6 +5558,29 @@ per host/process
      "Web Push API Encryption with
 @url{https://datatracker.ietf.org/doc/html/draft-ietf-webpush-vapid-01, VAPID}
 support.")
+    (license license:expat)))
+
+(define-public go-github-com-shurcool-graphql
+  (package
+    (name "go-github-com-shurcool-graphql")
+    (version "0.0.0-20230722043721-ed46e5a46466")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/shurcooL/graphql")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12cq16qak217bkpklqsmqhl42gz8cpadpzqw6fsivc3ambjpqdry"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/shurcooL/graphql"))
+    (home-page "https://github.com/shurcooL/graphql")
+    (synopsis "GraphQL client")
+    (description
+     "Package graphql provides a @code{GraphQL} client implementation.")
     (license license:expat)))
 
 (define-public go-github-com-shurcool-httpfs
