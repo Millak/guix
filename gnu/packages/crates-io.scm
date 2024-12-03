@@ -70312,6 +70312,22 @@ sub-processes using a fork-like interface.")
                        ("rust-quote" ,rust-quote-1)
                        ("rust-syn" ,rust-syn-1))))))
 
+(define-public rust-rustyline-derive-0.6
+  (package
+    (inherit rust-rustyline-derive-0.7)
+    (name "rust-rustyline-derive")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rustyline-derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0mw0nfi8xxsm4q80mv4va7ff8m0kgnsfjvv067zc1d8hp1daaddv"))))
+    (arguments
+     `(#:cargo-inputs (("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-1))))))
+
 (define-public rust-rustyline-derive-0.3
   (package
     (inherit rust-rustyline-derive-0.9)
