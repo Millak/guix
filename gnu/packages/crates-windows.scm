@@ -1529,6 +1529,22 @@ if they were just another Rust module.")
      `(#:cargo-inputs (("rust-windows-core" ,rust-windows-core-0.57)
                        ("rust-windows-targets" ,rust-windows-targets-0.52))))))
 
+(define-public rust-windows-0.56
+  (package
+    (inherit rust-windows-0.57)
+    (name "rust-windows")
+    (version "0.56.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "windows" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0cp10nzrqgrlk91dpwxjcpzyy6imr5vxr5f898pss7nz3gq9vrhx"))))
+    (arguments
+     `(#:cargo-inputs (("rust-windows-core" ,rust-windows-core-0.56)
+                       ("rust-windows-targets" ,rust-windows-targets-0.52))))))
+
 (define-public rust-windows-0.52
   (package
     (inherit rust-windows-0.58)
