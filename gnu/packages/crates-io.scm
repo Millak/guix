@@ -3129,6 +3129,26 @@ implementations for most of the standard library's methods on array like data
 structures.")
     (license license:mpl2.0)))
 
+(define-public rust-arraydeque-0.5
+  (package
+    (name "rust-arraydeque")
+    (version "0.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "arraydeque" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0dn2xdfg3rkiqsh8a6achnmvf5nf11xk33xgjzpksliab4yjx43x"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/andylokandy/arraydeque")
+    (synopsis
+     "Ring buffer with a fixed capacity, which can be stored on the stack")
+    (description
+     "This package provides a ring buffer with a fixed capacity, which can be stored
+on the stack.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-arrayref-0.3
   (package
     (name "rust-arrayref")
