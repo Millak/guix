@@ -23,6 +23,7 @@
 ;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1199,6 +1200,32 @@ functions and even in applications.")
      "Package gunit provides @code{testing} package hooks and convenience
 functions for writing tests in an @code{xUnit} style.")
     (license license:expat)))
+
+(define-public go-go-abhg-dev-requiredfield
+  (package
+    (name "go-go-abhg-dev-requiredfield")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/abhinav/requiredfield")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "15dccs71is06wi8xi3y2nnwpcpqbsh4pas4iggdr514aix8ljknf"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "go.abhg.dev/requiredfield"))
+    (propagated-inputs
+     (list go-golang-org-x-tools))
+    (home-page "https://go.abhg.dev/requiredfield")
+    (synopsis "Linter for required struct fields")
+    (description
+     "This package implements a linter that checks for required fields during
+struct initialization.")
+    (license license:bsd-3)))
 
 (define-public go-go-etcd-io-gofail
   (package
