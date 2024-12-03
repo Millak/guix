@@ -1954,7 +1954,7 @@ virtual machines, and certificates.")
 (define-public go-github-com-vishvananda-netns
   (package
     (name "go-github-com-vishvananda-netns")
-    (version "0.0.4")
+    (version "0.0.5")
     (source
      (origin
        (method git-fetch)
@@ -1963,20 +1963,13 @@ virtual machines, and certificates.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0rci8c211m57nya9il81fz6459pia3dj5i4b16fp34vjrkcxliml"))))
+        (base32 "1f96fbmjq93msdfxmicnypnn2lzvi7jrxy82fiyd9gwxdapfd061"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/vishvananda/netns"
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'disable-failing-tests
-            (lambda* (#:key tests? unpack-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" unpack-path)
-                (substitute* (find-files "." "\\_test.go$")
-                  ;; Disable tests requiring root access.
-                  (("TestGetNewSetDelete") "OffTestGetNewSetDelete")
-                  (("TestThreaded") "OffTestThreaded"))))))))
+      ;; Tests fail with error: operation not permitted.
+      #:test-flags #~(list "-skip" "TestGetNewSetDelete|TestThreaded")
+      #:import-path "github.com/vishvananda/netns"))
     (propagated-inputs
      (list go-golang-org-x-sys))
     (home-page "https://github.com/vishvananda/netns")
