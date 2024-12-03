@@ -17472,6 +17472,34 @@ intrinsics.")
         (base32 "1wv75ylrai556m388a40d50fxiyacmvm6qqz6va6qf1q04z3vylz"))))
     (arguments `())))
 
+(define-public rust-coverage-helper-0.2
+  (package
+    (name "rust-coverage-helper")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "coverage-helper" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0knim97n8v0yhn82rm4dvn0gds4fbwzx6f2yjdsiwgdv2wbmax41"))
+       (modules '((guix build utils)))
+       (snippet '(begin
+                   (substitute* "Cargo.toml"
+                     ;; cfg_attr(coverage_nightly) breaks some cargo versions
+                     ;; See issue: https://github.com/taiki-e/cargo-llvm-cov/issues/370
+                     (("\\[lints.rust\\]" all)
+                      (string-append all "\n"
+                       "unexpected_cfgs = { level = \"warn\", "
+                       "check-cfg = ['cfg(coverage_nightly)'] }")))))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/taiki-e/coverage-helper")
+    (synopsis "Helper for cargo-llvm-cov")
+    (description
+     "Helper for
+@url{https://github.com/taiki-e/cargo-llvm-cov/issues/123, cargo-llvm-cov}.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-count-instructions-0.1
   (package
     (name "rust-count-instructions")
