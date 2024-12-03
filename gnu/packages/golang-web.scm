@@ -2,6 +2,7 @@
 ;;; Copyright © 2017, 2019, 2020, 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2018 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2018 Pierre-Antoine Rouby <pierre-antoine.rouby@inria.fr>
+;;; Copyright © 2019 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2019, 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2020 Jack Hill <jackhill@jackhill.us>
@@ -5871,6 +5872,42 @@ encoding library for the MessagePack, CBOR, JSON and the Binc formats.")
      "This package provides a Go module @code{fasthttp} which may be used as
 replacement for native @code{net/http} module.")
     (license license:expat)))
+
+(define-public go-github-com-vishvananda-netlink
+  (package
+    (name "go-github-com-vishvananda-netlink")
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/vishvananda/netlink")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ckwb1ml7i2ccdd7kzc04s839naf4arlxav2ip5kf4rm4xhba9g7"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; The tests are unsupported on all architectures except x86_64-linux:
+      ;; cannot use 0xabcdef99 (untyped int constant 2882400153) as int value
+      ;; in struct literal (overflows)
+      #:tests? (and (not (%current-target-system)) (target-x86-64?))
+      #:test-flags
+      ;; One test fails with error: operation not permitted.
+      #~(list "-skip" "TestSocketXDPGetInfo")
+      #:import-path "github.com/vishvananda/netlink"))
+    (propagated-inputs
+     (list go-github-com-vishvananda-netns
+           go-golang-org-x-sys))
+    (home-page "https://github.com/vishvananda/netlink")
+    (synopsis "Simple netlink library for Go")
+    (description
+     "The netlink package provides a simple netlink library for Go.  Netlink
+is the interface a user-space program in Linux uses to communicate with the
+kernel.  It can be used to add and remove interfaces, set IP addresses and
+routes, and configure IPsec.")
+    (license license:asl2.0)))
 
 (define-public go-github-com-whyrusleeping-cbor
   (package
