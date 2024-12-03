@@ -75014,8 +75014,48 @@ functionality and without weak references.")
      "This package provides a 7z decompressor/compressor written in pure rust.")
     (license license:asl2.0)))
 
+(define-public rust-shadow-rs-0.36
+  (package
+    (name "rust-shadow-rs")
+    (version "0.36.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "shadow-rs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "064srz17klcgxqjzsj29pqn238y4pkn3l1h20mw9yyj98c3cvksq"))))
+    (build-system cargo-build-system)
+    (native-inputs (list pkg-config))
+    (inputs (list zlib libgit2-1.8))
+    (arguments
+     `(#:cargo-test-flags '("--release" "--"
+                            ;; Skip tests with missing files
+                            "--skip=date_time::tests::test_local_now_human_format"
+                            ;; Broken tests
+                            "--skip=git::tests::test_command_last_tag"
+                            "--skip=git::tests::test_current_branch"
+                            "--skip=git::tests::test_git")
+       #:cargo-inputs (("rust-cargo-metadata" ,rust-cargo-metadata-0.18)
+                       ("rust-const-format" ,rust-const-format-0.2)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-git2" ,rust-git2-0.19)
+                       ("rust-is-debug" ,rust-is-debug-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-time" ,rust-time-0.3)
+                       ("rust-tzdb" ,rust-tzdb-0.6))
+       #:cargo-development-inputs (("rust-winnow" ,rust-winnow-0.6))))
+    (home-page "https://github.com/baoyachi/shadow-rs")
+    (synopsis "Store build-time information in your rust project")
+    (description
+     "@code{shadow-rs} allows you to recall properties of the build process
+and environment at run time.  You can use this tool to check in production
+exactly where a binary came from and how it was built.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-shadow-rs-0.26
   (package
+    (inherit rust-shadow-rs-0.36)
     (name "rust-shadow-rs")
     (version "0.26.1")
     (source
@@ -75025,7 +75065,6 @@ functionality and without weak references.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "15xrlf66f10773k9kwpvz8909akfjspyy0yy9ss665wrfs15qp1y"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
        '("--release" "--"
@@ -75041,14 +75080,7 @@ functionality and without weak references.")
                        ("rust-tzdb" ,rust-tzdb-0.6))
        #:cargo-development-inputs (("rust-winnow" ,rust-winnow-0.5))))
     (native-inputs (list pkg-config))
-    (inputs (list libgit2-1.7 zlib))
-    (home-page "https://github.com/baoyachi/shadow-rs")
-    (synopsis "Recall properties of the build process at run time")
-    (description
-     "@code{shadow-rs} allows you to recall properties of the build process
-and environment at run time.  You can use this tool to check in production
-exactly where a binary came from and how it was built.")
-    (license (list license:expat license:asl2.0))))
+    (inputs (list libgit2-1.7 zlib))))
 
 (define-public rust-shadow-rs-0.8
   (package
