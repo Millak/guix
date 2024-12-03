@@ -91823,15 +91823,14 @@ in terms of displayed width.")
   (package
     (inherit rust-unicode-width-0.2)
     (name "rust-unicode-width")
-    (version "0.1.13")
+    (version "0.1.14")
     (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "unicode-width" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "0p92vl8n7qc8mxz45xn6qbgi0259z96n32a158l6vj5bywwdadh3"))))
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "unicode-width" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1bzn2zv0gp8xxbxbhifw778a7fc93pa6a1kj24jgg9msj07f7mkx"))))
     (arguments
      `(#:cargo-inputs
        (("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
