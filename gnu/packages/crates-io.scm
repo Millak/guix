@@ -56094,24 +56094,26 @@ algorithm.")
 (define-public rust-pest-2
   (package
     (name "rust-pest")
-    (version "2.6.0")
+    (version "2.7.14")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "pest" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "0w3vaad35km41g2liasf0sfkgfhj190rn7mc9q9hf18zn2zq93p6"))))
+        (base32 "0hplghvnz8yhs4mgpy7854gkpp6ysr96fy7ircs0k4w33al556c7"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-memchr" ,rust-memchr-2)
+        ("rust-miette" ,rust-miette-7)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-thiserror" ,rust-thiserror-1)
-        ("rust-ucd-trie" ,rust-ucd-trie-0.1))))
+        ("rust-ucd-trie" ,rust-ucd-trie-0.1))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.5)
+        ("rust-miette" ,rust-miette-7))))
     (home-page "https://pest.rs/")
     (synopsis "The Elegant Parser")
     (description "The Elegant Parser.")
