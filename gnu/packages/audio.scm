@@ -6579,6 +6579,31 @@ as is the case with audio plugins.")
            zlib))
     (native-inputs
      (list pkg-config))
+    (native-search-paths
+       (list (search-path-specification
+              (variable "CLAP_PATH")
+              (files '("lib/clap")))
+             (search-path-specification
+              (variable "LADSPA_PATH")
+              (files '("lib/ladspa")))
+             (search-path-specification
+              (variable "LV2_PATH")
+              (files '("lib/lv2")))
+             (search-path-specification
+              (variable "LXVST_PATH")
+              (files '("lib/lxvst")))
+             (search-path-specification
+              (variable "VST2_PATH")
+              (files '("lib/vst")))
+             (search-path-specification
+              (variable "VST3_PATH")
+              (files '("lib/vst3")))
+             (search-path-specification
+              (variable "SF2_PATH")
+              (files '("share/sf2")))
+             (search-path-specification
+              (variable "SFZ_PATH")
+              (files '("share/sfz")))))
     (home-page "https://kx.studio/Applications:Carla")
     (synopsis "Audio plugin host")
     (description "Carla is a modular audio plugin host, with features like
