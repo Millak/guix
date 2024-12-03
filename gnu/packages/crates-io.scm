@@ -82444,6 +82444,24 @@ tools.")
         (base32 "15gax4765vm2inh45m7cvaf4mgd2mb2mn0i87np0i1d95qhla822"))))
     (arguments '())))
 
+(define-public rust-target-triple-0.1
+  (package
+    (name "rust-target-triple")
+    (version "0.1.3")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "target-triple" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0y1hq4v4k1706rr3rdmw92as4kchchdxj7qkr2plb025vc6db922"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/dtolnay/target-triple")
+    (synopsis "TARGET and HOST triples")
+    (description "Access the $TARGET and $HOST rustc target triples that Cargo
+supplies to build scripts.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-tectonic-bridge-core-0.4
   (package
     (name "rust-tectonic-bridge-core")
