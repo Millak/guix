@@ -269,6 +269,31 @@ Windows Credential Manager.")
      "This package provides a library which provides an interface for @code{ConPTY}.")
     (license license:expat)))
 
+(define-public rust-deelevate-0.2
+  (package
+    (name "rust-deelevate")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "deelevate" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0kj2kcqv47l3iacpamgzbn742yf9d09h0xgwbadxs1l9qkw9fwqw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t ;; Depends on Windows
+       #:cargo-inputs (("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-pathsearch" ,rust-pathsearch-0.2)
+                       ("rust-rand" ,rust-rand-0.8)
+                       ("rust-shared-library" ,rust-shared-library-0.1)
+                       ("rust-termwiz" ,rust-termwiz-0.15)
+                       ("rust-winapi" ,rust-winapi-0.3))))
+    (home-page "https://crates.io/crates/deelevate")
+    (synopsis "Drop privileges on Windows")
+    (description "This package provides Drop privileges on Windows.")
+    (license license:expat)))
+
 (define-public rust-dunce-1
   (package
     (name "rust-dunce")
