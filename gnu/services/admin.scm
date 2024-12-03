@@ -512,11 +512,13 @@ which lets you search for packages that provide a given file.")
                       #$(string-append (number->string expiration)
                                        "s")))
 
-            (format #t "~a restarting services...~%" (timestamp))
-            (for-each restart-service '#$services)
+            (unless #$reboot?
+              ;; Rebooting effectively restarts services anyway and execution
+              ;; would be halted here if mcron is restarted.
+              (format #t "~a restarting services...~%" (timestamp))
+              (for-each restart-service '#$services))
 
-            ;; XXX: If 'mcron' has been restarted, perhaps this isn't
-            ;; reached.
+            ;; XXX: If 'mcron' has been restarted, this is not reached.
             (format #t "~a upgrade complete~%" (timestamp))
 
             ;; Stopping the root shepherd service triggers a reboot.

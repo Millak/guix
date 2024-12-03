@@ -23337,6 +23337,10 @@ system to use for the upgrade.  If no value is provided the
 This field specifies whether the system should reboot after completing
 an unattended upgrade.
 
+When @code{reboot?} is @code{#t}, services are not restarted before
+rebooting.  This means that the value for @code{services-to-restart} is
+ignored.  The updated services will be started after the system reboots.
+
 @item @code{services-to-restart} (default: @code{'(mcron)})
 This field specifies the Shepherd services to restart when the upgrade
 completes.
