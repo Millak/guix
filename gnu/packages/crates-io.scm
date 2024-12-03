@@ -56170,27 +56170,35 @@ algorithm.")
 (define-public rust-pest-meta-2
   (package
     (name "rust-pest-meta")
-    (version "2.6.0")
+    (version "2.7.14")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "pest_meta" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "04ala2f51zxninvajvvqk5gq80qxyp2v6cpfv3zkj7mpiqplankl"))))
+        (base32 "0gfhci2whiz3kiw2k2asj2lcj8rrrp4hm69whdvcpngl1jks4pdp"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           (delete-file "Cargo.toml")
+           (rename-file "Cargo.toml.orig" "Cargo.toml")
+           (substitute* "Cargo.toml"
+             ;; Correct path to pest dependency.
+             (("pest = \\{ path = \"\\.\\./pest\",") "pest = {")
+             ;; Remove explicit version requirement on cargo.
+             (("cargo = \\{ version = \"")
+              "cargo = { version = \">="))))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f          ; Not all test files included.
-       #:cargo-inputs
-       (("rust-once-cell" ,rust-once-cell-1)
-        ("rust-pest" ,rust-pest-2)
-        ("rust-sha2" ,rust-sha2-0.10))))
+     `(#:tests? #f ;Not all test files included.
+       #:cargo-inputs (("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-pest" ,rust-pest-2)
+                       ("rust-cargo" ,rust-cargo))
+       #:cargo-development-inputs (("rust-sha2" ,rust-sha2-0.10))))
     (home-page "https://pest.rs")
     (synopsis "Pest meta language parser and validator")
-    (description
-     "Pest meta language parser and validator.")
+    (description "Pest meta language parser and validator.")
     (license (list license:asl2.0 license:expat))))
 
 (define-public rust-petgraph-0.6
