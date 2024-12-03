@@ -94098,6 +94098,32 @@ updated when the crate version changes.")
         ("rust-toml" ,rust-toml-0.4)
         ("rust-url" ,rust-url-1))))))
 
+(define-public rust-versions-6
+  (package
+    (name "rust-versions")
+    (version "6.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "versions" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ff12avdiqhiv6nanikkjl1x3s2y7amkj3r5nivb7zficf5ljpgj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-itertools" ,rust-itertools-0.13)
+                       ("rust-nom" ,rust-nom-7)
+                       ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-semver" ,rust-semver-1)
+                                   ("rust-semver-parser" ,rust-semver-parser-0.10)
+                                   ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/fosskers/rs-versions")
+    (synopsis "Library for parsing and comparing software version numbers")
+    (description
+     "This package provides a library for parsing and comparing software version
+numbers.")
+    (license license:expat)))
+
 (define-public rust-vlq-0.5
   (package
     (name "rust-vlq")
