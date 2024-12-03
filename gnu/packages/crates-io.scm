@@ -83884,6 +83884,28 @@ writing colored text to a terminal.")
 color of the terminal.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-terminal-size-0.4
+  (package
+    (name "rust-terminal-size")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "terminal_size" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1sd4nq55h9sjirkx0138zx711ddxq1k1a45lc77ninhzj9zl8ljk"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f ;tests require /dev/stderr
+       #:cargo-inputs (("rust-rustix" ,rust-rustix-0.38)
+                       ("rust-windows-sys" ,rust-windows-sys-0.59))))
+    (home-page "https://github.com/eminence/terminal-size")
+    (synopsis "Gets the size of your Linux or Windows terminal")
+    (description
+     "This package provides Gets the size of your Linux or Windows terminal.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-terminal-size-0.3
   (package
     (name "rust-terminal-size")
