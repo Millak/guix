@@ -2279,6 +2279,23 @@ Windows crate.")
                        ("rust-quote" ,rust-quote-1)
                        ("rust-syn" ,rust-syn-2))))))
 
+(define-public rust-windows-implement-0.56
+  (package
+    (inherit rust-windows-implement-0.57)
+    (name "rust-windows-implement")
+    (version "0.56.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "windows-implement" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "16rgkvlx4syqmajfdwmkcvn6nvh126wjj8sg3jvsk5fdivskbz7n"))))
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))))
+
 (define-public rust-windows-implement-0.52
   (package
     (inherit rust-windows-implement-0.58)
