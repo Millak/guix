@@ -92530,27 +92530,27 @@ untrusted inputs in Rust.")
        (sha256
         (base32 "0byf88b7ca1kb5aap8f6npp6xncvg95dnma8ipmnmd4n9r5izkam"))))))
 
-(define-public rust-uom-0.34
+(define-public rust-uom-0.36
   (package
     (name "rust-uom")
-    (version "0.34.0")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "uom" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "190n79b5ywa9w0j13ld0q6dphz7vzsjkwrpp8pjnwrczsvfhxxg8"))))
+    (version "0.36.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "uom" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "176dszv02ki1a49hvv2nkszjcn4m8ccfjgh5hhji2pd6a19nxlzz"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-num-complex" ,rust-num-complex-0.4)
+     `(#:cargo-inputs (("rust-num-bigint" ,rust-num-bigint-0.4)
+                       ("rust-num-complex" ,rust-num-complex-0.4)
                        ("rust-num-rational" ,rust-num-rational-0.4)
                        ("rust-num-traits" ,rust-num-traits-0.2)
-                       ("rust-typenum" ,rust-typenum-1)
                        ("rust-serde" ,rust-serde-1)
-                       ("rust-num-bigint" ,rust-num-bigint-0.4))
+                       ("rust-typenum" ,rust-typenum-1))
        #:cargo-development-inputs (("rust-approx" ,rust-approx-0.5)
-                                   ("rust-quickcheck" ,rust-quickcheck-0.8)
+                                   ("rust-quickcheck" ,rust-quickcheck-1)
                                    ("rust-serde-json" ,rust-serde-json-1)
                                    ("rust-static-assertions" ,rust-static-assertions-1))))
     (home-page "https://github.com/iliekturtles/uom")
@@ -92562,7 +92562,31 @@ International System of Units (SI) which is based on the International System of
 Quantities (ISQ) and includes numerous quantities (length, mass, time, ...) with
 conversion factors for even more numerous measurement units (meter, kilometer, foot,
 mile, ...).")
-    (license (list license:expat license:asl2.0))))
+    (license (list license:asl2.0 license:expat))))
+
+(define-public rust-uom-0.34
+  (package
+    (inherit rust-uom-0.36)
+    (name "rust-uom")
+    (version "0.34.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "uom" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "190n79b5ywa9w0j13ld0q6dphz7vzsjkwrpp8pjnwrczsvfhxxg8"))))
+    (arguments
+     `(#:cargo-inputs (("rust-num-complex" ,rust-num-complex-0.4)
+                       ("rust-num-rational" ,rust-num-rational-0.4)
+                       ("rust-num-traits" ,rust-num-traits-0.2)
+                       ("rust-typenum" ,rust-typenum-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-num-bigint" ,rust-num-bigint-0.4))
+       #:cargo-development-inputs (("rust-approx" ,rust-approx-0.5)
+                                   ("rust-quickcheck" ,rust-quickcheck-0.8)
+                                   ("rust-serde-json" ,rust-serde-json-1)
+                                   ("rust-static-assertions" ,rust-static-assertions-1))))))
 
 (define-public rust-uom-0.30
   (package
