@@ -1947,8 +1947,7 @@ crate.")
         (base32 "16czypy425jzmiys4yb3pwsh7cm6grxn9kjp889iqnf2r17d99kb"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs (("rust-windows-implement" ,rust-windows-implement-0.58)
+     `(#:cargo-inputs (("rust-windows-implement" ,rust-windows-implement-0.58)
                        ("rust-windows-interface" ,rust-windows-interface-0.58)
                        ("rust-windows-result" ,rust-windows-result-0.2)
                        ("rust-windows-strings" ,rust-windows-strings-0.1)
