@@ -94664,6 +94664,23 @@ result.")
                (base32
                 "06g5v3vrdapfzvfq662cij7v8a1flwr2my45nnncdv2galrdzkfc"))))))
 
+(define-public rust-wasite-0.1
+  (package
+    (name "rust-wasite")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasite" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0nw5h9nmcl4fyf4j5d4mfdjfgvwi1cakpi349wc4zrr59wxxinmq"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/ardaku/wasite/blob/stable/CHANGELOG.md")
+    (synopsis "WASI Terminal Environment API")
+    (description "This package provides WASI Terminal Environment API.")
+    (license (list license:asl2.0 license:boost1.0 license:expat))))
+
 (define-public rust-wasm-bindgen-0.2
   (package
     (name "rust-wasm-bindgen")
