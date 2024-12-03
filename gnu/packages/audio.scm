@@ -6554,7 +6554,9 @@ as is the case with audio plugins.")
                                             (not (string-suffix? ".py" file)))
                                    (wrap-program file
                                      `("GUIX_PYTHONPATH" ":" prefix
-                                       (,(getenv "GUIX_PYTHONPATH"))))))
+                                       (,(getenv "GUIX_PYTHONPATH")))
+                                     `("QT_PLUGIN_PATH" ":" prefix
+                                       (,(getenv "QT_PLUGIN_PATH"))))))
                                (append (find-files "share/carla/resources")
                                        (find-files "bin")))))))))
     (inputs
@@ -6576,6 +6578,7 @@ as is the case with audio plugins.")
            ;; (ModuleNotFoundError: No module named 'PyQt5')
            python-wrapper
            qtbase-5
+           qtwayland-5
            zlib))
     (native-inputs
      (list pkg-config))
