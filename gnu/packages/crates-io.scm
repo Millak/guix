@@ -22105,8 +22105,41 @@ structs and enums.")
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))))))
 
+(define-public rust-derive-utils-0.14
+  (package
+    (name "rust-derive-utils")
+    (version "0.14.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "derive_utils" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1sh7d2xsr32h1m9qpzn5nh3dfm2lz1xgrfklsnjlv72mp3s55wb5"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           (substitute* "Cargo.toml"
+             (("\\[lib\\]" all)
+              (string-append "[dev-dependencies]" "\n"
+                             "trybuild = \"1\"" "\n"
+                             "\n" all)))))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))
+       #:cargo-development-inputs (("rust-rustversion" ,rust-rustversion-1)
+                                   ("rust-trybuild" ,rust-trybuild-1))))
+    (home-page "https://github.com/taiki-e/derive_utils")
+    (synopsis "Macro helper for easily writing derives macros for enum")
+    (description "This crate provides a procedural macro helper for easily
+writing derives macros for enums.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-derive-utils-0.11
   (package
+    (inherit rust-derive-utils-0.14)
     (name "rust-derive-utils")
     (version "0.11.2")
     (source
@@ -22117,7 +22150,6 @@ structs and enums.")
        (sha256
         (base32
          "1gx7giwn8x427d5f8c92n9h0hhcqdsasvz7i8iq2rqffvhalqask"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
@@ -22125,13 +22157,7 @@ structs and enums.")
         ("rust-syn" ,rust-syn-1))
        #:cargo-development-inputs
        (("rust-rustversion" ,rust-rustversion-1)
-        ("rust-trybuild" ,rust-trybuild-1))))
-    (home-page "https://github.com/taiki-e/derive_utils")
-    (synopsis "Macro helper for easily writing derives macros for enum")
-    (description
-     "This crate provides a procedural macro helper for easily
-writing derives macros for enums.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-trybuild" ,rust-trybuild-1))))))
 
 (define-public rust-derive-visitor-0.4
   (package
