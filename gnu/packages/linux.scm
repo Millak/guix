@@ -9548,18 +9548,11 @@ management tools in userspace.")
       ;; cannot use 0xabcdef99 (untyped int constant 2882400153) as int value
       ;; in struct literal (overflows)
       #:tests? (and (not (%current-target-system)) (target-x86-64?))
-      #:import-path "github.com/vishvananda/netlink"
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'disable-failing-tests
-            (lambda* (#:key tests? unpack-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" unpack-path)
-                (substitute* (find-files "." "\\_test.go$")
-                  ;; Disable tests requiring root access.
-                  (("TestNetNsIdByFd") "OffTestNetNsIdByFd")
-                  (("TestNetNsIdByPid") "OffTestNetNsIdByPid"))))))))
+      #:test-flags #~(list "-skip" "TestNetNsIdByFd|TestNetNsIdByPid")
+      #:import-path "github.com/vishvananda/netlink"))
     (propagated-inputs
-     (list go-golang-org-x-sys go-github-com-vishvananda-netns))
+     (list go-github-com-vishvananda-netns
+           go-golang-org-x-sys))
     (home-page "https://github.com/vishvananda/netlink")
     (synopsis "Simple netlink library for Go")
     (description
