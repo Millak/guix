@@ -8370,6 +8370,38 @@ distributable command line applications in an expressive way.")
            go-github-com-xrash-smetrics
            go-gopkg-in-yaml-v3))))
 
+(define-public go-github-com-vito-midterm
+  (package
+    (name "go-github-com-vito-midterm")
+    (version "0.1.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/vito/midterm")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0bvgw84750xfpm89hrab7pzfv1d5dy94igiqwzk5ivy4yca90ipw"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/vito/midterm"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-charmbracelet-bubbletea
+           go-github-com-creack-pty
+           go-github-com-muesli-termenv
+           go-github-com-sebdah-goldie-v2
+           go-golang-org-x-term))
+    (home-page "https://github.com/vito/midterm")
+    (synopsis "In-memory terminal emulator")
+    (description
+     "This package implements an in-memory terminal emulator, designed to be
+used as a component within a larger application for displaying logs, running
+interactive shells, or rendering terminal output.")
+    (license license:expat)))
 
 (define-public go-github-com-vitrun-qart
   (let ((commit "bf64b92db6b05651d6c25a3dabf2d543b360c0aa")
