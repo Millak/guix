@@ -1744,7 +1744,7 @@ syntax for short lambda.")
 (define-public emacs-llm
   (package
     (name "emacs-llm")
-    (version "0.17.4")
+    (version "0.19.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1753,9 +1753,11 @@ syntax for short lambda.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0vq7209wi20jw28m4v0fsca2i9k6vqn844fqkpyc8c95ranm0c1l"))))
+                "0k7fr8r05x72xpcw7bl0bih4cz9p3vmgasfxv06a49v81jna10ip"))))
     (build-system emacs-build-system)
-    (propagated-inputs (list emacs-plz))
+    (propagated-inputs (list emacs-plz
+                             emacs-plz-event-source
+                             emacs-plz-media-type))
     (home-page "https://github.com/ahyatt/llm")
     (synopsis "Emacs library abstracting Large Language Model capabilities")
     (description
