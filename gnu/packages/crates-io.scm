@@ -70138,8 +70138,7 @@ sub-processes using a fork-like interface.")
        (sha256
         (base32 "0f8069ljhiv9nf97y975wvv9yvx82w3lm9g50d5n298fkiw2cy6v"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-1)
         ("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-clipboard-win" ,rust-clipboard-win-4)
@@ -70157,7 +70156,13 @@ sub-processes using a fork-like interface.")
         ("rust-unicode-segmentation" ,rust-unicode-segmentation-1)
         ("rust-unicode-width" ,rust-unicode-width-0.1)
         ("rust-utf8parse" ,rust-utf8parse-0.2)
-        ("rust-winapi" ,rust-winapi-0.3))))))
+        ("rust-winapi" ,rust-winapi-0.3))
+       #:cargo-development-inputs
+       (("rust-assert-matches" ,rust-assert-matches-1)
+        ("rust-doc-comment" ,rust-doc-comment-0.3)
+        ("rust-env-logger" ,rust-env-logger-0.9)
+        ("rust-rustyline-derive" ,rust-rustyline-derive-0.6)
+        ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-rustyline-8
   (package
