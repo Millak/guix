@@ -5914,6 +5914,34 @@ kernel.  It can be used to add and remove interfaces, set IP addresses and
 routes, and configure IPsec.")
     (license license:asl2.0)))
 
+(define-public go-github-com-vishvananda-netns
+  (package
+    (name "go-github-com-vishvananda-netns")
+    (version "0.0.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/vishvananda/netns")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1f96fbmjq93msdfxmicnypnn2lzvi7jrxy82fiyd9gwxdapfd061"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; Tests fail with error: operation not permitted.
+      #:test-flags #~(list "-skip" "TestGetNewSetDelete|TestThreaded")
+      #:import-path "github.com/vishvananda/netns"))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
+    (home-page "https://github.com/vishvananda/netns")
+    (synopsis "Simple network namespace handling for Go")
+    (description
+     "The netns package provides a simple interface for handling network
+namespaces in Go.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-whyrusleeping-cbor
   (package
     (name "go-github-com-whyrusleeping-cbor")
