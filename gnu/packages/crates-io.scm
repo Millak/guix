@@ -13975,34 +13975,32 @@ how to behave across the three main input sources")
 (define-public rust-clap-4
   (package
     (name "rust-clap")
-    (version "4.5.18")
+    (version "4.5.21")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "clap" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "1lsxa59bgfxaag1q65ndp801h7vw9dffsly0zzx1mb13nd1nm5dh"))))
+        (base32 "0kv0n5jbpfpl9xyags5lpyq5cccbx6g36s98lpgi8xbwbag4nfzv"))))
     (build-system cargo-build-system)
     (arguments
-     (list #:cargo-inputs
-           `(("rust-clap-builder" ,rust-clap-builder-4)
-             ("rust-clap-derive" ,rust-clap-derive-4))
-           #:cargo-development-inputs
-           `(("rust-automod" ,rust-automod-1)
-             ("rust-clap-cargo" ,rust-clap-cargo-0.14)
-             ("rust-humantime" ,rust-humantime-2)
-             ("rust-rustversion" ,rust-rustversion-1)
-             ("rust-shlex" ,rust-shlex-1)
-             ("rust-snapbox" ,rust-snapbox-0.6)
-             ("rust-trybuild" ,rust-trybuild-1)
-             ("rust-trycmd" ,rust-trycmd-0.15))))
-    (home-page "https://clap.rs/")
+     `(#:cargo-inputs (("rust-clap-builder" ,rust-clap-builder-4)
+                       ("rust-clap-derive" ,rust-clap-derive-4)
+                       ("rust-terminal-size" ,rust-terminal-size-0.4))
+       #:cargo-development-inputs (("rust-automod" ,rust-automod-1)
+                                   ("rust-clap-cargo" ,rust-clap-cargo-0.14)
+                                   ("rust-humantime" ,rust-humantime-2)
+                                   ("rust-rustversion" ,rust-rustversion-1)
+                                   ("rust-shlex" ,rust-shlex-1)
+                                   ("rust-snapbox" ,rust-snapbox-0.6)
+                                   ("rust-trybuild" ,rust-trybuild-1)
+                                   ("rust-trycmd" ,rust-trycmd-0.15))))
+    (home-page "https://github.com/clap-rs/clap")
     (synopsis "Command Line Argument Parser")
     (description
-     "This package provides a simple to use, efficient, and full-featured
-Command Line Argument Parser.")
+     "This package provides a simple to use, efficient, and full-featured Command Line
+Argument Parser.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-clap-3
