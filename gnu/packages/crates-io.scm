@@ -35922,21 +35922,21 @@ that efficiently appends and removes common indentation after every newline.")
 (define-public rust-indexmap-2
   (package
     (name "rust-indexmap")
-    (version "2.6.0")
+    (version "2.7.0")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "indexmap" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1nmrwn8lbs19gkvhxaawffzbvrpyrb5y3drcrr645x957kz0fybh"))))
+                "07s7jmdymvd0rm4yswp0j3napx57hkjm9gs9n55lvs2g78vj5y32"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-arbitrary" ,rust-arbitrary-1)
         ("rust-borsh" ,rust-borsh-1)
         ("rust-equivalent" ,rust-equivalent-1)
-        ("rust-hashbrown" ,rust-hashbrown-0.14)
+        ("rust-hashbrown" ,rust-hashbrown-0.15)
         ("rust-quickcheck" ,rust-quickcheck-1)
         ("rust-rayon" ,rust-rayon-1)
         ("rust-rustc-rayon" ,rust-rustc-rayon-0.5)
@@ -35949,7 +35949,7 @@ that efficiently appends and removes common indentation after every newline.")
         ("rust-quickcheck" ,rust-quickcheck-1)
         ("rust-rand" ,rust-rand-0.8)
         ("rust-serde-derive" ,rust-serde-derive-1))))
-    (home-page "https://github.com/bluss/indexmap")
+    (home-page "https://github.com/indexmap-rs/indexmap")
     (synopsis "Hash table with consistent order and fast iteration")
     (description
      "This package provides a hash table with consistent order and fast iteration.
