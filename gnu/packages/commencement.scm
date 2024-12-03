@@ -3274,7 +3274,8 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
                                        "/lib -L" zlib "/lib -Wl,-rpath="
                                        zlib "/lib")
                         flag))
-                  #$(if (target-hurd64?)
+                  #$(if (or (target-hurd64?)
+                            (and (target-x86?) (target-linux?)))
                         `(cons
                           (string-append
                            ;;Convince gmp's configure that gcc works
@@ -3282,7 +3283,8 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
                           ,flags)
                         flags))))
         ((#:configure-flags flags)
-         (if (target-hurd64?)
+         (if (or (target-hurd64?)
+                 (and (target-x86?) (target-linux?)))
              #~(append
                 #$flags
                 (list #$(string-append
@@ -3336,7 +3338,8 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
                                                #\:))
                                       ":")
                                      "\nAM_CXXFLAGS = "))))))
-             #$@(if (target-hurd64?)
+             #$@(if (or (target-hurd64?)
+                        (and (target-x86?) (target-linux?)))
                     #~((add-after 'configure 'create-stage-wrapper
                          (lambda _
                            (with-output-to-file "gcc.sh"
