@@ -56144,16 +56144,14 @@ algorithm.")
 (define-public rust-pest-generator-2
   (package
     (name "rust-pest-generator")
-    (version "2.6.0")
+    (version "2.7.14")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "pest_generator" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "0zh7igibnn9d4skgx3vjy4q6nya2hjhw7vf8xd8vhdv40zqmnhvc"))))
+        (base32 "0khcyqjyd8pg1qcivh1xzk9613zbn983ycdclap1f5rh6ikmhmgb"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -56161,7 +56159,7 @@ algorithm.")
         ("rust-pest-meta" ,rust-pest-meta-2)
         ("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))
+        ("rust-syn" ,rust-syn-2))))
     (home-page "https://pest.rs/")
     (synopsis "Pest code generator")
     (description "Pest code generator.")
