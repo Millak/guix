@@ -78596,6 +78596,47 @@ deeply recursive algorithms that may accidentally blow the stack.")
     (description "New standard library, old compiler.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-starship-battery-0.10
+  (package
+    (name "rust-starship-battery")
+    (version "0.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "starship-battery" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1llfi5gvgrwf08rm49lqr60lkzga167w59vzh20dpwwwhwvsj5wh"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--"
+         ;; Missing test files
+         "--skip=src/types/manager.rs - types::manager::Manager (line 15)"
+         "--skip=src/units.rs - units (line 9)"
+         "--skip=src/units.rs - units (line 23)"
+         "--skip=src/units.rs - units (line 39)"
+         "--skip=src/units.rs - units (line 53)")
+       #:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-core-foundation" ,rust-core-foundation-0.10)
+                       ("rust-lazycell" ,rust-lazycell-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-mach2" ,rust-mach2-0.4)
+                       ("rust-nix" ,rust-nix-0.29)
+                       ("rust-num-traits" ,rust-num-traits-0.2)
+                       ("rust-plist" ,rust-plist-1)
+                       ("rust-schemars" ,rust-schemars-0.8)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-uom" ,rust-uom-0.36)
+                       ("rust-windows-sys" ,rust-windows-sys-0.59))
+       #:cargo-development-inputs (("rust-approx" ,rust-approx-0.5)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/starship/rust-battery")
+    (synopsis "Cross-platform information about the notebook batteries")
+    (description
+     "This package provides Cross-platform information about the notebook batteries.")
+    (license license:isc)))
+
 (define-public rust-state-0.6
   (package
     (name "rust-state")
