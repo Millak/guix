@@ -5291,9 +5291,11 @@ and more.  Full API documentation and examples are included.")
            libogg
            libsamplerate
            libsndfile
+           libsoundio
            libvorbis
            libxft
            portaudio
+           pulseaudio
            qtbase-5
            qtx11extras
            sdl))
