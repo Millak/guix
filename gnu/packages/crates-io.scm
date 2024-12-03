@@ -24416,19 +24416,19 @@ easy.")
 (define-public rust-either-1
   (package
     (name "rust-either")
-    (version "1.10.0")
+    (version "1.13.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "either" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0jiyq2mc1aa5b8whwl1bhm11i06xxcbk9ck7macxxggzjk07l58i"))))
+        (base32 "1w2c1mybrd7vljyxk77y9f4w9dyjrmp3yp82mk7bcm8848fazcb0"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-serde" ,rust-serde-1))
        #:cargo-development-inputs (("rust-serde-json" ,rust-serde-json-1))))
-    (home-page "https://github.com/bluss/either")
+    (home-page "https://github.com/rayon-rs/either")
     (synopsis
      "Enum @code{Either} with variants @code{Left} and @code{Right}")
     (description
