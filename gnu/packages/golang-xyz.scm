@@ -1773,6 +1773,61 @@ tools.")
 ECMA-48} specs.")
     (license license:expat)))
 
+;; XXX: This is for making the package compatible with
+;; go-github-com-charmbracelet-x-input, see
+;; <https://github.com/charmbracelet/x/issues/296> and
+;; <https://github.com/charmbracelet/x/pull/295>.
+;; Remove when a new tag is placed.
+(define go-github-com-charmbracelet-x-ansi-0.4.5
+  (package
+    (inherit go-github-com-charmbracelet-x-ansi)
+    (name "go-github-com-charmbracelet-x-ansi")
+    (version "0.4.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/charmbracelet/x")
+             (commit (go-version->git-ref version
+                                          #:subdir "ansi"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "10ivngjp9ifm8b50pkxrwdzan6hn4s3l9fxi6wiqiwy6m2v41a0a"))))))
+
+(define-public go-github-com-charmbracelet-x-input
+  (package
+    (name "go-github-com-charmbracelet-x-input")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/charmbracelet/x")
+             (commit (go-version->git-ref version
+                                          #:subdir "input"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0sby6rvi04nga2iv823slsgydqlianfl6k3fgjvjzfyxd68lqxsp"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (delete-file-recursively "ansi")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/charmbracelet/x/input"
+      #:unpack-path "github.com/charmbracelet/x"))
+    (propagated-inputs
+     (list go-github-com-charmbracelet-x-ansi-0.4.5
+           go-github-com-erikgeiser-coninput
+           go-github-com-muesli-cancelreader
+           go-github-com-xo-terminfo
+           go-golang-org-x-sys))
+    (home-page "https://github.com/charmbracelet/x")
+    (synopsis "Terminal event input handler and driver")
+    (description
+     "This package provides a terminal event input handler and driver.")
+    (license license:expat)))
+
 (define-public go-github-com-charmbracelet-x-term
   (package
     (name "go-github-com-charmbracelet-x-term")
