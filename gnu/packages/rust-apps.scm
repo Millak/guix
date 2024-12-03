@@ -1075,41 +1075,36 @@ gitoxide CLI.")
 (define-public gitui
   (package
     (name "gitui")
-    (version "0.25.2")
+    (version "0.26.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gitui" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "19xv6bvp0hs1m5y8a0myifvh8xrxrv14wd4gknlsrka0l7d8ijg7"))))
+        (base32 "0pqx3j2spw3xc9wipzcwdxn2l58x2fa803wi528370rl83zznhk6"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (("\"=([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                   (string-append "\"^" version))
+                  ;; Remove vendor-openssl from the default features.
+                  ((".*\"vendor-openssl\",.*") ""))))))
     (build-system cargo-build-system)
     (arguments
-     `(;; disable vendor-openssl from default flags
-       ;; use oniguruma regex lib which is faster and makes gitui 25% smaller
-       #:features '("ghemoji" "regex-onig" "trace-libgit")
-       #:cargo-build-flags
-       '("--release" "--no-default-features")
-       #:cargo-test-flags
-       '("--release" "--no-default-features"
-         "--features" "ghemoji regex-onig trace-libgit"
-         "--"
+     `(#:cargo-test-flags
+       '("--release" "--"
          ;; this test fails with permission denied error
          "--skip=test_symbolic_links")
        #:install-source? #f
        #:phases
        (modify-phases %standard-phases
-          (replace 'install
-             ;; Add --no-default-features to the install phase.
-             (lambda* (#:key outputs features #:allow-other-keys)
-                (let ((out (assoc-ref outputs "out")))
-                  (invoke "cargo" "install" "--no-track"
-                          "--path" "."
-                          "--root" out
-                          "--no-default-features"
-                          "--features" (string-join features))))))
+         (add-after 'unpack 'set-release-variable
+           (lambda _
+             (setenv "GITUI_RELEASE" "true")
+             (setenv "BUILD_GIT_COMMIT_ID" "GNUGUIX"))))
        #:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
-                       ("rust-asyncgit" ,rust-asyncgit-0.25)
+                       ("rust-asyncgit" ,rust-asyncgit-0.26)
                        ("rust-backtrace" ,rust-backtrace-0.3)
                        ("rust-bitflags" ,rust-bitflags-2)
                        ("rust-bugreport" ,rust-bugreport-0.5)
@@ -1130,7 +1125,8 @@ gitoxide CLI.")
                        ("rust-notify" ,rust-notify-6)
                        ("rust-notify-debouncer-mini" ,rust-notify-debouncer-mini-0.4)
                        ("rust-once-cell" ,rust-once-cell-1)
-                       ("rust-ratatui" ,rust-ratatui-0.24)
+                       ("rust-parking-lot-core" ,rust-parking-lot-core-0.9)
+                       ("rust-ratatui" ,rust-ratatui-0.26)
                        ("rust-rayon-core" ,rust-rayon-core-1)
                        ("rust-ron" ,rust-ron-0.8)
                        ("rust-scopeguard" ,rust-scopeguard-1)
@@ -1141,12 +1137,14 @@ gitoxide CLI.")
                        ("rust-struct-patch" ,rust-struct-patch-0.4)
                        ("rust-syntect" ,rust-syntect-5)
                        ("rust-tui-textarea" ,rust-tui-textarea-0.4)
+                       ("rust-two-face" ,rust-two-face-0.4)
                        ("rust-unicode-segmentation" ,rust-unicode-segmentation-1)
-                       ("rust-unicode-truncate" ,rust-unicode-truncate-0.2)
+                       ("rust-unicode-truncate" ,rust-unicode-truncate-1)
                        ("rust-unicode-width" ,rust-unicode-width-0.1)
                        ("rust-which" ,rust-which-6))
        #:cargo-development-inputs
-       (("rust-pretty-assertions" ,rust-pretty-assertions-1)
+       (("rust-env-logger" ,rust-env-logger-0.11)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1)
         ("rust-tempfile" ,rust-tempfile-3))))
     (native-inputs (list pkg-config))
     (inputs (list libgit2-1.7 libssh2 openssl zlib))
