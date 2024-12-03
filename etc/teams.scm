@@ -610,6 +610,15 @@ GLib/GIO, GTK, GStreamer and Webkit."
                       "guix/build/zig-build-system.scm"
                       "guix/build-system/zig.scm")))
 
+(define-team hurd
+  (team 'hurd
+        #:name "Team for the Hurd"
+        #:scope (list "gnu/system/hurd.scm"
+                      "gnu/system/images/hurd.scm"
+                      "gnu/build/hurd-boot.scm"
+                      "gnu/services/hurd.scm"
+                      "gnu/packages/hurd.scm")))
+
 
 (define-member (person "Eric Bavier"
                        "bavier@posteo.net")
