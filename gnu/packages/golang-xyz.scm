@@ -1806,6 +1806,32 @@ ECMA-48} specs.")
 @end itemize")
     (license license:expat)))
 
+(define-public go-github-com-charmbracelet-x-windows
+  (package
+    (name "go-github-com-charmbracelet-x-windows")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/charmbracelet/x")
+             (commit (go-version->git-ref version
+                                          #:subdir "windows"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "011kkz7l7fqr3a4sslfipiyl6bq51md1rc7ayj73xm5ayscpm0r2"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/charmbracelet/x/windows"
+           #:unpack-path "github.com/charmbracelet/x"))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
+    (home-page "https://github.com/charmbracelet/x")
+    (synopsis "Windows API used at Charmbracelet")
+    (description
+     "This package provides the Windows API used at Charmbracelet.")
+    (license license:expat)))
+
 (define-public go-github-com-charmbracelet-x-exp-golden
   (package
     (name "go-github-com-charmbracelet-x-exp-golden")
