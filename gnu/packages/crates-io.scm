@@ -95954,24 +95954,24 @@ json-like data values.")
 (define-public rust-which-6
   (package
     (name "rust-which")
-    (version "6.0.0")
+    (version "6.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "which" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "070hbvl3hjxywychmz7nj5gbsprdm38rir3kqnm48zzp1g0y19bz"))))
+        (base32 "07yg74dsq644hq5a35546c9mja6rsjdsg92rykr9hkflxf7r5vml"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-test-flags '("--release" "--"
-                            "--skip=it_works")
+     `(#:cargo-test-flags '("--release" "--" "--skip=it_works") ; Missing file
        #:cargo-inputs (("rust-either" ,rust-either-1)
                        ("rust-home" ,rust-home-0.5)
                        ("rust-once-cell" ,rust-once-cell-1)
                        ("rust-regex" ,rust-regex-1)
                        ("rust-rustix" ,rust-rustix-0.38)
-                       ("rust-windows-sys" ,rust-windows-sys-0.52))
+                       ("rust-windows-sys" ,rust-windows-sys-0.52)
+                       ("rust-winsafe" ,rust-winsafe-0.0.19))
        #:cargo-development-inputs (("rust-tempfile" ,rust-tempfile-3))))
     (home-page "https://github.com/harryfei/which-rs.git")
     (synopsis "Rust equivalent of @command{which}")
