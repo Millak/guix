@@ -5348,7 +5348,7 @@ and more.  Full API documentation and examples are included.")
            (("\"CarlaBackend\\.h\"") "<carla/CarlaBackend.h>")
            (("\"CarlaNative\\.h\"") "<carla/includes/CarlaNative.h>")
            (("\"CarlaUtils\\.h\"") "<carla/CarlaUtils.h>")))))
-    (build-system cmake-build-system)
+    (build-system qt-build-system)
     (arguments
      (list
       #:tests? #f                       ; no tests
@@ -5417,7 +5417,7 @@ and more.  Full API documentation and examples are included.")
            libxft
            portaudio
            pulseaudio
-           qtbase-5
+           qtwayland-5
            qtx11extras
            sdl
            stk))
