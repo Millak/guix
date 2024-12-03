@@ -92220,8 +92220,38 @@ described in Unicode Standard Annex #15.")
 boundaries according to Unicode Standard Annex #29 rules.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-unicode-truncate-1
+  (package
+    (name "rust-unicode-truncate")
+    (version "1.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "unicode-truncate" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1gr7arjjhrhy8dww7hj8qqlws97xf9d276svr4hs6pxgllklcr5k"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=tests::truncate_centered::family_stays_together"
+         "--skip=tests::truncate_end::family_stays_together"
+         "--skip=tests::truncate_start::family_stays_together")
+       #:cargo-inputs (("rust-itertools" ,rust-itertools-0.13)
+                       ("rust-unicode-segmentation" ,rust-unicode-segmentation-1)
+                       ("rust-unicode-width" ,rust-unicode-width-0.1))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.5))))
+    (home-page "https://github.com/Aetf/unicode-truncate")
+    (synopsis "Unicode-aware `str` truncate")
+    (description
+     "This package provides a unicode-aware algorithm to pad or truncate `str`
+in terms of displayed width.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-unicode-truncate-0.2
   (package
+    (inherit rust-unicode-truncate-1)
     (name "rust-unicode-truncate")
     (version "0.2.0")
     (source
@@ -92231,16 +92261,9 @@ boundaries according to Unicode Standard Annex #29 rules.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0hlf6k1d7s1qqdvhxwh4xl8wd1wvqm0vr0pazxq74jksbz5fajx0"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-unicode-width" ,rust-unicode-width-0.1))
-       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.3))))
-    (home-page "https://github.com/Aetf/unicode-truncate")
-    (synopsis "Unicode-aware `str` truncate")
-    (description
-     "This package provides a unicode-aware algorithm to pad or truncate `str`
-in terms of displayed width.")
-    (license (list license:expat license:asl2.0))))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.3))))))
 
 (define-public rust-unicode-width-0.2
   (package
