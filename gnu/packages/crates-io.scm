@@ -33436,14 +33436,14 @@ hash map.")
 (define-public rust-hashlink-0.9
   (package
     (name "rust-hashlink")
-    (version "0.9.0")
+    (version "0.9.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "hashlink" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1vi5nxldy84raw4jy0fq059xq7mnfha0y2gg7kfihxb0yzvslbk9"))))
+        (base32 "1byq4nyrflm5s6wdx5qwp96l1qbp2d0nljvrr5yqrsfy51qzz93b"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-hashbrown" ,rust-hashbrown-0.14)
