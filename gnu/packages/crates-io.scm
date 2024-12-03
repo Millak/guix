@@ -6489,6 +6489,64 @@ with custom types.")
      "Automatically implement traits for common smart pointers and closures.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-auto-enums-0.8
+  (package
+    (name "rust-auto-enums")
+    (version "0.8.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "auto_enums" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1yxcdw961199wrk1v5js321ynyfd4m40c0gi2pypby2mx2vpg6s5"))
+       (modules '((guix build utils)))
+       (snippet '(begin
+                   (substitute* "Cargo.toml"
+                     (("\\[features\\]" all)
+                      (string-append "[dev-dependencies]" "\n"
+                                     "macrotest = \"1\"" "\n"
+                                     "trybuild = \"1\"" "\n"
+                                     "\n" all)))))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:cargo-inputs `(("rust-derive-utils" ,rust-derive-utils-0.14)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))
+      #:cargo-development-inputs `(("rust-futures" ,rust-futures-0.1)
+                                   ("rust-futures-util" ,rust-futures-util-0.3)
+                                   ("rust-http-body" ,rust-http-body-1)
+                                   ("rust-macrotest" ,rust-macrotest-1)
+                                   ("rust-rayon" ,rust-rayon-1)
+                                   ("rust-rustversion" ,rust-rustversion-1)
+                                   ("rust-serde" ,rust-serde-1)
+                                   ("rust-tokio" ,rust-tokio-1)
+                                   ("rust-tokio" ,rust-tokio-0.1)
+                                   ("rust-tokio" ,rust-tokio-0.2)
+                                   ("rust-tokio" ,rust-tokio-0.3)
+                                   ("rust-trybuild" ,rust-trybuild-1))
+      #:cargo-test-flags '(list "--release" "--"
+                                ;; Skipping broken tests
+                                "--skip=src/lib.rs - (line 547)"
+                                "--skip=src/lib.rs - (line 672)"
+                                "--skip=src/lib.rs - (line 755)"
+                                "--skip=src/lib.rs - (line 818)"
+                                "--skip=src/lib.rs - _README (line 1073)")
+      #:phases #~(modify-phases %standard-phases
+                   ;; Tests depend on nightly/dev features
+                   (add-before 'check 'enable-unstable-features
+                     (lambda _
+                       (setenv "RUSTC_BOOTSTRAP" "1"))))))
+    (home-page "https://github.com/taiki-e/auto_enums")
+    (synopsis
+     "Library to allow multiple return types by automatically generated enum")
+    (description
+     "This package provides a library to allow multiple return types by
+automatically generated enum.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-auto-impl-0.4
   (package
     (inherit rust-auto-impl-0.5)
