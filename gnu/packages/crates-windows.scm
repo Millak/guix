@@ -1368,6 +1368,24 @@ icons to windows executables and dynamic libraries.")
 icons and metadata for executables.")
     (license license:expat)))
 
+(define-public rust-winsafe-0.0.19
+  (package
+    (name "rust-winsafe")
+    (version "0.0.19")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "winsafe" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0169xy9mjma8dys4m8v4x0xhw2gkbhv2v1wsbvcjl9bhnxxd2dfi"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/rodrigocfd/winsafe")
+    (synopsis "Windows API and GUI in safe, idiomatic Rust")
+    (description
+     "This package provides Windows API and GUI in safe, idiomatic Rust.")
+    (license license:expat)))
+
 (define-public rust-winutil-0.1
   (package
     (name "rust-winutil")
