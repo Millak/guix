@@ -23559,6 +23559,30 @@ system libraries.")
     (inputs
      (list rust-libloading-0.6))))
 
+(define-public rust-dlv-list-0.5
+  (package
+    (name "rust-dlv-list")
+    (version "0.5.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "dlv-list" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0pqvrinxzdz7bpy4a3p450h8krns3bd0mc3w0qqvm03l2kskj824"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-const-random" ,rust-const-random-0.1)
+                       ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+       (("rust-coverage-helper" ,rust-coverage-helper-0.2)
+        ("rust-serde-test" ,rust-serde-test-1))))
+    (home-page "https://github.com/sgodwincs/dlv-list-rs")
+    (synopsis "Semi-doubly linked list implemented using a vector")
+    (description
+     "This package provides a semi-doubly linked list implemented using a vector.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-dlv-list-0.3
   (package
     (name "rust-dlv-list")
