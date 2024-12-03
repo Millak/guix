@@ -45,8 +45,59 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control))
 
+(define-public rust-asyncgit-0.26
+  (package
+    (name "rust-asyncgit")
+    (version "0.26.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "asyncgit" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1zj3mz9g964m4z8zla70k3gicqg6hph801qgbn3fj48j254di4q9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=sync::hooks::tests::test_hooks_commit_msg_reject_in_subfolder"
+         "--skip=sync::hooks::tests::test_post_commit_hook_reject_in_subfolder"
+         "--skip=sync::hooks::tests::test_pre_commit_workdir"
+         "--skip=sync::submodules::tests::test_smoke")  ; network
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
+                       ("rust-dirs" ,rust-dirs-5)
+                       ("rust-easy-cast" ,rust-easy-cast-0.5)
+                       ("rust-fuzzy-matcher" ,rust-fuzzy-matcher-0.3)
+                       ("rust-git2" ,rust-git2-0.18)
+                       ("rust-git2-hooks" ,rust-git2-hooks-0.3)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-openssl-sys" ,rust-openssl-sys-0.9)
+                       ("rust-rayon" ,rust-rayon-1)
+                       ("rust-rayon-core" ,rust-rayon-core-1)
+                       ("rust-scopetime" ,rust-scopetime-0.1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-ssh-key" ,rust-ssh-key-0.6)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-unicode-truncate" ,rust-unicode-truncate-1)
+                       ("rust-url" ,rust-url-2))
+       #:cargo-development-inputs
+       (("rust-env-logger" ,rust-env-logger-0.11)
+        ("rust-invalidstring" ,rust-invalidstring-0.1)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1)
+        ("rust-serial-test" ,rust-serial-test-3)
+        ("rust-tempfile" ,rust-tempfile-3))))
+    (native-inputs (list pkg-config git-minimal))
+    (inputs (list libgit2-1.7 libssh2 openssl zlib))
+    (home-page "https://github.com/extrawurst/gitui")
+    (synopsis "Use git2 in an asynchronous context")
+    (description
+     "This package provides for using git2 in an asynchronous context.")
+    (license license:expat)))
+
 (define-public rust-asyncgit-0.25
   (package
+    (inherit rust-asyncgit-0.26)
     (name "rust-asyncgit")
     (version "0.25.1")
     (source
@@ -56,7 +107,6 @@
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "05qlwp63k5zd4yd7n18v6bs32fhbx5qlsc98j203maacy0vlm9h7"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags '("--release" "--"
                             "--skip" "reject_in_subfolder"      ; /bin/sh
@@ -82,14 +132,7 @@
         ("rust-invalidstring" ,rust-invalidstring-0.1)
         ("rust-pretty-assertions" ,rust-pretty-assertions-1)
         ("rust-serial-test" ,rust-serial-test-3)
-        ("rust-tempfile" ,rust-tempfile-3))))
-    (native-inputs (list pkg-config git-minimal))
-    (inputs (list libgit2-1.7 libssh2 openssl zlib))
-    (home-page "https://github.com/extrawurst/gitui")
-    (synopsis "Use git2 in an asynchronous context")
-    (description
-     "This package provides for using git2 in an asynchronous context.")
-    (license license:expat)))
+        ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-git-testament-0.2
   (package
