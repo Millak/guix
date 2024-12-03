@@ -45270,14 +45270,14 @@ quality, high performance hash algorithm.")
 (define-public rust-miette-7
   (package
     (name "rust-miette")
-    (version "7.2.0")
+    (version "7.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "miette" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1hdgjkkj1vgiqn9dq445m1p8z4y8adiaig8gh2mhsahc699qip2f"))))
+        (base32 "0r1c34b7crjj97i8gx06hh6agw3ip7qprwrafa91h0mp5rp18zri"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-backtrace" ,rust-backtrace-0.3)
@@ -45290,7 +45290,7 @@ quality, high performance hash algorithm.")
                        ("rust-supports-hyperlinks" ,rust-supports-hyperlinks-3)
                        ("rust-supports-unicode" ,rust-supports-unicode-3)
                        ("rust-syntect" ,rust-syntect-5)
-                       ("rust-terminal-size" ,rust-terminal-size-0.3)
+                       ("rust-terminal-size" ,rust-terminal-size-0.4)
                        ("rust-textwrap" ,rust-textwrap-0.16)
                        ("rust-thiserror" ,rust-thiserror-1)
                        ("rust-unicode-width" ,rust-unicode-width-0.1))
@@ -45366,8 +45366,7 @@ quality, high performance hash algorithm.")
                        ("rust-syn" ,rust-syn-2))))
     (home-page "https://github.com/zkat/miette")
     (synopsis "Derive macros for miette")
-    (description
-     "This package provides derive macros for miette.")
+    (description "This package provides derive macros for miette.")
     (license license:asl2.0)))
 
 (define-public rust-miette-derive-5
