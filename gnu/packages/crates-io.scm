@@ -46384,8 +46384,33 @@ possible over the OS abstractions.")
      "Mockall is a rich mocking library with a terse and ergonomic interface.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-mockall-derive-0.13
+  (package
+    (name "rust-mockall-derive")
+    (version "0.13.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "mockall_derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1608qajqrz23xbvv81alc6wm4l24as1bsqg4shdh3sggq8231ji5"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))
+       #:cargo-development-inputs
+       (("rust-pretty-assertions" ,rust-pretty-assertions-1))))
+    (home-page "https://github.com/asomers/mockall")
+    (synopsis "Procedural macros for Mockall")
+    (description "This package provides procedural macros for Mockall.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-mockall-derive-0.11
   (package
+    (inherit rust-mockall-derive-0.13)
     (name "rust-mockall-derive")
     (version "0.11.4")
     (source (origin
@@ -46395,7 +46420,6 @@ possible over the OS abstractions.")
               (sha256
                (base32
                 "1fvc9kwjcc9ia6ng7z9z02b4qkl9dvsx9m4z51xz9i0mj1k7bki2"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-cfg-if" ,rust-cfg-if-1)
@@ -46403,12 +46427,7 @@ possible over the OS abstractions.")
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))
        #:cargo-development-inputs
-       (("rust-pretty-assertions" ,rust-pretty-assertions-1))))
-    (home-page "https://github.com/asomers/mockall")
-    (synopsis "Procedural macros for the Mockall crate")
-    (description
-     "This package procides procedural macros for the Mockall crate.")
-    (license (list license:expat license:asl2.0))))
+       (("rust-pretty-assertions" ,rust-pretty-assertions-1))))))
 
 (define-public rust-mockall-double-0.3
   (package
