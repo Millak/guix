@@ -1713,6 +1713,36 @@ tools.")
      "Style definitions for nice terminal layouts.  Built with TUIs in mind.")
     (license license:expat)))
 
+(define-public go-github-com-charmbracelet-log
+  (package
+    (name "go-github-com-charmbracelet-log")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/charmbracelet/log")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1dljsz5h6pw9w396sy9na99c2pvi542b3r138lka7l0ifmzpxjw9"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/charmbracelet/log"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-charmbracelet-lipgloss
+           go-github-com-go-logfmt-logfmt
+           go-github-com-muesli-termenv
+           go-golang-org-x-exp))
+    (home-page "https://github.com/charmbracelet/log")
+    (synopsis "Colorful Go logging library")
+    (description
+     "This package provides a minimal and colorful Go logging library.")
+    (license license:expat)))
+
 (define-public go-github-com-charmbracelet-x-ansi
   (package
     (name "go-github-com-charmbracelet-x-ansi")
