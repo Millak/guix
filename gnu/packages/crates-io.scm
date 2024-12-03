@@ -54962,6 +54962,26 @@ relative path from a provided base directory path to the provided
 path.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-pathsearch-0.2
+  (package
+    (name "rust-pathsearch")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pathsearch" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "01bvjyighsrb5bgk8vcwlr1mjv6pqxk4n2qrkhbigaw2wp2kp66s"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-libc" ,rust-libc-0.2))))
+    (home-page "https://github.com/wez/wzsh")
+    (synopsis "Search for files in PATH")
+    (description "This package provides Search for files in PATH.")
+    (license license:expat)))
+
 (define-public rust-pcap-1
   (package
     (name "rust-pcap")
