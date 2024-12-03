@@ -3675,7 +3675,7 @@ is the GNU Compiler Collection.")
   (make-gcc-toolchain gcc-10))
 
 (define-public gcc-toolchain-11
-    (make-gcc-toolchain gcc-11))
+  (make-gcc-toolchain gcc-11))
 
 (define-public gcc-toolchain-12
   (make-gcc-toolchain gcc-12))
@@ -3688,9 +3688,7 @@ is the GNU Compiler Collection.")
 
 ;; The default GCC
 (define-public gcc-toolchain
-  (if (host-hurd64?)
-      gcc-toolchain-14
-      gcc-toolchain-11))
+  gcc-toolchain-14)
 
 (define-public gcc-toolchain-aka-gcc
   ;; It's natural for users to try "guix install gcc".  This package
