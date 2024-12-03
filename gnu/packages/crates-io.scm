@@ -60232,6 +60232,30 @@ macro use case.")
      "This package provides a procedural macro implementation of quote!.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-process-control-5
+  (package
+    (name "rust-process-control")
+    (version "5.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "process_control" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0qhbyxrfz6ywmsm69pjl7vxzgj6plc6qn6lp0zgqlw17laslwb7k"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2)
+                       ("rust-parking-lot" ,rust-parking-lot-0.12)
+                       ("rust-signal-hook" ,rust-signal-hook-0.3)
+                       ("rust-windows-sys" ,rust-windows-sys-0.59))
+       #:cargo-development-inputs (("rust-rustversion" ,rust-rustversion-1))))
+    (home-page "https://github.com/dylni/process_control")
+    (synopsis "Ergonomically run processes with limits")
+    (description
+     "This package provides Ergonomically run processes with limits.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-procfs-0.16
   (package
     (name "rust-procfs")
