@@ -91773,23 +91773,21 @@ described in Unicode Standard Annex #15.")
 (define-public rust-unicode-segmentation-1
   (package
     (name "rust-unicode-segmentation")
-    (version "1.11.0")
+    (version "1.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "unicode-segmentation" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "00kjpwp1g8fqm45drmwivlacn3y9jx73bvs09n6s3x73nqi7vj6l"))))
+        (base32 "14qla2jfx74yyb9ds3d2mpwpa4l4lzb9z57c6d2ba511458z5k7n"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-development-inputs
-       (("rust-criterion" ,rust-criterion-0.3)
-        ("rust-quickcheck" ,rust-quickcheck-0.7))))
+     `(#:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.5)
+                                   ("rust-quickcheck" ,rust-quickcheck-0.7))))
     (home-page "https://github.com/unicode-rs/unicode-segmentation")
     (synopsis "Grapheme Cluster, Word and Sentence boundaries")
-    (description
-     "This crate provides Grapheme Cluster, Word and Sentence
+    (description "This crate provides Grapheme Cluster, Word and Sentence
 boundaries according to Unicode Standard Annex #29 rules.")
     (license (list license:expat license:asl2.0))))
 
