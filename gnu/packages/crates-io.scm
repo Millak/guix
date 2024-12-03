@@ -41927,8 +41927,36 @@ Linux userspace APIs.")
         ("rust-pkg-config" ,rust-pkg-config-0.3)
         ("rust-vcpkg" ,rust-vcpkg-0.2))))))
 
+(define-public rust-libtest-mimic-0.8
+  (package
+    (name "rust-libtest-mimic")
+    (version "0.8.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libtest-mimic" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0cwxnbv3wl00xsz7q0sf5xzksnqadqw8995a6g7a9pcyy4p9d5sj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anstream" ,rust-anstream-0.6)
+                       ("rust-anstyle" ,rust-anstyle-1)
+                       ("rust-clap" ,rust-clap-4)
+                       ("rust-escape8259" ,rust-escape8259-0.5))
+       #:cargo-development-inputs
+       (("rust-fastrand" ,rust-fastrand-2)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1))))
+    (home-page "https://github.com/LukasKalbertodt/libtest-mimic")
+    (synopsis "Tools for writing a test harness")
+    (description
+     "Write your own test harness that looks and behaves like the built-in test
+harness used by @code{rustc --test}.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-libtest-mimic-0.7
   (package
+    (inherit rust-libtest-mimic-0.8)
     (name "rust-libtest-mimic")
     (version "0.7.3")
     (source
@@ -41938,7 +41966,6 @@ Linux userspace APIs.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0n4vdf4wz4zglammhdzgwxqal9v1a8gbj6rc4q22jfjvxm2xl2yc"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-clap" ,rust-clap-4)
                        ("rust-escape8259" ,rust-escape8259-0.5)
@@ -41946,13 +41973,7 @@ Linux userspace APIs.")
                        ("rust-threadpool" ,rust-threadpool-1))
        #:cargo-development-inputs
        (("rust-fastrand" ,rust-fastrand-1)
-        ("rust-pretty-assertions" ,rust-pretty-assertions-1))))
-    (home-page "https://github.com/LukasKalbertodt/libtest-mimic")
-    (synopsis "Tools for writing a test harness")
-    (description
-     "Write your own test harness that looks and behaves like the built-in test
-harness used by @code{rustc --test}.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1))))))
 
 (define-public rust-libtest-mimic-0.6
   (package
