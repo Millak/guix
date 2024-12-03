@@ -98,6 +98,10 @@
 ;; * Remove module packages, only offering the full Git repos? This is
 ;; more idiomatic, I think, because Go downloads Git repos, not modules.
 ;; What are the trade-offs?
+;; * Figurie out how to passthrough --verbosity option to "build" and "check"
+;; procedures.
+;; * Implement test-backend option, which would be similar to pyproject's
+;; one, allowing to provide custom test runner.
 ;;
 ;; [0] `go build`:
 ;; https://golang.org/cmd/go/#hdr-Compile_packages_and_dependencies
@@ -326,13 +330,23 @@ unpacking."
                               "Here are the results of `go env`:\n"))
       (invoke "go" "env"))))
 
-(define* (check #:key tests? import-path test-flags (parallel-tests? #t)
+(define* (check #:key
+                tests?
+                import-path
+                test-flags
+                test-subdirs
+                (parallel-tests? #t)
                 #:allow-other-keys)
   "Run the tests for the package named by IMPORT-PATH."
   (when tests?
     (let* ((njobs (if parallel-tests? (parallel-job-count) 1)))
       (setenv "GOMAXPROCS" (number->string njobs)))
-    (apply invoke "go" "test" `(,import-path ,@test-flags)))
+    (apply invoke "go" "test"
+           `(,@(map (lambda (dir)
+                      (format #f "~a~:[/~;~]~a"
+                              import-path (string-null? dir) dir))
+                    test-subdirs)
+             ,@test-flags)))
   #t)
 
 (define* (install #:key install-source? outputs import-path unpack-path #:allow-other-keys)
