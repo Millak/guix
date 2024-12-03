@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014, 2015, 2016 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2016, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2017 David Craven <david@craven.ch>
 ;;; Copyright © 2017, 2018, 2022-2024 Efraim Flashner <efraim@flashner.co.il>
@@ -116,7 +116,8 @@
      (list #:target "xtensa-ath9k-elf"
            #:tests? #f
            #:configure-flags
-           #~'("-DCMAKE_SYSTEM_NAME=Generic"      ;override default value
+           #~'("-DCMAKE_C_FLAGS=-Wno-error=implicit-function-declaration"
+               "-DCMAKE_SYSTEM_NAME=Generic"      ;override default value
                "-DTARGET_MAGPIE=ON")
            #:phases
            #~(modify-phases %standard-phases
@@ -146,6 +147,7 @@
        (package-arguments ath9k-htc-ar7010-firmware)
        ((#:configure-flags flags)
         #~'("-DCMAKE_SYSTEM_NAME=Generic"         ;override default value
+            "-DCMAKE_C_FLAGS=-Wno-error=implicit-function-declaration"
             "-DTARGET_K2=ON"))))
     (synopsis "Firmware for the Atheros AR9271 USB 802.11n NICs")
     (description
