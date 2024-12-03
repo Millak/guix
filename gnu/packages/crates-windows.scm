@@ -1978,9 +1978,29 @@ crate.")
        #:cargo-development-inputs
        (("rust-windows-bindgen" ,rust-windows-bindgen-0.57))))))
 
+(define-public rust-windows-core-0.56
+  (package
+    (inherit rust-windows-core-0.57)
+    (name "rust-windows-core")
+    (version "0.56.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "windows-core" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "19pj57bm0rzhlk0ghrccd3i5zvh0ghm52f8cmdc8d3yhs8pfb626"))))
+    (arguments
+     `(#:cargo-inputs (("rust-windows-implement" ,rust-windows-implement-0.56)
+                       ("rust-windows-interface" ,rust-windows-interface-0.56)
+                       ("rust-windows-result" ,rust-windows-result-0.1)
+                       ("rust-windows-targets" ,rust-windows-targets-0.52))
+       #:cargo-development-inputs
+       (("rust-windows-bindgen" ,rust-windows-bindgen-0.56))))))
+
 (define-public rust-windows-core-0.52
   (package
-    (inherit rust-windows-core-0.58)
+    (inherit rust-windows-core-0.56)
     (name "rust-windows-core")
     (version "0.52.0")
     (source
@@ -1990,13 +2010,8 @@ crate.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1nc3qv7sy24x0nlnb32f7alzpd6f72l4p24vl65vydbyil669ark"))))
-    (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-windows-targets" ,rust-windows-targets-0.52))))
-    (home-page "https://github.com/microsoft/windows-rs")
-    (synopsis "Rust for Windows")
-    (description "This package provides the core of Rust for Windows.")
-    (license (list license:expat license:asl2.0))))
+     `(#:cargo-inputs (("rust-windows-targets" ,rust-windows-targets-0.52))))))
 
 (define-public rust-windows-i686-gnu-0.52
   (package
