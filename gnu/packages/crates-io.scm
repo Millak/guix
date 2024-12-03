@@ -89427,30 +89427,28 @@ etc. distance calculations and string search.")
 (define-public rust-trybuild-1
   (package
     (name "rust-trybuild")
-    (version "1.0.99")
+    (version "1.0.101")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "trybuild" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1s4i2hpyb66676xkg6b6fxm2qdsawj5lfad8ds68vgn46q6sayi0"))))
+        (base32 "1m6yv898m8qbig2kjhn0c2b513nrgcmkszsbw7qjdh4nahm37kcd"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-dissimilar" ,rust-dissimilar-1)
-        ("rust-glob" ,rust-glob-0.3)
-        ("rust-once-cell" ,rust-once-cell-1)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-derive" ,rust-serde-derive-1)
-        ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-termcolor" ,rust-termcolor-1)
-        ("rust-toml" ,rust-toml-0.8))
+     `(#:cargo-inputs (("rust-dissimilar" ,rust-dissimilar-1)
+                       ("rust-glob" ,rust-glob-0.3)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-derive" ,rust-serde-derive-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-target-triple" ,rust-target-triple-0.1)
+                       ("rust-termcolor" ,rust-termcolor-1)
+                       ("rust-toml" ,rust-toml-0.8))
        #:cargo-development-inputs (("rust-automod" ,rust-automod-1))))
     (home-page "https://github.com/dtolnay/trybuild")
     (synopsis "Test harness for ui tests of compiler diagnostics")
-    (description
-     "Test harness for ui tests of compiler diagnostics.")
+    (description "Test harness for ui tests of compiler diagnostics.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-trybuild2-1
