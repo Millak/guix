@@ -46348,8 +46348,42 @@ possible over the OS abstractions.")
     (arguments
      `(#:cargo-inputs (("rust-once-cell" ,rust-once-cell-1))))))
 
+(define-public rust-mockall-0.13
+  (package
+    (name "rust-mockall")
+    (version "0.13.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "mockall" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1lir70dd9cnsjlf20gi3i51ha9n7mlrkx74bx5gfszlcdk6bz9ir"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-downcast" ,rust-downcast-0.11)
+                       ("rust-fragile" ,rust-fragile-2)
+                       ("rust-mockall-derive" ,rust-mockall-derive-0.13)
+                       ("rust-predicates" ,rust-predicates-3)
+                       ("rust-predicates-tree" ,rust-predicates-tree-1))
+       #:cargo-development-inputs (("rust-async-trait" ,rust-async-trait-0.1)
+                                   ("rust-auto-enums" ,rust-auto-enums-0.8)
+                                   ("rust-futures" ,rust-futures-0.3)
+                                   ("rust-mockall-double" ,rust-mockall-double-0.3)
+                                   ("rust-serde" ,rust-serde-1)
+                                   ("rust-serde-derive" ,rust-serde-derive-1)
+                                   ("rust-serde-json" ,rust-serde-json-1)
+                                   ("rust-tracing" ,rust-tracing-0.1))))
+    (home-page "https://github.com/asomers/mockall")
+    (synopsis "Powerful mock object library for Rust")
+    (description
+     "This package provides a powerful mock object library for Rust.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-mockall-0.11
   (package
+    (inherit rust-mockall-0.13)
     (name "rust-mockall")
     (version "0.11.4")
     (source (origin
@@ -46359,7 +46393,6 @@ possible over the OS abstractions.")
               (sha256
                (base32
                 "15kww0a3wv300wkksc6zj0kz1jwk0hyly48daxs2vvpj300lk12c"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f          ; Not all files included.
        #:cargo-inputs
@@ -46377,12 +46410,7 @@ possible over the OS abstractions.")
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-derive" ,rust-serde-derive-1)
         ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-tracing" ,rust-tracing-0.1))))
-    (home-page "https://github.com/asomers/mockall")
-    (synopsis "Mock object library for Rust")
-    (description
-     "Mockall is a rich mocking library with a terse and ergonomic interface.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-tracing" ,rust-tracing-0.1))))))
 
 (define-public rust-mockall-derive-0.13
   (package
