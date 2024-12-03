@@ -20,6 +20,7 @@
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 Brian Kubisiak <brian@kubisiak.com>
+;;; Copyright © 2024 Jordan Moore <lockbox@struct.foo>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -43,6 +44,7 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix build-system cargo)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
@@ -52,6 +54,11 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages cmake)
+  #:use-module (gnu packages crates-crypto)
+  #:use-module (gnu packages crates-io)
+  #:use-module (gnu packages crates-vcs)
+  #:use-module (gnu packages crates-windows)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
@@ -68,6 +75,7 @@
   #:use-module (gnu packages shells)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages tmux)
+  #:use-module (gnu packages version-control)
   #:use-module (gnu packages vim))
 
 (define-public ascii
@@ -463,6 +471,149 @@ Shell}, @url{https://www.gnu.org/software/bash/,Bash}, and
 @url{http://www.mirbsd.org/mksh.htm,mksh}.")
     (license license:bsd-3)))
 
+(define-public starship
+  (package
+    (name "starship")
+    (version "1.21.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "starship" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ikdy6jwlc36add55acxlba6f009dln9iyz368c1ndbfpgn4n42g"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-completions
+            (lambda* (#:key native-inputs outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (starship-bin
+                       (if #$(%current-target-system)
+                           (search-input-file native-inputs "/bin/starship")
+                           (string-append out "/bin/starship")))
+                     (share (string-append out "/share"))
+                     (bash-completion-dir
+                       (string-append out "/etc/bash-completion.d/"))
+                     (zsh-completion-dir
+                       (string-append share "/zsh/site-functions/"))
+                     (fish-completion-dir
+                       (string-append share "/fish/vendor_completions.d/"))
+                     (elvish-completion-dir
+                       (string-append share "/elvish/lib")))
+                    ;; Make the directories
+                  (mkdir-p bash-completion-dir)
+                  (mkdir-p zsh-completion-dir)
+                  (mkdir-p fish-completion-dir)
+                  (mkdir-p elvish-completion-dir)
+                  ;; Use the built starship to generate the completions.
+                  (with-output-to-file
+                    (string-append bash-completion-dir "/starship")
+                    (lambda _ (invoke starship-bin "completions" "bash")))
+                  (with-output-to-file
+                    (string-append zsh-completion-dir "/_starship")
+                    (lambda _(invoke starship-bin "completions" "zsh")))
+                  (with-output-to-file
+                    (string-append fish-completion-dir "/starship.fish")
+                    (lambda _ (invoke starship-bin "completions" "fish")))
+                  (with-output-to-file
+                    (string-append elvish-completion-dir "/starship")
+                    (lambda _ (invoke starship-bin "completions" "elvish"))))))
+          ;; Some tests require a writable home directory
+          (add-after 'unpack 'patch-test-shell
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; search through the rust files and then replace `/bin/sh'
+              ;; with the path to the `/bin/sh' in the drv inputs
+              (let ((rust-files (find-files "." "\\.rs$")))
+                (for-each (lambda (file)
+                            (substitute* file
+                              (("/bin/sh")
+                               (search-input-file inputs "/bin/sh"))))
+                          rust-files))))
+          ;; Set "HOME" to be located inside the cwd so it is writable
+          ;; for tests checking for user-configs
+          (add-before 'check 'set-test-env-vars
+            (lambda _
+              (setenv "HOME"
+                      (string-append (getcwd) "/.test-home")))))
+      #:cargo-inputs `(("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-clap" ,rust-clap-4)
+                       ("rust-clap-complete" ,rust-clap-complete-4)
+                       ("rust-deelevate" ,rust-deelevate-0.2)
+                       ("rust-dirs" ,rust-dirs-5)
+                       ("rust-dunce" ,rust-dunce-1)
+                       ("rust-gix" ,rust-gix-0.66)
+                       ("rust-gix-features" ,rust-gix-features-0.38)
+                       ("rust-guess-host-triple" ,rust-guess-host-triple-0.1)
+                       ("rust-home" ,rust-home-0.5)
+                       ("rust-indexmap" ,rust-indexmap-2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-nix" ,rust-nix-0.29)
+                       ("rust-notify-rust" ,rust-notify-rust-4)
+                       ("rust-nu-ansi-term" ,rust-nu-ansi-term-0.50)
+                       ("rust-open" ,rust-open-5)
+                       ("rust-os-info" ,rust-os-info-3)
+                       ("rust-path-slash" ,rust-path-slash-0.2)
+                       ("rust-pest" ,rust-pest-2)
+                       ("rust-pest-derive" ,rust-pest-derive-2)
+                       ("rust-process-control" ,rust-process-control-5)
+                       ("rust-quick-xml" ,rust-quick-xml-0.36)
+                       ("rust-rand" ,rust-rand-0.8)
+                       ("rust-rayon" ,rust-rayon-1)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-rust-ini" ,rust-rust-ini-0.21)
+                       ("rust-schemars" ,rust-schemars-0.8)
+                       ("rust-semver" ,rust-semver-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-sha1" ,rust-sha1-0.10)
+                       ("rust-shadow-rs" ,rust-shadow-rs-0.35)
+                       ("rust-shell-words" ,rust-shell-words-1)
+                       ("rust-starship-battery" ,rust-starship-battery-0.10)
+                       ("rust-strsim" ,rust-strsim-0.11)
+                       ("rust-systemstat" ,rust-systemstat-0.2)
+                       ("rust-terminal-size" ,rust-terminal-size-0.4)
+                       ("rust-toml" ,rust-toml-0.8)
+                       ("rust-toml-edit" ,rust-toml-edit-0.22)
+                       ("rust-unicode-segmentation" ,rust-unicode-segmentation-1)
+                       ("rust-unicode-width" ,rust-unicode-width-0.2)
+                       ("rust-urlencoding" ,rust-urlencoding-2)
+                       ("rust-versions" ,rust-versions-6)
+                       ("rust-which" ,rust-which-6)
+                       ("rust-whoami" ,rust-whoami-1)
+                       ("rust-windows" ,rust-windows-0.58)
+                       ("rust-winres" ,rust-winres-0.1)
+                       ("rust-yaml-rust2" ,rust-yaml-rust2-0.9))
+      #:cargo-development-inputs `(("rust-mockall" ,rust-mockall-0.13)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
+    (inputs (list cmake-minimal))
+    (native-inputs
+     (append
+       (if (%current-target-system)
+           (list this-package)
+           '())
+       (list git-minimal)))
+    (home-page "https://starship.rs")
+    (synopsis
+     "The minimal, blazing-fast, and infinitely customizable prompt for any shell!")
+    (description
+     "This package provides The minimal, blazing-fast, and infinitely customizable
+prompt for any shell!
+
+@itemize
+@item Fast: it's fast - *really really* fast :rocket:
+@item Customizable: configure every aspect of your prompt
+@item Universal: works on any shell, on any operating system
+@item Intelligent: shows relevant information at a glance
+@item Feature rich: support for all your favorite tools
+@item Easy: quick to install - start using it in minutes
+@end itemize
+
+Note: users must have a nerd font installed and enabled in their terminal")
+    (license license:isc)))
 
 (define-public envstore
   (package
