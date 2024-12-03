@@ -41999,9 +41999,28 @@ harness used by @code{rustc --test}.")
        (("rust-fastrand" ,rust-fastrand-1)
         ("rust-pretty-assertions" ,rust-pretty-assertions-1))))))
 
-(define-public rust-libtest-mimic-0.3
+(define-public rust-libtest-mimic-0.4
   (package
     (inherit rust-libtest-mimic-0.5)
+    (name "rust-libtest-mimic")
+    (version "0.4.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "libtest-mimic" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "17xs3xk26afdgajqqzafsv4fdg0sfijlfnjac6znad40bfmml6fc"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-clap" ,rust-clap-3)
+        ("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
+        ("rust-rayon" ,rust-rayon-1)
+        ("rust-termcolor" ,rust-termcolor-1))))))
+
+(define-public rust-libtest-mimic-0.3
+  (package
+    (inherit rust-libtest-mimic-0.4)
     (name "rust-libtest-mimic")
     (version "0.3.0")
     (source (origin
