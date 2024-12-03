@@ -399,7 +399,7 @@ or false to signal an error."
     ("powerpc64le-linux"
      (base32 "1rnyfz5q38jyvxddj617443bnnzql4vw0mxzqpj8wz48wx4bhbq0"))
     ("aarch64-linux"
-     (base32 "1ymp3lck1l5fybsa542ny2fdkfydfcfvqbgr3qh03yvq4fwfn6mc"))
+     (base32 "1giy2aprjmn5fp9c4s9r125fljw4wv6ixy5739i5bffw4jgr0f9r"))
     ("i586-gnu"
      (base32 "0wgqpsmvg25rnqn49ap7kwd2qxccd8dr4lllzp7i3rjvgav27vac"))
     ("x86_64-gnu"
