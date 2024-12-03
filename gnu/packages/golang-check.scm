@@ -1345,6 +1345,46 @@ reformat the source code, it only prints out style mistakes.")
     (description "This package provides a test library for the Go language.")
     (license license:bsd-2)))
 
+(define-public go-gopkg-in-dnaeon-go-vcr-v3
+  (package
+    (name "go-gopkg-in-dnaeon-go-vcr-v3")
+    (version "3.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gopkg.in/dnaeon/go-vcr.v3")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1nij7rjbnrbsgjlm7fwpg298qffrgi2ic3wb51vqzxl6s9qkbzrq"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (delete-file-recursively "vendor")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "gopkg.in/dnaeon/go-vcr.v3"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: Workaround for go-build-system's lack of Go modules
+          ;; support.
+          (delete 'build)
+          (replace 'check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
+    (propagated-inputs
+     (list go-gopkg-in-yaml-v3))
+    (home-page "https://gopkg.in/dnaeon/go-vcr.v3")
+    (synopsis "Record and replay your HTTP interactions")
+    (description
+     "@@code{go-vcr} simplifies testing by recording your HTTP interactions
+and replaying them in future runs in order to provide fast, deterministic and
+accurate testing of your code.")
+    (license license:bsd-2)))
+
 (define-public go-gopkg-in-go-playground-assert-v1
   (package
     (name "go-gopkg-in-go-playground-assert-v1")
