@@ -43530,24 +43530,25 @@ lexer.")
 (define-public rust-macrotest-1
   (package
     (name "rust-macrotest")
-    (version "1.0.9")
+    (version "1.0.13")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "macrotest" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-          (base32 "043gc53ch1szw7ihdclnygn464v62viw48iigd5l2iffhq4sx2bl"))))
+          (base32 "1bgx2fkjw20w4rchysnhs7zzzfwaqwd7d8idrpqqymsknkg3a82f"))))
     (build-system cargo-build-system)
     (arguments
       `(#:cargo-inputs
-        (("rust-diff" ,rust-diff-0.1)
+        (("rust-basic-toml" ,rust-basic-toml-0.1)
+         ("rust-diff" ,rust-diff-0.1)
          ("rust-glob" ,rust-glob-0.3)
-         ("rust-prettyplease" ,rust-prettyplease-0.1)
+         ("rust-prettyplease" ,rust-prettyplease-0.2)
          ("rust-serde" ,rust-serde-1)
+         ("rust-serde-derive" ,rust-serde-derive-1)
          ("rust-serde-json" ,rust-serde-json-1)
-         ("rust-syn" ,rust-syn-1)
-         ("rust-toml" ,rust-toml-0.5))))
+         ("rust-syn" ,rust-syn-2))))
     (home-page "https://github.com/eupn/macrotest")
     (synopsis "Test harness for macro expansion")
     (description
