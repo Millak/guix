@@ -6187,6 +6187,31 @@ OIDs)")
         (base32 "0ckgkcg6db5y94dqhmyikgn8yrsah6pyf4j197hv1c51bp0s00aw"))))
     (arguments `(#:skip-build? #t #:cargo-inputs (("rust-der" ,rust-der-0.4))))))
 
+(define-public rust-ssh-encoding-0.2
+  (package
+    (name "rust-ssh-encoding")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ssh-encoding" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "05aavlhk68vm60vbw8lcgx1p5wry367ck8niij7af221xywl54pb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-base64ct" ,rust-base64ct-1)
+                       ("rust-bytes" ,rust-bytes-1)
+                       ("rust-pem-rfc7468" ,rust-pem-rfc7468-0.7)
+                       ("rust-sha2" ,rust-sha2-0.10))
+       #:cargo-development-inputs (("rust-hex-literal" ,rust-hex-literal-0.4))))
+    (home-page "https://github.com/RustCrypto/SSH/tree/master/ssh-encoding")
+    (synopsis "Pure Rust implementation of SSH data type decoders/encoders")
+    (description
+     "This package provides Pure Rust implementation of SSH data type
+decoders/encoders as described in RFC4251.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-stream-cipher-0.4
   (package
     (name "rust-stream-cipher")
