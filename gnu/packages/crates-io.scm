@@ -96114,18 +96114,19 @@ executable.")
 (define-public rust-whoami-1
   (package
     (name "rust-whoami")
-    (version "1.4.1")
+    (version "1.5.2")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "whoami" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0l6ca9pl92wmngsn1dh9ih716v216nmn2zvcn94k04x9p1b3gz12"))))
+                "0vdvm6sga4v9515l6glqqfnmzp246nq66dd09cw5ri4fyn3mnb9p"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
+        ("rust-wasite" ,rust-wasite-0.1)
         ("rust-web-sys" ,rust-web-sys-0.3))))
     (home-page "https://github.com/ardaku/whoami/blob/stable/CHANGELOG.md")
     (synopsis "Retrieve the current user and environment")
