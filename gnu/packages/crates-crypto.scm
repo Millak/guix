@@ -6269,6 +6269,49 @@ older ciphers.")
 decoders/encoders as described in RFC4251.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-ssh-key-0.6
+  (package
+    (name "rust-ssh-key")
+    (version "0.6.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ssh-key" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1hx8as8rvnk31ncqg7dlqgcw9bmngkznn3xamf6d010ggwlzb1iv"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bcrypt-pbkdf" ,rust-bcrypt-pbkdf-0.10)
+                       ("rust-dsa" ,rust-dsa-0.6)
+                       ("rust-ed25519-dalek" ,rust-ed25519-dalek-2)
+                       ("rust-num-bigint-dig" ,rust-num-bigint-dig-0.8)
+                       ("rust-p256" ,rust-p256-0.13)
+                       ("rust-p384" ,rust-p384-0.13)
+                       ("rust-p521" ,rust-p521-0.13)
+                       ("rust-rand-core" ,rust-rand-core-0.6)
+                       ("rust-rsa" ,rust-rsa-0.9)
+                       ("rust-sec1" ,rust-sec1-0.7)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-sha1" ,rust-sha1-0.10)
+                       ("rust-sha2" ,rust-sha2-0.10)
+                       ("rust-signature" ,rust-signature-2)
+                       ("rust-ssh-cipher" ,rust-ssh-cipher-0.2)
+                       ("rust-ssh-encoding" ,rust-ssh-encoding-0.2)
+                       ("rust-subtle" ,rust-subtle-2)
+                       ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs (("rust-hex-literal" ,rust-hex-literal-0.4)
+                                   ("rust-rand-chacha" ,rust-rand-chacha-0.3))))
+    (home-page "https://github.com/RustCrypto/SSH/tree/master/ssh-key")
+    (synopsis "Pure Rust implementation of SSH key file format decoders/encoders")
+    (description
+     "This package provides Pure Rust implementation of SSH key file format
+decoders/encoders as described in RFC4251/RFC4253 and @code{OpenSSH} key
+formats, as well as \"sshsig\" signatures and certificates (including
+certificate validation and certificate authority support), with further support
+for the `authorized_keys` and `known_hosts` file formats.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-stream-cipher-0.4
   (package
     (name "rust-stream-cipher")
