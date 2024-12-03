@@ -831,6 +831,29 @@ server functionality.")
 @code{Deserializer} for the INI format.")
     (license license:expat)))
 
+(define-public rust-tauri-winrt-notification-0.2
+  (package
+    (name "rust-tauri-winrt-notification")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tauri-winrt-notification" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0wb8d0fdzvgs4kmnhc2znx00n5cnh40ajawvblgkhqkg1nvmz7zq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t ;Requires Windows
+       #:cargo-inputs (("rust-quick-xml" ,rust-quick-xml-0.31)
+                       ("rust-windows" ,rust-windows-0.56)
+                       ("rust-windows-version" ,rust-windows-version-0.1))))
+    (home-page "https://github.com/tauri-apps/winrt-notification")
+    (synopsis "Incomplete wrapper over the WinRT toast api")
+    (description
+     "This package provides An incomplete wrapper over the @code{WinRT} toast api.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-uds-windows-1
   (package
     (name "rust-uds-windows")
