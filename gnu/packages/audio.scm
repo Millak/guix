@@ -6567,6 +6567,7 @@ as is the case with audio plugins.")
            libx11
            gtk+-2              ;needed for bridging GTK2 plugins in GTK3 hosts
            gtk+
+           pulseaudio
            python-pyliblo
            python-pyqt
            python-rdflib
