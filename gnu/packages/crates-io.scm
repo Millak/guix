@@ -75053,6 +75053,19 @@ and environment at run time.  You can use this tool to check in production
 exactly where a binary came from and how it was built.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-shadow-rs-0.35
+  (package
+    (inherit rust-shadow-rs-0.36)
+    (name "rust-shadow-rs")
+    (version "0.35.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "shadow-rs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "11w6677ymsb69fy716adf51zjbzwgkkyf5arz41563gcnf7k5cpi"))))))
+
 (define-public rust-shadow-rs-0.26
   (package
     (inherit rust-shadow-rs-0.36)
