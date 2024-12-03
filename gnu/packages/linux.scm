@@ -9531,7 +9531,7 @@ management tools in userspace.")
 (define-public go-github-com-vishvananda-netlink
   (package
     (name "go-github-com-vishvananda-netlink")
-    (version "1.1.0")
+    (version "1.3.0")
     (source
      (origin
        (method git-fetch)
@@ -9540,7 +9540,7 @@ management tools in userspace.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1vhl30p1gx636a088ls4h6a0l8jjyfvz79fr5w0qzdrg4qg9h08h"))))
+        (base32 "1ckwb1ml7i2ccdd7kzc04s839naf4arlxav2ip5kf4rm4xhba9g7"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -9548,7 +9548,9 @@ management tools in userspace.")
       ;; cannot use 0xabcdef99 (untyped int constant 2882400153) as int value
       ;; in struct literal (overflows)
       #:tests? (and (not (%current-target-system)) (target-x86-64?))
-      #:test-flags #~(list "-skip" "TestNetNsIdByFd|TestNetNsIdByPid")
+      #:test-flags
+      ;; One test fails with error: operation not permitted.
+      #~(list "-skip" "TestSocketXDPGetInfo")
       #:import-path "github.com/vishvananda/netlink"))
     (propagated-inputs
      (list go-github-com-vishvananda-netns
