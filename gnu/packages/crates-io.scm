@@ -2314,8 +2314,12 @@ writing colored text to a terminal.")
         (base32 "11ifmzawvvi6d4r1lk0dkdnbswf574npgkika4535k7j6l3s9zl8"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t ; `#![feature]` may not be used on the stable release channel
-       #:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1))))
+     `(#:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1))
+       #:phases (modify-phases %standard-phases
+                  ;; `#![feature]` may not be used on the stable release channel
+                  ;; Enable using nightly/dev features
+                  (add-after 'unpack 'enable-unstable-features
+                    (lambda _ (setenv "RUSTC_BOOTSTRAP" "1"))))))
     (home-page "https://docs.rs/any_all_workaround/")
     (synopsis "Workaround for bad LLVM codegen for boolean reductions on 32-bit ARM")
     (description
