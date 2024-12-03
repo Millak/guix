@@ -69298,6 +69298,30 @@ based protocols (@code{EthernetII}, IPv4, IPv6, UDP, TCP ...).")
      "This package provides a sys crate for the rust_hawktracer library.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-rust-ini-0.21
+  (package
+    (name "rust-rust-ini")
+    (version "0.21.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rust-ini" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "17s0fmfba05i9cnfwfy02wp7mf5wkapis5x1d68vgvmnw7q0wcaf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-ordered-multimap" ,rust-ordered-multimap-0.7)
+                       ("rust-trim-in-place" ,rust-trim-in-place-0.1)
+                       ("rust-unicase" ,rust-unicase-2))))
+    (home-page "https://github.com/zonyitoo/rust-ini")
+    (synopsis "Ini configuration file parsing library in Rust")
+    (description
+     "This package provides An Ini configuration file parsing library in Rust.")
+    (license license:expat)))
+
+
 (define-public rust-rust-ini-0.18
   (package
     (name "rust-rust-ini")
