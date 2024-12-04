@@ -4022,14 +4022,14 @@ a cipher, can be used as a Message Authentication Code (MAC).")
 (define-public rust-polyval-0.6
   (package
     (name "rust-polyval")
-    (version "0.6.0")
+    (version "0.6.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "polyval" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1iihmpn1h1ag5zl368yfq0jz1drfdw7xg7zpaqpcppqiikh39wky"))))
+        (base32 "09gs56vm36ls6pyxgh06gw2875z2x77r8b2km8q28fql0q6yc7wx"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
