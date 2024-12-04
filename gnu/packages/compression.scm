@@ -2039,15 +2039,17 @@ Compression ratios of 2:1 to 3:1 are common for text files.")
                           `("-j" ,(number->string
                                    (parallel-job-count))
                             ,@make-flags
-                            "generic_gcc")))))
+                            "generic")))))
            #:make-flags
            ;; Fix cross-compilation without affecting native builds, as doing so
            ;; would trigger too many rebuilds: https://issues.guix.gnu.org/57127
            (if (%current-target-system)
                #~(list "-f" "unix/Makefile"
+                       "CC=gcc -Wno-error=implicit-function-declaration"
                        (string-append "prefix=" #$output)
                        (string-append "MANDIR=" #$output "/share/man/man1"))
                #~(list "-f" "unix/Makefile"
+                       "CC=gcc -Wno-error=implicit-function-declaration"
                        (string-append "prefix=" %output)
                        (string-append "MANDIR=" %output "/share/man/man1")))))
     (home-page "http://www.info-zip.org/UnZip.html")
