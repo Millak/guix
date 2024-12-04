@@ -1516,14 +1516,14 @@ variant of X@code{ChaCha20Poly1305}.")
 (define-public rust-crypto-bigint-0.5
   (package
     (name "rust-crypto-bigint")
-    (version "0.5.2")
+    (version "0.5.5")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "crypto-bigint" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "05gy7sqkxg65bj1wrgq1pbh8iwn1kmfysvzx1g22p4gx3972yk6g"))))
+                "0xmbdff3g6ii5sbxjxc31xfkv9lrmyril4arh3dzckd4gjsjzj8d"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -1536,7 +1536,7 @@ variant of X@code{ChaCha20Poly1305}.")
         ("rust-zeroize" ,rust-zeroize-1))
        #:cargo-development-inputs
        (("rust-bincode" ,rust-bincode-1)
-        ("rust-criterion" ,rust-criterion-0.4)
+        ("rust-criterion" ,rust-criterion-0.5)
         ("rust-hex-literal" ,rust-hex-literal-0.4)
         ("rust-num-bigint" ,rust-num-bigint-0.4)
         ("rust-num-integer" ,rust-num-integer-0.1)
