@@ -6064,17 +6064,20 @@ also use those libraries.")
 (define-public rust-trust-dns-https-0.20
   (package
     (name "rust-trust-dns-https")
-    (version "0.20.0")
+    (version "0.20.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "trust-dns-https" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "19f0l1illl69ycb97652rjrjppilz2pz7l9572lrjpkasffgcqr6"))))
+        (base32 "0l6x06vpm0fgcrldvk23ma0rd2xvd70f55ffncy0cqjqxnvwgbg2"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
+     `(#:cargo-test-flags
+       '("--release" "--"
+         ;; Requires the internet.
+         "--skip=https_client_stream::tests::test_https_google")
        #:cargo-inputs
        (("rust-bytes" ,rust-bytes-1)
         ("rust-cfg-if" ,rust-cfg-if-1)
@@ -6090,7 +6093,9 @@ also use those libraries.")
         ("rust-trust-dns-proto" ,rust-trust-dns-proto-0.20)
         ("rust-trust-dns-rustls" ,rust-trust-dns-rustls-0.20)
         ("rust-webpki" ,rust-webpki-0.21)
-        ("rust-webpki-roots" ,rust-webpki-roots-0.21))))
+        ("rust-webpki-roots" ,rust-webpki-roots-0.21))
+       #:cargo-development-inputs (("rust-env-logger" ,rust-env-logger-0.8)
+                                   ("rust-futures" ,rust-futures-0.3))))
     (home-page "https://www.trust-dns.org/index.html")
     (synopsis "DNS over HTTPS extension for the Trust-DNS client")
     (description
