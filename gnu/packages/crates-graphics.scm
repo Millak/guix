@@ -5694,14 +5694,14 @@ xml files.")
 (define-public rust-wayrs-protocols-0.13
   (package
     (name "rust-wayrs-protocols")
-    (version "0.13.0")
+    (version "0.13.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "wayrs-protocols" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1888h4wh3knjwh19v4y2gjpsv5j78c4vk08gls5f3aa1iryfpd7x"))))
+        (base32 "0ivs29fw27rcq7ahwy7c3zrx041fcal9cklyzg4wpri2npp64xdk"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-wayrs-client" ,rust-wayrs-client-1))))
