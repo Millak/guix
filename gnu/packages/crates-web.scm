@@ -4918,19 +4918,19 @@ and speed.")
   (package
     (inherit rust-rocket-0.5)
     (name "rust-rocket")
-    (version "0.4.7")
+    (version "0.4.11")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rocket" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "04ybnhjw92zaan92lsmx6mkhqc9cpsg3885svb3wzyj39pyzvsvz"))))
+        (base32 "0pimz9v0737dvz487j0kij7kasjyahaxd7ba2bcc3p6513fdkfc3"))))
     (arguments
-     `(#:skip-build? #t
+     `(#:skip-build? #t     ; Breaks from pear_codegen
        #:cargo-inputs
        (("rust-atty" ,rust-atty-0.2)
-        ("rust-base64" ,rust-base64-0.12)
+        ("rust-base64" ,rust-base64-0.13)
         ("rust-log" ,rust-log-0.4)
         ("rust-memchr" ,rust-memchr-2)
         ("rust-num-cpus" ,rust-num-cpus-1)
@@ -4941,7 +4941,6 @@ and speed.")
         ("rust-time" ,rust-time-0.1)
         ("rust-toml" ,rust-toml-0.4)
         ("rust-version-check" ,rust-version-check-0.9)
-        ("rust-yansi" ,rust-yansi-0.5)
         ("rust-yansi" ,rust-yansi-0.5))))))
 
 (define-public rust-rocket-codegen-0.5
