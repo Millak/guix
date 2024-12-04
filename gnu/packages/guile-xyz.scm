@@ -149,22 +149,19 @@
 (define-public artanis
   (package
     (name "artanis")
-    (version "0.6")
+    (version "1.0.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/artanis/artanis-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1y4mf8vv2fwjg4z8c4d7an5rxi96sh7krk0djnafm2l66i97cj3m"))
+                "05sigqvm04x0r1gwpwrxjffb3i13bss3ff24frr477zqm54wv5d8"))
               (modules '((guix build utils)))
               (snippet
                '(begin
-                  ;; Unbundle guile-redis and guile-json
                   (delete-file-recursively "artanis/third-party/json.scm")
-                  (delete-file-recursively "artanis/third-party/json")
                   (delete-file-recursively "artanis/third-party/redis.scm")
-                  (delete-file-recursively "artanis/third-party/redis")
                   (substitute* '("artanis/artanis.scm"
                                  "artanis/lpc.scm"
                                  "artanis/oht.scm"
