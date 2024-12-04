@@ -3140,14 +3140,14 @@ requests and responses.")
   (package
     (inherit rust-http-1)
     (name "rust-http")
-    (version "0.2.11")
+    (version "0.2.12")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "http" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1fwz3mhh86h5kfnr5767jlx9agpdggclq7xsqx930fflzakb2iw9"))))
+        (base32 "1w81s4bcbmcj9bjp7mllm8jlz6b31wzvirz8bgpzbqkpwmbvn730"))))
     (arguments
      `(#:cargo-inputs
        (("rust-bytes" ,rust-bytes-1)
