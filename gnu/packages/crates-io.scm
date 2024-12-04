@@ -84921,8 +84921,33 @@ generating parametrized test cases easily.")
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))))))
 
+(define-public rust-test-cert-gen-0.9
+  (package
+    (name "rust-test-cert-gen")
+    (version "0.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "test-cert-gen" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "02nmsm23660525igrxii7l3f4h3w7x4wb652mg6hg5f5ravr4prl"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f              ; Not all files included.
+       #:cargo-inputs (("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-pem" ,rust-pem-0.8)
+                       ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://crates.io/crates/test-cert-gen")
+    (synopsis "Generate certificates for tests")
+    (description
+     "This package is an utility to generate certificates for tests (e.g.,
+for TLS).")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-test-cert-gen-0.7
   (package
+    (inherit rust-test-cert-gen-0.9)
     (name "rust-test-cert-gen")
     (version "0.7.0")
     (source (origin
@@ -84932,18 +84957,10 @@ generating parametrized test cases easily.")
               (sha256
                (base32
                 "06gl7zqvrsl4fqm6d3i21q459gcv9nf258kb5ynd8dip5spd021j"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f              ; Not all files included.
-       #:cargo-inputs
-       (("rust-pem" ,rust-pem-0.8)
-        ("rust-tempdir" ,rust-tempdir-0.3))))
-    (home-page "https://crates.io/crates/test-cert-gen")
-    (synopsis "Generate certificates for tests")
-    (description
-     "This package is an utility to generate certificates for tests (e.g.,
-for TLS).")
-    (license (list license:expat license:asl2.0))))
+       #:cargo-inputs (("rust-pem" ,rust-pem-0.8)
+                       ("rust-tempdir" ,rust-tempdir-0.3))))))
 
 (define-public rust-test-generator-0.3
   (package
