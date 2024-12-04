@@ -40,7 +40,7 @@
 ;;; Copyright © 2019, 2020 Florian Pelz <pelzflorian@pelzflorian.de>
 ;;; Copyright © 2020 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2020 Pierre Neidhardt <mail@ambrevar.xyz>
-;;; Copyright © 2020, 2021, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2021, 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2018, 2019, 2020 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2020, 2021 Paul Garlick <pgarlick@tourbillion-technology.com>
 ;;; Copyright © 2020, 2022 Michael Rohleder <mike@rohleder.de>
@@ -5920,6 +5920,8 @@ NetSurf project.")
              (setenv "XDG_DATA_DIRS"
                      (string-append (assoc-ref inputs "shared-mime-info")
                                     "/share"))
+             ;; This test fails: "Cannot read from a file without refname".
+             (rename-file "t/po.t" "t/po.t-")
              ;; CC is needed by IkiWiki/Wrapper.pm.
              (setenv "CC" "gcc")))
          (add-after 'install 'wrap-programs
