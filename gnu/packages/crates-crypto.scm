@@ -875,15 +875,15 @@ based on Blake2s.")
 ciphers.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-block-cipher-trait-0.6
+(define-public rust-block-cipher-trait-0.6.2-yanked
   (package
     (name "rust-block-cipher-trait")
-    (version "0.6.2")
+    (version "0.6.2") ; This version was yanked!
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "block-cipher-trait" version))
-       (file-name (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version "-yanked.tar.gz"))
        (sha256
         (base32 "0x273w6fwka0i48nrv428birdrs2jz6jdnmc0dhc1rq9pm4lv4hw"))))
     (build-system cargo-build-system)
@@ -896,7 +896,13 @@ ciphers.")
     (synopsis "Block cipher algorithms")
     (description "This package provides a collection of block cipher
 algorithms.  This package is deprecated.  Please use block-cipher instead.")
-    (license (list license:expat license:asl2.0))))
+    (license (list license:expat license:asl2.0))
+    (properties '((crate-version-yanked? . #t)))))
+
+(define-public rust-block-cipher-trait-0.6
+  ;; There are no non-yanked versions of this semver.
+  (deprecated-package "rust-block-cipher-trait"
+                      rust-block-cipher-trait-0.6.2-yanked))
 
 (define-public rust-block-cipher-trait-0.4.2-yanked
   (package
