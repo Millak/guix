@@ -3535,14 +3535,14 @@ dependencies.")
   (package
     (inherit rust-hyper-1)
     (name "rust-hyper")
-    (version "0.14.27")
+    (version "0.14.31")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "hyper" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0s2l74p3harvjgb0bvaxlxgxq71vpfrzv0cqz2p9w8d8akbczcgz"))))
+        (base32 "11bf6mqcpzi0x2758p7q9zk3m877avzpbiw8nx8v2dd3iwp3024c"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -3557,7 +3557,7 @@ dependencies.")
         ("rust-httpdate" ,rust-httpdate-1)
         ("rust-itoa" ,rust-itoa-1)
         ("rust-libc" ,rust-libc-0.2)
-        ("rust-pin-project" ,rust-pin-project-lite-0.2)
+        ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
         ("rust-socket2" ,rust-socket2-0.4)
         ("rust-tokio" ,rust-tokio-1)
         ("rust-tower-service" ,rust-tower-service-0.3)
