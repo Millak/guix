@@ -90282,8 +90282,36 @@ and run them to verify the results, taking inspiration from @code{trybuild} and
     (description "Implementation detail of tstr.")
     (license license:zlib)))
 
+(define-public rust-ttf-parser-0.25
+  (package
+    (name "rust-ttf-parser")
+    (version "0.25.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ttf-parser" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0cbgqglcwwjg3hirwq6xlza54w04mb5x02kf7zx4hrw50xmr1pyj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--release" "--"
+                            "--skip=font_collection_num_fonts_overflow_2")
+       #:cargo-inputs (("rust-core-maths" ,rust-core-maths-0.1))
+       #:cargo-development-inputs (("rust-base64" ,rust-base64-0.22)
+                                   ("rust-pico-args" ,rust-pico-args-0.5)
+                                   ("rust-tiny-skia-path" ,rust-tiny-skia-path-0.11)
+                                   ("rust-xmlwriter" ,rust-xmlwriter-0.1))))
+    (home-page "https://github.com/harfbuzz/ttf-parser")
+    (synopsis "High-level, safe, zero-allocation TrueType font parser")
+    (description
+     "This package provides a high-level, safe, zero-allocation font parser for
+@code{TrueType}, @code{OpenType}, and AAT.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-ttf-parser-0.19
   (package
+    (inherit rust-ttf-parser-0.25)
     (name "rust-ttf-parser")
     (version "0.19.0")
     (source (origin
@@ -90293,15 +90321,8 @@ and run them to verify the results, taking inspiration from @code{trybuild} and
               (sha256
                (base32
                 "0iipdkmj1zyg2gl7rsyigj9c7gmsqllg2v8d80jwscivmq1g1p24"))))
-    (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t))   ; Cut the dependency graph.
-    (home-page "https://github.com/RazrFalcon/ttf-parser")
-    (synopsis "High-level, safe, zero-allocation TrueType font parser")
-    (description
-     "This package provides a high-level, safe, zero-allocation TrueType font
-parser.")
-    (license (list license:expat license:asl2.0))))
+     `(#:skip-build? #t)))) ; Cut the dependency graph.
 
 (define-public rust-ttf-parser-0.17
   (package
