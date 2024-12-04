@@ -491,11 +491,12 @@ This package is deprecated and was replaced by the @code{aes} crate.")
        (sha256
         (base32 "039si7yjp0wcd750sgq52c60sh2ikaxwd7rq7g0ba7ws7ypfgmyg"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-block-cipher-trait" ,rust-block-cipher-trait-0.6)
         ("rust-byteorder" ,rust-byteorder-1)
-        ("rust-opaque-debug" ,rust-opaque-debug-0.2))))))
+        ("rust-opaque-debug" ,rust-opaque-debug-0.2))
+       #:cargo-development-inputs
+       (("rust-block-cipher-trait" ,rust-block-cipher-trait-0.6))))))
 
 (define-public rust-aesni-0.10
   (package
