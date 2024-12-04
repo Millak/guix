@@ -4278,21 +4278,21 @@ applications.")
   (package
     (inherit rust-softbuffer-0.4)
     (name "rust-softbuffer")
-    (version "0.3.3")
+    (version "0.3.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "softbuffer" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0j199d8zg964324sppk1gnkq2361ivay7ykrlm71npg8v3ma4vc2"))))
+        (base32 "0qiv299v034hq7v4d79mkyvhzl05snal9m4ffm7amaiyl8mcwrpj"))))
     (arguments
      `(#:cargo-inputs (("rust-as-raw-xcb-connection" ,rust-as-raw-xcb-connection-1)
                        ("rust-bytemuck" ,rust-bytemuck-1)
                        ("rust-cfg-aliases" ,rust-cfg-aliases-0.1)
                        ("rust-cocoa" ,rust-cocoa-0.25)
                        ("rust-core-graphics" ,rust-core-graphics-0.23)
-                       ("rust-drm" ,rust-drm-0.10)
+                       ("rust-drm" ,rust-drm-0.11)
                        ("rust-fastrand" ,rust-fastrand-2)
                        ("rust-foreign-types" ,rust-foreign-types-0.5)
                        ("rust-js-sys" ,rust-js-sys-0.3)
