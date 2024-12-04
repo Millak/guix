@@ -120,14 +120,14 @@ shapes, lines and text to buffers.")
 (define-public rust-ansi-colours-1
   (package
     (name "rust-ansi-colours")
-    (version "1.2.2")
+    (version "1.2.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "ansi_colours" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "104aj4fi8nxdb9c5ahpwn53afmfcdzmwi3k9rawl3lvm42ymh5ba"))
+        (base32 "1zimwh84gs1r0g0chy6x5lm9v0ksxxlzwy8nyj80f6cq08zc9vhl"))
        (modules '((guix build utils)))
        (snippet
         '(begin (substitute* "Cargo.toml"
@@ -139,6 +139,7 @@ shapes, lines and text to buffers.")
     (arguments
      `(#:cargo-inputs
        (("rust-ansi-term" ,rust-ansi-term-0.12)
+        ("rust-anstyle" ,rust-anstyle-1)
         ("rust-rgb" ,rust-rgb-0.8)
         ("rust-termcolor" ,rust-termcolor-1))
        #:cargo-development-inputs
