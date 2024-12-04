@@ -1203,6 +1203,28 @@ and iOS.")
      "Safe, low-level bindings to the Direct Rendering Manager API.")
     (license license:expat)))
 
+(define-public rust-drm-0.11
+  (package
+    (inherit rust-drm-0.12)
+    (name "rust-drm")
+    (version "0.11.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "drm" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1pnwicchrbkmfx9rn222q7a8jalzm6faa9pgnkdffnnpc2gady50"))))
+    (arguments
+     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-bytemuck" ,rust-bytemuck-1)
+                       ("rust-drm-ffi" ,rust-drm-ffi-0.7)
+                       ("rust-drm-fourcc" ,rust-drm-fourcc-2)
+                       ("rust-rustix" ,rust-rustix-0.38))
+       #:cargo-development-inputs (("rust-image" ,rust-image-0.24)
+                                   ("rust-rustix" ,rust-rustix-0.38)
+                                   ("rust-rustyline" ,rust-rustyline-13))))))
+
 (define-public rust-drm-0.10
   (package
     (inherit rust-drm-0.12)
