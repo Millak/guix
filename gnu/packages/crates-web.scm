@@ -5763,14 +5763,14 @@ robust clients and servers.")
 (define-public rust-tower-http-0.5
   (package
     (name "rust-tower-http")
-    (version "0.5.1")
+    (version "0.5.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tower-http" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0bmgfh1hr92blw7kv2636ykd0gf3h0aqdd89kvjk6b2fg8kr788d"))
+        (base32 "1xakj3x0anp55gjqibiwvzma5iz0w9pcjsr7qk97sx4qm4sd970y"))
        (modules '((guix build utils)))
        (snippet '(begin
                    ;; Remove disabled doctests with unresolved imports.
