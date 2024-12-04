@@ -783,20 +783,19 @@ for computer graphics.")
   (package
     (inherit rust-core-graphics-0.22)
     (name "rust-core-graphics")
-    (version "0.21.1")
+    (version "0.21.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "core-graphics" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1i9gwzkil9k276317by0mi1pxz036h412dmcp1bzmlq4adj5anha"))))
+        (base32 "0y5rxchfhvjw25d19h9kz5pzshdngs26frgvx2n3w86gg11pr9jj"))))
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-1)
         ("rust-core-foundation" ,rust-core-foundation-0.9)
-        ("rust-core-graphics-types" ,rust-core-graphics-types-0.1)
         ("rust-foreign-types" ,rust-foreign-types-0.3)
         ("rust-libc" ,rust-libc-0.2))))))
 
