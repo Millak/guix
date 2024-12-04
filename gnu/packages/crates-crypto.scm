@@ -3231,14 +3231,14 @@ compression function.")
 (define-public rust-nettle-7
   (package
     (name "rust-nettle")
-    (version "7.3.0")
+    (version "7.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "nettle" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0dk36l90p79c3xgmrzp8489h8dfaal0jzaid1n8n3cg7xbrwrzdr"))))
+        (base32 "0dk9rlpz4c0kf2c7298vllpnwr3lh10kkgdbslglmlz5ji5gzrj4"))))
     (build-system cargo-build-system)
     (native-inputs
      (list pkg-config))
