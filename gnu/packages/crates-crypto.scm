@@ -243,16 +243,16 @@ ciphers implementations.")
        #:cargo-development-inputs
        (("rust-block-cipher" ,rust-block-cipher-0.7))))))
 
-(define-public rust-aes-0.3
+(define-public rust-aes-0.3.2-yanked
   (package
     (inherit rust-aes-0.4)
     (name "rust-aes")
-    (version "0.3.2")
+    (version "0.3.2") ; This version was yanked!
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "aes" version))
-       (file-name (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version "-yanked.tar.gz"))
        (sha256
         (base32 "1j90iwpax0y1dqq14i8y9xgpcnnlgnljwkxg3mhzrralwf7ivssl"))))
     (arguments
@@ -261,7 +261,12 @@ ciphers implementations.")
         ("rust-aesni" ,rust-aesni-0.6)
         ("rust-block-cipher-trait" ,rust-block-cipher-trait-0.6))
        #:cargo-development-inputs
-       (("rust-block-cipher-trait" ,rust-block-cipher-trait-0.6))))))
+       (("rust-block-cipher-trait" ,rust-block-cipher-trait-0.6))))
+    (properties '((crate-version-yanked? . #t)))))
+
+(define-public rust-aes-0.3
+  ;; There are no non-yanked versions of this semver.
+  (deprecated-package "rust-aes" rust-aes-0.3.2-yanked))
 
 (define-public rust-aes-ctr-0.6
   (package
