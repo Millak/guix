@@ -1261,14 +1261,14 @@ XChaCha20, XChaCha12 and XChaCha8 stream ciphers, and also optional
   (package
     (inherit rust-chacha20-0.9)
     (name "rust-chacha20")
-    (version "0.8.1")
+    (version "0.8.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "chacha20" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "14cgpnnpqsn5hmqkgrj4yaqdsvy56hkgcw5s2gqsxwhc7m1jmdq1"))
+        (base32 "19l0nrizh0v9mj2dcd1y0mh7nn9sjnmvvg203nwy6vx6193fb02w"))
        (modules '((guix build utils)))
        (snippet
         '(begin
