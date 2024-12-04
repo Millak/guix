@@ -386,22 +386,21 @@ Mac, and Unix.")
 (define-public rust-av-data-0.4
   (package
     (name "rust-av-data")
-    (version "0.4.3")
+    (version "0.4.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "av-data" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "135kq5javpf83xci44srw9k0inh3g6k40ijr4qi3s6qn6m1y4jhj"))))
+        (base32 "13ih12xbhjykwrncdsvnibjanjymmxbn2mqc3014r4hpsfjpp9pw"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-byte-slice-cast" ,rust-byte-slice-cast-1)
                        ("rust-bytes" ,rust-bytes-1)
                        ("rust-num-derive" ,rust-num-derive-0.4)
                        ("rust-num-rational" ,rust-num-rational-0.4)
-                       ("rust-num-traits" ,rust-num-traits-0.2)
-                       ("rust-thiserror" ,rust-thiserror-1))))
+                       ("rust-num-traits" ,rust-num-traits-0.2))))
     (home-page "https://github.com/rust-av/rust-av")
     (synopsis "Multimedia data structures")
     (description "This package provides multimedia data structures.")
