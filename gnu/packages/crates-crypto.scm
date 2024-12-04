@@ -6699,7 +6699,7 @@ One-Time Password library.")
   (package
     (inherit rust-universal-hash-0.5)
     (name "rust-universal-hash")
-    (version "0.4.0")
+    (version "0.4.1")
     (source
      (origin
        (method url-fetch)
@@ -6707,7 +6707,12 @@ One-Time Password library.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "00hljq64l0p68yrncvyww4cdgkzpzl49vrlnj57kwblkak3b49l3"))))
+         "01av09i0rqcl8f0xgvn2g07kzyafgbiwdhkfwq0m14kyd67lw8cz"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (substitute* "Cargo.toml"
+                   (("\"= ?([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                    (string-append "\"^" version)))))))
     (arguments
      `(#:cargo-inputs
        (("rust-generic-array" ,rust-generic-array-0.14)
