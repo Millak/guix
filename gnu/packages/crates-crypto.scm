@@ -1911,14 +1911,14 @@ re-exported cipher crate.")
 (define-public rust-curve25519-dalek-4
   (package
     (name "rust-curve25519-dalek")
-    (version "4.1.2")
+    (version "4.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "curve25519-dalek" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0j7kqchcgycs4a11gvlda93h9w2jr05nn4hjpfyh2kn94a4pnrqa"))))
+        (base32 "1gmjb9dsknrr8lypmhkyjd67p1arb8mbfamlwxm7vph38my8pywp"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
