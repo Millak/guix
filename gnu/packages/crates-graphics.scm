@@ -5651,20 +5651,19 @@ crate @code{rust-wayland-client} for usable bindings.")
 (define-public rust-wayrs-client-1
   (package
     (name "rust-wayrs-client")
-    (version "1.0.2")
+    (version "1.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "wayrs-client" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "18i19b7z4wp0mjwn256ps3pdfk47lx45h0cx8wkjlv7akkgzxnj7"))))
+        (base32 "0z7qcacf79ljvi7252sdw5cfa5vs6372a01b93v0cc68w5nq53hh"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-nix" ,rust-nix-0.27)
-                       ("rust-thiserror" ,rust-thiserror-1)
-                       ("rust-tokio" ,rust-tokio-1)
-                       ("rust-wayrs-scanner" ,rust-wayrs-scanner-0.13))))
+     `(#:cargo-inputs (("rust-tokio" ,rust-tokio-1)
+                       ("rust-wayrs-core" ,rust-wayrs-core-1)
+                       ("rust-wayrs-scanner" ,rust-wayrs-scanner-0.15))))
     (home-page "https://github.com/MaxVerevkin/wayrs")
     (synopsis "Wayland client library")
     (description "This package provides a wayland client library.")
