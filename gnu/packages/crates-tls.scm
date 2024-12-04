@@ -503,14 +503,14 @@ Google @code{BoringSSL} project and the @code{OpenSSL} project.")
   (package
     (inherit rust-aws-lc-sys-0.23)
     (name "rust-aws-lc-sys")
-    (version "0.13.0")
+    (version "0.13.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "aws-lc-sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "05a7z5hg00zpk4gvqggzv7j6bvljplx2c1kw44ifmxjnf5469rdn"))))
+        (base32 "0gpp0n8fr7f23h08mi603rxl0d08f60wn9z1zqv89930wgbf7v9p"))))
     (arguments
      `(#:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.69)
                        ("rust-cmake" ,rust-cmake-0.1)
