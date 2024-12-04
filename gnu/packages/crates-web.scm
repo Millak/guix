@@ -2410,14 +2410,14 @@ transfer coding.")
   (package
     (inherit rust-h2-0.4)
     (name "rust-h2")
-    (version "0.3.25")
+    (version "0.3.26")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "h2" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1sqq8rnv3vrwra7wzgc6099j9zw80rnm9aslhsa8d674qlh2igag"))))
+        (base32 "1s7msnfv7xprzs6xzfj5sg6p8bjcdpcqcmjjbkd345cyi1x55zl1"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; Not all files included.
@@ -2427,7 +2427,7 @@ transfer coding.")
                        ("rust-futures-sink" ,rust-futures-sink-0.3)
                        ("rust-futures-util" ,rust-futures-util-0.3)
                        ("rust-http" ,rust-http-0.2)
-                       ("rust-indexmap" ,rust-indexmap-1)
+                       ("rust-indexmap" ,rust-indexmap-2)
                        ("rust-slab" ,rust-slab-0.4)
                        ("rust-tokio" ,rust-tokio-1)
                        ("rust-tokio-util" ,rust-tokio-util-0.7)
