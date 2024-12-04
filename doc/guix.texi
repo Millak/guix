@@ -8061,8 +8061,8 @@ inputs.
 Look up @var{name} among @var{package}'s inputs (or native, propagated,
 or direct inputs).  Return it if found, @code{#f} otherwise.
 
-@var{name} is the name of a package depended on.  Here's how you might
-use it:
+@var{name} is the name of a package or the file name of an origin
+depended on.  Here's how you might use it:
 
 @lisp
 (use-modules (guix packages) (gnu packages base))
@@ -8073,6 +8073,10 @@ use it:
 
 In this example we obtain the @code{gmp} package that is among the
 direct inputs of @code{coreutils}.
+
+When looking up an origin, use the name that appears in the origin's
+@code{file-name} field or its default file name---e.g.,
+@code{"foo-1.2.tar.gz"}.
 @end deffn
 
 @cindex development inputs, of a package

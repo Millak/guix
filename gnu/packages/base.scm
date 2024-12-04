@@ -1778,14 +1778,17 @@ command.")
                      (delete-file-recursively
                       (string-append out "/share/zoneinfo-leaps")))))
                (delete 'configure))))
-    (inputs (list (origin
-                    (method url-fetch)
-                    (uri (string-append
-                          "https://data.iana.org/time-zones/releases/tzcode"
-                          version ".tar.gz"))
-                    (sha256
-                     (base32
-                      "07hn7hn2klw4dfyr673ril2nrk18198hbfv25gljsvc833hzk9g9")))))
+    (inputs `(("_"
+               ;; Note: The "_" label above is here to avoid a full rebuild.
+               ;; TODO: Remove it on next rebuild cycle.
+               ,(origin
+                  (method url-fetch)
+                  (uri (string-append
+                        "https://data.iana.org/time-zones/releases/tzcode"
+                        version ".tar.gz"))
+                  (sha256
+                   (base32
+                    "07hn7hn2klw4dfyr673ril2nrk18198hbfv25gljsvc833hzk9g9"))))))
     (home-page "https://www.iana.org/time-zones")
     (synopsis "Database of current and historical time zones")
     (description "The Time Zone Database (often called tz or zoneinfo)

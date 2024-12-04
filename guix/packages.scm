@@ -678,6 +678,9 @@ Texinfo.  Otherwise, return the string."
               "_")
          ,obj
          ,@(if (string=? output "out") '() (list output)))))
+    ((? origin? origin)
+     ;; Allow references to origins by their file name.
+     (list (or (origin-actual-file-name origin) "_") origin))
     (x
      `("_" ,x))))
 

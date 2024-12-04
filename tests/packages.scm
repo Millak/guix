@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
@@ -2050,6 +2050,14 @@
   (package-arguments
    (dummy-package "a"
      (arguments (this-package-native-input "hello")))))
+
+(test-equal "this-package-input, origin"
+  "http://example.org/foo.tar.gz"
+  (origin-uri
+   (package-arguments
+    (dummy-package "a"
+      (inputs (list (dummy-origin (uri "http://example.org/foo.tar.gz"))))
+      (arguments (this-package-input "foo.tar.gz"))))))
 
 (test-eq "modify-inputs, replace"
   coreutils
