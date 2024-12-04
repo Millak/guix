@@ -3803,16 +3803,16 @@ in AVIF format (powers the @code{cavif} tool).")
        #:cargo-development-inputs
        (("rust-avif-parse" ,rust-avif-parse-1))))))
 
-(define-public rust-ravif-0.6
+(define-public rust-ravif-0.6.6-yanked
   (package
     (inherit rust-ravif-0.8)
     (name "rust-ravif")
-    (version "0.6.6")
+    (version "0.6.6") ; This version was yanked!
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "ravif" version))
-       (file-name (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version "-yanked.tar.gz"))
        (sha256
         (base32 "0rfm63bv0q2rjyivmzlk4wma8xff6jralh7dr1bjz2aw4knm7cw1"))))
     (arguments
@@ -3829,7 +3829,12 @@ in AVIF format (powers the @code{cavif} tool).")
        (("rust-avif-parse" ,rust-avif-parse-0.13))))
     (native-inputs
      (list nasm))                 ;for building rav1e
-    (inputs '())))
+    (inputs '())
+    (properties '((crate-version-yanked? . #t)))))
+
+(define-public rust-ravif-0.6
+  ;; There are no non-yanked versions of this semver.
+  (deprecated-package "rust-ravif" rust-ravif-0.6.6-yanked))
 
 (define-public rust-raw-window-handle-0.6
   (package
