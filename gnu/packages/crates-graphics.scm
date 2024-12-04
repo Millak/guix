@@ -1334,20 +1334,19 @@ extrapolations and smoothing of generic data points.")
 (define-public rust-euclid-0.22
   (package
     (name "rust-euclid")
-    (version "0.22.6")
+    (version "0.22.11")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "euclid" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "102blw7ljphi7i2xg435z0bb0a4npmwwbgyfinqxg1m0af2q55ns"))))
+        (base32 "0j4yb01x9dn5hbbbigd3mwdplv4m29k5drmhmc95lj3yfi5xp75d"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-arbitrary" ,rust-arbitrary-1)
+        ("rust-bytemuck" ,rust-bytemuck-1)
         ("rust-mint" ,rust-mint-0.5)
         ("rust-num-traits" ,rust-num-traits-0.2)
         ("rust-serde" ,rust-serde-1))
