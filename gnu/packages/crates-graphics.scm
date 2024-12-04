@@ -1307,6 +1307,24 @@ Direct Rendering Manager} format fourcc.")
      "This package provides bindings to the Direct Rendering Manager API.")
     (license license:expat)))
 
+(define-public rust-drm-sys-0.6
+  (package
+    (inherit rust-drm-sys-0.7)
+    (name "rust-drm-sys")
+    (version "0.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "drm-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0xiir3qkl6ccw898zbhdnckxyjlgzws5xfh526qiiwcj3y4gy29d"))))
+    (arguments
+     `(#:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.69)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-linux-raw-sys" ,rust-linux-raw-sys-0.6)
+                       ("rust-pkg-config" ,rust-pkg-config-0.3))))))
+
 (define-public rust-drm-sys-0.5
   (package
     (inherit rust-drm-sys-0.7)
