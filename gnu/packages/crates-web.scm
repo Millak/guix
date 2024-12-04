@@ -6936,17 +6936,20 @@ other queries.")
 (define-public rust-trust-dns-rustls-0.20
   (package
     (name "rust-trust-dns-rustls")
-    (version "0.20.0")
+    (version "0.20.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "trust-dns-rustls" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "00i5jf6bkfxikna0093swl0yz246nabpm0xngdxb94wkr3rz0kq9"))))
+        (base32 "0ygfcp65xrjgsa3mkyk54fq1n34wis866bh3lx3jy6hxfgz3a4dr"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
+     `(#:cargo-test-flags
+       '("--release" "--"
+         ;; Not all files included.
+         "--skip=tests::test_tls_client_stream_ipv4")
        #:cargo-inputs
        (("rust-futures-channel" ,rust-futures-channel-0.3)
         ("rust-futures-io" ,rust-futures-io-0.3)
@@ -6956,7 +6959,10 @@ other queries.")
         ("rust-tokio" ,rust-tokio-1)
         ("rust-tokio-rustls" ,rust-tokio-rustls-0.22)
         ("rust-trust-dns-proto" ,rust-trust-dns-proto-0.20)
-        ("rust-webpki" ,rust-webpki-0.21))))
+        ("rust-webpki" ,rust-webpki-0.21))
+       #:cargo-development-inputs (("rust-openssl" ,rust-openssl-0.10))))
+    (native-inputs (list pkg-config))
+    (inputs (list openssl))
     (home-page "https://www.trust-dns.org/index.html")
     (synopsis "Trust-DNS client rustls extension")
     (description
