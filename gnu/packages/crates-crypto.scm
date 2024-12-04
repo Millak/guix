@@ -6380,22 +6380,27 @@ for the `authorized_keys` and `known_hosts` file formats.")
     (description "This package provides stream cipher traits.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-stream-cipher-0.3
+(define-public rust-stream-cipher-0.3.2-yanked
   (package
     (inherit rust-stream-cipher-0.4)
     (name "rust-stream-cipher")
-    (version "0.3.2")
+    (version "0.3.2") ; This version was yanked!
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "stream-cipher" version))
-       (file-name (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version "-yanked.tar.gz"))
        (sha256
         (base32 "1333qng84n6b15p8kndhajlgvbp1rgdddx04xgsvrjlnb1m2acc1"))))
     (arguments
      `(#:cargo-inputs
        (("rust-blobby" ,rust-blobby-0.1)
-        ("rust-generic-array" ,rust-generic-array-0.14))))))
+        ("rust-generic-array" ,rust-generic-array-0.14))))
+    (properties '((crate-version-yanked? . #t)))))
+
+(define-public rust-stream-cipher-0.3
+  ;; There are no non-yanked versions of this semver.
+  (deprecated-package "rust-stream-cipher" rust-stream-cipher-0.3.2-yanked))
 
 (define-public rust-streebog-0.10
   (package
