@@ -762,14 +762,14 @@ during testing.")
   (package
     (inherit rust-actix-router-0.5)
     (name "rust-actix-router")
-    (version "0.2.5")
+    (version "0.2.7")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "actix-router" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0df2626hk4n4yki6j88v3k0gcm8pi5hdnm1mldyvyi8nvbdzgldv"))))
+        (base32 "0b258dplqmria44mv1zzjpmm2xrpdzwcqcz3jg41z7k4ffprklia"))))
     (arguments
      ;; Tests fail with "error[E0432]: unresolved import `serde_derive`".
      `(#:tests? #false
