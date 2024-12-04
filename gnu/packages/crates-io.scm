@@ -58634,6 +58634,22 @@ convert SQL to Polars logical plans.")
     (description "Synchronously block the thread until a future completes.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-pollster-0.2
+  (package
+    (inherit rust-pollster-0.3)
+    (name "rust-pollster")
+    (version "0.2.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pollster" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1xzji8cq4crr795c7liy3ksd798sb45pjphbm8h5gvnp7whb18sx"))))
+    (arguments
+     `(#:cargo-development-inputs (("rust-futures-timer" ,rust-futures-timer-3)
+                                   ("rust-tokio" ,rust-tokio-1))))))
+
 (define-public rust-pollster-macro-0.1
   (package
     (name "rust-pollster-macro")
