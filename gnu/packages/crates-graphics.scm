@@ -2904,14 +2904,14 @@ graphics and video games.")
 (define-public rust-lyon-geom-1
   (package
     (name "rust-lyon-geom")
-    (version "1.0.5")
+    (version "1.0.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "lyon_geom" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1ydzjz8lh2jlg9gjcpmkix0yxfgkv76yn0mb67h0nasa4f6zpv7d"))))
+        (base32 "0w45pmyn5bpyk39wyrgniam08z3dpg23dr1yid1xywkj13f9xxla"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-arrayvec" ,rust-arrayvec-0.7)
