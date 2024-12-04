@@ -5673,18 +5673,17 @@ crate @code{rust-wayland-client} for usable bindings.")
 (define-public rust-wayrs-proto-parser-2
   (package
     (name "rust-wayrs-proto-parser")
-    (version "2.0.0")
+    (version "2.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "wayrs-proto-parser" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1a9gb0iv6rm1z2n4isfb9x05pv6wlgn23hljb9s038m4dgmyn1hl"))))
+        (base32 "1qhav3nzd69f4ikm19kv8k246rpg71qyih60hgz8l7dv9z8gsv79"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-quick-xml" ,rust-quick-xml-0.31)
-                       ("rust-thiserror" ,rust-thiserror-1))))
+     `(#:cargo-inputs (("rust-quick-xml" ,rust-quick-xml-0.37))))
     (home-page "https://github.com/MaxVerevkin/wayrs")
     (synopsis "Parser for wayland protocol xml files")
     (description "This package provides a parser for wayland protocol
