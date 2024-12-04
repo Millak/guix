@@ -53634,8 +53634,29 @@ platform-native strings.")
      "This package provides a macro to simplify operator overloading.")
     (license license:expat)))
 
+(define-public rust-owned-ttf-parser-0.25
+  (package
+    (name "rust-owned-ttf-parser")
+    (version "0.25.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "owned_ttf_parser" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1i5jhazmm87nf8wbqm76vjvncmcv28ghpqm4170q2aivpydp3v12"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-ttf-parser" ,rust-ttf-parser-0.25))))
+    (home-page "https://github.com/alexheretic/owned-ttf-parser")
+    (synopsis "Ttf-parser plus support for owned data")
+    (description
+     "This package provides a ttf-parser plus support for owned data.")
+    (license license:asl2.0)))
+
 (define-public rust-owned-ttf-parser-0.19
   (package
+    (inherit rust-owned-ttf-parser-0.25)
     (name "rust-owned-ttf-parser")
     (version "0.19.0")
     (source (origin
@@ -53645,14 +53666,8 @@ platform-native strings.")
               (sha256
                (base32
                 "192v6mjgy2fv7z8n7wm6548pikngcc293l9qh8xdc4s147iffvbh"))))
-    (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-ttf-parser" ,rust-ttf-parser-0.19))))
-    (home-page "https://github.com/alexheretic/owned-ttf-parser")
-    (synopsis "Ttf-parser plus support for owned data")
-    (description
-     "This package provides a ttf-parser plus support for owned data.")
-    (license license:asl2.0)))
+     `(#:cargo-inputs (("rust-ttf-parser" ,rust-ttf-parser-0.19))))))
 
 (define-public rust-owo-colors-4
   (package
