@@ -2679,18 +2679,19 @@ pixel buffers with width, height and stride.")
 (define-public rust-jpeg-decoder-0.3
   (package
     (name "rust-jpeg-decoder")
-    (version "0.3.0")
+    (version "0.3.1")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "jpeg-decoder" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
-               (base32 "0gkv0zx95i4fr40fj1a10d70lqi6lfyia8r5q8qjxj8j4pj0005w"))
+               (base32 "1c1k53svpdyfhibkmm0ir5w0v3qmcmca8xr8vnnmizwf6pdagm7m"))
               (modules '((guix build utils)))
               (snippet
                '(begin
                   (substitute* "Cargo.toml"
-                    (("=0\\.2\\.83") "^0.2.83"))))))
+                    (("\"=([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                   (string-append "\"^" version)))))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f                  ; Not all files included
