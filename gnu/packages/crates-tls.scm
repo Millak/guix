@@ -840,20 +840,19 @@ targets")
 (define-public rust-native-tls-0.2
   (package
     (name "rust-native-tls")
-    (version "0.2.11")
+    (version "0.2.12")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "native-tls" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0bmrlg0fmzxaycjpkgkchi93av07v2yf9k33gc12ca9gqdrn28h7"))))
+        (base32 "0rkl65z70n7sy4d5w0qa99klg1hr43wx6kcprk4d2n9xr2r4wqd8"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f                      ; tests require network access
        #:cargo-inputs
-       (("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-libc" ,rust-libc-0.2)
+       (("rust-libc" ,rust-libc-0.2)
         ("rust-log" ,rust-log-0.4)
         ("rust-openssl" ,rust-openssl-0.10)
         ("rust-openssl-probe" ,rust-openssl-probe-0.1)
@@ -864,7 +863,7 @@ targets")
         ("rust-tempfile" ,rust-tempfile-3))
        #:cargo-development-inputs
        (("rust-tempfile" ,rust-tempfile-3)
-        ("rust-test-cert-gen" ,rust-test-cert-gen-0.7))))
+        ("rust-test-cert-gen" ,rust-test-cert-gen-0.9))))
     (native-inputs
      (list pkg-config))
     (inputs
