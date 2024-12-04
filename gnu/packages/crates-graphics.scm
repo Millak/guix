@@ -4344,14 +4344,14 @@ applications.")
 (define-public rust-tiff-0.9
   (package
     (name "rust-tiff")
-    (version "0.9.0")
+    (version "0.9.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tiff" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "04b2fd3clxm0pmdlfip8xj594zyrsfwmh641i6x1gfiz9l7jn5vd"))))
+        (base32 "0ghyxlz566dzc3scvgmzys11dhq2ri77kb8sznjakijlxby104xs"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; Not all files included.
