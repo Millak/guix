@@ -1372,14 +1372,14 @@ grammars and BER/DER encodings, for example.")
   (package
     (inherit rust-rustls-0.22)
     (name "rust-rustls")
-    (version "0.21.10")
+    (version "0.21.12")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "rustls" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1fmpzk3axnhkd99saqkvraifdfms4pkyi56lkihf8n877j0sdmgr"))))
+                "0gjdg2a9r81sdwkyw3n5yfbkrr6p9gyk3xr2kcsr3cs83x6s2miz"))))
     (arguments
      `(#:tests? #f          ; Not all files included.
        #:cargo-inputs
