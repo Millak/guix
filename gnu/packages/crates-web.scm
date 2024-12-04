@@ -5516,23 +5516,24 @@ alike.  It's completely modular, and built directly for @code{async/await}.")
   (package
     (inherit rust-tiny-http-0.12)
     (name "rust-tiny-http")
-    (version "0.6.2")
+    (version "0.6.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tiny_http" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0la95daknfh8g951ddb2zdz6av2459rncp6h9dh02pf98h5glq8n"))))
+        (base32 "0qpmx0zvk1ffm1qaq2bq83i7583x23f3gqjv1cnzrrb3kcbwn8if"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-ascii" ,rust-ascii-0.8)
         ("rust-chrono" ,rust-chrono-0.4)
         ("rust-chunked-transfer" ,rust-chunked-transfer-0.3)
         ("rust-log" ,rust-log-0.4)
         ("rust-openssl" ,rust-openssl-0.10)
-        ("rust-url" ,rust-url-1))))))
+        ("rust-url" ,rust-url-1))
+       #:cargo-development-inputs (("rust-rustc-serialize" ,rust-rustc-serialize-0.3)
+                                   ("rust-sha1" ,rust-sha1-0.6))))))
 
 (define-public rust-tonic-0.10
   (package
