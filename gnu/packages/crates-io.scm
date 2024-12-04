@@ -16657,14 +16657,14 @@ generation.")
 (define-public rust-constant-time-eq-0.3
   (package
     (name "rust-constant-time-eq")
-    (version "0.3.0")
+    (version "0.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "constant_time_eq" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1hl0y8frzlhpr58rh8rlg4bm53ax09ikj2i5fk7gpyphvhq4s57p"))))
+        (base32 "19nwwczii762pwlsm7bpizgjg8hkg1kqi32b2g4rglijklsbhx3w"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-development-inputs
