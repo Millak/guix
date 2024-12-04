@@ -472,14 +472,14 @@ popular Rust library named ring.")
 (define-public rust-aws-lc-sys-0.23
   (package
     (name "rust-aws-lc-sys")
-    (version "0.23.0")
+    (version "0.23.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "aws-lc-sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "15igggl0xvzx212di0z4l1hxcvjhlk5ns67iw5yis7p8knd62fmd"))))
+        (base32 "1xrzqryr7gj0njcx6s5x495rbirlqmhws10bmambn9rjh7ris452"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.69)
