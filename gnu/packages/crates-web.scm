@@ -425,16 +425,16 @@
   (package
     (inherit rust-actix-http-3)
     (name "rust-actix-http")
-    (version "2.2.0")
+    (version "2.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "actix-http" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0x78h9lzqdhp06v1kf4dhbiqp8sc911w4lqfj5rmdbhpg3l9j8j5"))))
+        (base32 "1cshz5fqm2hxikrp2ilz3vymyivxpcar9b36sgkai557c9mvdrib"))))
     (arguments
-     `(#:skip-build? #t
+     `(#:tests? #f      ; use of undeclared crate or module `actix_http_test`
        #:cargo-inputs
        (("rust-actix" ,rust-actix-0.10)
         ("rust-actix-codec" ,rust-actix-codec-0.3)
@@ -446,7 +446,7 @@
         ("rust-actix-utils" ,rust-actix-utils-2)
         ("rust-base64" ,rust-base64-0.13)
         ("rust-bitflags" ,rust-bitflags-1)
-        ("rust-brotli2" ,rust-brotli2-0.3)
+        ("rust-brotli" ,rust-brotli-3)
         ("rust-bytes" ,rust-bytes-0.5)
         ("rust-cookie" ,rust-cookie-0.14)
         ("rust-copyless" ,rust-copyless-0.1)
