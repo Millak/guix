@@ -17230,6 +17230,27 @@ numbers using the CORDIC method.")
     (description "Implementation detail of the @code{core_extensions} crate.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-core-maths-0.1
+  (package
+    (name "rust-core-maths")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "core_maths" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "18q9fwy80lk1lccam375skmsslryik00zkhsl850pidqrh2jbc73"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-libm" ,rust-libm-0.2))))
+    (home-page "https://github.com/robertbastian/core_maths")
+    (synopsis "Extension trait for full float functionality in `#[no_std]`")
+    (description
+     "This package provides an extension trait for full float functionality in
+`#[no_std]` backed by `libm`.")
+    (license license:expat)))
+
 (define-public rust-core2-0.4
   (package
     (name "rust-core2")
