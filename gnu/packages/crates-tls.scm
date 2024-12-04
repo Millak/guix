@@ -1759,18 +1759,17 @@ native certificate store.")
 (define-public rust-rustls-pemfile-2
   (package
     (name "rust-rustls-pemfile")
-    (version "2.0.0")
+    (version "2.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rustls-pemfile" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1x34xidvzn4br2vl8f8xwmhgbjv4lmlb0ggv5whlnk4yl87rir1m"))))
+        (base32 "0l3f3mrfkgdjrava7ibwzgwc4h3dljw3pdkbsi9rkwz3zvji9qyw"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-base64" ,rust-base64-0.21)
-                       ("rust-rustls-pki-types" ,rust-rustls-pki-types-1))
+     `(#:cargo-inputs (("rust-rustls-pki-types" ,rust-rustls-pki-types-1))
        #:cargo-development-inputs (("rust-bencher" ,rust-bencher-0.1))))
     (home-page "https://github.com/rustls/pemfile")
     (synopsis "Basic parser for PEM formatted keys and certificates")
