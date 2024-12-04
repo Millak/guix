@@ -741,7 +741,7 @@ strongSwan.")))
                       (default '("10.0.0.1/32")))
   (port               wireguard-configuration-port ;integer
                       (default 51820))
-  (private-key        wireguard-configuration-private-key ;string
+  (private-key        wireguard-configuration-private-key ;maybe-string
                       (default "/etc/wireguard/private.key"))
   (peers              wireguard-configuration-peers ;list of <wiregard-peer>
                       (default '()))
@@ -805,9 +805,12 @@ strongSwan.")))
                     #$@(if (null? pre-up)
                            '()
                            (list (format #f "~{PreUp = ~a~%~}" pre-up)))
-                    (format #f "PostUp = ~a set %i private-key ~a\
-~{ peer ~a preshared-key ~a~}" #$(file-append wireguard "/bin/wg")
-#$private-key '#$peer-keys)
+                    (if #$private-key
+                        (format #f "PostUp = ~a set %i private-key ~a\
+~{ peer ~a preshared-key ~a~}"
+                                #$(file-append wireguard "/bin/wg")
+                                #$private-key '#$peer-keys)
+                        "")
                     #$@(if (null? post-up)
                            '()
                            (list (format #f "~{PostUp = ~a~%~}" post-up)))
@@ -838,18 +841,19 @@ strongSwan.")))
         (use-modules (guix build utils)
                      (ice-9 popen)
                      (ice-9 rdelim))
-        (mkdir-p (dirname #$private-key))
-        (unless (file-exists? #$private-key)
-          (let* ((pipe
-                  (open-input-pipe (string-append
-                                    #$(file-append wireguard "/bin/wg")
-                                    " genkey")))
-                 (key (read-line pipe)))
-            (call-with-output-file #$private-key
-              (lambda (port)
-                (display key port)))
-            (chmod #$private-key #o400)
-            (close-pipe pipe))))))
+        (when #$private-key
+          (mkdir-p (dirname #$private-key))
+          (unless (file-exists? #$private-key)
+            (let* ((pipe
+                    (open-input-pipe (string-append
+                                      #$(file-append wireguard "/bin/wg")
+                                      " genkey")))
+                   (key (read-line pipe)))
+              (call-with-output-file #$private-key
+                (lambda (port)
+                  (display key port)))
+              (chmod #$private-key #o400)
+              (close-pipe pipe)))))))
 
 ;;; XXX: Copied from (guix scripts pack), changing define to define*.
 (define-syntax-rule (define-with-source (variable args ...) body body* ...)

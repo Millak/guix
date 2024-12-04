@@ -34626,7 +34626,9 @@ an mcron time specification (@pxref{Guile Syntax,,,mcron}).
 
 @item @code{private-key} (default: @code{"/etc/wireguard/private.key"})
 The private key file for the interface.  It is automatically generated
-if the file does not exist.
+if the file does not exist.  If this field is @code{#f}, a private key
+is not automatically created and the path is not serialized to the
+configuration file.
 
 @item @code{peers} (default: @code{'()})
 The authorized peers on this interface.  This is a list of
