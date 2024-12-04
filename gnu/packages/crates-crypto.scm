@@ -5323,14 +5323,14 @@ in pure Rust.")
   (package
     (inherit rust-salsa20-0.10)
     (name "rust-salsa20")
-    (version "0.7.1")
+    (version "0.7.2")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "salsa20" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-          (base32 "09c16m566g45f41xx3673zyzwca3mykz630fmv2mbjbvmwcc4fw0"))))
+         (base32 "05cs0n4q63czqmi8rcpjhi3vx1412gaaapnf5w19d5a0zh7jk7rr"))))
     (arguments
       `(#:cargo-inputs
         (("rust-cipher" ,rust-cipher-0.2)
