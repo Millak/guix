@@ -256,11 +256,12 @@ ciphers implementations.")
        (sha256
         (base32 "1j90iwpax0y1dqq14i8y9xgpcnnlgnljwkxg3mhzrralwf7ivssl"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-aes-soft" ,rust-aes-soft-0.3)
         ("rust-aesni" ,rust-aesni-0.6)
-        ("rust-block-cipher-trait" ,rust-block-cipher-trait-0.6))))))
+        ("rust-block-cipher-trait" ,rust-block-cipher-trait-0.6))
+       #:cargo-development-inputs
+       (("rust-block-cipher-trait" ,rust-block-cipher-trait-0.6))))))
 
 (define-public rust-aes-ctr-0.6
   (package
