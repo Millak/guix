@@ -1916,8 +1916,34 @@ macOS and iOS.")
   (deprecated-package "rust-security-framework-sys"
                       rust-security-framework-sys-0.2.4-yanked))
 
+(define-public rust-system-configuration-0.6
+  (package
+    (name "rust-system-configuration")
+    (version "0.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "system-configuration" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0sxslml567zm0v8g732314vd2gk9sd3k4xj22xk6p64xir29v1rw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t ; struct `sockaddr_in` has no field named `sin_len`
+       #:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-2)
+        ("rust-core-foundation" ,rust-core-foundation-0.9)
+        ("rust-system-configuration-sys" ,rust-system-configuration-sys-0.6))))
+    (home-page "https://github.com/mullvad/system-configuration-rs")
+    (synopsis "Bindings to SystemConfiguration framework for macOS")
+    (description
+     "This package provides bindings to the @code{SystemConfiguration} framework
+for @code{macOS}.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-system-configuration-0.5
   (package
+    (inherit rust-system-configuration-0.6)
     (name "rust-system-configuration")
     (version "0.5.1")
     (source
@@ -1927,18 +1953,12 @@ macOS and iOS.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1rz0r30xn7fiyqay2dvzfy56cvaa3km74hnbz2d72p97bkf3lfms"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t ; struct `sockaddr_in` has no field named `sin_len`
        #:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-1)
         ("rust-core-foundation" ,rust-core-foundation-0.9)
-        ("rust-system-configuration-sys" ,rust-system-configuration-sys-0.5))))
-    (home-page "https://github.com/mullvad/system-configuration-rs")
-    (synopsis "Bindings to SystemConfiguration framework for macOS")
-    (description
-     "Bindings to @code{SystemConfiguration} framework for @code{macOS}.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-system-configuration-sys" ,rust-system-configuration-sys-0.5))))))
 
 (define-public rust-system-configuration-sys-0.5
   (package
