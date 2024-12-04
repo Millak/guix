@@ -5950,14 +5950,16 @@ functions core functionality.")
   (package
     (inherit rust-sha2-asm-0.6)
     (name "rust-sha2-asm")
-    (version "0.5.4")
+    (version "0.5.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "sha2-asm" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0y4n8r4362y2fa6p2j0dgny4zfi194gdf01l6j850n9vf8ha3kwj"))))))
+        (base32 "192xi35b9qp2ph4fv584z8gy8mr9bsxkbfvb9q9z40k5pqjz5hm7"))))
+    (arguments
+     `(#:cargo-inputs (("rust-cc" ,rust-cc-1))))))
 
 (define-public rust-sha256-1
   (package
