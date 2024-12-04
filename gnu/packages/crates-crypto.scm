@@ -533,16 +533,16 @@ block ciphers using AES-NI.
 This package is deprecated and was replaced by the @code{aes} crate.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-aesni-0.7
+(define-public rust-aesni-0.7.0-yanked
   (package
     (inherit rust-aesni-0.10)
     (name "rust-aesni")
-    (version "0.7.0")
+    (version "0.7.0") ; This version was yanked!
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "aesni" version))
-       (file-name (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version "-yanked.tar.gz"))
        (sha256
         (base32
          "0r6j0mjkyqnwvgib01cvrwfw8rlx1biw75234niv723n1fdx6l6h"))))
@@ -554,7 +554,12 @@ This package is deprecated and was replaced by the @code{aes} crate.")
         ("rust-stream-cipher" ,rust-stream-cipher-0.4))
        #:cargo-development-inputs
        (("rust-block-cipher" ,rust-block-cipher-0.7)
-        ("rust-stream-cipher" ,rust-stream-cipher-0.4))))))
+        ("rust-stream-cipher" ,rust-stream-cipher-0.4))))
+    (properties '((crate-version-yanked? . #t)))))
+
+(define-public rust-aesni-0.7
+  ;; There are no non-yanked versions of this semver.
+  (deprecated-package "rust-aesni" rust-aesni-0.7.0-yanked))
 
 (define-public rust-aesni-0.6.0-yanked
   (package
