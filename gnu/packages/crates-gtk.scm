@@ -1657,14 +1657,14 @@
 (define-public rust-gio-sys-0.20
   (package
     (name "rust-gio-sys")
-    (version "0.20.4")
+    (version "0.20.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gio-sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0ya7i4m3jirrhryy6h8x5kgp3fxn6m4111009ws5aiz0ilvgqzjg"))))
+        (base32 "1g19jl1rg5r9isz5mpi211wswwanrgpxk9y1nlb4ij1l6mpxyrdr"))))
     (build-system cargo-build-system)
     (arguments
      `(;; XXX: Tests are sensitive to the version of glib, even though
