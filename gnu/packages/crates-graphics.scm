@@ -2621,8 +2621,46 @@ filters and decoders for the most common image formats.")
      "This package provides @code{WebP} encoding and decoding in pure Rust.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-imageproc-0.25
+  (package
+    (name "rust-imageproc")
+    (version "0.25.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "imageproc" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "039zxplb99vq61ax305xz4p8lgyxwxkly5ca5sjm21wn11wgp4r3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; `#![feature]` may not be used on the stable release channel
+       #:cargo-inputs (("rust-ab-glyph" ,rust-ab-glyph-0.2)
+                       ("rust-approx" ,rust-approx-0.5)
+                       ("rust-getrandom" ,rust-getrandom-0.2)
+                       ("rust-image" ,rust-image-0.25)
+                       ("rust-itertools" ,rust-itertools-0.12)
+                       ("rust-katexit" ,rust-katexit-0.1)
+                       ("rust-nalgebra" ,rust-nalgebra-0.32)
+                       ("rust-num" ,rust-num-0.4)
+                       ("rust-quickcheck" ,rust-quickcheck-1)
+                       ("rust-rand" ,rust-rand-0.8)
+                       ("rust-rand-distr" ,rust-rand-distr-0.4)
+                       ("rust-rayon" ,rust-rayon-1)
+                       ("rust-sdl2" ,rust-sdl2-0.36))
+       #:cargo-development-inputs
+       (("rust-assert-approx-eq" ,rust-assert-approx-eq-1)
+        ("rust-proptest" ,rust-proptest-1)
+        ("rust-quickcheck" ,rust-quickcheck-1)
+        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))
+    (home-page "https://github.com/image-rs/imageproc")
+    (synopsis "Image processing operations")
+    (description "This package provides image processing operations.")
+    (license license:expat)))
+
 (define-public rust-imageproc-0.23
   (package
+    (inherit rust-imageproc-0.25)
     (name "rust-imageproc")
     (version "0.23.0")
     (source
@@ -2632,7 +2670,6 @@ filters and decoders for the most common image formats.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1mszh0jz8208r9h62aq61mda7xf6pwldcmcnl80n6ihx6n9ykbmn"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; Not all files included
        #:cargo-inputs (("rust-approx" ,rust-approx-0.5)
@@ -2651,11 +2688,7 @@ filters and decoders for the most common image formats.")
        (("rust-assert-approx-eq" ,rust-assert-approx-eq-1)
         ("rust-image" ,rust-image-0.24)
         ("rust-quickcheck" ,rust-quickcheck-0.9)
-        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))
-    (home-page "https://github.com/image-rs/imageproc")
-    (synopsis "Image processing operations")
-    (description "Image processing operations.")
-    (license license:expat)))
+        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))))
 
 (define-public rust-imgref-1
   (package
