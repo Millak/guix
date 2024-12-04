@@ -91722,18 +91722,17 @@ arithmetic.")
 (define-public rust-uncased-0.9
   (package
     (name "rust-uncased")
-    (version "0.9.6")
+    (version "0.9.10")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "uncased" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1l3flz044hfdnsddahj08dflqprfydszkm4vkf458l724xryvbjv"))))
+        (base32 "15q6r6g4fszr8c2lzg9z9k9g52h8g29h24awda3d72cyw37qzf71"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-serde" ,rust-serde-1)
         ("rust-version-check" ,rust-version-check-0.9))))
     (home-page "https://github.com/SergioBenitez/uncased")
