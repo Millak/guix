@@ -3191,14 +3191,14 @@ be used to implement arbitrary protocols.")
 (define-public rust-md5-asm-0.5
   (package
     (name "rust-md5-asm")
-    (version "0.5.0")
+    (version "0.5.2")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "md5-asm" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1ixmkg8j7sqy9zln6pz9xi2dl2d9zpm8pz6p49za47n1bvradfbk"))))
+                "1pz217kwlvrw4bj4hil5acyp3l7g37vwf25psdc210bxzkkqx6yi"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-cc" ,rust-cc-1))))
