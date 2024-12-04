@@ -1343,14 +1343,14 @@ grammars and BER/DER encodings, for example.")
   (package
     (inherit rust-rustls-0.23)
     (name "rust-rustls")
-    (version "0.22.2")
+    (version "0.22.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rustls" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0hcxyhq6ynvws9v5b2h81s1nwmijmya7a3vyyyhsy1wqpmb9jz78"))))
+        (base32 "0cl4q6w0x1cl5ldjsgbbiiqhkz6qg5vxl5dkn9wwsyxc44vzfkmz"))))
     (arguments
      `(#:tests? #f          ; Not all files included.
        #:cargo-inputs (("rust-aws-lc-rs" ,rust-aws-lc-rs-1)
