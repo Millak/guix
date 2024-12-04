@@ -2783,6 +2783,28 @@ pixel buffers with width, height and stride.")
         ("rust-png" ,rust-png-0.16)
         ("rust-walkdir" ,rust-walkdir-2))))))
 
+(define-public rust-katexit-0.1
+  (package
+    (name "rust-katexit")
+    (version "0.1.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "katexit" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1368kfz2cfsqk2sa4gy2cdzy8ynffv24p8wq49y20b6f932084zb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/termoshtt/katexit")
+    (synopsis "Insert KaTeX autorender script into rustdoc")
+    (description
+     "This package provides a @code{KaTeX} autorender script into rustdoc.")
+    (license license:asl2.0)))
+
 (define-public rust-keyframe-1
   (package
     (name "rust-keyframe")
