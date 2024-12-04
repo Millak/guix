@@ -2928,19 +2928,16 @@ graphics and video games.")
   (package
     (inherit rust-lyon-geom-1)
     (name "rust-lyon-geom")
-    (version "0.17.6")
+    (version "0.17.7")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "lyon_geom" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
+        (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32
-          "12al92qsh0f8ci3qf3533r4y5hxzzyfp972vm4wqzz9bq9vwx6ff"))))
+         (base32 "13lcghic8l1j632wsrds9cjw7k3vw8dhc8iy81cx50zxvb5rrn3i"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
         (("rust-arrayvec" ,rust-arrayvec-0.5)
          ("rust-euclid" ,rust-euclid-0.22)
          ("rust-num-traits" ,rust-num-traits-0.2)
