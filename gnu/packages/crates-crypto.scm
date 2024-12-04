@@ -1739,22 +1739,28 @@ Code} (MAC) algorithms.")
         ("rust-generic-array" ,rust-generic-array-0.12)
         ("rust-subtle" ,rust-subtle-1))))))
 
-(define-public rust-crypto-mac-0.4
+(define-public rust-crypto-mac-0.4.0-yanked
   (package
     (inherit rust-crypto-mac-0.11)
     (name "rust-crypto-mac")
-    (version "0.4.0")
+    (version "0.4.0") ; This version was yanked!
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "crypto-mac" version))
-       (file-name (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version "-yanked.tar.gz"))
        (sha256
         (base32 "160ixpghhz5kz16f38kzcyv6lx8wmi4cgbhlhq4nazf678iib43p"))))
     (arguments
      `(#:cargo-inputs
        (("rust-constant-time-eq" ,rust-constant-time-eq-0.1)
-        ("rust-generic-array" ,rust-generic-array-0.8))))))
+        ("rust-generic-array" ,rust-generic-array-0.8))))
+    (properties '((crate-version-yanked? . #t)))))
+
+(define-public rust-crypto-mac-0.4
+  ;; There are no non-yanked versions of this semver.
+  (deprecated-package "rust-crypto-mac" rust-crypto-mac-0.4.0-yanked))
+
 
 (define-public rust-crypto-tests-0.5
   (package
