@@ -1089,8 +1089,37 @@ and iOS.")
     (inputs
      (list dav1d clang llvm))))
 
+(define-public rust-dcv-color-primitives-0.6
+  (package
+    (name "rust-dcv-color-primitives")
+    (version "0.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "dcv-color-primitives" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0k3384cfwhc8z9pxj0gb6dz8sjcwsamnpbrkbc570sfhzvnn5b87"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-paste" ,rust-paste-1)
+                       ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.3)
+        ("rust-getrandom" ,rust-getrandom-0.2)
+        ("rust-itertools" ,rust-itertools-0.10)
+        ("rust-perf-event" ,rust-perf-event-0.4)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))
+    (home-page "https://github.com/aws/dcv-color-primitives")
+    (synopsis "Library to perform image color model conversion")
+    (description
+     "This package provides a library to perform image color model conversion.")
+    (license license:expat-0)))
+
 (define-public rust-dcv-color-primitives-0.4
   (package
+    (inherit rust-dcv-color-primitives-0.6)
     (name "rust-dcv-color-primitives")
     (version "0.4.1")
     (source (origin
@@ -1099,7 +1128,6 @@ and iOS.")
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32 "01c0ag8dwzz00hyq9qam9d5j6yzdh8xpidcn37vgkzlmhgfz8mql"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-paste" ,rust-paste-1)
@@ -1109,12 +1137,7 @@ and iOS.")
         ("rust-getrandom" ,rust-getrandom-0.2)
         ("rust-itertools" ,rust-itertools-0.10)
         ("rust-rand" ,rust-rand-0.8)
-        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))
-    (home-page "https://github.com/aws/dcv-color-primitives")
-    (synopsis "Library to perform image color model conversion")
-    (description
-     "This package provides a library to perform image color model conversion.")
-    (license license:expat-0)))
+        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))))
 
 (define-public rust-deltae-0.3
   (package
