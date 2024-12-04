@@ -6314,24 +6314,27 @@ extension for the Trust-DNS client to use native-tls for TLS.")
 (define-public rust-trust-dns-openssl-0.20
   (package
     (name "rust-trust-dns-openssl")
-    (version "0.20.0")
+    (version "0.20.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "trust-dns-openssl" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1zd10g824qrs0yw2bmxphw43iylxlpgvnwb3l3hnwblp2ffhcx50"))))
+        (base32 "0snwgqj7174ss9hgz0yhgycf5gbkzkrrhx3x3lmq6arn63ii7vcx"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-futures-channel" ,rust-futures-channel-0.3)
         ("rust-futures-util" ,rust-futures-util-0.3)
         ("rust-openssl" ,rust-openssl-0.10)
         ("rust-tokio" ,rust-tokio-1)
         ("rust-tokio-openssl" ,rust-tokio-openssl-0.6)
-        ("rust-trust-dns-proto" ,rust-trust-dns-proto-0.20))))
+        ("rust-trust-dns-proto" ,rust-trust-dns-proto-0.20))
+       #:cargo-development-inputs (("rust-openssl" ,rust-openssl-0.10)
+                                   ("rust-tokio" ,rust-tokio-1))))
+    (native-inputs (list pkg-config))
+    (inputs (list openssl))
     (home-page "https://www.trust-dns.org/index.html")
     (synopsis "Trust-DNS client tokio-openssl extension")
     (description "Trust-DNS is a safe and secure DNS library.  This is an
