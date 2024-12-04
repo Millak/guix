@@ -81860,17 +81860,17 @@ a syntax tree of Rust source code.")
 standard library.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-sync-wrapper-0.1
+(define-public rust-sync-wrapper-1
   (package
     (name "rust-sync-wrapper")
-    (version "0.1.2")
+    (version "1.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "sync_wrapper" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0q01lyj0gr9a93n10nxsn8lwbzq97jqd6b768x17c8f7v7gccir0"))))
+        (base32 "0qvjyasd6w18mjg5xlaq5jgy84jsjfsvmnn12c13gypxbv75dwhb"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-futures-core" ,rust-futures-core-0.3))
@@ -81884,6 +81884,24 @@ standard library.")
      "This package provides a tool for enlisting the compiler's help in proving
 the absence of concurrency.")
     (license license:asl2.0)))
+
+(define-public rust-sync-wrapper-0.1
+  (package
+    (inherit rust-sync-wrapper-1)
+    (name "rust-sync-wrapper")
+    (version "0.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sync_wrapper" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0q01lyj0gr9a93n10nxsn8lwbzq97jqd6b768x17c8f7v7gccir0"))))
+    (arguments
+     `(#:cargo-inputs (("rust-futures-core" ,rust-futures-core-0.3))
+       #:cargo-development-inputs
+       (("rust-futures" ,rust-futures-0.3)
+        ("rust-pin-project-lite" ,rust-pin-project-lite-0.2))))))
 
 (define-public rust-synom-0.11
   (package
