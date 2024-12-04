@@ -3969,9 +3969,16 @@ implementation suitable for use with cryptographic private keys.")
        (uri (crate-uri "pem-rfc7468" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1m1c9jypydzabg4yscplmvff7pdcc8gg4cqg081hnlf03hxkmsc4"))))
+        (base32 "1m1c9jypydzabg4yscplmvff7pdcc8gg4cqg081hnlf03hxkmsc4"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (((string-append ">=([[:digit:]]+(\\.[[:digit:]]+)*),"
+                                   " <([[:digit:]]+(\\.[[:digit:]]+)*)")
+                    _ version _)
+                   (string-append ">=" version)))))))
     (arguments
-     `(#:cargo-inputs (("rust-base64ct" ,rust-base64ct-1.1))))))
+     `(#:cargo-inputs (("rust-base64ct" ,rust-base64ct-1))))))
 
 (define-public rust-poly1305-0.8
   (package
