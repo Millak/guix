@@ -3450,15 +3450,14 @@ dependencies.")
 (define-public rust-httparse-1
   (package
     (name "rust-httparse")
-    (version "1.8.0")
+    (version "1.9.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "httparse" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "010rrfahm1jss3p022fqf3j3jmm72vhn4iqhykahb9ynpaag75yq"))))
+        (base32 "0ip9v8m9lvgvq1lznl31wvn0ch1v254na7lhid9p29yx9rbx6wbx"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-development-inputs
