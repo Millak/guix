@@ -1952,14 +1952,21 @@ on ristretto255 and Curve25519.")
   (package
     (inherit rust-curve25519-dalek-4)
     (name "rust-curve25519-dalek")
-    (version "3.2.0")
+    (version "3.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "curve25519-dalek" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0q8v97275cy6v4ly6y2qwv9a8phnpjg9sy8kv7r6mgdjfacxz7qb"))))
+        (base32 "1h0vcl8p4syvci9zxkn3h80h06xv1fyqgcrfwrv0lnbzjr9d1ych"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (((string-append ">=([[:digit:]]+(\\.[[:digit:]]+)*),"
+                                   " <([[:digit:]]+(\\.[[:digit:]]+)*)")
+                    _ version _)
+                   (string-append ">=" version)))))))
     (arguments
      `(#:cargo-inputs
        (("rust-byteorder" ,rust-byteorder-1)
