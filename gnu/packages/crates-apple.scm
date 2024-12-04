@@ -1960,17 +1960,17 @@ for @code{macOS}.")
         ("rust-core-foundation" ,rust-core-foundation-0.9)
         ("rust-system-configuration-sys" ,rust-system-configuration-sys-0.5))))))
 
-(define-public rust-system-configuration-sys-0.5
+(define-public rust-system-configuration-sys-0.6
   (package
     (name "rust-system-configuration-sys")
-    (version "0.5.0")
+    (version "0.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "system-configuration-sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1jckxvdr37bay3i9v52izgy52dg690x5xfg3hd394sv2xf4b2px7"))))
+        (base32 "1i5sqrmgy58l4704hibjbl36hclddglh73fb3wx95jnmrq81n7cf"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-core-foundation-sys" ,rust-core-foundation-sys-0.8)
@@ -1980,3 +1980,19 @@ for @code{macOS}.")
     (description
      "Low level bindings to @code{SystemConfiguration} framework for @code{macOS}.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-system-configuration-sys-0.5
+  (package
+    (inherit rust-system-configuration-sys-0.6)
+    (name "rust-system-configuration-sys")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "system-configuration-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1jckxvdr37bay3i9v52izgy52dg690x5xfg3hd394sv2xf4b2px7"))))
+    (arguments
+     `(#:cargo-inputs (("rust-core-foundation-sys" ,rust-core-foundation-sys-0.8)
+                       ("rust-libc" ,rust-libc-0.2))))))
