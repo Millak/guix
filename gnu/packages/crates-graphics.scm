@@ -504,22 +504,27 @@ alpha channel embedding.")
        #:cargo-inputs (("rust-arrayvec" ,rust-arrayvec-0.7))
        #:cargo-development-inputs (("rust-avif-parse" ,rust-avif-parse-1))))))
 
-(define-public rust-avif-serialize-0.6
+(define-public rust-avif-serialize-0.6.5-yanked
   (package
     (inherit rust-avif-serialize-0.7)
     (name "rust-avif-serialize")
-    (version "0.6.5")
+    (version "0.6.5") ; This version was yanked!
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "avif-serialize" version))
-       (file-name (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version "-yanked.tar.gz"))
        (sha256
         (base32 "130wq838lslkcqcp2kjci7q3aq9qpir07pvxndc81xqbn63wvdjg"))))
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
-       (("rust-arrayvec" ,rust-arrayvec-0.5))))))
+       (("rust-arrayvec" ,rust-arrayvec-0.5))))
+    (properties '((crate-version-yanked? . #t)))))
+
+(define-public rust-avif-serialize-0.6
+  ;; There are no non-yanked versions of this semver.
+  (deprecated-package "rust-avif-serialize" rust-avif-serialize-0.6.5-yanked))
 
 (define-public rust-box-drawing-0.1
   (package
