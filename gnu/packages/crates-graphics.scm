@@ -5712,8 +5712,32 @@ xml files.")
 with wayrs-client.")
     (license license:expat)))
 
+(define-public rust-wayrs-scanner-0.15
+  (package
+    (name "rust-wayrs-scanner")
+    (version "0.15.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wayrs-scanner" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ic501bv24racms7gissz8v7axf71irrd134ljsjx557zv5p3w91"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2)
+                       ("rust-wayrs-proto-parser" ,rust-wayrs-proto-parser-2))))
+    (home-page "https://github.com/MaxVerevkin/wayrs")
+    (synopsis "Generates code for wayrs-client from xml files")
+    (description "This package provides code generation for wayrs-client
+from xml files.")
+    (license license:expat)))
+
 (define-public rust-wayrs-scanner-0.13
   (package
+    (inherit rust-wayrs-scanner-0.15)
     (name "rust-wayrs-scanner")
     (version "0.13.2")
     (source
@@ -5723,18 +5747,12 @@ with wayrs-client.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "07xzg36rnnsb4z4rd82r2mk3y05vg1ssfwrry2kd4yz395sx91z3"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-proc-macro-crate" ,rust-proc-macro-crate-3)
                        ("rust-proc-macro2" ,rust-proc-macro2-1)
                        ("rust-quote" ,rust-quote-1)
                        ("rust-syn" ,rust-syn-2)
-                       ("rust-wayrs-proto-parser" ,rust-wayrs-proto-parser-2))))
-    (home-page "https://github.com/MaxVerevkin/wayrs")
-    (synopsis "Generates code for wayrs-client from xml files")
-    (description "This package provides code generation for wayrs-client
-from xml files.")
-    (license license:expat)))
+                       ("rust-wayrs-proto-parser" ,rust-wayrs-proto-parser-2))))))
 
 (define-public rust-webp-0.3
   (package
