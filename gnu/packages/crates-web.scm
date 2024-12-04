@@ -5881,22 +5881,20 @@ clients and servers.")
 (define-public rust-tower-layer-0.3
   (package
     (name "rust-tower-layer")
-    (version "0.3.2")
+    (version "0.3.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tower-layer" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1l7i17k9vlssrdg4s3b0ia5jjkmmxsvv8s9y9ih0jfi8ssz8s362"))))
+        (base32 "03kq92fdzxin51w8iqix06dcfgydyvx7yr6izjq0p626v9n2l70j"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
        '("--release" "--"
-         "--skip=layer_fn::layer_fn")
-       #:cargo-development-inputs
-       (("rust-tower" ,rust-tower-0.4)
-        ("rust-tower-service" ,rust-tower-service-0.3))))
+         "--skip=layer_fn::layer_fn"
+         "--skip=src/lib.rs - Layer")))
     (home-page "https://github.com/tower-rs/tower")
     (synopsis "Easy composition between @code{Service}s")
     (description "This package decorates a @code{Service} to allow easy
