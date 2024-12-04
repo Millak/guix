@@ -6205,7 +6205,7 @@ platform-specific getters provided by winit, or another library.")
 (define-public rust-x11-2
   (package
     (name "rust-x11")
-    (version "2.20.1")
+    (version "2.21.0")
     (source
      (origin
        (method url-fetch)
@@ -6213,7 +6213,7 @@ platform-specific getters provided by winit, or another library.")
        (file-name
         (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "10pbvmcyqm6j6zr4zk7znk8silmilihv8jxmbxbl1b0pkidqsqy2"))))
+        (base32 "0bnvl09d7044k067gqdx1ln2r0ljp5f4675icwb0216d9i3aabah"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
