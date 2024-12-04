@@ -6531,17 +6531,16 @@ DNS protocol library for all Trust-DNS projects.")
   (package
     (inherit rust-trust-dns-proto-0.22)
     (name "rust-trust-dns-proto")
-    (version "0.20.0")
+    (version "0.20.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "trust-dns-proto" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1gdsxjl628h02dp0fhcjz6js79fc4dxprqgqny6rghk450dki84q"))))
+        (base32 "0cafw8m2488xlr251b0khf6h2d7g4ix0s164j33838dnzvlx956a"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-async-trait" ,rust-async-trait-0.1)
         ("rust-backtrace" ,rust-backtrace-0.3)
         ("rust-cfg-if" ,rust-cfg-if-1)
@@ -6562,9 +6561,14 @@ DNS protocol library for all Trust-DNS projects.")
         ("rust-smallvec" ,rust-smallvec-1)
         ("rust-socket2" ,rust-socket2-0.3)
         ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-tinyvec" ,rust-tinyvec-1)
         ("rust-tokio" ,rust-tokio-1)
         ("rust-url" ,rust-url-2)
-        ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2))))))
+        ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2))
+       #:cargo-development-inputs
+       (("rust-env-logger" ,rust-env-logger-0.8)
+        ("rust-futures-executor" ,rust-futures-executor-0.3)
+        ("rust-tokio" ,rust-tokio-1))))))
 
 (define-public rust-trust-dns-proto-0.19
   (package
