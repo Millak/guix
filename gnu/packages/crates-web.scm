@@ -3231,14 +3231,14 @@ extended with server support and additional auth schemes.")
 (define-public rust-http-body-1
   (package
     (name "rust-http-body")
-    (version "1.0.0")
+    (version "1.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "http-body" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0hyn8n3iadrbwq8y0p1rl1275s4nm49bllw5wji29g4aa3dqbb0w"))))
+        (base32 "111ir5k2b9ihz5nr9cz7cwm7fnydca7dx4hc7vr16scfzghxrzhy"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bytes" ,rust-bytes-1)
