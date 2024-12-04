@@ -3920,8 +3920,37 @@ using Rust.")
     (description "This package provides SDL2 bindings for Rust.")
     (license license:expat)))
 
+(define-public rust-sdl2-sys-0.36
+  (package
+    (name "rust-sdl2-sys")
+    (version "0.36.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sdl2-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0adxb3n2bq8j58x7diwnm0d96qwa0fqgwjahg2srylsxskysrg16"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; `#[panic_handler]` function required, but not found
+       #:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.53)
+                       ("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-cmake" ,rust-cmake-0.1)
+                       ("rust-flate2" ,rust-flate2-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-pkg-config" ,rust-pkg-config-0.3)
+                       ("rust-vcpkg" ,rust-vcpkg-0.2)
+                       ("rust-version-compare" ,rust-version-compare-0.1))))
+    (home-page "https://github.com/rust-sdl2/rust-sdl2")
+    (synopsis "Raw SDL2 bindings for Rust, used internally rust-sdl2")
+    (description "This package provides raw SDL2 bindings for Rust, used
+internally rust-sdl2.")
+    (license license:expat)))
+
 (define-public rust-sdl2-sys-0.35
   (package
+    (inherit rust-sdl2-sys-0.36)
     (name "rust-sdl2-sys")
     (version "0.35.2")
     (source (origin
@@ -3933,7 +3962,6 @@ using Rust.")
               (modules '((guix build utils)))
               (snippet
                '(begin (delete-file-recursively "SDL")))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t     ; Building requires several SDL2 inputs.
        #:cargo-inputs
@@ -3944,12 +3972,7 @@ using Rust.")
         ("rust-libc" ,rust-libc-0.2)
         ("rust-pkg-config" ,rust-pkg-config-0.3)
         ("rust-vcpkg" ,rust-vcpkg-0.2)
-        ("rust-version-compare" ,rust-version-compare-0.1))))
-    (home-page "https://github.com/rust-sdl2/rust-sdl2")
-    (synopsis "Raw SDL2 bindings for Rust, used internally rust-sdl2")
-    (description "This package provides raw SDL2 bindings for Rust, used
-internally rust-sdl2.")
-    (license license:expat)))
+        ("rust-version-compare" ,rust-version-compare-0.1))))))
 
 (define-public rust-smithay-client-toolkit-0.19
   (package
