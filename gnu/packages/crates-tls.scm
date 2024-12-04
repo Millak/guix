@@ -1652,29 +1652,31 @@ grammars and BER/DER encodings, for example.")
 (define-public rust-rustls-native-certs-0.7
   (package
     (name "rust-rustls-native-certs")
-    (version "0.7.0")
+    (version "0.7.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rustls-native-certs" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "14ip15dcr6fmjzi12lla9cpln7mmkdid4a7wsp344v4kz9gbh7wg"))))
+        (base32 "1r9ib5gwkfci2wbqnbh44nigvrfgxs4n1x89js82w97dxsab7gz5"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f      ; Tests want network access.
+     `(#:cargo-test-flags '("--release" "--"
+                            "--skip=test_contains_most_roots_known_by_mozilla")
        #:cargo-inputs (("rust-openssl-probe" ,rust-openssl-probe-0.1)
                        ("rust-rustls-pemfile" ,rust-rustls-pemfile-2)
                        ("rust-rustls-pki-types" ,rust-rustls-pki-types-1)
                        ("rust-schannel" ,rust-schannel-0.1)
                        ("rust-security-framework" ,rust-security-framework-2))
-       #:cargo-development-inputs (("rust-ring" ,rust-ring-0.16)
-                                   ("rust-rustls" ,rust-rustls-0.22)
+       #:cargo-development-inputs (("rust-ring" ,rust-ring-0.17)
+                                   ("rust-rustls" ,rust-rustls-0.23)
                                    ("rust-rustls-webpki" ,rust-rustls-webpki-0.102)
-                                   ("rust-serial-test" ,rust-serial-test-2)
-                                   ("rust-untrusted" ,rust-untrusted-0.7)
+                                   ("rust-serial-test" ,rust-serial-test-3)
+                                   ("rust-tempfile" ,rust-tempfile-3)
+                                   ("rust-untrusted" ,rust-untrusted-0.9)
                                    ("rust-webpki-roots" ,rust-webpki-roots-0.26)
-                                   ("rust-x509-parser" ,rust-x509-parser-0.15))))
+                                   ("rust-x509-parser" ,rust-x509-parser-0.16))))
     (home-page "https://github.com/ctz/rustls-native-certs")
     (synopsis "Use the platform native certificate store with rustls")
     (description "@code{rustls-native-certs} allows rustls to use the platform
