@@ -3996,14 +3996,14 @@ internally rust-sdl2.")
   (package
     (inherit rust-smithay-client-toolkit-0.19)
     (name "rust-smithay-client-toolkit")
-    (version "0.18.0")
+    (version "0.18.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "smithay-client-toolkit" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "03v0h71qzg5iw5nd2k15a50ic55a9wq6bc7l5dyczfm33yadkqv0"))))
+        (base32 "0fpm2yfpsif7022w4xalxgn53y8w5dc8zkipcpbj1n1vmgpd6bwj"))))
     (arguments
      `(#:skip-build? #t     ; Cut the dependency chain
        #:cargo-inputs
