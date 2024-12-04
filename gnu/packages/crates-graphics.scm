@@ -4143,22 +4143,22 @@ internally rust-sdl2.")
 (define-public rust-smithay-clipboard-0.7
   (package
     (name "rust-smithay-clipboard")
-    (version "0.7.0")
+    (version "0.7.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "smithay-clipboard" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "19m1rqw4fsp9x92cji9qz169004djjh376b68ylcp9g51hl2pdhb"))))
+        (base32 "0inqnr4x458nqz0wdcanbgn77dad3bj0m7pjj074lrv3qkp1d0nc"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-libc" ,rust-libc-0.2)
-        ("rust-smithay-client-toolkit" ,rust-smithay-client-toolkit-0.18)
+        ("rust-smithay-client-toolkit" ,rust-smithay-client-toolkit-0.19)
         ("rust-wayland-backend" ,rust-wayland-backend-0.3))
        #:cargo-development-inputs
-       (("rust-smithay-client-toolkit" ,rust-smithay-client-toolkit-0.18))))
+       (("rust-smithay-client-toolkit" ,rust-smithay-client-toolkit-0.19))))
     (native-inputs (list pkg-config))
     (inputs (list libxkbcommon))
     (home-page "https://github.com/smithay/smithay-clipboard")
