@@ -39,27 +39,32 @@ if test "x$guix_build_daemon" = "xyes"; then
 
   case "$LIBGCRYPT_PREFIX" in
     no)
-      LIBGCRYPT_CXXFLAGS=""
+      LIBGCRYPT_CPPFLAGS=""
       ;;
     *)
-      LIBGCRYPT_CXXFLAGS="-I$LIBGCRYPT_PREFIX/include"
+      LIBGCRYPT_CPPFLAGS="-I$LIBGCRYPT_PREFIX/include"
       ;;
   esac
 
   case "$LIBGCRYPT_LIBDIR" in
     no | "")
-      LIBGCRYPT_LDFLAGS="-lgcrypt"
       ;;
     *)
-      LIBGCRYPT_LDFLAGS="-L$LIBGCRYPT_LIBDIR -lgcrypt"
+      LIBGCRYPT_LDFLAGS="-L$LIBGCRYPT_LIBDIR"
       ;;
   esac
 
-  AC_SUBST([LIBGCRYPT_CXXFLAGS])
+  LIBGCRYPT_LIBS="-lgcrypt"
+  AC_SUBST([LIBGCRYPT_CPPFLAGS])
   AC_SUBST([LIBGCRYPT_LDFLAGS])
+  AC_SUBST([LIBGCRYPT_LIBS])
 
-  CXXFLAGS="$CXXFLAGS $LIBGCRYPT_CXXFLAGS"
+  save_CPPFLAGS="$CPPFLAGS"
+  save_LDFLAGS="$LDFLAGS"
+  save_LIBS="$LIBS"
+  CPPFLAGS="$CPPFLAGS $LIBGCRYPT_CPPFLAGS"
   LDFLAGS="$LDFLAGS $LIBGCRYPT_LDFLAGS"
+  LIBS="$LIBS $LIBGCRYPT_LIBS"
 
   have_gcrypt=yes
   AC_CHECK_LIB([gcrypt], [gcry_md_open], [:], [have_gcrypt=no])
@@ -67,6 +72,9 @@ if test "x$guix_build_daemon" = "xyes"; then
   if test "x$have_gcrypt" != "xyes"; then
     AC_MSG_ERROR([GNU libgcrypt not found; please install it.])
   fi
+  CPPFLAGS="$save_CPPFLAGS"
+  LDFLAGS="$save_LDFLAGS"
+  LIBS="$save_LIBS"
 
   dnl Chroot support.
   AC_CHECK_FUNCS([chroot unshare])

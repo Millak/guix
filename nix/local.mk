@@ -69,7 +69,8 @@ libutil_headers =				\
 libutil_a_CPPFLAGS =				\
   -I$(top_builddir)/nix				\
   -I$(top_srcdir)/%D%/libutil			\
-  $(libformat_a_CPPFLAGS)
+  $(libformat_a_CPPFLAGS)			\
+  $(LIBGCRYPT_CPPFLAGS)
 
 libstore_a_SOURCES =				\
   %D%/libstore/gc.cc				\
@@ -109,7 +110,7 @@ libstore_a_CPPFLAGS =				\
   -DDEFAULT_CHROOT_DIRS="\"\""
 
 libstore_a_CXXFLAGS = $(AM_CXXFLAGS)		\
-  $(SQLITE3_CFLAGS) $(LIBGCRYPT_CFLAGS)
+  $(SQLITE3_CFLAGS)
 
 bin_PROGRAMS = guix-daemon
 
@@ -121,6 +122,9 @@ guix_daemon_CPPFLAGS =				\
   -DLOCALEDIR=\"$(localedir)\"			\
   $(libutil_a_CPPFLAGS)				\
   -I$(top_srcdir)/%D%/libstore
+
+guix_daemon_LDFLAGS = 				\
+  $(LIBGCRYPT_LDFLAGS)
 
 guix_daemon_LDADD =				\
   libstore.a libutil.a libformat.a -lz		\
