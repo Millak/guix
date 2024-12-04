@@ -62984,17 +62984,17 @@ to write.")
          (base32
           "1q6za3v78hsspisc197bg3g7rpc989qycy8ypr8ap8igv10ikl51"))))))
 
-(define-public rust-quick-xml-0.36
+(define-public rust-quick-xml-0.37
   (package
     (name "rust-quick-xml")
-    (version "0.36.2")
+    (version "0.37.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "quick-xml" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1zj3sjcjk6sn544wb2wvhr1km5f9cy664vzclygfsnph9mxrlr7p"))))
+        (base32 "00vagwspb7j87v34ybvylphf9isf8bb5zy9fcgcb91rrzyyjjbzj"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-arbitrary" ,rust-arbitrary-1)
@@ -63016,6 +63016,34 @@ to write.")
     (description
      "This package provides a high performance XML reader and writer.")
     (license license:expat)))
+
+(define-public rust-quick-xml-0.36
+  (package
+    (inherit rust-quick-xml-0.37)
+    (name "rust-quick-xml")
+    (version "0.36.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "quick-xml" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1zj3sjcjk6sn544wb2wvhr1km5f9cy664vzclygfsnph9mxrlr7p"))))
+    (arguments
+     `(#:cargo-inputs (("rust-arbitrary" ,rust-arbitrary-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-encoding-rs" ,rust-encoding-rs-0.8)
+                       ("rust-memchr" ,rust-memchr-2)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-tokio" ,rust-tokio-1))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.4)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-serde-value" ,rust-serde-value-0.7)
+        ("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tokio-test" ,rust-tokio-test-0.4))))))
 
 (define-public rust-quick-xml-0.32
   (package
