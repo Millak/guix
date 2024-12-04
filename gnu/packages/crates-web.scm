@@ -4947,17 +4947,17 @@ and speed.")
 (define-public rust-rocket-codegen-0.5
   (package
     (name "rust-rocket-codegen")
-    (version "0.5.0")
+    (version "0.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rocket_codegen" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0k6hdf9s9y73kzj89qs688gnfjj1sl4imp6pdjz22pzpmdk808x2"))))
+        (base32 "0inxw7nzr52sabwpz83cz5rh1a0mg32cg7w7ih8715qsxkbk4pap"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f      ; can't find crate for `rocket`
+     `(#:tests? #f      ; use of undeclared crate or module `rocket`
        #:cargo-inputs (("rust-devise" ,rust-devise-0.4)
                        ("rust-glob" ,rust-glob-0.3)
                        ("rust-indexmap" ,rust-indexmap-2)
