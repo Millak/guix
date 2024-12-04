@@ -395,17 +395,18 @@
 (define-public rust-aws-lc-fips-sys-0.12
   (package
     (name "rust-aws-lc-fips-sys")
-    (version "0.12.1")
+    (version "0.12.15")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "aws-lc-fips-sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0fv2z5gcm9wm45hbsjhm657p6diqiq1vw5a2rzrzfg8j4vxdzz07"))))
+        (base32 "1yrvbilhzdisjk3mf3qf9xlbqwkh07ycsa2c7ppm2y1a4678l7nz"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.69)
+                       ("rust-cc" ,rust-cc-1)
                        ("rust-cmake" ,rust-cmake-0.1)
                        ("rust-dunce" ,rust-dunce-1)
                        ("rust-fs-extra" ,rust-fs-extra-1)
