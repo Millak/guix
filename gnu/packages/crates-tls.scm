@@ -1589,14 +1589,14 @@ grammars and BER/DER encodings, for example.")
 (define-public rust-rustls-ffi-0.14
   (package
     (name "rust-rustls-ffi")
-    (version "0.14.0")
+    (version "0.14.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rustls-ffi" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1cdpnx205m3bc7sn6gvaizlsb8ayipf1l061das37mf7n4sw157s"))))
+        (base32 "1hky8z8xf9l813b1f54b0ir2knzv3kflh41i7q7xwlkyafza65n9"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
