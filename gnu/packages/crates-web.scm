@@ -3376,14 +3376,14 @@ response bodies.")
 (define-public rust-http-range-header-0.4
   (package
     (name "rust-http-range-header")
-    (version "0.4.0")
+    (version "0.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "http-range-header" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1zhigmvyrk50jzll6nmn7n1rxkfzh8xn0838dvdvnj52rlqyzr1w"))))
+        (base32 "171mszmmq0lzpj9brig4wz1sz8hh3h6dgmaxs69q2db8ibma4wci"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-development-inputs
