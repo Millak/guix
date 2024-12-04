@@ -3110,24 +3110,22 @@ libraries.")
 (define-public rust-http-1
   (package
     (name "rust-http")
-    (version "1.0.0")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "http" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1sllw565jn8r5w7h928nsfqq33x586pyasdfr7vid01scwwgsamk"))))
+        (base32 "1skglzdf98j5nzxlii540n11is0w4l80mi5sm3xrj716asps4v7i"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bytes" ,rust-bytes-1)
                        ("rust-fnv" ,rust-fnv-1)
                        ("rust-itoa" ,rust-itoa-1))
        #:cargo-development-inputs (("rust-doc-comment" ,rust-doc-comment-0.3)
-                                   ("rust-indexmap" ,rust-indexmap-1.8)
-                                   ("rust-quickcheck" ,rust-quickcheck-0.9)
-                                   ("rust-rand" ,rust-rand-0.7)
-                                   ("rust-seahash" ,rust-seahash-3)
+                                   ("rust-quickcheck" ,rust-quickcheck-1)
+                                   ("rust-rand" ,rust-rand-0.8)
                                    ("rust-serde" ,rust-serde-1)
                                    ("rust-serde-json" ,rust-serde-json-1))))
     (home-page "https://github.com/hyperium/http")
