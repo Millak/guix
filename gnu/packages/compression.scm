@@ -1942,13 +1942,14 @@ the actual decompression, the other input and output.")
      `(#:tests? #f ; no test target
        #:make-flags (let ((out (assoc-ref %outputs "out")))
                       (list "-f" "unix/Makefile"
+                            "CC=gcc -Wno-error=implicit-function-declaration"
                             (string-append "prefix=" out)
                             (string-append "MANDIR=" out "/share/man/man1")))
        #:phases
        (modify-phases %standard-phases
          (replace 'build
            (lambda* (#:key (make-flags '()) #:allow-other-keys)
-             (apply invoke "make" "generic_gcc" make-flags)))
+             (apply invoke "make" "generic" make-flags)))
          (delete 'configure))))
     (home-page "http://www.info-zip.org/Zip.html")
     (synopsis "Compression and file packing utility")
