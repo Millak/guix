@@ -1498,16 +1498,16 @@ the Actix ecosystem.")
   (package
     (inherit rust-actix-web-4)
     (name "rust-actix-web")
-    (version "3.3.2")
+    (version "3.3.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "actix-web" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "11kv8y1p9dw78lnhrw3rqavhmazmy7s0z8j14a3a1yp7fahx8hg6"))))
+        (base32 "0xz2wggpxqdi57caj1hx7ydwi4i0nk5529xs8gscm0gmdl94llxn"))))
     (arguments
-     `(#:skip-build? #t
+     `(#:tests? #f      ; Test uses multiple undeclared crates.
        #:cargo-inputs
        (("rust-actix-codec" ,rust-actix-codec-0.3)
         ("rust-actix-http" ,rust-actix-http-2)
