@@ -5740,20 +5740,17 @@ for data that potentially contains secrets (e.g. cryptographic keys).")
 (define-public rust-sha1-asm-0.5
   (package
     (name "rust-sha1-asm")
-    (version "0.5.1")
+    (version "0.5.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "sha1-asm" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "1b7ab7f4n87pqdmbl1a5jrc2axf27pvbndsz9qiwwgxw01qlygan"))))
+        (base32 "0asqxlxf5li7ac9mi49qj890rzsfb5px5ynzmqq12z5nz2xcwsi8"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-cc" ,rust-cc-1))))
+     `(#:cargo-inputs (("rust-cc" ,rust-cc-1))))
     (home-page "https://github.com/RustCrypto/asm-hashes")
     (synopsis "Assembly implementation of SHA-1 compression function")
     (description
