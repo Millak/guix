@@ -4982,16 +4982,16 @@ and speed.")
   (package
     (inherit rust-rocket-codegen-0.5)
     (name "rust-rocket-codegen")
-    (version "0.4.7")
+    (version "0.4.11")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rocket_codegen" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "18s2dll8c4sd26s8cfr6cizj5z55xwnk6r6x7b2wvcf8n9ajrb6f"))))
+        (base32 "1zl4f99s4df8fpkps53qn77030baww4x7zflggwql290b1xh6418"))))
     (arguments
-     `(#:skip-build? #t
+     `(#:skip-build? #t     ; Breaks from pear_codegen
        #:cargo-inputs
        (("rust-devise" ,rust-devise-0.2)
         ("rust-glob" ,rust-glob-0.3)
