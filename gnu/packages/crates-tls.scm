@@ -429,14 +429,14 @@ version of AWS-LC.")
 (define-public rust-aws-lc-rs-1
   (package
     (name "rust-aws-lc-rs")
-    (version "1.11.0")
+    (version "1.11.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "aws-lc-rs" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0ifz8z5y4qg94ri9vybyv2pq0hr7ds3da1r6rmd08dk2nr02hz7y"))
+        (base32 "18z5wvb8ay1183vw3cbp8wpqil3pl2p8bxfcxrkx4sdn2v6bhyzl"))
        (modules '((guix build utils)))
        (snippet
         '(begin (substitute* "Cargo.toml"
@@ -447,7 +447,6 @@ version of AWS-LC.")
      `(#:tests? #f          ; Not all files included.
        #:cargo-inputs (("rust-aws-lc-fips-sys" ,rust-aws-lc-fips-sys-0.12)
                        ("rust-aws-lc-sys" ,rust-aws-lc-sys-0.23)
-                       ("rust-mirai-annotations" ,rust-mirai-annotations-1)
                        ("rust-paste" ,rust-paste-1)
                        ("rust-untrusted" ,rust-untrusted-0.7)
                        ("rust-zeroize" ,rust-zeroize-1))
