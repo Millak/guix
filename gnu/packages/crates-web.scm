@@ -5050,16 +5050,16 @@ responses, and headers for the Rocket web framework.")
   (package
     (inherit rust-rocket-http-0.5)
     (name "rust-rocket-http")
-    (version "0.4.7")
+    (version "0.4.11")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rocket_http" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0ga98nbcga8amg4xhrfkn1wljnqx9h0vv7mnay9g66vsxl042dnf"))))
+        (base32 "17xiivj4cp3anm4rxxpd8g58kzday1y2pgdys2i23wz1538wpy9b"))))
     (arguments
-     `(#:skip-build? #t
+     `(#:skip-build? #t     ; Breaks from pear_codegen
        #:cargo-inputs
        (("rust-cookie" ,rust-cookie-0.11)
         ("rust-hyper" ,rust-hyper-0.10)
