@@ -5906,7 +5906,7 @@ composition between @code{Service}s.")
 (define-public rust-tower-service-0.3
   (package
     (name "rust-tower-service")
-    (version "0.3.2")
+    (version "0.3.3")
     (source
      (origin
        (method url-fetch)
@@ -5914,7 +5914,7 @@ composition between @code{Service}s.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0lmfzmmvid2yp2l36mbavhmqgsvzqf7r2wiwz73ml4xmwaf1rg5n"))))
+         "1hzfkvkci33ra94xjx64vv3pp0sq346w06fpkcdwjcid7zhvdycd"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-development-inputs
