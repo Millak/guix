@@ -5691,24 +5691,16 @@ for data that potentially contains secrets (e.g. cryptographic keys).")
   (package
     (inherit rust-sha1-0.10)
     (name "rust-sha1")
-    (version "0.6.0")
+    (version "0.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "sha1" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "03gs2q4m67rn2p8xcdfxhip6mpgahdwm12bnb3vh90ahv9grhy95"))))
+        (base32 "0w1p0s9060cv1vlgfa5c93kjksmvzjjc8j780lns3jj5fk4hbnn1"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-serde" ,rust-serde-1))
-       #:cargo-development-inputs
-       (("rust-openssl" ,rust-openssl-0.10)
-        ("rust-rand" ,rust-rand-0.4)
-        ("rust-serde-json" ,rust-serde-json-1))))))
+     `(#:cargo-inputs (("rust-sha1-smol" ,rust-sha1-smol-1))))))
 
 (define-public rust-sha1-0.2
   (package
