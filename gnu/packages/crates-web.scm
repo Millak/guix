@@ -6771,16 +6771,31 @@ other queries.")
   (package
     (inherit rust-trust-dns-resolver-0.22)
     (name "rust-trust-dns-resolver")
-    (version "0.20.0")
+    (version "0.20.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "trust-dns-resolver" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1r2n933z9yrpdqv60c9mbhl64y2inpx9rm870nq1qqmx226d2wih"))))
+        (base32 "0ymprysz8f5qjaj74x488pjhbwy329yybs2clgx5x6frm8xkibpc"))))
     (arguments
-     `(#:skip-build? #t
+     `(#:cargo-test-flags
+       '("--release" "--lib" "--bins" "--tests" "--"
+         "--skip=async_resolver::tests::test_domain_search"
+         "--skip=async_resolver::tests::test_fqdn"
+         "--skip=async_resolver::tests::test_idna"
+         "--skip=async_resolver::tests::test_large_ndots"
+         "--skip=async_resolver::tests::test_lookup_cloudflare"
+         "--skip=async_resolver::tests::test_lookup_google"
+         "--skip=async_resolver::tests::test_lookup_quad9"
+         "--skip=async_resolver::tests::test_ndots"
+         "--skip=async_resolver::tests::test_search_list"
+         "--skip=hosts::tests::test_read_hosts_conf"
+         "--skip=name_server::name_server::tests::test_name_server"
+         "--skip=name_server::name_server_pool::tests::test_multi_use_conns"
+         "--skip=resolver::tests::test_lookup"
+         "--skip=system_conf::unix::tests::test_read_resolv_conf")
        #:cargo-inputs
        (("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-futures-util" ,rust-futures-util-0.3)
@@ -6803,7 +6818,10 @@ other queries.")
         ("rust-trust-dns-openssl" ,rust-trust-dns-openssl-0.20)
         ("rust-trust-dns-proto" ,rust-trust-dns-proto-0.20)
         ("rust-trust-dns-rustls" ,rust-trust-dns-rustls-0.20)
-        ("rust-webpki-roots" ,rust-webpki-roots-0.21))))))
+        ("rust-webpki-roots" ,rust-webpki-roots-0.21))
+       #:cargo-development-inputs
+       (("rust-env-logger" ,rust-env-logger-0.8)
+        ("rust-futures-executor" ,rust-futures-executor-0.3))))))
 
 (define-public rust-trust-dns-resolver-0.19
   (package
