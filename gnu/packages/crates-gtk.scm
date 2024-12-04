@@ -1392,14 +1392,14 @@
 (define-public rust-gio-0.20
   (package
     (name "rust-gio")
-    (version "0.20.4")
+    (version "0.20.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gio" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0g6l7a1n63a8myjpcv10mn214w0ypijf6rq812b3wn09zgl9kndq"))))
+        (base32 "071n06a1zsngjr4q7k0kr7qzbxmg1pm0psjby3hkvkjnmnlx49l8"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
@@ -1414,8 +1414,7 @@
                        ("rust-glib" ,rust-glib-0.20)
                        ("rust-libc" ,rust-libc-0.2)
                        ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
-                       ("rust-smallvec" ,rust-smallvec-1)
-                       ("rust-thiserror" ,rust-thiserror-1))
+                       ("rust-smallvec" ,rust-smallvec-1))
        #:cargo-development-inputs
        (("rust-futures" ,rust-futures-0.3)
         ("rust-futures-util" ,rust-futures-util-0.3)
