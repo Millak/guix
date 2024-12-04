@@ -7514,26 +7514,26 @@ Verification.")
 (define-public rust-webpki-roots-0.26
   (package
     (name "rust-webpki-roots")
-    (version "0.26.1")
+    (version "0.26.7")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "webpki-roots" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "029006qfs61q75gl60aap25m0gdqmvd1pcpljid9b0q44yp39pmk"))))
+        (base32 "0zpykqqk4jnrx55jc8wcysnprhfdcwh35dsiwhm2fybydgqjyr2x"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f  ; use of undeclared crate or module `webpki_ccadb`
        #:cargo-inputs (("rust-rustls-pki-types" ,rust-rustls-pki-types-1))
        #:cargo-development-inputs (("rust-hex" ,rust-hex-0.4)
                                    ("rust-percent-encoding" ,rust-percent-encoding-2)
-                                   ("rust-rcgen" ,rust-rcgen-0.12)
+                                   ("rust-rcgen" ,rust-rcgen-0.13)
                                    ("rust-ring" ,rust-ring-0.17)
-                                   ("rust-rustls" ,rust-rustls-0.22)
+                                   ("rust-rustls" ,rust-rustls-0.23)
                                    ("rust-rustls-webpki" ,rust-rustls-webpki-0.102)
                                    ("rust-tokio" ,rust-tokio-1)
-                                   ("rust-x509-parser" ,rust-x509-parser-0.15)
+                                   ("rust-x509-parser" ,rust-x509-parser-0.16)
                                    ("rust-yasna" ,rust-yasna-0.5))))
     (native-inputs
      (list pkg-config))
