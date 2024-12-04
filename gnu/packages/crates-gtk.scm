@@ -4146,14 +4146,14 @@ library.")
 (define-public rust-pango-0.20
   (package
     (name "rust-pango")
-    (version "0.20.4")
+    (version "0.20.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "pango" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0mpkjnxcgng8mjf7y55q5d1md4qxswf90m5784hxg50hn5aal9ma"))))
+        (base32 "0jjml2rmdh6fmayqzm6nm5gp50rbm04i89g5swrkjbn5l9y4xqvi"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-gio" ,rust-gio-0.20)
