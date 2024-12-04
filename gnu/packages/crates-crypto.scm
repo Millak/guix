@@ -5468,14 +5468,14 @@ well as the Elliptic-Curve-Point-to-Octet-String encoding.")
 (define-public rust-secp256k1-0.21
   (package
     (name "rust-secp256k1")
-    (version "0.21.2")
+    (version "0.21.3")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "secp256k1" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-          (base32 "09gia5hjf1hb9jgac9nzq0s0ijbsdjfflh40xw8z08avgl0q6y5b"))))
+          (base32 "0q0jfmnshx6xkmhb4c89s752n7ql6ik8vqj33vsh0pswfgqychlw"))))
     (build-system cargo-build-system)
     (arguments
       `(#:cargo-inputs
