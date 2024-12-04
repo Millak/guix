@@ -2370,14 +2370,14 @@
 (define-public rust-glib-sys-0.20
   (package
     (name "rust-glib-sys")
-    (version "0.20.4")
+    (version "0.20.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "glib-sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0avm6dr3q2xvlad7fcbq7an7qasaqf3k480dn19s99ngi1fwm7jz"))))
+        (base32 "1pn2hynpky8kh776wrlyd7wp2spzaxfqw8pv1lnc87v2x0kih2rx"))))
     (build-system cargo-build-system)
     (arguments
      `(;; XXX: Tests are sensitive to the version of glib, even though
