@@ -2197,14 +2197,14 @@
 (define-public rust-glib-macros-0.20
   (package
     (name "rust-glib-macros")
-    (version "0.20.4")
+    (version "0.20.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "glib-macros" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1mqwhk5qnd9vbvsb335n1j6m5pbqnfycm7b3jxhhlwnm1kvqigx6"))))
+        (base32 "0mn1054ypcw906qpgvkqdz1wfjjb2kgfsmh4lwfykhyggai1rlp7"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-heck" ,rust-heck-0.5)
