@@ -5861,14 +5861,14 @@ platform-specific getters provided by winit, or another library.")
   (package
     (inherit rust-winit-0.30)
     (name "rust-winit")
-    (version "0.29.10")
+    (version "0.29.15")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "winit" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1kzzl8m68sq6njdr6n1b90ppfg1pfhkcq48iqxpfdshyjh8lz0jc"))))
+        (base32 "1jp5j96hcr6xif7asgck522791fqmlmhd3wwy3x5fmk3babasn8d"))))
     (arguments
      `(#:cargo-inputs
        (("rust-ahash" ,rust-ahash-0.8)
@@ -5894,8 +5894,8 @@ platform-specific getters provided by winit, or another library.")
         ("rust-orbclient" ,rust-orbclient-0.3)
         ("rust-percent-encoding" ,rust-percent-encoding-2)
         ("rust-raw-window-handle" ,rust-raw-window-handle-0.6)
-        ("rust-raw-window-handle" ,rust-raw-window-handle-0.4)
         ("rust-raw-window-handle" ,rust-raw-window-handle-0.5)
+        ("rust-raw-window-handle" ,rust-raw-window-handle-0.4)
         ("rust-redox-syscall" ,rust-redox-syscall-0.3)
         ("rust-rustix" ,rust-rustix-0.38)
         ("rust-sctk-adwaita" ,rust-sctk-adwaita-0.8)
