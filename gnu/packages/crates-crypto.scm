@@ -2582,14 +2582,14 @@ curve forms, scalars, points, and public/secret keys composed thereof.")
 (define-public rust-fiat-crypto-0.2
   (package
     (name "rust-fiat-crypto")
-    (version "0.2.6")
+    (version "0.2.9")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "fiat-crypto" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "10hkkkjynhibvchznkxx81gwxqarn9i5sgz40d6xxb8xzhsz8xhn"))))
+        (base32 "07c1vknddv3ak7w89n85ik0g34nzzpms6yb845vrjnv9m4csbpi8"))))
     (build-system cargo-build-system)
     (home-page "https://github.com/mit-plv/fiat-crypto")
     (synopsis "Fiat-crypto generated Rust")
