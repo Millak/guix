@@ -6657,20 +6657,20 @@ for @code{libxkbcommon}.")
 (define-public rust-xkeysym-0.2
   (package
     (name "rust-xkeysym")
-    (version "0.2.0")
+    (version "0.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "xkeysym" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0886dn1rlkiazcp5n6ayqfg0ibpiny62dlbiyr9v4l32nxl8wjh5"))))
+        (base32 "0mksx670cszyd7jln6s7dhkw11hdfv7blwwr3isq98k22ljh1k5r"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bytemuck" ,rust-bytemuck-1)
                        ("rust-serde" ,rust-serde-1))
        #:cargo-development-inputs (("rust-bytemuck" ,rust-bytemuck-1)
-                                   ("rust-x11rb" ,rust-x11rb-0.11))))
+                                   ("rust-x11rb" ,rust-x11rb-0.12))))
     (home-page "https://github.com/notgull/xkeysym")
     (synopsis "Rust library for working with X11 keysyms")
     (description
