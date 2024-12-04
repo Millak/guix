@@ -1523,24 +1523,21 @@ EUI-64, also known as MAC-48 media access control addresses.")
 (define-public rust-gfx-0.18
   (package
     (name "rust-gfx")
-    (version "0.18.2")
+    (version "0.18.3")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "gfx" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
+        (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32
-          "0nqmxqi3x4ni0g78g77a6aldrv8cfvzhnpqhxyd2ap4aa3wldph1"))))
+         (base32 "02lf16bgyvdk5imzw0r0xyxjrsyv2ficmf9kiarzvf5zx1bl0xgb"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-log" ,rust-log-0.4)
-        ("rust-mint" ,rust-mint-0.5)
-        ("rust-draw-state" ,rust-draw-state-0.8)
-        ("rust-gfx-core" ,rust-gfx-core-0.9))))
+     `(#:cargo-inputs
+       (("rust-draw-state" ,rust-draw-state-0.8)
+        ("rust-gfx-core" ,rust-gfx-core-0.9)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-mint" ,rust-mint-0.5))))
     (home-page "https://github.com/gfx-rs/gfx")
     (synopsis "High-performance, bindless graphics API")
     (description
