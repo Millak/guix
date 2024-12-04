@@ -3308,14 +3308,14 @@ HTTP request or response body.")
 (define-public rust-http-body-util-0.1
   (package
     (name "rust-http-body-util")
-    (version "0.1.0")
+    (version "0.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "http-body-util" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0h78a6jj2vky0wmgmq5f1h541cmhmlij09gw63fxl59h77mpkjs1"))))
+        (base32 "0kslwazg4400qnc2azkrgqqci0fppv12waicnsy5d8hncvbjjd3r"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bytes" ,rust-bytes-1)
@@ -3323,8 +3323,7 @@ HTTP request or response body.")
                        ("rust-http" ,rust-http-1)
                        ("rust-http-body" ,rust-http-body-1)
                        ("rust-pin-project-lite" ,rust-pin-project-lite-0.2))
-       #:cargo-development-inputs (("rust-futures-util" ,rust-futures-util-0.3)
-                                   ("rust-tokio" ,rust-tokio-1))))
+       #:cargo-development-inputs (("rust-tokio" ,rust-tokio-1))))
     (home-page "https://github.com/hyperium/http-body")
     (synopsis "Combinators and adapters for HTTP request/response bodies")
     (description
