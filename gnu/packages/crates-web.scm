@@ -6210,17 +6210,20 @@ the Trust-DNS client to use DNS over HTTPS.")
 (define-public rust-trust-dns-native-tls-0.20
   (package
     (name "rust-trust-dns-native-tls")
-    (version "0.20.0")
+    (version "0.20.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "trust-dns-native-tls" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "129map2cvy9xcdjg6927xyzic48mq6hqmils0qrmigbr61djxkna"))))
+        (base32 "04zs3pc0vd9dwnvlhb5za1bjam5qnhhr4dajvkypzj8r79mil1m3"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
+     `(#:cargo-test-flags
+       '("--release" "--"
+         ;; Not all files included.
+         "--skip=tests::test_tls_client_stream_ipv4")
        #:cargo-inputs
        (("rust-futures-channel" ,rust-futures-channel-0.3)
         ("rust-futures-util" ,rust-futures-util-0.3)
@@ -6228,6 +6231,8 @@ the Trust-DNS client to use DNS over HTTPS.")
         ("rust-tokio" ,rust-tokio-1)
         ("rust-tokio-native-tls" ,rust-tokio-native-tls-0.3)
         ("rust-trust-dns-proto" ,rust-trust-dns-proto-0.20))))
+    (native-inputs (list pkg-config))
+    (inputs (list openssl))
     (home-page "https://www.trust-dns.org/index.html")
     (synopsis "Trust-DNS client native-tls extension")
     (description "Trust-DNS is a safe and secure DNS library.  This is an
