@@ -3435,25 +3435,27 @@ interactive applications.")
 (define-public rust-png-0.17
   (package
     (name "rust-png")
-    (version "0.17.13")
+    (version "0.17.14")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "png" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1qdmajjzkdbmk5zk7qb5pc6927xa26hr2v68hbkpa9ris79v1r06"))))
+        (base32 "1w130qw3cngzppxk1yp3ls2pbw3f0spbzhkbarbnlnm06imd9yaj"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
        '("--release" "--"
-         ;; Not all files incuded.
+         ;; Not all files included.
          "--skip=decoder::stream::tests::image_gamma"
          "--skip=decoder::stream::tests::image_source_chromaticities"
          "--skip=decoder::stream::tests::test_two_iccp_chunks"
+         "--skip=decoder::stream::tests::test_png_with_broken_iccp"
          "--skip=encoder::tests::image_palette"
-         "--skip=src/decoder/mod.rs - decoder::Decoder<R>::set_ignore_text_chunk (line 269)"
-         "--skip=src/decoder/mod.rs - decoder::Decoder<R>::set_limits (line 182)"
+         "--skip=src/decoder/mod.rs - decoder::Decoder<R>::set_ignore_text_chunk (line 267)"
+         "--skip=src/decoder/mod.rs - decoder::Decoder<R>::set_ignore_text_chunk (line 251)"
+         "--skip=src/decoder/mod.rs - decoder::Decoder<R>::set_limits (line 166)"
          "--skip=src/lib.rs - (line 13)"
          "--skip=src/text_metadata.rs - text_metadata (line 25)")
        #:cargo-inputs
@@ -3461,7 +3463,7 @@ interactive applications.")
         ("rust-crc32fast" ,rust-crc32fast-1)
         ("rust-fdeflate" ,rust-fdeflate-0.3)
         ("rust-flate2" ,rust-flate2-1)
-        ("rust-miniz-oxide" ,rust-miniz-oxide-0.7))
+        ("rust-miniz-oxide" ,rust-miniz-oxide-0.8))
        #:cargo-development-inputs
        (("rust-byteorder" ,rust-byteorder-1)
         ("rust-clap" ,rust-clap-3)
