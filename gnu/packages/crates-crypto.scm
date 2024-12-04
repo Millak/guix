@@ -589,14 +589,14 @@ This package is deprecated and was replaced by the @code{aes} crate.")
 (define-public rust-argon2-0.5
   (package
     (name "rust-argon2")
-    (version "0.5.2")
+    (version "0.5.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "argon2" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1y820hkza66lfliaxg49zskz7agj8wf7aak528livg261an4rfhp"))))
+        (base32 "0wn0kk97k49wxidfigmz1pdqmygqzi4h6w72ib7cpq765s4i0diw"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
