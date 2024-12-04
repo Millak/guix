@@ -5776,18 +5776,22 @@ for data that potentially contains secrets (e.g. cryptographic keys).")
 (define-public rust-sha1-smol-1
   (package
     (name "rust-sha1-smol")
-    (version "1.0.0")
+    (version "1.0.1")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "sha1_smol" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "04nhbhvsk5ms1zbshs80iq5r1vjszp2xnm9f0ivj38q3dhc4f6mf"))))
+                "0pbh2xjfnzgblws3hims0ib5bphv7r5rfdpizyh51vnzvnribymv"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs (("rust-serde" ,rust-serde-1))))
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-openssl" ,rust-openssl-0.10)
+                                   ("rust-rand" ,rust-rand-0.4)
+                                   ("rust-serde-json" ,rust-serde-json-1))))
+    (native-inputs (list pkg-config))
+    (inputs (list openssl))
     (home-page "https://github.com/mitsuhiko/sha1-smol")
     (synopsis "Dependency free SHA1 implementation")
     (description
