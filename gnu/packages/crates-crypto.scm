@@ -66,18 +66,19 @@
 (define-public rust-aead-0.5
   (package
     (name "rust-aead")
-    (version "0.5.1")
+    (version "0.5.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "aead" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1j6pmc8pk4ha64bj9l6xzbhd85s2y1dblna2zsq83h0zy6w2w6aw"))))
+        (base32 "1c32aviraqag7926xcb9sybdm36v5vh9gnxpn4pxdwjc50zl28ni"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-blobby" ,rust-blobby-0.3)
+       (("rust-arrayvec" ,rust-arrayvec-0.7)
+        ("rust-blobby" ,rust-blobby-0.3)
         ("rust-bytes" ,rust-bytes-1)
         ("rust-crypto-common" ,rust-crypto-common-0.1)
         ("rust-generic-array" ,rust-generic-array-0.14)
