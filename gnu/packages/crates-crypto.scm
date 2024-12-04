@@ -2614,14 +2614,14 @@ curve forms, scalars, points, and public/secret keys composed thereof.")
 (define-public rust-ghash-0.5
   (package
     (name "rust-ghash")
-    (version "0.5.0")
+    (version "0.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "ghash" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0h1y3v3kj8xxkf2snv1yly0lr20fdh3jrm60p382szbiwl6pac6r"))))
+        (base32 "1wbg4vdgzwhkpkclz1g6bs4r5x984w5gnlsj4q5wnafb5hva9n7h"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
