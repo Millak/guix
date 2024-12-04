@@ -1918,14 +1918,14 @@
 (define-public rust-glib-0.20
   (package
     (name "rust-glib")
-    (version "0.20.4")
+    (version "0.20.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "glib" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1zw5xd2772vakf95pslvzmmnzg6f9wnj9vkcpkyzj2v5sg31xkxd"))))
+        (base32 "1qfmp4cgcm7zv92z5bc1cv8rmh8cjdbdn06r6nhvb2lrwx73xgc6"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
@@ -1944,8 +1944,7 @@
                        ("rust-libc" ,rust-libc-0.2)
                        ("rust-log" ,rust-log-0.4)
                        ("rust-memchr" ,rust-memchr-2)
-                       ("rust-smallvec" ,rust-smallvec-1)
-                       ("rust-thiserror" ,rust-thiserror-1))
+                       ("rust-smallvec" ,rust-smallvec-1))
        #:cargo-development-inputs
        (("rust-criterion" ,rust-criterion-0.5)
         ("rust-gir-format-check" ,rust-gir-format-check-0.1)
