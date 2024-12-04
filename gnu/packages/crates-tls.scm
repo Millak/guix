@@ -522,14 +522,14 @@ Google @code{BoringSSL} project and the @code{OpenSSL} project.")
 (define-public rust-der-0.7
   (package
     (name "rust-der")
-    (version "0.7.8")
+    (version "0.7.9")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "der" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "070bwiyr80800h31c5zd96ckkgagfjgnrrdmz3dzg2lccsd3dypz"))))
+                "1h4vzjfa1lczxdf8avfj9qlwh1qianqlxdy1g5rn762qnvkzhnzm"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
