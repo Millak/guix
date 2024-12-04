@@ -6405,14 +6405,14 @@ for the `authorized_keys` and `known_hosts` file formats.")
 (define-public rust-streebog-0.10
   (package
     (name "rust-streebog")
-    (version "0.10.0")
+    (version "0.10.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "streebog" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1w7sxj3risp0zqm6r4mc73bd3fn3bnlxi4l10gp7661i5asr6ajz"))))
+        (base32 "0dnm1f3bkm8rvskvl3cvhh1f2nbrpckr8c3hw1hc7kj2ibnyczwy"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
