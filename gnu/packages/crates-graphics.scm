@@ -694,20 +694,20 @@ for computer graphics.")
 (define-public rust-colorous-1
   (package
     (name "rust-colorous")
-    (version "1.0.12")
+    (version "1.0.15")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "colorous" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1crqxkhpvwjcnjggp2qjs2mzyd1xrv3drgqq4bzlhi9ggj687c3y"))))
+        (base32 "146g6rl0083r1h8y5nzq9ca28jqqw3mmapc0bfzg7f91z7ygk1hb"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-development-inputs (("rust-dejavu" ,rust-dejavu-2)
-                                   ("rust-image" ,rust-image-0.24)
-                                   ("rust-imageproc" ,rust-imageproc-0.23)
-                                   ("rust-rusttype" ,rust-rusttype-0.9))))
+     `(#:cargo-development-inputs (("rust-ab-glyph" ,rust-ab-glyph-0.2)
+                                   ("rust-dejavu" ,rust-dejavu-2)
+                                   ("rust-image" ,rust-image-0.25)
+                                   ("rust-imageproc" ,rust-imageproc-0.25))))
     (home-page "https://github.com/dtolnay/colorous")
     (synopsis "Professional color schemes ported from d3-scale-chromatic")
     (description "Professional color schemes ported from d3-scale-chromatic.")
