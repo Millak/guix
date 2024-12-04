@@ -3280,14 +3280,14 @@ cryptographic library.")
 (define-public rust-nettle-sys-2
   (package
     (name "rust-nettle-sys")
-    (version "2.2.0")
+    (version "2.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "nettle-sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0wwa7pmxdz7yl9jwybml2kmrj3i87jcn0h0cdc5xl0lhgcs1rs5m"))))
+        (base32 "1v36is0kygwc4rcdqnszgdwm14z2j8p23wbblbiq16m120x0b5dl"))))
     (build-system cargo-build-system)
     (native-inputs
      (list clang pkg-config))
@@ -3295,7 +3295,7 @@ cryptographic library.")
      (list nettle))
     (arguments
      `(#:cargo-inputs
-       (("rust-bindgen" ,rust-bindgen-0.63)
+       (("rust-bindgen" ,rust-bindgen-0.68)
         ("rust-cc" ,rust-cc-1)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-pkg-config" ,rust-pkg-config-0.3)
