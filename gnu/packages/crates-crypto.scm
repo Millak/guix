@@ -5831,23 +5831,21 @@ code is translated from C to Rust using c2rust.")
   (package
     (inherit rust-sha1collisiondetection-0.3)
     (name "rust-sha1collisiondetection")
-    (version "0.2.3")
+    (version "0.2.7")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "sha1collisiondetection" version))
-        (file-name
-          (string-append name "-" version ".tar.gz"))
+        (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-          (base32 "10nh7s3d02136kkz93pxyfv628ls5xz8ndg27pkb6na0ghccz9np"))))
+         (base32 "13mkl29ma6sqybzvr8dqpj0f697d1xk1d0a39kdcgcihhg7r61xj"))))
     (arguments
-      `(#:skip-build? #t
-        #:cargo-inputs
-        (("rust-digest" ,rust-digest-0.9)
-         ("rust-generic-array" ,rust-generic-array-0.14)
-         ("rust-libc" ,rust-libc-0.2)
-         ("rust-sha-1" ,rust-sha-1-0.9)
-         ("rust-structopt" ,rust-structopt-0.3))))))
+     `(#:cargo-inputs (("rust-digest" ,rust-digest-0.9)
+                       ("rust-generic-array" ,rust-generic-array-0.14)
+                       ("rust-sha-1" ,rust-sha-1-0.9)
+                       ("rust-structopt" ,rust-structopt-0.3))
+       #:cargo-development-inputs (("rust-getrandom" ,rust-getrandom-0.2)
+                                   ("rust-hex-literal" ,rust-hex-literal-0.3))))))
 
 (define-public rust-sha2-0.10
   (package
