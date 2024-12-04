@@ -4032,14 +4032,14 @@ internally rust-sdl2.")
   (package
     (inherit rust-smithay-client-toolkit-0.18)
     (name "rust-smithay-client-toolkit")
-    (version "0.16.0")
+    (version "0.16.1")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "smithay-client-toolkit" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0m7l0zhl9s3321yj8z6hf1g0w3l2ay85irgcw2r5wwfj69yw81zk"))))
+                "1fbfr05h4bcwkkymxwdkhh59pqwgx234pv23pxjbwb4g1gijf147"))))
     (arguments
      `(#:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-1)
