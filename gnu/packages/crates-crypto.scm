@@ -6384,21 +6384,18 @@ for the `authorized_keys` and `known_hosts` file formats.")
   (package
     (inherit rust-stream-cipher-0.4)
     (name "rust-stream-cipher")
-    (version "0.3.0")
+    (version "0.3.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "stream-cipher" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "1g1nd8r6pph70rzk5yyvg7a9ji7pkap9ddiqpp4v9xa9ys0bqqc8"))))
+        (base32 "1333qng84n6b15p8kndhajlgvbp1rgdddx04xgsvrjlnb1m2acc1"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-blobby" ,rust-blobby-0.1)
-        ("rust-generic-array" ,rust-generic-array-0.13))))))
+        ("rust-generic-array" ,rust-generic-array-0.14))))))
 
 (define-public rust-streebog-0.10
   (package
