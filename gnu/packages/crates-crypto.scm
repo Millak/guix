@@ -3311,14 +3311,14 @@ cryptographic library.")
 (define-public rust-orion-0.17
   (package
     (name "rust-orion")
-    (version "0.17.6")
+    (version "0.17.7")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "orion" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1rcm8vgzb1rvm1ilgak1lkia3wasdmnmv93b055qqg4hh40v3gbs"))))
+                "1lzs8dlpdbq19hi3b4358bnrypvsxvfz4xp5b492gkb0rwam9awp"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
