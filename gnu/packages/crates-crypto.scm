@@ -6452,14 +6452,14 @@ for the `authorized_keys` and `known_hosts` file formats.")
 (define-public rust-subtle-2
   (package
     (name "rust-subtle")
-    (version "2.5.0")
+    (version "2.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "subtle" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1g2yjs7gffgmdvkkq0wrrh0pxds3q0dv6dhkw9cdpbib656xdkc1"))))
+        (base32 "14ijxaymghbl1p0wql9cib5zlwiina7kall6w7g89csprkgbvhhk"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-development-inputs (("rust-rand" ,rust-rand-0.8))))
