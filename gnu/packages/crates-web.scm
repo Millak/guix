@@ -4862,14 +4862,14 @@ in the Rust programming language.")
 (define-public rust-rocket-0.5
   (package
     (name "rust-rocket")
-    (version "0.5.0")
+    (version "0.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rocket" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0l4i93dai7pyzlkvdjkqg2g7ni1r6749cwx4nrrhsrr6rdybaywy"))))
+        (base32 "0gypf9z6s0kshv33qq1vf16raw8xnr1p03ii0kfgf7d3jrr905m5"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-async-stream" ,rust-async-stream-0.3)
@@ -4883,7 +4883,7 @@ in the Rust programming language.")
                        ("rust-indexmap" ,rust-indexmap-2)
                        ("rust-log" ,rust-log-0.4)
                        ("rust-memchr" ,rust-memchr-2)
-                       ("rust-multer" ,rust-multer-2)
+                       ("rust-multer" ,rust-multer-3)
                        ("rust-num-cpus" ,rust-num-cpus-1)
                        ("rust-parking-lot" ,rust-parking-lot-0.12)
                        ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
@@ -4904,8 +4904,9 @@ in the Rust programming language.")
                        ("rust-uuid" ,rust-uuid-1)
                        ("rust-version-check" ,rust-version-check-0.9)
                        ("rust-yansi" ,rust-yansi-1))
-       #:cargo-development-inputs (("rust-figment" ,rust-figment-0.10)
-                                   ("rust-pretty-assertions" ,rust-pretty-assertions-1))))
+       #:cargo-development-inputs
+       (("rust-figment" ,rust-figment-0.10)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1))))
     (home-page "https://rocket.rs")
     (synopsis
      "Web framework with focus on ease-of-use, expressibility, and speed")
