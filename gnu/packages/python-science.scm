@@ -20,7 +20,7 @@
 ;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2022 Wiktor Żelazny <wzelazny@vurv.cz>
 ;;; Copyright © 2022 Eric Bavier <bavier@posteo.net>
-;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
+;;; Copyright © 2022, 2024 Antero Mejr <antero@mailbox.org>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2023, 2024 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
