@@ -457,16 +457,16 @@ AES (Rijndael) block ciphers.
 This package is deprecated and was replaced by the @code{aes} crate.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-aes-soft-0.4
+(define-public rust-aes-soft-0.4.0-yanked
   (package
     (inherit rust-aes-soft-0.6)
     (name "rust-aes-soft")
-    (version "0.4.0")
+    (version "0.4.0") ; This version was yanked!
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "aes-soft" version))
-       (file-name (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version "-yanked.tar.gz"))
        (sha256
         (base32
          "19szsg0qqxq42k7bj5p3svb147n8wxy9a20n4g7mcl2fwrz689a9"))))
@@ -476,7 +476,12 @@ This package is deprecated and was replaced by the @code{aes} crate.")
         ("rust-byteorder" ,rust-byteorder-1)
         ("rust-opaque-debug" ,rust-opaque-debug-0.2))
        #:cargo-development-inputs
-       (("rust-block-cipher" ,rust-block-cipher-0.7))))))
+       (("rust-block-cipher" ,rust-block-cipher-0.7))))
+    (properties '((crate-version-yanked? . #t)))))
+
+(define-public rust-aes-soft-0.4
+  ;; There are no non-yanked versions of this semver.
+  (deprecated-package "rust-aes-soft" rust-aes-soft-0.4.0-yanked))
 
 (define-public rust-aes-soft-0.3.3-yanked
   (package
