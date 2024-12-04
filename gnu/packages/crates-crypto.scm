@@ -3002,13 +3002,13 @@ be used to implement arbitrary protocols.")
 (define-public rust-kuznyechik-0.8
   (package
     (name "rust-kuznyechik")
-    (version "0.8.1")
+    (version "0.8.2")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "kuznyechik" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
-               (base32 "0av39qh65xchvpfjkcwh861h9bzmmrgcrzl5h0sa5b692xabd0w4"))))
+               (base32 "0by12awlby61ihp097gz193h8any0dkq5z46svg6130r4jjrjy6a"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
