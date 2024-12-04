@@ -200,22 +200,21 @@
 (define-public rust-cairo-rs-0.20
   (package
     (name "rust-cairo-rs")
-    (version "0.20.1")
+    (version "0.20.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "cairo-rs" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0s9yafifi3pwf7jck0bhgwr4rlg483sqhlr32fb8q44lghafm878"))))
+        (base32 "1rp3jjgdz2996lk69chr84fjxr73y1gdl7c138093rks3ng6kynp"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
                        ("rust-cairo-sys-rs" ,rust-cairo-sys-rs-0.20)
                        ("rust-freetype-rs" ,rust-freetype-rs-0.37)
                        ("rust-glib" ,rust-glib-0.20)
-                       ("rust-libc" ,rust-libc-0.2)
-                       ("rust-thiserror" ,rust-thiserror-1))
+                       ("rust-libc" ,rust-libc-0.2))
        #:cargo-development-inputs (("rust-float-eq" ,rust-float-eq-1)
                                    ("rust-tempfile" ,rust-tempfile-3))))
     (native-inputs (list pkg-config))
