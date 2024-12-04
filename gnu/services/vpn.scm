@@ -12,6 +12,7 @@
 ;;; Copyright © 2022 Cameron V Chaparro <cameron@cameronchaparro.com>
 ;;; Copyright © 2022 Timo Wilken <guix@twilken.net>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2024 Richard Sent <richard@freakingpenguin.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -800,33 +801,33 @@ strongSwan.")))
                  (define lines
                    (list
                     "[Interface]"
-                    #$@(if (null? addresses)
-                           '()
-                           (list (format #f "Address = ~{~a~^, ~}"
-                                         addresses)))
+                    (if (null? '#$addresses)
+                        ""
+                        (format #f "Address = ~{~a~^, ~}"
+                                (list #$@addresses)))
                     (format #f "~@[Table = ~a~]" #$table)
-                    #$@(if (null? pre-up)
-                           '()
-                           (list (format #f "~{PreUp = ~a~%~}" pre-up)))
+                    (if (null? '#$pre-up)
+                        ""
+                        (format #f "~{PreUp = ~a~%~}" (list #$@pre-up)))
                     (if #$private-key
                         (format #f "PostUp = ~a set %i private-key ~a\
 ~{ peer ~a preshared-key ~a~}"
                                 #$(file-append wireguard "/bin/wg")
-                                #$private-key '#$peer-keys)
+                                #$private-key (list #$@peer-keys))
                         "")
-                    #$@(if (null? post-up)
-                           '()
-                           (list (format #f "~{PostUp = ~a~%~}" post-up)))
-                    #$@(if (null? pre-down)
-                           '()
-                           (list (format #f "~{PreDown = ~a~%~}" pre-down)))
-                    #$@(if (null? post-down)
-                           '()
-                           (list (format #f "~{PostDown = ~a~%~}" post-down)))
+                    (if (null? '#$post-up)
+                        ""
+                        (format #f "~{PostUp = ~a~%~}" (list #$@post-up)))
+                    (if (null? '#$pre-down)
+                        ""
+                        (format #f "~{PreDown = ~a~%~}" (list #$@pre-down)))
+                    (if (null? '#$post-down)
+                        ""
+                        (format #f "~{PostDown = ~a~%~}" (list #$@post-down)))
                     (format #f "~@[ListenPort = ~a~]" #$port)
-                    #$@(if (null? dns)
-                           '()
-                           (list (format #f "DNS = ~{~a~^, ~}" dns)))))
+                    (if (null? '#$dns)
+                        ""
+                        (format #f "DNS = ~{~a~^, ~}" (list #$@dns)))))
 
                  (mkdir #$output)
                  (chdir #$output)
