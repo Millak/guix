@@ -4086,18 +4086,17 @@ internally rust-sdl2.")
   (package
     (inherit rust-smithay-client-toolkit-0.15)
     (name "rust-smithay-client-toolkit")
-    (version "0.12.2")
+    (version "0.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "smithay-client-toolkit" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1rjdszpf8pns99gyy8f5axf01ckc33f30dddfazyfg45xfii6vii"))))
+        (base32 "100bm0wk7agfk1dmfnqfjq55kn53srkyc3yq7vx9bb6ksmpwfl27"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-andrew" ,rust-andrew-0.3)
         ("rust-bitflags" ,rust-bitflags-1)
         ("rust-calloop" ,rust-calloop-0.6)
@@ -4108,7 +4107,8 @@ internally rust-sdl2.")
         ("rust-nix" ,rust-nix-0.18)
         ("rust-wayland-client" ,rust-wayland-client-0.28)
         ("rust-wayland-cursor" ,rust-wayland-cursor-0.28)
-        ("rust-wayland-protocols" ,rust-wayland-protocols-0.28))))))
+        ("rust-wayland-protocols" ,rust-wayland-protocols-0.28))
+       #:cargo-development-inputs (("rust-image" ,rust-image-0.23))))))
 
 (define-public rust-smithay-client-toolkit-0.4
   (package
