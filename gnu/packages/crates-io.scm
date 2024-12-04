@@ -86345,14 +86345,14 @@ specified in FIPS-202, SP800-185 and KangarooTwelve.")
 (define-public rust-tiny-skia-path-0.11
   (package
     (name "rust-tiny-skia-path")
-    (version "0.11.3")
+    (version "0.11.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tiny-skia-path" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0hg5a0i7f505l3ix5a9ywjhjbsgqq856hwgic6pslaq5j255xqsx"))))
+        (base32 "14ywbdfakvacl6rxxmzbnycplaxpc6i2linh2yqk0sp8qb07z7lw"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-arrayref" ,rust-arrayref-0.3)
