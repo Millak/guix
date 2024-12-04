@@ -478,16 +478,16 @@ This package is deprecated and was replaced by the @code{aes} crate.")
        #:cargo-development-inputs
        (("rust-block-cipher" ,rust-block-cipher-0.7))))))
 
-(define-public rust-aes-soft-0.3
+(define-public rust-aes-soft-0.3.3-yanked
   (package
     (inherit rust-aes-soft-0.4)
     (name "rust-aes-soft")
-    (version "0.3.3")
+    (version "0.3.3") ; This version was yanked!
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "aes-soft" version))
-       (file-name (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version "-yanked.tar.gz"))
        (sha256
         (base32 "039si7yjp0wcd750sgq52c60sh2ikaxwd7rq7g0ba7ws7ypfgmyg"))))
     (arguments
@@ -496,7 +496,12 @@ This package is deprecated and was replaced by the @code{aes} crate.")
         ("rust-byteorder" ,rust-byteorder-1)
         ("rust-opaque-debug" ,rust-opaque-debug-0.2))
        #:cargo-development-inputs
-       (("rust-block-cipher-trait" ,rust-block-cipher-trait-0.6))))))
+       (("rust-block-cipher-trait" ,rust-block-cipher-trait-0.6))))
+    (properties '((crate-version-yanked? . #t)))))
+
+(define-public rust-aes-soft-0.3
+  ;; There are no non-yanked versions of this semver.
+  (deprecated-package "rust-aes-soft" rust-aes-soft-0.3.3-yanked))
 
 (define-public rust-aesni-0.10
   (package
