@@ -2689,6 +2689,27 @@ Windows crate.")
        (sha256
         (base32 "03h0c6qs1yyl0z69p4k1hdq636j868qdxnri1dy47nprjvckacbm"))))))
 
+(define-public rust-windows-registry-0.2
+  (package
+    (name "rust-windows-registry")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "windows-registry" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1c04923fq0rbvl3z0h67xr6rh2fgwkizhclhqv0j79i0nwdh0074"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-windows-result" ,rust-windows-result-0.2)
+                       ("rust-windows-strings" ,rust-windows-strings-0.1)
+                       ("rust-windows-targets" ,rust-windows-targets-0.52))))
+    (home-page "https://github.com/microsoft/windows-rs")
+    (synopsis "Windows registry")
+    (description "This package provides Windows registry.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-windows-result-0.2
   (package
     (name "rust-windows-result")
