@@ -97286,14 +97286,14 @@ pure rust.")
 (define-public rust-yansi-1
   (package
     (name "rust-yansi")
-    (version "1.0.0-rc.1")
+    (version "1.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "yansi" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0xr3n41j5v00scfkac2d6vhkxiq9nz3l5j6vw8f3g3bqixdjjrqk"))))
+        (base32 "0jdh55jyv0dpd38ij4qh60zglbw9aa8wafqai6m0wa7xaxk3mrfg"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-is-terminal" ,rust-is-terminal-0.4))))
