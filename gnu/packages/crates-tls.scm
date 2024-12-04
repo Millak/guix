@@ -40,7 +40,6 @@
   #:use-module (gnu packages crates-windows)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages golang)
-  #:use-module (gnu packages jemalloc)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages rust-apps)
@@ -1284,14 +1283,14 @@ grammars and BER/DER encodings, for example.")
 (define-public rust-rustls-0.23
   (package
     (name "rust-rustls")
-    (version "0.23.17")
+    (version "0.23.19")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rustls" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "07lg2b56s3gp3acd8a6yaqbpji8vv3xmv3ay8vaacjy525ap86kz"))))
+        (base32 "1lgqjf1vh09kghyj34a4svn1max18pmhka6bwbxb61mv61240jwk"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; Not all files included.
@@ -1311,7 +1310,6 @@ grammars and BER/DER encodings, for example.")
        #:cargo-development-inputs
        (("rust-base64" ,rust-base64-0.22)
         ("rust-bencher" ,rust-bencher-0.1)
-        ("rust-clap" ,rust-clap-4)
         ("rust-env-logger" ,rust-env-logger-0.10)
         ("rust-hex" ,rust-hex-0.4)
         ("rust-log" ,rust-log-0.4)
@@ -1319,20 +1317,8 @@ grammars and BER/DER encodings, for example.")
         ("rust-rcgen" ,rust-rcgen-0.13)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-tikv-jemallocator" ,rust-tikv-jemallocator-0.6)
         ("rust-time" ,rust-time-0.3)
-        ("rust-webpki-roots" ,rust-webpki-roots-0.26))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'configure 'override-jemalloc
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((jemalloc (assoc-ref inputs "jemalloc")))
-               ;; This flag is needed when not using the bundled jemalloc.
-               ;; https://github.com/tikv/jemallocator/issues/19
-               (setenv "CARGO_FEATURE_UNPREFIXED_MALLOC_ON_SUPPORTED_PLATFORMS" "1")
-               (setenv "JEMALLOC_OVERRIDE"
-                       (string-append jemalloc "/lib/libjemalloc_pic.a"))))))))
-    (inputs (list jemalloc))
+        ("rust-webpki-roots" ,rust-webpki-roots-0.26))))
     (home-page "https://github.com/rustls/rustls")
     (synopsis "Modern TLS library written in Rust")
     (description
