@@ -298,14 +298,14 @@ Standard}.  Use the AES crate if possible, as the aes-ctr has been into it.")
 (define-public rust-aes-gcm-0.10
   (package
     (name "rust-aes-gcm")
-    (version "0.10.1")
+    (version "0.10.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "aes-gcm" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0z2429v2d2wyf809h2wc4vwwibwypz3y4p7sn4kzkjb91ip3dqc2"))))
+        (base32 "1lgaqgg1gh9crg435509lqdhajg1m2vgma6f7fdj1qa2yyh10443"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
