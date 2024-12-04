@@ -2049,6 +2049,15 @@ the XDG directory specification from @file{~/.@var{name}} to
        (sha256
         (base32 "03aw8pw8694jyrzpnbry05rk9718sqw66kiyq878bbb679gl7224"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-cross-compile
+            (lambda _
+              (substitute* "autogen.sh"
+                (("pkg-config")
+                 #$(pkg-config-for-target))))))))
     (native-inputs (list autoconf automake libtool pkg-config))
     (inputs (list attr fuse-2 xz zlib `(,zstd "lib")))
     (home-page "https://github.com/vasi/squashfuse")
@@ -2063,17 +2072,18 @@ memory-efficient.")
     (package
       (inherit squashfuse)
       (arguments
-       (list
+       (cons*
         #:configure-flags
         #~'("CFLAGS=-ffunction-sections -fdata-sections -Os -no-pie"
             "LDFLAGS=-static")
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'install 'install-private-headers
-              (lambda _
-                (install-file "fuseprivate.h"
-                              (string-append #$output
-                                             "/include/squashfuse/")))))))
+        (substitute-keyword-arguments (package-arguments squashfuse)
+          ((#:phases phases)
+           #~(modify-phases #$phases
+               (add-after 'install 'install-private-headers
+                 (lambda _
+                   (install-file "fuseprivate.h"
+                                 (string-append #$output
+                                                "/include/squashfuse/")))))))))
       (inputs (list fuse-for-appimage
                     `(,zstd "lib")
                     `(,zstd "static")
