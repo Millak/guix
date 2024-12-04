@@ -775,14 +775,14 @@ $out/bin/guile --version~%"
               (chmod "lib" #o755)
 
               ;; Patch linker scripts so they refer to the right file-names.
-              ,(if (target-hurd64?)
-                   '(substitute* '("lib/libc.so" "lib/libm.so")
-                      (("/[^ ]+/lib/(libc|libm|libh|ld)" _ prefix)
-                       (string-append out "/lib/" prefix)))
-                   '(substitute* "lib/libc.so"
-                      (("/[^ ]+/lib/(libc|ld)" _ prefix)
-                       (string-append out "/lib/" prefix))))
-              #t))))))
+              ,@(if (target-hurd64?)
+                    '((substitute* '("lib/libc.so" "lib/libm.so")
+                        (("/[^ ]+/lib/(libc|libm|libh|ld)" _ prefix)
+                         (string-append out "/lib/" prefix))))
+                    '((substitute* "lib/libc.so"
+                        (("/[^ ]+/lib/(libc|ld)" _ prefix)
+                         (string-append out "/lib/" prefix)))
+                      #t))))))))
     (inputs
      `(("tar" ,(bootstrap-executable "tar" (%current-system)))
        ("xz"  ,(bootstrap-executable "xz" (%current-system)))
@@ -874,20 +874,22 @@ $out/bin/guile --version~%"
            (let ((builddir (getcwd))
                  (bindir   (string-append out "/bin")))
 
-             (define (wrap-program program)
-               (let ((wrapped (format #f ".~a-wrapped" program)))
-                 (rename-file program wrapped)
-                 (call-with-output-file program
-                   (lambda (p)
-                     (format p "#!~a
+             ,@(if (target-hurd64?)
+                   `((define (wrap-program program)
+                       (let ((wrapped (format #f ".~a-wrapped" program)))
+                         (rename-file program wrapped)
+                         (call-with-output-file program
+                           (lambda (p)
+                             (format p "#!~a
 exec ~a/bin/~a -B~a/lib \
      -Wl,-rpath -Wl,~a/lib \
      -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
-                             bash
-                             out wrapped
-                             libc libc libc
-                             ,(glibc-dynamic-linker)))))
-               (chmod program #o555))
+                                     bash
+                                     out wrapped
+                                     libc libc libc
+                                     ,(glibc-dynamic-linker)))))
+                       (chmod program #o555)))
+                   '())
 
              (with-directory-excursion out
                (invoke tar "xvf"
@@ -895,10 +897,21 @@ exec ~a/bin/~a -B~a/lib \
 
              (with-directory-excursion bindir
                (chmod "." #o755)
-               (for-each wrap-program
-                         ,(if (target-hurd64?)
-                              ''("gcc" "g++")
-                              ''("gcc")))))))))
+               ,@(if (target-hurd64?)
+                     `((for-each wrap-program '("gcc" "g++")))
+                     `((rename-file "gcc" ".gcc-wrapped")
+                       (call-with-output-file "gcc"
+                         (lambda (p)
+                           (format p "#!~a
+exec ~a/bin/.gcc-wrapped -B~a/lib \
+     -Wl,-rpath -Wl,~a/lib \
+     -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
+                                   bash
+                                   out libc libc libc
+                                   ,(glibc-dynamic-linker))))
+
+                       (chmod "gcc" #o555)
+                       #t))))))))
     (inputs
      `(("tar" ,(bootstrap-executable "tar" (%current-system)))
        ("xz"  ,(bootstrap-executable "xz" (%current-system)))
