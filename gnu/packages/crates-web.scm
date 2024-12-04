@@ -3629,16 +3629,17 @@ dependencies.")
   (package
     (inherit rust-hyper-0.13)
     (name "rust-hyper")
-    (version "0.12.35")
+    (version "0.12.36")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "hyper" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1xnm8zi4bdjqhlnx3238kx8yjf29jjd1ww54apcql7wf8g8nxglx"))))
+        (base32 "0ljcsgxddqaaasran1chafd10kpdz5d20da78j9izz4ncapkr12w"))))
     (arguments
-     `(#:skip-build? #t ;; fails due to some missing example file
+     `(#:tests? #f              ; Not all files included.
+       #:install-source? #f     ; `README.md` does not appear to exist
        #:cargo-inputs
        (("rust-bytes" ,rust-bytes-0.4)
         ("rust-futures" ,rust-futures-0.1)
@@ -3651,6 +3652,7 @@ dependencies.")
         ("rust-itoa" ,rust-itoa-0.4)
         ("rust-log" ,rust-log-0.4)
         ("rust-net2" ,rust-net2-0.2)
+        ("rust-rustc-version" ,rust-rustc-version-0.2)
         ("rust-time" ,rust-time-0.1)
         ("rust-tokio" ,rust-tokio-0.1)
         ("rust-tokio-buf" ,rust-tokio-buf-0.1)
@@ -3664,7 +3666,6 @@ dependencies.")
        #:cargo-development-inputs
        (("rust-futures-timer" ,rust-futures-timer-0.1)
         ("rust-num-cpus" ,rust-num-cpus-1)
-        ("rust-rustc-version" ,rust-rustc-version-0.2)
         ("rust-pretty-env-logger" ,rust-pretty-env-logger-0.3)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-derive" ,rust-serde-derive-1)
