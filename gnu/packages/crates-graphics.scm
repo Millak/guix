@@ -5669,6 +5669,25 @@ crate @code{rust-wayland-client} for usable bindings.")
     (description "This package provides a wayland client library.")
     (license license:expat)))
 
+(define-public rust-wayrs-core-1
+  (package
+    (name "rust-wayrs-core")
+    (version "1.0.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wayrs-core" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1jf5gf60rmwky1q8g09adkl6gm8wssixnhm8vc2p1b2ksh6y78mn"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2))))
+    (home-page "https://github.com/MaxVerevkin/wayrs")
+    (synopsis "Core Wayland types for wayrs")
+    (description "This package provides the core Wayland types for wayrs.")
+    (license license:expat)))
+
 (define-public rust-wayrs-proto-parser-2
   (package
     (name "rust-wayrs-proto-parser")
