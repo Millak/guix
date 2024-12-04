@@ -1696,8 +1696,41 @@ framework.")
 currently pressed on macOS.")
     (license license:expat)))
 
+(define-public rust-security-framework-3
+  (package
+    (name "rust-security-framework")
+    (version "3.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "security-framework" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1j1rpyiwq698dyyq2lnnws8hzknw8r32dy9cx9jc7gljgrh5lhg1"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; unresolved import `security_framework::secure_transport`
+       #:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-2)
+        ("rust-core-foundation" ,rust-core-foundation-0.10)
+        ("rust-core-foundation-sys" ,rust-core-foundation-sys-0.8)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-security-framework-sys" ,rust-security-framework-sys-2))
+       #:cargo-development-inputs (("rust-env-logger" ,rust-env-logger-0.10)
+                                   ("rust-hex" ,rust-hex-0.4)
+                                   ("rust-tempfile" ,rust-tempfile-3)
+                                   ("rust-time" ,rust-time-0.3)
+                                   ("rust-x509-parser" ,rust-x509-parser-0.16))))
+    (home-page "https://lib.rs/crates/security_framework")
+    (synopsis "@code{Security.framework} bindings for macOS and iOS")
+    (description "This package provides @code{Security.framework} bindings for
+macOS and iOS.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-security-framework-2
   (package
+    (inherit rust-security-framework-3)
     (name "rust-security-framework")
     (version "2.11.1")
     (source
@@ -1707,7 +1740,6 @@ currently pressed on macOS.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "00ldclwx78dm61v7wkach9lcx76awlrv0fdgjdwch4dmy12j4yw9"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; unresolved import `security_framework::secure_transport`
        #:cargo-inputs
@@ -1723,12 +1755,7 @@ currently pressed on macOS.")
         ("rust-hex" ,rust-hex-0.4)
         ("rust-tempdir" ,rust-tempdir-0.3)
         ("rust-time" ,rust-time-0.3)
-        ("rust-x509-parser" ,rust-x509-parser-0.16))))
-    (home-page "https://lib.rs/crates/security_framework")
-    (synopsis "@code{Security.framework} bindings for macOS and iOS")
-    (description "This package provides @code{Security.framework} bindings for
-macOS and iOS.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-x509-parser" ,rust-x509-parser-0.16))))))
 
 (define-public rust-security-framework-1
   (package
