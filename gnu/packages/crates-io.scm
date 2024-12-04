@@ -37492,19 +37492,19 @@ whether or not a given path points to an executable file.")
 (define-public rust-is-terminal-0.4
   (package
     (name "rust-is-terminal")
-    (version "0.4.10")
+    (version "0.4.13")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "is-terminal" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0m9la3f7cs77y85nkbcjsxkb7k861fc6bdhahyfidgh7gljh1b8b"))))
+                "0jwgjjz33kkmnwai3nsdk1pz9vb6gkqvw1d1vq7bs3q48kinh7r6"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-hermit-abi" ,rust-hermit-abi-0.3)
-        ("rust-rustix" ,rust-rustix-0.38)
+       (("rust-hermit-abi" ,rust-hermit-abi-0.4)
+        ("rust-libc" ,rust-libc-0.2)
         ("rust-windows-sys" ,rust-windows-sys-0.52))
        #:cargo-development-inputs
        (("rust-atty" ,rust-atty-0.2)
