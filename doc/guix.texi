@@ -34630,6 +34630,25 @@ if the file does not exist.  If this field is @code{#f}, a private key
 is not automatically created and the path is not serialized to the
 configuration file.
 
+@item @code{bootstrap-private-key?} (default: @code{#t})
+Whether or not the private key should be generated automatically if it
+does not exist.
+
+Setting this to @code{#f} allows one to set the private key using
+command substitution.  One example shown in the @code{wg-quick(8)}
+manual is retrieving a private key using @code{password-store}.  This
+can be achieved with the following code:
+
+@lisp
+(wireguard-configuration
+ (private-key
+  #~(string-append "<("
+                   #$(file-append password-store "/bin/pass")
+                   ;; Wireguard replaces %i with the interface name.
+                   " WireGuard/private-keys/%i)")))
+@end lisp
+
+
 @item @code{peers} (default: @code{'()})
 The authorized peers on this interface.  This is a list of
 @var{wireguard-peer} records.
