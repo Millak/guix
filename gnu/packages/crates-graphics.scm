@@ -1623,19 +1623,22 @@ EUI-64, also known as MAC-48 media access control addresses.")
   (package
     (inherit rust-gif-0.12)
     (name "rust-gif")
-    (version "0.11.3")
+    (version "0.11.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gif" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0nsfd5qvp69z8kn17ziiq8zv4mclfycyxppf5k9fm2h8g1z1i9y3"))))
+        (base32 "01hbw3isapzpzff8l6aw55jnaqx2bcscrbwyf3rglkbbfp397p9y"))))
     (arguments
-     `(#:skip-build? #t
+     `(#:tests? #f      ; Not all files included.
        #:cargo-inputs
        (("rust-color-quant" ,rust-color-quant-1)
-        ("rust-weezl" ,rust-weezl-0.1))))))
+        ("rust-weezl" ,rust-weezl-0.1))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.3)
+                                   ("rust-glob" ,rust-glob-0.3)
+                                   ("rust-png" ,rust-png-0.17))))))
 
 (define-public rust-gif-0.10
   (package
