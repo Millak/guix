@@ -1246,6 +1246,22 @@ and iOS.")
      "Safe, low-level bindings to the Direct Rendering Manager API.")
     (license license:expat)))
 
+(define-public rust-drm-ffi-0.7
+  (package
+    (inherit rust-drm-ffi-0.8)
+    (name "rust-drm-ffi")
+    (version "0.7.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "drm-ffi" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1iiardadqms7gaad50qq9624xzw0asfbnpyh5biq693r0n24ycs1"))))
+    (arguments
+     `(#:cargo-inputs (("rust-drm-sys" ,rust-drm-sys-0.6)
+                       ("rust-rustix" ,rust-rustix-0.38))))))
+
 (define-public rust-drm-ffi-0.6
   (package
     (inherit rust-drm-ffi-0.8)
