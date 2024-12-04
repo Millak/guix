@@ -1847,14 +1847,14 @@ EUI-64, also known as MAC-48 media access control addresses.")
   (package
     (inherit rust-glutin-0.32)
     (name "rust-glutin")
-    (version "0.31.2")
+    (version "0.31.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "glutin" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "04mjvgh2dipwa8wdy8gc70k8w48104v8vmr2cmqdqspq5ai5jm00"))))
+        (base32 "0il7aija3y17p3sz6qqzxyahrgp5crqzbf002fnr3nc69spd9z0q"))))
     (arguments
      `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
                        ("rust-cfg-aliases" ,rust-cfg-aliases-0.1)
