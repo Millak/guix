@@ -3488,14 +3488,14 @@ dependencies.")
 (define-public rust-hyper-1
   (package
     (name "rust-hyper")
-    (version "1.2.0")
+    (version "1.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "hyper" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0fi6k7hz5fmdph0a5r8hw50d7h2n9zxkizmafcmb65f67bblhr8q"))))
+        (base32 "07s87id0566m2p5dc5q6nqmxz5r8drqd81b7w4q44djgxwkqi0cp"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f  ; unresolved imports `super::DecodedLength`, `super::Sender`
@@ -3509,8 +3509,8 @@ dependencies.")
                        ("rust-httparse" ,rust-httparse-1)
                        ("rust-httpdate" ,rust-httpdate-1)
                        ("rust-itoa" ,rust-itoa-1)
-                       ("rust-libc" ,rust-libc-0.2)
                        ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
+                       ("rust-smallvec" ,rust-smallvec-1)
                        ("rust-tokio" ,rust-tokio-1)
                        ("rust-tracing" ,rust-tracing-0.1)
                        ("rust-want" ,rust-want-0.3))
