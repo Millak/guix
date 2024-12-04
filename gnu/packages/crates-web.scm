@@ -2368,22 +2368,22 @@ transfer coding.")
 (define-public rust-h2-0.4
   (package
     (name "rust-h2")
-    (version "0.4.4")
+    (version "0.4.7")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "h2" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0sc0ymhiqp4hbz39d405cjbga77wnz2pprbgyc498xs58hlwfvl1"))))
+        (base32 "0bljg66n2x3c5yzbi12v2jfcj77hb35rjq0gq21x0d6n52bjgbnc"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; Not all files included
-       #:cargo-inputs (("rust-bytes" ,rust-bytes-1)
+       #:cargo-inputs (("rust-atomic-waker" ,rust-atomic-waker-1)
+                       ("rust-bytes" ,rust-bytes-1)
                        ("rust-fnv" ,rust-fnv-1)
                        ("rust-futures-core" ,rust-futures-core-0.3)
                        ("rust-futures-sink" ,rust-futures-sink-0.3)
-                       ("rust-futures-util" ,rust-futures-util-0.3)
                        ("rust-http" ,rust-http-1)
                        ("rust-indexmap" ,rust-indexmap-2)
                        ("rust-slab" ,rust-slab-0.4)
@@ -2398,9 +2398,9 @@ transfer coding.")
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-tokio" ,rust-tokio-1)
-        ("rust-tokio-rustls" ,rust-tokio-rustls-0.24)
+        ("rust-tokio-rustls" ,rust-tokio-rustls-0.26)
         ("rust-walkdir" ,rust-walkdir-2)
-        ("rust-webpki-roots" ,rust-webpki-roots-0.25))))
+        ("rust-webpki-roots" ,rust-webpki-roots-0.26))))
     (home-page "https://github.com/hyperium/h2")
     (synopsis "HTTP/2 client and server")
     (description "This package provides an HTTP/2 client and server.")
