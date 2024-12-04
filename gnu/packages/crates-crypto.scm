@@ -5087,14 +5087,14 @@ traits with cryptographic algorithm implementations from @code{ring}.")
 (define-public rust-rsa-0.9
   (package
     (name "rust-rsa")
-    (version "0.9.6")
+    (version "0.9.7")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "rsa" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1z0d1aavfm0v4pv8jqmqhhvvhvblla1ydzlvwykpc3mkzhj523jx"))))
+                "06amqm85raq26v6zg00fbf93lbj3kx559n2lpxc3wrvbbiy5vis7"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
