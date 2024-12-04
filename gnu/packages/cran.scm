@@ -1635,6 +1635,30 @@ robust, and Bayesian versions of t-test/ANOVA, correlation analyses,
 contingency table analysis, meta-analysis, and regression analyses.")
     (license license:gpl3)))
 
+(define-public r-ggupset
+  (package
+    (name "r-ggupset")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "ggupset" version))
+       (sha256
+        (base32 "0cycnnycn1qazy35s4w746zlfraayf109bq40fglklmick6kfwsz"))))
+    (properties `((upstream-name . "ggupset")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-ggplot2 r-gtable r-rlang r-scales r-tibble))
+    (native-inputs (list r-testthat))
+    (home-page "https://github.com/const-ae/ggupset")
+    (synopsis "Combination matrix axis for ggplot2 to create UpSet plots")
+    (description
+     "This package lets you replace the standard x-axis in ggplots with a
+combination matrix to visualize complex set overlaps.  UpSet has introduced a
+new way to visualize the overlap of sets as an alternative to Venn diagrams.
+This package provides a simple way to produce such plots using ggplot2.  In
+addition it can convert any categorical axis into a combination matrix axis.")
+    (license license:gpl3)))
+
 (define-public r-glmpca
   (package
     (name "r-glmpca")
