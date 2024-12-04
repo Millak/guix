@@ -898,22 +898,28 @@ ciphers.")
 algorithms.  This package is deprecated.  Please use block-cipher instead.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-block-cipher-trait-0.4
+(define-public rust-block-cipher-trait-0.4.2-yanked
   (package
     (inherit rust-block-cipher-trait-0.6)
     (name "rust-block-cipher-trait")
-    (version "0.4.2")
+    (version "0.4.2") ; This version was yanked!
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "block-cipher-trait" version))
-       (file-name (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version "-yanked.tar.gz"))
        (sha256
         (base32
          "10qmg8vphqmfllb9a2yx6s7r66jh1wh33clhsawq7ikg2wgz2p6q"))))
     (arguments
      `(#:cargo-inputs
-       (("rust-generic-array" ,rust-generic-array-0.8))))))
+       (("rust-generic-array" ,rust-generic-array-0.8))))
+    (properties '((crate-version-yanked? . #t)))))
+
+(define-public rust-block-cipher-trait-0.4
+  ;; There are no non-yanked versions of this semver.
+  (deprecated-package "rust-block-cipher-trait"
+                      rust-block-cipher-trait-0.4.2-yanked))
 
 (define-public rust-block-modes-0.8
   (package
