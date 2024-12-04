@@ -5004,14 +5004,14 @@ and speed.")
 (define-public rust-rocket-http-0.5
   (package
     (name "rust-rocket-http")
-    (version "0.5.0")
+    (version "0.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rocket_http" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "17iq208zf9rfxdnx8hfjxnn51074cc9li99yjigzwnfhjhv6d89p"))))
+        (base32 "1fc2z0a7zhmf8rh7s1dwdmmkjmq7qiivsi6027v6ac7f41d92x72"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; can't find crate for `rocket`
