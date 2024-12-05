@@ -49,7 +49,7 @@
 (define-public libffi
   (package
     (name "libffi")
-    (version "3.4.4")
+    (version "3.4.6")
     (source (origin
               (method url-fetch)
               (uri
@@ -58,20 +58,13 @@
                               name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0xpn5mqlbdmqgxgp910ba1qj79axpwr8nh7wklmcz0ls4nnmcv6n"))))
+                "0kjsi51phx1pskjhhwa9y5fxdazzxgrl0m421sjsfqy84ggskpmh"))))
     (build-system gnu-build-system)
     (arguments
      `(;; Prevent the build system from passing -march and -mtune to the
        ;; compiler.  See "ax_cc_maxopt.m4" and "ax_gcc_archflag.m4".
        #:configure-flags '("--enable-portable-binary"
-                           "--without-gcc-arch"
-                           ,@(if (or (target-hurd64?)
-                                     (%current-target-system)
-                                     (and (target-x86-64?) (target-linux?)))
-                                 (list (string-append
-                                        "CFLAGS=-g -O2"
-                                        " -Wno-implicit-function-declaration"))
-                                 '()))))
+                           "--without-gcc-arch")))
     (outputs '("out" "debug"))
     (synopsis "Foreign function call interface library")
     (description
