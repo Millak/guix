@@ -340,10 +340,9 @@ or false to signal an error."
      ;; here just so we can keep going.
      ((string=? system "arm-eabi") "no-ld.so")
      ((string=? system "avr") "no-ld.so")
-     ((string=? system "i686-mingw") "no-ld.so")
      ((string=? system "or1k-elf") "no-ld.so")
-     ((string=? system "x86_64-mingw") "no-ld.so")
      ((string-suffix? "-elf" system) "no-ld.so")
+     ((string-suffix? "-mingw" system) "no-ld.so")
 
      (else (error "dynamic linker name not known for this system"
                   system)))))
