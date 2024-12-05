@@ -6533,12 +6533,30 @@ as is the case with audio plugins.")
                    (invoke "make" "features")))
                (add-after 'install 'make-carla-executable
                  (lambda _
-                   (chmod (string-append #$output "/share/carla/carla") #o555)))
+                   (with-directory-excursion (string-append #$output
+                                                           "/share/carla")
+                     (for-each (lambda (file)
+                                 (chmod file #o555))
+                               (list "carla"
+                                     "carla-control"
+                                     "carla-jack-multi"
+                                     "carla-jack-single"
+                                     "carla-patchbay"
+                                     "carla-rack")))))
                (add-after 'install 'wrap-executables
-                 (lambda _
-                   (wrap-program (string-append #$output "/bin/carla")
-                     `("GUIX_PYTHONPATH" ":" prefix
-                       (,(getenv "GUIX_PYTHONPATH")))))))))
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   ;; Wrap only those executable files that other programs
+                   ;; (e.g. lmms) would call.
+                   (with-directory-excursion #$output
+                     (for-each (lambda (file)
+                                 (when (and (executable-file? file)
+                                            (not (symbolic-link? file))
+                                            (not (string-suffix? ".py" file)))
+                                   (wrap-program file
+                                     `("GUIX_PYTHONPATH" ":" prefix
+                                       (,(getenv "GUIX_PYTHONPATH"))))))
+                               (append (find-files "share/carla/resources")
+                                       (find-files "bin")))))))))
     (inputs
      (list alsa-lib
            ffmpeg
