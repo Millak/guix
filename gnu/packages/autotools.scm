@@ -10,7 +10,7 @@
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019 Pierre-Moana Levesque <pierre.moana.levesque@gmail.com>
-;;; Copyright © 2020, 2023 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;;
@@ -346,6 +346,7 @@ output is indexed in many ways to simplify browsing.")
                   (srfi srfi-1)
                   (srfi srfi-26)
                   (rnrs io ports))
+      #:configure-flags #~'("CFLAGS=-g -O2 -Wno-implicit-function-declaration")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'patch-source-shebangs 'patch-tests-shebangs
