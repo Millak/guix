@@ -1424,7 +1424,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/gemrb-remove-ifdef-and-externalize-path-setting-to-cmake.patch	\
   %D%/packages/patches/genimage-mke2fs-test.patch		\
   %D%/packages/patches/geoclue-config.patch			\
-  %D%/packages/patches/gettext-libunicode-update.patch		\
   %D%/packages/patches/ghc-8.0-fall-back-to-madv_dontneed.patch	\
   %D%/packages/patches/ghc-9.2-cabal-support-package-path.patch \
   %D%/packages/patches/ghc-9-StgCRunAsm-only-when-needed.patch	\
