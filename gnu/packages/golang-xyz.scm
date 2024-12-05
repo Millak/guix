@@ -1670,7 +1670,13 @@ tools.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/charmbracelet/lipgloss"))
+      #:import-path "github.com/charmbracelet/lipgloss"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key import-path #:allow-other-keys)
+              (delete-file-recursively
+               (string-append "src/" import-path "/examples")))))))
     (propagated-inputs
      (list go-github-com-aymanbagabas-go-udiff
            go-github-com-charmbracelet-x-ansi
