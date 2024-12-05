@@ -778,14 +778,11 @@ $out/bin/guile --version~%"
               (chmod "lib" #o755)
 
               ;; Patch linker scripts so they refer to the right file-names.
-              ,(if (target-hurd64?)
-                   '(substitute* '("lib/libc.so" "lib/libm.so")
-                      (("/[^ ]+/lib/(libc|libm|libh|ld)" _ prefix)
-                       (string-append out "/lib/" prefix)))
-                   '(substitute* "lib/libc.so"
-                      (("/[^ ]+/lib/(libc|ld)" _ prefix)
-                       (string-append out "/lib/" prefix))))
-              #t))))))
+              (substitute* ,(if (target-hurd64?)
+                                ''("lib/libc.so" "lib/libm.so")
+                                "lib/libc.so")
+                (("/[^ ]+/lib/(libc|libm|libh|ld)" _ prefix)
+                 (string-append out "/lib/" prefix)))))))))
     (inputs
      `(("tar" ,(bootstrap-executable "tar" (%current-system)))
        ("xz"  ,(bootstrap-executable "xz" (%current-system)))
