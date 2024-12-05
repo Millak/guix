@@ -237,6 +237,7 @@
   #:use-module (gnu artwork)
   #:use-module (guix build-system cargo)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
@@ -13723,6 +13724,48 @@ developed with the aim of being used with the Librem 5 phone.")
     (native-search-paths (list (search-path-specification
                                 (variable "KOMIKKU_SERVERS_PATH")
                                 (files '("lib/komikku/servers")))))))
+
+(define-public komikku-servers
+  (package
+    (name "komikku-servers")
+    (version "1.59.0")                  ; latest version that works with 1.57
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/valos/Komikku/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0sfqmqcpdl3bsbs0wxl4jwvd7wpgigkvvasy1niz6qm2vnp35gzq"))))
+    (build-system copy-build-system)
+    (arguments
+     (list
+      #:install-plan
+      #~'(("komikku/servers" "lib/komikku/servers"))
+      #:modules '((guix build copy-build-system)
+                  (guix build utils)
+                  (ice-9 ftw))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'delete-conflicting-files
+            (lambda _
+              (with-directory-excursion "komikku/servers"
+                (for-each delete-file
+                          (scandir "."
+                                   (lambda (f) (string-suffix? ".py" f)))))))
+          (add-after 'install 'compile
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((site-dir (string-append (assoc-ref outputs "out")
+                                             "/lib/komikku/servers")))
+                (invoke "python" "-m" "compileall"
+                        "--invalidation-mode=unchecked-hash" site-dir)))))))
+    (native-inputs (list python-wrapper))
+    (home-page "https://apps.gnome.org/Komikku")
+    (synopsis "Servers for Komikku")
+    (description "This package provides more recent servers for Komikku.")
+    (license license:gpl3+)))
 
 (define-public libgda
   (package
