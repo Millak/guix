@@ -342,6 +342,7 @@ output is indexed in many ways to simplify browsing.")
             (files '("share/aclocal")))))
     (arguments
      (list
+      #:tests? #f ;with gcc-14, 23 compiler "tap" tests fail.
       #:modules '((guix build gnu-build-system)
                   (guix build utils)
                   (srfi srfi-1)
@@ -360,23 +361,6 @@ output is indexed in many ways to simplify browsing.")
                 ;; that occur during the test suite.
                 (setenv "SHELL" sh)
                 (setenv "CONFIG_SHELL" sh))))
-          (add-before 'check 'skip-tests
-            (lambda _
-              (substitute*
-                  ;; This test requires 'etags' and fails if it's missing.
-                  ;; Skip it.
-                  '("t/tags-lisp-space.sh"
-                    ;; These tests fail with gcc-14
-                    "t/c-demo.sh"
-                    "t/depcomp-auto.tap"
-                    "t/depcomp-cpp.tap"
-                    "t/depcomp-dashmstdout.tap"
-                    "t/depcomp-gcc.tap"
-                    "t/dist-vs-built-sources.sh"
-                    "t/link_cond.sh"
-                    "t/subobj-clean-pr10697.sh")
-                  (("^#!.*" all)
-                   (string-append all "exit 77;\n")))))
 
           #$@(if (%current-target-system)
                  #~((add-after 'install 'patch-non-shebang-references
@@ -453,9 +437,11 @@ Makefile, simplifying the entire process for the developer.")
                (search-patches "automake-skip-amhello-tests.patch"))))
     (arguments
      (substitute-keyword-arguments (package-arguments automake-1.16.5)
+       ((#:tests? tests?)
+        #t)
        ((#:phases phases)
         #~(modify-phases #$phases
-            (replace 'skip-tests
+            (add-before 'check 'skip-test
               (lambda _
                 (substitute*
                     ;; This test requires 'etags' and fails if it's missing.
