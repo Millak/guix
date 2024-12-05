@@ -6091,7 +6091,13 @@ helping you to transform blocks of text.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/muesli/termenv"))
+      #:import-path "github.com/muesli/termenv"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key import-path #:allow-other-keys)
+              (delete-file-recursively
+               (string-append "src/" import-path "/examples")))))))
     (propagated-inputs
      (list go-github-com-aymanbagabas-go-osc52-v2
            go-github-com-lucasb-eyer-go-colorful
