@@ -49,6 +49,7 @@
 ;;; Copyright © 2024 Spencer Peters <spencerpeters@protonmail.com>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2024 gemmaro <gemmaro.dev@gmail.com>
+;;; Copyright © 2024 Simen Endsjø <contact@simendsjo.me>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2104,7 +2105,7 @@ metrics to Graphite.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/cyphar/filepatv-securejoin")
+             (url "https://github.com/cyphar/filepath-securejoin")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
