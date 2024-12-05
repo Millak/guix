@@ -540,8 +540,7 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
                 (substitute* (cons "gcc/config/rs6000/sysv4.h"
                                    (find-files "gcc/config"
                                                "^gnu-user.*\\.h$"))
-                  ((" -lgcc_s}}") "}}"))
-                #$@(if (target-hurd64?) '() '(#t))))))))
+                  ((" -lgcc_s}}") "}}"))))))))
      (inputs
       `(("zlib:static" ,zlib "static")
         ("isl:static" ,isl "static")
