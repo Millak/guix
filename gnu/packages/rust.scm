@@ -1487,24 +1487,23 @@ exec -a \"$0\" \"~a\" \"$@\""
               #$@(if (target-mingw? target)
                      `((add-after 'set-env 'patch-for-mingw
                          (lambda* (#:key inputs #:allow-other-keys)
-                           (setenv "LIBRARY_PATH"
-                                   (string-join
-                                    (delete
-                                     (string-append
-                                      (or (assoc-ref inputs "mingw-w64-i686-winpthreads")
-                                          (assoc-ref inputs "mingw-w64-x86_64-winpthreads"))
-                                      "/lib")
-                                     (string-split (getenv "LIBRARY_PATH") #\:))
-                                    ":"))
-                           (setenv "CPLUS_INCLUDE_PATH"
-                                   (string-join
-                                    (delete
-                                     (string-append
-                                      (or (assoc-ref inputs "mingw-w64-i686-winpthreads")
-                                          (assoc-ref inputs "mingw-w64-x86_64-winpthreads"))
-                                      "/include")
-                                     (string-split (getenv "CPLUS_INCLUDE_PATH") #\:))
-                                    ":"))
+                           (let* ((arch ,(string-take target
+                                                      (string-index target #\-)))
+                                  (mingw (assoc-ref inputs
+                                                    (string-append "mingw-w64-" arch
+                                                                   "-winpthreads"))))
+                             (setenv "LIBRARY_PATH"
+                                     (string-join
+                                       (delete
+                                         (string-append mingw "/lib")
+                                         (string-split (getenv "LIBRARY_PATH") #\:))
+                                       ":"))
+                             (setenv "CPLUS_INCLUDE_PATH"
+                                     (string-join
+                                       (delete
+                                         (string-append mingw "/include")
+                                         (string-split (getenv "CPLUS_INCLUDE_PATH") #\:))
+                                       ":")))
                            ;; When building a rust-sysroot this crate is only used for
                            ;; the rust-installer.
                            (substitute* '("vendor/num_cpus-1.13.0/src/linux.rs"
@@ -1610,9 +1609,9 @@ ar = \"" (search-input-file inputs (string-append "/bin/" #$(ar-for-target targe
        (if (target-mingw? target)
            (modify-inputs (package-propagated-inputs base-rust)
              (prepend
-              (if (string=? "i686-w64-mingw32" target)
-                  mingw-w64-i686-winpthreads
-                  mingw-w64-x86_64-winpthreads)))
+              (make-mingw-w64
+                (string-take target (string-index target #\-))
+                #:with-winpthreads? #t)))
            (package-propagated-inputs base-rust)))
       (native-inputs
        (if (target-mingw? target)
@@ -1620,9 +1619,9 @@ ar = \"" (search-input-file inputs (string-append "/bin/" #$(ar-for-target targe
              (prepend (cross-gcc target
                                  #:libc (cross-libc target))
                       (cross-binutils target)
-                      (if (string=? "i686-w64-mingw32" target)
-                          mingw-w64-i686-winpthreads
-                          mingw-w64-x86_64-winpthreads)))
+                      (make-mingw-w64
+                        (string-take target (string-index target #\-))
+                        #:with-winpthreads? #t)))
            (modify-inputs (package-native-inputs base-rust)
              (prepend (cross-gcc target
                                  #:libc (cross-libc target))
