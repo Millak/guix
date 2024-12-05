@@ -52,7 +52,7 @@
 ;;; Copyright © 2021 ikasero <ahmed@ikasero.com>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
-;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2022, 2024 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 Derek Chuank <derekchuank@outlook.com>
 ;;; Copyright © 2022, 2023 Wamm K. D. <jaft.r@outlook.com>
@@ -836,7 +836,7 @@ rasterisation.")
 (define-public libdrm
   (package
     (name "libdrm")
-    (version "2.4.123")
+    (version "2.4.124")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -844,7 +844,7 @@ rasterisation.")
                     version ".tar.xz"))
               (sha256
                (base32
-                "17mpmp59icp8vaa47dz9gdpdh583kigq47p9a07lp9s9l5kqbfd2"))))
+                "0yd37j3c1qz9gmwvv7vwqgss8aiizypsg8hn9fpsyjnac4zjjdmc"))))
     (build-system meson-build-system)
     (arguments
      (list #:configure-flags
