@@ -18025,6 +18025,30 @@ in English as you type.  It primarily detects \"weasel words\" and abuse of
 passive voice.")
     (license license:gpl3+)))
 
+(define-public emacs-writefreely
+  (let ((commit "cfbba9c3a34f580f39c0796966ea76b0cf98a23e")
+        (revision "0"))
+    (package
+      (name "emacs-writefreely")
+      (version (git-version "0.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/dangom/writefreely.el")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "02gy3kg28igqcg7ai8n2p19q8m4xpgp5wn34n2fwz2bjymgf9g4s"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-ox-hugo emacs-request))
+      (home-page "https://github.com/dangom/writefreely.el")
+      (synopsis "Emacs interface to the WriteFreely API")
+      (description
+       "This library publishes Org mode files as posts to any instance of the
+federated blogging platform WriteFreely.")
+      (license license:gpl3+))))
+
 (define-public emacs-neotree
   (package
     (name "emacs-neotree")
