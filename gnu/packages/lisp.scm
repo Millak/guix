@@ -711,7 +711,7 @@ supporting ASDF, Sockets, Gray streams, MOP, and other useful components.")
 (define-public eisl
   (package
     (name "eisl")
-    (version "5.36")
+    (version "5.38")
     (source
      (origin
        (method git-fetch)
@@ -720,7 +720,7 @@ supporting ASDF, Sockets, Gray streams, MOP, and other useful components.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1i3gnfccds4g1pknns8jqmjy3x48jys3k2hs4lnd7wq4i5k2ihg7"))))
+        (base32 "0zrlsg77azlhm01djfqxglipqnz67r4h092f86rvvvhr332y2902"))))
     (build-system gnu-build-system)
     (inputs
      (list bash-minimal freeglut gdbm libiconv ncurses tcl tk))
