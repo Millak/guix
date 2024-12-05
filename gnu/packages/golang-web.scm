@@ -995,6 +995,32 @@ API.  See the full Circonus API Documentation at
 @url{https://login.circonus.com/resources/api} for more information.")
     (license license:bsd-3)))
 
+(define-public go-github-com-cli-browser
+  (package
+    (name "go-github-com-cli-browser")
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cli/browser")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1f54ap2a4df32bwrwqsasfsikkxngkk4wr2wfbsns4lf0yymra6k"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/cli/browser"))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
+    (home-page "https://github.com/cli/browser")
+    (synopsis "Helpers to open URLs, files, or readers in a web browser")
+    (description
+     "Package browser provides helpers to open files, readers, and URLs in a
+browser window.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-coder-websocket
   (package
     (name "go-github-com-coder-websocket")
