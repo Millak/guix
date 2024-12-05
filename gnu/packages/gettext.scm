@@ -55,15 +55,14 @@
 (define-public gettext-minimal
   (package
     (name "gettext-minimal")
-    (version "0.21")
+    (version "0.23")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/gettext/gettext-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "04kbg1sx0ncfrsbr85ggjslqkzzb243fcw9nyh3rrv1a22ihszf7"))
-              (patches (search-patches "gettext-libunicode-update.patch"))))
+                "19h717qnmg01499gi3494z9l2ss12cp60405ml473p82580dfpcl"))))
     (build-system gnu-build-system)
     (outputs '("out"
                "doc"))                            ;9 MiB of HTML
@@ -89,13 +88,13 @@
                    (substitute* '("gettext-tools/src/project-id"
                                   "gettext-tools/projects/KDE/trigger"
                                   "gettext-tools/projects/GNOME/trigger")
-                     (("/bin/pwd") "pwd"))
-                   #t))
+                     (("/bin/pwd") "pwd"))))
                (add-before 'check 'patch-tests
                  (lambda* (#:key inputs #:allow-other-keys)
-                   ;; This test fails
-                   (substitute* "gettext-tools/tests/xgettext-javascript-6"
-                     (("^#!.*" all) (string-append all "exit 77;\n")))
+                   ;;libgettextlib-0.23.so => not found
+                   (substitute* "gettext-tools/gnulib-tests/test-execute.sh"
+                     (("^#!.*" all)
+                      (string-append all "exit 77;\n")))
                    (let* ((bash (which "sh")))
                      ;; Some of the files we're patching are
                      ;; ISO-8859-1-encoded, so choose it as the default
@@ -131,9 +130,7 @@
                                      "gettext-tools/gnulib-tests/Makefile.in"
                                    ;; See 'coreutils' for the rationale.
                                    ((" test-tls\\$\\(EXEEXT\\) ") " ")))
-                              '())
-
-                       #t))))
+                              '())))))
           #$@(if (%current-target-system)
                  #~((add-after 'install 'patch-cross-shebangs
                       (lambda _
