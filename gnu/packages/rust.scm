@@ -1614,19 +1614,15 @@ ar = \"" (search-input-file inputs (string-append "/bin/" #$(ar-for-target targe
                 #:with-winpthreads? #t)))
            (package-propagated-inputs base-rust)))
       (native-inputs
-       (if (target-mingw? target)
-           (modify-inputs (package-native-inputs base-rust)
-             (prepend (cross-gcc target
-                                 #:libc (cross-libc target))
-                      (cross-binutils target)
+       (modify-inputs (package-native-inputs base-rust)
+         (prepend (cross-gcc target
+                             #:libc (cross-libc target)))
+         (prepend (if (target-mingw? target)
                       (make-mingw-w64
                         (string-take target (string-index target #\-))
-                        #:with-winpthreads? #t)))
-           (modify-inputs (package-native-inputs base-rust)
-             (prepend (cross-gcc target
-                                 #:libc (cross-libc target))
-                      (cross-libc target)
-                      (cross-binutils target)))))
+                        #:with-winpthreads? #t)
+                      (cross-libc target)))
+         (prepend (cross-binutils target))))
       (properties
        `((hidden? . #t) ,(package-properties base-rust))))))
 
