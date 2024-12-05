@@ -8903,6 +8903,36 @@ provides Go APIs that allow you to easily embed a scripting language to your
 Go host programs.")
     (license license:expat)))
 
+(define-public go-go-abhg-dev-komplete
+  (package
+    (name "go-go-abhg-dev-komplete")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/abhinav/komplete")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "060ns34mcf3a39vqairv52lkxiknrv6ghpyy0prliswfhw0hwy67"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.22
+      #:import-path "go.abhg.dev/komplete"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-alecthomas-kong
+           go-github-com-buildkite-shellwords))
+    (home-page "https://go.abhg.dev/komplete")
+    (synopsis "Shell completion support for Kong CLI parser")
+    (description
+     "This package provides a command-line completion engine for the
+@url{https://github.com/alecthomas/kong, Kong CLI parser}.")
+    (license license:bsd-3)))
+
 (define-public go-go-etcd-io-bbolt
   (package
     (name "go-go-etcd-io-bbolt")
