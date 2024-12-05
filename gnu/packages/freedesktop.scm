@@ -1462,15 +1462,16 @@ fullscreen) or other display servers.")
 (define-public wayland-protocols
   (package
     (name "wayland-protocols")
-    (version "1.37")
+    (version "1.38")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "https://gitlab.freedesktop.org/wayland/"
-                                  name "/-/releases/" version "/downloads/"
-                                  name "-" version ".tar.xz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.freedesktop.org/wayland/wayland-protocols")
+                    (commit version)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "09pk3qhpc29x1a6srpqqw9dcvalg33vfmp14d276is7j4klrn3m7"))))
+                "1aik5zmpjwhxsfv9aa88sg95s0mg6yvy2cbqbd1xhigfbnq271zb"))))
     (build-system meson-build-system)
     (inputs
      (list wayland))
@@ -1485,9 +1486,6 @@ functionality not available in the Wayland core protocol.  Such protocols either
 add completely new functionality, or extend the functionality of some other
 protocol either in Wayland core, or some other protocol in wayland-protocols.")
     (home-page "https://wayland.freedesktop.org")
-    (properties
-     '((release-monitoring-url
-        . "https://wayland.freedesktop.org/releases.html")))
     (license license:expat)))
 
 (define-public wayland-protocols-next
