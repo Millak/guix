@@ -13641,7 +13641,7 @@ profiler via Sysprof, debugging support, and more.")
 (define-public komikku
   (package
     (name "komikku")
-    (version "1.46.0")
+    (version "1.57.0")
     (source
      (origin
        (method git-fetch)
@@ -13651,7 +13651,7 @@ profiler via Sysprof, debugging support, and more.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1ggg4hgd1kyc69b06kcgvvjwmz72xgjakva19gs3nrszr4cinank"))))
+         "0z8sigv1a8a96y0hgm21j4qmpy06ziqw8yhlgbp8kbg70g5yhrbg"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -13699,6 +13699,7 @@ profiler via Sysprof, debugging support, and more.")
            python-natsort
            python-piexif
            python-pillow
+           python-pillow-heif
            python-pure-protobuf
            python-pycairo
            python-pygobject
@@ -13718,7 +13719,10 @@ profiler via Sysprof, debugging support, and more.")
     (synopsis "Manga reader for GNOME")
     (description "Komikku is an online/offline manga reader for GNOME,
 developed with the aim of being used with the Librem 5 phone.")
-    (license license:gpl3+)))
+    (license license:gpl3+)
+    (native-search-paths (list (search-path-specification
+                                (variable "KOMIKKU_SERVERS_PATH")
+                                (files '("lib/komikku/servers")))))))
 
 (define-public libgda
   (package
