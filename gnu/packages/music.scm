@@ -5369,6 +5369,12 @@ and more.  Full API documentation and examples are included.")
             (lambda* (#:key inputs #:allow-other-keys)
               (copy-recursively (assoc-ref inputs "rpmalloc")
                                 "src/3rdparty/rpmalloc/rpmalloc")))
+          (add-after 'unpack 'patch-stk-path
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (substitute* "cmake/modules/FindSTK.cmake"
+                    (("/usr") (assoc-ref inputs "stk")))
+                  (substitute* "src/core/ConfigManager.cpp"
+                    (("/usr") (assoc-ref inputs "stk")))))
           (add-before 'configure 'set-ldflags
             (lambda _
               (setenv "LDFLAGS"
@@ -5402,6 +5408,7 @@ and more.  Full API documentation and examples are included.")
            jack-2
            ladspa
            lame
+           libgig
            libogg
            libsamplerate
            libsndfile
@@ -5412,7 +5419,8 @@ and more.  Full API documentation and examples are included.")
            pulseaudio
            qtbase-5
            qtx11extras
-           sdl))
+           sdl
+           stk))
     (home-page "https://lmms.io/")
     (synopsis "Music composition tool")
     (description "LMMS is a digital audio workstation.  It includes tools for
