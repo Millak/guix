@@ -1,4 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
+;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -21,7 +22,10 @@
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix packages)
-  #:use-module (gnu packages))
+  #:use-module (gnu packages)
+  #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-check)
+  #:use-module (gnu packages golang-web))
 
 ;;; Commentary:
 ;;;
@@ -32,6 +36,38 @@
 ;;;
 ;;; Libraries:
 ;;;
+
+(define-public go-github-com-xanzy-go-gitlab
+  (package
+    (name "go-github-com-xanzy-go-gitlab")
+    (version "0.114.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/xanzy/go-gitlab")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "136iik1pqggdk2z3yz4wh5z05wp9sb6j1rpbf33bjn5djqxcxbbf"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/xanzy/go-gitlab"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-google-go-querystring
+           go-github-com-hashicorp-go-cleanhttp
+           go-github-com-hashicorp-go-retryablehttp
+           go-golang-org-x-oauth2
+           go-golang-org-x-time))
+    (home-page "https://github.com/xanzy/go-gitlab")
+    (synopsis "GitLab Go SDK")
+    (description
+     "This package provides a GitLab API client enabling Go programs to
+interact with GitLab in a simple and uniform way.")
+    (license license:asl2.0)))
 
 ;;;
 ;;; Executables:
