@@ -11150,6 +11150,50 @@ a general image processing tool.")
               "http://www.pythonware.com/products/pil/license.htm"
               "The PIL Software License"))))
 
+(define-public python-pillow-heif
+  (package
+    (name "python-pillow-heif")
+    (version "0.21.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pillow_heif" version))
+       (sha256
+        (base32 "16xl2a51z4rjfy7y8vnn3w0ngcr1mr2sgsl9p7z62payy2zy3bh7"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k"                      ; XXX: 10/12 bit tests fail
+              (string-append
+               "not test_save_bgr_16bit_to_10_12_bit"
+               " and not test_save_bgra_16bit_to_10_12_bit"
+               " and not test_open_heif_compare_non_standard_modes_data"
+               " and not test_open_save_disable_16bit"
+               " and not test_heif_read_images[image_path16]"
+               " and not test_heif_read_images[image_path43]"
+               " and not test_premultiplied_alpha"
+               " and not test_hdr_save"
+               " and not test_I_color_modes_to_10_12_bit"))))
+    (inputs (list libheif))
+    (propagated-inputs (list python-pillow))
+    (native-inputs (list opencv         ; for opencv-python
+                         python-coverage
+                         python-defusedxml
+                         python-numpy
+                         python-packaging
+                         python-pre-commit
+                         python-pylint
+                         python-pympler
+                         python-setuptools
+                         python-pytest
+                         python-wheel))
+    (home-page "https://github.com/bigcat88/pillow_heif")
+    (synopsis "Python interface for libheif library")
+    (description "This package provides Python bindings for the libheif library
+and a plugin for Pillow.")
+    (license license:bsd-3)))
+
 (define-public python-pillow-2.9
   (package
     (inherit python-pillow)
