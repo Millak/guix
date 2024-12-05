@@ -691,7 +691,7 @@ be stripped.")
 (define-public go-github-com-alecthomas-kong
   (package
     (name "go-github-com-alecthomas-kong")
-    (version "0.9.0")
+    (version "1.5.1")
     (source
      (origin
        (method git-fetch)
@@ -700,7 +700,7 @@ be stripped.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0a9arf30h84ll8k612jh50c3vjmvdfj6i7dbvfnw3dalm6dn2aan"))))
+        (base32 "1b9yns6rgmxjb40rlm6v2pybi25my0760vvp6666vx5da7yg4dg9"))))
     (build-system go-build-system)
     (arguments
      (list
