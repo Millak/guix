@@ -2079,6 +2079,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/smalltalk-multiplication-overflow.patch	\
   %D%/packages/patches/soci-mysql-ddl-types.patch		\
   %D%/packages/patches/sqlite-hurd.patch			\
+  %D%/packages/patches/stk-5.0.1-fix-typo.patch			\
   %D%/packages/patches/strace-readlink-tests.patch		\
   %D%/packages/patches/sunxi-tools-remove-sys-io.patch	\
   %D%/packages/patches/p11-kit-hurd.patch			\

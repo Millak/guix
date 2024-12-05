@@ -1,0 +1,8 @@
+This patch fixes typo.
+
+diff -ruN stk-5.0.1-a/projects/eguitar/ElectricGuitar stk-5.0.1-b/projects/eguitar/ElectricGuitar
+--- stk-5.0.1-a/projects/eguitar/ElectricGuitar	2024-11-30 15:07:14.267988301 +0530
++++ stk-5.0.1-b/projects/eguitar/ElectricGuitar	2024-11-30 15:05:40.951986213 +0530
+@@ -1 +1 @@
+-wish < tcl/Eguitar.tcl | ./eguitar -or -ip
++wish < tcl/EGuitar.tcl | ./eguitar -or -ip

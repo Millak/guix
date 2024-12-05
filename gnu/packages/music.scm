@@ -45,7 +45,7 @@
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Thomas Albers Raviola <thomas@thomaslabs.org>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
-;;; Copyright © 2022, 2023 Sughosha <sughosha@disroot.org>
+;;; Copyright © 2022, 2023, 2024 Sughosha <sughosha@disroot.org>
 ;;; Copyright © 2022, 2025 Remco van 't Veer <remco@remworks.net>
 ;;; Copyright © 2022, 2023, 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2022 Wamm K. D. <jaft.r@outlook.com>
@@ -1834,6 +1834,119 @@ scores.")
 listeners answer questions about music quickly and simply.")
     ;; Software is dual-licensed.
     (license (list license:bsd-3 license:lgpl3+))))
+
+(define-public stk
+  (package
+    (name "stk")
+    (version "5.0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/thestk/stk")
+                    (commit version)))
+              (sha256
+               (base32
+                "0z16614ljbvqa1ax6wl0nkzpqffaz1y59g4r09ch8x45wmy0xknb"))
+              (file-name (git-file-name name version))
+              (patches
+               (search-patches "stk-5.0.1-fix-typo.patch"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:tests? #f ;no tests
+           #:modules
+           '((guix build cmake-build-system)
+             (guix build utils)
+             (srfi srfi-26))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-paths
+                 (lambda _
+                   ;; Patch rawwaves path.
+                   (substitute* (find-files "." "(\\.h$|\\.cpp$)")
+                     (("\\.\\./\\.\\./rawwaves")
+                      (string-append #$output "/share/stk/rawwaves"))
+                     (("\"rawwaves")
+                      (string-append "\"" #$output "/share/stk/rawwaves")))
+                   ;; Patch tk and tcl paths.
+                   (with-directory-excursion "projects"
+                     (for-each (lambda (file)
+                                 (substitute* (string-drop-right file 4)
+                                   (("wish") (which "wish"))
+                                   (("< tcl") (string-append "< " #$output:gui
+                                                             "/share/stk/tcl"))
+                                   (("\\./") (string-append #$output "/bin/"))))
+                      (find-files "." "\\.bat$"))
+                     (substitute* (find-files "share/stk/tcl" "\\.tcl$")
+                       (("tcl/bitmaps")
+                        (string-append #$output:gui "/share/stk/tcl/bitmaps"))))))
+               (add-after 'install 'install-rawwaves-and-projects
+                 (lambda _
+                   (let* ((bin (string-append #$output "/bin"))
+                          (data (string-append #$output "/share/stk"))
+                          (rawwaves (string-append data "/rawwaves"))
+                          (scores (string-append data "/scores"))
+                          (gui (string-append #$output:gui "/bin"))
+                          (tcl (string-append #$output:gui "/share/stk/tcl")))
+                     (mkdir-p data)
+                     ;; Install rawwaves.
+                     (copy-recursively "rawwaves" rawwaves)
+                     ;; Install projects.
+                     (with-directory-excursion "../source/projects"
+                       ;; Install project binaries.
+                       (for-each (cut install-file <> bin)
+                                 '("demo/stk-demo"
+                                   "effects/effects"
+                                   "examples/audioprobe"
+                                   "examples/bethree"
+                                   "examples/controlbee"
+                                   "examples/crtsine"
+                                   "examples/duplex"
+                                   "examples/foursine"
+                                   "examples/grains"
+                                   "examples/inetIn"
+                                   "examples/inetOut"
+                                   "examples/midiprobe"
+                                   "examples/play"
+                                   "examples/playsmf"
+                                   "examples/record"
+                                   "examples/rtsine"
+                                   "examples/sine"
+                                   "examples/sineosc"
+                                   "examples/threebees"
+                                   "eguitar/eguitar"
+                                   "ragamatic/ragamat"))
+                       ;; Install project rawwaves.
+                       (for-each (cut copy-recursively <> rawwaves)
+                                 '("examples/rawwaves"
+                                   "ragamatic/rawwaves"))
+                       ;; Install project scores.
+                       (for-each (cut copy-recursively <> scores)
+                                 '("demo/scores"
+                                   "eguitar/scores"
+                                   "examples/scores"))
+                       ;; Install GUI scripts.
+                       (for-each (lambda (file)
+                                   (install-file (string-drop-right file 4) gui))
+                                 (find-files "." "\\.bat"))
+                       ;; Install TCL files.
+                       (for-each (cut copy-recursively <> tcl)
+                                 '("demo/tcl"
+                                   "effects/tcl"
+                                   "eguitar/tcl"
+                                   "ragamatic/tcl")))))))))
+    (outputs
+     '("out" "gui"))
+    (inputs
+     (list alsa-lib jack-2 tk))
+    (home-page "https://ccrma.stanford.edu/software/stk/")
+    (synopsis "Audio signal processing and algorithmic synthesis classes")
+    (description
+     "Synthesis ToolKit in C++ (STK) is a set of audio signal processing and
+algorithmic synthesis classes written in C++.
+
+This package also provides its demo project, examples, ElectricGuitar,
+RagaMatic and Effects.")
+    (license (license:non-copyleft "file:///LICENSE"))))
 
 (define-public abjad
   (package
