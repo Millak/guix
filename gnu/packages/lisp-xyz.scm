@@ -27439,6 +27439,36 @@ running into parallelism problems when having to change directory.")
 (define-public ecl-simple-inferiors
   (sbcl-package->ecl-package sbcl-simple-inferiors))
 
+(define-public sbcl-simple-matrix
+  (let ((commit "9b549c3b2729270327a6fd5e2da30abbff789621")
+        (revision "1"))
+    (package
+      (name "sbcl-simple-matrix")
+      (version (git-version "1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://codeberg.org/glv/cl-simple-matrix")
+               (commit commit)))
+         (file-name (git-file-name "cl-simple-matrix" version))
+         (sha256
+          (base32 "0m6fxb2jg9n2r1mcknad85n328n12c30id7bw6ym4s7pmprc8hq8"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs (list sbcl-fiveam))
+      (synopsis "Matrix library for Common Lisp")
+      (description
+       "@code{simple-matrix} is a Common Lisp library implementing some basic
+functions to work with matrices.")
+      (home-page "https://codeberg.org/glv/cl-simple-matrix")
+      (license license:gpl3+))))
+
+(define-public cl-simple-matrix
+  (sbcl-package->cl-source-package sbcl-simple-matrix))
+
+(define-public ecl-simple-matrix
+  (sbcl-package->ecl-package sbcl-simple-matrix))
+
 (define-public sbcl-simple-neural-network
   (package
     (name "sbcl-simple-neural-network")
