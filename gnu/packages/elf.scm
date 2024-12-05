@@ -76,14 +76,14 @@ libraries.")
 (define-public elfutils
   (package
     (name "elfutils")
-    (version "0.187")
+    (version "0.192")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://sourceware.org/elfutils/ftp/"
                                   version "/elfutils-" version ".tar.bz2"))
               (sha256
                (base32
-                "1j2lsicm3dkj5n6spszr9qy5rqm48bqimmz03x6hry8hwvxhs2z7"))
+                "1d0nnkm59pwi9hrr28w0ifb6smldrjk6rn33kcgs3ar4msz9jq31"))
               (patches (search-patches "elfutils-tests-ptrace.patch"))))
     (build-system gnu-build-system)
 
@@ -175,15 +175,6 @@ libraries.")
                                          "tests/run-varlocs.sh")
                             (("^#!.*" all)
                              (string-append all "exit 77;\n"))))))
-                   #~())
-            #$@(if (%current-target-system)
-                   #~((add-after 'unpack 'patch
-                        (lambda* (#:key native-inputs #:allow-other-keys)
-                          (invoke
-                           "patch" "-p1" "--force" "-i"
-                           #$(local-file
-                              (search-patch
-                               "elfutils-libdwfl-string-overflow.patch"))))))
                    #~()))))
     (native-inputs (append (if (target-loongarch64?)
                                (list config)
