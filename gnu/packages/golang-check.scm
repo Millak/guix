@@ -1385,6 +1385,34 @@ and replaying them in future runs in order to provide fast, deterministic and
 accurate testing of your code.")
     (license license:bsd-2)))
 
+(define-public go-gopkg-in-dnaeon-go-vcr-v4
+  (package
+    (inherit go-gopkg-in-dnaeon-go-vcr-v3)
+    (name "go-gopkg-in-dnaeon-go-vcr-v4")
+    (version "4.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gopkg.in/dnaeon/go-vcr.v4")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1p1a4hbk303k2bv9dmaf770dml71zr3260g5z7yd84vzhj8i0rzb"))))
+    (arguments
+     (list
+      #:import-path "gopkg.in/dnaeon/go-vcr.v4"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: Workaround for go-build-system's lack of Go modules
+          ;; support.
+          (delete 'build)
+          (replace 'check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))))
+
 (define-public go-gopkg-in-go-playground-assert-v1
   (package
     (name "go-gopkg-in-go-playground-assert-v1")
