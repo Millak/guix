@@ -125,3 +125,22 @@ which predates the formalization of the terms by the RFC by several years.")
      "@code{URI::Nested} provides support for nested URIs, where the scheme is
 a prefix, and the remainder of the URI is another URI.")
     (license license:perl-license)))
+
+(define-public perl-mojo-dom58
+  (package
+    (name "perl-mojo-dom58")
+    (version "3.001")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://cpan/authors/id/D/DB/DBOOK/Mojo-DOM58-"
+                           version ".tar.gz"))
+       (sha256
+        (base32 "15jp9wiczrnvdx8cld0jn43bmj20v5ll6cfzvmd4252k3ra6vchq"))))
+    (build-system perl-build-system)
+    (propagated-inputs (list perl-role-tiny))
+    (home-page "https://metacpan.org/release/Mojo-DOM58")
+    (synopsis "Minimalistic HTML/XML DOM parser with CSS selectors")
+    (description "This package provides a HTML and XML DOM parser.  It also
+supports CSS selectors.")
+    (license license:artistic2.0)))
