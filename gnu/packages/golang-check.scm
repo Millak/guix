@@ -334,6 +334,9 @@ fgprof is designed for analyzing applications with mixed I/O and CPU
 workloads.  This kind of profiling is also known as wall-clock profiling.")
     (license license:expat)))
 
+;; XXX: The project looks like abandoned, see
+;; <https://github.com/frankban/quicktest/issues/172>, remove when nothing
+;; depends on it.
 (define-public go-github-com-frankban-quicktest
   (package
     (name "go-github-com-frankban-quicktest")
@@ -350,9 +353,18 @@ workloads.  This kind of profiling is also known as wall-clock profiling.")
     (build-system go-build-system)
     (arguments
      (list
+      #:test-flags
+      #~(list "-skip" (string-join
+                       (list "TestReportOutput"
+                             "TestIndirectReportOutput"
+                             "TestMultilineReportOutput"
+                             "TestCmpReportOutput"
+                             "TestTopLevelAssertReportOutput")
+                       "|"))
       #:import-path "github.com/frankban/quicktest"))
     (propagated-inputs
-     (list go-github-com-google-go-cmp go-github-com-kr-pretty))
+     (list go-github-com-google-go-cmp
+           go-github-com-kr-pretty))
     (home-page "https://github.com/frankban/quicktest")
     (synopsis "Quick helpers for testing Go applications")
     (description
