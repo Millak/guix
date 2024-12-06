@@ -1154,6 +1154,25 @@ processes can safely access the cache at the same time.  It uses a basic LRU
 algorithm to keep the most used entries in the cache.")
     (license (package-license perl))))
 
+(define-public perl-file-map
+  (package
+    (name "perl-file-map")
+    (version "0.71")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://cpan/authors/id/L/LE/LEONT/File-Map-"
+                           version ".tar.gz"))
+       (sha256
+        (base32 "0na78rf31cn4pp9zrywq1iv3r2xchrw3nqljp950v1sfh0rnkqn8"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build perl-test-fatal perl-test-warnings))
+    (propagated-inputs (list perl-sub-exporter-progressive))
+    (home-page "https://metacpan.org/release/File-Map")
+    (synopsis "Method for memory mapping a file")
+    (description "This package provides a way to memory map a file.")
+    (license (package-license perl))))
+
 (define-public perl-capture-tiny
   (package
     (name "perl-capture-tiny")
