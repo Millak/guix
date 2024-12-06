@@ -1300,6 +1300,33 @@ in the terminal or with an external viewer.")
 @code{cairo} that provides uniform output to multiple devices.")
     (license license:gpl2+)))
 
+(define-public perl-pgplot
+  (package
+    (name "perl-pgplot")
+    (version "2.34")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://cpan/authors/id/E/ET/ETJ/PGPLOT-" version
+                           ".tar.gz"))
+       (sha256
+        (base32 "1j0hjnhi0rkihviab2s6ninwfm71s73zh89pds1mpg9kf3c1w97z"))))
+    (build-system perl-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+        (add-after 'unpack 'setenv
+         (lambda* (#:key inputs #:allow-other-keys)
+           (setenv "PGPLOT_DIR" (string-append (assoc-ref inputs "giza") "/lib")))))))
+    (inputs (list giza libx11))
+    (native-inputs (list perl-devel-checklib perl-extutils-f77 gfortran))
+    (home-page "https://metacpan.org/release/PGPLOT")
+    (synopsis "Scientific plotting library (using giza)")
+    (description "This package provides PGPLOT bindings for Perl.  It uses
+giza instead of PGPLOT for the implementation, though.")
+    ;; Since giza is GPL2+, so is this.
+    (license license:gpl2+)))
+
 (define-public gnuplot
   (package
     (name "gnuplot")
