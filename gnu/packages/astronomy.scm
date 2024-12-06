@@ -1922,6 +1922,34 @@ Applications} formats (such as @file{.image} datasets).  This implementation
 is independent of and does not use @code{casacore}.")
     (license license:lgpl2.0)))
 
+(define-public python-ccdproc
+  (package
+    (name "python-ccdproc")
+    (version "2.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ccdproc" version))
+       (sha256
+        (base32 "14faivm9nihpdwzg0jx1c9zr7jk22gjfjw78raq6h63ypl10i6yx"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-memory-profiler
+           python-pytest-astropy))
+    (propagated-inputs
+     (list python-astropy
+           python-astroscrappy
+           python-numpy
+           python-reproject
+           python-scikit-image
+           python-scipy))
+    (home-page "http://ccdproc.readthedocs.io/")
+    (synopsis "Basic data reductions of CCD images")
+    (description "The ccdproc package provides many of the necessary tools for
+processing of CCD images built on a framework to provide error propagation and
+bad pixel tracking throughout the reduction process.")
+    (license license:bsd-3)))
+
 (define-public python-coolest
   (package
     (name "python-coolest")
@@ -2381,6 +2409,43 @@ across many files.")
     (home-page "http://glueviz.org")
     (synopsis "Multidimensional data visualization across files")
     (description "Multidimensional data visualization across files.")
+    (license license:bsd-3)))
+
+(define-public python-gwcs
+  (package
+    (name "python-gwcs")
+    (version "0.21.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "gwcs" version))
+       (sha256
+        (base32 "1fn5l4v236bl7xqi1is40c2q57dji8by98iwqcndfnmjwqf7zllc"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-jsonschema
+           python-jmespath
+           python-pytest
+           python-pytest-doctestplus
+           python-pyyaml
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-asdf
+           python-asdf-astropy
+           python-asdf-wcs-schemas
+           python-astropy
+           python-numpy
+           python-scipy))
+    (home-page "https://gwcs.readthedocs.io/en/latest/")
+    (synopsis "Generalized World Coordinate System")
+    (description "Generalized World Coordinate System (GWCS) is an Astropy
+affiliated package providing tools for managing the World Coordinate System of
+astronomical data.
+
+GWCS takes a general approach to the problem of expressing transformations
+between pixel and world coordinates.  It supports a data model which includes
+the entire transformation pipeline from input coordinates (detector by
+default) to world coordinates.")
     (license license:bsd-3)))
 
 (define-public python-halotools
@@ -3508,34 +3573,6 @@ be as fast as possible so some of the readability has been sacrificed,
 specifically in the C code.")
     (license license:bsd-3)))
 
-(define-public python-ccdproc
-  (package
-    (name "python-ccdproc")
-    (version "2.4.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "ccdproc" version))
-       (sha256
-        (base32 "14faivm9nihpdwzg0jx1c9zr7jk22gjfjw78raq6h63ypl10i6yx"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-memory-profiler
-           python-pytest-astropy))
-    (propagated-inputs
-     (list python-astropy
-           python-astroscrappy
-           python-numpy
-           python-reproject
-           python-scikit-image
-           python-scipy))
-    (home-page "http://ccdproc.readthedocs.io/")
-    (synopsis "Basic data reductions of CCD images")
-    (description "The ccdproc package provides many of the necessary tools for
-processing of CCD images built on a framework to provide error propagation and
-bad pixel tracking throughout the reduction process.")
-    (license license:bsd-3)))
-
 (define-public python-cdflib
   (package
     (name "python-cdflib")
@@ -3816,6 +3853,163 @@ implemented using the astropy.modeling framework.")
     (description "@code{hvpy} is a Python API wrapper around the formal
 @url{Helioviewer API, https://api.helioviewer.org/docs/v2/}.")
     (license license:bsd-2)))
+
+(define-public python-jplephem
+  (package
+    (name "python-jplephem")
+    (version "2.22")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "jplephem" version))
+       (sha256
+        (base32 "0b2rgb7pvwnl72pqjryf9c812mmdxr69fwiym7mnz05l2xrcr6hd"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "python" "-m" "unittest" "discover" "-s" "test")))))))
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-numpy))
+    (home-page "https://github.com/brandon-rhodes/python-jplephem")
+    (synopsis "Python version of NASA DE4xx ephemerides")
+    (description
+     "@code{skyfield} computes positions for the stars, planets, and
+satellites in orbit around the Earth.  Its results should agree with the
+positions generated by the United States Naval Observatory and their
+Astronomical Almanac to within 0.0005 arcseconds (half a @emph{mas} or
+milliarcsecond).")
+    (license license:expat)))
+
+(define-public python-jwst
+  (package
+    (name "python-jwst")
+    (version "1.16.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "jwst" version))
+              (sha256
+               (base32
+                "1bqfgqp4gdm1ky5dvzhzpgygwr710h4mbykp5sb9aw3cw9jg1bk7"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  ;; Replace reference to external configobj.
+                  (substitute* (find-files "." "\\.py$")
+                    (("from astropy.extern import configobj") "import configobj")
+                    (("from astropy.extern.configobj import validate") "import validate")
+                    (("from astropy.extern.configobj.configobj import ") "from configobj import ")
+                    (("from astropy.extern.configobj.validate import ") "from validate import "))))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; XXX: Tests require access to https://jwst-crds-pub.stsci.edu server for
+      ;; getting data sets.
+      #:tests? #f
+      #:phases #~(modify-phases %standard-phases
+                   ;; NOTE: (Sharlatan-20230529T113448+0100): opencv-python's
+                   ;; version can't be detected, it could the way it's packed in
+                   ;; Guix. Review failing sanity check with more efforts,
+                   ;; disable for now to make package buildable.
+                   (delete 'sanity-check))))
+    ;; opencv provides OpenCV-Python which is Listed as install requirement.
+    (propagated-inputs (list opencv
+                             python-asdf
+                             python-asdf-astropy
+                             python-astropy
+                             python-bayesicfitting
+                             python-crds
+                             python-drizzle
+                             python-gwcs
+                             python-importlib-metadata
+                             python-jplephem
+                             python-jsonschema
+                             python-numpy
+                             python-packaging
+                             python-photutils
+                             python-poppy
+                             python-psutil
+                             python-pyparsing
+                             python-pysiaf
+                             python-requests
+                             python-scikit-image
+                             python-scipy
+                             python-spherical-geometry
+                             python-stcal
+                             python-stdatamodels
+                             python-stpipe
+                             python-stsci-image
+                             python-stsci-imagestats
+                             python-synphot
+                             python-tweakwcs
+                             python-wiimatch))
+    (native-inputs (list python-colorama
+                         python-pytest
+                         python-pytest-cov
+                         python-pytest-doctestplus
+                         python-pytest-openfiles
+                         python-requests-mock
+                         ;; python-ruff ; not packed yet in Guix
+                         python-setuptools
+                         python-setuptools-scm
+                         python-wheel))
+    (home-page "https://jwst-pipeline.readthedocs.io/en/latest/")
+    (synopsis
+     "Python library for science observations from the James Webb Space Telescope")
+    (description
+     "This package provides an access to the JWST Science Calibration Pipeline
+processes data from all JWST instruments and observing modes by applying various
+science corrections sequentially, producing both fully-calibrated individual
+exposures and high-level data products (mosaics, extracted spectra, etc.).")
+    (license license:bsd-3)))
+
+(define-public python-jwst-reffiles
+  (package
+    (name "python-jwst-reffiles")
+    (version "1.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "jwst_reffiles" version))
+       (sha256
+        (base32 "1dlw955cw49qczdmimglmlcbal8vd3wbv5j48ckllvjgd59pwr3s"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; FIXME: Invistigate why it failes on python-jwst side where the
+      ;; python-tweakwcs is built just fine:
+      ;;
+      ;; <...>/tweakwcs/matchutils.py:18: in <module>
+      ;; from stsci.stimage import xyxymatch
+      ;; E   ModuleNotFoundError: No module named 'stsci.stimage'
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'sanity-check))))
+    (propagated-inputs
+     (list python-astropy
+           python-jwst
+           python-matplotlib
+           python-numpy
+           python-scipy))
+    (native-inputs
+     (list python-pytest
+           python-stsci-stimage))
+    (home-page "https://github.com/spacetelescope/jwst_reffiles")
+    (synopsis "Tool for JWST's CRDS-formatted reference files creation")
+    (description
+     "This package provides a tool to create @acronym{Calibration References
+Data System,CRDS}-formatted reference files for @acronym{James Webb Space
+Telescope,JWST} from a set of input dark current files and a set of flat field
+files.")
+    (license license:bsd-3)))
 
 (define-public python-kanon
   (package
@@ -5254,163 +5448,6 @@ PYSYNPHOT, utilizing Astropy covering instrument specific portions of the old
 packages for HST.")
     (license license:bsd-3)))
 
-(define-public python-jplephem
-  (package
-    (name "python-jplephem")
-    (version "2.22")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "jplephem" version))
-       (sha256
-        (base32 "0b2rgb7pvwnl72pqjryf9c812mmdxr69fwiym7mnz05l2xrcr6hd"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "python" "-m" "unittest" "discover" "-s" "test")))))))
-    (native-inputs
-     (list python-setuptools
-           python-wheel))
-    (propagated-inputs
-     (list python-numpy))
-    (home-page "https://github.com/brandon-rhodes/python-jplephem")
-    (synopsis "Python version of NASA DE4xx ephemerides")
-    (description
-     "@code{skyfield} computes positions for the stars, planets, and
-satellites in orbit around the Earth.  Its results should agree with the
-positions generated by the United States Naval Observatory and their
-Astronomical Almanac to within 0.0005 arcseconds (half a @emph{mas} or
-milliarcsecond).")
-    (license license:expat)))
-
-(define-public python-jwst
-  (package
-    (name "python-jwst")
-    (version "1.16.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "jwst" version))
-              (sha256
-               (base32
-                "1bqfgqp4gdm1ky5dvzhzpgygwr710h4mbykp5sb9aw3cw9jg1bk7"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  ;; Replace reference to external configobj.
-                  (substitute* (find-files "." "\\.py$")
-                    (("from astropy.extern import configobj") "import configobj")
-                    (("from astropy.extern.configobj import validate") "import validate")
-                    (("from astropy.extern.configobj.configobj import ") "from configobj import ")
-                    (("from astropy.extern.configobj.validate import ") "from validate import "))))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; XXX: Tests require access to https://jwst-crds-pub.stsci.edu server for
-      ;; getting data sets.
-      #:tests? #f
-      #:phases #~(modify-phases %standard-phases
-                   ;; NOTE: (Sharlatan-20230529T113448+0100): opencv-python's
-                   ;; version can't be detected, it could the way it's packed in
-                   ;; Guix. Review failing sanity check with more efforts,
-                   ;; disable for now to make package buildable.
-                   (delete 'sanity-check))))
-    ;; opencv provides OpenCV-Python which is Listed as install requirement.
-    (propagated-inputs (list opencv
-                             python-asdf
-                             python-asdf-astropy
-                             python-astropy
-                             python-bayesicfitting
-                             python-crds
-                             python-drizzle
-                             python-gwcs
-                             python-importlib-metadata
-                             python-jplephem
-                             python-jsonschema
-                             python-numpy
-                             python-packaging
-                             python-photutils
-                             python-poppy
-                             python-psutil
-                             python-pyparsing
-                             python-pysiaf
-                             python-requests
-                             python-scikit-image
-                             python-scipy
-                             python-spherical-geometry
-                             python-stcal
-                             python-stdatamodels
-                             python-stpipe
-                             python-stsci-image
-                             python-stsci-imagestats
-                             python-synphot
-                             python-tweakwcs
-                             python-wiimatch))
-    (native-inputs (list python-colorama
-                         python-pytest
-                         python-pytest-cov
-                         python-pytest-doctestplus
-                         python-pytest-openfiles
-                         python-requests-mock
-                         ;; python-ruff ; not packed yet in Guix
-                         python-setuptools
-                         python-setuptools-scm
-                         python-wheel))
-    (home-page "https://jwst-pipeline.readthedocs.io/en/latest/")
-    (synopsis
-     "Python library for science observations from the James Webb Space Telescope")
-    (description
-     "This package provides an access to the JWST Science Calibration Pipeline
-processes data from all JWST instruments and observing modes by applying various
-science corrections sequentially, producing both fully-calibrated individual
-exposures and high-level data products (mosaics, extracted spectra, etc.).")
-    (license license:bsd-3)))
-
-(define-public python-jwst-reffiles
-  (package
-    (name "python-jwst-reffiles")
-    (version "1.0.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "jwst_reffiles" version))
-       (sha256
-        (base32 "1dlw955cw49qczdmimglmlcbal8vd3wbv5j48ckllvjgd59pwr3s"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; FIXME: Invistigate why it failes on python-jwst side where the
-      ;; python-tweakwcs is built just fine:
-      ;;
-      ;; <...>/tweakwcs/matchutils.py:18: in <module>
-      ;; from stsci.stimage import xyxymatch
-      ;; E   ModuleNotFoundError: No module named 'stsci.stimage'
-      #:tests? #f
-      #:phases
-      #~(modify-phases %standard-phases
-          (delete 'sanity-check))))
-    (propagated-inputs
-     (list python-astropy
-           python-jwst
-           python-matplotlib
-           python-numpy
-           python-scipy))
-    (native-inputs
-     (list python-pytest
-           python-stsci-stimage))
-    (home-page "https://github.com/spacetelescope/jwst_reffiles")
-    (synopsis "Tool for JWST's CRDS-formatted reference files creation")
-    (description
-     "This package provides a tool to create @acronym{Calibration References
-Data System,CRDS}-formatted reference files for @acronym{James Webb Space
-Telescope,JWST} from a set of input dark current files and a set of flat field
-files.")
-    (license license:bsd-3)))
-
 (define-public python-pyerfa
   (package
     (name "python-pyerfa")
@@ -6133,43 +6170,6 @@ install an implementation package such as asdf-astropy.")
      "This package provides ASDF schemas for validating World Coordinate
 System (WCS) tags.  Users should not need to install this directly; instead,
 install an implementation package such as gwcs.")
-    (license license:bsd-3)))
-
-(define-public python-gwcs
-  (package
-    (name "python-gwcs")
-    (version "0.21.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "gwcs" version))
-       (sha256
-        (base32 "1fn5l4v236bl7xqi1is40c2q57dji8by98iwqcndfnmjwqf7zllc"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-jsonschema
-           python-jmespath
-           python-pytest
-           python-pytest-doctestplus
-           python-pyyaml
-           python-setuptools-scm))
-    (propagated-inputs
-     (list python-asdf
-           python-asdf-astropy
-           python-asdf-wcs-schemas
-           python-astropy
-           python-numpy
-           python-scipy))
-    (home-page "https://gwcs.readthedocs.io/en/latest/")
-    (synopsis "Generalized World Coordinate System")
-    (description "Generalized World Coordinate System (GWCS) is an Astropy
-affiliated package providing tools for managing the World Coordinate System of
-astronomical data.
-
-GWCS takes a general approach to the problem of expressing transformations
-between pixel and world coordinates.  It supports a data model which includes
-the entire transformation pipeline from input coordinates (detector by
-default) to world coordinates.")
     (license license:bsd-3)))
 
 (define-public python-rad
