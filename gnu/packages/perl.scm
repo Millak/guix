@@ -5917,6 +5917,24 @@ filehandles; in particular, IO::Scalar, IO::ScalarArray, and IO::Lines.")
 interfaces to pseudo ttys.")
     (license (package-license perl))))
 
+(define-public perl-termreadkey
+  (package
+    (name "perl-termreadkey")
+    (version "2.38")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://cpan/authors/id/J/JS/JSTOWE/TermReadKey-"
+             version ".tar.gz"))
+       (sha256
+        (base32 "143jlibah1g14bym7sj3gphvqkpj1w4vn7sqc4vc62jpviw5hr2s"))))
+    (build-system perl-build-system)
+    (home-page "https://metacpan.org/release/TermReadKey")
+    (synopsis "Change terminal modes, and perform non-blocking reads.")
+    (description "This package provides a package to change terminal modes
+and perform non-blocking reads.")
+    (license (package-license perl))))
+
 (define-public perl-ipc-cmd
   (package
     (name "perl-ipc-cmd")
