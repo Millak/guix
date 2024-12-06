@@ -11442,7 +11442,7 @@ generates it as a string.  Please see the homepage for usage examples.")
             (lambda* (#:key outputs #:allow-other-keys)
               (emacs-substitute-variables "jedi-core.el"
                 ("jedi:server-command"
-                 (search-input-file outputs "bin/jediepcserver"))))))))
+                 `(list ,(search-input-file outputs "bin/jediepcserver")))))))))
     (native-inputs (list emacs-mocker python-wrapper))
     (inputs (list python-wrapper python-epc python-jedi)) ;wrapped
     (propagated-inputs
