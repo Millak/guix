@@ -4866,6 +4866,26 @@ submodules of ExtUtils::Typemaps.")
 interface XS for C++; it is a thin layer over plain XS.")
     (license (package-license perl))))
 
+(define-public perl-extutils-f77
+  (package
+    (name "perl-extutils-f77")
+    (version "1.26")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://cpan/authors/id/E/ET/ETJ/ExtUtils-F77-"
+                           version ".tar.gz"))
+       (sha256
+        (base32 "1mlxifj6lzvm4f8smr07ds03qbl6may40aqmbypgr92cxhz1vpdb"))))
+    (build-system perl-build-system)
+    (native-inputs (list gfortran))
+    (propagated-inputs (list perl-file-which))
+    (home-page "https://metacpan.org/release/ExtUtils-F77")
+    (synopsis "Build helper for linking Fortran libraries")
+    (description "This package provides some compilation helpers so you can
+link Fortran libraries into C libraries.")
+    (license (package-license perl))))
+
 (define-public perl-file-changenotify
   (package
     (name "perl-file-changenotify")
