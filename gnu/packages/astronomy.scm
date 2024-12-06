@@ -1725,6 +1725,67 @@ format for chunked, compressed, N-dimensional arrays based on an open-source
 specification.")
     (license license:bsd-3)))
 
+(define-public python-astral
+  (package
+    (name "python-astral")
+    (version "3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "astral" version))
+       (sha256
+        (base32 "121xag65rmv6pszbi3d206yz3jfwmpkf0jxjrxrd2scy5r0knz4v"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; XXX: Disable tests which require newer version of python-pytz.
+      ;; No time zone found with key Pacific/Auckland
+      #~(list "-k" (string-append
+                    "not test_TimezoneLookup"
+                    " and not test_Sun"
+                    " and not test_Dawn"
+                    " and not test_Sunrise"
+                    " and not test_SolarNoon"
+                    " and not test_Dusk"
+                    " and not test_Sunset"
+                    " and not test_SolarElevation"
+                    " and not test_SolarAzimuth"
+                    " and not test_TimeAtAltitude"
+                    " and not test_MoonNoDate"
+                    " and not test_lookup"
+                    " and not test_tzinfo"
+                    " and not test_australia"
+                    " and not test_adak"
+                    " and not test_australia"
+                    " and not test_Elevation_NonNaive"
+                    " and not test_Wellington"
+                    " and not test_Sun_Local_tzinfo"
+                    " and not test_Sun_Local_str"
+                    " and not test_SolarZenith_London"
+                    " and not test_SolarZenith_Riyadh"
+                    " and not test_moonrise_utc"
+                    " and not test_moonrise_wellington"
+                    " and not test_moonset_wellington"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'prepare-test-environment
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list python-freezegun
+           python-poetry-core
+           python-pytest
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-dataclasses python-pytest python-pytz))
+    (home-page "https://github.com/sffjunkie/astral")
+    (synopsis "Calculations for the position of the sun and moon")
+    (description "Astral is a Python module that calculates times for various
+positions of the sun: dawn, sunrise, solar noon, sunset, dusk, solar
+elevation, solar azimuth, rahukaalam, and the phases of the moon.")
+    (license license:asl2.0)))
+
 (define-public python-astroalign
   (package
     (name "python-astroalign")
@@ -2050,6 +2111,52 @@ cosmological parameters e.g. redshift or luminosity-distance.")
 a time-dynamic graphical scene, primarily for display in a web browser running
 Cesium.")
     (license license:expat)))
+
+(define-public python-drizzle
+  (package
+    (name "python-drizzle")
+    (version "2.0.0")
+    (source
+     (origin
+       (method git-fetch) ;PyPi doesn't have the test data sets
+       (uri (git-reference
+             (url "https://github.com/spacetelescope/drizzle")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1psa98n81wphin15j7k0392rh94dkhnwrjp32lr40gb9ldp52mcm"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-env-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
+          (add-before 'check 'build-extensions
+            (lambda _
+              ;; Cython extensions have to be built before running the tests.
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (list python-astropy
+           python-numpy))
+    (home-page "https://github.com/spacetelescope/drizzle")
+    (synopsis
+     "Astronomical tool for combining dithered images into a single image")
+    (description
+     "The drizzle library is a Python package for combining dithered images
+into a single image.  This library is derived from code used in DrizzlePac.
+Like DrizzlePac, most of the code is implemented in the C language.  The
+biggest change from DrizzlePac is that this code passes an array that maps the
+input to output image into the C code, while the DrizzlePac code computes the
+mapping by using a Python callback.  Switching to using an array allowed the
+code to be greatly simplified.")
+    (license license:bsd-3)))
 
 (define-public python-ephem
   (package
@@ -3090,50 +3197,6 @@ large scale galaxy-survey data, it can perform reasonably well on moderately
 crowded star fields.")
     (license license:gpl3+)))
 
-(define-public splash
-  (package
-    (name "splash")
-    (version "3.10.3")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/danieljprice/splash")
-                    (commit (string-append "v" version))))
-              (sha256
-               (base32
-                "077s9if7fmccvhsbp0dhvyqcil46vpbgdm1y6qn6h34r8lfqj9z6"))
-              (file-name (git-file-name name version))))
-    (build-system gnu-build-system)
-    (arguments
-     ;; FIXME: Tests failed
-     ;; Issue submited upstream https://github.com/danieljprice/splash/issues/67
-     ;;
-     ;; make: *** No rule to make target 'test_interpolate3D.o', needed by 'test1'.  Stop.
-     ;;
-     (list #:tests? #f
-           #:parallel-build? #f ;parallel build fails
-           #:make-flags #~(list "SYSTEM=gfortran" "PREFIX="
-                                (string-append "GIZA_DIR="
-                                               #$(this-package-input "giza"))
-                                (string-append "DESTDIR="
-                                               #$output))
-           #:phases #~(modify-phases %standard-phases
-                        (delete 'configure)
-                        (add-before 'install 'create-install-dirrectories
-                          (lambda _
-                            (mkdir-p (string-append #$output "/bin")))))))
-    (native-inputs (list gfortran pkg-config perl python-wrapper))
-    (inputs (list cairo cfitsio giza))
-    (home-page "https://users.monash.edu.au/~dprice/splash/")
-    (synopsis
-     "Astrophysical visualisation tool for smoothed particle hydrodynamics")
-    (description
-     "SPLASH is visualisation tool for Smoothed Particle Hydrodynamics (SPH)
-simulations in one, two and three dimensions, developed mainly for
-astrophysics.  It uses a command-line menu but data can be manipulated
-interactively in the plotting window.")
-    (license license:gpl2+)))
-
 (define-public stackistry
   (package
     (name "stackistry")
@@ -3757,52 +3820,6 @@ MDI data with Python.  It uses the publicly accessible
 JSOC (@url{http://jsoc.stanford.edu/}) DRMS server by default, but can also be
 used with local NetDRMS sites.")
     (license license:bsd-2)))
-
-(define-public python-drizzle
-  (package
-    (name "python-drizzle")
-    (version "2.0.0")
-    (source
-     (origin
-       (method git-fetch) ;PyPi doesn't have the test data sets
-       (uri (git-reference
-             (url "https://github.com/spacetelescope/drizzle")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1psa98n81wphin15j7k0392rh94dkhnwrjp32lr40gb9ldp52mcm"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'build 'set-env-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
-          (add-before 'check 'build-extensions
-            (lambda _
-              ;; Cython extensions have to be built before running the tests.
-              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
-    (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-setuptools-scm
-           python-wheel))
-    (propagated-inputs
-     (list python-astropy
-           python-numpy))
-    (home-page "https://github.com/spacetelescope/drizzle")
-    (synopsis
-     "Astronomical tool for combining dithered images into a single image")
-    (description
-     "The drizzle library is a Python package for combining dithered images
-into a single image.  This library is derived from code used in DrizzlePac.
-Like DrizzlePac, most of the code is implemented in the C language.  The
-biggest change from DrizzlePac is that this code passes an array that maps the
-input to output image into the C code, while the DrizzlePac code computes the
-mapping by using a Python callback.  Switching to using an array allowed the
-code to be greatly simplified.")
-    (license license:bsd-3)))
 
 (define-public python-dust-extinction
   (package
@@ -4819,67 +4836,6 @@ SolarSoft data analysis environment.")
      "This package provides a @code{sunpy} FIDO plugin for accessing data in the
 @acronym{Solar Orbiter Archive, SOAR}.")
     (license license:bsd-2)))
-
-(define-public python-astral
-  (package
-    (name "python-astral")
-    (version "3.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "astral" version))
-       (sha256
-        (base32 "121xag65rmv6pszbi3d206yz3jfwmpkf0jxjrxrd2scy5r0knz4v"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      ;; XXX: Disable tests which require newer version of python-pytz.
-      ;; No time zone found with key Pacific/Auckland
-      #~(list "-k" (string-append
-                    "not test_TimezoneLookup"
-                    " and not test_Sun"
-                    " and not test_Dawn"
-                    " and not test_Sunrise"
-                    " and not test_SolarNoon"
-                    " and not test_Dusk"
-                    " and not test_Sunset"
-                    " and not test_SolarElevation"
-                    " and not test_SolarAzimuth"
-                    " and not test_TimeAtAltitude"
-                    " and not test_MoonNoDate"
-                    " and not test_lookup"
-                    " and not test_tzinfo"
-                    " and not test_australia"
-                    " and not test_adak"
-                    " and not test_australia"
-                    " and not test_Elevation_NonNaive"
-                    " and not test_Wellington"
-                    " and not test_Sun_Local_tzinfo"
-                    " and not test_Sun_Local_str"
-                    " and not test_SolarZenith_London"
-                    " and not test_SolarZenith_Riyadh"
-                    " and not test_moonrise_utc"
-                    " and not test_moonrise_wellington"
-                    " and not test_moonset_wellington"))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'prepare-test-environment
-            (lambda _
-              (setenv "HOME" "/tmp"))))))
-    (native-inputs
-     (list python-freezegun
-           python-poetry-core
-           python-pytest
-           python-setuptools-scm))
-    (propagated-inputs
-     (list python-dataclasses python-pytest python-pytz))
-    (home-page "https://github.com/sffjunkie/astral")
-    (synopsis "Calculations for the position of the sun and moon")
-    (description "Astral is a Python module that calculates times for various
-positions of the sun: dawn, sunrise, solar noon, sunset, dusk, solar
-elevation, solar azimuth, rahukaalam, and the phases of the moon.")
-    (license license:asl2.0)))
 
 (define-public python-spectral-cube
   (package
@@ -6982,6 +6938,50 @@ object lists in ASCII generated by the Stuff program to produce realistic
 astronomical fields.  SkyMaker is part of the
 @uref{https://www.astromatic.net/projects/efigi, EFIGI} development project.")
     (license license:gpl3+)))
+
+(define-public splash
+  (package
+    (name "splash")
+    (version "3.10.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/danieljprice/splash")
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32
+                "077s9if7fmccvhsbp0dhvyqcil46vpbgdm1y6qn6h34r8lfqj9z6"))
+              (file-name (git-file-name name version))))
+    (build-system gnu-build-system)
+    (arguments
+     ;; FIXME: Tests failed
+     ;; Issue submited upstream https://github.com/danieljprice/splash/issues/67
+     ;;
+     ;; make: *** No rule to make target 'test_interpolate3D.o', needed by 'test1'.  Stop.
+     ;;
+     (list #:tests? #f
+           #:parallel-build? #f ;parallel build fails
+           #:make-flags #~(list "SYSTEM=gfortran" "PREFIX="
+                                (string-append "GIZA_DIR="
+                                               #$(this-package-input "giza"))
+                                (string-append "DESTDIR="
+                                               #$output))
+           #:phases #~(modify-phases %standard-phases
+                        (delete 'configure)
+                        (add-before 'install 'create-install-dirrectories
+                          (lambda _
+                            (mkdir-p (string-append #$output "/bin")))))))
+    (native-inputs (list gfortran pkg-config perl python-wrapper))
+    (inputs (list cairo cfitsio giza))
+    (home-page "https://users.monash.edu.au/~dprice/splash/")
+    (synopsis
+     "Astrophysical visualisation tool for smoothed particle hydrodynamics")
+    (description
+     "SPLASH is visualisation tool for Smoothed Particle Hydrodynamics (SPH)
+simulations in one, two and three dimensions, developed mainly for
+astrophysics.  It uses a command-line menu but data can be manipulated
+interactively in the plotting window.")
+    (license license:gpl2+)))
 
 (define-public stellarium
   (package
