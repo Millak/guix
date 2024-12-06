@@ -29989,6 +29989,23 @@ for other purposes beside previewing.  The package provides several
 customisation options to control its behaviour.")
     (license license:gpl3+)))
 
+(define-public emacs-dired-launch
+  (package
+    (name "emacs-dired-launch")
+    (version "20240809.1910")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://melpa.org/packages/dired-launch-"
+                                  version ".tar"))
+              (sha256
+               (base32
+                "1zgs1hzy04pywpcgn5r8s7aah2bv1p5x5lmlcqg9yranxj8a9k6d"))))
+    (build-system emacs-build-system)
+    (synopsis "Extra command to launch external programs")
+    (description "This package provides a method to open entries in external programs from dired.")
+    (home-page "https://codeberg.org/thomp/dired-launch")
+    (license license:gpl3+)))
+
 (define-public emacs-dired-rsync
   (package
     (name "emacs-dired-rsync")
