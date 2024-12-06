@@ -1227,6 +1227,30 @@ functions for writing tests in an @code{xUnit} style.")
 struct initialization.")
     (license license:bsd-3)))
 
+(define-public go-go-abhg-dev-testing-stub
+  (package
+    (name "go-go-abhg-dev-testing-stub")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/abhinav/stub-go")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04by4hq9lhmz3ij2rdl053nr76l65q5w8w41khxgr5xak8s63yq6"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "go.abhg.dev/testing/stub"))
+    (home-page "https://github.com/abhinav/stub-go/tree")
+    (synopsis "Trivial stubbing package for Go")
+    (description
+     "Package stub provides helper functions to replace global variables for testing,
+and restore them afterwards.")
+    (license license:bsd-3)))
+
 (define-public go-go-etcd-io-gofail
   (package
     (name "go-go-etcd-io-gofail")
