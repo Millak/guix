@@ -3,7 +3,7 @@
 ;;; Copyright © 2014, 2015, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2016, 2018 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2016, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2016, 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2017 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2018, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Julien Lepiller <julien@lepiller.eu>
@@ -171,7 +171,11 @@ multiple inheritance and public and private classes and variables.")
      '(#:configure-flags
        (let ((out (assoc-ref %outputs "out"))
              (tcl (assoc-ref %build-inputs "tcl")))
-         (list (string-append "--with-tcl=" tcl "/lib")
+         (list (string-append "CFLAGS=-g -O2"
+                              " -Wno-error=implicit-function-declaration"
+                              " -Wno-error=implicit-int"
+                              " -Wno-error=incompatible-pointer-types")
+               (string-append "--with-tcl=" tcl "/lib")
                (string-append "--with-tclinclude=" tcl "/include")
                (string-append "--exec-prefix=" out)
                (string-append "--mandir=" out "/share/man")))
