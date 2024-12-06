@@ -4226,6 +4226,24 @@ SHA-1 message digest algorithm for use by Perl programs.")
 modules separately and deal with them after the module is done installing.")
     (license (package-license perl))))
 
+(define-public perl-sort-versions
+  (package
+    (name "perl-sort-versions")
+    (version "1.62")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/N/NE/NEILB/Sort-Versions-" version
+             ".tar.gz"))
+       (sha256
+        (base32 "1aifzm79ky03gi2lwxyx4mk6yky8x215j0kz4f0jbgkf803k6pxz"))))
+    (build-system perl-build-system)
+    (home-page "https://metacpan.org/release/Sort-Versions")
+    (synopsis "Sort revision-like numbers")
+    (description "This package provides a way to sort revision-like numbers.")
+    (license (package-license perl))))
+
 (define-public perl-dynaloader-functions
   (package
     (name "perl-dynaloader-functions")
