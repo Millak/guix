@@ -1,0 +1,32 @@
+Upstream-status: Presented upstream.
+
+From 8b0db8997007d427ce9e77cb8191e698d1c47f02 Mon Sep 17 00:00:00 2001
+From: "janneke@gnu.org" <janneke@gnu.org>
+Date: Sat, 7 Dec 2024 09:48:49 +0100
+Subject: [PATCH] build: Support gcc-14.
+
+* configure.ac: When compiling natively declare LZ_decompress_open before
+using it in conftest.c.
+---
+ configure.ac | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/configure.ac b/configure.ac
+index 4c56768..ffdab1d 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -43,7 +43,10 @@ EOF
+      else
+        old_LIBS="$LIBS"
+        LIBS="-llz"
+-       AC_LINK_IFELSE([AC_LANG_SOURCE([int main () { return LZ_decompress_open(); }])],
++       AC_LINK_IFELSE([AC_LANG_SOURCE([
++int LZ_decompress_open ();
++int main () { return LZ_decompress_open(); }
++])],
+ 	 [guile_cv_liblz_libdir="`ldd conftest$EXEEXT | grep liblz | sed '-es/.*=> \(.*\) .*$/\1/g'`"])
+        LIBS="$old_LIBS"
+      fi])
+-- 
+2.46.0
+
