@@ -6,6 +6,7 @@
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2023, 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2024 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1218,3 +1219,56 @@ also mount the world at @code{/ipfs}.")
 
 (define-public go-ipfs
   (deprecated-package "go-ipfs" kubo))
+
+(define-public spritely-libp2p-daemon
+  (let ((version "0.1")
+        (commit "f10d8c4bad2a50d6e481c0b57231741d079ffedb")
+        (revision "0"))
+    (package
+      (name "spritely-libp2p-daemon")
+      (version (git-version version revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.com/spritely/go-libp2p-daemon.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0bk2610rlg8d4lla7h7sic9drv1syabfbr7kbg2yqqbhiwg0v2br"))))
+      (build-system go-build-system)
+      (arguments
+       (list
+        #:go go-1.21
+        #:import-path "gitlab.com/spritely/spritely-libp2p-daemon"
+        #:tests? #f
+        #:install-source? #f
+        #:phases
+        #~(modify-phases %standard-phases
+            ;; libp2p-asn-util uses go://embed to embed a file, but Go
+            ;; does *not* accept files that are symlinks.  Guix sets up
+            ;; all dependency files as symlinks, though.  To work around
+            ;; this, we delete the symlink and copy over the file to be
+            ;; embedded.
+            (add-after 'unpack 'fix-libp2p-asn-util-embed
+              (lambda _
+                (let ((file-name
+                       (string-append
+                        "src/github.com/libp2p/go-libp2p-asn-util/"
+                        "sorted-network-list.bin")))
+                  (delete-file file-name)
+                  (copy-file
+                   (string-append #$go-github-com-libp2p-go-libp2p-asn-util
+                                  "/" file-name)
+                   file-name)))))))
+      (propagated-inputs
+       (list go-github-com-libp2p-go-libp2p
+             go-github-com-libp2p-go-libp2p-peer
+             go-github-com-libp2p-go-libp2p-crypto
+             go-github-com-multiformats-go-multiaddr))
+      (home-page "https://gitlab.com/spritely/go-libp2p-daemon")
+      (synopsis "Simple daemon to connect over libp2p")
+      (description "This package provides a very simple daemon to interface to
+from other programming languages.  It's designed to fulfill the needs of
+Spritely's Goblins library to support libp2p as a netlayer.")
+      (license license:asl2.0))))
