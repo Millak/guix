@@ -1,0 +1,100 @@
+From 49e8725b66cb721931a9a5f0f35405e19ccee956 Mon Sep 17 00:00:00 2001
+From: Janneke Nieuwenhuizen <janneke@gnu.org>
+Date: Sat, 7 Dec 2024 20:52:04 +0100
+Subject: [PATCH 1/3] robin's patch.
+
+---
+ src/gtkutil.c | 4 ++--
+ src/print.c   | 5 ++---
+ 2 files changed, 4 insertions(+), 5 deletions(-)
+
+diff --git a/src/gtkutil.c b/src/gtkutil.c
+index b1471d56eb9..be72b50c9ef 100644
+--- a/src/gtkutil.c
++++ b/src/gtkutil.c
+@@ -241,13 +241,13 @@ xg_display_open (char *display_name, GdkDisplay **dpy)
+ {
+   GdkDisplay *gdpy;
+ 
+-  unrequest_sigio ();  /* See comment in x_display_ok, xterm.c.  */
++  // unrequest_sigio ();  /* See comment in x_display_ok, xterm.c.  */
+ #ifndef HAVE_PGTK
+   gdpy = gdk_display_open (display_name);
+ #else
+   gdpy = gdk_display_open (strlen (display_name) == 0 ? NULL : display_name);
+ #endif
+-  request_sigio ();
++  // request_sigio ();
+   if (!gdpy_def && gdpy)
+     {
+       gdpy_def = gdpy;
+diff --git a/src/print.c b/src/print.c
+index 002274bd7da..e2c2251bf5c 100644
+--- a/src/print.c
++++ b/src/print.c
+@@ -2532,9 +2532,8 @@ print_object (Lisp_Object obj, Lisp_Object printcharfun, bool escapeflag)
+         else
+           scm_write (obj, port);
+         scm_display (SCM_MAKE_CHAR ('>'), port);
+-        //guilemacs: this looks wrong (size_byte = -1)
+-        //strout (scm_to_locale_string (scm_get_output_string (port)),
+-        //        -1, -1, printcharfun);
++	char* str = scm_to_locale_string (scm_get_output_string (port));
++	strout (str, strlen(str), strlen(str), printcharfun);
+         scm_close_port (port);
+       }
+       break;
+-- 
+2.46.0
+
+From 325fc39906198c33d78e33895e385916099a283f Mon Sep 17 00:00:00 2001
+From: Janneke Nieuwenhuizen <janneke@gnu.org>
+Date: Sat, 7 Dec 2024 19:00:45 +0100
+Subject: [PATCH 2/3] src/xfns.c: Link fix.
+
+---
+ src/xfns.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/src/xfns.c b/src/xfns.c
+index 858402613b4..94fde4b9e84 100644
+--- a/src/xfns.c
++++ b/src/xfns.c
+@@ -8921,7 +8921,8 @@ x_hide_tip (bool delete)
+       else
+ 	tip_frame = Qnil;
+ 
+-      return unbind_to (count, was_open);
++      dynwind_end ();
++      return was_open;
+     }
+ #else /* not USE_GTK */
+   if (NILP (tip_frame)
+-- 
+2.46.0
+
+From 7754d875df5c9cb8fefa44604061479108429bce Mon Sep 17 00:00:00 2001
+From: Janneke Nieuwenhuizen <janneke@gnu.org>
+Date: Sat, 7 Dec 2024 20:14:17 +0100
+Subject: [PATCH 3/3] dump fix: comment use of cl-function-documentation.
+
+---
+ lisp/simple.el | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/lisp/simple.el b/lisp/simple.el
+index 15c790226b5..d1ceded84ae 100644
+--- a/lisp/simple.el
++++ b/lisp/simple.el
+@@ -2800,7 +2800,7 @@ command-completion--command-for-this-buffer-function
+ '(cl-defmethod function-documentation ((function accessor))
+   (oclosure--accessor-docstring function)) ;; FIXME: η-reduce!
+ 
+-(cl-defmethod function-documentation ((f cconv--interactive-helper))
++'(cl-defmethod function-documentation ((f cconv--interactive-helper))
+   (function-documentation (cconv--interactive-helper--fun f)))
+ 
+ ;; This should be in `oclosure.el' but that file is loaded before `cl-generic'.
+-- 
+2.46.0
+

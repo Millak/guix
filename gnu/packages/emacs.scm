@@ -12,7 +12,7 @@
 ;;; Copyright © 2017, 2019, 2020, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2017 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2017, 2018 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2017, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2017, 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2018, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2018, 2019, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -629,7 +629,7 @@ editor (with wide ints)" )
   (deprecated-package "emacs-next-tree-sitter" emacs-next))
 
 (define-public guile-emacs
-  (let ((commit "41120e0f595b16387eebfbf731fff70481de1b4b")
+  (let ((commit "8f87cbc1dae6a9e77368afc5736df8c342e9153d")
         (revision "0"))
     (package
       (inherit emacs)
@@ -638,35 +638,60 @@ editor (with wide ints)" )
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
-                      (url "https://git.hcoop.net/git/bpt/emacs.git")
+                      (url "https://codeberg.org/lyrra/guilemacs")
                       (commit commit)))
                 (file-name (git-file-name name version))
-                (patches (search-patches "guile-emacs-fix-configure.patch"))
+                (patches (search-patches "guile-emacs-build-fixes.patch"))
                 (sha256
                  (base32
-                  "0lvcvsz0f4mawj04db35p1dvkffdqkz8pkhc0jzh9j9x2i63kcz6"))))
+                  "1yhxy6d5i673y35i66d2x975zih3cw6p59ylsb8xk68wds6s7xrl"))))
       (native-inputs
        (modify-inputs (package-native-inputs emacs)
          (prepend autoconf automake guile-for-guile-emacs)))
       (arguments
-       (substitute-keyword-arguments `(;; Build fails if we allow parallel build.
-                                       #:parallel-build? #f
-                                       ;; Tests aren't passing for now.
+       (substitute-keyword-arguments `(;; Tests aren't passing for now.
                                        #:tests? #f
+                                       #:strip-binaries? #f
                                        ,@(package-arguments emacs))
          ((#:configure-flags flags ''())
-          #~(delete "--with-cairo" #$flags))
+          #~`("CFLAGS=-Og -ggdb3"
+              "--with-native-compilation=no"
+              "--without-modules"
+              "--without-threads"
+              "--with-jpeg=no"
+              "--without-cairo"
+              "--without-tree-sitter"
+              ,@(fold delete #$flags '("--with-cairo"
+                                       "--with-modules"
+                                       "--with-native-compilation=aot"))))
+         ((#:make-flags flags #~'())
+          #~(list "V=1"))
          ((#:phases phases)
           #~(modify-phases #$phases
               (add-after 'unpack 'autogen
                 (lambda _
                   (invoke "sh" "autogen.sh")))
-              ;; Build sometimes fails: deps/dispnew.d: No such file or directory
-              (add-before 'build 'make-deps-dir
-                (lambda _
-                  (invoke "mkdir" "-p" "src/deps")))
+              (delete 'patch-compilation-driver)
+              (delete 'set-libgccjit-path)
+              (delete 'validate-comp-integrity)
               (delete 'restore-emacs-pdmp)
-              (delete 'strip-double-wrap))))))))
+              (delete 'build-trampolines)
+              (delete 'install-site-start)
+              (add-after 'unpack 'help-patch-progam-file-names
+                (lambda _
+                  (call-with-output-file "lisp/obsolete/terminal.el"
+                    (lambda (port) (display port)))))
+              (add-after 'configure 'touch-lisp/finder-inf.el
+                (lambda _
+                  (call-with-output-file "lisp/finder-inf.el"
+                    (lambda (port) (display port)))))))))
+      (native-search-paths
+       (list (search-path-specification
+              (variable "EMACSLOADPATH")
+              (files '("share/emacs/31.0.50/lisp")))
+             (search-path-specification
+              (variable "INFOPATH")
+              (files '("share/info"))))))))
 
 (define-public m17n-db
   (package
