@@ -9691,6 +9691,43 @@ documentation at @url{https://github.com/ArtifactDB/gypsum-worker} for more
 details.")
     (license license:expat)))
 
+;; This is a CRAN package, but it depends on r-genomicranges from
+;; Bioconductor.
+(define-public r-hahmmr
+  (package
+    (name "r-hahmmr")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "hahmmr" version))
+       (sha256
+        (base32 "19bds84pkimr71dy1365b71k7ihn7x86yalgcmagvkxgygpg3409"))))
+    (properties `((upstream-name . "hahmmr")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-data-table
+                             r-dplyr
+                             r-genomicranges
+                             r-ggplot2
+                             r-glue
+                             r-iranges
+                             r-patchwork
+                             r-rcpp
+                             r-rcpparmadillo
+                             r-roptim
+                             r-stringr
+                             r-tibble
+                             r-zoo))
+    (native-inputs (list r-testthat))
+    (home-page "https://cran.r-project.org/package=hahmmr")
+    (synopsis "Haplotype-aware Hidden Markov Model for RNA")
+    (description
+     "Haplotype-aware Hidden Markov Model for RNA (@code{HaHMMR}) is a method
+for detecting copy number variations (CNVs) from bulk RNA-seq data.
+Additional examples, documentations, and details on the method are available
+at @url{https://github.com/kharchenkolab/hahmmr/}.")
+    (license license:expat)))
+
 (define-public r-harshlight
   (package
     (name "r-harshlight")
