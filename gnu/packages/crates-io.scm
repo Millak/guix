@@ -45,6 +45,7 @@
 ;;; Copyright © 2024 Aaron Covrig <aaron.covrig.us@ieee.org>
 ;;; Copyright © 2024 Nguyễn Gia Phong <mcsinyx@disroot.org>
 ;;; Copyright © 2024 Jordan Moore <lockbox@struct.foo>
+;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -77927,6 +77928,30 @@ instrumenting global allocators.")
      "This package provides a straight translation of the font loading code
 in @code{stb_truetype.h} from C to Rust.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-stc-s-0.1
+  (package
+    (name "rust-stc-s")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "stc-s" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0mcvhd50qqysqvd5jqd5ydjyqs3rp2x6irk518lrqn7xlx3cz04p"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-nom" ,rust-nom-7)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/cds-astro/cds-stc-rust/")
+    (synopsis "STC-S serializer/deserializer with JSON support")
+    (description
+     "This package provides Rust implementation of a @acronym{Space-Time
+Coordinate,STC-S} serializer/deserializer with JSON support.")
+    (license (list license:asl2.0 license:expat))))
 
 (define-public rust-std-prelude-0.2
   (package
