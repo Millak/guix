@@ -1676,7 +1676,7 @@ highlighting for dozens of languages.  Jed is very small and fast.")
                    (replace 'build
                      (lambda* (#:key make-flags #:allow-other-keys)
                        (apply invoke "make" "linux" make-flags))))))
-    (inputs (list motif pcre))
+    (inputs (list motif))
     (native-inputs (list pkg-config))
     (home-page "https://sourceforge.net/projects/xnedit/")
     (synopsis "Fast and classic X11 text editor")
