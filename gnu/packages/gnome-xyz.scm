@@ -1453,7 +1453,7 @@ dark elements.  It supports GNOME, Unity, Xfce, and Openbox.")
 (define-public orchis-theme
   (package
     (name "orchis-theme")
-    (version "2021-02-28")
+    (version "2024-11-03")
     (source
       (origin
         (method git-fetch)
@@ -1464,7 +1464,7 @@ dark elements.  It supports GNOME, Unity, Xfce, and Openbox.")
         (file-name (git-file-name name version))
         (sha256
           (base32
-           "1qp3phiza93qllrjm5xjjca5b7l2sbng8c382khy9m97grxvcq0y"))
+           "1m1kml068pfnw0zl81khm8d0km5r56ynx29xddawh512a15n5h9b"))
         (modules '((guix build utils)
                    (ice-9 regex)
                    (srfi srfi-26)))
@@ -1484,8 +1484,7 @@ dark elements.  It supports GNOME, Unity, Xfce, and Openbox.")
                           "--dest" (string-append
                                     (assoc-ref %outputs "out")
                                     "/share/themes")
-                          "--theme" "all"
-                          "--radio-color")
+                          "--theme" "all")
        #:tests? #f ; no tests
        #:phases
        (modify-phases %standard-phases
