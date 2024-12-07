@@ -1120,7 +1120,7 @@ shell, including panels, corners, workspaces.")
 (define-public gnome-shell-extension-burn-my-windows
   (package
     (name "gnome-shell-extension-burn-my-windows")
-    (version "40")
+    (version "44")
     (source
      (origin
        (method git-fetch)
@@ -1129,7 +1129,7 @@ shell, including panels, corners, workspaces.")
              (commit (string-append "v" version))))
        (sha256
         (base32
-         "16n6ilszdn67835clqlr4flna69x9k00k5qrm55765dv2ny9jdcq"))
+         "1br4hv0xnb9q30p844z360f37xzk6xflfq27i8ipbxpk6bd12ik6"))
        (file-name (git-file-name name version))))
     (build-system copy-build-system)
     (arguments
