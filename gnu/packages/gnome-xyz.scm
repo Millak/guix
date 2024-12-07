@@ -604,7 +604,7 @@ GNOME Shell.")
 (define-public gnome-shell-extension-clipboard-indicator
   (package
     (name "gnome-shell-extension-clipboard-indicator")
-    (version "47")
+    (version "65")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -616,7 +616,7 @@ GNOME Shell.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "00v0v454y6hblzsx06aaysxbs6aky89vnkf7ydzxrddns24c2wix"))
+                "1p10qnrjrlcyw270k87xwx92kp2cmn8vp4vsk59y13v6k9yaq4q8"))
               (modules '((guix build utils)))
               (snippet
                ;; Remove pre-compiled settings schemas and translations from
