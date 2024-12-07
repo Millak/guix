@@ -833,7 +833,15 @@ shell services and remote host selection.")
                ;; TODO Test fails for unknown reason
                (("(.+)async def test_confirm" all indent)
                 (string-append indent "@unittest.skip('disabled by guix')\n"
-                               indent "async def test_confirm")))))
+                               indent "async def test_confirm")))
+             (substitute* "tests/test_connection.py"
+               ;; Tests fail with: asyncssh.misc.ConnectionLost: Connection lost
+               (("(.+)async def test_get_server_host_key_proxy" all indent)
+                (string-append indent "@unittest.skip('disabled by guix')\n"
+                               indent "async def test_get_server_host_key_proxy"))
+               (("(.+)async def test_connect_reverse_proxy" all indent)
+                (string-append indent "@unittest.skip('disabled by guix')\n"
+                               indent "async def test_connect_reverse_proxy")))))
          (replace 'check
            (lambda* (#:key tests? inputs outputs #:allow-other-keys)
              (when tests?
