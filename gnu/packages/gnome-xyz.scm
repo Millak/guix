@@ -822,7 +822,7 @@ control.")
 (define-public gnome-shell-extension-just-perfection
   (package
     (name "gnome-shell-extension-just-perfection")
-    (version "26.0")
+    (version "30.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -831,7 +831,7 @@ control.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0dvq2mb04b557g9nz4pm90x2c2jc1dwwbg2is1gkx38yk0dsj6r3"))))
+                "1y7m4y8zx7l6vl2f8w9nxac21x48ajcs5gf07r1k34adnf7wh8p2"))))
     (build-system copy-build-system)
     (arguments
      (list
