@@ -4174,6 +4174,37 @@ for short) for X11 and Wayland, that goes to great lengths to be both CPU and
 battery efficient---polling is only done when absolutely necessary.")
     (license license:expat)))
 
+(define-public wideriver
+  (package
+    (name "wideriver")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/alex-courtis/wideriver")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16i0mzgxn32nrh5ajn0kb4xdwmsjg03amhasxhwyvspar5y4flhg"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:test-target "test"
+      #:make-flags
+      #~(list (string-append "PREFIX=" #$output)
+              (string-append "CC=" #$(cc-for-target)))
+      #:phases #~(modify-phases %standard-phases
+                   (delete 'configure)))) ; no configure script
+    (native-inputs (list pkg-config cmocka))
+    (inputs (list wayland wayland-protocols wlroots))
+    (home-page "https://github.com/alex-courtis/wideriver")
+    (synopsis "A set of riverWM layouts")
+    (description
+     "Tiling window manager for the river wayland compositor, inspired by dwm
+and xmonad.")
+    (license license:gpl3)))
+
 (define-public wf-config
   (package
     (name "wf-config")
