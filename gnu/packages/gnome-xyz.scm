@@ -959,7 +959,7 @@ It uses ES6 syntax and claims to be more actively maintained than others.")
 (define-public gnome-shell-extension-paperwm
   (package
     (name "gnome-shell-extension-paperwm")
-    (version "44.17.0")
+    (version "47.1.0")                  ; still compatible with GNOME 46
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -968,7 +968,7 @@ It uses ES6 syntax and claims to be more actively maintained than others.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1d91k9qih81wckqf6554kf8grv6q61rkk4g776g0ijpmf35ljdin"))
+                "0vgrkda38va1pwrzf5bkkmfbpm2i61487x86zky2f02wimxl9i7m"))
               (snippet
                '(begin (delete-file "schemas/gschemas.compiled")))))
     (build-system copy-build-system)
