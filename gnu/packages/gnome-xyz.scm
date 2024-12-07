@@ -580,7 +580,7 @@ Ubuntu Unity Shell.")
 (define-public gnome-shell-extension-appindicator
   (package
     (name "gnome-shell-extension-appindicator")
-    (version "53")
+    (version "59")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -589,7 +589,7 @@ Ubuntu Unity Shell.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "0lyfznsq5x287vpz133y593s7s4mz9i4x2491sgqvir891zwsivy"))
+                "1k1h9haj0qgcv9hm3hw2nz7ppznp9zrpg922mhrfa6nj97carmqh"))
               (file-name (git-file-name name version))))
     (build-system meson-build-system)
     (native-inputs (list jq gnu-gettext
