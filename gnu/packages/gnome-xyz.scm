@@ -867,10 +867,6 @@ GNOME Shell itself does not provide out of the box, such as the ability to hide
 certain elements or change animation speeds.")
     (license license:gpl3)))
 
-(define-public gnome-shell-extension-hide-app-icon
-  (deprecated-package "gnome-shell-extension-hide-app-icon"
-                      gnome-shell-extension-just-perfection))
-
 (define-public gnome-shell-extension-dash-to-panel
   (package
     (name "gnome-shell-extension-dash-to-panel")
