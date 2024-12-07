@@ -37,7 +37,7 @@
 (define-public mygnuhealth
   (package
     (name "mygnuhealth")
-    (version "1.0.5")
+    (version "2.2.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "MyGNUHealth" version))
@@ -61,7 +61,7 @@
                        (setenv "HOME" "/tmp"))))))
     (native-inputs (list python-pyside-2))
     (inputs (list bash-minimal
-                  kirigami
+                  kirigami-5
                   python
                   python-bcrypt
                   python-matplotlib
