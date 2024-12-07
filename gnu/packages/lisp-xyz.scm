@@ -27472,30 +27472,27 @@ functions to work with matrices.")
 (define-public sbcl-simple-neural-network
   (package
     (name "sbcl-simple-neural-network")
-    (version "3.1")
+    (version "3.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://codeberg.org/glv/simple-neural-network")
              (commit (string-append "v" version))))
-       (file-name (git-file-name "simple-neural-network" version))
+       (file-name (git-file-name "cl-simple-neural-network" version))
        (sha256
-        (base32 "1jj1c90fr5clwka0jv32hv6xp1bkdlpa6x5jh19an13rhx8ll4zr"))))
+        (base32 "15c4851qm1zv76hqa4081z0ni7dnf23130x1rxgsiysjpvz2slyf"))))
     (build-system asdf-build-system/sbcl)
     (native-inputs
-     `(("chipz" ,sbcl-chipz)
-       ("fiveam" ,sbcl-fiveam)))
+     (list sbcl-chipz sbcl-fiveam))
     (inputs
-     `(("cl-store" ,sbcl-cl-store)
-       ("lparallel" ,sbcl-lparallel)))
+     (list sbcl-cl-store sbcl-lparallel))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'check 'remove-test-data
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (for-each delete-file (find-files out "\\.gz$"))))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'check 'remove-test-data
+                 (lambda _
+                   (for-each delete-file (find-files #$output "\\.gz$")))))))
     (synopsis "Simple neural network in Common Lisp")
     (description
      "@code{simple-neural-network} is a Common Lisp library for creating,
