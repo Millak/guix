@@ -11078,7 +11078,7 @@ GNOME Shell appearance and extension, etc.")
 (define-public gnome-shell-extensions
   (package
     (name "gnome-shell-extensions")
-    (version "44.0")
+    (version "46.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -11086,7 +11086,7 @@ GNOME Shell appearance and extension, etc.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1aq1n75m1svsv0ppg66n9qch26rhjxcv3q33a3skf7hsydr5wd4c"))))
+                "0vyqqzqdd69sgarzpahxfj056rcm0hlk9hd52pr5y4i5d79fjhnl"))))
     (build-system meson-build-system)
     (arguments
      (list
