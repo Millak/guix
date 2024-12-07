@@ -5138,7 +5138,7 @@ end users in their personal workflows.")
 (define-public julia-preferences
   (package
     (name "julia-preferences")
-    (version "1.2.2")
+    (version "1.4.3")
     (source
       (origin
         (method git-fetch)
@@ -5147,7 +5147,7 @@ end users in their personal workflows.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1cail43iqzbi6m9v6981rhz47zf2lcvhs5ds5gdqvc9nx5frghxq"))))
+         (base32 "09q5d223ad37qp6vqjm46la9vf8skj30z1ri3qmadq6vdycav7xm"))))
     (build-system julia-build-system)
     (arguments
      (list #:tests? #f))        ; Tests try to mkdir /.julia
