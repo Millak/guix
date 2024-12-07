@@ -11746,14 +11746,16 @@ for Environmental Statistics\" (Millard, 2013, Springer, ISBN
 (define-public r-suntools
   (package
     (name "r-suntools")
-    (version "1.0.0")
+    (version "1.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "suntools" version))
        (sha256
-        (base32 "1qlp0q2ckqg5v3yvbr98k3nr9awgg7ks0l1103nqvm1ssadv7ds2"))))
-    (properties `((upstream-name . "suntools")))
+        (base32 "1j7xz3yxg1azvcshb6sp88diipjiq37895cbipxm0s22dhhx1bqv"))))
+    (properties
+     `((upstream-name . "suntools")
+       (updater-extra-native-inputs . ("tzdata-for-tests"))))
     (build-system r-build-system)
     (propagated-inputs (list r-sf))
     (native-inputs (list r-testthat tzdata-for-tests))
