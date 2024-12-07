@@ -12611,6 +12611,55 @@ archive to be linked into Rustcode.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-cdshealpix-0.7
+  (package
+    (name "rust-cdshealpix")
+    (version "0.7.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cdshealpix" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0rxg2wsrnzfhm8pid1sv22zn1cly54zdbg2ffajx0i0dvyfpm1cc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       (list "--release" "--"
+             ;; Tests can't find FITS files:
+             ;; - test/resources/skymap/skymap.fits
+             ;; - test/resources/skymap/skymap.2mass.depth6.fits
+             "--skip=tests::test_skymap_to_mom_basic"
+             "--skip=tests::test_skymap_to_mom_chi2"
+             "--skip=tests::test_mom_diff_spec"
+             "--skip=tests::test_skymap_spec")
+     #:cargo-inputs
+       (("rust-base64" ,rust-base64-0.21)
+        ("rust-byteorder" ,rust-byteorder-1)
+        ("rust-colorous" ,rust-colorous-1)
+        ("rust-flate2" ,rust-flate2-1)
+        ("rust-itertools" ,rust-itertools-0.13)
+        ("rust-katex-doc" ,rust-katex-doc-0.1)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-mapproj" ,rust-mapproj-0.3)
+        ("rust-num" ,rust-num-0.4)
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-png" ,rust-png-0.17)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.4)
+        ("rust-rand" ,rust-rand-0.8))))
+    (home-page "https://github.com/cds-astro/cds-healpix-rust/")
+    (synopsis "HEALPix tesselation")
+    (description
+     "This library is an implementation in Rust of the HEALPix tesselation.
+This implementation has been made by the Strasbourg astronomical Data
+Centre (Centre de Données astronomique de Strasbourg,
+@url{http://cdsweb.u-strasbg.fr/,CDS}).")
+    (license (list license:asl2.0
+                   license:expat))))
+
 (define-public rust-cesu8-1
   (package
     (name "rust-cesu8")
