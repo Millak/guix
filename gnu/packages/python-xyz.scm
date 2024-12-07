@@ -2341,13 +2341,13 @@ allows one to read and write JPEG 2000 files")
 (define-public python-gphoto2
   (package
     (name "python-gphoto2")
-    (version "2.2.1")
+    (version "2.5.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "gphoto2" version))
               (sha256
                (base32
-                "118zm25c8mlajfl0pzssnwz4b8lamj9dgymla9rn4nla7l244a0r"))))
+                "104yb4g427rqjkaw3i0w30x3sssvmpna802nabjclzq688y7ml4p"))))
     (build-system python-build-system)
     (native-inputs
      (list pkg-config))
@@ -2358,7 +2358,7 @@ allows one to read and write JPEG 2000 files")
     (description "@code{python-gphoto2} is a comprehensive Python interface
 (or binding) to @code{libgphoto2}.  It is built using @code{SWIG} to
 automatically generate the interface code.")
-    (license license:gpl3+)))
+    (license license:lgpl3+)))
 
 (define-public python-colour
   (package
