@@ -938,21 +938,13 @@ Guile's foreign function interface.")
        (file-name (string-append "guile-lzlib-" version ".tar.gz"))
        (sha256
         (base32
-         "1whgmwkr1v8m63p4aaqn8blwl9vcrswwhbfv4bm0aghl5a6rryd7"))))
+         "1whgmwkr1v8m63p4aaqn8blwl9vcrswwhbfv4bm0aghl5a6rryd7"))
+       (patches (search-patches "guile-lzlib-gcc-14.patch"
+                                "guile-lzlib-hurd64.patch"))))
     (build-system gnu-build-system)
     (arguments
      (list
-      #:make-flags #~'("GUILE_AUTO_COMPILE=0") ;prevent guild warnings
-      #:phases (if (or (%current-target-system) (target-hurd64?))
-                   #~(modify-phases %standard-phases
-                       (add-after 'unpack 'apply-hurd64-patch
-                         (lambda _
-                           (let ((patch
-                                  #$(local-file
-                                     (search-patch
-                                      "guile-lzlib-hurd64.patch"))))
-                             (invoke "patch" "--force" "-p1" "-i" patch)))))
-                   #~%standard-phases)))
+      #:make-flags #~'("GUILE_AUTO_COMPILE=0"))) ;prevent guild warnings
     (native-inputs (list autoconf automake pkg-config guile-3.0))
     (inputs (list guile-3.0 lzlib))
     (synopsis "Guile bindings to lzlib")
