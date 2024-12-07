@@ -1348,7 +1348,7 @@ Shimmer Project.  It supports GNOME, Unity, and Xfce.")
 (define-public matcha-theme
   (package
     (name "matcha-theme")
-    (version "2021-01-01")
+    (version "2024-05-01")
     (source
       (origin
         (method git-fetch)
@@ -1359,7 +1359,7 @@ Shimmer Project.  It supports GNOME, Unity, and Xfce.")
         (file-name (git-file-name name version))
         (sha256
           (base32
-            "1pa6ra87wlq0gwz4n03l6xv0pxiamr5dygycvppms8v6xyc2aa0r"))))
+            "19dsa7bx37g76sm0l3x65kzq2sg4id3q6j649ny88a69kx2k1d5n"))))
     (build-system trivial-build-system)
     (arguments
      '(#:modules ((guix build utils))
