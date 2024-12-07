@@ -921,11 +921,11 @@ into a single panel, similar to that found in KDE Plasma and Windows 7+.")
   ;; https://extensions.gnome.org/extension/6109/noannoyance-fork/ because it
   ;; supports newer GNOME Shell versions than the previously used “NoAnnoyance
   ;; v2”.
-  (let ((commit "5e9e6a1878d2a1d961f5d59505f15339c5b7e17e")
+  (let ((commit "8312e010908119b0b0a744c27e661c89b35eddb7")
         ;; “NoAnnoyance v2” version 17 correlates with
         ;; c6804a47063659f9f48d13a0942b78ce98aac72b, from which we count
         ;; commits.
-        (revision "6"))
+        (revision "23"))
     (package
       (name "gnome-shell-extension-noannoyance")
       (version (git-version "17" revision commit))
@@ -936,13 +936,20 @@ into a single panel, similar to that found in KDE Plasma and Windows 7+.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "0br9zrwvn499kh3db84hhw1kl02jpchwb5ldfp892p15vwih8yrf"))
+                  "1pf575pwm304cn4kdjdjcxiyjsggmkcy9mrar901an0xr4vbm3pg"))
                 (file-name (git-file-name name version))))
       (build-system copy-build-system)
       (arguments
        (list
         #:install-plan
-        #~'(("." "share/gnome-shell/extensions/noannoyance@vrba.dev"))))
+        #~'(("." "share/gnome-shell/extensions/noannoyance-fork@vrba.dev"))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'install 'compile-schemas
+              (lambda _
+                (with-directory-excursion "schemas"
+                  (invoke "glib-compile-schemas" ".")))))))
+      (native-inputs (list `(,glib "bin")))
       (synopsis "Remove 'Window is ready' annotation")
       (description "One of the many extensions that remove this message.
 It uses ES6 syntax and claims to be more actively maintained than others.")
