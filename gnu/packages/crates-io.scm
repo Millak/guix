@@ -43470,6 +43470,25 @@ algorithms.  It supports CBC block cipher mode, PKCS5 padding and 64, 128,
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-mapproj-0.3
+  (package
+    (name "rust-mapproj")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "mapproj" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "08wjp6vj1w2qbz769k057pdk2w8351i26xj40p8xbxjj3wli7iz3"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/cds-astro/cds-mapproj-rust/")
+    (synopsis "Map projections defined in the FITS World Coordinate System")
+    (description
+     "This package provides Implementation of (a part of) map projections
+defined in the FITS World Coordinate System (WCS).")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-markup-proc-macro-0.13
   (package
     (name "rust-markup-proc-macro")
