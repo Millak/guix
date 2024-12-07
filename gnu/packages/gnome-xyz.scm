@@ -878,7 +878,7 @@ certain elements or change animation speeds.")
 (define-public gnome-shell-extension-dash-to-panel
   (package
     (name "gnome-shell-extension-dash-to-panel")
-    (version "56") ;Compatible with GNOME 44
+    (version "64")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -886,7 +886,7 @@ certain elements or change animation speeds.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "17rm3wjj8zfdxgh5vp5f35vgd4mc9f9c2w77hac4vyvkgvwfzcnn"))
+                "0dgp15qr9s9h9wam0a994sqd8rdab36wii6j6rai3s5p8bw8gsfn"))
               (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
