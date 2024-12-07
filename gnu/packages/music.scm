@@ -1343,8 +1343,9 @@ audio and video).")
             (url "https://github.com/flacon/flacon")
             (commit (string-append "v" version))
             (recursive? #t)))
+        (file-name (git-file-name name version))
         (sha256
-          (base32 "0yp73yl5x9m2l4whrzj6yx8aqv1915khmlihgp1p12m9m540dql2"))))
+         (base32 "0yp73yl5x9m2l4whrzj6yx8aqv1915khmlihgp1p12m9m540dql2"))))
     (build-system cmake-build-system)
     (arguments
       ;; The tests fail while attempting to exercise MacOS functionality.
