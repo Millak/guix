@@ -682,10 +682,6 @@ that caches clipboard history.")
 behavior, system tray and input source indicator for IBus.")
     (license license:gpl3+)))
 
-(define-public gnome-shell-extension-topicons-redux
-  (deprecated-package "gnome-shell-extension-topicons-redux"
-                      gnome-shell-extension-appindicator))
-
 (define-public gnome-shell-extension-dash-to-dock
   (package
     (name "gnome-shell-extension-dash-to-dock")
