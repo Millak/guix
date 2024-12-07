@@ -1080,7 +1080,7 @@ copies you now want to paste.")
 (define-public gnome-shell-extension-v-shell
   (package
     (name "gnome-shell-extension-v-shell")
-    (version "37")
+    (version "47.1")
     (source
      (origin
        (method git-fetch)
@@ -1089,7 +1089,7 @@ copies you now want to paste.")
              (commit (string-append "v" version))))
        (sha256
         (base32
-         "1h9f3g1dswxkka0yyj51610w86mwl46ylch19b51gj5mmxlyvzlv"))
+         "0c2hl7wi83aacl5w09h5daph06zwiv63vn9za2v63az1i8333sgi"))
        (file-name (git-file-name name version))))
     (build-system copy-build-system)
     (arguments
