@@ -11379,13 +11379,13 @@ previously been used in XCMS.")
 (define-public r-numbat
   (package
     (name "r-numbat")
-    (version "1.3.2-1")
+    (version "1.4.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "numbat" version))
               (sha256
                (base32
-                "1b9bykgw3z7a8bky5yv2g402gdapv8kcla2kbbyqvs77x4wba4q4"))))
+                "0a78iwr23nandzq6jk8lnh6qdaq99060j41klf8bzl7rmn43h4d6"))))
     (properties `((upstream-name . "numbat")))
     (build-system r-build-system)
     (propagated-inputs (list r-ape
@@ -11398,6 +11398,7 @@ previously been used in XCMS.")
                              r-ggraph
                              r-ggtree
                              r-glue
+                             r-hahmmr
                              r-igraph
                              r-iranges
                              r-logger
