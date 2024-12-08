@@ -10,7 +10,7 @@
 ;;; Copyright © 2016 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2016, 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
-;;; Copyright © 2016 Jan Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2016, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016-2022 Marius Bakke <marius@gnu.org>
@@ -1887,13 +1887,13 @@ because lxml.etree already has its own implementation of XPath 1.0.")
 (define-public python-lxml
   (package
     (name "python-lxml")
-    (version "4.9.1")
+    (version "5.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "lxml" version))
        (sha256
-         (base32 "0grczyrrq2rbwhvpri15cyhv330s494vbz3js3jky8xp5c2rnx7y"))))
+        (base32 "11yvrzlswlh81z6lpmds2is2jd3wkigpwj6mcfcaggl0h64w8bdv"))))
     (build-system python-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
