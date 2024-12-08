@@ -919,6 +919,13 @@ in the style of communicating sequential processes (@dfn{CSP}).")
                 (substitute* "src/cmd/go/testdata/script/cgo_path_space.txt"
                   (("/bin/sh") (which "sh")))))
 
+            (add-after 'unpack 'remove-failing-test
+              (lambda _
+                ;; This test fails with newer gcc's
+                ;; https://github.com/golang/go/issues/57691
+                (substitute* "src/cmd/cgo/internal/testsanitizers/asan_test.go"
+                  ((".*arena_fail.*") ""))))
+
             (add-after 'enable-external-linking 'enable-external-linking-1.21
               (lambda _
                 ;; Invoke GCC to link any archives created with GCC (that is,
