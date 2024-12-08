@@ -11961,18 +11961,31 @@ available in a vignette.")
 (define-public r-progressr
   (package
     (name "r-progressr")
-    (version "0.15.0")
+    (version "0.15.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "progressr" version))
        (sha256
-        (base32 "1rzn3abiy2zfr86yqaajh53y1a3x79n411gg6xj2jwi80bgh375z"))))
-    (properties `((upstream-name . "progressr")))
+        (base32 "09m4a21rwkm2g0z6m9di8vmammzzs391cn5ya00whps011wggn9h"))))
+    (properties
+     `((upstream-name . "progressr")
+       ;; FIXME: these packages don't exist (yet?), but we also don't need
+       ;; them for building or running tests.
+       (updater-ignored-native-inputs . ("r-apply" "r-notifier"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-digest))
-    (native-inputs (list r-future))
+    (native-inputs (list r-beepr
+                         r-dofuture
+                         r-furrr
+                         r-future
+                         r-pbmcapply
+                         r-plyr
+                         r-progress
+                         r-purrr
+                         r-rstudioapi
+                         r-shiny))
     (home-page "https://progressr.futureverse.org")
     (synopsis "Inclusive, unifying API for progress updates")
     (description
