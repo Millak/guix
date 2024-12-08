@@ -1178,7 +1178,8 @@ code for classes that correspond to data structures defined by XMLSchema.")
      ;; Make sure the reference to util-linux's 'getopt' is kept in 'xmlto'.
      (list
       #:configure-flags
-      #~(list (string-append "GETOPT="
+      #~(list "CFLAGS=-g -O2 -Wno-error=implicit-int"
+              (string-append "GETOPT="
                              #$(this-package-input "util-linux")
                              "/bin/getopt"))))
     (native-inputs
