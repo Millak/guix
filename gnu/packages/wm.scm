@@ -615,6 +615,43 @@ the i3 window manager through its i3bar component, as an alternative to
 i3status.")
     (license license:gpl3+)))
 
+(define-public papersway
+  (package
+    (name "papersway")
+    (version "1.004")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/S/SP/SPWHITTON/App-papersway-" version
+             ".tar.gz"))
+       (sha256
+        (base32 "02p144cbzi3vk5jpk1pmcrf51mmli0q92hrkjyalj91drl0d44px"))))
+    (build-system perl-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'wrap-program
+                 (lambda _
+                   (for-each
+                    (lambda (command)
+                      (wrap-program (string-append #$output "/bin/" command)
+                        `("PERL5LIB" ":" prefix
+                          (,(getenv "PERL5LIB")
+                           ,(string-append #$output "/lib/perl5/site_perl")))))
+                    '("papersway" "papersway-msg")))))))
+    (inputs (list perl-anyevent perl-anyevent-i3 perl-json))
+    (home-page "https://spwhitton.name/tech/code/papersway/")
+    (synopsis
+     "Scrollable tiling window management for Sway and i3 window manager")
+    (description
+     "@command{papersway} is an implementation of scrollable window management
+like @code{gnome-shell-extension-paperwm} for @code{sway} and @code{i3-wm}.
+If you like @code{sway} and @code{i3-wm}'s commitments to stability, avoiding
+scope creep etc., but dislike the window management model, @command{papersway}
+might be of interest.")
+    (license license:gpl3)))
+
 (define-public perl-anyevent-i3
   (package
     (name "perl-anyevent-i3")
