@@ -1,0 +1,39 @@
+Index: emacs-29.4/src/lread.c
+===================================================================
+--- emacs-29.4.orig/src/lread.c
++++ emacs-29.4/src/lread.c
+@@ -1668,9 +1668,34 @@ directories, make sure the PREDICATE fun
+ 
+ #ifdef HAVE_NATIVE_COMP
+ static bool
++permit_swap_for_eln (Lisp_Object src_name, Lisp_Object eln_name)
++{
++  char *src = SSDATA (src_name), *eln = SSDATA (eln_name);
++  size_t eln_ln = strlen (eln);
++
++  while (*src && *eln && *src == *eln)
++    {
++      ++src; ++eln; --eln_ln;
++    }
++
++  /* After stripping common prefixes, the first directory should be
++   * "lib/" (inside the Guix store) or "native-lisp" (inside Emacs build).
++   * Alternatively, if eln contains "eln-cache", it's likely the user's
++   * cache, which we will also permit. */
++
++  return
++    (eln_ln > 4 && !strncmp (eln, "lib/", 4)) ||
++    (eln_ln > 12 && !strncmp (eln, "native-lisp/", 12)) ||
++    strstr (eln, "eln-cache") != NULL;
++}
++
++static bool
+ maybe_swap_for_eln1 (Lisp_Object src_name, Lisp_Object eln_name,
+ 		     Lisp_Object *filename, int *fd, struct timespec mtime)
+ {
++  if (!permit_swap_for_eln (src_name, eln_name))
++    return false;
++
+   struct stat eln_st;
+   int eln_fd = emacs_open (SSDATA (ENCODE_FILE (eln_name)), O_RDONLY, 0);
+ 

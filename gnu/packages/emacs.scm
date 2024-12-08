@@ -117,6 +117,7 @@
                                        "emacs-fix-scheme-indent-function.patch"
                                        "emacs-native-comp-driver-options.patch"
                                        "emacs-native-comp-fix-filenames.patch"
+                                       "emacs-native-comp-pin-packages.patch"
                                        "emacs-pgtk-super-key-fix.patch"))
               (modules '((guix build utils)))
               (snippet
@@ -233,16 +234,6 @@
                 (("\\(tramp-compat-process-running-p \"(.*)\"\\)" all process)
                  (format #f "(or ~a (tramp-compat-process-running-p ~s))"
                          all (string-append "." process "-real"))))))
-          (add-after 'unpack 'disable-native-compilation
-            (lambda _
-              ;; Temporary workaround to prevent the behaviour discussed in
-              ;; <https://issues.guix.gnu.org/72333>.
-              ;; Please remove once the native-compilation for Emacs packages
-              ;; is fully supported.
-              (substitute* "lisp/transient.el"
-                ((";; End:")
-                 ";; no-native-compile: t
-;; End:"))))
           (add-before 'configure 'fix-/bin/pwd
             (lambda _
               ;; Use `pwd', not `/bin/pwd'.
