@@ -2927,6 +2927,30 @@ The package provides functions for point generation, arc length estimation,
 degree elevation and curve fitting.")
     (license license:gpl2+)))
 
+(define-public r-bife
+  (package
+    (name "r-bife")
+    (version "0.7.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "bife" version))
+       (sha256
+        (base32 "0xikxniwzcv6jc64rgx39hddqchxk6c43h45algssbz2vaxvc4zg"))))
+    (properties `((upstream-name . "bife")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-data-table r-formula r-rcpp r-rcpparmadillo))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/amrei-stammann/bife")
+    (synopsis "Binary choice models with fixed effects")
+    (description
+     "This package lets you estimate fixed effects binary choice models (logit
+and probit) with potentially many individual fixed effects and compute average
+partial effects.  Incidental parameter bias can be reduced with an asymptotic
+bias correction proposed by Fernandez-Val (2009)
+<doi:10.1016/j.jeconom.2009.02.007>.")
+    (license license:gpl2+)))
+
 (define-public r-biglm
   (package
     (name "r-biglm")
