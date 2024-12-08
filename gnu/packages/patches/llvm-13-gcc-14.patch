@@ -1,0 +1,12 @@
+See:  https://github.com/smlnj/smlnj/issues/279
+
+--- llvm-13.0.1.src/include/llvm/Support/Signals.h.orig	2024-12-08 14:34:21.338967469 +0100
++++ llvm-13.0.1.src/include/llvm/Support/Signals.h	2024-12-08 14:32:22.486780827 +0100
+@@ -14,6 +14,7 @@
+ #ifndef LLVM_SUPPORT_SIGNALS_H
+ #define LLVM_SUPPORT_SIGNALS_H
+ 
++#include <cstdint>
+ #include <string>
+ 
+ namespace llvm {
