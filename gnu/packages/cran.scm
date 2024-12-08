@@ -1031,6 +1031,27 @@ values per cutpoint using Generalized Additive Models.  Various plotting
 functions are included.")
     (license license:gpl3)))
 
+(define-public r-datapasta
+  (package
+    (name "r-datapasta")
+    (version "3.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "datapasta" version))
+       (sha256
+        (base32 "0sqv29iv2rv50rbw1601rn8p7gv7rsw00djhl7h1znr0igzi5b82"))))
+    (properties `((upstream-name . "datapasta")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-clipr r-readr r-rstudioapi))
+    (native-inputs (list r-data-table r-knitr r-testthat r-tibble))
+    (home-page "https://github.com/milesmcbain/datapasta")
+    (synopsis "R tools for data copy-pasta")
+    (description
+     "This package provides RStudio addins and R functions that make
+copy-pasting vectors and tables to text painless.")
+    (license license:expat)))
+
 (define-public r-datawizard
   (package
     (name "r-datawizard")
