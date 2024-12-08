@@ -618,14 +618,14 @@ i3status.")
 (define-public perl-anyevent-i3
   (package
     (name "perl-anyevent-i3")
-    (version "0.17")
+    (version "0.19")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://cpan/authors/id/M/MS/MSTPLBG/"
                                   "AnyEvent-I3-" version ".tar.gz"))
               (sha256
                (base32
-                "0qvd9bq16jyy7v3ma82qcnvz9j503bw0mh7h55gkjf7ir62ck0jk"))))
+                "0fj8mhfh9z4zgccpfpm8ymj245zii8z3b4g7ila60m9xvdh3pk8v"))))
     (build-system perl-build-system)
     (propagated-inputs
      (list perl-anyevent perl-json-xs))
