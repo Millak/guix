@@ -322,7 +322,7 @@ or musca).
 (define-public hyprland
   (package
     (name "hyprland")
-    (version "0.44.1")
+    (version "0.45.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/hyprwm/Hyprland"
@@ -339,7 +339,7 @@ or musca).
                               "subprojects"))))
               (sha256
                (base32
-                "0qzwdlj0bwj267285l3gjklhafn3bln90z985yws4j5cbp7bj0d9"))))
+                "1jqnly8h72v20fsz1075ib7gl7272g5svqw7qpqhx6243w1320np"))))
     (build-system cmake-build-system)
     (arguments
      (list #:cmake cmake-3.30
