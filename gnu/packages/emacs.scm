@@ -629,12 +629,13 @@ editor (with wide ints)" )
   (deprecated-package "emacs-next-tree-sitter" emacs-next))
 
 (define-public guile-emacs
-  (let ((commit "8f87cbc1dae6a9e77368afc5736df8c342e9153d")
+  (let ((upstream-version "31.0.50")
+        (commit "8f87cbc1dae6a9e77368afc5736df8c342e9153d")
         (revision "0"))
     (package
       (inherit emacs)
       (name "guile-emacs")
-      (version (git-version "0.0.0" revision commit))
+      (version (git-version upstream-version revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -687,8 +688,10 @@ editor (with wide ints)" )
                     (lambda (port) (display port)))))))))
       (native-search-paths
        (list (search-path-specification
+              ;;guile-emacs needs this non-standard load-path for now
               (variable "EMACSLOADPATH")
-              (files '("share/emacs/31.0.50/lisp")))
+              (files
+               (list (string-append "share/emacs/" upstream-version "/lisp"))))
              (search-path-specification
               (variable "INFOPATH")
               (files '("share/info"))))))))
