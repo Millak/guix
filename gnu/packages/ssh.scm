@@ -819,12 +819,19 @@ shell services and remote host selection.")
      (list
       #:test-flags
       #~(list "-k" (string-join
-                    ;; TODO Test fails for unknown reason
-                    (list "not test_confirm"
-                          ;; Tests fail with: asyncssh.misc.ConnectionLost:
-                          ;; Connection lost
-                          "test_get_server_host_key_proxy"
-                          "test_connect_reverse_proxy")
+                    (list
+                     ;; TODO Test fails for unknown reason
+                     "not test_confirm"
+                     #$@(if (target-aarch64?)
+                            (list
+                             ;; Tests fail with: asyncssh.misc.ConnectionLost:
+                             ;; Connection lost
+                             "test_connect_non_tcp_sock"
+                             "test_connect_reverse_proxy"
+                             "test_get_server_auth_methods_no_sockn"
+                             "test_get_server_auth_methods_no_sockname"
+                             "test_get_server_host_key_proxy")
+                            '()))
                     " and not " ))
       #:phases
       #~(modify-phases %standard-phases
