@@ -20,6 +20,7 @@
 ;;; Copyright © 2023 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -77,6 +78,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix gexp)
@@ -812,40 +814,41 @@ shell services and remote host selection.")
        (method url-fetch)
        (uri (pypi-uri "asyncssh" version))
        (sha256
-        (base32
-         "11zq9ywzgyljzihdygawzad0ydly0l32zvz11liwyi8bbk087fzb"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-cryptography python-pyopenssl python-gssapi
-           python-bcrypt python-typing-extensions))
-    (native-inputs
-     (list openssh openssl python-fido2 python-aiofiles netcat
-           python-pytest))
+        (base32 "11zq9ywzgyljzihdygawzad0ydly0l32zvz11liwyi8bbk087fzb"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'disable-tests
-           (lambda* _
-             (substitute* "tests/test_connection.py"
-               ;; nc is always available.
-               (("which nc") "true"))
-             (substitute* "tests/test_agent.py"
-               ;; TODO Test fails for unknown reason
-               (("(.+)async def test_confirm" all indent)
-                (string-append indent "@unittest.skip('disabled by guix')\n"
-                               indent "async def test_confirm")))
-             (substitute* "tests/test_connection.py"
-               ;; Tests fail with: asyncssh.misc.ConnectionLost: Connection lost
-               (("(.+)async def test_get_server_host_key_proxy" all indent)
-                (string-append indent "@unittest.skip('disabled by guix')\n"
-                               indent "async def test_get_server_host_key_proxy"))
-               (("(.+)async def test_connect_reverse_proxy" all indent)
-                (string-append indent "@unittest.skip('disabled by guix')\n"
-                               indent "async def test_connect_reverse_proxy")))))
-         (replace 'check
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-vv")))))))
+     (list
+      #:test-flags
+      #~(list "-k" (string-join
+                    ;; TODO Test fails for unknown reason
+                    (list "not test_confirm"
+                          ;; Tests fail with: asyncssh.misc.ConnectionLost:
+                          ;; Connection lost
+                          "test_get_server_host_key_proxy"
+                          "test_connect_reverse_proxy")
+                    " and not " ))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda* _
+              (substitute* "tests/test_connection.py"
+                ;; nc is always available.
+                (("which nc") "true")))))))
+    (native-inputs
+     (list netcat
+           openssh
+           openssl
+           python-aiofiles
+           python-fido2
+           python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-cryptography
+           python-pyopenssl
+           python-gssapi
+           python-bcrypt
+           python-typing-extensions))
     (home-page "https://asyncssh.readthedocs.io/")
     (synopsis "Asynchronous SSHv2 client and server library for Python")
     (description
