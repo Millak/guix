@@ -649,6 +649,7 @@ editor (with wide ints)" )
       (native-inputs
        (modify-inputs (package-native-inputs emacs)
          (prepend autoconf automake guile-for-guile-emacs)))
+      (home-page "https://guile-emacs.org")
       (arguments
        (substitute-keyword-arguments `(;; Tests aren't passing for now.
                                        #:tests? #f
