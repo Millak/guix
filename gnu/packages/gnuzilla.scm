@@ -744,7 +744,7 @@ variable defined below.  It requires guile-json to be installed."
            ;; https://bugzilla.mozilla.org/show_bug.cgi?id=1819374).
            ffmpeg-5
            libvpx
-           icu4c-73
+           icu4c
            pixman
            pulseaudio
            mesa
@@ -1551,7 +1551,7 @@ ca495991b7852b855"))
            gtk+
            gtk+-2
            hunspell
-           icu4c-73
+           icu4c
            libcanberra
            libevent
            libffi

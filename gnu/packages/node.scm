@@ -960,7 +960,7 @@ fi"
      (list ;; Runtime dependencies for binaries used as a bootstrap.
            c-ares-for-node-lts
            brotli
-           icu4c-73
+           icu4c
            libuv-for-node-lts
            `(,nghttp2 "lib")
            openssl
@@ -976,7 +976,7 @@ fi"
      (list bash-minimal
            coreutils
            c-ares-for-node-lts
-           icu4c-73
+           icu4c
            libuv-for-node-lts
            llhttp-bootstrap
            brotli
