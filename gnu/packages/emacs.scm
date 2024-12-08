@@ -678,6 +678,39 @@ editor (with wide ints)" )
               (delete 'restore-emacs-pdmp)
               (delete 'build-trampolines)
               (delete 'install-site-start)
+              (replace 'wrap-emacs-paths
+                ;; Restrict EMACSLOADPATH to builtin packages.
+                (lambda _
+                  (let ((lisp-dirs (list (string-append
+                                          #$output "/share/emacs/"
+                                          #$upstream-version "/lisp")))
+                        (inputs '#$(map (match-lambda
+                                          ((name directory)
+                                           #~(#$name . #$directory)))
+                                        (package-inputs this-package))))
+                    (for-each
+                     (lambda (prog)
+                       (wrap-program prog
+                         ;; Some variants rely on uname being in PATH for Tramp.
+                         ;; Tramp paths can't be hardcoded, because they need to
+                         ;; be portable.
+                         `("PATH" suffix
+                           ,(map dirname
+                                 (list (search-input-file inputs "/bin/gzip")
+                                       ;; for coreutils
+                                       (search-input-file inputs "/bin/yes"))))
+                         ;; We use "=" because loading non-builtin packages is
+                         ;; currently not supported and prevents guile-emacs
+                         ;; from running.
+                         `("EMACSLOADPATH" = ,lisp-dirs)))
+                     (find-files
+                      (string-append #$output "/bin")
+                      ;; Matches versioned and unversioned emacs binaries.
+                      ;; We don't patch emacsclient, because it takes its
+                      ;; environment variables from emacs.
+                      ;; Likewise, we don't need to patch helper binaries
+                      ;; like etags, ctags or ebrowse.
+                      "^emacs(-[0-9]+(\\.[0-9]+)*)?$")))))
               (add-after 'unpack 'help-patch-progam-file-names
                 (lambda _
                   (call-with-output-file "lisp/obsolete/terminal.el"
@@ -685,16 +718,7 @@ editor (with wide ints)" )
               (add-after 'configure 'touch-lisp/finder-inf.el
                 (lambda _
                   (call-with-output-file "lisp/finder-inf.el"
-                    (lambda (port) (display port)))))))))
-      (native-search-paths
-       (list (search-path-specification
-              ;;guile-emacs needs this non-standard load-path for now
-              (variable "EMACSLOADPATH")
-              (files
-               (list (string-append "share/emacs/" upstream-version "/lisp"))))
-             (search-path-specification
-              (variable "INFOPATH")
-              (files '("share/info"))))))))
+                    (lambda (port) (display port))))))))))))
 
 (define-public m17n-db
   (package
