@@ -146,7 +146,10 @@ using the CMake build system.")
     ;; This test requires 'ldconfig' which is not available in Guix.
     "RunCMake.install"
     ;; This test fails for unknown reason.
-    "RunCMake.file-GET_RUNTIME_DEPENDENCIES"))
+    "RunCMake.file-GET_RUNTIME_DEPENDENCIES"
+    ;; These tests fail with gcc-14.
+    "LoadCommand"
+    "LoadedCommandOneConfig"))
 
 (define %common-disabled-tests/hurd
   '("CTestTestTimeout"
