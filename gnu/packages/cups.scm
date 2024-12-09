@@ -9,6 +9,7 @@
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2021, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -529,14 +530,14 @@ should only be used as part of the Guix cups-pk-helper service.")
 (define-public hplip
   (package
     (name "hplip")
-    (version "3.23.12")
+    (version "3.24.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/hplip/hplip/" version
                                   "/hplip-" version ".tar.gz"))
               (sha256
                (base32
-                "1vb9irqsm3d4c2qdr4h6ia940x65bb99h4x31mgxn7dkvv42lv57"))
+                "1yzil1fn9ib2hxmqh9in0apmmznvln0xahlxvyny59ck321l6xjx"))
               (patches (search-patches "hplip-usb-timeout.patch"))
               (modules '((guix build utils)))
               (snippet
@@ -599,6 +600,18 @@ should only be used as part of the Guix cups-pk-helper service.")
               "--disable-qt4")
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-gcc-14-cflags
+            ;; We set CFLAGS here because adding setting it in
+            ;; #:configure-flags or #:make-flags does not work.
+            (lambda _
+              (substitute* "Makefile.in"
+                (("CFLAGS = @CFLAGS@" all)
+                 (string-append all
+                                " -Wno-error=attributes"
+                                " -Wno-error=implicit-function-declaration"
+                                " -Wno-error=implicit-int"
+                                " -Wno-error=incompatible-pointer-types"
+                                " -Wno-error=return-mismatch")))))
           (add-after 'unpack 'fix-hard-coded-file-names
             (lambda* (#:key inputs outputs #:allow-other-keys)
               (let ((out #$output)
