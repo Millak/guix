@@ -414,6 +414,18 @@ interface and is based on GNU Guile.")
               (replace "guile-fibers"
                 (this-package-native-input "guile-fibers"))))))
 
+(define-public shepherd-1.0
+  (package
+    (inherit shepherd-0.10)
+    (version "1.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnu/shepherd/shepherd-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "0z4yxl8g0k3b6k4x7b3ks10x31hs46j5kmw0ah5cr417n0rszrp8"))))))
+
 (define-public shepherd shepherd-0.10)
 
 (define-public guile2.2-shepherd
