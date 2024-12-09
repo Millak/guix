@@ -938,23 +938,28 @@ clients at a time.")
 (define-public webssh
   (package
     (name "webssh")
-    (version "1.5.3")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/huashengdun/webssh")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1bcy9flrzbvams5p77swwiygv54ac58ia7hpic1bvg30b3wpvv7b"))))
-    (build-system python-build-system)
+    (version "1.6.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/huashengdun/webssh")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0v0dxnqac9xdj06lhljv6bhi8hd16rn6h0qr7fkm640nvr55a8i1"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
     (propagated-inputs
-     (list python-paramiko python-tornado))
+     (list python-paramiko
+           python-tornado))
     (home-page "https://webssh.huashengdun.org/")
     (synopsis "Web application to be used as an SSH client")
-    (description "This package provides a web application to be used as an SSH
-client.
+    (description
+     "This package provides a web application to be used as an SSH client.
 
 Features:
 @itemize @bullet
