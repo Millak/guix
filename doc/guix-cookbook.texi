@@ -86,6 +86,7 @@ manual}).
 * Software Development::        Environments, continuous integration, etc.
 * Environment management::      Control environment
 * Installing Guix on a Cluster::  High-performance computing.
+* Guix System Management::      System Management specifics.
 
 * Acknowledgments::             Thanks!
 * GNU Free Documentation License::  The license of this document.
@@ -198,6 +199,10 @@ Installing Guix on a Cluster
 * Cluster Network Access::      Dealing with network access restrictions.
 * Cluster Disk Usage::          Disk usage considerations.
 * Cluster Security Considerations::  Keeping the cluster secure.
+
+Guix System Management
+
+* Upgrade Postgres for Cuirass::  How to handle deprecation of the default postgres package.
 
 @end detailmenu
 @end menu
@@ -5523,6 +5528,104 @@ guix gc --referrers /gnu/store/…-glibc-2.25
 
 This will report whether profiles exist that refer to this specific
 glibc variant.
+
+@c *********************************************************************
+@node Guix System Management
+@chapter Guix System Management
+@cindex system management
+@cindex sysadmin
+
+Since Guix does not handle packaging, system configuration and services
+the way other (more ``classical'') distributions do, some workflows tend
+to unfold slightly different as we are used to and need slight
+adjustment.  This chapter intends to help with such manners.
+
+@menu
+* Upgrade Postgres for Cuirass:: Upgrading from the default postgres.
+@end menu
+
+@node Upgrade Postgres for Cuirass
+@section Upgrade Postgres for Cuirass
+
+With the deprecation of the default value for the postgres package in
+postgresql-configuration (see b93434e656eba4260df82158a96c295000d3ff44),
+system upgrades need some manual action before they can take place.
+Here's a handy guide on how to.
+
+Please note that this is a straight-forward way for smaller datasets.
+For larger databases
+@url{https://www.postgresql.org/docs/current/pgupgrade.html,
+@code{pg_upgrade}} may be the better choice.  Handling the service and
+system upgrade as described in this guide still applies, though.
+
+@enumerate
+@item
+Stop and disable cuirass.
+
+Prevent the service from starting and failing after a reconfiguration:
+
+    @code{sudo herd stop cuirass && sudo herd disable cuirass}
+
+@item
+Dump the database contents.
+
+    @code{sudo su - postgres -s /bin/sh -c pg_dumpall > /tmp/pg.dump}
+
+@item
+Add or alter the postgres service.
+
+Depending on whether your postgres service is defined implicitly
+(through the dependency from the cuirass service) or its own entry in
+your operating system's @code{(services)} property, you need to either
+add or alter the already existing configuration to reflect your intended
+version upgrade.
+
+Be careful not to upgrade directly to postgres-16 -- cuirass service for
+some reason doesn't like that.  I had to find and purge the relevant
+files and then re-initialize after a failed upgrade to postgres 16.
+
+@lisp
+(service postgresql-service-type
+         (postgresql-configuration
+          (postgresql (@ (gnu packages databases) postgresql-15))))
+@end lisp
+
+Note: If you for some reason didn't read the text here but somewhat
+blindly followed the examples and @emph{did upgrade to 16}, here's how
+you reset the state:
+
+@enumerate
+@item
+Delete the database instance files.
+
+They default to live under @file{/var/lib/postgres/data}.
+
+@item
+Re-initialize postgres.
+
+@code{sudo su - postgres -s /bin/sh -c 'pg_ctl init -D
+/var/lib/postgres/data'}
+@end enumerate
+
+@item
+Reconfigure your system.
+
+@code{sudo guix system reconfigure path/to/your/altered/config.scm}
+
+@item
+Restore database contents.
+
+@code{sudo su - postgres -s /bin/sh -c 'psql -d postgres -f /tmp/pg.dump'}
+
+@item
+Enable and start the service.
+
+@example
+sudo herd enable cuirass
+sudo herd start cuirass
+@end example
+
+@end enumerate
 
 
 @c *********************************************************************
