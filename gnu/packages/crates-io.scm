@@ -60519,17 +60519,17 @@ macro use case.")
      "This package provides an interface to the Linux procfs pseudo-filesystem.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-procfs-core-0.16
+(define-public rust-procfs-core-0.17
   (package
     (name "rust-procfs-core")
-    (version "0.16.0")
+    (version "0.17.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "procfs-core" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0acs0p19yfcs0h787ls24vi5ql4g6c62cm57qh2cxx397a958d9d"))))
+        (base32 "1v0jdbyc1rq1x22m0wn7n4iq4h86gdls38wqfg06zc29hcnz1793"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-backtrace" ,rust-backtrace-0.3)
@@ -60543,6 +60543,25 @@ macro use case.")
      "This package provides data structures and parsing for the Linux procfs
 pseudo-filesystem.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-procfs-core-0.16
+  (package
+    (inherit rust-procfs-core-0.17)
+    (name "rust-procfs-core")
+    (version "0.16.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "procfs-core" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0acs0p19yfcs0h787ls24vi5ql4g6c62cm57qh2cxx397a958d9d"))))
+    (arguments
+     `(#:cargo-inputs (("rust-backtrace" ,rust-backtrace-0.3)
+                       ("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-hex" ,rust-hex-0.4)
+                       ("rust-serde" ,rust-serde-1))))))
 
 (define-public rust-procinfo-0.4
   (package
