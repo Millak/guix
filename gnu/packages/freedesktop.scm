@@ -40,6 +40,7 @@
 ;;; Copyright © 2024 Dariqq <dariqq@posteo.net>
 ;;; Copyright © 2024 Wilko Meyer <w@wmeyer.eu>
 ;;; Copyright © 2024 dan <i@dan.games>
+;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1123,9 +1124,10 @@ This library provides just sd-bus (and the busctl utility).")
                          "idn"
                          "nss-myhostname"
                          "nss-systemd")))
-       `(#:configure-flags ',(map (lambda (component)
-                                    (string-append "-D" component "=false"))
-                                  (delete "localed" components))
+       `(#:configure-flags '("-Dc_args=-g -O2 -Wno-format-overflow"
+                             ,@(map (lambda (component)
+                                      (string-append "-D" component "=false"))
+                                    (delete "localed" components)))
 
          ;; It doesn't make sense to test all of systemd.
          #:tests? #f
