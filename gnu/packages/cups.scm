@@ -10,6 +10,7 @@
 ;;; Copyright © 2021, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2025 Lukas Gradl <lgradl@posteo.net>
+;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -600,6 +601,18 @@ should only be used as part of the Guix cups-pk-helper service.")
               "--disable-qt4")
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-gcc-14-cflags
+            ;; We set CFLAGS here because adding setting it in
+            ;; #:configure-flags or #:make-flags does not work.
+            (lambda _
+              (substitute* "Makefile.in"
+                (("CFLAGS = @CFLAGS@" all)
+                 (string-append all
+                                " -Wno-error=attributes"
+                                " -Wno-error=implicit-function-declaration"
+                                " -Wno-error=implicit-int"
+                                " -Wno-error=incompatible-pointer-types"
+                                " -Wno-error=return-mismatch")))))
           (add-after 'unpack 'fix-hard-coded-file-names
             (lambda* (#:key inputs outputs #:allow-other-keys)
               (let ((out #$output)
