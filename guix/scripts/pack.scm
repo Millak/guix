@@ -1105,12 +1105,30 @@ by '--bootstrap', for testing purposes."
   "Lower COMPILER to a single script that does the right thing."
   (define toolchain
     (or (c-compiler-toolchain compiler)
-        (list (first (assoc-ref (standard-packages) "gcc"))
-              (first (assoc-ref (standard-packages) "ld-wrapper"))
-              (first (assoc-ref (standard-packages) "binutils"))
-              (first (assoc-ref (standard-packages) "libc"))
-              (gexp-input (first (assoc-ref (standard-packages) "libc"))
-                          "static"))))
+        (if target
+            (let* ((cross-packages-host
+                    (standard-cross-packages target 'host))
+                   (cross-packages-target
+                    (standard-cross-packages target 'target))
+                   (xgcc
+                    (first (assoc-ref cross-packages-host "cross-gcc"))))
+              (list xgcc
+                    ;; ld-wrapper-cross isn't included with
+                    ;; STANDARD-CROSS-PACKAGES, pull it from the inputs of
+                    ;; cross-gcc instead
+                    (first (assoc-ref (package-native-inputs xgcc)
+                                      "ld-wrapper-cross"))
+                    (first (assoc-ref cross-packages-host "cross-binutils"))
+                    (first (assoc-ref cross-packages-target "cross-libc"))
+                    (gexp-input (first (assoc-ref cross-packages-target
+                                                  "cross-libc:static"))
+                                "static")))
+            (list (first (assoc-ref (standard-packages) "gcc"))
+                  (first (assoc-ref (standard-packages) "ld-wrapper"))
+                  (first (assoc-ref (standard-packages) "binutils"))
+                  (first (assoc-ref (standard-packages) "libc"))
+                  (gexp-input (first (assoc-ref (standard-packages) "libc"))
+                              "static")))))
 
   (define inputs
     (match (append-map package-propagated-inputs
@@ -1120,7 +1138,9 @@ by '--bootstrap', for testing purposes."
 
   (define search-paths
     (cons $PATH
-          (append-map package-native-search-paths
+          (append-map (if target
+                          package-search-paths
+                          package-native-search-paths)
                       (filter package? inputs))))
 
   (define run
@@ -1144,17 +1164,12 @@ by '--bootstrap', for testing purposes."
                             '#$inputs)
 
           (let ((output (output-file (command-line))))
-            (apply invoke "gcc" (cdr (command-line)))
-            (invoke "strip" output)))))
-
-  (when target
-    ;; TODO: Yep, we'll have to do it someday!
-    (leave (G_ "cross-compilation not implemented here;
-please email '~a'~%")
-           (@ (guix config) %guix-bug-report-address)))
+            (apply invoke #$(cc-for-target target) (cdr (command-line)))
+            (invoke #$(strip-for-target target) output)))))
 
   (gexp->script "c-compiler" run
-                #:guile (c-compiler-guile compiler)))
+                #:guile (c-compiler-guile compiler)
+                #:target #f))
 
 
 ;;;
