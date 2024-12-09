@@ -40,6 +40,7 @@
 ;;; Copyright © 2024 Dariqq <dariqq@posteo.net>
 ;;; Copyright © 2024 Wilko Meyer <w@wmeyer.eu>
 ;;; Copyright © 2024 dan <i@dan.games>
+;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1169,6 +1170,7 @@ This library provides just sd-bus (and the busctl utility).")
                          "nss-systemd")))
        (list
         #:configure-flags #~(list
+                             "-Dc_args=-g -O2 -Wno-format-overflow"
                              #$@(map (lambda (component)
                                        (string-append "-D" component "=false"))
                                      (delete "localed" components)))
