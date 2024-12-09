@@ -2489,14 +2489,14 @@ rebase.")
 (define-public procs
   (package
     (name "procs")
-    (version "0.14.5")
+    (version "0.14.8")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "procs" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1ixl4912md5spanasf4kj0js35j6ff2rpwxbj9q15699cj5di8x4"))))
+        (base32 "06q9ply29745g0yxpvmxmqzr74r7qix6i0m16sj1cn7cg1gmc7h3"))))
     (build-system cargo-build-system)
     (arguments
      (list
@@ -2516,21 +2516,20 @@ rebase.")
                        ("rust-libc" ,rust-libc-0.2)
                        ("rust-libproc" ,rust-libproc-0.14)
                        ("rust-minus" ,rust-minus-5)
-                       ("rust-nix" ,rust-nix-0.28)
+                       ("rust-nix" ,rust-nix-0.29)
                        ("rust-once-cell" ,rust-once-cell-1)
                        ("rust-pager" ,rust-pager-0.16)
-                       ("rust-pager" ,rust-pager-0.16)
-                       ("rust-procfs" ,rust-procfs-0.16)
+                       ("rust-procfs" ,rust-procfs-0.17)
                        ("rust-regex" ,rust-regex-1)
                        ("rust-serde" ,rust-serde-1)
                        ("rust-serde-derive" ,rust-serde-derive-1)
-                       ("rust-termbg" ,rust-termbg-0.5)
+                       ("rust-termbg" ,rust-termbg-0.6)
                        ("rust-tokio" ,rust-tokio-1)
                        ("rust-toml" ,rust-toml-0.8)
-                       ("rust-unicode-width" ,rust-unicode-width-0.1)
-                       ("rust-uzers" ,rust-uzers-0.11)
+                       ("rust-unicode-width" ,rust-unicode-width-0.2)
+                       ("rust-uzers" ,rust-uzers-0.12)
                        ("rust-which" ,rust-which-6)
-                       ("rust-winapi" ,rust-winapi-0.3))
+                       ("rust-windows-sys" ,rust-windows-sys-0.59))
       #:phases #~(modify-phases %standard-phases
                    (add-after 'install 'install-manual-page
                      (lambda* (#:key outputs #:allow-other-keys)
