@@ -10453,3 +10453,27 @@ architecture.")
 +and canonical forms of graphs.  It has both a command line user interface as
 +well as C++ and C programming language APIs.")
     (license license:lgpl3)))
+
+(define-public python-mathics-scanner
+  (package
+    (name "python-mathics-scanner")
+    (version "1.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Mathics3/mathics-scanner.git")
+             (commit "1.3.1")))
+       (sha256
+        (base32
+         "1i632v3f64q3v1i0p0x850mjhgad49fl24dl6r20r4wa1mhalmp0"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-chardet python-click python-pyyaml))
+    (native-inputs (list python-pytest))
+    (home-page "https://mathics.org/")
+    (synopsis
+     "Character tables and tokenizer for Mathics and the Wolfram language")
+    (description
+     "This package provides character tables and a tokenizer for Mathics and
+the Wolfram language.")
+    (license license:gpl3+)))
