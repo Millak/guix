@@ -214,6 +214,9 @@
             (substitute* "CMakeLists.txt"
               (("set\\(DUCKDB_VERSION \"[^\"]*\"")
                (string-append "set(DUCKDB_VERSION \"v" #$version "-dev0\"")))))))
+    (arguments
+     `(#:configure-flags
+       (list "-DBUILD_EXTENSIONS=autocomplete;fts;icu;json;parquet;tpch;")))
     (build-system cmake-build-system)
     (home-page "https://duckdb.org")
     (synopsis "In-process SQL OLAP database management system")
