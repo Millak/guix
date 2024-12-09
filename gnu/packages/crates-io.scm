@@ -18955,8 +18955,48 @@ rasterizing glyphs, using native font engines whenever possible.")
         ("rust-servo-fontconfig" ,rust-servo-fontconfig-0.5)
         ("rust-winapi" ,rust-winapi-0.3))))))
 
+(define-public rust-crossterm-0.28
+  (package
+    (name "rust-crossterm")
+    (version "0.28.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "crossterm" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1im9vs6fvkql0sr378dfr4wdm1rrkrvr22v4i8byz05k1dd9b7c2"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-crossterm-winapi" ,rust-crossterm-winapi-0.9)
+                       ("rust-filedescriptor" ,rust-filedescriptor-0.8)
+                       ("rust-futures-core" ,rust-futures-core-0.3)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-mio" ,rust-mio-1)
+                       ("rust-parking-lot" ,rust-parking-lot-0.12)
+                       ("rust-rustix" ,rust-rustix-0.38)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-signal-hook" ,rust-signal-hook-0.3)
+                       ("rust-signal-hook-mio" ,rust-signal-hook-mio-0.2)
+                       ("rust-winapi" ,rust-winapi-0.3))
+       #:cargo-development-inputs (("rust-async-std" ,rust-async-std-1)
+                                   ("rust-futures" ,rust-futures-0.3)
+                                   ("rust-futures-timer" ,rust-futures-timer-3)
+                                   ("rust-serde-json" ,rust-serde-json-1)
+                                   ("rust-serial-test" ,rust-serial-test-2)
+                                   ("rust-temp-env" ,rust-temp-env-0.3)
+                                   ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/crossterm-rs/crossterm")
+    (synopsis "Crossplatform terminal library for manipulating terminals")
+    (description
+     "This package provides a crossplatform terminal library for manipulating
+terminals.")
+    (license license:expat)))
+
 (define-public rust-crossterm-0.27
   (package
+    (inherit rust-crossterm-0.28)
     (name "rust-crossterm")
     (version "0.27.0")
     (source
@@ -18966,7 +19006,6 @@ rasterizing glyphs, using native font engines whenever possible.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1pr413ki440xgddlmkrc4j1bfx1h8rpmll87zn8ykja1bm2gwxpl"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-2)
@@ -18986,13 +19025,7 @@ rasterizing glyphs, using native font engines whenever possible.")
         ("rust-futures-timer" ,rust-futures-timer-3)
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-serial-test" ,rust-serial-test-2)
-        ("rust-tokio" ,rust-tokio-1))))
-    (home-page "https://github.com/crossterm-rs/crossterm")
-    (synopsis "Crossplatform terminal library for manipulating terminals")
-    (description
-     "This package provides a crossplatform terminal library for manipulating
-terminals.")
-    (license license:expat)))
+        ("rust-tokio" ,rust-tokio-1))))))
 
 (define-public rust-crossterm-0.26
   (package
