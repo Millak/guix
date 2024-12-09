@@ -2542,8 +2542,45 @@ rebase.")
                                  "--doctype=manpage"
                                  "--format=manpage"
                                  "man/procs.1.adoc"
-                                 (string-append "--destination-dir=" man))))))))
-    (native-inputs (list asciidoc))
+                                 (string-append "--destination-dir=" man)))))
+                   (add-after 'install 'install-shell-completions
+                     (lambda* (#:key native-inputs outputs #:allow-other-keys)
+                       (let* ((out (assoc-ref outputs "out"))
+                              (share (string-append out "/share"))
+                              (bash-completions-dir
+                               (string-append out "/etc/bash_completion.d/"))
+                              (zsh-completions-dir
+                               (string-append share "/zsh/site-functions"))
+                              (fish-completions-dir
+                               (string-append share "/fish/vendor_completions.d"))
+                              (elvish-completions-dir
+                               (string-append share "/elvish/lib"))
+                              (procs (if #$(%current-target-system)
+                                         (search-input-file native-inputs "/bin/procs")
+                                         (string-append out "/bin/procs"))))
+                         (for-each mkdir-p
+                                   (list bash-completions-dir
+                                         zsh-completions-dir
+                                         fish-completions-dir
+                                         elvish-completions-dir))
+                         (with-output-to-file
+                           (string-append bash-completions-dir "/procs")
+                           (lambda _ (invoke procs "--gen-completion-out" "bash")))
+                         (with-output-to-file
+                           (string-append zsh-completions-dir "/_procs")
+                           (lambda _ (invoke procs "--gen-completion-out" "zsh")))
+                         (with-output-to-file
+                           (string-append fish-completions-dir "/procs.fish")
+                           (lambda _ (invoke procs "--gen-completion-out" "fish")))
+                         (with-output-to-file
+                           (string-append elvish-completions-dir "/procs")
+                           (lambda _ (invoke procs "--gen-completion-out" "elvish")))))))))
+    (native-inputs
+     (append
+       (if (%current-target-system)
+           (list this-package)
+           '())
+       (list asciidoc)))
     (home-page "https://github.com/dalance/procs")
     (synopsis "Modern replacement for @command{ps}")
     (description "This package provides a  modern replacement for @command{ps}
