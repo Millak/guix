@@ -2290,7 +2290,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/seq24-rename-mutex.patch			\
   %D%/packages/patches/libsequoia-fix-ffi-Makefile.patch	\
   %D%/packages/patches/libsequoia-remove-store.patch		\
-  %D%/packages/patches/serf-python3.patch			\
   %D%/packages/patches/shakespeare-spl-fix-grammar.patch		\
   %D%/packages/patches/shared-mime-info-xdgmime-path.patch	\
   %D%/packages/patches/sharutils-CVE-2018-1000097.patch		\
