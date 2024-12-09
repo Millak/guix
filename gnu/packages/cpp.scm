@@ -701,6 +701,17 @@ language used in Hyprland.")
                (base32
                 "01dh24rf62gb6xm32f7mfv6wx0dxprr1q9y73hvv7xanrjyia2zn"))))
     (build-system cmake-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-cross-compilation
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("find_package.PkgConfig" all)
+                 (string-append
+                  "set(PKG_CONFIG_EXECUTABLE " #$(pkg-config-for-target) ")\n"
+                  all))))))))
     (native-inputs (list gcc-13 pkg-config))
     (inputs (list pixman))
     (home-page "https://github.com/hyprwm/hyprutils")
