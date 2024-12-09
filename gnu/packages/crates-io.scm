@@ -85676,8 +85676,32 @@ handle Unicode characters correctly.")
      "This package provides a vec that takes up less space on the stack.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-thiserror-2
+  (package
+    (name "rust-thiserror")
+    (version "2.0.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "thiserror" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0izahgy0lzcmcg2i72h9jk9lqd5zpq3z0k8cp7i7gl7b40c2mv4g"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-thiserror-impl" ,rust-thiserror-impl-2))
+       #:cargo-development-inputs (("rust-anyhow" ,rust-anyhow-1)
+                                   ("rust-ref-cast" ,rust-ref-cast-1)
+                                   ("rust-rustversion" ,rust-rustversion-1)
+                                   ("rust-trybuild" ,rust-trybuild-1))))
+    (home-page "https://github.com/dtolnay/thiserror")
+    (synopsis "derive(Error)")
+    (description "This package provides @code{derive(Error)} in Rust.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-thiserror-1
   (package
+    (inherit rust-thiserror-2)
     (name "rust-thiserror")
     (version "1.0.64")
     (source
@@ -85688,7 +85712,6 @@ handle Unicode characters correctly.")
        (sha256
         (base32
           "114s8lmssxl0c2480s671am88vzlasbaikxbvfv8pyqrq6mzh2nm"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-thiserror-impl" ,rust-thiserror-impl-1))
@@ -85696,11 +85719,7 @@ handle Unicode characters correctly.")
        (("rust-anyhow" ,rust-anyhow-1)
         ("rust-ref-cast" ,rust-ref-cast-1)
         ("rust-rustversion" ,rust-rustversion-1)
-        ("rust-trybuild" ,rust-trybuild-1))))
-    (home-page "https://github.com/dtolnay/thiserror")
-    (synopsis "Provides @code{derive(Error)}")
-    (description "This package provides @code{derive(Error)} in Rust.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-trybuild" ,rust-trybuild-1))))))
 
 (define-public rust-thiserror-core-1
   (package
