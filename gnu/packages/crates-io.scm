@@ -75612,24 +75612,26 @@ words, like Python's shlex.")
 (define-public rust-signal-hook-mio-0.2
   (package
     (name "rust-signal-hook-mio")
-    (version "0.2.3")
+    (version "0.2.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "signal-hook-mio" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1bwrrbd0lhwzlf63708vyzlh20693s5bg5s0ak6adjbyycajxb99"))))
+        (base32 "1k8pl9aafiadr4czsg8zal9b4jdk6kq5985p90i19jc5sh31mnrl"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-libc" ,rust-libc-0.2)
+        ("rust-mio" ,rust-mio-1)
         ("rust-mio" ,rust-mio-0.8)
         ("rust-mio" ,rust-mio-0.7)
         ("rust-mio" ,rust-mio-0.6)
         ("rust-mio-uds" ,rust-mio-uds-0.6)
-        ("rust-signal-hook" ,rust-signal-hook-0.3))))
+        ("rust-signal-hook" ,rust-signal-hook-0.3))
+       #:cargo-development-inputs (("rust-mio" ,rust-mio-0.7)
+                                   ("rust-serial-test" ,rust-serial-test-0.5))))
     (home-page "https://github.com/vorner/signal-hook")
     (synopsis "MIO support for signal-hook")
     (description "This crate provides MIO support for signal-hook.")
