@@ -84360,8 +84360,35 @@ template language.")
        (("rust-libc" ,rust-libc-0.2)
         ("rust-winapi" ,rust-winapi-0.3))))))
 
+(define-public rust-termbg-0.6
+  (package
+    (name "rust-termbg")
+    (version "0.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "termbg" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1lavrj3dbs4p8dcd7cxrbzyy5rwg66nwb2g3ahrk3skd6cb6lhh3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-crossterm" ,rust-crossterm-0.28)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-mockall" ,rust-mockall-0.13)
+                       ("rust-scopeguard" ,rust-scopeguard-1)
+                       ("rust-simplelog" ,rust-simplelog-0.12)
+                       ("rust-thiserror" ,rust-thiserror-2)
+                       ("rust-winapi" ,rust-winapi-0.3))
+       #:cargo-development-inputs (("rust-either" ,rust-either-1))))
+    (home-page "https://github.com/dalance/termbg")
+    (synopsis "Terminal background color detection")
+    (description "This package provides terminal background color detection.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-termbg-0.5
   (package
+    (inherit rust-termbg-0.6)
     (name "rust-termbg")
     (version "0.5.0")
     (source
@@ -84371,17 +84398,12 @@ template language.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1pidjkz38z13iz8xchrz1nidxny5zjmxvbl1fs4arilvpzhfc4ic"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-async-std" ,rust-async-std-1)
                        ("rust-crossterm" ,rust-crossterm-0.27)
                        ("rust-is-terminal" ,rust-is-terminal-0.4)
                        ("rust-thiserror" ,rust-thiserror-1)
-                       ("rust-winapi" ,rust-winapi-0.3))))
-    (home-page "https://github.com/dalance/termbg")
-    (synopsis "Terminal background color detection")
-    (description "This package provides terminal background color detection.")
-    (license (list license:expat license:asl2.0))))
+                       ("rust-winapi" ,rust-winapi-0.3))))))
 
 (define-public rust-termbox-sys-0.2
   (package
