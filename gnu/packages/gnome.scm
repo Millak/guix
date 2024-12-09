@@ -7872,7 +7872,7 @@ configuration program to choose applications starting on login.")
 (define-public gjs
   (package
     (name "gjs")
-    (version "1.76.3")
+    (version "1.82.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -7880,9 +7880,7 @@ configuration program to choose applications starting on login.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0knkbczic9874r2mnhc8yh9w63bmj574b7528ql0x3lf40nzcjx5"))
-              ;; TODO: Remove when updating to 1.82.0.
-              (patches (search-patches "gjs-fix-closure-annotations.patch"))
+                "0g39nl4x32x71c9gnwlrlv8jnpl2lnhmc7qpl7jy0vap6rbalfgv"))
               (modules '((guix build utils)))
               (snippet
                '(begin
