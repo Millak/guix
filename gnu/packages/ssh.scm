@@ -866,7 +866,7 @@ framework.")
 (define-public clustershell
   (package
     (name "clustershell")
-    (version "1.8.4")
+    (version "1.9.2")
     (source
      (origin
        (method git-fetch)
@@ -875,19 +875,32 @@ framework.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "11b87vyamcw4rvgxz74jxwkr9ly0h9ldp2wqsi5wc19p0r06la5j"))))
+        (base32 "1zk3syrdck2gi27b9njaq98fnnjf14831yvkma2n4ydsf2mxnkaw"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:tests? #f ; tests require python-nose, and most of them fail
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'build 'record-openssh-file-name
+          (add-before 'build 'fix-pathes
             (lambda _
               (let ((ssh #$(this-package-input "openssh")))
-                (substitute* "lib/ClusterShell/Worker/Ssh.py"
-                  (("info\\(\"ssh_path\"\\) or \"ssh\"")
-                   (string-append "info(\"ssh_path\") or \""
-                                  ssh "/bin/ssh\"")))))))))
+                (substitute* (list "lib/ClusterShell/Worker/Ssh.py"
+                                   "lib/ClusterShell/Worker/fastsubprocess.py")
+                  (("\"/bin/sh\"") (format #f "'~a'" (which "sh")))
+                  (("\"ssh\"")     (format #f "'~a/bin/ssh'" ssh))
+                  (("\"scp\"")     (format #f "'~a/bin/scp'" ssh)))
+                (substitute* (find-files "./tests" "\\.py$")
+                  (("\"/bin/hostname\"") (format #f "'~a'" (which "hostname")))
+                  (("/bin/sleep")        "sleep")
+                  (("/bin/echo")         "echo")
+                  (("/bin/uname")        "uname")
+                  (("/bin/false")        "false")
+                  (("/bin/true")         "true")
+                  (("/usr/bin/printf")   "printf"))))))))
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
     (inputs
      (list openssh))
     (propagated-inputs
