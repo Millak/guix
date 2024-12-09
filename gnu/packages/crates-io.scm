@@ -76090,14 +76090,14 @@ diff output.")
 (define-public rust-simplelog-0.12
   (package
     (name "rust-simplelog")
-    (version "0.12.1")
+    (version "0.12.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "simplelog" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0sa3hjdifxhcb9lnlg549fr2cc7vz89nygwbih2dbqsx3h20ivmc"))
+        (base32 "1h59cp84gwdmbxiljq6qmqq1x3lv9ikc1gb32f5ya7pgzbdpl98n"))
        (snippet
         #~(begin (use-modules (guix build utils))
                  (substitute* "Cargo.toml"
