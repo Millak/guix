@@ -46715,6 +46715,25 @@ possible over the OS abstractions.")
     (description "Macros that provide source code annotations for MIRAI")
     (license license:expat)))
 
+(define-public rust-mktemp-0.4
+  (package
+    (name "rust-mktemp")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "mktemp" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "18hd84l7k7i1mbjylagwg1miczh78cjrs55r0kggqcc28ivfcpcp"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-uuid" ,rust-uuid-0.8))))
+    (home-page "https://docs.rs/mktemp")
+    (synopsis "Mktemp files and directories")
+    (description "This package provides mktemp files and directories.")
+    (license license:mpl2.0)))
+
 (define-public rust-mock-instant-0.3
   (package
     (name "rust-mock-instant")
