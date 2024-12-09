@@ -6,6 +6,7 @@
 ;;; Copyright © 2019 Ivan Petkov <ivanppetkov@gmail.com>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2021, 2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -242,11 +243,14 @@ do not extract the conventional inputs)."
        (if (null? propagated)
            (reverse result)
            (loop (reverse (concatenate propagated)) result '() seen)))
-      (((and input (label (? package? package))) rest ...)
+      ;; Match inputs with labels for backward compatibility.
+      (((or (_ (? package? package))
+            (? package? package))
+        rest ...)
        (if (seen? seen package)
            (loop rest result propagated seen)
            (loop rest
-                 (cons input result)
+                 (cons package result)
                  (cons (package-cargo-inputs package)
                        propagated)
                  (vhash-consq package package seen))))
@@ -303,8 +307,8 @@ any dependent crates. This can be a benefits:
   something that can always be extended or reworked in the future)."
   (filter-map
     (match-lambda
-      ((label (? package? p))
-       (list label (package-source p)))
+      ((? package? p)
+       (list (package-name p) (package-source p)))
       ((label input)
        (list label input)))
     (crate-closure (append cargo-inputs cargo-development-inputs))))
