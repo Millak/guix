@@ -90,7 +90,7 @@
                   (#f #f)
                   (('service response-parts ...)
                    (match (assq-ref response-parts 'running)
-                     ((pid) (number? pid))))))
+                     ((pid) pid)))))
              marionette))
 
           (test-equal "http-get"
@@ -212,7 +212,7 @@ host	all	all	::1/128 	trust"))))))
                   (#f #f)
                   (('service response-parts ...)
                    (match (assq-ref response-parts 'running)
-                     ((pid) (number? pid))))))
+                     ((pid) pid)))))
              marionette))
 
           (test-assert "process jobs service running"
@@ -223,7 +223,7 @@ host	all	all	::1/128 	trust"))))))
                   (#f #f)
                   (('service response-parts ...)
                    (match (assq-ref response-parts 'running)
-                     ((pid) (number? pid))))))
+                     ((pid) pid)))))
              marionette))
 
           ;; The service starts immediately but replies with status 500 until
@@ -378,7 +378,7 @@ host	all	all	::1/128 	trust"))))))
                   (#f #f)
                   (('service response-parts ...)
                    (match (assq-ref response-parts 'running)
-                     ((pid) (number? pid))))))
+                     ((pid) pid)))))
              marionette))
 
           (test-equal "http-get"
@@ -456,7 +456,7 @@ host	all	all	::1/128 	trust"))))))
                   (#f #f)
                   (('service response-parts ...)
                    (match (assq-ref response-parts 'running)
-                     ((pid) (number? pid))))))
+                     ((pid) pid)))))
              marionette))
 
           (test-equal "http-get"

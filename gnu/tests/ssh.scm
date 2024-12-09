@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2022, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017, 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2017 Marius Bakke <mbakke@fastmail.com>
 ;;;
@@ -124,13 +124,22 @@ root with an empty password."
               (let ((pid (marionette-eval
                           '(begin
                              (use-modules (gnu services herd)
-                                          (srfi srfi-1))
+                                          (srfi srfi-1)
+                                          (ice-9 match))
 
-                             (live-service-running
-                              (find (lambda (live)
-                                      (memq 'ssh-daemon
-                                            (live-service-provision live)))
-                                    (current-services))))
+                             (match (live-service-running
+                                     (find (lambda (live)
+                                             (memq 'ssh-daemon
+                                                   (live-service-provision live)))
+                                           (current-services)))
+                               ((? number? pid)
+                                ;; shepherd < 1.0.0
+                                pid)
+                               (('inetd-service _ ...)
+                                #t)
+                               (('process ('version 0 _ ...)
+                                          ('id pid) _ ...)
+                                pid)))
                           marionette)))
                 (if #$pid-file
                     (= pid (wait-for-file #$pid-file marionette))

@@ -91,7 +91,7 @@
                   (#f #f)
                   (('service response-parts ...)
                    (match (assq-ref response-parts 'running)
-                     ((pid) (number? pid))))))
+                     ((pid) pid)))))
              marionette))
 
           ;; Give the libvirtd service time to start up.
@@ -206,7 +206,7 @@
                   (#f #f)
                   (('service response-parts ...)
                    (match (assq-ref response-parts 'running)
-                     ((pid) (number? pid))))))
+                     ((pid) pid)))))
              marionette))
 
           (test-equal "ping guest"
@@ -322,7 +322,7 @@ output."
                   (#f #f)
                   (('service response-parts ...)
                    (match (assq-ref response-parts 'running)
-                     ((pid) (number? pid))))))
+                     ((pid) pid)))))
              marionette))
 
           (test-equal "childhurd SSH server replies"

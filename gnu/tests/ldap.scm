@@ -124,7 +124,7 @@ suffix = dc=example,dc=com")))
                   (#f #f)
                   (('service response-parts ...)
                    (match (assq-ref response-parts 'running)
-                     ((pid) (number? pid))))))
+                     ((pid) pid)))))
              marionette))
 
           (test-assert "nslcd produces a log file"

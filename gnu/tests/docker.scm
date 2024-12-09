@@ -97,7 +97,7 @@ inside %DOCKER-OS."
                   (#f #f)
                   (('service response-parts ...)
                    (match (assq-ref response-parts 'running)
-                     ((pid) (number? pid))))))
+                     ((pid) pid)))))
              marionette))
 
           (test-assert "containerd PID file present"
@@ -111,7 +111,7 @@ inside %DOCKER-OS."
                   (#f #f)
                   (('service response-parts ...)
                    (match (assq-ref response-parts 'running)
-                     ((pid) (number? pid))))))
+                     ((pid) pid)))))
              marionette))
 
           (test-eq "fetch version"
@@ -257,7 +257,7 @@ inside %DOCKER-OS."
                   (#f #f)
                   (('service response-parts ...)
                    (match (assq-ref response-parts 'running)
-                     ((pid) (number? pid))))))
+                     ((pid) pid)))))
              marionette))
 
           (test-assert "containerd PID file present"
@@ -271,7 +271,7 @@ inside %DOCKER-OS."
                   (#f #f)
                   (('service response-parts ...)
                    (match (assq-ref response-parts 'running)
-                     ((pid) (number? pid))))))
+                     ((pid) pid)))))
              marionette))
 
           (test-assert "load system image and run it"
@@ -422,7 +422,7 @@ docker-image} inside Docker.")
                   (#f #f)
                   (('service response-parts ...)
                    (match (assq-ref response-parts 'running)
-                     ((pid) (number? pid))))))
+                     ((pid) pid)))))
              marionette))
 
           (test-assert "containerd PID file present"
@@ -436,7 +436,7 @@ docker-image} inside Docker.")
                   (#f #f)
                   (('service response-parts ...)
                    (match (assq-ref response-parts 'running)
-                     ((pid) (number? pid))))))
+                     ((pid) pid)))))
              marionette))
 
           (sleep 10) ; let service start
@@ -449,7 +449,7 @@ docker-image} inside Docker.")
                   (#f #f)
                   (('service response-parts ...)
                    (match (assq-ref response-parts 'running)
-                     ((pid) (number? pid))))))
+                     ((pid) pid)))))
              marionette))
 
           (test-equal "passing host environment variables and volumes"

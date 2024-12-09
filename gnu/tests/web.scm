@@ -128,7 +128,7 @@ HTTP-PORT."
                   (('service response-parts ...)
                    (match (assq-ref response-parts 'running)
                      ((#t) #t)
-                     ((pid) (number? pid))))))
+                     ((pid) pid)))))
              marionette))
 
           (test-assert "HTTP port ready"
@@ -320,7 +320,7 @@ HTTP-PORT, along with php-fpm."
                   (#f #f)
                   (('service response-parts ...)
                    (match (assq-ref response-parts 'running)
-                     ((pid) (number? pid))))))
+                     ((pid) pid)))))
              marionette))
 
           (test-assert "nginx running"
@@ -401,7 +401,7 @@ HTTP-PORT, along with php-fpm."
                   (#f #f)
                   (('service response-parts ...)
                    (match (assq-ref response-parts 'running)
-                     ((pid) (number? pid))))))
+                     ((pid) pid)))))
              marionette))
 
           (test-equal "http-get"
@@ -628,7 +628,7 @@ HTTP-PORT."
                   (('service response-parts ...)
                    (match (assq-ref response-parts 'running)
                      ((#t) #t)
-                     ((pid) (number? pid))))))
+                     ((pid) pid)))))
              marionette))
 
           (test-assert "httpd running"
@@ -728,7 +728,7 @@ HTTP-PORT."
                   (('service response-parts ...)
                    (match (assq-ref response-parts 'running)
                      ((#t) #t)
-                     ((pid) (number? pid))))))
+                     ((pid) pid)))))
              marionette))
 
           (test-assert "Agate TCP port ready, IPv4"

@@ -79,7 +79,7 @@
                   (#f #f)
                   (('service response-parts ...)
                    (match (assq-ref response-parts 'running)
-                     ((pid) (number? pid))))))
+                     ((pid) pid)))))
              marionette))
 
           (let* ((ai (car (getaddrinfo "localhost"
@@ -433,7 +433,7 @@ data double PRECISION NULL
                   (#f #f)
                   (('service response-parts ...)
                    (match (assq-ref response-parts 'running)
-                     ((pid) (number? pid))))))
+                     ((pid) pid)))))
              marionette))
 
           (test-assert "mysql_upgrade completed"
