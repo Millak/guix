@@ -95,7 +95,7 @@
   shepherd-configuration make-shepherd-configuration
   shepherd-configuration?
   (shepherd shepherd-configuration-shepherd
-            (default shepherd-0.10)) ; file-like
+            (default shepherd-1.0))               ;file-like
   (services shepherd-configuration-services
             (default '()))) ; list of <shepherd-service>
 
