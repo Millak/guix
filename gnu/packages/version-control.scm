@@ -4464,7 +4464,12 @@ comes as a command line app and also an Emacs interface.")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'fix-paths
-           (lambda* (#:key outputs #:allow-other-keys)
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (substitute* '("src/github.com/github/git-sizer/git/git.go")
+               (("gitBin, err := findGitBin\\(\\)")
+                (string-append "gitBin := \""
+                               (search-input-file inputs "bin/git")
+                               "\"\n\tvar err error")))
              (substitute* '("src/github.com/github/git-sizer/git_sizer_test.go")
                (("bin/git-sizer")
                 (string-append (assoc-ref outputs "out")
@@ -4478,7 +4483,7 @@ comes as a command line app and also an Emacs interface.")
                          ;; Git repository.
                          '("TestBomb" "TestFromSubdir" "TestRefgroups"
                            "TestRefSelections" "TestTaggedTags"))))))))
-    (native-inputs (list git))
+    (inputs (list git-minimal/pinned))
     (propagated-inputs
      (list go-github-com-cli-safeexec
            go-github-com-davecgh-go-spew
