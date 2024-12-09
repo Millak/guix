@@ -85747,8 +85747,31 @@ handle Unicode characters correctly.")
     (description "Implementation detail of the @code{thiserror} crate.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-thiserror-impl-2
+  (package
+    (name "rust-thiserror-impl")
+    (version "2.0.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "thiserror-impl" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "04k3dz901mymm06j3x6f65hpbsqlk6g51fmiky9g2kqgnk550myn"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/dtolnay/thiserror")
+    (synopsis "Implementation detail of the thiserror crate")
+    (description "This package provides an implementation detail of the
+@code{thiserror} crate.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-thiserror-impl-1
   (package
+    (inherit rust-thiserror-impl-2)
     (name "rust-thiserror-impl")
     (version "1.0.64")
     (source
@@ -85757,19 +85780,12 @@ handle Unicode characters correctly.")
        (uri (crate-uri "thiserror-impl" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-          "1hvzmjx9iamln854l74qyhs0jl2pg3hhqzpqm9p8gszmf9v4x408"))))
-    (build-system cargo-build-system)
+        (base32 "1hvzmjx9iamln854l74qyhs0jl2pg3hhqzpqm9p8gszmf9v4x408"))))
     (arguments
      `(#:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-2))))
-    (home-page "https://github.com/dtolnay/thiserror")
-    (synopsis "Implementation detail of the thiserror crate")
-    (description "This package provides an implementation detail of the
-@code{thiserror} crate.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-syn" ,rust-syn-2))))))
 
 (define-public rust-thousands-0.2
   (package
