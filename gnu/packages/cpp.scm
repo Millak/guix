@@ -678,6 +678,17 @@ library for SIMD (Single Instruction, Multiple Data) with runtime dispatch.")
                (base32
                 "0yvfrz3hdyxzhngzhr0bgc5279ra5fv01hbfi6pdj84pz0lpaw02"))))
     (build-system cmake-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-cross-compilation
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("find_package.PkgConfig" all)
+                 (string-append
+                  "set(PKG_CONFIG_EXECUTABLE " #$(pkg-config-for-target) ")\n"
+                  all))))))))
     (native-inputs (list gcc-13 pkg-config))
     (inputs (list hyprutils))
     (home-page "https://wiki.hyprland.org/Hypr-Ecosystem/hyprlang/")
