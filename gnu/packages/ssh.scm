@@ -876,18 +876,22 @@ framework.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "11b87vyamcw4rvgxz74jxwkr9ly0h9ldp2wqsi5wc19p0r06la5j"))))
-    (build-system python-build-system)
-    (inputs (list openssh))
-    (propagated-inputs (list python-pyyaml))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-before 'build 'record-openssh-file-name
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      (let ((ssh (assoc-ref inputs "openssh")))
-                        (substitute* "lib/ClusterShell/Worker/Ssh.py"
-                          (("info\\(\"ssh_path\"\\) or \"ssh\"")
-                           (string-append "info(\"ssh_path\") or \""
-                                          ssh "/bin/ssh\"")))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'record-openssh-file-name
+            (lambda _
+              (let ((ssh #$(this-package-input "openssh")))
+                (substitute* "lib/ClusterShell/Worker/Ssh.py"
+                  (("info\\(\"ssh_path\"\\) or \"ssh\"")
+                   (string-append "info(\"ssh_path\") or \""
+                                  ssh "/bin/ssh\"")))))))))
+    (inputs
+     (list openssh))
+    (propagated-inputs
+     (list python-pyyaml))
     (home-page "https://cea-hpc.github.io/clustershell/")
     (synopsis "Scalable event-driven Python framework for cluster administration")
     (description
