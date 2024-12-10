@@ -1108,6 +1108,18 @@ improved and cleaner API.")
       #:import-path "golang.org/x/vuln/cmd/govulncheck"
       #:unpack-path "golang.org/x/vuln"))))
 
+(define-public protoc-gen-go
+  (package
+    (inherit go-github-com-golang-protobuf)
+    (name "protoc-gen-go")
+    (arguments
+     (list
+      #:tests? #f
+      #:install-source? #f
+      #:import-path "github.com/golang/protobuf/protoc-gen-go"
+      #:unpack-path "github.com/golang/protobuf"))
+    (synopsis "Protoc plugin to generate a Go protocol buffer package")))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
