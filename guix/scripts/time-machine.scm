@@ -70,6 +70,9 @@ If COMMAND is not provided, print path to the time-machine profile.\n"))
   (display (G_ "
       --disable-authentication
                          disable channel authentication"))
+  (display (G_ "
+      --no-check-certificate
+                         do not validate the certificate of HTTPS servers"))
   (newline)
   (show-build-options-help)
   (newline)
@@ -101,6 +104,9 @@ If COMMAND is not provided, print path to the time-machine profile.\n"))
          (option '("disable-authentication") #f #f
                  (lambda (opt name arg result)
                    (alist-cons 'authenticate-channels? #f result)))
+         (option '("no-check-certificate") #f #f
+                 (lambda (opt name arg result)
+                   (alist-cons 'verify-certificate? #f result)))
          (option '(#\h "help") #f #f
                  (lambda args
                    (leave-on-EPIPE (show-help))
@@ -120,6 +126,7 @@ If COMMAND is not provided, print path to the time-machine profile.\n"))
     (print-extended-build-trace? . #t)
     (multiplexed-build-output? . #t)
     (authenticate-channels? . #t)
+    (verify-certificate? . #t)
     (graft? . #t)
     (debug . 0)
     (verbosity . 1)))
@@ -180,7 +187,8 @@ to %OLDEST-POSSIBLE-COMMIT is not that of an ancestor."
             (command-line (assoc-ref opts 'exec))
             (ref          (assoc-ref opts 'ref))
             (substitutes?  (assoc-ref opts 'substitutes?))
-            (authenticate? (assoc-ref opts 'authenticate-channels?)))
+            (authenticate? (assoc-ref opts 'authenticate-channels?))
+            (verify-certificate? (assoc-ref opts 'verify-certificate?)))
        (let* ((directory
                (with-store store
                  (with-status-verbosity (assoc-ref opts 'verbosity)
@@ -195,7 +203,9 @@ to %OLDEST-POSSIBLE-COMMIT is not that of an ancestor."
                                               #:reference-channels
                                               %reference-channels
                                               #:validate-channels
-                                              validate-guix-channel)))))
+                                              validate-guix-channel
+                                              #:verify-certificate?
+                                              verify-certificate?)))))
               (executable (string-append directory "/bin/guix")))
          (if command-line
              (apply execl (cons* executable executable command-line))
