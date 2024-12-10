@@ -907,6 +907,29 @@ JSONMarshal/JSONUnmarshal to store/reload the Bloom filter.")
 commands.")
     (license license:expat)))
 
+(define-public go-github-com-antihax-optional
+  (package
+    (name "go-github-com-antihax-optional")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/antihax/optional")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ix08vl49qxr58rc6201cl97g1yznhhkwvqldslawind99js4rj0"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/antihax/optional"))
+    (home-page "https://github.com/antihax/optional")
+    (synopsis "Optional parameters for Golang")
+    (description
+     "This package implements optimal parameters for data-types.")
+    (license license:expat)))
+
 (define-public go-github-com-arceliar-phony
   (package
     (name "go-github-com-arceliar-phony")
