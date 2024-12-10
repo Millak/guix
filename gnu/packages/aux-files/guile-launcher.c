@@ -43,6 +43,14 @@ static const char *load_path, *load_compiled_path;
 static void
 inner_main (void *unused, int argc, char **argv)
 {
+#if defined __GNU__
+  /* XXX: On 32-bit GNU/Hurd (i586-gnu), libgc emits "Repeated allocation"
+     warnings that are annoying and interfere with communications between
+     'guix-daemon' and 'guix authenticate':
+     <https://issues.guix.gnu.org/73181>.  Silence them.  */
+  GC_set_warn_proc (no_warnings);
+#endif
+
   if (load_path != NULL)
     {
       setenv ("GUILE_LOAD_PATH", load_path, 1);
@@ -81,14 +89,6 @@ main (int argc, char **argv)
        that.  That gives us UTF-8 support for 'scm_to_locale_string', etc.,
        which is always preferable over the C locale.  */
     setlocale (LC_ALL, "en_US.utf8");
-
-#if defined __GNU__
-  /* XXX: On 32-bit GNU/Hurd (i586-gnu), libgc emits "Repeated allocation"
-     warnings that are annoying and interfere with communications between
-     'guix-daemon' and 'guix authenticate':
-     <https://issues.guix.gnu.org/73181>.  Silence them.  */
-  GC_set_warn_proc (no_warnings);
-#endif
 
   const char *str;
   str = getenv ("GUILE_LOAD_PATH");
