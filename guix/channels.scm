@@ -407,12 +407,15 @@ commits)...~%"
 (define* (latest-channel-instance store channel
                                   #:key (patches %patches)
                                   starting-commit
-                                  (authenticate? #f)
+                                  (authenticate? #t)
                                   (validate-pull
-                                   ensure-forward-channel-update))
+                                   ensure-forward-channel-update)
+                                  (verify-certificate? #t))
   "Return the latest channel instance for CHANNEL.  When STARTING-COMMIT is
 true, call VALIDATE-PULL with CHANNEL, STARTING-COMMIT, the target commit, and
-their relation.  When AUTHENTICATE? is false, CHANNEL is not authenticated."
+their relation.  When AUTHENTICATE? is false, CHANNEL is not authenticated.
+When VERIFY-CERTIFICATE? is false, invalid X.509 host certificates are
+accepted."
   (define (dot-git? file stat)
     (and (string=? (basename file) ".git")
          (eq? 'directory (stat:type stat))))
@@ -421,7 +424,8 @@ their relation.  When AUTHENTICATE? is false, CHANNEL is not authenticated."
         (checkout commit relation
                   (update-cached-checkout (channel-url channel)
                                           #:ref (channel-reference channel)
-                                          #:starting-commit starting-commit)))
+                                          #:starting-commit starting-commit
+                                          #:verify-certificate? verify-certificate?)))
     (when relation
       (validate-pull channel starting-commit commit relation))
 
@@ -505,12 +509,16 @@ information."
                                    (current-channels '())
                                    (authenticate? #t)
                                    (validate-pull
-                                    ensure-forward-channel-update))
+                                    ensure-forward-channel-update)
+                                   (verify-certificate? #t))
   "Return a list of channel instances corresponding to the latest checkouts of
 CHANNELS and the channels on which they depend.
 
 When AUTHENTICATE? is true, authenticate the subset of CHANNELS that has a
 \"channel introduction\".
+
+When VERIFY-CERTIFICATE? is false, invalid X.509 host certificates are
+accepted.
 
 CURRENT-CHANNELS is the list of currently used channels.  It is compared
 against the newly-fetched instances of CHANNELS, and VALIDATE-PULL is called
@@ -562,7 +570,9 @@ depending on the policy it implements."
                                                 #:validate-pull
                                                 validate-pull
                                                 #:starting-commit
-                                                current)))
+                                                current
+                                                #:verify-certificate?
+                                                verify-certificate?)))
                  (when authenticate?
                    ;; CHANNEL is authenticated so we can trust the
                    ;; primary URL advertised in its metadata and warn
