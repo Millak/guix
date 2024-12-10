@@ -769,7 +769,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
                    (format p "~a-default~%" ,version)))))))
        #:allowed-references ()
        #:tests? #f))
-    (supported-systems (delete "i586-gnu" %supported-systems))
+    (supported-systems (remove target-hurd? %supported-systems))
     (properties %linux-libre-timeout-properties)
     (home-page "https://www.gnu.org/software/linux-libre/")
     (synopsis "GNU Linux-Libre kernel headers")
