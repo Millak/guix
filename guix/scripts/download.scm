@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2015, 2016, 2017, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2013, 2015-2017, 2020, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -94,7 +94,8 @@
                     #t
                     source))
 
-(define (git-download-to-file url file reference recursive?)
+(define* (git-download-to-file url file reference recursive?
+                               #:key (verify-certificate? #t))
   "Download the git repo at URL to file, checked out at REFERENCE.
 REFERENCE must be a pair argument as understood by 'latest-repository-commit'.
 Return FILE."
@@ -108,7 +109,8 @@ Return FILE."
                     (else url))))
     (copy-recursively-without-dot-git
      (with-git-error-handling
-      (update-cached-checkout url #:ref reference #:recursive? recursive?))
+      (update-cached-checkout url #:ref reference #:recursive? recursive?
+                              #:verify-certificate? verify-certificate?))
      file))
   file)
 
@@ -151,12 +153,13 @@ pair argument as understood by 'latest-repository-commit'."
                                   (string-drop url (string-length "file:")))
                    url)))
     (with-store store
-      ;; TODO: Verify certificate support and deactivation.
       (with-git-error-handling
        (latest-repository-commit store
                                  url
                                  #:recursive? recursive?
-                                 #:ref reference)))))
+                                 #:ref reference
+                                 #:verify-certificate?
+                                 verify-certificate?)))))
 
 (define %default-options
   ;; Alist of default option values.
@@ -207,9 +210,10 @@ and 'base16' ('hex' and 'hexadecimal' can be used as well).\n"))
 
 (define (add-git-download-option result)
   (alist-cons 'download-proc
-              ;; XXX: #:verify-certificate? currently ignored.
               (lambda* (url #:key verify-certificate? ref recursive?)
-                (git-download-to-store* url ref recursive?))
+                (git-download-to-store* url ref recursive?
+                                        #:verify-certificate?
+                                        verify-certificate?))
               (alist-delete 'download result)))
 
 (define %options
@@ -243,20 +247,20 @@ and 'base16' ('hex' and 'hexadecimal' can be used as well).\n"))
                   (alist-cons 'verify-certificate? #f result)))
         (option '(#\o "output") #t #f
                 (lambda (opt name arg result)
-                  (let* ((git
-                          (assoc-ref result 'git-reference)))
+                  (let* ((git (assoc-ref result 'git-reference)))
                     (if git
                         (alist-cons 'download-proc
-                                    (lambda* (url
-                                              #:key
-                                              verify-certificate?
-                                              ref
-                                              recursive?)
+                                    (lambda* (url #:key
+                                                  (verify-certificate? #t)
+                                                  ref
+                                                  recursive?)
                                       (git-download-to-file
                                        url
                                        arg
                                        (assoc-ref result 'git-reference)
-                                       recursive?))
+                                       recursive?
+                                       #:verify-certificate?
+                                       verify-certificate?))
                                     (alist-delete 'download result))
                         (alist-cons 'download-proc
                                     (lambda* (url
