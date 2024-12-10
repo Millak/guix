@@ -24,7 +24,7 @@
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
 ;;; Copyright © 2018, 2019 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2019 Nicolas Goaziou <mail@nicolasgoaziou.fr>
-;;; Copyright © 2019, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2019, 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2020, 2021 Lars-Dominik Braun <lars@6xq.net>
@@ -2118,7 +2118,7 @@ timestamps in the file header with a fixed time (1 January 2008).
 (define-public zziplib
   (package
     (name "zziplib")
-    (version "0.13.72")
+    (version "0.13.78")
     (home-page "https://github.com/gdraheim/zziplib")
     (source (origin
               (method git-fetch)
@@ -2127,7 +2127,7 @@ timestamps in the file header with a fixed time (1 January 2008).
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0i6bpa2b13z19alm6ig80364dnin1w28cvif18k6wkkb0w3dzp8y"))))
+                "18578xbzj8j89srv4bwayjm11bg56fl34sya0znq4fwq3apm037i"))))
     (build-system cmake-build-system)
     (inputs
      (list zlib))
