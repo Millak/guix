@@ -3698,13 +3698,13 @@ attempting to maintain ISTP compliance
 (define-public python-ci-watson
   (package
     (name "python-ci-watson")
-    (version "0.7.0")
+    (version "0.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ci_watson" version))
        (sha256
-        (base32 "1qb5iyb053k1711ic93rcm0z344dc6h8vg8fpkbqpg5z6q0v2b0y"))))
+        (base32 "1rlhs8y0splmzr76z1s35zl68qm748nlayha8m81b0zhkhicxvhg"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -3716,12 +3716,15 @@ attempting to maintain ISTP compliance
                 ;; ImportError: Error importing plugin " no:legacypath": No
                 ;; module named ' no:legacypath'
                 (("-p no:legacypath") "")))))))
+    (native-inputs
+     (list python-pytest-astropy-header
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-crds
            python-pytest
+           python-readchar
            python-requests))
-    (native-inputs
-     (list python-pytest-astropy-header))
     (home-page "https://github.com/spacetelescope/ci_watson")
     (synopsis "Helper functions for STScI software")
     (description
