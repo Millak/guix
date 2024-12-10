@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013-2015, 2017-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2015, 2017-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;;
@@ -77,6 +77,7 @@
     (debug . 0)
     (verbosity . 1)
     (authenticate-channels? . #t)
+    (verify-certificate? . #t)
     (validate-pull . ,ensure-forward-channel-update)))
 
 (define (show-help)
@@ -98,6 +99,9 @@ Download and deploy the latest version of Guix.\n"))
   (display (G_ "
       --disable-authentication
                          disable channel authentication"))
+  (display (G_ "
+      --no-check-certificate
+                         do not validate the certificate of HTTPS servers"))
   (display (G_ "
   -N, --news             display news compared to the previous generation"))
   (display (G_ "
@@ -183,6 +187,9 @@ Download and deploy the latest version of Guix.\n"))
          (option '("disable-authentication") #f #f
                  (lambda (opt name arg result)
                    (alist-cons 'authenticate-channels? #f result)))
+         (option '("no-check-certificate") #f #f
+                 (lambda (opt name arg result)
+                   (alist-cons 'verify-certificate? #f result)))
          (option '(#\p "profile") #t #f
                  (lambda (opt name arg result)
                    (alist-cons 'profile (canonicalize-profile arg)
@@ -845,7 +852,8 @@ Use '~/.config/guix/channels.scm' instead."))
             (profile      (or (assoc-ref opts 'profile) %current-profile))
             (current-channels (profile-channels profile))
             (validate-pull    (assoc-ref opts 'validate-pull))
-            (authenticate?    (assoc-ref opts 'authenticate-channels?)))
+            (authenticate?    (assoc-ref opts 'authenticate-channels?))
+            (verify-certificate? (assoc-ref opts 'verify-certificate?)))
        (cond
         ((assoc-ref opts 'query)
          (process-query opts profile))
@@ -877,7 +885,9 @@ Use '~/.config/guix/channels.scm' instead."))
                                                    #:validate-pull
                                                    validate-pull
                                                    #:authenticate?
-                                                   authenticate?)))
+                                                   authenticate?
+                                                   #:verify-certificate?
+                                                   verify-certificate?)))
                    (format (current-error-port)
                            (N_ "Building from this channel:~%"
                                "Building from these channels:~%"

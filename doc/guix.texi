@@ -4643,6 +4643,14 @@ Make sure you understand its security implications before using
 @option{--disable-authentication}.
 @end quotation
 
+@item --no-check-certificate
+Do not validate the X.509 certificates of HTTPS servers.
+
+When using this option, you have @emph{absolutely no guarantee} that you
+are communicating with the authentic server responsible for the given
+URL.  Unless the channel is authenticated, this makes you vulnerable to
+``man-in-the-middle'' attacks.
+
 @item --system=@var{system}
 @itemx -s @var{system}
 Attempt to build for @var{system}---e.g., @code{i686-linux}---instead of
