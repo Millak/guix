@@ -4564,6 +4564,29 @@ the C++ ABI defined at https://codesourcery.com/cxx-abi/ and the
 ABI}.")
     (license license:bsd-3)))
 
+(define-public go-github-com-iancoleman-strcase
+  (package
+    (name "go-github-com-iancoleman-strcase")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/iancoleman/strcase")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "169fb56kiif2gq92b7hvh9xgl2n8kjmdg4gqaa1492kb97ia8lwm"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/iancoleman/strcase"))
+    (home-page "https://github.com/iancoleman/strcase")
+    (synopsis "Converting to snake_case or CamelCase")
+    (description
+     "Package strcase converts strings to various cases.")
+    (license license:expat)))
+
 (define-public go-github-com-itchyny-timefmt-go
   (package
     (name "go-github-com-itchyny-timefmt-go")
