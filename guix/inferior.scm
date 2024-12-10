@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2018-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2018-2024 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -864,7 +864,7 @@ failing when GUIX is too old and lacks the 'guix repl' command."
   (make-parameter (string-append (cache-directory #:ensure? #f)
                                  "/inferiors")))
 
-(define (channel-full-commit channel)
+(define* (channel-full-commit channel #:key (verify-certificate? #t))
   "Return the commit designated by CHANNEL as quickly as possible.  If
 CHANNEL's 'commit' field is a full SHA1, return it as-is; if it's a SHA1
 prefix, resolve it; and if 'commit' is unset, fetch CHANNEL's branch tip."
@@ -876,7 +876,8 @@ prefix, resolve it; and if 'commit' is unset, fetch CHANNEL's branch tip."
                (cache commit relation
                      (update-cached-checkout (channel-url channel)
                                              #:ref ref
-                                             #:check-out? #f)))
+                                             #:check-out? #f
+                                             #:verify-certificate? verify-certificate?)))
           commit))))
 
 (define* (cached-channel-instance store
@@ -886,7 +887,8 @@ prefix, resolve it; and if 'commit' is unset, fetch CHANNEL's branch tip."
                                   (cache-directory (%inferior-cache-directory))
                                   (ttl (* 3600 24 30))
                                   (reference-channels '())
-                                  (validate-channels (const #t)))
+                                  (validate-channels (const #t))
+                                  (verify-certificate? #t))
   "Return a directory containing a guix filetree defined by CHANNELS, a list of channels.
 The directory is a subdirectory of CACHE-DIRECTORY, where entries can be
 reclaimed after TTL seconds.  This procedure opens a new connection to the
@@ -895,12 +897,18 @@ build daemon.  AUTHENTICATE? determines whether CHANNELS are authenticated.
 VALIDATE-CHANNELS must be a four-argument procedure used to validate channel
 instances against REFERENCE-CHANNELS; it is passed as #:validate-pull to
 'latest-channel-instances' and should raise an exception in case a target
-channel commit is deemed \"invalid\"."
+channel commit is deemed \"invalid\".
+
+When VERIFY-CERTIFICATE? is true, raise an error when encountering an invalid
+X.509 host certificate; otherwise, warn about the problem and keep going."
   (define commits
     ;; Since computing the instances of CHANNELS is I/O-intensive, use a
     ;; cheaper way to get the commit list of CHANNELS.  This limits overhead
     ;; to the minimum in case of a cache hit.
-    (map channel-full-commit channels))
+    (map (lambda (channel)
+           (channel-full-commit channel
+                                #:verify-certificate? verify-certificate?))
+         channels))
 
   (define key
     (bytevector->base32-string
@@ -951,7 +959,9 @@ channel commit is deemed \"invalid\"."
                                                            #:current-channels
                                                            reference-channels
                                                            #:validate-pull
-                                                           validate-channels))
+                                                           validate-channels
+                                                           #:verify-certificate?
+                                                           verify-certificate?))
                              (profile
                               (channel-instances->derivation instances)))
           (mbegin %store-monad
