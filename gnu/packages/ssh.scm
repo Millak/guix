@@ -2,7 +2,7 @@
 ;;; Copyright © 2012-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013, 2014 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2014, 2015, 2016 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2015, 2016, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015, 2016, 2018-2022, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2019 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2021, 2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2016 Christine Lemmer-Webber <cwebber@dustycloud.org>
@@ -159,7 +159,8 @@ file names.
     (outputs '("out" "debug"))
     (arguments
      `(#:configure-flags '("-DWITH_GCRYPT=ON"
-                           ,@(if (and (%current-target-system) (target-x86-32?))
+                           ,@(if (and (%current-target-system)
+                                      (not (target-64bit?)))
                                  (list (string-append
                                         "-DCMAKE_C_FLAGS=-g -O2"
                                         " -Wno-incompatible-pointer-types"))
