@@ -5833,6 +5833,41 @@ an interface to implement any other minifier.")
      "This package contains several lexers and parsers written in Go.")
     (license license:expat)))
 
+(define-public go-github-com-tetratelabs-wabin
+  (package
+    (name "go-github-com-tetratelabs-wabin")
+    (version "0.0.0-20230304001439-f6f874872834")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tetratelabs/wabin")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "195bh4n2ba3rbgzcb1h7zi93dr0k38qxhg8m0laa0z41vl9i0igm"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/tetratelabs/wabin"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: Replace when go-build-system supports nested path.
+          (delete 'build)
+          (replace 'check
+            (lambda* (#:key import-path tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/tetratelabs/wabin")
+    (synopsis "WebAssembly Binary Format in Go")
+    (description
+     "This package provides @code{WebAssembly} a @code{WebAssembly} data model
+and binary encoder.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-tv42-httpunix
   (let ((commit "2ba4b9c3382c77e7b9ea89d00746e6111d142a22")
         (revision "0"))
