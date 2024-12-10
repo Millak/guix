@@ -1841,6 +1841,7 @@ machines in /etc/guix/machines.scm."
                                (@ (ice-9 textual-ports)
                                   get-string-all)))
                    (user "offloading")
+                   (overload-threshold 1.8) ;current load reporting is off by 1
                    (private-key #$host-ssh-key))))))
       (guix-extension)))
 
