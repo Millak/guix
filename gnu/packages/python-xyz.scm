@@ -21388,6 +21388,24 @@ Python implementation of the @code{wcwidth} and @code{wcswidth} C functions
 specified in POSIX.1-2001 and POSIX.1-2008.")
     (license license:expat)))
 
+(define-public python-columnize
+  (package
+    (name "python-columnize")
+    (version "0.3.11")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "columnize" version))
+       (sha256
+        (base32 "1clb3lfw694crq8m767q0yjaazkplcrbzdr9fr2w39hhndivhcd6"))))
+    (build-system pyproject-build-system)
+    (home-page "https://github.com/rocky/pycolumnize")
+    (synopsis "Format a simple (i.e. not nested) list into aligned columns.")
+    (description
+     "This package provides a way to format a simple (i.e. not nested) list
+into aligned columns.")
+    (license license:expat)))
+
 (define-public python-chai
   (package
     (name "python-chai")
