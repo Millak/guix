@@ -10478,6 +10478,23 @@ architecture.")
 the Wolfram language.")
     (license license:gpl3+)))
 
+(define-public python-mathics-pygments
+  (package
+    (name "python-mathics-pygments")
+    (version "1.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "mathics_pygments" version))
+       (sha256
+        (base32 "1q54c8mb9pgw8ncbs9hln183nxvvxq0d8495c8zakccsfswvznx2"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-mathics-scanner python-pygments))
+    (home-page "http://github.com/Mathics3/mathics-pygments/")
+    (synopsis "Wolfram language lexer for Pygments")
+    (description "This package provides a Wolfram language lexer for Pygments.")
+    (license license:expat)))
+
 (define-public python-mathics-core
   (package
     (name "python-mathics-core")
