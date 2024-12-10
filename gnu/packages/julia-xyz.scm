@@ -3490,6 +3490,31 @@ each one has a fixed size.  Currently support inline strings from 1 byte up to
 255 bytes.")
     (license license:expat)))
 
+(define-public julia-interfaces
+  (package
+    (name "julia-interfaces")
+    (version "0.3.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/rafaqz/Interfaces.jl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1g765wzqc16pxrr3kqcbq0b2n1w51mwaxffrv4yjn1mvr607y6xf"))))
+    (build-system julia-build-system)
+    (native-inputs
+     (list julia-aqua))
+    (propagated-inputs
+     (list julia-documenter))
+    (home-page "https://github.com/rafaqz/Interfaces.jl")
+    (synopsis "Macros to define and implement interfaces")
+    (description
+     "This package provides macros for defining the required behaviours of
+Julia interfaces, and stating that an object implements them.")
+    (license license:expat)))
+
 (define-public julia-interpolations
   (package
     (name "julia-interpolations")
