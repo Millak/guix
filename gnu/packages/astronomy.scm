@@ -3734,28 +3734,39 @@ attempting to maintain ISTP compliance
 (define-public python-cmyt
   (package
     (name "python-cmyt")
-    (version "2.0.0")
+    (version "2.0.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "cmyt" version))
+       (method git-fetch) ; no tests in the PyPI tarball
+       (uri (git-reference
+             (url "https://github.com/yt-project/cmyt")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1zabmckr1z637pfqqvlkj0asfqqvx2x92163dby8x0c8yiqgdvjb"))))
+        (base32 "0d1szsgjd09ya53vx7g5ryz2jdxl19p9rvrm4xz8v53vbqrp18cv"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                ;; numpy>=1.26
+                ((">=1.26") ">=1.23")))))))
     (native-inputs
      (list python-colorspacious
            python-pytest
            python-pytest-mpl
-           python-setuptools
-           python-wheel))
+           python-hatchling))
     (propagated-inputs
      (list python-matplotlib
            python-numpy))
     (home-page "https://yt-project.org/")
     (synopsis "Matplotlib colormaps from the yt project")
     (description
-     "This package provides a range of colormaps designed for scientific
-use with Matplotlib.  It includes perceptually uniform sequential colormaps such
+     "This package provides a range of colormaps designed for scientific use
+with Matplotlib.  It includes perceptually uniform sequential colormaps such
 as @code{abre}, @code{dusk}, @code{kepl}, and @code{octarine}, as well as
 monochromatic sequential colormaps like @code{blue}, @code{green}, and
 @code{red}, and others (@code{algae}, @code{pastel}, and @code{xray}).")
