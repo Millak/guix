@@ -2567,13 +2567,13 @@ default) to world coordinates.")
 (define-public python-halotools
   (package
     (name "python-halotools")
-    (version "0.9.1")
+    (version "0.9.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "halotools" version))
        (sha256
-        (base32 "1fn74ljb4yv3nprgzaf9awiyjdvkmzf1a1n2kvajbax835qcs3bz"))))
+        (base32 "1fa4w8dabr0zx6xwnrdwdipf4s6sg7q25jmq42n9q8n64kjx60vb"))))
     (build-system pyproject-build-system)
     (arguments
      (list
