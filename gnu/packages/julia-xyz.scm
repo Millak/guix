@@ -1265,6 +1265,29 @@ they are points in a normed vector space.")
 focusing mostly (as of now) on enumerative combinatorics and permutations.")
     (license license:expat)))
 
+(define-public julia-commonsolve
+  (package
+    (name "julia-commonsolve")
+    (version "0.2.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/SciML/CommonSolve.jl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1w05fp02g5cmqzqp96hcpriwjpqx61sl481rj92gf4y4xpinmdf5"))))
+    (build-system julia-build-system)
+    (home-page "https://docs.sciml.ai/CommonSolve/stable")
+    (synopsis "Common solve function for scientific machine learning")
+    (description
+     "CommonSolve.jl provides @code{solve}, @code{init}, @code{solve!}, and
+@code{step!} commands.  By using the same definition, solver libraries from
+other completely different ecosystems can extend the functions and thus not
+clash with SciML if both ecosystems export the solve command.")
+    (license license:expat)))
+
 (define-public julia-commonsubexpressions
   (package
     (name "julia-commonsubexpressions")
