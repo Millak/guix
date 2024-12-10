@@ -2254,6 +2254,29 @@ expressions during metaprogramming.  This package aims to provide light-weight
 performant tooling without requiring additional package dependencies.")
     (license license:expat)))
 
+(define-public julia-extents
+  (package
+    (name "julia-extents")
+    (version "0.1.4")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/rafaqz/Extents.jl")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "0l3f7fv13npd71rhjwb49j2f2aq3az6lyls85bbxxfh3pw51yr78"))))
+    (build-system julia-build-system)
+    (home-page "https://github.com/rafaqz/Extents.jl")
+    (synopsis "Shared Extent object for Julia spatial data")
+    (description
+     "Extents.jl is a small package that defines an @code{Extent} object that
+can be used by the different Julia spatial data packages.  @code{Extent} is a
+wrapper for a NamedTuple of tuples holding the lower and upper bounds for each
+dimension of a object.")
+    (license license:expat)))
+
 (define-public julia-ffmpeg
   (package
     (name "julia-ffmpeg")
