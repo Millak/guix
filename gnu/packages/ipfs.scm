@@ -43,6 +43,56 @@
   #:use-module (gnu packages shells)
   #:use-module (gnu packages specifications))
 
+(define-public go-github-com-ceramicnetwork-go-dag-jose
+  (package
+    (name "go-github-com-ceramicnetwork-go-dag-jose")
+    (version "0.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ceramicnetwork/go-dag-jose")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0g34dwlnq07zg176bdhp2hcg1hg5l55s0a6hk4kiq37vm01w68j7"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 ;; Delete git submodule.
+                 (delete-file-recursively ".ipld")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ceramicnetwork/go-dag-jose"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: Workaround for go-build-system's lack of Go modules
+          ;; support.
+          (delete 'build)
+          (replace 'check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
+    (native-inputs
+     (list go-github-com-stretchr-testify
+           go-github-com-frankban-quicktest
+           go-github-com-warpfork-go-testmark))
+    (propagated-inputs
+     (list go-github-com-go-jose-go-jose-v4
+           go-github-com-ipfs-go-cid
+           go-github-com-ipld-go-ipld-prime
+           go-github-com-multiformats-go-multibase
+           go-github-com-multiformats-go-multihash
+           go-golang-org-x-crypto
+           go-pgregory-net-rapid))
+    (home-page "https://github.com/ceramicnetwork/go-dag-jose")
+    (synopsis "Implementation of the IPLD dag-jose codec")
+    (description
+     "This is an implementation of the IPLD
+@@url{https://ipld.io/specs/codecs/dag-jose/spec/,dag-jose codec}.")
+    (license license:expat)))
+
 (define-public go-github-com-ipfs-bbloom
   (package
     (name "go-github-com-ipfs-bbloom")
