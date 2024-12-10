@@ -36,6 +36,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages algebra)
@@ -66,6 +67,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
@@ -745,3 +747,31 @@ hardware designs in Verilog.")
 to an FPGA.")
     (home-page "https://trabucayre.github.io/openFPGALoader")
     (license license:asl2.0)))
+
+(define-public python-hdlmake
+  (let ((commit "3cb248fdad601c579b59fd7c194402871209bc54")
+        (revision "0"))
+    (package
+      (name "python-hdlmake")
+      (version (git-version "3.3" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://ohwr.org/project/hdl-make")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "08ivnhxyp44agmifqb4pjbxj23p43qqcg73s2y2z1hqk2six3fdx"))))
+      (build-system pyproject-build-system)
+      (arguments
+       `(#:tests? #f))
+      (native-inputs (list python-setuptools python-wheel))
+      (propagated-inputs (list python-six))
+      (home-page "https://ohwr.org/projects/hdl-make")
+      (synopsis "Generate multi-purpose makefiles for HDL projects")
+      (description
+       "Hdlmake helps manage and share @acronym{HDL, hardware description
+language} code by automatically finding file dependencies, writing synthesis
+and simulation Makefiles.")
+      (license license:gpl3+))))
