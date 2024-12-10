@@ -182,16 +182,29 @@ the 'SSL_CERT_FILE' and 'SSL_CERT_DIR' environment variables."
   ;; Return true to indicate that we should go on.
   #t)
 
-(define (make-default-fetch-options)
-  "Return the default fetch options."
-  (let ((auth-method (%make-auth-ssh-agent)))
-    (make-fetch-options auth-method
-                        ;; Guile-Git doesn't distinguish between these.
-                        #:proxy-url (or (getenv "http_proxy")
-                                        (getenv "https_proxy"))
-                        #:transfer-progress
-                        (and (isatty? (current-error-port))
-                             show-progress))))
+(define* (make-default-fetch-options #:key (verify-certificate? #t))
+  "Return the default fetch options.  VERIFY-CERTIFICATE? determines whether
+to verify X.509 host certificates."
+  (define (warn-for-invalid-certificate host valid?)
+    (unless valid?
+      (warning (G_ "ignoring invalid certificate for '~a'~%") host)))
+
+  (let* ((auth-method (%make-auth-ssh-agent))
+         (options
+          (make-fetch-options auth-method
+                              ;; Guile-Git doesn't distinguish between these.
+                              #:proxy-url (or (getenv "http_proxy")
+                                              (getenv "https_proxy"))
+                              #:transfer-progress
+                              (and (isatty? (current-error-port))
+                                   show-progress))))
+    ;; When VERIFY-CERTIFICATE? is true, keep the default libgit2 behavior,
+    ;; which is to raise an exception upon invalid certificates.
+    (unless verify-certificate?
+      (let ((callbacks (fetch-options-remote-callbacks options)))
+        (set-remote-callbacks-certificate-check! callbacks
+                                                 warn-for-invalid-certificate)))
+    options))
 
 (define GITERR_HTTP
   ;; Guile-Git <= 0.5.2 lacks this constant.
@@ -213,7 +226,7 @@ If one of them is #f, the corresponding default setting is kept unchanged."
              read-timeout)
     (set-server-timeout! read-timeout)))
 
-(define (clone* url directory)
+(define* (clone* url directory #:key (verify-certificate? #t))
   "Clone git repository at URL into DIRECTORY.  Upon failure,
 make sure no empty directory is left behind."
   (with-throw-handler #t
@@ -222,7 +235,8 @@ make sure no empty directory is left behind."
 
       (clone url directory
              (make-clone-options
-              #:fetch-options (make-default-fetch-options))))
+              #:fetch-options (make-default-fetch-options
+                               #:verify-certificate? verify-certificate?))))
     (lambda _
       (false-if-exception (rmdir directory)))))
 
@@ -445,7 +459,8 @@ a copy archived at Software Heritage."
             (remote-set-url! repository "origin" url)
             repository)))))
 
-(define (clone/swh-fallback url ref cache-directory)
+(define* (clone/swh-fallback url ref cache-directory
+                             #:key (verify-certificate? #t))
   "Like 'clone', but fallback to Software Heritage if the repository cannot be
 found at URL."
   (define (inaccessible-url-error? err)
@@ -456,7 +471,8 @@ found at URL."
 
   (catch 'git-error
     (lambda ()
-      (clone* url cache-directory))
+      (clone* url cache-directory
+              #:verify-certificate? verify-certificate?))
     (lambda (key err)
       (match ref
         (((or 'commit 'tag-or-commit) . commit)
@@ -526,6 +542,7 @@ could not be fetched from Software Heritage~%")
                                  (check-out? #t)
                                  starting-commit
                                  (log-port (%make-void-port "w"))
+                                 (verify-certificate? #t)
                                  (cache-directory
                                   (url-cache-directory
                                    url (%repository-cache-directory)
@@ -543,6 +560,9 @@ When RECURSIVE? is true, check out submodules as well, if any.
 
 When CHECK-OUT? is true, reset the cached working tree to REF; otherwise leave
 it unchanged.
+
+When VERIFY-CERTIFICATE? is true, raise an error when encountering an invalid
+X.509 host certificate; otherwise, warn about the problem and keep going.
 
 Wait for up to CONNECTION-TIMEOUT milliseconds when establishing connection to
 the remote server, and for up to READ-TIMEOUT milliseconds when reading from
@@ -573,15 +593,22 @@ current settings unchanged."
    (let* ((cache-exists? (openable-repository? cache-directory))
           (repository    (if cache-exists?
                              (repository-open cache-directory)
-                             (clone/swh-fallback url ref cache-directory))))
+                             (clone/swh-fallback url ref cache-directory
+                                                 #:verify-certificate?
+                                                 verify-certificate?))))
      ;; Only fetch remote if it has not been cloned just before.
      (when (and cache-exists?
                 (not (reference-available? repository ref)))
        (remote-fetch (remote-lookup repository "origin")
-                     #:fetch-options (make-default-fetch-options)))
+                     #:fetch-options (make-default-fetch-options
+                                      #:verify-certificate?
+                                      verify-certificate?)))
      (when recursive?
        (update-submodules repository #:log-port log-port
-                          #:fetch-options (make-default-fetch-options)))
+                          #:fetch-options
+                          (make-default-fetch-options
+                           #:verify-certificate?
+                           verify-certificate?)))
 
      ;; Note: call 'commit-relation' from here because it's more efficient
      ;; than letting users re-open the checkout later on.
@@ -632,6 +659,7 @@ current settings unchanged."
                                    #:key
                                    recursive?
                                    (log-port (%make-void-port "w"))
+                                   (verify-certificate? #t)
                                    (cache-directory
                                     (%repository-cache-directory))
                                    (ref '()))
@@ -643,6 +671,9 @@ data, respectively [<branch name> | <sha1> | <tag name>].  If REF is the empty
 list, the remote HEAD is used.
 
 When RECURSIVE? is true, check out submodules as well, if any.
+
+When VERIFY-CERTIFICATE? is true, raise an error when encountering an invalid
+X.509 host certificate; otherwise, warn about the problem and keep going.
 
 Git repositories are kept in the cache directory specified by
 %repository-cache-directory parameter.
@@ -668,6 +699,7 @@ Log progress and checkout info to LOG-PORT."
                                 (url-cache-directory url cache-directory
                                                      #:recursive?
                                                      recursive?)
+                                #:verify-certificate? verify-certificate?
                                 #:log-port log-port))
        ((name)
         (url+commit->name url commit)))
