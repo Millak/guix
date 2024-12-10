@@ -5868,6 +5868,60 @@ an interface to implement any other minifier.")
 and binary encoder.")
     (license license:asl2.0)))
 
+(define-public go-github-com-tetratelabs-wazero
+  (package
+    (name "go-github-com-tetratelabs-wazero")
+    (version "1.8.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tetratelabs/wazero")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1xchvrkp6m729x3jknj3qwms4w2b2q8kcwyxhkmagms43yg4ykm5"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            (for-each delete-file-recursively
+                      (list
+                       ;; This directory holds the wazero site's source code.
+                       "site"
+                       ;; Windows related MSI packaging files.
+                       "packaging"))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/tetratelabs/wazero"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       (list "TestHugePageConfigs"
+                             "TestRun"
+                             "TestRun/3_1"
+                             "Test_cli"
+                             "Test_cli/cargo-wasi"
+                             "Test_cli/cargo-wasi/test.txt"
+                             "Test_cli/cargo-wasi/testcases/test.txt"
+                             "Test_cli/tinygo"
+                             "Test_cli/tinygo/test.txt"
+                             "Test_cli/tinygo/testcases/test.txt"
+                             "Test_cli/zig"
+                             "Test_cli/zig-cc"
+                             "Test_cli/zig-cc/test.txt"
+                             "Test_cli/zig-cc/testcases/test.txt"
+                             "Test_cli/zig/test.txt")
+                       "|"))))
+    (home-page "https://github.com/tetratelabs/wazero")
+    (synopsis "Zero dependency WebAssembly runtime for Go")
+    (description
+     "wazero is a WebAssembly Core Specification
+@url{https://www.w3.org/TR/2019/REC-wasm-core-1-20191205/,1.0} and
+@code{https://www.w3.org/TR/2022/WD-wasm-core-2-20220419/,2.0} compliant
+runtime.  It has zero dependencies, and doesn't rely on CGO.  This means you
+can run applications in other languages and still keep cross compilation.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-tv42-httpunix
   (let ((commit "2ba4b9c3382c77e7b9ea89d00746e6111d142a22")
         (revision "0"))
