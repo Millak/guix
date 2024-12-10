@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020 Danny Milosavljevic <dannym@scratchpost.org>
+;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -45,7 +46,8 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages virtualization)
-  #:use-module ((guix build utils) #:select (alist-replace)))
+  #:use-module ((guix build utils) #:select (alist-replace))
+  #:use-module (srfi srfi-1))
 
 (define-public musl-cross
   (let ((revision "3")
@@ -158,7 +160,7 @@ done
            (uri "http://www.musl-libc.org/releases/musl-1.1.24.tar.gz")
            (sha256
             (base32 "18r2a00k82hz0mqdvgm7crzc7305l36109c0j9yjmkxj2alcjw0k"))))))
-    (supported-systems (delete "i586-gnu" %supported-systems))
+    (supported-systems (remove target-hurd? %supported-systems))
     (home-page "https://github.com/osresearch/heads")
     (synopsis "Musl-cross gcc 5 toolchain")
     (description "Musl-cross toolchain: binutils, gcc 5 and musl.")

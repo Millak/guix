@@ -30,6 +30,7 @@
 ;;; Copyright © 2024 bigbug <bigbookofbug@proton.me>
 ;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2024 David Pflug <david@pflug.io>
+;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -696,7 +697,7 @@ enough to play the original mainframe Zork all the way through.")
             (files '("etc")))))
     (home-page "https://ecl.common-lisp.dev/")
     (synopsis "Embeddable Common Lisp")
-    (supported-systems (delete "i586-gnu" %supported-systems))
+    (supported-systems (remove target-hurd? %supported-systems))
     (description "ECL is an implementation of the Common Lisp language as
 defined by the ANSI X3J13 specification.  Its most relevant features are: a
 bytecode compiler and interpreter, being able to compile Common Lisp with any
@@ -1506,7 +1507,7 @@ be built as a stand-alone REPL interpreter.")
             (variable "XDG_CONFIG_DIRS")
             (files '("etc")))))
     (home-page "https://www.sbcl.org/")
-    (supported-systems (delete "i586-gnu" %supported-systems))
+    (supported-systems (remove target-hurd? %supported-systems))
     (synopsis "Common Lisp implementation")
     (description "Steel Bank Common Lisp (SBCL) is a high performance Common
 Lisp compiler.  In addition to the compiler and runtime system for ANSI Common

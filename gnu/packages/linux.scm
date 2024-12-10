@@ -3585,7 +3585,7 @@ inadequately in modern network environments, and both should be deprecated.")
                               (string-append "mandir=/share/man")))))
       (native-inputs `(("gettext" ,gettext-minimal)
                        ("unzip" ,unzip)))
-      (supported-systems (delete "i586-gnu" %supported-systems))
+      (supported-systems (remove target-hurd? %supported-systems))
       (synopsis "Tools for controlling the network subsystem in Linux")
       (description
        "This package includes the important tools for controlling the network
@@ -3626,7 +3626,7 @@ configuration (iptunnel, ipmaddr).")
                             "BUILD_CC=gcc")
                           '()))))
     (native-inputs (list perl))
-    (supported-systems (delete "i586-gnu" %supported-systems))
+    (supported-systems (remove target-hurd? %supported-systems))
     (home-page "https://sites.google.com/site/fullycapable/")
     (synopsis "Library for working with POSIX capabilities")
     (description
@@ -3998,7 +3998,7 @@ or kill them altogether.")
                   (setenv "UDEV_RULES_PATH"
                           (string-append #$output
                                          "/lib/udev/rules.d"))))))))
-    (supported-systems (delete "i586-gnu" %supported-systems))
+    (supported-systems (remove target-hurd? %supported-systems))
     (home-page "https://github.com/libfuse/libfuse")
     (synopsis "Support file systems implemented in user space")
     (description
@@ -4468,7 +4468,7 @@ to use Linux' inotify mechanism, which allows file accesses to be monitored.")
                                "modinfo" "depmod")))))))
     (native-inputs (list pkg-config zstd)) ;zstd needed for tests
     (inputs (list xz zlib `(,zstd "lib")))
-    (supported-systems (delete "i586-gnu" %supported-systems))
+    (supported-systems (remove target-hurd? %supported-systems))
     (home-page "https://www.kernel.org/")
     (synopsis "Kernel module tools")
     (description "Kmod is a set of tools to handle common tasks with Linux
@@ -4828,7 +4828,7 @@ one to send arbitrary keycodes when a given key is tapped or held.")
 
        ;; The tests use 'mknod', which requires root access.
        #:tests? #f))
-    (supported-systems (delete "i586-gnu" %supported-systems))
+    (supported-systems (remove target-hurd? %supported-systems))
     (home-page "https://sourceware.org/lvm2/")
     (synopsis "Logical volume management for Linux")
     (description
@@ -5940,7 +5940,7 @@ MPEG-2 and audio over Linux IEEE 1394.")
            #:tests? #f))
     (inputs
      (list eudev))
-    (supported-systems (delete "i586-gnu" %supported-systems))
+    (supported-systems (remove target-hurd? %supported-systems))
     (home-page "http://neil.brown.name/blog/mdadm")
     (synopsis "Tool for managing Linux Software RAID arrays")
     (description
@@ -8793,7 +8793,7 @@ Text-based output formats: CSV, XML, Netfilter's LOG, Netfilter's conntrack
     ;; Many architectures are not supported (see:
     ;; https://github.com/proot-me/proot/blob/master/src/arch.h#L51).
     (supported-systems '("x86_64-linux" "i686-linux"
-                         "armhf-linux" "aarch64-linux" "i586-gnu"))
+                         "armhf-linux" "aarch64-linux" "i586-gnu" "x86_64-gnu"))
     (arguments
      ;; Disable the test suite on armhf-linux, as there are too many
      ;; failures to keep track of (see for example:

@@ -7,6 +7,7 @@
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2022 Denis Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2023 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -85,7 +86,8 @@ management and threading bugs, and profile your programs in detail.  You can
 also use Valgrind to build new tools.")
     ;; https://valgrind.org/info/platforms.html
     (supported-systems (fold delete %supported-systems
-                             '("i586-gnu" "armhf-linux" "riscv64-linux")))
+                             '("i586-gnu" "x86_64-gnu"
+                               "armhf-linux" "riscv64-linux")))
     (license gpl2+)
 
     ;; Hide this variant so end users get the "interactive" Valgrind below.
