@@ -946,7 +946,7 @@ floating-point (no compression, LZW- or ZIP-compressed), FITS 8-bit, 16-bit,
 (define-public indi-2.0
   (package
     (name "indi")
-    (version "2.1.0")
+    (version "2.1.1")
     (source
      (origin
        (method git-fetch)
@@ -955,7 +955,7 @@ floating-point (no compression, LZW- or ZIP-compressed), FITS 8-bit, 16-bit,
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "18i70m0qw59bsb46ffqb1kkigfb2m8ahbh825rxc2h86aqnrc6l6"))))
+        (base32 "1mkcql7hsc6qirpmwmfsz9j0bl9msi11d8p87hc840w1ximmglab"))))
     (build-system cmake-build-system)
     (arguments
      (list
