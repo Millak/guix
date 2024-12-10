@@ -3262,16 +3262,20 @@ stack typically requires post-processing, including sharpening (e.g. via
 deconvolution).  Such post-processing is not performed by Stackistry.")
     (license license:gpl3+)))
 
+;; XXX: Upgrading to the latest version requires Python3.11+ and fresh
+;; versions of numpy, PyYAML, packaging, Pandas and matplotlib, see
+;; <https://github.com/astropy/astropy/blob/v7.0.0/CHANGES.rst
+;; #other-changes-and-additions>.
 (define-public python-astropy
   (package
     (name "python-astropy")
-    (version "6.1.6")
+    (version "6.1.7")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "astropy" version))
        (sha256
-        (base32 "0iv8mkdflfprigv3g6666v80nvg6blwz0989hqw232g7gms57qb3"))
+        (base32 "1vspagb4vbmkl6fm3mr78577dgdq992ggwkd5qawpdh6cccaq1d4"))
        (modules '((guix build utils)))
        (snippet
         '(begin
