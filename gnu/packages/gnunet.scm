@@ -377,14 +377,14 @@ The following services are supported:
 (define-public gnunet-gtk
   (package (inherit gnunet)
     (name "gnunet-gtk")
-    (version "0.21.0")
+    (version "0.23.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/gnunet/gnunet-gtk-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1b7xfypa0s7zlijgvya8p3rvljnn65w5cjkaw6x83v9ra8l6s0dx"))))
+                "131z47px0kqnmn2b3sb84qmf90kynhl6mrx4rxrqh9chhy5pcr3h"))))
     (arguments
      (list #:configure-flags
            #~(list "--with-libunique"
