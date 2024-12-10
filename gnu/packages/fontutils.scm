@@ -1622,14 +1622,14 @@ definitions.")
 (define-public fontforge
   (package
     (name "fontforge")
-    (version "20220308")
+    (version "20230101")
     (source (origin
               (method url-fetch)
               (uri (string-append
                     "https://github.com/fontforge/fontforge/releases/download/"
                     version "/fontforge-" version ".tar.xz"))
               (sha256
-               (base32 "0ncfc4ajwy4ng6b6h79w52jh9z3lngvf3f3ldi1wzkhcg9zh3r01"))))
+               (base32 "1y30bk9rdya8bkw4q77y6nq5xfg7nm0qliz5miqdlk8c0r6fr0na"))))
     (build-system cmake-build-system)
     (native-inputs
      (list pkg-config))
@@ -1657,7 +1657,7 @@ definitions.")
            zlib))
     (arguments
      (list
-      #:configure-flags #~'( ;; TODO: Provide GTK+ for the Wayland-friendly GDK
+      #:configure-flags #~`(;; TODO: Provide GTK+ for the Wayland-friendly GDK
                             ;; backend, instead of the legacy X11 backend.
                             ;; Currently it introduces a circular dependency.
                             "-DENABLE_X11=ON")
@@ -1670,6 +1670,12 @@ definitions.")
               (substitute* "CMakeLists.txt"
                 (("^set_default_rpath\\(\\)")
                  ""))))
+          (add-after 'unpack 'do-not-use-msgfmt--check
+            (lambda _
+              ;; msgfmt --check from gettext-0.23 fails on fr.po:
+              ;; 'msgstr' is not a valid C format string
+              (substitute* "po/CMakeLists.txt"
+                ((" --check") ""))))
           #$@(if (target-hurd?)
                  #~((add-after 'unpack 'apply-hurd-patch
                       (lambda _
