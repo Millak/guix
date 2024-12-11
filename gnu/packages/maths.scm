@@ -10575,3 +10575,37 @@ the Wolfram language.")
 to Wolfram.")
     (home-page "https://mathics.org/")
     (license license:gpl3+)))
+
+(define-public python-mathicsscript
+  (package
+    (name "python-mathicsscript")
+    (version "7.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "mathicsscript" version))
+       (sha256
+        (base32 "15ppg8sj03j63664npdqiv1lfk2mqnrqjb5817zjyy04z9s0kp7l"))))
+    (build-system pyproject-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-before 'check 'setenv
+           (lambda _
+             (setenv "HOME" "/tmp"))))))
+    (propagated-inputs (list python-click
+                             python-colorama
+                             python-columnize
+                             python-mathics-pygments
+                             python-mathics-scanner
+                             python-mathics-core
+                             python-networkx
+                             python-prompt-toolkit
+                             python-pygments
+                             python-term-background))
+    (native-inputs (list python-pytest))
+    (home-page "https://mathics.org/")
+    (synopsis "Command-line interface to Mathics3")
+    (description "This package provides a command-line interface to
+Mathics3.")
+    (license license:gpl3)))
