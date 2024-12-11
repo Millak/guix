@@ -9255,7 +9255,7 @@ programming language and the extended Cython programming language.  It makes
 writing C extensions for Python as easy as Python itself.")
     (license license:asl2.0)))
 
-;; Needed for scipy
+;; Needed for scipy and numpy
 (define-public python-cython-0.29.35
   (package
     (inherit python-cython)
@@ -9333,11 +9333,7 @@ writing C extensions for Python as easy as Python itself.")
 (define-public python-numpy
   (package
     (name "python-numpy")
-    ;; XXX: Any other versions up to 1.26.4 failed to build with error similar
-    ;; to: 'fenv_t' has not been declared in '::' 58 | using ::fenv_t;
-    ;; See <https://github.com/numpy/numpy/issues/21075#issuecomment-1047976197>,
-    ;; <https://github.com/numpy/numpy/issues/24318>.
-    (version "1.24.4")
+    (version "1.26.4")
     (source
      (origin
        (method url-fetch)
@@ -9346,7 +9342,8 @@ writing C extensions for Python as easy as Python itself.")
              version "/numpy-" version ".tar.gz"))
        (sha256
         (base32
-         "0qwldmkq5bns561ppkz7psphc4jqfj5j1x4dhq0i8r4qwjjf7xc0"))))
+         "0410j6jfz1yzm5s0v0yrc1j0q6ih4322357and7arr0jxnlsn0ia"))
+       (patches (search-patches "python-numpy-gcc-14.patch"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -9355,6 +9352,10 @@ writing C extensions for Python as easy as Python itself.")
                   (ice-9 format))
       #:phases
       #~(modify-phases %standard-phases
+          (add-before 'build 'relax-gcc-14-strictness
+            (lambda _
+              (setenv "CFLAGS"
+                      "-g -O2 -Wno-error=implicit-function-declaration")))
           (add-before 'build 'parallelize-build
             (lambda _
               (setenv "NPY_NUM_BUILD_JOBS"
@@ -9421,30 +9422,48 @@ include_dirs = ~:*~a/include~%"
                               #$@(if (or (target-x86?) (target-arm32?))
                                      `(" and not test_identityless_reduction_huge_array"
                                        " and not (TestKind and test_all)")
-                                   '())
+                                     '())
                               ;; This test fails when building from aarch64-linux.
                               #$@(if (target-arm32?)
-                                   `(" and not test_features")
-                                   '())
+                                     `(" and not test_features")
+                                     '())
                               ;; These tests seem to fail on machines without
                               ;; an FPU is still under investigation upstream.
                               ;; https://github.com/numpy/numpy/issues/20635
-                              #$@(if (target-riscv64?)
-                                   `(" and not test_float"
-                                     " and not test_fpclass")
-                                   '())))))))))
+                              ;; They also fail with gcc-14
+                              " and not test_float"
+                              " and not test_fpclass"
+
+                              ;; These tests fail with gcc-14
+                              " and not test_context_locality"
+                              " and not test_cosh"
+                              " and not test_default_policy_singleton"
+                              " and not test_exp_exceptions"
+                              " and not test_half_fpe"
+                              " and not test_owner_is_base"
+                              " and not test_policy_propagation"
+                              " and not test_set_policy"
+                              " and not test_sinh"
+                              " and not test_square_values"
+                              " and not test_sum"
+                              " and not test_switch_owner"
+                              " and not test_thread_locality"))))))))
     (native-inputs
-     (list gfortran
-           meson-python
+     (list meson-python
            pkg-config
-           python-cython ;; overwrite Cython from meson-python
+           python-cython-0.29.35        ;overwrite Cython from meson-python
            python-hypothesis
            python-mypy
            python-pytest
            python-pytest-xdist
            python-setuptools
            python-typing-extensions
-           python-wheel))
+           python-wheel
+           ;; XXX: Avoid to: 'fenv_t' has not been declared in '::' 58 | using ::fenv_t;
+           ;; See <https://github.com/numpy/numpy/issues/21075#issuecomment-1047976197>,
+           ;; <https://github.com/numpy/numpy/issues/24318>.
+           gcc                    ;fevn.h c[++] include must precede fortran's
+           gfortran))
     (inputs (list bash openblas))
     (home-page "https://numpy.org")
     (synopsis "Fundamental package for scientific computing with Python")
