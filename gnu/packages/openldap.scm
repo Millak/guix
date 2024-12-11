@@ -10,6 +10,7 @@
 ;;; Copyright © 2021, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2023 Brian Cully <bjc@spork.org>
+;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -69,7 +70,7 @@
 (define-public openldap
   (package
     (name "openldap")
-    (version "2.6.4")
+    (version "2.6.9")
     (source (origin
               (method url-fetch)
               ;; See <http://www.openldap.org/software/download/> for a list of
@@ -85,7 +86,7 @@
                           "openldap-release/openldap-" version ".tgz")))
               (sha256
                (base32
-                "1489li52sjxm1f97v927jxaxzfk6v9sa32ixrw30qhvq07jh85ym"))))
+                "1zxjws0mcm9cjwhhb7v1qq6g7avqlnx7ydcr1pzhsd68x5rxrdrc"))))
     (build-system gnu-build-system)
     (inputs (list bdb-5.3 cyrus-sasl gnutls libgcrypt zlib))
     (native-inputs (list libtool groff bdb-5.3))
