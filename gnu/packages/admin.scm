@@ -5322,7 +5322,7 @@ tcpdump and snoop.")
      (list perl pkg-config))
     (inputs
      (append
-      (cons cryptsetup (libcryptsetup-propagated-inputs))
+      (cons cryptsetup-minimal (libcryptsetup-propagated-inputs))
       (list libhx
             libxml2
             linux-pam

@@ -4,7 +4,7 @@
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016, 2018–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016, 2019-2021, 2023, 2025 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2016, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2016, 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2016 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016, 2017 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2017 Hartmut Goebel <h.goebel@crazy-compilers.com>
@@ -1076,7 +1076,7 @@ and its highly optimized now for efficient performance.")
      (list pkg-config swig python-3))           ; used to generate the Python bindings
     (inputs
      (append
-      (cons cryptsetup (libcryptsetup-propagated-inputs))
+      (cons cryptsetup-minimal (libcryptsetup-propagated-inputs))
       (cons lvm2 (libdevmapper-propagated-inputs))
       (list nss
             (list util-linux "lib")
@@ -1254,7 +1254,7 @@ to create devices with respective mappings for the ATARAID sets discovered.")
            python-wrapper))
     (inputs
      (append
-      (cons cryptsetup (libcryptsetup-propagated-inputs))
+      (cons cryptsetup-minimal (libcryptsetup-propagated-inputs))
       (if (supported-package? multipath-tools)
           (list multipath-tools)
           '())
