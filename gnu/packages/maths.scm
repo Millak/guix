@@ -5426,7 +5426,8 @@ parts of it.")
     (home-page "https://www.openblas.net/")
     (synopsis "Optimized BLAS library based on GotoBLAS")
     (description
-     "OpenBLAS is a BLAS library forked from the GotoBLAS2-1.13 BSD version.")
+     "OpenBLAS is a Basic Linear Algebra Subprograms (BLAS) library forked
+from the GotoBLAS2-1.13 BSD version.")
     (license license:bsd-3)))
 
 (define-public openblas-ilp64
