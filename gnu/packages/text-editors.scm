@@ -1083,7 +1083,9 @@ editors.")
        (uri (string-append "https://www.texmacs.org/Download/ftp/tmftp/"
                            "source/TeXmacs-" version "-src.tar.gz"))
        (sha256
-        (base32 "11l1q5lmsj9g7yil1dn7n1cgsr8iikx59kg9riahpb6xw0p959l7"))))
+        (base32 "11l1q5lmsj9g7yil1dn7n1cgsr8iikx59kg9riahpb6xw0p959l7"))
+       (patches
+        (search-patches "texmacs-wayland-hidpi.patch"))))
     (build-system cmake-build-system)
     (native-inputs
      (list pkg-config xdg-utils))       ;for xdg-icon-resource
@@ -1133,7 +1135,9 @@ Octave.  TeXmacs is completely extensible via Guile.")
              (url "https://github.com/texmacs/texmacs.git")
              (commit "guile3_branch_2.1")))
        (sha256
-        (base32 "0f7l1sfbii25gawqsg27m31myvixb3xdxnsg5njlrnmp8xh1rs3v"))))
+        (base32 "0f7l1sfbii25gawqsg27m31myvixb3xdxnsg5njlrnmp8xh1rs3v"))
+       (patches
+        (search-patches "texmacs-wayland-hidpi.patch"))))
     (inputs
      (list freetype
            guile-3.0
@@ -1159,7 +1163,9 @@ Octave.  TeXmacs is completely extensible via Guile.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "04wz6xmimjv2l6baxgzm8vyq5grg102m3l4wq8i6bglv529yp4ff"))))
+        (base32 "04wz6xmimjv2l6baxgzm8vyq5grg102m3l4wq8i6bglv529yp4ff"))
+       (patches
+        (search-patches "texmacs-wayland-hidpi.patch"))))
     (build-system qt-build-system)
     (inputs
      (modify-inputs (package-inputs texmacs)

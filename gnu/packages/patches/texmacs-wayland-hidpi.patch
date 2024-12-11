@@ -1,0 +1,22 @@
+Author: Danny Milosavljevic <dannym@friendly-machines.com>
+Date: 2024-12-11 18:30:00 CET 2024
+License: gpl3+
+
+diff -ru orig/qsbrdssq407hsajf74z60vp3rhgafjsl-mogan-1.1.1-checkout/src/Texmacs/Texmacs/texmacs.cpp qsbrdssq407hsajf74z60vp3rhgafjsl-mogan-1.1.1-checkout/src/Texmacs/Texmacs/texmacs.cpp
+--- orig/qsbrdssq407hsajf74z60vp3rhgafjsl-mogan-1.1.1-checkout/src/Texmacs/Texmacs/texmacs.cpp	2024-05-10 01:51:55.312256939 +0200
++++ qsbrdssq407hsajf74z60vp3rhgafjsl-mogan-1.1.1-checkout/src/Texmacs/Texmacs/texmacs.cpp	2024-05-10 01:52:43.659909394 +0200
+@@ -685,8 +685,12 @@
+ #ifndef OS_MINGW
+   set_env ("LC_NUMERIC", "POSIX");
+ #ifndef OS_MACOS
+-  set_env ("QT_QPA_PLATFORM", "xcb");
+-  set_env ("XDG_SESSION_TYPE", "x11");
++  if (get_env ("XDG_SESSION_TYPE") == "wayland") {
++    set_env ("QT_QPA_PLATFORM", "wayland"); QGuiApplication::setAttribute(Qt::AA_DisableHighDpiScaling); QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
++  } else {
++    set_env ("QT_QPA_PLATFORM", "xcb");
++    set_env ("XDG_SESSION_TYPE", "x11");
++  }
+ #endif
+ #endif
+ #ifdef MACOSX_EXTENSIONS
