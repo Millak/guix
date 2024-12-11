@@ -5,6 +5,7 @@
 ;;; Copyright © 2019-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -239,19 +240,35 @@ directory = '" vendor-dir "'") port)
   (or skip-build?
       (apply invoke
              `("cargo" "build"
+               ,@(if parallel-build?
+                     (list "-j" (number->string (parallel-job-count)))
+                     (list "-j" "1"))
                ,@(if (null? features)
                      '()
                      `("--features" ,(string-join features)))
                ,@cargo-build-flags))))
 
 (define* (check #:key
+                parallel-build?
+                parallel-tests?
                 tests?
                 (cargo-test-flags '("--release"))
                 #:allow-other-keys)
   "Run tests for a given Cargo package."
-  (if tests?
-      (apply invoke "cargo" "test" cargo-test-flags)
-      #t))
+  (when tests?
+    (apply invoke
+           `("cargo" "test"
+             ,@(if parallel-build?
+                   (list "-j" (number->string (parallel-job-count)))
+                   (list "-j" "1"))
+             ,@cargo-test-flags
+             ,@(if (member "--" cargo-test-flags)
+                   '()
+                   '("--"))
+             ,@(if parallel-tests?
+                   (list "--test-threads"
+                         (number->string (parallel-job-count)))
+                   (list "--test-threads" "1"))))))
 
 (define* (package #:key
                   source

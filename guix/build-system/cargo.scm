@@ -7,6 +7,7 @@
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2021, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
+;;; Copyright © 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -96,6 +97,8 @@ to NAME and VERSION."
                       (cargo-package-flags ''("--no-metadata" "--no-verify"))
                       (features ''())
                       (skip-build? #f)
+                      (parallel-build? #t)
+                      (parallel-tests? #t)
                       (install-source? #t)
                       (phases '%standard-phases)
                       (outputs '("out"))
@@ -123,6 +126,8 @@ to NAME and VERSION."
                        #:cargo-target #$(cargo-triplet system)
                        #:features #$(sexp->gexp features)
                        #:skip-build? #$skip-build?
+                       #:parallel-build? #$parallel-build?
+                       #:parallel-tests? #$parallel-tests?
                        #:install-source? #$install-source?
                        #:tests? #$(and tests? (not skip-build?))
                        #:phases #$(if (pair? phases)
@@ -153,6 +158,8 @@ to NAME and VERSION."
                             (cargo-target (cargo-triplet (or target system)))
                             (features ''())
                             (skip-build? #f)
+                            (parallel-build? #t)
+                            (parallel-tests? #t)
                             (install-source? (not (target-mingw? target)))
                             (phases '%standard-phases)
                             (outputs '("out"))
@@ -182,6 +189,8 @@ to NAME and VERSION."
                        #:cargo-target #$(cargo-triplet (or target system))
                        #:features #$(sexp->gexp features)
                        #:skip-build? #$skip-build?
+                       #:parallel-build? #$parallel-build?
+                       #:parallel-tests? #$parallel-tests?
                        #:install-source? #$install-source?
                        #:tests? #$(and tests? (not skip-build?))
                        #:phases #$(if (pair? phases)
