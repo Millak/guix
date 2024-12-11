@@ -27,6 +27,30 @@
   #:use-module (guix packages)
   #:use-module (gnu packages crates-io))
 
+(define-public rust-mark-flaky-tests-1
+  (package
+    (name "rust-mark-flaky-tests")
+    (version "1.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "mark-flaky-tests" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0c29bflpb5aawl5vzcai2rhvphskvh7gdr5v9sq52lx0jmy4lv2q"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-futures" ,rust-futures-0.3)
+        ("rust-mark-flaky-tests-macro" ,rust-mark-flaky-tests-macro-1))
+       #:cargo-development-inputs (("rust-paste" ,rust-paste-1)
+                                   ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/GoldsteinE/mark-flaky-tests/")
+    (synopsis "Mark, debug and auto-retry your flaky tests")
+    (description
+     "This package provides a way to mark, debug and auto-retry your flaky tests.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-mark-flaky-tests-macro-1
   (package
     (name "rust-mark-flaky-tests-macro")
