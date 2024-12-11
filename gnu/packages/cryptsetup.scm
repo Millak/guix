@@ -4,6 +4,7 @@
 ;;; Copyright © 2019–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2025 Antoine Côté <antoine.cote@posteo.net>
+;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -36,9 +37,9 @@
   #:use-module (gnu packages ruby-check)
   #:use-module (gnu packages web))
 
-(define-public cryptsetup
+(define-public cryptsetup-minimal
   (package
-   (name "cryptsetup")
+   (name "cryptsetup-minimal")
    (version "2.8.0")
    (source (origin
             (method url-fetch)
@@ -71,10 +72,7 @@
           (string-append "--with-libgcrypt-prefix="
                          (assoc-ref %build-inputs "libgcrypt"))))))
    (native-inputs
-    (append (list pkg-config)
-            (if (supported-package? ruby-asciidoctor/minimal)
-                (list ruby-asciidoctor/minimal)
-                '())))
+    (list pkg-config))
    (inputs
     (list argon2
           json-c
@@ -101,6 +99,14 @@ block integrity kernel modules.")
    (license license:gpl2)
    (home-page "https://gitlab.com/cryptsetup/cryptsetup")))
 
+(define-public cryptsetup
+  (package/inherit cryptsetup-minimal
+    (name "cryptsetup")
+    (native-inputs `(,(if (supported-package? ruby-asciidoctor/minimal)
+                          `("ruby-asciidoctor" ,ruby-asciidoctor/minimal)
+                          '())
+                     ,@(package-native-inputs cryptsetup-minimal)))))
+
 (define-public (libcryptsetup-propagated-inputs)
   (list argon2
         json-c
@@ -123,10 +129,10 @@ files).  This assumes LIBRARY uses Libtool."
 (define-public cryptsetup-static
   ;; Stripped-down statically-linked 'cryptsetup' command for use in initrds.
   (package
-    (inherit cryptsetup)
+    (inherit cryptsetup-minimal)
     (name "cryptsetup-static")
     (arguments
-     (substitute-keyword-arguments (package-arguments cryptsetup)
+     (substitute-keyword-arguments (package-arguments cryptsetup-minimal)
        ((#:configure-flags flags ''())
         `(cons* "--disable-shared"
                 "--enable-static-cryptsetup"
