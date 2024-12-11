@@ -355,7 +355,7 @@ Browser.")
          ;; UNBUNDLE-ME! "--with-system-ogg"
          ;; UNBUNDLE-ME! "--with-system-vorbis"
          ;; UNBUNDLE-ME! "--with-system-theora" ; wants theora-1.2, not yet released
-         ;; UNBUNDLE-ME! "--with-system-libvpx"
+         "--with-system-libvpx"
          "--with-system-icu"
          "--with-system-nspr"
          ;; UNBUNDLE-ME! "--with-system-nss" ; pending upgrade of 'nss' to 3.90
@@ -424,7 +424,7 @@ Browser.")
                           ;; "media/libjpeg"  ; needed for now, because media/libjpeg/moz.build is referenced from config/external/moz.build
                           ;; UNBUNDLE-ME! "modules/zlib"
                           ;; UNBUNDLE-ME! "ipc/chromium/src/third_party/libevent"
-                          ;; UNBUNDLE-ME! "media/libvpx"
+                          "media/libvpx"
                           ;; UNBUNDLE-ME! "media/libogg"
                           ;; UNBUNDLE-ME! "media/libvorbis"
                           ;; UNBUNDLE-ME! "media/libtheora" ; wants theora-1.2, not yet released
