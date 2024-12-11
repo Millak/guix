@@ -3,6 +3,7 @@
 ;;; Copyright © 2014 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2017 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Thiago Jung Bauermann <bauermann@kolabnow.com>
+;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -40,7 +41,9 @@
         "0ckjqw5kz5m30srqi87idj7xhpw6bpki43mj07bazjm2qmh3cdbj"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:parallel-build? #f
+     '(#:configure-flags
+       '("CFLAGS=-g -O2 -Wno-error=incompatible-pointer-types")
+       #:parallel-build? #f
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'update-config-scripts
