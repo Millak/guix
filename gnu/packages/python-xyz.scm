@@ -17107,6 +17107,30 @@ a hash value.")
 applications from a list of lists of strings.  It supports multi-line rows.")
     (license license:expat)))
 
+(define-public python-term-background
+  (package
+    (name "python-term-background")
+    (version "1.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "term_background" version))
+       (sha256
+        (base32 "0p674silrwc3jncncmdnj1lr6pl2q5qbx0xi3mzjq9sgcs5vmp4n"))))
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-build
+           (lambda _
+             (delete-file "setup.py"))))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-wrapper python-setuptools-scm python-pkginfo python-pytest)) ; TODO: Remove python-pkginfo
+    (home-page "http://github.com/rocky/shell-term-background")
+    (synopsis "Determine if shell has a light or dark background")
+    (description "This package determines if shell has a light or dark
+background.")
+    (license license:gpl2+)))
+
 (define-public python-libarchive-c
   (package
     (name "python-libarchive-c")
