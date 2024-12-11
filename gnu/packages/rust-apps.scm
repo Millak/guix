@@ -12,7 +12,7 @@
 ;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.ccom>
 ;;; Copyright © 2021, 2022 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2021 Alexandru-Sergiu Marton <brown121407@posteo.ro>
-;;; Copyright © 2021, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021, 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Nicolas Graves <ngraves@ngraves.fr>
@@ -2116,6 +2116,24 @@ container management applications.")
      "This package provides a command-line utility for easily compressing and
 decompressing files and directories.")
     (license license:expat)))
+
+(define-public rust-py-spy-testdata-0.1
+  (hidden-package                       ; Uninteresting for users.
+   (package
+     (name "rust-py-spy-testdata")
+     (version "0.1.0")
+     (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "py-spy-testdata" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32 "18d880f2rjdd42828srh97vpvlrs9pg23j28gphw9qd2w3bp128q"))))
+     (build-system cargo-build-system)
+     (home-page "https://github.com/benfred/py-spy-testdata")
+     (synopsis "Python coredumps for testing py-spy")
+     (description "This package provides Python coredumps for testing py-spy.")
+     (license license:expat))))
 
 (define-public ripgrep
   (package
