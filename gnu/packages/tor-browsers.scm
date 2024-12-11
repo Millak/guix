@@ -238,6 +238,7 @@ Browser.")
            ;; UNBUNDLE-ME! libogg
            ;; UNBUNDLE-ME! libtheora ; wants theora-1.2, not yet released
            ;; UNBUNDLE-ME! libvorbis
+           libwebp
            libxft
            libevent
            libxinerama
@@ -348,6 +349,7 @@ Browser.")
          ;; Avoid bundled libraries.
          "--with-system-jpeg"           ;must be libjpeg-turbo
          "--with-system-png"            ;must be libpng-apng
+         "--with-system-webp"
          "--with-system-zlib"
          "--with-system-libevent"
          ;; UNBUNDLE-ME! "--with-system-ogg"
@@ -427,6 +429,7 @@ Browser.")
                           ;; UNBUNDLE-ME! "media/libvorbis"
                           ;; UNBUNDLE-ME! "media/libtheora" ; wants theora-1.2, not yet released
                           ;; UNBUNDLE-ME! "media/libtremor"
+                          "media/libwebp"
                           ;; UNBUNDLE-ME! "gfx/harfbuzz"
                           ;; UNBUNDLE-ME! "gfx/graphite2"
                           "js/src/ctypes/libffi"
