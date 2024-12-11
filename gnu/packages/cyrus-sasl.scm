@@ -4,6 +4,7 @@
 ;;; Copyright © 2016 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -49,7 +50,10 @@
     (inputs (list gdbm libxcrypt mit-krb5 openssl))
     (arguments
      (list
-      #:configure-flags #~(list (string-append "--with-plugindir="
+      #:configure-flags #~(list (string-append
+                                 "CFLAGS=-g -O2"
+                                 " -Wno-error=implicit-function-declaration")
+                                (string-append "--with-plugindir="
                                                (assoc-ref %outputs "out")
                                                "/lib/sasl2")
                                 ;; When cross-compiling the build system is
