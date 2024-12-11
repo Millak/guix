@@ -43386,9 +43386,27 @@ image together with its neighboring pixels.")
     (description "This package provides a LRU cache implementation.")
     (license license:expat)))
 
-(define-public rust-lru-0.9
+(define-public rust-lru-0.10
   (package
     (inherit rust-lru-0.12)
+    (name "rust-lru")
+    (version "0.10.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "lru" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0w5n2sgh66ac8ihqv6688mlm7zb3ks18jlbzpbhwgw3x8jp8z3ki"))))
+    (arguments
+     `(#:cargo-inputs (("rust-hashbrown" ,rust-hashbrown-0.13))
+       #:cargo-development-inputs
+       (("rust-scoped-threadpool" ,rust-scoped-threadpool-0.1)
+        ("rust-stats-alloc" ,rust-stats-alloc-0.1))))))
+
+(define-public rust-lru-0.9
+  (package
+    (inherit rust-lru-0.10)
     (name "rust-lru")
     (version "0.9.0")
     (source
