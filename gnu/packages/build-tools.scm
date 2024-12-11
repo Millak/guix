@@ -16,6 +16,7 @@
 ;;; Copyright © 2021, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022, 2023 Juliana Sims <juli@incana.org>
 ;;; Copyright © 2024 Evgeny Pisemsky <mail@pisemsky.site>
+;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -245,6 +246,7 @@ programs and other files depend.")
                    (lambda _
                      (setenv "CC" "gcc")
                      (setenv "CXX" "g++")
+                     (setenv "CXXFLAGS" "-g -O2 -Wno-error=redundant-move")
                      (setenv "AR" "ar")))
                  (replace 'configure
                    (lambda _
