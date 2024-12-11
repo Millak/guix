@@ -14,7 +14,7 @@
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2016, 2017, 2018 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
-;;; Copyright © 2016 Jan Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2016, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2016 Andy Patterson <ajpatter@uwaterloo.ca>
 ;;; Copyright © 2016 Danny Milosavljevic <dannym+a@scratchpost.org>
 ;;; Copyright © 2016-2022 Marius Bakke <marius@gnu.org>
@@ -2018,14 +2018,14 @@ changes.")
 (define-public tdb
   (package
     (name "tdb")
-    (version "1.4.7")
+    (version "1.4.12")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.samba.org/ftp/tdb/tdb-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "03n2hz4sv003gpkyp57hk5kiw4xk9f2dkxq75kzk2gskxy6idyx4"))))
+                "0yndhh829ai2p3n4i63h1rhl22dcvzba0rffgqihjbc1k1sb5r3c"))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases
