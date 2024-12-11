@@ -1,0 +1,14 @@
+Upstream status: Not presented upstream.
+
+--- numpy-1.26.4/numpy/core/src/common/half_private.hpp.orig	2024-12-11 22:32:59.883085553 +0100
++++ numpy-1.26.4/numpy/core/src/common/half_private.hpp	2024-12-11 22:33:05.291112742 +0100
+@@ -1,6 +1,9 @@
+ #ifndef NUMPY_CORE_SRC_COMMON_HALF_PRIVATE_HPP
+ #define NUMPY_CORE_SRC_COMMON_HALF_PRIVATE_HPP
+ 
++int fetestexcept (int);
++int feclearexcept (int);
++int feraiseexcept (int);
+ #include "npstd.hpp"
+ #include "float_status.hpp"
+ 
