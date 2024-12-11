@@ -31948,14 +31948,14 @@ permitted in ordinary Rust.")
 (define-public rust-gimli-0.31
   (package
     (name "rust-gimli")
-    (version "0.31.0")
+    (version "0.31.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gimli" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0r1d55xdi1k2l5ah9p0n23i93pm47cl8apjm8rwgqd1j7yi5w21j"))))
+        (base32 "0gvqc0ramx8szv76jhfd4dms0zyamvlg4whhiz11j34hh3dqxqh7"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -31965,7 +31965,8 @@ permitted in ordinary Rust.")
         ("rust-rustc-std-workspace-alloc" ,rust-rustc-std-workspace-alloc-1)
         ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1)
         ("rust-stable-deref-trait" ,rust-stable-deref-trait-1))
-       #:cargo-development-inputs (("rust-test-assembler" ,rust-test-assembler-0.1))))
+       #:cargo-development-inputs
+       (("rust-test-assembler" ,rust-test-assembler-0.1))))
     (home-page "https://github.com/gimli-rs/gimli")
     (synopsis "Library for reading and writing the DWARF debugging format")
     (description
