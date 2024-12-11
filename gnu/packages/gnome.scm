@@ -12675,7 +12675,11 @@ repository and commit your work.")
                 "02n1zr9y8q9lyczhcz0nxar1vmf8p2mmbw8kq0v43wg21jr4i6d5"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
+     `(#:configure-flags `(,(string-append
+                             "CFLAGS=-g -O2"
+                             " -Wno-error=implicit-function-declaration"
+                             " -Wno-error=return-mismatch"))
+       #:phases
        (modify-phases %standard-phases
          ;; The 'config.sub' is too old to recognise aarch64.
          ,@(if (or (target-aarch64?) (target-riscv64?))
