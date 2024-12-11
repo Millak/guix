@@ -21,6 +21,10 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix build-system perl)
+  #:use-module (gnu packages gcc)
+  #:use-module (gnu packages gd)
+  #:use-module (gnu packages gl)
+  #:use-module (gnu packages maths)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages perl-check))
 
@@ -68,4 +72,61 @@
     (description "This package provides the @code{Math::MatrixReal} module.
 It implements the data type \"matrix of real numbers\" (and consequently also
 \"vector of real numbers\").")
+    (license license:perl-license)))
+
+;; This is NOT compatible with perl-pdl-2.095
+(define-public perl-pdl-2.019
+  (package
+    (name "perl-pdl")
+    (version "2.019")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://www.cpan.org/modules/by-module/PDL/PDL-" version
+                           ".tar.gz"))
+       (sha256
+        (base32 "1zkp5pm351qjr6sb3xivpxy5vjfl72ns0hb4dx5vpm8xvgp7p92i"))))
+    (build-system perl-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'patch-includes
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "perldl.conf"
+              (("WITH_BADVAL => 0") "WITH_BADVAL => 1")
+              (("WITH_GD => undef") "WITH_GD => true")
+              (("GD_INC => undef")
+               (string-append "GD_INC => '" (assoc-ref inputs "gd") "/include'"))
+              (("GD_LIB => undef")
+               (string-append "GD_LIB => '" (assoc-ref inputs "gd") "/lib'"))
+              (("WITH_GSL => undef") "WITH_GSL => true"))))
+         (add-before 'check 'prepare-check
+           (lambda _
+             ;; Set this for official CPAN releases of PDL.
+             (setenv "SKIP_KNOWN_PROBLEMS" "1")
+             (setenv "HOME" "/tmp"))))))
+    (inputs (list gd gsl mesa glu))
+    (native-inputs (list perl-devel-checklib
+                         perl-extutils-depends
+                         perl-extutils-f77
+                         gfortran
+                         perl-file-which
+                         perl-pod-parser
+                         perl-test-deep
+                         perl-test-exception
+                         perl-test-warn))
+    (propagated-inputs (list perl-file-map
+                             perl-file-which
+                             perl-inline
+                             perl-inline-c
+                             perl-list-moreutils
+                             perl-opengl
+                             perl-pgplot
+                             perl-pod-parser
+                             perl-sys-sigaction
+                             perl-termreadkey))
+    (home-page "https://metacpan.org/release/PDL")
+    (synopsis "Perl Data Language")
+    (description "This package provides a library and simple REPL for the
+Perl Data Language.")
     (license license:perl-license)))
