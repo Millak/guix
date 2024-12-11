@@ -84,6 +84,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages crates-apple)
+  #:use-module (gnu packages crates-check)
   #:use-module (gnu packages crates-crypto)
   #:use-module (gnu packages crates-graphics)
   #:use-module (gnu packages crates-gtk)
@@ -67311,6 +67312,45 @@ crate unless you're working on a regex implementation.")
     (synopsis "Portable, relative paths for Rust")
     (description "This package provides portable, relative paths for Rust.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-remoteprocess-0.5
+  (package
+    (name "rust-remoteprocess")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "remoteprocess" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "087z016qvypalbqjgdxmri97vsrqg4k1kpmc8b5d5hdgqxq4f6g6"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-addr2line" ,rust-addr2line-0.24)
+        ("rust-cfg-if" ,rust-cfg-if-1)
+        ("rust-goblin" ,rust-goblin-0.9)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-libproc" ,rust-libproc-0.14)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-mach" ,rust-mach-0.3)
+        ("rust-mach-o-sys" ,rust-mach-o-sys-0.1)
+        ("rust-memmap2" ,rust-memmap2-0.9)
+        ("rust-nix" ,rust-nix-0.26)
+        ("rust-object" ,rust-object-0.36)
+        ("rust-proc-maps" ,rust-proc-maps-0.4)
+        ("rust-read-process-memory" ,rust-read-process-memory-0.1)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-winapi" ,rust-winapi-0.3))
+       #:cargo-development-inputs
+       (("rust-env-logger" ,rust-env-logger-0.10)
+        ("rust-mark-flaky-tests" ,rust-mark-flaky-tests-1))))
+    (home-page "https://github.com/benfred/remoteprocess")
+    (synopsis "Library for getting information on running processes")
+    (description "This package provides an API for getting information on
+running processes.")
+    (license license:expat)))
 
 (define-public rust-rend-0.3
   (package
