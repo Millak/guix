@@ -105,8 +105,7 @@ Cargo.toml file present at its root."
 
       (for-each (lambda (crate)
                   (invoke "tar" "xzf" crate "-C" vendor-dir))
-                (find-files "target/package" "\\.crate$"))))
-  #t)
+                (find-files "target/package" "\\.crate$")))))
 
 (define (rust-package? name)
   (string-prefix? "rust-" name))
@@ -220,8 +219,7 @@ directory = '" vendor-dir "'") port)
   ;; during building, and in any case if one is not present it is created
   ;; during the 'build phase by cargo.
   (when (file-exists? "Cargo.lock")
-    (delete-file "Cargo.lock"))
-  #t)
+    (delete-file "Cargo.lock")))
 
 ;; After the 'patch-generated-file-shebangs phase any vendored crates who have
 ;; their shebangs patched will have a mismatch on their checksum.
@@ -229,10 +227,10 @@ directory = '" vendor-dir "'") port)
                                 (vendor-dir "guix-vendor")
                                 #:allow-other-keys)
   "Patch the checksums of the vendored crates after patching their shebangs."
-  (generate-all-checksums vendor-dir)
-  #t)
+  (generate-all-checksums vendor-dir))
 
 (define* (build #:key
+                parallel-build?
                 skip-build?
                 (features '())
                 (cargo-build-flags '("--release"))
@@ -311,8 +309,7 @@ directory = '" vendor-dir "'") port)
                        (find-files dir #:directories? #t))
                 (delete-file-recursively dir)))
             (find-files "." "\\.crate$")))))
-    (format #t "Not installing cargo sources, skipping `cargo package`.~%"))
-  #t)
+    (format #t "Not installing cargo sources, skipping `cargo package`.~%")))
 
 (define* (install #:key
                   inputs
@@ -348,9 +345,7 @@ directory = '" vendor-dir "'") port)
 
       (for-each (lambda (crate)
                   (invoke "tar" "xzf" crate "-C" sources))
-                (find-files registry "\\.crate$")))
-
-    #t))
+                (find-files registry "\\.crate$")))))
 
 (define %standard-phases
   (modify-phases gnu:%standard-phases
