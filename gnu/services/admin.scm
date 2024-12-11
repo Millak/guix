@@ -553,7 +553,7 @@ which lets you search for packages that provide a given file.")
   (reboot?              unattended-upgrade-configuration-reboot?
                         (default #f))
   (services-to-restart  unattended-upgrade-configuration-services-to-restart
-                        (default '(mcron)))
+                        (default '(unattended-upgrade)))
   (system-expiration    unattended-upgrade-system-expiration
                         (default (* 3 30 24 3600)))
   (maximum-duration     unattended-upgrade-maximum-duration
@@ -564,13 +564,16 @@ which lets you search for packages that provide a given file.")
 (define %unattended-upgrade-log-file
   "/var/log/unattended-upgrade.log")
 
-(define (unattended-upgrade-mcron-jobs config)
+(define (unattended-upgrade-shepherd-services config)
   (define channels
     (scheme-file "channels.scm"
                  (unattended-upgrade-configuration-channels config)))
 
   (define log
     (unattended-upgrade-configuration-log-file config))
+
+  (define schedule
+    (unattended-upgrade-configuration-schedule config))
 
   (define services
     (unattended-upgrade-configuration-services-to-restart config))
@@ -598,35 +601,17 @@ which lets you search for packages that provide a given file.")
       #~(begin
           (use-modules (guix build utils)
                        (gnu services herd)
-                       (srfi srfi-19)
                        (srfi srfi-34))
 
-          (define log
-            (open-file #$log "a0"))
-
-          (define (timestamp)
-            (date->string (time-utc->date (current-time time-utc))
-                          "[~4]"))
-
-          (define (alarm-handler . _)
-            (format #t "~a time is up, aborting upgrade~%"
-                    (timestamp))
-            (exit 1))
+          (setvbuf (current-output-port) 'line)
+          (setvbuf (current-error-port) 'line)
 
           ;; 'guix time-machine' needs X.509 certificates to authenticate the
           ;; Git host.
           (setenv "SSL_CERT_DIR"
                   #$(file-append nss-certs "/etc/ssl/certs"))
 
-          ;; Make sure the upgrade doesn't take too long.
-          (sigaction SIGALRM alarm-handler)
-          (alarm #$(unattended-upgrade-maximum-duration config))
-
-          ;; Redirect stdout/stderr to LOG to save the output of 'guix' below.
-          (redirect-port log (current-output-port))
-          (redirect-port log (current-error-port))
-
-          (format #t "~a starting upgrade...~%" (timestamp))
+          (format #t "starting upgrade...~%")
           (guard (c ((invoke-error? c)
                      (report-invoke-error c)))
             (apply invoke #$(file-append guix "/bin/guix")
@@ -645,23 +630,45 @@ which lets you search for packages that provide a given file.")
             (unless #$reboot?
               ;; Rebooting effectively restarts services anyway and execution
               ;; would be halted here if mcron is restarted.
-              (format #t "~a restarting services...~%" (timestamp))
+              (format #t "restarting services...~%")
               (for-each restart-service '#$services))
 
-            ;; XXX: If 'mcron' has been restarted, this is not reached.
-            (format #t "~a upgrade complete~%" (timestamp))
+            ;; XXX: If this service has been restarted, this is not reached.
+            (format #t "upgrade complete~%")
 
             ;; Stopping the root shepherd service triggers a reboot.
             (when #$reboot?
-              (format #t "~a rebooting system~%" (timestamp))
+              (format #t "rebooting system~%")
               (force-output) ;ensure the entire log is written.
               (stop-service 'root))))))
 
   (define upgrade
     (program-file "unattended-upgrade" code))
 
-  (list #~(job #$(unattended-upgrade-configuration-schedule config)
-               #$upgrade)))
+  (list (shepherd-service
+         (provision '(unattended-upgrade))
+         (requirement '(user-processes networking))
+         (modules '((shepherd service timer)))
+         (start #~(make-timer-constructor
+                   #$(if (string? schedule)
+                         #~(cron-string->calendar-event #$schedule)
+                         schedule)
+                   (command '(#$upgrade))
+
+                   #:log-file #$log
+
+                   ;; Make sure the upgrade doesn't take too long.
+                   #:max-duration
+                   #$(unattended-upgrade-maximum-duration config)
+
+                   ;; Wait for the previous attempt to terminate before trying
+                   ;; again.
+                   #:wait-for-termination? #t))
+         (stop #~(make-timer-destructor))
+         (actions (list (shepherd-action
+                         (name 'trigger)
+                         (documentation "Trigger unattended system upgrade.")
+                         (procedure #~trigger-timer)))))))
 
 (define (unattended-upgrade-log-rotations config)
   (list (log-rotation
@@ -672,8 +679,8 @@ which lets you search for packages that provide a given file.")
   (service-type
    (name 'unattended-upgrade)
    (extensions
-    (list (service-extension mcron-service-type
-                             unattended-upgrade-mcron-jobs)
+    (list (service-extension shepherd-root-service-type
+                             unattended-upgrade-shepherd-services)
           (service-extension rottlog-service-type
                              unattended-upgrade-log-rotations)))
    (description

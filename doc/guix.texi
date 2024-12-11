@@ -23472,9 +23472,9 @@ service.  The following fields are available:
 
 @table @asis
 @item @code{schedule} (default: @code{"30 01 * * 0"})
-This is the schedule of upgrades, expressed as a gexp containing an
-mcron job schedule (@pxref{Guile Syntax, mcron job specifications,,
-mcron, GNU@tie{}mcron}).
+This is the schedule of upgrades, expressed as a string in traditional
+cron syntax or as a gexp evaluating to a Shepherd calendar event
+(@pxref{Timers,,, shepherd, The GNU Shepherd Manual}).
 
 @item @code{channels} (default: @code{#~%default-channels})
 This gexp specifies the channels to use for the upgrade
@@ -23523,7 +23523,7 @@ When @code{reboot?} is @code{#t}, services are not restarted before
 rebooting.  This means that the value for @code{services-to-restart} is
 ignored.  The updated services will be started after the system reboots.
 
-@item @code{services-to-restart} (default: @code{'(mcron)})
+@item @code{services-to-restart} (default: @code{'(unattended-upgrade)})
 This field specifies the Shepherd services to restart when the upgrade
 completes.
 
@@ -23538,8 +23538,9 @@ Use @command{herd status} to find out candidates for restarting.
 @xref{Services}, for general information about services.  Common
 services to restart would include @code{ntpd} and @code{ssh-daemon}.
 
-By default, the @code{mcron} service is restarted.  This ensures that
-the latest version of the unattended upgrade job will be used next time.
+By default, the @code{unattended-upgrade} service is restarted.  This
+ensures that the latest version of the unattended upgrade job will be
+used next time.
 
 @item @code{system-expiration} (default: @code{(* 3 30 24 3600)})
 This is the expiration time in seconds for system generations.  System
