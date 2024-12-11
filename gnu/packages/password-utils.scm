@@ -41,6 +41,7 @@
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2023 Christian Miller <christian.miller@dadoes.de>
 ;;; Copyright © 2024 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1673,7 +1674,7 @@ HTTP.")
     (native-inputs
      (list autoconf automake))
     (inputs
-     (list cryptsetup))
+     (list cryptsetup-minimal))
     (synopsis "LUKS encrypted volume cracker")
     (description
      "This is a cracker for LUKS encrypted volumes.  It can be used either in

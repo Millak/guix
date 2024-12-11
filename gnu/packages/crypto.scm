@@ -467,7 +467,7 @@ total number of shares generated.")
      `(("bash" ,bash-minimal) ; for wrap-program
        ("zsh" ,zsh)
        ("gnupg" ,gnupg)
-       ("cryptsetup" ,cryptsetup)
+       ("cryptsetup" ,cryptsetup-minimal)
        ("e2fsprogs" ,e2fsprogs)         ;for mkfs.ext4
        ("gettext" ,gettext-minimal)     ;used at runtime
        ("lsof" ,lsof)

@@ -4,6 +4,7 @@
 ;;; Copyright © 2020, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -220,7 +221,7 @@
            bash-minimal
            boost
            curl
-           cryptsetup
+           cryptsetup-minimal
            eudev
            expat
            fcgi
