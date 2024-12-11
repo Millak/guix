@@ -221,7 +221,6 @@ Browser.")
            tor-client
            alsa-lib
            bash-minimal                 ;for wrap-program
-           bzip2
            cups
            dbus-glib
            gdk-pixbuf
@@ -350,7 +349,6 @@ Browser.")
          "--with-system-jpeg"           ;must be libjpeg-turbo
          "--with-system-png"            ;must be libpng-apng
          "--with-system-zlib"
-         ;; UNBUNDLE-ME! "--with-system-bz2"
          "--with-system-libevent"
          ;; UNBUNDLE-ME! "--with-system-ogg"
          ;; UNBUNDLE-ME! "--with-system-vorbis"
