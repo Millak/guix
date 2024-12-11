@@ -124,13 +124,14 @@
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages datamash)
   #:use-module (gnu packages dbm)
-  #:use-module (gnu packages documentation)
   #:use-module (gnu packages django)
+  #:use-module (gnu packages documentation)
   #:use-module (gnu packages elf)
   #:use-module (gnu packages emacs)
   #:use-module (gnu packages file)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages fltk)
+  #:use-module (gnu packages fonts)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gettext)
@@ -152,6 +153,7 @@
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages logging)
   #:use-module (gnu packages lua)
+  #:use-module (gnu packages plotutils)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages xorg)
@@ -10537,6 +10539,7 @@ the Wolfram language.")
               (sha256
                (base32
                 "0hhk2qq6swnprf9hliazwi3858sv3b3015g0mnm4ycdk5fsc7y57"))))
+    (outputs '("out" "doc"))
     (arguments
      `(;; <https://github.com/pytest-dev/pytest/pull/10173> is missing .closed
        #:test-flags '("-s")
@@ -10544,6 +10547,11 @@ the Wolfram language.")
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-bugs
            (lambda _
+             (substitute* "mathics/doc/latex_doc.py"
+              (("^NUMBER_RE = .*")
+               ;; Prevent a match of "-7.0.0" (version number)
+               ; X"NUMBER_RE = re.compile(r\"([ -])(\d*(?<!\.)\.\d+|\d+\.(?!\.)\d*|\d+)(?![.0123456789])\")\n"
+               "NUMBER_RE = re.compile(r\"([ -])(\\d*(?<!\\.)\\.\\d+|\\d+\\.(?!\\.)\\d*|\\d+)(?![.0123456789])\")\n"))
              (substitute* "pyproject.toml"
               (("\"autoload/\\*.m\",")
                ;; They forgot to install autoload/rules/*.m
@@ -10551,15 +10559,56 @@ the Wolfram language.")
              ;; Prevent internet access by tests.
              (substitute* "mathics/builtin/files_io/files.py"
               (("https://raw.githubusercontent.com/Mathics3/mathics-core/master/README.rst")
-               (string-append (getcwd) "/README.rst")))))
+               (string-append (getcwd) "/README.rst")))
+             (substitute* "mathics/docpipeline.py"
+              ;; Undefined.
+              (("test_parameters[.]doc_even_if_error") "False"))))
+         ;; TODO: make latexdoc ; (cd mathics/doc/latex && $(MAKE) doc)
+         (add-after 'install 'build-docs
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             ; Would fuck up LOCAL_ROOT_DIR: (add-installed-pythonpath inputs outputs)
+             (setenv "PYTHONPATH" (getcwd))
+             (substitute* "mathics/settings.py"
+               (("^(ROOT_DIR = .*)" _ a) (string-append a "\nimport sys\nprint('XXROOT_DIR', ROOT_DIR, sys.stderr)\n")))
+             (setenv "HOME" "/tmp")
+             (mkdir-p "/tmp/.local/var/mathics")
+             (setenv "BASH" (which "bash"))
+             (invoke "make" "latexdoc")
+             ;; TODO: The other files.
+             (install-file "mathics/doc/latex/mathics-title.pdf"
+              (string-append (assoc-ref outputs "doc") "/share/doc/mathics"))))
          (add-before 'check 'prepare-locales
            (lambda _
              ;; Otherwise 210 tests fail because the real output would use
              ;; unicode arrow characters.  With this, only 18 (symbolic) tests fail.
              (setenv "MATHICS_CHARACTER_ENCODING" "ASCII"))))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-pytest))
-    (inputs (list llvm))
+    (native-inputs (list python-pytest
+                         texlive-xetex
+                         font-latin-modern
+                         (texlive-updmap.cfg
+                          (list asymptote
+                                texlive-latexmk
+                                texlive-koma-script
+                                texlive-gensymb
+                                texlive-newpx
+                                texlive-xstring
+                                texlive-kastrup
+                                texlive-preprint
+                                texlive-listings
+                                texlive-paralist
+                                texlive-breqn
+                                texlive-environ
+                                texlive-colophon
+                                texlive-minitoc
+                                texlive-mlmodern
+                                texlive-palatino
+                                texlive-mathpazo
+                                texlive-pagella-otf
+                                texlive-tex-gyre-math))
+                         ghostscript
+                         bash))
+    (inputs (list llvm asymptote))
     (propagated-inputs (list python-mpmath
                              python-pint
                              python-palettable
