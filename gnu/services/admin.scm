@@ -385,18 +385,31 @@ Old log files are removed or compressed according to the configuration.")
                                 (length logs) #$directory)
                         (for-each delete-file logs))))))
 
-(define (log-cleanup-mcron-jobs configuration)
+(define (log-cleanup-shepherd-services configuration)
   (match-record configuration <log-cleanup-configuration>
-    (directory expiry schedule)
-    (list #~(job #$schedule
-                 #$(log-cleanup-program directory expiry)))))
+                (directory expiry schedule)
+    (let ((program (log-cleanup-program directory expiry)))
+      (list (shepherd-service
+             (provision '(log-cleanup))
+             (requirement '(user-processes))
+             (modules '((shepherd service timer)))
+             (start #~(make-timer-constructor
+                       #$(if (string? schedule)
+                             #~(cron-string->calendar-event #$schedule)
+                             schedule)
+                       (command '(#$program))))
+             (stop #~(make-timer-destructor))
+             (actions (list (shepherd-action
+                             (name 'trigger)
+                             (documentation "Trigger log cleanup.")
+                             (procedure #~trigger-timer)))))))))
 
 (define log-cleanup-service-type
   (service-type
    (name 'log-cleanup)
    (extensions
-    (list (service-extension mcron-service-type
-                             log-cleanup-mcron-jobs)))
+    (list (service-extension shepherd-root-service-type
+                             log-cleanup-shepherd-services)))
    (description
     "Periodically delete old log files.")))
 

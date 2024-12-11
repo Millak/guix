@@ -21085,8 +21085,9 @@ Age in seconds after which a file is subject to deletion (six months by
 default).
 
 @item @code{schedule} (default: @code{"30 12 01,08,15,22 * *"})
-String or gexp denoting the corresponding mcron job schedule
-(@pxref{Scheduled Job Execution}).
+Schedule of the log cleanup job written either as a string in
+traditional cron syntax or as a gexp representing a Shepherd calendar
+event (@pxref{Timers,,, shepherd, The GNU Shepherd Manual}).
 @end table
 @end deftp
 
