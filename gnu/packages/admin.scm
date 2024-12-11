@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2014, 2015, 2016, 2018, 2019, 2020 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014, 2015-2018, 2020-2023 Eric Bavier <bavier@posteo.net>
@@ -431,7 +431,19 @@ interface and is based on GNU Guile.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1i8h4wp11nkn85vj79yh2sgzh5adgdvi6fgng4gkniycw58h0pc9"))))))
+                "1i8h4wp11nkn85vj79yh2sgzh5adgdvi6fgng4gkniycw58h0pc9"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments shepherd-0.10)
+       ((#:configure-flags flags #~'())
+        #~(list "--localstatedir=/var"
+
+                ;; Gzip and zstd are used by the log rotation service.
+                (string-append "--with-gzip=" #$(this-package-input "gzip")
+                               "/bin/gzip")
+                (string-append "--with-zstd=" #$(this-package-input "zstd")
+                               "/bin/zstd")))))
+    (inputs (modify-inputs (package-inputs shepherd-0.10)
+              (append gzip zstd)))))
 
 (define-public shepherd shepherd-0.10)
 
