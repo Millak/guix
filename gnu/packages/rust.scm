@@ -536,7 +536,7 @@ ar = \"" binutils "/bin/ar" "\"
                    suffix (,(string-append libc "/lib"))))))))))
     (native-inputs
      `(("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)
+       ("python" ,python-minimal-wrapper)
        ("rustc-bootstrap" ,rust-bootstrap)
        ("cargo-bootstrap" ,rust-bootstrap "cargo")))
     (inputs
