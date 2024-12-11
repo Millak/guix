@@ -143,7 +143,7 @@ AC_DEFUN([GUIX_CHECK_GUILE_SSH], [
             (@ (ssh popen) open-remote-pipe)
             (@ (ssh dist node) node-eval)
             (@ (ssh auth) userauth-gssapi!)
-            ((@ (ssh session) make-session) #:nodelay #t))])
+            ((@ (ssh session) make-session) #:nodelay #t #:config #f))])
      if test "$retval" = 0; then
        guix_cv_have_recent_guile_ssh="yes"
      else
