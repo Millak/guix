@@ -514,7 +514,7 @@ total number of shares generated.")
     (inputs
      (list argon2
            bash-minimal
-           cryptsetup
+           cryptsetup-minimal
            e2fsprogs        ; for mkfs.ext4
            gettext-minimal  ; used at runtime
            gnupg
