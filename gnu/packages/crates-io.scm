@@ -52396,7 +52396,7 @@ form and deobfuscated locally.")
         ("rust-rustc-std-workspace-alloc" ,rust-rustc-std-workspace-alloc-1)
         ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1)
         ("rust-ruzstd" ,rust-ruzstd-0.7)
-        ("rust-wasmparser" ,rust-wasmparser-0.216))))
+        ("rust-wasmparser" ,rust-wasmparser-0.218))))
     (home-page "https://github.com/gimli-rs/object")
     (synopsis "Unified interface for reading and writing object file formats")
     (description
@@ -96266,20 +96266,23 @@ attribute that is not in the shared backend crate.")
 and native running processes.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-wasmparser-0.216
+(define-public rust-wasmparser-0.218
   (package
     (name "rust-wasmparser")
-    (version "0.216.0")
+    (version "0.218.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "wasmparser" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1qr8j1c15r208d9nsjw01x3w71m9i4g756djnhgk37b1lfzfdpmw"))))
+        (base32 "1p65jvj1i6bh180hd656z8yzkn3zx8vs3a6i5lmsgspczk3ld7mh"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f  ; failed to resolve: use of undeclared crate or module `wat`
+     ;; The test suite fails with error "failed to resolve: use of undeclared
+     ;; crate or module `wat`" (see:
+     ;; https://github.com/bytecodealliance/wasm-tools/issues/1947).
+     `(#:tests? #f
        #:cargo-inputs (("rust-ahash" ,rust-ahash-0.8)
                        ("rust-bitflags" ,rust-bitflags-2)
                        ("rust-hashbrown" ,rust-hashbrown-0.14)
@@ -96302,7 +96305,7 @@ and native running processes.")
 
 (define-public rust-wasmparser-0.118
   (package
-    (inherit rust-wasmparser-0.216)
+    (inherit rust-wasmparser-0.218)
     (name "rust-wasmparser")
     (version "0.118.2")
     (source
