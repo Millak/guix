@@ -66355,6 +66355,29 @@ reference counting.")
 @code{rdrand} and @code{rdseed} instructions")
     (license license:isc)))
 
+(define-public rust-read-process-memory-0.1
+  (package
+    (name "rust-read-process-memory")
+    (version "0.1.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "read-process-memory" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1c1vmw8a2ywf7v96xfwbsyrnpk3fy8cc2a0rdxw8fs0b5wxni5w4"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-mach" ,rust-mach-0.3)
+                       ("rust-winapi" ,rust-winapi-0.3))))
+    (home-page "https://github.com/rbspy/read-process-memory")
+    (synopsis "Read memory from another process")
+    (description "This package provides a crate that allows reading memory
+from another process.")
+    (license license:expat)))
+
 (define-public rust-readlock-0.1
   (package
     (name "rust-readlock")
