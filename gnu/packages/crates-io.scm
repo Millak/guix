@@ -82436,18 +82436,18 @@ codecs and formats.")
 (define-public rust-syn-2
   (package
     (name "rust-syn")
-    (version "2.0.87")
+    (version "2.0.90")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "syn" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
-               (base32 "0bd3mfcswvn4jkrp7ich5kk58kmpph8412yxd36nsfnh8vilrai5"))))
+                (base32 "0cfg5dsr1x0hl6b9hz08jp1197mx0rq3xydqmqaws36xlms3p7ci"))))
     (build-system cargo-build-system)
     (arguments
      ;; Tests fail to compile
-     ;; error[E0432]: unresolved imports `syn::Item`, `syn::Pat`
-     `(#:tests? #false
+     ;; error[E0463]: can't find crate for `rustc_ast` (among other errors).
+     `(#:tests? #f
        #:phases
        (modify-phases %standard-phases
          ;; The syn-test-suite crate is empty.
