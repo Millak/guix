@@ -579,17 +579,6 @@ appended to the configuration.")
    "mpd.conf"
    (serialize-configuration configuration mpd-configuration-fields)))
 
-(define (mpd-log-rotation config)
-  (match-record config <mpd-configuration>
-    (log-file)
-    (if (string=? "syslog" log-file)
-        '()                             ;nothing to do
-        (list (log-rotation
-               (files (list log-file))
-               (post-rotate #~(begin
-                                (use-modules (gnu services herd))
-                                (with-shepherd-action 'mpd ('reopen) #f))))))))
-
 (define (mpd-shepherd-service config)
   (match-record config <mpd-configuration>
     (user package shepherd-requirement
@@ -675,8 +664,7 @@ appended to the configuration.")
    (extensions
     (list (service-extension shepherd-root-service-type
                              (compose list mpd-shepherd-service))
-          (service-extension account-service-type mpd-accounts)
-          (service-extension rottlog-service-type mpd-log-rotation)))
+          (service-extension account-service-type mpd-accounts)))
    (default-value (mpd-configuration))))
 
 
@@ -953,14 +941,6 @@ prompting a pin from the user.")
                     user)))
       (list user group))))
 
-(define (mympd-log-rotation config)
-  (match-record config <mympd-configuration>
-    (log-to)
-    (if (maybe-value-set? log-to)
-        (list (log-rotation
-               (files (list log-to))))
-        '())))
-
 (define mympd-service-type
   (service-type
    (name 'mympd)
@@ -970,8 +950,6 @@ prompting a pin from the user.")
            (service-extension account-service-type
                               mympd-accounts)
            (service-extension special-files-service-type
-                              mympd-serialize-configuration)
-           (service-extension rottlog-service-type
-                              mympd-log-rotation)))
+                              mympd-serialize-configuration)))
    (description "Run myMPD, a frontend for MPD. (Music Player Daemon)")
    (default-value (mympd-configuration))))

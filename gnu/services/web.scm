@@ -1282,11 +1282,6 @@ a webserver.")
 (define %hpcguix-web-log-file
   "/var/log/hpcguix-web.log")
 
-(define %hpcguix-web-log-rotations
-  (list (log-rotation
-         (files (list %hpcguix-web-log-file))
-         (frequency 'weekly))))
-
 (define (hpcguix-web-shepherd-service config)
   (let* ((specs       (hpcguix-web-configuration-specs config))
          (config-file (and specs (scheme-file "hpcguix-web.scm" specs)))
@@ -1324,8 +1319,6 @@ a webserver.")
                              (const %hpcguix-web-accounts))
           (service-extension activation-service-type
                              (const %hpcguix-web-activation))
-          (service-extension rottlog-service-type
-                             (const %hpcguix-web-log-rotations))
           (service-extension shepherd-root-service-type
                              (compose list hpcguix-web-shepherd-service))))
    (default-value (hpcguix-web-configuration))))
@@ -2121,12 +2114,6 @@ WSGIPassAuthorization On
                       #:log-file #$%mumi-mailer-log))
             (stop #~(make-kill-destructor)))))))
 
-(define %mumi-log-rotations
-  (list (log-rotation
-         (files (list %mumi-log
-                      %mumi-mailer-log
-                      %mumi-worker-log)))))
-
 (define mumi-service-type
   (service-type
    (name 'mumi)
@@ -2136,9 +2123,7 @@ WSGIPassAuthorization On
           (service-extension account-service-type
                              (const %mumi-accounts))
           (service-extension shepherd-root-service-type
-                             mumi-shepherd-services)
-          (service-extension rottlog-service-type
-                             (const %mumi-log-rotations))))
+                             mumi-shepherd-services)))
    (description
     "Run Mumi, a Web interface to the Debbugs bug-tracking server.")
    (default-value

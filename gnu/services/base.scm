@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015, 2016 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2015, 2016, 2020 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
@@ -1685,12 +1685,20 @@ reload its settings file.")))
              #:pid-file "/var/run/syslog.pid"))
    (stop #~(make-kill-destructor))))
 
+(define %default-syslog-files
+  ;; List of files usually produced by syslogd that should be rotated.
+  '("/var/log/messages" "/var/log/secure" "/var/log/debug"
+    "/var/log/maillog"))
+
 (define syslog-service-type
   (service-type
    (name 'syslog)
    (default-value (syslog-configuration))
    (extensions (list (service-extension shepherd-root-service-type
-                                        (compose list syslog-shepherd-service))
+                                        (compose list
+                                                 syslog-shepherd-service))
+                     (service-extension log-rotation-service-type
+                                        (const %default-syslog-files))
                      (service-extension etc-service-type syslog-etc)))
    (description "Run the syslog daemon, @command{syslogd}, which is
 responsible for logging system messages.")))
@@ -2354,12 +2362,6 @@ raise a deprecation warning if the 'compression-level' field was used."
          (home-directory "/var/empty")
          (shell (file-append shadow "/sbin/nologin")))))
 
-(define %guix-publish-log-rotations
-  (list (log-rotation
-         (files (list "/var/log/guix-publish.log"))
-         (options `("rotate 4"                    ;don't keep too many of them
-                    ,@%default-log-rotation-options)))))
-
 (define (guix-publish-activation config)
   (let ((cache (guix-publish-configuration-cache config)))
     (if cache
@@ -2381,8 +2383,6 @@ raise a deprecation warning if the 'compression-level' field was used."
                                           guix-publish-shepherd-service)
                        (service-extension account-service-type
                                           (const %guix-publish-accounts))
-                       (service-extension rottlog-service-type
-                                          (const %guix-publish-log-rotations))
                        (service-extension activation-service-type
                                           guix-publish-activation)))
                 (default-value (guix-publish-configuration))
@@ -3748,7 +3748,7 @@ login manager daemon.")
         (service guix-service-type)
         (service nscd-service-type)
 
-        (service rottlog-service-type)
+        (service log-rotation-service-type)
 
         ;; Periodically delete old build logs.
         (service log-cleanup-service-type

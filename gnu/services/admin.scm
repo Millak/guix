@@ -670,19 +670,12 @@ which lets you search for packages that provide a given file.")
                          (documentation "Trigger unattended system upgrade.")
                          (procedure #~trigger-timer)))))))
 
-(define (unattended-upgrade-log-rotations config)
-  (list (log-rotation
-         (files
-          (list (unattended-upgrade-configuration-log-file config))))))
-
 (define unattended-upgrade-service-type
   (service-type
    (name 'unattended-upgrade)
    (extensions
     (list (service-extension shepherd-root-service-type
-                             unattended-upgrade-shepherd-services)
-          (service-extension rottlog-service-type
-                             unattended-upgrade-log-rotations)))
+                             unattended-upgrade-shepherd-services)))
    (description
     "Periodically upgrade the system from the current configuration.")
    (default-value (unattended-upgrade-configuration))))

@@ -20902,6 +20902,9 @@ You can also list files subject to rotation with @command{herd files
 log-rotation} and trigger rotation manually with @command{herd trigger
 log-rotation}.
 
+This service is part of @code{%base-services}, and thus enabled by
+default, with the default settings.
+
 @defvar log-rotation-service-type
 This is the type of the log rotation service.  Its associated value must
 be a @code{log-rotation-configuration} record, as discussed below.
@@ -20950,8 +20953,6 @@ An alternative log rotation service relying on GNU@tie{}Rot[t]log, a log
 rotation tool (@pxref{Top,,, rottlog, GNU Rot[t]log Manual}), is also
 provided.
 
-This service is part of @code{%base-services}, and thus enabled by
-default, with the default settings, for commonly encountered log files.
 The example below shows how to extend it with an additional
 @dfn{rotation}, should you need to do that (usually, services that
 produce log files already take care of that):

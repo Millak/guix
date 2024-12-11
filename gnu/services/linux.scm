@@ -181,19 +181,13 @@ representation."
              #:log-file "/var/log/earlyoom.log"))
    (stop #~(make-kill-destructor))))
 
-(define %earlyoom-log-rotation
-  (list (log-rotation
-         (files '("/var/log/earlyoom.log")))))
-
 (define earlyoom-service-type
   (service-type
    (name 'earlyoom)
    (default-value (earlyoom-configuration))
    (extensions
     (list (service-extension shepherd-root-service-type
-                             (compose list earlyoom-shepherd-service))
-          (service-extension rottlog-service-type
-                             (const %earlyoom-log-rotation))))
+                             (compose list earlyoom-shepherd-service))))
    (description "Run @command{earlyoom}, a daemon that quickly responds to
 @acronym{OOM, out-of-memory} conditions by terminating relevant processes.")))
 

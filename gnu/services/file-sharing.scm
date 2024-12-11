@@ -701,10 +701,6 @@ running."))))))))))))
          (shell (file-append shadow "/sbin/nologin"))
          (system? #t))))
 
-(define %transmission-daemon-log-rotations
-  (list (log-rotation
-         (files (list %transmission-daemon-log-file)))))
-
 (define (transmission-daemon-computed-settings-file config)
   "Return a @code{computed-file} object that, when unquoted in a G-expression,
 produces a Transmission settings file (@file{settings.json}) matching CONFIG."
@@ -785,8 +781,6 @@ produces a Transmission settings file (@file{settings.json}) matching CONFIG."
                              transmission-daemon-shepherd-service)
           (service-extension account-service-type
                              (const %transmission-daemon-accounts))
-          (service-extension rottlog-service-type
-                             (const %transmission-daemon-log-rotations))
           (service-extension activation-service-type
                              transmission-daemon-activation)))
    (default-value (transmission-daemon-configuration))

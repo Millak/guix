@@ -340,20 +340,6 @@
             (when #$remote-cache
               (chown #$remote-cache uid gid)))))))
 
-(define (cuirass-log-rotations config)
-  "Return the list of log rotations that corresponds to CONFIG."
-  (list (log-rotation
-         (files (append (list (cuirass-configuration-log-file config)
-                              (cuirass-configuration-web-log-file config))
-                        (let ((server
-                               (cuirass-configuration-remote-server config)))
-                          (if server
-                              (list (cuirass-remote-server-log-file server))
-                              '()))))
-         (frequency 'weekly)
-         (options `("rotate 40"                   ;worth keeping
-                    ,@%default-log-rotation-options)))))
-
 (define cuirass-service-type
   (service-type
    (name 'cuirass)
@@ -361,7 +347,6 @@
     (list
      (service-extension profile-service-type      ;for 'info cuirass'
                         (compose list cuirass-configuration-cuirass))
-     (service-extension rottlog-service-type cuirass-log-rotations)
      (service-extension activation-service-type cuirass-activation)
      (service-extension shepherd-root-service-type cuirass-shepherd-service)
      (service-extension account-service-type cuirass-account)
@@ -454,14 +439,6 @@ CONFIG."
                     #:log-file #$log-file))
            (stop #~(make-kill-destructor))))))
 
-(define (cuirass-remote-worker-log-rotations config)
-  "Return the list of log rotations that corresponds to CONFIG."
-  (list (log-rotation
-         (files (list (cuirass-remote-worker-log-file config)))
-         (frequency 'weekly)
-         (options `("rotate 4"                    ;don't keep too many of them
-                    ,@%default-log-rotation-options)))))
-
 (define cuirass-remote-worker-service-type
   (service-type
    (name 'cuirass-remote-worker)
@@ -469,8 +446,6 @@ CONFIG."
     (list (service-extension shepherd-root-service-type
                              cuirass-remote-worker-shepherd-service)
           (service-extension account-service-type
-                             (const %cuirass-remote-worker-accounts))
-          (service-extension rottlog-service-type
-                             cuirass-remote-worker-log-rotations)))
+                             (const %cuirass-remote-worker-accounts))))
    (description
     "Run the Cuirass remote build worker service.")))
