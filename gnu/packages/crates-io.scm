@@ -60753,6 +60753,31 @@ macro use case.")
                        ("rust-yansi" ,rust-yansi-0.5))
        #:cargo-development-inputs (("rust-trybuild" ,rust-trybuild-1))))))
 
+(define-public rust-proc-maps-0.4
+  (package
+    (name "rust-proc-maps")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "proc-maps" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ys4dj9wzqj6z5k7i28qy7l2ff224znvjfyrzhjkl68flrd4rd1x"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-bindgen" ,rust-bindgen-0.70)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-libproc" ,rust-libproc-0.14)
+                       ("rust-mach2" ,rust-mach2-0.4)
+                       ("rust-winapi" ,rust-winapi-0.3))))
+    (home-page "https://github.com/rbspy/proc-maps")
+    (synopsis "Helper crate for getting virtual memory maps from processes")
+    (description "This package provides a helper crate for getting virtual
+memory maps from processes.")
+    (license license:expat)))
+
 (define-public rust-proc-mounts-0.3
   (package
     (name "rust-proc-mounts")
