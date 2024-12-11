@@ -531,7 +531,7 @@ actual compiler."
                                      (symlink #$program
                                               (string-append bin "/" program)))
                                    '("cc" "gcc" "clang" "g++" "c++" "clang++"
-                                     "go" "rustc" "zig")))))))
+                                     "gfortran" "go" "rustc" "zig")))))))
 
 (define (build-system-with-tuning-compiler bs micro-architecture)
   "Return a variant of BS, a build system, that ensures that the compiler that
