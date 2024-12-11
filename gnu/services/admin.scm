@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016 Jan Nieuwenhuizen <janneke@gnu.org>
-;;; Copyright © 2016-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2023 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2024 Gabriel Wicki <gabriel@erlikon.ch>
@@ -45,7 +45,18 @@
   #:use-module (srfi srfi-1)
   #:use-module (ice-9 match)
   #:use-module (ice-9 vlist)
-  #:export (%default-rotations
+  #:export (log-rotation-configuration
+            log-rotation-configuration?
+            log-rotation-configuration-provision
+            log-rotation-configuration-requirement
+            log-rotation-configuration-calendar-event
+            log-rotation-configuration-external-log-files
+            log-rotation-configuration-compression
+            log-rotation-configuration-expiry
+            log-rotation-configuration-size-threshold
+            log-rotation-service-type
+
+            %default-rotations
             %rotated-files
 
             log-rotation
@@ -112,13 +123,104 @@
 
 ;;; Commentary:
 ;;;
-;;; This module implements configuration of rottlog by writing
-;;; /etc/rottlog/{rc,hourly|daily|weekly}.  Example usage
-;;;
-;;;     (mcron-service)
-;;;     (service rottlog-service-type)
+;;; This module provides basic system administration tools: log rotation,
+;;; unattended upgrades, etc.
 ;;;
 ;;; Code:
+
+
+;;;
+;;; Shepherd's log rotation service.
+;;;
+
+(define %default-log-rotation-calendar-event
+  ;; Default calendar event when log rotation is triggered.
+  #~(calendar-event #:minutes '(0)
+                    #:hours '(22)
+                    #:days-of-week '(sunday)))
+
+(define (gexp-or-integer? x)
+  (or (gexp? x) (integer? x)))
+
+(define-configuration log-rotation-configuration
+  (provision
+   (list-of-symbols '(log-rotation))
+   "The name(s) of the log rotation Shepherd service."
+   empty-serializer)
+  (requirement
+   (list-of-symbols (if for-home? '() '(user-processes)))
+   "Dependencies of the log rotation Shepherd service."
+   empty-serializer)
+  (calendar-event
+   (gexp %default-log-rotation-calendar-event)
+   "Gexp containing the @dfn{calendar event} when log rotation occurs.
+@xref{Timers,,, shepherd, The GNU Shepherd Manual}, for more information on
+calendar events."
+   empty-serializer)
+  (external-log-files
+   (list-of-strings '())
+   "List of file names, external log files that should also be
+rotated."
+   empty-serializer)
+  (compression
+   (symbol 'zstd)
+   "The compression method used for rotated log files, one of
+@code{'none}, @code{'gzip}, and @code{'zstd}."
+   empty-serializer)
+  (expiry
+   (gexp-or-integer #~(%default-log-expiry))
+   "Age in seconds after which a log file is deleted."
+   empty-serializer)
+  (size-threshold
+   (gexp-or-integer #~(%default-rotation-size-threshold))
+   "Size in bytes below which a log file is @emph{not} rotated."
+   empty-serializer))
+
+(define (log-rotation-shepherd-services config)
+  (list (shepherd-service
+         (provision (log-rotation-configuration-provision config))
+         (requirement (log-rotation-configuration-requirement config))
+         (modules '((shepherd service timer)      ;for 'calendar-event'
+                    (shepherd service log-rotation)))
+         (free-form #~(log-rotation-service
+                       #$(log-rotation-configuration-calendar-event config)
+                       #:provision
+                       '#$(log-rotation-configuration-provision config)
+                       #:requirement
+                       '#$(log-rotation-configuration-requirement config)
+                       #:external-log-files
+                       '#$(log-rotation-configuration-external-log-files
+                           config)
+                       #:compression
+                       '#$(log-rotation-configuration-compression config)
+                       #:expiry
+                       #$(log-rotation-configuration-expiry config)
+                       #:rotation-size-threshold
+                       #$(log-rotation-configuration-size-threshold
+                          config))))))
+
+(define log-rotation-service-type
+  (service-type
+   (name 'log-rotation)
+   (description
+    "Periodically rotate log files using the Shepherd's log rotation service.
+Run @command{herd status log-rotation} to view its status, @command{herd files
+log-rotation} to list files subject to log rotation.")
+   (extensions (list (service-extension shepherd-root-service-type
+                                        log-rotation-shepherd-services)))
+   (compose concatenate)
+   (extend (lambda (config log-files)
+             (log-rotation-configuration
+              (inherit config)
+              (external-log-files
+               (append (log-rotation-configuration-external-log-files config)
+                       log-files)))))
+   (default-value (log-rotation-configuration))))
+
+
+;;;
+;;; Rottlog + mcron.
+;;;
 
 (define-record-type* <log-rotation> log-rotation make-log-rotation
   log-rotation?

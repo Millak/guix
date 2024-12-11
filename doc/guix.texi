@@ -395,7 +395,7 @@ Services
 
 * Base Services::               Essential system services.
 * Scheduled Job Execution::     The mcron service.
-* Log Rotation::                The rottlog service.
+* Log Rotation::                Archiving and deleting old logs.
 * Networking Setup::            Setting up network interfaces.
 * Networking Services::         Firewall, SSH daemon, etc.
 * Unattended Upgrades::         Automated system upgrades.
@@ -19230,7 +19230,7 @@ declaration.
 @menu
 * Base Services::               Essential system services.
 * Scheduled Job Execution::     The mcron service.
-* Log Rotation::                The rottlog service.
+* Log Rotation::                Archiving and deleting old logs.
 * Networking Setup::            Setting up network interfaces.
 * Networking Services::         Firewall, SSH daemon, etc.
 * Unattended Upgrades::         Automated system upgrades.
@@ -20873,8 +20873,82 @@ is also prefixed by a timestamp by GNU Shepherd.
 Log files such as those found in @file{/var/log} tend to grow endlessly,
 so it's a good idea to @dfn{rotate} them once in a while---i.e., archive
 their contents in separate files, possibly compressed.  The @code{(gnu
-services admin)} module provides an interface to GNU@tie{}Rot[t]log, a
-log rotation tool (@pxref{Top,,, rottlog, GNU Rot[t]log Manual}).
+services admin)} module provides an interface to the log rotation
+service provided by the Shepherd (@pxref{Log Rotation,,, shepherd, The
+GNU Shepherd Manual}).
+
+This log rotation service is made available through
+@code{log-rotation-service-type}, which takes a
+@code{log-rotation-configuration} record has its value.  By default,
+this provides @code{log-rotation}, a Shepherd ``timed service'' that
+runs periodically---once a week by default.  It automatically knows
+about the log files produced by Shepherd services and can be taught
+about external log files.  You can inspect the service and see when it's
+going to run the usual way:
+
+@example
+$ sudo herd status log-rotation
+Status of log-rotation:
+  It is running since Mon 09 Dec 2024 03:27:47 PM CET (2 days ago).
+  @dots{}
+
+Upcoming timer alarms:
+  Sun 15 Dec 2024 10:00:00 PM CET (in 4 days)
+  Sun 22 Dec 2024 10:00:00 PM CET (in 11 days)
+  Sun 29 Dec 2024 10:00:00 PM CET (in 18 days)
+@end example
+
+You can also list files subject to rotation with @command{herd files
+log-rotation} and trigger rotation manually with @command{herd trigger
+log-rotation}.
+
+@defvar log-rotation-service-type
+This is the type of the log rotation service.  Its associated value must
+be a @code{log-rotation-configuration} record, as discussed below.
+@end defvar
+
+@c %start of fragment
+
+@deftp {Data Type} log-rotation-configuration
+Available @code{log-rotation-configuration} fields are:
+
+@table @asis
+@item @code{provision} (default: @code{(log-rotation)}) (type: list-of-symbols)
+The name(s) of the log rotation Shepherd service.
+
+@item @code{requirement} (default: @code{(user-processes)}) (type: list-of-symbols)
+Dependencies of the log rotation Shepherd service.
+
+@item @code{calendar-event} (type: gexp)
+Gexp containing the @dfn{calendar event} when log rotation occurs.
+@xref{Timers,,,shepherd,The GNU Shepherd Manual}, for more information
+on calendar events.
+
+@item @code{external-log-files} (default: @code{()}) (type: list-of-strings)
+List of file names, external log files that should also be rotated.
+
+@item @code{compression} (default: @code{zstd}) (type: symbol)
+The compression method used for rotated log files, one of @code{'none},
+@code{'gzip}, and @code{'zstd}.
+
+@item @code{expiry} (type: gexp-or-integer)
+Age in seconds after which a log file is deleted.
+
+@item @code{size-threshold} (type: gexp-or-integer)
+Size in bytes below which a log file is @emph{not} rotated.
+
+@end table
+
+@end deftp
+
+
+@c %end of fragment
+
+@subheading Rottlog
+
+An alternative log rotation service relying on GNU@tie{}Rot[t]log, a log
+rotation tool (@pxref{Top,,, rottlog, GNU Rot[t]log Manual}), is also
+provided.
 
 This service is part of @code{%base-services}, and thus enabled by
 default, with the default settings, for commonly encountered log files.
