@@ -10574,7 +10574,7 @@ the Wolfram language.")
     (description "This package provides a computer algebra system--an alternative
 to Wolfram.")
     (home-page "https://mathics.org/")
-    (license license:gpl3+)))
+    (license license:gpl3)))
 
 (define-public python-mathicsscript
   (package
