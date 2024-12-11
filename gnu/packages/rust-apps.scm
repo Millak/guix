@@ -93,6 +93,7 @@
   #:use-module (gnu packages jemalloc)
   #:use-module (gnu packages kde)
   #:use-module (gnu packages libusb)
+  #:use-module (gnu packages libunwind)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages networking)
@@ -2115,6 +2116,97 @@ container management applications.")
     (description
      "This package provides a command-line utility for easily compressing and
 decompressing files and directories.")
+    (license license:expat)))
+
+(define-public py-spy
+  (package
+    (name "py-spy")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "py-spy" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0fvdmrqp4qand1zb9cwks8hpkysdqajrdh9y7ks15c78985k1x64"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:cargo-inputs (list rust-anyhow-1
+                           rust-chrono-0.4
+                           rust-clap-3
+                           rust-clap-complete-3
+                           rust-console-0.15
+                           rust-cpp-demangle-0.4
+                           rust-ctrlc-3
+                           rust-env-logger-0.10
+                           rust-goblin-0.9
+                           rust-indicatif-0.17
+                           rust-inferno-0.11
+                           rust-lazy-static-1
+                           rust-libc-0.2
+                           rust-log-0.4
+                           rust-lru-0.10
+                           rust-memmap2-0.9
+                           rust-num-traits-0.2
+                           rust-proc-maps-0.4
+                           rust-rand-0.8
+                           rust-rand-distr-0.4
+                           rust-regex-1
+                           rust-remoteprocess-0.5
+                           rust-serde-1
+                           rust-serde-derive-1
+                           rust-serde-json-1
+                           rust-tempfile-3
+                           rust-termios-0.3
+                           rust-winapi-0.3)
+      #:cargo-development-inputs (list rust-py-spy-testdata-0.1)
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-shell-completions
+            (lambda* (#:key native-inputs outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (share (string-append out "/share"))
+                     (bash-completions-dir
+                      (string-append out "/etc/bash_completion.d/"))
+                     (zsh-completions-dir
+                      (string-append share "/zsh/site-functions"))
+                     (fish-completions-dir
+                      (string-append share "/fish/vendor_completions.d"))
+                     (elvish-completions-dir
+                      (string-append share "/elvish/lib"))
+                     (py-spy (if #$(%current-target-system)
+                                (search-input-file native-inputs "/bin/py-spy")
+                                (string-append out "/bin/py-spy"))))
+                (for-each mkdir-p
+                          (list bash-completions-dir
+                                zsh-completions-dir
+                                fish-completions-dir
+                                elvish-completions-dir))
+                (with-output-to-file
+                  (string-append bash-completions-dir "/py-spy")
+                  (lambda _ (invoke py-spy "completions" "bash")))
+                (with-output-to-file
+                  (string-append zsh-completions-dir "/_py-spy")
+                  (lambda _ (invoke py-spy "completions" "zsh")))
+                (with-output-to-file
+                  (string-append fish-completions-dir "/py-spy.fish")
+                  (lambda _ (invoke py-spy "completions" "fish")))
+                (with-output-to-file
+                  (string-append elvish-completions-dir "/py-spy")
+                  (lambda _ (invoke py-spy "completions" "elvish")))))))))
+    (native-inputs
+     (append
+       (if (%current-target-system)
+           (list this-package)
+           '())
+       (list python-minimal-wrapper)))
+    (inputs (list libunwind))
+    (home-page "https://github.com/benfred/py-spy")
+    (synopsis "Sampling profiler for Python programs")
+    (description
+     "This package provides a sampling profiler for Python programs.")
     (license license:expat)))
 
 (define-public rust-py-spy-testdata-0.1
