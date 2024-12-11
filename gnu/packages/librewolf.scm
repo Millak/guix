@@ -188,7 +188,11 @@
                (invoke "make" "all")
                (copy-file (string-append "librewolf-" #$version
                                          ".source.tar.gz")
-                          #$output))))))))
+                          #$output)))))
+      (patches
+       (search-patches
+        "torbrowser-compare-paths.patch"
+        "librewolf-use-system-wide-dir.patch")))))
 
 ;; Define the versions of rust needed to build librewolf, trying to match
 ;; upstream.  See the file taskcluster/ci/toolchain/rust.yml at
@@ -705,6 +709,11 @@
                          rust-cbindgen-0.26
                          which
                          yasm))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "ICECAT_SYSTEM_DIR")
+            (separator #f)              ;single entry
+            (files '("lib/icecat")))))
     (home-page "https://librewolf.net/")
     (synopsis
      "Custom version of Firefox, focused on privacy, security and freedom")
