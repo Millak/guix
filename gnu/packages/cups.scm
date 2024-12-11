@@ -922,7 +922,8 @@ HP@tie{}LaserJet, and possibly other printers.  See @file{README} for details.")
            `((srfi srfi-26)
              ,@%default-gnu-modules)
            #:configure-flags
-           #~(list "--disable-static"
+           #~(list "CFLAGS=-g -O2 -Wno-error=implicit-function-declaration"
+                   "--disable-static"
                    (string-append "--prefix=" #$output)
                    (string-append "--with-cupsfilterdir=" #$output "/lib/cups/filter")
                    (string-append "--with-cupsppddir=" #$output "/share/cups/model"))
