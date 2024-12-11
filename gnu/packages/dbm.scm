@@ -8,6 +8,7 @@
 ;;; Copyright © 2021 Leo Le Bouter <lle-bout@zaclys.net>
 ;;; Copyright © 2021, 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 LuHui <luhux76@gmail.com>
+;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -89,6 +90,7 @@
            #:out-of-source? #true
            #:configure-flags
            #~(list
+              "CFLAGS=-g -O2 -Wno-error=implicit-function-declaration"
               ;; Remove 7 MiB of .a files.
               "--disable-static"
 
