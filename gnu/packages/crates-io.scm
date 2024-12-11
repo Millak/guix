@@ -98909,22 +98909,22 @@ for locating fonts.")
 (define-public rust-zerocopy-derive-0.8
   (package
     (name "rust-zerocopy-derive")
-    (version "0.8.9")
+    (version "0.8.13")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "zerocopy-derive" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1cd712qs5ccn6diy53ymk8vkprgcmnx1gvg3x3xsdxqxi362ywzs"))
+        (base32 "0pgjqk2w5wrw752wfsxgf7rwqjlk1r4vq5iky2fjijh38cxdg23r"))
        (modules '((guix build utils)))
-       (snippet
+       (snippet                         ;relax requirements
         '(begin (substitute* "Cargo.toml"
                   (("\"= ?([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
                    (string-append "\"^" version)))))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f  ; unresolved import `zerocopy`
+     `(#:tests? #f                 ;error[E0432]: unresolved import `zerocopy`
        #:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
                        ("rust-quote" ,rust-quote-1)
                        ("rust-syn" ,rust-syn-2))
