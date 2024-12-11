@@ -11,6 +11,7 @@
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -170,7 +171,9 @@ time-stamping or reference clock, sub-microsecond accuracy is possible.")
       ;; Pass "--with-yielding-select=yes" so that 'configure' knows whether
       ;; 'select' yields when using pthreads in a cross-compilation context.
       #:configure-flags
-      #~(list "--with-yielding-select=yes")
+      #~(list
+         "CFLAGS=-g -O2 -Wno-error=int-conversion"
+         "--with-yielding-select=yes")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'disable-network-test
