@@ -184,14 +184,14 @@ written in C, C++, Ada, Objective-C, Pascal and more.")
   (package/inherit gdb-14
     (name "gdb-multiarch")
     (arguments
-     (append
-      (list #:configure-flags
-            #~(list "--enable-targets=all"
-                    "--enable-multilib"
-                    "--enable-interwork"
-                    "--enable-languages=c,c++"
-                    "--disable-nls"))
-      (package-arguments gdb-14)))
+     (substitute-keyword-arguments (package-arguments gdb-14)
+       ((#:configure-flags flags '())
+        #~(cons* "--enable-targets=all"
+                 "--enable-multilib"
+                 "--enable-interwork"
+                 "--enable-languages=c,c++"
+                 "--disable-nls"
+                 #$flags))))
     (synopsis "The GNU debugger (with all architectures enabled)")))
 
 (define-public gdb-minimal
@@ -210,14 +210,14 @@ written in C, C++, Ada, Objective-C, Pascal and more.")
   (package/inherit gdb-14
     (name "avr-gdb")
     (arguments
-     (append
-      (list #:configure-flags
-            #~(list "--target=avr"
-                    "--disable-nls"
-                    "--enable-languages=c,c++"
-                    "--with-system-readline"
-                    "--enable-source-highlight"))
-      (package-arguments gdb-14)))
+     (substitute-keyword-arguments (package-arguments gdb-14)
+       ((#:configure-flags flags '())
+        #~(cons* "--target=avr"
+                 "--disable-nls"
+                 "--enable-languages=c,c++"
+                 "--with-system-readline"
+                 "--enable-source-highlight"
+                 #$flags))))
     (synopsis "The GNU Debugger for AVR")
     (description
      "GDB is the GNU debugger.  With it, you can monitor what a program is

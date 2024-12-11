@@ -741,12 +741,14 @@ languages are C and C++.")
       (inherit gdb)
       (name "gdb-arm-none-eabi")
       (arguments
-       `(#:configure-flags '("--target=arm-none-eabi"
-                             "--enable-multilib"
-                             "--enable-interwork"
-                             "--enable-languages=c,c++"
-                             "--disable-nls")
-         ,@(package-arguments gdb))))))
+       (substitute-keyword-arguments (package-arguments gdb)
+         ((#:configure-flags flags '())
+          #~(cons* "--target=arm-none-eabi"
+                   "--enable-multilib"
+                   "--enable-interwork"
+                   "--enable-languages=c,c++"
+                   "--disable-nls"
+                   #$flags)))))))
 
 (define-public libjaylink
   (package
