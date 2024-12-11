@@ -48,9 +48,6 @@
 (define* (remote-pipe-for-gexp lowered session #:optional become-command)
   "Return a remote pipe for the given SESSION to evaluate LOWERED.  If
 BECOME-COMMAND is given, use that to invoke the remote Guile REPL."
-  (define shell-quote
-    (compose object->string object->string))
-
   (define repl-command
     (append (or become-command '())
             (list
@@ -65,7 +62,7 @@ BECOME-COMMAND is given, use that to invoke the remote Guile REPL."
                           `("-C" ,directory))
                         (lowered-gexp-load-path lowered))
             `("-c"
-              ,(shell-quote (lowered-gexp-sexp lowered)))))
+              ,(object->string (lowered-gexp-sexp lowered)))))
 
   (let ((pipe (apply open-remote-pipe* session OPEN_READ repl-command)))
     (when (eof-object? (peek-char pipe))
