@@ -125,6 +125,7 @@
   #:use-module (gnu packages datamash)
   #:use-module (gnu packages dbm)
   #:use-module (gnu packages documentation)
+  #:use-module (gnu packages django)
   #:use-module (gnu packages elf)
   #:use-module (gnu packages emacs)
   #:use-module (gnu packages file)
@@ -10608,4 +10609,36 @@ to Wolfram.")
     (synopsis "Command-line interface to Mathics3")
     (description "This package provides a command-line interface to
 Mathics3.")
+    (license license:gpl3)))
+
+(define-public python-mathics-django
+  (package
+    (name "python-mathics-django")
+    (version "7.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "Mathics-Django" version))
+       (sha256
+        (base32 "02ccq0kx9i9b339p48j6xixr5wqj58dp8rhcik07b7vrfvznnxdi"))))
+    (build-system pyproject-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (delete 'check)
+         (add-after 'build 'check
+           (lambda _
+             (setenv "PYTHONPATH" (getcwd))
+             (setenv "DJANGO_SETTINGS_MODULE" "mathics_django.settings")
+             (invoke "django-admin" "test"))))))
+    (native-inputs (list python-pytest))
+    (propagated-inputs (list python-django-4.2
+                             python-mathics-scanner
+                             python-mathics-core
+                             python-networkx-next
+                             python-pygments
+                             python-requests))
+    (home-page "https://mathics.org/")
+    (synopsis "A Django front end for Mathics3.")
+    (description "This package provides a Django front end for Mathics3.")
     (license license:gpl3)))
