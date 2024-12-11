@@ -32643,20 +32643,20 @@ timers.")
 libraries GMP, MPFR, and MPC.")
     (license license:lgpl3+)))
 
-(define-public rust-goblin-0.8
+(define-public rust-goblin-0.9
   (package
     (name "rust-goblin")
-    (version "0.8.0")
+    (version "0.9.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "goblin" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "11wqipqx0dbimxy5612nxpx79qja43sxic95llcb34r0xpzs81xv"))))
+        (base32 "08yrnjj5j4nddh6y1r8kf35ys7p3iwg6npga3nc4cwfps4r3zask"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f          ; Not all files included.
+     `(#:tests? #f                      ;there are missing data files
        #:cargo-inputs (("rust-log" ,rust-log-0.4)
                        ("rust-plain" ,rust-plain-0.2)
                        ("rust-scroll" ,rust-scroll-0.12))
@@ -32666,6 +32666,25 @@ libraries GMP, MPFR, and MPC.")
     (description "This package provides an ELF, Mach-o, and PE binary parsing
 and loading crate.")
     (license license:expat)))
+
+(define-public rust-goblin-0.8
+  (package
+    (inherit rust-goblin-0.9)
+    (name "rust-goblin")
+    (version "0.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "goblin" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "11wqipqx0dbimxy5612nxpx79qja43sxic95llcb34r0xpzs81xv"))))
+    (arguments
+     `(#:tests? #f          ; Not all files included.
+       #:cargo-inputs (("rust-log" ,rust-log-0.4)
+                       ("rust-plain" ,rust-plain-0.2)
+                       ("rust-scroll" ,rust-scroll-0.12))
+       #:cargo-development-inputs (("rust-stderrlog" ,rust-stderrlog-0.5))))))
 
 (define-public rust-goblin-0.7
   (package
