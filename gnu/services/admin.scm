@@ -38,6 +38,7 @@
   #:use-module (gnu system accounts)
   #:use-module ((gnu system shadow) #:select (account-service-type))
   #:use-module ((guix store) #:select (%store-prefix))
+  #:use-module (guix deprecation)
   #:use-module (guix gexp)
   #:use-module (guix modules)
   #:use-module (guix packages)
@@ -334,12 +335,16 @@ for ROTATION."
   (or (rottlog-configuration-jobs config)
       (default-jobs (rottlog-configuration-rottlog config))))
 
-(define rottlog-service-type
+;; TODO: Deprecated; remove sometime after 2025-06-15.
+(define-deprecated rottlog-service-type
+  log-rotation-service-type
   (service-type
    (name 'rottlog)
    (description
     "Periodically rotate log files using GNU@tie{}Rottlog and GNU@tie{}mcron.
-Old log files are removed or compressed according to the configuration.")
+Old log files are removed or compressed according to the configuration.
+
+This service is deprecated and slated for removal after 2025-06-15.")
    (extensions (list (service-extension etc-service-type rottlog-etc)
                      (service-extension mcron-service-type
                                         rottlog-jobs-or-default)
