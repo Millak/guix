@@ -67766,14 +67766,14 @@ First In First Out} ring buffer with direct access to inner data.")
 (define-public rust-rle-decode-fast-1
   (package
     (name "rust-rle-decode-fast")
-    (version "1.0.1")
+    (version "1.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rle-decode-fast" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1b4h7qs4mssc5dnlhs3f91ya8pb40bv72zzshl18gify2jllzgna"))))
+        (base32 "08kljzl29rpm12fiz0qj5pask49aiswdvcjigdcq73s224rgd0im"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
