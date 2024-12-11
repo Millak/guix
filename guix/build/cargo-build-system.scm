@@ -25,7 +25,7 @@
 (define-module (guix build cargo-build-system)
   #:use-module ((guix build gnu-build-system) #:prefix gnu:)
   #:use-module (guix build json)
-  #:use-module (guix build utils)
+  #:use-module ((guix build utils) #:hide (delete))
   #:use-module (guix build cargo-utils)
   #:use-module (ice-9 popen)
   #:use-module (ice-9 rdelim)
