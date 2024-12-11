@@ -420,7 +420,7 @@ Browser.")
                           ;;
                           "modules/freetype2"
                           ;; "media/libjpeg"  ; needed for now, because media/libjpeg/moz.build is referenced from config/external/moz.build
-                          ;; UNBUNDLE-ME! "modules/zlib"
+                          "modules/zlib"
                           "ipc/chromium/src/third_party/libevent"
                           "media/libvpx"
                           ;; UNBUNDLE-ME! "media/libogg"
