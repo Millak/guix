@@ -351,7 +351,7 @@ Browser.")
          "--with-system-png"            ;must be libpng-apng
          "--with-system-zlib"
          ;; UNBUNDLE-ME! "--with-system-bz2"
-         ;; UNBUNDLE-ME! "--with-system-libevent"
+         "--with-system-libevent"
          ;; UNBUNDLE-ME! "--with-system-ogg"
          ;; UNBUNDLE-ME! "--with-system-vorbis"
          ;; UNBUNDLE-ME! "--with-system-theora" ; wants theora-1.2, not yet released
@@ -423,7 +423,7 @@ Browser.")
                           "modules/freetype2"
                           ;; "media/libjpeg"  ; needed for now, because media/libjpeg/moz.build is referenced from config/external/moz.build
                           ;; UNBUNDLE-ME! "modules/zlib"
-                          ;; UNBUNDLE-ME! "ipc/chromium/src/third_party/libevent"
+                          "ipc/chromium/src/third_party/libevent"
                           "media/libvpx"
                           ;; UNBUNDLE-ME! "media/libogg"
                           ;; UNBUNDLE-ME! "media/libvorbis"
