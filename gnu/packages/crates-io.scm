@@ -71740,17 +71740,17 @@ sub-processes using a fork-like interface.")
 (define-public rust-ruzstd-0.7
   (package
     (name "rust-ruzstd")
-    (version "0.7.2")
+    (version "0.7.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "ruzstd" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "08ffshmfmmcgijcg4w517clpsxwknga89inxjw4hgb1s2f797hwr"))))
+        (base32 "17z83lw00pd3190yvdk2lksdi7my6wc0psgg07is6gf7pyb2kl7s"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f      ; Not all files included.
+     `(#:tests? #f                      ;missing data files
        #:cargo-inputs
        (("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
         ("rust-rustc-std-workspace-alloc" ,rust-rustc-std-workspace-alloc-1)
