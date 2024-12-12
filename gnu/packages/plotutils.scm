@@ -136,10 +136,10 @@
                            (guix build emacs-utils))
       #:configure-flags
       #~(list (string-append "--enable-gc=" #$(this-package-input "libgc"))
-              (string-append "--with-latex=" #$output "/share/texmf-dist/tex/latex")
+              (string-append "--with-latex=" #$output "/share/texmf/tex/latex")
               (string-append "--with-context="
                              #$output
-                             "/share/texmf-dist/tex/context/third"))
+                             "/share/texmf/tex/context/third"))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'locate-tirpc
