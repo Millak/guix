@@ -2399,13 +2399,7 @@ exec " gcc "/bin/" program
                                    ,(glibc-dynamic-linker
                                      (match (%current-system)
                                        ("x86_64-linux" "i686-linux")
-                                       (_ (%current-system))))))
-                  (if (target-hurd64?)
-                      ;;Convince gmp's configure that gcc works
-                      (list (string-append
-                             "CC_FOR_BUILD=gcc"
-                             " -Wno-implicit-function-declaration"))
-                      '())))))
+                                       (_ (%current-system))))))))))
         ((#:phases phases)
          #~(modify-phases #$phases
              (add-after 'unpack 'unpack-gmp&co
@@ -3275,24 +3269,14 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
                                        "/lib -L" zlib "/lib -Wl,-rpath="
                                        zlib "/lib")
                         flag))
-                  #$(if (or (target-hurd64?)
-                            (and (target-x86?) (target-linux?)))
-                        `(cons
-                          (string-append
-                           ;;Convince gmp's configure that gcc works
-                           "STAGE_CC_WRAPPER=" (getcwd) "/build/gcc.sh")
-                          ,flags)
-                        flags))))
+                  #$flags)))
         ((#:configure-flags flags)
+         ;; XXX FIXME: Does this need to stay separate?
          (if (or (target-hurd64?)
                  (and (target-x86?) (target-linux?)))
              #~(append
                 #$flags
-                (list #$(string-append
-                         ;;Convince gmp's configure that gcc works
-                         "CC=gcc"
-                         " -Wno-implicit-function-declaration")
-                      "--disable-plugin"))
+                (list "--disable-plugin"))
              flags))
         ;; Build again GMP & co. within GCC's build process, because it's hard
         ;; to do outside (because GCC-BOOT0 is a cross-compiler, and thus
@@ -3338,20 +3322,7 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
                                                (getenv "CPLUS_INCLUDE_PATH")
                                                #\:))
                                       ":")
-                                     "\nAM_CXXFLAGS = "))))))
-             #$@(if (or (target-hurd64?)
-                        (and (target-x86?) (target-linux?)))
-                    #~((add-after 'configure 'create-stage-wrapper
-                         (lambda _
-                           (with-output-to-file "gcc.sh"
-                             (lambda _
-                               (format #t "#! ~a/bin/bash
-exec \"$@\" \
-    -Wno-error \
-    -Wno-implicit-function-declaration"
-                                       #$static-bash-for-glibc)))
-                           (chmod "gcc.sh" #o555))))
-                    #~()))))))
+                                     "\nAM_CXXFLAGS = ")))))))))))
 
     ;; This time we want Texinfo, so we get the manual.  Add
     ;; STATIC-BASH-FOR-GLIBC so that it's used in the final shebangs of
