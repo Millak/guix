@@ -584,6 +584,32 @@ package).")
      "This package provides a library to generate unified diffs.")
     (license license:bsd-3)))
 
+(define-public go-github-com-jackc-pgmock
+  (package
+    (name "go-github-com-jackc-pgmock")
+    (version "0.0.0-20210724152146-4ad1a8207f65")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jackc/pgmock")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "189hp5fkvavwgg7z0z9b9xj88ypsphvb7s4dpwa5aj42jm39nqha"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ; cycles with go-github-com-jackc-pgconn
+      #:import-path "github.com/jackc/pgmock"))
+    (propagated-inputs
+     (list go-github-com-jackc-pgproto3-v2))
+    (home-page "https://github.com/jackc/pgmock")
+    (synopsis "PostgreSQL server mocking library")
+    (description
+     "This package implements a functionality to mock a PostgreSQL server.")
+    (license license:expat)))
+
 (define-public go-github-com-jacobsa-oglematchers
   (let ((commit "141901ea67cd4769c6800aa7bfdfc558fa22bda5")
         (revision "0"))
