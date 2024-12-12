@@ -210,7 +210,7 @@ is on expressing the content semantically, avoiding physical markup commands.")
                         #t)))
                   '()))))
       (if (or (target-hurd64?) (%current-target-system))
-          (list #:configure-flags ''("CFLAGS=-Wno-incompatible-pointer-types"))
+          (list #:configure-flags ''("CFLAGS=-Wno-error=incompatible-pointer-types"))
           '())))))
 
 (define-public info-reader
