@@ -1086,7 +1086,7 @@ editors.")
         (base32 "11l1q5lmsj9g7yil1dn7n1cgsr8iikx59kg9riahpb6xw0p959l7"))
        (patches
         (search-patches "texmacs-wayland-hidpi.patch"))))
-    (build-system cmake-build-system)
+    (build-system qt-build-system)
     (native-inputs
      (list pkg-config xdg-utils))       ;for xdg-icon-resource
     (inputs
