@@ -370,8 +370,11 @@ superfluous when building natively and incorrect when cross-compiling."
 (define (properly-starts-sentence? s)
   (string-match "^[(\"'`[:upper:][:digit:]]" s))
 
+(define %starts-with-texinfo-markup-rx
+  (make-regexp "^@(acronym|dfn|code|command|emph|file|quotation|samp|uref|url)\\{.*?\\}"))
+
 (define (starts-with-texinfo-markup? s)
-  (string-match "^@(acronym|dfn|code|command|emph|file|quotation|samp|uref|url)\\{.*?\\}" s))
+  (regexp-exec %starts-with-texinfo-markup-rx s))
 
 (define (starts-with-abbreviation? s)
   "Return #t if S starts with what looks like an abbreviation or acronym."
