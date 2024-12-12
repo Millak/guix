@@ -7974,12 +7974,10 @@ sensors).")
                  ;; The tests fail when run with gccgo.
                  (false-if-exception (search-input-file inputs "/bin/gccgo"))
                  (apply (assoc-ref %standard-phases 'check) args)))))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
     (propagated-inputs
-     (list go-github-com-davecgh-go-spew
-           go-github-com-pmezard-go-difflib
-           go-github-com-stretchr-testify
-           go-golang-org-x-crypto
-           go-golang-org-x-sys))
+     (list go-golang-org-x-sys))
     (home-page "https://github.com/sirupsen/logrus")
     (synopsis "Structured, pluggable logging for Go")
     (description "Logrus is a structured logger for Go, completely API
