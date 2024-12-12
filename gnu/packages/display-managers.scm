@@ -13,6 +13,7 @@
 ;;; Copyright © 2021-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -712,7 +713,8 @@ in config.h of lightdm-tiny-greeter."
         (base32 "06r47ypf9lsy76jikrvihw8ka9j2wbrnn8g3sbxp819hcbqxg22z"))
        (patches (search-patches "slim-config.patch"
                                 "slim-login.patch"
-                                "slim-display.patch"))))
+                                "slim-display.patch"
+                                "slim-gcc-14.patch"))))
     (build-system cmake-build-system)
     (inputs (list fontconfig
                   freeglut
