@@ -1563,16 +1563,16 @@ with the included @command{xfstests-check} helper.")
 (define-public zfs
   (package
     (name "zfs")
-    (version "2.2.6")
+    (version "2.2.7")
     (outputs '("out" "module" "src"))
     (source
       (origin
         (method url-fetch)
-          (uri (string-append "https://github.com/openzfs/zfs/releases"
-                              "/download/zfs-" version
-                              "/zfs-" version ".tar.gz"))
-          (sha256
-           (base32 "19x2a8k25i3y6nr7nx5aaqrpnp55vjmrw86p06zpgpf578804bn9"))))
+        (uri (string-append "https://github.com/openzfs/zfs/releases"
+                            "/download/zfs-" version
+                            "/zfs-" version ".tar.gz"))
+        (sha256
+         (base32 "0wkniyfjmbvyyfqv35fhbdx58qk7rck3f91j05x419pjmfzy7f5j"))))
     (build-system linux-module-build-system)
     (arguments
      (list
