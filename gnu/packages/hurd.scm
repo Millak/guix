@@ -499,12 +499,13 @@ exec ${system}/rc \"$@\"
                                      "/bin/bash")
                       (string-append "CC="
                                      ,(cc-for-target))
-                      (string-append "WARNINGS="
-                                     " -Wno-declaration-missing-parameter-type"
-                                     " -Wno-implicit-function-declaration"
-                                     " -Wno-implicit-int"
-                                     " -Wno-int-conversion"
-                                     " -Wno-strict-prototypes")
+                      (string-append
+                       "WARNINGS="
+                       " -Wno-error=declaration-missing-parameter-type"
+                       " -Wno-error=implicit-function-declaration"
+                       " -Wno-error=implicit-int"
+                       " -Wno-error=int-conversion"
+                       " -Wno-error=strict-prototypes")
                       (string-append "ARCH=" arch)))))
          (add-after 'install 'install-goodies
           (lambda* (#:key inputs native-inputs outputs #:allow-other-keys)
