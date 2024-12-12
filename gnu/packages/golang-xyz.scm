@@ -4673,6 +4673,52 @@ ABI}.")
 time strings.")
     (license license:expat)))
 
+(define-public go-github-com-jackc-chunkreader
+  (package
+    (name "go-github-com-jackc-chunkreader")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jackc/chunkreader")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zsxsd6alk51lssq1xq194sf88awj083fjiy7pk3098v2nj9m65l"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/jackc/chunkreader"))
+    (home-page "https://github.com/jackc/chunkreader")
+    (synopsis "Wrapper for @code{io.Reader}")
+    (description
+     "ChunkReader is a @code{io.Reader} wrapper that minimizes IO reads and
+memory allocations.  It allocates memory in chunks and will read as much as
+will fit in the current buffer in a single call regardless of how large a read
+is actually requested.  The memory returned via Next is owned by the caller.
+This avoids the need for an additional copy.  It extracted from original
+implementation in https://github.com/jackc/pgx.")
+    (license license:expat)))
+
+(define-public go-github-com-jackc-chunkreader-v2
+  (package
+    (inherit go-github-com-jackc-chunkreader)
+    (name "go-github-com-jackc-chunkreader-v2")
+    (version "2.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jackc/chunkreader")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0fj585hp3s4cjfzncr5gmim96p0b956pqdf4nm7yan1ipfch9l1c"))))
+    (arguments
+     (list
+      #:import-path "github.com/jackc/chunkreader/v2"))))
+
 (define-public go-github-com-jackc-pgio
   (package
     (name "go-github-com-jackc-pgio")
