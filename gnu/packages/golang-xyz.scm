@@ -4719,6 +4719,47 @@ implementation in https://github.com/jackc/pgx.")
      (list
       #:import-path "github.com/jackc/chunkreader/v2"))))
 
+(define-public go-github-com-jackc-pgconn
+  (package
+    (name "go-github-com-jackc-pgconn")
+    (version "1.14.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jackc/pgconn")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0rqx0y9k6g8ydcpciv3k246hfd5am4yw4jg3cbq4wlfny01ksh3y"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ; requiring running PostgreSQL server
+      #:import-path "github.com/jackc/pgconn"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-jackc-chunkreader-v2
+           go-github-com-jackc-pgio
+           go-github-com-jackc-pgmock
+           go-github-com-jackc-pgpassfile
+           go-github-com-jackc-pgproto3-v2
+           go-github-com-jackc-pgservicefile
+           go-golang-org-x-crypto
+           go-golang-org-x-text))
+    (home-page "https://github.com/jackc/pgconn")
+    (synopsis "Low-level PostgreSQL database driver")
+    (description
+     "Package pgconn is a low-level PostgreSQL database driver.  It operates
+at nearly the same level as the C library libpq.
+
+It is primarily intended to serve as the foundation for higher level libraries
+such as @url{https://github.com/jackc/pgx}.  Applications should handle normal
+queries with a higher level library and only use pgconn directly when required
+for low-level access to PostgreSQL functionality.")
+    (license license:expat)))
+
 (define-public go-github-com-jackc-pgio
   (package
     (name "go-github-com-jackc-pgio")
