@@ -635,11 +635,11 @@ implementing them.")
                "PKGDIR=libdde_linux26"
                (string-append "CC=" ,(cc-for-target))
                (string-append "WARNINGS="
-                              " -Wno-declaration-missing-parameter-type"
-                              " -Wno-implicit-function-declaration"
-                              " -Wno-implicit-int"
-                              " -Wno-int-conversion"
-                              " -Wno-strict-prototypes")
+                              " -Wno-error=declaration-missing-parameter-type"
+                              " -Wno-error=implicit-function-declaration"
+                              " -Wno-error=implicit-int"
+                              " -Wno-error=int-conversion"
+                              " -Wno-error=strict-prototypes")
                (let ((arch ,(match (or (%current-target-system)
                                        (%current-system))
                               ((? target-x86-32?)
