@@ -1313,30 +1313,30 @@ real database connection.")
     (license license:expat)))
 
 (define-public go-golang-org-x-lint
-    (package
-      (name "go-golang-org-x-lint")
-      (version "0.0.0-20241112194109-818c5a804067")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://go.googlesource.com/lint")
-               (commit (go-version->git-ref version))))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "06ni2jpd3s5bzg2qrry58svakkg9k43gkgkrbk8f8x886qnhnimp"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path "golang.org/x/lint"
-         #:tests? #f)) ;; TODO: Fix tests
-      (propagated-inputs
-       (list go-golang-org-x-tools))
-      (home-page "https://golang.org/x/lint")
-      (synopsis "Linter for Go source code")
-      (description
-       "This is a linter for Go source code.  Unlike gofmt, it doesn't
-reformat the source code, it only prints out style mistakes.")
-      (license license:bsd-3)))
+  (package
+    (name "go-golang-org-x-lint")
+    (version "0.0.0-20241112194109-818c5a804067")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://go.googlesource.com/lint")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06ni2jpd3s5bzg2qrry58svakkg9k43gkgkrbk8f8x886qnhnimp"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "golang.org/x/lint"
+       #:tests? #f)) ;; TODO: Fix tests
+    (propagated-inputs
+     (list go-golang-org-x-tools))
+    (home-page "https://golang.org/x/lint")
+    (synopsis "Linter for Go source code")
+    (description
+     "This is a linter for Go source code.  Unlike gofmt, it doesn't reformat
+the source code, it only prints out style mistakes.")
+    (license license:bsd-3)))
 
 ;; XXX: Unmaintained since 2020, see
 ;; <https://github.com/go-check/check/issues/111>.
