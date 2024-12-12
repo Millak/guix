@@ -362,7 +362,7 @@ Python 3.3 and later, rather than on Python 2.")
               ;; nars; see <https://bugs.gnu.org/21949>.
               "NO_INSTALL_HARDLINKS=indeed"
               #$@(if (or (target-hurd64?) (%current-target-system))
-                     #~("-Wno-implicit-function-declaration")
+                     #~("-Wno-error=implicit-function-declaration")
                      #~()))
       #:phases
       #~(modify-phases %standard-phases
