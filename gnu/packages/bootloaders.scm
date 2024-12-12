@@ -18,7 +18,7 @@
 ;;; Copyright © 2022, 2023 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2021 Stefan <stefan-guix@vodafonemail.de>
 ;;; Copyright © 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
-;;; Copyright © 2023 Herman Rimm <herman@rimm.ee>
+;;; Copyright © 2023-2024 Herman Rimm <herman@rimm.ee>
 ;;; Copyright © 2023 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;;
@@ -1150,6 +1150,27 @@ CONFIG_TOOLS_KWBIMAGE=n"))))
                          (copy-file file target-file)))
                      uboot-files)))))))))))
 
+(define* (make-u-boot-rockchip-package board soc #:optional configs)
+  "Return the U-Boot package for BOARD with AAarch64 Rockchip SOC
+(System on Chip)."
+  (let* ((board (string-append board "-" (symbol->string soc)))
+         (base (make-u-boot-package board "aarch64-linux-gnu"
+                                    #:configs configs))
+         (atf (match soc
+                ('rk3399 arm-trusted-firmware-rk3399)
+                ('rk3328 arm-trusted-firmware-rk3328))))
+    (package
+      (inherit base)
+      (arguments
+       (substitute-keyword-arguments (package-arguments base)
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'set-environment
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (let ((atf (assoc-ref inputs #$(package-name atf))))
+                    (setenv "BL31" (string-append atf "/bl31.elf")))))))))
+      (inputs (modify-inputs (package-inputs base) (append atf))))))
+
 (define-public u-boot-am335x-boneblack
   (let ((base (make-u-boot-package
                "am335x_evm" "arm-linux-gnueabihf"
@@ -1265,19 +1286,7 @@ version, contrary to Novena upstream, does not load u-boot.img from the first
 partition."))
 
 (define-public u-boot-orangepi-r1-plus-lts-rk3328
-  (let ((base (make-u-boot-package "orangepi-r1-plus-lts-rk3328" "aarch64-linux-gnu")))
-    (package
-      (inherit base)
-      (arguments
-       (substitute-keyword-arguments (package-arguments base)
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'set-environment
-                (lambda* (#:key native-inputs inputs #:allow-other-keys)
-                  (setenv "BL31" (search-input-file inputs "bl31.elf"))))))))
-      (inputs
-       (modify-inputs (package-inputs base)
-         (append arm-trusted-firmware-rk3328))))))
+  (make-u-boot-rockchip-package "orangepi-r1-plus-lts" 'rk3328))
 
 (define-public u-boot-cubieboard
   (make-u-boot-package "Cubieboard" "arm-linux-gnueabihf"))
@@ -1286,22 +1295,7 @@ partition."))
   (make-u-boot-package "Cubietruck" "arm-linux-gnueabihf"))
 
 (define-public u-boot-puma-rk3399
-  (let ((base (make-u-boot-package "puma-rk3399" "aarch64-linux-gnu")))
-    (package
-      (inherit base)
-      (arguments
-       (substitute-keyword-arguments (package-arguments base)
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'set-environment
-                (lambda* (#:key inputs #:allow-other-keys)
-                  (setenv "BL31" (search-input-file inputs "/bl31.elf"))))
-              ;; Phases do not succeed on the bl31 ELF.
-              (delete 'strip)
-              (delete 'validate-runpath)))))
-      (inputs
-       (modify-inputs (package-inputs base)
-         (append arm-trusted-firmware-rk3399))))))
+  (make-u-boot-rockchip-package "puma" 'rk3399))
 
 (define-public u-boot-qemu-arm
   (make-u-boot-package "qemu_arm" "arm-linux-gnueabihf"
@@ -1413,86 +1407,38 @@ Documentation} for more information (for example by running @samp{info
          (append opensbi-for-visionfive2))))))
 
 (define-public u-boot-rock64-rk3328
-  (let ((base (make-u-boot-package "rock64-rk3328" "aarch64-linux-gnu")))
-    (package
-      (inherit base)
-      (arguments
-       (substitute-keyword-arguments (package-arguments base)
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'set-environment
-                (lambda* (#:key native-inputs inputs #:allow-other-keys)
-                  (setenv "BL31" (search-input-file inputs "bl31.elf"))))))))
-      (inputs
-       (modify-inputs (package-inputs base)
-         (append arm-trusted-firmware-rk3328))))))
+  (make-u-boot-rockchip-package "rock64" 'rk3328))
 
 (define-public u-boot-firefly-rk3399
-  (let ((base (make-u-boot-package "firefly-rk3399" "aarch64-linux-gnu")))
-    (package
-      (inherit base)
-      (arguments
-       (substitute-keyword-arguments (package-arguments base)
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'set-environment
-                (lambda* (#:key native-inputs inputs #:allow-other-keys)
-                  (setenv "BL31" (search-input-file inputs "bl31.elf"))))
-              ;; Phases do not succeed on the bl31 ELF.
-              (delete 'strip)
-              (delete 'validate-runpath)))))
-      (inputs
-       (modify-inputs (package-inputs base)
-         (append arm-trusted-firmware-rk3399))))))
+  (make-u-boot-rockchip-package "firefly" 'rk3399))
 
 (define-public u-boot-rockpro64-rk3399
-  (let ((base (make-u-boot-package "rockpro64-rk3399" "aarch64-linux-gnu"
-                                   #:configs '("CONFIG_USB=y"
-                                               "CONFIG_AHCI=y"
-                                               "CONFIG_AHCI_PCI=y"
-                                               "CONFIG_SATA=y"
-                                               "CONFIG_SATA_SIL=y"
-                                               "CONFIG_SCSI=y"
-                                               "CONFIG_SCSI_AHCI=y"
-                                               ;; Disable SPL FIT signatures,
-                                               ;; due to GPLv2 and Openssl
-                                               ;; license incompatibilities
-                                               "# CONFIG_SPL_FIT_SIGNATURE is not set"))))
+  (let ((base (make-u-boot-rockchip-package
+               "rockpro64" 'rk3399
+               '("CONFIG_USB=y"
+                 "CONFIG_AHCI=y"
+                 "CONFIG_AHCI_PCI=y"
+                 "CONFIG_SATA=y"
+                 "CONFIG_SATA_SIL=y"
+                 "CONFIG_SCSI=y"
+                 "CONFIG_SCSI_AHCI=y"
+                 ;; Disable SPL FIT signatures, due to GPLv2 and
+                 ;; OpenSSL license incompatibilities.
+                 "# CONFIG_SPL_FIT_SIGNATURE is not set"))))
     (package
       (inherit base)
       (arguments
        (substitute-keyword-arguments (package-arguments base)
          ((#:phases phases)
           #~(modify-phases #$phases
-              (add-after 'unpack 'set-environment
-                (lambda* (#:key inputs #:allow-other-keys)
-                  (setenv "BL31" (search-input-file inputs "/bl31.elf"))))
               (add-after 'unpack 'patch-header
                 (lambda _
                   (substitute* "include/config_distro_bootcmd.h"
                     (("\"scsi_need_init=")
-                     "\"setenv scsi_need_init"))))))))
-      (inputs
-       (modify-inputs (package-inputs base)
-         (append arm-trusted-firmware-rk3399))))))
+                     "\"setenv scsi_need_init")))))))))))
 
 (define-public u-boot-pinebook-pro-rk3399
-  (let ((base (make-u-boot-package "pinebook-pro-rk3399" "aarch64-linux-gnu")))
-    (package
-      (inherit base)
-      (arguments
-       (substitute-keyword-arguments (package-arguments base)
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'set-environment
-                (lambda* (#:key native-inputs inputs #:allow-other-keys)
-                  (setenv "BL31" (search-input-file inputs "bl31.elf"))))
-              ;; Phases do not succeed on the bl31 ELF.
-              (delete 'strip)
-              (delete 'validate-runpath)))))
-      (inputs
-       (modify-inputs (package-inputs base)
-         (append arm-trusted-firmware-rk3399))))))
+  (make-u-boot-rockchip-package "pinebook-pro" 'rk3399))
 
 (define*-public (make-u-boot-bin-package u-boot-package
                                          #:key
