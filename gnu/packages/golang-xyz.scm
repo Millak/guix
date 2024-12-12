@@ -4721,6 +4721,31 @@ time strings.")
      "Package pgpassfile is a parser @code{PostgreSQL} .pgpass files.")
     (license license:expat)))
 
+(define-public go-github-com-jackc-pgservicefile
+  (package
+    (name "go-github-com-jackc-pgservicefile")
+    (version "0.0.0-20240606120523-5a60cdf6a761")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jackc/pgservicefile")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0z8ndfdxx5r4dpjbjn9caq9w56lrzwm6nh8jwwk0gnq0n2q4cfhi"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/jackc/pgservicefile"))
+    (native-inputs (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/jackc/pgservicefile")
+    (synopsis "Parser PostgreSQL for service files")
+    (description
+     "Package pgservicefile is a parser for @code{PostgreSQL} service
+files (e.g. .pg_service.conf).")
+    (license license:expat)))
+
 (define-public go-github-com-jackc-puddle
   (package
     (name "go-github-com-jackc-puddle")
