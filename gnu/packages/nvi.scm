@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014 Marek Benc <merkur32@gmail.com>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -25,6 +26,7 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix build-system gnu)
+  #:use-module (guix gexp)
   #:use-module (guix licenses)
   #:use-module (guix utils))
 
@@ -65,32 +67,34 @@
 
     (build-system gnu-build-system)
     (arguments
-      `(#:out-of-source? #t
-        #:configure-flags
-        '("--enable-widechar"
-          ,@(if (%current-target-system)
-                '("vi_cv_sprintf_count=yes")
-                '()))
-        #:make-flags (list "CFLAGS=-g -O2 -Wno-incompatible-pointer-types\
+     (list
+      #:out-of-source? #t
+      #:configure-flags
+      #~'("--enable-widechar"
+          #$@(if (%current-target-system)
+                 '("vi_cv_sprintf_count=yes")
+                 '()))
+      #:make-flags #~(list "CFLAGS=-g -O2 -Wno-incompatible-pointer-types\
  -Wno-implicit-function-declaration")
-        #:phases
-        (modify-phases %standard-phases
+
+      #:phases
+      #~(modify-phases %standard-phases
           (add-before 'configure 'fix-configure
             (lambda* (#:key inputs native-inputs #:allow-other-keys)
               ;; Replace outdated config.sub and config.guess:
               (with-directory-excursion "dist"
-                (for-each (lambda (file)
-                            (chmod file #o755)
-                            (install-file
-                             (string-append
-                              (assoc-ref
-                               (or native-inputs inputs) "automake")
-                              "/share/automake-"
-                              ,(version-major+minor
-                                (package-version automake))
-                              "/" file) "."))
-                          '("config.sub")))
-              #t)))))
+                (for-each
+                 (lambda (file)
+                   (chmod file #o755)
+                   (install-file
+                    (format #f "~a/share/automake-~a/~a"
+                            (assoc-ref (or native-inputs inputs)
+                                       "automake")
+                            #$(version-major+minor
+                               (package-version automake))
+                            file)
+                    "."))
+                 '("config.sub" "config.guess"))))))))
     (inputs
       (list bdb ncurses))
     (native-inputs
