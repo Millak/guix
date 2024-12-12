@@ -9267,6 +9267,87 @@ Go.")
      (list
       #:import-path "gopkg.in/alecthomas/kingpin.v2"))))
 
+(define-public go-gopkg-in-inconshreveable-log15-v1
+  (package
+    (name "go-gopkg-in-inconshreveable-log15-v1")
+    (version "1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/inconshreveable/log15")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1hz7vnzn4cbiqra443mhmp63ifzq15xsfnyc9jmxh2p1ngwxp2n2"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "gopkg.in/inconshreveable/log15.v1"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://pkg.go.dev/github.com/inconshreveable/log15")
+    (synopsis "Structured, composable logging for Golang")
+    (description
+     "This package provides a toolkit for logging that is both human and
+machine readable.  It is modeled after the Go standard library's @code{io} and
+@code{net/http} packages and is an alternative to the standard library's
+@code{log} package.")
+    (license license:asl2.0)))
+
+(define-public go-gopkg-in-inconshreveable-log15-v2
+  (package
+    (inherit go-gopkg-in-inconshreveable-log15-v1)
+    (name "go-gopkg-in-inconshreveable-log15-v2")
+    (version "2.16.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/inconshreveable/log15")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "117ivm1asxw2hlwb3zf72q553ywjk00bsn21bpwi99q784ghr4wd"))))
+    (arguments
+     (list
+      #:import-path "gopkg.in/inconshreveable/log15.v2"
+      #:test-flags #~(list "-skip" "TestCallerStackHandler")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-import-path
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (substitute* (find-files "." "\\.go$")
+                  (("github.com/inconshreveable/log15") import-path))))))))
+    (propagated-inputs
+     (list go-github-com-go-stack-stack
+           go-github-com-mattn-go-colorable
+           go-golang-org-x-term))))
+
+(define-public go-gopkg-in-inconshreveable-log15-v3
+  (package
+    (inherit go-gopkg-in-inconshreveable-log15-v2)
+    (name "go-gopkg-in-inconshreveable-log15-v3")
+    (version "3.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/inconshreveable/log15")
+             (commit (string-append "v" version "-testing.5"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14b03w7mlsac0n5ig5qc0iggii6ig9mvbiv6656r1h19vh4kmx8x"))))
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-gopkg-in-inconshreveable-log15-v2)
+       ((#:import-path _) "gopkg.in/inconshreveable/log15.v3")))
+    (propagated-inputs
+     (list go-github-com-go-stack-stack
+           go-github-com-mattn-go-colorable
+           go-golang-org-x-term))))
+
 (define-public go-gopkg-in-ini-v1
   (package
     (name "go-gopkg-in-ini-v1")
