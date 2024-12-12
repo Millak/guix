@@ -4372,8 +4372,15 @@ have super fancy logs.")
          "0ihdqg411gkv454fwx8w5nbndgkm5dz5phfliksxgmhggyxxm7sn"))))
     (build-system go-build-system)
     (arguments
-     '(#:tests? #f ;; tests require a network connection
-       #:import-path "github.com/go-sql-driver/mysql"))
+     (list
+      #:import-path "github.com/go-sql-driver/mysql"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       (list "TestConnectorReturnsTimeout"
+                             "TestErrorInMultiResult"
+                             "TestDSNReformat/user:p"
+                             "FuzzFormatDSN/seed#8")
+                       "|"))))
     (propagated-inputs
      (list go-filippo-io-edwards25519))
     (home-page "https://github.com/go-sql-driver/mysql")
