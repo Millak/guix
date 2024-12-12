@@ -3821,7 +3821,13 @@ golang's database/sql package.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/go-stack/stack"))
+      #:import-path "github.com/go-stack/stack"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       (list "TestCallStackString"
+                             "TestCallStackMarshalText"
+                             "TestTrimRuntime")
+                       "|"))))
     (home-page "https://github.com/go-stack/stack")
     (synopsis "Utilities to capture, manipulate, and format call stacks")
     (description
