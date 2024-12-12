@@ -4,7 +4,7 @@
 ;;; Copyright © 2015-2017, 2019-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2018, 2023 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2019 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2019, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Lars-Dominik Braun <ldb@leibniz-psychology.org>
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
@@ -457,10 +457,13 @@ downloads the source and possibly the wheel of PYPI-PACKAGE."
   "Try different project name substitution until the result is found in
 pypi-uri.  Downcase is required for \"uWSGI\", and
 underscores are required for flake8-array-spacing."
+  ;; XXX: Each tool producing wheels and sdists appear to have their own,
+  ;; distinct, naming scheme.
   (or (find (cut string-contains pypi-url <>)
             (list name
                   (string-downcase name)
-                  (string-replace-substring name "-" "_")))
+                  (string-replace-substring name "-" "_")
+                  (string-replace-substring name "." "_")))
       (begin
         (warning
          (G_ "project name ~a does not appear verbatim in the PyPI URI~%")
