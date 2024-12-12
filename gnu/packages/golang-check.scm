@@ -1327,8 +1327,8 @@ real database connection.")
         (base32 "06ni2jpd3s5bzg2qrry58svakkg9k43gkgkrbk8f8x886qnhnimp"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "golang.org/x/lint"
-       #:tests? #f)) ;; TODO: Fix tests
+     (list
+      #:import-path "golang.org/x/lint"))
     (propagated-inputs
      (list go-golang-org-x-tools))
     (home-page "https://golang.org/x/lint")
