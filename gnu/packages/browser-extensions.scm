@@ -282,6 +282,33 @@ with the @uref{https://keepassxc.org, KeePassXC} password manager.")
 (define-public keepassxc-browser/icecat
   (make-icecat-extension keepassxc-browser))
 
+(define livemarks
+  (package
+    (name "livemarks")
+    (version "3.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/nt1m/livemarks")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "02p2080lgnb2xy4n781ydjdywkg7g7hmz6cpnbh6icldbjy5xa5i"))))
+    (build-system copy-build-system)
+    (arguments
+     (list #:install-plan
+           #~'(("." #$(assq-ref (package-properties this-package) 'addon-id)))))
+    (home-page "https://github.com/nt1m/livemarks")
+    (synopsis "RSS feed bookmark folders")
+    (description
+     "This browser extension provides auto-updated RSS feed bookmark folders.")
+    (license license:expat)
+    (properties '((addon-id . "{c5867acc-54c9-4074-9574-04d8818d53e8}")))))
+
+(define-public livemarks/icecat
+  (make-icecat-extension livemarks))
+
 (define noscript
   (package
     (name "noscript")
