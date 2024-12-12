@@ -4673,6 +4673,30 @@ ABI}.")
 time strings.")
     (license license:expat)))
 
+(define-public go-github-com-jackc-pgio
+  (package
+    (name "go-github-com-jackc-pgio")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jackc/pgio")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0l17gpn11wf6jm5kbfmxh8j00n5zpmwck3wr91f1cv34k4chyvg1"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/jackc/pgio"))
+    (home-page "https://github.com/jackc/pgio")
+    (synopsis "Low-level toolkit building messages in the PostgreSQL wire protocol")
+    (description
+     "Package pgio is a low-level toolkit building messages in the
+@code{PostgreSQL} wire protocol.")
+    (license license:expat)))
+
 (define-public go-github-com-jackc-puddle
   (package
     (name "go-github-com-jackc-puddle")
