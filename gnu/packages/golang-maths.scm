@@ -36,6 +36,38 @@
 ;;; Libraries:
 ;;;
 
+(define-public go-github-com-aclements-go-moremath
+  (package
+    (name "go-github-com-aclements-go-moremath")
+    (version "0.0.0-20241023150245-c8bbc672ef66")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/aclements/go-moremath")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01c9fkjs6gx7z6qkzy9qld7q3jhi9vgqhk8ymqck3ccmhg9bh1nq"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/aclements/go-moremath"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; No Go files in project root.
+          (delete 'build))))
+    (propagated-inputs
+     (list go-gonum-org-v1-gonum))
+    (home-page "https://github.com/aclements/go-moremath")
+    (synopsis "Assortment of more specialized math routines for Golang")
+    (description
+     "These packages provide more specialized math routines than are available
+in the standard Go @code{math} package.  go-moremath currently focuses on
+statistical routines, with particular focus on high-quality implementations
+and APIs for non-parametric methods.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-montanaflynn-stats
   (package
     (name "go-github-com-montanaflynn-stats")
