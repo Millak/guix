@@ -7948,6 +7948,44 @@ sensors).")
                ;; environment.
                (string-append "src/" import-path "/host/host_test.go")))))))))
 
+(define-public go-github-com-sirupsen-logrus
+  (package
+    (name "go-github-com-sirupsen-logrus")
+    (version "1.9.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sirupsen/logrus")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1jz7nyq88i9fwfpp7krl046q62kjn6lb9j4r932bxnpypl1hwc49"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+       #:import-path "github.com/sirupsen/logrus"
+       #:test-flags #~(list "-skip" "TestNestedLoggingReportsCorrectCaller")
+       #:phases
+       #~(modify-phases %standard-phases
+           (replace 'check
+             (lambda* (#:key inputs #:allow-other-keys #:rest args)
+               (unless
+                 ;; The tests fail when run with gccgo.
+                 (false-if-exception (search-input-file inputs "/bin/gccgo"))
+                 (apply (assoc-ref %standard-phases 'check) args)))))))
+    (propagated-inputs
+     (list go-github-com-davecgh-go-spew
+           go-github-com-pmezard-go-difflib
+           go-github-com-stretchr-testify
+           go-golang-org-x-crypto
+           go-golang-org-x-sys))
+    (home-page "https://github.com/sirupsen/logrus")
+    (synopsis "Structured, pluggable logging for Go")
+    (description "Logrus is a structured logger for Go, completely API
+compatible with the standard library logger.")
+    (license license:expat)))
+
 (define-public go-github-com-skip2-go-qrcode
   (package
     (name "go-github-com-skip2-go-qrcode")
