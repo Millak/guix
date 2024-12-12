@@ -4673,6 +4673,56 @@ ABI}.")
 time strings.")
     (license license:expat)))
 
+(define-public go-github-com-jackc-puddle
+  (package
+    (name "go-github-com-jackc-puddle")
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jackc/puddle")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0382q7xjdw5wx6174i2sf4gnc5ppgj9snvrvh3rcnwg02yd0np38"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/jackc/puddle"))
+    (native-inputs (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/jackc/puddle")
+    (synopsis "Generic resource pool for Golang")
+    (description
+     "Puddle is a tiny generic resource pool library hat uses the standard
+context library to signal cancellation of acquires.  It is designed to contain
+the minimum functionality required for a resource pool.  It can be used
+directly or it can be used as the base for a domain specific resource pool.
+For example, a database connection pool may use puddle internally and
+implement health checks and keep-alive behavior without needing to implement
+any concurrent code of its own.")
+    (license license:expat)))
+
+(define-public go-github-com-jackc-puddle-v2
+  (package
+    (inherit go-github-com-jackc-puddle)
+    (name "go-github-com-jackc-puddle-v2")
+    (version "2.2.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jackc/puddle")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0agbk4nnja0fahi8mjp1y5ac9vjsjhldjwx9zshw0zjqhaxmsk11"))))
+    (arguments
+     (list
+      #:import-path "github.com/jackc/puddle/v2"))
+    (propagated-inputs
+     (list go-golang-org-x-sync))))
+
 (define-public go-github-com-jbenet-go-random
   (package
     (name "go-github-com-jbenet-go-random")
