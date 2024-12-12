@@ -1313,20 +1313,18 @@ real database connection.")
     (license license:expat)))
 
 (define-public go-golang-org-x-lint
-  (let ((commit "83fdc39ff7b56453e3793356bcff3070b9b96445")
-        (revision "0"))
     (package
       (name "go-golang-org-x-lint")
-      (version (git-version "0.0.0" revision commit))
+      (version "0.0.0-20241112194109-818c5a804067")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://go.googlesource.com/lint")
-               (commit commit)))
+               (commit (go-version->git-ref version))))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0ms3rs5hvpnm9bxbr5f9743i7hn2bbmqdmvzxq6nmi0f24ypv1l3"))))
+          (base32 "06ni2jpd3s5bzg2qrry58svakkg9k43gkgkrbk8f8x886qnhnimp"))))
       (build-system go-build-system)
       (arguments
        '(#:import-path "golang.org/x/lint"
@@ -1338,7 +1336,7 @@ real database connection.")
       (description
        "This is a linter for Go source code.  Unlike gofmt, it doesn't
 reformat the source code, it only prints out style mistakes.")
-      (license license:bsd-3))))
+      (license license:bsd-3)))
 
 ;; XXX: Unmaintained since 2020, see
 ;; <https://github.com/go-check/check/issues/111>.
