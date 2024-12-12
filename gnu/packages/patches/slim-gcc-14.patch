@@ -1,0 +1,12 @@
+Upstream status: Not presented upstream.
+
+--- slim-1.4.1/log.h.orig	2024-12-12 09:22:50.701696122 +0100
++++ slim-1.4.1/log.h	2024-12-12 09:22:20.673689802 +0100
+@@ -14,6 +14,7 @@
+ #define _LOG_H_
+ 
+ #include <fstream>
++#include "PAM.h"
+ 
+ using namespace std;
+ 
