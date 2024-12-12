@@ -1117,7 +1117,8 @@ large scale eigenvalue problems.")
      "LAPACK is a Fortran 90 library for solving the most commonly occurring
 problems in numerical linear algebra.")
     (license (license:non-copyleft "file://LICENSE"
-                                "See LICENSE in the distribution."))))
+                                "See LICENSE in the distribution."))
+    (properties '((tunable? . #t)))))
 
 (define-public clapack
   (package
