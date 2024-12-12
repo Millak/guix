@@ -2,7 +2,7 @@
 ;;; Copyright © 2021 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021 Calum Irwin <calumirwin1@gmail.com>
-;;; Copyright © 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2022-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2023, 2024 Hilton Chain <hako@ultrarare.space>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -384,6 +384,13 @@ toolchain.  Among other features it provides
        (substitute-keyword-arguments (package-arguments base)
          ((#:phases phases '%standard-phases)
           #~(modify-phases #$phases
+              (add-after 'unpack 'set-host-triple
+                (lambda _
+                  (substitute* "CMakeLists.txt"
+                    (("\\$\\{(ZIG_)?HOST_TARGET_TRIPLE\\}")
+                     (zig-target
+                      #$(platform-target
+                         (lookup-platform-by-system (%current-system))))))))
               (replace 'prepare-source
                 (lambda* (#:key native-inputs inputs #:allow-other-keys)
                   (install-file (search-input-file
@@ -1126,6 +1133,13 @@ toolchain.  Among other features it provides
      (substitute-keyword-arguments (package-arguments zig-0.10)
        ((#:phases phases '%standard-phases)
         #~(modify-phases #$phases
+            (add-after 'unpack 'set-host-triple
+              (lambda _
+                (substitute* "CMakeLists.txt"
+                  (("\\$\\{ZIG_HOST_TARGET_TRIPLE\\}")
+                   (zig-target
+                    #$(platform-target
+                       (lookup-platform-by-system (%current-system))))))))
             (add-after 'unpack 'prepare-source
               (lambda* (#:key native-inputs inputs #:allow-other-keys)
                 (install-file (search-input-file
