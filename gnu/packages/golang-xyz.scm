@@ -4767,6 +4767,57 @@ implementation in https://github.com/jackc/pgx.")
      "Package pgpassfile is a parser @code{PostgreSQL} .pgpass files.")
     (license license:expat)))
 
+(define-public go-github-com-jackc-pgproto3
+  (package
+    (name "go-github-com-jackc-pgproto3")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jackc/pgproto3")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "03vpkqa6j4sanmsj7q13fb6yamspszfv38sr28d40g887bcwf0j8"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/jackc/pgproto3"))
+    (propagated-inputs
+     (list go-github-com-jackc-chunkreader
+           go-github-com-jackc-pgio
+           go-github-com-pkg-errors))
+    (home-page "https://github.com/jackc/pgproto3")
+    (synopsis "Encoder and decoder of the PostgreSQL wire protocol version 3")
+    (description
+     "This package provides a encoder and decoder of the @code{PostgreSQL}
+wire protocol version 3.")
+    (license license:expat)))
+
+(define-public go-github-com-jackc-pgproto3-v2
+  (package
+    (inherit go-github-com-jackc-pgproto3)
+    (name "go-github-com-jackc-pgproto3-v2")
+    (version "2.3.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jackc/pgproto3")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1bmj1bqnn5863178a0k8m3f9xv48zs10z96dm2rl28ybx33d2l77"))))
+    (arguments
+     (list
+      #:import-path "github.com/jackc/pgproto3/v2"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-jackc-chunkreader-v2
+           go-github-com-jackc-pgio))))
+
 (define-public go-github-com-jackc-pgservicefile
   (package
     (name "go-github-com-jackc-pgservicefile")
