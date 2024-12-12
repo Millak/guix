@@ -1345,8 +1345,9 @@ collaboration using typical untrusted file hosts or services.")
    (license license:gpl3+)))
 
 (define-public cgit
-  (let ((commit "2a13177f3dce660954b1ce78bc83338fe64f6b33")
-        (rev "6"))
+  ;; Use the latest commit, as the latest tagged release is 5 years old.
+  (let ((commit "751a5b527de07dde30a69709c2d6fc6f05fafd06")
+        (rev "7"))
     (package
       (name "cgit")
       ;; Update the ‘git-source’ input as well.
@@ -1358,7 +1359,7 @@ collaboration using typical untrusted file hosts or services.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "0g02rghwx6gda15ip1pd3rli6smis1mrcb904zlxfqmm6dlc7lca"))
+                  "0rfflh7fnfhchd7pdspn2r416c5kaya37cad918f7ldidzwvmp37"))
                 (file-name (git-file-name name version))))
       (build-system gnu-build-system)
       (arguments
@@ -1433,10 +1434,10 @@ collaboration using typical untrusted file hosts or services.")
                ;; Building cgit requires a Git source tree.
                ;; cgit is tightly bound to git.  Use GIT_VER from the Makefile,
                ;; which may not match the current (package-version git).
-               (uri "mirror://kernel.org/software/scm/git/git-2.46.2.tar.xz")
+               (uri "mirror://kernel.org/software/scm/git/git-2.47.1.tar.xz")
                (sha256
                 (base32
-                 "18rcmvximgyg3v1a9papi9djfamiak0ys5cmgx7ll29nhp3a3s2y"))
+                 "046kdr5dhg31hjcg6wpfqnwwbaqdjyax7n8wx5s26fdf4fxzkn7k"))
                (file-name "git-source.tar.xz"))
              bash-minimal
              openssl
