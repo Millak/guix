@@ -1470,26 +1470,8 @@ Documentation} for more information (for example by running @samp{info
               (add-after 'unpack 'patch-header
                 (lambda _
                   (substitute* "include/config_distro_bootcmd.h"
-                    (("\"scsi_need_init=false")
-                     "\"setenv scsi_need_init false")
-                    (("#define BOOTENV_SET_SCSI_NEED_INIT \"scsi_need_init=;")
-                     "#define BOOTENV_SET_SCSI_NEED_INIT \"setenv scsi_need_init;"))
-                  (substitute* "include/configs/rockchip-common.h"
-                    (("#define BOOT_TARGET_DEVICES\\(func\\)")
-                     "
-#if CONFIG_IS_ENABLED(CMD_SCSI)
-       #define BOOT_TARGET_SCSI(func) func(SCSI, scsi, 0)
-#else
-       #define BOOT_TARGET_SCSI(func)
-#endif
-#define BOOT_TARGET_DEVICES(func)")
-                    (("BOOT_TARGET_NVME\\(func\\) \\\\")
-                     "\
-BOOT_TARGET_NVME(func) \\
-       BOOT_TARGET_SCSI(func) \\"))))
-              ;; Phases do not succeed on the bl31 ELF.
-              (delete 'strip)
-              (delete 'validate-runpath)))))
+                    (("\"scsi_need_init=")
+                     "\"setenv scsi_need_init"))))))))
       (inputs
        (modify-inputs (package-inputs base)
          (append arm-trusted-firmware-rk3399))))))
