@@ -32,6 +32,35 @@
   #:use-module (gnu packages password-utils)
   #:use-module (gnu packages python))
 
+(define adaptive-tab-bar-colour
+  (package
+    (name "adaptive-tab-bar-colour")
+    (version "2.1.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/easonwong-de/Adaptive-Tab-Bar-Colour")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "03w06qrfg3bra6z7bmksj7mj27xnznn0ddm8gsr8z8b32hiifg4r"))))
+    (build-system copy-build-system)
+    (arguments
+     (list #:install-plan
+           #~'(("." #$(assq-ref (package-properties this-package) 'addon-id)))))
+    (home-page "https://github.com/easonwong-de/Adaptive-Tab-Bar-Colour")
+    (synopsis "Adaptive tab bar colour")
+    (description
+     "This package provides a browser extension for changing tab bar colour to
+match website theme.")
+    (license license:expat)
+    (properties '((addon-id . "ATBC@EasonWong")))))
+
+(define-public adaptive-tab-bar-colour/icecat
+  (make-icecat-extension adaptive-tab-bar-colour))
+
 (define play-to-kodi
   (package
     (name "play-to-kodi")
