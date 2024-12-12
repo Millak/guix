@@ -184,7 +184,8 @@
                         #$@extra-options)
 
                   #:environment-variables
-                  (list "GIT_SSL_CAINFO=/etc/ssl/certs/ca-certificates.crt"
+                  (list "LC_ALL=C.UTF-8"        ;for proper file name decoding
+                        "GIT_SSL_CAINFO=/etc/ssl/certs/ca-certificates.crt"
                         (string-append "GIT_EXEC_PATH=" #$git
                                        "/libexec/git-core"))
 
