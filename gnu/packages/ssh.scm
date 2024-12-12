@@ -168,7 +168,7 @@ file names.
                           (not (target-64bit?)))
                      #~((string-append
                          "-DCMAKE_C_FLAGS=-g -O2"
-                         " -Wno-incompatible-pointer-types"))
+                         " -Wno-error=incompatible-pointer-types"))
                      #~()))
       #:phases
       #~(modify-phases %standard-phases
