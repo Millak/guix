@@ -111,15 +111,6 @@
         (write-file-on-device u-boot (stat:size (stat u-boot))
                               image (* 69 1024)))))
 
-(define install-orangepi-r1-plus-lts-rk3328-u-boot
-  #~(lambda (bootloader root-index image)
-      (let ((idb (string-append bootloader "/libexec/idbloader.img"))
-            (u-boot (string-append bootloader "/libexec/u-boot.itb")))
-        (write-file-on-device idb (stat:size (stat idb))
-                              image (* 64 512))
-        (write-file-on-device u-boot (stat:size (stat u-boot))
-                              image (* 16384 512)))))
-
 (define install-puma-rk3399-u-boot
   #~(lambda (bootloader root-index image)
       (let ((spl (string-append bootloader "/libexec/idbloader.img"))
@@ -129,7 +120,7 @@
         (write-file-on-device u-boot (stat:size (stat u-boot))
                               image (* 512 512)))))
 
-(define install-firefly-rk3399-u-boot
+(define install-rockchip-u-boot
   #~(lambda (bootloader root-index image)
       (let ((idb (string-append bootloader "/libexec/idbloader.img"))
             (u-boot (string-append bootloader "/libexec/u-boot.itb")))
@@ -137,26 +128,6 @@
                               image (* 64 512))
         (write-file-on-device u-boot (stat:size (stat u-boot))
                               image (* 16384 512)))))
-
-(define install-rock64-rk3328-u-boot
-  #~(lambda (bootloader root-index image)
-      (let ((idb (string-append bootloader "/libexec/idbloader.img"))
-            (u-boot (string-append bootloader "/libexec/u-boot.itb")))
-        (write-file-on-device idb (stat:size (stat idb))
-                              image (* 64 512))
-        (write-file-on-device u-boot (stat:size (stat u-boot))
-                              image (* 16384 512)))))
-
-(define install-rockpro64-rk3399-u-boot
-  #~(lambda (bootloader root-index image)
-      (let ((idb (string-append bootloader "/libexec/idbloader.img"))
-            (u-boot (string-append bootloader "/libexec/u-boot.itb")))
-        (write-file-on-device idb (stat:size (stat idb))
-                              image (* 64 512))
-        (write-file-on-device u-boot (stat:size (stat u-boot))
-                              image (* 16384 512)))))
-
-(define install-pinebook-pro-rk3399-u-boot install-rockpro64-rk3399-u-boot)
 
 (define install-sifive-unmatched-u-boot
   #~(lambda (bootloader root-index image)
@@ -219,6 +190,12 @@
    (inherit u-boot-bootloader)
    (disk-image-installer install-imx-u-boot)))
 
+(define u-boot-rockchip-bootloader
+  ;; SD and eMMC use the same format
+  (bootloader
+   (inherit u-boot-bootloader)
+   (disk-image-installer install-rockchip-u-boot)))
+
 (define u-boot-nintendo-nes-classic-edition-bootloader
   (bootloader
     (inherit u-boot-allwinner-bootloader)
@@ -250,11 +227,9 @@
     (package u-boot-cubietruck)))
 
 (define u-boot-firefly-rk3399-bootloader
-  ;; SD and eMMC use the same format
   (bootloader
-   (inherit u-boot-bootloader)
-   (package u-boot-firefly-rk3399)
-   (disk-image-installer install-firefly-rk3399-u-boot)))
+   (inherit u-boot-rockchip-bootloader)
+   (package u-boot-firefly-rk3399)))
 
 (define u-boot-mx6cuboxi-bootloader
   (bootloader
@@ -273,9 +248,8 @@
 
 (define u-boot-orangepi-r1-plus-lts-rk3328-bootloader
   (bootloader
-   (inherit u-boot-bootloader)
-   (package u-boot-orangepi-r1-plus-lts-rk3328)
-   (disk-image-installer install-orangepi-r1-plus-lts-rk3328-u-boot)))
+   (inherit u-boot-rockchip-bootloader)
+   (package u-boot-orangepi-r1-plus-lts-rk3328)))
 
 (define u-boot-pine64-plus-bootloader
   (bootloader
@@ -299,25 +273,19 @@
    (disk-image-installer install-puma-rk3399-u-boot)))
 
 (define u-boot-rock64-rk3328-bootloader
-  ;; SD and eMMC use the same format
   (bootloader
-   (inherit u-boot-bootloader)
-   (package u-boot-rock64-rk3328)
-   (disk-image-installer install-rock64-rk3328-u-boot)))
+   (inherit u-boot-rockchip-bootloader)
+   (package u-boot-rock64-rk3328)))
 
 (define u-boot-rockpro64-rk3399-bootloader
-  ;; SD and eMMC use the same format
   (bootloader
-   (inherit u-boot-bootloader)
-   (package u-boot-rockpro64-rk3399)
-   (disk-image-installer install-rockpro64-rk3399-u-boot)))
+   (inherit u-boot-rockchip-bootloader)
+   (package u-boot-rockpro64-rk3399)))
 
 (define u-boot-pinebook-pro-rk3399-bootloader
-  ;; SD and eMMC use the same format
   (bootloader
-   (inherit u-boot-bootloader)
-   (package u-boot-pinebook-pro-rk3399)
-   (disk-image-installer install-pinebook-pro-rk3399-u-boot)))
+   (inherit u-boot-rockchip-bootloader)
+   (package u-boot-pinebook-pro-rk3399)))
 
 (define u-boot-ts7970-q-2g-1000mhz-c-bootloader
   ;; This bootloader doesn't really need to be installed, as it is read from
