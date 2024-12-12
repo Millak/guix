@@ -1098,6 +1098,7 @@ editors.")
            python-wrapper
            qtbase-5
            qtsvg-5
+           qtwayland-5
            sqlite))
     (arguments
      (list
@@ -1148,6 +1149,7 @@ Octave.  TeXmacs is completely extensible via Guile.")
            python-wrapper
            qtbase-5
            qtsvg-5
+           qtwayland-5
            sqlite))))
 
 (define-public mogan
