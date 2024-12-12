@@ -1751,6 +1751,22 @@ tool."))))
     (description "This package turns unkeyed struct literals (@code{T{1, 2,
 3}}) into keyed ones (@code{T{A: 1, B: 2, C: 3}}) in Go.")))
 
+(define-public go-pgmockproxy
+  (package
+    (inherit go-github-com-jackc-pgmock)
+    (name "go-pgmockproxy")
+    (arguments
+     (list
+      #:install-source? #f
+      #:import-path "github.com/jackc/pgmock/pgmockproxy"
+      #:unpack-path "github.com/jackc/pgmock"))
+    (description
+     "pgmockproxy is a PostgreSQL proxy that logs the messages back and forth
+between the PostgreSQL client and server.  This can aid in building a mocking
+script by running commands against a real server to observe the results.  It
+can also be used to debug applications that speak the PostgreSQL wire protocol
+without needing to use a tool like Wireshark.")))
+
 (define-public go-pprof
   (package
     (inherit go-github-com-google-pprof)
