@@ -59,6 +59,37 @@
 ;;;
 ;;; Code:
 
+(define-public go-github-com-goccmack-gocc
+  (package
+    (name "go-github-com-goccmack-gocc")
+    (version "0.0.0-20230228185258-2292f9e40198")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/goccmack/gocc")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ah1z1bmn9y9sbh2z1jxsjgsrv1rfrzzzi4c4nq646z2n25c2x8s"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/goccmack/gocc"
+      ;; Test requiring gocc in PATH.
+      #:test-flags #~(list "-skip" "TestEmptyKeyword")))
+    (propagated-inputs
+     (list go-golang-org-x-mod))
+    (home-page "https://github.com/goccmack/gocc")
+    (synopsis "Parser/Scanner Generator")
+    (description
+     "Gocc is a compiler kit for Go written in Go.  Gocc generates lexers and
+parsers or stand-alone DFAs or parsers from a BNF.  Lexers are DFAs, which
+recognise regular languages. Gocc lexers accept UTF-8 input. Gocc parsers are
+PDAs, which recognise LR-1 languages. Optional LR1 conflict handling
+automatically resolves shift / reduce and reduce / reduce conflicts.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-golang-glog
   (package
     (name "go-github-com-golang-glog")
