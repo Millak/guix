@@ -161,9 +161,10 @@ file names.
      `(#:configure-flags '("-DWITH_GCRYPT=ON"
                            ,@(if (and (%current-target-system)
                                       (not (target-64bit?)))
-                                 (list (string-append
-                                        "-DCMAKE_C_FLAGS=-g -O2"
-                                        " -Wno-incompatible-pointer-types"))
+                                 (list
+                                  (string-append
+                                   "-DCMAKE_C_FLAGS=-g -O2"
+                                   " -Wno-error=incompatible-pointer-types"))
                                  '()))
 
        ;; TODO: Add 'CMockery' and '-DWITH_TESTING=ON' for the test suite.
