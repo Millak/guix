@@ -23,7 +23,8 @@
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix packages)
-  #:use-module (gnu packages))
+  #:use-module (gnu packages)
+  #:use-module (gnu packages golang-build))
 
 ;;; Commentary:
 ;;;
@@ -114,6 +115,58 @@ Features:
 754 half-precision floating-point format (binary16)} with IEEE 754 default
 rounding for conversions.  IEEE 754-2008 refers to this 16-bit floating-point
 format as binary16.")
+    (license license:expat)))
+
+(define-public go-gonum-org-v1-gonum
+  (package
+    (name "go-gonum-org-v1-gonum")
+    (version "0.15.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gonum/gonum")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "002qsavnylj8l4ki56narpn3zm0r9p7p8ccgd20q1xp751wg2kvp"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "gonum.org/v1/gonum"
+      #:test-subdirs
+      #~(list "."
+              "blas/..."
+              "cmplxs/..."
+              "diff/..."
+              "dsp/fourier/..."
+              "floats/..."
+              "integrate/..."
+              "internal/..."
+              "interp/..."
+              "lapack/..."
+              "mat/..."
+              "mathext/..."
+              "num/..."
+              "optimize/..."
+              "spatial/..."
+              "stat/..."
+              "uniti/...")))
+    (propagated-inputs
+     (list go-github-com-goccmack-gocc
+           go-github-com-google-go-cmp
+           go-golang-org-x-exp
+           go-golang-org-x-tools
+           #;go-gonum-org-v1-plot ; not packed yet
+           ))
+    (home-page "https://www.gonum.org/")
+    (synopsis "Set of numeric libraries for Golang")
+    (description
+     "Gonum is a set of packages designed to make writing numerical and
+scientific algorithms productive, performant, and scalable.  It provides
+libraries for matrices and linear algebra; statistics, probability
+distributions, and sampling; tools for function differentiation,integration,
+and optimization; network creation and analysis")
     (license license:expat)))
 
 ;;;
