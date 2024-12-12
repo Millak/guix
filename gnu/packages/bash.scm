@@ -271,7 +271,8 @@ without modification.")
           (srfi srfi-1)
           (srfi srfi-26)))
        ((#:configure-flags flags '())
-        `(list "--without-bash-malloc"
+        `(list "CFLAGS=-g -O2 -Wno-error=implicit-function-declaration"
+               "--without-bash-malloc"
                "--disable-readline"
                "--disable-history"
                "--disable-help-builtin"
@@ -282,15 +283,6 @@ without modification.")
                ;; Pretend 'dlopen' is missing so we don't build loadable
                ;; modules and related code.
                "ac_cv_func_dlopen=no"
-
-               ,@(if (or (target-hurd64?)
-                         (%current-target-system)
-                         (and (target-x86?) (target-linux?)))
-                     ;; gcc-14 implictly uses -Wimplicit-function-declaration
-                     ;; which together with -Werror causes:
-                     ;; ./enable.def:492:11: error: implicit declaration of function ‘dlclose’;
-                     '("CFLAGS=-g -O2 -Wno-error=implicit-function-declaration")
-                     '())
 
                ,@(if (%current-target-system)
                      '("bash_cv_job_control_missing=no"
