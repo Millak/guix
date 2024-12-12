@@ -317,9 +317,12 @@ object is bound to in the (guix licenses) module, such as 'license:gpl3+, or
   (assoc-ref licenses license))
 
 (define (snake-case str)
-  "Return a downcased version of the string STR where underscores are replaced
-with dashes."
-  (string-join (string-split (string-downcase str) #\_) "-"))
+  "Return a downcased version of the string STR where underscores and periods
+are replaced with dashes."
+  (string-map (match-lambda
+                ((or #\_ #\.) #\-)
+                (chr chr))
+              (string-downcase str)))
 
 (define* (beautify-description description #:optional (length 80))
   "Improve the package DESCRIPTION by turning a beginning sentence fragment into
