@@ -15,6 +15,7 @@
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2024 Jordan Moore <lockbox@struct.foo>
+;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -311,14 +312,14 @@ Desktops into Active Directory environments using the winbind daemon.")
 (define-public talloc
   (package
     (name "talloc")
-    (version "2.3.4")
+    (version "2.4.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.samba.org/ftp/talloc/talloc-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "01b5pq39z1l26f86dy8jqb37fsjbvsvx5ji65jmy8rsy4sz9x7qp"))))
+                "19nqn6lygdwpfvc5g8jzany20hz126jfjlhajpwrh3z2cpjgkv45"))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases
