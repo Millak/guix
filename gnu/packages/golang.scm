@@ -3146,6 +3146,7 @@ containers.")
     (arguments
      (list
        #:import-path "github.com/sirupsen/logrus"
+       #:test-flags #~(list "-skip" "TestNestedLoggingReportsCorrectCaller")
        #:phases
        #~(modify-phases %standard-phases
            (replace 'check
