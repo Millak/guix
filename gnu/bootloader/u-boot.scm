@@ -66,6 +66,22 @@
         (let ((install-dir (string-append mount-point "/boot")))
           #$@file))))
 
+(define (write-u-boot-image files block-size)
+  "FILES is a list of (FILE COUNT OFFSET) tuples.  Each FILE is written
+to the target image at BLOCK-SIZE * OFFSET.  The number of bytes written
+is BLOCK-SIZE * COUNT, or FILE size if COUNT is not given."
+  (define (write-file-to-image file)
+    (match file
+      ((file count ... offset)
+       (let* ((file #~(string-append bootloader "/libexec/" #$file))
+              (size (match count
+                      (() #~(stat:size (stat #$file)))
+                      ((count) (* count block-size)))))
+         #~(write-file-on-device #$file #$size image
+                                 #$(* offset block-size))))))
+  #~(lambda (bootloader _ image)
+      #$@(map write-file-to-image files)))
+
 (define install-u-boot
   #~(lambda (bootloader root-index image)
       (if bootloader
@@ -78,75 +94,33 @@
   ;; the MLO and is expected at 0x60000.  Write both first stage ("MLO") and
   ;; second stage ("u-boot.img") images, read in BOOTLOADER directory, to the
   ;; specified DEVICE.
-  #~(lambda (bootloader root-index image)
-      (let ((mlo (string-append bootloader "/libexec/MLO"))
-            (u-boot (string-append bootloader "/libexec/u-boot.img")))
-        (write-file-on-device mlo (* 256 512)
-                              image (* 256 512))
-        (write-file-on-device u-boot (* 1024 512)
-                              image (* 768 512)))))
+  (write-u-boot-image '(("MLO" 256 256) ("u-boot.img" 768 1024)) 512))
 
 (define install-allwinner-u-boot
-  #~(lambda (bootloader root-index image)
-      (let ((u-boot (string-append bootloader
-                                   "/libexec/u-boot-sunxi-with-spl.bin")))
-        (write-file-on-device u-boot (stat:size (stat u-boot))
-                              image (* 8 1024)))))
+  (write-u-boot-image '(("u-boot-sunxi-with-spl.bin" 8)) 1024))
 
 (define install-allwinner64-u-boot
-  #~(lambda (bootloader root-index image)
-      (let ((spl (string-append bootloader "/libexec/u-boot-sunxi-with-spl.bin"))
-            (u-boot (string-append bootloader "/libexec/u-boot-sunxi-with-spl.fit.itb")))
-        (write-file-on-device spl (stat:size (stat spl))
-                              image (* 8 1024))
-        (write-file-on-device u-boot (stat:size (stat u-boot))
-                              image (* 40 1024)))))
+  (write-u-boot-image '(("u-boot-sunxi-with-spl.bin" 8)
+                        ("u-boot-sunxi-with-spl.fit.itb" 40))
+                      1024))
 
 (define install-imx-u-boot
-  #~(lambda (bootloader root-index image)
-      (let ((spl (string-append bootloader "/libexec/SPL"))
-            (u-boot (string-append bootloader "/libexec/u-boot.img")))
-        (write-file-on-device spl (stat:size (stat spl))
-                              image (* 1 1024))
-        (write-file-on-device u-boot (stat:size (stat u-boot))
-                              image (* 69 1024)))))
+  (write-u-boot-image '(("SPL" 1) ("u-boot.img" 69)) 1024))
 
 (define install-puma-rk3399-u-boot
-  #~(lambda (bootloader root-index image)
-      (let ((spl (string-append bootloader "/libexec/idbloader.img"))
-            (u-boot (string-append bootloader "/libexec/u-boot.itb")))
-        (write-file-on-device spl (stat:size (stat spl))
-                              image (* 64 512))
-        (write-file-on-device u-boot (stat:size (stat u-boot))
-                              image (* 512 512)))))
+  (write-u-boot-image '(("idbloader.img" 64) ("u-boot.itb" 512)) 512))
 
 (define install-rockchip-u-boot
-  #~(lambda (bootloader root-index image)
-      (let ((idb (string-append bootloader "/libexec/idbloader.img"))
-            (u-boot (string-append bootloader "/libexec/u-boot.itb")))
-        (write-file-on-device idb (stat:size (stat idb))
-                              image (* 64 512))
-        (write-file-on-device u-boot (stat:size (stat u-boot))
-                              image (* 16384 512)))))
+  (write-u-boot-image '(("idbloader.img" 64) ("u-boot.itb" 16384)) 512))
 
 (define install-sifive-unmatched-u-boot
-  #~(lambda (bootloader root-index image)
-      (let ((spl (string-append bootloader "/libexec/spl/u-boot-spl.bin"))
-            (u-boot (string-append bootloader "/libexec/u-boot.itb")))
-        (write-file-on-device spl (stat:size (stat spl))
-                              image (* 34 512))
-        (write-file-on-device u-boot (stat:size (stat u-boot))
-                              image (* 2082 512)))))
+  (write-u-boot-image '(("spl/u-boot-spl.bin" 34) ("u-boot.itb" 2082))
+                      512))
 
 (define install-starfive-visionfive2-u-boot
-  #~(lambda (bootloader root-index image)
-      (let ((spl (string-append
-                  bootloader "/libexec/spl/u-boot-spl.bin.normal.out"))
-            (u-boot (string-append bootloader "/libexec/u-boot.itb")))
-        (write-file-on-device spl (stat:size (stat spl))
-                              image (* 34 512))
-        (write-file-on-device u-boot (stat:size (stat u-boot))
-                              image (* 2082 512)))))
+  (write-u-boot-image '(("spl/u-boot-spl.bin.normal.out" 34)
+                        ("u-boot.itb" 2082))
+                      512))
 
 (define install-starfive-visionfive2-uEnv.txt
   (make-u-boot-installer
