@@ -104,6 +104,7 @@
   #:use-module (gnu packages guile)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages lesstif)
   #:use-module (gnu packages libbsd)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages libusb)
@@ -5143,37 +5144,41 @@ on the ALSA software PCM plugin.")
 (define-public snd
   (package
     (name "snd")
-    (version "20.9")
+    (version "24.9")
     (source (origin
               (method url-fetch)
               (uri (string-append "ftp://ccrma-ftp.stanford.edu/pub/Lisp/"
                                   "snd-" version ".tar.gz"))
               (sha256
                (base32
-                "0jxkycxn6jcbs4gklk9sk3gfr0y26dz1m71nxah9rnx80wnzj6hr"))))
+                "1bbc7ld9n8v9y2l9ysdjxxhd2qzm00fpn6lj2hxsmxcpwfldwi6w"))))
     (build-system glib-or-gtk-build-system)
     (arguments
-     `(#:tests? #f                      ; no tests
-       #:out-of-source? #f              ; for the 'install-doc' phase
-       #:configure-flags
-       (let* ((out (assoc-ref %outputs "out"))
-              (docdir (string-append out "/share/doc/"
-                                     ,name "-" ,version)))
-         (list "--with-alsa" "--with-jack" "--with-gmp"
-               (string-append "--with-doc-dir=" docdir)))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'install-doc
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (doc (string-append out "/share/doc/"
-                                        ,name "-" ,version)))
-               (for-each
-                (lambda (f)
-                  (install-file f doc))
-                (find-files "." "\\.html$"))
-               (copy-recursively "pix" (string-append doc "/pix"))
-               #t))))))
+     (list
+      #:tests? #f                       ; no tests
+      #:out-of-source? #f               ; for the 'install-doc' phase
+      #:configure-flags
+      #~(let ((docdir (string-append #$output "/share/doc/"
+                                     #$name "-" #$version)))
+          (list "--with-alsa"
+                "--with-jack"
+                "--with-gmp"
+                "--with-gui"
+                (string-append "--with-doc-dir=" docdir)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-s7
+            (lambda _
+              (install-file "s7.h" (string-append #$output "/include"))))
+          (add-after 'install 'install-doc
+            (lambda _
+              (let ((doc (string-append #$output "/share/doc/"
+                                        #$name "-" #$version)))
+                (for-each
+                 (lambda (f)
+                   (install-file f doc))
+                 (find-files "." "\\.html$"))
+                (copy-recursively "pix" (string-append doc "/pix"))))))))
     (native-inputs
      (list pkg-config))
     (inputs
@@ -5182,9 +5187,9 @@ on the ALSA software PCM plugin.")
            flac
            gmp
            gsl
-           gtk+
-           jack-1
+           jack-2
            libsamplerate
+           motif
            mpc
            mpfr
            mpg123
