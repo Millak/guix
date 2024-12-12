@@ -58,8 +58,10 @@
     (arguments
      (if (or (target-hurd64?) (%current-target-system))
          (list #:configure-flags
-               #~'(#$(string-append "CFLAGS=-Wno-int-conversion"
-                                    " -Wno-implicit-function-declaration")))
+               #~'(#$(string-append
+                      "CFLAGS=-g -O2"
+                      " -Wno-error=implicit-function-declaration"
+                      " -Wno-error=int-conversion")))
          '()))
     ;; m4 is not present in PATH when cross-building
     (native-inputs
