@@ -32,7 +32,8 @@
              ((guix import github) #:select (%github-api))
              (guix build-system gnu)
              (guix build-system cmake)
-             ((gnu packages) #:select (all-packages))
+             ((gnu packages)
+              #:select (all-packages specification->package))
 
              (gnu packages backup)
              (gnu packages curl)
@@ -40,7 +41,6 @@
              (gnu packages gnupg)
              (gnu packages ssh)
              (gnu packages tls)
-             (gnu packages version-control)
              (gnu packages xorg)
 
              (ice-9 match)
@@ -60,8 +60,11 @@
         curl-ssh
 
         libarchive
-        libgit2
         libssh
+
+        ;; Since there are several libgit2 versions, pick the latest one and
+        ;; compute the upgrade against that one.
+        (specification->package "libgit2")
 
         ;; GnuPG.
         libassuan
