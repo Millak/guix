@@ -47,7 +47,7 @@
             (list #:configure-flags
                   `'(,(string-append
                        "CFLAGS=-g -O2"
-                       " -Wno-implicit-function-declaration")))
+                       " -Wno-error=implicit-function-declaration")))
             '())
       #:phases
       (modify-phases %standard-phases
