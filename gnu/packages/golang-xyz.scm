@@ -4697,6 +4697,30 @@ time strings.")
 @code{PostgreSQL} wire protocol.")
     (license license:expat)))
 
+(define-public go-github-com-jackc-pgpassfile
+  (package
+    (name "go-github-com-jackc-pgpassfile")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jackc/pgpassfile")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1crw06lzksgimbmr1a3sr00azg2v7l4qkvjra1cpmzzq5mncaj8z"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/jackc/pgpassfile"))
+    (native-inputs (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/jackc/pgpassfile")
+    (synopsis "PostgreSQL .pgpass files parser")
+    (description
+     "Package pgpassfile is a parser @code{PostgreSQL} .pgpass files.")
+    (license license:expat)))
+
 (define-public go-github-com-jackc-puddle
   (package
     (name "go-github-com-jackc-puddle")
