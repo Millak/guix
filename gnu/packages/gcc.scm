@@ -239,6 +239,33 @@ where the OS part is overloaded to denote a specific ABI---into GCC
 
           #:phases
           (modify-phases %standard-phases
+            (add-before 'configure 'relax-gcc-14s-strictness
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let ((bash (assoc-ref inputs "bash"))
+                      (wrapper (string-append (getcwd) "/gcc.sh"))
+                      (stage-wrapper (string-append (getcwd) "/stage-gcc.sh")))
+                  (with-output-to-file wrapper
+                    (lambda _
+                      (format #t "#! ~a/bin/bash
+exec gcc \"$@\" \
+    -Wno-error=implicit-function-declaration"
+                              bash)))
+                  (chmod wrapper #o555)
+                  (with-output-to-file stage-wrapper
+                    (lambda _
+                      (format #t "#! ~a/bin/bash
+exec \"$@\" \
+    -Wno-error=implicit-function-declaration"
+                              bash)))
+                  (chmod stage-wrapper #o555)
+                  ;; Rather than adding CC to #:configure-flags and
+                  ;; STAGE_CC_WRAPPER to #:make-flags, we add them to the
+                  ;; environment in this easily removable stage.
+                  (cond (,(%current-target-system) ;cross-build?
+                         (setenv "CC_FOR_BUILD" wrapper))
+                        (else
+                         (setenv "CC" wrapper)
+                         (setenv "STAGE_CC_WRAPPER" stage-wrapper))))))
             (add-before 'configure 'pre-configure
               (lambda* (#:key inputs outputs #:allow-other-keys)
                 (let ((libdir ,(libdir))
