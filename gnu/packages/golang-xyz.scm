@@ -25,6 +25,7 @@
 ;;; Copyright © 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
+;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 raingloom <raingloom@riseup.net>
 ;;; Copyright © 2021, 2023, 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2022 (unmatched-parenthesis <paren@disroot.org>
@@ -48,10 +49,10 @@
 ;;; Copyright © 2024 Jean Simard <woshilapin@tuziwo.info>
 ;;; Copyright © 2024 Jesse Eisses <jesse@eisses.email>
 ;;; Copyright © 2024 Luis Higino <luishenriquegh2701@gmail.com>
+;;; Copyright © 2024 Simen Endsjø <contact@simendsjo.me>
 ;;; Copyright © 2024 Spencer Peters <spencerpeters@protonmail.com>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2024 gemmaro <gemmaro.dev@gmail.com>
-;;; Copyright © 2024 Simen Endsjø <contact@simendsjo.me>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3770,6 +3771,39 @@ implemented features include
 @item Supports the \"Gregorian\" calendar only
 @end itemize")
     (license license:expat)))
+
+(define-public go-github-com-go-sql-driver-mysql
+  (package
+    (name "go-github-com-go-sql-driver-mysql")
+    (version "1.8.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/go-sql-driver/mysql")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ihdqg411gkv454fwx8w5nbndgkm5dz5phfliksxgmhggyxxm7sn"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/go-sql-driver/mysql"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       (list "TestConnectorReturnsTimeout"
+                             "TestErrorInMultiResult"
+                             "TestDSNReformat/user:p"
+                             "FuzzFormatDSN/seed#8")
+                       "|"))))
+    (propagated-inputs
+     (list go-filippo-io-edwards25519))
+    (home-page "https://github.com/go-sql-driver/mysql")
+    (synopsis "MySQL driver for golang")
+    (description
+     "This is a pure Go implementation of the MySQL API, compatible with
+golang's database/sql package.")
+    (license license:mpl2.0)))
 
 (define-public go-github-com-go-stack-stack
   (package

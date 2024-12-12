@@ -4356,40 +4356,6 @@ have super fancy logs.")
     (home-page "https://github.com/kr/text")
     (license license:expat)))
 
-(define-public go-github-com-go-sql-driver-mysql
-  (package
-    (name "go-github-com-go-sql-driver-mysql")
-    (version "1.8.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/go-sql-driver/mysql")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0ihdqg411gkv454fwx8w5nbndgkm5dz5phfliksxgmhggyxxm7sn"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/go-sql-driver/mysql"
-      #:test-flags
-      #~(list "-skip" (string-join
-                       (list "TestConnectorReturnsTimeout"
-                             "TestErrorInMultiResult"
-                             "TestDSNReformat/user:p"
-                             "FuzzFormatDSN/seed#8")
-                       "|"))))
-    (propagated-inputs
-     (list go-filippo-io-edwards25519))
-    (home-page "https://github.com/go-sql-driver/mysql")
-    (synopsis "MySQL driver for golang")
-    (description
-     "This is a pure Go implementation of the MySQL API, compatible with
-golang's database/sql package.")
-    (license license:mpl2.0)))
-
 (define-public go-github-com-lucasb-eyer-go-colorful
   (package
     (name "go-github-com-lucasb-eyer-go-colorful")
