@@ -45,7 +45,7 @@
     (arguments
      (if (and (%current-target-system) (target-x86-32?))
          (list #:configure-flags
-               #~(list "CFLAGS=-g -O2 -Wno-incompatible-pointer-types"))
+               #~(list "CFLAGS=-g -O2 -Wno-error=incompatible-pointer-types"))
          '()))
     (inputs
      (list ncurses))
