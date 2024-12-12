@@ -333,3 +333,35 @@ protection for web browsers.")
 
 (define-public noscript/icecat
   (make-icecat-extension noscript))
+
+(define privacy-redirect
+  (package
+    (name "privacy-redirect")
+    (version "1.1.49")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/SimonBrazell/privacy-redirect")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "13j5i6vh4lq9hcqmqbmn8fnymnplwra5rm696h6magbjxnj3nkyz"))))
+    (build-system copy-build-system)
+    (arguments
+     (list
+      #:install-plan
+      #~'(("src" #$(assq-ref (package-properties this-package) 'addon-id)))))
+    (home-page "https://github.com/SimonBrazell/privacy-redirect")
+    (synopsis "Redirect to privacy friendly alternative frontends")
+    (description
+     "This package provides a browser extension that redirects sites to their
+privacy friendly alternative frontends.  It's possible to toggle all redirects
+on and off and the extension will default to using random instances if none are
+selected.")
+    (license license:gpl3)
+    (properties '((addon-id . "{b7f9d2cd-d772-4302-8c3f-eb941af36f76}")))))
+
+(define-public privacy-redirect/icecat
+  (make-icecat-extension privacy-redirect))
