@@ -68,6 +68,53 @@ statistical routines, with particular focus on high-quality implementations
 and APIs for non-parametric methods.")
     (license license:bsd-3)))
 
+(define-public go-github-com-cockroachdb-apd
+  (package
+    (name "go-github-com-cockroachdb-apd")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cockroachdb/apd")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14jnnqpdsa3vxh2zpznd2dpnychcrlkljppfplrigrs245slyh72"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/cockroachdb/apd"))
+    (propagated-inputs
+     (list go-github-com-pkg-errors))
+    (home-page "https://github.com/cockroachdb/apd")
+    (synopsis "Arbitrary-precision decimals for Golang")
+    (description
+     "This package implements much of the decimal specification from the
+@url{http://speleotrove.com/decimal/,General Decimal Arithmetic} description.
+This is the same specification implemented by
+@url{https://docs.python.org/2/library/decimal.html,Python’s decimal module}
+and GCC’s decimal extension.")
+    (license license:asl2.0)))
+
+(define-public go-github-com-cockroachdb-apd-v3
+  (package
+    (inherit go-github-com-cockroachdb-apd)
+    (name "go-github-com-cockroachdb-apd-v3")
+    (version "3.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cockroachdb/apd")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1jrb43l80mr8q1hx8q4p54rld6kya886ackv5yzqyhhhl271rnm6"))))
+    (arguments
+     (list
+      #:import-path "github.com/cockroachdb/apd/v3"))))
+
 (define-public go-github-com-montanaflynn-stats
   (package
     (name "go-github-com-montanaflynn-stats")
