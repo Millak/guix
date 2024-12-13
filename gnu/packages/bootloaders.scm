@@ -54,6 +54,7 @@
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages guile)
+  #:use-module (gnu packages efi)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages man)
@@ -755,26 +756,22 @@ tree binary files.  These are board description files used by Linux and BSD.")
   ;; https://lists.denx.de/pipermail/u-boot/2021-October/462728.html
   (search-patch "u-boot-allow-disabling-openssl.patch"))
 
-(define %u-boot-build-without-libcrypto-patch
-  ;; Upstream commit to fix Amlogic builds in u-boot 2024.01.
-  (search-patch "u-boot-build-without-libcrypto.patch"))
-
 (define u-boot
   (package
     (name "u-boot")
-    (version "2024.01")
+    (version "2024.10")
     (source (origin
               (patches
                (list %u-boot-rockchip-inno-usb-patch
-                     %u-boot-build-without-libcrypto-patch
                      %u-boot-allow-disabling-openssl-patch))
-              (method url-fetch)
-              (uri (string-append
-                    "https://ftp.denx.de/pub/u-boot/"
-                    "u-boot-" version ".tar.bz2"))
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://source.denx.de/u-boot/u-boot.git")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "1czmpszalc6b8cj9j7q6cxcy19lnijv3916w3dag6yr3xpqi35mr"))))
+                "0yrhb0izihv47p781dc4cp0znc5g225ayl7anz23c6jdrmfbpz2h"))))
     (build-system gnu-build-system)
     (native-inputs
      (list bison
@@ -873,9 +870,11 @@ Info manual.")))
                (("\\./tools/patman/patman") (which "true"))
                ;; FIXME: test fails, needs further investiation
                (("run_test \"binman\"") "# run_test \"binman\"")
-               ;; FIXME: test_spl fails, needs further investiation
-               (("test_ofplatdata or test_handoff or test_spl")
-                "test_ofplatdata or test_handoff")
+               ;; FIXME: tests fail without kwbimage, i.e. openssl.
+               (("run_test \"sandbox_noinst\"")
+                "# run_test \"sandbox_noinst\"")
+               (("run_test \"sandbox_vpl\"")
+                "# run_test \"sandbox_vpl\"")
                ;; FIXME: code coverage not working
                (("run_test \"binman code coverage\"")
                 "# run_test \"binman code coverage\"")
@@ -898,14 +897,16 @@ def test_ctrl_c"))
                            (("CONFIG_FIT_SIGNATURE=y")
                             "CONFIG_FIT_SIGNATURE=n
 CONFIG_UT_LIB_ASN1=n
-CONFIG_TOOLS_LIBCRYPTO=n")
+CONFIG_TOOLS_LIBCRYPTO=n
+CONFIG_TOOLS_KWBIMAGE=n")
                            ;; Catch instances of implied CONFIG_FIG_SIGNATURE
                            ;; with VPL targets
                            (("CONFIG_SANDBOX_VPL=y")
                             "CONFIG_SANDBOX_VPL=y
 CONFIG_FIT_SIGNATURE=n
 CONFIG_VPL_FIT_SIGNATURE=n
-CONFIG_TOOLS_LIBCRYPTO=n")
+CONFIG_TOOLS_LIBCRYPTO=n
+CONFIG_TOOLS_KWBIMAGE=n")
                            ;; This test requires a sound system, which is un-used
                            ;; in u-boot-tools.
                            (("CONFIG_SOUND=y") "CONFIG_SOUND=n")))
@@ -971,6 +972,13 @@ CONFIG_TOOLS_LIBCRYPTO=n")
           (add-after 'unpack 'chdir
             (lambda _
               (chdir "tools/u_boot_pylib")))
+          (add-after 'chdir 'list-package
+            (lambda _
+              (let ((port (open-file "pyproject.toml" "a")))
+                (display "[tool.setuptools.packages.find]\n" port)
+                (display "where = [\"..\"]\n" port)
+                (display "include = [\"u_boot_pylib*\"]" port)
+                (close-port port))))
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
@@ -1117,7 +1125,8 @@ U-Boot must be used."
                 (lambda _
                   (substitute* ".config"
                     (("CONFIG_TOOLS_LIBCRYPTO=.*$")
-                     "CONFIG_TOOLS_LIBCRYPTO=n"))))
+                     "CONFIG_TOOLS_LIBCRYPTO=n
+CONFIG_TOOLS_KWBIMAGE=n"))))
               (replace 'install
                 (lambda _
                   (let ((libexec (string-append #$output "/libexec"))
@@ -1325,21 +1334,10 @@ partition."))
 (define-public u-boot-sandbox
   (let ((base (make-u-boot-package
                "sandbox" #f             ;build for the native system
-               ;; Disable CONFIG_TOOLS_LIBCRYPTO, CONFIG_FIT_SIGNATURE and
-               ;; CONFIG_FIT_CIPHER and their selectors as these features
-               ;; require OpenSSL, which is incompatible with the GPLv2-only
-               ;; parts of U-boot.  The options below replicate the changes
-               ;; that disabling the above features in 'make menuconfig' then
-               ;; refreshing the defconfig with 'make savedefconfig' would do.
-               #:configs (list "# CONFIG_FIT_RSASSA_PSS is not set"
-                               "# CONFIG_FIT_CIPHER is not set"
-                               "# CONFIG_LEGACY_IMAGE_FORMAT is not set"
-                               "# CONFIG_IMAGE_PRE_LOAD is not set"
-                               "# CONFIG_IMAGE_PRE_LOAD_SIG is not set"
-                               "# CONFIG_CMD_BOOTM_PRE_LOAD is not set"
-                               "CONFIG_RSA=y"
-                               "# CONFIG_EFI_SECURE_BOOT is not set"
-                               "# CONFIG_TOOLS_LIBCRYPTO is not set")
+               ;; These disabled features require OpenSSL, which is
+               ;; incompatible with the GPLv2-only parts of U-boot.
+               #:configs (map (cut string-append "# CONFIG_" <> " is not set")
+                              '("FIT_CIPHER"))
                #:append-description
                "The sandbox configuration of U-Boot provides a
 @command{u-boot} command that runs as a normal user space application.  It can
@@ -1359,8 +1357,9 @@ Documentation} for more information (for example by running @samp{info
                   (mkdir (string-append #$output "/bin"))
                   (symlink (search-input-file outputs "libexec/u-boot")
                            (string-append #$output "/bin/u-boot"))))))))
+      ;; cert-to-efi-sig-list from efitools creates the EFI capsule ESL.
       (inputs (modify-inputs (package-inputs base)
-                (append sdl2))))))
+                (append efitools sdl2))))))
 
 (define-public u-boot-sifive-unleashed
   (let ((base (make-u-boot-package "sifive_unleashed" "riscv64-linux-gnu")))
@@ -1460,7 +1459,6 @@ Documentation} for more information (for example by running @samp{info
                                                "CONFIG_SATA_SIL=y"
                                                "CONFIG_SCSI=y"
                                                "CONFIG_SCSI_AHCI=y"
-                                               "CONFIG_DM_SCSI=y"
                                                ;; Disable SPL FIT signatures,
                                                ;; due to GPLv2 and Openssl
                                                ;; license incompatibilities
