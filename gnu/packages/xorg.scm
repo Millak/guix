@@ -5342,29 +5342,6 @@ application-facing EGL functions.")
     (home-page "https://github.com/NVIDIA/eglexternalplatform")
     (license license:expat)))
 
-(define-public egl-gbm
-  (package
-    (name "egl-gbm")
-    (version "1.1.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/NVIDIA/egl-gbm")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "125h1751vdg60klci0cbmcqj46spxalzqawvvd469qvx69bm30da"))))
-    (build-system meson-build-system)
-    (native-inputs (list pkg-config))
-    (inputs (list eglexternalplatform mesa))
-    (synopsis "GBM EGL external platform library")
-    (description
-     "This package provides an EGL External Platform library implementation for
-GBM EGL support.")
-    (home-page "https://github.com/NVIDIA/egl-gbm")
-    (license license:expat)))
-
 (define-public egl-wayland
   (package
     (name "egl-wayland")
