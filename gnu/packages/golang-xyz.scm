@@ -7925,6 +7925,34 @@ logging.")
 symbols in the style of Sublime Text, VSCode, @code{IntelliJ} IDEA et al.")
     (license license:expat)))
 
+(define-public go-github-com-satori-go-uuid
+  (package
+    (name "go-github-com-satori-go-uuid")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/satori/go.uuid")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1j4s5pfg2ldm35y8ls8jah4dya2grfnx2drb4jcbjsyrp4cm5yfb"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/satori/go.uuid"))
+    (native-inputs
+     (list go-gopkg-in-check-v1))
+    (home-page "https://github.com/satori/go.uuid")
+    (synopsis "UUID package for Go language")
+    (description
+     "Package uuid provides implementation of @acronym{Universally Unique
+Identifier, UUID}. Supported versions are 1, 3, 4 and 5 (as specified in
+@url{https://rfc-editor.org/rfc/rfc4122.html,RFC 4122}) and version 2 (as
+specified in DCE 1.1).")
+    (license license:expat)))
+
 (define-public go-github-com-schollz-progressbar-v3
   (package
     (name "go-github-com-schollz-progressbar-v3")
