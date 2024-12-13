@@ -2058,6 +2058,74 @@ levels that works by wrapping the standard @code{log} library.")
      "Readline is a pure Go implementation of a GNU-Readline like library.")
     (license license:expat)))
 
+(define-public go-github-com-cilium-ebpf
+  (package
+    (name "go-github-com-cilium-ebpf")
+    (version "0.16.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cilium/ebpf")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1p3wssg00d0h5dn1fadl0g8iwcak0d6myyjlqwgf6rnfnlajcrgi"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/cilium/ebpf"
+      #:test-flags
+      ;; Tests fail with errors:
+      ;; - neither debugfs nor tracefs are mounted
+      ;; - no such file or directory
+      #~(list "-skip" (string-join
+                       (list
+                        "TestNewEvent"
+                        "TestFSType"
+                        "TestEventID"
+                        "TestSanitizePath"
+                        "TestGetTracefsPath")
+                       "|"))
+      ;; XXX: 337 tests failed and 664 passed when "..."  is preserved, run
+      ;; some of available tests, figure out how to fix the rests.
+      #:test-subdirs
+      #~(list
+         ;; Tests fail with error: detect support for
+         ;; FnSkbSetTstamp for program type SchedCLS:
+         ;; detect support for SchedCLS: load program:
+         ;; operation not permitted
+         ;; "features"
+
+         ;; Failed to adjust rlimit, tests may fail
+         ;; "link"
+         ;; "perf"
+         ;; "ringbuf"
+         "asm"
+         "internal/...")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (for-each delete-file-recursively
+                          (list "example_sock_elf_test.go"
+                                "example_sock_extract_dist_test.go"
+                                "examples"))))))))
+    (propagated-inputs
+     (list go-github-com-go-quicktest-qt
+           go-github-com-google-go-cmp
+           go-github-com-jsimonetti-rtnetlink-v2
+           go-golang-org-x-exp
+           go-golang-org-x-sys))
+    (home-page "https://ebpf-go.dev/")
+    (synopsis "Read, modify and load extended Berkeley Packet Filter programs in Golang")
+    (description
+     "This package provides utilities for loading, compiling, and debugging
+@url{https://www.ebpf.io/,eBPF} programs.  It has minimal external
+dependencies and is intended to be used in long running processes.")
+    (license license:expat)))
+
 (define-public go-github-com-containerd-cgroups
   (package
     (name "go-github-com-containerd-cgroups")
