@@ -745,33 +745,21 @@ The SUBDIR argument defaults to \"efi/Guix\", as it is also the case for
 tree binary files.  These are board description files used by Linux and BSD.")
     (license license:gpl2+)))
 
-(define %u-boot-rockchip-inno-usb-patch
-  ;; Fix regression in 2020.10 causing freezes on boot with USB boot enabled.
-  ;; See https://gitlab.manjaro.org/manjaro-arm/packages/core/uboot-rockpro64/-/issues/4
-  ;; and https://patchwork.ozlabs.org/project/uboot/patch/20210406151059.1187379-1-icenowy@aosc.io
-  (search-patch "u-boot-rockchip-inno-usb.patch"))
-
-(define %u-boot-allow-disabling-openssl-patch
-  ;; Fixes build of u-boot 2021.10 without openssl
-  ;; https://lists.denx.de/pipermail/u-boot/2021-October/462728.html
-  (search-patch "u-boot-allow-disabling-openssl.patch"))
-
 (define u-boot
   (package
     (name "u-boot")
     (version "2024.10")
-    (source (origin
-              (patches
-               (list %u-boot-rockchip-inno-usb-patch
-                     %u-boot-allow-disabling-openssl-patch))
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://source.denx.de/u-boot/u-boot.git")
-                     (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0yrhb0izihv47p781dc4cp0znc5g225ayl7anz23c6jdrmfbpz2h"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://source.denx.de/u-boot/u-boot.git")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0yrhb0izihv47p781dc4cp0znc5g225ayl7anz23c6jdrmfbpz2h"))
+       (patches (search-patches "u-boot-allow-disabling-openssl.patch"
+                                "u-boot-rockchip-inno-usb.patch"))))
     (build-system gnu-build-system)
     (native-inputs
      (list bison

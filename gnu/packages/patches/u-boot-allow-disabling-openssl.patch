@@ -10,6 +10,9 @@ CONFIG_FIT_PRELOAD to remove fit_pre_load_data, which depends on openssl.
 
 Addendum 2024-01-18, Herman Rimm: Patch updated to leave out upstreamed
 diffs with CONFIG_FIT_PRELOAD.
+---
+Fixes build of U-Boot v2021.10 without openssl.  See:
+https://lists.denx.de/pipermail/u-boot/2021-October/462728.html
 
 diff --git a/tools/kwbimage.c b/tools/kwbimage.c
 index 4dce495ff0..976174ae77 100644

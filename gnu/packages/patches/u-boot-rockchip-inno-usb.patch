@@ -1,149 +1,7 @@
-Downloaded from:
-https://patchwork.ozlabs.org/project/uboot/patch/20210406151059.1187379-1-icenowy@aosc.io
-
-From patchwork Tue Apr  6 15:10:59 2021
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Patchwork-Submitter: Icenowy Zheng <icenowy@aosc.io>
-X-Patchwork-Id: 1462876
-X-Patchwork-Delegate: ykai007@gmail.com
-Return-Path: <u-boot-bounces@lists.denx.de>
-X-Original-To: incoming@patchwork.ozlabs.org
-Delivered-To: patchwork-incoming@bilbo.ozlabs.org
-Authentication-Results: ozlabs.org;
- spf=pass (sender SPF authorized) smtp.mailfrom=lists.denx.de
- (client-ip=85.214.62.61; helo=phobos.denx.de;
- envelope-from=u-boot-bounces@lists.denx.de; receiver=<UNKNOWN>)
-Authentication-Results: ozlabs.org;
-	dkim=fail reason="signature verification failed" (1024-bit key;
- unprotected) header.d=mymailcheap.com header.i=@mymailcheap.com
- header.a=rsa-sha256 header.s=default header.b=unszVtqT;
-	dkim=fail reason="signature verification failed" (1024-bit key;
- unprotected) header.d=aosc.io header.i=@aosc.io header.a=rsa-sha256
- header.s=default header.b=mWwYCh9A;
-	dkim-atps=neutral
-Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by ozlabs.org (Postfix) with ESMTPS id 4FF9wc3GdNz9sW1
-	for <incoming@patchwork.ozlabs.org>; Wed,  7 Apr 2021 01:11:42 +1000 (AEST)
-Received: from h2850616.stratoserver.net (localhost [IPv6:::1])
-	by phobos.denx.de (Postfix) with ESMTP id C1F9C8040A;
-	Tue,  6 Apr 2021 17:11:32 +0200 (CEST)
-Authentication-Results: phobos.denx.de;
- dmarc=none (p=none dis=none) header.from=aosc.io
-Authentication-Results: phobos.denx.de;
- spf=pass smtp.mailfrom=u-boot-bounces@lists.denx.de
-Authentication-Results: phobos.denx.de;
-	dkim=fail reason="signature verification failed" (1024-bit key;
- unprotected) header.d=mymailcheap.com header.i=@mymailcheap.com
- header.b="unszVtqT";
-	dkim=fail reason="signature verification failed" (1024-bit key;
- unprotected) header.d=aosc.io header.i=@aosc.io header.b="mWwYCh9A";
-	dkim-atps=neutral
-Received: by phobos.denx.de (Postfix, from userid 109)
- id E4F22805B4; Tue,  6 Apr 2021 17:11:30 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on phobos.denx.de
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
- DKIM_VALID,DKIM_VALID_AU,SPF_HELO_NONE autolearn=ham
- autolearn_force=no version=3.4.2
-Received: from relay3.mymailcheap.com (relay3.mymailcheap.com
- [217.182.66.161])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by phobos.denx.de (Postfix) with ESMTPS id 2FC4A8039D
- for <u-boot@lists.denx.de>; Tue,  6 Apr 2021 17:11:27 +0200 (CEST)
-Authentication-Results: phobos.denx.de;
- dmarc=none (p=none dis=none) header.from=aosc.io
-Authentication-Results: phobos.denx.de; spf=pass smtp.mailfrom=icenowy@aosc.io
-Received: from filter2.mymailcheap.com (filter2.mymailcheap.com
- [91.134.140.82])
- by relay3.mymailcheap.com (Postfix) with ESMTPS id A6AC13ECDF;
- Tue,  6 Apr 2021 17:11:26 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
- by filter2.mymailcheap.com (Postfix) with ESMTP id 88D512A915;
- Tue,  6 Apr 2021 17:11:26 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
- s=default; t=1617721886;
- bh=qb5gt5o7M9qjdJd67A3WHGZp/76w4s4FS6+u1VuEh/o=;
- h=From:To:Cc:Subject:Date:From;
- b=unszVtqTnO9MGZVbgLH5H0cMo3VfQ+g5377blmOUcrtzMSqNbDD5SM25MUhlTUKiB
- hTFq4L53gszBYfRPfh7Z5XgNVERULL5Zx0+WnVjZ7kUIp/wS3IQqxe81ChoFEsLTr8
- 22UB9NN3OSVkuN/jRAzX+lKpugVGBHwOCjZBZukQ=
-Received: from filter2.mymailcheap.com ([127.0.0.1])
- by localhost (filter2.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id V9lVOgo6gApH; Tue,  6 Apr 2021 17:11:25 +0200 (CEST)
-Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by filter2.mymailcheap.com (Postfix) with ESMTPS;
- Tue,  6 Apr 2021 17:11:25 +0200 (CEST)
-Received: from [213.133.102.83] (ml.mymailcheap.com [213.133.102.83])
- by mail20.mymailcheap.com (Postfix) with ESMTP id C9EA3400B6;
- Tue,  6 Apr 2021 15:11:24 +0000 (UTC)
-Authentication-Results: mail20.mymailcheap.com; dkim=pass (1024-bit key;
- unprotected) header.d=aosc.io header.i=@aosc.io header.b="mWwYCh9A";
- dkim-atps=neutral
-AI-Spam-Status: Not processed
-Received: from ice-e5v2.lan (unknown [59.41.163.135])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest
- SHA256) (No client certificate requested)
- by mail20.mymailcheap.com (Postfix) with ESMTPSA id 251F840C16;
- Tue,  6 Apr 2021 15:11:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=aosc.io; s=default;
- t=1617721874; bh=qb5gt5o7M9qjdJd67A3WHGZp/76w4s4FS6+u1VuEh/o=;
- h=From:To:Cc:Subject:Date:From;
- b=mWwYCh9AM8eRWm9hiEqirytotj/G/C1p9r2fd0zUxPhS0UQH+kw6L3RWZnsfmXAYq
- HmYFiM3ktIfwevqQw89tOi8c2ktb49iYOyHXkfi8hTZl1dNsJDS94uyzBiHYY+U7x5
- P0aTRRaL5C8ua2c1GedoPx06nrARO/KMEFy39rxI=
 From: Icenowy Zheng <icenowy@aosc.io>
-To: Simon Glass <sjg@chromium.org>, Kever Yang <kever.yang@rock-chips.com>,
- Frank Wang <frank.wang@rock-chips.com>,
- Jagan Teki <jagan@amarulasolutions.com>
-Cc: u-boot@lists.denx.de,
-	Icenowy Zheng <icenowy@aosc.io>
+Date: Tue, 6 Apr 2021 23:10:59 +0800
 Subject: [PATCH] phy: rockchip: inno-usb2: fix hang when multiple controllers
  exit
-Date: Tue,  6 Apr 2021 23:10:59 +0800
-Message-Id: <20210406151059.1187379-1-icenowy@aosc.io>
-X-Mailer: git-send-email 2.30.2
-MIME-Version: 1.0
-X-Rspamd-Server: mail20.mymailcheap.com
-X-Spamd-Result: default: False [4.90 / 20.00]; RCVD_VIA_SMTP_AUTH(0.00)[];
- ARC_NA(0.00)[]; R_DKIM_ALLOW(0.00)[aosc.io:s=default];
- RECEIVED_SPAMHAUS_PBL(0.00)[59.41.163.135:received];
- FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
- R_MISSING_CHARSET(2.50)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- MIME_GOOD(-0.10)[text/plain]; DMARC_NA(0.00)[aosc.io];
- BROKEN_CONTENT_TYPE(1.50)[]; R_SPF_SOFTFAIL(0.00)[~all];
- RCPT_COUNT_FIVE(0.00)[6]; ML_SERVERS(-3.10)[213.133.102.83];
- DKIM_TRACE(0.00)[aosc.io:+]; MID_CONTAINS_FROM(1.00)[];
- RCVD_NO_TLS_LAST(0.10)[]; FROM_EQ_ENVFROM(0.00)[];
- MIME_TRACE(0.00)[0:+];
- ASN(0.00)[asn:24940, ipnet:213.133.96.0/19, country:DE];
- RCVD_COUNT_TWO(0.00)[2];
- HFILTER_HELO_BAREIP(3.00)[213.133.102.83,1]
-X-Rspamd-Queue-Id: C9EA3400B6
-X-BeenThere: u-boot@lists.denx.de
-X-Mailman-Version: 2.1.34
-Precedence: list
-List-Id: U-Boot discussion <u-boot.lists.denx.de>
-List-Unsubscribe: <https://lists.denx.de/options/u-boot>,
- <mailto:u-boot-request@lists.denx.de?subject=unsubscribe>
-List-Archive: <https://lists.denx.de/pipermail/u-boot/>
-List-Post: <mailto:u-boot@lists.denx.de>
-List-Help: <mailto:u-boot-request@lists.denx.de?subject=help>
-List-Subscribe: <https://lists.denx.de/listinfo/u-boot>,
- <mailto:u-boot-request@lists.denx.de?subject=subscribe>
-Errors-To: u-boot-bounces@lists.denx.de
-Sender: "U-Boot" <u-boot-bounces@lists.denx.de>
-X-Virus-Scanned: clamav-milter 0.102.4 at phobos.denx.de
-X-Virus-Status: Clean
 
 The OHCI and EHCI controllers are both bound to the same PHY. They will
 both do init and power_on operations when the controller is brought up
@@ -166,23 +24,26 @@ Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
 Fixes: ac97a9ece14e ("phy: rockchip: Add Rockchip USB2PHY driver")
 Tested-by: Peter Robinson <pbrobinson@gmail.com>
 ---
- drivers/phy/rockchip/phy-rockchip-inno-usb2.c | 21 +++++++++++++++++++
- 1 file changed, 21 insertions(+)
+Fix U-Boot v2020.10 regression, freezing on boot with USB boot enabled:
+https://gitlab.manjaro.org/manjaro-arm/packages/core/uboot-rockpro64/-/issues/4
+
+Downloaded from:
+https://patchwork.ozlabs.org/project/uboot/patch/20210406151059.1187379-1-icenowy@aosc.io
 
 diff --git a/drivers/phy/rockchip/phy-rockchip-inno-usb2.c b/drivers/phy/rockchip/phy-rockchip-inno-usb2.c
-index 70e61eccb7..ce36db94a7 100644
+index 43f6e020a6a..2086192445d 100644
 --- a/drivers/phy/rockchip/phy-rockchip-inno-usb2.c
 +++ b/drivers/phy/rockchip/phy-rockchip-inno-usb2.c
-@@ -64,6 +64,8 @@ struct rockchip_usb2phy {
- 	void *reg_base;
+@@ -47,6 +47,8 @@ struct rockchip_usb2phy {
+ 	struct regmap *reg_base;
  	struct clk phyclk;
  	const struct rockchip_usb2phy_cfg *phy_cfg;
 +	int init_count;
 +	int power_on_count;
  };
  
- static inline int property_enable(void *reg_base,
-@@ -106,6 +108,10 @@ static int rockchip_usb2phy_power_on(struct phy *phy)
+ static inline int property_enable(struct regmap *base,
+@@ -98,6 +100,10 @@ static int rockchip_usb2phy_power_on(struct phy *phy)
  	struct rockchip_usb2phy *priv = dev_get_priv(parent);
  	const struct rockchip_usb2phy_port_cfg *port_cfg = us2phy_get_port(phy);
  
@@ -193,7 +54,7 @@ index 70e61eccb7..ce36db94a7 100644
  	property_enable(priv->reg_base, &port_cfg->phy_sus, false);
  
  	/* waiting for the utmi_clk to become stable */
-@@ -120,6 +126,10 @@ static int rockchip_usb2phy_power_off(struct phy *phy)
+@@ -112,6 +118,10 @@ static int rockchip_usb2phy_power_off(struct phy *phy)
  	struct rockchip_usb2phy *priv = dev_get_priv(parent);
  	const struct rockchip_usb2phy_port_cfg *port_cfg = us2phy_get_port(phy);
  
@@ -204,8 +65,8 @@ index 70e61eccb7..ce36db94a7 100644
  	property_enable(priv->reg_base, &port_cfg->phy_sus, true);
  
  	return 0;
-@@ -132,6 +142,10 @@ static int rockchip_usb2phy_init(struct phy *phy)
- 	const struct rockchip_usb2phy_port_cfg *port_cfg = us2phy_get_port(phy);
+@@ -123,6 +133,10 @@ static int rockchip_usb2phy_init(struct phy *phy)
+ 	struct rockchip_usb2phy *priv = dev_get_priv(parent);
  	int ret;
  
 +	priv->init_count++;
@@ -215,7 +76,7 @@ index 70e61eccb7..ce36db94a7 100644
  	ret = clk_enable(&priv->phyclk);
  	if (ret && ret != -ENOSYS) {
  		dev_err(phy->dev, "failed to enable phyclk (ret=%d)\n", ret);
-@@ -154,6 +168,10 @@ static int rockchip_usb2phy_exit(struct phy *phy)
+@@ -137,6 +151,10 @@ static int rockchip_usb2phy_exit(struct phy *phy)
  	struct udevice *parent = dev_get_parent(phy->dev);
  	struct rockchip_usb2phy *priv = dev_get_priv(parent);
  
@@ -226,7 +87,7 @@ index 70e61eccb7..ce36db94a7 100644
  	clk_disable(&priv->phyclk);
  
  	return 0;
-@@ -294,6 +312,9 @@ static int rockchip_usb2phy_probe(struct udevice *dev)
+@@ -281,6 +299,9 @@ static int rockchip_usb2phy_probe(struct udevice *dev)
  		return ret;
  	}
  
