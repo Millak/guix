@@ -1248,26 +1248,26 @@ the tty to run, among other things."
   mingetty-configuration?
   (mingetty          mingetty-configuration-mingetty ;file-like
                      (default mingetty))
-  (tty               mingetty-configuration-tty) ;string
-  (auto-login        mingetty-auto-login         ;string | #f
+  (tty               mingetty-configuration-tty)       ;string
+  (auto-login        mingetty-configuration-auto-login ;string | #f
                      (default #f))
-  (login-program     mingetty-login-program ;gexp
+  (login-program     mingetty-configuration-login-program ;gexp
                      (default #f))
-  (login-pause?      mingetty-login-pause? ;Boolean
+  (login-pause?      mingetty-configuration-login-pause? ;boolean
                      (default #f))
-  (clear-on-logout?  mingetty-clear-on-logout? ;Boolean
+  (clear-on-logout?  mingetty-configuration-clear-on-logout? ;boolean
                      (default #t))
-  (delay             mingetty-configuration-delay ;Integer | #f
+  (delay             mingetty-configuration-delay ;integer | #f
                      (default #f))
-  (print-issue       mingetty-configuration-print-issue ;Boolean | Symbol
+  (print-issue       mingetty-configuration-print-issue ;boolean | symbol
                      (default #t))
-  (print-hostname    mingetty-configuration-print-hostname ;Boolean | Symbol
+  (print-hostname    mingetty-configuration-print-hostname ;boolean | symbol
                      (default #t))
-  (nice              mingetty-configuration-nice ;Integer | #f
+  (nice              mingetty-configuration-nice ;integer | #f
                      (default #f))
-  (working-directory mingetty-configuration-working-directory ;String | #f
+  (working-directory mingetty-configuration-working-directory ;string | #f
                      (default #f))
-  (root-directory    mingetty-configuration-root-directory ;String | #f
+  (root-directory    mingetty-configuration-root-directory ;string | #f
                      (default #f)))
 
 (define (mingetty-shepherd-service config)
