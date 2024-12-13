@@ -767,8 +767,7 @@ tree binary files.  These are board description files used by Linux and BSD.")
               (patches
                (list %u-boot-rockchip-inno-usb-patch
                      %u-boot-build-without-libcrypto-patch
-                     %u-boot-allow-disabling-openssl-patch
-                     (search-patch "u-boot-calloc-visibility.patch")))
+                     %u-boot-allow-disabling-openssl-patch))
               (method url-fetch)
               (uri (string-append
                     "https://ftp.denx.de/pub/u-boot/"
