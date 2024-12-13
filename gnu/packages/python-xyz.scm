@@ -17697,7 +17697,7 @@ libmagic.")))
     (arguments
      (list
       #:test-flags
-      #~(list "-n" "0" ; fails: (number->string (parallel-job-count))
+      #~(list "-n" (number->string (parallel-job-count))
               "-k"
               (string-append
                ;; The two "break_01" tests have been failing on
@@ -17719,12 +17719,7 @@ libmagic.")))
               (substitute* "tests_python/test_convert_utilities.py"
                 ;; Add missing trailing '/'.
                 (("\"\\\\\\\\usr\\\\\\\\bin\\\\\\\\\") == \"/usr/bin" all)
-                 (string-append all "/")))
-              ;; pytest-xdist's parallel tests would fail that test.
-              ;; So we disabled parallel tests.
-              ;(delete-file "tests_python/test_utilities.py") ; test_is_main_thread
-              ;; TODO: fix.
-              (delete-file "tests_python/test_debugger_json.py"))) ; test_soft_terminate timeout
+                 (string-append all "/")))))
           (add-after 'unpack 'patch-command-paths
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "_pydevd_bundle/pydevd_api.py"
@@ -17772,8 +17767,10 @@ libmagic.")))
            python-psutil
            python-pytest
            python-pytest-xdist
+           python-setuptools
            python-trio
-           python-untangle))
+           python-untangle
+           python-wheel))
     (inputs (list coreutils gdb/pinned procps))
     (home-page "https://github.com/fabioz/PyDev.Debugger/")
     (synopsis "Python debugger")
