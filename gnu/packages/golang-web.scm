@@ -3782,21 +3782,20 @@ via REST APIs.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1pxd0qn73jr9n64gkp2kd8q8x7xgssm3v8a68vkh88al55g8jkma"))))
+        (base32 "1pxd0qn73jr9n64gkp2kd8q8x7xgssm3v8a68vkh88al55g8jkma"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Cycles with go-github-com-jsimonetti-rtnetlink.
+            (delete-file-recursively "internal/integration")))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/mdlayher/netlink"
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'disable-failing-tests
-            (lambda* (#:key tests? import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (substitute* (find-files "." "_test\\.go$")
-                  ;; failed to start command "ip": exec: "ip": executable file
-                  ;; not found in $PATH
-                  (("TestIntegrationConnSetBuffersSyscallConn")
-                   "OffTestIntegrationConnSetBuffersSyscallConn"))))))))
+      #:test-flags
+      ;; Test fails to start command "ip": exec: "ip": executable file not
+      ;; found in $PATH
+      #~(list "-skip" "TestIntegrationConnSetBuffersSyscallConn")))
     (propagated-inputs
      (list go-github-com-google-go-cmp
            go-github-com-josharian-native
