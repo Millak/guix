@@ -4814,16 +4814,17 @@ server for Python and pypy3.")
 (define-public cadabra2
   (package
     (name "cadabra2")
-    (version "2.4.5.6")
+    (version "2.5.8")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/kpeeters/cadabra2")
-                    (commit version)))
+                    (commit version)
+                    (recursive? #t)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1c0832q156kl83dz1wpjw4wf2f68fg7421wxwzahnr2r7xxvgrvl"))))
+                "0pcijvvv75x6408r6slkwljhqb4l4csnk6dhf5333dv9j9cm76ck"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -4838,20 +4839,13 @@ server for Python and pypy3.")
                         (assoc-ref %outputs "out")))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-dependencies
-            (lambda _
-              (substitute* "cmake/modules/FindGLIBMM.cmake"
-                (("glibmm-2[.]4") "glibmm-2.68"))
-              (substitute* "client_server/ComputeThread.cc"
-                (("sigc::slot<void>[(][)]") "{}")
-                (("Glib::SPAWN_") "Glib::SpawnFlags::"))))
           (add-before 'check 'prepare-checks
             (lambda _
               (setenv "HOME" "/tmp"))))))
     (native-inputs
      (list pkg-config))
     (inputs
-     (list glibmm gmp python boost gtkmm-3 sqlite python-gmpy2 python-sympy
+     (list glibmm-2.66 gmp python boost gtkmm-3 sqlite python-gmpy2 python-sympy
            python-mpmath python-matplotlib texlive-dvipng
            `(,util-linux "lib")))
     (synopsis "Computer algebra system geared towards field theory")
