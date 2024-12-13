@@ -2196,6 +2196,43 @@ cgroup uses the OCI runtime-spec found
 @url{https://github.com/opencontainers/runtime-spec,here}.")
     (license license:asl2.0)))
 
+(define-public go-github-com-containerd-cgroups-v3
+  (package
+    (inherit go-github-com-containerd-cgroups)
+    (name "go-github-com-containerd-cgroups-v3")
+    (version "3.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/containerd/cgroups")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09fkbhkx0hmcfcym3zl0dshbhj3p692xg7d6y8pj732g64zk6v4k"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodule(s) with their own go.mod files and packed as
+            ;; separated packages:
+            ;;
+            ;; - github.com/containerd/cgroups/cmd cgctl
+            (delete-file-recursively "cmd")))))
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-containerd-cgroups)
+       ((#:import-path _) "github.com/containerd/cgroups/v3")))
+    (propagated-inputs
+     (list go-github-com-cilium-ebpf
+           go-github-com-containerd-log
+           go-github-com-coreos-go-systemd-v22
+           go-github-com-docker-go-units
+           go-github-com-godbus-dbus-v5
+           go-github-com-moby-sys-userns
+           go-github-com-opencontainers-runtime-spec
+           go-golang-org-x-sys
+           go-google-golang-org-protobuf))))
+
 (define-public go-github-com-containerd-fifo
   (package
     (name "go-github-com-containerd-fifo")
