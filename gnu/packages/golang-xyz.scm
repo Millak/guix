@@ -6385,6 +6385,32 @@ colored strings.")
     (description "Go library for decoding generic map values")
     (license license:expat)))
 
+(define-public go-github-com-moby-sys-userns
+  (package
+    (name "go-github-com-moby-sys-userns")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/moby/sys")
+             (commit (go-version->git-ref version
+                                          #:subdir "userns"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1clr9x412gr1cq3jxf9lxblh9pkf8c42gz57wr14miy0nqsimx7j"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/moby/sys/userns"
+      #:unpack-path "github.com/moby/sys"))
+    (home-page "https://github.com/moby/sys")
+    (synopsis "Probe Linux user namespace")
+    (description
+     "Package userns provides utilities to detect whether we are currently
+running in a Linux user namespace.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-modern-go-concurrent
   (package
     (name "go-github-com-modern-go-concurrent")
