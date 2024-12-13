@@ -2223,6 +2223,31 @@ cgroup uses the OCI runtime-spec found
 way.")
     (license license:asl2.0)))
 
+(define-public go-github-com-containerd-log
+  (package
+    (name "go-github-com-containerd-log")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/containerd/log")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1nzviiqpn0djdwql2q3m2xs1ndxyd0v2klvq6xi2r0dn4wr3mqdy"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/containerd/log"))
+    (propagated-inputs (list go-github-com-sirupsen-logrus))
+    (home-page "https://github.com/containerd/log")
+    (synopsis "Common log interface for containerd repositories and clients")
+    (description
+     "Package log provides types and functions related to logging, passing
+loggers through a context, and attaching context to the logger.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-coocood-freecache
   (package
     (name "go-github-com-coocood-freecache")
