@@ -5030,6 +5030,60 @@ wire protocol version 3.")
 files (e.g. .pg_service.conf).")
     (license license:expat)))
 
+(define-public go-github-com-jackc-pgx
+  (package
+    (name "go-github-com-jackc-pgx")
+    (version "3.6.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jackc/pgx")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0hbnh69ss0pq83n18b62znj3qi54y9kr31a3xi9h35p27nsk3izf"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/jackc/pgx"
+      #:test-subdirs
+      #~(list ;; "pgtype/..." ; most tests require networking setup
+              ;; "stdlib"
+              ;; "."          ; github.com/jackc/pgx [build failed]
+              "chunkreader"
+              "internal/sanitize"
+              "log/..."
+              "pgio"
+              "pgproto3")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples-and-benchmarks
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "examples")))))))
+    (native-inputs
+     (list go-github-com-cockroachdb-apd
+           go-github-com-jackc-fake))
+    (propagated-inputs
+     (list go-github-com-gofrs-uuid
+           go-github-com-lib-pq
+           go-github-com-rs-zerolog
+           go-github-com-satori-go-uuid
+           go-github-com-shopspring-decimal
+           go-github-com-sirupsen-logrus
+           go-go-uber-org-zap))
+    (home-page "https://github.com/jackc/pgx")
+    (synopsis "PostgreSQL driver and toolkit for Golang")
+    (description
+     "This package implements a pure Go driver and toolkit for PostgreSQL.  It
+is different from other drivers such as
+@url{http://godoc.org/github.com/lib/pq,pq} because, while it can operate as a
+database/sql compatible driver, pgx is also usable directly.  It offers a
+native interface similar to database/sql that offers better performance and
+more features.")
+    (license license:expat)))
+
 (define-public go-github-com-jackc-puddle
   (package
     (name "go-github-com-jackc-puddle")
