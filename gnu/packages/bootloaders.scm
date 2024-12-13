@@ -1319,34 +1319,35 @@ partition."))
   (make-u-boot-package "qemu-riscv64_smode" "riscv64-linux-gnu"))
 
 (define-public u-boot-sandbox
-  (let ((base (make-u-boot-package
-               "sandbox" #f             ;build for the native system
-               ;; These disabled features require OpenSSL, which is
-               ;; incompatible with the GPLv2-only parts of U-boot.
-               #:configs (map (cut string-append "# CONFIG_" <> " is not set")
-                              '("FIT_CIPHER"))
-               #:append-description
-               "The sandbox configuration of U-Boot provides a
-@command{u-boot} command that runs as a normal user space application.  It can
-be used to test the functionality of U-Boot interactively without having to
-deploy to an actual target device.  @xref{Sandbox<6>,,,u-boot, The U-Boot
+  (define base
+    (make-u-boot-package
+      "sandbox" #f             ;build for the native system
+      ;; These disabled features require OpenSSL, which is
+      ;; incompatible with the GPLv2-only parts of U-boot.
+      #:configs (map (cut string-append "# CONFIG_" <> " is not set")
+                     '("FIT_CIPHER"))
+      #:append-description
+      "The sandbox configuration of U-Boot provides a @command{u-boot}
+command that runs as a normal user space application.  It can be used to
+test the functionality of U-Boot interactively without having to deploy
+to an actual target device.  @xref{Sandbox<6>,,,u-boot, The U-Boot
 Documentation} for more information (for example by running @samp{info
-\"(u-boot) Sandbox<6>\"}).")))
-    (package
-      (inherit base)
-      (arguments
-       (substitute-keyword-arguments (package-arguments base)
-         ((#:phases phases '%standard-phases)
-          #~(modify-phases #$phases
-              (add-after 'install 'symlink-u-boot-command
-                (lambda* (#:key outputs #:allow-other-keys)
-                  ;; For ease of discovery.
-                  (mkdir (string-append #$output "/bin"))
-                  (symlink (search-input-file outputs "libexec/u-boot")
-                           (string-append #$output "/bin/u-boot"))))))))
-      ;; cert-to-efi-sig-list from efitools creates the EFI capsule ESL.
-      (inputs (modify-inputs (package-inputs base)
-                (append efitools sdl2))))))
+\"(u-boot) Sandbox<6>\"})."))
+  (package
+    (inherit base)
+    (arguments
+     (substitute-keyword-arguments (package-arguments base)
+       ((#:phases phases '%standard-phases)
+        #~(modify-phases #$phases
+            (add-after 'install 'symlink-u-boot-command
+              (lambda* (#:key outputs #:allow-other-keys)
+                ;; For ease of discovery.
+                (mkdir (string-append #$output "/bin"))
+                (symlink (search-input-file outputs "libexec/u-boot")
+                         (string-append #$output "/bin/u-boot"))))))))
+    ;; cert-to-efi-sig-list from efitools creates the EFI capsule ESL.
+    (inputs (modify-inputs (package-inputs base)
+              (append efitools sdl2)))))
 
 (define-public u-boot-sifive-unleashed
   (let ((base (make-u-boot-package "sifive_unleashed" "riscv64-linux-gnu")))
