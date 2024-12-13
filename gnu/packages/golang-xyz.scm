@@ -2151,20 +2151,36 @@ dependencies and is intended to be used in long running processes.")
     (arguments
      (list
       #:import-path "github.com/containerd/cgroups"
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'disable-failing-tests
-            (lambda* (#:key tests? import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (substitute* (find-files "." "_test\\.go$")
-                  ;; expected error "controller is not supported" but received
-                  ;; "cgroups: cannot find cgroup mount destination"
-                  (("TestSystemd240") "OffTestSystemd240"))))))))
+      #:test-flags
+      #~(list "-skip" (string-join
+                       ;; cannot find cgroup mount destination"
+                       (list "TestSystemd240"
+                             ;; cannot statfs cgroup root
+                             "TestCgroupType"
+                             "TestCgroupv2CpuStats"
+                             "TestCgroupv2MemoryStats"
+                             "TestCgroupv2PSIStats"
+                             "TestCgroupv2PidsStats"
+                             "TestErrorsWhenUnitAlreadyExists"
+                             "TestEventChanCleanupOnCgroupRemoval"
+                             "TestIgnoreUnitExistsWhenPidNegativeOne"
+                             "TestKill"
+                             "TestMoveTo"
+                             "TestSystemdCgroupCpuController"
+                             "TestSystemdCgroupMemoryController"
+                             "TestSystemdCgroupPSIController"
+                             "TestSystemdCgroupPidsController"
+                             ;; Assertion failed
+                             "TestDeviceFilter_Nil"
+                             "TestDeviceFilter_Privileged"
+                             "TestDeviceFilter_Weird")
+                       "|"))))
     (native-inputs
      (list go-github-com-stretchr-testify
            go-go-uber-org-goleak))
     (propagated-inputs
-     (list go-github-com-coreos-go-systemd-v22
+     (list go-github-com-cilium-ebpf
+           go-github-com-coreos-go-systemd-v22
            go-github-com-docker-go-units
            go-github-com-godbus-dbus-v5
            go-github-com-gogo-protobuf
