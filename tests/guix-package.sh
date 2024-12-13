@@ -2,6 +2,8 @@
 # Copyright © 2012-2022 Ludovic Courtès <ludo@gnu.org>
 # Copyright © 2013 Nikita Karetnikov <nikita@karetnikov.org>
 # Copyright © 2022 Josselin Poiret <dev@jpoiret.xyz>
+# Copyright © 2022 Josselin Poiret <dev@jpoiret.xyz>
+# Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 #
 # This file is part of GNU Guix.
 #
@@ -124,7 +126,7 @@ guix package --show=emacs@42 && false
 # Search.
 LC_MESSAGES=C
 export LC_MESSAGES
-test "`guix package -s "An example GNU package" | grep ^name:`" = \
+test "`guix package -s "Example GNU package" | grep ^name:`" = \
     "name: hello"
 test -z "`guix package -s "n0t4r341p4ck4g3"`"
 
