@@ -46272,6 +46272,7 @@ it manually. (@pxref{Configuring the Shell}).
 @end quotation
 
 @findex home-environment
+@vindex %base-home-services
 @lisp
 @include he-config-bare-bones.scm
 @end lisp

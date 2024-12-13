@@ -23,6 +23,7 @@
   #:use-module (gnu home services shells)
   #:use-module (gnu home services xdg)
   #:use-module (gnu home services fontutils)
+  #:use-module (gnu home services admin)
   #:use-module (gnu services)
   #:use-module (guix records)
   #:use-module (guix diagnostics)
@@ -43,7 +44,9 @@
 
             home-environment-with-provenance
 
-            home-generation-base))
+            home-generation-base
+
+            %base-home-services))
 
 ;;; Comment:
 ;;;
@@ -67,13 +70,17 @@
                                 this-home-environment)))
 
   (services           home-environment-user-services
-                      (default '())
+                      (default %base-home-services)
                       (sanitize validate-service-list))
 
   (location           home-environment-location            ; <location>
                       (default (and=> (current-source-location)
                                       source-properties->location))
                       (innate)))
+
+(define %base-home-services
+  ;; Non-essential but useful services to have by default.
+  '())
 
 (define (home-environment-default-essential-services he)
   "Return the list of essential services for home environment."

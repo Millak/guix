@@ -115,7 +115,7 @@ corresponding file."
       ('specifications->packages
        ('list "guile@2.0.9" "gcc:lib" "glibc@2.19")))
      ('services
-      ('list)))))
+      ('append ('list) '%base-home-services)))))
 
 (define-home-environment-matcher match-home-environment-transformations
   ('begin
@@ -131,7 +131,7 @@ corresponding file."
       ('list (transform ('specification->package "guile@2.0.9"))
              ('list ('specification->package "gcc") "lib")
              ('specification->package "glibc@2.19")))
-     ('services ('list)))))
+     ('services ('append ('list) '%base-home-services)))))
 
 (define-home-environment-matcher match-home-environment-no-services-nor-packages
   ('begin
@@ -143,7 +143,7 @@ corresponding file."
      ('packages
       ('specifications->packages ('list)))
      ('services
-      ('list)))))
+      ('append ('list) '%base-home-services)))))
 
 (define-home-environment-matcher match-home-environment-bash-service
   ('begin
@@ -157,13 +157,14 @@ corresponding file."
      ('packages
       ('specifications->packages ('list)))
      ('services
-      ('list ('service
-              'home-bash-service-type
-              ('home-bash-configuration
-               ('aliases ('quote ()))
-               ('bashrc
-                ('list ('local-file "/tmp/guix-config/.bashrc"
-                                    "bashrc"))))))))))
+      (append ('list ('service
+                      'home-bash-service-type
+                      ('home-bash-configuration
+                       ('aliases ('quote ()))
+                       ('bashrc
+                        ('list ('local-file "/tmp/guix-config/.bashrc"
+                                            "bashrc"))))))
+              '%base-home-services)))))
 
 (define-home-environment-matcher match-home-environment-bash-service-with-alias
   ('begin
@@ -177,15 +178,16 @@ corresponding file."
      ('packages
       ('specifications->packages ('list)))
      ('services
-      ('list ('service
-              'home-bash-service-type
-              ('home-bash-configuration
-               ('aliases
-                ('quote (("grep" . "grep --exclude-from=\"$HOME/.grep-exclude\"")
-                         ("ls" . "ls -p"))))
-               ('bashrc
-                ('list ('local-file "/tmp/guix-config/.bashrc"
-                                    "bashrc"))))))))))
+      ('append ('list ('service
+                       'home-bash-service-type
+                       ('home-bash-configuration
+                        ('aliases
+                         ('quote (("grep" . "grep --exclude-from=\"$HOME/.grep-exclude\"")
+                                  ("ls" . "ls -p"))))
+                        ('bashrc
+                         ('list ('local-file "/tmp/guix-config/.bashrc"
+                                             "bashrc"))))))
+               '%base-home-services)))))
 
 
 (test-assert "manifest->code: No services"

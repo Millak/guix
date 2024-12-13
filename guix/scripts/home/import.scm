@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Andrew Tropin <andrew@trop.in>
-;;; Copyright © 2021-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2021-2022, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2022 Arjan Adriaanse <arjan@adriaan.se>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;;
@@ -160,7 +160,8 @@ user's files to CONFIGURATION-DIRECTORY; the generated sexp refers to them."
 
            (home-environment
             (packages ,packages)
-            (services (list ,@services)))))))
+            (services (append (list ,@services)
+                              %base-home-services)))))))
     (('begin ('specifications->manifest packages))
      (match (configurations+modules configuration-directory)
        (((services . modules) ...)
@@ -183,7 +184,8 @@ user's files to CONFIGURATION-DIRECTORY; the generated sexp refers to them."
             ,(comment (G_ "\
 ;; Below is the list of Home services.  To search for available
 ;; services, run 'guix home search KEYWORD' in a terminal.\n"))
-            (services (list ,@services)))))))))
+            (services (append (list ,@services)
+                              %base-home-services)))))))))
 
 (define* (import-manifest
           manifest destination-directory
