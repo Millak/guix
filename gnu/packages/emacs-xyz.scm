@@ -148,6 +148,7 @@
 ;;; Copyright © 2024 Spencer King <spencer.king@nursiapress.com>
 ;;; Copyright © 2024 emma thompson <bigbookofbug@proton.me>
 ;;; Copyright © 2024 Liam Hupfer <liam@hpfr.net>
+;;; Copyright © 2024 aurtzy <aurtzy@gmail.com>
 
 ;;;
 ;;; This file is part of GNU Guix.
@@ -1536,6 +1537,31 @@ in named tab groups.  This package automates the steps you’d otherwise need to
 do manually if you wanted to keep the buffers of a project neatly isolated in
 separate, named tab groups.")
       (license license:gpl3+))))
+
+(define-public emacs-disproject
+  (package
+    (name "emacs-disproject")
+    (version "1.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/aurtzy/disproject")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "03wf14vilnysj9szcffsadhw86p68v3083dv98d99c8axm51n6hz"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-transient))
+    (home-page "https://github.com/aurtzy/disproject")
+    (synopsis "Transient interface for managing and interacting with projects")
+    (description
+     "Disproject is a package for GNU Emacs that implements Transient menus
+for dispatching project-related commands on top of the Project library.  It
+aims to provide a more capable version of the @code{project-switch-project}
+command, which it is inspired by.  Those who are familiar with Projectile may
+also find similarities to @code{projectile-commander}.")
+    (license license:gpl3+)))
 
 (define-public emacs-golden-ratio
   (let ((commit "375c9f287dfad68829582c1e0a67d0c18119dab9")
