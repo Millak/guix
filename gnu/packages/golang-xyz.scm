@@ -8917,7 +8917,9 @@ supported by the time package
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
-     (list go-github-com-go-md2man))
+     (list go-github-com-burntsushi-toml
+           go-github-com-go-md2man
+           go-gopkg-in-yaml-v2))
     (home-page "https://github.com/urfave/cli")
     (synopsis "Simple, fast, and fun package for building command line apps in Go")
     (description
