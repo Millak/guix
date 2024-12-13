@@ -101,6 +101,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/compression.scm				\
   %D%/home.scm					\
   %D%/home/services.scm			\
+  %D%/home/services/admin.scm			\
   %D%/home/services/desktop.scm			\
   %D%/home/services/dict.scm			\
   %D%/home/services/dotfiles.scm		\

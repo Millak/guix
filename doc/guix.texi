@@ -20910,6 +20910,7 @@ This is the type of the log rotation service.  Its associated value must
 be a @code{log-rotation-configuration} record, as discussed below.
 @end defvar
 
+@anchor{log-rotation-configuration}
 @c %start of fragment
 
 @deftp {Data Type} log-rotation-configuration
@@ -47295,6 +47296,20 @@ You should probably use the service extension
 mechanism instead (@pxref{Shepherd Services}).
 @end table
 @end deftp
+
+@cindex log rotation, for user services
+The Shepherd also comes with a @dfn{log rotation service}, which
+compresses and then deletes old log files produced by services and
+daemons that it runs.  This service is made available through
+@code{home-log-rotation-service-type} as described below.
+
+@defvar home-log-rotation-service-type
+This is the service type for the user Shepherd log rotation service
+(@pxref{Log Rotation Service,,, shepherd, The GNU Shepherd Manual}).
+Its value must be a @code{log-rotation-configuration} record, exactly as
+for its system-wide counterpart.  @xref{log-rotation-configuration}, for
+its reference.
+@end defvar
 
 @node Secure Shell
 @subsection Secure Shell
