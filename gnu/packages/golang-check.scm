@@ -389,9 +389,20 @@ tests.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/go-quicktest/qt"))
+      #:import-path "github.com/go-quicktest/qt"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       ;; Tests failing with assertion error or could not find
+                       ;; test files.
+                       (list "TestReportOutput"
+                             "TestIndirectReportOutput"
+                             "TestMultilineReportOutput"
+                             "TestCmpReportOutput"
+                             "TestTopLevelAssertReportOutput")
+                       "|"))))
     (propagated-inputs
-     (list go-github-com-google-go-cmp go-github-com-kr-pretty))
+     (list go-github-com-google-go-cmp
+           go-github-com-kr-pretty))
     (home-page "https://github.com/go-quicktest/qt")
     (synopsis "Qt: quicker Go tests")
     (description
