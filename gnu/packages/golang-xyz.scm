@@ -7816,12 +7816,16 @@ Included are the following:
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/rs/zerolog"))
+      #:import-path "github.com/rs/zerolog"
+      ;; Unexpected error write unixgram @234fb->/run/systemd/journal/socket:
+      ;; sendmsg: no such file or directory
+      #:test-flags #~(list "-skip" "TestWriteReturnsNoOfWrittenBytes")))
     (propagated-inputs
      (list go-github-com-coreos-go-systemd-v22
            go-github-com-mattn-go-colorable
            go-github-com-pkg-errors
-           go-github-com-rs-xid))
+           go-github-com-rs-xid
+           go-golang-org-x-tools))
     (home-page "https://github.com/rs/zerolog")
     (synopsis "Zero Allocation JSON Logger")
     (description
