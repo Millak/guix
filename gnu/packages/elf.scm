@@ -11,6 +11,7 @@
 ;;; Copyright © 2021 Leo Le Bouter <lle-bout@zaclys.net>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -99,48 +100,57 @@
              '())
 
        #:phases
-       (modify-phases %standard-phases
-         ;; No reason has been found for this test to reliably fail on aarch64-linux.
-         (add-after 'unpack 'disable-failing-aarch64-tests
-           (lambda _
-             (substitute* "tests/Makefile.in"
-               (("run-backtrace-native.sh") ""))
-             #t))
-         ,@(if (target-riscv64?)
-             `((add-after 'unpack 'disable-failing-riscv64-test
-                 (lambda _
-                   (substitute* "tests/Makefile.in"
-                     ;; dwfl_thread_getframes: No DWARF information found
-                     (("run-backtrace-dwarf.sh") "")
-                     ;; These tests have several errors:
-                     ;; unknown program header entry type 0x70000003
-                     ;; '.riscv.attributes' has unsupported type 1879048195
-                     (("run-reverse-sections-self.sh") "")
-                     (("run-strip-strmerge.sh") "")
-                     (("run-elflint-self.sh") "")))))
-             '())
-         ,@(if (system-hurd?)
-             `((add-after 'unpack 'skip-tests
-                 (lambda _
-                   (substitute* '("tests/elfstrtab.c"
-                                  "tests/emptyfile.c")
-                     (("elf_version \\(EV_CURRENT\\);" all)
-                      "exit (77);"))
-                   (substitute* '("tests/run-all-dwarf-ranges.sh"
-                                  "tests/run-allfcts-multi.sh"
-                                  "tests/run-attr-integrate-skel.sh"
-                                  "tests/run-bug1-test.sh"
-                                  "tests/run-copyadd-sections.sh"
-                                  "tests/run-deleted.sh"
-                                  "tests/run-get-units-split.sh"
-                                  "tests/run-native-test.sh"
-                                  "tests/run-readelf-loc.sh"
-                                  "tests/run-readelf-ranges.sh"
-                                  "tests/run-unit-info.sh"
-                                  "tests/run-varlocs.sh")
-                               (("^#!.*" all)
-                                (string-append all "exit 77;\n"))))))
-             '()))))
+       ,#~(modify-phases %standard-phases
+            ;; No reason has been found for this test to reliably fail on aarch64-linux.
+            (add-after 'unpack 'disable-failing-aarch64-tests
+              (lambda _
+                (substitute* "tests/Makefile.in"
+                  (("run-backtrace-native.sh") ""))
+                #t))
+            #$@(if (target-riscv64?)
+                   #~((add-after 'unpack 'disable-failing-riscv64-test
+                        (lambda _
+                          (substitute* "tests/Makefile.in"
+                            ;; dwfl_thread_getframes: No DWARF information found
+                            (("run-backtrace-dwarf.sh") "")
+                            ;; These tests have several errors:
+                            ;; unknown program header entry type 0x70000003
+                            ;; '.riscv.attributes' has unsupported type 1879048195
+                            (("run-reverse-sections-self.sh") "")
+                            (("run-strip-strmerge.sh") "")
+                            (("run-elflint-self.sh") "")))))
+                   #~())
+            #$@(if (system-hurd?)
+                   #~((add-after 'unpack 'skip-tests
+                        (lambda _
+                          (substitute* '("tests/elfstrtab.c"
+                                         "tests/emptyfile.c")
+                            (("elf_version \\(EV_CURRENT\\);" all)
+                             "exit (77);"))
+                          (substitute* '("tests/run-all-dwarf-ranges.sh"
+                                         "tests/run-allfcts-multi.sh"
+                                         "tests/run-attr-integrate-skel.sh"
+                                         "tests/run-bug1-test.sh"
+                                         "tests/run-copyadd-sections.sh"
+                                         "tests/run-deleted.sh"
+                                         "tests/run-get-units-split.sh"
+                                         "tests/run-native-test.sh"
+                                         "tests/run-readelf-loc.sh"
+                                         "tests/run-readelf-ranges.sh"
+                                         "tests/run-unit-info.sh"
+                                         "tests/run-varlocs.sh")
+                            (("^#!.*" all)
+                             (string-append all "exit 77;\n"))))))
+                   #~())
+            #$@(if (%current-target-system)
+                   #~((add-after 'unpack 'patch
+                        (lambda* (#:key native-inputs #:allow-other-keys)
+                          (invoke
+                           "patch" "-p1" "--force" "-i"
+                           #$(local-file
+                              (search-patch
+                               "elfutils-libdwfl-string-overflow.patch"))))))
+                   #~()))))
 
     (native-inputs (list m4))
     (inputs (list xz zlib))
