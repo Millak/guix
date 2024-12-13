@@ -529,7 +529,7 @@ directory) packages.")
 (define-public go-golang-org-x-exp-typeparams
   (package
     (name "go-golang-org-x-exp-typeparams")
-    (version "0.0.0-20240707233637-46b078467d37")
+    (version "0.0.0-20241210194714-1829a127f884")
     (source
      (origin
        (method git-fetch)
@@ -538,12 +538,14 @@ directory) packages.")
              (commit (go-version->git-ref version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "17pwikql9x1bm5ci0kk4mlad7smkph0cgq1pi2b43gnhjz8m96l0"))))
+        (base32 "16lc0sgydpr4gbb5c9ygq86jdmq6f9qjf0vv1m5mhh3dggc1fzpp"))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "golang.org/x/exp/typeparams"
-      #:unpack-path "golang.org/x/exp"))
+      #:unpack-path "golang.org/x/exp"
+      ;; Could not import go/ast (can't find import: "go/ast").
+      #:test-flags #~(list "-skip" "TestAPIConsistency")))
     (home-page "https://pkg.go.dev/golang.org/x/exp/typeparams")
     (synopsis "Golang common utilities for writing tools")
     (description
