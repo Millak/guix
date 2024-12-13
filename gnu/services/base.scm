@@ -187,6 +187,12 @@
             mingetty-configuration-login-pause?
             mingetty-configuration-clear-on-logout?
             mingetty-configuration-mingetty
+            mingetty-configuration-delay
+            mingetty-configuration-print-issue
+            mingetty-configuration-print-hostname
+            mingetty-configuration-nice
+            mingetty-configuration-working-directory
+            mingetty-configuration-root-directory
             mingetty-configuration?
             mingetty-service  ; deprecated
             mingetty-service-type
@@ -1240,22 +1246,36 @@ the tty to run, among other things."
 (define-record-type* <mingetty-configuration>
   mingetty-configuration make-mingetty-configuration
   mingetty-configuration?
-  (mingetty         mingetty-configuration-mingetty ;file-like
-                    (default mingetty))
-  (tty              mingetty-configuration-tty)     ;string
-  (auto-login       mingetty-auto-login             ;string | #f
-                    (default #f))
-  (login-program    mingetty-login-program          ;gexp
-                    (default #f))
-  (login-pause?     mingetty-login-pause?           ;Boolean
-                    (default #f))
-  (clear-on-logout? mingetty-clear-on-logout?       ;Boolean
-                    (default #t)))
+  (mingetty          mingetty-configuration-mingetty ;file-like
+                     (default mingetty))
+  (tty               mingetty-configuration-tty) ;string
+  (auto-login        mingetty-auto-login         ;string | #f
+                     (default #f))
+  (login-program     mingetty-login-program ;gexp
+                     (default #f))
+  (login-pause?      mingetty-login-pause? ;Boolean
+                     (default #f))
+  (clear-on-logout?  mingetty-clear-on-logout? ;Boolean
+                     (default #t))
+  (delay             mingetty-configuration-delay ;Integer | #f
+                     (default #f))
+  (print-issue       mingetty-configuration-print-issue ;Boolean | Symbol
+                     (default #t))
+  (print-hostname    mingetty-configuration-print-hostname ;Boolean | Symbol
+                     (default #t))
+  (nice              mingetty-configuration-nice ;Integer | #f
+                     (default #f))
+  (working-directory mingetty-configuration-working-directory ;String | #f
+                     (default #f))
+  (root-directory    mingetty-configuration-root-directory ;String | #f
+                     (default #f)))
 
 (define (mingetty-shepherd-service config)
   (match-record config <mingetty-configuration>
-    (mingetty tty auto-login login-program
-              login-pause? clear-on-logout?)
+                ( mingetty tty auto-login login-program
+                  login-pause? clear-on-logout? delay
+                  print-issue print-hostname nice
+                  working-directory root-directory)
     (list
      (shepherd-service
       (documentation "Run mingetty on an tty.")
@@ -1286,6 +1306,32 @@ the tty to run, among other things."
                               #~())
                        #$@(if login-pause?
                               #~("--loginpause")
+                              #~())
+                       #$@(if delay
+                              #~("--delay" #$(number->string delay))
+                              #~())
+                       #$@(match print-issue
+                            (#t
+                             #~())
+                            ('no-nl
+                             #~("--nonewline"))
+                            (#f
+                             #~("--noissue")))
+                       #$@(match print-hostname
+                            (#t
+                             #~())
+                            ('long
+                             #~("--long-hostname"))
+                            (#f
+                             #~("--nohostname")))
+                       #$@(if nice
+                              #~("--nice" #$(number->string nice))
+                              #~())
+                       #$@(if working-directory
+                              #~("--chdir" #$working-directory)
+                              #~())
+                       #$@(if root-directory
+                              #~("--chroot" #$root-directory)
                               #~()))))
       (stop   #~(make-kill-destructor))))))
 

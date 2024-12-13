@@ -19429,7 +19429,33 @@ When set to @code{#t} in conjunction with @var{auto-login}, the user
 will have to press a key before the log-in shell is launched.
 
 @item @code{clear-on-logout?} (default: @code{#t})
-When set to @code{#t}, the screen will be cleared after logout.
+When set to @code{#t}, the screen will be cleared before showing the
+login prompt.  The field name is bit unfortunate, since it controls
+clearing also before the initial login, not just after a logout.
+
+@item @code{delay} (default: @code{#f})
+When set to a number, sleep that many seconds after startup.
+
+@item @code{print-issue} (default: @code{#t})
+When set to @code{#t}, write out a new line and the content of
+@file{/etc/issue}.  Value of @code{'no-nl} can be used to suppress the
+new line.
+
+@item @code{print-hostname} (default: @code{#t})
+When set to @code{#t}, print the host name before the login prompt.  The
+host name is printed up to the first dot.  Can be set to @code{'long} to
+print the full host name.
+
+@item @code{nice} (default: @code{#f})
+When set to a number, change the process priority using @code{nice}.
+
+@item @code{working-directory} (default: @code{#f})
+When set to a string, change into that directory before calling the
+login program.
+
+@item @code{root-directory} (default: @code{#f})
+When set to a string, use this directory at the process's root
+directory.
 
 @item @code{mingetty} (default: @var{mingetty})
 The Mingetty package to use.
