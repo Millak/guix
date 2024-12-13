@@ -5296,7 +5296,7 @@ draggable titlebars and borders.")
 (define-public eglexternalplatform
   (package
     (name "eglexternalplatform")
-    (version "1.1")
+    (version "1.2")
     (source
      (origin
        (method git-fetch)
@@ -5307,32 +5307,8 @@ draggable titlebars and borders.")
        (file-name
         (git-file-name name version))
        (sha256
-        (base32 "0lr5s2xa1zn220ghmbsiwgmx77l156wk54c7hybia0xpr9yr2nhb"))))
-    (build-system copy-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-pkgconfig
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "eglexternalplatform.pc"
-               (("/usr")
-                (assoc-ref outputs "out")))))
-         (add-after 'install 'revise
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out")))
-               (mkdir-p (string-append out "/include/EGL"))
-               (rename-file
-                (string-append out "/interface")
-                (string-append out "/include/EGL"))
-               (mkdir-p (string-append out "/share/pkgconfig"))
-               (rename-file
-                (string-append out "/eglexternalplatform.pc")
-                (string-append out "/share/pkgconfig/eglexternalplatform.pc"))
-               (for-each delete-file-recursively
-                         (list
-                          (string-append out "/samples")
-                          (string-append out "/COPYING")
-                          (string-append out "/README.md")))))))))
+        (base32 "1cq8j2ymjpxpdcwnmcj0h5fgi3i1l8hns3vgw10rigwljrmn8ixp"))))
+    (build-system meson-build-system)
     (synopsis "EGL External Platform interface")
     (description "EGLExternalPlatform is an specification of the EGL External
 Platform interface for writing EGL platforms and their interactions with modern
