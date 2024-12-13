@@ -9692,7 +9692,7 @@ applications out of reusable, composable modules.")
 (define-public go-go-uber-org-zap
   (package
     (name "go-go-uber-org-zap")
-    (version "1.24.0")
+    (version "1.27.0")
     (source
      (origin
        (method git-fetch)
@@ -9701,32 +9701,40 @@ applications out of reusable, composable modules.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0lzbbs87fvixzbyv4wpl3s70vm2m0jz2jgdvrviiksc2al451qgs"))))
+        (base32 "1h3ml2wqmdxwqv0xdfqvf7l4wma5yd0hdfsa6189mmbhkhzn8v3m"))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "go.uber.org/zap"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       ;; Unexpected stack trace annotation.
+                       (list "TestAddStackSkip"
+                             ;; Expected to find package name and file name in
+                             ;; output.
+                             "TestLoggerAddCaller"
+                             "TestSugarAddCaller")
+                       "|"))
       #:phases
       #~(modify-phases %standard-phases
-          ;; Remove test files requiring to download all dependencies for the
-          ;; current Go module and reports their module paths and locations on
-          ;; disk.
-          (add-after 'unpack 'remove-test-files
-            (lambda* (#:key import-path #:allow-other-keys)
-              (delete-file
-               (string-append "src/" import-path
-                              "/stacktrace_ext_test.go")))))))
+          (add-after 'unpack 'remove-examples-and-benchmarks
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (for-each delete-file-recursively
+                          (list "benchmarks"
+                                ;; Remove test files requiring to download all
+                                ;; dependencies for the current Go module and
+                                ;; reports their module paths and locations on
+                                ;; disk.
+                                "stacktrace_ext_test.go"
+                                ;; Not packed yet google.golang.org/grpc.
+                                "zapgrpc/internal/test/grpc_test.go"))))))))
     (native-inputs
      (list go-github-com-stretchr-testify
-           go-go-uber-org-goleak
-           go-golang-org-x-lint
-           go-honnef-co-go-tools))
+           go-go-uber-org-goleak))
     (propagated-inputs
-     (list go-github-com-benbjohnson-clock
-           go-github-com-pkg-errors
-           go-go-uber-org-atomic
-           go-go-uber-org-multierr
-           go-gopkg-in-yaml-v2))
+     (list go-go-uber-org-multierr
+           go-gopkg-in-yaml-v3))
     (home-page "https://pkg.go.dev/go.uber.org/zap")
     (synopsis "Logging library for Go")
     (description
