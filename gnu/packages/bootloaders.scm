@@ -841,8 +841,7 @@ Info manual.")))
                 python-filelock
                 python-pycryptodomex
                 python-pytest
-                python-pytest-xdist
-                sdl2)))
+                python-pytest-xdist)))
     (arguments
      `(#:make-flags '("HOSTCC=gcc")
        #:test-target "tcheck"
