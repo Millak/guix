@@ -41,6 +41,7 @@
             u-boot-nintendo-nes-classic-edition-bootloader
             u-boot-novena-bootloader
             u-boot-orangepi-r1-plus-lts-rk3328-bootloader
+            u-boot-orangepi-zero2w-bootloader
             u-boot-pine64-plus-bootloader
             u-boot-pine64-lts-bootloader
             u-boot-pinebook-bootloader
@@ -224,6 +225,11 @@ is BLOCK-SIZE * COUNT, or FILE size if COUNT is not given."
   (bootloader
    (inherit u-boot-rockchip-bootloader)
    (package u-boot-orangepi-r1-plus-lts-rk3328)))
+
+(define u-boot-orangepi-zero2w-bootloader
+  (bootloader
+   (inherit u-boot-allwinner-bootloader)
+   (package u-boot-orangepi-zero2w)))
 
 (define u-boot-pine64-plus-bootloader
   (bootloader

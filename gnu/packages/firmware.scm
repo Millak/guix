@@ -1172,6 +1172,9 @@ interface standards, such as:
 (define-public arm-trusted-firmware-sun50i-a64
   (make-arm-trusted-firmware "sun50i_a64"))
 
+(define-public arm-trusted-firmware-sun50i-h616
+  (make-arm-trusted-firmware "sun50i_h616"))
+
 (define-public arm-trusted-firmware-rk3328
   (make-arm-trusted-firmware "rk3328"))
 

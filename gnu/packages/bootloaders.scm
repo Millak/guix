@@ -1214,6 +1214,24 @@ removed so that it fits within common partitioning schemes.")))
        (modify-inputs (package-inputs base)
          (append arm-trusted-firmware-sun50i-a64))))))
 
+(define-public u-boot-orangepi-zero2w
+  (let ((base (make-u-boot-package
+               "orangepi_zero2w" "aarch64-linux-gnu")))
+    (package
+      (inherit base)
+      (arguments
+       (substitute-keyword-arguments (package-arguments base)
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'set-environment
+                (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                  (setenv "SCP" "/dev/null")
+                  (setenv "BL31" (search-input-file inputs "bl31.bin"))))))))
+      (inputs
+       (modify-inputs (package-inputs base)
+         ;; The Zero 2W uses the slightly revised Allwinner H618.
+         (append arm-trusted-firmware-sun50i-h616))))))
+
 (define-public u-boot-pine64-plus
   (make-u-boot-sunxi64-package "pine64_plus" "aarch64-linux-gnu"
                                (delay crust-pine64-plus)))
