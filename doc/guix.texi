@@ -47310,6 +47310,8 @@ This is the service type for the user Shepherd log rotation service
 Its value must be a @code{log-rotation-configuration} record, exactly as
 for its system-wide counterpart.  @xref{log-rotation-configuration}, for
 its reference.
+
+This service is part of @code{%base-home-services}.
 @end defvar
 
 @node Secure Shell

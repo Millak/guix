@@ -80,7 +80,7 @@
 
 (define %base-home-services
   ;; Non-essential but useful services to have by default.
-  '())
+  (list (service home-log-rotation-service-type)))
 
 (define (home-environment-default-essential-services he)
   "Return the list of essential services for home environment."
