@@ -19457,6 +19457,26 @@ login program.
 When set to a string, use this directory at the process's root
 directory.
 
+@item @code{shepherd-requirement}
+List of shepherd requirements.  Unless you know what you are doing, it
+is recommended to extend the default list instead of overriding it.
+
+As an example, when using auto-login on a system with elogind, it is
+necessary to wait on the @code{'dbus-system} service:
+
+@lisp
+(modify-services %base-services
+  (mingetty-service-type config =>
+                         (mingetty-configuration
+                          (inherit config)
+                          ;; Automatically log in as "guest".
+                          (auto-login "guest")
+                          (shepherd-requirement
+                           (cons 'dbus-system
+                                 (mingetty-configuration-shepherd-requirement
+                                  config))))))
+@end lisp
+
 @item @code{mingetty} (default: @var{mingetty})
 The Mingetty package to use.
 
