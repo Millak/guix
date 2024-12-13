@@ -4439,31 +4439,26 @@ reasonable substitute.")
                              "and not redismod "
                              "and not ssl "
                              "and not graph")
-              "-k" (string-append
-                    ;; The autoclaim test fails with "AssertionError: assert
-                    ;; [b'0-0', [], []] == [b'0-0', []]".
-                    "not test_xautoclaim "
-                    ;; These tests cause the following error: "Error 111
-                    ;; connecting to localhost:6380. Connection refused."
-                    ;; (see: https://github.com/redis/redis-py/issues/2109).
-                    "and not test_sync "
-                    "and not test_psync "
-                    ;; Same with: "Error 111 connecting to
-                    ;; localhost:6479. Connection refused."
-                    "and not test_tfcall "
-                    "and not test_tfunction_load_delete "
-                    "and not test_tfunction_list"
-                    ;; AssertionError: assert 3 == 2
-                    "and not test_acl_list"))
+              "-k" (string-join
+                    (list
+                     ;; The autoclaim test fails with "AssertionError: assert
+                     ;; [b'0-0', [], []] == [b'0-0', []]".
+                     "not test_xautoclaim "
+                     ;; These tests cause the following error: "Error 111
+                     ;; connecting to localhost:6380. Connection refused."
+                     ;; (see: https://github.com/redis/redis-py/issues/2109).
+                     "test_sync"
+                     "test_psync"
+                     ;; Same with: "Error 111 connecting to
+                     ;; localhost:6479. Connection refused."
+                     "test_tfcall"
+                     "test_tfunction_load_delete"
+                     "test_tfunction_list"
+                     ;; AssertionError: assert 3 == 2
+                     "test_acl_list")
+                    " and not "))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'relax-requirements
-            (lambda _
-              ;; FIXME Our version of python-async-timeout is just a little
-              ;; too old, but upgrading it would cause close to 1000 rebuilds.
-              (substitute* '("requirements.txt" "setup.py")
-                (("async-timeout>=4.0.3")
-                 "async-timeout>=4.0.2"))))
           ;; Tests require a running Redis server.
           (add-before 'check 'start-redis
             (lambda* (#:key tests? #:allow-other-keys)
@@ -4475,6 +4470,7 @@ reasonable substitute.")
      (list python-numpy
            python-pytest
            python-pytest-asyncio-0.23
+           python-pytest-cov
            python-pytest-timeout
            python-setuptools
            python-wheel
