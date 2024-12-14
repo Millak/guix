@@ -156,23 +156,7 @@ as \"x86_64-linux\"."
            (patches (map search-patch patches)))
          (llvm-monorepo (package-version llvm))))
     (build-system cmake-build-system)
-    (native-inputs
-     (cond ((version>=? version "19")
-            ;; TODO: Remove this when GCC 14 is the default.
-            ;; libfuzzer fails to build with GCC 13
-            (modify-inputs (package-native-inputs llvm)
-              (prepend gcc-14)))
-           ((version>=? version "18")
-            ;; TODO: Remove this when GCC 13 is the default.
-            ;; libfuzzer fails to build with GCC 12
-            (modify-inputs (package-native-inputs llvm)
-              (prepend gcc-13)))
-           ((version>=? version "15")
-            ;; TODO: Remove this when GCC 12 is the default.
-            ;; libfuzzer fails to build with GCC 11
-            (modify-inputs (package-native-inputs llvm)
-              (prepend gcc-12)))
-           (else (package-native-inputs llvm))))
+    (native-inputs (package-native-inputs llvm))
     (inputs
      (append
       (list llvm)
