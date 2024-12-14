@@ -411,7 +411,7 @@ panfrost,r300,r600,svga,softpipe,llvmpipe,tegra,v3d,vc4,virgl,zink"))
               '("-Dvulkan-drivers=intel,intel_hasvk,amd,swrast"))
              ((target-aarch64?)
               ;; This differs from "auto" which only includes swrast and intel
-              '("-Dvulkan-drivers=freedreno,amd,broadcom,swrast"))
+              '("-Dvulkan-drivers=freedreno,amd,broadcom,swrast,asahi"))
              (else
               '("-Dvulkan-drivers=auto")))
 
