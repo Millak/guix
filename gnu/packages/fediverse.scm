@@ -75,7 +75,9 @@
      (list python-psycopg2-binary
            python-pytest
            python-pyyaml
-           python-typing-extensions))
+           python-setuptools
+           python-typing-extensions
+           python-wheel))
     (inputs
      (list python-beautifulsoup4
            python-click
