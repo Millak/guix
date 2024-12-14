@@ -480,7 +480,7 @@ described at @url{https://xxhash.com/}.")
 (define-public go-github-com-cloudflare-circl
   (package
     (name "go-github-com-cloudflare-circl")
-    (version "1.3.6")
+    (version "1.5.0")
     (source
      (origin
        (method git-fetch)
@@ -489,7 +489,20 @@ described at @url{https://xxhash.com/}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "05hk5svprcjrj6k4mg4kd732pnb658llqv04z6xrcl5v77jda2kd"))))
+        (base32 "1pfxg0iqai760arvbkznwkb6w2w7gginqpzr49s419dp73kr99hj"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodule(s) with their own go.mod files and packed as
+            ;; separated packages:
+            ;;
+            ;; - github.com/cloudflare/circl/pke/kyber/internal/common/asm
+            ;; - github.com/cloudflare/circl/sign/internal/dilithium/asm
+            ;; - github.com/cloudflare/circl/simd/keccakf1600/internal/asm
+            (for-each delete-file-recursively
+                      (list "pke/kyber/internal/common/asm"
+                            "sign/internal/dilithium/asm"
+                            "simd/keccakf1600/internal/asm"))))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/cloudflare/circl"))
