@@ -28662,7 +28662,7 @@ library to allow local file system access via @code{file://} URLs.")
        (sha256
         (base32 "17gspl2dsykg000275svvyam4k7wz9ypi9xrfrmsgcgryczravlc"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-pytest))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (propagated-inputs (list python-cffi))
     (home-page "https://github.com/asottile/ukkonen")
     (synopsis "Implementation of bounded Levenshtein distance (Ukkonen)")
