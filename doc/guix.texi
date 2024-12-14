@@ -47750,11 +47750,11 @@ Programs to execute at startup time @emph{and} after every configuration
 reload.  The value of this field is a list of strings, G-expressions or
 file-like objects (@pxref{G-Expressions}).
 
-@item @code{startup-programs} (default: @code{%sway-default-execs})
+@item @code{startup-programs} (default: @code{%sway-default-startup-programs})
 Programs to execute at startup time.  As above, values of this field are
 a list of strings, G-expressions or file-like objects.
 
-The default value, @code{%sway-default-execs}, executes @code{swayidle}
+The default value, @code{%sway-default-startup-programs}, executes @code{swayidle}
 in order to lock the screen after 5@ minutes of inactivity (displaying a
 background distributed with Sway) and turn the screen off after 10@
 minutes of inactivity.
