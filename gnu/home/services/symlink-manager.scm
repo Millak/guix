@@ -106,7 +106,8 @@ subdirectory from XDG_CONFIG_HOME to generate a target path."
            (mkdir-p backup-directory)
            (format #t (G_ "Backing up ~a...") (target-file file))
            (mkdir-p (dirname backup))
-           (rename-file (target-file file) backup)
+           (copy-file (target-file file) backup)
+           (delete-file (target-file file))
            (display (G_ " done\n")))
 
          (define (cleanup-symlinks home-generation)
