@@ -377,8 +377,8 @@ needing to use secp256k1 elliptic curve cryptography.")
         (base32 "0h508v790wk6g8jq0gh18296xl87vmgc4fhwnac7mk6i5g3mz6v4"))))
     (build-system go-build-system)
     (arguments
-     (list #:unpack-path "github.com/bwesterb/go-ristretto"
-           #:import-path "github.com/bwesterb/go-ristretto/edwards25519"))
+     (list
+      #:import-path "github.com/bwesterb/go-ristretto"))
     (home-page "https://github.com/bwesterb/go-ristretto")
     (synopsis "Operations on the Ristretto prime-order group")
     (description "This is a pure Go implementation of the group operations on
