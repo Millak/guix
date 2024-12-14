@@ -1426,7 +1426,9 @@ in terms of new algorithms.")
             python-fb-re2
             python-parameterized-next
             python-pytest
-            python-pytest-runner)
+            python-pytest-runner
+            python-setuptools
+            python-wheel)
       (filter
        (lambda (pkg)
          (member (or (%current-target-system)
