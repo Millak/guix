@@ -4906,6 +4906,30 @@ queries with a higher level library and only use pgconn directly when required
 for low-level access to PostgreSQL functionality.")
     (license license:expat)))
 
+(define-public go-github-com-jackc-pgerrcode
+  (package
+    (name "go-github-com-jackc-pgerrcode")
+    (version "0.0.0-20240316143900-6e2875d9b438")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jackc/pgerrcode")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00csrjkg8fg97q5wy4r2wqi88w7g1cj0f5xkp5442nz3agmkxgrj"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/jackc/pgerrcode"))
+    (home-page "https://github.com/jackc/pgerrcode")
+    (synopsis "Constants for PostgreSQL error codes")
+    (description
+     "Package pgerrcode contains constants for @code{PostgreSQL} error
+codes.")
+    (license license:expat)))
+
 (define-public go-github-com-jackc-pgio
   (package
     (name "go-github-com-jackc-pgio")
