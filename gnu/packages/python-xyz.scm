@@ -13572,15 +13572,16 @@ supports @code{readline} shortcuts.")
 (define-public python-urwidgets
   (package
     (name "python-urwidgets")
-    (version "0.2.0")
+    (version "0.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "urwidgets" version))
        (sha256
-        (base32 "123n9qfg6qwwh1911y71c3msxi89n8cjj15wh2snqmwdkyfwy6nl"))))
+        (base32 "1vrydw9h8c5gi89dnv12a9cdyyxaffvxl1kq51f118cxjk9brwpr"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-urwid))
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/AnonymouX47/urwidgets")
     (synopsis "Collection of widgets for urwid")
     (description
