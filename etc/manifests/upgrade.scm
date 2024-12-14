@@ -119,7 +119,8 @@
      (let ((update-all (package-input-rewriting
                         (map (lambda (package)
                                `(,package . ,(latest-version package)))
-                             security-packages))))
+                             security-packages)
+                        #:recursive? #t)))
        (map (lambda (package)
               (manifest-entry
                 (inherit (package->manifest-entry
