@@ -207,10 +207,9 @@
        ;; Rust's own .so library files are not found in any RUNPATH, but
        ;; that doesn't seem to cause issues.
        #:validate-runpath? #f
-       ;; Most of the build is single-threaded. This also improves the
-       ;; build time on machines with "only" 8GB of RAM.
-       ;; ppc64le regularly sees race conditions between various dependant crates.
-       #:parallel-build? ,(target-x86-64?)
+       ;; We currently see race conditions between various dependant crates.
+       ;; TODO: Re-evaluate after moving to a more recent mrustc.
+       #:parallel-build? #f
        #:make-flags
        (list ,(string-append "RUSTC_TARGET="
                              (platform-rust-target
