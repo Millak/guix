@@ -160,8 +160,10 @@ as \"x86_64-linux\"."
      (cond ((version>=? version "18")
             ;; clang-18.1.8 doesn't build with gcc-14
             ;; source/build/lib/fuzzer/libcxx_fuzzer_x86_64/include/c++/v1/__filesystem/path.h:534:52: error: use of built-in trait ‘__remove_pointer(typename std::__Fuzzer::decay<_Tp>::type)’ in function signature; use library traits instead
+            ;; clang-18.1.8 doesn't build with gcc-12
+            ;; source/build/lib/fuzzer/libcxx_fuzzer_x86_64/include/c++/v1/__type_traits/is_convertible.h:28:77: error: there are no arguments to ‘__is_convertible’ that depend on a template parameter, so a declaration of ‘__is_convertible’ must be available [-fpermissive]
             (modify-inputs (package-native-inputs llvm)
-              (prepend gcc-12)))
+              (prepend gcc-13)))
            (else (package-native-inputs llvm))))
     (inputs
      (append
