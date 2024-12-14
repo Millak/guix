@@ -5184,6 +5184,37 @@ more features.")
       (native-inputs '())
       (propagated-inputs '()))))
 
+(define-public go-github-com-jackc-pgx-v5
+  (package
+    (inherit go-github-com-jackc-pgx-v4)
+    (name "go-github-com-jackc-pgx-v5")
+    (version "5.7.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jackc/pgx")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0b8wgqax34q77m4pmaaqlp9dr1x9mam76jx7ah1sxdldl737rv27"))))
+    (build-system go-build-system)
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-jackc-pgx-v4)
+       ((#:import-path _) "github.com/jackc/pgx/v5")
+       ((#:test-subdirs _)
+        #~(list "internal/..."
+                "log/..."
+                "multitracer"))))
+    (propagated-inputs
+     (list go-github-com-jackc-pgpassfile
+           go-github-com-jackc-pgservicefile
+           go-github-com-jackc-puddle-v2
+           go-golang-org-x-crypto
+           go-golang-org-x-sync
+           go-golang-org-x-text))))
+
 (define-public go-github-com-jackc-puddle
   (package
     (name "go-github-com-jackc-puddle")
