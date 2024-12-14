@@ -7405,6 +7405,7 @@ text styles of documentation.")
        (sha256
         (base32 "1c0z4snkjiyl1iq4m1k6liwg0b4pdv2as4bfyvcm0mpjzki6na3s"))))
     (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/cs01/pygdbmi")
     (synopsis "Parse gdb machine interface output with Python")
     (description "This package provides a parse gdb machine interface output
