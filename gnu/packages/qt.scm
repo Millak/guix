@@ -4036,6 +4036,8 @@ Python.")
          "0ykxq0607f2sdwbl5cxbp0y8pl14bsgzc9nhifpxbibfivj5kjbz"))
        (patches (search-patches "python-sip-include-dirs.patch"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))        ; No test system found.
     (native-inputs
      (list python-wrapper python-setuptools python-setuptools-scm-next))
     (propagated-inputs
