@@ -35,15 +35,16 @@
           (length result) (map package-full-name result))
     result))
 
+(define ungraft
+  (package-mapping (lambda (p)
+                     (or (package-replacement p) p))
+                   #:deep? #t))
+
 (manifest
  (with-store store
-   (let* ((grafted (grafted-packages))
-          (ungraft-all (package-input-rewriting
-                        (map (lambda (package)
-                               `(,package . ,(package-replacement package)))
-                             grafted))))
+   (let ((grafted (grafted-packages)))
      (map (lambda (package)
             (manifest-entry
-              (inherit (package->manifest-entry (ungraft-all package)))
+              (inherit (package->manifest-entry (ungraft package)))
               (name (string-append (package-name package) "-ungrafted"))))
           (dependents store grafted)))))
