@@ -12949,8 +12949,8 @@ well as standard genetic algorithms.")
   (sbcl-package->ecl-package sbcl-core-gp))
 
 (define-public sbcl-croatoan
-  (let ((commit "0157da69edf1459db43fcd30bc6941ef0b26c02d")
-        (revision "1"))
+  (let ((commit "470055739ef6ece42655ef0f3878a87a9e3e9b78")
+        (revision "2"))
     (package
       (name "sbcl-croatoan")
       (version (git-version "0.3" revision commit))
@@ -12958,11 +12958,11 @@ well as standard genetic algorithms.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/McParen/croatoan")
+               (url "https://codeberg.org/McParen/croatoan")
                (commit commit)))
          (file-name (git-file-name "cl-croatoan" version))
          (sha256
-          (base32 "1pd3ivh2hcrbj7xfrfma10chlpzcgh0g36sjy5b23pm2zga4dqvs"))))
+          (base32 "04776x4i8inxs8n4mgy9xf0q39bzv4mfz4cl880sxwk6mnhwnn4c"))))
       (build-system asdf-build-system/sbcl)
       (arguments
        '(#:phases
@@ -12980,7 +12980,7 @@ well as standard genetic algorithms.")
       (synopsis "Common Lisp bindings for the ncurses terminal library")
       (description "Croatoan provides high-level Common Lisp CLOS bindings for
 the ncurses terminal library.")
-      (home-page "https://github.com/McParen/croatoan")
+      (home-page "https://codeberg.org/McParen/croatoan")
       (license license:expat))))
 
 (define-public cl-croatoan
