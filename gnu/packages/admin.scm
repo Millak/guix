@@ -3785,6 +3785,35 @@ shortcut syntax and completion options.")
       (home-page "https://github.com/TrilbyWhite/interrobang")
       (license license:gpl3+))))
 
+(define-public pam-hooks
+  (package
+    (name "pam-hooks")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://upsilon.cc/~zack/hacking/software/"
+                           name "/" name "_" version ".tar.gz"))
+       (sha256
+        (base32 "102azxhvs53akkhgg2dkqg8m0jd6804fx8v7gq7pp03qm3m7bhqi"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:make-flags #~`("CC=gcc"
+                            ,(string-append "DESTDIR=" #$output))
+           #:phases #~(modify-phases %standard-phases
+                        (delete 'configure))
+           ;; There is a test directory, but it's unclear how to run them.
+           #:tests? #f))
+    (inputs (list linux-pam))
+    (home-page "https://upsilon.cc/~zack/hacking/software/pam-hooks/")
+    (synopsis "Linux-PAM module for login/logout hooks")
+    (description "@code{pam-hooks} is a tiny PAM module enabling the
+execution of hook scripts when a PAM session is opened or closed.  The
+typical use case is the need of doing some per-user set-up when a user
+logs via a PAM-aware login mechanism and/or the need of doing some
+per-user clean-up when the user logs out.")
+    (license license:gpl3+)))
+
 (define-public pam-krb5
   (package
     (name "pam-krb5")
