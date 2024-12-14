@@ -5030,6 +5030,56 @@ wire protocol version 3.")
 files (e.g. .pg_service.conf).")
     (license license:expat)))
 
+(define-public go-github-com-jackc-pgtype
+  (package
+    (name "go-github-com-jackc-pgtype")
+    (version "1.14.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jackc/pgtype")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04yd3b1c1qph6g1giskmm49c9hk0scagfqd08bhj1pprvp9jmn2f"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ; test require running PostgreSQL
+      #:import-path "github.com/jackc/pgtype"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-gofrs-uuid
+           go-github-com-jackc-pgconn
+           go-github-com-jackc-pgio
+           go-github-com-jackc-pgx-v4-bootstrap
+           go-github-com-lib-pq
+           go-github-com-shopspring-decimal))
+    (home-page "https://github.com/jackc/pgtype")
+    (synopsis "PostgreSQL types implementations in Golang")
+    (description
+     "This package implements Go types for over 70 PostgreSQL types.  It is
+the type system underlying the https://github.com/jackc/pgx PostgreSQL driver.
+These types support the binary format for enhanced performance with pgx.  They
+also support the database/sql @code{Scan} and @code{Value} interfaces and can
+be used with https://github.com/lib/pq.")
+    (license license:expat)))
+
+(define-public go-github-com-jackc-pgtype-bootstrap
+  (hidden-package
+   (package
+     (inherit go-github-com-jackc-pgtype)
+     (arguments
+      (list #:tests? #f
+            #:import-path "github.com/jackc/pgtype"
+            #:phases
+            #~(modify-phases %standard-phases
+                (delete 'build))))
+      (native-inputs '())
+      (propagated-inputs '()))))
+
 (define-public go-github-com-jackc-pgx
   (package
     (name "go-github-com-jackc-pgx")
@@ -5083,6 +5133,56 @@ database/sql compatible driver, pgx is also usable directly.  It offers a
 native interface similar to database/sql that offers better performance and
 more features.")
     (license license:expat)))
+
+(define-public go-github-com-jackc-pgx-v4
+  (package
+    (inherit go-github-com-jackc-pgx)
+    (name "go-github-com-jackc-pgx-v4")
+    (version "4.18.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jackc/pgx")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xxvkgngl8c73zg06xdm5sqvck6yvrvjpzidpmsaah1az0lh1lay"))))
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-jackc-pgx)
+       ((#:import-path _) "github.com/jackc/pgx/v4")
+       ((#:test-subdirs _) #~(list "internal/sanitize" "log/..."))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-cockroachdb-apd
+           go-github-com-go-kit-log
+           go-github-com-gofrs-uuid
+           go-github-com-jackc-pgconn
+           go-github-com-jackc-pgio
+           go-github-com-jackc-pgproto3-v2
+           go-github-com-jackc-pgtype-bootstrap
+           go-github-com-jackc-puddle
+           go-github-com-masterminds-semver-v3
+           go-github-com-rs-zerolog
+           go-github-com-shopspring-decimal
+           go-github-com-sirupsen-logrus
+           go-go-uber-org-zap
+           go-gopkg-in-inconshreveable-log15-v2))))
+
+(define-public go-github-com-jackc-pgx-v4-bootstrap
+  (hidden-package
+   (package
+     (inherit go-github-com-jackc-pgx-v4)
+     (arguments
+      (list #:tests? #f
+            #:import-path "github.com/jackc/pgx/v4"
+            #:phases
+            #~(modify-phases %standard-phases
+                (delete 'build))))
+      (native-inputs '())
+      (propagated-inputs '()))))
 
 (define-public go-github-com-jackc-puddle
   (package
