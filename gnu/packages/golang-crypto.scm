@@ -1442,7 +1442,7 @@ algorithm.")
 (define-public go-github-com-protonmail-go-crypto
   (package
     (name "go-github-com-protonmail-go-crypto")
-    (version "1.0.0")
+    (version "1.1.3")
     (source
      (origin
        (method git-fetch)
@@ -1451,21 +1451,14 @@ algorithm.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "11q94983r6zjrdvflpikms4773a9s5vb9gg4qw1rj5800yhhah0n"))))
+        (base32 "0kcan2bw548cn6pm282zyddysv400dankcsrdanha7qmxqki34c0"))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/ProtonMail/go-crypto"
       #:phases
       #~(modify-phases %standard-phases
-          ;; XXX: Workaround for go-build-system's lack of Go modules
-          ;; support.
-          (delete 'build)
-          (replace 'check
-            (lambda* (#:key tests? import-path #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion (string-append "src/" import-path)
-                  (invoke "go" "test" "-v" "./..."))))))))
+          (delete 'build)))) ; no go files in project's root
     (propagated-inputs
      (list go-github-com-cloudflare-circl
            go-golang-org-x-crypto))
