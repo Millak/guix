@@ -41953,6 +41953,60 @@ Mode for filter.
 
 @c End of auto-generated fail2ban documentation.
 
+@cindex resize-file-system
+@subsubheading Resize File System Service
+
+This service type lets you resize a live file system during boot, which
+can be convenient if a Guix image is flashed on an SD Card (e.g. for an
+embedded device) or uploaded to a VPS.  In both cases the medium the
+image will reside upon may be larger than the image you want to produce.
+
+For an embedded device booting from an SD card you may use something like:
+@lisp
+(service resize-file-system-service-type
+         (resize-file-system-configuration
+          (file-system
+           (file-system (device (file-system-label "root"))
+                        (type "ext4")))))
+@end lisp
+
+@quotation Warning
+Be extra cautious to use the correct device and type.  The service has
+little error handling of its own and relies on the underlying tools.
+Wrong use could end in loss of data or the corruption of the operating
+system.
+@end quotation
+
+Partitions and file systems are grown to the maximum size available.
+File systems can only grow when they are on the last partition on a
+device and have empty space available.
+
+This service supports the ext2, ext3, ext4, btrfs, and bcachefs file
+systems.
+
+@table @asis
+
+@item @code{file-system} (default: @code{#f}) (type: file-system)
+The file-system object to resize (@pxref{File Systems}).  This object
+must have the @code{device} and @code{type} fields set.  Other fields
+are ignored.
+
+@item @code{cloud-utils} (default: @code{cloud-utils}) (type: file-like)
+The cloud-utils package to use.  This package is used for the
+@code{growpart} command.
+
+@item @code{e2fsprogs} (default: @code{e2fsprogs}) (type: file-like)
+The e2fsprogs package to use, used for resizing ext2, ext3, and ext4
+file systems.
+
+@item @code{btrfs-progs} (default: @code{btrfs-progs}) (type: file-like)
+The btrfs-progs package to use, used for resizing the btrfs file system.
+
+@item @code{bcachefs-tools} (default: @code{bcachefs-tools}) (type: file-like)
+The bcachefs-tools package to use, used for resizing the bcachefs file system.
+
+@end table
+
 @cindex Backup
 @subsubheading Backup Services
 

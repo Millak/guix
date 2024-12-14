@@ -3,6 +3,8 @@
 ;;; Copyright © 2016-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2023 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2024 Gabriel Wicki <gabriel@erlikon.ch>
+;;; Copyright © 2024 Richard Sent <richard@freakingpenguin.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -20,11 +22,15 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu services admin)
+  #:use-module (gnu system file-systems)
   #:use-module (gnu packages admin)
   #:use-module ((gnu packages base)
                 #:select (canonical-package findutils coreutils sed))
+  #:use-module (gnu packages file-systems)
   #:use-module (gnu packages certs)
+  #:use-module (gnu packages disk)
   #:use-module (gnu packages package-management)
+  #:use-module (gnu packages linux)
   #:use-module (gnu services)
   #:use-module (gnu services configuration)
   #:use-module (gnu services mcron)
@@ -93,7 +99,16 @@
             unattended-upgrade-configuration-services-to-restart
             unattended-upgrade-configuration-system-expiration
             unattended-upgrade-configuration-maximum-duration
-            unattended-upgrade-configuration-log-file))
+            unattended-upgrade-configuration-log-file
+
+            resize-file-system-service-type
+            resize-file-system-configuration
+            resize-file-system-configuration?
+            resize-file-system-configuration-file-system
+            resize-file-system-configuration-cloud-utils
+            resize-file-system-configuration-e2fsprogs
+            resize-file-system-configuration-btrfs-progs
+            resize-file-system-configuration-bcachefs-tools))
 
 ;;; Commentary:
 ;;;
@@ -549,5 +564,121 @@ which lets you search for packages that provide a given file.")
    (description
     "Periodically upgrade the system from the current configuration.")
    (default-value (unattended-upgrade-configuration))))
+
+;;;
+;;; Resize file system.
+;;;
+
+(define-record-type* <resize-file-system-configuration>
+  resize-file-system-configuration make-resize-file-system-configuration
+  resize-file-system-configuration?
+  (file-system    resize-file-system-file-system
+                  (default #f))
+  (cloud-utils    resize-file-system-cloud-utils
+                  (default cloud-utils))
+  (e2fsprogs      resize-file-system-e2fsprogs
+                  (default e2fsprogs))
+  (btrfs-progs    resize-file-system-btrfs-progs
+                  (default btrfs-progs))
+  (bcachefs-tools resize-file-system-bcachefs-tools
+                  (default bcachefs-tools)))
+
+(define (resize-file-system-shepherd-service config)
+  "Returns a <shepherd-service> for resize-file-system-service for CONFIG."
+  (match-record config <resize-file-system-configuration>
+                (file-system cloud-utils e2fsprogs btrfs-progs
+                             bcachefs-tools)
+    (let ((fs-spec (file-system->spec file-system)))
+      (shepherd-service
+       (documentation "Resize a file system. Intended for Guix Systems that
+are booted from a system image flashed onto a larger medium.")
+       ;; XXX: This could be extended with file-system info.
+       (provision '(resize-file-system))
+       (requirement '(user-processes))
+       (one-shot? #t)
+       (respawn? #f)
+       (modules '((guix build utils)
+                  (gnu build file-systems)
+                  (gnu system file-systems)
+                  (ice-9 control)
+                  (ice-9 match)
+                  (ice-9 ftw)
+                  (ice-9 rdelim)
+                  (srfi srfi-34)))
+       (start (with-imported-modules (source-module-closure
+                                      '((guix build utils)
+                                        (gnu build file-systems)
+                                        (gnu system file-systems)))
+                #~(lambda _
+                    (use-modules (guix build utils)
+                                 (gnu build file-systems)
+                                 (gnu system file-systems)
+                                 (ice-9 control)
+                                 (ice-9 match)
+                                 (ice-9 ftw)
+                                 (ice-9 rdelim)
+                                 (srfi srfi-34))
+
+                    (define file-system
+                      (spec->file-system '#$fs-spec))
+
+                    ;; Shepherd recommends the start constructor takes <1
+                    ;; minute, canonicalize-device-spec will hang for up to
+                    ;; max-trials seconds (20 seconds) if an invalid device is
+                    ;; connected. Revisit this if max-trials increases.
+                    (define device (canonicalize-device-spec
+                                    (file-system-device file-system)))
+
+                    (define grow-partition-command
+                      (let* ((sysfs-device
+                              (string-append "/sys/class/block/"
+                                             (basename device)))
+                             (partition-number
+                              (with-input-from-file
+                                  (string-append sysfs-device
+                                                 "/partition")
+                                read-line))
+                             (parent (string-append
+                                      "/dev/"
+                                      (basename (dirname (readlink sysfs-device))))))
+                        (list #$(file-append cloud-utils "/bin/growpart")
+                              parent partition-number)))
+
+                    (define grow-filesystem-command
+                      (match (file-system-type file-system)
+                        ((or "ext2" "ext3" "ext4")
+                         (list #$(file-append e2fsprogs "/sbin/resize2fs") device))
+                        ("btrfs"
+                         (list #$(file-append btrfs-progs "/bin/btrfs")
+                               "filesystem" "resize" device))
+                        ("bcachefs"
+                         (list #$(file-append bcachefs-tools "/sbin/bcachefs")
+                               "device" "resize" device))
+                        (e (error "Unsupported filesystem type" e))))
+
+                    (let/ec return
+                      (guard (c ((and (invoke-error? c)
+                                      ;; growpart NOCHANGE exits with 1. It is
+                                      ;; unlikely the partition was resized
+                                      ;; while the file system was not. Just
+                                      ;; exit.
+                                      (equal? (invoke-error-exit-status c) 1))
+                                 (format (current-error-port)
+                                         "The device ~a is already resized.~%" device)
+                                 ;; Must return something or Shepherd considers
+                                 ;; the service perpetually starting.
+                                 (return 0)))
+                        (apply invoke grow-partition-command))
+                      (apply invoke grow-filesystem-command)))))))))
+
+(define resize-file-system-service-type
+  (service-type
+   (name 'resize-file-system)
+   (description "Resize a partition and the underlying file system during boot.")
+   (extensions
+    (list
+     (service-extension shepherd-root-service-type
+                        (compose list resize-file-system-shepherd-service))))
+   (default-value (resize-file-system-configuration))))
 
 ;;; admin.scm ends here
