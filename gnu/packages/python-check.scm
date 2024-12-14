@@ -271,6 +271,7 @@ times and detect flakyness.")
          (sha256
           (base32 "1h31m68igz670bzl307hazjrfbr8pk14mxflllar18ydmlrnl677"))))
       (build-system pyproject-build-system)
+      (native-inputs (list python-setuptools python-wheel))
       (propagated-inputs (list python-pytest))
       (home-page "https://github.com/AdamGleave/pytest-shard")
       (synopsis "Pytest plugin for sharding tests")
