@@ -1501,6 +1501,36 @@
       ((("python" python) _ ...)
        (derivation-file-name (package-derivation %store python))))))
 
+(test-assert "package-input-rewriting, recursive"
+  (let* ((dep (dummy-package "dep" (native-inputs (list grep))))
+         (p0  (dummy-package "example1" (inputs (list dep grep))))
+         (p1  (dummy-package "example2" (inputs (list dep grep))))
+         (replacements `((,grep . ,findutils) (,p0 . ,p1)))
+         (rewrite (package-input-rewriting replacements))
+         (rewrite/recursive (package-input-rewriting replacements
+                                                     #:recursive? #t))
+         (p2 (rewrite p0))
+         (p3 (rewrite/recursive p0)))
+    (and (string=? (package-name p2) "example2")
+         ;; Here P0 is replaced by P1, but P1 itself is kept unchanged.
+         (match (package-inputs p2)
+           ((("dep" dep1) ("grep" dep2))
+            (and (match (package-native-inputs dep1)
+                   ((("grep" x)) (eq? x grep)))
+                 (eq? dep2 grep))))
+
+         ;; Here P0 is replaced by P1, and in addition references to GREP in
+         ;; P1 and its dependencies are also replaced by FINDUTILS.
+         (string=? (package-name p3) "example2")
+         (match (package-inputs p3)
+           ((("dep" dep1) ("grep" dep2))
+            (and (match (package-native-inputs dep1)
+                   ((("grep" x))
+                    (string=? (package-full-name x)
+                              (package-full-name findutils))))
+                 (string=? (package-full-name dep2)
+                           (package-full-name findutils))))))))
+
 (test-assert "package-input-rewriting/spec"
   (let* ((dep     (dummy-package "chbouib"
                     (native-inputs `(("x" ,grep)))))

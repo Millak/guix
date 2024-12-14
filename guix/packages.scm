@@ -1585,11 +1585,15 @@ applied to implicit inputs as well."
 
 (define* (package-input-rewriting replacements
                                   #:optional (rewrite-name identity)
-                                  #:key (deep? #t))
+                                  #:key (deep? #t)
+                                  (recursive? #f))
   "Return a procedure that, when passed a package, replaces its direct and
 indirect dependencies, including implicit inputs when DEEP? is true, according
 to REPLACEMENTS.  REPLACEMENTS is a list of package pairs; the first element
 of each pair is the package to replace, and the second one is the replacement.
+
+When RECURSIVE? is true, apply replacements to the right-hand sides of
+REPLACEMENTS as well, recursively.
 
 Optionally, REWRITE-NAME is a one-argument procedure that takes the name of a
 package and returns its new name after rewrite."
@@ -1611,7 +1615,8 @@ package and returns its new name after rewrite."
 
   (define (cut? p)
     (or (assq-ref (package-properties p) replacement-property)
-        (assq-ref replacements p)))
+        (and (not recursive?)
+             (assq-ref replacements p))))
 
   (package-mapping rewrite cut?
                    #:deep? deep?))

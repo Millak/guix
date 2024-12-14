@@ -8665,12 +8665,16 @@ Dependency graph rewriting, for the purposes of swapping packages in the
 graph, is what the @code{package-input-rewriting} procedure in
 @code{(guix packages)} implements.
 
-@deffn {Procedure} package-input-rewriting replacements [rewrite-name] [#:deep? #t]
+@deffn {Procedure} package-input-rewriting replacements [rewrite-name] @
+  [#:deep? #t] [#:recursive? #f]
 Return a procedure that, when passed a package, replaces its direct and
 indirect dependencies, including implicit inputs when @var{deep?} is
 true, according to @var{replacements}.  @var{replacements} is a list of
 package pairs; the first element of each pair is the package to replace,
 and the second one is the replacement.
+
+When @var{recursive?} is true, apply replacements to the right-hand sides of
+@var{replacements} as well, recursively.
 
 Optionally, @var{rewrite-name} is a one-argument procedure that takes
 the name of a package and returns its new name after rewrite.
