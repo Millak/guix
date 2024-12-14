@@ -18980,7 +18980,8 @@ connection pool.")
          "1nq4sq1zk1xzdsqq61hd27jhj978ys136aba1zjg02x1g0c0cg11"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest python-tomli))
+     (list python-pip python-pytest python-setuptools python-tomli
+           python-wheel))
     (home-page "https://github.com/praiskup/argparse-manpage")
     (synopsis "Build manual page from Python's ArgumentParser object")
     (description
