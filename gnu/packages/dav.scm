@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015, 2016, 2017 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2018, 2019, 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2018, 2019, 2022-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Tanguy Le Carrour <tanguy@bioneland.org>
@@ -138,8 +138,10 @@ efficient syncing
                 (("^release.*")
                  (string-append "release = '" #$version "'\n"))))))))
     (native-inputs
-     (list python-setuptools-scm
+     (list python-setuptools
+           python-setuptools-scm
            python-sphinx
+           python-wheel
            ;; Required for testing
            python-aioresponses
            python-hypothesis
