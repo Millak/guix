@@ -620,6 +620,33 @@ package).")
      "This package provides a library to generate unified diffs.")
     (license license:bsd-3)))
 
+(define-public go-github-com-icrowley-fake
+  (package
+    (name "go-github-com-icrowley-fake")
+    (version "0.0.0-20240710202011-f797eb4a99c0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/icrowley/fake")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zb2rdck6fwjw1ib7k6gm9d9mnsig4cr2807k7v5z6nwqka1pcw1"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/icrowley/fake"))
+    (propagated-inputs
+     (list go-github-com-corpix-uarand))
+    (home-page "https://github.com/icrowley/fake")
+    (synopsis "Fake data generator for Golang")
+    (description
+     "Package fake is the fake data generatror for go (Golang), heavily
+inspired by forgery and @url{https://github.com/ffaker/ffaker,ffaker} Ruby
+gems.")
+    (license license:expat)))
+
 (define-public go-github-com-jackc-pgmock
   (package
     (name "go-github-com-jackc-pgmock")
