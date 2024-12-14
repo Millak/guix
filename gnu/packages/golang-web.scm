@@ -1632,7 +1632,7 @@ metrics (i.e. response time, bytes written, and http status code) from your
 application's http.Handlers.")
     (license license:expat)))
 
-;; This project looks like domain or abandoned, see
+;; This project looks like dormant or abandoned, see
 ;; <https://github.com/francoispqt/gojay/issues/150>.
 (define-public go-github-com-francoispqt-gojay
   (package
@@ -1654,9 +1654,25 @@ application's http.Handlers.")
       ;; <https://github.com/francoispqt/gojay/issues/173>.
       #:tests? (and (not (%current-target-system))
                     (target-x86-64?))
-      #:import-path "github.com/francoispqt/gojay"))
+      #:import-path "github.com/francoispqt/gojay"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       (list "TestMessage_Unmarshal"
+                             "TestMessage_Marshal"
+                             "TestGenerator_Generate")
+                       "|"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples-and-benchmarks
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (for-each delete-file-recursively
+                          (list "benchmarks" "examples"))))))))
     (native-inputs
-     (list go-github-com-stretchr-testify))
+     (list go-github-com-go-errors-errors ; for CLI build
+           go-github-com-stretchr-testify
+           go-github-com-viant-assertly   ; for CLI build
+           go-github-com-viant-toolbox))  ; for CLI build
     (home-page "https://github.com/francoispqt/gojay")
     (synopsis "JSON encoder/decoder with powerful stream API for Golang")
     (description
