@@ -647,6 +647,35 @@ inspired by forgery and @url{https://github.com/ffaker/ffaker,ffaker} Ruby
 gems.")
     (license license:expat)))
 
+(define-public go-github-com-jackc-fake
+  (package
+    (inherit go-github-com-icrowley-fake)
+    (name "go-github-com-jackc-fake")
+    (version "0.0.0-20150926172116-812a484cc733")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jackc/fake")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0f32qgzhx7pl3s0g4v916z21kfyh5v1dv28aakxisiw23936wf68"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Module name has not been changed after been forked upstream.
+            (substitute* (find-files "." "\\.go$")
+              (("github.com/icrowley/fake") "github.com/jackc/fake"))))))
+    (arguments
+     (list
+      #:import-path "github.com/jackc/fake"))
+    (home-page "https://github.com/jackc/fake")
+    (description
+     "This package is an alternative fork of @url{github.com/icrowley/fake}
+used in go-github-com-jackc-pgx.")
+    (license license:expat)))
+
 (define-public go-github-com-jackc-pgmock
   (package
     (name "go-github-com-jackc-pgmock")
