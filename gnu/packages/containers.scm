@@ -56,6 +56,7 @@
   #:use-module (gnu packages networking)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages rust-apps)
   #:use-module (gnu packages selinux)
@@ -593,7 +594,7 @@ To get @code{podman machine} working, install @code{qemu-minimal}, and
     (arguments
      (list
       #:test-flags #~(list "pytests")))
-    (native-inputs (list python-pytest python-parameterized))
+    (native-inputs (list python-pytest python-parameterized python-setuptools python-wheel))
     (propagated-inputs (list python-dotenv python-pyyaml))
     (home-page "https://github.com/containers/podman-compose")
     (synopsis "Script to run docker-compose.yml using podman")
