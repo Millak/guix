@@ -10472,17 +10472,25 @@ from a program in a @dfn{pager} such as @command{less}.")
 (define-public python-autopep8
   (package
     (name "python-autopep8")
-    (version "1.5.3")
+    (version "2.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "autopep8" version))
        (sha256
         (base32
-         "1w6vh627vrmgfbvrdcxrc3k4gxcldrb2lpgxv9irkdds851qrzb0"))))
-    (build-system python-build-system)
+         "037yhzmc9lssmn6cifa5gvw23f1c0hgsfgn83jfl3cwppm50c4r9"))))
+    (build-system pyproject-build-system)
     (propagated-inputs
-     (list python-pycodestyle python-toml))
+     (list python-pycodestyle python-tomli))
+    (native-inputs
+     (list python-setuptools python-wheel))
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-before 'check 'prepare-check
+           (lambda _
+             (setenv "HOME" "/tmp"))))))
     (home-page "https://github.com/hhatto/autopep8")
     (synopsis "Format Python code according to the PEP 8 style guide")
     (description
