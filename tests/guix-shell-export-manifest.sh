@@ -1,5 +1,6 @@
 # GNU Guix --- Functional package management for GNU
 # Copyright © 2022 Ludovic Courtès <ludo@gnu.org>
+# Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 #
 # This file is part of GNU Guix.
 #
@@ -83,7 +84,7 @@ guix build -m "$manifest" -d | \
 guix shell --export-manifest -D guile -D python-itsdangerous > "$manifest"
 guix build -m "$manifest" -d | grep "$(guix build libffi -d)"
 guix build -m "$manifest" -d | \
-    grep "$(guix build -e '(@ (gnu packages python) python)' -d)"
+    grep "$(guix build -e '(@ (gnu packages python) python-sans-pip-wrapper)' -d)"
 
 # Test various combinations to make sure generated code uses interfaces
 # correctly.
