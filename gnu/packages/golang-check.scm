@@ -207,6 +207,31 @@ test (using testing.TB's @code{TempDir}) and with a few helper methods.")
      "A testing library for Go programs.")
     (license license:expat)))
 
+(define-public go-github-com-corpix-uarand
+  (package
+    (name "go-github-com-corpix-uarand")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/corpix/uarand")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ad5k1h2qpam2cfalwkjigrwg1yc45dny10n08qmqix1gxyjillc"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/corpix/uarand"))
+    (native-inputs (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/corpix/uarand")
+    (synopsis "Random user-agent generator for Golang")
+    (description
+     "This package implements a functionality to generate random user-agent
+strings which may be used in mock tests.")
+    (license license:unlicense)))
+
 (define-public go-github-com-davecgh-go-spew
   (package
     (name "go-github-com-davecgh-go-spew")
