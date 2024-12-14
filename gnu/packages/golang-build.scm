@@ -1,12 +1,12 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2018, 2019, 2020 Leo Famulari <leo@famulari.name>
+;;; Copyright © 2017-2020 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2019 Brian Leung <bkleung89@gmail.com>
+;;; Copyright © 2019, 2020 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2020 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2020 HiPhish <hiphish@posteo.de>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Ryan Prior <rprior@protonmail.com>
-;;; Copyright © 2020 Vagrant Cascadian <vagrant@debian.org>
-;;; Copyright © 2020, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2020, 2022, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
@@ -311,6 +311,36 @@ replace a file or symbolic link.")
      "The uuid package generates and inspects UUIDs based on RFC 4122 and DCE
 1.1: Authentication and Security Services.")
     (license license:bsd-3)))
+
+;; XXX: This repository has been archived by the owner on Dec 1, 2021. It is
+;; now read-only.
+(define-public go-github-com-pkg-errors
+  (package
+    (name "go-github-com-pkg-errors")
+    (version "0.9.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pkg/errors")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1761pybhc2kqr6v5fm8faj08x9bql8427yqg6vnfv6nhrasx1mwq"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; Tests fail with a newer version of Golang (1.21) due to some API
+      ;; changes in how the module path is calculated which is not reflected
+      ;; in tests.
+      #:tests? #f
+      #:import-path "github.com/pkg/errors"))
+    (home-page "https://github.com/pkg/errors")
+    (synopsis "Go error handling primitives")
+    (description
+     "This package provides @code{error}, which offers simple error handling
+primitives in Go.")
+    (license license:bsd-2)))
 
 (define-public go-github-com-yuin-goldmark
   (package
