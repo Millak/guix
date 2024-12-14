@@ -51,7 +51,6 @@
   #:use-module (gnu packages openstack)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages python-build)
-  #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
@@ -2301,7 +2300,7 @@ them using any Python VM with basically no runtime overhead.")
 (define-public python-nptyping
   (package
     (name "python-nptyping")
-    (version "2.5.0")
+    (version "2.0.0")
     (source (origin
               (method git-fetch)        ;pypi only contains a binary wheel
               (uri (git-reference
@@ -2310,7 +2309,7 @@ them using any Python VM with basically no runtime overhead.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0m6iq98qi9pl5hcc5k99bvy5w293vrlsdnimxl020i60rfnihgl7"))))
+                "0839mcrv5jljq9k9124ssnl1hc1inbxwlwjk72imabsbqssjy9rb"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -2326,7 +2325,7 @@ them using any Python VM with basically no runtime overhead.")
            python-setuptools
            python-typeguard
            python-wheel))
-    (propagated-inputs (list python-numpy python-typing-extensions python-pandas-stubs))
+    (propagated-inputs (list python-numpy python-typing-extensions))
     (home-page "https://github.com/ramonhagenaars/nptyping")
     (synopsis "Type hints for Numpy")
     (description "This package provides extensive dynamic type checks for
