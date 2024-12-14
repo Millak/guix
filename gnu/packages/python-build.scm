@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015, 2024 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2015, 2020, 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015, 2020, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2020, 2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
@@ -694,7 +694,7 @@ them as the version argument or in a SCM managed file.")
                                  (getcwd) "/src:"
                                  (getenv "GUIX_PYTHONPATH"))))))
                 #:tests? #f))    ;avoid extra dependencies such as pytest
-    (native-inputs (list python-setuptools))))
+    (native-inputs (list python-setuptools python-wheel))))
 
 (define-public python-editables
   (package
