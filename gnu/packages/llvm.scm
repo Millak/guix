@@ -156,7 +156,13 @@ as \"x86_64-linux\"."
            (patches (map search-patch patches)))
          (llvm-monorepo (package-version llvm))))
     (build-system cmake-build-system)
-    (native-inputs (package-native-inputs llvm))
+    (native-inputs
+     (cond ((version>=? version "18")
+            ;; clang-18.1.8 doesn't build with gcc-14
+            ;; source/build/lib/fuzzer/libcxx_fuzzer_x86_64/include/c++/v1/__filesystem/path.h:534:52: error: use of built-in trait ‘__remove_pointer(typename std::__Fuzzer::decay<_Tp>::type)’ in function signature; use library traits instead
+            (modify-inputs (package-native-inputs llvm)
+              (prepend gcc-12)))
+           (else (package-native-inputs llvm))))
     (inputs
      (append
       (list llvm)
