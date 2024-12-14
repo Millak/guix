@@ -1695,7 +1695,7 @@ three libraries:
     (propagated-inputs
      (list python-lxml))
     (native-inputs
-     (list pkg-config python-pytest))
+     (list pkg-config python-pytest python-setuptools python-wheel))
     (home-page "https://libvirt.org")
     (synopsis "Python bindings to libvirt")
     (description "This package provides Python bindings to the libvirt
