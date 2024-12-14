@@ -878,6 +878,21 @@ the store.")
     (home-page "https://www.gnu.org/software/guix//")
     (license gpl3+)))
 
+(define %glibc-patches
+  (list "glibc-2.39-git-updates.patch"
+        "glibc-ldd-powerpc.patch"
+        "glibc-2.38-ldd-x86_64.patch"
+        "glibc-dl-cache.patch"
+        "glibc-2.37-versioned-locpath.patch"
+        ;; "glibc-allow-kernel-2.6.32.patch"
+        "glibc-reinstate-prlimit64-fallback.patch"
+        "glibc-supported-locales.patch"
+        "glibc-2.37-hurd-clock_t_centiseconds.patch"
+        "glibc-2.37-hurd-local-clock_gettime_MONOTONIC.patch"
+        "glibc-hurd-mach-print.patch"
+        "glibc-hurd-gettyent.patch"
+        "glibc-hurd-getauxval.patch"))
+
 (define-public glibc
   ;; This is the GNU C Library, used on GNU/Linux and GNU/Hurd.  Prior to
   ;; version 2.28, GNU/Hurd used a different glibc branch.
@@ -890,21 +905,11 @@ the store.")
             (sha256
              (base32
               "09nrwb0ksbah9k35jchd28xxp2hidilqdgz7b8v5f30pz1yd8yzp"))
-            (patches (search-patches "glibc-2.39-git-updates.patch"
-                                     "glibc-ldd-powerpc.patch"
-                                     "glibc-2.38-ldd-x86_64.patch"
-                                     "glibc-dl-cache.patch"
-                                     "glibc-2.37-versioned-locpath.patch"
-                                     ;; "glibc-allow-kernel-2.6.32.patch"
-                                     "glibc-reinstate-prlimit64-fallback.patch"
-                                     "glibc-supported-locales.patch"
-                                     "glibc-2.37-hurd-clock_t_centiseconds.patch"
-                                     "glibc-2.37-hurd-local-clock_gettime_MONOTONIC.patch"
-                                     "glibc-hurd-mach-print.patch"
-                                     "glibc-hurd-gettyent.patch"
-                                     "glibc-hurd-getauxval.patch"))))
-   (properties `((lint-hidden-cve . ("CVE-2024-33601" "CVE-2024-33602"
+            (patches (map search-patch %glibc-patches))))
+   (properties `((lint-hidden-cve . ("CVE-2024-2961"
+                                     "CVE-2024-33601" "CVE-2024-33602"
                                      "CVE-2024-33600" "CVE-2024-33599"))))
+   (replacement glibc/fixed)
    (build-system gnu-build-system)
 
    ;; Glibc's <limits.h> refers to <linux/limit.h>, for instance, so glibc
@@ -1181,6 +1186,28 @@ The GNU C library is used as the C library in the GNU system and most systems
 with the Linux kernel.")
    (license lgpl2.0+)
    (home-page "https://www.gnu.org/software/libc/")))
+
+(define glibc/fixed
+  (package
+    (inherit glibc)
+    (name "glibc")
+    (version (package-version glibc))
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "git://sourceware.org/git/glibc.git")
+                    ;; This is the latest commit from the
+                    ;; 'release/2.39/master' branch, where CVEs and other
+                    ;; important bug fixes are cherry picked.
+                    (commit "2c882bf9c15d206aaf04766d1b8e3ae5b1002cc2")))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "111yf24g0qcfcxywfzrilmjxysahlbkzxfimcz9rq8p00qzvvf51"))
+              (patches (map search-patch
+                            (fold (cut delete <...>)
+                                  %glibc-patches
+                                  '("glibc-2.39-git-updates.patch"))))))))
 
 ;; Define a variation of glibc which uses the default /etc/ld.so.cache, useful
 ;; in FHS containers.
