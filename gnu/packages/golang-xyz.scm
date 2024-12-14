@@ -1974,7 +1974,8 @@ package provides an API for comparing Golden files.")
      (list go-github-com-fatih-color
            go-github-com-mattn-go-colorable
            go-github-com-mattn-go-isatty
-           go-github-com-mattn-go-runewidth))
+           go-github-com-mattn-go-runewidth
+           go-github-com-vividcortex-ewma))
     (home-page "https://github.com/cheggaaa/pb/")
     (synopsis "Console progress bar for Go")
     (description
@@ -1999,9 +2000,10 @@ package provides an API for comparing Golden files.")
      (list
       #:import-path "github.com/cheggaaa/pb/v3"
       #:unpack-path "github.com/cheggaaa/pb"))
-    (propagated-inputs
-     (modify-inputs (package-propagated-inputs go-github-com-cheggaaa-pb)
-       (append go-github-com-vividcortex-ewma)))))
+    (arguments
+     (list
+      #:import-path "github.com/cheggaaa/pb/v3"
+      #:unpack-path "github.com/cheggaaa/pb"))))
 
 (define-public go-github-com-chzyer-logex
   (package
