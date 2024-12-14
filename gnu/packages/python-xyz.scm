@@ -13016,7 +13016,7 @@ installing @code{kernelspec}s for use with Jupyter frontends.")
                   (ice-9 match))
       #:test-flags
       ;; XXX: probably not good that this fails
-      '(list "-k" "not test_copy_to_globals")
+      '(list "-k" "not test_copy_to_globals" "-Wignore::DeprecationWarning")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'relax-a-bit
