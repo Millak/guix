@@ -1815,6 +1815,49 @@ package is intended for interoperability with the standard library and the
 possible.")
       (license license:bsd-3))))
 
+(define-public go-gitlab-com-yawning-obfs4-git
+  (package
+    (name "go-gitlab-com-yawning-obfs4-git")
+    (version "0.0.0-20231012084234-c3e2d44b1033")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/yawning/obfs4.git")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1kv62161jf28v1d31avlc0f5iyk5ar06zlk3zdw99hyyfqjiasdr"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "gitlab.com/yawning/obfs4.git"
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'build)))) ; no go files in project's root
+    (propagated-inputs
+     (list go-filippo-io-edwards25519
+           go-github-com-dchest-siphash
+           go-gitlab-com-yawning-edwards25519-extra
+           go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-goptlib
+           go-golang-org-x-crypto
+           go-golang-org-x-net))
+    (home-page "https://gitlab.com/yawning/obfs4")
+    (synopsis "Network traffic obfourscator library")
+    (description
+     "This package implements functionality based on ideas and concepts from
+Philipp Winter's
+@url{https://www.cs.kau.se/philwint/scramblesuit/,ScrambleSuit} protocol.
+The notable differences between ScrambleSuit and obfs4:
+@itemize
+@item the handshake always does a full key exchange (no such thing as a
+Session Ticket Handshake)
+@item the handshake uses the Tor Project's ntor handshake with public keys
+obfuscated via the Elligator 2 mapping
+@item the link layer encryption uses NaCl secret boxes (Poly1305/XSalsa20)
+@end itemize")
+    (license license:gpl3+)))
+
 (define-public go-gitlab-com-yawning-utls-git
   (package
     (name "go-gitlab-com-yawning-utls-git")
