@@ -16456,24 +16456,25 @@ traversal from leaf to root.")
               (sha256
                (base32
                 "0xmw2yv1y3y7vh5jcbrmlkn43nmfs0pf6z78k1yxqs3qy248m9b0"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
+     (list
+      #:phases
+      '(modify-phases %standard-phases
          ;; See https://github.com/linnarsson-lab/loompy/issues/169
          (add-after 'unpack 'fix-h5py-error
            (lambda _
              (substitute* "tests/test_file_attribute_manager.py"
                (("h5py.File\\(f.name\\)")
                 "h5py.File(f.name, 'a')"))))
+         (add-after 'unpack 'numpy-compatibility
+           (lambda _
+             (substitute* "tests/test_connection.py"
+               (("np.int") "int"))))
          ;; Numba needs a writable dir to cache functions.
          (add-before 'check 'set-numba-cache-dir
            (lambda _
-             (setenv "NUMBA_CACHE_DIR" "/tmp")))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "tests")))))))
+             (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
     (propagated-inputs
      (list python-click
            python-h5py
@@ -16483,7 +16484,7 @@ traversal from leaf to root.")
            python-pandas
            python-scipy))
     (native-inputs
-     (list python-pytest))
+     (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/linnarsson-lab/loompy")
     (synopsis "Work with .loom files for single-cell RNA-seq data")
     (description "The loom file format is an efficient format for very large
