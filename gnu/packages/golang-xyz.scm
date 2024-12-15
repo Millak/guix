@@ -3025,6 +3025,8 @@ implementation of http://docopt.org/.")
     (arguments
      (list
       #:import-path "github.com/dsnet/golib"))
+    (propagated-inputs
+     (list go-github-com-google-go-cmp))
     (home-page "https://github.com/dsnet/golib")
     (synopsis "Collection of helper libraries for Golang")
     (description
