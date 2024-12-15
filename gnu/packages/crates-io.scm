@@ -56365,17 +56365,17 @@ runtime support for rust-peg grammars.  To use rust-peg, see the peg crate.")
 (define-public rust-pem-3
   (package
     (name "rust-pem")
-    (version "3.0.3")
+    (version "3.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "pem" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0463ya67xrxaqn4qs9iz7rsx4parcasd78pd9fv7yd1m81wwr3qv"))))
+        (base32 "1blgcn17wc41yxdzrxlsir5m6ds8r13ijmpsqda6lwwhwmjr6icf"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-base64" ,rust-base64-0.21)
+     `(#:cargo-inputs (("rust-base64" ,rust-base64-0.22)
                        ("rust-serde" ,rust-serde-1))
        #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.3)
                                    ("rust-proptest" ,rust-proptest-1)
