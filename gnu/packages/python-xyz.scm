@@ -20028,65 +20028,69 @@ enhancements to optimization and data fitting problems.")
               (sha256
                (base32
                 "00sbhya9vfdv3yi07j6mxwx1x1h9497nhd3smdjrcdxgc48q0czg"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               ;; These require selenium.
-               (delete-file "tests/unit/bokeh/io/test_export.py")
-               (delete-file "tests/unit/bokeh/io/test_webdriver.py")
-               (delete-file "tests/unit/bokeh/embed/test_standalone.py")
+     (list
+      #:test-flags
+      '(list
+        ;; These require selenium.
+        "--ignore=tests/unit/bokeh/io/test_export.py"
+        "--ignore=tests/unit/bokeh/io/test_webdriver.py"
+        "--ignore=tests/unit/bokeh/embed/test_standalone.py"
 
-               ;; Doesn't find ManagedServerLoop fixture
-               (delete-file "tests/unit/bokeh/test_client_server.py")
+        ;; Doesn't find ManagedServerLoop fixture
+        "--ignore=tests/unit/bokeh/test_client_server.py"
 
-               ;; This fails because of the Guix wrapper around pytest
-               (delete-file "tests/unit/bokeh/io/test_util__io.py")
+        ;; This fails because of the Guix wrapper around pytest
+        "--ignore=tests/unit/bokeh/io/test_util__io.py"
 
-               ;; Fixture ipython not found.
-               (delete-file "tests/unit/bokeh/application/handlers/test_notebook__handlers.py")
-               (delete-file "tests/unit/bokeh/command/subcommands/test_info.py")
+        ;; Fixture ipython not found.
+        "--ignore=tests/unit/bokeh/application/handlers/test_notebook__handlers.py"
+        "--ignore=tests/unit/bokeh/command/subcommands/test_info.py"
 
-               ;; pd fixture not found.
-               (delete-file "tests/unit/bokeh/models/test_mappers.py")
-               (delete-file "tests/unit/bokeh/models/util/test_structure.py")
-               (delete-file "tests/unit/bokeh/plotting/test__plot.py")
-               (delete-file "tests/unit/bokeh/plotting/test__graph.py")
-               (delete-file "tests/unit/bokeh/plotting/test_figure.py")
-               (delete-file "tests/unit/bokeh/core/test_json_encoder.py")
-               (delete-file "tests/unit/bokeh/core/property/test_bases.py")
-               (delete-file "tests/unit/bokeh/core/property/test_container.py")
-               (delete-file "tests/unit/bokeh/core/property/test_dataspec.py")
-               (delete-file "tests/unit/bokeh/core/property/test_datetime.py")
-               (delete-file "tests/unit/bokeh/core/property/test_pandas.py")
+        ;; pd fixture not found.
+        "--ignore=tests/unit/bokeh/models/test_mappers.py"
+        "--ignore=tests/unit/bokeh/models/util/test_structure.py"
+        "--ignore=tests/unit/bokeh/plotting/test__plot.py"
+        "--ignore=tests/unit/bokeh/plotting/test__graph.py"
+        "--ignore=tests/unit/bokeh/plotting/test_figure.py"
+        "--ignore=tests/unit/bokeh/core/test_json_encoder.py"
+        "--ignore=tests/unit/bokeh/core/property/test_bases.py"
+        "--ignore=tests/unit/bokeh/core/property/test_container.py"
+        "--ignore=tests/unit/bokeh/core/property/test_dataspec.py"
+        "--ignore=tests/unit/bokeh/core/property/test_datetime.py"
+        "--ignore=tests/unit/bokeh/core/property/test_pandas.py"
 
-               ;; nx fixture not found.
-               (delete-file "tests/unit/bokeh/plotting/test_graph.py")
-               (delete-file "tests/unit/bokeh/models/test_graphs.py")
-               (delete-file "tests/unit/bokeh/io/test_showing.py")
-               (delete-file "tests/unit/bokeh/document/test_events__document.py")
+        ;; nx fixture not found.
+        "--ignore=tests/unit/bokeh/plotting/test_graph.py"
+        "--ignore=tests/unit/bokeh/models/test_graphs.py"
+        "--ignore=tests/unit/bokeh/io/test_showing.py"
+        "--ignore=tests/unit/bokeh/document/test_events__document.py"
 
-               ;; These tests need external sample data
-               (delete-file-recursively "tests/unit/bokeh/sampledata/")
+        ;; These tests need external sample data
+        "--ignore-glob=tests/unit/bokeh/sampledata/*"
 
-               ;; Attempts to install something via npm.
-               (delete-file "tests/unit/bokeh/test_ext.py")
+        ;; Attempts to install something via npm.
+        "--ignore=tests/unit/bokeh/test_ext.py"
 
-               ;; More failures due to set up problems.
-               (delete-file "tests/unit/bokeh/server/test_server__server.py")
-               (delete-file "tests/unit/bokeh/server/test_tornado__server.py")
-               (delete-file "tests/unit/bokeh/util/test_serialization.py")
-               (delete-file "tests/unit/bokeh/util/test_hex.py")
-               (delete-file "tests/unit/bokeh/models/test_sources.py")
-               (delete-file "tests/unit/bokeh/embed/test_bundle.py")
+        ;; More failures due to set up problems.
+        "--ignore=tests/unit/bokeh/server/test_server__server.py"
+        "--ignore=tests/unit/bokeh/server/test_tornado__server.py"
+        "--ignore=tests/unit/bokeh/util/test_serialization.py"
+        "--ignore=tests/unit/bokeh/util/test_hex.py"
+        "--ignore=tests/unit/bokeh/models/test_sources.py"
+        "--ignore=tests/unit/bokeh/embed/test_bundle.py"
 
-               ;; XXX: This one test transforms a gif of a red box.  It
-               ;; transforms it all right but the base64 doesn't look as
-               ;; expected, probably because of a change in pillow.
-               (invoke "pytest" "-v" "-k" "not test_transform_PIL")))))))
+        "-k"
+        (string-append
+         ;; Fails with: 'called_once_with' is not a valid assertion. [...]
+         ;; Did you mean: 'assert_called_once_with'?
+         "not test_set_from_json"
+
+         ;; XXX: This one test transforms a gif of a red box.  It transforms
+         ;; it all right but the base64 doesn't look as expected, probably
+         ;; because of a change in pillow.
+         " and not test_transform_PIL"))))
     (propagated-inputs
      (list node-lts
            python-jinja2
@@ -20105,7 +20109,9 @@ enhancements to optimization and data fitting problems.")
            python-pandas
            python-pytest
            python-pytz
-           python-requests))
+           python-requests
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/bokeh/bokeh")
     (synopsis "Interactive plots and applications in the browser from Python")
     (description
