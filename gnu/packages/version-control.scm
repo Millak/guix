@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2013 Cyril Roelandt <tipecaml@gmail.com>
-;;; Copyright © 2013-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2022, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013, 2014 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015, 2016 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2014, 2015, 2016 Mark H Weaver <mhw@netris.org>
@@ -1647,15 +1647,16 @@ allowing to handle large objects with a small memory footprint.")
                 "1rarp97cpjnhi106k2yhb7kygdyflmlgq0icxv3ggzl4wvszv0yz"))))
     (build-system python-build-system)
     (arguments
-     `(#:tests? #f ;XXX: Tests can only be run within the GitPython repository.
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'embed-git-reference
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      (substitute* "git/cmd.py"
-                        (("git_exec_name = \"git\"")
-                         (string-append "git_exec_name = \""
-                                        (assoc-ref inputs "git")
-                                        "/bin/git\""))))))))
+     (list #:tests? #f ;XXX: tests can only be run within the GitPython repository
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'embed-git-reference
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "git/cmd.py"
+                     (("git_exec_name = \"git\"")
+                      (string-append "git_exec_name = \""
+                                     (search-input-file inputs "/bin/git")
+                                     "\""))))))))
     (inputs
      (list git))
     (propagated-inputs
