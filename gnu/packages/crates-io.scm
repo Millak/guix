@@ -12764,19 +12764,17 @@ types that works on stable Rust.")
 (define-public rust-cc-1
   (package
     (name "rust-cc")
-    (version "1.1.28")
+    (version "1.2.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "cc" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-          "1hdzh7161ixzmk6znpzdx0ldqw1rlrk0d6xf3h7881xblfvf701f"))))
+        (base32 "1bqw7559dq0by6dq5k38rijz5p0wr5sa94s2gb180n0ndfmbnmwi"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-jobserver" ,rust-jobserver-0.1)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-shlex" ,rust-shlex-1))
