@@ -2573,7 +2573,7 @@ specified by @uref{https://tools.ietf.org/html/rfc2141, IETF RFC 2141}.")
 (define-public go-github-com-jessevdk-go-flags
   (package
     (name "go-github-com-jessevdk-go-flags")
-    (version "1.5.0")
+    (version "1.6.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2581,17 +2581,12 @@ specified by @uref{https://tools.ietf.org/html/rfc2141, IETF RFC 2141}.")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "13ixw1yx4bvcj66lkc8zgwf9j7gkvj686g991gycdsafvdvca0lj"))))
+               (base32 "1dxk8n06sh15rm7777v5jgwxz9ca1c090ni6lyjhj1d2lxfysb45"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/jessevdk/go-flags"
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-tests
-           (lambda _
-             ;; SOURCE_DATE_EPOCH messes with the date on the man page test.
-             (substitute* "src/github.com/jessevdk/go-flags/help_test.go"
-               (("TestMan") "DisabledTestMan")))))))
+     (list
+      #:import-path "github.com/jessevdk/go-flags"
+      #:test-flags #~(list "-skip" "TestCompletion|TestParserCompletion")))
     (propagated-inputs
      (list go-golang-org-x-sys))
     (synopsis "Go library for parsing command line arguments")
