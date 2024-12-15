@@ -5224,7 +5224,7 @@ dependant.")
 (define-public go-github-com-pkg-sftp
   (package
     (name "go-github-com-pkg-sftp")
-    (version "1.13.6")
+    (version "1.13.7")
     (source
      (origin
        (method git-fetch)
@@ -5233,7 +5233,7 @@ dependant.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0n35lzfrnrffjqy34ny6gxs27kq81s67ply6q8s1g19mhfzm6my7"))))
+        (base32 "0hhnsl327acwlmvp8wk4x1ml2mi6gdrdwm1dh9666n2cj9d8yj24"))))
     (build-system go-build-system)
     (arguments
      (list
