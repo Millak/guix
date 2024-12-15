@@ -62781,8 +62781,34 @@ ecosystem.")
 extension to python.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-pyo3-macros-backend-0.22
+  (package
+    (name "rust-pyo3-macros-backend")
+    (version "0.22.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pyo3-macros-backend" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1gmz3i0sr4fdg7qjvd8ylbkrgbbch9wv955kni903rd17fh13h1n"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-heck" ,rust-heck-0.5)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-pyo3-build-config" ,rust-pyo3-build-config-0.22)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))
+    (native-inputs (list python-minimal))
+    (home-page "https://github.com/pyo3/pyo3")
+    (synopsis "Code generation for PyO3")
+    (description
+     "This package provides code generation backends for PyO3.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-pyo3-macros-backend-0.21
   (package
+    (inherit rust-pyo3-macros-backend-0.22)
     (name "rust-pyo3-macros-backend")
     (version "0.21.2")
     (source
@@ -62792,19 +62818,12 @@ extension to python.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0p58yp8ajlc8bq56wghw1syrjszmadasasdfpsjy3d9dychhf9h8"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-heck" ,rust-heck-0.4)
                        ("rust-proc-macro2" ,rust-proc-macro2-1)
                        ("rust-pyo3-build-config" ,rust-pyo3-build-config-0.21)
                        ("rust-quote" ,rust-quote-1)
-                       ("rust-syn" ,rust-syn-2))))
-    (native-inputs (list python-minimal))
-    (home-page "https://github.com/pyo3/pyo3")
-    (synopsis "Code generation for PyO3")
-    (description
-     "This package provides code generation backends for PyO3.")
-    (license (list license:expat license:asl2.0))))
+                       ("rust-syn" ,rust-syn-2))))))
 
 (define-public rust-pyo3-macros-backend-0.20
   (package
