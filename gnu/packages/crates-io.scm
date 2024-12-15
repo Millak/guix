@@ -77647,14 +77647,14 @@ monotone matrix.")
   (package
     (inherit rust-smol-2)
     (name "rust-smol")
-    (version "1.2.5")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "smol" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1r45zng0hymqx1kb2dmxkapbin7f9rhgrdcssz0q7rzka59kpkw5"))))
+        (base32 "18c7d7n9dl5h0isf81cs0g3ly3zp54lmj76z1zgghiw4rm4bbwhk"))))
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -77666,8 +77666,7 @@ monotone matrix.")
         ("rust-async-net" ,rust-async-net-1)
         ("rust-async-process" ,rust-async-process-1)
         ("rust-blocking" ,rust-blocking-1)
-        ("rust-futures-lite" ,rust-futures-lite-1)
-        ("rust-once-cell" ,rust-once-cell-1))))))
+        ("rust-futures-lite" ,rust-futures-lite-1))))))
 
 (define-public rust-smol-0.1
   (package
