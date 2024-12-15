@@ -770,14 +770,14 @@ It also includes runtime support libraries for these languages.")
 (define-public gcc-11
   (package
    (inherit gcc-8)
-   (version "11.4.0")
+   (version "11.5.0")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://gnu/gcc/gcc-"
                                 version "/gcc-" version ".tar.xz"))
             (sha256
              (base32
-              "1ncd7akww0hl5kkmw1dj3qgqp3phdrr5dfnm7jia9s07n0ib4b9z"))
+              "0y1l6q4iy94nr30r3189fbb82ljbdqkq87y0y23wyifmx9l1iqm6"))
             (patches (search-patches "gcc-9-strmov-store-file-names.patch"
                                      "gcc-5.0-libvtv-runpath.patch"
                                      "gcc-10-libsanitizer-no-crypt.patch"
