@@ -4748,7 +4748,10 @@ overhead is linear with the size of the cache.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/hashicorp/hcl"))
+      #:import-path "github.com/hashicorp/hcl"
+      #:test-subdirs
+      #~(list "json/..." "hcl/ast" "hcl/fmtcmd" "hcl/printer" "hcl/scanner"
+              "hcl/strconv" "hcl/token" ".")))
     (native-inputs
      (list go-github-com-davecgh-go-spew))
     (synopsis "Go implementation of HashiCorp Configuration Language V1")
