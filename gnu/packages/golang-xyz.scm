@@ -3705,6 +3705,34 @@ also favors portability, and includes support for all POSIX systems.")
       (modify-inputs (package-inputs go-github-com-gdamore-tcell)
         (prepend go-golang-org-x-term go-golang-org-x-sys))))))
 
+(define-public go-github-com-go-errors-errors
+  (package
+    (name "go-github-com-go-errors-errors")
+    (version "1.5.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/go-errors/errors")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ydwx20al9x99xnki0srb9iy96y638inw05xx5jb16dn8rz09wib"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/go-errors/errors"
+      ;; Stack trace does not contain source line: 'a: b(5)'.
+      #:test-flags #~(list "-skip" "TestStackFormat")))
+    (home-page "https://github.com/go-errors/errors")
+    (synopsis "Errors with stacktraces for Golang")
+    (description
+     "Package errors provides errors that have stack-traces.  It provides the
+type @code{*Error} which implements the standard golang error interface, so
+you can use this library interchangeably with code that is expecting a normal
+error return.")
+    (license license:expat)))
+
 (define-public go-github-com-go-git-go-billy-v5
   (package
     (name "go-github-com-go-git-go-billy-v5")
