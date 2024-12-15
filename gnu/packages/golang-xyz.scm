@@ -4310,6 +4310,38 @@ execution.")
      "The chardet package ports character set detection from ICU to Go.")
     (license license:expat)))
 
+(define-public go-github-com-google-gnostic-models
+  (package
+    (name "go-github-com-google-gnostic-models")
+    (version "0.6.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/google/gnostic-models")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0z170sw1dlspxwbgpzffry5xm8mmcq7kpkrn0zkjzwdnmjhmmdqx"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/google/gnostic-models"
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'build)))) ; no go files in project's root
+    (propagated-inputs
+     (list go-google-golang-org-protobuf
+           go-gopkg-in-yaml-v3))
+    (home-page "https://github.com/google/gnostic-models")
+    (synopsis "Protocol Buffer models for Gnostic")
+    (description
+     "This package provides Protocol Buffer models and associated libraries
+for working with API description formats supported by
+@url{https://github.com/google/gnostic,gnostic}.  It exists to provide a
+lightweight distribution of these models with minimal dependencies.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-google-goterm
   (package
     (name "go-github-com-google-goterm")
