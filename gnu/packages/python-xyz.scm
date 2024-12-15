@@ -567,6 +567,7 @@ design}.")
            python-ipython-genutils
            python-jupyter-server
            python-pyaml
+           python-toml
            python-pytest
            python-setuptools
            python-wheel))
