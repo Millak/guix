@@ -1642,7 +1642,7 @@ ssh-agent process using the sample server.")
 (define-public go-github-com-youmark-pkcs8
   (package
     (name "go-github-com-youmark-pkcs8")
-    (version "1.2")
+    (version "1.3")
     (source
      (origin
        (method git-fetch)
@@ -1651,7 +1651,7 @@ ssh-agent process using the sample server.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ckdrwa5rmp2c85936qd9d0gzrnrvqfg0297ansz5frdhg6fc6nq"))))
+        (base32 "17pnl7b0ml4595cmxhramnc7ry6df6f4zisvaafxj4r7ravx8i7c"))))
     (build-system go-build-system)
     (arguments
      (list
