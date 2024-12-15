@@ -53116,21 +53116,20 @@ the default program configured on the system.")
 (define-public rust-openssl-macros-0.1
   (package
     (name "rust-openssl-macros")
-    (version "0.1.0")
+    (version "0.1.1")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "openssl-macros" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0v3kgnzbadrf9c06q4cqmbjas53av73n5w7wwz3n0nb6257y80dm"))))
+                "173xxvfc63rr5ybwqwylsir0vq6xsj4kxiv4hmg4c3vscdmncj59"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))
+        ("rust-syn" ,rust-syn-2))))
     (home-page "https://github.com/sfackler/rust-openssl")
     (synopsis "Internal macros used by the openssl crate")
     (description "This package provides internal macros used by the openssl
