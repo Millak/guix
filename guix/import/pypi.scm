@@ -470,12 +470,18 @@ the corresponding list of <upstream-input> records."
                          (type type))))
                 (sort deps string-ci<?)))
 
+  (define (add-missing-native-inputs inputs)
+    ;; setuptools cannot build wheels without the python-wheel.
+    (if (member "setuptools" inputs)
+      (cons "wheel" inputs)
+      inputs))
+
   ;; TODO: Record version number ranges in <upstream-input>.
   (let ((dependencies (guess-requirements source-url wheel-url archive)))
     (match dependencies
       ((propagated native)
        (append (requirements->upstream-inputs propagated 'propagated)
-               (requirements->upstream-inputs native 'native))))))
+               (requirements->upstream-inputs (add-missing-native-inputs native) 'native))))))
 
 (define* (pypi-package-inputs pypi-package #:optional version)
   "Return the list of <upstream-input> for PYPI-PACKAGE.  This procedure
