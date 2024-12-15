@@ -3762,7 +3762,7 @@ error return.")
 (define-public go-github-com-go-git-go-billy-v5
   (package
     (name "go-github-com-go-git-go-billy-v5")
-    (version "5.5.0")
+    (version "5.6.0")
     (source
      (origin
        (method git-fetch)
@@ -3771,13 +3771,14 @@ error return.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1r7hfwc6lqnb7jhbbmicdlb3yipjyazq3pndpffw026fcq7jhxg1"))))
+        (base32 "061yczvpxq5xcnjbi8ywx0qvrispi8pwk3nqky5cv1dsi6xzkchc"))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/go-git/go-billy/v5"))
     (native-inputs
      (list go-github-com-onsi-gomega
+           go-github-com-stretchr-testify
            go-gopkg-in-check-v1))
     (propagated-inputs
      (list go-github-com-cyphar-filepath-securejoin
