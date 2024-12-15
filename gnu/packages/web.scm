@@ -5290,8 +5290,8 @@ Cloud.")
     (license license:expat)))
 
 (define-public guix-data-service
-  (let ((commit "64aeeffd8eb5b03da706d7bf57d1a2964585e6d1")
-        (revision "55"))
+  (let ((commit "62d6b5901331ad5f78ac65a8a9cb5410b60942cb")
+        (revision "56"))
     (package
       (name "guix-data-service")
       (version (string-append "0.0.1-" revision "." (string-take commit 7)))
@@ -5303,7 +5303,7 @@ Cloud.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0jcjl5vhzwl1hc37w6xnmxlal8j5jlfykycx5wvdrc1wb7111s8v"))))
+                  "0nfh13sgp9f66bpm476866lpwgfzhxg0k04rxbxnxq2qqij3s9g4"))))
       (build-system gnu-build-system)
       (arguments
        (list
@@ -5370,10 +5370,12 @@ Cloud.")
       (propagated-inputs
        (list guix
              guile-fibers
+             guile-knots
              guile-json-4
              guile-email
              guile-prometheus
-             guile-squee))
+             guile-squee
+             guile-lzlib))
       (native-inputs
        (list (car (assoc-ref (package-native-inputs guix) "guile"))
              autoconf
