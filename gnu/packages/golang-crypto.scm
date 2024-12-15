@@ -1722,6 +1722,34 @@ and SSE4.1 acceleration.")
 Congruential Generator} (PCG) algorithm.")
     (license license:cc0)))
 
+(define-public go-gitlab-com-yawning-bsaes-git
+  (package
+    (name "go-gitlab-com-yawning-bsaes-git")
+    (version "0.0.0-20190805113838-0a714cd429ec")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/yawning/bsaes.git")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1w4g9phpb2f02dpkyd0ixp8jw9v42lnjljj4ysfz8im15abskwdn"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "gitlab.com/yawning/bsaes.git"))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
+    (home-page "https://gitlab.com/yawning/bsaes")
+    (synopsis "AES implementatin in Golang")
+    (description
+     "The @code{bsaes} is a portable pure-Go constant time AES implementation
+based on the code from @url{https://bearssl.org/,BearSSL}.  On appropriate
+systems, with a sufficiently recent Go runtime, it will transparently call
+crypto/aes when NewCipher is invoked.")
+    (license license:expat)))
+
 (define-public go-gitlab-com-yawning-edwards25519-extra
   (let ((commit "2149dcafc266f66d2487f45b156f6397f9c4760b")
         (revision "0"))
