@@ -624,14 +624,14 @@ ciphers, message digests and key derivation functions.")
 (define-public python-pyopenssl
   (package
     (name "python-pyopenssl")
-    (version "24.1.0")
+    (version "24.2.1")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "pyOpenSSL" version))
+       (uri (pypi-uri "pyopenssl" version))
        (sha256
         (base32
-         "0vqsyji1q4vhd5yxlzks0z6va62knq64mxhfdjhz3yaxmazx9gna"))))
+         "158fpy6fsmkrci67qpzg06ha3ygh3ah3xzxjrc6md3blwgdz0is2"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -643,7 +643,7 @@ ciphers, message digests and key derivation functions.")
                 ;; PyOpenSSL runs tests against a certificate with a fixed
                 ;; expiry time.  To ensure successful builds in the future,
                 ;; set the time to roughly the release date.
-                (invoke "faketime" "2024-03-09" "pytest" "-vv" "-k"
+                (invoke "faketime" "2024-07-20" "pytest" "-vv" "-k"
                         ;; This test tries to look up certificates from
                         ;; the compiled-in default path in OpenSSL, which
                         ;; does not exist in the build environment.
