@@ -4240,33 +4240,6 @@ anchor names.")
 have super fancy logs.")
       (license license:expat))))
 
-(define-public go-github-com-kr-fs
-  (let ((commit "1455def202f6e05b95cc7bfc7e8ae67ae5141eba")
-        (revision "0"))
-    (package
-      (name "go-github-com-kr-fs")
-      (version (git-version "0.1.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/kr/fs")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "11zg176x9hr9q7fsk95r6q0wf214gg4czy02slax4x56n79g6a7q"))))
-      (build-system go-build-system)
-      (arguments
-       (list
-        #:import-path "github.com/kr/fs"
-        #:test-flags #~(list "-skip" "TestBug3486")))
-      (home-page "https://github.com/kr/fs")
-      (synopsis "File-system-related functions for Go")
-      (description
-       "The fs package provides file-system-related Go functions.")
-      (license license:bsd-3))))
-
 (define-public go-github-com-kr-text
   (package
     (name "go-github-com-kr-text")

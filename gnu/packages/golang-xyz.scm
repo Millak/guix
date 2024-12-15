@@ -1,9 +1,11 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017-2020 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2018 Pierre Neidhardt <ambrevar@gmail.com>
+;;; Copyright © 2018 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2018 Pierre-Antoine Rouby <pierre-antoine.rouby@inria.fr>
 ;;; Copyright © 2018, 2020 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2019 Brian Leung <bkleung89@gmail.com>
+;;; Copyright © 2019, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2021 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2019-2021 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2019-2024 Efraim Flashner <efraim@flashner.co.il>
@@ -25,7 +27,6 @@
 ;;; Copyright © 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
-;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 raingloom <raingloom@riseup.net>
 ;;; Copyright © 2021, 2023, 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2022 (unmatched-parenthesis <paren@disroot.org>
@@ -5868,6 +5869,33 @@ very eas to use.")
      "@code{fastime} is a time function library for Go with zero memory
 allocation.  @code{fastime} is returning the approximate time.")
     (license license:expat)))
+
+(define-public go-github-com-kr-fs
+  (let ((commit "1455def202f6e05b95cc7bfc7e8ae67ae5141eba")
+        (revision "0"))
+    (package
+      (name "go-github-com-kr-fs")
+      (version (git-version "0.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/kr/fs")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "11zg176x9hr9q7fsk95r6q0wf214gg4czy02slax4x56n79g6a7q"))))
+      (build-system go-build-system)
+      (arguments
+       (list
+        #:import-path "github.com/kr/fs"
+        #:test-flags #~(list "-skip" "TestBug3486")))
+      (home-page "https://github.com/kr/fs")
+      (synopsis "File-system-related functions for Go")
+      (description
+       "The fs package provides file-system-related Go functions.")
+      (license license:bsd-3))))
 
 (define-public go-github-com-kr-pretty
   (package
