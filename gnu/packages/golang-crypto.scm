@@ -1815,6 +1815,49 @@ package is intended for interoperability with the standard library and the
 possible.")
       (license license:bsd-3))))
 
+(define-public go-gitlab-com-yawning-utls-git
+  (package
+    (name "go-gitlab-com-yawning-utls-git")
+    (version "0.0.12-1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/yawning/utls.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0f4m5g6yc0kn2s457gy98id4rr4m4z56y1nsxzx3xl04n408aimx"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "gitlab.com/yawning/utls.git"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       ;; Test requiring network setup.
+                       (list "TestHandshakeClientCertECDSA"
+                             "TestHandshakeServerECDHEECDSAAES"
+                             "TestVerifyHostname"
+                             ;; Fails with error: misamtch on read.
+                             "TestCipherSuiteCertPreferenceECDSA/TLSv12"
+                             "TestUTLSHandshakeClientParrotGolang"
+                             ;; Fails with error: expected "key size too small
+                             ;; for PSS signature".
+                             "TestKeyTooSmallForRSAPSS")
+                       "|"))))
+    (propagated-inputs
+     (list go-github-com-dsnet-compress
+           go-gitlab-com-yawning-bsaes-git
+           go-golang-org-x-crypto
+           go-golang-org-x-net))
+    (home-page "https://gitlab.com/yawning/utls")
+    (synopsis "Alternative fork of @code{github.com/refraction-networking/utls}")
+    (description
+     "This provides a fork of
+@url{https://github.com/refraction-networking/utls,uTLS} for the specific
+purpose of improving obfs4proxy's meek_lite transport.")
+    (license license:bsd-3)))
+
 (define-public go-lukechampine-com-blake3
   (package
     (name "go-lukechampine-com-blake3")
