@@ -80,6 +80,9 @@ the @code{c2go} tool at
     (arguments
      (list
       #:import-path "github.com/dsnet/compress"
+      #:test-subdirs
+      #~(list "brotli/..." "bzip2/..." "flate" "internal" "internal/prefix"
+              "internal/testutil" "xflate/...")
       #:phases
       #~(modify-phases %standard-phases
           ;; Testdata directories contains some compressed files requiring
