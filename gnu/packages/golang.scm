@@ -2570,34 +2570,6 @@ Under Windows, the console APIs are used.  Otherwise, ANSI texts are output.")
 specified by @uref{https://tools.ietf.org/html/rfc2141, IETF RFC 2141}.")
     (license license:expat)))
 
-(define-public go-github-com-jessevdk-go-flags
-  (package
-    (name "go-github-com-jessevdk-go-flags")
-    (version "1.6.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/jessevdk/go-flags")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32 "1dxk8n06sh15rm7777v5jgwxz9ca1c090ni6lyjhj1d2lxfysb45"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/jessevdk/go-flags"
-      #:test-flags #~(list "-skip" "TestCompletion|TestParserCompletion")))
-    (propagated-inputs
-     (list go-golang-org-x-sys))
-    (synopsis "Go library for parsing command line arguments")
-    (description
-     "The @code{flags} package provides a command line option parser.  The
-functionality is similar to the go builtin @code{flag} package, but
-@code{flags} provides more options and uses reflection to provide a succinct
-way of specifying command line options.")
-    (home-page "https://github.com/jessevdk/go-flags")
-    (license license:bsd-3)))
-
 (define-public go-github-com-go-playground-universal-translator
   (package
     (name "go-github-com-go-playground-universal-translator")
