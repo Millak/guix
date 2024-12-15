@@ -564,6 +564,7 @@ values for the purpose of fuzz testing.")
     (build-system go-build-system)
     (arguments
      (list
+      #:tests? #f ; source only package
       #:import-path "github.com/google/pprof"
       #:phases
       #~(modify-phases %standard-phases
