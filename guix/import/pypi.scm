@@ -57,6 +57,7 @@
   #:use-module (guix import utils)
   #:use-module (guix import json)
   #:use-module (json)
+  #:use-module (guix build toml)
   #:use-module (guix packages)
   #:use-module (guix upstream)
   #:use-module ((guix licenses) #:prefix license:)
@@ -386,7 +387,42 @@ be extracted in a temporary directory."
        (if wheel-url
            (and (url-fetch wheel-url temp)
                 (read-wheel-metadata temp))
-           #f))))
+           (list '() '())))))
+
+  (define (guess-requirements-from-pyproject.toml dir)
+    (let* ((pyproject.toml-files (find-files dir (lambda (abs-file-name _)
+                                          (string-match "/pyproject.toml$"
+                                          abs-file-name))))
+          (pyproject.toml (match pyproject.toml-files
+                            (()
+                              (warning (G_ "Cannot guess requirements from \
+pyproject.toml file, because it does not exist.~%"))
+                              '())
+                            (else (parse-toml-file (first pyproject.toml-files)))))
+          (pyproject-build-requirements
+           (or (recursive-assoc-ref pyproject.toml '("build-system" "requires")) '()))
+          (pyproject-dependencies
+           (or (recursive-assoc-ref pyproject.toml '("project" "dependencies")) '()))
+          ;; This is more of a convention, since optional-dependencies is a table of arbitrary values.
+          (pyproject-test-dependencies
+           (or (recursive-assoc-ref pyproject.toml '("project" "optional-dependencies" "test")) '())))
+      (if (null? pyproject.toml)
+        #f
+        (list (map specification->requirement-name pyproject-dependencies)
+              (map specification->requirement-name
+                   (append pyproject-build-requirements
+                           pyproject-test-dependencies))))))
+
+  (define (guess-requirements-from-requires.txt dir)
+    (let ((requires.txt-files (find-files dir (lambda (abs-file-name _)
+		                                          (string-match "\\.egg-info/requires.txt$"
+                                                  abs-file-name)))))
+     (match requires.txt-files
+       (()
+        (warning (G_ "Cannot guess requirements from source archive: \
+no requires.txt file found.~%"))
+        #f)
+       (else (parse-requires.txt (first requires.txt-files))))))
 
   (define (guess-requirements-from-source)
     ;; Return the package's requirements by guessing them from the source.
@@ -398,27 +434,29 @@ be extracted in a temporary directory."
              (if (string=? "zip" (file-extension source-url))
                  (invoke "unzip" archive "-d" dir)
                  (invoke "tar" "xf" archive "-C" dir)))
-           (let ((requires.txt-files
-                  (find-files dir (lambda (abs-file-name _)
-		                    (string-match "\\.egg-info/requires.txt$"
-                                                  abs-file-name)))))
-             (match requires.txt-files
-               (()
-                (warning (G_ "Cannot guess requirements from source archive:\
- no requires.txt file found.~%"))
-                (list '() '()))
-               (else (parse-requires.txt (first requires.txt-files)))))))
+               (list (guess-requirements-from-pyproject.toml dir)
+                     (guess-requirements-from-requires.txt dir))))
         (begin
           (warning (G_ "Unsupported archive format; \
 cannot determine package dependencies from source archive: ~a~%")
                    (basename source-url))
-          (list '() '()))))
+          (list #f #f))))
 
-  ;; First, try to compute the requirements using the wheel, else, fallback to
-  ;; reading the "requires.txt" from the egg-info directory from the source
-  ;; archive.
-  (or (guess-requirements-from-wheel)
-      (guess-requirements-from-source)))
+  (define (merge a b)
+    "Given lists A and B with two iteams each, combine A1 and B1, as well as A2 and B2."
+    (match (list a b)
+      (((first-propagated first-native) (second-propagated second-native))
+       (list (append first-propagated second-propagated) (append first-native second-native)))))
+
+  ;; requires.txt and the metadata of a wheel contain redundant information,
+  ;; so fetch only one of them, preferring requires.txt from the source
+  ;; distribution, which we always fetch, since the source tarball also
+  ;; contains pyproject.toml.
+  (match (guess-requirements-from-source)
+    ((from-pyproject.toml #f)
+      (merge (or from-pyproject.toml '(() ())) (or (guess-requirements-from-wheel) '(() ()))))
+    ((from-pyproject.toml from-requires.txt)
+      (merge (or from-pyproject.toml '(() ())) from-requires.txt))))
 
 (define (compute-inputs source-url wheel-url archive)
   "Given the SOURCE-URL and WHEEL-URL of an already downloaded ARCHIVE, return

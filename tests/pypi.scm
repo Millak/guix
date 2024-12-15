@@ -112,6 +112,20 @@ Mock
 coverage
 ")
 
+(define test-pyproject.toml "\
+[build-system]
+requires = [\"dummy-build-dep-a\", \"dummy-build-dep-b\"]
+
+[project]
+dependencies = [
+  \"dummy-dep-a\",
+  \"dummy-dep-b\",
+]
+
+[project.optional-dependencies]
+test = [\"dummy-test-dep-a\", \"dummy-test-dep-b\"]
+")
+
 (define test-metadata "\
 Classifier: Programming Language :: Python :: 3.7
 Requires-Dist: baz ~= 3
@@ -325,13 +339,90 @@ files specified by SPECS.  Return its file name."
         (x
          (pk 'fail x #f))))))
 
-(test-skip (if (which "zip") 0 1))
-(test-assert "pypi->guix-package, wheels"
+(test-assert "pypi->guix-package, no wheel, no requires.txt, but pyproject.toml"
   (let ((tarball (pypi-tarball
                   "foo-1.0.0"
-                  '(("foo-1.0.0/foo.egg-info/requires.txt"
-                     "wrong data \
-to make sure we're testing wheels"))))
+                  `(("pyproject.toml" ,test-pyproject.toml))))
+        (twice (lambda (lst) (append lst lst))))
+    (with-pypi (twice `(("/foo-1.0.0.tar.gz" 200 ,(file-dump tarball))
+                        ("/foo-1.0.0-py2.py3-none-any.whl" 404 "")
+                        ("/foo/json" 200 ,(lambda (port)
+                                            (display (foo-json) port)))))
+      ;; Not clearing the memoization cache here would mean returning the value
+      ;; computed in the previous test.
+      (invalidate-memoization! pypi->guix-package)
+      (match (pypi->guix-package "foo")
+        (`(package
+            (name "python-foo")
+            (version "1.0.0")
+            (source (origin
+                      (method url-fetch)
+                      (uri (pypi-uri "foo" version))
+                      (sha256
+                       (base32 ,(? string? hash)))))
+            (build-system pyproject-build-system)
+            (propagated-inputs (list python-dummy-dep-a python-dummy-dep-b))
+            (native-inputs (list python-dummy-build-dep-a python-dummy-build-dep-b
+                                 python-dummy-test-dep-a python-dummy-test-dep-b))
+            (home-page "http://example.com")
+            (synopsis "summary")
+            (description "summary.")
+            (license license:lgpl2.0))
+         (and (string=? default-sha256/base32 hash)
+              (equal? (pypi->guix-package "foo" #:version "1.0.0")
+                      (pypi->guix-package "foo"))
+              (guard (c ((error? c) #t))
+                (pypi->guix-package "foo" #:version "42"))))
+        (x
+         (pk 'fail x #f))))))
+
+(test-assert "pypi->guix-package, no wheel, but requires.txt and pyproject.toml"
+  (let ((tarball (pypi-tarball
+                  "foo-1.0.0"
+                  `(("foo-1.0.0/pyproject.toml" ,test-pyproject.toml)
+                    ("foo-1.0.0/bizarre.egg-info/requires.txt"
+                     ,test-requires.txt))))
+        (twice (lambda (lst) (append lst lst))))
+    (with-pypi (twice `(("/foo-1.0.0.tar.gz" 200 ,(file-dump tarball))
+                        ("/foo-1.0.0-py2.py3-none-any.whl" 404 "")
+                        ("/foo/json" 200 ,(lambda (port)
+                                            (display (foo-json) port)))))
+      ;; Not clearing the memoization cache here would mean returning the value
+      ;; computed in the previous test.
+      (invalidate-memoization! pypi->guix-package)
+      (match (pypi->guix-package "foo")
+        (`(package
+            (name "python-foo")
+            (version "1.0.0")
+            (source (origin
+                      (method url-fetch)
+                      (uri (pypi-uri "foo" version))
+                      (sha256
+                       (base32 ,(? string? hash)))))
+            (build-system pyproject-build-system)
+            ;; Information from requires.txt and pyproject.toml is combined.
+            (propagated-inputs (list python-bar python-dummy-dep-a python-dummy-dep-b
+                                     python-foo))
+            (native-inputs (list python-dummy-build-dep-a python-dummy-build-dep-b
+                                 python-dummy-test-dep-a python-dummy-test-dep-b
+                                 python-pytest))
+            (home-page "http://example.com")
+            (synopsis "summary")
+            (description "summary.")
+            (license license:lgpl2.0))
+         (and (string=? default-sha256/base32 hash)
+              (equal? (pypi->guix-package "foo" #:version "1.0.0")
+                      (pypi->guix-package "foo"))
+              (guard (c ((error? c) #t))
+                (pypi->guix-package "foo" #:version "42"))))
+        (x
+         (pk 'fail x #f))))))
+
+(test-skip (if (which "zip") 0 1))
+(test-assert "pypi->guix-package, no requires.txt, but wheel."
+  (let ((tarball (pypi-tarball
+                  "foo-1.0.0"
+                  '(("foo-1.0.0/foo.egg-info/.empty" ""))))
         (wheel (wheel-file "foo-1.0.0"
                            `(("METADATA" ,test-metadata)))))
     (with-pypi `(("/foo-1.0.0.tar.gz" 200 ,(file-dump tarball))
@@ -362,7 +453,7 @@ to make sure we're testing wheels"))))
         (x
          (pk 'fail x #f))))))
 
-(test-assert "pypi->guix-package, no usable requirement file."
+(test-assert "pypi->guix-package, no usable requirement file, no wheel."
   (let ((tarball (pypi-tarball "foo-1.0.0"
                                '(("foo.egg-info/.empty" "")))))
     (with-pypi `(("/foo-1.0.0.tar.gz" 200 ,(file-dump tarball))
