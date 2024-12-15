@@ -523,27 +523,28 @@ package, but can be used in other contexts too.")
     (license license:bsd-3)))
 
 (define-public go-github-com-google-gofuzz
-    (package
-      (name "go-github-com-google-gofuzz")
-      (version "1.2.0")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/google/gofuzz")
-               (commit (string-append "v" version))))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "19bykk6y9d1ivylxchkx1r1d02xrh3wfvvd02zvr5qv5ippv78ag"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path "github.com/google/gofuzz"))
-      (home-page "https://github.com/google/gofuzz")
-      (synopsis "Fuzz testing library for Go")
-      (description "Gofuzz is a library for populationg Go objects with random
-values for the purpose of fuzz testing.")
-      (license license:asl2.0)))
+  (package
+    (name "go-github-com-google-gofuzz")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/google/gofuzz")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19bykk6y9d1ivylxchkx1r1d02xrh3wfvvd02zvr5qv5ippv78ag"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/google/gofuzz"))
+    (home-page "https://github.com/google/gofuzz")
+    (synopsis "Fuzz testing library for Go")
+    (description
+     "Gofuzz is a library for populationg Go objects with random values for
+the purpose of fuzz testing.")
+    (license license:asl2.0)))
 
 ;; XXX: Placing to (gnu package profiling) creates some failing cycles.
 (define-public go-github-com-google-pprof
