@@ -1658,7 +1658,7 @@ allowing to handle large objects with a small memory footprint.")
                                      (search-input-file inputs "/bin/git")
                                      "\""))))))))
     (inputs
-     (list git))
+     (list git-minimal/pinned))
     (propagated-inputs
      (list python-gitdb python-typing-extensions))
     (native-inputs
