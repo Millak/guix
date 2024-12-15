@@ -1290,6 +1290,7 @@ as functions or string constants to form colored terminal output.")
        (sha256
         (base32 "08bjsmmkihyksms2vgndslln02rvw56lkxz28d39qrnxbg4v1707"))))
     (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-wheel))
     (propagated-inputs (list python-pillow))
     (home-page "https://github.com/fengsp/color-thief-py")
     (synopsis "Grab the color palette of an image")
