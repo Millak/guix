@@ -62579,8 +62579,32 @@ in codeblocks, while assuring quality with a powerful test suite.")
     (description "This package provides a safe interface to @code{pwd.h}.")
     (license license:public-domain)))
 
+(define-public rust-pyo3-build-config-0.23
+  (package
+    (name "rust-pyo3-build-config")
+    (version "0.23.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pyo3-build-config" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0fzzpr1bkwps58m3adcy460820k12mg9d62b0hh8w82gm1lh83nw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-python3-dll-a" ,rust-python3-dll-a-0.2)
+                       ("rust-target-lexicon" ,rust-target-lexicon-0.12))))
+    (native-inputs (list python-minimal))       ;for tests
+    (home-page "https://github.com/pyo3/pyo3")
+    (synopsis "Build configuration for PyO3")
+    (description
+     "This package provides Build configuration for the @code{PyO3} ecosystem.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-pyo3-build-config-0.22
   (package
+    (inherit rust-pyo3-build-config-0.23)
     (name "rust-pyo3-build-config")
     (version "0.22.6")
     (source
@@ -62590,17 +62614,10 @@ in codeblocks, while assuring quality with a powerful test suite.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0f4w8waba9cyzllq0dpxpw7qmgic05wdf4k20p8nsi7znmsmfjxi"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-once-cell" ,rust-once-cell-1)
                        ("rust-python3-dll-a" ,rust-python3-dll-a-0.2)
-                       ("rust-target-lexicon" ,rust-target-lexicon-0.12))))
-    (native-inputs (list python))       ;for tests
-    (home-page "https://github.com/pyo3/pyo3")
-    (synopsis "Build configuration for PyO3")
-    (description
-     "This package provides Build configuration for the @code{PyO3} ecosystem.")
-    (license (list license:expat license:asl2.0))))
+                       ("rust-target-lexicon" ,rust-target-lexicon-0.12))))))
 
 (define-public rust-pyo3-build-config-0.21
   (package
