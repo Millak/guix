@@ -2298,7 +2298,7 @@ visualize your public Git repositories on a web interface.")
               (invoke "git" "config" "--global" "user.name" "Your Name")
               (invoke "git" "config" "--global" "user.email" "you@example.com"))))))
     (native-inputs
-     (list git-minimal
+     (list git-minimal/pinned
            python-covdefaults
            python-coverage
            python-distlib
