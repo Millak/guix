@@ -77,6 +77,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages swig)
   #:use-module (gnu packages vulkan)
   #:use-module (gnu packages xml)
@@ -2061,15 +2062,15 @@ requirements according to version 1.1 of the OpenCL specification.")
 (define-public python-llvmlite
   (package
     (name "python-llvmlite")
-    (version "0.39.1")
+    (version "0.42.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "llvmlite" version))
        (sha256
         (base32
-         "0wnm0l0301sj8xp6skg3ci1gii56x5dk6l2x88f2c1g8h9ybsfml"))))
-    (build-system python-build-system)
+         "0jl50faakmv131x6qx5kyp89a4lfpmkkz64bv9bz9hqc7hj0jazr"))))
+    (build-system pyproject-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -2080,10 +2081,11 @@ requirements according to version 1.1 of the OpenCL specification.")
                (setenv "CPPFLAGS" "-fPIC")
                (setenv "LDFLAGS" (string-append "-Wl,-rpath="
                                                 llvm "/lib"))))))))
+    (native-inputs (list python-setuptools python-wheel))
     (inputs
      (list
       (let* ((patches-commit
-              "a4a19e8af2c5ef9b9901f20193e4be070726da97")
+              "530bed8f4b872d22a7089167d16198f373442d86")
              (patch-uri (lambda (name)
                           (string-append
                            "https://raw.githubusercontent.com/numba/"
@@ -2094,33 +2096,36 @@ requirements according to version 1.1 of the OpenCL specification.")
              (patch-origin (lambda (name hash)
                              (origin (method url-fetch)
                                      (uri (patch-uri name))
-                                     (sha256 (base32 hash)))))
+                                     (sha256 (base32 hash))
+                                     (modules '((ice-9 ftw)
+                                                (guix build utils)))
+                                     (snippet
+                                      '(let ((file (car
+                                                    (scandir "."
+                                                             (lambda (name)
+                                                               (not
+                                                                (member name
+                                                                        (quote
+                                                                         ("." "..")))))))))
+                                         (substitute* file
+                                           (("llvm-14.0.6.src/") "llvm/")))))))
              (arch-independent-patches
               (list (patch-origin
-                     "partial-testing.patch"
-                     "0g3nkci87knvmn7piqhmh4bcc65ff8r921cvfcibyiv65klv3syg")
+                     "llvm14-clear-gotoffsetmap.patch"
+                     "1gzs959hmh4wankalhg7idbhqjpk9q678bphhwfy308appf9c339")
                     (patch-origin
-                     "0001-Revert-Limit-size-of-non-GlobalValue-name.patch"
-                     "0n4k7za0smx6qwdipsh6x5lm7bfvzzb3p9r8q1zq1dqi4na21295"))))
+                     "llvm14-remove-use-of-clonefile.patch"
+                     "1wd156yjdshzh67dfk7c860hpx3nf5mn59sgmgb7lv1c55i6w97x")
+                    (patch-origin
+                     "llvm14-svml.patch"
+                     "1dx1mgd36m0d1x6acd9ky9allvqhshjcbhfb5vj9sizk9bm1ipsr"))))
         (package
-          (inherit llvm-11)
+          (inherit llvm-14)
           (source
            (origin
-             (inherit (package-source llvm-11))
-             (patches (if (string=? "aarch64-linux" (%current-system))
-                          `(,(patch-origin
-                              "intel-D47188-svml-VF_LLVM9.patch"
-                              "0gnnlfxr8p1a7ls93hzcpfqpa8r0icypfwj8l9cmkslq5sz8p64r")
-                            ,@arch-independent-patches
-                            ,@(origin-patches (package-source llvm-11)))
-                          `(,(patch-origin
-                              "intel-D47188-svml-VF.patch"
-                              "0gnnlfxr8p1a7ls93hzcpfqpa8r0icypfwj8l9cmkslq5sz8p64r")
-                            ,(patch-origin
-                              "expect-fastmath-entrypoints-in-add-TLI-mappings.ll.patch"
-                              "0jxhjkkwwi1cy898l2n57l73ckpw0v73lqnrifp7r1mwpsh624nv")
-                            ,@arch-independent-patches
-                            ,@(origin-patches (package-source llvm-11)))))))))))
+             (inherit (package-source llvm-14))
+             (patches (append arch-independent-patches
+                              (origin-patches (package-source llvm-14))))))))))
     (home-page "https://llvmlite.pydata.org")
     (synopsis "Wrapper around basic LLVM functionality")
     (description
