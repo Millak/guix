@@ -92,7 +92,10 @@ connection, or through a transit-relay.")
                             (install-file file docs))
                           (find-files "docs/"))))))))
     (native-inputs
-     (list python-mock python-pytest))
+     (list python-mock
+           python-pytest
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-twisted))
     (home-page "https://github.com/magic-wormhole/magic-wormhole-transit-relay")
