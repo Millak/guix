@@ -4079,7 +4079,7 @@ files.")
             (lambda _
               (setenv "HOME" "/tmp"))))))
     (native-inputs
-     (list git-minimal
+     (list git-minimal/pinned
            python-poetry-core
            python-poetry-dynamic-versioning
            python-pytest-astropy
