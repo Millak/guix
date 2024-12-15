@@ -68,6 +68,22 @@
      "This is a Rust library for parsing and generating ASN.1 data (DER only).")
     (license license:bsd-3)))
 
+(define-public rust-asn1-0.16
+  (package
+    (inherit rust-asn1-0.20)
+    (name "rust-asn1")
+    (version "0.16.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "asn1" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ggb140ilik21y4vha7f1p9m795k1aq4mp9adc4n46r8b2hfsb2k"))))
+    (arguments
+     `(#:cargo-inputs (("rust-asn1-derive" ,rust-asn1-derive-0.16))
+       #:cargo-development-inputs (("rust-libc" ,rust-libc-0.2))))))
+
 (define-public rust-asn1-0.15
   (package
     (inherit rust-asn1-0.20)
