@@ -126,6 +126,23 @@
      "This package provides #[derive] support for @code{asn1}.")
     (license license:bsd-3)))
 
+(define-public rust-asn1-derive-0.16
+  (package
+    (inherit rust-asn1-derive-0.20)
+    (name "rust-asn1-derive")
+    (version "0.16.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "asn1_derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "11y93778dzdfjcl03w07ddg9gq9f18bk2pznn0icq5yc71nhgrjn"))))
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))))
+
 (define-public rust-asn1-derive-0.15
   (package
     (inherit rust-asn1-derive-0.20)
