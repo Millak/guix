@@ -80573,20 +80573,20 @@ struct.")
 (define-public rust-strum-0.26
   (package
     (name "rust-strum")
-    (version "0.26.1")
+    (version "0.26.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "strum" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0przl5xmy1gzf4rlp8ff7wla43slsyk1vlg2xdjsk6nzmpl96fvj"))))
+        (base32 "01lgl6jvrf4j28v5kmx9bp480ygf1nhvac8b4p7rcj9hxw50zv4g"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags '("--release" "--"
                             "--skip=EnumMessage"
                             "--skip=EnumProperty"
-                            "--skip=EnumIterator")
+                            "--skip=IntoEnumIterator")
        #:cargo-inputs (("rust-phf" ,rust-phf-0.10)
                        ("rust-strum-macros" ,rust-strum-macros-0.26))
        #:cargo-development-inputs (("rust-strum-macros" ,rust-strum-macros-0.26))))
