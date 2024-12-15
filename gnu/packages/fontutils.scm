@@ -1738,28 +1738,7 @@ generate bitmaps.")
      (list
       #:test-flags
       ;; The code no longer raises <class 'ValueError'>
-      '(list "-k" "not test_load_stylespace_broken_range")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'adjust-for-older-attrs
-            ;; Our older attrs package is using the 'attr' rather than 'attrs'
-            ;; namespace.
-            ;; TODO: Remove after python-attrs is updated to >= 21.4.0.
-            (lambda _
-              (substitute* "pyproject.toml"
-                (("attrs = \">=21.3\"")
-                 "attrs = \">=21.2\"")
-                (("cattrs = \">=22.2\"")
-                 "cattrs = \">=22.1\""))
-              (substitute* (find-files "." "\\.py$")
-                (("from attrs\\b")
-                 "from attr")
-                (("import attrs")
-                 "import attr")
-                (("@attrs")
-                 "@attr")
-                (("\\battrs\\.")
-                 "attr.")))))))
+      '(list "-k" "not test_load_stylespace_broken_range")))
     (native-inputs
      (list python-poetry-core
            python-pytest
