@@ -111,14 +111,14 @@ together, allowing them to pretend they have a direct connection.")
 (define-public magic-wormhole
   (package
     (name "magic-wormhole")
-    (version "0.14.0")
+    (version "0.16.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "magic-wormhole" version))
        (sha256
         (base32
-         "105hsv7ck83bs29929zpb29aygr69q00mxpgq9xw7xxzi2gj6v80"))))
+         "1jcldlyj6bdd9bb39r77cd9ra6cllqijc9lhs6kaggcdi53c3rhl"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -133,10 +133,13 @@ together, allowing them to pretend they have a direct connection.")
     (native-inputs
      (list python-mock
            python-pytest
+           python-setuptools
+           python-wheel
            magic-wormhole-mailbox-server
            magic-wormhole-transit-relay))
     (propagated-inputs
-     (list python-autobahn
+     (list python-attrs
+           python-autobahn
            python-click
            python-hkdf
            python-humanize
