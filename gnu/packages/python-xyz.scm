@@ -14180,7 +14180,9 @@ approach.")
            python-wrapper
            python-pytest
            python-pandas
-           python-requests-mock))
+           python-requests-mock
+           python-setuptools
+           python-wheel))
     (home-page "https://snakemake.readthedocs.io")
     (synopsis "Python-based execution environment for make-like workflows")
     (description
