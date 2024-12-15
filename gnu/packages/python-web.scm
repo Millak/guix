@@ -4302,6 +4302,8 @@ opt.override_default_trust_store_from_path(None, os.getenv('SSL_CERT_FILE')) if 
                         "discover" "--verbose")))))))
     (inputs (list openssl))
     (native-inputs (list cmake-minimal
+                         python-setuptools
+                         python-wheel
                          ;; For tests only
                          nss-certs-for-test
                          python-boto3
