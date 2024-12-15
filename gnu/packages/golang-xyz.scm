@@ -2818,6 +2818,10 @@ encoding/decoding.  It has no dependencies.")
     (arguments
      (list
       #:import-path "github.com/dgraph-io/badger"
+      #:test-flags
+      #~(list "-skip"
+              ;; Test fails with error: assertion is not equal.
+              "TestBuildKeyValueSizeHistogram/All_same_size_key-values")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-failing-tests
@@ -2829,15 +2833,7 @@ encoding/decoding.  It has no dependencies.")
                   ;; fmt.Sprint(x)?).
                   ;; See: <https://github.com/dgraph-io/badger/issues/2103>.
                   (("\"testing\"") (string-append "\"testing\"\n\"fmt\""))
-                  (("string") "fmt.Sprint")))))
-          ;; XXX: Replace when go-build-system supports nested path.
-          (replace 'check
-            (lambda* (#:key import-path tests? #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion (string-append "src/" import-path)
-                  (invoke "go" "test" "-v"
-                          "-skip" "TestBuildKeyValueSizeHistogram"
-                          "./..." ))))))))
+                  (("string") "fmt.Sprint"))))))))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
