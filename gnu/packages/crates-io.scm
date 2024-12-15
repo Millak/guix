@@ -62663,8 +62663,32 @@ ecosystem.")
      `(#:cargo-inputs
        (("rust-once-cell" ,rust-once-cell-1))))))
 
+(define-public rust-pyo3-ffi-0.22
+  (package
+    (name "rust-pyo3-ffi")
+    (version "0.22.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pyo3-ffi" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0dl6zj806rkvs67q2mdgjbnzjhzm8glms46nqx8bpp1c9bqbrdcs"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2)
+                       ("rust-pyo3-build-config" ,rust-pyo3-build-config-0.22))
+       #:cargo-development-inputs (("rust-paste" ,rust-paste-1))))
+    (native-inputs (list python-minimal))
+    (home-page "https://github.com/pyo3/pyo3")
+    (synopsis "Python API bindings for the PyO3 ecosystem")
+    (description
+     "This package provides Python-API bindings for the @code{PyO3} ecosystem.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-pyo3-ffi-0.21
   (package
+    (inherit rust-pyo3-ffi-0.22)
     (name "rust-pyo3-ffi")
     (version "0.21.2")
     (source
@@ -62674,17 +62698,10 @@ ecosystem.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "00vlp4gmzn76gz250pz1r3fydd5r41nwl7dd9nmidfb0vi1migh1"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-libc" ,rust-libc-0.2)
-        ("rust-pyo3-build-config" ,rust-pyo3-build-config-0.21))))
-    (native-inputs (list python))
-    (home-page "https://github.com/pyo3/pyo3")
-    (synopsis "Python API bindings for the PyO3 ecosystem")
-    (description
-     "This crate provides Rust FFI declarations for Python 3.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-pyo3-build-config" ,rust-pyo3-build-config-0.21))))))
 
 (define-public rust-pyo3-ffi-0.20
   (package
