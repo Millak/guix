@@ -25440,14 +25440,14 @@ accessor functions on enums.")
 (define-public rust-enum-dispatch-0.3
   (package
     (name "rust-enum-dispatch")
-    (version "0.3.11")
+    (version "0.3.13")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "enum_dispatch" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1qlxlxjvy92s0fwcwlnd2cdkkyml1755xap2lq8v4812hsanxwqi"))
+                "1kby2jz173ggg7wk41vjsskmkdyx7749ll8lhqhv6mb5qqmww65a"))
               (modules '((guix build utils)))
               (snippet
                '(begin (substitute* "Cargo.toml"
@@ -25456,16 +25456,16 @@ accessor functions on enums.")
     (build-system cargo-build-system)
     (arguments
      (list
-       #:skip-build? #t     ; Needs newer version of rust-smol
+       #:tests? #f  ; `#![feature]` may not be used on the stable release channel
        #:cargo-inputs
        `(("rust-once-cell" ,rust-once-cell-1)
          ("rust-proc-macro2" ,rust-proc-macro2-1)
          ("rust-quote" ,rust-quote-1)
-         ("rust-syn" ,rust-syn-1))
+         ("rust-syn" ,rust-syn-2))
        #:cargo-development-inputs
        `(("rust-custom-derive" ,rust-custom-derive-0.1)
          ("rust-enum-derive" ,rust-enum-derive-0.1)
-         ("rust-rand" ,rust-rand-0.6)
+         ("rust-rand" ,rust-rand-0.5)
          ("rust-serde" ,rust-serde-1)
          ("rust-serde-json" ,rust-serde-json-1)
          ("rust-smol" ,rust-smol-1))))
