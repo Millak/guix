@@ -10752,6 +10752,31 @@ and other languages.  More precisely, it is the syntax accepted by RE2 and
 described at https://golang.org/s/re2syntax, except for @code{\\C.}")
     (license license:bsd-3)))
 
+(define-public go-sigs-k8s-io-json
+  (package
+    (name "go-sigs-k8s-io-json")
+    (version "0.0.0-20241014173422-cfa47c3a1cc8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kubernetes-sigs/json")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zdb3sq333ns8m5azv4fqqy62r0vrhssxl0przicm4v1nmrxj4jh"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.23
+      #:import-path "sigs.k8s.io/json"))
+    (home-page "https://github.com/kubernetes-sigs/json")
+    (synopsis "JSON decoder with enchansed features")
+    (description
+     "This package provides case-sensitive, integer-preserving JSON
+unmarshaling functions based on @code{encoding/json} @code{Unmarshal()}.")
+    (license license:asl2.0)))
+
 (define-public go-sigs-k8s-io-yaml
   (package
     (name "go-sigs-k8s-io-yaml")
