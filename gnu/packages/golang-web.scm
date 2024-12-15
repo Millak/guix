@@ -465,7 +465,10 @@ functions.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/aws/aws-sdk-go-v2"))
+      #:import-path "github.com/aws/aws-sdk-go-v2"
+      ;; XXX: It contains a lot of sub packages defined with go.mod, consider
+      ;; to pack them separately.
+      #:test-subdirs #~(list ".")))
     (propagated-inputs
      (list go-github-com-jmespath-go-jmespath
            go-github-com-aws-smithy-go))
