@@ -6516,35 +6516,6 @@ Features:
 @end itemize")
     (license license:asl2.0)))
 
-(define-public go-sigs-k8s-io-yaml
-  (package
-    (name "go-sigs-k8s-io-yaml")
-    (version "1.4.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/kubernetes-sigs/yaml")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0yjnmpwmvlb6md3djn6qx1ag4ld7gjz7jfyz1ldml88zyb9crpqx"))))
-    (build-system go-build-system)
-    (arguments '(#:import-path "sigs.k8s.io/yaml"))
-    (native-inputs (list go-gopkg-in-check-v1 go-github-com-google-go-cmp))
-    (home-page "https://sigs.k8s.io/yaml")
-    (synopsis "YAML marshaling and unmarshaling support for Go")
-    (description
-     "This package provides a Go library that first converts YAML to JSON
-using @code{go-yaml} and then uses @code{json.Marshal} and
-@code{json.Unmarshal} to convert to or from the struct.  This means that it
-effectively reuses the JSON struct tags as well as the custom JSON methods
-@code{MarshalJSON} and @code{UnmarshalJSON} unlike @code{go-yaml}.
-
-kubernetes-sigs/yaml is a permanent fork of
-@url{https://github.com/ghodss/yaml,ghodss/yaml}.")
-    (license (list license:expat license:bsd-3))))
-
 (define-public go-github-com-google-go-jsonnet
   (package
     (name "go-github-com-google-go-jsonnet")
