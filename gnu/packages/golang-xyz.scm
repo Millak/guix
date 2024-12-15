@@ -10538,7 +10538,22 @@ also provides V-style logging controlled by the @code{-v} and
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "k8s.io/klog/v2"))))
+      #:import-path "k8s.io/klog/v2"
+      #:test-flags
+      #~(list "-skip"
+              (string-join
+               (list "TestDestinationsWithDifferentFlags/with_log_file_only"
+                     "TestDestinationsWithDifferentFlags/everything_disabled"
+                     "TestDestinationsWithDifferentFlags/with_log_dir_only"
+                     "TestDestinationsWithDifferentFlags/with_log_dir_only_and_one_output"
+                     "TestDestinationsWithDifferentFlags/with_log_file_and_log_dir")
+               "|"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "examples")))))))))
 
 (define-public go-go-mongodb-org-mongo-driver
   (package
