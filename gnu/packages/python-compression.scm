@@ -746,7 +746,7 @@ wrapper.  It provides a backport of the @code{Path} object.")
         (base32 "1z4zdqqs2rg3z36khgj96bpggv34av337isfv7yxg32prawj687r"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest python-pytest-cov))
+     (list python-pytest python-pytest-cov python-setuptools python-wheel))
     (home-page "https://github.com/pR0Ps/zipstream-ng")
     (synopsis "Streamable zip file generator")
     (description
