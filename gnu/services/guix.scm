@@ -100,6 +100,8 @@
             guix-data-service-host
             guix-data-service-getmail-idle-mailboxes
             guix-data-service-commits-getmail-retriever-configuration
+            guix-data-service-configuration-git-repositories
+            guix-data-service-configuration-build-servers
 
             guix-data-service-type
 
@@ -556,7 +558,11 @@
                     (default '()))
   (extra-process-jobs-options
    guix-data-service-extra-process-jobs-options
-   (default '())))
+   (default '()))
+  (git-repositories guix-data-service-configuration-git-repositories
+                    (default #f))
+  (build-servers    guix-data-service-configuration-build-servers
+                    (default #f)))
 
 (define (guix-data-service-profile-packages config)
   "Return the guix-data-service package, this will populate the
@@ -566,7 +572,8 @@ ca-certificates.crt file in the system profile."
 
 (define (guix-data-service-shepherd-services config)
   (match-record config <guix-data-service-configuration>
-    (package user group port host extra-options extra-process-jobs-options)
+    (package user group port host extra-options extra-process-jobs-options
+             git-repositories build-servers)
     (list
      (shepherd-service
       (documentation "Guix Data Service web server")
@@ -594,6 +601,41 @@ ca-certificates.crt file in the system profile."
                   "LC_ALL=en_US.UTF-8")
                 #:log-file "/var/log/guix-data-service/web.log"))
       (stop #~(make-kill-destructor)))
+
+     (shepherd-service
+      (documentation "Guix Data Service setup database")
+      (provision '(guix-data-service-setup-database))
+      (requirement '(postgres))
+      (one-shot? #t)
+      (start
+       (with-extensions (cons package
+                              ;; This is a poorly constructed Guile load path,
+                              ;; since it contains things that aren't Guile
+                              ;; libraries, but it means that the Guile
+                              ;; libraries needed for the Guix Data Service
+                              ;; don't need to be individually specified here.
+                              (append
+                               (map second (package-inputs package))
+                               (map second (package-propagated-inputs package))))
+         #~(lambda _
+             (use-modules (guix-data-service database)
+                          (guix-data-service model git-repository)
+                          (guix-data-service model build-server))
+
+             (begin
+               ((@ (guix-data-service database) run-sqitch))
+
+               #$@(if git-repositories
+                      #~(((@ (guix-data-service model git-repository)
+                             specify-git-repositories)
+                          '(#$@git-repositories)))
+                      '())
+               #$@(if build-servers
+                      #~(((@ (guix-data-service model build-server)
+                             specify-build-servers)
+                          '(#$@build-servers)))
+                      '())))))
+      (auto-start? #t))
 
      (shepherd-service
       (documentation "Guix Data Service process jobs")

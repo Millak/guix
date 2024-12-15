@@ -40261,6 +40261,12 @@ Extra command line options for @code{guix-data-service}.
 @item @code{extra-process-jobs-options} (default: @var{'()})
 Extra command line options for @code{guix-data-service-process-jobs}.
 
+@item @code{git-repositories} (default: @var{#f})
+List of git-repository information to insert into the database.
+
+@item @code{build-servers} (default: @var{#f})
+List of build-server information to insert into the database.
+
 @end table
 @end deftp
 
