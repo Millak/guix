@@ -328,7 +328,7 @@ authorized substitutes."
       (erase-current-line (current-error-port)) ;erase current line
       (force-output (current-error-port))
       (format (current-error-port)
-              (G_ "updating substitutes from '~a'... ~5,1f%")
+              (G_ "looking for substitutes on '~a'... ~5,1f%")
               url (* 100. (/ done total)))
       (set! done (+ 1 done)))
 
