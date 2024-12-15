@@ -5438,7 +5438,7 @@ temporal directories.")
     (arguments
      `(#:import-path "github.com/twpayne/go-xdg/v3"))
     (native-inputs
-     (list go-github-com-stretchr-testify go-github-com-twpayne-go-vfs))
+     (list go-github-com-stretchr-testify go-github-com-twpayne-go-vfs-1.0.1))
     (home-page "https://github.com/twpayne/go-xdg/")
     (synopsis "Functions related to freedesktop.org")
     (description "Package @code{xdg} provides functions related to
