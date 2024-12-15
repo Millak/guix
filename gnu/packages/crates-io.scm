@@ -77454,14 +77454,14 @@ inline storage.")
 (define-public rust-smallvec-1
   (package
     (name "rust-smallvec")
-    (version "1.13.1")
+    (version "1.13.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "smallvec" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1mzk9j117pn3k1gabys0b7nz8cdjsx5xc6q7fwnm8r0an62d7v76"))))
+        (base32 "0rsw5samawl3wsw6glrsb127rx6sh89a8wyikicw6dkdcjd1lpiw"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
