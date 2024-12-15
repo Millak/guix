@@ -366,7 +366,30 @@ keys used by @code{go-ipfs} (Kubo).")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/ipfs/go-datastore"))
+      #:import-path "github.com/ipfs/go-datastore"
+      #:test-subdirs
+      #~(list "autobatch/..."
+              "delayed/..."
+              "examples/..."
+              "failstore/..."
+              ;; "fuzz/..." ; introduces cycle, for CLI
+              "keytransform/..."
+              "mount/..."
+              "namespace/..."
+              "query/..."
+              "retrystore/..."
+              "scoped/..."
+              "sync/..."
+              "test/..."
+              "trace/..."
+              ".")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (for-each delete-file-recursively
+                          (list "examples"))))))))
     (native-inputs
      (list go-gopkg-in-check-v1))
     (propagated-inputs
