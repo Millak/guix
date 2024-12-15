@@ -10575,46 +10575,34 @@ also provides V-style logging controlled by the @code{-v} and
     (arguments
      (list
       #:import-path "go.mongodb.org/mongo-driver"
+      #:test-flags
+      #~(list "-skip"
+              (string-join
+               ;; Some tests require running database and available network
+               ;; connection.
+               (list "TestAggregate"
+                     "TestPollSRVRecords"
+                     "TestPollSRVRecordsServiceName"
+                     "TestPollingSRVRecordsLoadBalanced"
+                     "TestPollingSRVRecordsSpec"
+                     "TestServerHeartbeatOffTimeout"
+                     "TestServerHeartbeatTimeout"
+                     "TestTimeCodec"
+                     "TestTopologyConstructionLogging"
+                     "TestURIOptionsSpec")
+               "|"))
+      #:test-subdirs
+      #~(list "bson/..." "event/..." "internal/..." "tag/..." "x/...")
       #:phases
       #~(modify-phases %standard-phases
+          (delete 'build) ; no go files in project's root
           (add-after 'unpack 'remove-examples-and-benchmarks
             (lambda* (#:key tests? import-path #:allow-other-keys)
               (with-directory-excursion (string-append "src/" import-path)
                 (for-each delete-file-recursively
                           (list "benchmark"
                                 "examples"
-                                "cmd/godriver-benchmark")))))
-          (add-before 'check 'disable-failing-tests
-            (lambda* (#:key tests? unpack-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" unpack-path)
-                (substitute* (find-files "." "\\_test.go$")
-                  ;; Some tests require running database and available network connection.
-                  (("TestAggregate") "OffTestAggregate")
-                  (("TestPollSRVRecords") "OffTestPollSRVRecords")
-                  (("TestPollSRVRecordsServiceName")
-                   "OffTestPollSRVRecordsServiceName")
-                  (("TestPollingSRVRecordsLoadBalanced")
-                   "OffTestPollingSRVRecordsLoadBalanced")
-                  (("TestPollingSRVRecordsSpec")
-                   "OffTestPollingSRVRecordsSpec")
-                  (("TestServerHeartbeatOffTimeout")
-                   "OffTestServerHeartbeatTimeout")
-                  (("TestServerHeartbeatTimeout")
-                   "OffTestServerHeartbeatTimeout")
-                  (("TestTimeCodec") "OffTestTimeCodec")
-                  (("TestTopologyConstructionLogging")
-                   "OffTestTopologyConstructionLogging")
-                  (("TestURIOptionsSpec") "OffTestURIOptionsSpec")))))
-          ;; XXX: Workaround for go-build-system's lack of Go modules support.
-          (delete 'build)
-          (replace 'check
-            (lambda* (#:key tests? import-path #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion (string-append "src/" import-path)
-                  (for-each
-                   (lambda (package)
-                     (invoke "go" "test" (string-append "./" package "/...")))
-                   (list "bson" "event" "internal" "tag" "x")))))))))
+                                "cmd/godriver-benchmark"))))))))
     (native-inputs
      (list go-github-com-aws-aws-lambda-go))
     (propagated-inputs
