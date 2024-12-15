@@ -595,7 +595,11 @@ credentials sources.")
         (base32 "1pcq9d154l41c4k23q6ri51ba5i2kc8ihrv4sgkv4q59cw70rspi"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/aws/smithy-go"))
+     (list
+      #:import-path "github.com/aws/smithy-go"
+      ;; XXX: It contains a lot of sub packages defined with go.mod, consider
+      ;; to pack them separately.
+      #:test-subdirs #~(list ".")))
     (propagated-inputs
      (list go-github-com-jmespath-go-jmespath go-github-com-google-go-cmp))
     (home-page "https://github.com/aws/smithy-go")
