@@ -61,7 +61,7 @@
    (constructor (lambda (os)
                   (image
                    (inherit
-                    (raw-with-offset-disk-image (* 9 (expt 2 20)))) ;9MiB
+                    (raw-with-offset-disk-image (* 16 (expt 2 20)))) ;16MiB
                    (operating-system os)
                    (platform aarch64-linux))))))
 
