@@ -6519,7 +6519,7 @@ Features:
 (define-public go-sigs-k8s-io-yaml
   (package
     (name "go-sigs-k8s-io-yaml")
-    (version "1.3.0")
+    (version "1.4.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6528,10 +6528,10 @@ Features:
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0qxs0ppqwqrfqs4aywyn1h28xh1qlj5ds4drmygaz1plrxj02dqn"))))
+                "0yjnmpwmvlb6md3djn6qx1ag4ld7gjz7jfyz1ldml88zyb9crpqx"))))
     (build-system go-build-system)
     (arguments '(#:import-path "sigs.k8s.io/yaml"))
-    (propagated-inputs (list go-gopkg-in-yaml-v2 go-github-com-davecgh-go-spew))
+    (native-inputs (list go-gopkg-in-check-v1 go-github-com-google-go-cmp))
     (home-page "https://sigs.k8s.io/yaml")
     (synopsis "YAML marshaling and unmarshaling support for Go")
     (description
