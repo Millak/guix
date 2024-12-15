@@ -5343,7 +5343,8 @@ and is not compatible with JSON.")
            python-setuptools-scm
            python-tomli
            python-setuptools
-           python-wheel))
+           python-wheel
+           python-pip))
     (home-page "https://extension-helpers.readthedocs.io")
     (synopsis "Astropy ecosystem utilities for building and installing packages")
     (description
