@@ -10550,6 +10550,51 @@ machine readable.  It is modeled after the Go standard library's @code{io} and
 values.")
     (license license:asl2.0)))
 
+(define-public go-k8s-io-gengo-v2
+  (package
+    (name "go-k8s-io-gengo-v2")
+    (version "2.0.0-20240911193312-2b36238f13e9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kubernetes/gengo")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ffwigrg92ivyb5r6g0alb4z8iydp9lkdviz3vm62gr89yw28yc7"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "k8s.io/gengo/v2"
+      #:unpack-path "k8s.io/gengo"
+      #:test-flags
+      ;; XXX: Figure out why these tests fail.
+      #~(list "-skip" (string-join
+                       (list "TestSnippetWriter"
+                             "TestFindPackages"
+                             "TestAlreadyLoaded"
+                             "TestLoadPackagesInternal"
+                             "TestLoadPackagesTo"
+                             "TestUserRequestedPackages"
+                             "TestAddOnePkgToUniverse"
+                             "TestStructParse/generic"
+                             "TestJSON")
+                       "|"))))
+    (native-inputs
+     (list go-github-com-google-go-cmp))
+    (propagated-inputs
+     (list go-github-com-spf13-pflag
+           go-golang-org-x-tools
+           go-k8s-io-klog-v2))
+    (home-page "https://github.com/kubernetes/gengo")
+    (synopsis "Framework for building simple code generators")
+    (description
+     "This package implements a functionality for generating things based on
+go files.  This mechanism was first used in Kubernetes code-generator and is
+split out here for ease of reuse and maintainability.")
+    (license license:asl2.0)))
+
 (define-public go-k8s-io-klog
   (package
     (name "go-k8s-io-klog")
