@@ -28952,58 +28952,61 @@ validation testing and application logic.")
 (define-public python-numba
   (package
     (name "python-numba")
-    (version "0.56.4")
+    (version "0.59.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "numba" version))
        (sha256
         (base32
-         "1vlnmirhay8gl36cxa94nvlgs41k9p7vdkp0xzbq65682bsgxn9j"))))
-    (build-system python-build-system)
+         "02rp5x59kw3qw6x821d4k4r4x8r8qpl1a16j9rvx4a30p4r93xkn"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
+     (list
+      #:phases
+      `(modify-phases %standard-phases
          (add-after 'unpack 'disable-proprietary-features
            (lambda _
              (setenv "NUMBA_DISABLE_HSA" "1")
              (setenv "NUMBA_DISABLE_CUDA" "1")))
          (add-after 'unpack 'disable-failing-tests
            (lambda _
+             ;; This expects to be able to run pip.
+             (delete-file "numba/tests/test_sysinfo.py")
              ;; This one test fails because a deprecation warning is printed.
              (substitute* "numba/tests/test_import.py"
                (("def test_no_accidental_warnings")
                 "def disabled_test_no_accidental_warnings"))
              ;; Some tests timeout or crash on some architectures.
              ,@(cond
-                 ((target-aarch64?)
-                  `((substitute* "numba/tests/test_sets.py"
-                      (("def test_add_discard")
-                       "def disabled_test_add_discard")
-                      (("def test_isdisjoint")
-                       "def disabled_test_isdisjoint")
-                      (("def test_issubset")
-                       "def disabled_test_issubset")
-                      (("def test_issuperset")
-                       "def disabled_test_issuperset")
-                      (("def test_remove_error")
-                       "def disabled_test_remove_error"))))
-                 ((target-ppc64le?)
-                  `((substitute* "numba/tests/test_mathlib.py"
-                      (("def test_ldexp")
-                       "def disabled_test_ldexp"))))
-                 ((target-arm32?)
-                  ;; Armhf emulation on aarch64 using armv8 machines returns
-                  ;; 'armv8l' from platform.machine() and won't skip some tests.
-                  ;; Fix borrowed from an upstream bug report:
-                  ;; https://github.com/numba/numba/issues/6345#issuecomment-764993001
-                  `((substitute* '("numba/tests/support.py"
-                                   "numba/tests/test_dispatcher.py")
-                      (("platform\\.machine\\(\\) == 'armv7l'")
-                       (string-append
-                         "platform.machine().startswith('armv') and "
-                         "int(platform.machine()[len('armv'):-1]) >= 7")))))
-                 (#t '()))))
+                ((target-aarch64?)
+                 `((substitute* "numba/tests/test_sets.py"
+                     (("def test_add_discard")
+                      "def disabled_test_add_discard")
+                     (("def test_isdisjoint")
+                      "def disabled_test_isdisjoint")
+                     (("def test_issubset")
+                      "def disabled_test_issubset")
+                     (("def test_issuperset")
+                      "def disabled_test_issuperset")
+                     (("def test_remove_error")
+                      "def disabled_test_remove_error"))))
+                ((target-ppc64le?)
+                 `((substitute* "numba/tests/test_mathlib.py"
+                     (("def test_ldexp")
+                      "def disabled_test_ldexp"))))
+                ((target-arm32?)
+                 ;; Armhf emulation on aarch64 using armv8 machines returns
+                 ;; 'armv8l' from platform.machine() and won't skip some tests.
+                 ;; Fix borrowed from an upstream bug report:
+                 ;; https://github.com/numba/numba/issues/6345#issuecomment-764993001
+                 `((substitute* '("numba/tests/support.py"
+                                  "numba/tests/test_dispatcher.py")
+                     (("platform\\.machine\\(\\) == 'armv7l'")
+                      (string-append
+                       "platform.machine().startswith('armv') and "
+                       "int(platform.machine()[len('armv'):-1]) >= 7")))))
+                (#t '()))))
          (replace 'check
            (lambda* (#:key tests? inputs outputs #:allow-other-keys)
              (when tests?
@@ -29014,10 +29017,8 @@ validation testing and application logic.")
                (with-directory-excursion "/tmp"
                  (setenv "HOME" (getcwd))
                  (invoke "python3" "-m" "numba.runtests" "-v" "-m"))))))))
-    (propagated-inputs
-     (list python-llvmlite python-numpy python-singledispatch))
-    (native-inputs                      ;for tests
-     (list python-jinja2 python-pygments))
+    (propagated-inputs (list python-llvmlite python-numpy))
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://numba.pydata.org")
     (synopsis "Compile Python code using LLVM")
     (description "Numba gives you the power to speed up your applications with
