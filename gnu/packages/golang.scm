@@ -5197,29 +5197,6 @@ use one of our glamorous default themes.")
      "A simple, efficient spring animation library for smooth, natural motion.")
     (license license:expat)))
 
-(define-public go-github-com-coreos-go-semver
-  (package
-    (name "go-github-com-coreos-go-semver")
-    (version "0.3.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/coreos/go-semver")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0vs04yykv1bwgvbyvi1m7ps83w06wzplw4giw8jac2iidx0x74v5"))))
-    (build-system go-build-system)
-    (arguments
-     `(#:import-path "github.com/coreos/go-semver"))
-    (propagated-inputs (list go-gopkg-in-yaml-v3))
-    (home-page "https://github.com/coreos/go-semver/")
-    (synopsis "Semantic versioning library")
-    (description "@code{go-semver} is a semantic versioning library for Go.
-It lets you parse and compare two semantic version strings.")
-    (license license:asl2.0)))
-
 (define-public go-github-com-emirpasic-gods
   (package
     (name "go-github-com-emirpasic-gods")
