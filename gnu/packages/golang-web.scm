@@ -1564,9 +1564,9 @@ for Go.")
 RFC 5321.")
     (license license:expat)))
 
-(define-public go-github-com-emicklei-go-restful
+(define-public go-github-com-emicklei-go-restful-v3
   (package
-    (name "go-github-com-emicklei-go-restful")
+    (name "go-github-com-emicklei-go-restful-v3")
     (version "3.4.0")
     (source
      (origin
