@@ -3823,6 +3823,24 @@ operations.")
      "This package provides fixtures used by @code{go-git}.")
     (license license:asl2.0)))
 
+(define-public go-github-com-go-git-go-git-fixtures-v5
+  (package
+    (inherit go-github-com-go-git-go-git-fixtures-v4)
+    (name "go-github-com-go-git-go-git-fixtures-v5")
+    (version "5.0.0-20241125094932-6b905c043834")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/go-git/go-git-fixtures")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1wgw5bzzk5gynqa0j49hxklcfliv2ql7jvpsjh4fn0053rwgs730"))))
+    (arguments
+     (list
+      #:import-path "github.com/go-git/go-git-fixtures/v5"))))
+
 (define-public go-github-com-go-kit-log
   (package
     (name "go-github-com-go-kit-log")
