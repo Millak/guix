@@ -3611,6 +3611,7 @@ sanitizer Rust crate.")
         (base32 "0ifnj0mpbqsfqba9n12vf5yzxj4qf2gxql3ry43qyshgnrqsi4mh"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-cryptography))
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/plizonczyk/noiseprotocol")
     (synopsis "Implementation of Noise Protocol Framework")
     (description
