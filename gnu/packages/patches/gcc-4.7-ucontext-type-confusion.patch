@@ -1,0 +1,25 @@
+From ef0d1ac2580b43535965eb4b31f077f355660215 Mon Sep 17 00:00:00 2001
+From: Ekaitz Zarraga <ekaitz@elenq.tech>
+Date: Wed, 30 Mar 2022 13:41:15 +0200
+Subject: [PATCH] Fix ucontext_t issue
+
+---
+ libgcc/config/i386/linux-unwind.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/libgcc/config/i386/linux-unwind.h b/libgcc/config/i386/linux-unwind.h
+index cd9a9a1e2b6..62ce4e44d54 100644
+--- a/libgcc/config/i386/linux-unwind.h
++++ b/libgcc/config/i386/linux-unwind.h
+@@ -53,7 +53,7 @@ x86_64_fallback_frame_state (struct _Unwind_Context *context,
+   if (*(unsigned char *)(pc+0) == 0x48
+       && *(unsigned long long *)(pc+1) == RT_SIGRETURN_SYSCALL)
+     {
+-      struct ucontext *uc_ = context->cfa;
++      struct ucontext_t *uc_ = context->cfa;
+       /* The void * cast is necessary to avoid an aliasing warning.
+          The aliasing warning is correct, but should not be a problem
+          because it does not alias anything.  */
+-- 
+2.46.0
+
