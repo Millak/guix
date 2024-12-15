@@ -8691,6 +8691,21 @@ Use waterutil with it to work with TUN/TAP packets/frames.")
      "This package provides a file system abstraction for Go.")
     (license license:asl2.0)))
 
+;; XXX: For chezmoi 1.8.10, remove it when updated.
+(define-public go-github-com-spf13-afero-1.1.2
+  (hidden-package (package (inherit go-github-com-spf13-afero)
+   (name "go-github-com-spf13-afero")
+   (version "1.1.2")
+   (source
+    (origin
+      (method git-fetch)
+      (uri (git-reference
+            (url "https://github.com/spf13/afero")
+            (commit (string-append "v" version))))
+      (file-name (git-file-name name version))
+      (sha256
+       (base32 "0miv4faf5ihjfifb1zv6aia6f6ik7h1s4954kcb8n6ixzhx9ck6k")))))))
+
 (define-public go-github-com-spf13-cast
   (package
     (name "go-github-com-spf13-cast")
@@ -9387,6 +9402,21 @@ supported by the time package
      "Package @code{vfs} provides an abstraction of the @code{os} and
 @code{ioutil} packages that is easy to test.")
     (license license:expat)))
+
+;; XXX: For chezmoi 1.8.10, remove it when updated.
+(define-public go-github-com-twpayne-go-vfs-1.0.1
+  (hidden-package (package (inherit go-github-com-twpayne-go-vfs)
+   (name "go-github-com-twpayne-go-vfs")
+   (version "1.0.1")
+   (source
+    (origin
+      (method git-fetch)
+      (uri (git-reference
+            (url "https://github.com/twpayne/go-vfs")
+            (commit (string-append "v" version))))
+      (file-name (git-file-name name version))
+      (sha256
+       (base32 "1if2wfdwl3h8v8kgrgywkwcjafcz7hynq8ikr52s11qf2n0w3gny")))))))
 
 (define-public go-github-com-urfave-cli
   (package

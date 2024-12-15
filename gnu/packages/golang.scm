@@ -5413,7 +5413,7 @@ temporal directories.")
     (arguments
      `(#:import-path "github.com/twpayne/go-vfsafero"))
     (native-inputs
-     (list go-github-com-twpayne-go-vfs go-github-com-spf13-afero))
+     (list go-github-com-twpayne-go-vfs-1.0.1 go-github-com-spf13-afero-1.1.2))
     (home-page "https://github.com/twpayne/go-vfsafero/")
     (synopsis "Compatibility later between @code{go-vfs} and @code{afero}")
     (description
