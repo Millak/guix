@@ -10777,6 +10777,38 @@ described at https://golang.org/s/re2syntax, except for @code{\\C.}")
 unmarshaling functions based on @code{encoding/json} @code{Unmarshal()}.")
     (license license:asl2.0)))
 
+(define-public go-sigs-k8s-io-structured-merge-diff-v4
+  (package
+    (name "go-sigs-k8s-io-structured-merge-diff-v4")
+    (version "4.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kubernetes-sigs/structured-merge-diff")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xgi3r2xvwvxy6jc6rd5rrnib4y9b4kgpqphm4lkhgaayy3njwv3"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "sigs.k8s.io/structured-merge-diff/v4"
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'build)))) ; no go files in project's root
+    (propagated-inputs
+     (list go-github-com-google-go-cmp
+           go-github-com-google-gofuzz
+           go-github-com-json-iterator-go
+           go-sigs-k8s-io-yaml))
+    (home-page "https://github.com/kubernetes-sigs/structured-merge-diff")
+    (synopsis "Structured Merge and Diff")
+    (description
+     "This package provides a code which implements the Kubernetes \"apply\"
+operation.")
+    (license license:asl2.0)))
+
 (define-public go-sigs-k8s-io-yaml
   (package
     (name "go-sigs-k8s-io-yaml")
