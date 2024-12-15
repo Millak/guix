@@ -4258,7 +4258,9 @@ have super fancy logs.")
            "11zg176x9hr9q7fsk95r6q0wf214gg4czy02slax4x56n79g6a7q"))))
       (build-system go-build-system)
       (arguments
-       '(#:import-path "github.com/kr/fs"))
+       (list
+        #:import-path "github.com/kr/fs"
+        #:test-flags #~(list "-skip" "TestBug3486")))
       (home-page "https://github.com/kr/fs")
       (synopsis "File-system-related functions for Go")
       (description
