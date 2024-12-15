@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2017, 2019, 2020, 2021, 2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2017, 2019, 2020, 2021, 2023, 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 Lukas Gradl <lgradl@openmailbox.org>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
 ;;; Copyright © 2016, 2019, 2020, 2022 Marius Bakke <marius@gnu.org>
@@ -704,7 +704,7 @@ RPC system.  Think JSON, except binary.  Or think Protocol Buffers, except faste
 (define-public python-msgspec
   (package
     (name "python-msgspec")
-    (version "0.16.0")
+    (version "0.18.6")
     (source (origin
               ;; There are no tests in the PyPI tarball.
               (method git-fetch)
@@ -719,7 +719,7 @@ RPC system.  Think JSON, except binary.  Or think Protocol Buffers, except faste
                   (delete-file "msgspec/atof_consts.h")))
               (sha256
                (base32
-                "09q567klcv7ly60w9lqip2ffyhrij100ky9igh3p3vqwbml33zb3"))))
+                "0akq8lc3547i0j67dpnq1si3dvdc51r4f66dka2h7mq6c4zxq3fn"))))
     (build-system pyproject-build-system)
     (arguments
      (list
