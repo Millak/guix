@@ -681,7 +681,7 @@ in transmittable and storable formats, such as JSON and MessagePack.")
         ("python-docutils" ,python-docutils)
         ("python-sphinx" ,python-sphinx)
         ("gnupg" ,gnupg)
-        ("git" ,git-minimal)))
+        ("git" ,git-minimal/pinned)))
     (home-page "https://docs.openstack.org/reno/latest/")
     (synopsis "Release notes manager")
     (description "Reno is a tool for storing release notes in a git repository
