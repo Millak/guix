@@ -555,7 +555,7 @@ Its main purpose is to support the key usage by @code{docker-init}:
      (list (package/inherit grep
              (inputs (list pcre2)))     ; Drop once grep on master supports -P
            bats
-           git
+           git-minimal/pinned
            go-1.22
            go-github-com-go-md2man
            mandoc
