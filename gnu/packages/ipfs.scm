@@ -173,6 +173,35 @@ by a @acronym{Content Identifiers,CID}.  The CID contains the multihash
 corresponding to the block.")
     (license license:expat)))
 
+(define-public go-github-com-ipfs-go-ds-flatfs
+  (package
+    (name "go-github-com-ipfs-go-ds-flatfs")
+    (version "0.5.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipfs/go-ds-flatfs")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1mrgl6kslq4d4zfpdyxvqxz8brhm8wphvnp916pippn7z63sayj3"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ipfs/go-ds-flatfs"))
+    (propagated-inputs
+     (list go-github-com-ipfs-go-datastore
+           go-github-com-ipfs-go-log
+           go-github-com-jbenet-goprocess))
+    (home-page "https://github.com/ipfs/go-ds-flatfs")
+    (synopsis "Datastore implementation using sharded directories and flat files to store data")
+    (description
+     "Package flatfs is a Datastore implementation that stores all objects in
+a two-level directory structure in the local file system, regardless of the
+hierarchy of the keys.")
+    (license license:expat)))
+
 (define-public go-github-com-ipfs-go-ipfs-blockstore
   (package
     (name "go-github-com-ipfs-go-ipfs-blockstore")
