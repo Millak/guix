@@ -6264,6 +6264,40 @@ of numbers.  Scheme is great at expressing your coding thoughts.  This project
 is an attempt to combine both into something useful.")
       (license license:asl2.0))))
 
+(define-public guile-knots
+  (let ((commit "2f39c58d6ca72cd869ba69e03d639f36d497e9a8")
+        (revision "1"))
+    (package
+    (name "guile-knots")
+    (version (git-version "0" revision commit))
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.cbaines.net/git/guile/knots")
+                    (commit commit)))
+              (sha256
+               (base32
+                "1kv2sw4pif2hjcfghjlzdv0plkdqkv4mpq2a18mj38jhwsjxr1q2"))
+              (file-name (string-append name "-" version "-checkout"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list pkg-config
+           autoconf
+           automake
+           guile-3.0
+           guile-fibers))
+    (inputs
+     (list guile-3.0))
+    (propagated-inputs
+     (list guile-fibers))
+    (home-page "https://git.cbaines.net/guile/knots")
+    (synopsis "Patterns and functionality to use with Guile Fibers")
+    (description
+     "Guile Knots is a collection of patterns and functionality that is useful
+when using Guile Fibers.  This includes higher level concurrency utilities,
+support for timeouts and an alternative web server implementation.")
+    (license license:gpl3+))))
+
 (define-public guile-kolam
   (package
     (name "guile-kolam")
