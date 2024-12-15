@@ -6600,6 +6600,8 @@ the @code{cpan} module @code{Parse::CommandLine}.")
     (arguments
      (list
       #:import-path "github.com/mattn/go-sixel"))
+    (native-inputs
+     (list go-github-com-burntsushi-graphics-go)) ; for the CLI command
     (propagated-inputs
      (list go-github-com-soniakeys-quant))
     (home-page "https://github.com/mattn/go-sixel")
