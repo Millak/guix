@@ -131,7 +131,13 @@ and GCC’s decimal extension.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/montanaflynn/stats"))
+      #:import-path "github.com/montanaflynn/stats"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "examples")))))))
     (home-page "https://github.com/montanaflynn/stats")
     (synopsis "Statistics library for Golang")
     (description
