@@ -28080,6 +28080,7 @@ python-mpv, but it uses the JSON IPC protocol instead of the C API.")
        (sha256
         (base32 "0r67cp9nizvn3cbslgi30zpd3mw4a6zal0ygik3jv5lni1xdkk5w"))))
     (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-wheel))
     (propagated-inputs (list python-certifi python-requests python-urllib3
                              python-websocket-client))
     (home-page "https://github.com/jellyfin/jellyfin-apiclient-python")
