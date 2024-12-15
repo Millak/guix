@@ -3808,8 +3808,9 @@ operations.")
     (build-system go-build-system)
     (arguments
      (list
-      ;; XXX: panic: runtime error: makeslice: cap out of range
+      ;; XXX: The onpanic: runtime error: makeslice: cap out of range
       #:tests? (target-64bit?)
+      #:test-subdirs #~(list ".")
       #:import-path "github.com/go-git/go-git-fixtures/v4"))
     (native-inputs
      (list go-github-com-stretchr-testify))
