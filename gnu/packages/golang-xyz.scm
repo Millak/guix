@@ -9309,6 +9309,132 @@ distributable command line applications in an expressive way.")
            go-github-com-xrash-smetrics
            go-gopkg-in-yaml-v3))))
 
+(define-public go-github-com-viant-toolbox
+  (package
+    (name "go-github-com-viant-toolbox")
+    (version "0.37.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/viant/toolbox")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1m49nar5cwx3wqym20awh7yw4fw2bdw21m4h71bx4g688gv1kri4"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/viant/toolbox"
+      #:test-flags #~(list "-skip" "TestCase_To|Test_NewReplayService")
+      #:test-subdirs #~(list "bridge/..."
+                             "cred/..."
+                             "data/..."
+                             "format/..."
+                             "sampler/..."
+                             "secret/..."
+                             "ssh/..."
+                             "test/..."
+                             "unsafe/..."
+                             "url/...")))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    ;; XXX: No go.mod to list dependencies, see
+    ;; <https://github.com/viant/toolbox/pull/51>.
+    (propagated-inputs
+     (list ;go-cloud-google-com-go-storage
+           ;go-github-com-aws-aws-sdk-go-aws
+           ;go-github-com-aws-aws-sdk-go-aws-credentials
+           ;go-github-com-aws-aws-sdk-go-aws-session
+           ;go-github-com-aws-aws-sdk-go-service-kms
+           ;go-github-com-aws-aws-sdk-go-service-s3
+           ;go-github-com-aws-aws-sdk-go-service-s3-s3manager
+           ;go-github-com-aws-aws-sdk-go-service-ssm
+           go-github-com-go-errors-errors
+           go-github-com-lunixbochs-vtclean
+           go-github-com-pkg-errors
+           go-github-com-viant-xunsafe
+           go-golang-org-x-crypto
+           go-golang-org-x-oauth2
+           ;go-google-golang-org-api-cloudkms-v1
+           ;go-google-golang-org-api-option
+           go-gopkg-in-yaml-v2))
+    (home-page "https://github.com/viant/toolbox")
+    (synopsis "Utility library for Golang")
+    (description
+     "This package provides set of utilities/abstractions developed as part of
+datastore connectivity and testing (viant/dsc, viant/dsunit).")
+    (license license:asl2.0)))
+
+(define-public go-github-com-viant-toolbox-bootstrap
+  (hidden-package
+   (package
+     (inherit go-github-com-viant-toolbox)
+     (arguments
+      (list #:tests? #f
+            #:import-path "github.com/viant/toolbox"
+            #:phases
+            #~(modify-phases %standard-phases
+                (delete 'build))))
+     (propagated-inputs
+      (list go-github-com-go-errors-errors
+            go-github-com-pkg-errors
+            go-gopkg-in-yaml-v2)))))
+
+(define-public go-github-com-viant-xreflect
+  (package
+    (name "go-github-com-viant-xreflect")
+    (version "0.7.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/viant/xreflect")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1r5y3cbs8z9frgfqrq2yv77z43fv36s7jrk49prpbfsskgpk8rh2"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ; to break import cycle
+      #:import-path "github.com/viant/xreflect"))
+    (propagated-inputs
+     (list go-golang-org-x-mod))
+    (home-page "https://github.com/viant/xreflect")
+    (synopsis "Golang reflection extension")
+    (description
+     "This package provides a reflection extension.")
+    (license license:unlicense)))
+
+(define-public go-github-com-viant-xunsafe
+  (package
+    (name "go-github-com-viant-xunsafe")
+    (version "0.9.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/viant/xunsafe")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ddf9grf7rczik9rzwmz10xagn65sn1n7mhkp7app0d3nc3xdlgs"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/viant/xunsafe"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-viant-xreflect))
+    (home-page "https://github.com/viant/xunsafe")
+    (synopsis "Faster Golang reflection")
+    (description
+     "This package provides a implementation reflection that greatly improved
+performance, that is between 25 to 50x time faster than native one.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-vito-midterm
   (package
     (name "go-github-com-vito-midterm")

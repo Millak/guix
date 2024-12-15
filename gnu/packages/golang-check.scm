@@ -1319,6 +1319,64 @@ functions and even in applications.")
 functions for writing tests in an @code{xUnit} style.")
     (license license:expat)))
 
+(define-public go-github-com-viant-assertly
+  (package
+    (name "go-github-com-viant-assertly")
+    (version "0.9.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/viant/assertly")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0mli7kfkaz3k4izx76w14qhq5a8bp6x1zw9471idrhg5wxg1mr1r"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/viant/assertly"
+      #:test-flags #~(list "-skip" "TestAssertCoalesceWithZero")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; failed to expand macro 1<ds:env[\"USER\"]>3, path:[/]:,
+              ;; failed to lookup USER in env.
+              (setenv "USER" "guix"))))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-viant-toolbox))
+    (home-page "https://github.com/viant/assertly")
+    (synopsis "Data structure testing library)")
+    (description
+     "This library enables complex data structure testing, specifically:
+@itemize
+@item realtime transformation or casting of incompatible data types with
+directives system
+@item consistent way of testing of unordered structures
+@item contains, Range, RegExp support on any data structure deeph level
+@item switch case directive to provide expected value alternatives based on
+actual switch/case input match
+@item macro system enabling complex predicate and expression evaluation, and
+customization
+@end itemize")
+    (license license:asl2.0)))
+
+(define-public go-github-com-viant-assertly-bootstrap
+  (hidden-package
+   (package
+     (inherit go-github-com-viant-assertly)
+     (arguments
+      (list #:tests? #f
+            #:import-path "github.com/viant/assertly"
+            #:phases
+            #~(modify-phases %standard-phases
+                (delete 'build))))
+      (native-inputs '())
+      (propagated-inputs '()))))
+
 (define-public go-go-abhg-dev-requiredfield
   (package
     (name "go-go-abhg-dev-requiredfield")
