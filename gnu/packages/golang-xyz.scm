@@ -10622,6 +10622,38 @@ also provides V-style logging controlled by the @code{-v} and
               (with-directory-excursion (string-append "src/" import-path)
                 (delete-file-recursively "examples")))))))))
 
+(define-public go-k8s-io-utils
+  (package
+    (name "go-k8s-io-utils")
+    (version "0.0.0-20241210054802-24370beab758")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kubernetes/utils")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "158rsq780hrzv6zb7lycjg8b2lfd00nvmx3mn4pi9byjam2y7nds"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ; XXX: all of them fail with various reasons
+      #:import-path "k8s.io/utils"
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'build)))) ; no go files in project's root
+    (propagated-inputs
+     (list go-github-com-davecgh-go-spew
+           go-k8s-io-klog-v2))
+    (home-page "https://github.com/kubernetes/utils")
+    (synopsis "Utility libraries for Golang")
+    (description
+     "This package provides a set of libraries that implementing low-level,
+kubernetes-independent packages supplementing the
+@url{https://pkg.go.dev/std#stdlib,Go standard libs}.")
+    (license license:asl2.0)))
+
 (define-public go-mvdan-cc-editorconfig
   (package
     (name "go-mvdan-cc-editorconfig")
