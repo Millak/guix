@@ -80706,20 +80706,20 @@ easier in Rust.")
 (define-public rust-strum-macros-0.26
   (package
     (name "rust-strum-macros")
-    (version "0.26.1")
+    (version "0.26.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "strum_macros" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "066dsk2f1psyyjllr1yc50251jvpjyh585m0fkcl0rypjgy1fd3s"))))
+        (base32 "1gl1wmq24b8md527cpyd5bw9rkbqldd7k1h38kf5ajd2ln2ywssc"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags '("--release" "--"
                             "--skip=enum_discriminants"
                             "--skip=static_variants_array")
-       #:cargo-inputs (("rust-heck" ,rust-heck-0.4)
+       #:cargo-inputs (("rust-heck" ,rust-heck-0.5)
                        ("rust-proc-macro2" ,rust-proc-macro2-1)
                        ("rust-quote" ,rust-quote-1)
                        ("rust-rustversion" ,rust-rustversion-1)
