@@ -2107,7 +2107,7 @@ Amazon S3 compatible object storage server.")
 (define-public python-pycurl
   (package
     (name "python-pycurl")
-    (version "7.45.3")
+    (version "7.45.4")
     (source
      (origin
        (method git-fetch)
@@ -2117,7 +2117,7 @@ Amazon S3 compatible object storage server.")
                       "REL_" (string-replace-substring version "." "_")))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0sqxz14p8qvhdb9pvlbrfdldn8s27l6hpv252s77kbbrj2pp294c"))))
+        (base32 "00cd1l0lsml0708hpv5k4qyhqfv0qphb0p317j9aci2wdspn1mpl"))))
     (build-system pyproject-build-system)
     (arguments
      '(#:test-flags
@@ -2156,6 +2156,7 @@ Amazon S3 compatible object storage server.")
     (native-inputs
      (list python-bottle
            python-flaky
+           python-flask
            python-pytest
            python-setuptools
            python-wheel))
