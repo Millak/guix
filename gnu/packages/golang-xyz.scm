@@ -10083,6 +10083,73 @@ for projects that don't require a full database server such as Postgres or
 MySQL.")
     (license license:expat)))
 
+(define-public go-go-mongodb-org-mongo-driver
+  (package
+    (name "go-go-mongodb-org-mongo-driver")
+    (version "1.16.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mongodb/mongo-go-driver")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "160hwrk8y8h3nl9sh5v6pxnlyw1ywbssjgzb72lj0x68akgl8gff"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (delete-file-recursively "vendor")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "go.mongodb.org/mongo-driver"
+      #:test-flags
+      #~(list "-skip"
+              (string-join
+               ;; Some tests require running database and available network
+               ;; connection.
+               (list "TestAggregate"
+                     "TestPollSRVRecords"
+                     "TestPollSRVRecordsServiceName"
+                     "TestPollingSRVRecordsLoadBalanced"
+                     "TestPollingSRVRecordsSpec"
+                     "TestServerHeartbeatOffTimeout"
+                     "TestServerHeartbeatTimeout"
+                     "TestTimeCodec"
+                     "TestTopologyConstructionLogging"
+                     "TestURIOptionsSpec")
+               "|"))
+      #:test-subdirs
+      #~(list "bson/..." "event/..." "internal/..." "tag/..." "x/...")
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'build) ; no go files in project's root
+          (add-after 'unpack 'remove-examples-and-benchmarks
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (for-each delete-file-recursively
+                          (list "benchmark"
+                                "examples"
+                                "cmd/godriver-benchmark"))))))))
+    (native-inputs
+     (list go-github-com-aws-aws-lambda-go))
+    (propagated-inputs
+     (list go-github-com-davecgh-go-spew
+           go-github-com-golang-snappy
+           go-github-com-google-go-cmp
+           go-github-com-klauspost-compress
+           go-github-com-montanaflynn-stats
+           go-github-com-xdg-go-scram
+           go-github-com-xdg-go-stringprep
+           go-github-com-youmark-pkcs8
+           go-golang-org-x-crypto
+           go-golang-org-x-sync))
+    (home-page "https://go.mongodb.org/mongo-driver")
+    (synopsis "MongoDB Go Driver")
+    (description
+     "This package provides a driver for @code{Mongo} data base.")
+    (license license:asl2.0)))
+
 (define-public go-go-senan-xyz-flagconf
   (package
     (name "go-go-senan-xyz-flagconf")
@@ -10554,73 +10621,6 @@ also provides V-style logging controlled by the @code{-v} and
             (lambda* (#:key tests? import-path #:allow-other-keys)
               (with-directory-excursion (string-append "src/" import-path)
                 (delete-file-recursively "examples")))))))))
-
-(define-public go-go-mongodb-org-mongo-driver
-  (package
-    (name "go-go-mongodb-org-mongo-driver")
-    (version "1.16.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/mongodb/mongo-go-driver")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "160hwrk8y8h3nl9sh5v6pxnlyw1ywbssjgzb72lj0x68akgl8gff"))
-       (snippet
-        #~(begin (use-modules (guix build utils))
-                 (delete-file-recursively "vendor")))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "go.mongodb.org/mongo-driver"
-      #:test-flags
-      #~(list "-skip"
-              (string-join
-               ;; Some tests require running database and available network
-               ;; connection.
-               (list "TestAggregate"
-                     "TestPollSRVRecords"
-                     "TestPollSRVRecordsServiceName"
-                     "TestPollingSRVRecordsLoadBalanced"
-                     "TestPollingSRVRecordsSpec"
-                     "TestServerHeartbeatOffTimeout"
-                     "TestServerHeartbeatTimeout"
-                     "TestTimeCodec"
-                     "TestTopologyConstructionLogging"
-                     "TestURIOptionsSpec")
-               "|"))
-      #:test-subdirs
-      #~(list "bson/..." "event/..." "internal/..." "tag/..." "x/...")
-      #:phases
-      #~(modify-phases %standard-phases
-          (delete 'build) ; no go files in project's root
-          (add-after 'unpack 'remove-examples-and-benchmarks
-            (lambda* (#:key tests? import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (for-each delete-file-recursively
-                          (list "benchmark"
-                                "examples"
-                                "cmd/godriver-benchmark"))))))))
-    (native-inputs
-     (list go-github-com-aws-aws-lambda-go))
-    (propagated-inputs
-     (list go-github-com-davecgh-go-spew
-           go-github-com-golang-snappy
-           go-github-com-google-go-cmp
-           go-github-com-klauspost-compress
-           go-github-com-montanaflynn-stats
-           go-github-com-xdg-go-scram
-           go-github-com-xdg-go-stringprep
-           go-github-com-youmark-pkcs8
-           go-golang-org-x-crypto
-           go-golang-org-x-sync))
-    (home-page "https://go.mongodb.org/mongo-driver")
-    (synopsis "MongoDB Go Driver")
-    (description
-     "This package provides a driver for @code{Mongo} data base.")
-    (license license:asl2.0)))
 
 (define-public go-mvdan-cc-editorconfig
   (package
