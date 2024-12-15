@@ -15007,6 +15007,14 @@ you do not want to store entirely on disk or on memory.")
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-before 'check 'fix-test
+           ;; See https://github.com/getsentry/sentry-python/pull/2712
+           (lambda _
+             (substitute* "tests/__init__.py"
+               (("import pytest")
+                "import warnings")
+               (("pytest.warns\\(None\\)")
+                "warnings.catch_warnings(record=True)"))))
          (replace 'check
            (lambda* (#:key inputs outputs tests? #:allow-other-keys)
              (when tests?
@@ -15061,7 +15069,12 @@ you do not want to store entirely on disk or on memory.")
                         " and not test_finds_transaction_when_descendent_span_is_on_scope"
                         " and not test_finds_orphan_span_on_scope"
                         " and not test_finds_non_orphan_span_on_scope"
-                        " and not test_circular_references"))))))))
+                        " and not test_circular_references"
+
+                        ;; AttributeError: module 'py' has no attribute 'process'
+                        ;; See <https://github.com/pytest-dev/pytest-forked/issues/88>.
+                        " and not test_threading"
+                        " and not test_transport"))))))))
     (native-inputs
      (list python-django
            python-executing
