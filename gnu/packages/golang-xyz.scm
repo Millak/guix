@@ -1585,6 +1585,32 @@ indicator to any terminal application.")
 strings into words like a POSIX or Windows shell would.")
     (license license:expat)))
 
+(define-public go-github-com-burntsushi-graphics-go
+  (package
+    (name "go-github-com-burntsushi-graphics-go")
+    (version "0.0.0-20160129215708-b43f31a4a966")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/BurntSushi/graphics-go")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1084wkrj5l6j48s9lkh28h2zgmw8kp63ra1yw1nfpkf0f6hil3hn"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/BurntSushi/graphics-go"
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'build)))) ; no go files in project's root
+    (home-page "https://github.com/BurntSushi/graphics-go")
+    (synopsis "Graphics library for the Golang")
+    (description
+     "This package provides a library to works with graphics.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-burntsushi-toml
   (package
     (name "go-github-com-burntsushi-toml")
