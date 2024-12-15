@@ -6724,6 +6724,20 @@ protocol.")
 ;;; Executables:
 ;;;
 
+(define-public go-gojay
+  (package
+    (inherit go-github-com-francoispqt-gojay)
+    (name "go-gojay")
+    (arguments
+     (list
+      #:tests? #f ; already tested in the library
+      #:install-source? #f
+      #:import-path "github.com/francoispqt/gojay/gojay"
+      #:unpack-path "github.com/francoispqt/gojay"))
+    (description
+     "This package provides a command line tool to generate gojay's marshaling
+and unmarshaling interface implementation for custom struct type(s).")))
+
 (define-public go-html2text
   (package
     (inherit go-github-com-jaytaylor-html2text)
