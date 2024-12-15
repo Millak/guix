@@ -368,7 +368,7 @@ reading and writing git repositories.")
         ("rust-time" ,rust-time-0.1))))
     (native-inputs
      `(("pkg-config" ,pkg-config)
-       ("git" ,git-minimal)))           ;for a single test
+       ("git" ,git-minimal/pinned)))              ;for a single test
     (inputs
      (list libgit2 libssh2 openssl zlib))))
 
