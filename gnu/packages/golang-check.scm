@@ -1247,28 +1247,29 @@ execution when a test fails.")
 (define-public go-github-com-smartystreets-goconvey
   (package
     (name "go-github-com-smartystreets-goconvey")
-    (version "v1.8.1")
+    (version "1.8.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/smartystreets/goconvey")
-             (commit version)))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0s9s7yd4jfwgirnz46kw1sfhgcgsdzfxlca6q16i6ixaqczfaap9"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/smartystreets/goconvey"))
+     (list
+      #:import-path "github.com/smartystreets/goconvey"))
     (propagated-inputs
      (list go-github-com-jtolds-gls
            go-github-com-smarty-assertions
            go-golang-org-x-tools))
     (home-page "https://github.com/smartystreets/goconvey")
     (synopsis "Go testing tool with both a web and terminal user interface")
-    (description "GoConvey is a testing tool for Go.  It integrates with go
-test, can show test coverage and has a web user interface that will refresh
-automatically.")
+    (description
+     "GoConvey is a testing tool for Go.  It integrates with go test, can show
+test coverage and has a web user interface that will refresh automatically.")
     (license license:expat)))
 
 (define-public go-github-com-smarty-assertions
