@@ -448,15 +448,21 @@ cannot determine package dependencies from source archive: ~a~%")
       (((first-propagated first-native) (second-propagated second-native))
        (list (append first-propagated second-propagated) (append first-native second-native)))))
 
+  (define default-pyproject.toml-dependencies
+    ;; If there is no pyproject.toml, we assume it’s an old-style setuptools-based project.
+    '(() ("setuptools")))
+
   ;; requires.txt and the metadata of a wheel contain redundant information,
   ;; so fetch only one of them, preferring requires.txt from the source
   ;; distribution, which we always fetch, since the source tarball also
   ;; contains pyproject.toml.
   (match (guess-requirements-from-source)
     ((from-pyproject.toml #f)
-      (merge (or from-pyproject.toml '(() ())) (or (guess-requirements-from-wheel) '(() ()))))
+      (merge (or from-pyproject.toml default-pyproject.toml-dependencies)
+             (or (guess-requirements-from-wheel) '(() ()))))
     ((from-pyproject.toml from-requires.txt)
-      (merge (or from-pyproject.toml '(() ())) from-requires.txt))))
+      (merge (or from-pyproject.toml default-pyproject.toml-dependencies)
+             from-requires.txt))))
 
 (define (compute-inputs source-url wheel-url archive)
   "Given the SOURCE-URL and WHEEL-URL of an already downloaded ARCHIVE, return
