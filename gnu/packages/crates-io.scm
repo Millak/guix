@@ -53139,14 +53139,14 @@ crate.")
 (define-public rust-openssl-0.10
   (package
     (name "rust-openssl")
-    (version "0.10.64")
+    (version "0.10.68")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "openssl" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "07vb455yh08qh3n493ssw1qsa3zg3zfj438kk2180453hq94i84m"))
+                "1xbiz2bmba2fibg70s462yk2fndp3f9vz11c7iw0ilh2y54bqx31"))
               (snippet
                #~(begin (use-modules (guix build utils))
                         (substitute* "Cargo.toml"
@@ -53162,7 +53162,7 @@ crate.")
         ("rust-openssl-macros" ,rust-openssl-macros-0.1)
         ("rust-openssl-sys" ,rust-openssl-sys-0.9))
        #:cargo-development-inputs
-       (("rust-hex" ,rust-hex-0.3))))
+       (("rust-hex" ,rust-hex-0.4))))
     (native-inputs
      (list pkg-config))
     (inputs
