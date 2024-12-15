@@ -2423,7 +2423,7 @@ submodules:
 (define-public go-github-com-creack-pty
   (package
     (name "go-github-com-creack-pty")
-    (version "1.1.23")
+    (version "1.1.24")
     (source
      (origin
        (method git-fetch)
@@ -2432,7 +2432,7 @@ submodules:
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1chx7ml9wlpk8pzgnnxb97gblmxz1j1v37m5i1asb94l5c24r1fg"))))
+        (base32 "0yy4zhfb7vrrbwd13rcw0zzcq0ami3zv3hp0x7g7il6mrbadcf25"))))
     (build-system go-build-system)
     (arguments
      (list
