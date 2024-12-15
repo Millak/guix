@@ -1579,12 +1579,20 @@ RFC 5321.")
         (base32 "0m1y5a6xr6hmdj77afrvyh2llkbhn1166lcrgis654shl8zs9qhz"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/emicklei/go-restful"))
+     (list
+      #:import-path "github.com/emicklei/go-restful"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "examples")))))))
     (home-page "https://github.com/emicklei/go-restful")
     (synopsis "Build REST-style web services using Go")
-    (description "This package provides @code{go-restful}, which helps
-developers to use @code{http} methods explicitly and in a way that's
-consistent with the HTTP protocol definition.")
+    (description
+     "This package provides @code{go-restful}, which helps developers to use
+@code{http} methods explicitly and in a way that's consistent with the HTTP
+protocol definition.")
     (license license:expat)))
 
 (define-public go-github-com-evanphx-json-patch
@@ -4263,6 +4271,32 @@ multistream-select protocol.  The protocol is defined at
 @code{Marshal} and @code{MarshalIndent} functions and @code{Encoder} type
 which produce colorized output using github.com/fatih/color.")
     (license license:expat)))
+
+(define-public go-github-com-nytimes-gziphandler
+  (package
+    (name "go-github-com-nytimes-gziphandler")
+    (version "1.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/nytimes/gziphandler")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0rhrjlw220hnymzfccm0yir3pc9dpj7h3gwzhzq2cbsb3hhsqvyy"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/NYTimes/gziphandler"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/NYTimes/gziphandler")
+    (synopsis "Middleware to gzip HTTP responses")
+    (description
+     "This is a tiny Go package which wraps HTTP handlers to transparently
+gzip the response body, for clients which support it.")
+    (license license:asl2.0)))
 
 (define-public go-github-com-opentracing-contrib-go-stdlib
   (package
