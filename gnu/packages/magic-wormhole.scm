@@ -3,6 +3,7 @@
 ;;; Copyright © 2024 normally_js <normally_js@posteo.net>
 ;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2024 TakeV <takev@disroot.org>
+;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -27,6 +28,7 @@
   #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-compression)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
@@ -45,7 +47,10 @@
          "1yw8i8jv5iv1kkz1aqimskw7fpichjn6ww0fq0czbalwj290bw8s"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-mock python-pytest))
+     (list python-mock
+           python-pytest
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-attrs
            python-autobahn
