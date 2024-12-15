@@ -3717,7 +3717,8 @@ simple and Pythonic domain language.")
     (native-inputs
      (list python-cython
            python-pytest
-           python-setuptools))
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-greenlet
            python-typing-extensions))
