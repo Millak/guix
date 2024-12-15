@@ -101,7 +101,7 @@
     (native-inputs
      (list automake
            autoconf
-           git
+           git-minimal/pinned
            libtool
            pkg-config
            python-3))
