@@ -283,12 +283,7 @@ satisfy."
         (let ((line (read-line port)))
           (cond
            ((eof-object? line)
-            ;; Duplicates can occur, since the same requirement can be
-            ;; listed multiple times with different conditional markers, e.g.
-            ;; pytest >= 3 ; python_version >= "3.3"
-            ;; pytest < 3 ; python_version < "3.3"
-            (map (compose reverse delete-duplicates)
-                 (list required-deps test-deps)))
+            (list required-deps test-deps))
            ((or (string-null? line) (comment? line))
             (loop required-deps test-deps inside-test-section? optional?))
            ((section-header? line)
@@ -342,8 +337,7 @@ returned value."
         (let ((line (read-line port)))
           (cond
            ((eof-object? line)
-            (map (compose reverse delete-duplicates)
-                 (list required-deps test-deps)))
+            (list required-deps test-deps))
            ((and (requires-dist-header? line) (not (extra? line)))
             (loop (cons (specification->requirement-name
                          (requires-dist-value line))
@@ -486,8 +480,10 @@ the corresponding list of <upstream-input> records."
   (let ((dependencies (guess-requirements source-url wheel-url archive)))
     (match dependencies
       ((propagated native)
-       (append (requirements->upstream-inputs propagated 'propagated)
-               (requirements->upstream-inputs (add-missing-native-inputs native) 'native))))))
+       (append (requirements->upstream-inputs (delete-duplicates propagated)
+                                              'propagated)
+               (requirements->upstream-inputs (delete-duplicates (add-missing-native-inputs native))
+                                              'native))))))
 
 (define* (pypi-package-inputs pypi-package #:optional version)
   "Return the list of <upstream-input> for PYPI-PACKAGE.  This procedure
