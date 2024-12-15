@@ -77482,16 +77482,14 @@ stack.")
   (package
     (inherit rust-smallvec-1)
     (name "rust-smallvec")
-    (version "0.6.13")
+    (version "0.6.14")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "smallvec" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "1dl219vnfkmsfx28lm3f83lyw24zap6fdsli6rg8nnp1aa67bc7p"))))
+        (base32 "1q4hz0ssnv24s6fq5kfp2wzrrprrrjiwc42a0h7s7nwym3mwlzxr"))))
     (arguments
      `(#:cargo-inputs
        (("rust-maybe-uninit" ,rust-maybe-uninit-2)
