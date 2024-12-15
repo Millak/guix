@@ -1899,7 +1899,11 @@ multiple deep learning frameworks.")
              ;; These are known to fail with Pandas 2
              "-k"
              (string-append "not test_datetime_conversion_warning"
-                            " and not test_timedelta_conversion_warning"))))
+                            " and not test_timedelta_conversion_warning"
+                            ;; These expect deprecation warnings that are not
+                            ;; emitted in our case.
+                            " and not test_drop_index_labels"
+                            " and not test_rename_multiindex"))))
     (native-inputs
      (list python-setuptools python-setuptools-scm python-pytest python-wheel))
     (propagated-inputs
