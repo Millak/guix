@@ -22442,7 +22442,7 @@ strings require only one extra byte in addition to the strings themselves.")
 (define-public python-cattrs
   (package
     (name "python-cattrs")
-    (version "23.2.3")
+    (version "24.1.2")
     (source (origin
               (method git-fetch)        ;for tests
               (uri (git-reference
@@ -22451,12 +22451,12 @@ strings require only one extra byte in addition to the strings themselves.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0lrrz4n6ygfyrzn40mxm82kkvgqclfi760zydy4lin3bcv73jqyd"))))
+                "0l806xs0insnvnd1c2l6f6bcaa7wgfrpvbbcyhhsvf2xy9mzq8rd"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      #~(list "--numprocesses" (number->string (parallel-job-count))
+      '(list "--numprocesses" (number->string (parallel-job-count))
               ;; Skip all benchmark tests.
               "--ignore=bench/test_attrs_collections.py"
               "--ignore=bench/test_attrs_nested.py"
@@ -22466,12 +22466,15 @@ strings require only one extra byte in addition to the strings themselves.")
               (string-join
                ;; XXX: Tests fail with error: AssertionError: assert ...,
                ;; check why.
-               (list "not test_310_optional_field_roundtrip"
+               (list "not test_msgspec_json_converter"
+                     "test_structure_simple_from_dict_default"
+                     "test_310_optional_field_roundtrip"
                      "test_310_union_field_roundtrip"
                      "test_nested_roundtrip"
                      "test_nested_roundtrip_tuple"
                      "test_omit_default_roundtrip"
                      "test_optional_field_roundtrip"
+                     ;; See https://github.com/python-attrs/cattrs/issues/575
                      "test_simple_roundtrip"
                      "test_simple_roundtrip_defaults"
                      "test_simple_roundtrip_defaults_tuple"
@@ -22490,13 +22493,21 @@ strings require only one extra byte in addition to the strings themselves.")
                 (("dynamic = \\[\"version\"\\]")
                  (string-append "version = \"" #$version "\""))
                 ;; Just run pytest with no frills
-                (("addopts = \"-l.*") "")))))))
+                (("addopts = \"-l.*") ""))))
+          ;; XXX Our python-hypothesis package is too old.
+          (add-after 'unpack 'compatibility
+            (lambda _
+              (substitute* "tests/typed.py"
+                (("characters\\(codec=codec\\)")
+                 "characters()")))))))
     (native-inputs
      (list python-hatchling
            python-hatch-vcs
            python-hypothesis
            python-immutables
            python-msgpack
+           python-msgspec
+           python-poetry-core
            python-pymongo               ;for the bson module
            python-pytest
            python-pytest-benchmark
