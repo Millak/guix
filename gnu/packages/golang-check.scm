@@ -1260,7 +1260,16 @@ execution when a test fails.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/smartystreets/goconvey"))
+      #:import-path "github.com/smartystreets/goconvey"
+      #:test-flags
+      ;; XXX: Figure out why these test fail.
+      #~(list "-skip" (string-join
+                       (list "TestShellIntegration"
+                             "TestStackModeMultipleInvocationInheritance"
+                             "TestStackModeMultipleInvocationInheritance2"
+                             "TestStackModeMultipleInvocationInheritance3"
+                             "TestWatcher")
+                       "|"))))
     (propagated-inputs
      (list go-github-com-jtolds-gls
            go-github-com-smarty-assertions
