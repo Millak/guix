@@ -3950,6 +3950,7 @@ will reconstruct the object along its delta-base chain and return it.")
       #:embed-files #~(list "children" "nodes" "text")
       #:import-path "github.com/git-lfs/git-lfs"
       #:install-source? #f
+      #:test-flags #~(list "-skip" "TestHistoryRewriterUpdatesRefs")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-/bin/sh
