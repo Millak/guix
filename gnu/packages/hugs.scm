@@ -23,7 +23,7 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix build-system gnu)
-  #:use-module (gnu packages gcc))
+  #:use-module (gnu packages))
 
 (define-public hugs
   (package
@@ -36,7 +36,8 @@
                           name "98-plus-" version ".tar.gz"))
       (sha256
        (base32
-        "1mdy4aq4campgmnpc2qwq7bsbfhaxfsqdghbyyz2wms4lnfcmyma"))))
+        "1mdy4aq4campgmnpc2qwq7bsbfhaxfsqdghbyyz2wms4lnfcmyma"))
+      (patches (search-patches "hugs-fix-build.patch"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -71,8 +72,6 @@
                (("/bin/cp") (which "cp")))
              #t)))
        #:tests? #f)) ; no test target
-    ;; FIXME: Fails to build with GCC 5.
-    (native-inputs (list gcc-4.9))
     (home-page "https://www.haskell.org/hugs/")
     (synopsis "Functional programming system based on Haskell 98")
     (description

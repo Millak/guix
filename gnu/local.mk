@@ -1567,6 +1567,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/htslib-for-stringtie.patch		\
   %D%/packages/patches/hubbub-sort-entities.patch		\
   %D%/packages/patches/hueplusplus-mbedtls.patch		\
+  %D%/packages/patches/hugs-fix-build.patch			\
   %D%/packages/patches/hurd-64bit.patch				\
   %D%/packages/patches/hurd-refcounts-assert.patch		\
   %D%/packages/patches/hurd-rumpdisk-no-hd.patch		\
