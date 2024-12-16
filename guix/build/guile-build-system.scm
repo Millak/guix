@@ -76,8 +76,7 @@ determined."
   (match (assoc-ref (or native-inputs inputs) "locales")
     (#f #t)
     (locales
-     (setenv "GUIX_LOCPATH" (string-append locales "/lib/locale"))
-     #t)))
+     (setenv "GUIX_LOCPATH" (string-append locales "/lib/locale")))))
 
 (define* (invoke-each commands
                       #:key (max-processes (current-processor-count))
@@ -112,8 +111,7 @@ Raise an error if one of the processes exit with non-zero."
          (lambda ()
            (primitive-exit 127))))
       (pid
-       (hashv-set! processes pid command)
-       #t)))
+       (hashv-set! processes pid command))))
 
   (let loop ((commands  commands)
              (running   0)
@@ -208,8 +206,7 @@ installed; this is useful for files that are meant to be included."
                                  flags)))
                    source-files)
        #:max-processes (parallel-job-count)
-       #:report-progress report-build-progress))
-    #t))
+       #:report-progress report-build-progress))))
 
 (define* (install-documentation #:key outputs
                                 (documentation-file-regexp
@@ -220,8 +217,7 @@ installed; this is useful for files that are meant to be included."
          (doc (string-append out "/share/doc/"
                              (strip-store-file-name out))))
     (for-each (cut install-file <> doc)
-              (find-files "." documentation-file-regexp))
-    #t))
+              (find-files "." documentation-file-regexp))))
 
 (define %standard-phases
   (modify-phases gnu:%standard-phases
