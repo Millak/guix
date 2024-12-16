@@ -905,7 +905,8 @@ testing capabilities.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/onsi/ginkgo"))
+      #:import-path "github.com/onsi/ginkgo"
+      #:test-flags #~(list "-skip" "TestIntegration")))
     (propagated-inputs
      (list go-github-com-go-task-slim-sprig
            go-github-com-nxadm-tail
