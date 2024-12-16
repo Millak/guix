@@ -859,6 +859,9 @@ style and key ordering are kept, so you can diff the source.")
         (base32
          "1dmv163cnslyqccrybkxn0c9s1jk1mmafmgxv75iamnz5lk5l8hk"))))
     (build-system pyproject-build-system)
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
     (home-page "https://github.com/brianolson/cbor_py")
     (synopsis "Implementation of the Concise Binary Object Representation")
     (description
