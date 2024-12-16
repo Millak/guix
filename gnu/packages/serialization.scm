@@ -68,7 +68,8 @@
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-science)
-  #:use-module (gnu packages python-xyz))
+  #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages time))
 
 (define-public avro-cpp-1.9
   (package
@@ -845,6 +846,25 @@ style and key ordering are kept, so you can diff the source.")
     (description
      "This package provides a C version of the reader, parser and emitter for
 @code{ruamel.yaml} derived from libyaml.")
+    (license license:expat)))
+
+(define-public python-strictyaml
+  (package
+    (name "python-strictyaml")
+    (version "1.7.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "strictyaml" version))
+       (sha256
+        (base32 "01y4hrakk1psdj6ir5k70apqkjjipvja0c40pbfvahmbzjjm9y12"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-dateutil python-ruamel.yaml))
+    (native-inputs (list python-setuptools python-wheel))
+    (home-page "https://pypi.org/project/strictyaml/")
+    (synopsis "Strict, typed YAML parser")
+    (description "StrictYAML is a type-safe YAML parser that parses and
+validates a restricted subset of the YAML specification.")
     (license license:expat)))
 
 (define-public python-cbor
