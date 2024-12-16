@@ -633,11 +633,12 @@ the API, and provides features such as:
       ;; TODO: Pack arrow-adbc/c/driver/sqlite for tests.
       #:tests? #f
       #:build-backend "setuptools.build_meta"))
-    (propagated-inputs
-     (list python-typing-extensions))
     (native-inputs
      (list python-cython-3
-           python-pytest))
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-typing-extensions))
     (home-page "https://arrow.apache.org/adbc/")
     (synopsis "Generic entrypoint for ADBC drivers in Python")
     (description
