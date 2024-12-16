@@ -5935,7 +5935,7 @@ support for reading and writing various compression algorithms including:
               "--ignore=tests/test_manifests.py"
               "--ignore=tests/test_yaml_schema.py")))
     (native-inputs
-     (list python-astropy
+     (list python-astropy-minimal
            python-jsonschema
            python-pypa-build
            python-pytest
