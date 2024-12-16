@@ -323,7 +323,7 @@
     (arguments
      (list
       #:test-flags
-      #~(list "--numprocesses" "auto"
+      #~(list "--numprocesses" (number->string (parallel-job-count))
               "--ignore=test/test_plugin_macosx.py"
               "-k" (string-append "not test_plugin_mqtt_tls_connect_success"
                                   " and not test_plugin_mqtt_tls_no_verify_success"))))
