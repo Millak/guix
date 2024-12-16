@@ -943,28 +943,55 @@ routes using HTTP Digest Authentication.")
 (define-public python-aws-sam-translator
   (package
     (name "python-aws-sam-translator")
-    (version "1.51.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "aws-sam-translator" version))
-              (sha256
-               (base32
-                "1ywzchc3nk13xh593j7b14qp3y0fdx7cfbdhnm34p39av66xffac"))))
-    (build-system python-build-system)
+    (version "1.94.0")
+    (source
+     (origin
+       (method git-fetch)               ; no tests in PyPI release
+       (uri (git-reference
+             (url "https://github.com/aws/serverless-application-model")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0rrmp2a2lr1bb909x34j7dqkdynx48hfwxg9m488s0mws68f78m3"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(;; XXX: Tests are not distributed with the PyPI archive, and would
-       ;; introduce a circular dependency on python-cfn-lint.
-       #:tests? #f
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'loosen-requirements
-                    (lambda _
-                      ;; The package needlessly specifies exact versions
-                      ;; of dependencies, when it works fine with others.
-                      (substitute* "requirements/base.txt"
-                        (("(.*)(~=[0-9\\.]+)" all package version)
-                         package)))))))
+     (list
+      #:test-flags
+      #~(list "--numprocesses" (number->string (parallel-job-count))
+              "--ignore=tests/bin/test_public_interface.py"
+              "-k"
+              (string-join
+               ;; AttributeError: module 'pydantic.v1' has no attribute
+               ;; 'error_wrappers'
+               (list "not test_connector_with_empty_properties"
+                     "test_connector_with_invalid_permission"
+                     "test_connector_with_invalid_permission_type"
+                     "test_connector_without_source"
+                     "test_transform_invalid_document")
+               " and not ")
+              "tests")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              ;; Drop test coverage requirements.
+              (substitute* "pytest.ini"
+                ((".*addopts.*") ""))))
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "AWS_DEFAULT_REGION" "eu-west-3"))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-pytest-xdist
+           python-parameterized
+           python-pyyaml
+           python-wheel))
     (propagated-inputs
-     (list python-boto3 python-jsonschema python-six))
+     (list python-boto3
+           python-jsonschema
+           python-pydantic
+           python-typing-extensions))
     (home-page "https://github.com/aws/serverless-application-model")
     (synopsis "Transform AWS SAM templates into AWS CloudFormation templates")
     (description
