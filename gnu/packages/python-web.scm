@@ -310,6 +310,26 @@ scripting Launchpad via its the web service API.")
 reusable library for parsing, manipulating, and generating URIs.")
     (license license:lgpl3)))
 
+(define-public python-legacy-cgi
+  (package
+    (name "python-legacy-cgi")
+    (version "2.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "legacy_cgi" version))
+       (sha256
+        (base32 "0hksizyq7awmwh3337zy0rmj47x6b5igzam6ffj74gbwfjfakbgj"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-poetry-core python-pytest))
+    (home-page "https://github.com/jackrosenthal/legacy-cgi")
+    (synopsis "Fork of the legacy standard library cgi and cgitb modules")
+    (description
+     "This is a fork of the standard library modules @code{cgi} and
+@code{cgitb}.  They are slated to be removed from the Python standard libary
+in Python 3.13 by PEP-594.")
+    (license license:psfl)))
+
 (define-public python-portend
   (package
     (name "python-portend")
