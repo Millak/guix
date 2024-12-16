@@ -7406,6 +7406,25 @@ via commands such as @command{rst2man}, as well as supporting Python code.")
 Microsoft Word (.docx) documents.")
     (license license:expat)))
 
+(define-public python-repoze-lru
+  (package
+    (name "python-repoze-lru")
+    (version "0.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "repoze.lru" version))
+       (sha256
+        (base32 "0xzz1aw2smy8hdszrq8yhnklx6w1r1mf55061kalw3iq35gafa84"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-coverage python-nose python-setuptools python-wheel))
+    (home-page "https://www.repoze.org")
+    (synopsis "Tiny LRU cache implementation and decorator")
+    (description
+     "This package provides a tiny LRU cache implementation and decorator.")
+    (license license:bsd-4)))
+
 (define-public python-restructuredtext-lint
   (package
     (name "python-restructuredtext-lint")
