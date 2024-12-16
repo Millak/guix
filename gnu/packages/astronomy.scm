@@ -6117,7 +6117,9 @@ implementation package such as asdf-astropy.")
      (list python-asdf
            python-pytest
            python-pytest-openfiles
-           python-setuptools-scm))
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
     (propagated-inputs
      (list python-asdf-coordinates-schemas
            python-asdf-standard
