@@ -6797,6 +6797,75 @@ Signing and Encryption set of standards.  This includes support for JSON Web
 Encryption, JSON Web Signature, and JSON Web Token standards.")
     (license license:asl2.0)))
 
+(define-public go-k8s-io-kube-openapi
+  (package
+    (name "go-k8s-io-kube-openapi")
+    (version "0.0.0-20241212222426-2c72e554b1e7")
+    ;; XXX: Unbundle third_party in pkg.
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kubernetes/kube-openapi")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0crd349jd210bh68ic70pqmdkfns7cix2qhsa6pfya6kbvschyf9"))
+       ;; XXX: test/integration contains submodule with it's own go.mod.
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Keeping just testdata.
+            (for-each delete-file-recursively
+                      (list "test/integration/builder"
+                            "test/integration/builder3"
+                            "test/integration/openapiconv"
+                            "test/integration/pkg/generated"
+                            "test/integration/testutil"
+                            "test/integration/import.go"
+                            "test/integration/integration_suite_test.go"))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.23
+      #:import-path "k8s.io/kube-openapi"
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'build)))) ; no go files in project's root
+    (native-inputs
+     (list go-github-com-getkin-kin-openapi
+           go-github-com-google-gofuzz
+           go-github-com-onsi-ginkgo-v2
+           go-github-com-onsi-gomega
+           go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-emicklei-go-restful-v3
+           go-github-com-go-openapi-jsonreference
+           go-github-com-go-openapi-swag
+           go-github-com-google-gnostic-models
+           go-github-com-google-go-cmp
+           go-github-com-google-uuid
+           go-github-com-munnerz-goautoneg
+           go-github-com-nytimes-gziphandler
+           go-github-com-spf13-pflag
+           go-golang-org-x-tools
+           go-google-golang-org-protobuf
+           go-gopkg-in-yaml-v3
+           go-k8s-io-gengo-v2
+           go-k8s-io-klog-v2
+           go-k8s-io-utils
+           go-sigs-k8s-io-json
+           go-sigs-k8s-io-structured-merge-diff-v4
+           go-sigs-k8s-io-yaml))
+    (home-page "https://github.com/kubernetes/kube-openapi")
+    (synopsis "Kubernetes OpenAPI spec generation & serving")
+    (description
+     "This package implements a Kubernetes OpenAPI discovery spec generation,
+providing support a subset of OpenAPI features to satisfy kubernetes use-cases
+but implement that subset with little to no assumption about the structure of
+the code or routes.")
+    (license license:asl2.0)))
+
 (define-public go-mvdan-cc-xurls-v2
   (package
     (name "go-mvdan-cc-xurls-v2")
