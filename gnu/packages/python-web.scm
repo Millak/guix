@@ -1638,6 +1638,27 @@ content using a variety of algorithms.")
 Encryption} (JOSE) Web Standards.")
     (license license:lgpl3+)))
 
+(define-public python-pypitoken
+  (package
+    (name "python-pypitoken")
+    (version "7.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pypitoken" version))
+       (sha256
+        (base32 "18hhwmdfs9y5ypl1n8z2h2ys2f52mv5xr043gzgb34mpmg0wi46x"))))
+    (build-system pyproject-build-system)
+    ;; There are no tests.
+    (arguments (list #:tests? #false))
+    (propagated-inputs (list python-jsonschema python-pymacaroons
+                             python-typing-extensions))
+    (native-inputs (list python-poetry-core))
+    (home-page "https://pypitoken.readthedocs.io/en/latest/")
+    (synopsis "Manipulate PyPI API tokens")
+    (description "This package lets you manipulate PyPI API tokens.")
+    (license license:expat)))
+
 (define-public python-pyscss
   (package
     (name "python-pyscss")
