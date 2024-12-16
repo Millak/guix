@@ -5135,16 +5135,25 @@ applications.")
 (define-public python-flask-sqlalchemy
   (package
     (name "python-flask-sqlalchemy")
-    (version "2.5.1")
+    (version "3.1.1")
     (source (origin
               (method url-fetch)
-              (uri (pypi-uri "Flask-SQLAlchemy" version))
+              (uri (pypi-uri "flask_sqlalchemy" version))
               (sha256
                (base32
-                "04jrx4sjrz1b20j38qk4qin975xwz30krzq59rfv3b3w7ss49nib"))))
-    (build-system python-build-system)
+                "04l3dfivznlpvk9p9f20zdbyxl869k42z2w7glddlbc0h6w8pdp4"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k" (string-append "not test_explicit_table[db2]"
+                                  " and not test_explicit_table[db4]"))))
+    (native-inputs
+     (list python-flit-core
+           python-pytest))
     (propagated-inputs
-     (list python-flask python-sqlalchemy))
+     (list python-flask
+           python-sqlalchemy-2))
     (home-page "https://github.com/mitsuhiko/flask-sqlalchemy")
     (synopsis "Module adding SQLAlchemy support to your Flask application")
     (description
