@@ -2962,16 +2962,65 @@ Python file for configuration.")
 (define-public python-tox
   (package
     (name "python-tox")
-    (version "4.8.0")
+    (version "4.23.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "tox" version))
        (sha256
         (base32
-         "0yq3d2wif88d2iih8c2dwjx7rz8axkc7b6gskl5z3k0jbd1wznia"))))
+         "0b2a5wrjwryjzg58v1mwzx3wn7pr2wwk7z2cwy16xpsmwl05w1w6"))))
     (build-system pyproject-build-system)
-    (arguments (list #:tests? #f))      ;require python-devpi-process
+    (arguments
+     (list
+      #:test-flags
+      '(list "-k"
+             (string-join
+              (map (lambda (test)
+                     (string-append "not test_" test))
+                   '( ;; These freeze the test suite
+                     "parallel"
+                     "parallel_live"
+
+                     ;; These fail with: Directory cannot be installed in
+                     ;; editable mode
+                     "skip_missing_interpreters"
+                     "skip_missing_interpreters_specified_env"
+                     ;; assert 0 == -1
+                     "config_skip_missing_interpreters"
+                     ;; KeyError: 'env'
+                     "legacy_cli_flags"
+                     ;; AssertionError: should be None, got code: 0
+                     "missing_interpreter_skip_on"
+                     "missing_interpreter_skip_off"
+                     ;; Unexplainable diff
+                     "skip_develop_mode"
+                     "show_config_exception"
+                     "python_generate_hash_seed"
+                     ;; XXX Tries to call python-wrapper-3.10.7/bin/tox
+                     "call_as_exe"
+                     "usedevelop_with_nonexistent_basepython"))
+              " and ")
+             ;; XXX Our version of virtualenv is too old.
+             "--ignore-glob=tests/tox_env/python/virtual_env/*")
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'virtualenv-compatibility
+           (lambda _
+             (setenv "HOME" "/tmp")
+             ;; XXX: Our version of virtualenv does not like this extra
+             ;; keyword argument.
+             (substitute* "src/tox/tox_env/python/virtual_env/api.py"
+               (("session_via_cli\\(env_dir, options=None, setup_logging=False, env=env\\)")
+                "session_via_cli(env_dir, options=None, setup_logging=False)"))
+             ;; XXX: This is a real problem, but we cannot fix it without
+             ;; affecting thousands of packages.
+             (substitute* "pyproject.toml"
+               (("virtualenv>=20.26.6") "virtualenv>=20.3.0")
+               (("typing-extensions>=4.12.2") "typing-extensions>=4.10.0")
+               (("platformdirs>=4.3.6") "platformdirs>=4.2.0")
+               (("colorama>=0.4.6") "colorama>=0.4.4")
+               (("chardet>=5.2") "chardet>=5.1.0")))))))
     (propagated-inputs
      (list python-cachetools
            python-chardet
@@ -2982,18 +3031,20 @@ Python file for configuration.")
            python-pluggy
            python-pyproject-api
            python-tomli
+           python-typing-extensions
            python-virtualenv))
     (native-inputs
-     (list python-distlib
-           ;;python-devpi-process  ;FIXME: package me
+     (list python-devpi-process
            python-flaky
-           python-hatchling
            python-hatch-vcs
+           python-hatchling
            python-psutil
            python-pytest
            python-pytest-mock
            python-pytest-xdist
-           python-re-assert))
+           python-re-assert
+           python-time-machine
+           python-wheel))
     (home-page "https://tox.readthedocs.io")
     (synopsis "Virtualenv-based automation of test activities")
     (description "Tox is a generic virtualenv management and test command line
