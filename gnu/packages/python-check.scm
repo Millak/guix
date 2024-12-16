@@ -56,6 +56,7 @@
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
+  #:use-module (gnu packages time)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml)
@@ -2938,6 +2939,24 @@ which make writing and running functional and integration tests easier.")
 Python environments, similar to @code{tox}.  Unlike tox, Nox uses a standard
 Python file for configuration.")
     (license license:asl2.0)))
+
+(define-public python-time-machine
+  (package
+    (name "python-time-machine")
+    (version "2.16.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "time_machine" version))
+       (sha256
+        (base32 "1qn7cj9lx3m7pwa8ak1106f9c54yvpa996x84gfqmyfjfg1ar6aa"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-dateutil))
+    (native-inputs (list python-setuptools python-wheel))
+    (home-page "https://github.com/adamchainz/time-machine")
+    (synopsis "Travel through time in your tests.")
+    (description "This package lets you set a different time for your tests.")
+    (license license:expat)))
 
 (define-public python-tox
   (package
