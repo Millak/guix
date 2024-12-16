@@ -603,6 +603,35 @@ interface and is based on GNU Guile.")
 
 (define-public shepherd shepherd-0.10)
 
+(define-public shepherd-for-home
+  ;; Variant of shepherd without 'sbin' to not shadow 'halt' and 'reboot' on
+  ;; foreign distributions.
+  (let ((base shepherd-1.0))
+    (hidden-package
+     (package/inherit base
+       (name "shepherd-for-home")
+       (source #f)
+       (build-system trivial-build-system)
+       (arguments
+        (list
+         #:modules '((guix build union)
+                     (guix build utils))
+         #:builder
+         #~(begin
+             (use-modules (guix build union)
+                          (guix build utils))
+             (union-build #$output
+                          (list #$(this-package-input "shepherd"))
+                          #:create-all-directories? #t)
+             (delete-file-recursively
+              (string-append #$output "/sbin"))
+             (delete-file-recursively
+              (string-append #$output "/share/man/man8")))))
+       (synopsis
+        "The Shepherd for Guix Home, without @command{halt} and @command{reboot}")
+       (native-inputs '())
+       (inputs (list base))))))
+
 (define-public guile2.2-shepherd
   (package
     (inherit shepherd-0.10)
