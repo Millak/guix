@@ -3797,7 +3797,10 @@ class.")
         (base32 "14l9kv9igcmp5k6d2ahnx6z4dn6zy5kykz95hkh0rkqswn8x79b1"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-pretend python-pytest python-setuptools))
+     (list python-pretend
+           python-pytest
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/di/calver")
     (synopsis "Setuptools extension for CalVer package versions")
     (description
