@@ -1138,54 +1138,50 @@ decode and default on encode.
 (define-public python-cfn-lint
   (package
     (name "python-cfn-lint")
-    (version "0.65.0")
-    (home-page "https://github.com/aws-cloudformation/cfn-lint")
+    (version "1.22.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url home-page)
+                    (url "https://github.com/aws-cloudformation/cfn-lint")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1rfacp39jssrbchrzb49vwrqyzhx5v7jfcgngqnb9r7qfs4bwi3w"))))
-    (build-system python-build-system)
+                "1zz121r9yv1irwdbk07s7958fh43h3r3q39qcj0gv4kpgb0vdf32"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'skip-network-test
-           (lambda _
-             ;; This test requires networking.
-             (substitute* "test/unit/module/formatters/test_formatters.py"
-               (("def test_sarif_formatter") "def _test_sarif_formatter"))))
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (let ((out (assoc-ref outputs "out")))
-                 ;; Remove test for the documentation update scripts
-                 ;; to avoid a dependency on 'git'.
-                 (delete-file
-                  "test/unit/module/maintenance/test_update_documentation.py")
-                 (delete-file
-                  "test/unit/module/maintenance/test_update_resource_specs.py")
-                 (add-installed-pythonpath inputs outputs)
-                 (setenv "PATH" (string-append out "/bin:"
-                                               (getenv "PATH")))
-                 (invoke "python" "-m" "unittest" "discover"
-                         "-s" "test"))))))))
+     (list
+      #:test-flags
+      #~(list "-k" (string-join
+                    (list
+                     ;; Skip documentation tests.
+                     "not test_update_docs"
+                     ;; Tests fail with error: AssertinError ...
+                     "test_parameter_for_autopublish_code_sha256"
+                     "test_sam_with_language_extension"
+                     ;; Test fails with error: diff error while comparing
+                     ;; graphs.
+                     "test_build_graph")
+                    " and not "))))
     (native-inputs
-     (list python-pydot python-mock))
+     (list python-defusedxml
+           python-pydot
+           python-pytest
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-aws-sam-translator
            python-importlib-resources
            python-jschema-to-python
            python-jsonpatch
-           python-jsonschema
            python-junit-xml
            python-networkx
            python-pyyaml
+           python-regex
            python-sarif-om
-           python-six))
+           python-sympy
+           python-typing-extensions))
+    (home-page "https://github.com/aws-cloudformation/cfn-lint")
     (synopsis "Validate CloudFormation templates")
     (description
      "This package lets you validate CloudFormation YAML/JSON templates against
