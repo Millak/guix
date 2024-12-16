@@ -5627,13 +5627,13 @@ Features:
 (define-public python-pysiaf
   (package
     (name "python-pysiaf")
-    (version "0.23.3")
+    (version "0.24.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pysiaf" version))
        (sha256
-        (base32 "16qbg5n2bw2wr3i8a040i7z7az3w0pn508y6xggy05viwdli6br8"))))
+        (base32 "0jgs50jmisv7b7am677q2c3kqjk0fch8gpvijzhdllhkav9wdhs0"))))
     (build-system pyproject-build-system)
     (arguments
      (list
