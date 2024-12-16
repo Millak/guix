@@ -951,6 +951,19 @@ Gomega matcher library.")
            go-golang-org-x-sys
            go-golang-org-x-tools))))
 
+(define-public go-github-com-onsi-ginkgo-v2-bootstrap
+  (hidden-package (package (inherit go-github-com-onsi-ginkgo-v2)
+    (name "go-github-com-onsi-ginkgo-v2")
+    (arguments
+     (list
+      #:tests? #f
+      #:import-path "github.com/onsi/ginkgo/v2"
+      #:phases
+      #~(modify-phases %standard-phases (delete 'build))))
+    (native-inputs '())
+    (propagated-inputs
+     (list go-github-com-go-logr-logr)))))
+
 (define-public go-github-com-onsi-gomega
   (package
     (name "go-github-com-onsi-gomega")
@@ -967,10 +980,15 @@ Gomega matcher library.")
     (build-system go-build-system)
     (arguments
      (list
-      ;; Unless we disable the tests, we have a circular dependency on
-      ;; ginkgo/v2.
-      #:tests? #f
-      #:import-path "github.com/onsi/gomega"))
+      #:import-path "github.com/onsi/gomega"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-failing-test-files
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+              (delete-file "gexec/build_test.go")))))))
+    (native-inputs
+     (list go-github-com-onsi-ginkgo-v2-bootstrap))
     (propagated-inputs
      (list go-github-com-golang-protobuf
            go-golang-org-x-net
