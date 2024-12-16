@@ -4933,6 +4933,32 @@ ABI}.")
      "Package strcase converts strings to various cases.")
     (license license:expat)))
 
+(define-public go-github-com-invopop-yaml
+  (package
+    (name "go-github-com-invopop-yaml")
+    (version "0.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/invopop/yaml")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0isvalfivw39hjj20y28g4yws0plzqaym8asz3sr5lfwv5gnq7zg"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/invopop/yaml"))
+    (propagated-inputs
+     (list go-gopkg-in-yaml-v3))
+    (home-page "https://github.com/invopop/yaml")
+    (synopsis "YAML marshaling and unmarshaling support for Golang")
+    (description
+     "This package provides a wrapper around go-yaml designed to enable a
+better way of handling YAML when marshaling to and from structs.")
+    (license license:expat)))
+
 (define-public go-github-com-itchyny-timefmt-go
   (package
     (name "go-github-com-itchyny-timefmt-go")
