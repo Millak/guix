@@ -1725,6 +1725,51 @@ algorithm originally designed for use in
 Golang.")
     (license license:asl2.0)))
 
+(define-public go-github-com-getkin-kin-openapi
+  (package
+    (name "go-github-com-getkin-kin-openapi")
+    (version "0.128.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/getkin/kin-openapi")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "162hxwqywpbmfybyj1m0s4a0nxx0qldx90k49d2mf52xps1jp5p2"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/getkin/kin-openapi"
+      #:test-flags
+      ;; They try to access network.
+      #~(list "-skip" "TestIssue495WithDraft04|TestExtraSiblingsInRemoteRef")
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'build)))) ; no go files in project's root
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-go-openapi-jsonpointer
+           go-github-com-gorilla-mux
+           go-github-com-invopop-yaml
+           go-github-com-mohae-deepcopy
+           go-github-com-perimeterx-marshmallow
+           go-gopkg-in-yaml-v3))
+    (home-page "https://github.com/getkin/kin-openapi")
+    (synopsis "OpenAPI 3.0 and Swagger v2 implementation for Golang")
+    (description
+     "This package implements a functionality for parsing, converting and
+validating
+@url{https://github.com/OAI/OpenAPI-Specification/blob/main/versions/2.0.md,
+OpenAPI v2.0},
+@url{https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.3.md,
+OpenAPI v3.0} and
+@url{https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.1.0.md,
+OpenAPI v3.1}.")
+    (license license:expat)))
+
 ;; TODO: This repository has been archived by the owner on Aug 30, 2023. It is
 ;; now read-only. The raven-go SDK is no longer maintained and was superseded
 ;; by the sentry-go
