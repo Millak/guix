@@ -2544,30 +2544,38 @@ new data from those PDFs.")
 (define-public python-lifelines
   (package
     (name "python-lifelines")
-    (version "0.28.0")
+    (version "0.30.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "lifelines" version))
        (sha256
-        (base32 "0pmjb3z1rw1ia64gw87r6y9x1g4kwpw239gqzsa9qh7xadj75kzf"))))
+        (base32 "065yajlfydi7x7b1sjxp9h3rqgwrd3w9ivxiyph7y5nbbwkzdxpp"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      ;; This accuracy test fails because 0.012 is not < 0.01.
-      '(list "-k" "not test_weibull_with_delayed_entries")))
-    (propagated-inputs (list python-autograd
-                             python-autograd-gamma
-                             python-formulaic
-                             python-matplotlib
-                             python-numpy
-                             python-pandas
-                             python-scipy))
-    (native-inputs (list python-dill
-                         python-flaky
-                         python-joblib
-                         python-pytest))
+      ;; NOTE: Tests take 15-25min to complete on 16 threads and much longer
+      ;; in single one, consider to try enabling --numprocesses option.
+      #~(list ;; "--numprocesses" (number->string (parallel-job-count))
+              ;; This accuracy test fails because 0.012 is not < 0.01.
+              "-k" "not test_weibull_with_delayed_entries")))
+    (native-inputs
+     (list python-dill
+           python-flaky
+           python-joblib
+           python-pytest
+           ;; python-pytest-xdist
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-autograd
+           python-autograd-gamma
+           python-formulaic
+           python-matplotlib
+           python-numpy
+           python-pandas
+           python-scipy))
     (home-page "https://github.com/CamDavidsonPilon/lifelines")
     (synopsis
      "Survival analysis including Kaplan Meier, Nelson Aalen and regression")
