@@ -7410,25 +7410,26 @@ changed the process is restarted.")
 (define-public python-pyramid
   (package
     (name "python-pyramid")
-    (version "1.10.4")
+    (version "2.0.2")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "pyramid" version))
               (sha256
                (base32
-                "0rkxs1ajycg2zh1c94xlmls56mx5m161sn8112skj0amza6cn36q"))))
-    (build-system python-build-system)
+                "1phqdz068hl3zda263qkjp5am8fmvmpcxp3nrhsna8g472kkh89p"))))
+    (build-system pyproject-build-system)
     (propagated-inputs
      (list python-hupper
+           python-plaster
            python-plaster-pastedeploy
+           python-setuptools
            python-translationstring
            python-venusian
            python-webob
-           python-zope-deprecation
-           python-zope-interface
-           python-webtest
            python-zope-component
-           python-plaster))
+           python-zope-deprecation
+           python-zope-interface))
+    (native-inputs (list python-pytest python-webtest python-wheel))
     (home-page "https://trypyramid.com/")
     (synopsis "Python web-framework suitable for small and large sites")
     (description
