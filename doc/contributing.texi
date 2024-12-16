@@ -2362,6 +2362,17 @@ information on some builds and substitute availability.
 Once the branch has been merged, the issue should be closed and the
 branch deleted.
 
+@cindex work-in-progress branches, wip
+@cindex wip branches
+Sometimes, a branch may be a work in progress, for example for larger
+efforts such as updating the GNOME desktop.  In these cases, the branch
+name should reflect this by having the @samp{wip-} prefix.  The QA
+infrastructure will avoid building work-in-progress branches, so that
+the available resources can be better focused on building the branches
+that are ready to be merged.  When the branch is no longer a work in
+progress, it should be renamed, with the @samp{wip-} prefix removed, and
+only then should the merge requests be created, as documented earlier.
+
 @node Debbugs User Interfaces
 @subsection Debbugs User Interfaces
 
