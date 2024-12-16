@@ -7537,9 +7537,14 @@ NSQ protocol @url{https://nsq.io/}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0s8lawq661g8qqf7c1cip5l60cm2138b125jgmv9h548ji9g5yqx"))))
+        (base32 "0s8lawq661g8qqf7c1cip5l60cm2138b125jgmv9h548ji9g5yqx"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (delete-file-recursively "vendor")))))
     (build-system go-build-system)
-    (arguments (list #:import-path "github.com/nxadm/tail"))
+    (arguments
+     (list
+      #:import-path "github.com/nxadm/tail"))
     (propagated-inputs
      (list go-github-com-fsnotify-fsnotify
            go-gopkg-in-tomb-v1))
