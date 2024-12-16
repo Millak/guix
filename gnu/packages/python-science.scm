@@ -316,7 +316,7 @@ numerical optimization package.")
        (sha256
         (base32 "1lspam0k8gnw1yglqxvdv350fq00nkgdfmkizmx7bk0hxjjkj5ab"))))
     (build-system pyproject-build-system)
-    (native-inputs (list cmake-minimal pybind11))
+    (native-inputs (list cmake-minimal pybind11 python-setuptools))
     (propagated-inputs (list python-numpy python-scipy))
     (home-page "https://github.com/oxfordcontrol/qdldl-python/")
     (synopsis "QDLDL LDL factorization routine")
