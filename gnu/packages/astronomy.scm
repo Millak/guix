@@ -5992,14 +5992,17 @@ package such as asdf-astropy.")
     (native-inputs
      (list python-pytest
            python-pytest-xdist
-           python-setuptools-scm))
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
     (propagated-inputs
      (list python-asdf))
     (home-page "https://github.com/asdf-format/asdf-coordinates-schemas")
     (synopsis "ASDF coordinates schemas")
-    (description "This package provides ASDF schemas for validating
-coordinates tags.  Users should not need to install this directly; instead,
-install an implementation package such as asdf-astropy.")
+    (description
+     "This package provides ASDF schemas for validating coordinates tags.
+Users should not need to install this directly; instead, install an
+implementation package such as asdf-astropy.")
     (license license:bsd-3)))
 
 (define python-asdf-fits-schemas
