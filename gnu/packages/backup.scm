@@ -1338,6 +1338,9 @@ compression parameters used by Gzip.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; XXX: all tests fail with error: AttributeError: module
+      ;; '_pytest.runner' has no attribute 'call_runtest_hook'.
+      #:tests? #f
       #:phases #~(modify-phases %standard-phases
                    (add-after 'unpack 'configure
                      (lambda* (#:key inputs #:allow-other-keys)
@@ -1358,13 +1361,19 @@ compression parameters used by Gzip.")
                          (setenv "PATH"
                                  (string-append #$output "/bin" ":"
                                                 (getenv "PATH"))))))))
-    (inputs (list borg
-                  python-apprise
-                  python-colorama
-                  python-jsonschema
-                  python-requests
-                  python-ruamel.yaml))
-    (native-inputs (list python-flexmock python-pytest python-pytest-cov))
+    (native-inputs
+     (list python-flexmock
+           python-pytest
+           python-pytest-cov
+           python-setuptools
+           python-wheel))
+    (inputs
+     (list borg
+           python-apprise
+           python-colorama
+           python-jsonschema
+           python-requests
+           python-ruamel.yaml))
     (home-page "https://torsion.org/borgmatic/")
     (synopsis "Simple, configuration-driven backup software")
     (description
