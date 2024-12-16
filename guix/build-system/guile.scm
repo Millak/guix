@@ -85,6 +85,10 @@
                       (source-directory ".")
                       not-compiled-file-regexp
                       (scheme-file-regexp %scheme-file-regexp)
+                      ;; FIXME: Turn on parallel building of Guile modules by
+                      ;; default after the non-determinism issues in the Guile byte
+                      ;; compiler are resolved (see bug #20272).
+                      (parallel-build? #f)
                       (compile-flags %compile-flags)
                       (imported-modules %guile-build-system-modules)
                       (modules '((guix build guile-build-system)
@@ -101,6 +105,7 @@
                        #:source-directory #$source-directory
                        #:scheme-file-regexp #$scheme-file-regexp
                        #:not-compiled-file-regexp #$not-compiled-file-regexp
+                       #:parallel-build? #$parallel-build?
                        #:compile-flags #$compile-flags
                        #:phases #$phases
                        #:system #$system
@@ -132,6 +137,11 @@
                             (source-directory ".")
                             (scheme-file-regexp %scheme-file-regexp)
                             not-compiled-file-regexp
+                            ;; FIXME: Turn on parallel building of Guile
+                            ;; modules by default after the non-determinism
+                            ;; issues in the Guile byte compiler are resolved
+                            ;; (see bug #20272).
+                            (parallel-build? #f)
                             (compile-flags %compile-flags)
                             (imported-modules %guile-build-system-modules)
                             (modules '((guix build guile-build-system)
@@ -159,6 +169,7 @@
                        #:source-directory #$source-directory
                        #:scheme-file-regexp #$scheme-file-regexp
                        #:not-compiled-file-regexp #$not-compiled-file-regexp
+                       #:parallel-build? #$parallel-build?
                        #:compile-flags #$compile-flags
                        #:inputs %build-target-inputs
                        #:native-inputs %build-host-inputs

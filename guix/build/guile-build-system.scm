@@ -145,6 +145,10 @@ Raise an error if one of the processes exit with non-zero."
 (define* (build #:key outputs inputs native-inputs
                 (source-directory ".")
                 (compile-flags '())
+                ;; FIXME: Turn on parallel building of Guile modules by
+                ;; default after the non-determinism issues in the Guile byte
+                ;; compiler are resolved (see bug #20272).
+                (parallel-build? #f)
                 (scheme-file-regexp %scheme-file-regexp)
                 (not-compiled-file-regexp #f)
                 target
@@ -205,7 +209,7 @@ installed; this is useful for files that are meant to be included."
                                  (string-append source-directory "/" file)
                                  flags)))
                    source-files)
-       #:max-processes (parallel-job-count)
+       #:max-processes (if parallel-build? (parallel-job-count) 1)
        #:report-progress report-build-progress))))
 
 (define* (install-documentation #:key outputs
