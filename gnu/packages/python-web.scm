@@ -143,6 +143,31 @@
   #:use-module (gnu packages)
   #:use-module (srfi srfi-1))
 
+(define-public python-devpi-common
+  (package
+    (name "python-devpi-common")
+    (version "4.0.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "devpi_common" version))
+       (sha256
+        (base32 "1k217b0fvsc7k2afw6wwlvqr1ksnv1vjzfm61g358vn98nd0lni3"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-lazy python-packaging-legacy
+                             python-requests))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (home-page "https://github.com/devpi/devpi")
+    (synopsis
+     "Utilities jointly used by devpi-server, devpi-client and others")
+    (description
+     "This package provides utilities jointly used by devpi-server,
+devpi-client and others.")
+    (license license:expat)))
+
 (define-public python-huggingface-hub
   (package
     (name "python-huggingface-hub")
