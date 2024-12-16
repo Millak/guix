@@ -1682,6 +1682,8 @@ custom assertions to be used alongside native Go testing.")
     (arguments
      (list
       #:import-path "github.com/warpfork/go-testmark"))
+    (propagated-inputs
+     (list go-github-com-warpfork-go-fsx))
     (home-page "https://github.com/warpfork/go-testmark")
     (synopsis "Parser for @code{testmark} format")
     (description
