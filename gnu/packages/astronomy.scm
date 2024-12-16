@@ -1601,13 +1601,13 @@ Main features:
 (define-public python-asdf
   (package
     (name "python-asdf")
-    (version "3.3.0")
+    (version "4.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "asdf" version))
        (sha256
-        (base32 "0pwy8p3idz40a1z07d0lvvd0mwwya8g52wrp72frgpagjkvj3ska"))))
+        (base32 "1nzrgsyidcynhgiqxy7pwny07prza1g6b7hs17ybg6fh9zas6kc6"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -1623,7 +1623,6 @@ Main features:
                 (("version_file = \"asdf/_version.py\"") "")))))))
     (native-inputs
      (list python-fsspec
-           python-packaging
            python-psutil
            python-pytest
            python-pytest-doctestplus
@@ -1639,6 +1638,7 @@ Main features:
            python-jmespath
            python-lz4
            python-numpy
+           python-packaging
            python-pyyaml
            python-semantic-version))
     (home-page "https://github.com/asdf-format/asdf")
