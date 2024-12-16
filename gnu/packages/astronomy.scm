@@ -5883,7 +5883,9 @@ of the old packages.")
       (native-inputs
        (list python-numpy
              python-pytest
-             python-setuptools-scm))
+             python-setuptools
+             python-setuptools-scm
+             python-wheel))
       (propagated-inputs
        (list python-asdf
              python-blosc
