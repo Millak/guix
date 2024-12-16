@@ -4472,6 +4472,37 @@ higher-level API for doing so.")
      "Common enterprise features for the Go programming language.")
     (license license:cc0)))
 
+(define-public go-github-com-perimeterx-marshmallow
+  (package
+    (name "go-github-com-perimeterx-marshmallow")
+    (version "1.1.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/PerimeterX/marshmallow")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0jxpjfyshcbrmj9qmj3sr21va6kw7hs55w2gaz9118jd861s6mbw"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/perimeterx/marshmallow"))
+    (native-inputs
+     (list go-github-com-go-test-deep))
+    (propagated-inputs
+     (list go-github-com-mailru-easyjson
+           go-github-com-ugorji-go-codec))
+    (home-page "https://github.com/perimeterx/marshmallow")
+    (synopsis "JSON unmarshalling in Golang")
+    (description
+     "This package provides a simple API to perform JSON unmarshalling.
+It supports unmarshalling of some known and some unknown fields with zero
+performance overhead.  While unmarshalling, it allows fully retaining the
+original data and access it via a typed struct and a dynamic map.")
+    (license license:expat)))
+
 (define-public go-github-com-pion-datachannel
   (package
     (name "go-github-com-pion-datachannel")
