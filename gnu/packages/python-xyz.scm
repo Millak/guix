@@ -22653,31 +22653,31 @@ manage (install/update) them for you.")
 (define-public python-pyproject-api
   (package
     (name "python-pyproject-api")
-    (version "1.6.1")
+    (version "1.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyproject_api" version))
        (sha256
-        (base32 "0f75rajzk72ay4x9ajw1835amm932q7cdn0yrbwiy3fwi80xq5qq"))))
+        (base32 "15l4fx1v4dqhhysxd2mcm1vn4qvrwbqmf6y2zkp36pgb5ygh9f3p"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      ;; This test fails with AssertionError.
-      #~(list "-k" "not test_setuptools_prepare_metadata_for_build_wheel")
-      #:phases #~(modify-phases %standard-phases
-                   (add-after 'unpack 'relax-packaging
-                     (lambda _
-                       (substitute* "pyproject.toml"
-                         ;; We have packaging 21.3.
-                         (("packaging>=23.1") "packaging>=21.3")))))))
+      '(list "-k" (string-append
+                   ;; This fails because of extraneous parentheses
+                   "not test_setuptools_prepare_metadata_for_build_wheel"
+                   ;; This fails because wheel shows up in requirements
+                   " and not test_setuptools_get_requires_for_build_wheel"))))
     (native-inputs
      (list python-covdefaults
            python-hatch-vcs
            python-hatchling
            python-pytest
-           python-pytest-mock))
+           python-pytest-cov
+           python-pytest-mock
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-packaging python-tomli))
     (home-page "https://pyproject-api.readthedocs.io/latest/")
