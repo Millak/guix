@@ -167,7 +167,12 @@ representations and sentence classification.")
        (sha256
         (base32 "1i699a9m5ndnj8cwzjjf2agb77aawhzrzxfbmn5zrkxridxvnypj"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-autograd python-scipy))
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-autograd
+           python-scipy))
     (home-page "https://github.com/CamDavidsonPilon/autograd-gamma")
     (synopsis
      "Autograd-compatible approximations to the gamma family of functions")
