@@ -711,6 +711,24 @@ can be gzipped if desired.  An optional threaded queue logging handler is
 provided to perform logging in the background.")
     (license license:asl2.0)))
 
+(define-public python-lazy
+  (package
+    (name "python-lazy")
+    (version "1.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "lazy" version))
+       (sha256
+        (base32 "1sfk1v54dyjxvilcxf9vlnypc5z0mg0i2inb117k5s09qx7349vi"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (home-page "https://github.com/stefanholek/lazy")
+    (synopsis "Lazy attributes for Python objects")
+    (description "This package provides a decorator to create lazy
+attributes.")
+    (license license:bsd-2)))
+
 (define-public python-logzero
   (package
     (name "python-logzero")
