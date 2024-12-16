@@ -452,19 +452,26 @@ package.  It is not useful on its own, only as a dependency for awkward.")
 (define-public python-awkward
   (package
     (name "python-awkward")
-    (version "2.6.3")
+    (version "2.7.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "awkward" version))
        (sha256
-        (base32 "1s280ndr4r2q9qn9c0slan5zw37p41cx8q5z6k6p988afr01c6j8"))))
+        (base32 "1bfg4pggahnfvq4n71ydkb1pwzc89plfdgp9wcv7ky4dss37y1ay"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
       ;; CUDA is and requires proprietary software.
-      '(list "--ignore-glob=tests-cuda**")))
+      '(list "--ignore-glob=tests-cuda**"
+             "-k"
+             (string-append
+              ;; BrokenProcessPool
+              "not test_noop_pickler"
+              " and not test_non_packing_pickler"
+              ;; Regex pattern did not match.
+              " and not test_malformed_pickler"))))
     (propagated-inputs (list python-awkward-cpp
                              python-fsspec
                              python-importlib-metadata
