@@ -30589,25 +30589,27 @@ files are easily readable and they work nicely with version control systems.")
     (license license:gpl3+)))
 
 (define-public emacs-nerd-icons
-  (package
-    (name "emacs-nerd-icons")
-    (version "0.1.0")
-    (home-page "https://github.com/rainstormstudio/nerd-icons.el")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference (url home-page) (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0ggj6lm02m7nb5gxnqs2v2lkxsclml6kq176vam9qyg1fsm7yvdw"))))
-    (build-system emacs-build-system)
-    (arguments
-     (list #:include #~(cons "^data\\/" %default-include)))
-    (synopsis "Library for easily using nerd font icons inside Emacs")
-    (description "Nerd-icons an alternative to all-the-icons.  It works on both
+  (let ((commit "4bd9795f1f3f47cb874e10ff5c3845e037f0b3e2")
+        (revision "1"))
+    (package
+      (name "emacs-nerd-icons")
+      (version (git-version "0.1.0" revision commit))
+      (home-page "https://github.com/rainstormstudio/nerd-icons.el")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference (url home-page) (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1imklm81jsq2jdjprsjm8pdq701c4l0rgn7l0f3l3xs602kg49l1"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list #:include #~(cons "^data\\/" %default-include)))
+      (synopsis "Library for easily using nerd font icons inside Emacs")
+      (description "Nerd-icons an alternative to all-the-icons.  It works on both
 GUI and terminal, and requires a nerd font installed on your system.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-all-the-icons
   (package
