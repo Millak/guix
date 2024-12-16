@@ -178,8 +178,7 @@ where the OS part is overloaded to denote a specific ABI---into GCC
                   (base32
                    "10k2k71kxgay283ylbbhhs51cl55zn2q38vj5pk4k950qdnirrlj"))
                  (patches (search-patches "gcc-4-compile-with-gcc-5.patch"
-                                          "gcc-fix-texi2pod.patch"
-                                          "gcc-4.7-ucontext-type-confusion.patch"))))
+                                          "gcc-fix-texi2pod.patch"))))
        (build-system gnu-build-system)
 
        ;; Separate out the run-time support libraries because all the
@@ -203,8 +202,7 @@ where the OS part is overloaded to denote a specific ABI---into GCC
                                ;; incompatible with some earlier versions.
                                ;; Force an earlier C++ standard while building.
                                (cond
-                                ((or (version-prefix? "4.7" version)
-                                     (version-prefix? "4.8" version))
+                                 ((version-prefix? "4.8" version)
                                   `(cons "CXX=g++ -std=c++03" ,flags))
                                  ((or (version-prefix? "4.9" version)
                                       (version-prefix? "5" version))
