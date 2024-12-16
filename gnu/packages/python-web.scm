@@ -225,6 +225,52 @@ devpi-server.  It allows to upload, test and install packages from devpi
 indexes.")
     (license license:expat)))
 
+(define-public python-devpi-process
+  (package
+    (name "python-devpi-process")
+    (version "1.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "devpi_process" version))
+       (sha256
+        (base32 "0v26i8bs0n8f2ikizwyvq77fw3l0nsyl4wj8yff0r3y351ydqbs1"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             ;; Our package is too old, sorry.
+             (substitute* "pyproject.toml"
+               (("typing-extensions>=4.12.2")
+                "typing-extensions>=4.10.0"))))
+         (add-after 'unpack 'patch-tool-locations
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "src/devpi_process/__init__.py"
+               (("_exe\\(\"devpi-init\"\\)")
+                (string-append "\"" (search-input-file inputs "/bin/devpi-init") "\""))
+               (("_exe\\(\"devpi-server\"\\)")
+                (string-append "\"" (search-input-file inputs "/bin/devpi-server") "\""))
+               (("_exe\\(\"devpi\"\\)")
+                (string-append "\"" (search-input-file inputs "/bin/devpi") "\""))))))))
+    (propagated-inputs (list python-devpi-client python-devpi-server
+                             python-typing-extensions))
+    (native-inputs
+     (list python-covdefaults
+           python-hatchling
+           python-hatch-vcs
+           python-httpx
+           python-pytest
+           python-pytest-cov))
+    (home-page "https://github.com/devpi/devpi")
+    (synopsis "API to create and use a devpi server process")
+    (description
+     "This package provides a programmatic API to create and use a devpi
+server process.")
+    (license license:expat)))
+
 (define-public python-devpi-server
   (package
     (name "python-devpi-server")
