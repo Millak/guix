@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016 Petter <petter@mykolab.ch>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Leo Famulari <leo@famulari.name>
+;;; Copyright © 2016-2021, 2024 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020-2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
@@ -49,7 +49,7 @@
 (define-public syncthing
   (package
     (name "syncthing")
-    (version "1.27.2")
+    (version "1.28.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/syncthing/syncthing"
@@ -57,71 +57,70 @@
                                   "/syncthing-source-v" version ".tar.gz"))
               (sha256
                (base32
-                "0g418jyqqik8ds8qcrlnmm2bhwwpbrfgd82fg2jyip4zw1aicqia"))))
+                "16j5w6hdr1x2231hw0zsxm53sw34wxcs4ijjjcnzcg1vz9drjrg9"))))
     (build-system go-build-system)
     ;; The primary Syncthing executable goes to "out", while the auxiliary
     ;; server programs and utility tools go to "utils".  This reduces the size
     ;; of "out" by ~144 MiB.
     (outputs '("out" "utils"))
     (arguments
-     (list #:modules '((srfi srfi-26) ; for cut
-                       (guix build utils)
-                       (guix build go-build-system))
-           #:import-path "github.com/syncthing/syncthing"
-           ;; We don't need to install the source code for end-user applications.
-           #:install-source? #f
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-before 'build 'increase-test-timeout
-                 (lambda _
-                   (substitute* "src/github.com/syncthing/syncthing/build.go"
-                     (("120s") "999s"))))
+     (list
+       #:modules '((srfi srfi-26) ; for cut
+                   (guix build utils)
+                   (guix build go-build-system))
+       #:import-path "github.com/syncthing/syncthing"
+       ;; We don't need to install the source code for end-user applications.
+       #:install-source? #f
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-before 'build 'increase-test-timeout
+             (lambda _
+               (substitute* "src/github.com/syncthing/syncthing/build.go"
+                 (("120s") "999s"))))
 
-               (replace 'build
-                 (lambda _
-                   (with-directory-excursion "src/github.com/syncthing/syncthing"
-                     ;; XXX The only way to build Syncthing without its automatic
-                     ;; updater and to build the utilities is to "build all" and then
-                     ;; "build syncthing" again with -no-upgrade.
-                     ;; https://github.com/syncthing/syncthing/issues/6118
-                     (invoke "go" "run" "build.go")
-                     (delete-file "bin/syncthing")
-                     (invoke "go" "run" "build.go" "-no-upgrade" "build" "syncthing"))))
+           (replace 'build
+             (lambda _
+               (with-directory-excursion "src/github.com/syncthing/syncthing"
+                 ; Build the primary Syncthing executable
+                 (invoke "go" "run" "build.go" "-no-upgrade")
+                 ; Build utilities used to run an independent Syncthing network
+                 (for-each (cut invoke "go" "run" "build.go" "build" <>)
+                           '("stcrashreceiver" "strelaypoolsrv" "stupgrades"
+                             "ursrv")))))
 
-             (replace 'check
-               (lambda* (#:key tests? #:allow-other-keys)
-                 (when tests?
-                   (with-directory-excursion "src/github.com/syncthing/syncthing"
-                     (invoke "go" "run" "build.go" "test")))))
+           (replace 'check
+             (lambda* (#:key tests? #:allow-other-keys)
+               (when tests?
+                 (with-directory-excursion "src/github.com/syncthing/syncthing"
+                   (invoke "go" "run" "build.go" "test")))))
 
-             (replace 'install
-               (lambda _
-                 (with-directory-excursion "src/github.com/syncthing/syncthing/bin"
-                   (install-file "../syncthing" (string-append #$output "/bin"))
-                   (for-each (cut install-file <> (string-append #$output:utils "/bin/"))
-                             '("stcompdirs" "stcrashreceiver"
-                               "stdisco" "stdiscosrv" "stevents" "stfileinfo"
-                               "stfinddevice" "stfindignored" "stgenfiles"
-                               "strelaypoolsrv" "strelaysrv" "stsigtool"
-                               "stvanity" "stwatchfile" "ursrv")))))
+           (replace 'install
+             (lambda _
+               (with-directory-excursion "src/github.com/syncthing/syncthing/bin"
+                 (install-file "syncthing" (string-append #$output "/bin"))
+                 (for-each (cut install-file <> (string-append #$output:utils "/bin/"))
+                           '("stdiscosrv" "strelaysrv")))
+               (with-directory-excursion "src/github.com/syncthing/syncthing"
+                 (for-each (cut install-file <> (string-append #$output:utils "/bin/"))
+                           '("ursrv" "stupgrades" "strelaypoolsrv" "stcrashreceiver")))))
 
-         (add-after 'install 'install-docs
-           (lambda _
-             (let ((man (string-append #$output "/share/man"))
-                   (man:utils (string-append #$output:utils "/share/man")))
-               ;; Install all the man pages to "out".
-               (for-each
-                (lambda (file)
-                  (install-file file
-                                (string-append man "/man" (string-take-right file 1))))
-                (find-files "src/github.com/syncthing/syncthing/man" "\\.[1-9]"))
-               ;; Copy all the man pages to "utils"
-               (copy-recursively man man:utils)
-               ;; Delete extraneous man pages from "out" and "utils",
-               ;; respectively.
-               (delete-file (string-append man "/man1/stdiscosrv.1"))
-               (delete-file (string-append man "/man1/strelaysrv.1"))
-               (delete-file (string-append man:utils  "/man1/syncthing.1"))))))))
+           (add-after 'install 'install-docs
+             (lambda _
+               (let ((man (string-append #$output "/share/man"))
+                     (man:utils (string-append #$output:utils "/share/man")))
+                 ;; Install all the man pages to "out".
+                 (for-each
+                  (lambda (file)
+                    (install-file file
+                                  (string-append man "/man" (string-take-right file 1))))
+                  (find-files "src/github.com/syncthing/syncthing/man" "\\.[1-9]"))
+                 ;; Copy all the man pages to "utils"
+                 (copy-recursively man man:utils)
+                 ;; Delete extraneous man pages from "out" and "utils",
+                 ;; respectively.
+                 (delete-file (string-append man "/man1/stdiscosrv.1"))
+                 (delete-file (string-append man "/man1/strelaysrv.1"))
+                 (delete-file (string-append man:utils  "/man1/syncthing.1"))))))))
     (synopsis "Decentralized continuous file system synchronization")
     (description "Syncthing is a peer-to-peer file synchronization tool that
 supports a wide variety of computing platforms.  It uses the Block Exchange
