@@ -2466,7 +2466,10 @@ parameters.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/google/gopacket"))
+      #:import-path "github.com/google/gopacket"
+      ;; XXX: pfring/pfring.go:14:10: fatal error: pfring.h: No such file or
+      ;; directory. Check how to fix all tests.
+      #:test-subdirs #~(list ".")))
     (propagated-inputs
      (list go-github-com-vishvananda-netlink
            go-golang-org-x-net
