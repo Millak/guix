@@ -1612,15 +1612,12 @@ Main features:
     (arguments
      (list
       #:test-flags
-      #~(list "-p" "no:legacypath")
+      #~(list "--numprocesses" (number->string (parallel-job-count)))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-pypojrect-toml
             (lambda _
               (substitute* "pyproject.toml"
-                ;; ImportError: Error importing plugin " no:legacypath": No
-                ;; module named ' no:legacypath'
-                ((".*:legacypath.*") "")
                 ;; TypeError: Configuration.__init__() got an unexpected
                 ;; keyword argument 'version_file'
                 (("version_file = \"asdf/_version.py\"") "")))))))
@@ -1628,13 +1625,12 @@ Main features:
      (list python-fsspec
            python-packaging
            python-psutil
-           ;; 3.3.0+ requries newer version of pytest, see
-           ;; <https://github.com/asdf-format/asdf/issues/1804>.
            python-pytest
            python-pytest-doctestplus
            python-pytest-remotedata
            python-pytest-xdist
-           python-setuptools-scm))
+           python-setuptools-scm
+           python-wheel))
     (propagated-inputs
      (list python-asdf-standard
            python-asdf-transform-schemas
