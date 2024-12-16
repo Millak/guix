@@ -13212,7 +13212,7 @@ abstract syntax tree (AST) nodes without side effects.")
         (base32 "0sffrjjqh37ijwnggyvs2rfm4iwaz2m395wqg0x727wv8i0x3f3b"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest))
+     (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/cdgriffith/puremagic")
     (synopsis "Pure Python implementation of magic file detection")
     (description
