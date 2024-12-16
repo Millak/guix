@@ -25927,6 +25927,29 @@ manipulation, or @code{stdout}.")
     ;; licenses.
     (license (list license:asl2.0 license:bsd-2))))
 
+(define-public python-packaging-legacy
+  (package
+    (name "python-packaging-legacy")
+    (version "23.0.post0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "packaging_legacy" version))
+       (sha256
+        (base32 "1nyryxlc7fd4c0jmfp99az1s61vfv5xbi6017wqi4wd7j4ia8x69"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-packaging))
+    (native-inputs
+     (list python-pretend
+           python-pytest
+           python-setuptools
+           python-wheel))
+    (home-page "https://pypi.org/project/packaging-legacy/")
+    (synopsis "Core utilities for legacy Python packages")
+    (description "This library provides support for legacy Python Packaging
+functionality removed from @code{packaging}.")
+    (license license:asl2.0)))
+
 (define-public python-relatorio
   (package
     (name "python-relatorio")
