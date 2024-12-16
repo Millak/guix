@@ -374,16 +374,17 @@ silently and reliably flow across to every other.")
 (define-public onedrive
   (package
     (name "onedrive")
-    (version "2.4.25")
+    ;; Move ahead of 2.5.3 for OpenSSL version check error and other fixes
+    (version "2.5.3-1.71a71da")
     (source
       (origin
         (method git-fetch)
         (uri (git-reference
                (url "https://github.com/abraunegg/onedrive")
-               (commit (string-append "v" version))))
+               (commit "71a71da1e0c981969900fa690c93905e0cc4b9b5")))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1i93mq4r9w8cqrdfsfv8wparfd3dbrppc5z04ab056545hk0x89k"))))
+         (base32 "1rr3aw363gln4i8j3b43mih1acqj5way7ybs0mndxkhsayw67vb0"))))
     (build-system gnu-build-system)
     (arguments
      (list
