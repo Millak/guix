@@ -1253,14 +1253,15 @@ libraries to make them compatible with the Array API standard")
 (define-public python-cachetools
   (package
     (name "python-cachetools")
-    (version "5.3.1")
+    (version "5.5.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "cachetools" version))
               (sha256
                (base32
-                "0azn5c4nkwpq7s5wjzs605if9nxjzblghjnlihm767sfkcnkzs6w"))))
-    (build-system python-build-system)
+                "0ahg0mfp2ijsf92z5599kinpcp99lsfdpnddggxk75p3rfs4zhic"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/tkem/cachetools/")
     (synopsis "Extensible memoizing collections and decorators")
     (description "This module provides various memoizing collections and
