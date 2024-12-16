@@ -168,6 +168,63 @@
 devpi-client and others.")
     (license license:expat)))
 
+(define-public python-devpi-client
+  (package
+    (name "python-devpi-client")
+    (version "7.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "devpi-client" version))
+       (sha256
+        (base32 "0ywx4ql8lsypb17n2miq39bmkrp232sdk8g6pskqp1y3b223chy1"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; This wants to use pip install
+      '(list "--ignore=testing/test_upload.py"
+             ;; These complain about finding distutils.  It's not my fault,
+             ;; mate, setuptools is right there, but you won't pick it!
+             "--ignore=testing/test_list_remove.py"
+             "--ignore=testing/test_main.py"
+             "--ignore=testing/test_install.py"
+             "--ignore=testing/test_functional.py"
+             "--ignore=testing/test_test.py")
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'patch-tests
+           (lambda _
+             ;; Do not replace the directory name of the store item.
+             (substitute* "testing/conftest.py"
+               (("\"devpi-server\", \"devpi-init\"")
+                "\"/bin/devpi-server\", \"/bin/devpi-init\""))))
+         (add-before 'check 'set-HOME
+           ;; Some tests need this
+           (lambda _ (setenv "HOME" "/tmp"))))))
+    (propagated-inputs (list python-pypa-build
+                             python-check-manifest
+                             python-colorama
+                             python-devpi-common
+                             python-iniconfig
+                             python-pkginfo
+                             python-platformdirs
+                             python-pluggy
+                             python-pypitoken
+                             python-tomli))
+    (native-inputs
+     (list python-devpi-server
+           python-pytest
+           python-setuptools
+           python-virtualenv))
+    (home-page "https://github.com/devpi/devpi")
+    (synopsis "Devpi upload/install/... commands for Python developers")
+    (description
+     "The devpi command line tool is typically used in conjunction with
+devpi-server.  It allows to upload, test and install packages from devpi
+indexes.")
+    (license license:expat)))
+
 (define-public python-devpi-server
   (package
     (name "python-devpi-server")
