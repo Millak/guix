@@ -31568,7 +31568,7 @@ Notation (CSON).")
 (define-public python-aionotify
   (package
     (name "python-aionotify")
-    (version "0.3.0")
+    (version "0.3.1")
     (source
      (origin
        ;; Source tarball on PyPi lacks tests
@@ -31578,8 +31578,12 @@ Notation (CSON).")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qkzwccv8k6mx1yvc0hmsgnzgb4vh8h97kq7i64ic6xzxkd57vkz"))))
+        (base32 "1p08g0h4bjlra25cwysag7gifsrm35d5vkjfv845w1rig8b57q9s"))))
     (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/rbarrois/aionotify")
     (synopsis "inotify library for Python")
     (description
