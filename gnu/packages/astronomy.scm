@@ -2166,7 +2166,10 @@ code to be greatly simplified.")
        (sha256
         (base32 "0ps2lr6aa477262yw13w3hh0h5rzmywdlji0wbnkxnzrfvmf9lhf"))))
     (build-system pyproject-build-system)
-    (native-inputs (list tzdata))
+    (native-inputs
+     (list python-setuptools
+           python-wheel
+           tzdata))
     (home-page "https://rhodesmill.org/pyephem/")
     (synopsis "Compute positions of the planets and stars")
     (description
