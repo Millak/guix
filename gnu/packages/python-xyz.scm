@@ -29205,15 +29205,16 @@ tool).")
 (define-public python-numcodecs
   (package
     (name "python-numcodecs")
-    ;; XXX: Starting from 0.11.0 numcodecs requires NumPy 1.7 or higher.
-    (version "0.10.2")
+    (version "0.13.1")
+    ;; python-zarr does not want versions 0.14.0 or 0.14.1.
+    ;;(version "0.14.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "numcodecs" version))
        (sha256
         (base32
-         "1i2rvm1f23dapcf6w3mj4877jzq5f24bhfa0fafbv1nr7xmqr0r2"))
+         "1g09fwhgmhmw66x5gzmzhm8yhgqki3gpfi0dkhx8z2gh3n43gkx3"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -29224,22 +29225,13 @@ tool).")
              (("os\\.name == 'posix'")
               (string-append "os.name + platform.machine() == 'posixx86_64' or"
                              " os.name + platform.machine() == 'posixx86'")))
-           (delete-file-recursively "c-blosc")
-           (for-each delete-file '("numcodecs/_shuffle.c"
-                                   "numcodecs/blosc.c"
-                                   "numcodecs/compat_ext.c"
-                                   "numcodecs/lz4.c"
-                                   "numcodecs/vlen.c"
-                                   "numcodecs/zstd.c"))))))
+           (delete-file-recursively "c-blosc")))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      ;; Tests fail with error: ValueError: setting an array element with a
-      ;; sequence. The requested array has an inhomogeneous shape after 1
-      ;; dimensions. The detected shape was (3,) + inhomogeneous part.
-      #~(list "--deselect=numcodecs/tests/test_json.py::test_non_numpy_inputs"
-              "--deselect=numcodecs/tests/test_msgpacks.py::test_non_numpy_inputs")
+      ;; zarr isn't available, because it dependes on this package.
+      '(list "-k" "not test_zarr3_import")
       #:phases
       '(modify-phases %standard-phases
          (add-after 'unpack 'disable-avx2
@@ -29266,13 +29258,23 @@ tool).")
      (list c-blosc lz4 zlib
            `(,zstd "lib")))
     (propagated-inputs
-     (list python-entrypoints
-           python-numpy
+     (list python-coverage
+           python-google-crc32c
+           python-importlib-metadata
            python-msgpack
-           python-typing-extensions))
+           python-numpy
+           python-numpydoc))
     (native-inputs
-     (list python-cython python-pytest python-setuptools-scm
-           python-setuptools python-wheel))
+     (list python-cython
+           python-py-cpuinfo
+           python-pydata-sphinx-theme
+           python-pytest
+           python-pytest-cov
+           python-setuptools
+           python-setuptools-scm ;for correct version
+           python-sphinx
+           python-sphinx-issues
+           python-wheel))
     (home-page "https://github.com/zarr-developers/numcodecs")
     (synopsis "Buffer compression and transformation codecs")
     (description
