@@ -168,6 +168,54 @@
 devpi-client and others.")
     (license license:expat)))
 
+(define-public python-devpi-server
+  (package
+    (name "python-devpi-server")
+    (version "6.14.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "devpi-server" version))
+       (sha256
+        (base32 "08smfjhnvqj68fp45gzqm9axjcgnksc0z31v48llivnzlxwf8cmr"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; These all fail with: "module 'py' has no attribute 'io'"
+      '(list "--ignore=test_devpi_server/test_importexport.py"
+             "--ignore=test_devpi_server/test_main.py"
+             "--ignore=test_devpi_server/test_genconfig.py")))
+    (propagated-inputs (list python-argon2-cffi
+                             python-attrs
+                             python-defusedxml
+                             python-devpi-common
+                             python-httpx
+                             python-itsdangerous
+                             python-lazy
+                             python-legacy-cgi
+                             python-passlib
+                             python-platformdirs
+                             python-pluggy
+                             python-py
+                             python-pyramid
+                             python-repoze-lru
+                             python-ruamel.yaml
+                             python-strictyaml
+                             python-waitress))
+    (native-inputs
+     (list python-execnet
+           python-pytest
+           python-pytest-timeout
+           python-setuptools
+           python-webtest
+           python-wheel))
+    (home-page "https://devpi.net")
+    (synopsis "Pypi.org caching server")
+    (description "This package implements a reliable private and pypi.org
+caching server.")
+    (license license:expat)))
+
 (define-public python-huggingface-hub
   (package
     (name "python-huggingface-hub")
