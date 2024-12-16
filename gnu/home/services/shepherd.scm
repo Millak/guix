@@ -60,7 +60,7 @@
   home-shepherd-configuration make-home-shepherd-configuration
   home-shepherd-configuration?
   (shepherd home-shepherd-configuration-shepherd
-            (default shepherd-1.0))               ;package
+            (default shepherd-for-home))               ;package
   (auto-start? home-shepherd-configuration-auto-start?
                (default #t))
   (daemonize? home-shepherd-configuration-daemonize?
