@@ -1,0 +1,65 @@
+From 6b3aed3d71ea9481762de7bd42395704176b6625 Mon Sep 17 00:00:00 2001
+From: Suhail <suhail@bayesians.ca>
+Date: Mon, 16 Dec 2024 15:07:55 -0500
+Subject: [PATCH v2] racket: raco: Ensure launchers of packages include config
+ directory.
+
+Currently, binaries installed via "raco" (included in Guix's "racket" package)
+don't include the -G / --config configuration option specifying the "Main
+configuration directory".  This is problematic.
+
+Specifically, when installing "rash" via raco using the below:
+
+#+begin_src sh
+  raco pkg install rash
+#+end_src
+
+The resulting rash-repl binary (which is missing the -G configuration option
+in the call to the racket binary), when invoked, results in the following
+error:
+
+#+begin_src sh
+  standard-module-name-resolver: collection not found
+    for module path: (lib "rash/repl.rkt")
+    collection: "rash"
+    in collection directories:
+     ${HOME}/.local/share/racket/8.14/collects
+     /gnu/store/vn20i9xk22czljr9drwzwpgw209l49s8-racket-vm-cs-8.14/opt/racket-vm/collects/
+#+end_src
+
+Adding the -G configuration option in the call to the racket binary fixes the
+above error.
+
+The executable scripts (at least on linux) are generated via
+make-unix-launcher in ./racket/collects/launcher/launcher.rkt .  The patch
+below ensures that the -G flag is added to such launcher scripts.  The patch
+is conservative in that it allows it to be overwritten by callers of
+launcher.rkt as desired.
+
+---
+ racket/collects/launcher/launcher.rkt | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/racket/collects/launcher/launcher.rkt b/racket/collects/launcher/launcher.rkt
+index 0faacec4ce..2c77d55caf 100644
+--- a/racket/collects/launcher/launcher.rkt
++++ b/racket/collects/launcher/launcher.rkt
+@@ -405,7 +405,14 @@
+          [x-flags? (and (eq? kind 'mred)
+                         (eq? (cross-system-type) 'unix)
+                         (not (script-variant? variant)))]
+-         [flags (let ([m (assq 'wm-class aux)])
++         [flags (let ([m (assq 'wm-class aux)]
++                      [flags (if (or (member "-G" flags)
++                                     (member "--config" flags))
++                                 flags
++                                 (list* "-G"
++                                        (format "~a"
++                                                (find-system-path 'config-dir))
++                                        flags))])
+                   (if m
+                       (list* "-J" (cdr m) flags)
+                       flags))]
+-- 
+2.47.1
+

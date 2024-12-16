@@ -2165,6 +2165,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/rpcbind-CVE-2017-8779.patch		\
   %D%/packages/patches/rtags-separate-rct.patch			\
   %D%/packages/patches/racket-chez-scheme-bin-sh.patch		\
+  %D%/packages/patches/racket-launcher-config-dir.patch		\
   %D%/packages/patches/racket-rktio-bin-sh.patch		\
   %D%/packages/patches/reduce-unbundle-libffi.patch             \
   %D%/packages/patches/remake-impure-dirs.patch			\
