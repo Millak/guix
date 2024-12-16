@@ -477,13 +477,13 @@ genetic variation data.")
 (define-public python-scikit-build-core
   (package
     (name "python-scikit-build-core")
-    (version "0.9.3")
+    (version "0.10.7")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "scikit_build_core" version))
        (sha256
-        (base32 "146k3w3kcamyyqassmsmp6h4f5lb3cdqnbjjcbf0jm1s8wz1279l"))))
+        (base32 "1y64d8rl39banfwdkszyd4sbzp795q8lj66yxrz2l84mwygvbjq4"))))
     (build-system pyproject-build-system)
     ;; Tests are aborted with the admonition: "setup.py install is
     ;; deprecated. Use build and pip and other standards-based tools."
@@ -496,7 +496,6 @@ genetic variation data.")
                              python-tomli
                              python-typing-extensions))
     (native-inputs (list pybind11
-                         python-pypa-build
                          python-cattrs
                          python-fastjsonschema
                          python-hatch-fancy-pypi-readme
@@ -504,7 +503,9 @@ genetic variation data.")
                          python-hatchling
                          python-numpy
                          python-pip
+                         python-pypa-build
                          python-pytest
+                         python-pytest-subprocess
                          python-rich
                          python-setuptools
                          python-setuptools-scm
