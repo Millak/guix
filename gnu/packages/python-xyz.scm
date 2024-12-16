@@ -432,15 +432,15 @@ loop.")
 (define-public python-awkward-cpp
   (package
     (name "python-awkward-cpp")
-    (version "32")
+    (version "43")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "awkward-cpp" version))
+       (uri (pypi-uri "awkward_cpp" version))
        (sha256
-        (base32 "1w11fjkwrian3vll7jhnisl1b6m6rk2rqx0n9d1hzyq6cbw5m35d"))))
+        (base32 "1bays82mjyg0clmms0rdaf1jrdyr0pw5njq8v9kgcan8drcpbvf1"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-importlib-resources python-numpy))
+    (propagated-inputs (list python-numpy))
     (native-inputs
      (list cmake pybind11 python-pytest python-scikit-build-core))
     (home-page "https://github.com/scikit-hep/awkward-1.0")
