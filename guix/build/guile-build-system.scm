@@ -18,7 +18,7 @@
 
 (define-module (guix build guile-build-system)
   #:use-module ((guix build gnu-build-system) #:prefix gnu:)
-  #:use-module (guix build utils)
+  #:use-module ((guix build utils) #:hide (delete))
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:use-module (ice-9 match)
@@ -79,7 +79,7 @@ determined."
      (setenv "GUIX_LOCPATH" (string-append locales "/lib/locale")))))
 
 (define* (invoke-each commands
-                      #:key (max-processes (current-processor-count))
+                      #:key (max-processes (parallel-job-count))
                       report-progress)
   "Run each command in COMMANDS in a separate process, using up to
 MAX-PROCESSES processes in parallel.  Call REPORT-PROGRESS at each step.
