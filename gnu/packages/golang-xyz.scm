@@ -9740,6 +9740,39 @@ encoded values to create the picture in a code with no inherent errors.")
 weighted moving averages}.")
     (license license:expat)))
 
+(define-public go-github-com-warpfork-go-fsx
+  (package
+    (name "go-github-com-warpfork-go-fsx")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/warpfork/go-fsx")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1yhh42vp12hnkhlfimcab4a2df2apprnlg3ll75yr2pd0b001p5b"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/warpfork/go-fsx"))
+    (home-page "https://github.com/warpfork/go-fsx")
+    (synopsis "Extended filesystem interface for Golang")
+    (description
+     "This package, @code{fsx}, takes the style of the io/fs package, and
+extends it with more features:
+@itemize
+@item fsx provides the ability to write files (using OpenFile, which is much
+like the os package feature you're already familiar with)
+@item fsx provides the ability to create directories
+@item fsx provides the ability to delete files and directories
+@item fsx provides features for reading symlinks, and creating them
+@end itemize")
+    ;; This library is multiply-licensed under either of Apache 2.0 or MIT or
+    ;; BSD-3-Clause terms.
+    (license (list license:expat license:asl2.0 license:bsd-3))))
+
 (define-public go-github-com-whyrusleeping-base32
   (package
     (name "go-github-com-whyrusleeping-base32")
