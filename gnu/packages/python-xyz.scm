@@ -4868,7 +4868,7 @@ variables.")
      ;; "CovReportWarning: Failed to generate report: No data to report."
      (list #:tests? #f))
     (native-inputs
-     (list python-pytest python-pytest-cov))
+     (list python-pytest python-pytest-cov python-setuptools python-wheel))
     (propagated-inputs (list python-bson python-pyyaml))
     (home-page "https://gitlab.com/d3v-t00lz/pymarshal")
     (synopsis "Pythonic implementation of Golang struct (un)marshalling")
