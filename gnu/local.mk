@@ -1849,6 +1849,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/mono-mcs-patches-from-5.10.0.patch	\
   %D%/packages/patches/mosaicatcher-unbundle-htslib.patch	\
   %D%/packages/patches/mrrescue-support-love-11.patch		\
+  %D%/packages/patches/mrustc-patches.patch			\
   %D%/packages/patches/mtools-mformat-uninitialized.patch	\
   %D%/packages/patches/mupen64plus-ui-console-notice.patch	\
   %D%/packages/patches/musl-cross-locale.patch			\
@@ -2177,7 +2178,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/ruby-mustache-1.1.1-fix-race-condition-tests.patch \
   %D%/packages/patches/ruby-nokogiri.patch			\
   %D%/packages/patches/ruby-x25519-automatic-fallback-non-x86_64.patch \
-  %D%/packages/patches/rustc-1.54.0-src.patch			\
   %D%/packages/patches/rust-1.64-fix-riscv64-bootstrap.patch	\
   %D%/packages/patches/rust-1.70-fix-rustix-build.patch	\
   %D%/packages/patches/rust-1.78-unwinding-fix.patch		\
