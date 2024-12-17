@@ -52,7 +52,7 @@
 ;;; Copyright © 2018-2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2018 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2018, 2019, 2021, 2023 Clément Lassieur <clement@lassieur.org>
-;;; Copyright © 2018, 2019, 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2018-2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2018 Luther Thompson <lutheroto@gmail.com>
 ;;; Copyright © 2018 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2015, 2018 Pjotr Prins <pjotr.guix@thebird.nl>
@@ -16778,76 +16778,46 @@ tasks, sockets, files, locks, and queues.")
 (define-public python-tables
   (package
     (name "python-tables")
-    (version "3.7.0")
+    (version "3.10.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "tables" version))
        (sha256
         (base32
-         "1zp1qmas4pgcag9sn0gwd40c6ibn9bg056d6ckjq7agjsrx8hap9"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           ;; Remove pre-compiled .pyc files from source.
-           (for-each delete-file-recursively
-                     (find-files "." "__pycache__" #:directories? #t))
-           (for-each delete-file (find-files "." "\\.pyc$"))
-           (for-each delete-file
-                     (list "tables/_comp_bzip2.c"
-                           "tables/_comp_lzo.c"
-                           "tables/hdf5extension.c"
-                           "tables/indexesextension.c"
-                           "tables/linkextension.c"
-                           "tables/lrucacheextension.c"
-                           "tables/tableextension.c"
-                           "tables/utilsextension.c"))))))
+         "1kr6y4qivqy462gva4bqym3x4alhxijfqjplxax3gh5r6k3pm82a"))
+       (snippet '(begin
+                   (use-modules (guix build utils))
+                   (delete-file-recursively "c-blosc")))))
     (build-system python-build-system)
     (arguments
      (list
       #:phases
-      ;; FIXME: python-build-system does not pass configure-flags to "build"
-      ;; or "check", so we must override the build and check phases.
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'use-gcc
-            (lambda _
-              (substitute* "setup.py"
-                (("lib_dirs = \\[\\]")
-                 (string-append "lib_dirs = ["
-                                "'" #$(this-package-input "hdf5") "/lib',"
-                                "'" #$(this-package-input "bzip2") "/lib',"
-                                "'" #$(this-package-input "c-blosc") "/lib',"
-                                "]"))
-                (("^( +)compiler = new_compiler\\(\\)" line indent)
-                 (string-append line
-                                "\n"
-                                indent
-                                "compiler.set_executables(compiler='gcc',"
-                                "compiler_so='gcc',"
-                                "linker_exe='gcc',"
-                                "linker_so='gcc -shared')")))))
           (add-after 'unpack 'disable-tuning
             (lambda _
               (substitute* "setup.py"
                 (("cpu_flags = .*")
                  "cpu_flags = ['sse2']\n"))))
-          (replace 'build
-            (lambda* (#:key inputs #:allow-other-keys)
-              (invoke "python" "setup.py" "build"
-                      (string-append "--hdf5="
-                                     (assoc-ref inputs "hdf5")))))
+          (add-before 'build 'set-LD_LIBRARY_PATH
+            (lambda _
+              ;; The setup.py build system makes use of ctypes.CDLL, which
+              ;; uses dlopen, which looks up library names from standard
+              ;; locations or LD_LIBRARY_PATH.
+              (setenv "LD_LIBRARY_PATH" (getenv "LIBRARY_PATH"))))
           (replace 'check
-            (lambda* (#:key inputs #:allow-other-keys)
-              (invoke "python" "setup.py" "check"
-                      (string-append "--hdf5="
-                                     (assoc-ref inputs "hdf5"))))))))
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "python" "setup.py" "check")))))))
     (propagated-inputs
-     (list python-numexpr python-numpy python-packaging
-           python-py-cpuinfo))
-    (native-inputs
-     (list python-cython pkg-config))
-    (inputs
-     (list c-blosc hdf5-1.10 bzip2 lzo zlib))
+     (list python-blosc2
+           python-numpy
+           python-numexpr
+           python-packaging
+           python-py-cpuinfo
+           python-typing-extensions))
+    (native-inputs (list pkg-config python-cython))
+    (inputs (list c-blosc c-blosc2 hdf5-1.10 bzip2 lzo zlib))
     (home-page "https://www.pytables.org/")
     (synopsis "Hierarchical datasets for Python")
     (description "PyTables is a package for managing hierarchical datasets and
