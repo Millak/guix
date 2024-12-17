@@ -36648,13 +36648,13 @@ compatible with a wide range of versions of the Stripe API.")
 (define-public python-platformdirs
   (package
     (name "python-platformdirs")
-    (version "4.2.1")
+    (version "4.3.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "platformdirs" version))
        (sha256
-        (base32 "1pwv0fvr6xzykv6dyibp7y3ac66j2w2arsnwh8zcagn69s6x2703"))))
+        (base32 "01xrwajkmxv3jp6n14y8jndkrhb48p9kxknkmwch8nw8pjnb4zrm"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-appdirs
