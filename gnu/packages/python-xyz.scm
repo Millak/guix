@@ -22971,29 +22971,45 @@ until the object is actually required, and caches the result of said call.")
 (define-public python-dnspython
   (package
     (name "python-dnspython")
-    (version "2.1.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "dnspython" version ".zip"))
-              (sha256
-               (base32
-                "1m0xvyby8baaxp6pfm0fgq8d2pq5dd8qm8bzfbrs009jaw5pza74"))))
-    (build-system python-build-system)
+    (version "2.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "dnspython" version))
+       (sha256
+        (base32 "1wgsbiz90npdi47cilmwdccm29hl9qddzkm533v1rj8dv8p4776f"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f                      ; XXX: requires internet access
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-getprotobyname-calls
-           ;; These calls are problematic in the build environment as there is
-           ;; no /etc/protocols.  This breaks the sanity-check phase of any
-           ;; package depnding on this one.
-           (lambda _
-             (substitute* "dns/rdtypes/IN/WKS.py"
-               (("socket.getprotobyname\\('tcp'\\)")
-                "6")
-               (("socket.getprotobyname\\('udp'\\)")
-                "17")))))))
-    (native-inputs (list unzip))
+     (list
+      #:test-flags
+      #~(list
+         ;; AssertionError: assert False
+         "--deselect=tests/test_features.py::test_have"
+         ;; dns.exception.SyntaxError: protocol not found
+         "--deselect=tests/test_rdata.py::RdataTestCase::test_misc_good_WKS_text")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-getprotobyname-calls
+            ;; These calls are problematic in the build environment as there is
+            ;; no /etc/protocols.  This breaks the sanity-check phase of any
+            ;; package depnding on this one.
+            (lambda _
+              (substitute* "dns/rdtypes/IN/WKS.py"
+                (("socket.getprotobyname\\('tcp'\\)")
+                 "6")
+                (("socket.getprotobyname\\('udp'\\)")
+                 "17")))))))
+    (native-inputs
+     (list python-hatchling
+           python-pytest))
+    (propagated-inputs
+     (list python-cryptography
+           python-aioquic
+           python-h2
+           python-httpcore
+           python-httpx
+           python-idna
+           python-trio))
     (home-page "https://www.dnspython.org")
     (synopsis "DNS toolkit for Python")
     (description
