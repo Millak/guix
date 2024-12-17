@@ -330,38 +330,29 @@ ideal (e.g. in LV2 implementations or embedded applications).")
 (define-public python-rdflib
   (package
     (name "python-rdflib")
-    (version "7.0.0")
+    (version "7.1.1")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "rdflib" version))
         (sha256
          (base32
-          "1blmx4v003afr3l9qg84ymj0sldcbsr2dzdgq6w5k022d62yp5cr"))))
+          "0glin9v600gmaa0pm8f742ja390ncr7xi0x95j05hiansdmyhk8n"))))
     (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'adjust-tests
-           (lambda _
-             (for-each delete-file
-                       '(;; The tests in this file miss a test fixture.
-                         ;; fixture 'no_cover' not found
-                         "test/test_misc/test_plugins.py"
-                         ;; These tests need internet access.
-                         "test/jsonld/test_onedotone.py"
-                         "test/test_examples.py"
-                         "test/test_extras/test_infixowl/test_basic.py"
-                         "test/test_extras/test_infixowl/test_context.py"
-                         "test/test_sparql/test_service.py"))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-vv" "test/")))))))
+     (list
+      #:test-flags
+      '(list "-m" "not webtest"
+             ;; These two tests attempt to use "pip install"
+             "-k" "not test_sparqleval and not test_parser")))
     (native-inputs
-     (list python-pytest python-poetry-core))
+     (list python-pytest python-pytest-cov python-poetry-core))
     (propagated-inputs
-      (list python-html5lib python-isodate python-pyparsing))
+      (list python-isodate
+            python-lxml
+            python-networkx
+            python-orjson
+            python-pyparsing))
     (home-page "https://github.com/RDFLib/rdflib")
     (synopsis "Python RDF library")
     (description
