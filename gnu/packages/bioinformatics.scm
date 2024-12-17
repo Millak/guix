@@ -6350,7 +6350,8 @@ trees (phylogenies) and characters.")
        (sha256
         (base32
          "1vw2nvw1yrl7ikkqsqs1pg239yr5nspvd969r1x9arms1k25a1a5"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/dpryan79/py2bit")
     (synopsis "Access 2bit files using lib2bit")
     (description
