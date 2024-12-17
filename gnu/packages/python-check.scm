@@ -2,7 +2,7 @@
 ;;; Copyright © 2019, 2021-2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2019, 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2019, 2020, 2021, 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019, 2021 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2020, 2022 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
@@ -2907,67 +2907,38 @@ Python file for configuration.")
 (define-public python-tox
   (package
     (name "python-tox")
-    (version "3.20.0")
+    (version "4.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "tox" version))
        (sha256
         (base32
-         "0nk0nyzhzamcrvn0qqzzy54isxxqwdi28swml7a2ym78c3f9sqpb"))))
-    (build-system python-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "-vv" "-k"
-                        (string-join
-                         (map (lambda (test)
-                                (string-append "not test_" test))
-                              '("invocation_error"
-                                "create_KeyboadInterrupt"
-                                "exit_code"
-                                "tox_get_python_executable"
-                                "find_alias_on_path"
-                                "get_executable"
-                                "get_executable_no_exist"
-                                "get_sitepackagesdir_error"
-                                "spinner_stdout_not_unicode"
-                                "provision_non_canonical_dep"
-                                "package_setuptools"
-                                "package_poetry"
-                                "parallel_interrupt"
-                                "provision_missing"
-                                "provision_from_pyvenv"
-                                "provision_interrupt_child"
-                                "create"
-                                "run_custom_install_command"
-                                "toxuone_env"
-                                "different_config_cwd"
-                                "test_usedevelop"
-                                "build_backend_without_submodule"
-                                "parallel"
-                                "parallel_live"
-                                "tox_env_var_flags_inserted_isolated"))
-                         " and "))))))))
+         "0yq3d2wif88d2iih8c2dwjx7rz8axkc7b6gskl5z3k0jbd1wznia"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;require python-devpi-process
     (propagated-inputs
-     (list python-filelock
+     (list python-cachetools
+           python-chardet
+           python-colorama
+           python-filelock
            python-packaging
+           python-platformdirs
            python-pluggy
-           python-py
-           python-six
-           python-toml
+           python-pyproject-api
+           python-tomli
            python-virtualenv))
     (native-inputs
-     (list python-flaky
-           python-pathlib2
-           python-pytest                ; >= 2.3.5
-           python-pytest-freezegun
-           python-pytest-timeout
-           python-setuptools-scm))
+     (list python-distlib
+           ;;python-devpi-process  ;FIXME: package me
+           python-flaky
+           python-hatchling
+           python-hatch-vcs
+           python-psutil
+           python-pytest
+           python-pytest-mock
+           python-pytest-xdist
+           python-re-assert))
     (home-page "https://tox.readthedocs.io")
     (synopsis "Virtualenv-based automation of test activities")
     (description "Tox is a generic virtualenv management and test command line
