@@ -2023,9 +2023,10 @@ applications needing access to be root.")
                                                   (%current-system))))
   ;; List of services typically useful for a "desktop" use case.
 
-  ;; Since GDM depends on Rust (gdm -> gnome-shell -> gjs -> mozjs -> rust)
-  ;; and Rust is currently unavailable on non-x86_64 platforms, default to
-  ;; SDDM there (FIXME).
+  ;; Since GDM depends on Rust and Rust is not available on all platforms,
+  ;; use SDDM as the fall-back display manager.
+  ;; TODO: Switch the condition to use (supported-package? "rust") and make
+  ;; a news entry about the change.
   (cons* (if (string-prefix? "x86_64" system)
              (service gdm-service-type)
              (service sddm-service-type))
