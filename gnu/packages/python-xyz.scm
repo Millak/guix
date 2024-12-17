@@ -6585,19 +6585,34 @@ e.g. filters, callbacks and errbacks can all be promises.")
 (define-public python-virtualenv
   (package
     (name "python-virtualenv")
-    (version "20.3.1")
+    (version "20.28.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "virtualenv" version))
        (sha256
         (base32
-         "1nbhnpzswcf3lmzn5xabmfdd7ki8r2w2i37y6wml54di6qi1l48c"))))
-    (build-system python-build-system)
+         "1aj980vffl4mpq4j67f7a0j07rlm8jp5yw8xh3m8fywfpdi3571c"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; These tests require Internet access.
+     (list #:test-flags '(list "-k" "not test_seed_link_via_app_data")))
     (native-inputs
-     (list python-mock python-pytest python-setuptools-scm))
+     (list python-covdefaults
+           python-coverage
+           python-flaky
+           python-hatch-vcs
+           python-hatchling
+           python-packaging
+           python-pytest
+           python-pytest-env
+           python-pytest-mock
+           python-pytest-timeout
+           python-setuptools
+           python-time-machine))
     (propagated-inputs
-     (list python-appdirs python-distlib python-filelock python-six))
+     (list python-distlib python-filelock python-importlib-metadata
+           python-platformdirs))
     (home-page "https://virtualenv.pypa.io/")
     (synopsis "Virtual Python environment builder")
     (description
