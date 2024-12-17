@@ -1269,7 +1269,7 @@ doing practical, real world data analysis in Python.")
     (name "python-pandas-stubs")
     ;; The versioning follows that of Pandas and uses the date of the
     ;; python-pandas-stubs release.
-    (version "2.1.1.230928")
+    (version "2.2.3.241126")
     (source
      (origin
        ;; No tests in the PyPI tarball.
@@ -1279,11 +1279,12 @@ doing practical, real world data analysis in Python.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "13b6wcwf9ybxf492w1l8qqf2bcgch21xds5r88pfkmrvqhxwfpyr"))))
+        (base32 "0xbvin2l7h8vq9g24n4n2l49pdxbi15qghq7zkhh567p3pbmvsyb"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags #~(list "-k"
+      #:test-flags #~(list "--ignore=tests/test_io.py" ;requires python-calamine
+                           "-k"
                            (string-append
                             ;; The python-pyarrow package in Guix is built
                             ;; with ORC integration, but these tests fail with
@@ -1330,7 +1331,7 @@ doing practical, real world data analysis in Python.")
                          python-pyreadstat
                          python-pytest
                          python-scipy
-                         python-sqlalchemy
+                         python-sqlalchemy-2
                          python-tables
                          python-tabulate
                          python-xarray
