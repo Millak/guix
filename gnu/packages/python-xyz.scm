@@ -18793,14 +18793,14 @@ simulation, statistical modeling, machine learning and much more.")
 (define-public python-chardet
   (package
     (name "python-chardet")
-    (version "5.1.0")
+    (version "5.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "chardet" version))
        (sha256
         (base32
-         "1r9ixxnish9j3dq4h0z0cwlkr4f5lgi6d8mhbzw59hbbjlmp2qhd"))))
+         "1xqwkjijq2fxn8rhcvfddl14lp39jllqbh527yy19i58g7s6yfqv"))))
     (native-inputs
      (list python-pytest python-setuptools python-wheel))
     (build-system pyproject-build-system)
