@@ -1971,7 +1971,7 @@ plain (undecoratored) native coroutine tests.")
             (lambda _
               (with-directory-excursion "tests/example-project"
                 (invoke "python" "setup.py" "build_ext" "--inplace")))))))
-    (native-inputs (list python-cython-3 python-setuptools))
+    (native-inputs (list python-cython-3 python-setuptools python-wheel))
     (propagated-inputs (list python-pytest))
     (home-page "https://github.com/lgpage/pytest-cython")
     (synopsis "Cython extension modules testing plugin")
