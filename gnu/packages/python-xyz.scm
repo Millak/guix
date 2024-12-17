@@ -23067,24 +23067,26 @@ simple, lightweight implementation.")
 (define-public python-email-validator
   (package
     (name "python-email-validator")
-    (version "1.0.2")
+    (version "2.2.0")
     (source
-     (origin (method url-fetch)
-             (uri (pypi-uri "email_validator" version))
-             (sha256
-              (base32
-               "1ja9149l9ck5n45a72h3is7v476hjny5ybxbcamx1nw6iplsm7k6"))))
-    (build-system python-build-system)
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "email_validator" version))
+       (sha256
+        (base32 "1dw28lv9lpsw2s7dylhih93fn72s8iqyfsp6497p2yk19hs0ysfb"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'use-dnspython
-           (lambda _
-             (substitute* "setup.py"
-               (("dnspython3") "dnspython"))
-             #t)))))
+     (list
+      #:test-flags
+      ;; dns.resolver.NoResolverConfiguration: cannot open /etc/resolv.conf
+      #~(list "-k" "not test_caching_dns_resolver")))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
     (propagated-inputs
-     (list python-dnspython python-idna))
+     (list python-dnspython
+           python-idna))
     (home-page "https://github.com/JoshData/python-email-validator")
     (synopsis "Email address validation library for Python")
     (description
