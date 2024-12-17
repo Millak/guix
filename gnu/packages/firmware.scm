@@ -11,6 +11,7 @@
 ;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
 ;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -80,6 +81,7 @@
   #:use-module (gnu packages polkit)
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages shells)
   #:use-module (gnu packages sqlite)
@@ -1499,6 +1501,7 @@ corresponding layout." layout))
            coreutils-minimal
            sed
            util-linux))
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://qmk.fm")
     (synopsis "Command line utility to manage QMK keyboard firmwares")
     (description "The QMK CLI provides a @acronym{CLI, command line interface}
