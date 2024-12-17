@@ -1012,6 +1012,30 @@ Evapotranspiration using various standard methods.")
 tissue-specificity metrics for gene expression.")
     (license license:gpl3+)))
 
+(define-public python-ndindex
+  (package
+    (name "python-ndindex")
+    (version "1.7")                     ;newer versions require a newer numpy
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ndindex" version))
+       (sha256
+        (base32 "1lpgsagmgxzsas7g8yiv6wmyss8q57w92h70fn11rnpadsvx16xz"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:test-flags #~(list "-c" "/dev/null"))) ;avoid coverage
+    (native-inputs
+     (list python-cython
+           python-numpy
+           python-pytest
+           python-setuptools
+           python-wheel))
+    (home-page "https://quansight-labs.github.io/ndindex/")
+    (synopsis "Python library for manipulating indices of ndarrays")
+    (description "This package provides a Python library for manipulating
+indices of @code{ndarrays}.")
+    (license license:expat)))
+
 (define-public python-pandas-1
   (package
     (name "python-pandas")
