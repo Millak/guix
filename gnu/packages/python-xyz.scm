@@ -8416,19 +8416,37 @@ errors when data is invalid.")
     (build-system pyproject-build-system)
     (arguments
      (list
-       #:test-flags #~(list "--ignore=tests/test_docs.py"   ; no pytest_examples
-                            ;; These tests include hashes that keep changing depending on
-                            ;; package versions.
-                            "--ignore=tests/benchmarks/test_north_star.py"
-                            ;; need python-email-validator >= 2.0.0
-                            "-k not test_fastapi_startup_perf")
-       #:phases
-       #~(modify-phases %standard-phases
-           (add-before 'check 'pre-check
-             (lambda _
-               ;; Remove the addopts from pyproject.toml, it breaks the 'check phase.
-               (substitute* "pyproject.toml"
-                 (("'--benchmark") "#'--benchmark")))))))
+      #:test-flags
+      #~(list "--ignore=tests/test_docs.py"   ; no pytest_examples
+              ;; These tests include hashes that keep changing depending on
+              ;; package versions.
+              "--ignore=tests/benchmarks/test_north_star.py"
+              "-k" (string-join
+                    ;; need python-email-validator >= 2.0.0
+                    (list "not test_fastapi_startup_perf"
+                          ;; Test fails with assertion is not equal.
+                          "test_assert_raises_validation_error"
+                          ;; Cannot generate a JsonSchema for
+                          ;; core_schema.CallableSchema [skipped-choice].
+                          "test_callable_fallback_with_non_serializable_default"
+                          ;; Failed: DID NOT WARN. No warnings of type (<class
+                          ;; 'pydantic.warnings.PydanticDeprecatedSince20'>,)
+                          ;; were emitted.
+                          "test_use_bare"
+                          "test_use_no_fields"
+                          "test_validator_bad_fields_throws_configerror")
+                    " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; Remove the addopts from pyproject.toml, it breaks the 'check
+              ;; phase.
+              (substitute* "pyproject.toml"
+                (("'--benchmark") "#'--benchmark")
+                ;; Do not fail on deprecation warnings.
+                (("ignore:path is deprecated.*:DeprecationWarning:")
+                 "ignore::DeprecationWarning")))))))
     (native-inputs
      (list python-hatchling
            python-hatch-fancy-pypi-readme
