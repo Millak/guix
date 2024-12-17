@@ -3502,48 +3502,30 @@ use-case, we encourage users to compose functions to achieve their goals.")
        ;; Delete generated C files.
        (snippet
         '(for-each delete-file (find-files "." "\\.c")))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags
+      '(list "-k"
+             (string-append ;; Unclear why this one fails.  There is no backtrace.
+                            "not test_to_dataframe_is_sparse"
+                            ;; These need skbio, but that neeeds biom-format.
+                            " and not test_align_tree_intersect_obs"
+                            " and not test_align_tree_intersect_tips"
+                            " and not test_align_tree_sample"))
       #:phases
       '(modify-phases %standard-phases
          (add-after 'unpack 'use-cython
            (lambda _ (setenv "USE_CYTHON" "1")))
+         (add-before 'check 'build-extensions
+           (lambda _
+             ;; Cython extensions have to be built before running the tests.
+             (invoke "python" "setup.py" "build_ext" "--inplace")))
          (add-after 'unpack 'pandas-compatibility
            (lambda _
              (substitute* "biom/tests/test_table.py"
                (("import pandas.util.testing")
-                "import pandas.testing"))))
-         (add-after 'unpack 'disable-broken-tests
-           (lambda _
-             (substitute* "biom/tests/test_util.py"
-               (("^(.+)def test_biom_open_hdf5_no_h5py" m indent)
-                (string-append indent
-                               "@npt.dec.skipif(True, msg='Guix')\n"
-                               m)))
-             (substitute* "biom/tests/test_table.py"
-               (("^(.+)def test_from_hdf5_issue_731" m indent)
-                (string-append indent
-                               "@npt.dec.skipif(True, msg='Guix')\n"
-                               m))
-               ;; Unclear why this one fails.  There is no backtrace.
-               (("^(.+)def test_to_dataframe_is_sparse" m indent)
-                (string-append indent
-                               "@npt.dec.skipif(True, msg='Guix')\n"
-                               m))
-               ;; These need skbio, but that neeeds biom-format.
-               (("^(.+)def test_align_tree_intersect_obs" m indent)
-                (string-append indent
-                               "@npt.dec.skipif(True, msg='Guix')\n"
-                               m))
-               (("^(.+)def test_align_tree_intersect_tips" m indent)
-                (string-append indent
-                               "@npt.dec.skipif(True, msg='Guix')\n"
-                               m))
-               (("^(.+)def test_align_tree_sample" m indent)
-                (string-append indent
-                               "@npt.dec.skipif(True, msg='Guix')\n"
-                               m))))))))
+                "import pandas.testing")))))))
     (propagated-inputs
      (list python-anndata
            python-click
@@ -3555,7 +3537,7 @@ use-case, we encourage users to compose functions to achieve their goals.")
            ;;python-scikit-bio ;mutually recursive dependency
            python-scipy))
     (native-inputs
-     (list python-cython python-pytest python-pytest-cov python-nose))
+     (list python-cython python-pytest python-pytest-cov))
     (home-page "https://www.biom-format.org")
     (synopsis "Biological Observation Matrix (BIOM) format utilities")
     (description
