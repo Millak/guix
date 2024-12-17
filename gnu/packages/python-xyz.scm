@@ -20397,23 +20397,21 @@ templates into Python modules.")
 (define-public python-waitress
   (package
     (name "python-waitress")
-    (version "3.0.0")
+    (version "3.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "waitress" version))
        (sha256
         (base32
-         "18dq4bibsv6cfhv6a3b16w2xwycxqkkiwbb0vpcwsd21n1ws8p80"))))
+         "07y3xyx2006f2ni5d55byh3y7w4kcg9xww7vmfjasi0cmzralak8"))))
     (build-system pyproject-build-system)
     (arguments
      ;; https://github.com/Pylons/waitress/issues/443
      (list #:test-flags #~(list "-k" "not test_service_port")))
     (native-inputs
-     (list python-pytest
-           python-pytest-cov
-           python-setuptools
-           python-wheel))
+     (list python-coverage python-pytest python-pytest-cov
+           python-setuptools python-wheel))
     (home-page "https://github.com/Pylons/waitress")
     (synopsis "Waitress WSGI server")
     (description
