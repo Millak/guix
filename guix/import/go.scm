@@ -6,7 +6,7 @@
 ;;; Copyright © 2021-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
-;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2021, 2024 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2024 Christina O'Donnell <cdo@mutix.org>
 ;;;
@@ -38,7 +38,8 @@
   #:use-module (guix http-client)
   #:use-module (guix memoization)
   #:autoload   (htmlprag) (html->sxml)            ;from Guile-Lib
-  #:autoload   (guix base32) (bytevector->nix-base32-string)
+  #:autoload   (guix base32) (bytevector->nix-base32-string
+                              nix-base32-string->bytevector)
   #:autoload   (guix build utils) (mkdir-p)
   #:autoload   (guix ui) (warning)
   #:autoload   (gcrypt hash) (hash-algorithm sha256)
@@ -563,10 +564,19 @@ tag."
   (chmod cache #o700)
   (let-values (((checkout commit _)
                 (parameterize ((%repository-cache-directory cache))
-                  (update-cached-checkout url
-                                          #:ref
-                                          `(tag-or-commit . ,reference)))))
-    (file-hash* checkout #:algorithm algorithm #:recursive? #true)))
+                  (catch 'git-error
+                    (lambda ()
+                      (update-cached-checkout url
+                                              #:ref
+                                              `(tag-or-commit . ,reference)))
+                    (lambda (key err)
+                      (warning (G_ "failed to check out ~s from Git repository at '~a': ~a~%")
+                               reference url (git-error-message err))
+                      (values #f #f #f))))))
+        (if (and checkout commit)
+            (file-hash* checkout #:algorithm algorithm #:recursive? #true)
+            (nix-base32-string->bytevector
+             "0000000000000000000000000000000000000000000000000000"))))
 
 (define (vcs->origin vcs-type vcs-repo-url version subdir)
   "Generate the `origin' block of a package depending on what type of source
