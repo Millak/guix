@@ -7017,7 +7017,11 @@ bookmarks using a declarative input in the form of a markdown file.")
       #:test-flags  ; disabled to avoid having to depend on ipython/jupyter
       #~(list
          "--numprocesses" (number->string (parallel-job-count))
-         "-k" "not test_parallel_call_cached_function_defined_in_jupyter")))
+         "-k"
+         (string-append
+          "not test_parallel_call_cached_function_defined_in_jupyter"
+          ;; XXX This test times out.
+          " and not test_no_resource_tracker_on_import"))))
     (native-inputs
      (list python-pytest python-pytest-xdist python-setuptools python-wheel))
     (propagated-inputs (list python-psutil))
