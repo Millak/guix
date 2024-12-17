@@ -22844,11 +22844,11 @@ instead of #'FOO.
   (sbcl-package->ecl-package sbcl-nkeymaps))
 
 (define-public sbcl-nodgui
-  (let ((commit "dc3efed8f93d4955e59347824f8f6d018e1a22e0")
-        (revision "1"))
+  (let ((commit "9a1b2c6419adce2ba317497328276f8d63843279")
+        (revision "2"))
     (package
       (name "sbcl-nodgui")
-      (version (git-version "0.7.0.3" revision commit))
+      (version (git-version "0.7.2.0" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -22857,7 +22857,7 @@ instead of #'FOO.
                (commit commit)))
          (file-name (git-file-name "cl-nodgui" version))
          (sha256
-          (base32 "1kjbimzl9q74dz1fhl03n49607li55q6h0kdygfyr0n8cnf5638j"))))
+          (base32 "1qanhxn46bwq8a10v61n46q4j8avp7n1m2687bi2wdylz1pgakyq"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-clunit2))
@@ -22880,15 +22880,16 @@ instead of #'FOO.
              sbcl-trivial-garbage
              sbcl-zpng
              tk
-             tklib))
+             tklib
+             tcllib))
       (arguments
        (list #:phases
              #~(modify-phases %standard-phases
                  (add-after 'unpack 'fix-paths
                    (lambda* (#:key inputs #:allow-other-keys)
                      (substitute* "src/wish-communication.lisp"
-                       (("#-freebsd \"wish\"")
-                        (string-append "#-freebsd \""
+                       (("\\(guess-wish-interpreter-path\\)")
+                        (string-append "\""
                                        (search-input-file inputs "/bin/wish")
                                        "\""))))))))
       (synopsis "Common Lisp bindings for the Tk GUI toolkit")
