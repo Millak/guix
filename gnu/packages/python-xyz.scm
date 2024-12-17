@@ -19708,18 +19708,19 @@ for the module to work under Python 3.3.")
 (define-public python-colorama
   (package
    (name "python-colorama")
-   (version "0.4.4")
+   (version "0.4.6")
    (source
     (origin
      (method url-fetch)
      (uri (pypi-uri "colorama" version))
      (sha256
-      (base32 "16w62sm95hmh55rqxn4zwdz0bkh3fqm1qnz9cwi3s510iasb4har"))))
-   (build-system python-build-system)
+      (base32 "0i3fpq0w5mbfdpy3z9p5raw4fg17jxr6jwh5l8qhavpdnxf5ys88"))))
+   (build-system pyproject-build-system)
+   (native-inputs (list python-hatchling python-pytest))
+   (home-page "https://pypi.org/project/colorama/")
    (synopsis "Colored terminal text rendering for Python")
    (description "Colorama is a Python library for rendering colored terminal
 text.")
-   (home-page "https://pypi.org/project/colorama/")
    (license license:bsd-3)))
 
 (define-public python-monthdelta
