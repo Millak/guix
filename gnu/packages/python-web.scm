@@ -6870,7 +6870,7 @@ and fairly speedy.")
 (define-public python-uvicorn
   (package
     (name "python-uvicorn")
-    (version "0.32.1")
+    (version "0.34.0")
     (source
      (origin
        ;; PyPI tarball has no tests.
@@ -6880,7 +6880,7 @@ and fairly speedy.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0mrp87l2d5k2dcz07wj2vysjsa99lw5xp12a1a2xiciahg04w7ib"))))
+        (base32 "05lkxnpzmr0kik81kdcvavjvvc4d1lgmw88mr4vbwsqk147wgqbc"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -6893,7 +6893,8 @@ and fairly speedy.")
               ;; Maybe this <https://github.com/encode/uvicorn/issues/2466>.
               "--ignore=tests/supervisors/test_multiprocess.py")))
     (native-inputs
-     (list python-a2wsgi
+     (list nss-certs-for-test
+           python-a2wsgi
            python-hatchling
            python-httpx-bootstrap
            python-pytest
