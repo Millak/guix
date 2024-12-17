@@ -2981,46 +2981,13 @@ Python file for configuration.")
                    '( ;; These freeze the test suite
                      "parallel"
                      "parallel_live"
-
-                     ;; These fail with: Directory cannot be installed in
-                     ;; editable mode
-                     "skip_missing_interpreters"
-                     "skip_missing_interpreters_specified_env"
-                     ;; assert 0 == -1
-                     "config_skip_missing_interpreters"
-                     ;; KeyError: 'env'
-                     "legacy_cli_flags"
-                     ;; AssertionError: should be None, got code: 0
-                     "missing_interpreter_skip_on"
-                     "missing_interpreter_skip_off"
-                     ;; Unexplainable diff
-                     "skip_develop_mode"
-                     "show_config_exception"
+                     ;; Needs internet access
+                     "build_wheel_external"
+                     "run_installpkg_targz"
                      "python_generate_hash_seed"
                      ;; XXX Tries to call python-wrapper-3.10.7/bin/tox
-                     "call_as_exe"
-                     "usedevelop_with_nonexistent_basepython"))
-              " and ")
-             ;; XXX Our version of virtualenv is too old.
-             "--ignore-glob=tests/tox_env/python/virtual_env/*")
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'virtualenv-compatibility
-           (lambda _
-             (setenv "HOME" "/tmp")
-             ;; XXX: Our version of virtualenv does not like this extra
-             ;; keyword argument.
-             (substitute* "src/tox/tox_env/python/virtual_env/api.py"
-               (("session_via_cli\\(env_dir, options=None, setup_logging=False, env=env\\)")
-                "session_via_cli(env_dir, options=None, setup_logging=False)"))
-             ;; XXX: This is a real problem, but we cannot fix it without
-             ;; affecting thousands of packages.
-             (substitute* "pyproject.toml"
-               (("virtualenv>=20.26.6") "virtualenv>=20.3.0")
-               (("typing-extensions>=4.12.2") "typing-extensions>=4.10.0")
-               (("platformdirs>=4.3.6") "platformdirs>=4.2.0")
-               (("colorama>=0.4.6") "colorama>=0.4.4")
-               (("chardet>=5.2") "chardet>=5.1.0")))))))
+                     "call_as_exe"))
+              " and "))))
     (propagated-inputs
      (list python-cachetools
            python-chardet
