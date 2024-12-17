@@ -8842,6 +8842,32 @@ go-github-com-orisano-pixelmatch source.")))
                     "  This package provides an command line interface (CLI)
 tool."))))
 
+(define-public go-suah-dev-protect
+  (package
+    (name "go-suah-dev-protect")
+    (version "1.2.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/qbit/protect")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1f36w2435xivggl4d31813ggk37ya9v8q6w8ygbp35ypzwfgzlh3"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "suah.dev/protect"))
+    (home-page "https://codeberg.org/qbit/protect")
+    (synopsis "Wrapper for OpenBSD's pledge and unveil system calls.")
+    (description
+     "Package protect is a wrapper for OpenBSD's @code{pledge} and @code{unveil}
+system calls.
+
+It allows one to safely call Unveil / Pledge on non-OpenBSD operating systems.")
+    (license license:isc)))
+
 (define-public go-tengo
   (package
     (inherit go-github-com-d5-tengo-v2)
