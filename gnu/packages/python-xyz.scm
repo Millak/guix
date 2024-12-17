@@ -27354,17 +27354,17 @@ such as lines length, trailing spaces, indentation, etc.")
 (define-public python-yapf
   (package
     (name "python-yapf")
-    (version "0.32.0")
+    (version "0.43.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "yapf" version))
        (sha256
         (base32
-         "06vxqski7qss2h2iy4fd04czym0cwjrzkaab9h03wzpg6xfhixd3"))))
+         "13i1sn0jfm7snfdzbyrawxl457bdmgsxkmg0n8h99zzdpwjamlq0"))))
     (build-system pyproject-build-system)
     (propagated-inputs
-     (list python-importlib-metadata python-platformdirs python-tomli))
+     (list python-platformdirs python-tomli))
     (native-inputs
      (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/google/yapf")
