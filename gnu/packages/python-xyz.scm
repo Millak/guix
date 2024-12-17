@@ -30287,24 +30287,16 @@ distribution.")
 (define-public python-gast
   (package
     (name "python-gast")
-    (version "0.5.3")
+    (version "0.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "gast" version))
        (sha256
-        (base32 "1sidaczriw54pfkj3523y9j9q2harrczc1qqgnfaylz641ca5gng"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (when tests?
-                        (invoke "pytest" "-vv")))))))
+        (base32 "1yxinr3xvxf0cryfrfr9q3rgvrki5y310lsigg5ccyicsc057z48"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest))
-    (propagated-inputs
-     (list python-astunparse))
+     (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/serge-sans-paille/gast/")
     (synopsis "Generic Python AST that abstracts the underlying Python version")
     (description
