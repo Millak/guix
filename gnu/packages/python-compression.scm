@@ -9,6 +9,8 @@
 ;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2023, 2024 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2024 TakeV <takev@disroot.org>
+;;; Copyright © 2023 Ivan Vilata i Balaguer <ivan@selidor.net>
+;;; Copyright © 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -47,6 +49,7 @@
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-crypto)
+  #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages rust-apps)
   #:use-module (gnu packages sphinx))
@@ -93,6 +96,56 @@ relatively low entropy, like sparse data, time series, grids with
 regular-spaced values, etc.
 
 This Python package wraps the Blosc library.")
+    (license license:bsd-3)))
+
+(define-public python-blosc2
+  (package
+    (name "python-blosc2")
+    (version "2.7.1")                   ;3.0.0 requires numpy>=1.25
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "blosc2" version))
+       (sha256
+        (base32 "1s4gpdf1hfbw5w3hpx0g8bfwjrws1b8wgmh7snafh5ivai0lvnrl"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (replace 'build
+                          (lambda* (#:key inputs #:allow-other-keys)
+                            (invoke "python" "setup.py" "build"
+                                    "-DUSE_SYSTEM_BLOSC2=ON")))
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (invoke "python" "-m" "pytest" "-vv")))))))
+    (inputs (list c-blosc2))
+    (propagated-inputs
+     (list python-msgpack
+           python-ndindex
+           python-numexpr
+           python-numpy
+           python-py-cpuinfo))
+    (native-inputs
+     (list cmake-minimal
+           pkg-config
+           python-cython-3
+           python-pytest
+           python-scikit-build))
+    (home-page "https://github.com/blosc/python-blosc2")
+    (synopsis "Python wrapper for the Blosc2 data compressor library")
+    (description
+     "Blosc2 is a high performance compressor optimized for binary
+data.  It has been designed to transmit data to the processor cache faster
+than the traditional, non-compressed, direct memory fetch approach via a
+@code{memcpy()} system call.
+
+Python-Blosc2 wraps the C-Blosc2 library, and it aims to leverage its new API
+so as to support super-chunks, multi-dimensional arrays, serialization and
+other features introduced in C-Blosc2.
+
+Python-Blosc2 also reproduces the API of Python-Blosc and is meant to be able
+to access its data, so it can be used as a drop-in replacement.")
     (license license:bsd-3)))
 
 (define-public python-multivolumefile
