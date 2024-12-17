@@ -1666,49 +1666,44 @@ y, z)}.")
 (define-public python-pythran
   (package
     (name "python-pythran")
-    (version "0.11.0")
+    (version "0.17.0")
     (home-page "https://github.com/serge-sans-paille/pythran")
     (source (origin
               (method git-fetch)
               (uri (git-reference (url home-page) (commit version)))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "0cm7wfcyvkp1wmq7n1lyf2d3sj6158jf63bagjpjmfnjwij19n0p"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  ;; Remove bundled Boost and xsimd.
-                  (delete-file-recursively "third_party")))))
-    (build-system python-build-system)
+               (base32 "1rm9lfbz5qvah1m0rr5gaaahkf1gzwlw1ysvym2l2yh0clglav94"))))
+    (build-system pyproject-build-system)
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'do-not-install-third-parties
-                 (lambda _
-                   (substitute* "setup.py"
-                     (("third_parties = .*")
-                      "third_parties = []\n"))))
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     ;; Remove compiler flag that trips newer GCC:
-                     ;; https://github.com/serge-sans-paille/pythran/issues/908
-                     (substitute* "pythran/tests/__init__.py"
-                       (("'-Wno-absolute-value',")
-                        ""))
-                     (setenv "HOME" (getcwd))
-                     ;; This setup is modelled after the upstream CI system.
-                     (call-with-output-file ".pythranrc"
-                       (lambda (port)
-                         (format port "[compiler]\nblas=openblas~%")))
-                     (invoke "pytest" "-vv"
-                             (string-append "--numprocesses="
-                                            (number->string
-                                             (parallel-job-count)))
-                             "pythran/tests/test_cases.py")))))))
+     (list
+      #:test-flags
+      '(list (string-append "--numprocesses=" (number->string
+                                               (parallel-job-count)))
+             ;; XXX There are lots of tests of the format
+             ;; pythran/tests/test_*.py, but they cannot easily be selected.
+             "pythran/tests/test_typing.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; Remove compiler flag that trips newer GCC:
+                ;; https://github.com/serge-sans-paille/pythran/issues/908
+                (substitute* "pythran/tests/__init__.py"
+                  (("'-Wno-absolute-value',") ""))
+                (setenv "HOME" (getcwd))
+                ;; This setup is modelled after the upstream CI system.
+                (call-with-output-file ".pythranrc"
+                  (lambda (port)
+                    (format port "[compiler]\nblas=openblas~%")))))))))
     (native-inputs
      ;; For tests.
-     (list openblas python-pytest python-pytest-xdist))
+     (list openblas
+           python-pytest
+           python-pytest-xdist
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list boost xsimd                  ;headers need to be available
            python-beniget python-gast python-numpy python-ply))
