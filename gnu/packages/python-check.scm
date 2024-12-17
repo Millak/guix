@@ -51,6 +51,7 @@
   #:use-module (gnu packages openstack)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
@@ -2297,7 +2298,7 @@ them using any Python VM with basically no runtime overhead.")
 (define-public python-nptyping
   (package
     (name "python-nptyping")
-    (version "2.0.0")
+    (version "2.5.0")
     (source (origin
               (method git-fetch)        ;pypi only contains a binary wheel
               (uri (git-reference
@@ -2306,23 +2307,43 @@ them using any Python VM with basically no runtime overhead.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0839mcrv5jljq9k9124ssnl1hc1inbxwlwjk72imabsbqssjy9rb"))))
-    (build-system python-build-system)
+                "0m6iq98qi9pl5hcc5k99bvy5w293vrlsdnimxl020i60rfnihgl7"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'set-source-date-epoch
-           (lambda _
-             ;; Otherwise the wheel building test would fail with "ZIP does
-             ;; not support timestamps before 1980".
-             (setenv "SOURCE_DATE_EPOCH" "315532800"))))))
+     (list
+      #:test-flags
+      #~(list
+         ;; Multiple failures due to undefined names (typing package must be
+         ;; too outdated, or perhaps they use a newer pandas).
+         "--ignore=tests/test_mypy.py"
+         "--ignore=tests/pandas_/test_mypy_dataframe.py"
+         "--ignore=tests/pandas_/test_fork_sync.py" ;requires connectivity
+         ;; This test requires 'python-pyright', not packaged.
+         "--ignore=tests/test_pyright.py"
+         ;; This one fails with "Unexpected argument of type <class 'tuple'>".
+         "--ignore=tests/test_typeguard.py"
+         ;; This one runs pip and fails.
+         "--ignore=tests/test_wheel.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-source-date-epoch
+            (lambda _
+              ;; Otherwise the wheel building test would fail with "ZIP does
+              ;; not support timestamps before 1980".
+              (setenv "SOURCE_DATE_EPOCH" "315532800"))))))
     (native-inputs
      (list python-beartype
+           python-feedparser
            python-mypy
+           python-pandas
+           python-pytest
            python-setuptools
            python-typeguard
            python-wheel))
-    (propagated-inputs (list python-numpy python-typing-extensions))
+    (propagated-inputs
+     (list python-numpy
+           python-typing-extensions
+           python-pandas-stubs))
     (home-page "https://github.com/ramonhagenaars/nptyping")
     (synopsis "Type hints for Numpy")
     (description "This package provides extensive dynamic type checks for
