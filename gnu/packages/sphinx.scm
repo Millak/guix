@@ -17,7 +17,7 @@
 ;;; Copyright © 2021 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Hugo Lecomte <hugo.lecomte@inria.fr>
-;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;;
@@ -818,29 +818,23 @@ introspection of @code{zope.interface} instances in code.")
 (define-public python-sphinx-prompt
   (package
     (name "python-sphinx-prompt")
-    (version "1.5.0")
+    (version "1.9.0")
     (source
      (origin
-       (method git-fetch)               ; no source release in PyPI
-       (uri (git-reference
-             (url "https://github.com/sbrunner/sphinx-prompt")
-             (commit version)))
-       (file-name (git-file-name name version))
+       (method url-fetch)
+       (uri (pypi-uri "sphinx_prompt" version))
        (sha256
-        (base32 "0x9wmgf04rzivbzp7jv1b7fkhkpi02lpk5w1qf4i7bcgih00ym8a"))
-       (patches
-         (search-patches "python-sphinx-prompt-docutils-0.19.patch"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "python" "-m" "pytest")))))))
-    (native-inputs
-     (list python-pytest python-sphinx))
+        (base32 "18cmx6d5582jdaq32vnl1slfkm2zhr0raz8nkc57ikkd8rnkq6s7"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;no tests in pypi sdist
+    (native-inputs (list python-poetry-core))
+    (propagated-inputs
+     (list python-certifi
+           python-docutils
+           python-idna
+           python-pygments
+           python-sphinx
+           python-urllib3))
     (home-page "https://github.com/sbrunner/sphinx-prompt")
     (synopsis "Sphinx directive to add unselectable prompt")
     (description
