@@ -258,7 +258,8 @@ indexes.")
     (propagated-inputs (list python-devpi-client python-devpi-server
                              python-typing-extensions))
     (native-inputs
-     (list python-covdefaults
+     (list nss-certs-for-test
+           python-covdefaults
            python-hatchling
            python-hatch-vcs
            python-httpx
