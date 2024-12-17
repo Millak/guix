@@ -21454,7 +21454,8 @@ respectively.")
     (propagated-inputs
      (list python-pytoolconfig))
     (native-inputs
-     (list python-pre-commit
+     (list python-pip
+           python-pre-commit
            python-pytest
            python-pytest-cov
            python-pytest-timeout
