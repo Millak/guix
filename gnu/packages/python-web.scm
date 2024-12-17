@@ -8962,24 +8962,27 @@ translate entities on HTML strings, among other things.")
 (define-public python-webcolors
   (package
     (name "python-webcolors")
-    (version "1.11.1")
+    (version "24.11.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "webcolors" version))
        (sha256
-        (base32 "1rkda75h2p65zx6r84c9mjavn4xpviqvqrklvdvcklapd5in1wvn"))))
-    (build-system python-build-system)
+        (base32 "1xl0vn4xa03vjwx6fj19q9kgb94g65gvdf3p0ivsy0i2ydldgczc"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "pytest")))))))
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'patch-pyproject
+           (lambda _
+             ;; XXX Our version of python-pdm-backend does not recognize
+             ;; "dependency-groups", but is fine with the bogus
+             ;; "tool.whatever".
+             (substitute* "pyproject.toml"
+               (("\\[dependency-groups\\]") "[tool.whatever]")))))))
     (native-inputs
-     (list python-pytest))
+     (list python-pdm-backend python-pytest))
     (home-page "https://github.com/ubernostrum/webcolors")
     (synopsis "HTML/CSS color definitions library")
     (description "@code{python-webcolors} is a module for working with
