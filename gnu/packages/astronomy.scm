@@ -5159,7 +5159,8 @@ Telescope Science Institute} image array manipulation functions.")
               ;; Cython extensions have to be built before running the tests.
               (invoke "python" "setup.py" "build_ext" "--inplace"))))))
     (propagated-inputs (list python-numpy))
-    (native-inputs (list python-pytest python-setuptools-scm))
+    (native-inputs (list python-pytest python-setuptools python-wheel
+                         python-setuptools-scm))
     (home-page "https://stsciimagestats.readthedocs.io/en/latest/")
     (synopsis "Compute sigma-clipped statistics on data arrays")
     (description
