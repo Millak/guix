@@ -5419,6 +5419,7 @@ any Python package.")
     (build-system pyproject-build-system)
     (propagated-inputs (list python-appdirs python-argcomplete python-colorama
                              python-halo python-spinners))
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/clueboard/milc")
     (synopsis "Python library for command line interface programs")
     (description "MILC is a Python library for developing command line
