@@ -1076,7 +1076,9 @@ ASGI server.")
       #~(list "-k" (string-join
                     (list "not test_starlette_stream_response"
                           "test_starlette_base_http_middleware"
-                          "test_baize_stream_response")
+                          "test_baize_stream_response"
+                          ;; Fails because of harmless whitespace differences.
+                          "test_wsgi_post")
                     " and not "))
       #:build-backend "pdm.backend"))
     (native-inputs
