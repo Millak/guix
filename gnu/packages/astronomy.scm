@@ -821,18 +821,18 @@ backward), and manual time control
                (version-list (string-split version #\.))
                (name+version (format #f "~a_~{~a.~a~a~}" name version-list)))
           (string-append "mirror://sourceforge/healpix/"
-                         name+version "/" name+version "_" "2022Jul28.tar.gz")))
+                         name+version "/" name+version "_" "2024Nov13.tar.gz")))
        (sha256
         (base32 sha256-base32-hash ))))
 
 (define-public healpix
   (package
     (name "healpix")
-    (version "3.8.2")
+    (version "3.8.3")
     (source
      (healpix-source
       #:version version
-      #:sha256-base32-hash "09x1lafq01gzk16yvmz2pdhrxnqfjp3b2p9hlgy0dbrdg82ryqj7"))
+      #:sha256-base32-hash "1nhxad4zbk6qm6zblvyvyaavfq7vy8asq150n83dfvsrzj7c2xl8"))
     (build-system gnu-build-system)
     (arguments
      (list
