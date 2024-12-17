@@ -33,7 +33,7 @@
 ;;; Copyright © 2021 Antoine Côté <antoine.cote@posteo.net>
 ;;; Copyright © 2021 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Ahmad Jarara <git@ajarara.io>
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
@@ -2802,6 +2802,46 @@ large datasets on-disk or in-memory, but also to accelerate memory-bound
 computations.")
     ;; Blosc itself is released under BSD-3 but it incorporates code under
     ;; other non-copyleft licenses.
+    (license license:bsd-3)))
+
+(define-public c-blosc2
+  (package
+    (name "c-blosc2")
+    (version "2.15.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Blosc/c-blosc2")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "17kqwvw2n6bgzidi8f5906s5hc9wm1lbfbpd491gf7csxjck99sx"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags #~(list "-DBUILD_STATIC=OFF"
+                                     "-DDEACTIVATE_AVX2=ON"
+                                     "-DDEACTIVATE_AVX512=ON"
+                                     "-DPREFER_EXTERNAL_LZ4=ON"
+                                     "-DPREFER_EXTERNAL_ZLIB=ON"
+                                     "-DPREFER_EXTERNAL_ZSTD=ON")))
+    (inputs (list lz4 zlib `(,zstd "lib")))
+    (home-page "https://blosc.org")
+    (synopsis "Blocking, shuffling and lossless compression library")
+    (description
+     "Blosc is a high performance compressor optimized for binary
+data (i.e. floating point numbers, integers and booleans, although it can
+handle string data too).  It has been designed to transmit data to the
+processor cache faster than the traditional, non-compressed, direct memory
+fetch approach via a @code{memcpy()} system call.  Blosc main goal is not just
+to reduce the size of large datasets on-disk or in-memory, but also to
+accelerate memory-bound computations.
+
+C-Blosc2 is the new major version of C-Blosc, and is backward compatible with
+both the C-Blosc1 API and its in-memory format.  However, the reverse thing is
+generally not true for the format; buffers generated with C-Blosc2 are not
+format-compatible with C-Blosc1 (i.e. forward compatibility is not
+supported).")
     (license license:bsd-3)))
 
 (define-public ecm
