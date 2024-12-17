@@ -20634,17 +20634,18 @@ CPUs required per given input size, and parameters for CWL workflows.")
 (define-public python-beniget
   (package
     (name "python-beniget")
-    (version "0.4.1")
+    (version "0.4.2.post1")
     (home-page "https://github.com/serge-sans-paille/beniget")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "beniget" version))
        (sha256
-        (base32 "035c4f78yllpw2c5p1w92520rilm7nnpsqh7yvi3qmfhi8xlnmbm"))))
-    (build-system python-build-system)
+        (base32 "1bjjl12pqbz4amnn8wvcpd4zjrx6cpw04s586gn18zjywqvqa9d0"))))
+    (build-system pyproject-build-system)
     (propagated-inputs
      (list python-gast))
+    (native-inputs (list python-setuptools python-wheel))
     (synopsis "Extract semantic information about static Python code")
     (description
      "Beniget is a collection of analyzers for Python @acronym{AST,
