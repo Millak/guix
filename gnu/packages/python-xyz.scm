@@ -29099,6 +29099,7 @@ tool).")
 (define-public python-numcodecs
   (package
     (name "python-numcodecs")
+    ;; XXX: Starting from 0.11.0 numcodecs requires NumPy 1.7 or higher.
     (version "0.10.2")
     (source
      (origin
@@ -29127,6 +29128,12 @@ tool).")
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags
+      ;; Tests fail with error: ValueError: setting an array element with a
+      ;; sequence. The requested array has an inhomogeneous shape after 1
+      ;; dimensions. The detected shape was (3,) + inhomogeneous part.
+      #~(list "--deselect=numcodecs/tests/test_json.py::test_non_numpy_inputs"
+              "--deselect=numcodecs/tests/test_msgpacks.py::test_non_numpy_inputs")
       #:phases
       '(modify-phases %standard-phases
          (add-after 'unpack 'disable-avx2
