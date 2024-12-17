@@ -7180,7 +7180,7 @@ Some things HTTP Core does do:
 (define-public python-httpx
   (package
     (name "python-httpx")
-    (version "0.27.2")
+    (version "0.28.1")
     (source
      (origin
        ;; PyPI tarball does not contain tests.
@@ -7190,7 +7190,7 @@ Some things HTTP Core does do:
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1jd5w3nhpvrbj66nk2njvfnk0g1mkxivwa52j2yyhcna1xafsk1p"))))
+        (base32 "00d6rb21xwazwb0sj68zhra0qxxcwkd0vv7bg3k1jg94dmk2w7xl"))))
     (build-system pyproject-build-system)
     (arguments
      (list
