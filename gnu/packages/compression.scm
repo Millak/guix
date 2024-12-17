@@ -2791,7 +2791,7 @@ chunks.")
          "-DPREFER_EXTERNAL_ZSTD=ON")))
     (inputs
      (list lz4 snappy zlib `(,zstd "lib")))
-    (home-page "https://blosc.org")
+    (home-page "https://www.blosc.org/")
     (synopsis "Blocking, shuffling and lossless compression library")
     (description
      "Blosc is a high performance compressor optimized for binary data. It has
