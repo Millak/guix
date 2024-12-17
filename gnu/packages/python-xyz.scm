@@ -39027,13 +39027,13 @@ interfaces.")
 (define-public python-islenska
   (package
     (name "python-islenska")
-    (version "1.0.0")
+    (version "1.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "islenska" version))
        (sha256
-        (base32 "0fdp90mzy0sd4kyw8kd8kybd1ni765fvqn8hz2wx5sqbjjkm4d5k"))))
+        (base32 "1fhpyqn8z8g4hrsxndspxqm6973c7cwy0cms2ql87xcmh5a86ky7"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-cffi python-typing-extensions))
     (native-inputs (list python-setuptools python-wheel))
