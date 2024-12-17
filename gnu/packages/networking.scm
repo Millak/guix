@@ -4670,7 +4670,7 @@ QUIC protocol.")
 (define-public yggdrasil
   (package
     (name "yggdrasil")
-    (version "0.5.10")
+    (version "0.5.11")
     (source
      (origin
        (method git-fetch)
@@ -4681,7 +4681,7 @@ QUIC protocol.")
          (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0dd5181p07xshbd7q6p0hf3cvq1ahq6q36qjij0vzdil8dka6fmx"))
+        (base32 "0l7lvqmvzw89wv53lpxa44k7y148y7japvy77yir4467ghdmnvyk"))
       (patches (search-patches "yggdrasil-extra-config.patch"))))
     (build-system go-build-system)
     (arguments
@@ -4729,7 +4729,8 @@ QUIC protocol.")
            go-golang-org-x-net
            go-golang-org-x-sys
            go-golang-org-x-text
-           go-golang-zx2c4-com-wireguard))
+           go-golang-zx2c4-com-wireguard
+           go-suah-dev-protect))
     (home-page "https://yggdrasil-network.github.io/blog.html")
     (synopsis
      "Experiment in scalable routing as an encrypted IPv6 overlay network")
