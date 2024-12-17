@@ -5039,7 +5039,7 @@ spherical polygons that represent arbitrary regions of the sky.")
 (define-public python-spisea
   (package
     (name "python-spisea")
-    (version "2.1.11")
+    (version "2.1.13")
     (source
      (origin
        (method git-fetch)
@@ -5048,7 +5048,7 @@ spherical polygons that represent arbitrary regions of the sky.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1xgmbg1c0lijvbsfiicjl2r4y7prm47qnmj86w69wa8xxsz7n2ph"))))
+        (base32 "1i25csfcism3b5v74kqp0a3i44qkhwkh61ag65l69krm5w3yvygv"))))
     (build-system pyproject-build-system)
     (arguments
      (list
