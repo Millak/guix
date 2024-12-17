@@ -23636,8 +23636,10 @@ Design spec without sacrificing ease of use or application performance.")
     (native-inputs
      (list python-pytest
            python-pytest-asyncio
+           python-pytest-cov
            python-pytest-timeout
-           python-setuptools))
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-typing-extensions))
     (home-page "https://github.com/aio-libs/async-lru")
