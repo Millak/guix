@@ -29254,14 +29254,14 @@ codecs for use in data storage and communication applications.")
 (define-public python-zarr
   (package
     (name "python-zarr")
-    (version "2.17.2")
+    (version "2.18.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "zarr" version))
        (sha256
         (base32
-         "1kjj0pk0s6306ljrig77m39zqdy32ch4nyja5lalab9l9v5sdfic"))))
+         "1fr41j8mxhbj7psn00416qs3nm12djhhmybgpqdax0q6vpg0wy9p"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -29273,6 +29273,12 @@ codecs for use in data storage and communication applications.")
               "-k not test_lazy_loader and not open_array")
       #:phases
       #~(modify-phases %standard-phases
+          (add-before 'build 'set-version
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("^version_file.*") "")
+                (("dynamic = \\[\"version\"\\]")
+                 (string-append "version = \"" #$version "\"")))))
           (add-after 'unpack 'disable-service-tests
             (lambda _
               (setenv "ZARR_TEST_ABS" "0")
@@ -29281,16 +29287,21 @@ codecs for use in data storage and communication applications.")
     (propagated-inputs
      (list python-asciitree
            python-fasteners
+           python-ipywidgets
+           python-notebook
            python-numcodecs
-           python-numpy))
+           python-numpy
+           python-numpydoc
+           python-pydata-sphinx-theme))
     (native-inputs
-     (list python-fsspec
-           python-pytest
-           python-h5py
-           python-pytest-doctestplus
-           python-pytest-timeout
+     (list python-pytest
            python-pytest-xdist
-           python-setuptools-scm
+           python-pytest-doctestplus
+           python-sphinx
+           python-sphinx-copybutton
+           python-sphinx-design
+           python-sphinx-issues
+           python-setuptools
            python-wheel))
     (home-page "https://github.com/zarr-developers/zarr-python")
     (synopsis "Chunked, compressed, N-dimensional arrays for Python")
