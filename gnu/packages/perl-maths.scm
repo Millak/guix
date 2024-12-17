@@ -21,6 +21,7 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix build-system perl)
+  #:use-module (gnu packages)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gd)
   #:use-module (gnu packages gl)
@@ -85,7 +86,9 @@ It implements the data type \"matrix of real numbers\" (and consequently also
        (uri (string-append "https://www.cpan.org/modules/by-module/PDL/PDL-" version
                            ".tar.gz"))
        (sha256
-        (base32 "1zkp5pm351qjr6sb3xivpxy5vjfl72ns0hb4dx5vpm8xvgp7p92i"))))
+        (base32 "1zkp5pm351qjr6sb3xivpxy5vjfl72ns0hb4dx5vpm8xvgp7p92i"))
+       (patches
+        (search-patches "pdl-2.019-glut-bitmap-fonts.patch"))))
     (build-system perl-build-system)
     (arguments
      `(#:phases

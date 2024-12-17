@@ -1,0 +1,43 @@
+Author: Danny Milosavljevic <dannym@friendly-machines.com>
+Date: 2024-12-17 21:00:00 CET
+Subject: Make bitmap fonts work even in glut
+License: Same as Perl.
+
+--- orig/PDL-2.019/Graphics/TriD/POGL/OpenGL.pm	2018-05-05 19:56:29.000000000 +0200
++++ PDL-2.019/Graphics/TriD/POGL/OpenGL.pm	2024-12-17 22:56:30.043984134 +0100
+@@ -358,9 +358,34 @@
+ 
+ =cut
+ 
++use OpenGL qw(GL_COMPILE GLUT_BITMAP_9_BY_15 GLUT_BITMAP_8_BY_13);
++use constant GLUT_FONTS => {
++    '9x15' => GLUT_BITMAP_9_BY_15,
++    '8x13' => GLUT_BITMAP_8_BY_13,
++};
++
+ sub glpRasterFont{
+    my($this,@args) = @_;
+-   OpenGL::glpRasterFont($args[0],$args[1],$args[2],$this->{Display});
++   # see also OpenGL::glpPrintString($::lb,$header);
++   if ( $this->{window_type} eq 'glut' ) {
++       my $font_name = $args[0] || '8x13';
++       my $font = GLUT_FONTS->{$font_name} || GLUT_FONTS->{'8x13'};
++       my $start_char = $args[1] || 0;
++       my $num_chars = $args[2] || 128;
++       my $cache_key = "${font_name};${start_char};${num_chars}";
++       unless (exists $this->{font_cache}{$cache_key}) {
++           my $base = OpenGL::glGenLists($num_chars);
++           for my $i (0..($num_chars - 1)) {
++               OpenGL::glNewList($base + $i, GL_COMPILE);
++               OpenGL::glutBitmapCharacter($font, $start_char + $i);
++               OpenGL::glEndList();
++           }
++           $this->{font_cache}{$cache_key} = $base;
++       }
++       return $this->{font_cache}{$cache_key};
++   } else {
++       OpenGL::glpRasterFont($args[0],$args[1],$args[2],$this->{Display});
++   }
+ }
+ 
+ 
