@@ -33733,18 +33733,8 @@ and have a maximum lifetime built-in.")
      (list
       #:test-flags
       ;; Disable some failing tests.
-      #~(list "-k" (string-append "not test_print_subprocess"
-                                  " and not test_simple")
-              "--ignore=tests/test_insert_assert.py")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'relax-requirements
-            (lambda _
-              (substitute* "pyproject.toml"
-                ;; Pygments 2.12.0 is available.
-                (("2.15.0") "2.12.0")
-                ;; executing 0.8.2 is available.
-                (("1.1.1") "0.8.2")))))))
+      '(list "-k" "not test_print_subprocess"
+             "--ignore=tests/test_insert_assert.py")))
     (native-inputs
      (list python-hatchling python-pytest python-pytest-mock))
     (propagated-inputs
