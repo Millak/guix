@@ -38364,7 +38364,7 @@ colors.")
                ;; TODO: After updating python-packaging, fix this.
                (delete 'sanity-check))))
     (propagated-inputs (list python-importlib-metadata python-packaging))
-    (native-inputs (list python-pytest))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://mido.readthedocs.io/en/stable/")
     (synopsis "MIDI Objects for Python")
     (description "This library is for working with MIDI 1.0 ports, messages and
