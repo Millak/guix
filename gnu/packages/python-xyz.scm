@@ -8553,22 +8553,26 @@ Server (PLS).")
 (define-public python-lsp-server
   (package
     (name "python-lsp-server")
-    (version "1.11.0")
+    (version "1.12.0")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "python-lsp-server" version))
+       (uri (pypi-uri "python_lsp_server" version))
        (sha256
         (base32
-         "11lf7c9dpf8jzz5y7dllz8l1lka887m9a79xbazy8lkq7zxxdvc9"))))
+         "0fq5vkwkvn29rwf5l19iicmj913franc6q8ymjdvs0ys53qkd8xn"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      '(list "-k" "not test_pyqt_completion"
-             ;; This could be a real issue due to our old version of
-             ;; pydocstyle.
-             "--ignore=test/plugins/test_pydocstyle_lint.py")
+      '(list "-c" "/dev/null"           ;avoid coverage
+             "-k"
+             (string-append
+              "not test_pyqt_completion " ;avoid pyqt5
+              ;; This test fails with "AssertionError: assert 'isabs(s)' ==
+              ;; 'commonprefix(m)'" (see:
+              ;; https://github.com/python-lsp/python-lsp-server/issues/602).
+              "and not test_jedi_completion_with_fuzzy_enabled"))
       #:phases
       '(modify-phases %standard-phases
          (add-before 'check 'set-HOME
@@ -8587,21 +8591,20 @@ Server (PLS).")
     (native-inputs
      (list python-autopep8
            python-flake8
-           python-coverage
            python-flaky
            python-matplotlib
            python-numpy
            python-pandas
            python-pylint
            python-pytest
-           python-pytest-cov
            python-rope
            python-setuptools
+           python-setuptools-scm
            python-wheel))
     (home-page "https://github.com/python-lsp/python-lsp-server")
     (synopsis "Python implementation of the Language Server Protocol")
     (description
-"The Python Language Server @command{pylsp} is an implementation of the
+     "The Python Language Server @command{pylsp} is an implementation of the
 Python 3 language specification for the Language Server Protocol (LSP).
 This tool is used in text editing environments to provide a complete
 and integrated feature-set for programming Python effectively.")
