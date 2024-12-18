@@ -508,6 +508,28 @@ comparison operators, as defined in the original
 @url{http://goessner.net/articles/JsonPath/, JSONPath} proposal.")
     (license license:asl2.0)))
 
+(define-public python-pyxdameraulevenshtein
+  (package
+    (name "python-pyxdameraulevenshtein")
+    (version "1.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pyxdameraulevenshtein" version))
+       (sha256
+        (base32 "07nhds44ry9mchqjqjdnq2asp13y9pqc8003pkydvb3dah7wrvhv"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-cython
+           python-setuptools
+           python-wheel))
+    (home-page "https://github.com/lanl/pyxDamerauLevenshtein")
+    (synopsis "Damerau-Levenshtein edit distance algorithm")
+    (description
+     "@code{pyxDamerauLevenshtein} implements the Damerau-Levenshtein (DL)
+edit distance algorithm for Python in Cython for high performance.")
+    (license license:bsd-3)))
+
 (define-public python-xmldiff
   (package
     (name "python-xmldiff")
