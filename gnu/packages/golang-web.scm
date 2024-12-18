@@ -6875,6 +6875,30 @@ but implement that subset with little to no assumption about the structure of
 the code or routes.")
     (license license:asl2.0)))
 
+(define-public go-modernc-org-httpfs
+  (package
+    (name "go-modernc-org-httpfs")
+    (version "1.0.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/cznic/httpfs")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01q5rvhxmrd45h0ljh4185wlly7rxv6vvh28d2shsyan4nj67zf1"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "modernc.org/httpfs"))
+    (home-page "https://gitlab.com/cznic/httpfs")
+    (synopsis "HTTP file system implementation in Golang")
+    (description
+     "Package httpfs implements @code{http.FileSystem} on top of a
+@code{map[string]string}.")
+    (license license:bsd-3)))
+
 (define-public go-modernc-org-token
   (package
     (name "go-modernc-org-token")
