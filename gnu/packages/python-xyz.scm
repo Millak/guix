@@ -482,6 +482,29 @@ including arbitrary-length lists, records, mixed types, and missing data,
 using NumPy-like idioms.")
     (license license:bsd-3)))
 
+(define-public python-distance
+  (package
+    (name "python-distance")
+    (version "0.1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "Distance" version))
+       (sha256
+        (base32 "0la51nzzqrkisshwbk2wpviisqqzylwkz9qsa9f3y05nyn27b030"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
+    (home-page "https://github.com/doukremt/distance")
+    (synopsis "Utilities for comparing sequences")
+    (description
+     "This package provides helpers for computing similarities between
+arbitrary sequences. Included metrics are Levenshtein, Hamming, Jaccard, and
+Sorensen distance, plus some bonuses.  All distance computations are
+implemented in pure Python, and most of them are also implemented in C.")
+    (license license:gpl2+)))
+
 (define-public python-jsonpath-ng
   (package
     (name "python-jsonpath-ng")
