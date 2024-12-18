@@ -2184,7 +2184,7 @@ of dates.")
 (define-public python-extinction
   (package
     (name "python-extinction")
-    (version "0.4.6")
+    (version "0.4.7")
     (source
      (origin
        (method git-fetch) ; No tests in PyPI
@@ -2193,7 +2193,7 @@ of dates.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1adxq926jd469mxm6llvsljgf2jqb06905h61i9qzc7m2yrm4wga"))))
+        (base32 "04k9mfbijf2nwzhh9sxpkswxk7077d7gbc6nq4hjb51h8rslcjg2"))))
     (build-system pyproject-build-system)
     (arguments
      (list
