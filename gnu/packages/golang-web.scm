@@ -6875,6 +6875,30 @@ but implement that subset with little to no assumption about the structure of
 the code or routes.")
     (license license:asl2.0)))
 
+(define-public go-modernc-org-token
+  (package
+    (name "go-modernc-org-token")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/cznic/token")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1vvnnfppmgq7hxmw18dx90fg6khwnxpwn9kwwf0hwxsckxfb5icv"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "modernc.org/token"))
+    (home-page "https://modernc.org/token")
+    (synopsis "Variant of the Golang stdlib package @code{token}")
+    (description
+     "Package token is variant of the stdlib package token with types
+@code{FileSet} and Token removed.")
+    (license license:bsd-3)))
+
 (define-public go-mvdan-cc-xurls-v2
   (package
     (name "go-mvdan-cc-xurls-v2")
