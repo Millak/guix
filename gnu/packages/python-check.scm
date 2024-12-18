@@ -406,7 +406,8 @@ nosetests, etc...) in Python projects.")
            python-mypy
            python-numpy
            python-setuptools
-           python-typeguard))
+           python-typeguard
+           python-wheel))
     (propagated-inputs
      (list python-asttokens
            python-typing-extensions))
