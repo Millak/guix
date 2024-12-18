@@ -8719,7 +8719,7 @@ Compatible with Cisco VPN concentrators configured to use IPsec.")
 (define-public network-manager-openconnect
   (package
     (name "network-manager-openconnect")
-    (version "1.2.8")
+    (version "1.2.10")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -8728,7 +8728,7 @@ Compatible with Cisco VPN concentrators configured to use IPsec.")
                     "/NetworkManager-openconnect-" version ".tar.xz"))
               (sha256
                (base32
-                "1k6d6cv2c9v8gf0f2js6cklr3ijhaanbz0nhvlwy5n42bmwamvax"))))
+                "0r342dinhh1808cb095xb5zfxrm5kaw6sxwclss9gnya9vv6njw4"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags '("--enable-absolute-paths"
@@ -8759,7 +8759,8 @@ Compatible with Cisco VPN concentrators configured to use IPsec.")
            libxml2
            lz4
            network-manager
-           openconnect))
+           openconnect
+           webkitgtk-with-libsoup2))
     (home-page "https://wiki.gnome.org/Projects/NetworkManager/VPN")
     (synopsis "OpenConnect plug-in for NetworkManager")
     (description
