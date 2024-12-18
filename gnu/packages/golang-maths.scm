@@ -278,6 +278,32 @@ distributions, and sampling; tools for function differentiation,integration,
 and optimization; network creation and analysis")
     (license license:expat)))
 
+(define-public go-modernc-org-mathutil
+  (package
+    (name "go-modernc-org-mathutil")
+    (version "1.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/cznic/mathutil")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0wafxarpfvys5p2wsamadkv8j54ahrv9dwmlba9xsxb85n4q9ywm"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "modernc.org/mathutil"))
+    (propagated-inputs (list go-github-com-remyoudompheng-bigfft))
+    (home-page "https://modernc.org/mathutil")
+    (synopsis
+     "Utilities supplemental to the Go standard @code{rand} and @code{math} packages")
+    (description
+     "Package mathutil provides utilities supplementing the standard
+@code{math} and @code{math/rand} packages.")
+    (license license:bsd-3)))
+
 ;;;
 ;;; Executables:
 ;;;
