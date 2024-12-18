@@ -1904,7 +1904,7 @@ mining in astronomy.")
 (define-public python-bayesicfitting
   (package
     (name "python-bayesicfitting")
-    (version "3.2.2")
+    (version "3.2.3")
     (source
      (origin
        (method git-fetch)
@@ -1913,7 +1913,7 @@ mining in astronomy.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "15zl6r5agfc07lnkrr4qwzx0naql0jblh96j095jyqywd2qnhfsb"))))
+        (base32 "0q7s7glf4b46vln67x7ggbpkbi4anyh3f3ldwafc2hggsrmx683q"))))
     (build-system pyproject-build-system)
     (arguments
      (list
