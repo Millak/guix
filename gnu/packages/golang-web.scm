@@ -1872,7 +1872,7 @@ Encryption, JSON Web Signature, and JSON Web Token standards.")
 (define-public go-github-com-go-ldap-ldap-v3
   (package
     (name "go-github-com-go-ldap-ldap-v3")
-    (version "3.4.8")
+    (version "3.4.9")
     (source
      (origin
        (method git-fetch)
@@ -1881,26 +1881,35 @@ Encryption, JSON Web Signature, and JSON Web Token standards.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0fbmhlc8ss5vn6zz0iiifvy4pm0mwaf13qpz70k83mmnv9vrv16x"))))
+        (base32 "0qcm4piyk7l5n3kplcism0y7zp40xcfmjl04hw1s276qqf7vi6hg"))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/go-ldap/ldap/v3"
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'remove-failing-tests
-            (lambda* (#:key import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (for-each delete-file
-                          ;; FAIL <...> LDAP Result Code 200 "Network Error":
-                          ;; dial tcp: lookup ldap.itd.umich.edu on <...>
-                          (list "ldap_test.go"))))))))
+      #:test-flags
+      #~(list "-skip" (string-join
+                       (list "TestCompare"
+                             "TestExtendedRequest_WhoAmI"
+                             "TestExtendedRequest_FastBind"
+                             "TestMatchDNError"
+                             "TestMultiGoroutineSearch"
+                             "TestSearch"
+                             "TestSearchAsync"
+                             "TestSearchAsyncAndCancel"
+                             "TestSearchStartTLS"
+                             "TestSearchWithPaging"
+                             "TestSecureDialURL"
+                             "TestStartTLS"
+                             "TestTLSConnectionState"
+                             "TestUnsecureDialURL")
+                       "|"))))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
      (list go-github-com-azure-go-ntlmssp
            go-github-com-go-asn1-ber-asn1-ber
-           go-github-com-google-uuid))
+           go-github-com-google-uuid
+           go-github-com-jcmturner-gokrb5-v8))
     (home-page "https://github.com/go-ldap/ldap")
     (synopsis "LDAP v3 functionality for Go")
     (description "This package provides basic LDAP v3 functionality in the Go
