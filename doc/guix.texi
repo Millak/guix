@@ -1824,6 +1824,14 @@ this binary incompatibility problem because those @code{libnss_*.so}
 files are loaded in the @command{nscd} process, not in applications
 themselves.
 
+@cindex nsncd, replacement for nscd
+Note that @command{nscd} is no longer provided on some GNU/Linux
+distros, such as Arch Linux (as of Dec. 2024).  @command{nsncd} can be
+used as a drop-in-replacement.  See
+@uref{https://github.com/twosigma/nsncd, the nsncd repository} and
+@uref{https://flokli.de/posts/2022-11-18-nsncd/, this blog post} for
+more information.
+
 @subsection X11 Fonts
 
 @cindex fonts
