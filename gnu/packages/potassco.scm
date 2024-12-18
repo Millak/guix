@@ -757,7 +757,7 @@ which allows user interfaces to be specified entirely as a logic program.")
 (define-public python-clintest
   (package
     (name "python-clintest")
-    (version "0.2.0")
+    (version "0.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -766,10 +766,10 @@ which allows user interfaces to be specified entirely as a logic program.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0xzbby9ram55h87ykm652kgm45b8rlhbjc8gjkz308h1jnjllmmy"))))
+                "1k8y3pm3w81n2appfl98drv1hpgjjqi2hxb1aa52y2m831lir38s"))))
     (build-system pyproject-build-system)
     (inputs (list python-clingo))
-    (native-inputs (list python-pytest))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://potassco.org/clintest/")
     (synopsis "Test framework for clingo programs")
     (description "Clintest is a framework for unit testing clingo programs.
