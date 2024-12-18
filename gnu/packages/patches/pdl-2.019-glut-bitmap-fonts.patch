@@ -36,7 +36,7 @@ License: Same as Perl.
 +       }
 +       return $this->{font_cache}{$cache_key};
 +   } else {
-+       OpenGL::glpRasterFont($args[0],$args[1],$args[2],$this->{Display});
++       return OpenGL::glpRasterFont($args[0],$args[1],$args[2],$this->{Display});
 +   }
  }
  
