@@ -1869,9 +1869,9 @@ Encryption, JSON Web Signature, and JSON Web Token standards.")
      (list
       #:import-path "github.com/go-jose/go-jose/v4"))))
 
-(define-public go-github-com-go-ldap-ldap
+(define-public go-github-com-go-ldap-ldap-v3
   (package
-    (name "go-github-com-go-ldap-ldap")
+    (name "go-github-com-go-ldap-ldap-v3")
     (version "3.4.8")
     (source
      (origin
