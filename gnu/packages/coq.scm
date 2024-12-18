@@ -135,8 +135,8 @@ It is developed using Objective Caml and Camlp5.")
   ;; The latest release is from 2022 and there has been more than 100 commits
   ;; since then.
   ;; Commit from 2024-04-29.
-  (let ((commit "cb23709ad0c9a9ca0ee48b3ee73c29caea243b98")
-        (revision "1"))
+  (let ((commit "d6689469298b4140dc1f0f8b0ff7e8f937041ffe")
+        (revision "2"))
     (package
       (name "proof-general")
       (version (git-version "4.5" revision commit))
@@ -148,7 +148,7 @@ It is developed using Objective Caml and Camlp5.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1spd8rz95s1x91i4lbbb6zabb8014fihx6ai6pgad1nwyr0y9bir"))))
+                  "1d12z41rn5nh15qj4sf0w8xrbd9djxlrz0r6g38fiq63i7krbm4x"))))
       (build-system gnu-build-system)
       (native-inputs
        `(("emacs" ,emacs-minimal)
@@ -168,30 +168,14 @@ It is developed using Objective Caml and Camlp5.")
            #:phases
            (modify-phases %standard-phases
              (delete 'configure)
-             (add-after 'unpack 'disable-byte-compile-error-on-warn
-               (lambda _
-                 (substitute* "Makefile"
-                   (("\\(setq byte-compile-error-on-warn t\\)")
-                    "(setq byte-compile-error-on-warn nil)"))))
-             (add-after 'unpack 'modify-readme-name
-               ;; The README file is called "README.md", but the Make variable
-               ;; "DOC_FILES" still refers to "README".
-               (lambda _
-                 (substitute* "Makefile"
-                   (("README") "README.md"))))
              (add-after 'unpack 'patch-hardcoded-paths
                (lambda _
                  (substitute* "Makefile"
                    (("/sbin/install-info") "install-info"))))
-             (add-after 'unpack 'remove-which
+             (add-after 'unpack 'do-not-patch-script-shebangs
                (lambda _
                  (substitute* "Makefile"
-                   (("`which perl`") "perl")
-                   (("`which bash`") "bash"))))
-             (add-after 'unpack 'clean
-               (lambda _
-                 ;; Delete the pre-compiled elc files for Emacs 23.
-                 (invoke "make" "clean")))
+                   (("install-bin: scripts") "install-bin:"))))
              (add-after 'install 'install-doc
                (lambda* (#:key make-flags #:allow-other-keys)
                  ;; XXX FIXME avoid building/installing pdf files,
