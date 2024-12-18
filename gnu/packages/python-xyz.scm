@@ -24940,7 +24940,14 @@ cases.")
        (sha256
         (base32 "0szgy4pqfixmswjs37qgma4qa3bsadpp3l1xflrpfi10aa8hh2sp"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-networkx python-numpy python-pydot))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-networkx
+           python-numpy
+           python-pydot))
     (home-page "https://github.com/Aunsiels/pyformlang")
     (synopsis "Framework for interacting with formal grammars")
     (description
