@@ -7321,15 +7321,15 @@ manipulate images.")
 (define-public webbpsf-data
   (package
     (name "webbpsf-data")
-    (version "1.4.0")
+    (version "1.5.0")
     (source
      (origin
        (method url-fetch)
-       ;; 70.1MiB archive
+       ;; 73.9MiB archive
        (uri "https://stsci.box.com/shared/static/qxpiaxsjwo15ml6m4pkhtk36c9jgj70k.gz")
        (file-name (string-append "webbpsf-data-" version ".tar.gz"))
        (sha256
-        (base32 "0b3qxp6mrm2dwsdnqnprf4yrp0zbncknildqmf28wgginwa5sch8"))))
+        (base32 "0lnzjvn9276v00p5g4894jgdb9mw4mr89q64l7ywikz9khk3j5gc"))))
     (build-system copy-build-system)
     (arguments
      (list
