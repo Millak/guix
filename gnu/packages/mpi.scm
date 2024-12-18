@@ -53,6 +53,7 @@
   #:use-module (gnu packages parallel)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages ssh)
   #:use-module (gnu packages valgrind)
   #:use-module (srfi srfi-1)
   #:use-module (ice-9 match))
@@ -220,7 +221,8 @@ bind processes, and much more.")
                      gfortran
                      libfabric
                      libevent
-                     opensm)
+                     opensm
+                     openssh-sans-x)
                (if-supported psm)
                (if-supported psm2)
                (if-supported ucx)
@@ -291,6 +293,14 @@ bind processes, and much more.")
                            '("./ompi/mca/io/romio321/src/io_romio321_component.c")
                          (("MCA_io_romio321_COMPLETE_CONFIGURE_FLAGS")
                           "\"[elided to reduce closure]\""))))
+                   (add-before 'build 'ssh-absolute-path
+                     (lambda* (#:key inputs #:allow-other-keys)
+                       ;; Avoid error at run time about 'ssh' not being found.
+                       (substitute* "orte/mca/plm/rsh/plm_rsh_component.c"
+                         (("mca_plm_rsh_component.agent = \"ssh : rsh\";")
+                          (format #f "mca_plm_rsh_component.agent = \"~a : rsh\";"
+                                  (search-input-file inputs
+                                                     "bin/ssh"))))))
                    (add-before 'build 'scrub-timestamps ;reproducibility
                      (lambda _
                        (substitute* '("ompi/tools/ompi_info/param.c"
