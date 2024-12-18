@@ -1234,7 +1234,9 @@ doing practical, real world data analysis in Python.")
       #:test-flags
       #~(list "--pyargs" "pandas"
               ;; "--exitfirst"
-              "--numprocesses" (number->string (parallel-job-count))
+              ;; XXX The tests won't even start on my 16 core laptop, but they
+              ;; start with 4 processes.
+              "--numprocesses" (number->string (min 4 (parallel-job-count)))
               "-m" "not slow and not network and not db"
               ;; All tests errored.
               "--ignore=pandas/tests/io/test_clipboard.py"
