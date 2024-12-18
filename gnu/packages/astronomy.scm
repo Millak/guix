@@ -7204,14 +7204,14 @@ n-body file formats (nemo, Gadget binaries 1 and 2, Gadget hdf5, Ramses).")
 (define-public wcslib
   (package
     (name "wcslib")
-    (version "8.3")
+    (version "8.4")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://www.atnf.csiro.au/people/mcalabre/WCS/"
+       (uri (string-append "https://www.atnf.csiro.au/people/mcalabre/WCS/WCS/"
                            "wcslib-" version ".tar.bz2"))
        (sha256
-        (base32 "0225c77jypjjlfw6zd53447qnrmlq1fl38xzi4mw1fr7g50s67j3"))
+        (base32 "1p1606jscky6cw32qwx7k7nwv24jm9c85mzfrm9qnjni4r2882wn"))
        (snippet
         #~(begin (use-modules (guix build utils))
                  (delete-file-recursively "C/flexed")))))
@@ -7236,7 +7236,7 @@ n-body file formats (nemo, Gadget binaries 1 and 2, Gadget hdf5, Ramses).")
      (list cfitsio))
     (native-inputs
      (list flex))
-    (home-page "https://www.atnf.csiro.au/people/mcalabre/WCS")
+    (home-page "https://www.atnf.csiro.au/people/mcalabre/WCS/WCS")
     (synopsis "Library which implements the FITS WCS standard")
     (description "The FITS \"World Coordinate System\" (@dfn{WCS}) standard
 defines keywords and usage that provide for the description of astronomical
