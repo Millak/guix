@@ -5636,6 +5636,63 @@ Features:
 @end itemize")
     (license license:expat)))
 
+(define-public python-pysat
+  (package
+    (name "python-pysat")
+    (version "3.2.1")
+    (source
+     (origin
+       (method git-fetch) ; no tests data in the PyPI tarball
+       (uri (git-reference
+             (url "https://github.com/pysat/pysat")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xsxj66ybh7q3n68nlasz23x8lsdamny92r960gipzk8xmwwzmcw"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--durations=10" ; report 10 slowest tests
+              ;; Tests require pysatSpaceWeather which is not packed yet.
+              "--ignore=pysat/tests/test_utils_files.py"
+              "-k" "not test_from_os")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; Do not run test coverage.
+              (substitute* "pyproject.toml"
+                ((".*addopts.*cov.*") ""))
+              ;; No such file or directory: '/homeless-shelter/.pysat'
+              (setenv "HOME" "/tmp")
+              (mkdir "pysatData")
+              (invoke "python" "-c"
+                      "import pysat; pysat.params['data_dirs'] = 'pysatData'"))))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-xdist
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-dask
+           python-netcdf4
+           python-numpy
+           python-pandas
+           python-portalocker
+           python-scipy
+           python-toolz
+           python-xarray))
+    (home-page "https://github.com/pysat/pysat")
+    (synopsis "Supports science analysis across disparate data platforms")
+    (description
+     "The Python Satellite Data Analysis Toolkit (pysat) provides a simple and
+flexible interface for robust data analysis from beginning to end - including
+downloading, loading, cleaning, managing, processing, and analyzing
+data.  Pysat's plug-in design allows analysis support for any data, including
+user provided data sets.")
+    (license license:bsd-3)))
+
 (define-public python-pysiaf
   (package
     (name "python-pysiaf")
