@@ -2649,16 +2649,13 @@ sensitivity or energy density
 (define-public python-healpy
   (package
     (name "python-healpy")
-    ;; The latest version depends on custom fork of HEALPix with changes not
-    ;; ported to upstream yet, see
-    ;; <https://github.com/healpy/healpy/issues/949>.
-    (version "1.16.6")
+    (version "1.18.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "healpy" version))
        (sha256
-        (base32 "1w99cgszh2mzcn5x8p0gdzn3r96vyfdnvbwm20a1l9fdiy16xcha"))))
+        (base32 "12ajn55kjgnqadyamh6cw4q8i01nyv6isgf47lcnv2jch27zs4ka"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2675,8 +2672,9 @@ sensitivity or energy density
             (lambda _
             (substitute* "pyproject.toml"
               (("--doctest-plus") ""))))
-          (add-before 'check 'build-extensions
+          (add-before 'check 'pre-check
             (lambda _
+              (delete-file "lib/healpy/conftest.py")
               (invoke "python" "setup.py" "build_ext" "--inplace"))))))
     (native-inputs
      (list nss-certs-for-test
