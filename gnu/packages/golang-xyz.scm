@@ -10796,6 +10796,30 @@ kubernetes-independent packages supplementing the
 @url{https://pkg.go.dev/std#stdlib,Go standard libs}.")
     (license license:asl2.0)))
 
+(define-public go-modernc-org-memory
+  (package
+    (name "go-modernc-org-memory")
+    (version "1.8.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/cznic/memory")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "066pzk0i1jxahialzp97ra0k0f191y1756sgppiw50zkpnpwzjxr"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "modernc.org/memory"))
+    (propagated-inputs
+     (list go-modernc-org-mathutil))
+    (home-page "https://gitlab.com/cznic/memory")
+    (synopsis "Memory allocator implementation")
+    (description "Package memory implements a memory allocator.")
+    (license license:bsd-3)))
+
 (define-public go-mvdan-cc-editorconfig
   (package
     (name "go-mvdan-cc-editorconfig")
