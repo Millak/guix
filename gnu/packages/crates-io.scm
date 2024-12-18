@@ -32671,14 +32671,14 @@ and loading crate.")
   (package
     (inherit rust-goblin-0.9)
     (name "rust-goblin")
-    (version "0.8.0")
+    (version "0.8.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "goblin" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "11wqipqx0dbimxy5612nxpx79qja43sxic95llcb34r0xpzs81xv"))))
+        (base32 "0isg7yzqv7y9s4xs594niy4vqzpc7d6h58z65x06dxk5q4q3ldhv"))))
     (arguments
      `(#:tests? #f          ; Not all files included.
        #:cargo-inputs (("rust-log" ,rust-log-0.4)
