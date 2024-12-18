@@ -58,6 +58,7 @@
   #:use-module (gnu packages perl-check)
   #:use-module (gnu packages pth)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
@@ -647,7 +648,7 @@ distributed separately.")
          "1px1c5nqsls3fxg0zkyd9sgc5rxpdagvsadnp8fd5bmgrrjka5ws"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list gnupg))
+     (list gnupg python-setuptools python-wheel))
     (inputs
      (list gpgme))
     (home-page "https://github.com/jhenstridge/pygpgme")
