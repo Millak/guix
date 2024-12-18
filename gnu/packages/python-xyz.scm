@@ -13674,34 +13674,35 @@ supports @code{readline} shortcuts.")
 (define-public python-textdistance
   (package
     (name "python-textdistance")
-    (version "4.2.1")
+    (version "4.6.3")
     (source
      (origin
        ;; There are no tests in the PyPI tarball.
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/life4/textdistance")
-             (commit (string-append "v." version))))
+             (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1g17i356fnny4k6hjr2ayy9k77jbvd6zzmngws2kbrnvhss1wgwf"))))
-    (build-system python-build-system)
+        (base32 "1qaplikab46p38jqr93bxd26vvxcnvib15fjxmmp4cbsiy5196sg"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:test-target "pytest"
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'delete-external-test
-           (lambda _
-             ;; All tests in this file require external libraries.
-             (delete-file "tests/test_external.py")
-             #t)))))
+     (list
+      #:test-flags
+      #~(list "--numprocesses" (number->string (parallel-job-count)))))
     (native-inputs
-     (list python-hypothesis
-           python-isort
-           python-numpy
+     (list python-numpy
            python-pytest
-           python-pytest-runner
-           python-tabulate))
+           python-pytest-xdist
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-jellyfish
+           python-distance
+           python-levenshtein
+           python-pylev
+           python-pyxdameraulevenshtein
+           python-rapidfuzz))
     (home-page "https://github.com/life4/textdistance")
     (synopsis "Compute distance between the two texts")
     (description "@code{textdistance} is a pure Python library for comparing
