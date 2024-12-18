@@ -984,6 +984,8 @@ fi"
            zlib))
     (properties (alist-delete 'hidden? (package-properties node-bootstrap)))))
 
+(define-public node node-lts)
+
 (define-public libnode
   (package/inherit node-lts
     (name "libnode")
