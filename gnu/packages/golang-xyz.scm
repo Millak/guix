@@ -10870,6 +10870,34 @@ kubernetes-independent packages supplementing the
 @code{sort} package.")
     (license license:bsd-3)))
 
+(define-public go-modernc-org-strutil
+  (package
+    (name "go-modernc-org-strutil")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/cznic/strutil")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0rk76c1n189hzg3kfab8pfvssa1h9v0vxk5jxy8pk32rqic0hdim"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "modernc.org/strutil"
+      ;; Cannot determine import path using GOPATH.
+      #:test-flags #~(list "-skip" "TestImportPath")))
+    (native-inputs
+     (list go-modernc-org-mathutil))
+    (home-page "https://gitlab.com/cznic/strutil")
+    (synopsis "Strings utility library for Golang")
+    (description
+     "Package strutil collects utils supplemental to the standard
+@code{strings} package.")
+    (license license:bsd-3)))
+
 (define-public go-mvdan-cc-editorconfig
   (package
     (name "go-mvdan-cc-editorconfig")
