@@ -5700,7 +5700,7 @@ FIFO and UNIX interprocess communication.")
 (define-public runitor
   (package
     (name "runitor")
-    (version "0.8.0")
+    (version "1.3.0-build.4")
     (source
       (origin
         (method git-fetch)
@@ -5709,7 +5709,7 @@ FIFO and UNIX interprocess communication.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-          (base32 "0vjfbyrbp5ywgzdz9j3x0qgjvnq7nw7193x8v9yy6k2cih1zsacn"))))
+          (base32 "00l83jcjmf5kcq8yzq575kk6ljkkr2xhm5cx27zzb1yhxn93xj7n"))))
     (build-system go-build-system)
     (arguments
      `(#:unpack-path "bdd.fi/x/runitor"
