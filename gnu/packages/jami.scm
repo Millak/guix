@@ -154,7 +154,8 @@
                (base32
                 "1bw0laj93w4pvlxsr5abz59805ypbmg21z5393yzm82j4d35cfyr"))
               (patches (search-patches
-                        "libjami-ac-config-files.patch"))))
+                        "libjami-ac-config-files.patch"
+                        "libjami-libgit2-compatibility.patch"))))
     (outputs '("out" "bin" "debug"))    ;"bin' contains jamid
     (build-system gnu-build-system)
     (arguments

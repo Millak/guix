@@ -1,0 +1,23 @@
+Libgit2 1.8.0 went for 'git_commit *const' but 1.8.4 reverted back to
+'const git_commit *'.
+
+--- a/src/jamidht/conversationrepository.cpp
++++ b/src/jamidht/conversationrepository.cpp
+@@ -783,7 +783,7 @@ ConversationRepository::Impl::createMergeCommit(git_index* index, const std::str
+     // Commit
+     git_buf to_sign = {};
+     // Check if the libgit2 library version is 1.8.0 or higher
+-#if( LIBGIT2_VER_MAJOR > 1 ) || ( LIBGIT2_VER_MAJOR == 1 && LIBGIT2_VER_MINOR >= 8 )
++#if( LIBGIT2_VER_MAJOR > 1 ) || ( LIBGIT2_VER_MAJOR == 1 && LIBGIT2_VER_MINOR >= 8 && LIBGIT2_VER_REVISION <= 3)
+     // For libgit2 version 1.8.0 and above
+     git_commit* const parents_ptr[2] {parents[0].get(), parents[1].get()};
+ #else
+@@ -1870,7 +1870,7 @@ ConversationRepository::Impl::commit(const std::string& msg, bool verifyDevice)
+ 
+     git_buf to_sign = {};
+     // Check if the libgit2 library version is 1.8.0 or higher
+-#if( LIBGIT2_VER_MAJOR > 1 ) || ( LIBGIT2_VER_MAJOR == 1 && LIBGIT2_VER_MINOR >= 8 )
++#if( LIBGIT2_VER_MAJOR > 1 ) || ( LIBGIT2_VER_MAJOR == 1 && LIBGIT2_VER_MINOR >= 8 && LIBGIT2_VER_REVISION <= 3)
+     // For libgit2 version 1.8.0 and above
+     git_commit* const head_ref[1] = {head_commit.get()};
+ #else
