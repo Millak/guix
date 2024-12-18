@@ -144,6 +144,30 @@ and GCC’s decimal extension.")
      "This package provides a statistical library for Golang.")
     (license license:expat)))
 
+(define-public go-github-com-remyoudompheng-bigfft
+  (package
+    (name "go-github-com-remyoudompheng-bigfft")
+    (version "0.0.0-20230129092748-24d4a6f8daec")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/remyoudompheng/bigfft")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0qxfda0jq70ank99zlgfz7iig2jpicbbxnpr7xcf1v9p474ak2dx"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/remyoudompheng/bigfft"))
+    (home-page "https://github.com/remyoudompheng/bigfft")
+    (synopsis "Big integer multiplication library for using Fast Fourier transform")
+    (description
+     "Package bigfft implements multiplication of @code{big.Int} using
+FFT (Schonhage-Strassen method for multiplying integers).")
+    (license license:bsd-3)))
+
 (define-public go-github-com-shopspring-decimal
   (package
     (name "go-github-com-shopspring-decimal")
