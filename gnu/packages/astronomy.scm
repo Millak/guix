@@ -2677,7 +2677,9 @@ sensitivity or energy density
            python-pytest-astropy-header
            python-pytest-cython
            ;python-pytest-doctestplus
-           python-setuptools-scm))
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
     (propagated-inputs
      (list python-astropy
            python-colorlog
