@@ -6442,26 +6442,26 @@ between image and reference catalogs. Currently only aligning images with
 (define-public python-webbpsf
   (package
     (name "python-webbpsf")
-    (version "1.4.0")
+    (version "1.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "webbpsf" version))
        (sha256
-        (base32 "1084vbk2q3kybxgvh8f2zbsi2w2z8zapsfjkgd6km4yhwqv1wl4a"))))
+        (base32 "0aad817lh2llld9wmb4mvdnncz916niw2apnhip8gc78fi1imfri"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
       #~(list "--numprocesses" (number->string (parallel-job-count))
-              "-k" (string-append
-                    ;; Test requiring network access
-                    "not test_monthly_trending_plot_auto_opdtable"
-                    " and not test_monthly_trending_plot_opdtable_param"
-                    " and not test_delta_wfe_around_time"
-                    ;; Newer NumPy is required
-                    " and not test_nircam_errors"
-                    " and not test_all_detectors"))
+              "-k"
+              ;; Tests requiring network access.
+              (string-join
+               (list "not test_delta_wfe_around_time"
+                     "test_get_webbpsf_data_path_invalid"
+                     "test_monthly_trending_plot_auto_opdtable"
+                     "test_monthly_trending_plot_opdtable_param")
+               " and not "))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'set-env
