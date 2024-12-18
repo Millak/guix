@@ -113,6 +113,7 @@
   #:use-module (guix build-system meson)
   #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system trivial)
   #:use-module (guix build-system scons)
   #:use-module (guix download)
@@ -873,7 +874,7 @@ a card with a smaller capacity than stated.")
 (define-public python-pyparted
   (package
     (name "python-pyparted")
-    (version "3.12.0")
+    (version "3.13.0")
     (source
      (origin
        (method git-fetch)
@@ -882,12 +883,14 @@ a card with a smaller capacity than stated.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0jxc1i1g3lz32wvqvdbb9ng2ypin783004kjnp0pghiz813lpw1d"))))
-    (build-system python-build-system)
+        (base32 "09gjp60sr8l0v41anmdfnh9lizfz1mbb7mxvqq73s30vn4504982"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list e2fsprogs pkg-config))
-    (propagated-inputs
-     (list python-six))
+     (list e2fsprogs
+           pkg-config
+           python-pytest
+           python-setuptools
+           python-wheel))
     (inputs
      (list parted))
     (home-page "https://github.com/dcantrell/pyparted")
