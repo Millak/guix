@@ -18788,6 +18788,18 @@ you to deal with multiple log levels.")
        (sha256
         (base32 "0g9ciqgkipm6ag5nvyvaz0wc51hpk0wh2wwiqaybdfhzja8bbqx6"))))
     (build-system emacs-build-system)
+    (arguments
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'build-info-manual
+                     (lambda _
+                       (import (guix build utils))
+                       (invoke (string-append #$emacs "/bin/emacs")
+                               "README.org"
+                               "--batch"
+                               "-f"
+                               "org-texinfo-export-to-info"
+                               "--kill") #t)))))
     (native-inputs (list texinfo))
     (home-page "https://protesilaos.com/emacs/denote/")
     (synopsis "Simple notes for Emacs")
