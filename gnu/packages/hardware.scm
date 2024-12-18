@@ -596,7 +596,7 @@ read/write access to i2c devices to users in the @samp{i2c} group.")
 (define-public ddcui
   (package
     (name "ddcui")
-    (version "0.3.0")
+    (version "0.5.4")
     (source
      (origin
        (method git-fetch)
@@ -605,7 +605,7 @@ read/write access to i2c devices to users in the @samp{i2c} group.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0gypfmwxhjmgyfwk29k8hfbgr0698kbcq2yj4izxv1i59zm63irz"))))
+        (base32 "1hq19gdy9ybraclkqvv1nlf46irql5b6wrc1y6wi0ihkqly20vgz"))))
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #f))                    ; No test suite
