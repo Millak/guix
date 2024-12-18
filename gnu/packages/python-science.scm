@@ -1279,10 +1279,8 @@ doing practical, real world data analysis in Python.")
                    (string-append "__version__ = \""
                                   #$(package-version this-package)
                                   "\""))))))
-          (add-before 'check 'prepare-x
+          (add-before 'check 'pre-check
             (lambda _
-              (system "Xvfb &")
-              (setenv "DISPLAY" ":0")
               (setenv "HOME" ".")
               ;; Skip tests that require lots of resources.
               (setenv "PANDAS_CI" "1")))
@@ -1328,9 +1326,7 @@ doing practical, real world data analysis in Python.")
            python-pytest-localserver
            python-pytest-mock
            python-pytest-xdist
-           python-versioneer
-           ;; Needed to test clipboard support.
-           xorg-server-for-tests))
+           python-versioneer))
     (home-page "https://pandas.pydata.org")
     (synopsis "Data structures for data analysis, time series, and statistics")
     (description
