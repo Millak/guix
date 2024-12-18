@@ -10844,6 +10844,32 @@ kubernetes-independent packages supplementing the
     (description "Package memory implements a memory allocator.")
     (license license:bsd-3)))
 
+(define-public go-modernc-org-sortutil
+  (package
+    (name "go-modernc-org-sortutil")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/cznic/sortutil")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01s9vil8lvaz526x6q9f12h6vpc3jc8zvpag7knz1bdx9b15yljc"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "modernc.org/sortutil"))
+    (native-inputs
+     (list go-modernc-org-mathutil))
+    (home-page "https://gitlab.com/cznic/sortutil")
+    (synopsis "Sort utility library")
+    (description
+     "Package sortutil provides utilities supplementing the standard
+@code{sort} package.")
+    (license license:bsd-3)))
+
 (define-public go-mvdan-cc-editorconfig
   (package
     (name "go-mvdan-cc-editorconfig")
