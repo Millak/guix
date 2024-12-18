@@ -10844,6 +10844,28 @@ kubernetes-independent packages supplementing the
     (description "Package memory implements a memory allocator.")
     (license license:bsd-3)))
 
+(define-public go-modernc-org-opt
+  (package
+    (name "go-modernc-org-opt")
+    (version "0.1.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/cznic/opt")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "02jih8lgcyrm2v0vagdmq298rvhqkwi4pswg4nwlksdiayw356p5"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "modernc.org/opt"))
+    (home-page "https://gitlab.com/cznic/opt")
+    (synopsis "Command-line flag parsing")
+    (description "Package opt implements command-line flag parsing.")
+    (license license:bsd-3)))
+
 (define-public go-modernc-org-sortutil
   (package
     (name "go-modernc-org-sortutil")
