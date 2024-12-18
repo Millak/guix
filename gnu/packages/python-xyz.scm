@@ -17593,7 +17593,10 @@ a hash value.")
         (base32
          "0fv1vq14rpqwgazxg4981904lfyp84mnammw7y046491cv76jv8x"))))
     ;; There are no tests
-    (arguments (list #:tests? #false))))
+    (arguments (list #:tests? #false))
+    (native-inputs
+     (list python-setuptools
+           python-wheel))))
 
 (define-public python-terminaltables
   (package
