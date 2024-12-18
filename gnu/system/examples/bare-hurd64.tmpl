@@ -11,12 +11,13 @@
 ;; You may run it like so:
 ;;
 ;;     guix shell qemu -- qemu-system-x86_64 -m 2048              \
-;;       --machine q35                                            \
 ;;       --enable-kvm                                             \
 ;;       --device e1000,netdev=net0                               \
 ;;       --netdev user,id=net0,hostfwd=tcp:127.0.0.1:10022-:2222  \
 ;;       --snapshot                                               \
 ;;       --hda /gnu/store/...-disk-image
+;;
+;; (note that the 64bit Hurd does not seem to show a login prompt)
 ;;
 ;; and use it like:
 ;;
