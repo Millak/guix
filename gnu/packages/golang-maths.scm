@@ -278,6 +278,33 @@ distributions, and sampling; tools for function differentiation,integration,
 and optimization; network creation and analysis")
     (license license:expat)))
 
+(define-public go-lukechampine-com-uint128
+  (package
+    (name "go-lukechampine-com-uint128")
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/lukechampine/uint128")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1yy6lbprrsl9gscxn4194kr5sfvgi9cgvjdxn2141k36ab3nz8ip"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "lukechampine.com/uint128"))
+    (home-page "https://github.com/lukechampine/uint128")
+    (synopsis "Uint128 for Golang")
+    (description
+     "This package provides a high-performance @code{Uint128} type that
+supports standard arithmetic operations.  Unlike @code{math/big}, operations
+on @code{Uint128} values always produce new values instead of modifying a
+pointer receiver.  A @@code{Uint128} value is therefore immutable, just like
+@code{uint64} and friends.")
+    (license license:expat)))
+
 (define-public go-modernc-org-mathutil
   (package
     (name "go-modernc-org-mathutil")
