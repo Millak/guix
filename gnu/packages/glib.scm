@@ -3,7 +3,7 @@
 ;;; Copyright © 2013, 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2021 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2016, 2020, 2021, 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2020, 2021, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Lukas Gradl <lgradl@openmailbox.org>
 ;;; Copyright © 2017, 2018, 2019 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Petter <petter@mykolab.ch>
@@ -328,6 +328,12 @@ information, refer to the @samp{dbus-daemon(1)} man page.")))
                          (("^  g_assert_cmpfloat \\(elapsed, ==.*" all)
                           (string-append "//" all "\n"))))
                      '())
+              #$@(if (target-ppc32?)
+                     ;; assertion failed (last_thread_id <= thread_id): (3 <= 2)
+                     #~((substitute* "glib/tests/thread-pool-slow.c"
+                          (("^   g_assert_cmpint \\(last_thread_id.*" all)
+                          (string-append "//" all "\n"))))
+                     #~())
               #$@(if (system-hurd?)
                      '((with-directory-excursion "gio/tests"
                          ;; TIMEOUT after 600s
