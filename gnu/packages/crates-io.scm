@@ -3171,24 +3171,20 @@ on the stack.")
 (define-public rust-arrayref-0.3
   (package
     (name "rust-arrayref")
-    (version "0.3.6")
+    (version "0.3.9")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "arrayref" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "0i6m1l3f73i0lf0cjdf5rh3xpvxydyhfbakq7xx7bkrp5qajgid4"))))
+        (base32 "1jzyp0nvp10dmahaq9a2rnxqdd5wxgbvp8xaibps3zai8c9fi8kn"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-development-inputs
-       (("rust-quickcheck" ,rust-quickcheck-0.6))))
+     `(#:cargo-development-inputs (("rust-quickcheck" ,rust-quickcheck-1))))
     (home-page "https://github.com/droundy/arrayref")
     (synopsis "Macros to take array references of slices")
-    (description
-     "Macros to take array references of slices.")
+    (description "Macros to take array references of slices.")
     (license license:bsd-2)))
 
 (define-public rust-arrayvec-0.7
