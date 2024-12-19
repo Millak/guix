@@ -386,7 +386,8 @@ paging.")
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
-       '("--release" "--"
+       '("--"
+         ;; Not all files are included.
          "--skip=search_unused::test_crate_renaming_works"
          "--skip=search_unused::test_false_positive_macro_use"
          "--skip=search_unused::test_ignore_deps_works"
