@@ -692,8 +692,10 @@ used in go-github-com-jackc-pgx.")
     (build-system go-build-system)
     (arguments
      (list
-      #:tests? #f ; cycles with go-github-com-jackc-pgconn
       #:import-path "github.com/jackc/pgmock"))
+    (native-inputs
+     (list go-github-com-jackc-pgconn-bootstrap
+           go-github-com-stretchr-testify))
     (propagated-inputs
      (list go-github-com-jackc-pgproto3-v2))
     (home-page "https://github.com/jackc/pgmock")

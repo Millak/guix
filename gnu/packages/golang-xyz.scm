@@ -5108,6 +5108,18 @@ queries with a higher level library and only use pgconn directly when required
 for low-level access to PostgreSQL functionality.")
     (license license:expat)))
 
+(define-public go-github-com-jackc-pgconn-bootstrap
+  (hidden-package
+   (package
+     (inherit go-github-com-jackc-pgconn)
+     (arguments
+      (list #:tests? #f
+            #:import-path "github.com/jackc/pgconn"
+            #:phases
+            #~(modify-phases %standard-phases
+                (delete 'build))))
+      (native-inputs '()))))
+
 (define-public go-github-com-jackc-pgerrcode
   (package
     (name "go-github-com-jackc-pgerrcode")
