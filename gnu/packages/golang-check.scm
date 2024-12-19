@@ -921,6 +921,34 @@ output capturing, mocking, and much more.")
 testing capabilities.")
     (license license:expat)))
 
+(define-public go-github-com-maxatome-go-testdeep
+  (package
+    (name "go-github-com-maxatome-go-testdeep")
+    (version "1.14.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/maxatome/go-testdeep")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0r9w79qm6j080gbqhrd5gwjzsnkmrcihy4yniw77g0wkspxxdjww"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/maxatome/go-testdeep"
+      ;; Structure comparison not equal.
+      #:test-flags #~(list "-skip" "TestFatalTrace")))
+    (propagated-inputs
+     (list go-github-com-davecgh-go-spew))
+    (home-page "https://github.com/maxatome/go-testdeep")
+    (synopsis "Extended HTTP API testing framework")
+    (description
+     "Package testdeep allows flexible deep comparison, it is an adaptation of
+Perl's @url{https://metacpan.org/pod/Test::Deep, Test::Deep perl}.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-onsi-ginkgo
   (package
     (name "go-github-com-onsi-ginkgo")
