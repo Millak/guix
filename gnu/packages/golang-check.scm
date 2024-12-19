@@ -828,6 +828,32 @@ failure messages automatically.")
      "Package reqtrace contains a very simple request tracing framework.")
     (license license:asl2.0)))
 
+(define-public go-github-com-jarcoal-httpmock
+  (package
+    (name "go-github-com-jarcoal-httpmock")
+    (version "1.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jarcoal/httpmock")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xw73d59nl1jj18h2hp9vlgqmfvqk9bknzpimg4mjn13d4jzhqrf"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/jarcoal/httpmock"))
+    (native-inputs
+     (list go-github-com-maxatome-go-testdeep))
+    (home-page "https://github.com/jarcoal/httpmock")
+    (synopsis "HTTP mocking for Golang")
+    (description
+     "Package httpmock provides tools for mocking HTTP responses. It
+implements exact URL and regexp matches.")
+    (license license:expat)))
+
 (define-public go-github-com-jbenet-go-cienv
   (package
     (name "go-github-com-jbenet-go-cienv")
