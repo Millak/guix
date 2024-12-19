@@ -743,17 +743,15 @@ Google Test for C++ and Google JS Test.")
     (license license:asl2.0)))
 
 (define-public go-github-com-jacobsa-oglemock
-  (let ((commit "e94d794d06ffc6de42cb19d0dab3c219efdd6dcf")
-        (revision "0"))
     (package
       (name "go-github-com-jacobsa-oglemock")
-      (version (git-version "0.0.0" revision commit))
+      (version "0.0.0-20150831005832-e94d794d06ff")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/jacobsa/oglemock")
-               (commit commit)))
+               (commit (go-version->git-ref version))))
          (file-name (git-file-name name version))
          (sha256
           (base32
@@ -770,7 +768,7 @@ Google Test for C++ and Google JS Test.")
       (synopsis "Mocking framework for unit tests")
       (description
        "Package oglemock provides a mocking framework for unit tests.")
-      (license license:asl2.0))))
+      (license license:asl2.0)))
 
 (define-public go-github-com-jacobsa-ogletest
   (package
