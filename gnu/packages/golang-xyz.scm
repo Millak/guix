@@ -36,6 +36,7 @@
 ;;; Copyright © 2022 Leo Nikkilä <hello@lnikki.la>
 ;;; Copyright © 2022 kiasoc5 <kiasoc5@disroot.org>
 ;;; Copyright © 2023 Benjamin <benjamin@uvy.fr>
+;;; Copyright © 2023 Felix Lechner <felix.lechner@lease-up.com>
 ;;; Copyright © 2023 Fries <fries1234@protonmail.com>
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2023 Katherine Cox-Buday <cox.katherine.e@gmail.com>
@@ -4481,6 +4482,44 @@ color (24-bit, RGB)
 underneath and returns only matching files or direcories, depending on the
 configuration.")
     (license license:expat)))
+
+(define-public go-github-com-hanwen-go-fuse-v2
+  (package
+    (name "go-github-com-hanwen-go-fuse-v2")
+    (version "2.7.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hanwen/go-fuse")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1fcf94chf9ffgjk0wcpnlz0kfb69m2fwzfn4k348kal75x178aar"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/hanwen/go-fuse/v2"
+      ;; Most of the tests require "/bin/fusermount" to be available which
+      ;; is missed during packaging, limit to some unit tests only.
+      #:test-subdirs #~(list "internal/..." "splice")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples-and-benchmarks
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "example")
+                (delete-file-recursively "benchmark")))))))
+    (propagated-inputs
+     (list go-github-com-kylelemons-godebug
+           go-github-com-moby-sys-mountinfo
+           go-golang-org-x-sync
+           go-golang-org-x-sys))
+    (home-page "https://github.com/hanwen/go-fuse")
+    (synopsis "Go bindings for FUSE filesystems")
+    (description
+     "This is a repository containing Go bindings for writing FUSE file systems.")
+    (license license:bsd-3)))
 
 (define-public go-github-com-hashicorp-errwrap
   (package
