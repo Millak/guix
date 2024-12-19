@@ -21826,13 +21826,13 @@ graphviz.")
 (define-public python-gevent
   (package
     (name "python-gevent")
-    (version "22.10.2")
+    (version "24.11.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "gevent" version))
               (sha256
                (base32
-                "0ijwwm2yr7jgz8xs1rbvzj6gp7xw1pagf0i7g99b6dzffshiv80w"))
+                "1jhs1k49nfhv59c0li6bcpvkr6pzmxkdgfm56gns7r792j8l3lcb"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -21858,102 +21858,91 @@ graphviz.")
                                             "_greenlet_primitives.c"
                                             "_abstract_linkable.c")
                                       (find-files "." "\\.html$"))))))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:modules ((ice-9 ftw)
-                  (ice-9 match)
-                  (srfi srfi-26)
-                  (guix build utils)
-                  (guix build python-build-system))
-       #:phases (modify-phases %standard-phases
-                  (add-before 'patch-source-shebangs 'patch-hard-coded-paths
-                    (lambda _
-                      (substitute* "src/gevent/subprocess.py"
-                        (("/bin/sh") (which "sh")))
-                      (for-each (lambda (file)
-                                  (substitute* file
-                                    (("/bin/sh") (which "sh"))
-                                    (("/bin/true") (which "true"))))
-                                (find-files "src/greentest" "\\.py$"))))
-                  (add-before 'build 'do-not-use-bundled-sources
-                    (lambda _
-                      (setenv "GEVENTSETUP_EMBED" "0")
+     (list
+      #:test-flags
+      '(list
+        ;; These tests relies on networking which is
+        ;; not available in the build container.
+        "test__getaddrinfo_import.py"
+        ;; These tests rely on KeyboardInterrupts which do not
+        ;; work inside the build container for some reason
+        ;; (lack of controlling terminal?).
+        "test__issues461_471.py"
+        ;; TODO: Patch out the tests that use getprotobyname, etc
+        ;; instead of disabling all the tests from these files.
+        "test__resolver_dnspython.py"
+        ;; This test contains 'test_unlink', which
+        ;; fails on i686 (see: https://github.com/gevent/gevent/issues/1558).
+        "test__core_stat.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'patch-source-shebangs 'patch-hard-coded-paths
+            (lambda _
+              (substitute* "src/gevent/subprocess.py"
+                (("/bin/sh") (which "sh")))
+              (for-each (lambda (file)
+                          (substitute* file
+                            (("/bin/sh") (which "sh"))
+                            (("/bin/true") (which "true"))))
+                        (find-files "src/greentest" "\\.py$"))))
+          (add-before 'build 'do-not-use-bundled-sources
+            (lambda _
+              (setenv "GEVENTSETUP_EMBED" "0")
 
-                      ;; Prevent building bundled libev.
-                      (substitute* "setup.py"
-                        (("run_make=_BUILDING")
-                         "run_make=False"))))
-                  (add-before 'build 'add-greenlet-on-C_INCLUDE_PATH
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      (let ((greenlet (string-append
-                                       (assoc-ref inputs "python-greenlet")
-                                       "/include")))
-                        (match (scandir greenlet
-                                        (lambda (item)
-                                          (string-prefix? "python" item)))
-                          ((python)
-                           (setenv "C_INCLUDE_PATH"
-                                   (string-append greenlet "/" python ":"
-                                                  (or (getenv "C_INCLUDE_PATH")
-                                                      ""))))))))
-                  (add-before 'check 'pretend-to-be-CI
-                    (lambda _
-                      ;; A few tests are skipped due to network constraints or
-                      ;; get longer timeouts when running in a CI environment.
-                      ;; Piggy-back on that, as we need the same adjustments.
-                      (setenv "TRAVIS" "1")
-                      (setenv "APPVEYOR" "1")))
-                  (add-before 'check 'adjust-tests
-                    (lambda _
-                      (let ((disabled-tests
-                             '(;; These tests relies on networking which is
-                               ;; not available in the build container.
-                               "test__getaddrinfo_import.py"
-                               "test__server_pywsgi.py"
-                               ;; XXX: These tests borrow functionality from the
-                               ;; Python builtin 'test' module, but it is not
-                               ;; installed with the Guix Python distribution.
-                               "test_smtpd.py"
-                               "test_wsgiref.py"
-                               "test_urllib2.py"
-                               "test_thread.py"
-                               "test_threading.py"
-                               "test__threading_2.py"
-                               ;; These tests rely on KeyboardInterrupts which do not
-                               ;; work inside the build container for some reason
-                               ;; (lack of controlling terminal?).
-                               "test_subprocess.py"
-                               "test__issues461_471.py"
-                               ;; TODO: Patch out the tests that use getprotobyname, etc
-                               ;; instead of disabling all the tests from these files.
-                               "test__resolver_dnspython.py"
-                               "test__doctests.py"
-                               "test__all__.py"
-                               "test___config.py"
-                               "test__execmodules.py"
-                               ;; This test contains 'test_unlink', which
-                               ;; fails on i686 (see:
-                               ;; https://github.com/gevent/gevent/issues/1558).
-                               "test__core_stat.py")))
-                        (call-with-output-file "skipped_tests.txt"
-                          (lambda (port)
-                            (format port "~a~%"
-                                    (string-join disabled-tests "\n")))))))
-                  (replace 'check
-                    (lambda _
-                      ;; Use the build daemons configured number of workers.
-                      (setenv "NWORKERS" (number->string (parallel-job-count)))
-
-                      (invoke "python" "-m" "gevent.tests" "-unone" "--config"
-                              "known_failures.py" "--ignore" "skipped_tests.txt"))))))
+              ;; Prevent building bundled libev.
+              (substitute* "setup.py"
+                (("run_make=_BUILDING")
+                 "run_make=False"))))
+          (add-before 'build 'augment-C_INCLUDE_PATH
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let* ((python (dirname (dirname
+                                       (search-input-file
+                                        inputs "bin/python"))))
+                     (version (python-version python))
+                     (greenlet (string-append
+                                #$(this-package-native-input "python-greenlet")
+                                "/include/python" version)))
+                (setenv "C_INCLUDE_PATH"
+                        (string-append greenlet "/:"
+                                       (or (getenv "C_INCLUDE_PATH")
+                                           ""))))))
+          (add-before 'check 'pretend-to-be-CI
+            (lambda _
+              ;; A few tests are skipped due to network constraints or
+              ;; get longer timeouts when running in a CI environment.
+              ;; Piggy-back on that, as we need the same adjustments.
+              (setenv "TRAVIS" "1")
+              (setenv "APPVEYOR" "1")))
+          (add-before 'check 'adjust-tests
+            (lambda*  (#:key test-flags #:allow-other-keys)
+              (call-with-output-file "skipped_tests.txt"
+                (lambda (port)
+                  (format port "~a~%" (string-join test-flags "\n"))))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; Use the build daemons configured number of workers.
+                (setenv "NWORKERS" (number->string (parallel-job-count)))
+                (invoke "python" "-m" "gevent.tests" "-unone" "--config"
+                        "known_failures.py" "--ignore" "skipped_tests.txt")))))))
     (propagated-inputs
-     (list python-greenlet python-zope-event python-zope-interface))
+     (list python-zope-event python-zope-interface))
     (native-inputs
-     (list python-cython
-           ;; For tests.
-           python-dnspython python-psutil python-objgraph))
+     (list python-cffi
+           python-coverage
+           python-cython
+           python-dnspython
+           python-greenlet
+           python-idna
+           python-objgraph
+           python-psutil
+           python-requests
+           python-setuptools
+           python-wheel))
     (inputs
-     (list c-ares libev))
+     (list c-ares libev libuv))
     (home-page "https://www.gevent.org/")
     (synopsis "Coroutine-based network library")
     (description
