@@ -796,6 +796,31 @@ signalling failures, it offers ways to express expectations and get nice failure
 messages automatically.")
       (license license:asl2.0))))
 
+(define-public go-github-com-jacobsa-reqtrace
+  (package
+    (name "go-github-com-jacobsa-reqtrace")
+    (version "0.0.0-20150505043853-245c9e0234cb")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jacobsa/reqtrace")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zfyijig10896v42rvxka1n4wn6lijqz40y2281187l7mq8vv5jn"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/jacobsa/reqtrace"))
+    (propagated-inputs
+     (list go-golang-org-x-net))
+    (home-page "https://github.com/jacobsa/reqtrace")
+    (synopsis "Simple request tracing framework")
+    (description
+     "Package reqtrace contains a very simple request tracing framework.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-jbenet-go-cienv
   (package
     (name "go-github-com-jbenet-go-cienv")
