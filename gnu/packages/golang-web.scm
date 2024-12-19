@@ -3063,7 +3063,7 @@ authenticated identities and their attributes.")
 (define-public go-github-com-jcmturner-gokrb5-v8
   (package
     (name "go-github-com-jcmturner-gokrb5-v8")
-    (version "8.4.2")
+    (version "8.4.4")
     (source
      (origin
        (method git-fetch)
@@ -3072,7 +3072,7 @@ authenticated identities and their attributes.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0w9d1pa3r6qmdblk25bghf78ncs03l15l1sxnh4n536c356rzq4b"))))
+        (base32 "1rv495j8j2x6avw5hqpf7rpiakr5gdsx6pv8rfn0ff7vi35zfa62"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/jcmturner/gokrb5/v8"
@@ -3087,8 +3087,7 @@ authenticated identities and their attributes.")
            go-github-com-jcmturner-gofork
            go-github-com-jcmturner-goidentity-v6
            go-github-com-jcmturner-rpc-v2
-           go-golang-org-x-crypto
-           go-golang-org-x-net))
+           go-golang-org-x-crypto))
     (home-page "https://github.com/jcmturner/gokrb5")
     (synopsis "Pure Go Kerberos library for clients and services")
     (description "This package provides a pure Go Kerberos library.  It
