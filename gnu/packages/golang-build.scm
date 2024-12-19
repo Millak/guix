@@ -416,74 +416,44 @@ primitives in Go.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1b5jgzz7fn1br2vw6m90z902i5r14sp0wj8s0lvlbm79xvi38x19"))))
+        (base32 "1b5jgzz7fn1br2vw6m90z902i5r14sp0wj8s0lvlbm79xvi38x19"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separatly:
+            ;;
+            ;; - olang.org/x/crypto/x509roots/fallback
+            (for-each delete-file-recursively (list "x509roots/fallback"))))))
     (build-system go-build-system)
     (arguments
      (list
+      #:skip-build? #t
       #:import-path "golang.org/x/crypto"
       #:phases
       #~(modify-phases %standard-phases
+          ;; Network access requried: go mod download -json
+          ;; github.com/google/wycheproof@v0.0.0-20191219022705-2196000605e4.
+          ;;
+          ;; internal/wycheproof/wycheproof_test.go
+          ;; Download the JSON test files from github.com/google/wycheproof
+          ;; using `go mod download -json` so the cached source of the testdata
+          ;; can be used in the following tests.
+          ;;
+          ;; <https://github.com/google/wycheproof> ->
+          ;; <https://github.com/C2SP/wycheproof>
+          ;;
+          ;; The structs for these tests are generated from the schemas
+          ;; provided in
+          ;; <https://github.com/google/wycheproof/tree/master/schemas> using
+          ;; <https://github.com/a-h/generate>.
           (add-after 'unpack 'remove-test-files
             (lambda* (#:key import-path #:allow-other-keys)
               (with-directory-excursion (string-append "src/" import-path)
                 (for-each delete-file
-                          (list
-                           ;; Network access requried: go mod download -json
-                           ;; github.com/google/wycheproof@v0.0.0-20191219022705-2196000605e4.
-                           "internal/wycheproof/aead_test.go"
-                           "internal/wycheproof/aes_cbc_test.go"
-                           "internal/wycheproof/dsa_test.go"
-                           "internal/wycheproof/ecdh_stdlib_test.go"
-                           "internal/wycheproof/ecdh_test.go"
-                           "internal/wycheproof/ecdsa_test.go"
-                           "internal/wycheproof/eddsa_test.go"
-                           "internal/wycheproof/hkdf_test.go"
-                           "internal/wycheproof/hmac_test.go"
-                           "internal/wycheproof/rsa_oaep_decrypt_test.go"
-                           "internal/wycheproof/rsa_pss_test.go"
-                           "internal/wycheproof/rsa_signature_test.go"
-                           "internal/wycheproof/wycheproof_test.go")))))
-          ;; XXX: Workaround for go-build-system's lack of Go modules
-          ;; support.
-          (delete 'build)
-          (replace 'check
-            (lambda* (#:key tests? import-path #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion (string-append "src/" import-path)
-                  (invoke "go" "test" "-v"
-                          ;; acme - cycle with go-golang-org-x-net
-                          "./argon2/..."
-                          "./bcrypt/..."
-                          "./blake2b/..."
-                          "./blake2s/..."
-                          "./blowfish/..."
-                          "./bn256/..."
-                          "./cast5/..."
-                          "./chacha20/..."
-                          "./chacha20poly1305/..."
-                          "./cryptobyte/..."
-                          "./curve25519/..."
-                          "./ed25519/..."
-                          "./hkdf/..."
-                          "./internal/..."
-                          "./md4/..."
-                          "./nacl/..."
-                          "./ocsp/..."
-                          "./openpgp/..."
-                          "./otr/..."
-                          "./pbkdf2/..."
-                          "./pkcs12/..."
-                          "./poly1305/..."
-                          "./ripemd160/..."
-                          "./salsa20/..."
-                          "./scrypt/..."
-                          "./sha3/..."
-                          "./ssh/..."
-                          "./tea/..."
-                          "./twofish/..."
-                          "./x509roots/..."
-                          "./xtea/..."
-                          "./xts/..."))))))))
+                          (find-files "internal/wycheproof" ".*_test\\.go$"))))))))
+    (native-inputs
+     (list go-golang-org-x-net-bootstrap
+           go-golang-org-x-text-bootstrap))
     (propagated-inputs
      (list go-golang-org-x-sys go-golang-org-x-term))
     (home-page "https://go.googlesource.com/crypto/")
