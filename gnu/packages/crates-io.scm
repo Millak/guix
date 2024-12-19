@@ -10832,20 +10832,18 @@ validation framework for Rust.")
 (define-public rust-bytecount-0.6
   (package
     (name "rust-bytecount")
-    (version "0.6.3")
+    (version "0.6.8")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "bytecount" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "173wsvyagflb7ic3hpvp1db6q3dsigr452inslnzmsb3ix3nlrrc"))))
+                "1klqfjwn41fwmcqw4z03v6i4imgrf7lmf3b5s9v74hxir8hrps2w"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-packed-simd-2" ,rust-packed-simd-2-0.3))
-       #:cargo-development-inputs
-       (("rust-criterion" ,rust-criterion-0.3)
+     `(#:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.4)
         ("rust-quickcheck" ,rust-quickcheck-1)
         ("rust-rand" ,rust-rand-0.8))))
     (home-page "https://github.com/llogiq/bytecount")
