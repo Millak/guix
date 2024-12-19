@@ -373,7 +373,7 @@ Report the availability of substitutes.\n"))
   -m, --manifest=MANIFEST
                          look up substitutes for packages specified in MANIFEST"))
   (display (G_ "
-  -e, --expression=EXPR  build the object EXPR evaluates to"))
+  -e, --expression=EXPR  look up substitutes for the package EXPR evaluates to"))
   (display (G_ "
   -c, --coverage[=COUNT]
                          show substitute coverage for packages with at least
