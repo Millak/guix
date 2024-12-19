@@ -5890,32 +5890,31 @@ futures.")
 (define-public rust-async-std-1
   (package
     (name "rust-async-std")
-    (version "1.12.0")
+    (version "1.13.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "async-std" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0pbgxhyb97h4n0451r26njvr20ywqsbm6y1wjllnp4if82s5nmk2"))))
+        (base32 "059nbiyijwbndyrz0050skvlvzhds0dmnl0biwmxwbw055glfd66"))))
     (build-system cargo-build-system)
     (arguments
      (list #:cargo-test-flags
-           `(list "--release" "--"
-                  "--skip=io_timeout_timedout")
+           `(list "--" "--skip=io_timeout_timedout")
            #:cargo-inputs
            `(("rust-async-attributes" ,rust-async-attributes-1)
              ("rust-async-channel" ,rust-async-channel-1)
              ("rust-async-global-executor" ,rust-async-global-executor-2)
-             ("rust-async-io" ,rust-async-io-1)
-             ("rust-async-lock" ,rust-async-lock-2)
-             ("rust-async-process" ,rust-async-process-1)
+             ("rust-async-io" ,rust-async-io-2)
+             ("rust-async-lock" ,rust-async-lock-3)
+             ("rust-async-process" ,rust-async-process-2)
              ("rust-crossbeam-utils" ,rust-crossbeam-utils-0.8)
              ("rust-futures-channel" ,rust-futures-channel-0.3)
              ("rust-futures-core" ,rust-futures-core-0.3)
              ("rust-futures-io" ,rust-futures-io-0.3)
-             ("rust-futures-lite" ,rust-futures-lite-1)
-             ("rust-gloo-timers" ,rust-gloo-timers-0.2)
+             ("rust-futures-lite" ,rust-futures-lite-2)
+             ("rust-gloo-timers" ,rust-gloo-timers-0.3)
              ("rust-kv-log-macro" ,rust-kv-log-macro-1)
              ("rust-log" ,rust-log-0.4)
              ("rust-memchr" ,rust-memchr-2)
