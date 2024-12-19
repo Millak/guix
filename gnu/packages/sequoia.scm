@@ -637,10 +637,6 @@ HKP protocol, and searching and publishing Web Key Directories.")
     (build-system cargo-build-system)
     (arguments
      `(#:features '("crypto-nettle")
-       #:cargo-test-flags
-       (list "--release" "--"
-             "--skip=leak_tests::test_aes_256_decryption"
-             "--skip=leak_tests::test_ed25519")
        #:cargo-inputs
        (("rust-aes" ,rust-aes-0.8)
         ("rust-aes-gcm" ,rust-aes-gcm-0.10)
