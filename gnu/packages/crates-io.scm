@@ -12312,8 +12312,35 @@ metadata}.")
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1))))))
 
+(define-public rust-cargo-lock-10
+  (package
+    (name "rust-cargo-lock")
+    (version "10.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cargo-lock" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ldm8nd05cwyc2y0wwbdwx51g5phylkffaycpc2xa8kh01npfsb4"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-gumdrop" ,rust-gumdrop-0.8)
+                       ("rust-petgraph" ,rust-petgraph-0.6)
+                       ("rust-semver" ,rust-semver-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-toml" ,rust-toml-0.8)
+                       ("rust-url" ,rust-url-2))))
+    (home-page "https://rustsec.org")
+    (synopsis "@file{Cargo.lock} parser with optional dependency graph analysis")
+    (description
+     "This package provides self-contained @file{Cargo.lock} parser with
+optional dependency graph analysis.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-cargo-lock-9
   (package
+    (inherit rust-cargo-lock-10)
     (name "rust-cargo-lock")
     (version "9.0.0")
     (source
@@ -12323,20 +12350,13 @@ metadata}.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0wmczs13psr8p9mc51w4r4pm900dbpbpipp87knlkd7gg19nf771"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-gumdrop" ,rust-gumdrop-0.8)
                        ("rust-petgraph" ,rust-petgraph-0.6)
                        ("rust-semver" ,rust-semver-1)
                        ("rust-serde" ,rust-serde-1)
                        ("rust-toml" ,rust-toml-0.7)
-                       ("rust-url" ,rust-url-2))))
-    (home-page "https://rustsec.org")
-    (synopsis "@file{Cargo.lock} parser with optional dependency graph analysis")
-    (description
-     "This package provides self-contained @file{Cargo.lock} parser with
-optional dependency graph analysis.")
-    (license (list license:asl2.0 license:expat))))
+                       ("rust-url" ,rust-url-2))))))
 
 (define-public rust-cargo-lock-8
   (package
