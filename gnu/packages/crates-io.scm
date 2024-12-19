@@ -11099,19 +11099,22 @@ and little-endian.")
 (define-public rust-bytestring-1
   (package
     (name "rust-bytestring")
-    (version "1.3.1")
+    (version "1.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "bytestring" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0wpf0c5c72x3ycdb85vznkmcy8fy6ckzd512064dyabbx81h5n3l"))))
+        (base32 "0pwf6x2hxy6imy7ph15c5jxx51js5p5xwl1zfnq26a1vw9x68rg4"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f      ; unresolved import `ahash`
-       #:cargo-inputs (("rust-bytes" ,rust-bytes-1)
-                       ("rust-serde" ,rust-serde-1))))
+     `(#:cargo-inputs (("rust-bytes" ,rust-bytes-1)
+                       ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+       (("rust-ahash" ,rust-ahash-0.8)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-static-assertions" ,rust-static-assertions-1))))
     (home-page "https://actix.rs")
     (synopsis "UTF-8 encoded string with Bytes as a storage")
     (description "This package provides a UTF-8 encoded read-only string using
