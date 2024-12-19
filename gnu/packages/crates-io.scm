@@ -8515,14 +8515,14 @@ useful for bioinformatics, but also in other fields.")
 (define-public rust-bit-field-0.10
   (package
     (name "rust-bit-field")
-    (version "0.10.1")
+    (version "0.10.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "bit_field" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "192rsg8g3ki85gj8rzslblnwr53yw5q4l8vfg6bf1lkn4cfdvdnw"))))
+        (base32 "0qav5rpm4hqc33vmf4vc4r0mh51yjx5vmd9zhih26n9yjs3730nw"))))
     (build-system cargo-build-system)
     (home-page "https://github.com/phil-opp/rust-bit-field")
     (synopsis "Methods for operating on individual bits and ranges of bits")
