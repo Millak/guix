@@ -775,10 +775,10 @@ Test for C++ and Google JS Test.")
         (base32 "1lbwbxzr75g65q07ry5k4kglxqs3ym7xkvqznzm55rm3qk76v83r"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/jacobsa/ogletest"
-       ;; These tests should be made working
-       #:tests? #f))
-    (native-inputs
+     (list
+       #:import-path "github.com/jacobsa/ogletest"
+       #:test-flags #~(list "-skip" "TestGoldenFiles")))
+    (propagated-inputs
      (list go-github-com-jacobsa-oglematchers
            go-github-com-jacobsa-oglemock
            go-github-com-jacobsa-reqtrace
