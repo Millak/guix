@@ -6260,6 +6260,28 @@ downstream packages to implement new methods on these types without
 depending on the entirety of @code{StaticArrays.jl}.")
     (license license:expat)))
 
+(define-public julia-staticnumbers
+  (package
+    (name "julia-staticnumbers")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/perrutquist/StaticNumbers.jl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1m6drdyxgizc6d5qak9l6c2dv8nb6x5kj7sgfxkgwnfxf6ran257"))))
+    (build-system julia-build-system)
+    (native-inputs (list julia-simd julia-staticarrays))
+    (home-page "https://github.com/perrutquist/StaticNumbers.jl")
+    (synopsis "Static numbers in Julia")
+    (description
+     "This package provides number datatypes which store their values in
+ type parameters, making them runtime constants.")
+    (license license:expat)))
+
 (define-public julia-statisticaltraits
   (package
     (name "julia-statisticaltraits")
