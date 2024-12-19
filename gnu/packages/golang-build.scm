@@ -956,7 +956,7 @@ processing.")
 (define-public go-golang-org-x-time
   (package
     (name "go-golang-org-x-time")
-    (version "0.6.0")
+    (version "0.8.0")
     (source
      (origin
        (method git-fetch)
@@ -965,7 +965,7 @@ processing.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "14z7f1yx3r393f94yjv09mrsfaydq6da7pswv8wvk327mxa56vw1"))))
+        (base32 "1m2xfgq3a6y1xckl0al9n03il927z3rp2a8fvb8369035d3al3qh"))))
     (build-system go-build-system)
     (arguments
      (list
