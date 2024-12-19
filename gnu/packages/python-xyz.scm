@@ -34232,14 +34232,14 @@ process.")
 (define-public python-gamera
   (package
     (name "python-gamera")
-    (version "4.0.0")
+    (version "4.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://gamera.informatik.hsnr.de/download/"
                            "gamera-" version ".tar.gz"))
        (sha256
-        (base32 "0fhlwbvpm3k54n4aa1y6qd348jqrb54ak9p0ic16drx7f07dsq05"))
+        (base32 "1apgjqdlsm0kx05jlpaw4398b6i2317yrw3jd8wp83w3pqmg34ps"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -34263,8 +34263,6 @@ process.")
                ;; Some tests require a writable HOME directory and test
                ;; directory.
                (setenv "HOME" "/tmp")
-               (mkdir "tests/tmp")     ;the code assumes this directory exists
-               ;; (for-each make-file-writable (find-files "tests"))
                (with-directory-excursion "tests"
                  (invoke "pytest" "-vv"
                          ;; This test causes gamera/gendoc.py to be loaded,
