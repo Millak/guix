@@ -6657,15 +6657,17 @@ bytes or encoder from file extension.")
 (define-public rust-autocfg-1
   (package
     (name "rust-autocfg")
-    (version "1.1.0")
+    (version "1.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "autocfg" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1ylp3cb47ylzabimazvbz9ms6ap784zhb6syaz6c1jqpmcmq0s6l"))))
+        (base32 "09lz3by90d2hphbq56znag9v87gfpd9gb8nr82hll8z6x2nhprdc"))))
     (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-test-flags '(list "--" "--skip=test_wrappers")))
     (home-page "https://github.com/cuviper/autocfg")
     (synopsis "Automatic configuration for Rust compiler features")
     (description
