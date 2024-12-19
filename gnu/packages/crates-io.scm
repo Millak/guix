@@ -77621,6 +77621,28 @@ implementations.")
      "This package provides iterators over groups in slices and strs.")
     (license license:expat)))
 
+(define-public rust-slice-ring-buffer-0.3
+  (package
+    (name "rust-slice-ring-buffer")
+    (version "0.3.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "slice-ring-buffer" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1mi7iigijbcp0c9m2sslfny5q2savysgv1grg67kdch9v8mk3bl4"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2)
+                       ("rust-mach2" ,rust-mach2-0.4)
+                       ("rust-winapi" ,rust-winapi-0.3))))
+    (home-page "https://github.com/liquidityc/slice_ring_buffer")
+    (synopsis "Double-ended queue that deref's into a slice")
+    (description
+     "This package provides a double-ended queue that deref's into a slice.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-slog-2
   (package
     (name "rust-slog")
