@@ -98921,14 +98921,7 @@ for locating fonts.")
                    (string-append "\"^" version)))))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-test-flags
-       '("--release" "--"
-         "--skip=error::tests::alignment_display"
-         "--skip=error::tests::size_display"
-         "--skip=error::tests::validity_display"
-         "--skip=layout::tests::test_validate_cast_and_convert_metadata"
-         "--skip=util::tests::test_round_down_to_next_multiple_of_alignment_zerocopy_panic_in_const_and_vec_try_reserve")
-       #:cargo-inputs (("rust-zerocopy-derive" ,rust-zerocopy-derive-0.8))
+     `(#:cargo-inputs (("rust-zerocopy-derive" ,rust-zerocopy-derive-0.8))
        #:cargo-development-inputs
        (("rust-elain" ,rust-elain-0.3)
         ("rust-itertools" ,rust-itertools-0.11)
