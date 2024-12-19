@@ -6622,6 +6622,27 @@ standard named test images and example images for the internal usage in
 package.")
     (license license:expat)))
 
+(define-public julia-timeroutputs
+  (package
+    (name "julia-timeroutputs")
+    (version "0.5.26")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/KristofferC/TimerOutputs.jl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0mz5kpjz2mcmaywxjp1y87wx02lmvi2b0z012rnz70p1y39s5y0v"))))
+    (build-system julia-build-system)
+    (propagated-inputs (list julia-exprtools))
+    (home-page "https://github.com/KristofferC/TimerOutputs.jl")
+    (synopsis "Formatted output of timed sections in Julia")
+    (description "This package generates formatted output from timings made
+in different sections of a program.")
+    (license license:expat)))
+
 (define-public julia-tokenize
   (package
     (name "julia-tokenize")
