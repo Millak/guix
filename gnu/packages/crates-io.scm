@@ -52266,16 +52266,16 @@ directly.")
 (define-public rust-num-threads-0.1
   (package
     (name "rust-num-threads")
-    (version "0.1.6")
+    (version "0.1.7")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "num_threads" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
-               (base32 "0i5vmffsv6g79z869flp1sja69g1gapddjagdw1k3q9f3l2cw698"))))
+               (base32 "1ngajbmhrgyhzrlc4d5ga9ych1vrfcvfsiqz6zv0h2dpr2wrhwsw"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f              ; Unclear why these tests fail.
+     `(#:tests? #f              ; Not all files included.
        #:cargo-inputs (("rust-libc" ,rust-libc-0.2))))
     (home-page "https://github.com/jhpratt/num_threads")
     (synopsis "Determine the number of running threads for the current process")
