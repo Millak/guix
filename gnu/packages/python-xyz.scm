@@ -30180,45 +30180,50 @@ class in a @acronym{DRY, Don't Repeat Yourself} way.")
     (license license:expat)))
 
 (define-public python-construct
-  (package
-    (name "python-construct")
-    (version "2.10.68")
-    (source
-     (origin
-       ;; There are no tests in the PyPI tarball.
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/construct/construct")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1b59kq8scxhn9afqgmksk45n53gawylqm8gw3k0vmljg274xi7vf"))))
-    (build-system python-build-system)
-    (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (invoke "pytest" "-v" "tests/")))))))
-    (native-inputs
-     (list python-pytest python-pytest-benchmark))
-    (propagated-inputs
-     (list python-arrow
-           python-cloudpickle
-           python-lz4
-           python-numpy
-           python-ruamel.yaml))
-    (home-page "https://construct.readthedocs.io")
-    (synopsis "Declarative and symmetrical parser and builder for binary data")
-    (description
-     "This package provides both simple, atomic constructs (such as
+  ;; Fixes not in a release yet.
+  (let ((commit "c1171b16bda1d213ba4858f3e0e4d4003e4aae90")
+        (revision "1"))
+    (package
+      (name "python-construct")
+      (version (git-version "2.10.70" revision commit))
+      (source
+       (origin
+         ;; There are no tests in the PyPI tarball.
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/construct/construct")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "03f6nvyzrq50nhqqwmmws983wwjg78yd9j09pl94vkmyjph33da5"))))
+      (build-system python-build-system)
+      (arguments
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (replace 'check
+                   (lambda* (#:key tests? #:allow-other-keys)
+                     (when tests?
+                       (invoke "pytest" "-v" "tests/")))))))
+      (native-inputs
+       (list python-pytest
+             python-pytest-benchmark))
+      (propagated-inputs
+       (list python-arrow
+             python-cloudpickle
+             python-cryptography
+             python-lz4
+             python-numpy
+             python-ruamel.yaml))
+      (home-page "https://construct.readthedocs.io")
+      (synopsis "Declarative and symmetrical parser and builder for binary data")
+      (description
+       "This package provides both simple, atomic constructs (such as
 integers of various sizes), as well as composite ones which allow you
 form hierarchical and sequential structures of increasing complexity.
 It features bit and byte granularity, easy debugging and testing, an
 easy-to-extend subclass system, and lots of primitive constructs to
 make your work easier.")
-    (license license:expat)))
+      (license license:expat))))
 
 (define-public python-outcome
   (package
