@@ -61640,8 +61640,36 @@ including most strategies and the testing framework itself.")
        #:cargo-development-inputs
        (("rust-regex" ,rust-regex-0.2))))))
 
+(define-public rust-proptest-derive-0.5
+  (package
+    (name "rust-proptest-derive")
+    (version "0.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "proptest-derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0jay6jwfvrwzz5bqpi4hxx3ax6kax06p0h29vgkxb0vl42nckqaf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; `#![feature]` may not be used on the stable release channel
+       #:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))
+       #:cargo-development-inputs (("rust-compiletest-rs" ,rust-compiletest-rs-0.11)
+                                   ("rust-criterion" ,rust-criterion-0.5)
+                                   ("rust-proptest" ,rust-proptest-1))))
+    (home-page
+     "https://proptest-rs.github.io/proptest/proptest-derive/index.html")
+    (synopsis "Custom-derive for the Arbitrary trait of proptest")
+    (description "This package provides a custom-derive for the Arbitrary
+trait of proptest.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-proptest-derive-0.4
   (package
+    (inherit rust-proptest-derive-0.5)
     (name "rust-proptest-derive")
     (version "0.4.0")
     (source
@@ -61656,7 +61684,6 @@ including most strategies and the testing framework itself.")
        (snippet '(begin (delete-file "tests/uninhabited-pass.rs")
                         (delete-file "tests/enum.rs")
                         (delete-file "tests/skip.rs")))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
        '("--release" "--"
@@ -61668,13 +61695,7 @@ including most strategies and the testing framework itself.")
        #:cargo-development-inputs
        (("rust-compiletest-rs" ,rust-compiletest-rs-0.9)
         ("rust-criterion" ,rust-criterion-0.5)
-        ("rust-proptest" ,rust-proptest-1))))
-    (home-page
-     "https://proptest-rs.github.io/proptest/proptest-derive/index.html")
-    (synopsis "Custom-derive for the Arbitrary trait of proptest")
-    (description "This package provides a custom-derive for the Arbitrary
-trait of proptest.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-proptest" ,rust-proptest-1))))))
 
 (define-public rust-proptest-derive-0.3
   (package
