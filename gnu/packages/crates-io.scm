@@ -5289,29 +5289,27 @@ synchronous without duplicating it.")
 (define-public rust-async-global-executor-2
   (package
     (name "rust-async-global-executor")
-    (version "2.0.2")
+    (version "2.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "async-global-executor" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1xjacr43sbz2zk0zygpd9k14n95wa61x8n9i8mcdwdkz659fr1lm"))))
+        (base32 "1762s45cc134d38rrv0hyp41hv4iv6nmx59vswid2p0il8rvdc85"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-async-channel" ,rust-async-channel-1)
-        ("rust-async-executor" ,rust-async-executor-1)
-        ("rust-async-io" ,rust-async-io-1)
-        ("rust-async-mutex" ,rust-async-mutex-1)
-        ("rust-blocking" ,rust-blocking-1)
-        ("rust-futures-lite" ,rust-futures-lite-1)
-        ("rust-num-cpus" ,rust-num-cpus-1)
-        ("rust-once-cell" ,rust-once-cell-1)
-        ("rust-tokio" ,rust-tokio-1)
-        ("rust-tokio" ,rust-tokio-0.2)
-        ("rust-tokio" ,rust-tokio-0.3))))
+     (list #:cargo-inputs (list rust-async-channel-2
+                                rust-async-executor-1
+                                rust-async-io-2
+                                rust-async-lock-3
+                                rust-blocking-1
+                                rust-futures-lite-2
+                                rust-once-cell-1
+                                rust-tokio-1
+                                rust-tokio-0.2
+                                rust-tokio-0.3)
+           #:cargo-development-inputs (list rust-doc-comment-0.3)))
     (home-page "https://github.com/async-rs/async-global-executor")
     (synopsis "Global executor built on top of @code{async-executor} and
 @code{async-io}")
