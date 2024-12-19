@@ -98286,17 +98286,19 @@ file into an in-memory tree structure.")
 (define-public rust-xxhash-rust-0.8
   (package
     (name "rust-xxhash-rust")
-    (version "0.8.10")
+    (version "0.8.12")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "xxhash-rust" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32 "00zfsfigb6zh0x8aaickkkyd3vyjgnrq36ym04lil7my4lgahzcj"))))
+         (base32 "1139skyp136z8710r916kb1djp7f7flfly31zccqi5800isvyp3a"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f      ; Only doc tests, which fail.
+     `(#:cargo-test-flags '("--features" "xxh3,const_xxh3"
+                            ;; Not all files included.
+                            "--" "--skip=test_vectors_xxh3")
        #:cargo-development-inputs (("rust-getrandom" ,rust-getrandom-0.2)
                                    ("rust-xxhash-c-sys" ,rust-xxhash-c-sys-0.8))))
     (home-page "https://github.com/DoumanAsh/xxhash-rust")
