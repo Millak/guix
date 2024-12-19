@@ -15863,8 +15863,44 @@ need compiler-rt intrinsics.")
     (description "This package provides a triggerable compiler error for Rust.")
     (license license:expat)))
 
+(define-public rust-compiletest-rs-0.11
+  (package
+    (name "rust-compiletest-rs")
+    (version "0.11.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "compiletest_rs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0k60xaazc2ar1ycp1xiyj2am3rjdl9ww1w2kmmyablpw0n8zwl7i"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-diff" ,rust-diff-0.1)
+                       ("rust-filetime" ,rust-filetime-0.2)
+                       ("rust-getopts" ,rust-getopts-0.2)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-miow" ,rust-miow-0.6)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-rustfix" ,rust-rustfix-0.8)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-derive" ,rust-serde-derive-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-tempfile" ,rust-tempfile-3)
+                       ("rust-tester" ,rust-tester-0.9)
+                       ("rust-windows-sys" ,rust-windows-sys-0.59))))
+    (home-page "https://github.com/Manishearth/compiletest-rs")
+    (synopsis "Extraction of the compiletest utility from the Rust compiler")
+    (description
+     "This package provides an extraction of the compiletest utility from the
+Rust compiler.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-compiletest-rs-0.10
   (package
+    (inherit rust-compiletest-rs-0.11)
     (name "rust-compiletest-rs")
     (version "0.10.2")
     (source
@@ -15874,7 +15910,6 @@ need compiler-rt intrinsics.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1mn0v8qax92pl9kdf2csah79jyigzvndg8mil6rpn97rpkhzw9bj"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-diff" ,rust-diff-0.1)
@@ -15891,14 +15926,7 @@ need compiler-rt intrinsics.")
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-tempfile" ,rust-tempfile-3)
         ("rust-tester" ,rust-tester-0.9)
-        ("rust-winapi" ,rust-winapi-0.3))))
-    (home-page "https://github.com/Manishearth/compiletest-rs")
-    (synopsis
-     "Extraction of the compiletest utility from the Rust compiler")
-    (description
-     "This package provides an extraction of the compiletest utility from the
-Rust compiler.")
-    (license (list license:asl2.0 license:expat))))
+        ("rust-winapi" ,rust-winapi-0.3))))))
 
 (define-public rust-compiletest-rs-0.9
   (package
