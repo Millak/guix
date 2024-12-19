@@ -9449,23 +9449,22 @@ comes with a strict specification.")
 (define-public rust-borsh-derive-1
   (package
     (name "rust-borsh-derive")
-    (version "1.3.0")
+    (version "1.5.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "borsh-derive" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1q0h8y7xpilasaqc3s7drjh3qzxk7k83wc5ns9x7gpf4kiq1hjdz"))))
+        (base32 "0i3jdajyd0mjbrsaxx3y93x13ghnylr9hv0rff1xd2wkicxklnf2"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; Tests aren't setup correctly.
        #:cargo-inputs (("rust-once-cell" ,rust-once-cell-1)
-                       ("rust-proc-macro-crate" ,rust-proc-macro-crate-2)
+                       ("rust-proc-macro-crate" ,rust-proc-macro-crate-3)
                        ("rust-proc-macro2" ,rust-proc-macro2-1)
                        ("rust-quote" ,rust-quote-1)
-                       ("rust-syn" ,rust-syn-2)
-                       ("rust-syn-derive" ,rust-syn-derive-0.1))
+                       ("rust-syn" ,rust-syn-2))
        #:cargo-development-inputs (("rust-insta" ,rust-insta-1)
                                    ("rust-prettyplease" ,rust-prettyplease-0.2)
                                    ("rust-syn" ,rust-syn-2))))
