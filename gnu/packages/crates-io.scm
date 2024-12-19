@@ -201,7 +201,7 @@ cubic beziers.")
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
-       '("--release" "--features=testing")
+       '("--features=testing")
        #:cargo-inputs (("rust-abi-stable-derive" ,rust-abi-stable-derive-0.11)
                        ("rust-abi-stable-shared" ,rust-abi-stable-shared-0.11)
                        ("rust-const-panic" ,rust-const-panic-0.2)
