@@ -6028,7 +6028,7 @@ interfaces you are used to, but in an async version and ready for Rust's
 (define-public rust-async-stream-0.3
   (package
     (name "rust-async-stream")
-    (version "0.3.5")
+    (version "0.3.6")
     (source
      (origin
        (method url-fetch)
@@ -6045,11 +6045,10 @@ version = \"0.4\"
 
 [dev-dependencies.trybuild]")))
        (sha256
-        (base32 "0l8sjq1rylkb1ak0pdyjn83b3k6x36j22myngl4sqqgg7whdsmnd"))))
+        (base32 "0xl4zqncrdmw2g6241wgr11dxdg4h7byy6bz3l6si03qyfk72nhb"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-test-flags '("--release" "--"
-                            "--skip=test")
+     `(#:cargo-test-flags '("--" "--skip=test")
        #:cargo-inputs
        (("rust-async-stream-impl" ,rust-async-stream-impl-0.3)
         ("rust-futures-core" ,rust-futures-core-0.3)
