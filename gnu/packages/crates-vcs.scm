@@ -163,14 +163,14 @@
 (define-public rust-git-testament-derive-0.2
   (package
     (name "rust-git-testament-derive")
-    (version "0.2.0")
+    (version "0.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "git-testament-derive" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0hk8r71jjr1adxz1gpxl3i1xrj4j3g15jdwlyqq6f6myzd74jccv"))))
+        (base32 "1h645dqdzzgibgkar3vki1mkpkf73r9cfbvlaqbdrcqywxkwksmv"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-log" ,rust-log-0.4)
