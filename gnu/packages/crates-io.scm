@@ -10453,14 +10453,14 @@ constants from build.rs or a script.")
 (define-public rust-build-context-0.1
   (package
     (name "rust-build-context")
-    (version "0.1.1")
+    (version "0.1.3")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "build-context" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "15jnnh6vk7ifc98j08rv8v9yapzaciz7awdk4q2lrna868dnzhjh"))))
+                "0df98z2ky5d5jqiqhz8bpfv7cfh0vrlrsksp3finapflx6qhqqc6"))))
     (build-system cargo-build-system)
     (home-page "https://github.com/taiki-e/build-context")
     (synopsis "Build environment/target information available in libraries")
