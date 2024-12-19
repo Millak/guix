@@ -51997,17 +51997,17 @@ primitives and enums easier.")
 (define-public rust-num-enum-derive-0.7
   (package
     (name "rust-num-enum-derive")
-    (version "0.7.1")
+    (version "0.7.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "num_enum_derive" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "03jgxry6vja1n7hp6wsg4c0rldkaabq95h8zv76rq85dk13y84bc"))))
+        (base32 "0mksna1jj87ydh146gn6jcqkvvs920c3dgh0p4f3xk184kpl865g"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-test-flags '("--release" "--"
+     `(#:cargo-test-flags '("--"
                             "--skip=derive_default"
                             "--skip=derive_from_primitive"
                             "--skip=derive_into_primitive"
