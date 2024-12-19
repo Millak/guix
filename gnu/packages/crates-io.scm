@@ -99695,14 +99695,14 @@ library.")
 (define-public rust-zstd-sys-2
   (package
     (name "rust-zstd-sys")
-    (version "2.0.10+zstd.1.5.6")
+    (version "2.0.13+zstd.1.5.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "zstd-sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1ak51pq1ni6q3qgyr58iq1pcz0vyh80f8vn8m27zrfpm9a8s8ly2"))
+        (base32 "1almbackh06am0d2kc4a089n3al91jg3ahgg9kcrg3zfrwhhzzrq"))
        (snippet #~(begin
                     (use-modules (guix build utils))
                     (delete-file-recursively "zstd")))))
