@@ -5046,14 +5046,14 @@ multi-consumer channels.")
 (define-public rust-async-compat-0.2
   (package
     (name "rust-async-compat")
-    (version "0.2.3")
+    (version "0.2.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "async-compat" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "06s625ydwms36y4sn723mwq7s4bba2gmp9pq0y65s2gb3xy712pn"))))
+        (base32 "1h4gqla7s8wczivqskbxg7nl3qj0svd6yf9fjssgg8wnwfyr9avv"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-futures-core" ,rust-futures-core-0.3)
@@ -5063,7 +5063,7 @@ multi-consumer channels.")
                        ("rust-tokio" ,rust-tokio-1))
        #:cargo-development-inputs (("rust-blocking" ,rust-blocking-1)
                                    ("rust-futures" ,rust-futures-0.3)
-                                   ("rust-reqwest" ,rust-reqwest-0.11)
+                                   ("rust-reqwest" ,rust-reqwest-0.12)
                                    ("rust-tokio" ,rust-tokio-1)
                                    ("rust-warp" ,rust-warp-0.3))))
     (native-inputs (list pkg-config))
