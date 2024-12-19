@@ -10706,14 +10706,14 @@ of built-in fundamental numeric types.")
 (define-public rust-byte-unit-5
   (package
     (name "rust-byte-unit")
-    (version "5.1.4")
+    (version "5.1.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "byte-unit" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0gnnl92szl7d6bxz028n03ifflg96z4xp0lxqc3m8rmjy2yikb1k"))))
+        (base32 "0x3ifzw0isgsiffg4yhvqa28rzbyxpivy2bkph69n845qp1jkkg1"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-rocket" ,rust-rocket-0.5)
