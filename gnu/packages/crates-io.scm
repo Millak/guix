@@ -5343,14 +5343,14 @@ synchronous without duplicating it.")
 (define-public rust-async-io-2
   (package
     (name "rust-async-io")
-    (version "2.3.4")
+    (version "2.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "async-io" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1s679l7x6ijh8zcxqn5pqgdiyshpy4xwklv86ldm1rhfjll04js4"))))
+        (base32 "0n8h0vy53n4vdkq529scqnkzm9vcl3r73za9nj81s2nfrhiv78j3"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-async-lock" ,rust-async-lock-3)
@@ -5369,7 +5369,7 @@ synchronous without duplicating it.")
                                    ("rust-blocking" ,rust-blocking-1)
                                    ("rust-criterion" ,rust-criterion-0.4)
                                    ("rust-getrandom" ,rust-getrandom-0.2)
-                                   ("rust-inotify" ,rust-inotify-0.10)
+                                   ("rust-inotify" ,rust-inotify-0.11)
                                    ("rust-signal-hook" ,rust-signal-hook-0.3)
                                    ("rust-tempfile" ,rust-tempfile-3)
                                    ("rust-timerfd" ,rust-timerfd-1)
