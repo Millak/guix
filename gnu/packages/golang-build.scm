@@ -407,7 +407,7 @@ primitives in Go.")
 (define-public go-golang-org-x-crypto
   (package
     (name "go-golang-org-x-crypto")
-    (version "0.27.0")
+    (version "0.31.0")
     (source
      (origin
        (method git-fetch)
@@ -416,7 +416,7 @@ primitives in Go.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1b5jgzz7fn1br2vw6m90z902i5r14sp0wj8s0lvlbm79xvi38x19"))
+        (base32 "0pd3qipz2wb5wbbb44lgbfygxhf9lq5rknf82p2dmaicszn0rd53"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
