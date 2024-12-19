@@ -5039,42 +5039,41 @@ for the basic TCP/IP protocols.")
 (define-public python-geventhttpclient
   (package
     (name "python-geventhttpclient")
-    (version "2.0.9")
+    (version "2.3.3")
     (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "geventhttpclient" version))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/geventhttpclient/geventhttpclient")
+                    (commit version)
+                    (recursive? #true)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "04qmcc7qpnif70ph61339dcld4g107fkhpa0gdmbs8z98v9kkg4a"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  ;; Delete pre-compiled files.
-                  (for-each delete-file (find-files "src/geventhttpclient"
-                                                    ".*\\.pyc"))))))
-    (build-system python-build-system)
+                "1ya0i0fbx054mfx5d1k75fcf64xzp7vva8lkwwzan41xbnc56nyj"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'delete-network-tests
-           (lambda _
-             (delete-file "src/geventhttpclient/tests/test_client.py")))
-         (add-after 'unpack 'fix-compatibility-issue
-           ;; See: https://github.com/gwik/geventhttpclient/issues/137.
-           (lambda _
-             (substitute* "src/geventhttpclient/tests/test_ssl.py"
-               ((".*sock.last_seen_sni = None.*")
-                ""))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "src/geventhttpclient/tests" "-v"
-                       ;; Append the test modules to sys.path to avoid
-                       ;; namespace conflict which breaks SSL tests.
-                       "--import-mode=append")))))))
-    (native-inputs (list nss-certs-for-test python-dpkt python-pytest))
+     (list
+      #:test-flags
+      ;; Disable network tests.
+      '(list "-k"
+             (string-append "not test_client_simple"
+                            " and not test_client_ssl"
+                            " and not test_client_with_default_headers"
+                            " and not test_client_without_leading_slash"
+                            " and not test_download"
+                            " and not test_fail_invalid_ca_certificate"
+                            " and not test_httpbin_multipart"
+                            " and not test_multi_queries_greenlet_safe"
+                            " and not test_no_form_encode_header"
+                            " and not test_no_form_encoded_header"
+                            " and not test_request_with_headers"
+                            " and not test_response_context_manager"
+                            " and not test_urllib_request"))))
+    (native-inputs (list nss-certs-for-test
+                         python-dpkt python-pytest python-requests
+                         python-setuptools python-wheel))
     (propagated-inputs (list python-brotli python-certifi python-gevent
-                             python-six python-urllib3))
+                             python-urllib3))
     (home-page "https://github.com/geventhttpclient/geventhttpclient")
     (synopsis "HTTP client library for gevent")
     (description "@code{python-geventhttpclient} is a high performance,
