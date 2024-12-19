@@ -72242,6 +72242,25 @@ computation (experimental)")
        #:cargo-inputs
        (("rust-bytemuck" ,rust-bytemuck-1))))))
 
+(define-public rust-safe-lock-0.1
+  (package
+    (name "rust-safe-lock")
+    (version "0.1.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "safe-lock" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0p661vi35v8rb79w0vz532vm1yi2817cslxplny9cwap1bnl367j"))))
+    (build-system cargo-build-system)
+    (home-page "https://gitlab.com/leonhard-llc/ops")
+    (synopsis "Lock struct for Rust")
+    (description
+     "This package provides a lock struct with a @code{const fn} constructor
+and no @code{unsafe}.")
+    (license license:asl2.0)))
+
 (define-public rust-safemem-0.3
   (package
     (name "rust-safemem")
