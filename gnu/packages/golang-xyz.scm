@@ -5529,6 +5529,30 @@ more like a Context-WaitGroup hybrid.  @code{goprocess} is about being able to s
 and stop units of work, which may receive @code{Close} signals from many clients.")
     (license license:expat)))
 
+(define-public go-github-com-jcmturner-gofork
+  (package
+    (name "go-github-com-jcmturner-gofork")
+    (version "1.7.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jcmturner/gofork")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0w1j6b671121r6md5w7hnh2d0sa332pw5q49yihw23wdfinknyin"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/jcmturner/gofork"))
+    (home-page "https://github.com/jcmturner/gofork")
+    (synopsis "Modified Go standard library packages")
+    (description
+     "This repository contains modified Go standard library packages for use
+as work arounds until issues are addressed in the official distribution.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-jdkato-twine
   (package
     (name "go-github-com-jdkato-twine")
