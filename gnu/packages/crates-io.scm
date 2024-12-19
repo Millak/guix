@@ -1238,6 +1238,25 @@ types.")
      "This package provides a newtype with alignment of at least `A` bytes.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-aligned-vec-0.5
+  (package
+    (name "rust-aligned-vec")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "aligned-vec" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1lb8qjqfap028ylf8zap6rkwrnrqimc3v6h3cixycjrdx1y0vaaa"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/sarah-ek/aligned-vec/")
+    (synopsis "Aligned vector and box containers")
+    (description "This package provides an aligned vector and box containers.")
+    (license license:expat)))
+
 (define-public rust-alloc-no-stdlib-2
   (package
     (name "rust-alloc-no-stdlib")
