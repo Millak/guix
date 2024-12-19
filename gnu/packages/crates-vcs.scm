@@ -137,14 +137,14 @@
 (define-public rust-git-testament-0.2
   (package
     (name "rust-git-testament")
-    (version "0.2.5")
+    (version "0.2.6")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "git-testament" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "13pwvfrfgm4s7f80gk4ygzrl0rlqlaks0fx6bcpycilfnv97h33i"))))
+                "0l9f4d4p21lfvx25640q7xl1i6m749ljx7bsr0czjy8ljaf9jx2s"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; cannot find value `None` in this scope
