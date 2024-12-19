@@ -1402,14 +1402,14 @@ other HTTP libraries.")
 (define-public python-cheroot
   (package
     (name "python-cheroot")
-    (version "10.0.0")
+    (version "10.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "cheroot" version))
        (sha256
         (base32
-         "1w0ind0dza9j1py56y23344piqkpyfmcm060qfrnk6gggy3s3i2r"))))
+         "0h0p3fnpa4dxi589s7ljlzb6p3mhqdivb3pc2f36pljqfrwjzf70"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -1419,8 +1419,13 @@ other HTTP libraries.")
               ;; "--numprocesses=auto"
               "--doctest-modules"
               "--showlocals"
-              ;; Disable test requiring networking.
-              "-k" "not test_tls_client_auth")
+              "-k" (string-append
+                    ;; Disable test requiring networking.
+                    "not test_tls_client_auth"
+                    ;; TypeError: HTTPConnection.request() got an unexpected keyword
+                    ;; argument 'chunked'
+                    " and not test_peercreds_unix_sock"
+                    " and not test_peercreds_unix_sock_with_lookup"))
       #:phases
       #~(modify-phases %standard-phases
           (replace 'check
@@ -1430,25 +1435,21 @@ other HTTP libraries.")
                   (apply invoke "pytest" "-v"
                          (append test-flags (list #$output))))))))))
     (propagated-inputs
-     (list python-jaraco-functools
-           python-more-itertools
-           python-six))
+     (list python-jaraco-functools python-more-itertools))
     (native-inputs
-     (list python-cryptography
-           python-jaraco-text
+     (list python-jaraco-text
            python-portend
            python-pyopenssl
            python-pypytools
-           python-pytest
            python-pytest-cov
            python-pytest-mock
-           python-pytest-xdist
            python-requests
            python-requests-toolbelt
            python-requests-unixsocket
+           python-setuptools
            python-setuptools-scm
-           python-setuptools-scm-git-archive
-           python-trustme))
+           python-trustme
+           python-wheel))
     (home-page "https://cheroot.cherrypy.dev")
     (synopsis "Highly-optimized, pure-python HTTP server")
     (description
