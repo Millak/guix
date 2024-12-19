@@ -45061,14 +45061,14 @@ testing of matrixcompare.")
 (define-public rust-matrixmultiply-0.3
   (package
     (name "rust-matrixmultiply")
-    (version "0.3.8")
+    (version "0.3.9")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "matrixmultiply" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1whgrp8ph7904aslqx87h9qm0ks4pxdj2nysffmrhiys6v7w2x3m"))))
+        (base32 "06msav241ybxvsqfwm4hfmb1pbws71v0inhmyk0i0vg9wc8vk04k"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
