@@ -51855,14 +51855,14 @@ exact behavior of code more explicit, and allows using turbofish syntax.")
 (define-public rust-num-derive-0.4
   (package
     (name "rust-num-derive")
-    (version "0.4.1")
+    (version "0.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "num-derive" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "04j7mndk9p6nzl9j6zrf49r2cq3250h4ldcx40jv3y48mxwpddyg"))))
+        (base32 "00p2am9ma8jgd2v6xpsz621wc7wbn1yqi71g15gc3h67m7qmafgd"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
