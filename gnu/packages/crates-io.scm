@@ -9477,14 +9477,14 @@ comes with a strict specification.")
   (package
     (inherit rust-borsh-derive-1)
     (name "rust-borsh-derive")
-    (version "0.10.3")
+    (version "0.10.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "borsh-derive" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1xslbx3qj531aq8ny1bkr45ibjmpsx0szsfc57rm33akj4v62m07"))))
+        (base32 "12gg3kgi6gi4qlqrxlccpnhffsxsb8scbqlnss6rj8wl1pw164l3"))))
     (arguments
      `(#:cargo-inputs
        (("rust-borsh-derive-internal" ,rust-borsh-derive-internal-0.10)
