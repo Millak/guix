@@ -41424,8 +41424,9 @@ BUG_REPORT_URL="https://gitlab.alpinelinux.org/alpine/aports/-/issues"
 Available @code{rootless-podman-configuration} fields are:
 
 @table @asis
-@item @code{podman} (default: @code{podman}) (type: package)
+@item @code{podman} (default: @code{podman}) (type: package-or-#f)
 The Podman package that will be installed in the system profile.
+Pass @code{#f} to not install Podman.
 
 @item @code{group-name} (default: @code{"cgroup"}) (type: string)
 The name of the group that will own /sys/fs/cgroup resources.  Users that

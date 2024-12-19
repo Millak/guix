@@ -64,10 +64,15 @@
 (define list-of-subid-ranges?
   (list-of subid-range?))
 
+(define (package-or-#f? val)
+  (or (not val)
+      (package? val)))
+
 (define-configuration/no-serialization rootless-podman-configuration
   (podman
-   (package podman)
-   "The Podman package that will be installed in the system profile.")
+   (package-or-#f podman)
+   "The Podman package that will be installed in the system profile.
+@code{#f} can be passed to suppress the installation.")
   (group-name
    (string "cgroup")
    "The name of the group that will own /sys/fs/cgroup resources.  Users that
@@ -107,8 +112,8 @@ available for each configured user."))
 
 (define rootless-podman-service-profile
   (lambda (config)
-    (list
-     (rootless-podman-configuration-podman config))))
+    (or (and=> (rootless-podman-configuration-podman config) list)
+        (list))))
 
 (define rootless-podman-service-etc
   (lambda (config)
