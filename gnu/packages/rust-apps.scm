@@ -1500,17 +1500,17 @@ bar.  It is also compatible with sway.")
 (define-public just
   (package
     (name "just")
-    (version "1.37.0")
+    (version "1.38.0")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "just" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
-               (base32 "1lx9avys0ipvdabgvwp5xrwxp7wfg1z0jrf1v6ax23k2a1xzvmpr"))))
+               (base32 "031yn8dijn89cdiwrlsh5l8ah83f2ci51j90z659aqrksflz44vw"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
-       '("--release" "--"
+       '("--"
          "--skip=backticks::trailing_newlines_are_stripped"
          "--skip=completions::bash"
          "--skip=functions::env_var_functions"
@@ -1537,6 +1537,7 @@ bar.  It is also compatible with sway.")
         ("rust-percent-encoding" ,rust-percent-encoding-2)
         ("rust-rand" ,rust-rand-0.8)
         ("rust-regex" ,rust-regex-1)
+        ("rust-rustversion" ,rust-rustversion-1)
         ("rust-semver" ,rust-semver-1)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1)
