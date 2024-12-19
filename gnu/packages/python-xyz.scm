@@ -24816,37 +24816,51 @@ system.")
 (define-public python-dulwich
   (package
     (name "python-dulwich")
-    (version "0.20.30")
+    (version "0.21.7")
     (source
-      (origin
-        (method url-fetch)
-        (uri (list (string-append "https://www.dulwich.io/releases/"
-                            "dulwich-" version ".tar.gz")
-                   (pypi-uri "dulwich" version)))
-        (sha256
-          (base32
-           "0hafaff30bmkj30b8pwpwsy3fz5h6c1pn98ihqcvl5zndflr1h22"))))
-    (build-system python-build-system)
+     (origin
+       (method url-fetch)
+       (uri (list (string-append "https://www.dulwich.io/releases/"
+                                 "dulwich-" version ".tar.gz")
+                  (pypi-uri "dulwich" version)))
+       (sha256
+        (base32
+         "0s79c3g19m052jbxm66amxv5v60ijx5px4hjmk1q19ff6dlcdsd9"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'fix-tests
+     (list
+      #:test-flags
+      ;; DULWICH_SWIFT_CFG is not set.
+      '(list "--ignore=dulwich/contrib/test_swift_smoke.py"
+             "-k"
+             ;; 'HTTPClient' object has no attribute 'get_base_url'
+             "not test_init_connector")
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'fix-tests
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* '("dulwich/tests/test_repository.py"
                             "dulwich/tests/test_porcelain.py"
                             "dulwich/tests/test_hooks.py")
-               (("/bin/sh") (search-input-file inputs "/bin/sh")))
-             (setenv "TEST_RUNNER" "unittest")
-             (setenv "PYTHONHASHSEED" "random"))))))
+               (("/bin/sh") (search-input-file inputs "/bin/sh")))))
+         (add-before 'check 'pre-check
+           (lambda _ (setenv "PYTHONHASHSEED" "random"))))))
     (propagated-inputs
      (list python-fastimport python-urllib3))
     (native-inputs
-     (list python-mock python-geventhttpclient python-gpg
-           git gnupg))
+     (list gnupg
+           git-minimal/pinned
+           python-geventhttpclient
+           python-mypy
+           python-paramiko
+           python-pytest
+           python-requests
+           python-setuptools
+           python-wheel))
     (home-page "https://www.dulwich.io/")
     (synopsis "Git implementation in Python")
     (description "Dulwich is an implementation of the Git file formats and
-     protocols written in pure Python.")
+protocols written in pure Python.")
     ;; Can be used with either license.
     (license (list license:asl2.0 license:gpl2+))))
 
