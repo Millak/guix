@@ -5286,14 +5286,14 @@ AsyncSeek if the inner type does.")
 (define-public rust-async-generic-1
   (package
     (name "rust-async-generic")
-    (version "1.1.1")
+    (version "1.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "async-generic" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0a8fd84qj7zw7sdk1qmaqcww5mhrg7jzr7fhx6wn00la37d8lm40"))))
+        (base32 "0wqnsinxaw6cj6wfbrj96qfrbc1gfgsm95qm6cw8gypfcs2p5wyx"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
