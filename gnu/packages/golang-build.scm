@@ -493,6 +493,17 @@ primitives in Go.")
 language.")
     (license license:bsd-3)))
 
+(define-public go-golang-org-x-crypto-bootstrap
+  (hidden-package
+   (package
+     (inherit go-golang-org-x-crypto)
+     (arguments
+      (list #:skip-build? #t
+            #:tests? #f
+            #:import-path "golang.org/x/crypto"))
+     (native-inputs '())
+     (propagated-inputs '()))))
+
 (define-public go-golang-org-x-exp
   (package
     (name "go-golang-org-x-exp")
@@ -555,6 +566,17 @@ language.")
      "This subrepository holds experimental and deprecated (in the @code{old}
 directory) packages.")
     (license license:bsd-3)))
+
+(define-public go-golang-org-x-exp-bootstrap
+  (hidden-package
+   (package
+     (inherit go-golang-org-x-exp)
+     (arguments
+      (list #:skip-build? #t
+            #:tests? #f
+            #:import-path "golang.org/x/exp"))
+     (native-inputs '())
+     (propagated-inputs '()))))
 
 (define-public go-golang-org-x-exp-typeparams
   (package
@@ -624,6 +646,17 @@ compile does not support generics.")
      "This package provides supplemental Go libraries for image processing.")
     (license license:bsd-3)))
 
+(define-public go-golang-org-x-image-bootstrap
+  (hidden-package
+   (package
+     (inherit go-golang-org-x-image)
+     (arguments
+      (list #:skip-build? #t
+            #:tests? #f
+            #:import-path "golang.org/x/image"))
+     (native-inputs '())
+     (propagated-inputs '()))))
+
 (define-public go-golang-org-x-mod
   (package
     (name "go-golang-org-x-mod")
@@ -674,6 +707,17 @@ The specific case of loading packages should still be done by invoking the
 loading algorithms.")
     (license license:bsd-3)))
 
+(define-public go-golang-org-x-mod-bootstrap
+  (hidden-package
+   (package
+     (inherit go-golang-org-x-mod)
+     (arguments
+      (list #:skip-build? #t
+            #:tests? #f
+            #:import-path "golang.org/x/mod"))
+     (native-inputs '())
+     (propagated-inputs '()))))
+
 (define-public go-golang-org-x-net
   (package
     (name "go-golang-org-x-net")
@@ -704,6 +748,17 @@ loading algorithms.")
     (description
      "This package provides supplemental Go networking libraries.")
     (license license:bsd-3)))
+
+(define-public go-golang-org-x-net-bootstrap
+  (hidden-package
+   (package
+     (inherit go-golang-org-x-net)
+     (arguments
+      (list #:skip-build? #t
+            #:tests? #f
+            #:import-path "golang.org/x/net"))
+     (native-inputs '())
+     (propagated-inputs '()))))
 
 (define-public go-golang-org-x-sync
   (package
@@ -747,6 +802,17 @@ cancelation for groups of goroutines working on subtasks of a common task
 @end itemize")
     (license license:bsd-3)))
 
+(define-public go-golang-org-x-sync-bootstrap
+  (hidden-package
+   (package
+     (inherit go-golang-org-x-sync)
+     (arguments
+      (list #:skip-build? #t
+            #:tests? #f
+            #:import-path "golang.org/x/sync"))
+     (native-inputs '())
+     (propagated-inputs '()))))
+
 (define-public go-golang-org-x-sys
   (package
     (name "go-golang-org-x-sys")
@@ -779,6 +845,17 @@ cancelation for groups of goroutines working on subtasks of a common task
     (description "This package provides supplemental libraries offering Go
 support for low-level interaction with the operating system.")
     (license license:bsd-3)))
+
+(define-public go-golang-org-x-sys-bootstrap
+  (hidden-package
+   (package
+     (inherit go-golang-org-x-sys)
+     (arguments
+      (list #:skip-build? #t
+            #:tests? #f
+            #:import-path "golang.org/x/sys"))
+     (native-inputs '())
+     (propagated-inputs '()))))
 
 (define-public go-golang-org-x-telemetry
   (package
@@ -886,6 +963,17 @@ telemetry uploads: GOOS, GOARCH, Go version, and per-program counters.")
 terminals, as commonly found on Unix systems.")
     (license license:bsd-3)))
 
+(define-public go-golang-org-x-term-bootstrap
+  (hidden-package
+   (package
+     (inherit go-golang-org-x-term)
+     (arguments
+      (list #:skip-build? #t
+            #:tests? #f
+            #:import-path "golang.org/x/term"))
+     (native-inputs '())
+     (propagated-inputs '()))))
+
 (define-public go-golang-org-x-text
   (package
     (name "go-golang-org-x-text")
@@ -936,6 +1024,17 @@ terminals, as commonly found on Unix systems.")
      "This package provides supplemental Go libraries for text
 processing.")
     (license license:bsd-3)))
+
+(define-public go-golang-org-x-text-bootstrap
+  (hidden-package
+   (package
+     (inherit go-golang-org-x-text)
+     (arguments
+      (list #:skip-build? #t
+            #:tests? #f
+            #:import-path "golang.org/x/text"))
+     (native-inputs '())
+     (propagated-inputs '()))))
 
 (define-public go-golang-org-x-time
   (package
@@ -1051,6 +1150,17 @@ time.")
      "This package provides miscellaneous tools that support the
 Go programming language.")
     (license license:bsd-3)))
+
+(define-public go-golang-org-x-tools-bootstrap
+  (hidden-package
+   (package
+     (inherit go-golang-org-x-tools)
+     (arguments
+      (list #:skip-build? #t
+            #:tests? #f
+            #:import-path "golang.org/x/tools"))
+     (native-inputs '())
+     (propagated-inputs '()))))
 
 (define-public go-golang-org-x-vuln
   (package
