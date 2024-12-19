@@ -6304,14 +6304,14 @@ fixed atomic types.")
 (define-public rust-atomic-polyfill-1
   (package
     (name "rust-atomic-polyfill")
-    (version "1.0.1")
+    (version "1.0.3")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "atomic-polyfill" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1ckvmx98ffyxax1irb61p0aln4v65xxnz4d2qgavhvcd513zb6fj"))))
+                "1x00ndablb89zvbr8m03cgjzgajg86fqn8pgz85yy2gy1pivrwlc"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
