@@ -146,6 +146,12 @@
             clone
             setns
 
+            kexec-load-file
+            KEXEC_FILE_UNLOAD
+            KEXEC_FILE_ON_CRASH
+            KEXEC_FILE_NO_INITRAMFS
+            KEXEC_FILE_DEBUG
+
             PF_PACKET
             AF_PACKET
             all-network-interface-names
@@ -762,6 +768,58 @@ current process."
                           (string->pointer options))))
         (unless (zero? ret)
           (throw 'system-error "load-linux-module" "~A"
+                 (list (strerror err))
+                 (list err)))))))
+
+(define (string->utf-8/nul-terminated str)
+  "Serialize STR to UTF-8; return the resulting bytevector, including
+terminating nul character."
+  (let* ((source (string->utf8 str))
+         (bv     (make-bytevector (+ (bytevector-length source) 1) 0)))
+    (bytevector-copy! source 0 bv 0 (bytevector-length source))
+    bv))
+
+;; Constants from <linux/kexec.h>.
+(define KEXEC_FILE_UNLOAD	#x00000001)
+(define KEXEC_FILE_ON_CRASH	#x00000002)
+(define KEXEC_FILE_NO_INITRAMFS	#x00000004)
+(define KEXEC_FILE_DEBUG	#x00000008)
+
+(define kexec-load-file
+  (let* ((proc (syscall->procedure int "syscall"
+                                   (list long             ;sysno
+                                         int              ;kernel fd
+                                         int              ;initrd fd
+                                         unsigned-long    ;cmdline length
+                                         '*               ;cmdline
+                                         unsigned-long))) ;flags
+         (syscall-id (match (utsname:machine (uname))
+                       ("i686"    320)
+                       ("x86_64"  320)
+                       ("armv7l"  401)
+                       ("aarch64" 294)
+                       ("ppc64le" 382)
+                       ("riscv64" 294)
+                       (_ #f))))
+    (lambda* (kernel-fd initrd-fd command-line #:optional (flags 0))
+      "Load for eventual use of kexec(8) the Linux kernel from
+@var{kernel-fd}, its initial RAM disk from @var{initrd-fd}, with the given
+@var{command-line} (a string).  Optionally, @var{flags} can be a bitwise or of
+the KEXEC_FILE_* constants."
+      (unless syscall-id
+        (throw 'system-error "kexec-load-file" "~A"
+               (list (strerror ENOSYS))
+               (list ENOSYS)))
+
+      (let*-values (((command-line)
+                     (string->utf-8/nul-terminated command-line))
+                    ((ret err)
+                     (proc syscall-id kernel-fd initrd-fd
+                           (bytevector-length command-line)
+                           (bytevector->pointer command-line)
+                           flags)))
+        (when (= ret -1)
+          (throw 'system-error "kexec-load-file" "~A"
                  (list (strerror err))
                  (list err)))))))
 

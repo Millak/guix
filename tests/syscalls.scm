@@ -679,6 +679,19 @@
         (lambda args
           (system-error-errno args))))))
 
+(when (or (zero? (getuid))
+          (not (string-contains %host-type "linux")))
+  (test-skip 1))
+(test-equal "kexec-load-file"
+  EPERM
+  (catch 'system-error
+    (lambda ()
+      (let ((fd1 (open-fdes "/dev/null" O_RDONLY))
+            (fd2 (open-fdes "/dev/null" O_RDONLY)))
+        (kexec-load-file fd1 fd2 "gnu.repl=yes")))
+    (lambda args
+      (system-error-errno args))))
+
 (test-end)
 
 (false-if-exception (delete-file temp-file))
