@@ -732,17 +732,8 @@ loading algorithms.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "golang.org/x/sync"
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; XXX: Workaround for go-build-system's lack of Go modules
-          ;; support.
-          (delete 'build)
-          (replace 'check
-            (lambda* (#:key tests? import-path #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion (string-append "src/" import-path)
-                  (invoke "go" "test" "-v" "./..."))))))))
+      #:skip-build? #t
+      #:import-path "golang.org/x/sync"))
     (home-page "https://go.googlesource.com/sync/")
     (synopsis "Additional Go concurrency primitives")
     (description
