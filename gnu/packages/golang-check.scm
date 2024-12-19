@@ -743,32 +743,32 @@ Google Test for C++ and Google JS Test.")
     (license license:asl2.0)))
 
 (define-public go-github-com-jacobsa-oglemock
-    (package
-      (name "go-github-com-jacobsa-oglemock")
-      (version "0.0.0-20150831005832-e94d794d06ff")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/jacobsa/oglemock")
-               (commit (go-version->git-ref version))))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "14yxf8ykwdwkcccksl6741xgzcf8qykyi58kp4maxpgscqhdl8rq"))))
-      (build-system go-build-system)
-      (arguments
-       (list
-        #:import-path "github.com/jacobsa/oglemock"
-        ;; break loop with with go-github-com-jacobsa-ogletest
-        #:tests? #f))
-      (native-inputs
-       (list go-github-com-jacobsa-oglematchers))
-      (home-page "https://github.com/jacobsa/oglemock")
-      (synopsis "Mocking framework for unit tests")
-      (description
-       "Package oglemock provides a mocking framework for unit tests.")
-      (license license:asl2.0)))
+  (package
+    (name "go-github-com-jacobsa-oglemock")
+    (version "0.0.0-20150831005832-e94d794d06ff")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jacobsa/oglemock")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "14yxf8ykwdwkcccksl6741xgzcf8qykyi58kp4maxpgscqhdl8rq"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/jacobsa/oglemock"
+      ;; break loop with with go-github-com-jacobsa-ogletest
+      #:tests? #f))
+    (native-inputs
+     (list go-github-com-jacobsa-oglematchers))
+    (home-page "https://github.com/jacobsa/oglemock")
+    (synopsis "Mocking framework for unit tests")
+    (description
+     "Package oglemock provides a mocking framework for unit tests.")
+    (license license:asl2.0)))
 
 (define-public go-github-com-jacobsa-ogletest
   (package
