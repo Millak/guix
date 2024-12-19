@@ -168,7 +168,7 @@ This package includes the @code{libtree-sitter} runtime library.")
     (arguments
      (list
       #:cargo-test-flags
-      ''("--release" "--"
+      ''("--"
          ;; Skip tests which rely on downloading grammar fixtures.  It is
          ;; difficult to support such tests given upstream does not encode
          ;; which version of the grammars are expected.
