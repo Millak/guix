@@ -33237,18 +33237,17 @@ across inserts.")
 (define-public rust-gumdrop-0.8
   (package
     (name "rust-gumdrop")
-    (version "0.8.0")
+    (version "0.8.1")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "gumdrop" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "02waas37nr8y669lnm1ifp6bkx79v3bd0bd4s9qcyy04aifiyms6"))))
+                "1qr94qa0h758hn11yhqs2wmb1xaq8adjs8j6hljg1xnji7wh1isv"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-gumdrop-derive" ,rust-gumdrop-derive-0.8))
        #:cargo-development-inputs
        (("rust-assert-matches" ,rust-assert-matches-1))))
