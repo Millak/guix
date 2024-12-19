@@ -7371,14 +7371,14 @@ library for Rust.")
 (define-public rust-basic-toml-0.1
   (package
     (name "rust-basic-toml")
-    (version "0.1.8")
+    (version "0.1.9")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "basic-toml" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1r8l5kz5lzfw66llq8b023vx38kh35gdf8jd428ma76lr8j1bcid"))))
+        (base32 "1y2q0la176gmqgskarc5464fqq3rncnjc138iiayj57n53i8hcw2"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
