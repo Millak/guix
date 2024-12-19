@@ -404,7 +404,7 @@ This package tracks the Rapid Release channel, which updates frequently.")))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
-       '("--release" "--"
+       '("--"
          ;; These tests fail with the current builder network setup
          "--skip=ffi::test_gethostbyaddr_r"
          "--skip=ffi::test_gethostbyname2_r"
