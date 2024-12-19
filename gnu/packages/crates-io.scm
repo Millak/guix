@@ -30829,14 +30829,14 @@ for the @code{futures-rs} library.")
 (define-public rust-futures-lite-2
   (package
     (name "rust-futures-lite")
-    (version "2.2.0")
+    (version "2.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "futures-lite" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1flj85i6xm0rjicxixmajrp6rhq8i4bnbzffmrd6h23ln8jshns4"))))
+        (base32 "18cii1zgxbm04almisj0ycnmf7nj7qqyvy8x0i8mnl9cmqhhvx6f"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-fastrand" ,rust-fastrand-2)
