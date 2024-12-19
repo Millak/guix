@@ -1259,7 +1259,7 @@ types.")
 (define-public rust-alloc-no-stdlib-2
   (package
     (name "rust-alloc-no-stdlib")
-    (version "2.0.1")
+    (version "2.0.4")
     (source
      (origin
        (method url-fetch)
@@ -1267,7 +1267,7 @@ types.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "19lhmi73fii1b6vrzh23vvp5yjqm33cb94h9yz17pn25b51yr4ji"))))
+         "1cy6r2sfv5y5cigv86vms7n5nlwhx1rbyxwcraqnmm1rxiib2yyc"))))
     (build-system cargo-build-system)
     (home-page "https://github.com/dropbox/rust-alloc-no-stdlib")
     (synopsis "Dynamic allocator that may be used with or without the stdlib")
