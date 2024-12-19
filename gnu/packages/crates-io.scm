@@ -10434,7 +10434,7 @@ users can send along with a bug report.")
 (define-public rust-build-const-0.2
   (package
     (name "rust-build-const")
-    (version "0.2.1")
+    (version "0.2.2")
     (source
      (origin
        (method url-fetch)
@@ -10442,7 +10442,7 @@ users can send along with a bug report.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0faz882spx9474cszay2djmb0lghbwq51qayabcar1s7g4r2l29r"))))
+         "1dryhsf4vfi1plljgv069sgfr8m1rsg04qy76x36kh6swqsl5bml"))))
     (build-system cargo-build-system)
     (home-page "https://crates.io/crates/build_const")
     (synopsis "Create importable constants from build.rs or a script")
