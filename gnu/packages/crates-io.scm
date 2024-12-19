@@ -95758,20 +95758,18 @@ numbers.")
 (define-public rust-vte-generate-state-changes-0.1
   (package
     (name "rust-vte-generate-state-changes")
-    (version "0.1.1")
+    (version "0.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "vte_generate_state_changes" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1zs5q766q7jmc80c5c80gpzy4qpg5lnydf94mgdzrpy7h5q82myj"))))
+        (base32 "0biwgpcji3w4llz7h4bi8c2rwqchm9gmyr7dnjki1m853gp9ndif"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-quote" ,rust-quote-1))))
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1))))
     (home-page "https://github.com/jwilm/vte")
     (synopsis "Proc macro for generating VTE state changes")
     (description
