@@ -703,30 +703,30 @@ used in go-github-com-jackc-pgx.")
     (license license:expat)))
 
 (define-public go-github-com-jacobsa-oglematchers
-    (package
-      (name "go-github-com-jacobsa-oglematchers")
-      (version "0.0.0-20150720000706-141901ea67cd")
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/jacobsa/oglematchers")
-                      (commit (go-version->git-ref version))))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "09ff5x6vbhd9zl1z4yzyk573ifh16rry38q1rx986kbz4hqkmniq"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path "github.com/jacobsa/oglematchers"
-         ;; break loop with with go-github-com-jacobsa-ogletest
-         #:tests? #f))
-      (home-page "https://github.com/jacobsa/oglematchers")
-      (synopsis "Matchers for Go testing framework")
-      (description
-       "Package oglematchers provides a set of matchers useful in a testing or mocking
-framework.  These matchers are inspired by and mostly compatible with Google
-Test for C++ and Google JS Test.")
-      (license license:asl2.0)))
+  (package
+    (name "go-github-com-jacobsa-oglematchers")
+    (version "0.0.0-20150720000706-141901ea67cd")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jacobsa/oglematchers")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09ff5x6vbhd9zl1z4yzyk573ifh16rry38q1rx986kbz4hqkmniq"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/jacobsa/oglematchers"
+       ;; break loop with with go-github-com-jacobsa-ogletest
+       #:tests? #f))
+    (home-page "https://github.com/jacobsa/oglematchers")
+    (synopsis "Matchers for Go testing framework")
+    (description
+     "Package oglematchers provides a set of matchers useful in a testing or
+mocking framework.  These matchers are inspired by and mostly compatible with
+Google Test for C++ and Google JS Test.")
+    (license license:asl2.0)))
 
 (define-public go-github-com-jacobsa-oglemock
   (let ((commit "e94d794d06ffc6de42cb19d0dab3c219efdd6dcf")
