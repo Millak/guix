@@ -345,7 +345,7 @@ primitives in Go.")
 (define-public go-github-com-yuin-goldmark
   (package
     (name "go-github-com-yuin-goldmark")
-    (version "1.7.4")
+    (version "1.7.8")
     (source
      (origin
        (method git-fetch)
@@ -354,24 +354,20 @@ primitives in Go.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01807xs8501cyhkrrgg6k9ghl9jrw6dp0ry9knygck48canckxs2"))))
+        (base32 "1iz7x1hqdixx8dkcbaa8lr842i59n843mc553jv5grq057s76yjx"))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/yuin/goldmark"
       #:phases
       #~(modify-phases %standard-phases
-          ;; XXX: Workaround for go-build-system's lack of Go modules
-          ;; support.
-          (replace 'check
-            (lambda* (#:key tests? import-path #:allow-other-keys)
+          (add-before 'check 'pre-check
+            (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
                 ;; We need to extend the timeout on some architectures.
                 ;; 64 is the default in extra_test.go.
                 (setenv "GOLDMARK_TEST_TIMEOUT_MULTIPLIER"
-                        (number->string (* 64 5)))
-                (with-directory-excursion (string-append "src/" import-path)
-                  (invoke "go" "test" "-v" "./..."))))))))
+                        (number->string (* 64 5)))))))))
     (home-page "https://github.com/yuin/goldmark/")
     (synopsis "Markdown parser")
     (description
