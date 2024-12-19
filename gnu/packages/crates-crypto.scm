@@ -5646,15 +5646,11 @@ for data that potentially contains secrets (e.g. cryptographic keys).")
      (origin
        (method url-fetch)
        (uri (crate-uri "sha-1" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "1pv387q0r7llk2cqzyq0nivzvkgqgzsiygqzlv7b68z9xl5lvngp"))))
+        (base32 "1pv387q0r7llk2cqzyq0nivzvkgqgzsiygqzlv7b68z9xl5lvngp"))))
     (arguments
-     `(#:cargo-test-flags
-       '("--release" "--lib" "--bins" "--tests")
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-block-buffer" ,rust-block-buffer-0.7)
         ("rust-digest" ,rust-digest-0.8)
         ("rust-fake-simd" ,rust-fake-simd-0.1)
