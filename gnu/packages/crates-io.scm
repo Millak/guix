@@ -31847,26 +31847,26 @@ getters and setters on fields.")
 (define-public rust-gettext-sys-0.21
   (package
     (name "rust-gettext-sys")
-    (version "0.21.0")
+    (version "0.21.4")
     (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "gettext-sys" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "105d5zh67yc5vyzmqxdw7hx82h606ca6rzhsfjgzjczn2s012pc8"))
-        (modules '((guix build utils)))
-        (snippet
-         '(begin (delete-file "gettext-0.21.tar.xz") #t))))
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gettext-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0rygxmqn0l4ylhmhmpjy3cjrwwzxyys6vnxa5jzbznpj51zpkf7p"))
+       (modules '((guix build utils)))
+       (snippet '(begin
+                   (delete-file "gettext-0.21.tar.xz")))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-cc" ,rust-cc-1)
-        ("rust-tempfile" ,rust-tempfile-3))))
-    (inputs
-     `(("gettext" ,gettext-minimal)))
+     `(#:cargo-inputs (("rust-cc" ,rust-cc-1)
+                       ("rust-temp-dir" ,rust-temp-dir-0.1))
+       #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'use-system-gettext
+                    (lambda _
+                      (setenv "GETTEXT_SYSTEM" "true"))))))
+    (inputs (list gettext-minimal))
     (home-page "https://github.com/Koka/gettext-rs")
     (synopsis "Gettext raw FFI bindings")
     (description "This package provides raw FFI bindings for GNU Gettext.")
