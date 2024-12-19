@@ -252,7 +252,7 @@ directory = '" vendor-dir "'") port)
                 parallel-build?
                 parallel-tests?
                 tests?
-                (cargo-test-flags '("--release"))
+                (cargo-test-flags '())
                 #:allow-other-keys)
   "Run tests for a given Cargo package."
   (when tests?
