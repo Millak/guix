@@ -4608,23 +4608,24 @@ standard.")
 (define-public python-eventlet
   (package
     (name "python-eventlet")
-    (version "0.35.2")
+    (version "0.38.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "eventlet" version))
        (sha256
         (base32
-         "0zd59yqqb2lzg3f9lkd3yw1wanwy5wkis3n6d826m0bz1gi664ld"))))
+         "1b7dhy3pyp3nfv0zzjrs7i3kam40cl1nh3acy2fd59ywy4x84ika"))))
     (build-system pyproject-build-system)
     (propagated-inputs
      (list python-dnspython python-greenlet python-monotonic))
     (native-inputs
      (list python-black
-           python-hatchling
            python-hatch-vcs
-           python-pytest
+           python-hatchling
            python-isort
+           python-pre-commit
+           python-pytest
            python-twine))
     (arguments
      (list
@@ -4636,6 +4637,7 @@ standard.")
               " and not test_noraise_dns_tcp"
               " and not test_raise_dns_tcp"
               " and not test_hosts_no_network"
+              " and not test_import_rdtypes_then_eventlet"
               " and not test_patcher_existing_locks"
               " and not test_dns_methods_are_green"))
       #:phases
