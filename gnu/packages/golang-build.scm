@@ -719,7 +719,7 @@ loading algorithms.")
 (define-public go-golang-org-x-sync
   (package
     (name "go-golang-org-x-sync")
-    (version "0.8.0")
+    (version "0.10.0")
     (source
      (origin
        (method git-fetch)
@@ -728,7 +728,7 @@ loading algorithms.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1jssyq49g5z7dbhdb9bnzsb8gigvsy5f4aczbzn5paz07v9wbjxs"))))
+        (base32 "1yp7pcfvy4793mjbfq28hxbr05yg38m0njnwam580xkb54lfwshx"))))
     (build-system go-build-system)
     (arguments
      (list
