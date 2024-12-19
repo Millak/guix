@@ -9398,14 +9398,14 @@ programs.")
 (define-public rust-borsh-1
   (package
     (name "rust-borsh")
-    (version "1.3.0")
+    (version "1.5.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "borsh" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0a1hic4kj1rcy86qkmappi4ckch7iwap52akhx3bafqszkdddm16"))))
+        (base32 "00vz4ngik3dz86j83ra6w3c8rq9amh1n9kaw452f6i5dfdzr81i5"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; Tests aren't setup correctly.
@@ -9413,11 +9413,10 @@ programs.")
                        ("rust-borsh-derive" ,rust-borsh-derive-1)
                        ("rust-bson" ,rust-bson-2)
                        ("rust-bytes" ,rust-bytes-1)
-                       ("rust-cfg-aliases" ,rust-cfg-aliases-0.1)
+                       ("rust-cfg-aliases" ,rust-cfg-aliases-0.2)
                        ("rust-hashbrown" ,rust-hashbrown-0.14))
-       #:cargo-development-inputs (("rust-bson" ,rust-bson-2)
-                                   ("rust-bytes" ,rust-bytes-1)
-                                   ("rust-insta" ,rust-insta-1))))
+       #:cargo-development-inputs (("rust-insta" ,rust-insta-1)
+                                   ("rust-serde-json" ,rust-serde-json-1))))
     (home-page "https://borsh.io")
     (synopsis "Borsch is the binary object representation serializer for hashing")
     (description "This crate implements @code{borsh}, the binary object
