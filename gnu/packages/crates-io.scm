@@ -84775,6 +84775,26 @@ loading and layout routines of XeTeX as a crate, currently providing only
 a C API.")
     (license license:expat)))
 
+(define-public rust-temp-dir-0.1
+  (package
+    (name "rust-temp-dir")
+    (version "0.1.14")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "temp-dir" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0wiwpkkxln7ykj44029bmc86cariqq2mjwllrdjzf4jgygpfc7mw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs (("rust-safe-lock" ,rust-safe-lock-0.1))))
+    (home-page "https://gitlab.com/leonhard-llc/ops")
+    (synopsis "Simple temporary directory with cleanup")
+    (description
+     "This package provides a simple temporary directory with cleanup.")
+    (license license:asl2.0)))
+
 (define-public rust-temp-env-0.3
   (package
     (name "rust-temp-env")
