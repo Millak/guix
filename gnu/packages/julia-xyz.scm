@@ -4917,6 +4917,31 @@ algorithms, while ensuring that the most efficient implementation is used in
 actual computation.")
     (license license:expat)))
 
+(define-public julia-performancetesttools
+  (package
+    (name "julia-performancetesttools")
+    (version "0.1.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/JuliaTesting/PerformanceTestTools.jl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0v5b8vnnhavra18h0136gahiyl7nc6r3rm3hm359ic3da8yzrnhn"))))
+    (build-system julia-build-system)
+    (home-page "https://github.com/JuliaTesting/PerformanceTestTools.jl")
+    (synopsis "Enables efficient code generation in test cases")
+    (description
+     "This package enables the Julia compiler to generate
+efficient code when running test cases.  Test cases are typically run with
+flags that prevent efficient code generation.  This package detects those flags
+and instead spawns a separate Julia process without the flags in which to run
+the test cases.")
+    (license license:expat)))
+
+
 (define-public julia-plotthemes
   (package
     (name "julia-plotthemes")
