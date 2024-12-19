@@ -9518,14 +9518,14 @@ comes with a strict specification.")
 (define-public rust-borsh-schema-derive-internal-0.10
   (package
     (name "rust-borsh-schema-derive-internal")
-    (version "0.10.3")
+    (version "0.10.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "borsh-schema-derive-internal" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1kaw1xdprb8chqj50c8gxjb5dadx1rac91zg8s81njpp8g60ahk3"))))
+        (base32 "1m5nldxh5ji4hxw7g3zlm6xqwj4f2j32nsg6hfz2fd06dzcr2ri7"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
