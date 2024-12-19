@@ -691,7 +691,7 @@ loading algorithms.")
 (define-public go-golang-org-x-net
   (package
     (name "go-golang-org-x-net")
-    (version "0.29.0")
+    (version "0.33.0")
     (source
      (origin
        (method git-fetch)
@@ -700,21 +700,14 @@ loading algorithms.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0scksgrrxyyy4ah2anh3n0qj0snpc63bqmhyw24q5lskzrsm2zvl"))))
+        (base32 "0k3vbxj4dxyki7rflbnad95avz7hnapwr02aa7jqgs79vd9j9k7n"))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "golang.org/x/net"
       #:phases
       #~(modify-phases %standard-phases
-          ;; XXX: Workaround for go-build-system's lack of Go modules
-          ;; support.
-          (delete 'build)
-          (replace 'check
-            (lambda* (#:key tests? import-path #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion (string-append "src/" import-path)
-                  (invoke "go" "test" "-v" "./..."))))))))
+          (delete 'build)))) ; no go files in project's root
     (propagated-inputs
      (list go-golang-org-x-crypto
            go-golang-org-x-sys
