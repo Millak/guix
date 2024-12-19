@@ -595,7 +595,7 @@ compile does not support generics.")
 (define-public go-golang-org-x-image
   (package
     (name "go-golang-org-x-image")
-    (version "0.20.0")
+    (version "0.23.0")
     (source
      (origin
        (method git-fetch)
@@ -604,32 +604,18 @@ compile does not support generics.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0bn85bqpwkznny3lrnlfk05s2p917rbq0kplz36xyv490a74pi7l"))))
+        (base32 "0xm3cqzh0j6s8m8k6c3rd170qbmz2lwb628jb48cl4wr6ivq5fp9"))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "golang.org/x/image"
       #:phases
       #~(modify-phases %standard-phases
-          ;; XXX: go-build-system can't install/build submodules.
-          (delete 'build)
+          (delete 'build) ; no go files in project's root
           (add-after 'unpack 'remove-examples
             (lambda* (#:key import-path #:allow-other-keys)
               (delete-file-recursively
-               (string-append "src/" import-path "/example"))))
-          (add-before 'check 'remove-failing-tests
-            (lambda* (#:key import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (for-each delete-file
-                          ;; tiff/reader_test.go:557:14: too many errors
-                          (list "tiff/reader_test.go"
-                                "tiff/writer_test.go")))))
-          ;; XXX: Workaround for go-build-system's lack of Go modules support.
-          (replace 'check
-            (lambda* (#:key tests? import-path #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion (string-append "src/" import-path)
-                  (invoke "go" "test" "-v" "./..."))))))))
+               (string-append "src/" import-path "/example")))))))
     (propagated-inputs
      (list go-golang-org-x-text))
     (home-page "https://pkg.go.dev/golang.org/x/image")
