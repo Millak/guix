@@ -1101,68 +1101,62 @@ Virtual Machines.  OVMF contains a sample UEFI firmware for QEMU and KVM.")
 
 (define* (make-arm-trusted-firmware platform
                                     #:key (triplet "aarch64-linux-gnu"))
-  (let ((native-build? (lambda ()
-                         ;; Note: %current-system is a *triplet*, unlike its
-                         ;; name would suggest.
-                         (or (not triplet) ;disable cross-compilation
-                             (string=? (%current-system)
-                                       (gnu-triplet->nix-system triplet))))))
-    (package
-      (name (string-append "arm-trusted-firmware-" platform))
-      (version "2.9")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               ;; There are only GitHub generated release snapshots.
-               (url "https://git.trustedfirmware.org/TF-A/trusted-firmware-a.git/")
-               (commit (string-append "v" version))))
-         (file-name (git-file-name "arm-trusted-firmware" version))
-         (sha256
-          (base32
-           "16fjbn1zck0d8b554h8lk1svqqn0zlawvrlkjxry9l71s9h4vd0p"))
-         (snippet
-          #~(begin
-              (use-modules (guix build utils))
-              ;; Remove binary blobs which do not contain source or proper
-              ;; license.
+  (define (native-build?)
+    "Return #t if the host and target platforms differ."
+    (or (not triplet)
+        ;;%current-system is a *triplet*, unlike its name would suggest.
+        (string=? (%current-system) (gnu-triplet->nix-system triplet))))
+  (package
+    (name (string-append "arm-trusted-firmware-" platform))
+    (version "2.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url (string-append "https://git.trustedfirmware.org"
+                                  "/TF-A/trusted-firmware-a.git/"))
+              (commit (string-append "v" version))))
+       (file-name (git-file-name "arm-trusted-firmware" version))
+       (sha256
+        (base32 "16fjbn1zck0d8b554h8lk1svqqn0zlawvrlkjxry9l71s9h4vd0p"))
+       (modules '((guix build utils)))
+       ;; Remove binary blobs: they don't reference a source or license.
+       (snippet #~(for-each delete-file (find-files "." "\\.bin$")))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:target (and (not (native-build?)) triplet)
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)         ;no configure script
+          (replace 'install
+            (lambda _
               (for-each (lambda (file)
-                          (delete-file file))
-                        (find-files "." "\\.bin$"))))))
-      (build-system gnu-build-system)
-      (arguments
-       (list
-        #:target (and (not (native-build?)) triplet)
-        #:phases
-        #~(modify-phases %standard-phases
-            (delete 'configure)         ;no configure script
-            (replace 'install
-              (lambda _
-                (for-each (lambda (file)
-                            (install-file file #$output))
-                          (find-files "." "\\.(bin|elf)$")))))
-        #:make-flags #~(list (string-append "PLAT=" #$platform)
-                             #$@(if (not (native-build?))
-                                    (list (string-append "CROSS_COMPILE=" triplet "-"))
-                                    '())
-                             "DEBUG=1")
-        #:tests? #f))                   ;no test suite
-      (home-page "https://www.trustedfirmware.org/")
-      (synopsis "Implementation of \"secure world software\"")
-      (description
-       "ARM Trusted Firmware provides a reference implementation of secure world
-software for ARMv7A and ARMv8-A, including a Secure Monitor executing at
-@dfn{Exception Level 3} (EL3).  It implements various ARM interface standards,
-such as:
+                          (install-file file #$output))
+                        (find-files "." "\\.(bin|elf)$")))))
+      #:make-flags
+      #~(list (string-append "PLAT=" #$platform)
+              #$@(if (not (native-build?))
+                     (list (string-append "CROSS_COMPILE=" triplet "-"))
+                     '())
+              "DEBUG=1")
+      #:tests? #f))                   ;no test suite
+    (home-page "https://www.trustedfirmware.org/")
+    (synopsis "Secure world software for ARMv7-A and ARMv8-A")
+    (description
+     "ARM Trusted Firmware provides a reference implementation of secure
+world software for ARMv7-A and ARMv8-A, including a Secure Monitor
+executing at @dfn{Exception Level 3} (EL3).  It implements various ARM
+interface standards, such as:
 @enumerate
 @item The Power State Coordination Interface (PSCI)
 @item Trusted Board Boot Requirements (TBBR, ARM DEN0006C-1)
 @item SMC Calling Convention
 @item System Control and Management Interface
 @item Software Delegated Exception Interface (SDEI)
-@end enumerate\n")
-      (license (list license:bsd-3
-                     license:bsd-2))))) ; libfdt
+@end enumerate")
+    (license (list license:bsd-3
+                   license:bsd-2)))) ; libfdt
 
 (define-public arm-trusted-firmware-sun50i-a64
   (let ((base (make-arm-trusted-firmware "sun50i_a64")))
