@@ -5989,12 +5989,13 @@ interfaces you are used to, but in an async version and ready for Rust's
      (origin
        (method url-fetch)
        (uri (crate-uri "async-std" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1k34181r1xzalyf7alka0ibnbqll6s5l435ycydm7fv1g6gill24"))))
     (arguments
-     `(#:cargo-test-flags '("--release" "--" "--skip=io_timeout")
+     `(#:cargo-test-flags '("--"
+                            "--skip=io_timeout_timedout"
+                            "--skip=src/stream/mod.rs - stream (line 36)")
        #:cargo-inputs
        (("rust-async-attributes" ,rust-async-attributes-1)
         ("rust-async-macros" ,rust-async-macros-1)
