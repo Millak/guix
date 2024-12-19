@@ -626,6 +626,10 @@ compile does not support generics.")
 (define-public go-golang-org-x-mod
   (package
     (name "go-golang-org-x-mod")
+    ;; XXX: To update to 0.22.0+ go-1.23 is required, wich provides
+    ;; "go/version" module, see
+    ;; <https://cs.opensource.google/go/go/+/refs/tags/
+    ;; go1.23.0:src/go/version/version.go>.
     (version "0.21.0")
     (source
      (origin
@@ -639,28 +643,14 @@ compile does not support generics.")
     (build-system go-build-system)
     (arguments
      (list
+      #:skip-build? #t
       #:import-path "golang.org/x/mod"
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'remove-test-files
-            (lambda* (#:key import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (for-each delete-file
-                          (list
-                           ;; Break cycle: go-golang-org-x-mod ->
-                           ;; go-golang-org-x-tools -> go-golang-org-x-mod.
-                           "zip/zip_test.go"
-                           ;; Trying to access
-                           ;; <http://ct.googleapis.com/logs/argon2020/ct/v1/get-sth>.
-                           "sumdb/tlog/ct_test.go")))))
-          ;; XXX: Workaround for go-build-system's lack of Go modules
-          ;; support.
-          (delete 'build)
-          (replace 'check
-            (lambda* (#:key tests? import-path #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion (string-append "src/" import-path)
-                  (invoke "go" "test" "-v" "./..."))))))))
+      ;; Test tries to acces:
+      ;; "http://ct.googleapis.com/logs/argon2020/ct/v1/get-sth": dial tcp:
+      ;; lookup ct.googleapis.com
+      #:test-flags #~(list "-skip" "TestCertificateTransparency")))
+    (native-inputs
+     (list go-golang-org-x-tools-bootstrap))
     (home-page "https://golang.org/x/mod")
     (synopsis "Tools to work directly with Go module mechanics")
     (description
