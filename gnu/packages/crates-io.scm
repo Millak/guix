@@ -99070,19 +99070,19 @@ for locating fonts.")
   (package
     (inherit rust-zerocopy-0.6)
     (name "rust-zerocopy")
-    (version "0.3.1")
+    (version "0.3.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "zerocopy" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "00nbb6yal8f74bkpn7msjcnhisimw8s5777a63206rfnn3br45zh"))))
+        (base32 "1wg3crnppc5np7x8fw43va7qzwjnids82nvgqjbv6pfk5fmin2fs"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-byteorder" ,rust-byteorder-1)
-        ("rust-zerocopy-derive" ,rust-zerocopy-derive-0.2))))
+        ("rust-zerocopy-derive" ,rust-zerocopy-derive-0.2))
+       #:cargo-development-inputs (("rust-rand" ,rust-rand-0.6))))
     (license license:bsd-3)))
 
 (define-public rust-zerocopy-derive-0.8
