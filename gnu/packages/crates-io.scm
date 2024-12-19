@@ -31632,26 +31632,28 @@ Rust.")
 (define-public rust-geo-types-0.7
   (package
     (name "rust-geo-types")
-    (version "0.7.2")
+    (version "0.7.8")
     (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "geo-types" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1fyj8ldl4xirhr8aawwiaslkklkzml2r5var87vqyp4zvnajxgfq"))))
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "geo-types" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "148rmd9rky1k6nyzykw81zvv0176q7w1dp0q554sav637av7js72"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (("\"=([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                   (string-append "\"^" version)))))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-approx" ,rust-approx-0.4)
-        ("rust-arbitrary" ,rust-arbitrary-1)
-        ("rust-num-traits" ,rust-num-traits-0.2)
-        ("rust-rstar" ,rust-rstar-0.8)
-        ("rust-serde" ,rust-serde-1))
-       #:cargo-development-inputs
-       (("rust-approx" ,rust-approx-0.4))))
+     `(#:cargo-inputs (("rust-approx" ,rust-approx-0.4)
+                       ("rust-arbitrary" ,rust-arbitrary-1)
+                       ("rust-num-traits" ,rust-num-traits-0.2)
+                       ("rust-rstar" ,rust-rstar-0.9)
+                       ("rust-rstar" ,rust-rstar-0.8)
+                       ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-approx" ,rust-approx-0.4))))
     (home-page "https://github.com/georust/geo")
     (synopsis "Geospatial primitive data types")
     (description "This package provides geospatial primitive data types.")
