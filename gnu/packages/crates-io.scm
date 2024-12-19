@@ -9496,14 +9496,14 @@ comes with a strict specification.")
 (define-public rust-borsh-derive-internal-0.10
   (package
     (name "rust-borsh-derive-internal")
-    (version "0.10.3")
+    (version "0.10.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "borsh-derive-internal" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1yx27ic6aal83bdi1h6v80wfs9ixvw51qzmdgcn8sn8rd4akid5g"))))
+        (base32 "1cvn16046101px9b98i3np95rmrwvzbi63d7l957362cci8bmmk5"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
