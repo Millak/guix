@@ -4885,14 +4885,14 @@ capacity and random or least recently used (LRU) replacement.")
 (define-public rust-async-attributes-1
   (package
     (name "rust-async-attributes")
-    (version "1.1.1")
+    (version "1.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "async-attributes" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "08w41342hybxhln7j7hjsf7v04p3r9d6qdczfwp8d53xj5bd3lzg"))))
+        (base32 "1rcnypqgmlcw9vwh0fk8bivvz8p5v8acy0zd2njdv6yxyiwkw853"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
