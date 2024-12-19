@@ -7005,22 +7005,22 @@ film grain data.")
 (define-public rust-backon-0.4
   (package
     (name "rust-backon")
-    (version "0.4.1")
+    (version "0.4.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "backon" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1yfwd1idd5hf6aq2p0rbx4cv0n450canazr6b8cb42qjnabn26hc"))))
+        (base32 "1w3bqipn0fc0dr9zgpk934ii6dz1m2c8wlrk6lfsgnk8z31q4xyn"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-fastrand" ,rust-fastrand-1)
+     `(#:cargo-inputs (("rust-fastrand" ,rust-fastrand-2)
                        ("rust-futures-core" ,rust-futures-core-0.3)
                        ("rust-pin-project" ,rust-pin-project-1)
                        ("rust-tokio" ,rust-tokio-1))
        #:cargo-development-inputs (("rust-anyhow" ,rust-anyhow-1)
-                                   ("rust-reqwest" ,rust-reqwest-0.11)
+                                   ("rust-reqwest" ,rust-reqwest-0.12)
                                    ("rust-tokio" ,rust-tokio-1))))
     (inputs (list openssl))
     (native-inputs (list pkg-config))
