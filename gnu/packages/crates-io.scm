@@ -71426,14 +71426,14 @@ font rendering.")
 (define-public rust-rustversion-1
   (package
     (name "rust-rustversion")
-    (version "1.0.17")
+    (version "1.0.18")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rustversion" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1mm3fckyvb0l2209in1n2k05sws5d9mpkszbnwhq3pkq8apjhpcm"))))
+        (base32 "0j2207vmgrcxwwwvknfn3lwv4i8djhjnxlvwdnz8bwijqqmrz08f"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-development-inputs
