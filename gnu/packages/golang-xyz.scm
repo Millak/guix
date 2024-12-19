@@ -5522,6 +5522,43 @@ any concurrent code of its own.")
     (propagated-inputs
      (list go-golang-org-x-sync))))
 
+(define-public go-github-com-jacobsa-syncutil
+  (package
+    (name "go-github-com-jacobsa-syncutil")
+    (version "0.0.0-20180201203307-228ac8e5a6c3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jacobsa/syncutil")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0dylp0qaabm8djqmn0qjki3gy9wnq23cbr4k4g63zk4axqgm2ns2"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/jacobsa/syncutil"))
+    (native-inputs
+     (list go-github-com-jacobsa-oglematchers
+           go-github-com-jacobsa-ogletest))
+    (propagated-inputs
+     (list go-golang-org-x-net))
+    (home-page "https://github.com/jacobsa/syncutil")
+    (synopsis "Code supplementing Go's sync package")
+    (description
+     "This package contains code that supplements the
+@url{http://godoc.org/sync,sync} package from the Go standard library.
+
+In particular:
+@itemize
+@item Bundle, which makes it easy to write code that spawns multiple
+cancellation-aware workers that may fail
+@item invariantMutex, which makes it possible to automatically check your
+invariants at lock and unlock time
+@end itemize")
+    (license license:asl2.0)))
+
 (define-public go-github-com-jacobsa-timeutil
   (package
     (name "go-github-com-jacobsa-timeutil")
