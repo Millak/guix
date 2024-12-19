@@ -960,35 +960,13 @@ terminals, as commonly found on Unix systems.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "golang.org/x/text"
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; XXX: Workaround for go-build-system's lack of Go modules
-          ;; support.
-          (delete 'build)
-          (replace 'check
-            (lambda* (#:key tests? import-path #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion (string-append "src/" import-path)
-                  (invoke "go" "test" "-v"
-                          "./cases/..."
-                          ;; cmd - cycle with go-golang-org-x-tools
-                          "./collate/..."
-                          "./currency/..."
-                          "./date/..."
-                          "./encoding/..."
-                          "./feature/..."
-                          "./internal/..."
-                          "./language/..."
-                          ;; message - cycle with go-golang-org-x-tools
-                          "./number/..."
-                          "./runes/..."
-                          "./search/..."
-                          "./secure/..."
-                          "./transform/..."
-                          "./unicode/..."
-                          "./width/..."))))))))
+      #:skip-build? #t
+      #:import-path "golang.org/x/text"))
     (home-page "https://go.googlesource.com/text")
+    (native-inputs
+     (list go-golang-org-x-mod-bootstrap
+           go-golang-org-x-sync-bootstrap
+           go-golang-org-x-tools-bootstrap))
     (synopsis "Supplemental Go text processing libraries")
     (description
      "This package provides supplemental Go libraries for text
