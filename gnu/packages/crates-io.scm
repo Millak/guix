@@ -31821,25 +31821,24 @@ getters and setters on fields.")
 (define-public rust-gettext-rs-0.7
   (package
     (name "rust-gettext-rs")
-    (version "0.7.0")
+    (version "0.7.2")
     (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "gettext-rs" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "0r7kahqcjrkm83d3gzzkn83fnw2bnqj2ank5z6hsm66izalai7p4"))))
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gettext-rs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "12ikrzvx35aybip55ib9zmnjf8is4mhy2pfmgv50lhq8vkvr4km4"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-gettext-sys" ,rust-gettext-sys-0.21)
-        ("rust-locale-config" ,rust-locale-config-0.3))
-       #:cargo-development-inputs
-       (("rust-lazy-static" ,rust-lazy-static-1))))
-    (inputs
-     `(("gettext" ,gettext-minimal)))
+     `(#:cargo-inputs (("rust-gettext-sys" ,rust-gettext-sys-0.21)
+                       ("rust-locale-config" ,rust-locale-config-0.3))
+       #:cargo-development-inputs (("rust-lazy-static" ,rust-lazy-static-1))
+       #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'use-system-gettext
+                    (lambda _
+                      (setenv "GETTEXT_SYSTEM" "true"))))))
+    (inputs (list gettext-minimal))
     (home-page "https://github.com/Koka/gettext-rs")
     (synopsis "GNU Gettext FFI binding for Rust")
     (description "This package provides GNU Gettext FFI bindings for Rust.")
