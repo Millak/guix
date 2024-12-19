@@ -10497,23 +10497,24 @@ libraries and binaries.")
 (define-public rust-built-0.7
   (package
     (name "rust-built")
-    (version "0.7.1")
+    (version "0.7.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "built" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0lyx4z4y5f7aaiv2yxxhq7klhs0979sw5vgv08d6vhsddr6pzl9q"))))
+        (base32 "0fyhzjgymls3qylggd6rs4vkq44rkl1kyv33lfbfrdsjxmd50q63"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-cargo-lock" ,rust-cargo-lock-9)
+     `(#:cargo-test-flags '("--" "--skip=full_testbox")
+       #:cargo-inputs (("rust-cargo-lock" ,rust-cargo-lock-10)
                        ("rust-chrono" ,rust-chrono-0.4)
-                       ("rust-git2" ,rust-git2-0.18)
+                       ("rust-git2" ,rust-git2-0.19)
                        ("rust-semver" ,rust-semver-1))
        #:cargo-development-inputs (("rust-tempfile" ,rust-tempfile-3))))
     (native-inputs (list pkg-config))
-    (inputs (list libgit2-1.7 zlib))
+    (inputs (list libgit2-1.8 zlib))
     (home-page "https://github.com/lukaslueg/built")
     (synopsis "Provides a crate with information from the time it was built")
     (description
