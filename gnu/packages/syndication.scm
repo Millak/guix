@@ -46,6 +46,7 @@
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages crates-crypto)
   #:use-module (gnu packages crates-io)
+  #:use-module (gnu packages crates-web)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gettext)
@@ -236,14 +237,14 @@ cards.")
 (define-public newsboat
   (package
     (name "newsboat")
-    (version "2.36.1")
+    (version "2.37")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://newsboat.org/releases/" version
                            "/newsboat-" version ".tar.xz"))
        (sha256
-        (base32 "1pgi19y1ym5dhh0szs0w0cjbvx83bzq30af24h73nwdalkwb3nhl"))))
+        (base32 "0z57zc70gqac2vk6hlv4ijql3nrn0dzi1w8drvl9any2hnixwm2g"))))
     (build-system cargo-build-system)
     (native-inputs
      `(("gettext" ,gettext-minimal)
@@ -274,6 +275,7 @@ cards.")
         ("rust-cxx-build" ,rust-cxx-build-1)
         ("rust-fastrand" ,rust-fastrand-2)
         ("rust-gettext-rs" ,rust-gettext-rs-0.7)
+        ("rust-httpmock" ,rust-httpmock-0.7)
         ("rust-lexopt" ,rust-lexopt-0.3)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-md5" ,rust-md5-0.7)
@@ -282,6 +284,7 @@ cards.")
         ("rust-percent-encoding" ,rust-percent-encoding-2)
         ("rust-url" ,rust-url-2)
         ("rust-unicode-width" ,rust-unicode-width-0.1)
+        ("rust-unicode-segmentation" ,rust-unicode-segmentation-1)
         ("rust-xdg" ,rust-xdg-2))
        #:cargo-development-inputs
        (("rust-tempfile" ,rust-tempfile-3)
