@@ -72,7 +72,7 @@ the `-I' option."
 
 (define (assert-utf8-locale)
   "Verify the current process is using the en_US.utf8 locale."
-  (unless (string=? "unset for tests" (getenv "GUIX_LOCPATH"))
+  (unless (string=? "unset for tests" (or (getenv "GUIX_LOCPATH") ""))
     (unless (false-if-exception (setlocale LC_ALL "en_US.utf8"))
       (error "environment not configured for en_US.utf8 locale"))))
 
