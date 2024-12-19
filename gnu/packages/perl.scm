@@ -12544,6 +12544,27 @@ Unicode data.")
     ;; license.
     (license (list (package-license perl) license:expat))))
 
+(define-public perl-unicode-eastasianwidth
+  (package
+    (name "perl-unicode-eastasianwidth")
+    (version "12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/A/AU/AUDREYT/Unicode-EastAsianWidth-"
+             version ".tar.gz"))
+       (sha256
+        (base32 "1x0gm5akah6x1ypykipywlm2hi95mhqjrnipc5zggragdj9gsnra"))))
+    (build-system perl-build-system)
+    (home-page "https://metacpan.org/release/Unicode-EastAsianWidth")
+    (synopsis "East Asian Width properties")
+    (description
+     "This module provides user-defined Unicode properties that deal with width
+status of East Asian characters, as specified in
+@url{https://www.unicode.org/reports/tr11/,Unicode® Standard Annex #11}.")
+    (license license:cc0)))
+
 (define-public perl-unicode-linebreak
   (package
     (name "perl-unicode-linebreak")
