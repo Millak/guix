@@ -1108,7 +1108,7 @@ Virtual Machines.  OVMF contains a sample UEFI firmware for QEMU and KVM.")
         (string=? (%current-system) (gnu-triplet->nix-system triplet))))
   (package
     (name (string-append "arm-trusted-firmware-" platform))
-    (version "2.9")
+    (version "2.12")
     (source
      (origin
        (method git-fetch)
@@ -1118,7 +1118,7 @@ Virtual Machines.  OVMF contains a sample UEFI firmware for QEMU and KVM.")
               (commit (string-append "v" version))))
        (file-name (git-file-name "arm-trusted-firmware" version))
        (sha256
-        (base32 "16fjbn1zck0d8b554h8lk1svqqn0zlawvrlkjxry9l71s9h4vd0p"))
+        (base32 "18rzhygvq0afcylirq9yis3kaa1nli14k2jrm64ih85gz4nhl99w"))
        (modules '((guix build utils)))
        ;; Remove binary blobs: they don't reference a source or license.
        (snippet #~(for-each delete-file (find-files "." "\\.bin$")))))
@@ -1128,7 +1128,15 @@ Virtual Machines.  OVMF contains a sample UEFI firmware for QEMU and KVM.")
       #:target (and (not (native-build?)) triplet)
       #:phases
       #~(modify-phases %standard-phases
-          (delete 'configure)         ;no configure script
+          (replace 'configure          ;no configure script
+            ;; Fix ATF commit ffb7742125def3e0acca4c7e4d3215af5ce25a31
+            (lambda _
+              (unless #$(native-build?)
+                (substitute* "plat/rockchip/rk3399/drivers/m0/Makefile"
+                  (("-oc") "-oc-default"))
+                (substitute* "make_helpers/build_macros.mk"
+                  (("-oc") "-oc-default")
+                  (("-od") "-od-default")))))
           (replace 'install
             (lambda _
               (for-each (lambda (file)
@@ -1138,9 +1146,10 @@ Virtual Machines.  OVMF contains a sample UEFI firmware for QEMU and KVM.")
       #~(list (string-append "PLAT=" #$platform)
               #$@(if (not (native-build?))
                      (list (string-append "CROSS_COMPILE=" triplet "-"))
-                     '())
+                     '("CC=gcc"))
               "DEBUG=1")
       #:tests? #f))                   ;no test suite
+    (native-inputs (list python))
     (home-page "https://www.trustedfirmware.org/")
     (synopsis "Secure world software for ARMv7-A and ARMv8-A")
     (description
