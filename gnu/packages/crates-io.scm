@@ -10746,14 +10746,14 @@ of built-in fundamental numeric types.")
 (define-public rust-bytecheck-0.6
   (package
     (name "rust-bytecheck")
-    (version "0.6.11")
+    (version "0.6.12")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "bytecheck" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "09xnpjfhw36a973dpdd2mcmb93rrix539j49vkkgcqf878174qwb"))))
+                "1hmipv4yyxgbamcbw5r65wagv9khs033v9483s9kri9sw9ycbk93"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; Not all files included.
