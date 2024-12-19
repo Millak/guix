@@ -703,16 +703,14 @@ used in go-github-com-jackc-pgx.")
     (license license:expat)))
 
 (define-public go-github-com-jacobsa-oglematchers
-  (let ((commit "141901ea67cd4769c6800aa7bfdfc558fa22bda5")
-        (revision "0"))
     (package
       (name "go-github-com-jacobsa-oglematchers")
-      (version (git-version "0.0.0" revision commit))
+      (version "0.0.0-20150720000706-141901ea67cd")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
                       (url "https://github.com/jacobsa/oglematchers")
-                      (commit commit)))
+                      (commit (go-version->git-ref version))))
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
@@ -728,7 +726,7 @@ used in go-github-com-jackc-pgx.")
        "Package oglematchers provides a set of matchers useful in a testing or mocking
 framework.  These matchers are inspired by and mostly compatible with Google
 Test for C++ and Google JS Test.")
-      (license license:asl2.0))))
+      (license license:asl2.0)))
 
 (define-public go-github-com-jacobsa-oglemock
   (let ((commit "e94d794d06ffc6de42cb19d0dab3c219efdd6dcf")
