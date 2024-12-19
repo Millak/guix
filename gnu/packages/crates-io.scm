@@ -5605,20 +5605,19 @@ TCP/UDP/Unix communication.")
   (package
     (inherit rust-async-net-2)
     (name "rust-async-net")
-    (version "1.5.0")
+    (version "1.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "async-net" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1rgvvqb1l86hawl1j0jfyzq35yracbbh29109131izmghmf4gph6"))))
+        (base32 "0by1m21ciwq6kvd8jplb0mqr9yh17zil1icakdvga76f33nv2d04"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-async-io" ,rust-async-io-1)
         ("rust-blocking" ,rust-blocking-1)
-        ("rust-fastrand" ,rust-fastrand-1)
         ("rust-futures-lite" ,rust-futures-lite-1))))))
 
 (define-public rust-async-object-pool-0.1
