@@ -904,7 +904,7 @@ rules are rather complex.  This crate implements the whole grammar." )
     (arguments
      `(#:install-source? #f
        #:cargo-test-flags
-       (list "--release" "--"
+       (list "--"
              ;; The certificate has an expiration date.
              "--skip=sq_autocrypt_import")
        #:cargo-inputs
