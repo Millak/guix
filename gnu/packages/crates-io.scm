@@ -8912,14 +8912,14 @@ the buffer.")
 (define-public rust-bitstream-io-2
   (package
     (name "rust-bitstream-io")
-    (version "2.3.0")
+    (version "2.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "bitstream-io" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0vj4f4kg3ls3j41180a7ia65rj2p762mbzimm0bxiw22ds2x24kw"))))
+        (base32 "1cli390l1dhp9skygyjjnqvczp36b7f31mkx9ry3dg26330cv6b0"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-core2" ,rust-core2-0.4))))
