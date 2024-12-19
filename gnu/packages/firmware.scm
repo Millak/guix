@@ -1177,12 +1177,9 @@ such as:
   (let ((base (make-arm-trusted-firmware "rk3399")))
     (package
       (inherit base)
-      (name "arm-trusted-firmware-rk3399")
-      (native-inputs
-       (modify-inputs (package-native-inputs base)
-         (prepend
-             (cross-gcc "arm-none-eabi")
-             (cross-binutils "arm-none-eabi")))))))
+      (native-inputs (modify-inputs (package-native-inputs base)
+                       (prepend (cross-gcc "arm-none-eabi")
+                                (cross-binutils "arm-none-eabi")))))))
 
 (define-public arm-trusted-firmware-imx8mq
   (let ((base (make-arm-trusted-firmware "imx8mq")))
