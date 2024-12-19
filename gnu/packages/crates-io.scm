@@ -10791,14 +10791,14 @@ Rust.")
 (define-public rust-bytecheck-derive-0.6
   (package
     (name "rust-bytecheck-derive")
-    (version "0.6.11")
+    (version "0.6.12")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "bytecheck_derive" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0qdgfqx23gbjp5scbc8fhqc5kd014bpxn8hc9i9ssd8r4rplrv57"))))
+                "0ng6230brd0hvqpbgcx83inn74mdv3abwn95x515bndwkz90dd1x"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
