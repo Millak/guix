@@ -99147,6 +99147,33 @@ crate.")
        (("rust-static-assertions" ,rust-static-assertions-1)
         ("rust-trybuild" ,rust-trybuild-1))))))
 
+(define-public rust-zerocopy-derive-0.6
+  (package
+    (inherit rust-zerocopy-derive-0.8)
+    (name "rust-zerocopy-derive")
+    (version "0.6.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "zerocopy-derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "14dx3c7bw8p381j5amnmrilc9nhvsirxvvz275f657bb7zg3jl8j"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (("\"= ?([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                   (string-append "\"^" version)))))))
+    (arguments
+     `(#:tests? #f  ; use of undeclared crate or module `zerocopy`
+       #:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))
+       #:cargo-development-inputs
+       (("rust-rustversion" ,rust-rustversion-1)
+        ("rust-static-assertions" ,rust-static-assertions-1)
+        ("rust-trybuild" ,rust-trybuild-1))))))
+
 (define-public rust-zerocopy-derive-0.3
   (package
     (inherit rust-zerocopy-derive-0.7)
