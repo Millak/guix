@@ -99793,14 +99793,14 @@ in Pure Rust.")
 (define-public rust-zune-jpeg-0.4
   (package
     (name "rust-zune-jpeg")
-    (version "0.4.13")
+    (version "0.4.14")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "zune-jpeg" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0s07igp839yy66hs5f8g6gzvvanywgv3zxr2hq18yk8bc0c9828n"))))
+        (base32 "0a70sbnxxkgfm777i1xjkhyn8mx07swg5cabbi083pyysywbm9cr"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-zune-core" ,rust-zune-core-0.4))))
