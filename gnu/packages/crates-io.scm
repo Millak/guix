@@ -5077,18 +5077,17 @@ multi-consumer channels.")
 (define-public rust-async-compression-0.4
   (package
     (name "rust-async-compression")
-    (version "0.4.5")
+    (version "0.4.18")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "async-compression" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "19f2mdiz7jrmpbhjxmpfmixfv5640iknhxhfb57x723k5bxhqbdw"))))
+        (base32 "08pmavgjha81hf1acwxka82vi0r711whnp5lyha68r3hbx8mm2fz"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f  ; could not find `proptest` in the list of imported crates
-       #:cargo-inputs (("rust-brotli" ,rust-brotli-3)
+     `(#:cargo-inputs (("rust-brotli" ,rust-brotli-7)
                        ("rust-bzip2" ,rust-bzip2-0.4)
                        ("rust-deflate64" ,rust-deflate64-0.1)
                        ("rust-flate2" ,rust-flate2-1)
@@ -5099,7 +5098,16 @@ multi-consumer channels.")
                        ("rust-tokio" ,rust-tokio-1)
                        ("rust-xz2" ,rust-xz2-0.1)
                        ("rust-zstd" ,rust-zstd-0.13)
-                       ("rust-zstd-safe" ,rust-zstd-safe-7))))
+                       ("rust-zstd-safe" ,rust-zstd-safe-7))
+       #:cargo-development-inputs (("rust-bytes" ,rust-bytes-1)
+                                   ("rust-futures" ,rust-futures-0.3)
+                                   ("rust-futures-test" ,rust-futures-test-0.3)
+                                   ("rust-ntest" ,rust-ntest-0.9)
+                                   ("rust-proptest" ,rust-proptest-1)
+                                   ("rust-proptest-derive" ,rust-proptest-derive-0.5)
+                                   ("rust-rand" ,rust-rand-0.8)
+                                   ("rust-tokio" ,rust-tokio-1)
+                                   ("rust-tokio-util" ,rust-tokio-util-0.7))))
     (home-page "https://github.com/Nullus157/async-compression")
     (synopsis
      "Adaptors between compression crates and Rust's modern asynchronous IO types")
