@@ -6322,26 +6322,27 @@ fixed atomic types.")
 they're not available.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-atomic-polyfill-0.1
+(define-public rust-atomic-polyfill-0.1.11-yanked
   (package
+    (inherit rust-atomic-polyfill-1)
     (name "rust-atomic-polyfill")
-    (version "0.1.11")
+    (version "0.1.11") ; This version was yanked!
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "atomic-polyfill" version))
-       (file-name (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version "-yanked.tar.gz"))
        (sha256
         (base32 "0a4vd4zq75xmwbi33flf35qmm2nf99kx3hx2m21lslqnyfrpxzz3"))))
-    (build-system cargo-build-system)
+    (properties '((crate-version-yanked? . #t)))
     (arguments
      `(#:cargo-inputs
-       (("rust-critical-section" ,rust-critical-section-1))))
-    (home-page "https://github.com/embassy-rs/atomic-polyfill")
-    (synopsis "Atomic polyfills, for targets where they're not available")
-    (description "This package provides atomic polyfills, for targets where
-they're not available.")
-    (license (list license:expat license:asl2.0))))
+       (("rust-critical-section" ,rust-critical-section-1))))))
+
+(define-public rust-atomic-polyfill-0.1
+  ;; There are no non-yanked versions of this semver.
+  (deprecated-package "rust-atomic-polyfill"
+                      rust-atomic-polyfill-0.1.11-yanked))
 
 (define-public rust-atomic-refcell-0.1
   (package
