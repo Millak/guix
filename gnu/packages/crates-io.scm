@@ -95347,23 +95347,23 @@ and test them against various comparison operators.")
 (define-public rust-version-sync-0.9
   (package
     (name "rust-version-sync")
-    (version "0.9.4")
+    (version "0.9.5")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "version-sync" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32 "1w0v20p6k13yhfmgmcwhgy3371znyqcn83lhrf47swq7xhf81l4r"))))
+         (base32 "12b0z8p2hhj361g1jn5yzdkqk48zmhm671srvwykgskk07d6jlc3"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-pulldown-cmark" ,rust-pulldown-cmark-0.8)
+        ("rust-pulldown-cmark" ,rust-pulldown-cmark-0.9)
         ("rust-regex" ,rust-regex-1)
         ("rust-semver" ,rust-semver-1)
-        ("rust-syn" ,rust-syn-1)
-        ("rust-toml" ,rust-toml-0.5)
+        ("rust-syn" ,rust-syn-2)
+        ("rust-toml" ,rust-toml-0.7)
         ("rust-url" ,rust-url-2))
        #:cargo-development-inputs
        (("rust-tempfile" ,rust-tempfile-3))))
