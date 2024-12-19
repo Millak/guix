@@ -9649,14 +9649,14 @@ program to verify sandboxing measures are adequate.")
 (define-public rust-bracoxide-0.1
   (package
     (name "rust-bracoxide")
-    (version "0.1.3")
+    (version "0.1.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "bracoxide" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1j71fs71ss70rj7n4na8hg63w93czhrjdgi7di6nma12lrfg79xd"))))
+        (base32 "13khmkxxh583hhzz0bvkg6bqwpnz4b9g400sq8liz3jf8asvrh7v"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.5))))
