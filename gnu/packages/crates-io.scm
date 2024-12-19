@@ -10997,20 +10997,20 @@ and little-endian.")
 (define-public rust-bytes-1
   (package
     (name "rust-bytes")
-    (version "1.4.0")
+    (version "1.9.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "bytes" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1gkh3fk4fm9xv5znlib723h5md5sxsvbd5113sbxff6g1lmgvcl9"))))
+        (base32 "16ykzx24v1x4f42v2lxyvlczqhdfji3v7r4ghwckpwijzvb1hn9j"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-serde" ,rust-serde-1))
        #:cargo-development-inputs
-       (("rust-loom" ,rust-loom-0.5)
+       (("rust-loom" ,rust-loom-0.7)
         ("rust-serde-test" ,rust-serde-test-1))))
     (home-page "https://github.com/tokio-rs/bytes")
     (synopsis "Types and traits for working with bytes")
