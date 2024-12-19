@@ -110,6 +110,7 @@
             operating-system-default-label
             operating-system-initrd-modules
             operating-system-initrd
+            operating-system-initrd-file
             operating-system-users
             operating-system-groups
             operating-system-issue
@@ -119,6 +120,7 @@
             operating-system-locale-libcs
             operating-system-mapped-devices
             operating-system-file-systems
+            operating-system-root-file-system
             operating-system-store-file-system
             operating-system-user-mapped-devices
             operating-system-boot-mapped-devices
@@ -1355,7 +1357,7 @@ we're running in the final root."
                (location (operating-system-location os)))))))
 
 (define (operating-system-initrd-file os)
-  "Return a gexp denoting the initrd file of OS."
+  "Return a file-like object for the initrd file of OS."
   (define boot-file-systems
     (filter file-system-needed-for-boot?
             (operating-system-file-systems os)))
