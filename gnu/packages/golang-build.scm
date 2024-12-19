@@ -1100,7 +1100,7 @@ the @url{https://vuln.go.dev,Go Vulnerability Database}.")
 (define-public go-golang-org-x-xerrors
   (package
     (name "go-golang-org-x-xerrors")
-    (version "0.0.0-20200804184101-5ec99f83aff1")
+    (version "0.0.0-20240903120638-7835f813f4da")
     (source
      (origin
        (method git-fetch)
@@ -1109,7 +1109,7 @@ the @url{https://vuln.go.dev,Go Vulnerability Database}.")
              (commit (go-version->git-ref version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1dbzc3gmf2haazpv7cgmv97rq40g2xzwbglc17vas8dwhgwgwrzb"))))
+        (base32 "1amjwicv2k6mkafa27ghwavc19jy8vi8kfndpj6vrgn0p5rc4kkc"))))
     (build-system go-build-system)
     (arguments
      (list
