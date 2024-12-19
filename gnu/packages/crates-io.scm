@@ -65415,19 +65415,17 @@ distributions.")
 (define-public rust-rand-hc-0.3
   (package
     (name "rust-rand-hc")
-    (version "0.3.1")
+    (version "0.3.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rand_hc" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1rwpykyvhkxs4jvqdja3mzp9dqaqamzn113cxaigs9z2dmcry7nm"))))
+        (base32 "0m2grc3bjndds93mv55qw7qf1gapar080v2qpxi8vy3hcd7ksdkv"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-rand-core" ,rust-rand-core-0.6))))
+     `(#:cargo-inputs (("rust-rand-core" ,rust-rand-core-0.6))))
     (home-page "https://crates.io/crates/rand_hc")
     (synopsis "HC128 random number generator")
     (description "This package provides a cryptographically secure random number
