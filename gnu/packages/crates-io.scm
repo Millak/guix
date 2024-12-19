@@ -98091,14 +98091,14 @@ including a line breaking iterator.")
 (define-public rust-xml-rs-0.8
   (package
     (name "rust-xml-rs")
-    (version "0.8.19")
+    (version "0.8.24")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "xml-rs" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0nnpvk3fv32hgh7vs9gbg2swmzxx5yz73f4b7rak7q39q2x9rjqg"))))
+        (base32 "0ck4s3j1dk4bnqam9h06nfmicnzdp69pz7y2hihlj2vrk8f3k2za"))))
     (build-system cargo-build-system)
     (home-page "https://lib.rs/crates/xml-rs")
     (synopsis "XML library in pure Rust")
