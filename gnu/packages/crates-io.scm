@@ -36894,8 +36894,38 @@ Rust program (generated with @code{cbindgen} for example).")
 writing and executing C code inside Rust.")
     (license license:bsd-3)))
 
+(define-public rust-inotify-0.11
+  (package
+    (name "rust-inotify")
+    (version "0.11.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "inotify" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1wq8m657rl085cg59p38sc5y62xy9yhhpvxbkd7n1awi4zzwqzgk"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-futures-core" ,rust-futures-core-0.3)
+                       ("rust-inotify-sys" ,rust-inotify-sys-0.1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-tokio" ,rust-tokio-1))
+       #:cargo-development-inputs (("rust-futures-util" ,rust-futures-util-0.3)
+                                   ("rust-maplit" ,rust-maplit-1)
+                                   ("rust-rand" ,rust-rand-0.8)
+                                   ("rust-tempfile" ,rust-tempfile-3)
+                                   ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/hannobraun/inotify")
+    (synopsis "Idiomatic wrapper for inotify")
+    (description "This package provides an idiomatic wrapper for inotify
+written in Rust.")
+    (license license:isc)))
+
 (define-public rust-inotify-0.10
   (package
+    (inherit rust-inotify-0.11)
     (name "rust-inotify")
     (version "0.10.2")
     (source (origin
@@ -36905,7 +36935,6 @@ writing and executing C code inside Rust.")
               (sha256
                (base32
                 "1k2m6a95827yspax1icmwiz4szr7c01w3dnn2b2bil4hfvcnilgx"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-1)
@@ -36918,12 +36947,7 @@ writing and executing C code inside Rust.")
         ("rust-maplit" ,rust-maplit-1)
         ("rust-rand" ,rust-rand-0.8)
         ("rust-tempfile" ,rust-tempfile-3)
-        ("rust-tokio" ,rust-tokio-1))))
-    (home-page "https://github.com/hannobraun/inotify")
-    (synopsis "Idiomatic wrapper for inotify")
-    (description "This package provides an idiomatic wrapper for inotify
-written in Rust.")
-    (license license:isc)))
+        ("rust-tokio" ,rust-tokio-1))))))
 
 (define-public rust-inotify-0.9
   (package
