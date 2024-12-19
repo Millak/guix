@@ -31558,22 +31558,20 @@ Rust.")
   (package
     (inherit rust-generic-array-0.12)
     (name "rust-generic-array")
-    (version "0.8.3")
+    (version "0.8.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "generic-array" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "1wi6rlx3dmrvl26yxm4z5n68kyj2ikk4nllk1kazw2ik9scnkszw"))))
+        (base32 "1gkyr94q67gq31xa3qzmkpsjhh4jlgf54jx21lw2wlgawfq7yadj"))))
     (arguments
-     `(#:cargo-inputs
-       (("rust-nodrop" ,rust-nodrop-0.1)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-typenum" ,rust-typenum-1))
-       #:cargo-development-inputs
-       (("rust-serde-json" ,rust-serde-json-1))))))
+     `(#:cargo-test-flags '("--" "--skip=arr::doctests_only::DocTests")
+       #:cargo-inputs (("rust-nodrop" ,rust-nodrop-0.1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-typenum" ,rust-typenum-1))
+       #:cargo-development-inputs (("rust-serde-json" ,rust-serde-json-1))))))
 
 (define-public rust-genetlink-0.2
   (package
