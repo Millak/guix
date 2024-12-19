@@ -45848,23 +45848,19 @@ non-interactive protocols can be implemented as if they were interactive.")
 (define-public rust-metrohash-1
   (package
     (name "rust-metrohash")
-    (version "1.0.6")
+    (version "1.0.7")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "metrohash" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "0v2hn33ypx79naimfcz58pz46qhj2prawvx1p9abrb72375m799v"))))
+        (base32 "1ifqmkg81nprxm9dv52k6wbcv48aibd830f3ph7zcff3mnzi2h58"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-development-inputs
-       (("rust-fnv" ,rust-fnv-1)
-        ("rust-twox-hash" ,rust-twox-hash-1))))
-    (home-page
-     "https://github.com/arthurprs/metrohash-rs")
+     `(#:cargo-development-inputs (("rust-fnv" ,rust-fnv-1)
+                                   ("rust-twox-hash" ,rust-twox-hash-1))))
+    (home-page "https://github.com/arthurprs/metrohash-rs")
     (synopsis "Rust implementation of the MetroHash hash algorithm")
     (description "This library is a Rust implementation of MetroHash, a high
 quality, high performance hash algorithm.")
