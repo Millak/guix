@@ -2,6 +2,7 @@
 ;;; Copyright © 2019 David Thompson <davet@gnu.org>
 ;;; Copyright © 2019 Jakob L. Kreuze <zerodaysfordays@sdf.org>
 ;;; Copyright © 2020-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2024 Richard Sent <richard@freakingpenguin.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -59,6 +60,9 @@ Perform the deployment specified by FILE.\n"))
   -V, --version          display version information and exit"))
   (newline)
   (display (G_ "
+  -e, --expression=EXPR  deploy the list of machines EXPR evaluates to"))
+  (newline)
+  (display (G_ "
   -x, --execute          execute the following command on all the machines"))
   (newline)
   (display (G_ "
@@ -74,6 +78,9 @@ Perform the deployment specified by FILE.\n"))
                  (lambda args
                    (show-version-and-exit "guix deploy")))
 
+         (option '(#\e "expression") #t #f
+                 (lambda (opt name arg result)
+                   (alist-cons 'expression arg result)))
          (option '(#\n "dry-run") #f #f
                  (lambda (opt name arg result)
                    (alist-cons 'dry-run? #t result)))
@@ -247,10 +254,16 @@ otherwise."
            (opts (parse-command-line args %options (list %default-options)
                                      #:argument-handler handle-argument))
            (file (assq-ref opts 'file))
-           (machines (and file (load-source-file file)))
+           (expression (assoc-ref opts 'expression))
+           (machines (or (and file (load-source-file file))
+                         (and expression (read/eval expression))))
            (dry-run? (assoc-ref opts 'dry-run?))
            (execute-command? (assoc-ref opts 'execute-command?)))
-      (unless file
+      (when (and file expression)
+        (leave (G_ "both '--expression' and a deployment file were provided~%")))
+
+      (unless (or file
+                  expression)
         (leave (G_ "missing deployment file argument~%")))
 
       (when (and (pair? command) (not execute-command?))
