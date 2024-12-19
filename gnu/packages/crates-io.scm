@@ -99052,19 +99052,29 @@ for locating fonts.")
   (package
     (inherit rust-zerocopy-0.7)
     (name "rust-zerocopy")
-    (version "0.6.1")
+    (version "0.6.6")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "zerocopy" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0dpj4nd9v56wy93ahjkp95znjzj91waqvidqch8gxwdwq661hbrk"))))
+                "1rpq5g7sp763w2f7bjrc6wi08wxcfjva2rjcl7lrwq9dr2d98kl5"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin (substitute* "Cargo.toml"
+                         (("\"= ?([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                          (string-append "\"^" version)))))))
     (arguments
-     `(#:skip-build? #t
+     `(#:tests? #f      ; Tests depend on exact versions of rust.
        #:cargo-inputs
        (("rust-byteorder" ,rust-byteorder-1)
-        ("rust-zerocopy-derive" ,rust-zerocopy-derive-0.3))))))
+        ("rust-zerocopy-derive" ,rust-zerocopy-derive-0.6))
+       #:cargo-development-inputs
+       (("rust-rand" ,rust-rand-0.6)
+        ("rust-rustversion" ,rust-rustversion-1)
+        ("rust-static-assertions" ,rust-static-assertions-1)
+        ("rust-trybuild" ,rust-trybuild-1))))))
 
 (define-public rust-zerocopy-0.3
   (package
