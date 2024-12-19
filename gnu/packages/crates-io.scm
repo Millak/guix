@@ -74781,14 +74781,14 @@ programs in rust.")
 (define-public rust-serde-path-to-error-0.1
   (package
     (name "rust-serde-path-to-error")
-    (version "0.1.14")
+    (version "0.1.16")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "serde_path_to_error" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32 "0dc31z4bg0jwn69gcqsczbmcy5y4w6r0vdcc4c38vma9x2ycivjb"))))
+         (base32 "19hlz2359l37ifirskpcds7sxg0gzpqvfilibs7whdys0128i6dg"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
