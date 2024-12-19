@@ -6303,9 +6303,7 @@ file or files to several hosts.")
         (base32 "0qr6ikq2ds8bq35iw480qyhf3d43dj61wiwp8587n3mgqf5djx8w"))))
     (build-system cargo-build-system)
     (arguments
-     (list #:cargo-test-flags `(list "--release" "--"
-                                     "--skip=test_apparent_size")
-           #:install-source? #f
+     (list #:install-source? #f
            #:cargo-inputs `(("rust-ansi-term" ,rust-ansi-term-0.12)
                             ("rust-chrono" ,rust-chrono-0.4)
                             ("rust-clap" ,rust-clap-4)
