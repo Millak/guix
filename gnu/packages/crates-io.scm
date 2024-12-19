@@ -5552,14 +5552,13 @@ crate.")
      (origin
        (method url-fetch)
        (uri (crate-uri "async-mutex" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0vhmsscqx48dmxw0yir6az0pbwcq6qjvcv2f43vdpn95vd9bi7a7"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-event-listener" ,rust-event-listener-2))
+     `(#:install-source? #f ; README is missing
+       #:cargo-inputs (("rust-event-listener" ,rust-event-listener-2))
        #:cargo-development-inputs
        (("rust-async-std" ,rust-async-std-1)
         ("rust-futures" ,rust-futures-0.3)
