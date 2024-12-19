@@ -95016,14 +95016,14 @@ for @code{Valuable} types.")
 (define-public rust-value-bag-sval2-1
   (package
     (name "rust-value-bag-sval2")
-    (version "1.9.0")
+    (version "1.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "value-bag-sval2" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0nr8453w1357xc70ilbvwcg4qa6bgll44pci0fbznb82hvjbm18p"))))
+        (base32 "0fm8lkzbf18x8hch9dqlrmxncxcp8iynb5scd643mi6a0akidaak"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
