@@ -5083,14 +5083,33 @@ implementation in https://github.com/jackc/pgx.")
     (build-system go-build-system)
     (arguments
      (list
-      #:tests? #f ; requiring running PostgreSQL server
-      #:import-path "github.com/jackc/pgconn"))
+      #:import-path "github.com/jackc/pgconn"
+      #:test-flags
+      #~(list "-skip"
+              (string-join
+               (list "TestConfigCopyCanBeUsedToConnect"
+                     "TestConnStress"
+                     "TestFrontendFatalErrExec"
+                     "TestLRUModePrepare"
+                     "TestLRUContext"
+                     "TestLRUStmtInvalidationIntegration"
+                     "TestLRUModeDescribe"
+                     "TestLRUModePrepareStress"
+                     "TestLRUStmtInvalidation")
+               "|"))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; All tests in this file rquire PostgreSQL service running.
+          (add-before 'check 'remove-failing-test-files
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file "pgconn_test.go")))))))
     (native-inputs
-     (list go-github-com-stretchr-testify))
+     (list go-github-com-jackc-pgmock-bootstrap
+           go-github-com-stretchr-testify))
     (propagated-inputs
      (list go-github-com-jackc-chunkreader-v2
            go-github-com-jackc-pgio
-           go-github-com-jackc-pgmock
            go-github-com-jackc-pgpassfile
            go-github-com-jackc-pgproto3-v2
            go-github-com-jackc-pgservicefile

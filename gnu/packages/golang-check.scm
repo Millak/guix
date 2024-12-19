@@ -704,6 +704,18 @@ used in go-github-com-jackc-pgx.")
      "This package implements a functionality to mock a PostgreSQL server.")
     (license license:expat)))
 
+(define-public go-github-com-jackc-pgmock-bootstrap
+  (hidden-package
+   (package
+     (inherit go-github-com-jackc-pgmock)
+     (arguments
+      (list #:tests? #f
+            #:import-path "github.com/jackc/pgmock"
+            #:phases
+            #~(modify-phases %standard-phases
+                (delete 'build))))
+      (native-inputs '()))))
+
 (define-public go-github-com-jacobsa-oglematchers
   (package
     (name "go-github-com-jacobsa-oglematchers")
