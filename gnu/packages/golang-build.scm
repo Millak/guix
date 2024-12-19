@@ -806,11 +806,34 @@ support for low-level interaction with the operating system.")
              (commit (go-version->git-ref version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "05gvxiv0yqfclckm2ysavbfy1jpz8v71r2glrcvhjq8wzw90g9gz"))))
+        (base32 "05gvxiv0yqfclckm2ysavbfy1jpz8v71r2glrcvhjq8wzw90g9gz"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separatly:
+            ;;
+            ;; - golang.org/x/telemetry/config
+            ;; - golang.org/x/telemetry/godev
+            (for-each delete-file-recursively (list "config" "godev"))))))
     (build-system go-build-system)
     (arguments
      (list
-      #:test-flags #~(list "-skip" "TestStart|TestConcurrentStart")
+      #:test-flags
+      #~(list "-skip" (string-join
+                       ;; Tests fail with error: failed to download config
+                       ;; module.
+                       (list "TestConcurrentStart"
+                             "TestDownload"
+                             "TestRun_Basic"
+                             "TestRun_Concurrent"
+                             "TestRun_DebugLog"
+                             "TestRun_EmptyUpload"
+                             "TestRun_MissingDate"
+                             "TestRun_ModeHandling/on"
+                             "TestRun_MultipleUploads"
+                             "TestRun_Retries"
+                             "TestStart") ; no upload occurred on 2786
+                       "|"))
       #:import-path "golang.org/x/telemetry"))
     (propagated-inputs
      (list go-golang-org-x-mod
