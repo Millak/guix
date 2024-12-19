@@ -8256,23 +8256,23 @@ bindings to C and C++ libraries.")
 (define-public rust-bio-types-1
   (package
     (name "rust-bio-types")
-    (version "1.0.1")
+    (version "1.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "bio-types" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0jmad6knx576mmz9djnqz4kldzql9mqvzs95202hh67jhydp8icx"))))
+        (base32 "0zmdcvj44a088larkahcic5z61cwn2x80iym0w14albzid7zbp7l"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-clap" ,rust-clap-4)
-                       ("rust-derive-new" ,rust-derive-new-0.5)
+     `(#:cargo-inputs (("rust-clap" ,rust-clap-3)
+                       ("rust-derive-new" ,rust-derive-new-0.6)
                        ("rust-lazy-static" ,rust-lazy-static-1)
                        ("rust-petgraph" ,rust-petgraph-0.6)
                        ("rust-regex" ,rust-regex-1)
                        ("rust-serde" ,rust-serde-1)
-                       ("rust-strum-macros" ,rust-strum-macros-0.24)
+                       ("rust-strum-macros" ,rust-strum-macros-0.25)
                        ("rust-thiserror" ,rust-thiserror-1))))
     (home-page "https://rust-bio.github.io")
     (synopsis "Common biomedical types for use in rust-bio and rust-htslib")
