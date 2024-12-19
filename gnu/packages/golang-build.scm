@@ -377,7 +377,7 @@ primitives in Go.")
 (define-public go-github-com-yuin-goldmark-emoji
   (package
     (name "go-github-com-yuin-goldmark-emoji")
-    (version "1.0.3")
+    (version "1.0.4")
     (source
      (origin
        (method git-fetch)
@@ -386,7 +386,7 @@ primitives in Go.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1mx8rkxd3ksvgi41jvf365x9mf00sxiqq4wm75x4sasd2lgcbrl4"))))
+        (base32 "001dgjaa9crbl1yb803gyq1dbcnnfzvv205ycgd97qw9p4xjg21g"))))
     (build-system go-build-system)
     (arguments
      (list
