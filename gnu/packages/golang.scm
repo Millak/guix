@@ -1261,32 +1261,42 @@ networks where it would otherwise be blocked or heavily throttled.")
     (license license:expat)))
 
 (define-public go-github-com-hanwen-go-fuse-v2
-  (let ((commit "915cf5413cdef5370ae3f953f8eb4cd9ac176d5c")
-        (revision "0"))
     (package
       (name "go-github-com-hanwen-go-fuse-v2")
-      (version (git-version "2.2.0" revision commit))
+      (version "2.7.2")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
                       (url "https://github.com/hanwen/go-fuse")
-                      (commit commit)))
+                      (commit (string-append "v" version))))
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1ik0yvs9m40vxccpb0rpxc22fyqmcgyysc7w0yl9kn3jyr6qa1d5"))))
+                  "1fcf94chf9ffgjk0wcpnlz0kfb69m2fwzfn4k348kal75x178aar"))))
       (build-system go-build-system)
       (arguments
-       '(#:import-path "github.com/hanwen/go-fuse/v2"))
-      (native-inputs (list
-                      go-golang-org-x-sys
+       (list
+        #:import-path "github.com/hanwen/go-fuse/v2"
+        ;; Most of the tests require "/bin/fusermount" to be available which
+        ;; is missed during packaging, limit to some unit tests only.
+        #:test-subdirs #~(list "internal/..." "splice")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'remove-examples-and-benchmarks
+              (lambda* (#:key tests? import-path #:allow-other-keys)
+                (with-directory-excursion (string-append "src/" import-path)
+                  (delete-file-recursively "example")
+                  (delete-file-recursively "benchmark")))))))
+      (propagated-inputs (list
+                      go-github-com-kylelemons-godebug
+                      go-github-com-moby-sys-mountinfo
                       go-golang-org-x-sync
-                      go-github-com-kylelemons-godebug))
+                      go-golang-org-x-sys))
       (home-page "https://github.com/hanwen/go-fuse")
       (synopsis "Go bindings for FUSE filesystems")
       (description
        "This is a repository containing Go bindings for writing FUSE file systems.")
-      (license license:bsd-3))))
+      (license license:bsd-3)))
 
 (define-public go-github-com-jacobsa-reqtrace
   (let ((commit "245c9e0234cb2ad542483a336324e982f1a22934")
