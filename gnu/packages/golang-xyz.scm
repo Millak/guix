@@ -5522,6 +5522,41 @@ any concurrent code of its own.")
     (propagated-inputs
      (list go-golang-org-x-sync))))
 
+(define-public go-github-com-jacobsa-timeutil
+  (package
+    (name "go-github-com-jacobsa-timeutil")
+    (version "0.0.0-20170205232429-577e5acbbcf6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jacobsa/timeutil")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0vp6ngfyw3z3n7fzqpijqh26mnwnhapy5x4kzly1qb8gmv15a8xb"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/jacobsa/timeutil"))
+    (native-inputs
+     (list go-github-com-jacobsa-oglematchers
+           go-github-com-jacobsa-ogletest))
+    (home-page "https://github.com/jacobsa/timeutil")
+    (synopsis "Code supplementing Go's time package")
+    (description
+     "This package contains code that supplements the
+@url{http://godoc.org/time, time} package from the Go standard library.
+
+In particular:
+@itemize
+@item a Clock interface, with a fake implementation that can be used in tests
+@item implementations of
+@url{https://godoc.org/github.com/jacobsa/oglematchers#Matcher,
+oglematchers.Matcher} for time values
+@end itemize")
+    (license license:asl2.0)))
+
 (define-public go-github-com-jbenet-go-random
   (package
     (name "go-github-com-jbenet-go-random")
