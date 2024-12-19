@@ -51927,17 +51927,19 @@ exact behavior of code more explicit, and allows using turbofish syntax.")
 (define-public rust-num-enum-0.7
   (package
     (name "rust-num-enum")
-    (version "0.7.1")
+    (version "0.7.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "num_enum" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1h1pncbi7zviymadn521ycj7gdq84q1x3c4zqc015n76j7am2dv8"))))
+        (base32 "0yai0vafhy85mvhknzfqd7lm04hzaln7i5c599rhy8mj831kyqaf"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f      ; unresolved import `num_enum`
+     `(#:cargo-test-flags '("--"
+                            "--skip=no_std"
+                            "--skip=std")
        #:cargo-inputs (("rust-num-enum-derive" ,rust-num-enum-derive-0.7))
        #:cargo-development-inputs (("rust-anyhow" ,rust-anyhow-1)
                                    ("rust-paste" ,rust-paste-1)
