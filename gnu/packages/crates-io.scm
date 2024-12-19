@@ -7687,21 +7687,21 @@ and no more (caveat: black_box is still missing!).")
   (package
     (inherit rust-bigdecimal-0.4)
     (name "rust-bigdecimal")
-    (version "0.3.0")
+    (version "0.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "bigdecimal" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0i1px8hk4l71n307c7h7igrdy37pzpm7dcni269gwab438ak7bva"))))
+        (base32 "1ypfsldr1ng80n3ax1h699kqw3s5gzzqvr30zc4ybh5g1vf3sxx6"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-num-bigint" ,rust-num-bigint-0.4)
         ("rust-num-integer" ,rust-num-integer-0.1)
         ("rust-num-traits" ,rust-num-traits-0.2)
-        ("rust-serde" ,rust-serde-1))))))
+        ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-serde-json" ,rust-serde-json-1))))))
 
 (define-public rust-bigdecimal-0.2
   (package
