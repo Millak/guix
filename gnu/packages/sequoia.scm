@@ -859,7 +859,7 @@ rules are rather complex.  This crate implements the whole grammar." )
     (build-system cargo-build-system)
     (arguments
      `(#:features '("sequoia-openpgp/crypto-nettle")
-       #:cargo-test-flags '("--release" "--"
+       #:cargo-test-flags '("--"
                             ;; Not all files included.
                             "--skip=gpg_trust_roots")
        #:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
