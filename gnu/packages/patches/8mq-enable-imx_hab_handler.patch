@@ -1,0 +1,36 @@
+From: Herman Rimm <herman@rimm.ee>
+Date: Sun, 8 Dec 2024 01:13:59 +0100
+Subject: [PATCH] fix(imx8m): 8mq: enable imx_hab_handler
+
+This completes af799814e2639a03b3453744f06a73e77cb66e86.
+
+Signed-off-by: Herman Rimm <herman@rimm.ee>
+---
+To submit to review.trustedfirmware.org, sign in with a GitHub account.
+
+diff --git a/plat/imx/common/include/imx_sip_svc.h b/plat/imx/common/include/imx_sip_svc.h
+index 404a82959..1948bc2eb 100644
+--- a/plat/imx/common/include/imx_sip_svc.h
++++ b/plat/imx/common/include/imx_sip_svc.h
+@@ -88,7 +88,8 @@ int imx_src_handler(uint32_t smc_fid, u_register_t x1,
+ 		    u_register_t x2, u_register_t x3, void *handle);
+ #endif
+ 
+-#if defined(PLAT_imx8mm) || defined(PLAT_imx8mn) || defined(PLAT_imx8mp)
++#if defined(PLAT_imx8mm) || defined(PLAT_imx8mn) || defined(PLAT_imx8mp) || \
++	defined(PLAT_imx8mq)
+ int imx_hab_handler(uint32_t smc_fid, u_register_t x1,
+ 		    u_register_t x2, u_register_t x3, u_register_t x4);
+ #endif
+diff --git a/plat/imx/imx8m/imx8mq/platform.mk b/plat/imx/imx8m/imx8mq/platform.mk
+index 73179dd0c..b1b954f1d 100644
+--- a/plat/imx/imx8m/imx8mq/platform.mk
++++ b/plat/imx/imx8m/imx8mq/platform.mk
+@@ -30,6 +30,7 @@ BL31_SOURCES		+=	plat/imx/common/imx8_helpers.S			\
+ 				plat/imx/imx8m/imx8mq/imx8mq_psci.c		\
+ 				plat/imx/imx8m/gpc_common.c			\
+ 				plat/imx/imx8m/imx_aipstz.c			\
++				plat/imx/imx8m/imx_hab.c			\
+ 				plat/imx/imx8m/imx8m_caam.c			\
+ 				plat/imx/imx8m/imx8m_ccm.c			\
+ 				plat/imx/imx8m/imx8m_psci_common.c		\

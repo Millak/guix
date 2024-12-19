@@ -1,0 +1,88 @@
+From: Jacky Bai <ping.bai@nxp.com>
+Date: Tue, 7 Jan 2020 15:48:36 +0800
+Subject: [PATCH] plat: imx8mq: move the stack & xlat table into ocram_s
+
+Move the stack & xlat table into ocram_s due to the
+ocram is not enough.
+
+Signed-off-by: Jacky Bai <ping.bai@nxp.com>
+Change-Id: I40a8e6c91f707598a38e420ff9f4be0c0a5dbf6c
+---
+Commit ae90cc5773abf5656e0e49f2ce746aa54f712b7b of:
+https://github.com/nxp-imx/imx-atf.git
+
+diff --git a/bl31/bl31.ld.S b/bl31/bl31.ld.S
+index 867dedb99..8be52bc7c 100644
+--- a/bl31/bl31.ld.S
++++ b/bl31/bl31.ld.S
+@@ -25,6 +25,10 @@ MEMORY {
+ #else /* SEPARATE_RWDATA_REGION */
+ #define RAM_RW RAM
+ #endif /* SEPARATE_RWDATA_REGION */
++
++#if XLAT_TABLE_IN_OCRAM_S
++    RAM_S (rwx): ORIGIN = 0x180000, LENGTH = 0x8000
++#endif
+ }
+
+ #ifdef PLAT_EXTRA_LD_SCRIPT
+@@ -198,9 +202,13 @@ SECTIONS {
+     __NOBITS_START__ = .;
+ #endif /* SEPARATE_NOBITS_REGION */
+
++#if !STACK_IN_OCRAM_S
+     STACK_SECTION >NOBITS
++#endif
+     BSS_SECTION >NOBITS
++#if !XLAT_TABLE_IN_OCRAM_S
+     XLAT_TABLE_SECTION >NOBITS
++#endif
+
+ #if USE_COHERENT_MEM
+     /*
+@@ -253,4 +261,15 @@ SECTIONS {
+     /DISCARD/ : {
+         *(.dynsym .dynstr .hash .gnu.hash)
+     }
++
++#if XLAT_TABLE_IN_OCRAM_S
++    . = 0x180000;
++    XLAT_TABLE_SECTION >RAM_S
++
++#if STACK_IN_OCRAM_S
++    STACK_SECTION >RAM_S
++#endif
++
++ASSERT(. <= OCRAM_S_LIMIT, "OCRAM_S limit has been exceeded.")
++#endif
+ }
+diff --git a/plat/imx/imx8m/imx8mq/imx8mq_bl31_setup.c b/plat/imx/imx8m/imx8mq/imx8mq_bl31_setup.c
+index 70c2def7d..ddff0925c 100644
+--- a/plat/imx/imx8m/imx8mq/imx8mq_bl31_setup.c
++++ b/plat/imx/imx8m/imx8mq/imx8mq_bl31_setup.c
+@@ -48,6 +48,7 @@ static uint8_t mmio_read_8_ldrb(uintptr_t address)
+ static const mmap_region_t imx_mmap[] = {
+ 	MAP_REGION_FLAT(GPV_BASE, GPV_SIZE, MT_DEVICE | MT_RW), /* GPV map */
+ 	MAP_REGION_FLAT(IMX_ROM_BASE, IMX_ROM_SIZE, MT_MEMORY | MT_RO), /* ROM map */
++	MAP_REGION_FLAT(OCRAM_S_BASE, OCRAM_S_SIZE, MT_MEMORY | MT_RW), /* ROM map */
+ 	MAP_REGION_FLAT(IMX_AIPS_BASE, IMX_AIPS_SIZE, MT_DEVICE | MT_RW), /* AIPS map */
+ 	MAP_REGION_FLAT(IMX_GIC_BASE, IMX_GIC_SIZE, MT_DEVICE | MT_RW), /* GIC map */
+ 	MAP_REGION_FLAT(IMX_DDRPHY_BASE, IMX_DDR_IPS_SIZE, MT_DEVICE | MT_RW), /* DDRMIX map */
+diff --git a/plat/imx/imx8m/imx8mq/platform.mk b/plat/imx/imx8m/imx8mq/platform.mk
+index 73179dd0c..20a73d691 100644
+--- a/plat/imx/imx8m/imx8mq/platform.mk
++++ b/plat/imx/imx8m/imx8mq/platform.mk
+@@ -45,7 +45,12 @@ BL31_SOURCES		+=	plat/imx/common/imx8_helpers.S			\
+ 				${XLAT_TABLES_LIB_SRCS}				\
+ 				${IMX_GIC_SOURCES}
+
+-ENABLE_PIE		:=	1
++XLAT_TABLE_IN_OCRAM_S	:=	1
++STACK_IN_OCRAM_S       :=      1
++
++$(eval $(call add_define,XLAT_TABLE_IN_OCRAM_S))
++$(eval $(call add_define,STACK_IN_OCRAM_S))
++
+ USE_COHERENT_MEM	:=	1
+ RESET_TO_BL31		:=	1
+ A53_DISABLE_NON_TEMPORAL_HINT := 0

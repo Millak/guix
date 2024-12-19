@@ -1099,8 +1099,9 @@ Virtual Machines.  OVMF contains a sample UEFI firmware for QEMU and KVM.")
 (define-public ovmf
   (deprecated-package "ovmf" ovmf-x86-64))
 
-(define* (make-arm-trusted-firmware platform
-                                    #:key (triplet "aarch64-linux-gnu"))
+(define* (make-arm-trusted-firmware platform #:key
+                                    (triplet "aarch64-linux-gnu")
+                                    (make-flags '("DEBUG=1")))
   (define (native-build?)
     "Return #t if the host and target platforms differ."
     (or (not triplet)
@@ -1119,6 +1120,8 @@ Virtual Machines.  OVMF contains a sample UEFI firmware for QEMU and KVM.")
        (file-name (git-file-name "arm-trusted-firmware" version))
        (sha256
         (base32 "18rzhygvq0afcylirq9yis3kaa1nli14k2jrm64ih85gz4nhl99w"))
+       (patches (search-patches "8mq-enable-imx_hab_handler.patch"
+                                "8mq-move-stack-to-ocram_s.patch"))
        (modules '((guix build utils)))
        ;; Remove binary blobs: they don't reference a source or license.
        (snippet #~(for-each delete-file (find-files "." "\\.bin$")))))
@@ -1147,7 +1150,7 @@ Virtual Machines.  OVMF contains a sample UEFI firmware for QEMU and KVM.")
               #$@(if (not (native-build?))
                      (list (string-append "CROSS_COMPILE=" triplet "-"))
                      '("CC=gcc"))
-              "DEBUG=1")
+              #$@make-flags)
       #:tests? #f))                   ;no test suite
     (native-inputs (list python))
     (home-page "https://www.trustedfirmware.org/")
@@ -1185,30 +1188,8 @@ interface standards, such as:
                                 (cross-binutils "arm-none-eabi")))))))
 
 (define-public arm-trusted-firmware-imx8mq
-  (let ((base (make-arm-trusted-firmware "imx8mq")))
-    (package
-      (inherit base)
-      ;; Newer versions do not build and are essentially not supported
-      ;; upstream.
-      ;; XXX: explore using NXP maintained branch
-      ;; https://github.com/nxp-imx/imx-atf
-      (version "2.8")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               ;; There are only GitHub generated release snapshots.
-               (url "https://git.trustedfirmware.org/TF-A/trusted-firmware-a.git/")
-               (commit (string-append "v" version))))
-         (file-name (git-file-name "arm-trusted-firmware" version))
-         (sha256
-          (base32
-           "0grq3fgxi9xhcljnhwlxjvdghyz15gaq50raw41xy4lm8rkmnzp3"))))
-      (arguments
-       (substitute-keyword-arguments (package-arguments base)
-         ((#:make-flags flags ''())
-          ;; Adding debug symbols causes the size to exceed limits.
-          #~(delete "DEBUG=1" #$flags)))))))
+  ;; Remove debug symbols because of limited OCRAM.
+  (make-arm-trusted-firmware "imx8mq" #:make-flags '()))
 
 (define make-crust-firmware
   (mlambda (platform)
