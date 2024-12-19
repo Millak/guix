@@ -1220,14 +1220,14 @@ types.")
 (define-public rust-aligned-0.4
   (package
     (name "rust-aligned")
-    (version "0.4.1")
+    (version "0.4.2")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "aligned" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0md67hsr0yw5qydr9hjlfz4wfxbbl39y7abkhpycf9m682a1p8l0"))))
+                "08srg0rbz21s1kk97b1canffly7icr31sp7l1nqk2i1ym05lqzip"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-as-slice" ,rust-as-slice-0.2))))
