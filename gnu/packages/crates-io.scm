@@ -5182,19 +5182,19 @@ and Rust's modern asynchronous IO types.")
 (define-public rust-async-dup-1
   (package
     (name "rust-async-dup")
-    (version "1.2.2")
+    (version "1.2.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "async-dup" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0z3grxarv9wpck6jm31qayib9barf12a47gvii9934n0ilms29vl"))))
+        (base32 "0484raf2r5lj97b8skkric9ysivrp3bns0gcg67h7x9sasmqca3w"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-futures-io" ,rust-futures-io-0.3)
-        ("rust-simple-mutex" ,rust-simple-mutex-1))
+       (("rust-async-lock" ,rust-async-lock-3)
+        ("rust-futures-io" ,rust-futures-io-0.3))
        #:cargo-development-inputs
        (("rust-futures" ,rust-futures-0.3)
         ("rust-smol" ,rust-smol-0.1))))
