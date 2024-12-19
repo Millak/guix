@@ -97934,26 +97934,27 @@ extended attributes.")
 (define-public rust-xcb-1
   (package
     (name "rust-xcb")
-    (version "1.2.0")
+    (version "1.5.0")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "xcb" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1ifnchjzf9xlwy6pfa90mwa6j43bx2bi5xl40m5gykymwbbv9bhg"))))
+                "1gjj1481pf08b5fhpdncaphyv0k5ka11n1f8ma6cv4hspc9g5qpi"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-build-flags '("--all-features")
        #:cargo-test-flags '("--all-features")
+       #:cargo-inputs
+       (("rust-as-raw-xcb-connection" ,rust-as-raw-xcb-connection-1)
+        ("rust-bitflags" ,rust-bitflags-1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-quick-xml" ,rust-quick-xml-0.30)
+        ("rust-x11" ,rust-x11-2))
        #:cargo-development-inputs
        (("rust-gl" ,rust-gl-0.14)
         ("rust-png" ,rust-png-0.17)
-        ("rust-x11" ,rust-x11-2))
-       #:cargo-inputs
-       (("rust-bitflags" ,rust-bitflags-1)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-quick-xml" ,rust-quick-xml-0.22)
         ("rust-x11" ,rust-x11-2))))
     (inputs
      (list mesa))                      ;required by rust-x11-2
