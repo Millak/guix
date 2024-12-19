@@ -95149,14 +95149,14 @@ integer encoding implementation in Rust.")
 (define-public rust-vec1-1
   (package
     (name "rust-vec1")
-    (version "1.12.0")
+    (version "1.12.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "vec1" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0dk9qlly3n6b5g71p9rxnnfyx7v1d31364x8wbabz2f1zz7hvdpz"))))
+        (base32 "08k370srixpnqgvyxqjqvkzig4j9c5kapqzvzsqfys8ghib8pdpa"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-serde" ,rust-serde-1)
