@@ -1281,7 +1281,7 @@ options to use calloc or a mutable global variable for pre-zeroed memory.")
 (define-public rust-alloc-stdlib-0.2
   (package
     (name "rust-alloc-stdlib")
-    (version "0.2.1")
+    (version "0.2.2")
     (source
      (origin
        (method url-fetch)
@@ -1289,7 +1289,7 @@ options to use calloc or a mutable global variable for pre-zeroed memory.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1hj3r1x88aajnvigdck0diygj2isc90wa271kkj1swgiq3nxfzk9"))))
+         "1kkfbld20ab4165p29v172h8g0wvq8i06z8vnng14whw0isq5ywl"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
