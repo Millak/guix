@@ -4483,7 +4483,7 @@ and evaluation and substitution.")
 (define-public julia-mutablearithmetics
   (package
     (name "julia-mutablearithmetics")
-    (version "1.4.6")
+    (version "1.6.0")
     (source
       (origin
         (method git-fetch)
@@ -4492,7 +4492,7 @@ and evaluation and substitution.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0wh4pvvzzs0l1q5h01004kq9k45n411330pw84gj8akcn7njn2z4"))))
+         (base32 "1mwa20f09iw9kaacj34fqa1z4gyg7afnxdv6w0rw35cck33i485k"))))
     (build-system julia-build-system)
     (arguments
      (list
