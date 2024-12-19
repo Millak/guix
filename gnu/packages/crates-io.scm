@@ -60643,16 +60643,14 @@ in your code.")
 (define-public rust-proc-macro-hack-impl-0.4
   (package
     (name "rust-proc-macro-hack-impl")
-    (version "0.4.2")
+    (version "0.4.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "proc-macro-hack-impl" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "0hk8g6s0zsi1ps0w48la2s8q5iqq42g8jfrgq3l2v04l2p5pvi1q"))))
+        (base32 "09q0jvdm5g0balskv9q446l9h7k3bk0fzmnxqzbz8d8nmvq5prbv"))))
     (build-system cargo-build-system)
     (home-page "https://github.com/dtolnay/proc-macro-hack")
     (synopsis "Procedural functionlike!() macros using only Macros 1.1")
