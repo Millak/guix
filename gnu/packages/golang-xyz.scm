@@ -6901,6 +6901,39 @@ colored strings.")
     (description "Go library for decoding generic map values")
     (license license:expat)))
 
+(define-public go-github-com-moby-sys-mountinfo
+  (package
+    (name "go-github-com-moby-sys-mountinfo")
+    (version "0.7.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/moby/sys")
+             (commit (go-version->git-ref version
+                                          #:subdir "mountinfo"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1i1phx1kk9qa4jf1i1nl23d3f6k9fn2w46274cl76cqw9hjqg868"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/moby/sys/mountinfo"
+      #:unpack-path "github.com/moby/sys"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       (list "TestMountedBy/not_mounted_socket"
+                             "TestMountedBy/socket_bind-mounted_to_itself")
+                       "|"))))
+    (propagated-inputs (list go-golang-org-x-sys))
+    (home-page "https://github.com/moby/sys")
+    (synopsis "Retrieve information about OS mounts")
+    (description
+     "Package mountinfo provides a set of functions to retrieve information
+about OS mounts as seen by the current process is available from
+@code{/proc/self/mountinfo}.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-moby-sys-userns
   (package
     (name "go-github-com-moby-sys-userns")
