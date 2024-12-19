@@ -7659,14 +7659,14 @@ and no more (caveat: black_box is still missing!).")
 (define-public rust-bigdecimal-0.4
   (package
     (name "rust-bigdecimal")
-    (version "0.4.2")
+    (version "0.4.7")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "bigdecimal" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1jcbzgna6292vgq0slw5iah929wl0xbps22zr63bp99y8az1jrn0"))))
+        (base32 "0b284z1lxc8r5090lr1xi2kny3jncqrlv02wk03mmin506pz6cbz"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-autocfg" ,rust-autocfg-1)
@@ -7676,7 +7676,7 @@ and no more (caveat: black_box is still missing!).")
                        ("rust-num-traits" ,rust-num-traits-0.2)
                        ("rust-serde" ,rust-serde-1))
        #:cargo-development-inputs (("rust-paste" ,rust-paste-1)
-                                   ("rust-serde-json" ,rust-serde-json-0.9)
+                                   ("rust-serde-test" ,rust-serde-test-0.8)
                                    ("rust-siphasher" ,rust-siphasher-0.3))))
     (home-page "https://github.com/akubera/bigdecimal-rs")
     (synopsis "Arbitrary precision decimal numbers")
