@@ -10214,14 +10214,14 @@ UTF-8.")
 (define-public rust-buffered-reader-1
   (package
     (name "rust-buffered-reader")
-    (version "1.3.1")
+    (version "1.3.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "buffered-reader" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1j0ffv5a50f1kk41808x2rz4lv8yfl6wz0wcg907jidnzmiqf2fd"))))
+        (base32 "16rbk2671wbslz4rxcxcr0cglrd65fnn6b8p4s2qwyjqamg1rggs"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
