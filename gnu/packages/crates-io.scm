@@ -99261,22 +99261,19 @@ implementation that works everywhere, even WASM!")
 (define-public rust-zeroize-derive-1
   (package
     (name "rust-zeroize-derive")
-    (version "1.3.3")
+    (version "1.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "zeroize_derive" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0v6kkgkw8sxddx2608in3xx8ijbbyj5xb5b6741j1sjh7v5hggs4"))))
+        (base32 "0sczjlqjdmrp3wn62g7mw6p438c9j4jgp2f9zamd56991mdycdnf"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1)
-        ("rust-synstructure" ,rust-synstructure-0.12))))
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))
     (home-page "https://github.com/iqlusioninc/crates/")
     (synopsis "Custom derive support for zeroize")
     (description "This crate provides custom derive support for Zeroize.")
