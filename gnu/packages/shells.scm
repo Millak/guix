@@ -1842,7 +1842,7 @@ framework.")
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
-       '("--release" "--"
+       '("--"
          ;; Not all files included.
          "--skip=config_add_unsupported_key"
          "--skip=config_add_unsupported_type"
