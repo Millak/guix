@@ -98182,16 +98182,15 @@ including a line breaking iterator.")
 (define-public rust-xmlparser-0.13
   (package
     (name "rust-xmlparser")
-    (version "0.13.3")
+    (version "0.13.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "xmlparser" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1n73ymdxpdq30fgz698095zvh8k5r264rl6pcxnyyrr19nra4jqi"))))
+        (base32 "1r796g21c70p983ax0j6rmhzmalg4rhx61mvd4farxdhfyvy1zk6"))))
     (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
     (home-page "https://github.com/RazrFalcon/xmlparser")
     (synopsis "Pull-based, zero-allocation XML parser")
     (description
