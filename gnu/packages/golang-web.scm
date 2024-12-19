@@ -3086,8 +3086,7 @@ authenticated identities and their attributes.")
            go-github-com-jcmturner-dnsutils-v2
            go-github-com-jcmturner-gofork
            go-github-com-jcmturner-goidentity-v6
-           go-github-com-jcmturner-rpc-v2-mstypes
-           go-github-com-jcmturner-rpc-v2-ndr
+           go-github-com-jcmturner-rpc-v2
            go-golang-org-x-crypto
            go-golang-org-x-net))
     (home-page "https://github.com/jcmturner/gokrb5")
@@ -3113,27 +3112,25 @@ Microsoft AD PAC authorization data.")
 (define-public go-github-com-jcmturner-rpc
   (package
     (name "go-github-com-jcmturner-rpc")
-    (version "2.0.3")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/jcmturner/rpc")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1nm4j2nwcszghldw39rwdx2hr56i1lybfpv33y4gd67w6qcqbpsi"))))
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jcmturner/rpc")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0hkmvf8qdcifnzym8kv1xhq7lq0wpr0i6gzff159lh9xn0wfg175"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/jcmturner/rpc"
-       ;; Source-only package.
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         ;; Source-only package.
-         (delete 'build))))
-    (propagated-inputs
-     (list go-golang-org-x-net go-github-com-stretchr-testify))
+     (list
+      #:import-path "gopkg.in/jcmturner/rpc.v1"
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'build)))) ; no go files in project's root
+    (native-inputs
+     (list go-github-com-stretchr-testify))
     (home-page "https://github.com/jcmturner/rpc")
     (synopsis "Remote Procedure Call libraries")
     (description
@@ -3143,21 +3140,29 @@ Procedure libraries, presented in
 Call}.")
     (license license:asl2.0)))
 
-(define-public go-github-com-jcmturner-rpc-v2-ndr
+(define-public go-github-com-jcmturner-rpc-v2
   (package
     (inherit go-github-com-jcmturner-rpc)
-    (name "go-github-com-jcmturner-rpc-v2-ndr")
+    (name "go-github-com-jcmturner-rpc-v2")
+    (version "2.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jcmturner/rpc")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1nm4j2nwcszghldw39rwdx2hr56i1lybfpv33y4gd67w6qcqbpsi"))))
     (arguments
-     `(#:import-path "github.com/jcmturner/rpc/v2/ndr"
-       #:unpack-path "github.com/jcmturner/rpc"))))
-
-(define-public go-github-com-jcmturner-rpc-v2-mstypes
-  (package
-    (inherit go-github-com-jcmturner-rpc)
-    (name "go-github-com-jcmturner-rpc-v2-mstypes")
-    (arguments
-     `(#:import-path "github.com/jcmturner/rpc/v2/mstypes"
-       #:unpack-path "github.com/jcmturner/rpc"))))
+     (list
+      #:import-path "github.com/jcmturner/rpc/v2"
+      #:unpack-path "github.com/jcmturner/rpc"
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'build)))) ; no go files in project's root
+    (propagated-inputs
+     (list go-golang-org-x-net))))
 
 (define-public go-github-com-jhillyerd-enmime
   (package
@@ -6818,6 +6823,27 @@ go.opentelemetry.io/otel/trace.")
     (synopsis "Implementation of WireGuard in Go")
     (description "This package is a Go Implementation of WireGuard.")
     (license license:expat)))
+
+;; This to satisfy alternative import path.
+(define-public go-gopkg-in-jcmturner-rpc-v1
+  (package
+    (inherit go-github-com-jcmturner-rpc)
+    (name "go-gopkg-in-jcmturner-rpc-v1")
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-jcmturner-rpc)
+       ((#:import-path _) "gopkg.in/jcmturner/rpc.v1")))))
+
+;; This to satisfy alternative import path.
+(define-public go-gopkg-in-jcmturner-rpc-v2
+  (package
+    (inherit go-github-com-jcmturner-rpc-v2)
+    (name "go-gopkg-in-jcmturner-rpc-v2")
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-jcmturner-rpc-v2)
+       ((#:tests? _ #t) #f)
+       ((#:import-path _) "gopkg.in/jcmturner/rpc.v2")))))
 
 ;; XXX: This repository has been archived by the owner on Feb 27, 2023. It is
 ;; now read-only and it is DEPRECATED.
