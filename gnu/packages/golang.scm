@@ -1261,16 +1261,14 @@ networks where it would otherwise be blocked or heavily throttled.")
     (license license:expat)))
 
 (define-public go-github-com-jacobsa-reqtrace
-  (let ((commit "245c9e0234cb2ad542483a336324e982f1a22934")
-        (revision "0"))
     (package
       (name "go-github-com-jacobsa-reqtrace")
-      (version (git-version "0.0.0" revision commit))
+      (version "0.0.0-20150505043853-245c9e0234cb")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
                       (url "https://github.com/jacobsa/reqtrace")
-                      (commit commit)))
+                      (commit (go-version->git-ref version))))
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
@@ -1278,13 +1276,13 @@ networks where it would otherwise be blocked or heavily throttled.")
       (build-system go-build-system)
       (arguments
        '(#:import-path "github.com/jacobsa/reqtrace"))
-      (inputs (list
-               go-golang-org-x-net))
+      (propagated-inputs
+       (list go-golang-org-x-net))
       (home-page "https://github.com/jacobsa/reqtrace")
       (synopsis "Simple request tracing framework")
       (description
        "Package reqtrace contains a very simple request tracing framework.")
-      (license license:asl2.0))))
+      (license license:asl2.0)))
 
 (define-public go-github-com-kataras-golog
   (package
