@@ -761,38 +761,37 @@ Test for C++ and Google JS Test.")
       (license license:asl2.0))))
 
 (define-public go-github-com-jacobsa-ogletest
-    (package
-      (name "go-github-com-jacobsa-ogletest")
-      (version "0.0.0-20170503003838-80d50a735a11")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/jacobsa/ogletest")
-               (commit (go-version->git-ref version))))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "1lbwbxzr75g65q07ry5k4kglxqs3ym7xkvqznzm55rm3qk76v83r"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path "github.com/jacobsa/ogletest"
-         ;; These tests should be made working
-         #:tests? #f))
-      (native-inputs
-       (list go-github-com-jacobsa-oglematchers
-             go-github-com-jacobsa-oglemock
-             go-github-com-jacobsa-reqtrace
-             go-golang-org-x-net))
-      (home-page "https://github.com/jacobsa/ogletest")
-      (synopsis "Expressive unit tests")
-      (description
-       "Package ogletest provides a framework for writing expressive unit tests.  It
-integrates with the builtin testing package, so it works with the gotest
+  (package
+    (name "go-github-com-jacobsa-ogletest")
+    (version "0.0.0-20170503003838-80d50a735a11")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jacobsa/ogletest")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1lbwbxzr75g65q07ry5k4kglxqs3ym7xkvqznzm55rm3qk76v83r"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/jacobsa/ogletest"
+       ;; These tests should be made working
+       #:tests? #f))
+    (native-inputs
+     (list go-github-com-jacobsa-oglematchers
+           go-github-com-jacobsa-oglemock
+           go-github-com-jacobsa-reqtrace
+           go-golang-org-x-net))
+    (home-page "https://github.com/jacobsa/ogletest")
+    (synopsis "Expressive unit tests")
+    (description
+     "Package ogletest provides a framework for writing expressive unit tests.
+It integrates with the builtin testing package, so it works with the gotest
 command.  Unlike the testing package which offers only basic capabilities for
-signalling failures, it offers ways to express expectations and get nice failure
-messages automatically.")
-      (license license:asl2.0)))
+signalling failures, it offers ways to express expectations and get nice
+failure messages automatically.")
+    (license license:asl2.0)))
 
 (define-public go-github-com-jacobsa-reqtrace
   (package
