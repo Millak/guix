@@ -43599,10 +43599,19 @@ list-generations}).  If that generation already exists, it will be
 overwritten.  This behavior mirrors that of @command{guix package}
 (@pxref{Invoking guix package}).
 
-It also adds a bootloader menu entry for the new OS configuration,
+It adds a bootloader menu entry for the new OS configuration,
 ---unless @option{--no-bootloader} is passed.  For GRUB, it moves
 entries for older configurations to a submenu, allowing you to choose
 an older system generation at boot time should you need it.
+
+@cindex kexec, for fast reboots
+@cindex rebooting @i{via} Linux kexec
+On Linux, @command{guix system reconfigure} also loads the new system
+for fast reboot @i{via} kexec: running @command{reboot --kexec} will
+boot the new system by directly executing its kernel, thus bypassing the
+BIOS initialization phase and bootloader (@pxref{Invoking reboot,,,
+shepherd, The GNU Shepherd Manual}).  You can avoid this behavior by
+passing the @option{--no-kexec} option.
 
 @cindex provenance tracking, of the operating system
 Upon completion, the new system is deployed under

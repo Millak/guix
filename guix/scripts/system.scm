@@ -798,6 +798,7 @@ and TARGET arguments."
                          save-provenance?
                          skip-safety-checks?
                          install-bootloader?
+                         load-for-kexec?
                          dry-run? derivations-only?
                          use-substitutes? target
                          full-boot?
@@ -900,7 +901,13 @@ static checks."
 To complete the upgrade, run 'herd restart SERVICE' to stop,
 upgrade, and restart each service that was not automatically restarted.\n")))
                 (return (format #t (G_ "\
-Run 'herd status' to view the list of services on your system.\n"))))))
+Run 'herd status' to view the list of services on your system.\n"))))
+               (mwhen load-for-kexec?
+                 (mlet %store-monad ((kexec? (load-system-for-kexec local-eval
+                                                                    os)))
+                   (mwhen kexec?
+                     (return (info (G_ "system loaded for fast reboot \
+with 'reboot --kexec'~%"))))))))
             ((init)
              (newline)
              (format #t (G_ "initializing operating system under '~a'...~%")
@@ -1026,6 +1033,8 @@ Some ACTIONS support additional ARGS.\n"))
   (display (G_ "
       --no-bootloader    for 'init', do not install a bootloader"))
   (display (G_ "
+      --no-kexec         for 'reconfigure', do not load system for kexec reboot"))
+  (display (G_ "
       --volatile         for 'image', make the root file system volatile"))
   (display (G_ "
       --persistent       for 'vm', make the root file system persistent"))
@@ -1127,6 +1136,9 @@ Some ACTIONS support additional ARGS.\n"))
          (option '("no-bootloader" "no-grub") #f #f
                  (lambda (opt name arg result)
                    (alist-cons 'install-bootloader? #f result)))
+         (option '("no-kexec") #f #f
+                 (lambda (opt name arg result)
+                   (alist-cons 'load-for-kexec? #f result)))
          (option '("volatile") #f #f
                  (lambda (opt name arg result)
                    (alist-cons 'volatile-image-root? #t result)))
@@ -1198,6 +1210,7 @@ Some ACTIONS support additional ARGS.\n"))
     (image-type . mbr-hybrid-raw)
     (image-size . guess)
     (install-bootloader? . #t)
+    (load-for-kexec? . #t)
     (label . #f)
     (volatile-image-root? . #f)
     (volatile-vm-root? . #t)
@@ -1275,6 +1288,7 @@ resulting from command-line parsing."
                            (leave (G_ "no configuration specified~%")))))))
          (dry?        (assoc-ref opts 'dry-run?))
          (bootloader? (assoc-ref opts 'install-bootloader?))
+         (kexec?      (assoc-ref opts 'load-for-kexec?))
          (label       (assoc-ref opts 'label))
          (image-type  (lookup-image-type-by-name
                        (assoc-ref opts 'image-type)))
@@ -1360,6 +1374,7 @@ resulting from command-line parsing."
                                                         (_ #f))
                                                       opts)
                                #:install-bootloader? bootloader?
+                               #:load-for-kexec? kexec?
                                #:target target-file
                                #:gc-root (assoc-ref opts 'gc-root)))))
           #:target target

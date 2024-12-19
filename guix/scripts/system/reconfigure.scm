@@ -31,6 +31,7 @@
   #:use-module (gnu services herd)
   #:use-module (gnu services shepherd)
   #:use-module (gnu system)
+  #:autoload   (gnu system file-systems) (file-system-device)
   #:use-module (guix gexp)
   #:use-module (guix modules)
   #:use-module (guix monads)
@@ -51,6 +52,9 @@
 
             upgrade-services-program
             upgrade-shepherd-services
+
+            kexec-loading-program
+            load-system-for-kexec
 
             install-bootloader-program
             install-bootloader
@@ -176,6 +180,27 @@ canonical names (symbols)."
         (for-each unload-service '#$to-unload)
         (for-each start-service '#$to-start)))))
 
+(define (kexec-loading-program os)
+  "Return a program that calls 'kexec_file_load' to allow rebooting into OS
+via 'kexec'."
+  (let ((root-device (file-system-device
+                      (operating-system-root-file-system os))))
+    (program-file
+     "kexec-load-system.scm"
+     (with-imported-modules '((guix build syscalls))
+       #~(begin
+           (use-modules (guix build syscalls))
+
+           (let ((kernel (open-fdes #$(operating-system-kernel-file os)
+                                    O_RDONLY))
+                 (initrd (open-fdes #$(operating-system-initrd-file os)
+                                    O_RDONLY)))
+             (kexec-load-file kernel initrd
+                              (string-join
+                               (list #$@(operating-system-kernel-arguments
+                                         os root-device)))
+                              KEXEC_FILE_DEBUG)))))))
+
 (define* (upgrade-shepherd-services eval os)
   "Using EVAL, a monadic procedure taking a single G-Expression as an argument,
 upgrade the Shepherd (PID 1) by unloading obsolete services and loading new
@@ -204,6 +229,12 @@ services as defined by OS."
                                                             to-start
                                                             to-unload
                                                             to-restart)))))))
+
+(define (load-system-for-kexec eval os)
+  "Load OS so that it can be rebooted into via kexec, if supported.  Return
+true on success."
+  (eval #~(and (string-contains %host-type "-linux")
+               (primitive-load #$(kexec-loading-program os)))))
 
 
 ;;;

@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019 Jakob L. Kreuze <zerodaysfordays@sdf.org>
+;;; Copyright © 2024 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -18,9 +19,12 @@
 
 (define-module (gnu tests reconfigure)
   #:use-module (gnu bootloader)
+  #:use-module (gnu services)
+  #:use-module (gnu services base)
   #:use-module (gnu services shepherd)
   #:use-module (gnu system)
   #:use-module (gnu system accounts)
+  #:use-module (gnu system file-systems)
   #:use-module (gnu system shadow)
   #:use-module (gnu system vm)
   #:use-module (gnu tests)
@@ -31,6 +35,7 @@
   #:use-module (guix store)
   #:export (%test-switch-to-system
             %test-upgrade-services
+            %test-upgrade-kexec
             %test-install-bootloader))
 
 ;;; Commentary:
@@ -178,6 +183,73 @@ Shepherd (PID 1) by unloading obsolete services and loading new services."
           (disable (upgrade-services-program '() '() '(dummy) '())))
      (test enable disable))))
 
+(define (run-kexec-test)
+  "Run a test aiming to reboot via Linux kexec into a new system."
+  (define os
+    (marionette-operating-system
+     (operating-system
+       (inherit %simple-os)
+       (services (modify-services %base-services
+                   (syslog-service-type
+                    config => (syslog-configuration
+                               (inherit config)
+                               (config-file
+                                (plain-file
+                                 "syslog.conf"
+                                 "*.* /dev/console\n")))))))
+     #:imported-modules '((gnu services herd)
+                          (guix combinators))))
+
+  (define new-os
+    (marionette-operating-system
+     (virtualized-operating-system               ;run as with "guix system vm"
+      (operating-system
+        (inherit %simple-os)
+        (host-name "the-new-os")
+        (kernel-arguments '("console=ttyS0")))    ;be verbose
+      #:volatile? #t)                             ;mount root read-only
+     #:imported-modules '((gnu services herd)
+                          (guix combinators))))
+
+  (define vm (virtual-machine os))
+
+  (define test
+    (with-imported-modules '((gnu build marionette))
+      #~(begin
+          (use-modules (gnu build marionette)
+                       (srfi srfi-64))
+
+          (define marionette
+            (make-marionette (list #$vm)))
+
+          (test-runner-current (system-test-runner #$output))
+          (test-begin "kexec")
+
+          (test-equal "host name"
+            #$(operating-system-host-name os)
+            (marionette-eval '(gethostname) marionette))
+
+          (test-assert "kexec-loading-program"
+            (marionette-eval
+             '(primitive-load #$(kexec-loading-program new-os))
+             marionette))
+
+          (test-assert "reboot/kexec"
+            (marionette-eval
+             '(begin
+                (use-modules (gnu services herd))
+                (with-shepherd-action 'root ('kexec) result
+                  (pk 'reboot-kexec result)))
+             marionette))
+
+          (test-equal "host name of new OS"
+            #$(operating-system-host-name new-os)
+            (marionette-eval '(gethostname) marionette))
+
+          (test-end))))
+
+  (gexp->derivation "kexec-test" test))
+
 (define* (run-install-bootloader-test)
   "Run a test of an OS running INSTALL-BOOTLOADER-PROGRAM, which installs a
 bootloader's configuration file."
@@ -267,6 +339,12 @@ bootloader's configuration file."
    (description "Upgrade the Shepherd by unloading obsolete services and
 loading new services.")
    (value (run-upgrade-services-test))))
+
+(define %test-upgrade-kexec
+  (system-test
+   (name "upgrade-kexec")
+   (description "Load a system and reboot into it via Linux kexec.")
+   (value (run-kexec-test))))
 
 (define %test-install-bootloader
   (system-test

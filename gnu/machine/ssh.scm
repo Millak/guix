@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019 Jakob L. Kreuze <zerodaysfordays@sdf.org>
-;;; Copyright © 2020-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2020-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2024 Ricardo <rekado@elephly.net>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -552,6 +552,13 @@ an error occurred while upgrading services on '~a':~%~{~s ~}~%")
                                                       (inferior-exception-arguments
                                                        c)))
                                            os)
+                (load-system-for-kexec (eval/error-handling c
+                                         (warning (G_ "\
+failed to load system of '~a' for kexec reboot:~%~{~s~^ ~}~%")
+                                                  host
+                                                  (inferior-exception-arguments
+                                                   c)))
+                                       os)
                 (install-bootloader (eval/error-handling c
                                       (raise (formatted-message
                                               (G_ "\
