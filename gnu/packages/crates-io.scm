@@ -99400,14 +99400,14 @@ implementation that works everywhere, even WASM!")
 (define-public rust-zlib-rs-0.4
   (package
     (name "rust-zlib-rs")
-    (version "0.4.0")
+    (version "0.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "zlib-rs" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1rbyn2bd0mi7b60bx7qgxslz90dxfxaxrpk1q5625jb6cpfak91c"))))
+        (base32 "1y24i695cwvm4frs98bhjznfa19by6hkb42np7abl4lk79ah3nma"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-arbitrary" ,rust-arbitrary-1)
