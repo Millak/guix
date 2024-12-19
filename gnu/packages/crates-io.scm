@@ -94991,14 +94991,14 @@ for @code{Valuable} types.")
 (define-public rust-value-bag-serde1-1
   (package
     (name "rust-value-bag-serde1")
-    (version "1.9.0")
+    (version "1.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "value-bag-serde1" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "12rjnrh2g3ijvjgfh78y7x1ilk3mw2svri93nymsjxxhbh6gbb6c"))))
+        (base32 "02sv7k5q2gf9ga91fj3k2rj3hrlw9m2r8v1kdv5cfngx6syp7dsb"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
