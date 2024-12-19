@@ -120,9 +120,17 @@ is on expressing the content semantically, avoiding physical markup commands.")
                (base32
                 "10kcdb3pf7yakniccvv0krchs2fh3vh1rvhvnqr98ll3cbj3gbii"))))
     (inputs (modify-inputs (package-inputs texinfo)
-              (append perl-archive-zip)))        ;needed for 'tex2any --epub3'
+              (append perl-archive-zip           ;needed for 'tex2any --epub3'
+                      perl-unicode-eastasianwidth perl-text-unidecode
+                      perl-libintl-perl)))
     (arguments
      (substitute-keyword-arguments (package-arguments texinfo)
+       ((#:configure-flags flags
+         ''())
+        #~(cons* "--with-external-Unicode-EastAsianWidth"
+                 "--with-external-Text-Unidecode"
+                 "--with-external-libintl-perl"
+                 #$flags))
        ((#:phases phases #~%standard-phases)
         #~(modify-phases #$phases
             (add-after 'install 'wrap-program
@@ -136,9 +144,15 @@ is on expressing the content semantically, avoiding physical markup commands.")
                                     (and (eq? 'directory (stat:type stat))
                                          (string=? (basename file)
                                                    "Archive")))
-                                  #:directories? #t))))
+                                  #:directories? #t)))
+                       (mods (map (lambda (mod)
+                                    (string-append (assoc-ref inputs mod)
+                                                   "/lib/perl5/site_perl"))
+                                  '("perl-unicode-eastasianwidth"
+                                    "perl-text-unidecode" "perl-libintl-perl"))))
                   (wrap-program program
-                    `("PERL5LIB" prefix (,(dirname zip)))))))))))))
+                    `("PERL5LIB" prefix
+                      ,(cons* (dirname zip) mods))))))))))))
 
 (define-public texinfo-5
   (package (inherit texinfo)
