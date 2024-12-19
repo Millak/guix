@@ -10731,14 +10731,14 @@ of built-in fundamental numeric types.")
   (package
     (inherit rust-byte-unit-5)
     (name "rust-byte-unit")
-    (version "4.0.9")
+    (version "4.0.19")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "byte-unit" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0lxi11qf6h1rqr0yhsh7i6755l325qrkv9r4bgismyik531mi1qw"))))
+        (base32 "0v4v4z8qilnbg0lv16icbbbdq5kjpbp8yw044lszrzdqawhb6y6s"))))
     (arguments
      `(#:cargo-inputs (("rust-serde" ,rust-serde-1)
                        ("rust-utf8-width" ,rust-utf8-width-0.1))))))
