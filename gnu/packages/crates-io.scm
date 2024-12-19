@@ -1322,14 +1322,14 @@ in no_std.")
 (define-public rust-allocator-api2-0.2
   (package
     (name "rust-allocator-api2")
-    (version "0.2.15")
+    (version "0.2.21")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "allocator-api2" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1sdgkqs0pyk61m4yjksl5fv8wld11s5rp7v4v3p5hhccvkw6rz2n"))))
+                "08zrzs022xwndihvzdn78yqarv2b9696y67i6h78nla3ww87jgb8"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags '("--lib")
