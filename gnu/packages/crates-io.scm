@@ -95319,14 +95319,14 @@ and test them against various comparison operators.")
   (package
     (inherit rust-version-compare-0.2)
     (name "rust-version-compare")
-    (version "0.1.0")
+    (version "0.1.1")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "version-compare" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0wyasmnqqngvm54x0gsxbwpxznvn747jkp0dx1nnppy1j9xj927y"))))))
+                "0acg4pmjdbmclg0m7yhijn979mdy66z3k8qrcnvn634f1gy456jp"))))))
 
 (define-public rust-version-compare-0.0.11
   (package
