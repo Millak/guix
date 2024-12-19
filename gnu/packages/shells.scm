@@ -1047,7 +1047,7 @@ files and text.")
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
-       '("--release" "--"
+       '("--"
          ;; Not all files included
          "--skip=tests::test_config_path::test_alternate_config_path"
          "--skip=tests::test_config_path::test_default_config_path"
