@@ -10640,18 +10640,18 @@ library for wrapping text.")
 (define-public rust-byte-pool-0.2
   (package
     (name "rust-byte-pool")
-    (version "0.2.2")
+    (version "0.2.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "byte-pool" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0yh96ral0pni02bzm3fhvicp1ixz1hz3c5m03hsyq66mk61fjf0y"))))
+        (base32 "0n3iibkqk5lyhwmxz0imwz1gsk4xbvs7q8m6xwjmc2zmi48v5wf2"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-crossbeam-queue" ,rust-crossbeam-queue-0.2)
+       (("rust-crossbeam-queue" ,rust-crossbeam-queue-0.3)
         ("rust-stable-deref-trait" ,rust-stable-deref-trait-1))))
     (home-page "https://crates.io/crates/byte-pool")
     (synopsis "Pool of byte slices, for efficient memory usage")
