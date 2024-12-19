@@ -544,18 +544,17 @@ syntax (e.g.  EasyList, EasyPrivacy) filter parsing and matching.")
 (define-public rust-addr2line-0.24
   (package
     (name "rust-addr2line")
-    (version "0.24.1")
+    (version "0.24.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "addr2line" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0xfkfsk45dwps3jq4n5ikk7v15i6g51cpnnivxgl1ga28j71vyzm"))))
+        (base32 "1hd1i57zxgz08j6h5qrhsnm2fi0bcqvsh389fw400xm3arz2ggnz"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f      ; use of undeclared crate or module `auxiliary`
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-clap" ,rust-clap-4)
         ("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
         ("rust-cpp-demangle" ,rust-cpp-demangle-0.4)
