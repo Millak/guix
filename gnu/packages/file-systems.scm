@@ -511,6 +511,7 @@ significantly increases the risk of irreversible data loss!")
     (build-system go-build-system)
     (arguments
      (list
+      #:install-source? #f
       #:import-path "github.com/rfjakob/gocryptfs"
       #:build-flags
       #~(list
@@ -519,6 +520,15 @@ significantly increases the risk of irreversible data loss!")
                      " -X main.GitVersionFuse=" #$(package-version
                                                    go-github-com-hanwen-go-fuse-v2)
                      " -X main.BuildDate=" "[reproducible]"))
+      #:test-flags
+      #~(list "-skip" (string-join
+                       (list "TestPrepareAtSyscall"
+                             "TestPrepareAtSyscallPlaintextnames"
+                             "TestGetdents")
+                       "|"))
+      ;; XXX: Test suit requires a root access to mount, limit to some unit
+      ;; tests, figure out how to enable most of the them.
+      #:test-subdirs #~(list "internal/...")
       #:phases
       #~(modify-phases %standard-phases
           ;; after 'check phase, should maybe unmount leftover mounts as in
@@ -536,18 +546,14 @@ significantly increases the risk of irreversible data loss!")
                 "github.com/rfjakob/gocryptfs/contrib/findholes"
                 "github.com/rfjakob/gocryptfs/contrib/atomicrename")))))))
     (native-inputs (list
-                    go-github-com-hanwen-go-fuse-v2
                     go-github-com-aperturerobotics-jacobsa-crypto
-                    go-github-com-jacobsa-oglematchers
-                    go-github-com-jacobsa-oglemock
-                    go-github-com-jacobsa-ogletest
-                    go-github-com-jacobsa-reqtrace
+                    go-github-com-hanwen-go-fuse-v2
+                    go-github-com-moby-sys-mountinfo
                     go-github-com-pkg-xattr
                     go-github-com-rfjakob-eme
                     go-github-com-sabhiram-go-gitignore
                     go-github-com-spf13-pflag
                     go-golang-org-x-crypto
-                    go-golang-org-x-net
                     go-golang-org-x-sys
                     go-golang-org-x-term
                     openssl
