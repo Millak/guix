@@ -5600,6 +5600,28 @@ TCP/UDP/Unix communication.")
         ("rust-fastrand" ,rust-fastrand-1)
         ("rust-futures-lite" ,rust-futures-lite-1))))))
 
+(define-public rust-async-object-pool-0.1
+  (package
+    (name "rust-async-object-pool")
+    (version "0.1.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "async-object-pool" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0b3546r13bdhcigbfbmpihh8gxxpad165cp80h3dbwn3jxmlag1k"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-async-std" ,rust-async-std-1))))
+    (home-page "https://github.com/alexliesenfeld/async-object-pool")
+    (synopsis
+     "Object pool implementation that using asynchronous synchronization primitives")
+    (description
+     "This package provides a simple object pool implementation that uses only
+asynchronous synchronization primitives.")
+    (license license:expat)))
+
 (define-public rust-async-once-cell-0.5
   (package
     (name "rust-async-once-cell")
