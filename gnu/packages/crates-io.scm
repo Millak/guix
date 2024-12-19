@@ -34127,19 +34127,17 @@ that don't require dynamic memory allocation.")
   (package
     (inherit rust-heapless-0.8)
     (name "rust-heapless")
-    (version "0.7.16")
+    (version "0.7.17")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "heapless" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0hq7ifnzpdj9rc06rhys4qa3qkr6q3k01kwfca0ak7lbl4jbq16v"))))
+        (base32 "0kwn2wzk9fnsqnwp6rqjqhvh6hfq4rh225xwqjm72b5n1ry4bind"))))
     (arguments
-     `(#:cargo-test-flags
-       '("--release" "--lib")
-       #:cargo-inputs
-       (("rust-atomic-polyfill" ,rust-atomic-polyfill-0.1)
+     `(#:cargo-inputs
+       (("rust-atomic-polyfill" ,rust-atomic-polyfill-1)
         ("rust-defmt" ,rust-defmt-0.3)
         ("rust-hash32" ,rust-hash32-0.2)
         ("rust-rustc-version" ,rust-rustc-version-0.4)
