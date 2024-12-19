@@ -33261,18 +33261,17 @@ support.")
 (define-public rust-gumdrop-derive-0.8
   (package
     (name "rust-gumdrop-derive")
-    (version "0.8.0")
+    (version "0.8.1")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "gumdrop_derive" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "01cdc7w5wf1g9i04ykcssczjmmnl6jky47a648sp710df5yg0pli"))))
+                "17d91ai4p9f9cwhqqnyivw9yi7prl9xzpaqq3a1yfxwx8k9rp7vj"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))))
