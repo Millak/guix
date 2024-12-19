@@ -21836,6 +21836,21 @@ strings.")
     (description "Demo of proc-macro-hack.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-demo-hack-impl-0.0.4
+  (package
+    (inherit rust-demo-hack-impl-0.0.5)
+    (name "rust-demo-hack-impl")
+    (version "0.0.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "demo-hack-impl" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1wb267k9g40z8p458q1g8nrq3x8cq13s2wnvx5fy9rd011f8qy7h"))))
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro-hack" ,rust-proc-macro-hack-0.4))))))
+
 (define-public rust-deranged-0.3
   (package
     (name "rust-deranged")
