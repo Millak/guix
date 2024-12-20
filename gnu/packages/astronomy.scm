@@ -5321,13 +5321,13 @@ processing functions: @code{xyxymatch}, @code{geomap}.")
 (define-public python-stdatamodels
   (package
     (name "python-stdatamodels")
-    (version "2.1.2")
+    (version "2.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "stdatamodels" version))
        (sha256
-        (base32 "0x7fzkda9cr7bsf8hq2q090a73cxk3l3ynipq8lqixfp8c94m3kq"))))
+        (base32 "14720438p245ncjgwh7j37s69jd91rdk39daab8zswk9lhfbq9dx"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -5335,20 +5335,21 @@ processing functions: @code{xyxymatch}, @code{geomap}.")
       #~(list "--numprocesses" (number->string (parallel-job-count))
               ;; Disable tests requiring access to CRDS servers to download
               ;; ~500MiB of data.
-              "-k" "not test_crds_selectors_vs_datamodel")
+              "-k" "not test_crds_selectors_vs_datamodel and not test_report")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'set-home
             (lambda _
               (setenv "HOME" "/tmp"))))))
     (propagated-inputs
-     (list python-asdf
+     (list python-asdf-3
            python-asdf-astropy
            python-astropy
-           python-numpy
-           python-psutil))
+           python-numpy))
     (native-inputs
-     (list python-crds
+     (list nss-certs-for-test
+           python-crds
+           python-psutil
            python-pytest
            python-pytest-doctestplus
            python-pytest-xdist
