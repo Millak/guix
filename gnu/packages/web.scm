@@ -118,6 +118,7 @@
   #:use-module (gnu packages bittorrent)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages build-tools)
+  #:use-module (gnu packages certs)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
@@ -7110,17 +7111,22 @@ efficient where possible.")
         (base32 "0s1vjdaf3pk2xd0hvi5f7p3jm2rgwpbc734jdp9r50m1smfhxpi0"))))
     (build-system python-build-system)
     (arguments
-     `(#:tests? #f  ; Tests require network access.
-       #:phases
-       (modify-phases %standard-phases
+     (list
+      #:phases
+      '(modify-phases %standard-phases
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (invoke "nosetests")))))))
+               (setenv "EVENTLET_NO_GREENDNS" "YES")
+               (invoke "nosetests" "--exclude=(passthrough|streaming|httpretty_should_handle)")))))))
     (native-inputs
-     (list python-coverage
+     (list nss-certs-for-test
+           python-coverage
            python-eventlet
+           python-freezegun
+           python-httplib2
            python-nose
+           python-pyparsing
            python-rednose
            python-requests
            python-sure
