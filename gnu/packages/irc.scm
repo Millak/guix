@@ -849,6 +849,25 @@ interface for those who are accustomed to the ircII way of doing things.")
      "This package provides an IRC library for Python, based on asyncio.")
     (license license:isc)))
 
+(define-public python-ircmatch
+  (package
+    (name "python-ircmatch")
+    (version "1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ircmatch" version))
+       (sha256
+        (base32 "1bn92bnk958c097jhwkas24i4a07h905hifix7bg111npc48536l"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-wheel))
+    (home-page "https://pypi.org/project/ircmatch/")
+    (synopsis "Library for matching IRC masks based on atheme")
+    (description "This is a python extension which provides string comparison
+and matching functions from Atheme.  They are hand-optimized for high
+performance when matching IRC hostmasks.")
+    (license license:isc)))
+
 (define-public python-irc-parser-tests
   (package
     (name "python-irc-parser-tests")
