@@ -4474,90 +4474,10 @@ a cron spec parser and job runner.")
        "This is a fork of another go-libvterm library for use with aerc.")
       (license license:expat))))
 
-(define (go-gotest-tools-source version sha256-base32-hash)
-  (origin
-    (method git-fetch)
-    (uri (git-reference
-          (url "https://github.com/gotestyourself/gotest.tools")
-          (commit (string-append "v" version))))
-    (file-name (git-file-name "go-gotest-tools" version))
-    (sha256
-     (base32 sha256-base32-hash))))
-
-;; Note that version 3.0.0 is incompatible to 2.3.0.
-;; See also <https://github.com/gotestyourself/gotest.tools/issues/166>.
-(define (go-gotest-tools-package suffix)
-  (package
-    (name (string-append "go-gotest-tools-"
-                         (string-replace-substring suffix "/" "-")))
-    (version "2.3.0")
-    (source
-     (go-gotest-tools-source version
-      "0071rjxp4xzcr3vprkaj1hdk35a3v45bx8v0ipk16wwc5hx84i2i"))
-    (build-system go-build-system)
-    (arguments
-     `(#:import-path ,(string-append "gotest.tools/" suffix)
-       #:unpack-path "gotest.tools"))
-    (synopsis "@code{gotest-tools} part")
-    (description "This package provides a part of @code{gotest-tools}.")
-    (home-page "https://github.com/gotestyourself/gotest.tools")
-    (license license:asl2.0)))
-
-(define-public go-gotest-tools-internal-format
-  (package (inherit (go-gotest-tools-package "internal/format"))
-    (native-inputs
-     (list go-github-com-pkg-errors go-github-com-google-go-cmp))
-    (synopsis "Formats messages for use with gotest-tools")
-    (description "This package provides a way to format messages for use
-with gotest-tools.")))
-
-(define-public go-gotest-tools-internal-difflib
-  (package (inherit (go-gotest-tools-package "internal/difflib"))
-    (synopsis "Differences for use with gotest-tools")
-    (description "This package computes differences for use
-with gotest-tools.")))
-
-(define-public go-gotest-tools-internal-source
-  (package (inherit (go-gotest-tools-package "internal/source"))
-    (arguments
-     (substitute-keyword-arguments
-       (package-arguments (go-gotest-tools-package "internal/source"))
-       ((#:phases phases #~%standard-phases)
-        #~(modify-phases #$phases
-            (replace 'check
-              (lambda* (#:key inputs #:allow-other-keys #:rest args)
-                (unless
-                  ;; failed to parse source file: : open : no such file or directory
-                  (false-if-exception (search-input-file inputs "/bin/gccgo"))
-                  (apply (assoc-ref %standard-phases 'check) args))))))))
-    (native-inputs
-     (list go-github-com-pkg-errors go-github-com-google-go-cmp))
-    (synopsis "Source code AST formatters for gotest-tools")
-    (description "This package provides source code AST formatters for
-gotest-tools.")))
-
-(define-public go-gotest-tools-assert
-  (package (inherit (go-gotest-tools-package "assert"))
-    (name "go-gotest-tools-assert")
-    (arguments
-     `(#:tests? #f ; Test failure concerning message formatting (FIXME)
-       #:import-path "gotest.tools/assert"
-       #:unpack-path "gotest.tools"))
-    (propagated-inputs
-     (list go-github-com-google-go-cmp
-           go-github-com-pkg-errors
-           go-github-com-spf13-pflag
-           go-golang-org-x-tools))
-    (synopsis "Compare values and fail a test when a comparison fails")
-    (description "This package provides a way to compare values and fail a
-test when a comparison fails.")
-    (home-page "https://github.com/gotestyourself/gotest.tools")
-    (license license:asl2.0)))
-
 (define-public gotestsum
   (package
     (name "gotestsum")
-    (version "0.4.0")
+    (version "1.12.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4566,27 +4486,34 @@ test when a comparison fails.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0y71qr3ss3hgc8c7nmvpwk946xy1jc5d8whsv6y77wb24ncla7n0"))))
+                "0fx92jh6ay4rk1ljbgp9b2m4fafqwy0a19q7lhdabgb1j8dvgxvs"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "gotest.tools/gotestsum"))
+     (list
+      #:import-path "gotest.tools/gotestsum"
+      #:test-flags
+      #~(list "-skip"
+              (string-join
+               (list "TestE2E_IgnoresWarnings"
+                     "TestE2E_MaxFails_EndTestRun"
+                     "TestScanTestOutput_TestTimeoutPanicRace/panic-race-2")
+               "|"))
+      ;; Run just unit test, integration tests from "testjson" require: run
+      ;; 'go test . -update' to automatically update
+      ;; testdata/summary/with-run-id to the new expected value.'
+      #:test-subdirs #~(list "cmd/..." "internal/...")))
     (native-inputs
-     (list go-github-com-fatih-color
-           go-golang-org-x-sync
-           go-github-com-pkg-errors
-           go-github-com-sirupsen-logrus
-           go-github-com-spf13-pflag
-           go-github-com-jonboulle-clockwork
-           go-golang-org-x-crypto
-           go-gotest-tools-assert
+     (list go-github-com-bitfield-gotestdox
+           go-github-com-dnephin-pflag
+           go-github-com-fatih-color
+           go-github-com-fsnotify-fsnotify
            go-github-com-google-go-cmp
-           ;; TODO: This would be better as a propagated-input of
-           ;; go-gotest-tools-assert, but that does not work for
-           ;; some reason.
-           go-gotest-tools-internal-format
-           go-gotest-tools-internal-difflib
-           go-gotest-tools-internal-source
-           go-github-com-google-go-cmp))
+           go-github-com-google-shlex
+           go-golang-org-x-sync
+           go-golang-org-x-sys
+           go-golang-org-x-term
+           go-golang-org-x-tools
+           go-gotest-tools-v3))
     (synopsis "Go test runner with output optimized for humans")
     (description "This package provides a @code{go test} runner with output
 optimized for humans, JUnit XML for CI integration, and a summary of the
