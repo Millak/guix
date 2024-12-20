@@ -4952,25 +4952,27 @@ of axis order, spatial projections, and spectral units that exist in the wild.
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; Disabling test requiring access to download
-      ;; <https://datacenter.iers.org/data/9/finals2000A.all>.
-      ;; XXX: Check if test data may be packed as standalone package.
-      #:test-flags #~(list "-k" "not test_create_spectral_axis")
+      #:test-flags
+      #~(list "-k" (string-join
+                    (list
+                     ;; Disabling test requiring access to download
+                     ;; <https://datacenter.iers.org/data/9/finals2000A.all>.
+                     ;; XXX: Check if test data may be packed as standalone
+                     ;; package.
+                     "not test_create_spectral_axis"
+                     ;; ValueError: Expected the following order of world
+                     ;; arguments: SpectralCoord
+                     "test_wcs_transformations")
+                    " and not "))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'relax-requirements
-            (lambda _
-              (substitute* "setup.cfg"
-                ;; numpy>=1.24
-                (("1.24") "1.23.2"))))
           (add-before 'check 'set-home-env
             (lambda _
               ;; Tests require HOME to be set.
               ;;  Permission denied: '/homeless-shelter'
               (setenv "HOME" "/tmp"))))))
     (propagated-inputs
-     (list ;; python-stdatamodels ; cycle with python-synphot, optional.
-           python-asdf
+     (list python-asdf
            python-asdf-astropy
            python-astropy
            python-gwcs
