@@ -136,14 +136,7 @@ functions that have a name matched by regex:.")
       #:import-path "github.com/golang/protobuf"
       #:phases
       #~(modify-phases %standard-phases
-          ;; XXX: Workaround for go-build-system's lack of Go modules
-          ;; support.
-          (delete 'build)
-          (replace 'check
-            (lambda* (#:key tests? import-path #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion (string-append "src/" import-path)
-                  (invoke "go" "test" "-v" "./..."))))))))
+          (delete 'build)))) ; no go files in project's root
     (native-inputs
      (list go-github-com-google-go-cmp))
     (propagated-inputs
