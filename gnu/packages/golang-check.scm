@@ -1937,6 +1937,79 @@ the end of a test.")
 built-in @code{testing} package, but can be used in other contexts too.")
     (license license:asl2.0)))
 
+(define-public go-gotest-tools-v3
+  (package
+    (name "go-gotest-tools-v3")
+    (version "3.5.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gotestyourself/gotest.tools")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1r5mc6slab6fj2si9nripl7fdq097s694gsn1gsxg2wj7605m5v4"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separatly:
+            ;;
+            ;; - gotest.tools/x/generics
+            (for-each delete-file-recursively
+                      (list "x/generics"))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "gotest.tools/v3"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       ;; Most of these failing tests can't read test file
+                       ;; maybe due to the symlink can't be resolved properly
+                       ;; or have assertion not equal.
+                       (list "TestAssert_WithBinaryExpression_Failures"
+                             "TestAssertWithBool.*"
+                             "TestCheckFailure"
+                             "TestCheckEqualFailure"
+                             "TestCheck_MultipleFunctionsOnTheSameLine"
+                             "TestEqualFailure"
+                             "TestEqualFailure.*"
+                             "TestAssertFailureWithOfflineComparison"
+                             "TestErrorTypeFailure"
+                             "TestErrorIs"
+                             "TestEqual_WithGoldenUpdate"
+                             "TestMigrateFile.*"
+                             "TestMigrate_AssertAlready.*"
+                             "TestFormattedCallExprArg.*"
+                             "TestWaitOnSocketWithTimeout/connection_to_"
+                             "TestIfCondition"
+                             "TestIfCondition.*")
+                       "|"))))
+    (propagated-inputs
+     (list go-github-com-google-go-cmp
+           go-golang-org-x-tools))
+    (home-page "https://gotest.tools")
+    (synopsis "gotest.tools")
+    (description
+     "Package gotesttools is a collection of packages to augment
+@code{testing} and support common patterns.
+
+Packages:
+@itemize
+@item @code{assert} - compare values and fail the test when a comparison fails
+@item @code{env} - test code which uses environment variables
+@item @code{fs} - create temporary files and compare a filesystem tree to an
+expected value
+@item @code{golden} - compare large multi-line strings against values frozen
+in golden files
+@item @code{icmd} - execute binaries and test the output
+@item @code{poll} - test asynchronous code by polling until a desired state is
+reached
+@item @code{skip} - skip a test and print the source code of the condition
+used to skip the test
+@end itemize")
+    (license license:asl2.0)))
+
 (define-public go-honnef-co-go-tools
   (package
     (name "go-honnef-co-go-tools")
