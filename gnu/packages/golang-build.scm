@@ -1090,19 +1090,14 @@ Go programming language.")
     (build-system go-build-system)
     (arguments
      (list
+      #:skip-build? #t
       #:import-path "golang.org/x/vuln"
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; XXX: Workaround for go-build-system's lack of Go modules support.
-          (delete 'build)
-          (replace 'check
-            (lambda* (#:key tests? import-path #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion (string-append "src/" import-path)
-                  (invoke "go" "test" "-v"
-                          "./doc/..."
-                          "./internal/..."
-                          "./scan/..."))))))))
+      ;; ts.RunParallel undefined (type *cmdtest.TestSuite has no field or
+      ;; method RunParallel)
+      ;;
+      ;; go: modules disabled by GO111MODULE=off
+      #:test-flags #~(list "-skip" "TestVet|TestGoModTidy|Test58509")
+      #:test-subdirs #~(list "internal/..." "scan/..." ".")))
     (propagated-inputs
      (list go-github-com-google-go-cmdtest
            go-github-com-google-go-cmp
