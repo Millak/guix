@@ -984,7 +984,7 @@ menu.")
 (define-public xfwm4
   (package
     (name "xfwm4")
-    (version "4.18.0")
+    (version "4.20.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/xfce/"
@@ -992,7 +992,7 @@ menu.")
                                   "xfwm4-" version ".tar.bz2"))
               (sha256
                (base32
-                "0gy1bxp9va6hz9vrysvh3sffg5ld4dn77in10syb8p5jkf41pkcj"))))
+                "01ng1lcr0a45w1jm3vwsfwk5kfy8jfz3c1ng3n6hvalpjgj672x5"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config intltool))
