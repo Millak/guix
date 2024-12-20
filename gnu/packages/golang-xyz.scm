@@ -8860,7 +8860,7 @@ tool."))))
      (list
       #:import-path "suah.dev/protect"))
     (home-page "https://codeberg.org/qbit/protect")
-    (synopsis "Wrapper for OpenBSD's pledge and unveil system calls.")
+    (synopsis "Wrapper for OpenBSD's pledge and unveil system calls")
     (description
      "Package protect is a wrapper for OpenBSD's @code{pledge} and @code{unveil}
 system calls.
