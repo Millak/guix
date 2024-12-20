@@ -731,7 +731,7 @@ allows you to shut down the computer from Xfce.")
 (define-public xfce4-settings
   (package
     (name "xfce4-settings")
-    (version "4.18.6")
+    (version "4.20.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/xfce/"
@@ -739,20 +739,30 @@ allows you to shut down the computer from Xfce.")
                                   name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "1zkvcsgx3bnk8gwcgwg7656pw5p9a4xl1fv4divddv96c0dhbafr"))
+                "1ag5pimprxc12zgdbs27vngin97fc6l9ig7xzc0naacs8aiqsm13"))
               (patches (search-patches "xfce4-settings-defaults.patch"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags '("--enable-pluggable-dialogs"
-                           "--enable-sound-settings"
-                           "--enable-upower-glib"
-                           "--enable-xrandr")))
+     (list #:configure-flags
+           #~(list "--enable-pluggable-dialogs"
+                   "--enable-sound-settings"
+                   "--enable-upower-glib"
+                   "--enable-xrandr")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'configure 'patch-configure
+                 (lambda _
+                   (substitute* "configure"
+                     ;; XDG_CHECK_PACKAGE_BINARY requires an absolute path.
+                     (("\\$PKG_CONFIG --variable=gdbus_codegen gio-2.0")
+                      "type -p gdbus-codegen")))))))
     (native-inputs
-     (list pkg-config intltool))
+     (list (list glib "bin") pkg-config intltool))
     (inputs
      (list colord
            exo
            garcon
+           gtk-layer-shell
            libnotify
            libxcursor
            libxi

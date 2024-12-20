@@ -1,16 +1,14 @@
 This patch make Xfce use "elementary-xfce-dark" as the default icon theme, "Greybird" as
 the default GTK theme and enable font antialias.
 
-
-diff -upr xfce4-settings-4.18.2.orig/xfsettingsd/xsettings.xml xfce4-settings-4.18.2/xfsettingsd/xsettings.xml
---- xfce4-settings-4.18.2.orig/xfsettingsd/xsettings.xml	2023-02-11 16:55:53.000000000 +0800
-+++ xfce4-settings-4.18.2/xfsettingsd/xsettings.xml	2023-05-14 19:20:43.919701586 +0800
+--- xfce4-settings-4.20.0/xfsettingsd/xsettings.xml.orig	2024-12-20 09:53:09.518493612 +0800
++++ xfce4-settings-4.20.0/xfsettingsd/xsettings.xml	2024-12-20 09:55:15.506496473 +0800
 @@ -6,8 +6,8 @@
  
  <channel name="xsettings" version="1.0">
    <property name="Net" type="empty">
--    <property name="ThemeName" type="empty"/>
--    <property name="IconThemeName" type="empty"/>
+-    <property name="ThemeName" type="string" value="Adwaita"/>
+-    <property name="IconThemeName" type="string" value="Adwaita"/>
 +    <property name="ThemeName" type="string" value="Greybird"/>
 +    <property name="IconThemeName" type="string" value="elementary-xfce-dark"/>
      <property name="DoubleClickTime" type="int" value="400"/>
@@ -19,12 +17,12 @@ diff -upr xfce4-settings-4.18.2.orig/xfsettingsd/xsettings.xml xfce4-settings-4.
 @@ -19,9 +19,9 @@
    </property>
    <property name="Xft" type="empty">
-     <property name="DPI" type="empty"/>
+     <property name="DPI" type="int" value="-1"/>
 -    <property name="Antialias" type="int" value="-1"/>
 +    <property name="Antialias" type="int" value="1"/>
      <property name="Hinting" type="int" value="-1"/>
 -    <property name="HintStyle" type="string" value="hintnone"/>
 +    <property name="HintStyle" type="string" value="hintfull"/>
      <property name="RGBA" type="string" value="none"/>
-     <!-- <property name="Lcdfilter" type="string" value="none"/> -->
    </property>
+   <property name="Gtk" type="empty">
