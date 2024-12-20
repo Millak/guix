@@ -481,7 +481,7 @@ type '<elpa-package>'."
    (pred package-from-elpa-repository?)
    (import latest-release)))
 
-(define elpa-guix-name (cut guix-name "emacs-" <>))
+(define elpa-guix-name (cut downstream-package-name "emacs-" <>))
 
 (define* (elpa-recursive-import package-name #:optional (repo 'gnu))
   (recursive-import package-name

@@ -478,7 +478,7 @@ empty list when the FIELD cannot be found."
     ("zlib1g-dev" "zlib")
     (_ sysname)))
 
-(define cran-guix-name (cut guix-name "r-" <>))
+(define cran-guix-name (cut downstream-package-name "r-" <>))
 
 (define (directory-needs-fortran? dir)
   "Check if the directory DIR contains Fortran source files."

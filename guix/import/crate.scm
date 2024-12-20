@@ -467,7 +467,7 @@ look up the development dependencs for the given crate."
       ((name _ ...) name))))
 
 (define (crate-name->package-name name)
-  (guix-name "rust-" name))
+  (downstream-package-name "rust-" name))
 
 
 

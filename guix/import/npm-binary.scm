@@ -178,7 +178,7 @@
   (define (clean name)
     (string-map (lambda (chr) (if (char=? chr #\/) #\- chr))
                 (string-filter (negate (cut char=? <> #\@)) name)))
-  (guix-name "node-" (clean npm-name)))
+  (downstream-package-name "node-" (clean npm-name)))
 
 (define (name+version->symbol name version)
   (string->symbol (string-append name "-" version)))
