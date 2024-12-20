@@ -5550,6 +5550,52 @@ any concurrent code of its own.")
     (propagated-inputs
      (list go-golang-org-x-sync))))
 
+(define-public go-github-com-jacobsa-fuse
+  (package
+    (name "go-github-com-jacobsa-fuse")
+    (version "0.0.0-20241025064006-8ccd61173b05")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jacobsa/fuse")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zf9fhv5j0pffmp4c0zba58627lb6cwr2qxjsa3dwba9b8fiz7sf"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ; requires fusermount
+      #:import-path "github.com/jacobsa/fuse"))
+    (native-inputs
+     (list go-github-com-detailyang-go-fallocate
+           go-github-com-jacobsa-ogletest
+           go-github-com-kylelemons-godebug))
+    (propagated-inputs
+     (list go-github-com-jacobsa-oglematchers
+           go-github-com-jacobsa-syncutil
+           go-github-com-jacobsa-timeutil
+           go-golang-org-x-net
+           go-golang-org-x-sys))
+    (home-page "https://github.com/jacobsa/fuse")
+    (synopsis "FUSE file system in Golang")
+    (description
+     "Package fuse enables writing and mounting user-space file systems.
+Subpackages:
+@itemize
+@item @code{fuse} provides support for mounting a new file system and reading
+requests from the kernel
+
+@item @code{fuseops} enumerates the supported requests from the kernel, and
+provides documentation on their semantics
+
+@item @code{fuseutil}, in particular the @code{FileSystem} interface, provides
+a convenient way to create a file system type and export it to the kernel via
+@code{fuse.Mount}.
+@end itemize")
+    (license license:asl2.0)))
+
 (define-public go-github-com-jacobsa-syncutil
   (package
     (name "go-github-com-jacobsa-syncutil")
