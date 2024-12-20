@@ -1551,7 +1551,7 @@ of data to either CD/DVD/BD.")
 (define-public mousepad
   (package
     (name "mousepad")
-    (version "0.6.2")
+    (version "0.6.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/apps/mousepad/"
@@ -1559,7 +1559,7 @@ of data to either CD/DVD/BD.")
                                   version ".tar.bz2"))
               (sha256
                (base32
-                "17fi33mkdz1nfmsgqlfa20l06wwy0s8lcj21cfg6ikdiihxwpjp7"))))
+                "1f99p6f0pw17xs87cph0n07a5yz4zhnsrhl2kjmi907ihp0n5w9g"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '(;; Use the GSettings keyfile backend rather than
@@ -1580,7 +1580,7 @@ of data to either CD/DVD/BD.")
            `(,glib "bin") ; for glib-compile-schemas.
            pkg-config))
     (inputs
-     (list bash-minimal gtk+ gtksourceview-4 xfconf))
+     (list bash-minimal gspell gtksourceview-4 libxfce4ui xfconf))
     (home-page "https://git.xfce.org/apps/mousepad/")
     (synopsis "Simple text editor for Xfce")
     (description
