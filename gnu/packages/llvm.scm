@@ -920,7 +920,8 @@ Library.")
       (uri (llvm-uri "llvm" version))
       (sha256
        (base32
-        "1pzx9zrmd7r3481sbhwvkms68fwhffpp4mmz45dgrkjpyl2q96kx"))))
+        "1pzx9zrmd7r3481sbhwvkms68fwhffpp4mmz45dgrkjpyl2q96kx"))
+      (patches (search-patches "llvm-13-gcc-14.patch"))))
     (arguments
      (substitute-keyword-arguments (package-arguments llvm-13)
        ((#:phases phases)
