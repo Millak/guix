@@ -5201,8 +5201,6 @@ task}.")
 (define-public python-stsci-stimage
   (package
     (name "python-stsci-stimage")
-    ;; PyPI version was 0.2.8 but the latest version tag on GiHub was 0.2.7,
-    ;; see <https://github.com/spacetelescope/stsci.stimage/issues/38>
     (version "0.2.9")
     (source (origin
               (method url-fetch)
@@ -5225,13 +5223,14 @@ task}.")
                           #$(this-package-native-input "python-waf") "/bin/waf")
                          "waf")
               (invoke "python" "waf" "configure" "build"))))))
-    (propagated-inputs
-     (list python-numpy))
     (native-inputs
      (list python-pytest
-           python-wheel
+           python-setuptools
            python-setuptools-scm
-           python-waf))
+           python-waf
+           python-wheel))
+    (propagated-inputs
+     (list python-numpy))
     (home-page "https://stscistimage.readthedocs.io/en/latest/")
     (synopsis "STScI image processing")
     (description
