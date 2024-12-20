@@ -977,7 +977,7 @@ pyproj, Rtree, and Shapely.")
       ;; XXX Reported upstream <https://github.com/tsssss/geopack/issues/21>.
       #:tests? #f))
     (native-inputs
-     (list python-pytest))
+     (list python-pytest python-setuptools python-wheel))
     (propagated-inputs
      (list python-numpy python-scipy))
     (home-page "https://github.com/tsssss/geopack")
