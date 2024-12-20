@@ -1295,7 +1295,9 @@ git integration, command-line support, and a curses-based TUI.")
                          python-packaging
                          python-pytest
                          python-pytest-cov
-                         python-pytest-mpl))
+                         python-pytest-mpl
+                         python-setuptools
+                         python-wheel))
     (home-page "https://colorcet.holoviz.org/")
     (synopsis "Collection of perceptually uniform colormaps")
     (description "Colorcet is a collection of perceptually accurate 256-color
