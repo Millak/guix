@@ -112,7 +112,7 @@
 (define-public libxfce4util
   (package
     (name "libxfce4util")
-    (version "4.18.2")
+    (version "4.20.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/xfce/"
@@ -120,7 +120,7 @@
                                   "/" name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "0ly3i4w2xb9rcmkr34d8yrig3fvb4yxzranl1i9f5xvq5cc2k8yr"))))
+                "14mml8rdj16gkax92h89vcgf6sphp7v3jf5r7n1858lmk6f3yj91"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config gobject-introspection intltool vala))
