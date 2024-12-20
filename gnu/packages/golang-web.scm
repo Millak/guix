@@ -5618,26 +5618,19 @@ the Go standard library}.")
       #:import-path "github.com/quic-go/quic-go"
       #:phases
       #~(modify-phases %standard-phases
-          ;; TODO: Figure out why some tests fail.
-          (add-after 'unpack 'remove-failing-tests
-            (lambda* (#:key import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (for-each delete-file
-                          (list "integrationtests/self/timeout_test.go"
-                                "server_test.go")))))
           ;; Test steps are taken from GitHub Actions -
-          ;; <https://github.com/quic-go/quic-go/blob/v0.42.0/.github/workflows/unit.yml>.
+          ;; <https://github.com/quic-go/quic-go/blob/v0.42.0/
+          ;; .github/workflows/unit.yml>.
           (replace 'check
             (lambda* (#:key tests? import-path #:allow-other-keys)
               (when tests?
                 (with-directory-excursion (string-append "src/" import-path)
                   (invoke "ginkgo" "-r" "-v"
-                          (string-append "--procs="
-                                         (number->string (parallel-job-count)))
+                          (string-append
+                           "--procs=" (number->string (parallel-job-count)))
                           "--randomize-all"
                           "--randomize-suites"
-                          "--skip-package"
-                          "integrationtests"))))))))
+                          "--skip-package=integrationtests"))))))))
     (native-inputs
      (list go-ginkgo
            go-github-com-onsi-ginkgo-v2
