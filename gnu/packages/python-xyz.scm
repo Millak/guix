@@ -10735,7 +10735,8 @@ the OleFileIO module from PIL, the Python Image Library.")
      (list
       ;; AssertionError.
       #:test-flags #~(list "-k" "not test_threads_ttl_expiry")))
-    (native-inputs (list python-freezegun python-pytest unzip))
+    (native-inputs (list python-freezegun python-pytest unzip
+                         python-setuptools python-wheel))
     (home-page "https://github.com/althonos/property-cached/")
     (synopsis "Decorator for caching properties in classes")
     (description "This package provides a decorator for caching properties in
