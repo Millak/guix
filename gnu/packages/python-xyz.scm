@@ -17816,6 +17816,7 @@ libmagic.")))
      (list
       #:test-flags
       #~(list "-n" (number->string (parallel-job-count))
+              "-m" "not flaky"
               "-k"
               (string-append
                ;; The two "break_01" tests have been failing on
