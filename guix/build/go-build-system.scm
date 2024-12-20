@@ -289,6 +289,7 @@ unpacking."
 
 (define* (build #:key
                 build-flags
+                skip-build?
                 import-path
                 (parallel-build? #t)
                 (verbosity 1)
@@ -311,19 +312,23 @@ unpacking."
     (setenv "GOMAXPROCS" (number->string njobs)))
 
   (with-throw-handler
-    #t
+      #t
     (lambda _
-      (apply invoke "go" "install"
-             ;; Respectively, strip the symbol table and debug information,
-             ;; and the DWARF symbol table.
-             "-ldflags=-s -w"
-             ;; Remove all file system paths from the resulting executable.
-             ;; Instead of absolute file system paths, the recorded file names
-             ;; will begin either a module path@version (when using modules),
-             ;; or a plain import path (when using the standard library, or
-             ;; GOPATH).
-             "-trimpath"
-             `(,@build-flags ,import-path)))
+      (if skip-build?
+          (begin
+            (format #t "Build is skipped, no go files in project's root.~%")
+            #t)
+          (apply invoke "go" "install"
+                 ;; Respectively, strip the symbol table and debug
+                 ;; information, and the DWARF symbol table.
+                 "-ldflags=-s -w"
+                 ;; Remove all file system paths from the resulting
+                 ;; executable.  Instead of absolute file system paths, the
+                 ;; recorded file names will begin either a module
+                 ;; path@version (when using modules), or a plain import path
+                 ;; (when using the standard library, or GOPATH).
+                 "-trimpath"
+                 `(,@build-flags ,import-path))))
 
     (lambda (key . args)
       (display (string-append "Building '" import-path "' failed.\n"

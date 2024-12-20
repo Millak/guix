@@ -203,6 +203,7 @@ commit hash and its date rather than a proper release tag."
                    (import-path "")
                    (unpack-path "")
                    (build-flags ''())
+                   (skip-build? #f)
                    (tests? #t)
                    (test-flags ''())
                    (test-subdirs ''("..."))
@@ -238,6 +239,7 @@ commit hash and its date rather than a proper release tag."
                     #:import-path #$import-path
                     #:unpack-path #$unpack-path
                     #:build-flags #$build-flags
+                    #:skip-build? #$skip-build?
                     #:tests? #$tests?
                     #:test-flags #$test-flags
                     #:test-subdirs #$test-subdirs
@@ -264,6 +266,7 @@ commit hash and its date rather than a proper release tag."
                          (import-path "")
                          (unpack-path "")
                          (build-flags ''())
+                         (skip-build? #f)
                          (tests? #f)              ; nothing can be done
                          (test-flags ''())
                          (test-subdirs ''("..."))
@@ -317,6 +320,7 @@ commit hash and its date rather than a proper release tag."
                     #:import-path #$import-path
                     #:unpack-path #$unpack-path
                     #:build-flags #$build-flags
+                    #:skip-build? #$skip-build?
                     #:tests? #$tests?
                     #:test-flags #$test-flags
                     #:test-subdirs #$test-subdirs
