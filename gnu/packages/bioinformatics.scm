@@ -7310,7 +7310,8 @@ average nucleotide identity.")
        (sha256
         (base32 "1fsnivwcw56q7lwz41c5kbfvxv0v17mmkx43i2a293l49fxj08j8"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-pytest python-twine python-wheel))
+    (native-inputs (list python-pytest python-twine python-setuptools
+                         python-wheel))
     (home-page "https://github.com/WojciechMula/pyahocorasick")
     (synopsis "Library for finding multiple key strings in text")
     (description
