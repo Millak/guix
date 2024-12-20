@@ -334,15 +334,6 @@ not succeed."
     ((lst ...) `(list ,@(map string->license lst)))
     (x `(error unknown-license ,x))))
 
-(define (guix-name name)
-  "Return a Guix package name for a given Texlive package NAME."
-  (string-append "texlive-"
-                 (string-map (match-lambda
-                               (#\_ #\-)
-                               (#\. #\-)
-                               (chr (char-downcase chr)))
-                             name)))
-
 (define* (filter-depends depends #:optional texlive-only)
   "Filter upstream package names DEPENDS to include only their equivalent Guix
 package names, without \"texlive-\" prefix.  When TEXLIVE-ONLY is true, ignore
@@ -578,7 +569,8 @@ of package with UPSTREAM-NAME in VERSION."
        (map (lambda (input-name)
               (upstream-input
                (name input-name)
-               (downstream-name (guix-name input-name))
+               (downstream-name (downstream-package-name "texlive-"
+                                                         input-name))
                (type 'propagated)))
             (sort (append
                    (filter-depends (or (assoc-ref package-data 'depend) '()))
@@ -655,7 +647,7 @@ at VERSION."
 
 (define (tlpdb->package upstream-name version database)
   (and-let* ((data (assoc-ref database upstream-name))
-             (name (guix-name upstream-name))
+             (name (downstream-package-name "texlive-" upstream-name))
              (reference
               (texlive->svn-multi-reference upstream-name version database))
              (source (with-store store
