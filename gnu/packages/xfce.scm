@@ -135,7 +135,7 @@ Xfce Desktop Environment.")
 (define-public xfconf
   (package
     (name "xfconf")
-    (version "4.18.3")
+    (version "4.20.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/xfce/"
@@ -143,12 +143,18 @@ Xfce Desktop Environment.")
                                   "xfconf-" version ".tar.bz2"))
               (sha256
                (base32
-                "165xbr6y5z4zr235znkqlwkcy2ib9hgfqrdic0n7p57nas8ccv65"))))
+                "1zbyar9hzvqf498z1a3q6kf6r77a6qm9x2gw6p7i6sviy5h3ri4b"))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases
        ;; Run check after install phase to test dbus activation.
        (modify-phases %standard-phases
+         (add-before 'configure 'patch-configure
+           (lambda _
+             (substitute* "configure"
+               ;; XDG_CHECK_PACKAGE_BINARY requires an absolute path.
+               (("\\$PKG_CONFIG --variable=gdbus_codegen gio-2.0")
+                "type -p gdbus-codegen"))))
          ;; tests-end seems to hang forever
          (add-before 'configure 'patchout-tests-end
            (lambda _
