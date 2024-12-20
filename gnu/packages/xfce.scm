@@ -789,7 +789,7 @@ like appearance, display, keyboard and mouse settings.")
 (define-public thunar
   (package
     (name "thunar")
-    (version "4.18.11")                           ;stable version = even minor
+    (version "4.20.0")                           ;stable version = even minor
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/xfce/"
@@ -797,7 +797,7 @@ like appearance, display, keyboard and mouse settings.")
                                   "thunar-" version ".tar.bz2"))
               (sha256
                (base32
-                "04nnfnm1913vva3d8515l3vs99q61rhbafj0gl9qqmka0zidl2vx"))))
+                "1c28fnhx8zah6gcq607p8hicar72i6nsydfan593gkxfydv1lwr7"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      '(#:configure-flags '("--with-custom-thunarx-dirs-enabled")))
