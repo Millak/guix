@@ -366,7 +366,7 @@ merging features essential for loading menus modified with menu editors.")
 (define-public tumbler
   (package
     (name "tumbler")
-    (version "4.18.2")
+    (version "4.20.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/xfce/"
@@ -374,12 +374,20 @@ merging features essential for loading menus modified with menu editors.")
                                   "tumbler-" version ".tar.bz2"))
               (sha256
                (base32
-                "0ymy6a0hbv5iainphgpd7dfi8snpg7zs7lyqq2cgiiza6p3fwc5m"))))
+                "102qwa8an7wdqf0hrqd5k51aiib3zww0iizsigllfrcjamyn9cbl"))))
     (build-system gnu-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'configure 'patch-configure
+                 (lambda _
+                   (substitute* "configure"
+                     ;; XDG_CHECK_PACKAGE_BINARY requires an absolute path.
+                     (("\\$PKG_CONFIG --variable=gdbus_codegen gio-2.0")
+                      "type -p gdbus-codegen")))))))
     (native-inputs
      (list pkg-config intltool
-           `(,glib "bin") ; need glib-genmarshal
-           dbus-glib))       ; need dbus-binding-tool
+           `(,glib "bin")))       ; need glib-genmarshal and gdbus-codegen
     (propagated-inputs
      (list glib))                 ; required by tumbler-1.pc
     (inputs
