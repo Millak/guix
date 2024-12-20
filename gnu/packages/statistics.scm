@@ -7108,14 +7108,14 @@ completion.")
 (define-public python-rpy2
   (package
     (name "python-rpy2")
-    (version "3.5.15")
+    (version "3.5.17")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "rpy2" version))
         (sha256
          (base32
-          "0asvybb7kmr48pfkibp1qi3h3vlq2fl0mazaf0xj6zywhi5awks4"))))
+          "10nmydlbmi0vyim7sx71isx3z2mnnfjmhf3248cicy9x1z1hizyv"))))
     (build-system pyproject-build-system)
     (propagated-inputs
      (list python-cffi
@@ -7145,7 +7145,9 @@ completion.")
            python-numpy
            python-pandas
            python-pytest
-           python-pytest-cov))
+           python-pytest-cov
+           python-setuptools
+           python-wheel))
     (home-page "https://rpy2.github.io")
     (synopsis "Python interface to the R language")
     (description "rpy2 is a redesign and rewrite of rpy.  It is providing a
