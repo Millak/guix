@@ -2523,19 +2523,26 @@ across many files.")
 (define-public python-gwcs
   (package
     (name "python-gwcs")
-    (version "0.21.0")
+    (version "0.22.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "gwcs" version))
        (sha256
-        (base32 "1fn5l4v236bl7xqi1is40c2q57dji8by98iwqcndfnmjwqf7zllc"))))
+        (base32 "0lvab51ryfb4sjsnckmap7idh29as2mjngkyin4ngfy7hdzknvg9"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "pyproject.toml"
+               ;; scipy>=1.14.1
+               ((">=1.14.1") ">=1.12.0")))))))
     (native-inputs
-     (list python-jsonschema
-           python-jmespath
-           python-pytest
-           python-pytest-doctestplus
+     (list python-pytest
+           python-pytest-astropy
            python-pyyaml
            python-setuptools-scm))
     (propagated-inputs
