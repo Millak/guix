@@ -3118,6 +3118,14 @@ revert and check changes.
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
+       #:cargo-test-flags '("--"
+                            ;; Not all files included.
+                            "--skip=tests::test_cli_arg_order_1"
+                            "--skip=tests::test_cli_arg_order_2"
+                            "--skip=tests::test_cli_input_directory"
+                            "--skip=tests::test_cli_input_missing_file"
+                            "--skip=tests::test_cli_input_stdin"
+                            "--skip=tests::test_cli_missing_param_value")
        #:cargo-inputs
        (("rust-ansi-term" ,rust-ansi-term-0.12)
         ("rust-clap" ,rust-clap-4)
