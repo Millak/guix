@@ -67,6 +67,7 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages search)
+  #:use-module (gnu packages serialization)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages version-control)
@@ -1020,7 +1021,7 @@ window manager.")
 (define-public xfdesktop
   (package
     (name "xfdesktop")
-    (version "4.18.1")
+    (version "4.20.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/xfce/"
@@ -1028,7 +1029,7 @@ window manager.")
                                   "xfdesktop-" version ".tar.bz2"))
               (sha256
                (base32
-                "0mpp9znpwkhp1h4cmpxhkhij1qgdr0fa6npzm4i7x1r51hcni4pg"))
+                "0cjnsrf7788vyq1mfcx4qypdhd9b2gqigj6yk6ffpwy7h2x42w12"))
               (modules '((guix build utils)))
               (snippet
                #~(begin
@@ -1038,6 +1039,18 @@ window manager.")
     (build-system gnu-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
+                  (add-before 'configure 'patch-configure
+                    (lambda _
+                      (substitute* "configure"
+                        ;; XDG_CHECK_PACKAGE_BINARY requires an absolute path.
+                        (("\\$PKG_CONFIG --variable=gdbus_codegen gio-2.0")
+                         "type -p gdbus-codegen")
+                        (("\\$PKG_CONFIG --variable=glib_compile_resources gio-2.0")
+                         "type -p glib-compile-resources")
+                        (("\\$PKG_CONFIG --variable=glib_genmarshal glib-2.0")
+                         "type -p glib-genmarshal")
+                        (("\\$PKG_CONFIG --variable=glib_mkenums glib-2.0")
+                         "type -p glib-mkenums"))))
                   (add-before 'configure 'prepare-background-image
                     (lambda _
                       ;; Stick a Guix logo in the background image.  XXX: It
@@ -1051,23 +1064,26 @@ window manager.")
                                           "/tmp/guix.png" image
                                           "/tmp/final.jpg")
                                   (copy-file "/tmp/final.jpg" image))
-                                '(;; "backgrounds/xfce-blue.jpg"
-                                  "backgrounds/xfce-stripes.png"
-                                  "backgrounds/xfce-teal.jpg"
-                                  "backgrounds/xfce-verticals.png"))
+                                '( ;; "backgrounds/xfce-blue.jpg"
+                                  "backgrounds/xfce-stripes.svg"
+                                  "backgrounds/xfce-teal.svg"
+                                  "backgrounds/xfce-verticals.svg"))
                       #t)))
 
        #:disallowed-references (,inkscape/stable ,imagemagick)))
     (native-inputs
-     (list pkg-config intltool
+     (list (list glib "bin") pkg-config intltool
            ;; For our own ‘prepare-background-image’ phase.
            inkscape/stable imagemagick))
     (inputs
      (list exo
            garcon
+           gtk-layer-shell
            libnotify
            libwnck
            libxfce4ui
+           libxfce4windowing
+           libyaml
            thunar))
     (home-page "https://www.xfce.org/")
     (synopsis "Xfce desktop manager")
