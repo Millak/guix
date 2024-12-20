@@ -828,7 +828,7 @@ fast.")
 (define-public thunar-volman
   (package
     (name "thunar-volman")
-    (version "4.18.0")
+    (version "4.20.0")
     (source
      (origin
        (method url-fetch)
@@ -836,7 +836,7 @@ fast.")
                            (version-major+minor version) "/"
                            "thunar-volman-" version ".tar.bz2"))
        (sha256
-        (base32 "0rgwhxp6f3cd4ldl6zirvzl4n64f2k65lach84gs4ip2zdzmrdwk"))))
+        (base32 "1nmi3q9jfc4p3dznw96m4ryk8h136qp5bvfipy7mnlcvjm9dinmh"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config intltool))
