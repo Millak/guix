@@ -2283,7 +2283,7 @@ lan interface (signal state, signal quality, network name (SSID)).")
 (define-public xfce4-weather-plugin
   (package
    (name "xfce4-weather-plugin")
-   (version "0.11.2")
+   (version "0.11.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/panel-plugins/"
@@ -2292,7 +2292,7 @@ lan interface (signal state, signal quality, network name (SSID)).")
                                   "/xfce4-weather-plugin-" version ".tar.bz2"))
               (sha256
                (base32
-                "0sw7p8xsgyc7b5w92abigqz9mii79w2vdlprm5c0hmb3g3zhmm35"))))
+                "0mywq00xs0rvdp3kd7kmcv2brpzixz65ijzk2ahg7lh677k1yb80"))))
     (build-system gnu-build-system)
     (native-inputs
      (list intltool pkg-config))
