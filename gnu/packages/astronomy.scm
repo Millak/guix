@@ -6318,7 +6318,7 @@ solar physics.")
            python-setuptools-scm
            python-wheel))
     (propagated-inputs
-     (list python-asdf
+     (list python-asdf-3
            python-asdf-astropy
            python-astropy
            python-gwcs
