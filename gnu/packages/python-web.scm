@@ -5695,7 +5695,8 @@ addon modules.")
     (propagated-inputs
      (list python-requests))
     (native-inputs
-     (list python-pytest python-pytest-timeout))))
+     (list python-pytest python-pytest-timeout python-setuptools
+           python-wheel))))
 
 (define-public python-bottle
   (package
