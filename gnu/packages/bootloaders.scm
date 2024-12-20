@@ -1041,9 +1041,7 @@ U-Boot must be used."
                                        (gnu-triplet->nix-system triplet))))))
     (package
       (inherit u-boot)
-      (name (string-append "u-boot-"
-                           (string-replace-substring (string-downcase board)
-                                                     "_" "-")
+      (name (string-append (downstream-package-name "u-boot-" board)
                            (or name-suffix "")))
       (description (if append-description
                        (string-append (package-description u-boot)
