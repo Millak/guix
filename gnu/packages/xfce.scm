@@ -679,7 +679,7 @@ your system in categories, so you can quickly find and launch them.")
 (define-public xfce4-session
   (package
     (name "xfce4-session")
-    (version "4.18.4")
+    (version "4.20.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/xfce/"
@@ -687,11 +687,11 @@ your system in categories, so you can quickly find and launch them.")
                                   "xfce4-session-" version ".tar.bz2"))
               (sha256
                (base32
-                "05k5w3n3hyb93a74f0qc6q0lky4vc51vdlsra8d8i2rkqxs5174s"))
+                "11agss7x749i4wnw82czv0b053mhqn34hwi8rihj6sgfwqzj6aaj"))
               (modules '((guix build utils)))
               (snippet
                '(begin
-                  (substitute* "xfsm-shutdown-helper/main.c"
+                  (substitute* "libxfsm/xfsm-shutdown-common.h"
                     (("/sbin/shutdown -h now")  "halt")
                     (("/sbin/shutdown -r now")  "restart")
                     (("/usr/sbin/pm-suspend")   "pm-suspend")
@@ -700,27 +700,30 @@ your system in categories, so you can quickly find and launch them.")
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags
-       (list (string-append "--with-xsession-prefix=" %output))
+       (list (string-append "--with-xsession-prefix=" %output)
+             (string-append "--with-wayland-session-prefix=" %output))
        ;; Disable icon cache update.
        #:make-flags
        '("gtk_update_icon_cache=true")
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'patch-xflock
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((xset (assoc-ref inputs "xset")))
-               (substitute* "scripts/xflock4"
-                 (("xset") (string-append xset "/bin/xset")))))))))
+         (add-before 'configure 'patch-configure
+           (lambda _
+             (substitute* "configure"
+               ;; XDG_CHECK_PACKAGE_BINARY requires an absolute path.
+               (("\\$PKG_CONFIG --variable=gdbus_codegen gio-2.0")
+                "type -p gdbus-codegen")))))))
     (native-inputs
-     (list pkg-config intltool))
+     (list (list glib "bin") pkg-config intltool))
     (inputs
      (list iceauth
+           gtk-layer-shell
            upower
            polkit
            libsm
            libwnck
            libxfce4ui
-           xset))
+           libxfce4windowing))
     (home-page "https://www.xfce.org/")
     (synopsis "Xfce session manager")
     (description
