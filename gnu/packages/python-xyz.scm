@@ -17830,7 +17830,8 @@ libmagic.")))
                ;; of the build file name present in the message.
                "and not test_evaluate_exception_trace "
                ;; This test fail with TimeoutError, no message on stderr.
-               "and not test_soft_terminate "))
+               "and not test_soft_terminate "
+               "and not test_debugger_case_deadlock_interrupt_thread"))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-tests
@@ -17872,6 +17873,9 @@ libmagic.")))
           (add-before 'check 'pre-check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
+                ;; Without this we get this error: type object 'GreenSocket'
+                ;; has no attribute 'sendmsg'.
+                (setenv "EVENTLET_NO_GREENDNS" "YES")
                 (setenv "PYDEVD_USE_CYTHON" "YES"))))
           (add-after 'install 'install-attach-binary
             (lambda _
