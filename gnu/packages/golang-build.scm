@@ -499,29 +499,21 @@ language.")
     (build-system go-build-system)
     (arguments
      (list
+      #:skip-build? #t
       #:import-path "golang.org/x/exp"
+      #:test-flags
+      ;; Disable failing tests: error running `go mod init`: go:
+      ;; modules disabled by GO111MODULE=off.
+      #~(list "-skip" (string-join
+                       (list "TestRelease_gitRepo_uncommittedChanges"
+                             "TestFailure")
+                       "|"))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'remove-failing-tests
+          (add-after 'unpack 'remove-benchmarks
             (lambda* (#:key import-path #:allow-other-keys)
               (with-directory-excursion (string-append "src/" import-path)
-                ;; Benchmark requires other modules to pass tests, delete them.
-                (delete-file-recursively "slog/benchmarks")
-               (substitute* (find-files "." "\\_test.go$")
-                 ;; Disable failing tests: error running `go mod init`: go:
-                 ;; modules disabled by GO111MODULE=off; see 'go help modules'
-                 ;; , exit status 1
-                 (("TestFailure") "OffTestFailure")
-                 (("TestRelease_gitRepo_uncommittedChanges")
-                  "OffTestRelease_gitRepo_uncommittedChanges")))))
-          ;; XXX: Workaround for go-build-system's lack of Go modules
-          ;; support.
-          (delete 'build)
-          (replace 'check
-            (lambda* (#:key tests? import-path #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion (string-append "src/" import-path)
-                  (invoke "go" "test" "-v" "./..."))))))))
+                (delete-file-recursively "slog/benchmarks")))))))
     (propagated-inputs
      (list go-github-com-google-go-cmp
            go-golang-org-x-mod
