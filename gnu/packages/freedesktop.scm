@@ -1462,7 +1462,7 @@ fullscreen) or other display servers.")
 (define-public wayland-protocols
   (package
     (name "wayland-protocols")
-    (version "1.38")
+    (version "1.39")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1471,7 +1471,7 @@ fullscreen) or other display servers.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1aik5zmpjwhxsfv9aa88sg95s0mg6yvy2cbqbd1xhigfbnq271zb"))))
+                "1dpcwsd2p6sjf5164b674cr7vq24hp3lfdshijj438r4bx8bld28"))))
     (build-system meson-build-system)
     (inputs
      (list wayland))
