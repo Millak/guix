@@ -62,6 +62,7 @@
 ;;; Copyright © 2024 Christina O'Donnell <cdo@mutix.org>
 ;;; Copyright © 2025 Ashvith Shetty <ashvithshetty10@gmail.com>
 ;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2024 Josep Bigorra <jjbigorra@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2519,6 +2520,32 @@ designed to make long texts pleasant and easy to read, even in less than ideal
 reproduction and display environments.  This package provides only TrueType
 files (TTF).")
     (home-page "https://software.sil.org/charis/")
+    (license license:silofl1.1)))
+
+(define-public font-monaspace
+  (package
+    (name "font-monaspace")
+    (version "1.101")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/githubnext/monaspace")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "00bpzzpwz5m20ap0c1gy0rf99pc76g8lk6jr0wh7xs8fjazq7lf1"))))
+    (build-system font-build-system)
+    (outputs '("out" "ttf" "woff"))
+    (home-page "https://monaspace.githubnext.com")
+    (synopsis "Innovative superfamily of fonts for code")
+    (description
+     "The Monaspace type system is a monospaced type superfamily with some
+modern tricks up its sleeve.  It consists of five variable axis typefaces.
+Each one has a distinct voice, but they are all metrics-compatible with one
+another, allowing you to mix and match them for a more expressive
+typographical palette.")
     (license license:silofl1.1)))
 
 (define-public font-mononoki
