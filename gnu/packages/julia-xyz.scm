@@ -5522,6 +5522,27 @@ recursive arrays like arrays of arrays.")
 @code{HTTP.jl} backends.")
     (license license:expat)))
 
+(define-public julia-referenceables
+  (package
+    (name "julia-referenceables")
+    (version "0.1.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/JuliaFolds2/Referenceables.jl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qjssgqrpyc726zm31r4fpllsyvgc21lw9kqz96whgg779y0yr80"))))
+    (build-system julia-build-system)
+    (propagated-inputs (list julia-adapt))
+    (home-page "https://github.com/JuliaFolds2/Referenceables.jl")
+    (synopsis "Provides an interface for referencing elements")
+    (description "This package provides an interface for readable and writable
+references to an element of an array or dictionary in Julia.")
+    (license license:expat)))
+
 (define-public julia-referencetests
   (package
     (name "julia-referencetests")
