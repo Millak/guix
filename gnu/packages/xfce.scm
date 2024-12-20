@@ -441,7 +441,7 @@ windowing-system-independent manner.")
 (define-public xfce4-panel
   (package
     (name "xfce4-panel")
-    (version "4.18.6")
+    (version "4.20.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/xfce/"
@@ -449,12 +449,17 @@ windowing-system-independent manner.")
                                   name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "0qkw1msrvq7hc4mjg9iai0kymgkrpj1nijv04zjbdfcbymhp2cr1"))
-              (patches (search-patches "xfce4-panel-plugins.patch"))))
+                "1f235lwmqavvsay9899gm7p2z3fdha6qgx05wczikhhnbmgwsczz"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-before 'configure 'patch-configure
+           (lambda _
+             (substitute* "configure"
+               ;; XDG_CHECK_PACKAGE_BINARY requires an absolute path.
+               (("\\$PKG_CONFIG --variable=gdbus_codegen gio-2.0")
+                "type -p gdbus-codegen"))))
          (add-after 'unpack 'fix-tzdata-path
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* (string-append "plugins/clock/clock.c")
@@ -470,15 +475,16 @@ windowing-system-independent manner.")
     (inputs
      (list tzdata ;; For fix-tzdata-path phase only.
            exo
-           gtk+-2
            xfconf
            garcon
+           gtk-layer-shell
            libwnck
-           libxfce4ui))
+           libxfce4ui
+           libxfce4windowing))
     (native-search-paths
      (list (search-path-specification
-            (variable "X_XFCE4_LIB_DIRS")
-            (files '("lib/xfce4")))))
+            (variable "XDG_DATA_DIRS")
+            (files '("share")))))
     (home-page "https://www.xfce.org/")
     (synopsis "Xfce desktop panel")
     (description

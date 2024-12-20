@@ -2370,7 +2370,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/xfig-Enable-error-message-for-missing-libraries.patch		\
   %D%/packages/patches/xfig-Fix-double-free-when-requesting-MediaBox.patch		\
   %D%/packages/patches/xfig-Use-pkg-config-to-set-fontconfig-CFLAGS-and-LIBS.patch	\
-  %D%/packages/patches/xfce4-panel-plugins.patch		\
   %D%/packages/patches/xfce4-settings-defaults.patch		\
   %D%/packages/patches/xgboost-use-system-dmlc-core.patch       \
   %D%/packages/patches/xmonad-dynamic-linking.patch		\
