@@ -6195,7 +6195,7 @@ install an implementation package such as gwcs.")
            python-setuptools-scm
            python-wheel))
     (propagated-inputs
-     (list python-asdf
+     (list python-asdf-3
            python-asdf-astropy))
     (home-page "https://github.com/spacetelescope/rad")
     (synopsis "Roman Attribute Dictionary")
