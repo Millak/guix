@@ -2803,6 +2803,30 @@ more complicated parallel cases.")
 encoding/decoding.  It has no dependencies.")
     (license license:expat)))
 
+(define-public go-github-com-detailyang-go-fallocate
+  (package
+    (name "go-github-com-detailyang-go-fallocate")
+    (version "0.0.0-20180908115635-432fa640bd2e")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/detailyang/go-fallocate")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1yvgkj5i43ihagdwg70vjgrhwf2mjsbyv2xwd6znsdwav6qpcdnw"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/detailyang/go-fallocate"))
+    (home-page "https://github.com/detailyang/go-fallocate")
+    (synopsis "Syscal @code{fallocate} implementation in Golang")
+    (description
+     "This package implements syscal @code{fallocate} by wrapping standard Go
+@code{os.SEEK_SET}.")
+    (license license:expat)))
+
 (define-public go-github-com-dgraph-io-badger
   (package
     (name "go-github-com-dgraph-io-badger")
