@@ -32424,7 +32424,7 @@ dumping of JSON5 data structures.")
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
                (invoke "python3" "tests/ci-test.py")))))))
-    (native-inputs (list python-pytest))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/Farama-Foundation/Farama-Notifications")
     (synopsis "Notifications for all Farama Foundation maintained libraries")
     (description
