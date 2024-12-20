@@ -20481,8 +20481,8 @@ and provides a uniform API regardless of which JSON implementation is used.")
     (build-system pyproject-build-system)
     (arguments
      (list  ; Integration tests require network connectivity.
-      #:test-flags '(list "--ignore=t/integration")))
-    (native-inputs (list python-pytest))
+      #:test-flags '(list "--ignore=t/integration/test_rmq.py")))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (propagated-inputs (list python-vine))
     (home-page "https://github.com/celery/py-amqp")
     (synopsis "Low-level AMQP client for Python (fork of amqplib)")
