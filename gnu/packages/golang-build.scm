@@ -473,7 +473,7 @@ language.")
 (define-public go-golang-org-x-exp
   (package
     (name "go-golang-org-x-exp")
-    (version "0.0.0-20240808152545-0cdaa3abc0fa")
+    (version "0.0.0-20241217172543-b2144cdd0a67")
     (source
      (origin
        (method git-fetch)
@@ -482,7 +482,7 @@ language.")
              (commit (go-version->git-ref version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1sa03fm57326qnchvfza7am7jjlz32l1yyqbdvy6mknw5bmp8a71"))
+        (base32 "01dq7llbqqdybv5s372zwlfiyq2syqpfqs7h4lxvbpqjq0aayf60"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -502,12 +502,29 @@ language.")
       #:skip-build? #t
       #:import-path "golang.org/x/exp"
       #:test-flags
-      ;; Disable failing tests: error running `go mod init`: go:
-      ;; modules disabled by GO111MODULE=off.
-      #~(list "-skip" (string-join
-                       (list "TestRelease_gitRepo_uncommittedChanges"
-                             "TestFailure")
-                       "|"))
+      #~(list "-skip"
+              (string-join
+               (list
+                ;; Disable failing tests: error running `go mod init`:
+                ;; go: modules disabled by GO111MODULE=off.
+                "TestRelease_gitRepo_uncommittedChanges"
+                "TestFailure"
+                ;; Delete: want nil discarded elements, got
+                ;; 0xc000012858, 0xc000012860
+                "TestDeleteClearTail"
+                ;; DeleteFunc: want nil discarded elements, got
+                ;; 0xc000012910, 0xc000012918
+                "TestDeleteFuncClearTail"
+                ;; Compact: want nil discarded elements, got
+                ;; 0xc000012b30, 0xc000012b38
+                "TestCompactClearTail"
+                ;; CompactFunc: want nil discarded elements, got
+                ;; 0xc000012be8, 0xc000012bf0
+                "TestCompactFuncClearTail"
+                ;; Replace: want nil discarded element, got
+                ;; 0xc000013058
+                "TestReplaceClearTail")
+               "|"))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'remove-benchmarks
