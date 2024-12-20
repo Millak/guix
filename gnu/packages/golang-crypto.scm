@@ -124,7 +124,7 @@ can be ignored.")
 (define-public go-filippo-io-age
   (package
     (name "go-filippo-io-age")
-    (version "1.2.0")
+    (version "1.2.1")
     (source
      (origin
        (method git-fetch)
@@ -133,7 +133,7 @@ can be ignored.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1dms32lxqgjipmlisng7dmy1sdw0qscj43x9lmpadyzbzc64lhrv"))))
+        (base32 "183iqzmdwk4b35vxrdg2gdzd4277yr5bgbgl9brqv3w1dap5v4pm"))))
     (build-system go-build-system)
     (arguments
      (list
