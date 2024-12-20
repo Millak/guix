@@ -35,6 +35,7 @@
   #:use-module (guix store)
   #:use-module (guix svn-download)
   #:use-module (guix upstream)
+  #:use-module ((guix utils) #:select (downstream-package-name))
   #:use-module (ice-9 ftw)
   #:use-module (ice-9 match)
   #:use-module (ice-9 popen)

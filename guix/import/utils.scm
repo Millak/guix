@@ -83,7 +83,6 @@
             read-lines
             chunk-lines
 
-            downstream-package-name
             guix-name
 
             recursive-import))
@@ -613,14 +612,6 @@ separated by PRED."
         (if (null? after)
             (reverse res)
             (loop (cdr after) res))))))
-
-(define (downstream-package-name prefix name)
-  "Return the Guix package name for a given package NAME."
-  (string-append prefix (string-map (match-lambda
-                                      (#\_ #\-)
-                                      (#\. #\-)
-                                      (chr (char-downcase chr)))
-                                    name)))
 
 (define-deprecated/alias guix-name downstream-package-name)
 

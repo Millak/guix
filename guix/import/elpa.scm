@@ -44,6 +44,7 @@
   #:use-module (guix git)
   #:use-module (guix hash)
   #:use-module (guix store)
+  #:use-module ((guix utils) #:select (downstream-package-name))
   #:use-module (guix base32)
   #:use-module (guix upstream)
   #:use-module (guix packages)

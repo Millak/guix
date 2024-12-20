@@ -91,6 +91,7 @@
             %current-system
             %current-target-system
             package-name->name+version
+            downstream-package-name
             target-linux?
             target-hurd?
             system-hurd?
@@ -705,6 +706,14 @@ a character other than '@'."
     (#f  (values spec #f))
     (idx (values (substring spec 0 idx)
                  (substring spec (1+ idx))))))
+
+(define (downstream-package-name prefix name)
+  "Return the Guix package name for a given package NAME."
+  (string-append prefix (string-map (match-lambda
+                                      (#\_ #\-)
+                                      (#\. #\-)
+                                      (chr (char-downcase chr)))
+                                    name)))
 
 (define* (target-linux? #:optional (target (or (%current-target-system)
                                                (%current-system))))
