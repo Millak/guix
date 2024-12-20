@@ -7894,7 +7894,9 @@ Encoding for HTTP.")
            python-pytest
            python-pytest-cov
            python-pytest-mock
-           python-passlib))
+           python-passlib
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/canonical/cloud-init")
     (synopsis "Cloud instance initialization tools")
     (description
