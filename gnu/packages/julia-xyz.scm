@@ -1292,6 +1292,28 @@ provides a macro that lets you use the latest syntax in a backwards-compatible
 way.")
     (license license:expat)))
 
+(define-public julia-compositionsbases
+  (package
+    (name "julia-compositionsbase")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/JuliaFunctional/CompositionsBase.jl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "11cfmc0rv0i8j6l7v59k4b367xx006nsxy9lkmqlzikc679zzzwa"))))
+    (build-system julia-build-system)
+    (native-inputs (list julia-documenter))
+    (propagated-inputs (list julia-inversefunctions))
+    (home-page "https://github.com/JuliaFunctional/CompositionsBase.jl")
+    (synopsis "Defines an operator for composition of morphisms")
+    (description "This package defines a new operator for composition
+of morphisms.")
+    (license license:expat)))
+
 (define-public julia-configurations
   (package
     (name "julia-configurations")
