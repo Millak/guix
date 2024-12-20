@@ -5192,13 +5192,12 @@ syntax.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; XXX: Check why these 3 tests fail.
-      #:test-flags #~(list "-k"
-                           (string-append "not test_sending_empty_netstring"
-                            " and not test_sending_one_netstring"
-                            " and not test_sending_two_netstrings"))))
-    (native-inputs (list python-pytest python-twisted python-setuptools
-                         python-wheel))
+      #:test-flags #~(list "ometa/test" "terml/test")))
+    (native-inputs
+     (list python-pytest
+           python-twisted
+           python-setuptools
+           python-wheel))
     (home-page "https://launchpad.net/parsley")
     (synopsis "Parsing and pattern matching Python library")
     (description
