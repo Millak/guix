@@ -38,6 +38,7 @@
   #:use-module (gnu packages apr)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages build-tools)
   #:use-module (gnu packages calendar)
   #:use-module (gnu packages cdrom)
   #:use-module (gnu packages fonts)
@@ -2222,7 +2223,7 @@ local weather in the panel, using forecast data provided by the
 (define-public xfce4-dev-tools
   (package
     (name "xfce4-dev-tools")
-    (version "4.18.1")
+    (version "4.20.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/xfce/"
@@ -2230,13 +2231,16 @@ local weather in the panel, using forecast data provided by the
                                   "xfce4-dev-tools-" version ".tar.bz2"))
               (sha256
                (base32
-                "10bnb8q7sj60ahzfwrb3av4ngr17wk1p6jsnfv0yn8l90kksnb41"))))
+                "1ak68k6r0q6dh3knc3vxqvkvkw54f916wfrsm8g7gk0fiah3kfhz"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list pkg-config
+     (list meson
+           pkg-config
            libxslt))
     (inputs
-     (list glib))
+     (list glib python))
+    (propagated-inputs
+     (list `(,glib "bin")))    ; 'glib-genmarshal' required by 'xdt-depends.m4'
     (home-page "https://docs.xfce.org/xfce/xfce4-dev-tools/")
     (synopsis "Xfce developer tools")
     (description
