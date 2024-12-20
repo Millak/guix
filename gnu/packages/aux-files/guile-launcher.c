@@ -84,11 +84,17 @@ int
 main (int argc, char **argv)
 {
   /* Try to install the current locale; remain silent if it fails.  */
-  if (setlocale (LC_ALL, "") == NULL)
-    /* The 'guix pull'-provided 'guix' includes at least en_US.utf8 so use
-       that.  That gives us UTF-8 support for 'scm_to_locale_string', etc.,
-       which is always preferable over the C locale.  */
-    setlocale (LC_ALL, "en_US.utf8");
+  char *locale = setlocale (LC_ALL, "");
+  if (locale == NULL || strcmp (locale, "C") == 0)
+    {
+      /* The 'guix pull'-provided 'guix' includes at least C.UTF-8 (which is
+	 baked into glibc, except when cross-compiling) so use that, and fall
+	 back to en_US.UTF-8.  That gives us UTF-8 support for
+	 'scm_to_locale_string', etc., which is always preferable over the C
+	 locale.  */
+      if (setlocale (LC_ALL, "C.UTF-8") == NULL)
+	setlocale (LC_ALL, "en_US.utf8");
+    }
 
   const char *str;
   str = getenv ("GUILE_LOAD_PATH");

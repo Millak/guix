@@ -521,7 +521,9 @@ part."
   "Install the current locale settings."
   (catch 'system-error
     (lambda _
-      (setlocale LC_ALL ""))
+      (when (string=? (setlocale LC_ALL "") "C")
+        ;; If the current locale is "C", prefer "C.UTF-8".
+        (setlocale LC_ALL "C.UTF-8")))
     (lambda args
       (display-hint (G_ "Consider installing the @code{glibc-locales} package
 and defining @code{GUIX_LOCPATH}, along these lines:
