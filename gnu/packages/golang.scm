@@ -4474,53 +4474,6 @@ a cron spec parser and job runner.")
        "This is a fork of another go-libvterm library for use with aerc.")
       (license license:expat))))
 
-(define-public gotestsum
-  (package
-    (name "gotestsum")
-    (version "1.12.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/gotestyourself/gotestsum")
-                     (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0fx92jh6ay4rk1ljbgp9b2m4fafqwy0a19q7lhdabgb1j8dvgxvs"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "gotest.tools/gotestsum"
-      #:test-flags
-      #~(list "-skip"
-              (string-join
-               (list "TestE2E_IgnoresWarnings"
-                     "TestE2E_MaxFails_EndTestRun"
-                     "TestScanTestOutput_TestTimeoutPanicRace/panic-race-2")
-               "|"))
-      ;; Run just unit test, integration tests from "testjson" require: run
-      ;; 'go test . -update' to automatically update
-      ;; testdata/summary/with-run-id to the new expected value.'
-      #:test-subdirs #~(list "cmd/..." "internal/...")))
-    (native-inputs
-     (list go-github-com-bitfield-gotestdox
-           go-github-com-dnephin-pflag
-           go-github-com-fatih-color
-           go-github-com-fsnotify-fsnotify
-           go-github-com-google-go-cmp
-           go-github-com-google-shlex
-           go-golang-org-x-sync
-           go-golang-org-x-sys
-           go-golang-org-x-term
-           go-golang-org-x-tools
-           go-gotest-tools-v3))
-    (synopsis "Go test runner with output optimized for humans")
-    (description "This package provides a @code{go test} runner with output
-optimized for humans, JUnit XML for CI integration, and a summary of the
-test results.")
-    (home-page "https://github.com/gotestyourself/gotestsum")
-    (license license:asl2.0)))
-
 (define-public go-github-com-macronut-go-tproxy
   (package
     (name "go-github-com-macronut-go-tproxy")
