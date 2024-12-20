@@ -121,6 +121,36 @@ value and call @code{t.Fatal()} if the assertion fails.")
 @end itemize")
     (license license:expat)))
 
+(define-public go-github-com-bitfield-gotestdox
+  (package
+    (name "go-github-com-bitfield-gotestdox")
+    (version "0.2.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/bitfield/gotestdox")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1kxj8igjm0wmq9nj3wns7nf95rx70xm327ra68d3ffh300rxg401"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/bitfield/gotestdox"))
+    (propagated-inputs
+     (list go-github-com-fatih-color
+           go-github-com-google-go-cmp
+           go-github-com-mattn-go-isatty
+           go-github-com-rogpeppe-go-internal
+           go-golang-org-x-text))
+    (home-page "https://github.com/bitfield/gotestdox")
+    (synopsis "Format Go test results as readable documentation")
+    (description
+     "This packages implements a functionality to run tests and report the
+results, converting test names WrittenInCamelCase into ordinary sentences.")
+    (license license:expat)))
+
 (define-public go-github-com-caarlos0-testfs
   (package
     (name "go-github-com-caarlos0-testfs")
@@ -2103,6 +2133,20 @@ into @code{go-structlayout-pretty}.")))
     (synopsis "Format the output of go-structlayout with ASCII art in Go")
     (description "This package takes @code{go-structlayout}-like JSON and
 prints an ASCII fraphic representing the memory layout.")))
+
+(define-public go-testdox
+  (package
+    (inherit go-github-com-bitfield-gotestdox)
+    (name "go-testdox")
+    (arguments
+     (list
+      #:install-source? #f
+      #:import-path "github.com/bitfield/gotestdox/cmd/gotestdox"
+      #:unpack-path "github.com/bitfield/gotestdox"))
+    (description
+     (string-append (package-description go-github-com-bitfield-gotestdox)
+                    "  This package provides an command line interface (CLI)
+tool."))))
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
