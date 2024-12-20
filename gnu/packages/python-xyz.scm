@@ -10448,7 +10448,7 @@ scratch, as well as in-place editing.")
                    " and not test_fetch_data_using_test_data_with_no_file_in_data_copies_from_stubs"
                    " and not test_fetch_data_using_test_data_and_force_with_file_in_data_over_writes"))))
     (propagated-inputs (list python-param python-pyyaml))
-    (native-inputs (list python-flake8 python-pytest))
+    (native-inputs (list python-flake8 python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/holoviz-dev/pyct")
     (synopsis "Common packaging tasks")
     (description
