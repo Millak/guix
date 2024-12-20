@@ -1213,7 +1213,7 @@ on your desktop.")
 (define-public xfce4-dict
   (package
     (name "xfce4-dict")
-    (version "0.8.6")
+    (version "0.8.8")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/apps/" name "/"
@@ -1221,7 +1221,7 @@ on your desktop.")
                                   name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "0h8adjgb7126hafik7r1k9wr3g6d835ggsh8zj9k4k9mf35bfpdf"))))
+                "05p9xbjzhqg2a13c9vsva854kpqjvzj4xjaj98bjrn3ns9wv030d"))))
     (build-system gnu-build-system)
     (native-inputs
      (list intltool pkg-config))
