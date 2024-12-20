@@ -1206,7 +1206,15 @@ MANIFEST.  Single-file bundles are required by programs such as Git and Lynx."
                           (scandir dir (negate (cute member <> '("." "..")))))))
                   (filter file-exists?
                           (map (cute string-append <> "/share/emacs/site-lisp")
-                               '#$(manifest-inputs manifest))))))
+                               '#$(manifest-inputs manifest)))))
+                (native-comp-needle
+                 ;; Dynamically find native-site-lisp relative to profile.
+                 ;; We can not hard-code the path here, because the output
+                 ;; isn't known yet.
+                 '(expand-file-name "../../../lib/emacs/native-site-lisp"))
+                (native-comp-dirs
+                 (search-path-as-list '("lib/emacs/native-site-lisp")
+                                      '#$(manifest-inputs manifest))))
             (mkdir-p destdir)
             (with-directory-excursion destdir
               (call-with-output-file "subdirs.el"
@@ -1214,6 +1222,18 @@ MANIFEST.  Single-file bundles are required by programs such as Git and Lynx."
                   (write
                    `(normal-top-level-add-to-load-path
                      (list ,@(delete-duplicates subdirs)))
+                   port)
+                  (newline port)
+                  (write
+                   `(when (boundp 'native-comp-eln-load-path)
+                      (let ((needle ,native-comp-needle))
+                        (setq native-comp-eln-load-path
+                              (mapcan (lambda (dir)
+                                        (if (equal dir needle)
+                                            (nconc ',native-comp-dirs
+                                                   (list dir))
+                                            (list dir)))
+                                      native-comp-eln-load-path))))
                    port)
                   (newline port)
                   #t)))))))
