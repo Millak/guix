@@ -3005,6 +3005,34 @@ mtime,ctime and btime for files.")
      "Regexp2 is a feature-rich RegExp engine for Go.")
     (license license:expat)))
 
+(define-public go-github-com-dnephin-pflag
+  (package
+    (name "go-github-com-dnephin-pflag")
+    (version "1.0.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dnephin/pflag")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1d3aakwpwdbq3lqpk5kdqlr0h7maqxnpsbrd2022xwd93fxyxcq0"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ; FIXME
+      #:import-path "github.com/dnephin/pflag"))
+    (home-page "https://github.com/dnephin/pflag")
+    (synopsis "Drop-in replacement for Go's flag package")
+    (description
+     "Package pflag is a drop-in replacement for Go's flag package,
+implementing POSIX/GNU-style --flags.  It is compatible with the
+@url{http://www.gnu.org/software/libc/manual/html_node/Argument-Syntax.html,
+GNU extensions to the POSIX recommendations for command-line options}.  This
+is an activly maintained fork of @url{https://github.com/ogier/pflag}.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-docopt-docopt-go
   (let ((commit "ee0de3bc6815ee19d4a46c7eb90f829db0e014b1")
         (revision "0"))
