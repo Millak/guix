@@ -6325,6 +6325,27 @@ create GraphQL schemas, an execution engine to execute GraphQL queries, and a
 HTTP handler to implement a HTTP GraphQL endpoint.")
     (license license:agpl3+)))
 
+(define-public guile-libnotify
+  (package
+    (name "guile-libnotify")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ekaitz-zarraga/guile-libnotify")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "055d3xjx819yr1mhph3lvciqn17hxmqrh3vp8cjz4905yr0bf7r2"))))
+    (build-system gnu-build-system)
+    (native-inputs (list autoconf automake pkg-config texinfo))
+    (inputs (list guile-3.0 libnotify))
+    (synopsis "Guile bindings for libnotify")
+    (description "Provides bindings for GNOME's libnotify C library to Guile")
+    (home-page "https://github.com/ekaitz-zarraga/guile-libnotify")
+    (license license:gpl3+)))
+
 (define-public lokke
   (let ((commit "92d36370dc6d218ff3bf315e56ebef93808c1b79")
         (revision "1"))
