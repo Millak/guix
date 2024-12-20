@@ -1345,7 +1345,7 @@ system resources, while still being visually appealing and user friendly.")
 (define-public xfce4-power-manager
   (package
     (name "xfce4-power-manager")
-    (version "4.18.4")
+    (version "4.20.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/xfce/"
@@ -1353,10 +1353,19 @@ system resources, while still being visually appealing and user friendly.")
                                   "xfce4-power-manager-" version ".tar.bz2"))
               (sha256
                (base32
-                "0x6qychcgqxc5dwwxzypqw2da35y6cd25ngg42zxndnrvixqz4bn"))))
+                "0agdsq2d4kr9aw7nqj1x5cgpxqcjffajipwjvlxq6likyv7924wp"))))
     (build-system gnu-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'configure 'patch-configure
+                 (lambda _
+                   (substitute* "configure"
+                     ;; XDG_CHECK_PACKAGE_BINARY requires an absolute path.
+                     (("\\$PKG_CONFIG --variable=gdbus_codegen gio-2.0")
+                      "type -p gdbus-codegen")))))))
     (native-inputs
-     (list pkg-config intltool))
+     (list (list glib "bin") pkg-config intltool))
     (inputs
      (list libxrandr gtk+ upower libnotify libxfce4ui))
     (home-page "https://www.xfce.org/")
