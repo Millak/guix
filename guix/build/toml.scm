@@ -414,6 +414,7 @@ the list KEY. For instance a KEY (a b) would retrieve alist[a][b]."
                                           local-time)
                                         tails)))
       ('array (list))
+      ('inline-table '())
       (('inline-table tails ...)
        (eval (keyword-flatten '(keyval) tails) '() '()))))
 

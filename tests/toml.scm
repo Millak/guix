@@ -396,6 +396,14 @@ fruit.apple.taste.sweet = true"))
 point = { x = 1, y = 2 }
 animal = { type.name = \"pug\" }"))
 
+(test-equal "parse-toml: Empty inline table"
+ '(("name")
+   ("point")
+   ("animal"))
+ (parse-toml "name = {}
+point = { }
+animal = {    }"))
+
 (test-error "parse-toml: Invalid assignment to inline table"
  #t
  (parse-toml "[product]
