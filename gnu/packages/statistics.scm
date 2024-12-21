@@ -2587,20 +2587,14 @@ Meier, Nelson Aalen and regression.")
 (define-public python-mapie
   (package
     (name "python-mapie")
-    (version "0.8.6")
+    (version "0.9.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "MAPIE" version))
               (sha256
                (base32
-                "013ljcjjl3k9yb3166fnvr6nsb9ph4rhidpdjjks78qw0w1j7faa"))))
+                "1lyqszfgmqfsyvfaxplzz84iqm7s49rdscjjhnxlymrasrizfp26"))))
     (build-system pyproject-build-system)
-    ;; See https://github.com/scikit-learn-contrib/MAPIE/issues/432
-    (arguments
-     (list
-      #:test-flags
-      '(list "-k" (string-append "not test_correct_results"
-                                 " and not test_correct_results_binary"))))
     (native-inputs (list python-pandas python-pytest python-setuptools
                          python-wheel))
     (propagated-inputs (list python-numpy python-scikit-learn))
