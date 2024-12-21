@@ -204,3 +204,48 @@
     (description
      "This package provides Clang AST extraction API for use in the C2Rust project.")
     (license license:bsd-3)))
+
+(define-public rust-c2rust-transpile-0.18
+  (package
+    (name "rust-c2rust-transpile")
+    (version "0.18.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "c2rust-transpile" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "09fvi2id0qjhfvsqcz9222ac81lyl2j6rbq280dhn06y1nvy000c"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-c2rust-ast-builder" ,rust-c2rust-ast-builder-0.18)
+                       ("rust-c2rust-ast-exporter" ,rust-c2rust-ast-exporter-0.18)
+                       ("rust-c2rust-ast-printer" ,rust-c2rust-ast-printer-0.18)
+                       ("rust-c2rust-bitfields" ,rust-c2rust-bitfields-0.18)
+                       ("rust-colored" ,rust-colored-2)
+                       ("rust-dtoa" ,rust-dtoa-1)
+                       ("rust-failure" ,rust-failure-0.1)
+                       ("rust-fern" ,rust-fern-0.6)
+                       ("rust-handlebars" ,rust-handlebars-4)
+                       ("rust-indexmap" ,rust-indexmap-1)
+                       ("rust-itertools" ,rust-itertools-0.10)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-log-reroute" ,rust-log-reroute-0.1)
+                       ("rust-pathdiff" ,rust-pathdiff-0.2)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-bencode" ,rust-serde-bencode-0.2)
+                       ("rust-serde-bytes" ,rust-serde-bytes-0.11)
+                       ("rust-serde-derive" ,rust-serde-derive-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-strum" ,rust-strum-0.24)
+                       ("rust-strum-macros" ,rust-strum-macros-0.24)
+                       ("rust-syn" ,rust-syn-1))))
+    (home-page "https://c2rust.com/")
+    (synopsis "C2Rust transpiler implementation")
+    (description "This package provides C2Rust transpiler implementation.")
+    (license license:bsd-3)))
