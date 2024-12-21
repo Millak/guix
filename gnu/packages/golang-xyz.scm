@@ -6269,6 +6269,30 @@ allocation.  @code{fastime} is returning the approximate time.")
      "This package provides a pretty printer for Go values.")
     (license license:expat)))
 
+(define-public go-github-com-kr-text
+  (package
+    (name "go-github-com-kr-text")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kr/text")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0hf58ypz6rxsw6nx3i856whir9lvy4sdx946wbw1nfaf2rdmr9vx"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/kr/text"))
+    (propagated-inputs
+     (list go-github-com-creack-pty))
+    (home-page "https://github.com/kr/text")
+    (synopsis "Text formatting in Go")
+    (description "This package provides a text formatting functions in Go.")
+    (license license:expat)))
+
 (define-public go-github-com-kylelemons-godebug
   (package
     (name "go-github-com-kylelemons-godebug")

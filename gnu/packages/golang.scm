@@ -4114,28 +4114,6 @@ anchor names.")
 have super fancy logs.")
       (license license:expat))))
 
-(define-public go-github-com-kr-text
-  (package
-    (name "go-github-com-kr-text")
-    (version "0.2.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/kr/text")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0hf58ypz6rxsw6nx3i856whir9lvy4sdx946wbw1nfaf2rdmr9vx"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:import-path "github.com/kr/text"))
-    (propagated-inputs (list go-github-com-creack-pty))
-    (synopsis "Text formatting in Go")
-    (description "This package provides a text formatting functions in Go.")
-    (home-page "https://github.com/kr/text")
-    (license license:expat)))
-
 (define-public go-github-com-lucasb-eyer-go-colorful
   (package
     (name "go-github-com-lucasb-eyer-go-colorful")
