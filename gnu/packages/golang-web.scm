@@ -213,7 +213,7 @@ result and details about the health status of each component.")
 (define-public go-github-com-arceliar-ironwood
   (package
     (name "go-github-com-arceliar-ironwood")
-    (version "v0.0.0-20241210120540-9deb08d9f8f9")
+    (version "v0.0.0-20241213013129-743fe2fccbd3")
     (source
      (origin
        (method git-fetch)
@@ -223,7 +223,7 @@ result and details about the health status of each component.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "08i4zm8jxq89dznxx76marn5zfkyscmbn6cdsx0adz6pzwgpd1cz"))))
+         "1nnqn388lg4m9cq24vbgcp4z2wh78mga82p59gqzdl7d2cvpsk56"))))
     (build-system go-build-system)
     (arguments
      (list
