@@ -21123,12 +21123,14 @@ tree-based ensemble regressors.")
     (license license:bsd-3)))
 
 (define-public pyscenic
-  ;; Latest commit from the update-pyarrow branch
-  (let ((commit "5f170fdf474548c37ab381d1849c662820d658ee")
+  ;; We use this commit because the last release is not compatible with the
+  ;; current version of numpy.  See
+  ;; https://github.com/aertslab/pySCENIC/issues/579#issuecomment-2405207860
+  (let ((commit "eaf23eb1fdcaae79b273de56b374b71aa8afde5a")
         (revision "1"))
     (package
       (name "pyscenic")
-      (version (git-version "0.11.2" revision commit))
+      (version (git-version "0.12.1" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -21138,7 +21140,7 @@ tree-based ensemble regressors.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "03qkvy400rjndg2ds6bhcaprir71mqr2v3yv9vd77lcnzxgw3s0z"))))
+           "1si2ifmj0cy2yba8lw5m7mg97iqaxi0cwhy3j43rz5bzkp0cah8n"))))
       (build-system pyproject-build-system)
       (arguments
        (list
@@ -21149,43 +21151,45 @@ tree-based ensemble regressors.")
            (add-after 'unpack 'do-not-reference-deleted-modules
              (lambda _
                (substitute* "setup.py"
-                 (("'db2feather = .*',") "")
-                 (("'invertdb = .*',") "")
-                 (("'gmt2regions = pyscenic.cli.gmt2regions:main'") ""))))
+                 (("\"db2feather = .*\",") "")
+                 (("\"csv2loom = .*\",") "")
+                 (("\"invertdb = .*\",") "")
+                 (("\"gmt2regions = .*\",") ""))))
            ;; Numba needs a writable dir to cache functions.
            (add-before 'check 'set-numba-cache-dir
              (lambda _
                (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
       (propagated-inputs
-       (list python-ctxcore
-             python-cytoolz
-             python-multiprocessing-on-dill
-             python-llvmlite
-             python-numba
+       (list python-aiohttp
+             python-arboreto
              python-attrs
+             python-boltons
+             python-cloudpickle
+             python-ctxcore
+             python-cytoolz
+             python-dask
+             python-distributed
              python-frozendict
+             python-fsspec
+             python-interlap
+             python-llvmlite
+             python-loompy
+             python-multiprocessing-on-dill
+             python-networkx
+             python-numba
+             python-numexpr
              python-numpy
              python-pandas
-             python-cloudpickle
-             python-dask
-             python-pyarrow               ;XXX for dask
-             python-distributed
-             python-arboreto
-             python-boltons
-             python-setuptools
+             python-pyarrow             ;XXX for dask
              python-pyyaml
-             python-tqdm
-             python-interlap
-             python-umap-learn
-             python-loompy
-             python-networkx
-             python-scipy
-             python-fsspec
              python-requests
-             python-aiohttp
-             python-scikit-learn))
+             python-scikit-learn
+             python-scipy
+             python-setuptools
+             python-tqdm
+             python-umap-learn))
       (native-inputs
-       (list python-pytest))
+       (list python-pytest python-wheel))
       (home-page "https://scenic.aertslab.org/")
       (synopsis "Single-Cell regulatory network inference and clustering")
       (description
