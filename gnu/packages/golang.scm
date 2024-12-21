@@ -4886,12 +4886,9 @@ use one of our glamorous default themes.")
                 "0vnnmv813m8yhykwlxpizpvpimsirbaiwa3ckxfyx3ybv1swlq44"))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "github.com/emirpasic/gods"
-       ; Source-only package
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'build))))
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/emirpasic/gods"))
     (home-page "https://github.com/emirpasic/gods/")
     (synopsis "Implementation of various data structures and algorithms in Go")
     (description "This package provides implementation of various data
