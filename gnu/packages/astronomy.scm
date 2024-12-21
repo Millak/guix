@@ -5369,13 +5369,13 @@ implemented in the @acronym{JWST, James Webb Space Telescope} and
 (define-public python-stpipe
   (package
     (name "python-stpipe")
-    (version "0.7.0")
+    (version "0.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "stpipe" version))
        (sha256
-        (base32 "0kxm0vllyi3z149q3g3xpfl0c0wpviiyfh55rv0x6zvs0px6c81j"))
+        (base32 "1883gbn9dy3f53423rka55r828ml38dsqdamn2bgf2w5xf6cp7dg"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -5386,17 +5386,16 @@ implemented in the @acronym{JWST, James Webb Space Telescope} and
              (("from astropy.extern.configobj.configobj import ") "from configobj import ")
              (("from astropy.extern.configobj.validate import ") "from validate import "))))))
     (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-pytest-doctestplus
+           python-pytest-openfiles
+           python-setuptools-scm))
     (propagated-inputs
      (list python-asdf
            python-astropy
            python-crds
            python-stdatamodels))
-    (native-inputs
-     (list ;; python-jwst ; cycle:  python-stpipe -> python-jwst -> python-stpipe
-           python-pytest
-           python-pytest-doctestplus
-           python-pytest-openfiles
-           python-setuptools-scm))
     (home-page "https://github.com/spacetelescope/stpipe")
     (synopsis "Framework for calibration pipeline software")
     (description
