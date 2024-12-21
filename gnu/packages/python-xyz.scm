@@ -8470,13 +8470,13 @@ errors when data is invalid.")
 (define-public python-pydantic-core
   (package
     (name "python-pydantic-core")
-    (version "2.14.6")
+    (version "2.18.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pydantic_core" version))
        (sha256
-        (base32 "0j79pd6ixapsiwsigsxzmvbrpmdr7f7c4l9sl7xl6a1pjp9w3l0z"))))
+        (base32 "0dbar3zsflhkwl0s6lisamcf9hpawhsip7bk51gb03jn2y3kx7fy"))))
     (build-system cargo-build-system)
     (arguments
      (list
@@ -8496,18 +8496,18 @@ errors when data is invalid.")
         ("rust-base64" ,rust-base64-0.21)
         ("rust-enum-dispatch" ,rust-enum-dispatch-0.3)
         ("rust-idna" ,rust-idna-0.4)
-        ("rust-jiter" ,rust-jiter-0.0.4)
+        ("rust-jiter" ,rust-jiter-0.2)
         ("rust-num-bigint" ,rust-num-bigint-0.4)
         ("rust-python3-dll-a" ,rust-python3-dll-a-0.2)
         ("rust-pyo3" ,rust-pyo3-0.20)
         ("rust-pyo3-build-config" ,rust-pyo3-build-config-0.20)
         ("rust-regex" ,rust-regex-1)
-        ("rust-strum" ,rust-strum-0.25)
-        ("rust-strum-macros" ,rust-strum-macros-0.25)
+        ("rust-strum" ,rust-strum-0.26)
+        ("rust-strum-macros" ,rust-strum-macros-0.26)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-smallvec" ,rust-smallvec-1)
-        ("rust-speedate" ,rust-speedate-0.13)
+        ("rust-speedate" ,rust-speedate-0.14)
         ("rust-url" ,rust-url-2)
         ("rust-uuid" ,rust-uuid-1)
         ("rust-version-check" ,rust-version-check-0.9))
@@ -8515,7 +8515,7 @@ errors when data is invalid.")
       `(("rust-pyo3" ,rust-pyo3-0.20))
       #:install-source? #false))
     (native-inputs
-     (list maturin python-wrapper))
+     (list maturin python-wrapper python-typing-extensions))
     (propagated-inputs
      (list python-typing-extensions))
     (home-page "https://github.com/pydantic/pydantic-core")
