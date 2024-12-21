@@ -4871,30 +4871,6 @@ use one of our glamorous default themes.")
      "A simple, efficient spring animation library for smooth, natural motion.")
     (license license:expat)))
 
-(define-public go-github-com-emirpasic-gods
-  (package
-    (name "go-github-com-emirpasic-gods")
-    (version "1.18.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/emirpasic/gods")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0vnnmv813m8yhykwlxpizpvpimsirbaiwa3ckxfyx3ybv1swlq44"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:skip-build? #t
-      #:import-path "github.com/emirpasic/gods"))
-    (home-page "https://github.com/emirpasic/gods/")
-    (synopsis "Implementation of various data structures and algorithms in Go")
-    (description "This package provides implementation of various data
-structures and algorithms in Go.")
-    (license license:bsd-2)))
-
 (define-public go-gopkg-in-warnings
   (package
     (name "go-gopkg-in-warnings")

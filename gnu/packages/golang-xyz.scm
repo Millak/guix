@@ -3395,6 +3395,31 @@ specified in @url{https://datatracker.ietf.org/doc/html/rfc6350, RFC 6350}.")
 @url{https://tools.ietf.org/html/rfc6352, RFC 6352} specifications.")
     (license license:expat)))
 
+(define-public go-github-com-emirpasic-gods
+  (package
+    (name "go-github-com-emirpasic-gods")
+    (version "1.18.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/emirpasic/gods")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0vnnmv813m8yhykwlxpizpvpimsirbaiwa3ckxfyx3ybv1swlq44"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/emirpasic/gods"))
+    (home-page "https://github.com/emirpasic/gods/")
+    (synopsis "Implementation of various data structures and algorithms in Go")
+    (description
+     "This package provides implementation of various data structures and
+algorithms in Go.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-erikgeiser-coninput
   (package
     (name "go-github-com-erikgeiser-coninput")
