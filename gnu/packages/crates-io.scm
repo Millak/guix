@@ -36404,6 +36404,39 @@ heavily inspired by the Temporal project.")
     (description "This package provides an iterable JSON parser.")
     (license license:expat)))
 
+(define-public rust-jiter-0.2
+  (package
+    (name "rust-jiter")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "jiter" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "163b67vsgn6xlnzypjk40r9wf27hc4ax9hfpwwd0ry6w1a37f4cf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-ahash" ,rust-ahash-0.8)
+        ("rust-lexical-parse-float" ,rust-lexical-parse-float-0.8)
+        ("rust-num-bigint" ,rust-num-bigint-0.4)
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-pyo3" ,rust-pyo3-0.21)
+        ("rust-pyo3-build-config" ,rust-pyo3-build-config-0.21)
+        ("rust-smallvec" ,rust-smallvec-1))
+       #:cargo-development-inputs
+       (("rust-bencher" ,rust-bencher-0.1)
+        ("rust-codspeed-bencher-compat" ,rust-codspeed-bencher-compat-2)
+        ("rust-paste" ,rust-paste-1)
+        ("rust-pyo3" ,rust-pyo3-0.21)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/pydantic/jiter/")
+    (synopsis "Fast iterable JSON parser")
+    (description "This package provides an iterable JSON parser.")
+    (license license:expat)))
+
 (define-public rust-jiter-0.0.6
   (package
     (inherit rust-jiter-0.5)
