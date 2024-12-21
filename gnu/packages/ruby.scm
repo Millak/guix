@@ -1805,6 +1805,45 @@ Style Sheets (CSS) rule sets in Ruby.")
     (home-page "https://github.com/premailer/css_parser")
     (license license:expat)))
 
+(define-public ruby-prism
+  (package
+    (name "ruby-prism")
+    (version "1.3.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/ruby/prism.git")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "03bs2gbackc3c3k4p979l2p9v215jb1m5h7b44n6yzh18kaimc85"))))
+    (build-system ruby-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'build
+           (lambda _
+             (setenv "CC" ,(cc-for-target))
+             (invoke "rake" "compile")))
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (setenv "GEM_HOME" (string-append (assoc-ref outputs "out")
+                                               "/lib/ruby/vendor_ruby"))
+             (invoke "rake" "install")
+             ;; Make build reproducible.
+             (for-each delete-file
+                       (find-files (string-append (assoc-ref outputs "out")
+                                                  "/lib/ruby/vendor_ruby")
+                                   "gem_make.out$")))))))
+    (native-inputs
+     (list ruby-rake ruby-rake-compiler))
+    (synopsis "Parser for Ruby source code")
+    (description "This package provides a parser for Ruby source code,
+written in C.")
+    (home-page "https://ruby.github.io/prism/")
+    (license license:expat)))
+
 (define-public ruby-prawn-svg
   (package
     (name "ruby-prawn-svg")
