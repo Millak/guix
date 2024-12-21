@@ -8,7 +8,7 @@
 ;;; Copyright © 2018 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2020 Sebastian Schott <sschott@mailbox.org>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
-;;; Copyright © 2020. 2021, 2022, 2024 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2024. 2021, 2022, 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022, 2023 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Sharlatan Hellseher <sharlatanus@gmail.com>
@@ -534,7 +534,7 @@ photographic equipment.")
 (define-public darktable
   (package
     (name "darktable")
-    (version "4.8.1")
+    (version "5.0.0")
     (source
      (origin
        (method url-fetch)
@@ -542,7 +542,7 @@ photographic equipment.")
              "https://github.com/darktable-org/darktable/releases/"
              "download/release-" version "/darktable-" version ".tar.xz"))
        (sha256
-        (base32 "14armww5rmbgqssm8c3xji5i6ccdzgnn0k6zkxhvhvykmqn0w6wh"))))
+        (base32 "18d37x4qlnhzbr372lxmi70vq6j4l2pnmql2f8957fr4wvk3d8ga"))))
     (build-system cmake-build-system)
     (arguments
      (list
