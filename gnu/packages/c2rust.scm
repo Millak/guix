@@ -146,3 +146,61 @@
     (description
      "This package provides C2Rust utilities related to build paths, primarily at build time.")
     (license license:bsd-3)))
+
+;; Note: It has expat license.
+;; Note: That is supposedly the (unreleased) version 0.6.3.
+(define %tinycbor-source
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+          (url "https://github.com/intel/tinycbor.git")
+          (commit "d393c16f3eb30d0c47e6f9d92db62272f0ec4dc7")))
+    (sha256
+     (base32
+      "0w38lzj0rz36skc1cn3shllc82c7nn32h88frb8f164a8haq3hkw"))))
+
+(define-public rust-c2rust-ast-exporter-0.18
+  (package
+    (name "rust-c2rust-ast-exporter")
+    (version "0.18.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "c2rust-ast-exporter" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1m589a7jld5mi7zv9z179p5j90zh7mkhbmj05mgx6bbp6m45kx7p"))
+       (patches (search-patches "c2rust-ast-exporter-local-search.patch"))
+       (modules '((guix build utils)))))
+    (build-system cargo-build-system)
+    (native-inputs
+     `(("cmake" ,cmake)
+       ("clang" ,clang)))
+    (propagated-inputs
+     `(("tinycbor-src" ,%tinycbor-source)))
+    (inputs
+     (list llvm))
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'bundle-tinycbor
+           (lambda* (#:key inputs #:allow-other-keys)
+             ;; The build process will slightly patch the sources.
+             (copy-recursively (assoc-ref inputs "tinycbor-src")
+                               "/tmp/tinycbor")
+             (setenv "CMAKE_TINYCBOR_SOURCE_DIR" "/tmp/tinycbor"))))
+       #:skip-build? #f
+       #:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.65)
+                       ("rust-c2rust-build-paths" ,rust-c2rust-build-paths-0.18)
+                       ("rust-clang-sys" ,rust-clang-sys-1.8)
+                       ("rust-cmake" ,rust-cmake-0.1)
+                       ("rust-env-logger" ,rust-env-logger-0.10)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-bytes" ,rust-serde-bytes-0.11)
+                       ("rust-serde-cbor" ,rust-serde-cbor-0.11))))
+    (home-page "https://c2rust.com/")
+    (synopsis "Clang AST extraction API for use in the C2Rust project")
+    (description
+     "This package provides Clang AST extraction API for use in the C2Rust project.")
+    (license license:bsd-3)))
