@@ -798,6 +798,24 @@ low-level interaction with the operating system.")
      (native-inputs '())
      (propagated-inputs '()))))
 
+;; This is the only one dependency for esbuild, which is the main tool to
+;; produce all Node packages, keep it away from other golang.
+(define-public go-golang-org-x-sys-for-esbuild
+  (hidden-package
+   (package
+     (inherit go-golang-org-x-sys)
+     (name "go-golang-org-x-sys")
+     (version "0.25.0")
+     (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+              (url "https://go.googlesource.com/sys")
+              (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "0hdysrba8imiifb4ksjgbhkzhk1mksm1g3fj59i3bas1zdc5lbgp")))))))
+
 (define-public go-golang-org-x-telemetry
   (package
     (name "go-golang-org-x-telemetry")

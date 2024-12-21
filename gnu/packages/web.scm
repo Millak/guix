@@ -1998,7 +1998,7 @@ UTS#46.")
                  (invoke "make" "test-go")))
              #t)))))
     (inputs
-     `(("golang.org/x/sys" ,go-golang-org-x-sys)))
+     `(("golang.org/x/sys" ,go-golang-org-x-sys-for-esbuild)))
     (native-inputs
      `(("github.com/kylelemons/godebug" ,go-github-com-kylelemons-godebug)))
     (home-page "https://esbuild.github.io/")
