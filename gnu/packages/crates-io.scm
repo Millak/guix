@@ -73672,6 +73672,28 @@ Rust's serde.")
         ("rust-indoc" ,rust-indoc-1)
         ("rust-serde-derive" ,rust-serde-derive-1))))))
 
+(define-public rust-serde-bencode-0.2
+  (package
+    (name "rust-serde-bencode")
+    (version "0.2.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "serde_bencode" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0gj17p1w5hyi69fngv55dai4nb4fmdij76gqwyb9if9qfixzq3d7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-serde" ,rust-serde-1)
+                       ("rust-serde-bytes" ,rust-serde-bytes-0.11))))
+    (home-page "https://github.com/toby/serde-bencode")
+    (synopsis "Serde backed Bencode encoding/decoding library for Rust.")
+    (description
+     "This package provides a Serde backed Bencode encoding/decoding library for Rust.")
+    (license license:expat)))
+
 (define-public rust-serde-wasm-bindgen-0.3
   (package
     (name "rust-serde-wasm-bindgen")
