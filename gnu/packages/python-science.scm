@@ -957,15 +957,17 @@ spheres, cubes, etc.")
      (list
       ;; See <https://github.com/astrofrog/mpl-scatter-density/issues/42>.
       #:test-flags #~(list "-k" "not test_default_dpi")))
-    (propagated-inputs
-     (list python-fast-histogram
-           python-matplotlib
-           python-numpy))
     (native-inputs
      (list python-pytest
            python-pytest-cov
            python-pytest-mpl
-           python-setuptools-scm))
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (list python-fast-histogram
+           python-matplotlib
+           python-numpy))
     (home-page "https://github.com/astrofrog/mpl-scatter-density")
     (synopsis "Matplotlib helpers to make density scatter plots")
     (description
