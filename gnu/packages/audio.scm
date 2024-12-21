@@ -1674,7 +1674,7 @@ emulation (valve, tape), bit fiddling (decimator, pointer-cast), etc.")
 (define-public libdjinterop
   (package
     (name "libdjinterop")
-    (version "0.20.2")
+    (version "0.22.1")
     (source
      (origin
        (method git-fetch)
@@ -1683,7 +1683,7 @@ emulation (valve, tape), bit fiddling (decimator, pointer-cast), etc.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0gbaji3d105vwshjfmnbxqrs42jjjxp41jqj5srncrfv3xmzsfkr"))))
+        (base32 "0rzbvl0ryvbxwi53gf3rszgvd0dwangg1zx0i4lcmiz682wrnhf7"))))
     (build-system cmake-build-system)
     (native-inputs
      (list boost pkg-config))
