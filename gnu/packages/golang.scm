@@ -4871,9 +4871,9 @@ use one of our glamorous default themes.")
      "A simple, efficient spring animation library for smooth, natural motion.")
     (license license:expat)))
 
-(define-public go-gopkg-in-warnings
+(define-public go-gopkg-in-warnings-v0
   (package
-    (name "go-gopkg-in-warnings")
+    (name "go-gopkg-in-warnings-v0")
     (version "0.1.2")
     (source (origin
               (method git-fetch)
@@ -4909,7 +4909,7 @@ errors (warnings).")
     (arguments
      `(#:import-path "github.com/go-git/gcfg"))
     (native-inputs
-     (list go-gopkg-in-warnings go-github-com-pkg-errors))
+     (list go-gopkg-in-warnings-v0 go-github-com-pkg-errors))
     (build-system go-build-system)
     (home-page "https://github.com/go-git/gcfg/")
     (synopsis "Gcfg reads INI-style configuration files into Go structs")

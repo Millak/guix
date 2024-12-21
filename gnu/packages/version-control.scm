@@ -4224,7 +4224,7 @@ defects faster.")
            go-golang-org-x-net
            go-golang-org-x-text
            go-gopkg-in-check-v1
-           go-gopkg-in-warnings))
+           go-gopkg-in-warnings-v0))
     (native-inputs (list git))
     (home-page "https://github.com/go-git/")
     (synopsis "Git implementation library")
