@@ -836,10 +836,7 @@ of regular expressions from text data and automatic test generation.")
 (define-public python-trimesh
   (package
     (name "python-trimesh")
-    ;; XXX: The latest version fails on sanity check, requiring newer
-    ;; setuptools which is not yet available on master. Update when
-    ;; python-team is merged.
-    (version "4.1.8")
+    (version "4.5.3")
     (source
      (origin
        (method git-fetch) ; no tests in PyPI
@@ -848,39 +845,36 @@ of regular expressions from text data and automatic test generation.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1vkp7znrlsqaiyg16py3jcqspi6yq4wh48lzng4sg248hqzhzspa"))))
+        (base32 "17fyapp8nffnnf95bmcvllvg41fjlpvlv6qndbm048hnyayixxld"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      #~(list "-k" (string-append
-                    ;; XXX: When more optional modules are available review
-                    ;; disabled tests once again.
-                    ;;
-                    ;; Disable tests requiring optional, not packed modules.
-                    "not test_bezier_example"
-                    " and not test_discrete"
-                    " and not test_dxf"
-                    " and not test_ply_path_bezier"
-                    " and not test_ply_path_line"
-                    " and not test_ply_path_multi"
-                    " and not test_revolve"
-                    " and not test_screw"
-                    " and not test_simple_closed"
-                    " and not test_simple_extrude"
-                    " and not test_simple_open"
-                    " and not test_slice_onplane"
-                    " and not test_spline_3D"
-                    " and not test_svg"))
+      ;; XXX: When more optional modules are available review
+      ;; disabled tests once again.
+      ;;
+      ;; Disable tests requiring optional, not packed modules.
+      #~(list "-k" (string-join
+                    (list "not test_bezier_example"
+                          "test_discrete"
+                          "test_dxf"
+                          "test_ply_path_bezier"
+                          "test_ply_path_line"
+                          "test_ply_path_multi"
+                          "test_revolve"
+                          "test_screw"
+                          "test_simple_closed"
+                          "test_simple_extrude"
+                          "test_simple_open"
+                          "test_slice_onplane"
+                          "test_spline_3D"
+                          "test_svg")
+                    " and not "))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-build
-            (lambda _
-              ;; Reported upstream, see
-              ;; <https://github.com/mikedh/trimesh/pull/2314>.
-              (substitute* "trimesh/resources/templates/blender_boolean.py.tmpl"
-                (("\\$MESH_PRE")
-                 "'$MESH_PRE'")))))))
+          ;; XXX: It struggles to load and fails with error: AttributeError:
+          ;; module 'trimesh' has no attribute '__main__'.
+          (delete 'sanity-check))))
     (native-inputs
      (list python-coveralls
            python-pyinstrument
