@@ -56,3 +56,25 @@
     (description
      "This package provides C-compatible struct bitfield derive implementation used in the C2Rust project.")
     (license license:bsd-3)))
+
+(define-public rust-c2rust-bitfields-0.18
+  (package
+    (name "rust-c2rust-bitfields")
+    (version "0.18.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "c2rust-bitfields" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0h9cnyijk65zypv8dqbmr5r238pqq9pa8njrdzx09xhfmc3kyg5l"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-c2rust-bitfields-derive" ,rust-c2rust-bitfields-derive-0.18))))
+    (home-page "https://c2rust.com/")
+    (synopsis
+     "C-compatible struct bitfield implementation used in the C2Rust project")
+    (description
+     "This package provides C-compatible struct bitfield implementation used in the C2Rust project.")
+    (license license:bsd-3)))
