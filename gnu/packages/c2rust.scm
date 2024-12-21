@@ -249,3 +249,51 @@
     (synopsis "C2Rust transpiler implementation")
     (description "This package provides C2Rust transpiler implementation.")
     (license license:bsd-3)))
+
+(define-public c2rust
+  (package
+    (name "c2rust")
+    (version "0.18.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "c2rust" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1rg9cvvmh9zw89mz2bpyvqlwbfhzl5dw2hab9z6d5rasr8mir7nh"))))
+    (build-system cargo-build-system)
+    (native-inputs
+     `(("tinycbor-src" ,%tinycbor-source)
+       ("cmake" ,cmake)
+       ("clang" ,clang)))
+    (inputs (list llvm))
+    (arguments
+     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-c2rust-build-paths" ,rust-c2rust-build-paths-0.18)
+                       ("rust-c2rust-transpile" ,rust-c2rust-transpile-0.18)
+                       ("rust-clap" ,rust-clap-3)
+                       ("rust-env-logger" ,rust-env-logger-0.10)
+                       ("rust-git-testament" ,rust-git-testament-0.2)
+                       ("rust-is-executable" ,rust-is-executable-1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-shlex" ,rust-shlex-1)
+                       ("rust-time-macros" ,rust-time-macros-0.2))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'patch-deps
+           (lambda _
+             ;; This is incorrect in the release to begin with.
+             (substitute* "Cargo.toml"
+              (("=0.2.6") "=0.2.18"))))
+         (add-before 'build 'patch
+           (lambda* (#:key inputs #:allow-other-keys)
+             ;; The build process will slightly patch the sources.
+             (copy-recursively (assoc-ref inputs "tinycbor-src")
+                               "/tmp/tinycbor")
+             (setenv "CMAKE_TINYCBOR_SOURCE_DIR" "/tmp/tinycbor"))))))
+    (home-page "https://c2rust.com/")
+    (synopsis "C to Rust translation, refactoring, and cross-checking")
+    (description
+     "This package provides C to Rust translation, refactoring, and cross-checking.")
+    (license license:bsd-3)))
