@@ -8412,13 +8412,13 @@ errors when data is invalid.")
   (package
     (inherit python-pydantic)
     (name "python-pydantic")
-    (version "2.5.3")
+    (version "2.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pydantic" version))
        (sha256
-        (base32 "0yiz75zp93x6x2czm772cz5pzn00i703irncjwb99c1m4p35gvxk"))))
+        (base32 "10xk9d5rgvqsp05r2qpli7ls2489x18kay944qp4d8ic4r1dvv5m"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -8427,21 +8427,17 @@ errors when data is invalid.")
               ;; These tests include hashes that keep changing depending on
               ;; package versions.
               "--ignore=tests/benchmarks/test_north_star.py"
-              "-k" (string-join
-                    ;; need python-email-validator >= 2.0.0
-                    (list "not test_fastapi_startup_perf"
-                          ;; Test fails with assertion is not equal.
-                          "test_assert_raises_validation_error"
-                          ;; Cannot generate a JsonSchema for
-                          ;; core_schema.CallableSchema [skipped-choice].
-                          "test_callable_fallback_with_non_serializable_default"
-                          ;; Failed: DID NOT WARN. No warnings of type (<class
-                          ;; 'pydantic.warnings.PydanticDeprecatedSince20'>,)
-                          ;; were emitted.
-                          "test_use_bare"
-                          "test_use_no_fields"
-                          "test_validator_bad_fields_throws_configerror")
-                    " and not "))
+              "-k"
+              (string-join
+               (list
+                ;; Not implemented
+                "not test_serialize_unsubstituted_typevars_bound_default_supported"
+                ;; Needs email-validator
+                "test_fastapi_startup_perf"
+                ;; Cannot generate a JsonSchema for
+                ;; core_schema.CallableSchema [skipped-choice].
+                "test_callable_fallback_with_non_serializable_default")
+               " and not "))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'pre-check
@@ -8454,11 +8450,12 @@ errors when data is invalid.")
                 (("ignore:path is deprecated.*:DeprecationWarning:")
                  "ignore::DeprecationWarning")))))))
     (native-inputs
-     (list python-hatchling
-           python-hatch-fancy-pypi-readme
+     (list tzdata-for-tests
            python-cloudpickle
            python-dirty-equals
-           python-faker
+           python-hatch-fancy-pypi-readme
+           python-hatchling
+           python-jsonschema
            python-pytest
            python-pytest-benchmark
            python-pytest-mock))
