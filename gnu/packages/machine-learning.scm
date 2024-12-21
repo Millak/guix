@@ -6191,7 +6191,7 @@ performance library of basic building blocks for deep learning applications.")
     (propagated-inputs (list python-cloudpickle python-farama-notifications
                              python-importlib-metadata python-numpy
                              python-typing-extensions))
-    (native-inputs (list python-pytest python-scipy))
+    (native-inputs (list python-pytest python-scipy python-setuptools))
     (arguments
      (list
       #:phases
