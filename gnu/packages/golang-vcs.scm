@@ -1,4 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
+;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -25,7 +26,8 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
-  #:use-module (gnu packages golang-web))
+  #:use-module (gnu packages golang-web)
+  #:use-module (gnu packages golang-xyz))
 
 ;;; Commentary:
 ;;;
@@ -36,6 +38,34 @@
 ;;;
 ;;; Libraries:
 ;;;
+
+(define-public go-github-com-go-git-gcfg
+  (package
+    (name "go-github-com-go-git-gcfg")
+    (version "1.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/go-git/gcfg")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1lb14z4j35pwz2b2rbykkpsq515spwbndb00gwn2xlrzn949xb83"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/go-git/gcfg"
+      ;; pass; got 10, error <nil>
+      ;; failed to parse "a" as int: expected integer; *ptr==0
+      #:test-flags #~(list "-skip" "TestParseInt|TestScanFully")))
+    (propagated-inputs
+     (list go-github-com-pkg-errors
+           go-gopkg-in-warnings-v0))
+    (home-page "https://github.com/go-git/gcfg")
+    (synopsis "Gcfg reads INI-style configuration files into Go structs")
+    (description "Gcfg reads INI-style configuration files into Go structs.")
+    (license license:bsd-3)))
 
 (define-public go-github-com-xanzy-go-gitlab
   (package

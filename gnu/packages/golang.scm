@@ -4871,33 +4871,6 @@ use one of our glamorous default themes.")
      "A simple, efficient spring animation library for smooth, natural motion.")
     (license license:expat)))
 
-(define-public go-github-com-go-git-gcfg
-  (package
-    (name "go-github-com-go-git-gcfg")
-    (version "1.5.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/go-git/gcfg")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1lb14z4j35pwz2b2rbykkpsq515spwbndb00gwn2xlrzn949xb83"))))
-    (arguments
-     (list
-      #:import-path "github.com/go-git/gcfg"
-       ;; pass; got 10, error <nil>
-       ;; failed to parse "a" as int: expected integer; *ptr==0
-       #:test-flags #~(list "-skip" "TestParseInt|TestScanFully")))
-    (native-inputs
-     (list go-gopkg-in-warnings-v0 go-github-com-pkg-errors))
-    (build-system go-build-system)
-    (home-page "https://github.com/go-git/gcfg/")
-    (synopsis "Gcfg reads INI-style configuration files into Go structs")
-    (description "Gcfg reads INI-style configuration files into Go structs.")
-    (license license:bsd-3)))
-
 (define-public go-github-com-jba-templatecheck
   (package
     (name "go-github-com-jba-templatecheck")
