@@ -5556,7 +5556,11 @@ Python.")
     (propagated-inputs
      (list python-numpy python-scikit-learn python-scipy))
     (native-inputs
-     (list pybind11 python-pytest python-setuptools-scm
+     (list pybind11
+           python-pytest
+           python-setuptools
+           python-setuptools-scm
+           python-wheel
            util-linux)) ;for lscpu
     (home-page "https://github.com/hmmlearn/hmmlearn")
     (synopsis "Hidden Markov Models with scikit-learn like API")
