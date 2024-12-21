@@ -7092,13 +7092,13 @@ important tasks for becoming a daemon process:
 (define-public python-annotated-types
   (package
     (name "python-annotated-types")
-    (version "0.6.0")
+    (version "0.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "annotated_types" version))
        (sha256
-        (base32 "0paaz0i4xqk335ji5w887i2bhgm2krnzr6by4sfgsgz50zl3jcsn"))))
+        (base32 "12ff8j1l0hrmfa8dfa1pyaka5a8sbyq8b76bzj6bq21sll4prw5g"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-hatchling
