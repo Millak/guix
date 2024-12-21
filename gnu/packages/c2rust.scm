@@ -1,0 +1,58 @@
+;;; GNU Guix --- Functional package management for GNU
+;;; Copyright © 2024 Danny Milosavljevic <dannym@friendly-machines.com>
+;;;
+;;; This file is part of GNU Guix.
+;;;
+;;; GNU Guix is free software; you can redistribute it and/or modify it
+;;; under the terms of the GNU General Public License as published by
+;;; the Free Software Foundation; either version 3 of the License, or (at
+;;; your option) any later version.
+;;;
+;;; GNU Guix is distributed in the hope that it will be useful, but
+;;; WITHOUT ANY WARRANTY; without even the implied warranty of
+;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;;; GNU General Public License for more details.
+;;;
+;;; You should have received a copy of the GNU General Public License
+;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
+
+(define-module (gnu packages c2rust)
+  #:use-module (guix packages)
+  #:use-module (guix download)
+  #:use-module (guix git-download)
+  #:use-module (guix build-system cargo)
+  #:use-module (guix build-system gnu)
+  #:use-module (guix gexp)
+  #:use-module (guix utils)
+  #:use-module (gnu packages)
+  #:use-module (gnu packages cmake)
+  #:use-module (gnu packages crates-io)
+  #:use-module (gnu packages crates-vcs)
+  #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages qt)
+  #:use-module (gnu packages llvm)
+  #:use-module ((guix licenses) #:prefix license:))
+
+(define-public rust-c2rust-bitfields-derive-0.18
+  (package
+    (name "rust-c2rust-bitfields-derive")
+    (version "0.18.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "c2rust-bitfields-derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0i95j6q1d61h1m1pk84i3ih00hsmbn8ib35xr129fz2rw81c3jyk"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-1))))
+    (home-page "https://c2rust.com/")
+    (synopsis
+     "C-compatible struct bitfield derive implementation used in the C2Rust project")
+    (description
+     "This package provides C-compatible struct bitfield derive implementation used in the C2Rust project.")
+    (license license:bsd-3)))

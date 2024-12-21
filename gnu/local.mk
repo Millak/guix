@@ -177,6 +177,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/busybox.scm			\
   %D%/packages/bqn.scm				\
   %D%/packages/c.scm				\
+  %D%/packages/c2rust.scm			\
   %D%/packages/calcurse.scm			\
   %D%/packages/ccache.scm			\
   %D%/packages/cdrom.scm			\
