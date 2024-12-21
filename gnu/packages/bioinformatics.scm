@@ -9293,7 +9293,11 @@ sequencing tag position and orientation.")
            python-scikit-learn
            python-scipy))
     (native-inputs
-     (list python-cython-3 python-pytest python-setuptools zlib))
+     (list python-cython-3
+           python-pytest
+           python-setuptools
+           python-wheel
+           zlib))
     (home-page "https://github.com/macs3-project/MACS")
     (synopsis "Model based analysis for ChIP-Seq data")
     (description
