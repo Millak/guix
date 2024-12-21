@@ -23817,6 +23817,27 @@ Rust.")
     (description "Graphics state blocks for gfx-rs.")
     (license license:asl2.0)))
 
+(define-public rust-dtoa-1
+  (package
+    (name "rust-dtoa")
+    (version "1.0.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "dtoa" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0lv6zzgrd3hfh83n9jqhzz8645729hv1wclag8zw4dbmx3w2pfyw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-no-panic" ,rust-no-panic-0.1))))
+    (home-page "https://github.com/dtolnay/dtoa")
+    (synopsis "Fast floating point primitive to string conversion")
+    (description
+     "This package provides Fast floating point primitive to string conversion.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-dtoa-0.4
   (package
     (name "rust-dtoa")
