@@ -8489,21 +8489,9 @@ strings.")
     (build-system go-build-system)
     (arguments
      (list
+      #:skip-build? #t
       #:import-path "github.com/rogpeppe/go-internal"
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'disable-failing-tests
-            (lambda* (#:key tests? import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (substitute* (find-files "." "\\_test.go$")
-                  (("TestSimple") "OffTestSimple")))))
-          ;; XXX: Replace when go-build-system supports nested path.
-          (delete 'build)
-          (replace 'check
-            (lambda* (#:key import-path tests? #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion (string-append "src/" import-path)
-                  (invoke "go" "test" "-v" "./..."))))))))
+      #:test-flags #~(list "-skip" "TestSimple/cover")))
     (propagated-inputs
      (list go-golang-org-x-mod
            go-golang-org-x-sys
