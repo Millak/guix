@@ -1533,56 +1533,6 @@ variables into structs.")
 tools.")
     (license license:expat)))
 
-(define-public go-github-com-cheggaaa-pb
-  (package
-    (name "go-github-com-cheggaaa-pb")
-    (version "1.0.29")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/cheggaaa/pb/")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0n8y589gf9aw53j72y4z8mzkgahbf6k8h19n2j0mllw5xpvpgijy"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/cheggaaa/pb"))
-    (propagated-inputs
-     (list go-github-com-fatih-color
-           go-github-com-mattn-go-colorable
-           go-github-com-mattn-go-isatty
-           go-github-com-mattn-go-runewidth))
-    (home-page "https://github.com/cheggaaa/pb/")
-    (synopsis "Console progress bar for Go")
-    (description
-     "This package is a Go library that draws progress bars on the terminal.")
-    (license license:bsd-3)))
-
-(define-public go-github-com-cheggaaa-pb-v3
-  (package
-    (inherit go-github-com-cheggaaa-pb)
-    (name "go-github-com-cheggaaa-pb-v3")
-    (version "3.1.5")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/cheggaaa/pb")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1mf86iav69qpyg0nd54g0f50yigjkfzdhaqzkbn4yfb3fnb75n2z"))))
-    (arguments
-     (list
-      #:import-path "github.com/cheggaaa/pb/v3"
-      #:unpack-path "github.com/cheggaaa/pb"))
-    (propagated-inputs
-     (modify-inputs (package-propagated-inputs go-github-com-cheggaaa-pb)
-       (append go-github-com-vividcortex-ewma)))))
-
 (define-public go-github-com-charmbracelet-bubbles
   (package
     (name "go-github-com-charmbracelet-bubbles")
@@ -1753,6 +1703,56 @@ ECMA-48} specs.")
 tests,which can contain control codes and escape sequences.  @code{golden}
 package provides an API for comparing Golden files.")
     (license license:expat)))
+
+(define-public go-github-com-cheggaaa-pb
+  (package
+    (name "go-github-com-cheggaaa-pb")
+    (version "1.0.29")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cheggaaa/pb/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0n8y589gf9aw53j72y4z8mzkgahbf6k8h19n2j0mllw5xpvpgijy"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/cheggaaa/pb"))
+    (propagated-inputs
+     (list go-github-com-fatih-color
+           go-github-com-mattn-go-colorable
+           go-github-com-mattn-go-isatty
+           go-github-com-mattn-go-runewidth))
+    (home-page "https://github.com/cheggaaa/pb/")
+    (synopsis "Console progress bar for Go")
+    (description
+     "This package is a Go library that draws progress bars on the terminal.")
+    (license license:bsd-3)))
+
+(define-public go-github-com-cheggaaa-pb-v3
+  (package
+    (inherit go-github-com-cheggaaa-pb)
+    (name "go-github-com-cheggaaa-pb-v3")
+    (version "3.1.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cheggaaa/pb")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1mf86iav69qpyg0nd54g0f50yigjkfzdhaqzkbn4yfb3fnb75n2z"))))
+    (arguments
+     (list
+      #:import-path "github.com/cheggaaa/pb/v3"
+      #:unpack-path "github.com/cheggaaa/pb"))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs go-github-com-cheggaaa-pb)
+       (append go-github-com-vividcortex-ewma)))))
 
 (define-public go-github-com-chzyer-logex
   (package
@@ -8562,6 +8562,32 @@ and other languages.  More precisely, it is the syntax accepted by RE2 and
 described at https://golang.org/s/re2syntax, except for @code{\\C.}")
     (license license:bsd-3)))
 
+(define-public go-suah-dev-protect
+  (package
+    (name "go-suah-dev-protect")
+    (version "1.2.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/qbit/protect")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1f36w2435xivggl4d31813ggk37ya9v8q6w8ygbp35ypzwfgzlh3"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "suah.dev/protect"))
+    (home-page "https://codeberg.org/qbit/protect")
+    (synopsis "Wrapper for OpenBSD's pledge and unveil system calls")
+    (description
+     "Package protect is a wrapper for OpenBSD's @code{pledge} and @code{unveil}
+system calls.
+
+It allows one to safely call Unveil / Pledge on non-OpenBSD operating systems.")
+    (license license:isc)))
+
 (define-public go-zgo-at-jfmt
   (package
     (name "go-zgo-at-jfmt")
@@ -8841,32 +8867,6 @@ go-github-com-orisano-pixelmatch source.")))
      (string-append (package-description go-github-com-neurosnap-sentences)
                     "  This package provides an command line interface (CLI)
 tool."))))
-
-(define-public go-suah-dev-protect
-  (package
-    (name "go-suah-dev-protect")
-    (version "1.2.4")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://codeberg.org/qbit/protect")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1f36w2435xivggl4d31813ggk37ya9v8q6w8ygbp35ypzwfgzlh3"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "suah.dev/protect"))
-    (home-page "https://codeberg.org/qbit/protect")
-    (synopsis "Wrapper for OpenBSD's pledge and unveil system calls")
-    (description
-     "Package protect is a wrapper for OpenBSD's @code{pledge} and @code{unveil}
-system calls.
-
-It allows one to safely call Unveil / Pledge on non-OpenBSD operating systems.")
-    (license license:isc)))
 
 (define-public go-tengo
   (package
