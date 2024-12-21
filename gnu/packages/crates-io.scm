@@ -13601,6 +13601,28 @@ interoperation between crates in Rust.")
     (description "This package provides Rust bindings for libclang.")
     (license license:asl2.0)))
 
+(define-public rust-clang-sys-1.8
+  (package
+    (name "rust-clang-sys")
+    (version "1.8.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "clang-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1x1r9yqss76z8xwpdanw313ss6fniwc1r7dzb5ycjn0ph53kj0hb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-glob" ,rust-glob-0.3)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-libloading" ,rust-libloading-0.8))))
+    (home-page "https://github.com/KyleMayes/clang-sys")
+    (synopsis "Rust bindings for libclang")
+    (description "This package provides Rust bindings for libclang.")
+    (license license:asl2.0)))
+
 (define-public rust-clang-sys-0.23
   (package
     (inherit rust-clang-sys-1)
