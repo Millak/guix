@@ -188,7 +188,7 @@
              ;; The build process will slightly patch the sources.
              (copy-recursively (assoc-ref inputs "tinycbor-src")
                                "/tmp/tinycbor")
-             (setenv "CMAKE_TINYCBOR_SOURCE_DIR" "/tmp/tinycbor"))))
+             (setenv "GUIX_TINYCBOR_SOURCE_DIR" "/tmp/tinycbor"))))
        #:skip-build? #f
        #:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.65)
                        ("rust-c2rust-build-paths" ,rust-c2rust-build-paths-0.18)
@@ -291,7 +291,7 @@
              ;; The build process will slightly patch the sources.
              (copy-recursively (assoc-ref inputs "tinycbor-src")
                                "/tmp/tinycbor")
-             (setenv "CMAKE_TINYCBOR_SOURCE_DIR" "/tmp/tinycbor"))))))
+             (setenv "GUIX_TINYCBOR_SOURCE_DIR" "/tmp/tinycbor"))))))
     (home-page "https://c2rust.com/")
     (synopsis "C to Rust translation, refactoring, and cross-checking")
     (description

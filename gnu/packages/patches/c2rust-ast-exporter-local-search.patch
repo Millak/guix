@@ -18,7 +18,7 @@ diff -ru orig/c2rust-ast-exporter-0.18.0/build.rs c2rust-ast-exporter-0.18.0/bui
              // Build libclangAstExporter.a with cmake
              let dst = Config::new("src")
                  // Where to find LLVM/Clang CMake files
-+                .define("TINYCBOR_SOURCE_DIR", &env!("CMAKE_TINYCBOR_SOURCE_DIR"))
++                .define("TINYCBOR_SOURCE_DIR", &env!("GUIX_TINYCBOR_SOURCE_DIR"))
                  .define("LLVM_DIR", &format!("{}/cmake/llvm", llvm_lib_dir))
                  .define("Clang_DIR", &format!("{}/cmake/clang", llvm_lib_dir))
                  // What to build
