@@ -41,7 +41,7 @@
 (define-public elixir
   (package
     (name "elixir")
-    (version "1.17.3")
+    (version "1.18.0")
     (source
      (origin
        (method git-fetch)
@@ -50,7 +50,7 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "171l6g304044yk6i0827hgl64vp122ygn1wa1xqdjhw08b5kl2pd"))
+        (base32 "1ki5wfkdidgkvcm3r6b547gkdpchah4r6z0y96frzf5f3prcjgbx"))
        (patches (search-patches "elixir-path-length.patch"))))
     (build-system gnu-build-system)
     (arguments
@@ -95,9 +95,9 @@
                 (copy-recursively
                  "lib"
                  (string-append (assoc-ref outputs "src") "/source/lib"))))
-            ;; Temporarily patch the compiler to place correct source
-            ;; locations into module info instead of build directory.
             (add-after 'pre-install-source 'patch-elixir-compiler
+              ;; Temporarily patch the compiler to place correct source
+              ;; locations into module info instead of build directory.
               (lambda* (#:key outputs #:allow-other-keys)
                 (copy-recursively compiler-path compiler-path-orig)
                 (let ((source (string-append "/tmp/guix-build-" #$name "-"
@@ -107,7 +107,18 @@
                     (("source, Source")
                      (string-append "source, string:replace(Source, \""
                                     source "\", \"" destination "\")"))))))
-            (add-before 'build 'make-current
+            (add-before 'build 'set-deterministic
+              (lambda _
+                ;; Set deterministic compiler option.
+                (setenv "ERL_COMPILER_OPTIONS" "deterministic")))
+            (add-after 'build 'restore-and-recompile
+              ;; Unpatch the compiler and recompile it.
+              (lambda _
+                (copy-recursively compiler-path-orig compiler-path)
+                (delete-file compiler-path-orig)
+                (invoke "erlc" "-I" "lib/elixir/include"
+                        "-o" "lib/elixir/ebin" compiler-path)))
+            (add-after 'restore-and-recompile 'make-current
               ;; The Elixir compiler checks whether or not to compile files
               ;; by inspecting their timestamps.  When the timestamp is
               ;; equal to the epoch no compilation will be performed.  Some
@@ -117,24 +128,10 @@
                             (let ((recent 1400000000))
                               (utime file recent recent 0 0)))
                           (find-files "." ".*"))))
-            ;; Unpatch the compiler and recompile it.
-            (add-after 'build 'restore-and-recompile
-              (lambda _
-                (copy-recursively compiler-path-orig compiler-path)
-                (delete-file compiler-path-orig)
-                (invoke "make")))
             (add-before 'check 'set-home
-              (lambda* (#:key inputs #:allow-other-keys)
+              (lambda _
                 ;; Some tests require access to a home directory.
                 (setenv "HOME" "/tmp")))
-            ;; Temporarily skip several tests related to logger to pass
-            ;; under Erlang 27.1. For more info see:
-            ;; https://elixirforum.com/t/elixir-v1-17-3-released/66156/2
-            (add-before 'check 'disable-some-logger-tests-for-erlang-27.1+
-              (lambda _
-                (substitute* "lib/logger/test/logger/translator_test.exs"
-                  (("test \"translates Supervisor progress")
-                   "@tag :skip\n  test \"translates Supervisor progress"))))
             (delete 'configure)
             (add-after 'install 'wrap-programs
               (lambda* (#:key inputs outputs #:allow-other-keys)
