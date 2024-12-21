@@ -28890,7 +28890,9 @@ Public Suffix List's private domains as well.")
     (native-inputs
      (list python-pytest
            python-pytest-runner
-           python-sphinx-argparse))
+           python-setuptools
+           python-sphinx-argparse
+           python-wheel))
     (propagated-inputs
      (list python-colorama
            python-termcolor
