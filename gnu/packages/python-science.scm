@@ -3570,8 +3570,13 @@ proportional-integral-derivative} controller.")
        (sha256
         (base32 "1lkj8l2mpki6x2pxcwlrplx63lhi8h9v2rzxgjfb0cppsfr8m1wp"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-numpy))
-    (native-inputs (list python-scipy))
+    (native-inputs
+     (list python-pytest
+           python-scipy
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-numpy))
     (home-page "http://github.com/jakevdp/supersmoother")
     (synopsis "Python implementation of Friedman's Supersmoother")
     (description
