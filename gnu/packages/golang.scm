@@ -4874,7 +4874,7 @@ use one of our glamorous default themes.")
 (define-public go-github-com-emirpasic-gods
   (package
     (name "go-github-com-emirpasic-gods")
-    (version "1.12.0")
+    (version "1.18.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4883,7 +4883,7 @@ use one of our glamorous default themes.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0i5qqq7ajvw3mikr95zl9rsnfsjanzwpqqs6kzzplsfgsifybar1"))))
+                "0vnnmv813m8yhykwlxpizpvpimsirbaiwa3ckxfyx3ybv1swlq44"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/emirpasic/gods"
