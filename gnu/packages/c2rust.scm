@@ -78,3 +78,27 @@
     (description
      "This package provides C-compatible struct bitfield implementation used in the C2Rust project.")
     (license license:bsd-3)))
+
+(define-public rust-c2rust-ast-printer-0.18
+  (package
+    (name "rust-c2rust-ast-printer")
+    (version "0.18.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "c2rust-ast-printer" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1a02bnnxn1difq917c2rv8b7654ni65lyk37hdyklv9n96inr07r"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-log" ,rust-log-0.4)
+                       ("rust-prettyplease" ,rust-prettyplease-0.1)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-syn" ,rust-syn-1))))
+    (home-page "https://c2rust.com/")
+    (synopsis "Customized version of libsyntax rust pretty-printer")
+    (description
+     "This package provides Customized version of libsyntax rust pretty-printer.")
+    (license (list license:expat license:asl2.0))))
