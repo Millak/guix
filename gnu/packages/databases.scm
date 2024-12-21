@@ -5803,7 +5803,17 @@ compatible with SQLite using a graphical user interface.")
     (arguments
      (list
       #:install-source? #f
-      #:import-path "github.com/lighttiger2505/sqls"))
+      #:import-path "github.com/lighttiger2505/sqls"
+      ;; XXX: Try to enable more or all tests.
+      #:test-subdirs #~(list "ast/..."
+                             "dialect/..."
+                             "parser/..."
+                             "internal/completer"
+                             "internal/config/..."
+                             "internal/database"
+                             "internal/debug"
+                             "internal/formatter"
+                             "internal/lsp")))
     (native-inputs
      (list go-github-com-google-go-cmp
            go-github-com-go-sql-driver-mysql
