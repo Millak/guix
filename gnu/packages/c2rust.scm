@@ -124,3 +124,25 @@
     (description
      "This package provides Rust AST builder support crate for the C2Rust project.")
     (license license:bsd-3)))
+
+(define-public rust-c2rust-build-paths-0.18
+  (package
+    (name "rust-c2rust-build-paths")
+    (version "0.18.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "c2rust-build-paths" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0b2liaxbqksgfbsmr6hacdia6czlq7m0pyqx3l2rrcfcnb2ksgv0"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-print-bytes" ,rust-print-bytes-1))))
+    (home-page "https://c2rust.com/")
+    (synopsis
+     "C2Rust utilities related to build paths, primarily at build time")
+    (description
+     "This package provides C2Rust utilities related to build paths, primarily at build time.")
+    (license license:bsd-3)))
