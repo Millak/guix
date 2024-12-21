@@ -6412,7 +6412,7 @@ in various CSS modules.")
     (propagated-inputs
      (list python-tinycss2))
     (native-inputs
-     (list python-pytest-cov python-pytest-runner))
+     (list python-flit python-pytest-cov python-pytest-runner))
     (home-page "https://cssselect2.readthedocs.io/")
     (synopsis "CSS selectors for Python ElementTree")
     (description "@code{cssselect2} is a straightforward implementation of
