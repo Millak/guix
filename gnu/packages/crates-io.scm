@@ -27462,20 +27462,17 @@ fallible format macro.")
 (define-public rust-failure-derive-0.1
   (package
     (name "rust-failure-derive")
-    (version "0.1.7")
+    (version "0.1.8")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "failure_derive" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "0cfjz0c9szqpxn43b2r722p6m3swzxj7aj6xhqw23ml7h8y762h3"))))
+        (base32 "1936adqqk080439kx2bjf1bds7h89sg6wcif4jw0syndcv3s6kda"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1)
