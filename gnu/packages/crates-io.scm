@@ -25541,7 +25541,7 @@ accessor functions on enums.")
   (package
     (inherit rust-enum-as-inner-0.5)
     (name "rust-enum-as-inner")
-    (version "0.3.3")
+    (version "0.3.4")
     (source
      (origin
        (method url-fetch)
@@ -25549,10 +25549,10 @@ accessor functions on enums.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "15gmpgywijda93lkq7hf2y53h66sqkhzabzbxich288xm6b00pvw"))))
+         "1m2l8zh0yd7i95qkyha86ca8m0bnhfimv38dr3n4p41yh6di03ap"))))
     (arguments
      `(#:cargo-inputs
-       (("rust-heck" ,rust-heck-0.3)
+       (("rust-heck" ,rust-heck-0.4)
         ("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))))))
