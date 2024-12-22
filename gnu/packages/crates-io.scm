@@ -28108,14 +28108,14 @@ Atom, RSS 2.0, RSS 1.0, RSS 0.x and JSON Feed")
 (define-public rust-femme-2
   (package
     (name "rust-femme")
-    (version "2.1.1")
+    (version "2.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "femme" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0d7h1lzbcrqcn8v5l6m7i15lkbbaaz394l6vavbr8nhs757s5w9a"))))
+        (base32 "1vqk8sjnc4qw51a816kppwirf2dkj6rfdnjjsm92kap3b8g8f16c"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
