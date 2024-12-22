@@ -29359,14 +29359,14 @@ implementation that is more efficient for smaller hash keys.")
 (define-public rust-foldhash-0.1
   (package
     (name "rust-foldhash")
-    (version "0.1.3")
+    (version "0.1.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "foldhash" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "18in1a8mjcg43pfrdkhwzr0w988zb2bmb6sqwi07snjlkhvcc7pq"))))
+        (base32 "0vsxw2iwpgs7yy6l7pndm7b8nllaq5vdxwnmjn1qpm5kyzhzvlm0"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-development-inputs (("rust-ahash" ,rust-ahash-0.8)
