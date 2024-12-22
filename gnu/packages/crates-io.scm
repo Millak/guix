@@ -20854,19 +20854,18 @@ reading attributes into structs when implementing custom derives.")
 (define-public rust-darling-macro-0.20
   (package
     (name "rust-darling-macro")
-    (version "0.20.3")
+    (version "0.20.10")
     (source
      (origin
        (method url-fetch)
-       (uri (crate-uri "darling-macro" version))
+       (uri (crate-uri "darling_macro" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1mg2k1f0v33s271lpn4m5mxcfjqnmg61bf77svb44cyngay9nsl3"))))
+         "01kq3ibbn47czijj39h3vxyw0c2ksd0jvc097smcrk7n2jjs4dnk"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-darling-core" ,rust-darling-core-0.20)
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-2))))
