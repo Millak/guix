@@ -2398,7 +2398,7 @@ targeting storage applications.  ISA-L includes:
 (define-public brotli
   (package
     (name "brotli")
-    (version "1.0.9")
+    (version "1.1.0")
     (source
      (origin
        (method git-fetch)
@@ -2407,35 +2407,8 @@ targeting storage applications.  ISA-L includes:
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1fikasxf7r2dwlk8mv8w7nmjkn0jw5ic31ky3mvpkdzwgd4xfndl"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           ;; Cherry-picked from upstream since the latest release
-           ;; https://github.com/google/brotli/commit/09b0992b6acb7faa6fd3b23f9bc036ea117230fc
-           (substitute* (find-files "scripts" "^lib.*pc\\.in")
-             (("-R\\$\\{libdir\\} ") ""))
-           #t))))
+        (base32 "0cvcq302wpjpd1a2cmxcp9a01lwvc2kkir8vsdb3x11djnxc0nsk"))))
     (build-system cmake-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'rename-static-libraries
-           ;; The build tools put a 'static' suffix on the static libraries, but
-           ;; other applications don't know how to find these.
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((lib (string-append (assoc-ref %outputs "out") "/lib/")))
-               (rename-file (string-append lib "libbrotlicommon-static.a")
-                            (string-append lib "libbrotlicommon.a"))
-               (rename-file (string-append lib "libbrotlidec-static.a")
-                            (string-append lib "libbrotlidec.a"))
-               (rename-file (string-append lib "libbrotlienc-static.a")
-                            (string-append lib "libbrotlienc.a"))
-               #t))))
-       #:configure-flags
-       (list ;; Defaults to "lib64" on 64-bit archs.
-             (string-append "-DCMAKE_INSTALL_LIBDIR="
-                            (assoc-ref %outputs "out") "/lib"))))
     (home-page "https://github.com/google/brotli")
     (synopsis "General-purpose lossless compression")
     (description "This package provides the reference implementation of Brotli,
