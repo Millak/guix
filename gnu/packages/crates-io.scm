@@ -27890,14 +27890,14 @@ descriptor to it.")
 (define-public rust-fdeflate-0.3
   (package
     (name "rust-fdeflate")
-    (version "0.3.4")
+    (version "0.3.7")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "fdeflate" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0ig65nz4wcqaa3y109sh7yv155ldfyph6bs2ifmz1vad1vizx6sg"))))
+        (base32 "130ga18vyxbb5idbgi07njymdaavvk6j08yh1dfarm294ssm6s0y"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-simd-adler32" ,rust-simd-adler32-0.3))
