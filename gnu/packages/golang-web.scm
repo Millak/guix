@@ -1769,6 +1769,30 @@ API and doesn't use reflection.  It relies on small interfaces to
 decode/encode structures and slices.")
     (license license:expat)))
 
+(define-public go-github-com-gaissmai-bart
+  (package
+    (name "go-github-com-gaissmai-bart")
+    (version "0.11.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gaissmai/bart")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1rnbmykmkl0c1fzz4vkv7q72l7hl2xpmalbm41f4lifdjscx5nk7"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/gaissmai/bart"))
+    (propagated-inputs
+     (list go-github-com-bits-and-blooms-bitset))
+    (home-page "https://github.com/gaissmai/bart")
+    (synopsis "Balanced Routing Table in Golang")
+    (description "This package provides a Balanced-Routing-Table (BART).")
+    (license license:expat)))
+
 (define-public go-github-com-gatherstars-com-jwz
   (package
     (name "go-github-com-gatherstars-com-jwz")
