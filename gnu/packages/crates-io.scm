@@ -25498,17 +25498,17 @@ from HTML entities.")
 (define-public rust-enum-as-inner-0.6
   (package
     (name "rust-enum-as-inner")
-    (version "0.6.0")
+    (version "0.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "enum-as-inner" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0sjl5z0ycicpxg88qnn57m6sxi3ny9fl7b7vz0pb61bcjsvcpz2z"))))
+        (base32 "1g3cywc65d9w974l2xy86ij13njss3qjc7b0kfbzbws9qrjs5rm1"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-heck" ,rust-heck-0.4)
+     `(#:cargo-inputs (("rust-heck" ,rust-heck-0.5)
                        ("rust-proc-macro2" ,rust-proc-macro2-1)
                        ("rust-quote" ,rust-quote-1)
                        ("rust-syn" ,rust-syn-2))))
