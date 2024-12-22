@@ -40681,13 +40681,13 @@ deflate, zlib, and gzip data.")
 (define-public rust-libdeflater-1
   (package
     (name "rust-libdeflater")
-    (version "1.19.0")
+    (version "1.23.0")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "libdeflater" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
-               (base32 "0zdbiqq2fmjakwk7d1xwnakjnxzaba9rz18k9clyql13cqpv4c9s"))))
+               (base32 "0fj5a7766kk25rb8fr0i0grypdz1a3g5ij2nkh5mbh7f2z4pd0yp"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -40696,6 +40696,8 @@ deflate, zlib, and gzip data.")
        (("rust-adler32" ,rust-adler32-1)
         ("rust-criterion" ,rust-criterion-0.3)
         ("rust-flate2" ,rust-flate2-1))))
+    (native-inputs (list pkg-config))
+    (inputs (list libdeflate))
     (home-page "https://github.com/adamkewley/libdeflater")
     (synopsis "Bindings to libdeflate for DEFLATE")
     (description "This package provides bindings to libdeflate for DEFLATE
