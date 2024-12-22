@@ -26522,25 +26522,31 @@ decoding.")
 (define-public rust-escargot-0.5
   (package
     (name "rust-escargot")
-    (version "0.5.7")
+    (version "0.5.13")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "escargot" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
+        (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32 "19h1yvg9x7lvyb7p75ypyb94sacns5dkxwc4fa56mcksgnhlnn7m"))))
+         (base32 "127drlrdvp235l528cirryvnfg0jmldzssccxwpkid8ng8car8q5"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f      ; not all test files included
+     `(#:cargo-test-flags
+       '("--"
+         ;; Not all files included.
+         "--skip=src/build.rs - build::CargoBuild::run (line 283)"
+         "--skip=src/run.rs - run::CargoRun (line 23)"
+         "--skip=src/run.rs - run::CargoRun::command (line 116)"
+         "--skip=src/run.rs - run::CargoRun::path (line 65)")
        #:cargo-inputs
        (("rust-log" ,rust-log-0.4)
         ("rust-once-cell" ,rust-once-cell-1)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1))
        #:cargo-development-inputs
-       (("rust-assert-fs" ,rust-assert-fs-1))))
+       (("rust-automod" ,rust-automod-1)
+        ("rust-tempfile" ,rust-tempfile-3))))
     (home-page "https://github.com/crate-ci/escargot")
     (synopsis "Cargo API written in Paris")
     (description "Cargo API written in Paris.")
