@@ -23680,23 +23680,19 @@ and @code{directories} crates.")
   (package
     (inherit rust-dirs-sys-0.4)
     (name "rust-dirs-sys")
-    (version "0.3.6")
+    (version "0.3.7")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "dirs-sys" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "102pbpcrfhvhfyfnyvmvvwpl6mfvynh170f6ima6fyinxls6bn03"))))
+        (base32 "19md1cnkazham8a6kh22v12d8hh3raqahfk6yb043vrjr68is78v"))))
     (arguments
      `(#:cargo-inputs
        (("rust-libc" ,rust-libc-0.2)
         ("rust-redox-users" ,rust-redox-users-0.4)
-        ("rust-winapi" ,rust-winapi-0.3))))
-    (inputs
-     (list rust-cfg-if-0.1 rust-libc-0.2 rust-redox-users-0.3
-           rust-winapi-0.3))))
+        ("rust-winapi" ,rust-winapi-0.3))))))
 
 (define-public rust-dirs-sys-next-0.1
   (package
