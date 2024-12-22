@@ -28409,18 +28409,18 @@ prime field implementations in rust.")
 (define-public rust-file-id-0.2
   (package
     (name "rust-file-id")
-    (version "0.2.1")
+    (version "0.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "file-id" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1jdg9xq830hghzrqkbnx8nda58a7z6mh8b6vlg5mj87v4l2ji135"))))
+        (base32 "0dmylm34z6g8cg3b60sc6bk9v5wv9930vyx9wgcdpjpgpfwh9jbb"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-serde" ,rust-serde-1)
-                       ("rust-windows-sys" ,rust-windows-sys-0.48))
+                       ("rust-windows-sys" ,rust-windows-sys-0.52))
        #:cargo-development-inputs (("rust-tempfile" ,rust-tempfile-3))))
     (home-page "https://github.com/notify-rs/notify")
     (synopsis
