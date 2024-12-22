@@ -1439,6 +1439,32 @@ algorithm.")
      "This package provides primitives for generating random values.")
     (license license:expat)))
 
+(define-public go-github-com-pjbgf-sha1cd
+  (package
+    (name "go-github-com-pjbgf-sha1cd")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pjbgf/sha1cd")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1g07kp07kvbsmpdrrv0r805vw4rr1mp77vx06m31nxvnp1s42zwi"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/pjbgf/sha1cd"))
+    (home-page "https://github.com/pjbgf/sha1cd")
+    (synopsis "sha1cd")
+    (description
+     "Package sha1cd implements collision detection based on the whitepaper
+Counter-cryptanalysis from Marc Stevens.  The original ubc implementation was
+done by Marc Stevens and Dan Shumow, and can be found at:
+@@url{https://github.com/cr-marcstevens/sha1collisiondetection,https://github.com/cr-marcstevens/sha1collisiondetection}.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-protonmail-go-crypto
   (package
     (name "go-github-com-protonmail-go-crypto")
