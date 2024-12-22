@@ -22752,25 +22752,38 @@ writing derives macros for enums.")
     (description "Decompose Vietnamese tone marks.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-deunicode-0.4
+(define-public rust-deunicode-1
   (package
     (name "rust-deunicode")
-    (version "0.4.3")
+    (version "1.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "deunicode" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "146nc3wlwz2j9awwf7zf76qvjcahnls0mlv9jm6clcvr9dlph245"))))
+        (base32 "006gnml4jy3m03yqma8qvx7kl9i2bw667za9f7yc6k9ckv64959k"))))
     (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
     (home-page "https://lib.rs/crates/deunicode")
     (synopsis "Convert Unicode strings to pure ASCII")
     (description
-     "This package converts Unicode strings to pure ASCII by
-intelligently transliterating them.  It supports Emoji and Chinese.")
+     "This package converts Unicode strings to pure ASCII by intelligently
+transliterating them.  It supports Emoji and Chinese.")
     (license license:bsd-3)))
+
+(define-public rust-deunicode-0.4
+  (package
+    (inherit rust-deunicode-1)
+    (name "rust-deunicode")
+    (version "0.4.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "deunicode" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "133m63d7x3y3kpf8hrdkjpqma9l74bv59rpmpb8rqgn2i6zz3nvi"))))
+    (arguments `(#:cargo-inputs (("rust-deunicode" ,rust-deunicode-1))))))
 
 (define-public rust-devise-0.4
   (package
