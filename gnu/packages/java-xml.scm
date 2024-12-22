@@ -765,3 +765,22 @@ changes of the Plexus fork. It is an implementation of the XMLPULL V1 API
     (description "This package provides utility methods to work with base64
 encoded data.")
     (license license:asl2.0)))
+
+(define-public java-axiom-xml-utils
+  (package
+    (name "java-axiom-xml-utils")
+    (version %axiom-version)
+    (source axiom-source)
+    (build-system ant-build-system)
+    (arguments
+     `(#:source-dir "components/xml-utils/src/main"
+       #:test-dir "components/xml-utils/src/test"
+       #:tests? #f ;; require too many yet unpackaged packages
+       #:jar-name "axiom-xml-utils.jar"))
+    (native-inputs
+     (list unzip))
+    (home-page "https://ws.apache.org/axiom/")
+    (synopsis "XML utilities for Apache Axiom Weaver")
+    (description "This package provides XML utilities used by Apache Axiom
+Weaver, anyhow not depending on depending on the Axiom API.")
+    (license license:asl2.0)))
