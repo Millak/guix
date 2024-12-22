@@ -24601,18 +24601,17 @@ Rust.")
 (define-public rust-easy-cast-0.5
   (package
     (name "rust-easy-cast")
-    (version "0.5.2")
+    (version "0.5.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "easy-cast" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1mizff08p0rlmgvi81rqdblji372rhr17xlvzmqylfsz2iw6g4qh"))))
+        (base32 "1mjhjxibj228bzs817rwaqdicxmln6dqqffabrjn5j1fd4v2g1bj"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-test-flags '("--") ; fails in --release mode
-       #:cargo-inputs (("rust-libm" ,rust-libm-0.2))))
+     `(#:cargo-inputs (("rust-libm" ,rust-libm-0.2))))
     (home-page "https://github.com/kas-gui/easy-cast")
     (synopsis "Type conversions which are expected to succeed")
     (description "This library is written to make numeric type conversions
