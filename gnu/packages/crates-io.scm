@@ -26864,14 +26864,14 @@ blocking data structures.")
 (define-public rust-event-listener-strategy-0.5
   (package
     (name "rust-event-listener-strategy")
-    (version "0.5.2")
+    (version "0.5.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "event-listener-strategy" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "18f5ri227khkayhv3ndv7yl4rnasgwksl2jhwgafcxzr7324s88g"))))
+        (base32 "1ch5gf6knllyq12jkb5zdfag573dh44307q4pwwi2g37sc6lwgiw"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-event-listener" ,rust-event-listener-5)
