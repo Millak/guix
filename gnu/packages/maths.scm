@@ -158,6 +158,7 @@
   #:use-module (gnu packages gl)
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages m4)
+  #:use-module (gnu packages man)
   #:use-module (gnu packages mpi)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
@@ -897,6 +898,45 @@ combinatorial problems on linear spaces.  Among others, it solves systems
 of linear equations, computes extreme rays of polyhedral cones, solves
 integer programming problems and computes Markov bases for statistics.")
     (license license:gpl2+)))
+
+(define-public sympow
+  (package
+    (name "sympow")
+    (version "2.023.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+         (url "https://gitlab.com/rezozer/forks/sympow")
+         (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0ilnxygkj4g5arjiyd16k00cvnjlqs0cpc8hk64kbqhl877mm5i9"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f ; no tests
+           #:phases #~(modify-phases %standard-phases
+                        (replace 'configure
+                          (lambda* (#:key inputs #:allow-other-keys)
+                            (substitute* "Configure"
+                              (("/bin/sh") (search-input-file inputs "/bin/bash")))
+                            (setenv "PREFIX" #$output)
+                            (setenv "VARPREFIX" #$output)
+                            (invoke "bash" "./Configure"))))))
+    (native-inputs (list bash-minimal coreutils help2man pari-gp which))
+    (home-page "https://gitlab.com/rezozer/forks/sympow")
+    (synopsis "Symmetric power elliptic curve L-functions")
+    (description "SYMPOW is a mathematical program to compute special values
+of symmetric power elliptic curve L-functions; it can compute up to about 64
+digits of precision.")
+    ;; bsd-2 with extra stipulation that users be informed of sympow's
+    ;; "less restrictive license" if it's included in a program with a more
+    ;; restrictive license.  However, since sympow includes fpu.c which is
+    ;; gpl2+ the whole package can only be distributed via GPL anyway.
+    ;; See also <https://gitlab.com/rezozer/forks/sympow/-/issues/7>.
+    (license (license:non-copyleft "file:///COPYING"
+                                   "See COPYING in the distribution."))))
 
 (define-public cddlib
   (package
