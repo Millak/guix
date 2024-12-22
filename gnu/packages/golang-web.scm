@@ -6802,7 +6802,9 @@ go.opentelemetry.io/otel/trace.")
                                   (delete-file-recursively item)
                                   (delete-file item)))
                             items))))
-            (delete-all-but "." "sdk")))))
+            (delete-all-but "." "sdk")
+            (delete-file-recursively "sdk/log")
+            (delete-file-recursively "sdk/metric")))))
     (build-system go-build-system)
     (arguments
      (list
