@@ -24789,14 +24789,14 @@ easy.")
 (define-public rust-elain-0.3
   (package
     (name "rust-elain")
-    (version "0.3.0")
+    (version "0.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "elain" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0wgpyy0m48vdnrip0f4x1h8w4bp2lxgy8pqk78qwhrbxmr7hj8im"))))
+        (base32 "0ym7gc1wbr1ynvjhcxifjadk51bbmg5qdsf2q7r0bvvyapgrp8vb"))))
     (build-system cargo-build-system)
     (home-page "https://docs.rs/elain/latest/elain/")
     (synopsis "Set a type's minimum alignment with const generics")
