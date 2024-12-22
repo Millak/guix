@@ -20586,7 +20586,7 @@ crate (implementation detail).")
 (define-public rust-darling-0.20
   (package
     (name "rust-darling")
-    (version "0.20.3")
+    (version "0.20.10")
     (source
      (origin
        (method url-fetch)
@@ -20594,13 +20594,17 @@ crate (implementation detail).")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0pjwwadwgnvvgn5qm3glpv7hjl7siaqqpw6cvh2mdar7lr6xj282"))))
+         "1299h2z88qn71mizhh05j26yr3ik0wnqmw11ijds89l8i9nbhqvg"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-darling-core" ,rust-darling-core-0.20)
-        ("rust-darling-macro" ,rust-darling-macro-0.20))))
+        ("rust-darling-macro" ,rust-darling-macro-0.20))
+       #:cargo-development-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                                   ("rust-quote" ,rust-quote-1)
+                                   ("rust-rustversion" ,rust-rustversion-1)
+                                   ("rust-syn" ,rust-syn-2)
+                                   ("rust-trybuild" ,rust-trybuild-1))))
     (home-page "https://github.com/TedDriggs/darling")
     (synopsis "Proc-macro library for reading attributes in custom derives")
     (description
