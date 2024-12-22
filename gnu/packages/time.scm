@@ -25,6 +25,7 @@
 ;;; Copyright © 2024 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2024 Vinicius Monego <monego@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -167,6 +168,31 @@ expressions.")
     (home-page "https://github.com/python/tzdata")
     (synopsis "Python wrapper of IANA time zone data")
     (description "This package provides a thin Python wrapper around tzdata.")
+    (license asl2.0)))
+
+(define-public python-pytz-deprecation-shim
+  (package
+    (name "python-pytz-deprecation-shim")
+    (version "0.1.0.post0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytz_deprecation_shim" version))
+       (sha256
+        (base32 "17d58msbi18dc4lk29hcrgylvrv9vhniwi24axfdwvb13fp7n2dg"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-dateutil python-tzdata))
+    (native-inputs (list python-pytest
+                         python-pytz
+                         python-setuptools
+                         python-wheel))
+    (home-page "https://github.com/pganssle/pytz-deprecation-shim")
+    (synopsis "Shims to make deprecation of pytz easier")
+    (description
+     "This package aims to make the transition away from @code{pytz} easier.
+It is intended for temporary usage only, and should allow you to drop your
+dependency on @code{pytz} while also giving your users notice that eventually
+you will remove support for the pytz-specific interface.")
     (license asl2.0)))
 
 (define-public python-pytz
