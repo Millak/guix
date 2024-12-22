@@ -33458,17 +33458,17 @@ higher performance on different key space sizes.")
 (define-public rust-handlebars-5
   (package
     (name "rust-handlebars")
-    (version "5.1.0")
+    (version "5.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "handlebars" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1r51g648z3skfp65xysh3zcai1qlm7z405izxqfnjrlyp5v38a5b"))))
+        (base32 "16skfw1kzkn188zv6plhrmiw1mjayy6d9f6iwklr6qqfdawqb16h"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-heck" ,rust-heck-0.4)
+     `(#:cargo-inputs (("rust-heck" ,rust-heck-0.5)
                        ("rust-log" ,rust-log-0.4)
                        ("rust-pest" ,rust-pest-2)
                        ("rust-pest-derive" ,rust-pest-derive-2)
