@@ -27854,18 +27854,18 @@ descriptor to it.")
   (package
     (inherit rust-fd-lock-4)
     (name "rust-fd-lock")
-    (version "3.0.12")
+    (version "3.0.13")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "fd-lock" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0hlnn1302p37qlc9xl2k5y0vw8q8id5kg59an6riy89hjlynpbir"))))
+        (base32 "1df1jdncda67g65hrnmd2zsl7q5hdn8cm84chdalxndsx7akw0zg"))))
     (arguments
      `(#:cargo-inputs
        (("rust-cfg-if" ,rust-cfg-if-1)
-        ("rust-rustix" ,rust-rustix-0.37)
+        ("rust-rustix" ,rust-rustix-0.38)
         ("rust-windows-sys" ,rust-windows-sys-0.48))
        #:cargo-development-inputs (("rust-tempfile" ,rust-tempfile-3))))))
 
