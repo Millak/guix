@@ -425,3 +425,27 @@ generic Python interface.")
 to be used by SageMath.")
     ;; Debian says GPLv2+.
     (license license:gpl2+)))
+
+(define-public sagemath-data-graphs
+  (package
+    (name "sagemath-data-graphs")
+    (version "20210214")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://mirrors.mit.edu/sage/spkg/upstream/"
+                    "graphs/graphs-" version ".tar.bz2"))
+              (sha256
+               (base32
+                "0h9p5wrxips51x6vpfiiaqzp9j004nwppzc9qc2iaqakk06pq8q7"))))
+    (build-system copy-build-system)
+    (arguments
+     '(#:install-plan '(("." "share/graphs"))))
+    (home-page "https://www.sagemath.org")
+    (synopsis "Database of graphs")
+    (description
+     "This package contains databases of graphs.  It also includes the
+@acronym{ISGCI, Information System on Graph Classes and their Inclusions}
+database.")
+    ;; Debian says GPLv2+.
+    (license license:gpl2+)))
