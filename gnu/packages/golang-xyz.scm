@@ -4996,6 +4996,31 @@ expressing configuration which is easy for both humans and machines to read.")
     (home-page "https://github.com/hashicorp/hcl")
     (license license:mpl2.0)))
 
+(define-public go-github-com-hebcal-greg
+  (package
+    (name "go-github-com-hebcal-greg")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hebcal/greg")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1cf53ay6sj0m635k9p3f64iw03asx81aqmyrk102lzmhg838mq1a"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/hebcal/greg"))
+    (native-inputs (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/hebcal/greg")
+    (synopsis "Converts between Gregorian dates and Rata Die day numbers")
+    (description
+     "Hebcal's greg package converts between Gregorian dates and R.D. (Rata
+Die) day numbers.")
+    (license license:gpl2)))
+
 (define-public go-github-com-hhrutter-tiff
   (package
     (name "go-github-com-hhrutter-tiff")
