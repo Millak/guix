@@ -37044,14 +37044,14 @@ over in-place and buffer-to-buffer modes of operation.")
 (define-public rust-insta-1
   (package
     (name "rust-insta")
-    (version "1.40.0")
+    (version "1.41.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "insta" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0q5b0ssw8ilj0ni6s2swpd1spv78q5yxp594fxl1i13kg8fa94v5"))
+        (base32 "1f28bjaj37dc5wmjbgvfzjv78lfbc4ljpi98m587qqcj916zr7vy"))
        (modules '((guix build utils)))
        (snippet
         '(begin (substitute* "Cargo.toml"
@@ -37060,10 +37060,12 @@ over in-place and buffer-to-buffer modes of operation.")
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
-       '("--release" "--"
+       '("--"
+         "--skip=env::test_get_cargo_workspace"
          "--skip=utils::test_format_rust_expression")
        #:cargo-inputs
-       (("rust-console" ,rust-console-0.15)
+       (("rust-clap" ,rust-clap-4)
+        ("rust-console" ,rust-console-0.15)
         ("rust-csv" ,rust-csv-1)
         ("rust-globset" ,rust-globset-0.4)
         ("rust-lazy-static" ,rust-lazy-static-1)
@@ -37075,10 +37077,10 @@ over in-place and buffer-to-buffer modes of operation.")
         ("rust-serde" ,rust-serde-1)
         ("rust-similar" ,rust-similar-2)
         ("rust-toml" ,rust-toml-0.5)
-        ("rust-walkdir" ,rust-walkdir-2)
-        ("rust-yaml-rust" ,rust-yaml-rust-0.4))
+        ("rust-walkdir" ,rust-walkdir-2))
        #:cargo-development-inputs
-       (("rust-serde" ,rust-serde-1)
+       (("rust-rustc-version" ,rust-rustc-version-0.4)
+        ("rust-serde" ,rust-serde-1)
         ("rust-similar-asserts" ,rust-similar-asserts-1))))
     (home-page "https://insta.rs/")
     (synopsis "Snapshot testing library for Rust")
