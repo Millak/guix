@@ -33554,17 +33554,17 @@ scientific applications with leap second support.")
 (define-public rust-home-0.5
   (package
     (name "rust-home")
-    (version "0.5.9")
+    (version "0.5.11")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "home" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "19grxyg35rqfd802pcc9ys1q3lafzlcjcv2pl2s5q8xpyr5kblg3"))))
+        (base32 "1kxb4k87a9sayr8jipr7nq9wpgmjk4hk4047hmf9kc24692k75aq"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-windows-sys" ,rust-windows-sys-0.52))))
+     `(#:cargo-inputs (("rust-windows-sys" ,rust-windows-sys-0.59))))
     (home-page "https://github.com/rust-lang/cargo")
     (synopsis "Shared definitions of home directories")
     (description "This package provides the definition of @code{home_dir}
