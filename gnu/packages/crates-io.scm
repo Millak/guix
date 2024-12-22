@@ -24704,20 +24704,18 @@ easy.")
 (define-public rust-edit-distance-2
   (package
     (name "rust-edit-distance")
-    (version "2.1.0")
+    (version "2.1.3")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "edit-distance" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
+        (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "0yq3wlmd7ly22qxhfysi77qp31yvpx2ll9waa75bkpiih7rsmfmv"))))
+          "15vkx4haqr6ldgpmamb38h30v57clpx6klfzanhhk303ggl9gx73"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-development-inputs
-       (("rust-quickcheck" ,rust-quickcheck-0.9))))
+     `(#:cargo-development-inputs (("rust-quickcheck" ,rust-quickcheck-1))))
     (home-page "https://github.com/febeling/edit-distance")
     (synopsis "Levenshtein edit distance between strings")
     (description
