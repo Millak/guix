@@ -124,7 +124,7 @@
     (synopsis "Book on combining art and technology")
     (description
      "Science, Programming, Art and Radioelectronics Club (SPARC) is a book that
-explains how to combine the topics mentined in the title to build projects.  The
+explains how to combine the topics mentioned in the title to build projects.  The
 book can be used to teach programming classes in colleges and to organize
 workshops in hackerspaces or other community-driven spaces.  Currently the book
 is available only in Russian.")
