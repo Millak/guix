@@ -35110,14 +35110,14 @@ and traversing, manipulating, and querying the document tree.")
 (define-public rust-human-date-parser-0.1
   (package
     (name "rust-human-date-parser")
-    (version "0.1.1")
+    (version "0.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "human-date-parser" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1g7hlbayw3jknj010jhrcxscyrgpz2s08q3v74337h7xs4x5pmlj"))))
+        (base32 "06jflxqah06cnbc5d9mmffmzrhw3ybj9aigyxag39k2pf5mgkjy5"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; use of undeclared crate or module `concat_idents`
