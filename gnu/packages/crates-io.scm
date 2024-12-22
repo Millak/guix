@@ -30065,14 +30065,14 @@ duplication.")
 (define-public rust-fs-at-0.1
   (package
     (name "rust-fs-at")
-    (version "0.1.6")
+    (version "0.1.10")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "fs_at" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "02mvd85zjs0pxpykvkbqlwkii5f768z8xm0fqbqzv1s41yrbl105"))))
+                "0994mb809zdhnfis8z4kc6snbgw9mr9nrb8pyj2fyzhhfp684bwq"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -30083,11 +30083,10 @@ duplication.")
         ("rust-log" ,rust-log-0.4)
         ("rust-nix" ,rust-nix-0.26)
         ("rust-once-cell" ,rust-once-cell-1)
-        ("rust-smart-default" ,rust-smart-default-0.7)
         ("rust-windows-sys" ,rust-windows-sys-0.48))
        #:cargo-development-inputs
        (("rust-env-logger" ,rust-env-logger-0.10)
-        ("rust-fs-set-times" ,rust-fs-set-times-0.19)
+        ("rust-fs-set-times" ,rust-fs-set-times-0.20)
         ("rust-rayon" ,rust-rayon-1)
         ("rust-tempfile" ,rust-tempfile-3)
         ("rust-test-log" ,rust-test-log-0.2))))
