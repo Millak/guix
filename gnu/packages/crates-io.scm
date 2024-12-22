@@ -24514,32 +24514,34 @@ Rust.")
 (define-public rust-duct-0.13
   (package
     (name "rust-duct")
-    (version "0.13.5")
+    (version "0.13.7")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "duct" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "13bxiy0y1dck3xz28rqw5ylf2ykv6mk8ww6g8408x26hksjs1ihg"))))
+         "174jk13rlvfgypha4f3l27mzzyc0ci7zginh5hjn6jr2s4c5gaz4"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
+     `(#:cargo-test-flags
+       '("--"
+         "--skip=test::test_capture_both"
+         "--skip=test::test_pipe"
+         "--skip=test::test_sh"
+         "--skip=test::test_stderr"
+         "--skip=test::test_swapping"
+         "--skip=src/lib.rs - ReaderHandle (line 1929)")
        #:cargo-inputs
        (("rust-libc" ,rust-libc-0.2)
         ("rust-once-cell" ,rust-once-cell-1)
-        ("rust-os-pipe" ,rust-os-pipe-0.9)
-        ("rust-shared-child" ,rust-shared-child-0.3))
-       #:cargo-development-inputs
-       (("rust-tempdir" ,rust-tempdir-0.3))))
-    (home-page
-     "https://github.com/oconnor663/duct.rs")
-    (synopsis
-     "Library for running child processes")
-    (description
-     "A library for running child processes.")
+        ("rust-os-pipe" ,rust-os-pipe-1)
+        ("rust-shared-child" ,rust-shared-child-1))
+       #:cargo-development-inputs (("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/oconnor663/duct.rs")
+    (synopsis "Library for running child processes")
+    (description "A library for running child processes.")
     (license license:expat)))
 
 (define-public rust-dyn-clone-1
