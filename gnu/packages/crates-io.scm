@@ -37441,14 +37441,14 @@ versions < 0.2.")
 (define-public rust-io-lifetimes-2
   (package
     (name "rust-io-lifetimes")
-    (version "2.0.3")
+    (version "2.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "io-lifetimes" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1373iwawish51r5dbd7fav1hp89idk30wkmbphyrg60y8xqi6qas"))))
+        (base32 "10s9fyfksnzn056c7zj75y1v43gqvly26j9nrm79drrv9nsjyhq6"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-async-std" ,rust-async-std-1)
