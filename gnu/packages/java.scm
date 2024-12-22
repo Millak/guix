@@ -14153,6 +14153,33 @@ Processing specification.")
     ;; with classpath exception
     (license license:epl2.0)))
 
+(define-public java-jakarta-activation-api
+  (package
+    (name "java-jakarta-activation-api")
+    (version "2.1.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/jakartaee/jaf-api")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "125bf475cb0mdyhn1lj3c8gbwngbd28x10vnknq86zrc1vq4m6gx"))))
+    (build-system ant-build-system)
+    (arguments
+     `(#:jar-name "jakarta-activation-api.jar"
+       #:source-dir "api/src/main/java"
+       #:tests? #f  ;; has no tests
+       #:jdk ,openjdk11))
+    (home-page "https://github.com/jakartaee/jaf-api")
+    (synopsis "Collection of Java activation")
+    (description "Jakarta Activation lets you take advantage of standard
+services to: determine the type of arbitrary piece of data; encapsulate access
+to it; discover the operations available on it; and instantiate the
+appropriate bean to perform the operation(s).")
+    (license license:bsd-3)))
+
 (define-public java-jakarta-annotations-api
   (package
     (name "java-jakarta-annotations-api")
