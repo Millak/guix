@@ -381,3 +381,24 @@ by using an optimized quadratic sieve algorithm.")
 coefficients of which are modular integers.")
     (license (list license:gpl2 license:gpl3)) ; dual licensed
     (home-page "https://gitlab.com/sagemath/zn_poly")))
+
+(define-public sagemath-data-conway-polynomials
+  (package
+    (name "sagemath-data-conway-polynomials")
+    (version "0.10")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "conway_polynomials" version))
+       (sha256
+        (base32 "1wz03a08kwlswx1pcr5d99ppmhpfzs2a5i969rnb2ghsz1j9yqag"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (home-page "https://github.com/sagemath/conway-polynomials")
+    (synopsis "Python interface to Frank Lübeck's Conway polynomial database")
+    (description "This package provides a Python interface to Frank Lübeck's
+Conway polynomial database.  These are used in several computer algebra
+systems such as GAP and SageMath to provide quick access to those Conway
+polynomials.  The aim of this package is to make them available through a
+generic Python interface.")
+    (license license:gpl3+)))
