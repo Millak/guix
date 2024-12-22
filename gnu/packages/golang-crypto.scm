@@ -1613,6 +1613,32 @@ wide-block encryption mode developed by Halevi and Rogaway.")
 tunnel proxy protocol.")
     (license license:asl2.0)))
 
+(define-public go-github-com-skeema-knownhosts
+  (package
+    (name "go-github-com-skeema-knownhosts")
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/skeema/knownhosts")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1i74wqingiflrrvpzhahwdly9f8c27i2far1qxkszi7aswhpj956"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/skeema/knownhosts"))
+    (propagated-inputs (list go-golang-org-x-crypto))
+    (home-page "https://github.com/skeema/knownhosts")
+    (synopsis "Go SSH known_hosts wrapper with host key lookup")
+    (description
+     "Package knownhosts is a thin wrapper around @code{golang.org/x/crypto/ssh/knownhosts},
+adding the ability to obtain the list of host key algorithms for a known
+host.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-xanzy-ssh-agent
   (package
     (name "go-github-com-xanzy-ssh-agent")
