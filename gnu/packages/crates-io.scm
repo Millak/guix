@@ -33405,22 +33405,16 @@ IEEE 754-2008 binary16 type.")
   (package
     (inherit rust-half-2)
     (name "rust-half")
-    (version "1.8.2")
+    (version "1.8.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "half" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1mqbmx2m9qd4lslkb42fzgldsklhv9c4bxsc8j82r80d8m24mfza"))))
+        (base32 "00q4ki8ycdswapw6xn1q89vr7rzi1c8m99igps0lx1i1gzhyshqv"))))
     (arguments
-     `(#:cargo-test-flags
-       '("--release" "--"
-         "--skip=bfloat::test::test_nan_conversion_to_larger"
-         "--skip=bfloat::test::test_nan_conversion_to_smaller"
-         "--skip=binary16::test::test_nan_conversion_to_larger"
-         "--skip=binary16::test::test_nan_conversion_to_smaller")
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-bytemuck" ,rust-bytemuck-1)
         ("rust-num-traits" ,rust-num-traits-0.2)
         ("rust-serde" ,rust-serde-1)
