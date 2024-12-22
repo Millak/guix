@@ -6237,6 +6237,31 @@ ansi.")
 customized globally.")
     (license license:expat)))
 
+(define-public go-github-com-kardianos-service
+  (package
+    (name "go-github-com-kardianos-service")
+    (version "1.2.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kardianos/service")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1wcrc632nf2l5gzwgjfpx7bh6v4la0qjmaykj58fysabb9fkk9dy"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/kardianos/service"
+      #:test-flags #~(list "-skip" "TestPlatformName")))
+    (propagated-inputs (list go-golang-org-x-sys))
+    (home-page "https://github.com/kardianos/service")
+    (synopsis "Run go programs as a service")
+    (description
+     "This package provides a simple way to create a system service.")
+    (license license:zlib)))
+
 (define-public go-github-com-karrick-godirwalk
   (package
     (name "go-github-com-karrick-godirwalk")
