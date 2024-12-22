@@ -22437,26 +22437,24 @@ error-chain.")
 (define-public rust-derive-more-0.99
   (package
     (name "rust-derive-more")
-    (version "0.99.17")
+    (version "0.99.18")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "derive_more" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0883jr0gdf9mi8rn7qbz1p0z7hqzfd275pil2gwm66bw1b9i1f2g"))))
+         "1kmz7bsjn9jh04nplqdr6bjyi90qkqjlxb8lm5zzvnp46y0qfcsz"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f  ; Some test files missing.
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-convert-case" ,rust-convert-case-0.4)
         ("rust-peg" ,rust-peg-0.5)
         ("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
         ("rust-rustc-version" ,rust-rustc-version-0.4)
-        ("rust-syn" ,rust-syn-1))))
+        ("rust-syn" ,rust-syn-2))))
     (home-page "https://github.com/JelteF/derive_more")
     (synopsis "Adds derive macros for more traits")
     (description
