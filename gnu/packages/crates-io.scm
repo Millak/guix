@@ -21451,15 +21451,14 @@ for sync managers.")
 (define-public rust-debug-helper-0.3
   (package
     (name "rust-debug-helper")
-    (version "0.3.12")
+    (version "0.3.13")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "debug-helper" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1a73xl73psmzyihd62jy30g1acfmgjmyi2k8khmh170mrq6x3yvn"))))
+        (base32 "0bhnpzpgmg8dkdr27g2b49slf6ca79m4idcb01z2krs0qkifhy7m"))))
     (build-system cargo-build-system)
     (home-page "https://magiclen.org/debug-helper")
     (synopsis "Declarative macros to implement the Debug trait manually")
