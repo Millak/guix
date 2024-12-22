@@ -24227,16 +24227,14 @@ objects back to their original types.  The same as the rust-downcast-rs crate.")
 (define-public rust-downcast-rs-1
   (package
     (name "rust-downcast-rs")
-    (version "1.2.0")
+    (version "1.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "downcast-rs" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "0l36kgxqd5djhqwf5abxjmgasdw8n0qsjvw3jdvhi91nj393ba4y"))))
+        (base32 "1lmrq383d1yszp7mg5i7i56b17x2lnn3kb91jwsq0zykvg2jbcvm"))))
     (build-system cargo-build-system)
     (home-page "https://github.com/marcianx/downcast-rs")
     (synopsis "Trait object downcasting support using only safe Rust")
