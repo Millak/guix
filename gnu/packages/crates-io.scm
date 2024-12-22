@@ -28715,20 +28715,20 @@ functionality for finl.")
 (define-public rust-fixed-1
   (package
     (name "rust-fixed")
-    (version "1.24.0")
+    (version "1.28.0")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "fixed" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32 "0zbfwzk4mrfbawpx2ahz533bkb97jzihv7fxiyhpmwf0wzkrrih2"))))
+         (base32 "0nn85j5x8yzx10q49jdzia4yp6pnasnxpnwh0p9aqr7qkfwf1il5"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-arbitrary" ,rust-arbitrary-1)
         ("rust-az" ,rust-az-1)
-        ("rust-borsh" ,rust-borsh-0.10)
+        ("rust-borsh" ,rust-borsh-1)
         ("rust-bytemuck" ,rust-bytemuck-1)
         ("rust-half" ,rust-half-1)
         ("rust-num-traits" ,rust-num-traits-0.2)
