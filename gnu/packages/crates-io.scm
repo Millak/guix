@@ -36403,6 +36403,32 @@ or numerical index.  A corresponding hash set type is also provided.")
 of reference counted pointers.")
     (license license:expat)))
 
+(define-public rust-indextree-macros-0.1
+  (package
+    (name "rust-indextree-macros")
+    (version "0.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "indextree-macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0nbnxgyw88xrhhgwl9x4vnhqd9xf5j879zwkc9jhg51pqxz2wzj7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-either" ,rust-either-1)
+                       ("rust-itertools" ,rust-itertools-0.13)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-strum" ,rust-strum-0.26)
+                       ("rust-syn" ,rust-syn-2)
+                       ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs (("rust-indextree" ,rust-indextree-4))))
+    (home-page "https://github.com/saschagrunert/indextree")
+    (synopsis "Macros for indextree")
+    (description "This package provides macros for indextree.")
+    (license license:expat)))
+
 (define-public rust-indicatif-0.17
   (package
     (name "rust-indicatif")
