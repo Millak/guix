@@ -766,6 +766,28 @@ changes of the Plexus fork. It is an implementation of the XMLPULL V1 API
 encoded data.")
     (license license:asl2.0)))
 
+(define-public java-axiom-core-streams
+  (package
+    (name "java-axiom-core-streams")
+    (version %axiom-version)
+    (source axiom-source)
+    (build-system ant-build-system)
+    (arguments
+     `(#:source-dir "components/core-streams/src/main"
+       #:test-dir "components/core-streams/src/test"
+       #:tests? #f  ;; require too many yet unpackaged packages
+       #:jar-name "axiom-core-streams.jar"))
+    (inputs
+     (list java-axiom-base64-utils
+           java-axiom-xml-utils
+           java-commons-logging-minimal
+           unzip))
+    (home-page "https://ws.apache.org/axiom/")
+    (synopsis "Stream classes used by Apache Axiom")
+    (description "This package provides stream classes used by the core or
+Apache Axiom.")
+    (license license:asl2.0)))
+
 (define-public java-axiom-xml-utils
   (package
     (name "java-axiom-xml-utils")
