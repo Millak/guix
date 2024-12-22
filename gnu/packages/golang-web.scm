@@ -6768,6 +6768,61 @@ go.opentelemetry.io/otel, go.opentelemetry.io/otel/metric and
 go.opentelemetry.io/otel/trace.")
     (license license:asl2.0)))
 
+(define-public go-go-opentelemetry-io-otel-log
+  (package
+    (name "go-go-opentelemetry-io-otel-log")
+    (version "0.9.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/open-telemetry/opentelemetry-go")
+             (commit (go-version->git-ref version
+                                          #:subdir "log"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0sb36qyq389fif9qp5iiqp6w41dfcwi95gb0bsbvznvijhd8c1cc"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            ;; XXX: 'delete-all-but' is copied from the turbovnc package.
+            ;; Consider to implement it as re-usable procedure in
+            ;; guix/build/utils or guix/build-system/go.
+            (define (delete-all-but directory . preserve)
+              (define (directory? x)
+                (and=> (stat x #f)
+                       (compose (cut eq? 'directory <>) stat:type)))
+              (with-directory-excursion directory
+                (let* ((pred
+                        (negate (cut member <> (append '("." "..") preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (lambda (item)
+                              (if (directory? item)
+                                  (delete-file-recursively item)
+                                  (delete-file item)))
+                            items))))
+            (delete-all-but "." "log")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "go.opentelemetry.io/otel/log"
+      #:unpack-path "go.opentelemetry.io/otel"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-go-logr-logr
+           go-go-opentelemetry-io-otel))
+    (home-page "https://go.opentelemetry.io/otel")
+    (synopsis "OpenTelemetry Logs API")
+    (description
+     "This package is intended to be used by bridges between existing logging
+libraries and OpenTelemetry.  Users should not directly use this package as a
+logging library.  Instead, install one of the bridges listed in the
+[registry], and use the associated logging library.")
+    (license license:asl2.0)))
+
 (define-public go-go-opentelemetry-io-otel-sdk
   (package
     (name "go-go-opentelemetry-io-otel-sdk")
