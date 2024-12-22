@@ -28359,17 +28359,17 @@ prime field implementations in rust.")
 (define-public rust-figment-0.10
   (package
     (name "rust-figment")
-    (version "0.10.15")
+    (version "0.10.19")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "figment" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1dnfri2371wzmk7lcxfd121z35b1b2251d93yc23w8b7f1z6fw3j"))))
+        (base32 "1ww9sxdzjj2i80w7bq0kllnymjyrfb1cdx2h70ap5wqcdga1rc4c"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f      ; unresolved import `figment::providers::Toml`
+     `(#:tests? #f      ; unresolved import `crate::providers::Toml`
        #:cargo-inputs (("rust-atomic" ,rust-atomic-0.6)
                        ("rust-parking-lot" ,rust-parking-lot-0.12)
                        ("rust-pear" ,rust-pear-0.2)
