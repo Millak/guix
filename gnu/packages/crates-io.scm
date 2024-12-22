@@ -30475,8 +30475,9 @@ zero allocations, composability, and iterator-like interfaces.")
 
 (define-public rust-futures-0.1
   (package
+    (inherit rust-futures-0.3)
     (name "rust-futures")
-    (version "0.1.29")
+    (version "0.1.31")
     (source
       (origin
         (method url-fetch)
@@ -30484,15 +30485,9 @@ zero allocations, composability, and iterator-like interfaces.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "1vq3cw37knnd0afw3rcjzh71i2l01v5m4ysinrrqdvnn2ql0z60v"))))
-    (build-system cargo-build-system)
-    (arguments '(#:skip-build? #t))
-    (home-page "https://github.com/rust-lang/futures-rs")
-    (synopsis "Implementation of zero-cost futures in Rust")
-    (description "An implementation of @code{futures} and @code{streams}
-featuring zero allocations, composability, and iterator-like interfaces.")
-    (license (list license:asl2.0
-                   license:expat))))
+          "0y46qbmhi37dqkch8dlfq5aninqpzqgrr98awkb3rn4fxww1lirs"))))
+    (arguments
+     (list #:cargo-test-flags '(list "--" "--skip=stream::Stream::filter_map")))))
 
 (define-public rust-futures-channel-0.3
   (package
