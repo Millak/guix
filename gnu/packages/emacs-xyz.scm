@@ -5023,8 +5023,8 @@ a set of simplified face specifications and a user-supplied color palette.")
     (home-page "https://howm.osdn.jp/")
     (synopsis "Note-taking tool for Emacs")
     (description "Howm is a note-taking tool for Emacs.  Like
-code@{emacs-wiki.el}, it facilitates using hyperlinks and doing full-text
-searches.  Unlike code@{emacs-wiki.el}, it can be combined with any format.")
+@code{emacs-wiki.el}, it facilitates using hyperlinks and doing full-text
+searches.  Unlike @code{emacs-wiki.el}, it can be combined with any format.")
     (license license:gpl1+)))
 
 (define-public emacs-mediawiki-el
