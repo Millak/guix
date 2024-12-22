@@ -3604,12 +3604,22 @@ and lookup requests.  Browse requests are not supported yet.")
                 "0dfv1bhx5zhb5bsj5sj757nkacf2swp1ajpcyj9d0b37n602m18a"))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "github.com/gogo/protobuf"
-       ; Source-only package
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'build))))
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/gogo/protobuf"
+      ;; protoc: exec: "protoc-min-version": executable file not found in $PATH
+      ;; err = exec: "protoc": executable file not found in $PATH:
+      #:test-flags
+      #~(list "-skip" (string-join
+                       (list "TestDashFilename"
+                             "TestEmbedMarshaler"
+                             "TestGolden"
+                             "TestParameters"
+                             "TestPopulateWarning"
+                             "TestRepeatedEmbed"
+                             "TestStdTypesGoString"
+                             "TestTakesTooLongToDebug")
+                       "|"))))
     (synopsis "Protocol Buffers for Go with Gadgets")
     (description "Gogoprotobuf is a fork of golang/protobuf with extra code
 generation features.  This code generation is used to achieve:
