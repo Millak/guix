@@ -24749,16 +24749,15 @@ easy.")
 (define-public rust-ego-tree-0.6
   (package
     (name "rust-ego-tree")
-    (version "0.6.2")
+    (version "0.6.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "ego-tree" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "149mkc6j7bx653s39rpnsnpl5dvd1rj18czcil57w54k868a8s1s"))))
+        (base32 "0hincmpradjn146d4as5yj9c8k5l97wvxfyhf3qzra84mhabp80j"))))
     (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
     (home-page "https://github.com/programble/ego-tree")
     (synopsis "Vec-backed ID-tree")
     (description "Ego Tree provides a vec-backed ID-tree.")
