@@ -23786,14 +23786,14 @@ Google's diff-match-patch.")
 (define-public rust-divan-0.1
   (package
     (name "rust-divan")
-    (version "0.1.14")
+    (version "0.1.17")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "divan" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0v757vmvlksbaqz7q8cgq7hvr3dimrddcarz7yj70a4w5kgngmd0"))))
+        (base32 "1i5qvk7h9fcrr89cxkmadpgm03sv7askplyqh8vb0a8b0a9k2n70"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1)
