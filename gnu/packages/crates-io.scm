@@ -25911,25 +25911,23 @@ convert enum to u8 slice ref.")
 (define-public rust-enumset-1
   (package
     (name "rust-enumset")
-    (version "1.0.8")
+    (version "1.1.5")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "enumset" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-          (base32 "0b2vdggbsnvvw09czxaazbqcpa378fycf7fs3afz5dbgkb0x45k2"))))
+          (base32 "14vjn774rvvs2ac2ykdld3bq8w657wy2f6hcbzpmqxjqjl24nynh"))))
     (build-system cargo-build-system)
     (arguments
       `(#:cargo-inputs
-        (("rust-enumset-derive" ,rust-enumset-derive-0.5)
+        (("rust-enumset-derive" ,rust-enumset-derive-0.10)
          ("rust-serde" ,rust-serde-1))
         #:cargo-development-inputs
         (("rust-bincode" ,rust-bincode-1)
-         ("rust-rustversion" ,rust-rustversion-1)
          ("rust-serde-derive" ,rust-serde-derive-1)
-         ("rust-serde-json" ,rust-serde-json-1)
-         ("rust-trybuild" ,rust-trybuild-1))))
+         ("rust-serde-json" ,rust-serde-json-1))))
     (home-page "https://github.com/Lymia/enumset")
     (synopsis "Library for creating compact sets of enums")
     (description "This package provides a Rust library for creating
