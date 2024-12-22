@@ -20723,7 +20723,7 @@ into structs when implementing custom derives.")
 (define-public rust-darling-core-0.20
   (package
     (name "rust-darling-core")
-    (version "0.20.3")
+    (version "0.20.10")
     (source
      (origin
        (method url-fetch)
@@ -20731,16 +20731,15 @@ into structs when implementing custom derives.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "08g6afi3z9jgcqx7g41s1mzr6q3dj2z56vz7v1bv6941h51k8zhp"))))
+         "1rgr9nci61ahnim93yh3xy6fkfayh7sk4447hahawah3m1hkh4wm"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-fnv" ,rust-fnv-1)
         ("rust-ident-case" ,rust-ident-case-1)
         ("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-strsim" ,rust-strsim-0.10)
+        ("rust-strsim" ,rust-strsim-0.11)
         ("rust-syn" ,rust-syn-2))))
     (home-page "https://github.com/TedDriggs/darling")
     (synopsis "Helper crate for @code{rust-darling}")
