@@ -22834,14 +22834,14 @@ procedural macros.")
 (define-public rust-devise-codegen-0.4
   (package
     (name "rust-devise-codegen")
-    (version "0.4.1")
+    (version "0.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "devise_codegen" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1mpy5mmsigkj5f72gby82yk4advcqj97am2wzn0dwkj8vnwg934w"))))
+        (base32 "0ryq9xibibjf82xhr26civsw7bg6id8j4j9kl9qaa5xyv208dcki"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-devise-core" ,rust-devise-core-0.4)
