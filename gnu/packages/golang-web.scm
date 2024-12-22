@@ -337,6 +337,34 @@ that of BeautifulSoup.")
 the parse trees produced by the html package.")
     (license license:bsd-2)))
 
+(define-public go-github-com-armon-go-socks5
+  (package
+    (name "go-github-com-armon-go-socks5")
+    (version "0.0.0-20160902184237-e75332964ef5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/armon/go-socks5")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "104w10jf0wlxyxi35hf6frndgf0ybz21h54xjmnkivpb6slycpyq"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/armon/go-socks5"))
+    (native-inputs
+     (list go-golang-org-x-net))
+    (home-page "https://github.com/armon/go-socks5")
+    (synopsis "SOCKS5 server in Golang")
+    (description
+     "This package provides the @code{socks5} package that implements a
+@url{http://en.wikipedia.org/wiki/SOCKS,SOCKS5 server}.  SOCKS (Secure
+Sockets) is used to route traffic between a client and server through an
+intermediate proxy layer.  This can be used to bypass firewalls or NATs.")
+    (license license:expat)))
+
 (define-public go-github-com-audriusbutkevicius-pfilter
   (package
     (name "go-github-com-audriusbutkevicius-pfilter")
