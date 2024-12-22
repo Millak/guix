@@ -802,6 +802,28 @@ This package provides the API for Apache Axiom.")
 encoded data.")
     (license license:asl2.0)))
 
+(define-public java-axiom-core-mixins
+  (package
+    (name "java-axiom-core-mixins")
+    (version %axiom-version)
+    (source axiom-source)
+    (build-system ant-build-system)
+    (arguments
+     `(#:source-dir "mixins/core-mixins/src/main"
+       #:tests? #f  ;; has no tests
+       #:jar-name "axiom-core-mixins.jar"))
+    (native-inputs
+     (list java-axiom-api
+           java-axiom-core-streams
+           java-axiom-xml-utils
+           java-axiom-weaver-annotations
+           unzip))
+    (home-page "https://ws.apache.org/axiom/")
+    (synopsis "Common classes for Apache Axiom core.")
+    (description "This package contains mixins and implementation classes used
+by core of Apache Axiom.")
+    (license license:asl2.0)))
+
 (define-public java-axiom-core-streams
   (package
     (name "java-axiom-core-streams")
