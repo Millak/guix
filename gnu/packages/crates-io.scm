@@ -40601,20 +40601,31 @@ macros on libc without stdlib.")
     (description "This package provides FFI bindings to libdbus.")
     (license (list license:asl2.0 license:expat))))
 
-;; TODO: Unbundle libdeflate
 (define-public rust-libdeflate-sys-1
   (package
     (name "rust-libdeflate-sys")
-    (version "1.19.0")
+    (version "1.23.0")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "libdeflate-sys" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
-               (base32 "1hhwgzlpbw2nafylnjrhbyh7s6q9fb2cglf3xxcia30hhmzim4k7"))))
+               (base32 "0hbrhz3jxjs4a3lnyw9c2wlfknmijb7ahxbs53kcnpvri9y6cfs1"))
+              (snippet
+               #~(begin (use-modules (guix build utils))
+                        ;; Prefer the system libdeflate.
+                        (substitute* "Cargo.toml"
+                          (("^dynamic") "default = [\"dynamic\"]\ndynamic"))
+                        ;; Accept any version of libdeflate.
+                        (substitute* "build.rs"
+                          ((".*exactly_version.*") ""))
+                        (delete-file-recursively "libdeflate")))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-cc" ,rust-cc-1))))
+     `(#:cargo-inputs (("rust-cc" ,rust-cc-1)
+                       ("rust-pkg-config" ,rust-pkg-config-0.3))))
+    (native-inputs (list pkg-config))
+    (inputs (list libdeflate))
     (home-page "https://github.com/adamkewley/libdeflater")
     (synopsis "Bindings to libdeflate")
     (description
@@ -40623,6 +40634,7 @@ exposed as non-streaming buffer operations.  It contains bindings for raw
 deflate, zlib, and gzip data.")
     (license license:asl2.0)))
 
+;; TODO: Unbundle libdeflate
 (define-public rust-libdeflate-sys-0.12
   (package
     (inherit rust-libdeflate-sys-1)
