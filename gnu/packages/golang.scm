@@ -4819,31 +4819,6 @@ in tests to find template errors early, and along template execution paths
 that might only rarely be reached.")
     (license license:expat)))
 
-(define-public go-github-com-jbenet-go-context
-    (package
-      (name "go-github-com-jbenet-go-context")
-      (version "0.0.0-20150711004518-d14ea06fba99")
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/jbenet/go-context")
-                      (commit (go-version->git-ref version))))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0q91f5549n81w3z5927n4a1mdh220bdmgl42zi3h992dcc4ls0sl"))))
-      (build-system go-build-system)
-      (arguments
-       (list
-        #:import-path "github.com/jbenet/go-context"))
-      (propagated-inputs
-       (list go-golang-org-x-net))
-      (home-page "https://github.com/jbenet/go-context/")
-      (synopsis "@code{jbenet's} context extensions")
-      (description "This package provides @code{jbenet's} context
-extensions.")
-      (license license:expat)))
-
 (define-public go-github-com-juju-ansiterm
   (package
     (name "go-github-com-juju-ansiterm")
