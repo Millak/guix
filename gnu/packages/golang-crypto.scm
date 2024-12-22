@@ -815,6 +815,34 @@ providing bidirectional mapping values to their names, plus enum convenience
 for values.")
     (license license:bsd-3)))
 
+(define-public go-github-com-gliderlabs-ssh
+  (package
+    (name "go-github-com-gliderlabs-ssh")
+    (version "0.3.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gliderlabs/ssh")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01svn6n2i7gb3j4wvjh3d7xyh3n0kxm5cda2kg9vgpl1l3bbsvqm"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/gliderlabs/ssh"))
+    (propagated-inputs
+     (list go-github-com-anmitsu-go-shlex
+           go-golang-org-x-crypto))
+    (home-page "https://github.com/gliderlabs/ssh")
+    (synopsis "SSH servers in Golang")
+    (description
+     "Package ssh wraps the crypto/ssh package with a higher-level API for
+building SSH servers.  The goal of the API was to make it as simple as using
+net/http, so the API is very similar.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-go-asn1-ber-asn1-ber
   (package
     (name "go-github-com-go-asn1-ber-asn1-ber")
