@@ -4834,12 +4834,10 @@ that might only rarely be reached.")
                   "0q91f5549n81w3z5927n4a1mdh220bdmgl42zi3h992dcc4ls0sl"))))
       (build-system go-build-system)
       (arguments
-       `(#:import-path "github.com/jbenet/go-context"
-         ; Source-only package
-         #:tests? #f
-         #:phases
-         (modify-phases %standard-phases
-           (delete 'build))))
+       (list
+        #:import-path "github.com/jbenet/go-context"))
+      (propagated-inputs
+       (list go-golang-org-x-net))
       (home-page "https://github.com/jbenet/go-context/")
       (synopsis "@code{jbenet's} context extensions")
       (description "This package provides @code{jbenet's} context
