@@ -37807,20 +37807,18 @@ process is running inside a Docker container.")
 (define-public rust-is-executable-1
   (package
     (name "rust-is-executable")
-    (version "1.0.1")
+    (version "1.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "is_executable" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1j59iqaxcgax0qll30rarpcr7y3dpkl38iv4mlkfcxbvsv3cv6ps"))))
+        (base32 "1qlafm7f0zq0kzvbd4fhcfci4g9gxp6g3yqxjqsjj1zrssxbb8fl"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-winapi" ,rust-winapi-0.3))))
+     `(#:cargo-inputs (("rust-winapi" ,rust-winapi-0.3))
+       #:cargo-development-inputs (("rust-diff" ,rust-diff-0.1))))
     (home-page "https://github.com/fitzgen/is_executable")
     (synopsis "Find executable files at path")
     (description
