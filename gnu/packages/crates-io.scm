@@ -33682,7 +33682,7 @@ already-hashed or hash-like data.")
 (define-public rust-hash32-derive-0.1
   (package
     (name "rust-hash32-derive")
-    (version "0.1.0")
+    (version "0.1.1")
     (source
      (origin
        (method url-fetch)
@@ -33690,13 +33690,13 @@ already-hashed or hash-like data.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "18lrlxycq45kaz0l688shxnhgh3ryjp3zn0n6vfcs5sa2nyyzh7b"))))
+         "1zy60cdqrccd9kc8w4hvk1q584b4gjr4d48n3dff42xn6alapljr"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-proc-macro2" ,rust-proc-macro2-0.3)
-        ("rust-quote" ,rust-quote-0.5)
-        ("rust-syn" ,rust-syn-0.13))))
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))))
     (home-page "https://github.com/japaric/hash32")
     (synopsis "Macros 1.1 implementation of @code{#[derive(Hash32)]}")
     (description "This package provides a macros 1.1 implementation of
