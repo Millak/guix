@@ -24448,22 +24448,19 @@ floating-point primitives to an @code{io::Write}.")
 (define-public rust-dtoa-short-0.3
   (package
     (name "rust-dtoa-short")
-    (version "0.3.3")
+    (version "0.3.5")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "dtoa-short" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
+        (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "1mh22nwja3v8922h0hq77c29k1da634lvkn9cvg9xrqhmqlk7q5x"))))
+          "11rwnkgql5jilsmwxpx6hjzkgyrbdmx1d71s0jyrjqm5nski25fd"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-dtoa" ,rust-dtoa-0.4))
-       #:cargo-development-inputs
-       (("rust-float-cmp" ,rust-float-cmp-0.4))))
+     `(#:cargo-inputs (("rust-dtoa" ,rust-dtoa-1))
+       #:cargo-development-inputs (("rust-float-cmp" ,rust-float-cmp-0.4))))
     (home-page "https://github.com/upsuper/dtoa-short")
     (synopsis "Serialize float number and truncate to certain precision")
     (description
