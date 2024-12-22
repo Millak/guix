@@ -4110,7 +4110,8 @@ bindings to almost all functions of PETSc.")
     (native-inputs
      (list python-cysignals
            python-cython
-           python-setuptools))
+           python-setuptools
+           python-wheel))
     (inputs
      (list pari-gp
            primecount
