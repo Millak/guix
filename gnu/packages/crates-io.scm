@@ -25640,14 +25640,14 @@ increasing their method call speed up to 10x.")
 (define-public rust-enum-iterator-1
   (package
     (name "rust-enum-iterator")
-    (version "1.4.1")
+    (version "1.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "enum-iterator" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "12g63d7w5vpq964f7fbnahw2qiqsml3f9j3rxrk6f1yxnmrkipbs"))))
+        (base32 "153fsc92sz80ghpmbk430vpb9cjaggan592a6njs07dyk7rl5llz"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-enum-iterator-derive" ,rust-enum-iterator-derive-1))))
