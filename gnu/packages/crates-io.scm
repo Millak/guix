@@ -28601,25 +28601,22 @@ navigation events, folding, scrolling and more.")
 (define-public rust-field-offset-0.3
   (package
     (name "rust-field-offset")
-    (version "0.3.4")
+    (version "0.3.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "field-offset" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "14pvxz7yr0r3mlhaf65zva3r9d0kqid01wdw7ngx7jsh2jam870y"))))
+        (base32 "0zq5sssaa2ckmcmxxbly8qgz3sxpb8g1lwv90sdh1z74qif2gqiq"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build?
-       #t
-       #:cargo-inputs
-       (("rust-memoffset" ,rust-memoffset-0.6)
-        ("rust-rustc-version" ,rust-rustc-version-0.3))))
+     `(#:cargo-inputs
+       (("rust-memoffset" ,rust-memoffset-0.9)
+        ("rust-rustc-version" ,rust-rustc-version-0.4))))
     (home-page "https://github.com/Diggsey/rust-field-offset")
     (synopsis "Safe pointer-to-member implementation")
-    (description "This package provides safe pointer-to-member
-implementation.")
+    (description "This package provides safe pointer-to-member implementation.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-find-crate-0.6
