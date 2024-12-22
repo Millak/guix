@@ -4752,6 +4752,8 @@ IPv6 Internet connectivity - it also works over IPv4.")
      (list
       #:import-path "github.com/slackhq/nebula"
       #:install-source? #f
+      ;; XXX: Pack missing packages for cmd/nebula-service
+      #:test-subdirs #~(list ".")
       #:phases
       #~(modify-phases %standard-phases
           (replace 'build
