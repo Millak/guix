@@ -27914,7 +27914,7 @@ failures, jump to test definitions, rerun tests with debugger all from inside
 Emacs.
 
 In order to work, this also requires the slite Common Lisp system to be
-present.  See the code@{*cl-slite packages}.")))
+present.  See the @code{*cl-slite packages}.")))
 
 (define-public sbcl-slot-extra-options
   (let ((commit "29517d980325cd63744f1acf4cfe5c8ccec2b318"))
