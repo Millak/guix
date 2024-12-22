@@ -6113,6 +6113,7 @@ doublets in single-cell RNA-seq data.")
         (base32
          "0agkz2w86k91rc9m5vx5hsqi5nm6fcmzkng6j99hjapz0r9233ql"))))
     (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-wheel))
     (propagated-inputs
      (list python-importlib-resources
            python-ruamel.yaml))
