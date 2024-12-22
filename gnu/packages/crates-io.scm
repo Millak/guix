@@ -21284,14 +21284,14 @@ sizes.  Big-endian order is used.  WARNING: Block must be aligned!")
 (define-public rust-dbus-tokio-0.7
   (package
     (name "rust-dbus-tokio")
-    (version "0.7.5")
+    (version "0.7.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "dbus-tokio" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "10112g227iasjiid7y9wrvnmxypfrczcymj2k5yjvcjk1i5ag88j"))))
+        (base32 "04xd3z2dnjv4d45kj3wqnwbnwllrp1zsg8v3q0qp2rxwb7a8hxh0"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f ;tests require X11 $DISPLAY
