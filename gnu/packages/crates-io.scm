@@ -24423,16 +24423,16 @@ Rust.")
         (base32 "0lv6zzgrd3hfh83n9jqhzz8645729hv1wclag8zw4dbmx3w2pfyw"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs (("rust-no-panic" ,rust-no-panic-0.1))))
+     (list #:cargo-inputs (list rust-no-panic-0.1)))
     (home-page "https://github.com/dtolnay/dtoa")
-    (synopsis "Fast floating point primitive to string conversion")
-    (description
-     "This package provides Fast floating point primitive to string conversion.")
+    (synopsis "Fast functions for printing floating-point primitives")
+    (description "This crate provides fast functions for printing
+floating-point primitives to an @code{io::Write}.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-dtoa-0.4
   (package
+    (inherit rust-dtoa-1)
     (name "rust-dtoa")
     (version "0.4.8")
     (source
@@ -24443,13 +24443,7 @@ Rust.")
         (sha256
          (base32
           "1c5j0wz118dhrczx6spc5za7dnbfxablr4adyahg9aknrsc9i2an"))))
-    (build-system cargo-build-system)
-    (home-page "https://github.com/dtolnay/dtoa")
-    (synopsis "Fast functions for printing floating-point primitives")
-    (description "This crate provides fast functions for printing
-floating-point primitives to an @code{io::Write}.")
-    (license (list license:asl2.0
-                   license:expat))))
+    (arguments '())))
 
 (define-public rust-dtoa-short-0.3
   (package
