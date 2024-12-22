@@ -4820,16 +4820,14 @@ that might only rarely be reached.")
     (license license:expat)))
 
 (define-public go-github-com-jbenet-go-context
-  (let ((commit "d14ea06fba99483203c19d92cfcd13ebe73135f4")
-        (revision "1"))
     (package
       (name "go-github-com-jbenet-go-context")
-      (version (git-version "0.0.1" revision commit))
+      (version "0.0.0-20150711004518-d14ea06fba99")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
                       (url "https://github.com/jbenet/go-context")
-                      (commit commit)))
+                      (commit (go-version->git-ref version))))
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
@@ -4846,7 +4844,7 @@ that might only rarely be reached.")
       (synopsis "@code{jbenet's} context extensions")
       (description "This package provides @code{jbenet's} context
 extensions.")
-      (license license:expat))))
+      (license license:expat)))
 
 (define-public go-github-com-juju-ansiterm
   (package
