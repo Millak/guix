@@ -6771,7 +6771,7 @@ go.opentelemetry.io/otel/trace.")
 (define-public go-go-opentelemetry-io-otel-sdk
   (package
     (name "go-go-opentelemetry-io-otel-sdk")
-    (version "1.30.0")
+    (version "1.33.0")
     (source
      (origin
        (method git-fetch)
@@ -6780,7 +6780,7 @@ go.opentelemetry.io/otel/trace.")
              (commit (go-version->git-ref version #:subdir "sdk"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0mpkwz2ryah5j2fb835pdw9084nwhr6fj3jig2mnvwwnsymp2bvy"))
+        (base32 "0sb36qyq389fif9qp5iiqp6w41dfcwi95gb0bsbvznvijhd8c1cc"))
        (modules '((guix build utils)
                   (ice-9 ftw)
                   (srfi srfi-26)))
