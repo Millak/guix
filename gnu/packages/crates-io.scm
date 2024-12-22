@@ -29258,27 +29258,27 @@ crate.")
 (define-public rust-flume-0.11
   (package
     (name "rust-flume")
-    (version "0.11.0")
+    (version "0.11.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "flume" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "10girdbqn77wi802pdh55lwbmymy437k7kklnvj12aaiwaflbb2m"))))
+        (base32 "15ch0slxa8sqsi6c73a0ky6vdnh48q8cxjf7rksa3243m394s3ns"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f      ; cannot find value `_IS_BIASED` in this scope
-       #:cargo-inputs (("rust-futures-core" ,rust-futures-core-0.3)
+     `(#:cargo-inputs (("rust-futures-core" ,rust-futures-core-0.3)
                        ("rust-futures-sink" ,rust-futures-sink-0.3)
                        ("rust-nanorand" ,rust-nanorand-0.7)
                        ("rust-spin" ,rust-spin-0.9))
        #:cargo-development-inputs
        (("rust-async-std" ,rust-async-std-1)
-        ("rust-criterion" ,rust-criterion-0.3)
+        ("rust-criterion" ,rust-criterion-0.5)
         ("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
         ("rust-crossbeam-utils" ,rust-crossbeam-utils-0.8)
         ("rust-futures" ,rust-futures-0.3)
+        ("rust-getrandom" ,rust-getrandom-0.2)
         ("rust-rand" ,rust-rand-0.8)
         ("rust-tokio" ,rust-tokio-1)
         ("rust-waker-fn" ,rust-waker-fn-1))))
