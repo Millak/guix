@@ -33364,28 +33364,23 @@ of gzip files based on the gzip header implementation in the @code{flate2} crate
 (define-public rust-half-2
   (package
     (name "rust-half")
-    (version "2.3.1")
+    (version "2.4.1")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "half" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
-               (base32 "0wj8gfpgn4zkjzw6hlnwb0pa71hy1mwq5h3fnpql71n02qwyalmw"))))
+               (base32 "123q4zzw1x4309961i69igzd1wb7pj04aaii3kwasrz3599qrl3d"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-test-flags
-       '("--release" "--"
-         "--skip=bfloat::test::test_nan_conversion_to_larger"
-         "--skip=bfloat::test::test_nan_conversion_to_smaller"
-         "--skip=binary16::test::test_nan_conversion_to_larger"
-         "--skip=binary16::test::test_nan_conversion_to_smaller")
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-bytemuck" ,rust-bytemuck-1)
         ("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-crunchy" ,rust-crunchy-0.2)
         ("rust-num-traits" ,rust-num-traits-0.2)
         ("rust-rand" ,rust-rand-0.8)
         ("rust-rand-distr" ,rust-rand-distr-0.4)
+        ("rust-rkyv" ,rust-rkyv-0.7)
         ("rust-serde" ,rust-serde-1)
         ("rust-zerocopy" ,rust-zerocopy-0.6))
        #:cargo-development-inputs
