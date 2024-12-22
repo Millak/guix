@@ -20882,17 +20882,16 @@ custom derives.")
   (package
     (inherit rust-darling-macro-0.20)
     (name "rust-darling-macro")
-    (version "0.14.1")
+    (version "0.14.4")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "darling_macro" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32 "1dag2f4bq38vdn886slqczip5qzhvb95317kl04zrlnbpz2nkz6x"))))
+         (base32 "13mlyd5w275c815k0ijf6g4c446hs8b3m2h4an5isqgpr7dv9am4"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-darling-core" ,rust-darling-core-0.14)
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))))))
