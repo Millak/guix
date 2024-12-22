@@ -5021,6 +5021,31 @@ expressing configuration which is easy for both humans and machines to read.")
 Die) day numbers.")
     (license license:gpl2)))
 
+(define-public go-github-com-hebcal-hdate
+  (package
+    (name "go-github-com-hebcal-hdate")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hebcal/hdate")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0i3r3ng9ygd7ly59znw948im4z4sbp23jqj3hhgxabwhh6b8mdmf"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/hebcal/hdate"))
+    (native-inputs (list go-github-com-stretchr-testify))
+    (propagated-inputs (list go-github-com-hebcal-greg))
+    (home-page "https://github.com/hebcal/hdate")
+    (synopsis "Converts between Hebrew and Gregorian dates")
+    (description
+     "Hebcal's hdate package converts between Hebrew and Gregorian dates.")
+    (license license:gpl2)))
+
 (define-public go-github-com-hhrutter-tiff
   (package
     (name "go-github-com-hhrutter-tiff")
