@@ -6879,6 +6879,61 @@ logging library.  Instead, install one of the bridges listed in the
      "This package provides OpenTelemetry Otel SDK.")
     (license license:asl2.0)))
 
+(define-public go-go-opentelemetry-io-otel-sdk-log
+  (package
+    (name "go-go-opentelemetry-io-otel-sdk-log")
+    (version "0.9.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/open-telemetry/opentelemetry-go")
+             (commit (go-version->git-ref version
+                                          #:subdir "sdk/log"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0sb36qyq389fif9qp5iiqp6w41dfcwi95gb0bsbvznvijhd8c1cc"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            ;; XXX: 'delete-all-but' is copied from the turbovnc package.
+            ;; Consider to implement it as re-usable procedure in
+            ;; guix/build/utils or guix/build-system/go.
+            (define (delete-all-but directory . preserve)
+              (define (directory? x)
+                (and=> (stat x #f)
+                       (compose (cut eq? 'directory <>) stat:type)))
+              (with-directory-excursion directory
+                (let* ((pred
+                        (negate (cut member <> (append '("." "..") preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (lambda (item)
+                              (if (directory? item)
+                                  (delete-file-recursively item)
+                                  (delete-file item)))
+                            items))))
+            (delete-all-but "sdk" "log")
+            (delete-all-but "." "sdk")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "go.opentelemetry.io/otel/sdk/log"
+      #:unpack-path "go.opentelemetry.io/otel"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-go-logr-logr
+           go-github-com-go-logr-stdr
+           go-github-com-google-go-cmp
+           go-go-opentelemetry-io-otel-log
+           go-go-opentelemetry-io-otel-sdk))
+    (home-page "https://go.opentelemetry.io/otel")
+    (synopsis "OpenTelemetry Log SDK library")
+    (description "Package log provides the @code{OpenTelemetry} Logs SDK.")
+    (license license:asl2.0)))
+
 (define-public go-golang-org-x-oauth2
   (package
     (name "go-golang-org-x-oauth2")
