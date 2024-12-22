@@ -788,6 +788,24 @@ encoded data.")
 Apache Axiom.")
     (license license:asl2.0)))
 
+(define-public java-axiom-weaver-annotations
+  (package
+    (name "java-axiom-weaver-annotations")
+    (version %axiom-version)
+    (source axiom-source)
+    (build-system ant-build-system)
+    (arguments
+     `(#:source-dir "axiom-weaver-annotations/src/main"
+       #:tests? #f  ;; has no tests
+       #:jar-name "axiom-weaver-annotations.jar"))
+    (native-inputs
+     (list unzip))
+    (home-page "https://ws.apache.org/axiom/")
+    (synopsis "Annotation for Apache Axiom Weaver")
+    (description "This package provides annotation classes for Apache Axiom
+Weaver.")
+    (license license:asl2.0)))
+
 (define-public java-axiom-xml-utils
   (package
     (name "java-axiom-xml-utils")
