@@ -21116,14 +21116,14 @@ hexadecimal, base32, and base64.")
 (define-public rust-data-encoding-macro-internal-0.1
   (package
     (name "rust-data-encoding-macro-internal")
-    (version "0.1.12")
+    (version "0.1.13")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "data-encoding-macro-internal" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1wvn4p7wzr6p8fy8q9qpzgbvb9j1k3b5016867b7vcc95izx0iq0"))))
+        (base32 "0gyk580bjsjdy10n06f4gqh5kkqy296ndvcg21ychfzm1967ab9k"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-data-encoding" ,rust-data-encoding-2)
