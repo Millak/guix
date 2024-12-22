@@ -25708,14 +25708,14 @@ type (e.g. all variants of an enumeration)")
 (define-public rust-enum-map-0.6
   (package
     (name "rust-enum-map")
-    (version "0.6.4")
+    (version "0.6.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "enum-map" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0m8qg32fnjdf6z64j4wmyp935p5838wd31gibkiqpbpl76c9k1s1"))))
+        (base32 "166yh44izfz871f4avl10cp0l161shhsawfcl1q6slv3siamqn93"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -25724,6 +25724,7 @@ type (e.g. all variants of an enumeration)")
         ("rust-serde" ,rust-serde-1))
        #:cargo-development-inputs
        (("rust-bincode" ,rust-bincode-1)
+        ("rust-serde-derive" ,rust-serde-derive-1)
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-serde-test" ,rust-serde-test-1))))
     (home-page "https://gitlab.com/KonradBorowski/enum-map")
