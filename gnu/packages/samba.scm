@@ -14,6 +14,7 @@
 ;;; Copyright © 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 Simon Streit <simon@netpanic.org>
+;;; Copyright © 2024 Jordan Moore <lockbox@struct.foo>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -74,14 +75,14 @@
 (define-public cifs-utils
   (package
     (name "cifs-utils")
-    (version "7.0")
+    (version "7.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://download.samba.org/pub/linux-cifs/"
                            "cifs-utils/cifs-utils-" version ".tar.bz2"))
        (sha256 (base32
-                "0qc1ph94yvg87m87xangw9dd0m5ds2q1zd2sqkzldsnkbfwamvqd"))))
+                "0ajvbc5lbwvzlhq2f2grsgy3rpzb314vm29icp4kcsjadbvj64d2"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake pkg-config
