@@ -15,7 +15,7 @@
 ;;; Copyright © 2019 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2021 Eric Bavier <bavier@posteo.net>
-;;; Copyright © 2021, 2022 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2021, 2022, 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Hugo Lecomte <hugo.lecomte@inria.fr>
 ;;; Copyright © 2021, 2022, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
@@ -518,6 +518,27 @@ math in HTML via JavaScript.")
 Blog, News or Announcements section to a Sphinx website.")
     (home-page "https://bitbucket.org/prometheus/sphinxcontrib-newsfeed")
     (license license:bsd-2)))
+
+(define-public python-sphinx-inline-tabs
+  (package
+    (name "python-sphinx-inline-tabs")
+    (version "2023.4.21")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "sphinx_inline_tabs" version))
+       (sha256
+        (base32 "1g5yhdk208i8maippnbnijd1knpai809wl3cbwzqy59cc0zz3wjx"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ; no tests in the release, only in the main branch
+    (native-inputs (list python-flit-core
+                         python-sphinx))
+    (home-page "https://github.com/pradyunsg/sphinx-inline-tabs")
+    (synopsis "Add inline tabbed content to your Sphinx documentation")
+    (description "This package provides a Sphinx plugin to add inline tabbed
+content to your Sphinx documentation.")
+    (license license:expat)))
 
 (define-public python-sphinx-issues
   (package
