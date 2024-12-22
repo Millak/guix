@@ -245,16 +245,15 @@ the real span of the lattice.")
     (native-inputs (list (texlive-updmap.cfg)))
     (inputs (list gmp libx11 perl readline))
     (arguments
-     '(#:make-flags '("all")
-       #:test-target "dobench"
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key outputs #:allow-other-keys)
-             (invoke "./Configure"
-                     "--mt=pthread"
-                     (string-append "--prefix="
-                                    (assoc-ref outputs "out"))))))))
+     (list
+      #:test-target "dobench"
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda _
+              (invoke "./Configure"
+                      "--mt=pthread"
+                      (string-append "--prefix=" #$output)))))))
     (synopsis "PARI/GP, a computer algebra system for number theory")
     (description
      "PARI/GP is a widely used computer algebra system designed for fast
