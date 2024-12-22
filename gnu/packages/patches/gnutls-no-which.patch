@@ -1,0 +1,92 @@
+Upstream-status: 
+
+diff --git a/tests/pkcs11-tool.sh b/tests/pkcs11-tool.sh
+index 2d650b52f..e64803fc3 100755
+--- a/tests/pkcs11-tool.sh
++++ b/tests/pkcs11-tool.sh
+@@ -64,7 +64,7 @@ if ! test -f "${SOFTHSM_MODULE}"; then
+ 	exit 77
+ fi
+ 
+-if [ -z "$(which pkcs11-tool 2>/dev/null)" ]; then
++if ! command -v pkcs11-tool >/dev/null; then
+ 	echo "Need pkcs11-tool from opensc package to run this test."
+ 	exit 77
+ fi
+diff --git a/tests/tpm2.sh b/tests/tpm2.sh
+index d48364c6c..a03945da8 100755
+--- a/tests/tpm2.sh
++++ b/tests/tpm2.sh
+@@ -29,22 +29,22 @@ if ! test -x "${CERTTOOL}"; then
+ 	exit 77
+ fi
+ 
+-if [ -z "$(which swtpm 2>/dev/null)" ]; then
++if ! command -v swtpm >/dev/null; then
+ 	echo "Need swtpm package to run this test."
+ 	exit 77
+ fi
+ 
+-if [ -z "$(which ncat 2>/dev/null)" ]; then
++if ! command -v ncat >/dev/null; then
+ 	echo "Need ncat from nmap-ncat package to run this test."
+ 	exit 77
+ fi
+ 
+-if [ -z "$(which tpm2_startup 2>/dev/null)" ]; then
++if ! command -v tpm2_startup >/dev/null; then
+ 	echo "Need tpm2_startup from tpm2-tools package to run this test."
+ 	exit 77
+ fi
+ 
+-if [ -z "$(which base64 2>/dev/null)" ]; then
++if ! command -v base64 >/dev/null; then
+ 	echo "Need the base64 tool to run this test."
+ 	exit 77
+ fi
+@@ -58,7 +58,7 @@ case `"$OPENSSL" version` in
+ 	;;
+ esac
+ 
+-if [ -z "$(which tpm2tss-genkey 2>/dev/null)" ]; then
++if ! command -v tpm2tss-genkey >/dev/null; then
+ 	echo "Need tpm2tss-genkey from tpm2-tss-engine package to run this test."
+ 	exit 77
+ fi
+diff --git a/tests/tpmtool_test.sh b/tests/tpmtool_test.sh
+index a14242808..962d571f6 100755
+--- a/tests/tpmtool_test.sh
++++ b/tests/tpmtool_test.sh
+@@ -28,27 +28,27 @@ if [ "$(id -u)" -ne 0 ]; then
+ 	exit 77
+ fi
+ 
+-if [ -z "$(which swtpm 2>/dev/null)" ]; then
++if ! command -v swtpm >/dev/null; then
+ 	echo "Need swtpm package to run this test."
+ 	exit 77
+ fi
+ 
+-if [ -z "$(which tcsd 2>/dev/null)" ]; then
++if ! command -v tcsd >/dev/null; then
+ 	echo "Need tcsd (TrouSerS) package to run this test."
+ 	exit 77
+ fi
+ 
+-if [ -z "$(which tpm_createek 2>/dev/null)" ]; then
++if ! command -v tpm_createek >/dev/null; then
+ 	echo "Need tpm_createek from tpm-tools package to run this test."
+ 	exit 77
+ fi
+ 
+-if [ -z "$(which ncat 2>/dev/null)" ]; then
++if ! command -v ncat >/dev/null; then
+ 	echo "Need ncat from nmap-ncat package to run this test."
+ 	exit 77
+ fi
+ 
+-if [ -z "$(which expect 2>/dev/null)" ]; then
++if ! command -v expect >/dev/null; then
+ 	echo "Need expect from expect package to run this test."
+ 	exit 77
+ fi

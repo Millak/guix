@@ -217,7 +217,8 @@ living in the same process.")
               (uri (string-append "mirror://gnupg/gnutls/v"
                                   (version-major+minor version)
                                   "/gnutls-" version ".tar.xz"))
-              (patches (search-patches "gnutls-skip-trust-store-test.patch"))
+              (patches (search-patches "gnutls-no-which.patch"
+                                       "gnutls-skip-trust-store-test.patch"))
               (sha256
                (base32
                 "1v9090cbajf02cw01idfbp0cgmgjn5091ff1b96hqryi0bc17qb9"))))
@@ -234,7 +235,11 @@ living in the same process.")
                      (this-package-native-input "socat")))
 
            #:configure-flags
-           #~(cons*
+           #~(list
+              ;; dlopen (the default otherwise) doesn't work reliably on Guix
+              ;; due to its non-FHS nature and the lack of a global
+              ;; ld.so.cache file.
+              "--with-zlib=link"
               ;; GnuTLS doesn't consult any environment variables to specify
               ;; the location of the system-wide trust store.  Instead it has a
               ;; configure-time option.  Unless specified, its configure script
@@ -244,33 +249,9 @@ living in the same process.")
               ;; store is used, so each program has to provide its own
               ;; fallback, and users have to configure each program
               ;; independently.  This seems suboptimal.
-              "--with-default-trust-store-dir=/etc/ssl/certs"
-
-              ;; The compression extensions dlopen compression libraries.
-              ;; Give them the absolute file name to look for.  (The variable
-              ;; is called 'soname' but it's really the file name.)
-              (string-append "gnutls_cv_soname_z="
-                             #$(this-package-input "zlib") "/lib/libz.so")
-
-              (let ((system #$(or (%current-target-system)
-                                  (%current-system))))
-                (if (string-prefix? "mips64el" system)
-                    (list
-                     ;; FIXME: Temporarily disable p11-kit support since it is
-                     ;; not working on mips64el.
-                     "--without-p11-kit")
-                    '())))
-
+              "--with-default-trust-store-dir=/etc/ssl/certs")
            #:phases
            #~(modify-phases %standard-phases
-               ;; fastopen.sh fails to connect to the server in the builder
-               ;; environment (see:
-               ;; https://gitlab.com/gnutls/gnutls/-/issues/1095).
-               (add-after 'unpack 'disable-failing-tests
-                 (lambda _
-                   (substitute* "tests/fastopen.sh"
-                     (("^unset RETCODE")
-                      "exit 77\n"))))   ;skip
                #$@(if (target-ppc32?)
                       ;; https://gitlab.com/gnutls/gnutls/-/issues/1354
                       ;; Extend the test timeout from the default of 20 * 1000
@@ -292,7 +273,8 @@ living in the same process.")
                "debug"
                "doc"))                  ;4.1 MiB of man pages
     (native-inputs
-     (append (list pkg-config texinfo which
+     (append (list pkg-config
+                   texinfo
                    util-linux)          ;one test needs 'setsid'
              (if (target-hurd?)
                  '()
@@ -303,12 +285,7 @@ living in the same process.")
     (inputs (list libunistring zlib))
     (propagated-inputs
      ;; These are all in the 'Requires.private' field of gnutls.pc.
-     (append (list libtasn1 libidn2 nettle zlib)
-             (let ((system (or (%current-target-system)
-                               (%current-system))))
-               (if (string-prefix? "mips64el" system)
-                   '()
-                   (list p11-kit)))))
+     (list libtasn1 libidn2 p11-kit nettle zlib))
     (home-page "https://gnutls.org")
     (synopsis "Transport layer security library")
     (description
