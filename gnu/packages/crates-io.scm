@@ -21430,14 +21430,14 @@ for sync managers.")
 (define-public rust-deadpool-sync-0.1
   (package
     (name "rust-deadpool-sync")
-    (version "0.1.2")
+    (version "0.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "deadpool-sync" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "02habnbf9gna5yg5parpfbgz1342mzyxmd5lcz7f9jhk9i4p1nzq"))))
+        (base32 "1s50gz56m8rhb7p8vw8jpgikwjx0v7x407hw3sjfvqyv52n17hic"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-deadpool-runtime" ,rust-deadpool-runtime-0.1)
