@@ -382,7 +382,8 @@ Qt.  Some of its features include:
     (native-inputs (list qttools))
     (inputs (list
              kwindowsystem
-             qtsvg))
+             qtsvg
+             qtwayland))
     (synopsis "SVG-based theme engine for Qt")
     (description
      "Kvantum is an SVG-based theme engine for Qt,
