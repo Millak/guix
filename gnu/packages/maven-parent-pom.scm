@@ -166,6 +166,12 @@
     apache-parent-pom-23
     #:tag-prefix "rel/commons-parent-"))
 
+(define-public apache-commons-parent-pom-78
+  (make-apache-commons-parent-pom
+    "78" "0zpyncll0qb821ki2hdf8329r5q0vxcrr7svrh3659gza9g2fz2l"
+    apache-parent-pom-33
+    #:tag-prefix "rel/commons-parent-"))
+
 (define-public java-weld-parent-pom
   (hidden-package
     (package
