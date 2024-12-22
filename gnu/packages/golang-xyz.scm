@@ -5061,13 +5061,9 @@ Die) day numbers.")
         (base32 "1vccmjb4g8g8x733a45g78lz25k2a0avsq4zvlp94varssk8wj1q"))))
     (build-system go-build-system)
     (arguments
-     (list #:import-path "github.com/hebcal/hebcal-go"
-           ;; Source-only package
-           #:tests? #f
-           #:phases
-           #~(modify-phases %standard-phases
-               ;; Source-only package
-               (delete 'build))))
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/hebcal/hebcal-go"))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
