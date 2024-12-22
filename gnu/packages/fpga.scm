@@ -285,7 +285,7 @@ Includes the actual FTDI connector.")
     (license license:isc))))
 
 (define-public nextpnr-ice40
-  (let* ((version "0.5")
+  (let* ((version "0.7")
          (tag (string-append "nextpnr-" version)))
     (package
       (name "nextpnr-ice40")
@@ -300,7 +300,7 @@ Includes the actual FTDI connector.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "119iqxxzbxq2qy8x20awf9gr0nf3y1yjmk36adsg89ly3rb9gwzk"))
+           "0sbhqscgmlk4q2207rsqsw99qx4fyrxx1hsd669lrk42gmk3s9lm"))
          (modules '((guix build utils)))
          (snippet
           #~(begin
