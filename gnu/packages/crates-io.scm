@@ -24563,14 +24563,14 @@ Rust.")
 (define-public rust-dwrote-0.11
   (package
     (name "rust-dwrote")
-    (version "0.11.0")
+    (version "0.11.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "dwrote" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0nx6d9ddqjv0gfi1if3zbsnc9sfj6qfm900jfgnx66k1llmir6j3"))))
+        (base32 "1z85pyzac4zpap94czx7nkn1hys64n95ddlnpar34djsa84jf63h"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
