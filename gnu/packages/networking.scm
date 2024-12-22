@@ -4731,7 +4731,7 @@ IPv6 Internet connectivity - it also works over IPv4.")
 (define-public nebula
   (package
     (name "nebula")
-    (version "1.9.3")
+    (version "1.9.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4740,7 +4740,7 @@ IPv6 Internet connectivity - it also works over IPv4.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "08zzbx2v713zd9p7i4kd1bvcw47xb0092p5apba1x5wg6fpxw5zr"))
+                "1slknnrdnf5a2ask11ql3gwnnl6c5359bp8rd712aq30lxa2d4r0"))
               ;; Remove windows-related binary blobs and files
               (snippet
                #~(begin
@@ -4780,29 +4780,32 @@ IPv6 Internet connectivity - it also works over IPv4.")
      (list go-dario-cat-mergo
            go-github-com-anmitsu-go-shlex
            go-github-com-armon-go-radix
-           go-github-com-cespare-xxhash-v2
            go-github-com-cyberdelia-go-metrics-graphite
            go-github-com-flynn-noise
+           go-github-com-gaissmai-bart
            go-github-com-gogo-protobuf
            go-github-com-google-gopacket
+           go-github-com-kardianos-service
            go-github-com-miekg-dns
            go-github-com-nbrownus-go-metrics-prometheus
            go-github-com-prometheus-client-golang
-           go-github-com-prometheus-client-model
-           go-github-com-prometheus-procfs
            go-github-com-rcrowley-go-metrics
            go-github-com-sirupsen-logrus
            go-github-com-skip2-go-qrcode
            go-github-com-songgao-water
            go-github-com-stretchr-testify
+           go-github-com-vishvananda-netlink
            go-golang-org-x-crypto
+           go-golang-org-x-exp
            go-golang-org-x-net
+           go-golang-org-x-sync
            go-golang-org-x-sys
            go-golang-org-x-term
+           go-golang-zx2c4-com-wireguard
            go-google-golang-org-protobuf
            go-gopkg-in-yaml-v2
-           go-github-com-vishvananda-netlink
-           go-github-com-vishvananda-netns))
+           ;go-gvisor-dev-gvisor  ; for nebula-service, not packed yet
+           ))
     (home-page "https://github.com/slackhq/nebula")
     (synopsis "Scalable, peer-to-peer overlay networking tool")
     (description
