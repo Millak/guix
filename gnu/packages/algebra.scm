@@ -59,6 +59,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages ruby)
@@ -72,6 +73,7 @@
   #:use-module (guix build-system ant)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system r)
   #:use-module (guix download)
@@ -1623,6 +1625,28 @@ structure constants of Schubert polynomials.")
     (license license:gpl2+)
     (home-page "https://sites.math.rutgers.edu/~asbuch/lrcalc/")))
 
+(define-public python-lrcalc
+  (package
+    (name "python-lrcalc")
+    (version "2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "lrcalc" version))
+       (sha256
+        (base32 "1adassfjalsdsngy01c37835qsx3gj0jx9cinc9b91x4xnd51873"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ; there are no tests
+    (native-inputs (list python-cython python-setuptools python-wheel))
+    (inputs (list lrcalc))
+    (home-page "https://math.rutgers.edu/~asbuch/lrcalc")
+    (synopsis "Python bindings for the Littlewood-Richardson Calculator")
+    (description
+     "This package provides Python bindings for the Littlewood-Richardson
+Calculator.")
+    (license license:gpl3+)))
+
 (define-public iml
   (package
     (name "iml")
@@ -1638,8 +1662,8 @@ structure constants of Schubert polynomials.")
     (build-system gnu-build-system)
     (inputs
      `(("gmp" ,gmp)
-       ("cblas" ,openblas))) ; or any other BLAS library; the documentation
-                             ; mentions ATLAS in particular
+       ("cblas" ,openblas)))    ; or any other BLAS library; the documentation
+                                        ; mentions ATLAS in particular
     (arguments
      `(#:configure-flags
        (list
