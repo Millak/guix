@@ -229,6 +229,16 @@ the real span of the lattice.")
     (description "fpylll is a Python wrapper for fplll.")
     (license license:gpl2+)))
 
+(define pari-galdata
+  ;; version from 2008-04-12
+  (origin
+    (method url-fetch)
+    ;; no versioning, old files seem to be moved to `old/...' on update
+    (uri "https://pari.math.u-bordeaux.fr/pub/pari/packages/galdata.tgz")
+    (sha256
+     (base32
+      "1pch6bk76f1i6cwwgm7hhxi5h71m52lqayp4mnyj0jmjk406bhdp"))))
+
 (define-public pari-gp
   (package
     (name "pari-gp")
@@ -253,7 +263,13 @@ the real span of the lattice.")
             (lambda _
               (invoke "./Configure"
                       "--mt=pthread"
-                      (string-append "--prefix=" #$output)))))))
+                      (string-append "--prefix=" #$output))))
+          (add-after 'install 'install-galdata
+            (lambda _
+              (invoke "tar" "-xvf" #$pari-galdata)
+              (copy-recursively "data/" (string-append
+                                         #$output
+                                         "/share/pari")))))))
     (synopsis "PARI/GP, a computer algebra system for number theory")
     (description
      "PARI/GP is a widely used computer algebra system designed for fast
