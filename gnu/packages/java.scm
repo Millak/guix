@@ -21,6 +21,7 @@
 ;;; Copyright © 2022, 2024, 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2024 Raven Hallsby <karl@hallsby.com>
+;;; Copyright © 2024 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2025 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2025 Julian Flake <julian@flake.de>
 ;;;
@@ -11926,6 +11927,35 @@ protocol-independent framework to build mail and messaging applications.")
     (description "MapDB provides concurrent maps, sets and queues backed by
 disk storage or off-heap memory.")
     (license license:bsd-3)))
+
+(define-public java-mime4j-core
+  (package
+    (name "java-mime4j-core")
+    (version "0.8.13")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://apache/james/mime4j/" version
+                                  "/james-mime4j-sources-" version ".zip"))
+              (sha256
+               (base32
+                "0f1r0ywa1qdw2b227c93v3fksqp9bgll00bqw1md1894v3szm9ca"))))
+    (build-system ant-build-system)
+    (arguments
+     `(#:tests? #f  ;; has no tests
+       #:source-dir "core/src/main/java"
+       #:jar-name "apache-mime4j-core.jar"))
+    (native-inputs
+     (list java-commons-io-latest ;; requries >= 2.7
+           java-junit
+           unzip))
+    (home-page "https://james.apache.org/mime4j/apache-mime4j-core/")
+    (synopsis "Java stream based MIME message parser")
+    (description "Apache James Mime4J provides a parser, MimeStreamParser, for
+e-mail message streams in plain rfc822 and MIME format.  The parser uses a
+callback mechanism to report parsing events such as the start of an entity
+header, the start of a body, etc.  If you are familiar with the SAX XML parser
+interface you should have no problem getting started with mime4j.")
+    (license license:asl2.0)))
 
 (define-public java-jeromq
   (package
