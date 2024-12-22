@@ -27354,14 +27354,14 @@ handling type for easy idiomatic error handling and reporting in Rust.")
 (define-public rust-fakeit-1
   (package
     (name "rust-fakeit")
-    (version "1.2.0")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "fakeit" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0zsz58zfawf3zk9ig3n7dbd382lgndjx0xxngwsymilcgipr0bfi"))))
+        (base32 "057155zak9jx127jv5mlaw4kvpsj795fxmzsgg3j9mh5yxz6c9kr"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-libmath" ,rust-libmath-0.2)
