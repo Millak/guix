@@ -305,6 +305,34 @@ replace a file or symbolic link.")
 1.1: Authentication and Security Services.")
     (license license:bsd-3)))
 
+(define-public go-github-com-mmcloughlin-avo
+  (package
+    (name "go-github-com-mmcloughlin-avo")
+    (version "0.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mmcloughlin/avo")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0lv771lb9nxaxqiz7l83k35rc82588xihixxrik6yapg13v675mp"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/mmcloughlin/avo"))
+    (propagated-inputs
+     (list go-golang-org-x-arch
+           go-golang-org-x-sys
+           go-golang-org-x-tools))
+    (home-page "https://github.com/mmcloughlin/avo")
+    (synopsis "Generate x86 Assembly with Go")
+    (description
+     "The avo package presents a familiar assembly-like interface that
+simplifies development without sacrificing performance.")
+    (license license:bsd-3)))
+
 ;; XXX: This repository has been archived by the owner on Dec 1, 2021. It is
 ;; now read-only.
 (define-public go-github-com-pkg-errors
