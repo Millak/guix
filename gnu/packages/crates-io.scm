@@ -2634,14 +2634,14 @@ last place (ULPs) comparisons.")
 (define-public rust-arbitrary-1
   (package
     (name "rust-arbitrary")
-    (version "1.3.2")
+    (version "1.4.1")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "arbitrary" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0471f0c4f1bgibhyhf8vnapkp158h1nkrzx0wnq97jwd9n0jcnkx"))))
+                "08zj2yanll5s5gsbmvgwvbq39iqzy3nia3yx3db3zwba08yhpqnx"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-derive-arbitrary" ,rust-derive-arbitrary-1))
