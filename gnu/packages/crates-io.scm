@@ -38226,14 +38226,14 @@ and functions.")
 (define-public rust-itoa-1
   (package
     (name "rust-itoa")
-    (version "1.0.11")
+    (version "1.0.14")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "itoa" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0nv9cqjwzr3q58qz84dcz63ggc54yhf1yqar1m858m1kfd4g3wa9"))))
+        (base32 "0x26kr9m062mafaxgcf2p6h2x7cmixm0zw95aipzn2hr3d5jlnnp"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-no-panic" ,rust-no-panic-0.1))))
