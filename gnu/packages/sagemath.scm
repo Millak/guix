@@ -23,6 +23,7 @@
 
 (define-module (gnu packages sagemath)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
@@ -402,3 +403,25 @@ systems such as GAP and SageMath to provide quick access to those Conway
 polynomials.  The aim of this package is to make them available through a
 generic Python interface.")
     (license license:gpl3+)))
+
+(define-public sagemath-data-polytopes-db
+  (package
+    (name "sagemath-data-polytopes-db")
+    (version "20170220")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://mirrors.mit.edu/sage/spkg/upstream/polytopes_db"
+                    "/polytopes_db-" version ".tar.bz2"))
+              (sha256
+               (base32
+                "1q0cd811ilhax4dsj9y5p7z8prlalqr7k9mzq178c03frbgqny6b"))))
+    (build-system copy-build-system)
+    (arguments '(#:install-plan '(("." "share/reflexive_polytopes"))))
+    (home-page "https://doc.sagemath.org/html/en/reference/spkg/polytopes_db.html")
+    (synopsis "Lists of 2- and 3-dimensional reflexive polytopes")
+    (description
+     "This package contains data for 2- and 3-dimensional reflexive polytopes
+to be used by SageMath.")
+    ;; Debian says GPLv2+.
+    (license license:gpl2+)))
