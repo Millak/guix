@@ -2147,6 +2147,7 @@ without needing to use a tool like Wireshark.")))
     (name "go-pprof")
     (arguments
      (list
+      #:tests? #f
       #:install-source? #f
       #:import-path "github.com/google/pprof"))
     (description
