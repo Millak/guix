@@ -37471,14 +37471,14 @@ library.")
   (package
     (inherit rust-io-lifetimes-2)
     (name "rust-io-lifetimes")
-    (version "1.0.10")
+    (version "1.0.11")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "io-lifetimes" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "08625nsz0lgbd7c9lly6b6l45viqpsnj9jbsixd9mrz7596wfrlw"))))
+                "1hph5lz4wd3drnn6saakwxr497liznpfnv70via6s0v8x6pbkrza"))))
     (arguments
      `(#:cargo-inputs (("rust-async-std" ,rust-async-std-1)
                        ("rust-fs-err" ,rust-fs-err-2)
