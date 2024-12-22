@@ -176,10 +176,9 @@
     (native-inputs
      `(("cmake" ,cmake)
        ("clang" ,clang)))
-    (propagated-inputs
-     `(("tinycbor-src" ,%tinycbor-source)))
     (inputs
-     (list llvm))
+     `(("llvm" ,llvm)
+       ("tinycbor-src" ,%tinycbor-source)))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
