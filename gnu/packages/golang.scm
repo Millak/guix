@@ -2608,21 +2608,19 @@ Hebrew letters.")
       (license license:bsd-2))))
 
 (define-public go-github-com-hebcal-hebcal-go
-  (let ((commit "d42e881860cfc9e8249fc79f268091c3c4d36b0d")
-        (revision "0"))
     (package
       (name "go-github-com-hebcal-hebcal-go")
-      (version (git-version "0.9.11" revision commit))
+      (version "0.9.31")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/hebcal/hebcal-go")
-               (commit commit)))
+               (commit (string-append "v" version))))
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "1m9akb8pwxchpaci05gambshrzw626gsrfhl25f36vjl7mq5292n"))))
+           "1vccmjb4g8g8x733a45g78lz25k2a0avsq4zvlp94varssk8wj1q"))))
       (build-system go-build-system)
       (arguments
        (list #:import-path "github.com/hebcal/hebcal-go"
@@ -2635,7 +2633,10 @@ Hebrew letters.")
       (native-inputs
        (list go-github-com-stretchr-testify))
       (propagated-inputs
-       (list go-github-com-hebcal-gematriya
+       (list go-github-com-dustin-go-humanize
+             go-github-com-hebcal-gematriya
+             go-github-com-hebcal-greg
+             go-github-com-hebcal-hdate
              go-github-com-nathan-osman-go-sunrise))
       (home-page "https://github.com/hebcal/hebcal-go")
       (synopsis "Go library for the Hebcal perpetual Jewish calendar")
@@ -2648,7 +2649,7 @@ are approximated based on location.
 Torah readings, Daf Yomi, and counting of the Omer can also be
 specified.  Algorithms are included to calculate yahrzeits, birthdays,
 and anniversaries.")
-      (license license:gpl2+))))
+      (license license:gpl2+)))
 
 (define-public go-gopkg.in-tomb.v2
   (let ((commit "d5d1b5820637886def9eef33e03a27a9f166942c")
