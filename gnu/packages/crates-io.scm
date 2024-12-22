@@ -23406,14 +23406,14 @@ diff.")
 (define-public rust-dircpy-0.3
   (package
     (name "rust-dircpy")
-    (version "0.3.16")
+    (version "0.3.19")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "dircpy" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1jkj888b22ln6qcvjlrl6a2za1y5j1c8f021qjzq0jf3a6vrs999"))))
+        (base32 "070k84wvc4d364rglwvhjk7psj938nmxh98rs58rspvza6q231d8"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t     ; Cut the dependency chain.
