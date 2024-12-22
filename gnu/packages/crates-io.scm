@@ -25934,28 +25934,29 @@ convert enum to u8 slice ref.")
 compact sets of enums.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-enumset-derive-0.5
+(define-public rust-enumset-derive-0.10
   (package
     (name "rust-enumset-derive")
-    (version "0.5.5")
+    (version "0.10.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "enumset_derive" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-          (base32 "1m7ccz9fcxsx3s1drj77psk62xfgjia0hp9lal3qhpb5ls514lb4"))))
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "enumset_derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0hp25sx7p60ms4xkdkz7x36byd96dhpq7hdxcr4k332x6i6b5hsr"))))
     (build-system cargo-build-system)
     (arguments
-      `(#:cargo-inputs
-        (("rust-darling" ,rust-darling-0.13)
-         ("rust-proc-macro2" ,rust-proc-macro2-1)
-         ("rust-quote" ,rust-quote-1)
-         ("rust-syn" ,rust-syn-1))))
+     `(#:cargo-inputs (("rust-darling" ,rust-darling-0.20)
+                       ("rust-proc-macro-crate" ,rust-proc-macro-crate-3)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))
     (home-page "https://github.com/Lymia/enumset")
     (synopsis "Internal helper crate for enumset")
-    (description "This package is an internal helper crate for
-@code{rust-enumset}.  It is not public API.")
+    (description
+     "This package provides an internal helper crate for @code{rust-enumset}.
+It is not a public API.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-env-logger-0.11
