@@ -63,6 +63,7 @@
 ;;; Copyright © 2023 Munyoki Kilyungi <me@bonfacemunyoki.com>
 ;;; Copyright © 2023 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
+;;; Copyright © 2024 gemmaro <gemmaro.dev@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -708,7 +709,7 @@ client.")
     (description
      "@code{pylibmc} is a client in Python for memcached.  It is a wrapper
 around TangentOrg’s libmemcached library, and can be used as a drop-in
-replacement for the code@{python-memcached} library.")
+replacement for the @code{python-memcached} library.")
     (license license:bsd-3)))
 
 (define-public go-github-com-bradfitz-gomemcache
