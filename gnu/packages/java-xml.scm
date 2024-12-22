@@ -968,3 +968,45 @@ Weaver.")
     (description "This package provides XML utilities used by Apache Axiom
 Weaver, anyhow not depending on depending on the Axiom API.")
     (license license:asl2.0)))
+
+;;; ----- Saxon HE ------
+
+(define-public java-saxon-he-10
+  ;; This is the last version not depending (indirectly via
+  ;; org.xmlresolver.xmlresolver and jing) on itself.
+  (package
+    (name "java-saxon-he")
+    (version "10.9")
+    ;; See <https://codeberg.org/guix/guix/pulls/5264#issuecomment-9492950> on
+    ;; why Maven Central is used in favor of
+    ;; <https://github.com/Saxonica/Saxon-HE> or
+    ;; <https://saxonica.plan.io/projects/saxonmirrorhe/repository>.
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://repo1.maven.org/maven2/"
+                                  "net/sf/saxon/Saxon-HE/" version
+                                  "/Saxon-HE-" version "-sources.jar"))
+              (sha256
+               (base32
+                "17dx6w48ka3d1g20qisvafbc1rmnvfg0vnm8zfz4vkhqfjbkp6j8"))))
+    (build-system ant-build-system)
+    (arguments
+     `(#:tests? #f  ;; tests are not included in release archives
+       #:jar-name "saxon-he.jar"))
+    (native-inputs (list unzip))
+    (inputs
+     (list java-axiom-impl
+           java-dom4j
+           java-jdom2
+           java-xom))
+    (propagated-inputs ;; upstream delivers these in its distribution archive
+     (list java-apache-xml-commons-resolver
+           java-jline-2))
+    (home-page "https://www.saxonica.com/")
+    (synopsis "Saxon XSLT and XQuery Processor")
+    (description "Saxon provides a XSLT 3.0, XQuery 3.1, and XPath 3.1
+processor.  This package provides the open source edition, called
+\"Home Edition (HE)\" for Java.  The Home Edition implements
+aforementioned standards at the basic level of conformance defined by
+W3C.")
+    (license license:mpl2.0)))
