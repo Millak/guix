@@ -2471,6 +2471,52 @@ from CloudFlare's github.com/cloudflare/cfssl/revoke.")
      "Fast JSON encoder/decoder compatible with encoding/json for Go.")
     (license license:expat)))
 
+(define-public go-github-com-gogo-protobuf
+  (package
+    (name "go-github-com-gogo-protobuf")
+    (version "1.3.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gogo/protobuf")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0dfv1bhx5zhb5bsj5sj757nkacf2swp1ajpcyj9d0b37n602m18a"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/gogo/protobuf"
+      ;; protoc: exec: "protoc-min-version": executable file not found in $PATH
+      ;; err = exec: "protoc": executable file not found in $PATH:
+      #:test-flags
+      #~(list "-skip"
+              (string-join
+               (list "TestDashFilename"
+                     "TestEmbedMarshaler"
+                     "TestGolden"
+                     "TestParameters"
+                     "TestPopulateWarning"
+                     "TestRepeatedEmbed"
+                     "TestStdTypesGoString"
+                     "TestTakesTooLongToDebug")
+               "|"))))
+    (home-page "https://github.com/gogo/protobuf")
+    (synopsis "Protocol Buffers for Go with Gadgets")
+    (description "Gogoprotobuf is a fork of golang/protobuf with extra code
+generation features.  This code generation is used to achieve:
+@itemize
+@item fast marshalling and unmarshalling
+@item more canonical Go structures
+@item goprotobuf compatibility
+@item less typing by optionally generating extra helper code
+@item peace of mind by optionally generating test and benchmark code
+@item other serialization formats
+@end itemize")
+    (license license:bsd-3)))
+
 (define-public go-github-com-golang-groupcache
   (package
     (name "go-github-com-golang-groupcache")
