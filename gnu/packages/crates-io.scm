@@ -36384,17 +36384,18 @@ or numerical index.  A corresponding hash set type is also provided.")
 (define-public rust-indextree-4
   (package
     (name "rust-indextree")
-    (version "4.6.0")
+    (version "4.7.3")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "indextree" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1dnysxws5kpw8c3yvnhq3r9p2kfqqrgcw29x7hrg2gn6wp812164"))))
+                "0gqsbd0qm2i749wv0xfpgay2b0w572ghffdppw238b20065fdwwi"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-rayon" ,rust-rayon-1)
+     `(#:cargo-inputs (("rust-indextree-macros" ,rust-indextree-macros-0.1)
+                       ("rust-rayon" ,rust-rayon-1)
                        ("rust-serde" ,rust-serde-1))))
     (home-page "https://github.com/saschagrunert/indextree")
     (synopsis "Arena based tree structure by using indices")
