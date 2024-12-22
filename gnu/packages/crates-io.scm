@@ -36913,17 +36913,16 @@ written in Rust.")
   (package
     (inherit rust-inotify-0.10)
     (name "rust-inotify")
-    (version "0.9.3")
+    (version "0.9.6")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "inotify" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1cs3xlkq3fnfca3mimvifazp01ayscinm07v38ifw0xin5f4fcdh"))))
+                "1zxb04c4qccp8wnr3v04l503qpxzxzzzph61amlqbsslq4z9s1pq"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-1)
         ("rust-futures-core" ,rust-futures-core-0.3)
         ("rust-inotify-sys" ,rust-inotify-sys-0.1)
