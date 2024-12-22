@@ -20612,23 +20612,24 @@ into structs when implementing custom derives.")
   (package
     (inherit rust-darling-0.20)
     (name "rust-darling")
-    (version "0.14.1")
+    (version "0.14.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "darling" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "00mc7svmwphywkwndzkjxsqaxhygrm8f4jv1p1lngzd7vn5naaa5"))))
+        (base32 "0l1qrn805bsxa0iy7x8bmdwr8c10hlw0yiqs8ckv7lbz86rhqxbv"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-darling-core" ,rust-darling-core-0.14)
         ("rust-darling-macro" ,rust-darling-macro-0.14))
        #:cargo-development-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))))
+        ("rust-rustversion" ,rust-rustversion-1)
+        ("rust-syn" ,rust-syn-1)
+        ("rust-trybuild" ,rust-trybuild-1))))))
 
 (define-public rust-darling-0.13
   (package
