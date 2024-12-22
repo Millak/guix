@@ -29680,7 +29680,7 @@ the controling terminal (daemon) using the fork and setsid syscalls.")
   (package
     (inherit rust-fork-0.2)
     (name "rust-fork")
-    (version "0.1.22")
+    (version "0.1.23")
     (source
      (origin
        (method url-fetch)
@@ -29688,7 +29688,7 @@ the controling terminal (daemon) using the fork and setsid syscalls.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "124fbfwqka5xh2jndmlpgbl2ya7a9yf7q6adxvkja510b5xajb5z"))))
+         "1vd8fv09zzxpn67iizndsl24msvrzd995r06v7lmg2lr4cs4vrv0"))))
     (arguments
      `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2))))))
 
