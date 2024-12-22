@@ -27437,20 +27437,17 @@ fallible format macro.")
 (define-public rust-failure-0.1
   (package
     (name "rust-failure")
-    (version "0.1.7")
+    (version "0.1.8")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "failure" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "0js6i6mb42q1g6q3csfbmi6q40s64k96705xbim0d8zg44j9qlmq"))))
+        (base32 "11jg1wmbkijrs6bk9fqnbrm9zf0850whnqpgnxyswbn0dk8rnbnk"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-backtrace" ,rust-backtrace-0.3)
         ("rust-failure-derive" ,rust-failure-derive-0.1))))
     (home-page "https://rust-lang-nursery.github.io/failure/")
