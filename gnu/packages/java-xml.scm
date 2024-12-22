@@ -870,6 +870,42 @@ Apache Axiom.")
 also implement DOM.")
     (license license:asl2.0)))
 
+(define-public java-axiom-impl
+  (package
+    (name "java-axiom-impl")
+    (version %axiom-version)
+    (source axiom-source)
+    (build-system ant-build-system)
+    (arguments
+     `(#:source-dir "implementations/axiom-impl/src/main"
+       #:test-dir "implementations/axiom-impl/src/test"
+       #:tests? #f  ;; tests require too many yet unpackaged packages
+       #:jar-name "axiom-impl.jar"))
+    (native-inputs
+     (list java-axiom-api
+           java-axiom-core-mixins
+           java-axiom-core-streams
+           java-axiom-om-mixins
+           java-axiom-weaver-annotations
+           java-commons-logging-minimal
+           java-woodstox-core
+           unzip))
+    (propagated-inputs
+     (list java-axiom-api))
+    (home-page "https://ws.apache.org/axiom/")
+    (synopsis "Default implementation of the Axiom API")
+    (description "Apache Axiom provides an XML Infoset compliant object model
+implementation which supports on-demand building of the object tree.  It
+supports a novel \"pull-through\" model which allows one to turn off the tree
+building and directly access the underlying pull event stream using the StAX
+API.  It also has built in support for XML Optimized Packaging (XOP) and MTOM,
+the combination of which allows XML to carry binary data efficiently and in a
+transparent manner.  The combination of these is an easy to use API with a
+very high performant architecture.
+
+This package provides the API for Apache Axiom.")
+    (license license:asl2.0)))
+
 (define-public java-axiom-om-mixins
   (package
     (name "java-axiom-om-mixins")
