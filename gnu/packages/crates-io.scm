@@ -76338,30 +76338,47 @@ shared secret key.")
     (description "This package provides a lock-free concurrent slab.")
     (license license:expat)))
 
-(define-public rust-shared-child-0.3
+(define-public rust-shared-child-1
   (package
     (name "rust-shared-child")
-    (version "0.3.4")
+    (version "1.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "shared_child" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "1lmjmr7931dr9cpalw2n7ss4i9mnl7285j2dygxflk9y80xczswc"))))
+        (base32 "035679h89ppqcfkjzgz9bb2hdlkw5wjv598l310xz8frmqw97yh9"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-libc" ,rust-libc-0.2)
-        ("rust-winapi" ,rust-winapi-0.3))))
+     `(#:cargo-test-flags '("--" "--skip=src/lib.rs - (line 35)")
+       #:cargo-inputs (("rust-libc" ,rust-libc-0.2)
+                       ("rust-windows-sys" ,rust-windows-sys-0.59))))
     (home-page "https://github.com/oconnor663/shared_child.rs")
     (synopsis "Use child processes from multiple threads")
-    (description
-     "A library for using child processes from multiple threads.")
+    (description "This package provides a library for using child processes from
+multiple threads.")
     (license license:expat)))
+
+(define-public rust-shared-child-0.3
+  (package
+    (inherit rust-shared-child-1)
+    (name "rust-shared-child")
+    (version "0.3.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "shared_child" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0np6g5fmixncky9c0j5xhqxrp1rkxqnmx5vj7spq652vavazgsbb"))))
+    (arguments
+     `(#:cargo-test-flags '("--"
+                            "--skip=tests::test_into_inner_after_wait"
+                            "--skip=src/lib.rs - (line 35)")
+       #:cargo-inputs (("rust-libc" ,rust-libc-0.2)
+                       ("rust-winapi" ,rust-winapi-0.3))))))
 
 (define-public rust-shared-library-0.1
   (package
