@@ -27244,23 +27244,25 @@ types which contain their own keys.")
 (define-public rust-eyeball-im-0.4
   (package
     (name "rust-eyeball-im")
-    (version "0.4.2")
+    (version "0.4.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "eyeball-im" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0pb2dmqji80hj1c7skk5pg0w64lsqaanmm8ngf3fa2v7v4lsn7q2"))))
+        (base32 "1m1vz8f8nv1za8pvn4c00r71wrnc2i2qnq0jaj9ii7fmyvcwh9lk"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-futures-core" ,rust-futures-core-0.3)
                        ("rust-imbl" ,rust-imbl-2)
+                       ("rust-serde" ,rust-serde-1)
                        ("rust-tokio" ,rust-tokio-1)
                        ("rust-tokio-util" ,rust-tokio-util-0.7)
                        ("rust-tracing" ,rust-tracing-0.1))
        #:cargo-development-inputs
-       (("rust-stream-assert" ,rust-stream-assert-0.1))))
+       (("rust-serde-json" ,rust-serde-json-1)
+        ("rust-stream-assert" ,rust-stream-assert-0.1))))
     (home-page "https://github.com/jplatte/eyeball")
     (synopsis "Observable collections based on the `im` crate")
     (description "Observable collections based on the `im` crate.")
