@@ -27215,14 +27215,14 @@ types which contain their own keys.")
 (define-public rust-eyeball-0.8
   (package
     (name "rust-eyeball")
-    (version "0.8.7")
+    (version "0.8.8")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "eyeball" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1yw01cm6316xrq26nz3nhlvnsfahc96j692brrai04c2v69jhj22"))))
+        (base32 "0grqzyxfc1nygfa4r9hr9sj6hncpjxpaj29w5lrxcq9xz7mx0fyr"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-criterion" ,rust-criterion-0.5)
