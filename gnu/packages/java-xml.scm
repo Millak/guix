@@ -846,6 +846,32 @@ by core of Apache Axiom.")
 Apache Axiom.")
     (license license:asl2.0)))
 
+(define-public java-axiom-om-mixins
+  (package
+    (name "java-axiom-om-mixins")
+    (version %axiom-version)
+    (source axiom-source)
+    (build-system ant-build-system)
+    (arguments
+     `(#:source-dir "mixins/om-mixins/src/main"
+       #:test-dir "mixins/om-mixins/src/test"
+       #:tests? #f  ;; tests requre too many yet unpackaged packages
+       #:jar-name "axiom-om-mixins.jar"))
+    (native-inputs
+     (list java-axiom-api
+           java-axiom-base64-utils
+           java-axiom-core-streams
+           java-axiom-core-mixins
+           java-axiom-xml-utils
+           java-axiom-weaver-annotations
+           java-commons-logging-minimal
+           unzip))
+    (home-page "https://ws.apache.org/axiom/")
+    (synopsis "Common classes for Apache Axiom LLOM and DOOM.")
+    (description "This package contains mixins and implementation classes
+shared by the object model implementations LLOM and DOOM.")
+    (license license:asl2.0)))
+
 (define-public java-axiom-weaver-annotations
   (package
     (name "java-axiom-weaver-annotations")
