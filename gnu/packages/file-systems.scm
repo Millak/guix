@@ -2127,7 +2127,7 @@ memory-efficient.")
                 (setenv "DESTDIR" #$output)
                 (invoke "make" "install")))))))
     (inputs
-     (list go-github-com-mattn-go-sqlite3 go-github-com-hanwen-fuse))
+     (list go-github-com-mattn-go-sqlite3 go-github-com-hanwen-go-fuse))
     (home-page "https://github.com/oniony/TMSU")
     (synopsis "Tag files and access them through a virtual file system")
     (description

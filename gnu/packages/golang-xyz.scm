@@ -4560,9 +4560,9 @@ underneath and returns only matching files or direcories, depending on the
 configuration.")
     (license license:expat)))
 
-(define-public go-github-com-hanwen-fuse
+(define-public go-github-com-hanwen-go-fuse
   (package
-    (name "go-github-com-hanwen-fuse")
+    (name "go-github-com-hanwen-go-fuse")
     (version "2.0.3")
     (source
      (origin
