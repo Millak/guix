@@ -34908,14 +34908,14 @@ characters in HTML, decoding and unescaping HTML entities as well.")
 (define-public rust-hts-sys-2
   (package
     (name "rust-hts-sys")
-    (version "2.0.3")
+    (version "2.2.0")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "hts-sys" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1sy4wfk64f1i81m0brhrs4cm6qkb099zv62gr0k6js6k0v24zfhd"))
+                "1cmvdwssd6xjk6w1iigaj5rl9ibx4zaaskfb2ji2mlhw28f7z3g3"))
               (modules '((guix build utils)))
               (snippet
                '(substitute* "Cargo.toml"
@@ -34930,13 +34930,13 @@ characters in HTML, decoding and unescaping HTML entities as well.")
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-bindgen" ,rust-bindgen-0.53)
+       (("rust-bindgen" ,rust-bindgen-0.69)
         ("rust-bzip2-sys" ,rust-bzip2-sys-0.1)
         ("rust-cc" ,rust-cc-1)
         ("rust-curl-sys" ,rust-curl-sys-0.4)
         ("rust-fs-utils" ,rust-fs-utils-1)
         ("rust-glob" ,rust-glob-0.3)
-        ("rust-libdeflate-sys" ,rust-libdeflate-sys-0.7)
+        ("rust-libdeflate-sys" ,rust-libdeflate-sys-1)
         ("rust-libz-sys" ,rust-libz-sys-1)
         ("rust-lzma-sys" ,rust-lzma-sys-0.1)
         ("rust-openssl-sys" ,rust-openssl-sys-0.9))))
