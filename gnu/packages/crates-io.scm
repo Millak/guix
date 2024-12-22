@@ -23812,14 +23812,14 @@ Google's diff-match-patch.")
 (define-public rust-divan-macros-0.1
   (package
     (name "rust-divan-macros")
-    (version "0.1.14")
+    (version "0.1.17")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "divan-macros" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "18klwl81akqmd0rqgz6l8hmc649hvbcdfc01ix6lh3dy96phnm17"))))
+        (base32 "0z5n3f4m5c7flqnr6vg9qz51j9mjb1s2afcsfnqf7x9nwsc1vicd"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
