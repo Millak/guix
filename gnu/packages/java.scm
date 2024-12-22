@@ -6043,6 +6043,31 @@ setter and getter method.")
 file filters and endian classes.")
     (license license:asl2.0)))
 
+(define-public java-commons-io-latest
+  (package
+    (inherit java-commons-io)
+    (version "2.21.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://apache/commons/io/source/"
+                           "commons-io-" version "-src.tar.gz"))
+       (sha256
+        (base32
+         "0rr6hb8mm7fd6nrr8f81mvdpfalq01k03l3mzrlxx7g7lda40mb3"))))
+    (outputs '("out"))
+    (arguments
+     `(#:tests? #f  ;; tests require too many not yet packaged packages
+       #:source-dir "src/main/java"
+       #:jar-name "commons-io.jar"
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'install (install-from-pom "pom.xml")))))
+    (native-inputs
+     (list))
+    (propagated-inputs
+     (list apache-commons-parent-pom-78))))
+
 (define-public java-commons-exec-1.1
   (package
     (name "java-commons-exec")
