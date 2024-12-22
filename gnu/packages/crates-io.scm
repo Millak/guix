@@ -26293,7 +26293,7 @@ deserialized from environment variables.")
   (package
     (inherit rust-erased-serde-0.4)
     (name "rust-erased-serde")
-    (version "0.3.24")
+    (version "0.3.31")
     (source
      (origin
        (method url-fetch)
@@ -26301,7 +26301,7 @@ deserialized from environment variables.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0zdaj96bf39h75rkdxkd1znik97s3j7m8ppgbxxfq5y0h59n1jp4"))))
+         "0v5jyid1v8irf2n2875iwhm80cw8x75gfkdh7qvzxrymz5s8j4vc"))))
     (arguments
      `(#:cargo-inputs
        (("rust-serde" ,rust-serde-1))
