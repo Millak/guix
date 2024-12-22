@@ -871,6 +871,43 @@ extremely fast @dfn{abstract data types} (ADT) such as hash tables b-trees,
 and much more.")
     (license license:lgpl3+)))
 
+(define-public gfan
+  (package
+    (name "gfan")
+    (version "0.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://users-math.au.dk/jensen/software"
+                           "/gfan/gfan" version ".tar.gz"))
+       (sha256
+        (base32 "17lqripnsdb5hn7nnhgn4siajgh1jh9nkaplca3akm74w5bkg0xb"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:make-flags #~(list (string-append "PREFIX=" #$output)
+                           (string-append "CC=" #$(cc-for-target))
+                           (string-append "CXX=" #$(cxx-for-target)))
+      #:phases #~(modify-phases %standard-phases
+                   (delete 'configure)
+                   ;; cddlib is distributed with the 'cddlib' header name,
+                   ;; but gfan expects it to be named 'cdd'.  Substitute
+                   ;; the include headers to make gfan find it.
+                   (add-after 'unpack 'fix-cdd-reference
+                     (lambda _
+                       (substitute* '("src/lp_cdd.cpp"
+                                      "src/gfanlib_zcone.cpp"
+                                      "src/app_librarytest.cpp")
+                         (("#include \"cdd") "#include \"cddlib")))))))
+    (inputs (list cddlib gmp))
+    (home-page "https://users-math.au.dk/jensen/software/gfan/gfan.html")
+    (synopsis "Compute Gröbner fans and tropical varieties")
+    (description "Gfan is a software package for computing Gröbner fans and
+tropical varieties.")
+    ;; homepage/gfan.html: "Gfan is distributed under the terms of the GPL
+    ;; license version 2 or 3 as desired"
+    (license license:gpl2)))
+
 (define-public 4ti2
   (package
     (name "4ti2")
