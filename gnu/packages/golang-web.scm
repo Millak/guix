@@ -5240,7 +5240,14 @@ throughout the @url{https://github.com/pion, Pion} modules.")
         (base32 "0g5pg6mz61blprccxzysbwldkil84qgwp6404lsp4m9wh44312hf"))))
     (arguments
      (list
-      #:import-path "github.com/pion/transport/v2"))
+      #:import-path "github.com/pion/transport/v2"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-module-paths
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (substitute* (find-files "." "\\.go$")
+                  (("github.com/pion/transport/v3") import-path))))))))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
