@@ -7,6 +7,7 @@
 ;;; Copyright © 2021 Léo Le Bouter <lle-bout@zaclys.net>
 ;;; Copyright © 2022 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2023 Frank Pursel <frank.pursel@gmail.com>
+;;; Copyright © 2024, 2025 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -733,12 +734,34 @@ changes of the Plexus fork. It is an implementation of the XMLPULL V1 API
 (parser only).")
     (license (license:non-copyleft "file://LICENSE.txt"))))
 
+;;; ----- Apache Axiom ------
 
+(define %axiom-version "1.4.0")
 
+(define axiom-source
+  (let ((version %axiom-version))
+    (origin
+      (method url-fetch)
+      (uri (string-append "mirror://apache/ws/axiom/" version
+                          "/axiom-" version "-src.zip"))
+      (sha256
+       (base32
+        "0wig9s1s089d0zq8kjny1f34za23vb47k515iab72bnkq62bbm8y")))))
 
-
-
-
-
-
-
+(define-public java-axiom-base64-utils
+  (package
+    (name "java-axiom-base64-utils")
+    (version %axiom-version)
+    (source axiom-source)
+    (build-system ant-build-system)
+    (arguments
+     `(#:source-dir "components/base64-utils/src/main"
+       #:tests? #f  ;; has no tests
+       #:jar-name "axiom-base64-utils.jar"))
+    (native-inputs
+     (list unzip))
+    (home-page "https://ws.apache.org/axiom/")
+    (synopsis "Apache Axiom base64 decoder and encoder")
+    (description "This package provides utility methods to work with base64
+encoded data.")
+    (license license:asl2.0)))
