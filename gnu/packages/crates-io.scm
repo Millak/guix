@@ -26442,14 +26442,14 @@ deserialized from environment variables.")
 (define-public rust-error-code-3
   (package
     (name "rust-error-code")
-    (version "3.2.0")
+    (version "3.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "error-code" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0nqpbhi501z3ydaxg4kjyb68xcw025cj22prwabiky0xsljl8ix0"))))
+        (base32 "0bx9hw3pahzqym8jvb0ln4qsabnysgn98mikyh2afhk9rif31nd5"))))
     (build-system cargo-build-system)
     (home-page "https://github.com/DoumanAsh/error-code")
     (synopsis "Alternative @code{Error} for Rust")
