@@ -22004,7 +22004,7 @@ whitespace in the buffer was initially clean.")
       (home-page "https://github.com/nicferrier/eimp")
       (synopsis "Interactive image manipulation utility for Emacs")
       (description "@code{emacs-eimp} allows interactive image manipulation
-from within Emacs.  It uses the code@{mogrify} utility from ImageMagick to do
+from within Emacs.  It uses the @code{mogrify} utility from ImageMagick to do
 the actual transformations.")
       (license license:gpl2+))))
 
