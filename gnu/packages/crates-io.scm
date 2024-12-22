@@ -35135,14 +35135,14 @@ usable by code.")
 (define-public rust-human-format-1
   (package
     (name "rust-human-format")
-    (version "1.0.3")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "human_format" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1c3w2lm41gmnd82acjsi6y50ym2sh5fdb6abghysmaaqsxhf5k46"))))
+        (base32 "1f45y1vib7z96ij5xv623rxpdm3ap4bj11j84jqjg7a5iir1yfsw"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t))   ; Wants the galvanic framework for the tests.
