@@ -22893,14 +22893,14 @@ procedural macros.")
 (define-public rust-devise-core-0.4
   (package
     (name "rust-devise-core")
-    (version "0.4.1")
+    (version "0.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "devise_core" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0sp5idq0idng9i5kwjd8slvc724s97r28arrhyqq1jpx1ax0vd9m"))))
+        (base32 "1xwa9dp1i66zwfywgvz4189gxzpbpanagmf4wgr03gvsrx1aaddh"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
