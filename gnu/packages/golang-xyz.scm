@@ -4560,6 +4560,31 @@ underneath and returns only matching files or direcories, depending on the
 configuration.")
     (license license:expat)))
 
+(define-public go-github-com-hanwen-fuse
+  (package
+    (name "go-github-com-hanwen-fuse")
+    (version "2.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hanwen/go-fuse")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1y44d08fxyis99s6jxdr6dbbw5kv3wb8lkhq3xmr886i4w41lz03"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/hanwen/go-fuse"))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
+    (home-page "https://github.com/hanwen/go-fuse")
+    (synopsis "FUSE bindings for Go")
+    (description
+     "This package provides Go native bindings for the FUSE kernel module.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-hanwen-go-fuse-v2
   (package
     (name "go-github-com-hanwen-go-fuse-v2")

@@ -1966,31 +1966,6 @@ Dropbox API v2.")
 local file system using FUSE.")
   (license license:gpl3+)))
 
-(define-public go-github-com-hanwen-fuse
-  (package
-    (name "go-github-com-hanwen-fuse")
-    (version "2.0.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/hanwen/go-fuse")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1y44d08fxyis99s6jxdr6dbbw5kv3wb8lkhq3xmr886i4w41lz03"))))
-    (build-system go-build-system)
-    (arguments
-     `(#:import-path "github.com/hanwen/go-fuse"))
-    (propagated-inputs
-     (list go-golang-org-x-sys))
-    (home-page "https://github.com/hanwen/go-fuse")
-    (synopsis "FUSE bindings for Go")
-    (description
-     "This package provides Go native bindings for the FUSE kernel module.")
-    (license license:bsd-3)))
-
 (define-public rewritefs
   (let ((revision "1")
         (commit "3a56de8b5a2d44968b8bc3885c7d661d46367306"))
