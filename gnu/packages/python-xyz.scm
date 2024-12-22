@@ -14997,10 +14997,10 @@ replacement for dictionaries where immutability is desired.")
        (sha256
         (base32 "1svk94pad8gcvjwd329zmfrw09wakwh6qjvnhf6sa6k92y44i82a"))))
     (build-system pyproject-build-system)
+    (propagated-inputs (list python-typing-extensions))
     (native-inputs
      (list python-pytest
            python-setuptools
-           python-typing-extensions
            python-wheel))
     (home-page "https://github.com/carpedm20/emoji/")
     (synopsis "Emoji terminal output for Python")
