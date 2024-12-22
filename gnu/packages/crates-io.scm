@@ -22031,14 +22031,14 @@ Rust.")
 (define-public rust-derive-arbitrary-1
   (package
     (name "rust-derive-arbitrary")
-    (version "1.3.2")
+    (version "1.4.1")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "derive_arbitrary" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "04bnd985frl81r5sgixgpvncnnj1bfpfnd7qvdx1aahnqi9pbrv7"))))
+                "000839h4mbgs65x1f8540kbjk2ifw68c4d8r5b9f7q0jv4d2qm1h"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
