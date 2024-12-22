@@ -21,6 +21,7 @@
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2024 Jordan Moore <lockbox@struct.foo>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -337,7 +338,7 @@ COCOMO model or user-provided parameters.")
 (define-public cloc
   (package
     (name "cloc")
-    (version "1.96.1")
+    (version "2.02")
     (source
      (origin
        (method git-fetch)
@@ -346,7 +347,7 @@ COCOMO model or user-provided parameters.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0j7qwc5n1y05jl3rq83mf1d0pavkz9z0waqi8dxblkgw4pwwnjyv"))))
+        (base32 "1syh1gppjr3p2m9mq0zm3n47bhaksxcn5bx1nwqc29xn404c2fm9"))))
     (build-system gnu-build-system)
     (inputs
      (list bash-minimal
