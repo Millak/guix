@@ -240,6 +240,7 @@ living in the same process.")
               ;; due to its non-FHS nature and the lack of a global
               ;; ld.so.cache file.
               "--with-zlib=link"
+              "--with-zstd=link"
               ;; GnuTLS doesn't consult any environment variables to specify
               ;; the location of the system-wide trust store.  Instead it has a
               ;; configure-time option.  Unless specified, its configure script
@@ -285,7 +286,7 @@ living in the same process.")
     (inputs (list libunistring zlib))
     (propagated-inputs
      ;; These are all in the 'Requires.private' field of gnutls.pc.
-     (list libtasn1 libidn2 p11-kit nettle zlib))
+     (list libtasn1 libidn2 p11-kit nettle zlib `(,zstd "lib")))
     (home-page "https://gnutls.org")
     (synopsis "Transport layer security library")
     (description
