@@ -1184,6 +1184,29 @@ data.  It is a successor to @code{go-github-com-golang-protobuf} with an
 improved and cleaner API.")
     (license license:bsd-3)))
 
+(define-public go-rsc-io-pdf
+  (package
+    (name "go-rsc-io-pdf")
+    (version "0.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/rsc/pdf")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01qjjwa8nn5a2jzd360xqg5zc8s0i2fpwcn2w2g6y2jgn9wl8x84"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:import-path "rsc.io/pdf"))
+    (home-page "https://rsc.io/pdf")
+    (synopsis "PDF reader for Golang")
+    (description "Package pdf implements reading of PDF files.")
+    (license license:bsd-3)))
+
 ;;;
 ;;; Executables:
 ;;;
