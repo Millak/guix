@@ -1766,14 +1766,14 @@ scores.")
 (define-public music21
   (package
     (name "music21")
-    (version "7.1.0")
+    (version "9.3.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "music21" version))
-        (sha256
-          (base32 "17v2id8qm99xqymqsdczq173fmbdha4w109ahh8j1d9l5a7mqc86"))))
-    (build-system python-build-system)
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "music21" version))
+       (sha256
+        (base32 "0jjgyyzw527h026zr2pphj7ba1pda46mi03j0djc2bh6l9ywdx0c"))))
+    (build-system pyproject-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -1783,9 +1783,16 @@ scores.")
                (add-installed-pythonpath inputs outputs)
                ;; See: https://github.com/cuthbertLab/music21/issues/1164
                (invoke "python" "-m" "music21.stream.tests")))))))
+    (native-inputs (list python-hatchling))
     (propagated-inputs
-      (list python-chardet python-joblib python-more-itertools
-            python-webcolors))
+     (list python-chardet
+           python-joblib
+           python-jsonpickle
+           python-matplotlib
+           python-more-itertools
+           python-numpy
+           python-requests
+           python-webcolors))
     (home-page "https://web.mit.edu/music21/")
     (synopsis "Toolkit for Computational Musicology")
     (description
