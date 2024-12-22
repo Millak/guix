@@ -4563,7 +4563,7 @@ configuration.")
 (define-public go-github-com-hanwen-go-fuse
   (package
     (name "go-github-com-hanwen-go-fuse")
-    (version "2.0.3")
+    (version "1.0.0")
     (source
      (origin
        (method git-fetch)
@@ -4572,21 +4572,32 @@ configuration.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1y44d08fxyis99s6jxdr6dbbw5kv3wb8lkhq3xmr886i4w41lz03"))))
+        (base32 "04xa8mh34639lv1b2p8dx13x742j5i493i3sk89hd3jfskzvval1"))))
     (build-system go-build-system)
     (arguments
-     (list #:import-path "github.com/hanwen/go-fuse"))
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/hanwen/go-fuse"
+      ;; Most of the tests require "/bin/fusermount" to be available which
+      ;; is missed during packaging, limit to some unit tests only.
+      #:test-subdirs #~(list "internal/..." "splice")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-example
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "example")))))))
     (propagated-inputs
      (list go-golang-org-x-sys))
     (home-page "https://github.com/hanwen/go-fuse")
-    (synopsis "FUSE bindings for Go")
+    (synopsis "Go bindings for FUSE filesystems")
     (description
-     "This package provides Go native bindings for the FUSE kernel module.")
+     "This is a repository containing Go bindings for writing FUSE file systems.")
     (license license:bsd-3)))
 
 (define-public go-github-com-hanwen-go-fuse-v2
   (package
+    (inherit go-github-com-hanwen-go-fuse)
     (name "go-github-com-hanwen-go-fuse-v2")
     (version "2.7.2")
     (source
@@ -4600,28 +4611,20 @@ configuration.")
         (base32 "1fcf94chf9ffgjk0wcpnlz0kfb69m2fwzfn4k348kal75x178aar"))))
     (build-system go-build-system)
     (arguments
-     (list
-      #:import-path "github.com/hanwen/go-fuse/v2"
-      ;; Most of the tests require "/bin/fusermount" to be available which
-      ;; is missed during packaging, limit to some unit tests only.
-      #:test-subdirs #~(list "internal/..." "splice")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'remove-examples-and-benchmarks
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-hanwen-go-fuse)
+       ((#:import-path _) "github.com/hanwen/go-fuse/v2")
+       ((#:phases phases #~%standard-phases)
+          #~(modify-phases #$phases
+          (add-after 'unpack 'remove-benchmark
             (lambda* (#:key tests? import-path #:allow-other-keys)
               (with-directory-excursion (string-append "src/" import-path)
-                (delete-file-recursively "example")
-                (delete-file-recursively "benchmark")))))))
+                (delete-file-recursively "benchmark"))))))))
     (propagated-inputs
      (list go-github-com-kylelemons-godebug
            go-github-com-moby-sys-mountinfo
            go-golang-org-x-sync
-           go-golang-org-x-sys))
-    (home-page "https://github.com/hanwen/go-fuse")
-    (synopsis "Go bindings for FUSE filesystems")
-    (description
-     "This is a repository containing Go bindings for writing FUSE file systems.")
-    (license license:bsd-3)))
+           go-golang-org-x-sys))))
 
 (define-public go-github-com-hashicorp-errwrap
   (package
