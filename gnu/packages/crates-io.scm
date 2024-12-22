@@ -24680,14 +24680,14 @@ easy.")
 (define-public rust-ecb-0.1
   (package
     (name "rust-ecb")
-    (version "0.1.1")
+    (version "0.1.2")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "ecb" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "18l1frsqg84c9ymn6shp0k51q7j6l95cpg3vw8g3a159h6x89z8p"))))
+                "1iw1i0mwkvg3599mlw24iibid6i6zv3a3jhghm2j3v0sbfbzm2qs"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
