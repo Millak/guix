@@ -27110,14 +27110,14 @@ by @file{sysexits.h}.")
 (define-public rust-expect-test-1
   (package
     (name "rust-expect-test")
-    (version "1.5.0")
+    (version "1.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "expect-test" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1q55nrkgzg345905aqbsdrwlq4sk0gjn4z5bdph1an1kc6jy02wy"))))
+        (base32 "1c5c081ykm4k5rlsam9jw56w4wgs2h7r4aj78zxlis1i8kzl7bv3"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
