@@ -24118,26 +24118,24 @@ This project is a fork of Faraday's boondock.")
 (define-public rust-docopt-1
   (package
     (name "rust-docopt")
-    (version "1.1.0")
+    (version "1.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "docopt" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "0s9rcpmnnivs502q69lc1h1wrwapkq09ikgbfbgqf31idmc5llkz"))))
+        (base32 "07x5g52n6fzilxhk5220caznkvdnzzvahlzrzkmgj8y88sc12gvz"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-regex" ,rust-regex-1)
         ("rust-serde" ,rust-serde-1)
-        ("rust-strsim" ,rust-strsim-0.9))))
+        ("rust-strsim" ,rust-strsim-0.10))))
     (home-page "https://github.com/docopt/docopt.rs")
     (synopsis "Command line argument parsing")
-    (description "Command line argument parsing.")
+    (description "This package provides command line argument parsing.")
     (license (list license:expat license:unlicense))))
 
 (define-public rust-docopt-0.7
