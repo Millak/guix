@@ -146,6 +146,7 @@
   #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages image)
   #:use-module (gnu packages imagemagick)
+  #:use-module (gnu packages libbsd)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages linux)
@@ -1568,7 +1569,7 @@ solution in their Wayland environment.")
 (define-public spectrwm
   (package
     (name "spectrwm")
-    (version "3.2.0")
+    (version "3.6.0")
     (source
      (origin
        (method git-fetch)
@@ -1579,42 +1580,44 @@ solution in their Wayland environment.")
                              (string-join (string-split version #\.) "_")))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1dfqy5f0s1nv6rqkz9lj006vypmp4rwxd5vczfk3ndzqgnh19kw6"))))
+        (base32 "1fh2r870djrxm3my2z6wigp0gswgh5gvfa9vxcyh7q488k7b0ljn"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags (let ((pkg-config (lambda (flag)
-                                        (string-append
-                                         "$(shell pkg-config " flag " "
-                                         "xft fontconfig x11 libpng)"))))
-                      (list
-                       "CC=gcc"
-                       (string-append "PREFIX=" %output)
-                       (string-append "INCS=-I. " (pkg-config "--cflags"))
-                       (string-append "LIBS=" (pkg-config "--libs") " -lm")))
-       #:tests? #f                      ;no test suite
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'change-dir
-           (lambda _
-             (chdir "linux") #t))
-         (add-after 'change-dir 'patch-makefile
-           (lambda _
-             (substitute* "Makefile"
-               (("-g") ""))))
-         (delete 'configure))))         ;no 'configure' exists
-    (inputs
-     `(("freetype" ,freetype)
-       ("fontconfig" ,fontconfig)
-       ("libx11" ,libx11)
-       ("libxcursor" ,libxcursor)
-       ("libxrandr" ,libxrandr)
-       ("libxtst" ,libxtst)
-       ("libxft" ,libxft)
-       ("xcb-util" ,xcb-util)
-       ("xcb-util-wm" ,xcb-util-wm)
-       ("xcb-util-keysyms" ,xcb-util-keysyms)))
-    (native-inputs
-     (list libxt pkg-config))
+     (list
+      #:make-flags #~(let ((pkg-config (lambda (flag)
+                                         (string-append "$(shell pkg-config "
+                                          flag " "
+                                          "freetype2 xft fontconfig x11 libpng)"))))
+                       (list (string-append "CC="
+                                            #$(cc-for-target))
+                             (string-append "PREFIX=" %output)
+                             (string-append "INCS=-I. "
+                                            (pkg-config "--cflags"))
+                             (string-append "LIBS="
+                                            (pkg-config "--libs") " -lm")))
+      #:tests? #f ;no test suite
+      #:phases #~(modify-phases %standard-phases
+                   (add-before 'build 'change-dir
+                     (lambda _
+                       (chdir "linux") #t))
+                   (add-after 'change-dir 'patch-makefile
+                     (lambda _
+                       (substitute* "Makefile"
+                         (("-g")
+                          ""))))
+                   (delete 'configure)))) ;no 'configure' exists
+    (inputs (list freetype
+                  fontconfig
+                  libx11
+                  libxcb
+                  libxcursor
+                  libxrandr
+                  libxtst
+                  libxft
+                  xcb-util
+                  xcb-util-wm
+                  xcb-util-keysyms))
+    (native-inputs (list libbsd libxt pkg-config))
     (synopsis "Minimalistic automatic tiling window manager")
     (description
      "Spectrwm is a small dynamic tiling and reparenting window manager for X11.
