@@ -23474,20 +23474,17 @@ Directory guidelines on macOS.")
   (package
     (inherit rust-directories-4)
     (name "rust-directories")
-    (version "3.0.1")
+    (version "3.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "directories" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "03ysv4m6mhsc3w1xnvncd5sxf7v2dz917awq6ksx0n0bsqwxdzpq"))))
+        (base32 "1mz1khca62zd48kphdy5hn4f8r55ywkyn23pjdbkj4h32zzh15p6"))))
     (arguments
-     `(#:cargo-inputs
-       (("rust-dirs-sys" ,rust-dirs-sys-0.3))
-       #:cargo-development-inputs
-       (("rust-bencher" ,rust-bencher-0.1))))))
+     `(#:cargo-inputs (("rust-dirs-sys" ,rust-dirs-sys-0.3))
+       #:cargo-development-inputs (("rust-bencher" ,rust-bencher-0.1))))))
 
 (define-public rust-directories-next-2
   (package
