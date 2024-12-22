@@ -28578,14 +28578,14 @@ creation time on Windows before Rust 1.75.")
 (define-public rust-filetreelist-0.5
   (package
     (name "rust-filetreelist")
-    (version "0.5.1")
+    (version "0.5.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "filetreelist" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0i7lnk5ncbjg2nfgadx8phmv7ihaak5872cclrdv54bl620id132"))))
+        (base32 "0j7s58lxg28kq39156n17qbf1iygkn7bxgi2xs99wz706syymyg8"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-thiserror" ,rust-thiserror-1))
