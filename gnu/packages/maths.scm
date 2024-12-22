@@ -5580,6 +5580,37 @@ from the GotoBLAS2-1.13 BSD version.")
 library.")
     (license license:expat)))
 
+(define-public palp
+  (package
+    (name "palp")
+    (version "2.21")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "http://hep.itp.tuwien.ac.at/~kreuzer/CY/palp/palp-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "1myxjv0jxgr9acchwnjh9g5l61wxwiva3q6c1d6892lr37r7njky"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:make-flags #~(list (string-append "CC=" #$(cc-for-target)))
+           #:tests? #f ; no tests
+           #:phases #~(modify-phases %standard-phases
+                        (delete 'configure)
+                        (replace 'install
+                          (lambda _
+                            (for-each
+                             (lambda (name)
+                               (install-file name (string-append #$output "/bin")))
+                             '("class.x" "cws.x" "mori.x" "nef.x" "poly.x")))))))
+    (home-page "http://hep.itp.tuwien.ac.at/~kreuzer/CY/CYpalp.html")
+    (synopsis "Package for Analyzing Lattice Polytopes")
+    (description
+     "PALP is a set of programs for calculations with lattice polytopes and
+applications to toric geometry.")
+    (license license:gpl3)))
+
 (define-public blis
   (package
     (name "blis")
