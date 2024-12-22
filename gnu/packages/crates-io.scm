@@ -22775,14 +22775,14 @@ intelligently transliterating them.  It supports Emoji and Chinese.")
 (define-public rust-devise-0.4
   (package
     (name "rust-devise")
-    (version "0.4.1")
+    (version "0.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "devise" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1y45iag4hyvspkdsf6d856hf0ihf9vjnaga3c7y6c72l7zywxsnn"))))
+        (base32 "07b5dza9dl5p15q32xng8pgmmhf7kbjpng2y46njqykp9h60pngi"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-devise-codegen" ,rust-devise-codegen-0.4)
