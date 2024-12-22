@@ -28820,14 +28820,14 @@ custom fixed-size hash types.")
 (define-public rust-flagset-0.4
   (package
     (name "rust-flagset")
-    (version "0.4.3")
+    (version "0.4.6")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "flagset" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "16alqal1jyg1pibd72drdq2ax5cb1fs09f54ghpw043qg75579nd"))))
+                "1v46bj0v8zqw6nnj16vhsmssxm04zj8xv50hnyjjcy1hz32ixsmk"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
