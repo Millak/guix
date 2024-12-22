@@ -4181,7 +4181,7 @@ defects faster.")
 (define-public go-github-com-go-git-go-git-v5
   (package
     (name "go-github-com-go-git-go-git-v5")
-    (version "5.1.0")
+    (version "5.12.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4190,7 +4190,7 @@ defects faster.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1vkcmhh2qq8c38sjbnzf0wvg2rzr19wssaq177bsvrjwj1xz1qbs"))))
+                "1zp7d4ncgrvr420hs6nf5p66s9015y61fb4krkz4y0sl802fzj7a"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -4200,7 +4200,7 @@ defects faster.")
       #~(modify-phases %standard-phases
           (add-before 'build 'setup
             (lambda* (#:key inputs #:allow-other-keys)
-              (let* ((git #$(this-package-native-input "git"))
+              (let* ((git #$(this-package-native-input "git-minimal"))
                      (git-bin (string-append git "/bin"))
                      (git-exe (string-append git-bin "/git")))
                 (setenv "GIT_DIST_PATH=" git)
@@ -4208,24 +4208,32 @@ defects faster.")
                 (setenv "HOME" (getcwd))
                 (invoke git-exe "config" "--global" "user.email" "gha@example.com")
                 (invoke git-exe "config" "--global" "user.name" "GitHub Actions")))))))
+    (native-inputs
+     (list git-minimal/pinned
+           go-github-com-stretchr-testify
+           go-gopkg-in-check-v1))
     (propagated-inputs
-     (list go-github-com-alcortesm-tgz
+     (list go-dario-cat-mergo
+           go-github-com-armon-go-socks5
+           go-github-com-elazarl-goproxy
            go-github-com-emirpasic-gods
+           go-github-com-gliderlabs-ssh
            go-github-com-go-git-gcfg
            go-github-com-go-git-go-billy-v5
            go-github-com-go-git-go-git-fixtures-v4
-           go-github-com-imdario-mergo
+           go-github-com-golang-groupcache
+           go-github-com-google-go-cmp
            go-github-com-jbenet-go-context
            go-github-com-kevinburke-ssh-config
-           go-github-com-mitchellh-go-homedir
+           go-github-com-pjbgf-sha1cd
+           go-github-com-protonmail-go-crypto
            go-github-com-sergi-go-diff
+           go-github-com-skeema-knownhosts
            go-github-com-xanzy-ssh-agent
            go-golang-org-x-crypto
            go-golang-org-x-net
-           go-golang-org-x-text
-           go-gopkg-in-check-v1
-           go-gopkg-in-warnings-v0))
-    (native-inputs (list git))
+           go-golang-org-x-sys
+           go-golang-org-x-text))
     (home-page "https://github.com/go-git/")
     (synopsis "Git implementation library")
     (description "This package provides a Git implementation library.")
