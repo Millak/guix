@@ -10944,6 +10944,30 @@ machine readable.  It is modeled after the Go standard library's @code{io} and
          (package-arguments go-github-com-op-go-logging)
        ((#:import-path _) "gopkg.in/op/go-logging.v1")))))
 
+(define-public go-gopkg-in-warnings-v0
+  (package
+    (name "go-gopkg-in-warnings-v0")
+    (version "0.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/go-warnings/warnings")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1kzj50jn708cingn7a13c2wdlzs6qv89dr2h4zj8d09647vlnd81"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "gopkg.in/warnings.v0"))
+    (home-page "https://gopkg.in/warnings.v0")
+    (synopsis "Error handling with non-fatal errors")
+    (description
+     "Package warnings implements error handling with non-fatal
+errors (warnings).")
+    (license license:bsd-2)))
+
 (define-public go-gopkg-in-yaml-v2
   (package
     (name "go-gopkg-in-yaml-v2")
