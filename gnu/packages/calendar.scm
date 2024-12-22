@@ -456,7 +456,7 @@ configured to show the current time in different timezones.")
        (list #:import-path "github.com/hebcal/hebcal"))
       (inputs
        (list go-github-com-hebcal-hebcal-go
-             go-github-com-pborman-getopt))
+             go-github-com-pborman-getopt-v2))
       (synopsis "Perpetual Jewish Calendar program")
       (description
        "Hebcal is a program for converting between Hebrew and Gregorian

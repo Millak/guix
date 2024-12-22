@@ -8343,6 +8343,38 @@ processes.")
 (define-public go-github-com-pborman-getopt
   (package
     (name "go-github-com-pborman-getopt")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pborman/getopt")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1sa66n392hzqbahn47grbjyaasvpklnn4s1wkzs1kdwrfdd62kfa"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/pborman/getopt/v2
+            (delete-file-recursively "v2")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/pborman/getopt"))
+    (home-page "https://github.com/pborman/getopt")
+    (synopsis "Getopt style option parsing for Go")
+    (description
+     "This package provides traditional getopt processing for implementing
+programs that use traditional command lines.")
+    (license license:bsd-3)))
+
+(define-public go-github-com-pborman-getopt-v2
+  (package
+    (inherit go-github-com-pborman-getopt)
+    (name "go-github-com-pborman-getopt-v2")
     (version "2.1.0")
     (source
      (origin
@@ -8356,13 +8388,8 @@ processes.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/pborman/getopt"))
-    (home-page "https://github.com/pborman/getopt")
-    (synopsis "Getopt style option parsing for Go")
-    (description
-     "This package provides traditional getopt processing for implementing
-programs that use traditional command lines.")
-    (license license:bsd-3)))
+      #:import-path "github.com/pborman/getopt/v2"
+      #:unpack-path "github.com/pborman/getopt"))))
 
 (define-public go-github-com-pelletier-go-toml
   (package
@@ -11955,7 +11982,7 @@ tool."))))
       #:import-path "github.com/oklog/ulid/v2/cmd/ulid"
       #:unpack-path "github.com/oklog/ulid/v2"))
     (native-inputs
-     (list go-github-com-pborman-getopt))
+     (list go-github-com-pborman-getopt-v2))
     (description
      (string-append (package-description go-github-com-oklog-ulid)
                     "  This package provides an command line interface (CLI)
