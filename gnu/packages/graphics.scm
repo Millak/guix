@@ -789,6 +789,65 @@ shading in advanced renderers and other applications, ideal for describing
 materials, lights, displacement, and pattern generation.")
     (license license:bsd-3)))
 
+(define-public tachyon
+  (package
+    (name "tachyon")
+    (version "0.99.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "http://jedi.ks.uiuc.edu/~johns/raytracer/files/"
+                    version "/tachyon-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1xd6h5d4v6dsnm6w46bdcr15fwkcz44p8dncymfry50i4c83q809"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f                  ; no tests
+           #:make-flags #~(list "linux-thr")
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)
+               (add-after 'unpack 'prepare-src
+                 (lambda _
+                   (substitute* "unix/Make-arch"
+                     (("CC = cc")
+                      (string-append "CC = " #$(cc-for-target))))
+                   (chdir "unix")))
+               (add-before 'build 'enable-png-jpeg-support
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "Make-config"
+                     (("USEJPEG=")
+                      "USEJPEG = -DUSEJPEG")
+                     (("JPEGLIB=")
+                      "JPEGLIB = -ljpeg")
+                     (("USEPNG=")
+                      "USEPNG = -DUSEPNG")
+                     (("PNGLIB=")
+                      "PNGLIB = -lpng -lz"))))
+               (add-before 'build 'fix-paths
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "Make-config"
+                     (("SHELL=/bin/sh")
+                      (string-append "SHELL=" (which "sh"))))))
+               (replace 'install
+                 (lambda _
+                   (install-file "../compile/linux-thr/tachyon"
+                                 (string-append #$output "/bin"))
+                   (install-file "../compile/linux-thr/libtachyon.a"
+                                 (string-append #$output "/lib")))))))
+    (inputs (list libjpeg-turbo libpng))
+    ;; The server does not seem to be reliably accessible
+    (home-page "http://jedi.ks.uiuc.edu/~johns/raytracer/")
+    (synopsis "Multithreaded ray tracing software")
+    (description
+     "This package contains the Tachyon raytracer.  It supports the typical
+ray tracer features, most of the common geometric primitives, shading and
+texturing modes, etc.  It also supports less common features such as HDR image
+output, ambient occlusion lighting, and support for various triangle mesh and
+volumetric texture formats beneficial for molecular visualization.")
+    (license license:bsd-3)))
+
 (define-public cgal
   (package
     (name "cgal")
