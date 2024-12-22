@@ -26315,14 +26315,14 @@ deserialized from environment variables.")
 (define-public rust-errno-0.3
   (package
     (name "rust-errno")
-    (version "0.3.8")
+    (version "0.3.10")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "errno" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0ia28ylfsp36i27g1qih875cyyy4by2grf80ki8vhgh6vinf8n52"))))
+                "0pgblicz1kjz9wa9m0sghkhh2zw1fhq1mxzj7ndjm746kg5m5n1k"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
