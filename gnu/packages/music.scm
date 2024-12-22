@@ -1878,59 +1878,6 @@ and manipulating rhythms such as accelerandi, taleas, and more.")
 music theorist Paul Nauert's quantization grids or Q-Grids, for short.")
     (license license:expat)))
 
-(define-public abjad-ext-ipython
-  (package
-    (name "abjad-ext-ipython")
-    (version "3.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-         (url "https://github.com/Abjad/abjad-ext-ipython")
-         (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1vv0alpiz0gf5lgjfvlh4km72dvrxfqkwzxl3k4amzci3i0jzbs2"))))
-    (build-system python-build-system)
-    (arguments
-     ;; UnboundLocalError: local variable 'output_path' referenced before assignment
-     `(#:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'loosen-requirements
-           (lambda _
-             (substitute* "setup.py"
-               ;; Don't require a specific version of abjad.
-               (("abjad==")
-                "abjad>="))))
-         (replace 'check
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-             (when tests?
-               (setenv "HOME" (getcwd))
-               (add-installed-pythonpath inputs outputs)
-               ;; From 'make jupyter-test'
-               (invoke "jupyter" "nbconvert" "--to=html"
-               "--ExecutePreprocessor.enabled=True" "tests/test.ipynb")))))))
-    (native-inputs
-     (list lilypond
-           python-black
-           python-flake8
-           python-iniconfig
-           python-isort
-           python-mypy
-           python-pytest
-           python-pytest-cov
-           python-pytest-helpers-namespace))
-    (propagated-inputs
-     (list abjad jupyter python-sphinx-autodoc-typehints))
-    (home-page "https://abjad.github.io")
-    (synopsis "Abjad IPython Extension")
-    (description
-     "@code{abjad-ext-ipython} makes it possible to embed music notation in
-@code{jupyter} notebooks.")
-    (license license:expat)))
-
 (define-public non-sequencer
   ;; The latest tagged release is three years old and uses a custom build
   ;; system, so we take the last commit.
