@@ -26478,14 +26478,14 @@ deserialized from environment variables.")
 (define-public rust-escape8259-0.5
   (package
     (name "rust-escape8259")
-    (version "0.5.2")
+    (version "0.5.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "escape8259" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1vjpfnk9fyq6qcc18bq7yfk9ahi2r12lfywr4rwcsvv6wc8ljkxs"))))
+        (base32 "1in2zrdak794x8v11lkrrgyqxjjqbijvg0yfn2paay0rb9xxv4jn"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-rustversion" ,rust-rustversion-1))))
