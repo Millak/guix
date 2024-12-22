@@ -29555,22 +29555,20 @@ implementation that is more efficient for smaller hash keys.")
 (define-public rust-foreign-types-macros-0.2
   (package
     (name "rust-foreign-types-macros")
-    (version "0.2.0")
+    (version "0.2.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "foreign-types-macros" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "0x71sdffjfb123l2jn5vhz0ni09b4rdq3h3gpczd1dj1g5qlr2yv"))))
+        (base32 "0hjpii8ny6l7h7jpns2cp9589016l8mlrpaigcnayjn9bdc6qp0s"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))
+        ("rust-syn" ,rust-syn-2))))
     (home-page "https://github.com/sfackler/foreign-types")
     (synopsis "Internal crate used by foreign-types")
     (description
