@@ -25127,21 +25127,19 @@ difference.")
 (define-public rust-ena-0.14
   (package
     (name "rust-ena")
-    (version "0.14.0")
+    (version "0.14.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "ena" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1hrnkx2swbczn0jzpscxxipx7jcxhg6sf9vk911ff91wm6a2nh6p"))))
+        (base32 "1m9a5hqk6qn5sqnrc40b55yr97drkfdzd0jj863ksqff8gfqn91x"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-dogged" ,rust-dogged-0.2)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-petgraph" ,rust-petgraph-0.4))))
+        ("rust-log" ,rust-log-0.4))))
     (home-page "https://github.com/rust-lang/ena")
     (synopsis "Union-find, congruence closure, and other unification code")
     (description "This package provides an implementation of union-find /
