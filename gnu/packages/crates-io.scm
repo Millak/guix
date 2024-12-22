@@ -37588,14 +37588,14 @@ ABI compatible with @code{std} and @code{lbc}.")
 (define-public rust-iri-string-0.7
   (package
     (name "rust-iri-string")
-    (version "0.7.0")
+    (version "0.7.7")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "iri-string" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1h07hkfkkjjvgzlaqpr5fia7hrgv7qxqdw4xrpdc3936gmk9p191"))))
+        (base32 "1siv0qq612v8d25ryy8n74n2h6g9zwr9yxjgzzi5dzlg5rbhl3yw"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-memchr" ,rust-memchr-2)
