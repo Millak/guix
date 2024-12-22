@@ -21409,14 +21409,14 @@ of any type.")
 (define-public rust-deadpool-runtime-0.1
   (package
     (name "rust-deadpool-runtime")
-    (version "0.1.3")
+    (version "0.1.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "deadpool-runtime" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0j9zmm37z6m4fnkf40z6qwidi4z1gwk0piqzx7yz6riazrjakpv3"))))
+        (base32 "0arbchl5j887hcfvjy4gq38d32055s5cf7pkpmwn0lfw3ss6ca89"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-async-std" ,rust-async-std-1)
