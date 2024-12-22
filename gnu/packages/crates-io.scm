@@ -20753,17 +20753,16 @@ reading attributes into structs when implementing custom derives.")
   (package
     (inherit rust-darling-core-0.20)
     (name "rust-darling-core")
-    (version "0.14.1")
+    (version "0.14.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "darling_core" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0vyvkx7qkz6ap5dwgsz8dg588xjigny8s7mrkz0fmcg806y93734"))))
+        (base32 "1w4b2ndxmkwghwq84yphk8x15jnpivm08w596g12ry5pwsk1r70h"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-fnv" ,rust-fnv-1)
         ("rust-ident-case" ,rust-ident-case-1)
         ("rust-proc-macro2" ,rust-proc-macro2-1)
