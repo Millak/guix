@@ -21313,18 +21313,18 @@ sizes.  Big-endian order is used.  WARNING: Block must be aligned!")
 (define-public rust-dbus-tree-0.9
   (package
     (name "rust-dbus-tree")
-    (version "0.9.1")
+    (version "0.9.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "dbus-tree" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1l2gi8073cwvv5vxlg5lafw6sppyhgm88hhpq7hak424x4kifpmi"))))
+        (base32 "027mnjc99ss8nab588aga9l8aag2pjvzkcfx35g5fm4fmscfcmpl"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-dbus" ,rust-dbus-0.9))))
+     `(#:install-source? #f     ; README is missing.
+       #:cargo-inputs (("rust-dbus" ,rust-dbus-0.9))))
     (native-inputs
      (list pkg-config))
     (inputs
