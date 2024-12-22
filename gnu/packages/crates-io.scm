@@ -29751,20 +29751,20 @@ values to other threads.")
 (define-public rust-freetype-0.7
   (package
     (name "rust-freetype")
-    (version "0.7.0")
+    (version "0.7.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "freetype" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1ijxyd8isq0w7qkbhp7p1y536xg3d8b8vy5ljg31rnz3m5w87qxy"))))
+        (base32 "0vl0lyrz3wswch06i34sxadyzb443qapgf6fjd48wyb3w140fi2s"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-freetype-sys" ,rust-freetype-sys-0.13)
+     `(#:cargo-inputs
+       (("rust-freetype-sys" ,rust-freetype-sys-0.20)
         ("rust-libc" ,rust-libc-0.2))))
+    (inputs (list freetype))
     (home-page "https://github.com/servo/rust-freetype")
     (synopsis "Bindings for Freetype used by Servo")
     (description "This package provides bindings for Freetype used by Servo.")
