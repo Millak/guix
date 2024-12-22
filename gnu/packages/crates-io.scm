@@ -26462,17 +26462,16 @@ deserialized from environment variables.")
   (package
     (inherit rust-error-code-3)
     (name "rust-error-code")
-    (version "2.3.0")
+    (version "2.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "error-code" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1zxi3pfrmj7hmv2bv94ax8vpylsfs49vwwp48c04wrr5mikma4dm"))))
+        (base32 "08baxlf8qz01lgjsdbfhs193r9y1nlc566s5xvzyf4dzwy8qkwb4"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-libc" ,rust-libc-0.2)
         ("rust-str-buf" ,rust-str-buf-1))))))
 
