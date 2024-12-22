@@ -393,6 +393,40 @@ primitives in Go.")
 @url{http://github.com/yuin/goldmark,goldmark}.")
     (license license:expat)))
 
+(define-public go-golang-org-x-arch
+  (package
+    (name "go-golang-org-x-arch")
+    (version "0.12.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://go.googlesource.com/arch")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "104mnfx3v6lwjndjd35ly8r6yb4bb74lq5sq1cqpxw38mqyzqmx2"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "golang.org/x/arch"
+      #:test-subdirs #~(list "arm/..."
+                             "arm64/..."
+                             "loong64/..."
+                             "ppc64/..."
+                             ;; "riscv64/..."; failed to build tests
+                             "s390x/..."
+                             "x86/...")))
+    (native-inputs
+     (list go-rsc-io-pdf))
+    (home-page "https://go.googlesource.com/arch")
+    (synopsis "Machine architecture information used by the Go toolchain")
+    (description
+     "This package provides a machine architecture information used by the Go
+toolchain.  The parts needed in the main Go repository are copied in.")
+    (license license:bsd-3)))
+
 (define-public go-golang-org-x-crypto
   (package
     (name "go-golang-org-x-crypto")
