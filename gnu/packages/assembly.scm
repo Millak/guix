@@ -403,6 +403,7 @@ assembler, a C compiler and a linker.  The assembler uses Intel syntax
        "GNU libjit is a library that provides generic Just-In-Time compiler
 functionality independent of any particular bytecode, language, or
 runtime")
+      (supported-systems '("i686-linux" "x86_64-linux" "aarch64-linux"))
       (license license:lgpl2.1+))))
 
 (define-public rgbds
