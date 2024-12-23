@@ -4840,6 +4840,18 @@ server for Python and pypy3.")
                         (assoc-ref %outputs "out")))
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-paths
+            (lambda* (#:key outputs #:allow-other-keys)
+              (substitute* "client_server/ComputeThread.cc"
+               (("[(]\"cadabra-server\"[)]")
+                (string-append "(\"" (assoc-ref outputs "out")
+                               "/bin/cadabra-server\")")))
+              (substitute* "client_server/Server.cc"
+               (("'\" [+] python_path [+]")
+                (string-append "'\" + std::string(\""
+                               (assoc-ref outputs "out")
+                               "/lib/python3.10/site-packages"
+                               "\") +")))))
           (add-before 'check 'prepare-checks
             (lambda _
               (setenv "HOME" "/tmp"))))))
