@@ -1167,6 +1167,46 @@ asynchronous request/response operations.")
        #:cargo-development-inputs
        (("rust-actix-rt" ,rust-actix-rt-0.2))))))
 
+(define-public rust-actix-test-0.1
+  (package
+    (name "rust-actix-test")
+    (version "0.1.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "actix-test" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0pxc3xlrbdkps8g58530gb50r3kfasljjl26k03w3nmmlysj5423"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:tests? #f      ; unresolved import `actix_web::get`
+           #:cargo-inputs (list rust-actix-codec-0.5
+                                rust-actix-http-3
+                                rust-actix-http-test-3
+                                rust-actix-rt-2
+                                rust-actix-service-2
+                                rust-actix-utils-3
+                                rust-actix-web-4
+                                rust-awc-3
+                                rust-futures-core-0.3
+                                rust-futures-util-0.3
+                                rust-log-0.4
+                                rust-openssl-0.10
+                                rust-rustls-0.20
+                                rust-rustls-0.21
+                                rust-rustls-0.22
+                                rust-rustls-0.23
+                                rust-serde-1
+                                rust-serde-json-1
+                                rust-serde-urlencoded-0.7
+                                rust-tokio-1)))
+    (home-page "https://actix.rs")
+    (synopsis "Integration testing tools for Actix Web applications")
+    (description
+     "This package provides integration testing tools for Actix Web applications.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-actix-testing-1
   (package
     (name "rust-actix-testing")
