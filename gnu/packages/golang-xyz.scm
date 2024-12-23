@@ -9464,7 +9464,9 @@ GNU extensions} to the POSIX recommendations for command-line options.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/spf13/viper"))
+      #:import-path "github.com/spf13/viper"
+      ;; Optional modules are not packed.
+      #:test-subdirs #~(list ".")))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
