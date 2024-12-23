@@ -92377,6 +92377,31 @@ and XXH3 algorithms.")
                        ("rust-quote" ,rust-quote-1)
                        ("rust-syn" ,rust-syn-2))))))
 
+(define-public rust-typed-json-0.1
+  (package
+    (name "rust-typed-json")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "typed-json" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1vcyqhji9mldhhh2dkg19yfcy4i0m6d6wdl9n7vb602l0b8ah930"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-inputs (list rust-serde-1
+                                rust-serde-json-1)
+           #:cargo-development-inputs (list rust-divan-0.1
+                                            rust-serde-1
+                                            rust-serde-json-core-0.5
+                                            rust-serde-json-1
+                                            rust-serde-test-1)))
+    (home-page "https://github.com/conradludgate/typed-json")
+    (synopsis "JSON serialization file format")
+    (description "This package provides a JSON serialization file format.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-typeid-1
   (package
     (name "rust-typeid")
