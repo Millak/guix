@@ -1666,18 +1666,21 @@ Code} (MAC) algorithms.")
   (package
     (inherit rust-crypto-mac-0.11)
     (name "rust-crypto-mac")
-    (version "0.10.0")
+    (version "0.10.1")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "crypto-mac" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
+        (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32 "19iyh7h9qaqrv29dhbd31rm6pq023ry78nw7jwr3qjy3l22zsms8"))))
+         (base32 "06h84hcaksgjzzzc9g9dpmifwx221qzzif6fw8l807khxh471w5z"))
+        (snippet
+         #~(begin (use-modules (guix build utils))
+                  (substitute* "Cargo.toml"
+                    (("\"= ?([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                     (string-append "\"^" version)))))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-blobby" ,rust-blobby-0.3)
         ("rust-cipher" ,rust-cipher-0.2)
         ("rust-generic-array" ,rust-generic-array-0.14)
