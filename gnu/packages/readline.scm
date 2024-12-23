@@ -82,29 +82,46 @@
     (build-system gnu-build-system)
     (propagated-inputs (list ncurses))
     (arguments
-     (list #:configure-flags
-           #~(list (string-append
-                    "LDFLAGS=-Wl,-rpath -Wl,"
-                    (dirname (search-input-file %build-inputs
-                                                "lib/libncurses.so")))
+     (append
+      (if (target-loongarch64?)
+          (list #:phases
+                #~(modify-phases %standard-phases
+                    (add-after 'unpack 'update-config-scripts
+                      (lambda* (#:key inputs native-inputs #:allow-other-keys)
+                        ;; Replace outdated config.guess and config.sub.
+                        (for-each (lambda (file)
+                                    (install-file
+                                     (search-input-file
+                                      (or native-inputs inputs)
+                                      (string-append "/bin/" file)) "./support"))
+                                  '("config.guess" "config.sub"))))))
+          '())
+      (list #:configure-flags
+            #~(list (string-append
+                     "LDFLAGS=-Wl,-rpath -Wl,"
+                     (dirname (search-input-file %build-inputs
+                                                 "lib/libncurses.so")))
 
-                   ;; This test does an 'AC_TRY_RUN', which aborts when
-                   ;; cross-compiling, so provide the correct answer.
-                   #$@(if (%current-target-system)
-                          '("bash_cv_wcwidth_broken=no")
-                          '())
-                   ;; MinGW: ncurses provides the termcap api.
-                   #$@(if (target-mingw?)
-                          '("bash_cv_termcap_lib=ncurses")
-                          '()))
+                    ;; This test does an 'AC_TRY_RUN', which aborts when
+                    ;; cross-compiling, so provide the correct answer.
+                    #$@(if (%current-target-system)
+                           '("bash_cv_wcwidth_broken=no")
+                           '())
+                    ;; MinGW: ncurses provides the termcap api.
+                    #$@(if (target-mingw?)
+                           '("bash_cv_termcap_lib=ncurses")
+                           '()))
 
-           #:make-flags
-           (if (target-mingw?)
-               ;; MinGW: termcap in ncurses
-               ;; some SIG_* #defined in _POSIX
-               #~'("TERMCAP_LIB=-lncurses"
-                   "CPPFLAGS=-D_POSIX -D'chown(f,o,g)=0'")
-               #~'())))
+            #:make-flags
+            (if (target-mingw?)
+                ;; MinGW: termcap in ncurses
+                ;; some SIG_* #defined in _POSIX
+                #~'("TERMCAP_LIB=-lncurses"
+                    "CPPFLAGS=-D_POSIX -D'chown(f,o,g)=0'")
+                #~'()))))
+    (native-inputs (if (target-loongarch64?)
+                       (list config)
+                       '()))
     (synopsis "Edit command lines while typing, with history support")
     (description
      "The GNU readline library allows users to edit command lines as they
