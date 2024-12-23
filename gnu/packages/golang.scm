@@ -4402,7 +4402,7 @@ Proxy functionality.")
 (define-public go-github-com-bits-and-blooms-bitset
   (package
     (name "go-github-com-bits-and-blooms-bitset")
-    (version "1.11.0")
+    (version "1.20.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4411,7 +4411,7 @@ Proxy functionality.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ialciixmr98p10rh61rnnkxpqi1j9hycbkv9rnjl0vnmsnpy0cy"))))
+                "1m1rk1bf6i1jnhjxm774i3rhg8n8s88a3n5pnhg5a9gf34y7r8az"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/bits-and-blooms/bitset"))
