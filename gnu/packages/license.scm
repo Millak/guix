@@ -5,6 +5,7 @@
 ;;; Copyright © 2021 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2022 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2024 Evgeny Pisemsky <mail@pisemsky.site>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -175,13 +176,13 @@ belonging to various licenses.")
 (define-public reuse
   (package
     (name "reuse")
-    (version "3.0.2")
+    (version "5.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "reuse" version))
        (sha256
-        (base32 "19ijdwbr47pa0ba30s40b53qb0chyq27akj0484aj9s5p1i85svk"))))
+        (base32 "0p08xmpf361m81kfmkwzm898q9iaq5v6cvb0sjx1176jbnp1d047"))))
     (build-system pyproject-build-system)
     (arguments
      ;; Change directory before running the test suite to avoid having both
@@ -190,18 +191,24 @@ belonging to various licenses.")
      (list #:phases #~(modify-phases %standard-phases
                         (add-before 'check 'chdir
                           (lambda _
-                            (chdir "/tmp"))))))
+                            (chdir "/tmp"))))
+           ;; The test_simple test hangs (see:
+           ;; https://github.com/fsfe/reuse-tool/issues/1119).
+           #:test-flags #~(list "-k" "not test_simple")))
     (native-inputs
-     (list python-poetry-core
+     (list python-freezegun
+           python-poetry-core
            python-pytest
            python-wheel))
     (inputs
-     (list python-binaryornot
+     (list python-attrs
+           python-binaryornot
            python-boolean.py
+           python-click
            python-debian
            python-jinja2
            python-license-expression
-           python-setuptools)) ; For pkg_resources.
+           python-tomlkit))
     (home-page "https://reuse.software/")
     (synopsis "Provide and verify copyright and licensing information")
     (description
@@ -219,7 +226,7 @@ to file headers, and contains a linter to identify problems.  There are other
 tools that have a lot more features and functionality surrounding the analysis
 and inspection of copyright and licenses in software projects.  This one is
 designed to be simple.")
-    (license (list asl2.0 gpl3+))))
+    (license (list asl2.0 cc0 cc-by-sa4.0 gpl3+))))
 
 (define-public licenseheaders
   (package
