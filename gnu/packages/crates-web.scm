@@ -1967,28 +1967,29 @@ being mixed into a larger web page.")
 (define-public rust-async-h1-2
   (package
     (name "rust-async-h1")
-    (version "2.3.0")
+    (version "2.3.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "async-h1" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1p6ls50p1ixnxrhmx4sdb5d2kqrl1kfhcb0lkqlhzzqjz1sqmip5"))))
+        (base32 "0w99d821wxkr0w22vcp9yhxpdd5rgy5hivfng652bi5jijp1s7ax"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-async-channel" ,rust-async-channel-1)
         ("rust-async-dup" ,rust-async-dup-1)
-        ("rust-async-std" ,rust-async-std-1)
-        ("rust-byte-pool" ,rust-byte-pool-0.2)
-        ("rust-futures-core" ,rust-futures-core-0.3)
+        ("rust-async-global-executor" ,rust-async-global-executor-2)
+        ("rust-async-io" ,rust-async-io-1)
+        ("rust-futures-lite" ,rust-futures-lite-1)
         ("rust-http-types" ,rust-http-types-2)
         ("rust-httparse" ,rust-httparse-1)
-        ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-log" ,rust-log-0.4)
-        ("rust-pin-project" ,rust-pin-project-1))))
+        ("rust-pin-project" ,rust-pin-project-1))
+       #:cargo-development-inputs
+       (("rust-async-std" ,rust-async-std-1)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-0.6))))
     (home-page "https://github.com/http-rs/async-h1")
     (synopsis "Asynchronous HTTP 1.1 parser")
     (description
