@@ -112,8 +112,10 @@ POSIX regular expression API.")
                "--enable-pcre2test-libreadline"
                "--enable-pcre2-16"
                "--enable-pcre2-32"
-               ;; riscv64-linux is an unsupported architecture.
-               #$@(if (target-riscv64?)
+               ;; riscv64-linux and loongarch64-linux is an unsupported
+               ;; architecture.
+               #$@(if (or (target-riscv64?)
+                          (target-loongarch64?))
                       #~()
                       #~("--enable-jit")))
            #:phases
