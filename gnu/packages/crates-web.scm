@@ -2384,19 +2384,17 @@ built on the Actix ecosystem.")
 (define-public rust-axum-macros-0.4
   (package
     (name "rust-axum-macros")
-    (version "0.4.1")
+    (version "0.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "axum-macros" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1ahfy8z5z2xlibj41gyr2jm84di1x1s660g13jcfajh15pp5bh00"))))
+        (base32 "1klv77c889jm05bzayaaiinalarhvh2crc2w4nvp3l581xaj7lap"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f      ; Tests unexpectedly pass.
-       #:cargo-inputs (("rust-heck" ,rust-heck-0.4)
-                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
                        ("rust-quote" ,rust-quote-1)
                        ("rust-syn" ,rust-syn-2))
        #:cargo-development-inputs (("rust-axum" ,rust-axum-0.7)
