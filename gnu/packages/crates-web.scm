@@ -867,21 +867,21 @@ during testing.")
 (define-public rust-actix-rt-2
   (package
     (name "rust-actix-rt")
-    (version "2.9.0")
+    (version "2.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "actix-rt" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "078mjccgha4xlqk2hjb9hxfg26pmpra9v2h2w0m40gvx5102vwr8"))))
+        (base32 "022jj938jdhs3r0xg0yg1vdbblsjw0m8lhxcam7alhp0lvia9v94"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f  ; use of undeclared crate or module `hyper`
-       #:cargo-inputs (("rust-actix-macros" ,rust-actix-macros-0.2)
+     `(#:cargo-inputs (("rust-actix-macros" ,rust-actix-macros-0.2)
                        ("rust-futures-core" ,rust-futures-core-0.3)
                        ("rust-tokio" ,rust-tokio-1)
-                       ("rust-tokio-uring" ,rust-tokio-uring-0.4))))
+                       ("rust-tokio-uring" ,rust-tokio-uring-0.5))
+       #:cargo-development-inputs (("rust-tokio" ,rust-tokio-1))))
     (home-page "https://actix.rs")
     (synopsis "Actix runtime")
     (description "This package provides Actix runtime.")
