@@ -1370,7 +1370,7 @@ system resources, while still being visually appealing and user friendly.")
     (native-inputs
      (list (list glib "bin") pkg-config intltool))
     (inputs
-     (list libxrandr gtk+ upower libnotify libxfce4ui))
+     (list libxrandr gtk+ upower libnotify libxfce4ui polkit xfce4-panel))
     (home-page "https://www.xfce.org/")
     (synopsis "Xfce Power Manager")
     (description
