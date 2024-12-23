@@ -1783,6 +1783,33 @@ PKCS#5 (v2.0) algorithms.")
 and SSE4.1 acceleration.")
     (license license:cc0)))
 
+(define-public go-github-com-zeebo-blake3-avo
+  (package
+    (name "go-github-com-zeebo-blake3-avo")
+    (version "0.0.0-20240814144702-1a8215cf69be")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/zeebo/blake3")
+             (commit (go-version->git-ref version
+                                          #:subdir "avo"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "117p973ccgalaqg7byj0qcd1xapysplql9np1sr9jkca500khcgf"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/zeebo/blake3/avo"
+      #:unpack-path "github.com/zeebo/blake3"))
+    (propagated-inputs (list go-github-com-mmcloughlin-avo))
+    (home-page "https://github.com/zeebo/blake3")
+    (synopsis "BLAKE3 Avo integration")
+    (description
+     "This package provides a @url{https://github.com/mmcloughlin/avo, avo}
+vectorized version of BLAKE3 implementation in Golang.")
+    (license license:cc0)))
+
 (define-public go-github-com-zeebo-pcg
   (package
     (name "go-github-com-zeebo-pcg")
