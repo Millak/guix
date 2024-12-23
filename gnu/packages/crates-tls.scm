@@ -1896,14 +1896,14 @@ PEM-encodings commonly used to store keys and certificates at rest.")
 (define-public rust-rustls-pki-types-1
   (package
     (name "rust-rustls-pki-types")
-    (version "1.10.0")
+    (version "1.10.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rustls-pki-types" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0jv78c32pgf1i0bn7rzf4xdr9qh5wsvigp6akc1yhzls7hdj1w8n"))
+        (base32 "0dqb3d0cbld1yrp084wyzgw6yk3qzzic8l5pbs1b6bcjzzk4ggyj"))
        (snippet
         #~(begin (use-modules (guix build utils))
                  (substitute* "Cargo.toml"
@@ -1911,8 +1911,7 @@ PEM-encodings commonly used to store keys and certificates at rest.")
                     (string-append "\"^" version)))))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-web-time" ,rust-web-time-1))
+     `(#:cargo-inputs (("rust-web-time" ,rust-web-time-1))
        #:cargo-development-inputs (("rust-crabgrind" ,rust-crabgrind-0.1))))
     (native-inputs (list valgrind))
     (home-page "https://github.com/rustls/pki-types")
