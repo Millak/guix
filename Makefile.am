@@ -140,6 +140,7 @@ MODULES =					\
   guix/platform.scm                             \
   guix/platforms/arm.scm                        \
   guix/platforms/avr.scm                        \
+  guix/platforms/loongarch.scm                  \
   guix/platforms/mips.scm                       \
   guix/platforms/or1k.scm                       \
   guix/platforms/powerpc.scm                    \

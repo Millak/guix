@@ -116,7 +116,7 @@ Copyright @copyright{} 2022 Antero Mejr@*
 Copyright @copyright{} 2023 Karl Hallsby@*
 Copyright @copyright{} 2023 Nathaniel Nicandro@*
 Copyright @copyright{} 2023 Tanguy Le Carrour@*
-Copyright @copyright{} 2023, 2024 Zheng Junjie@*
+Copyright @copyright{} 2023-2024 Zheng Junjie@*
 Copyright @copyright{} 2023 Brian Cully@*
 Copyright @copyright{} 2023 Felix Lechner@*
 Copyright @copyright{} 2023 Foundation Devices, Inc.@*
@@ -17044,6 +17044,7 @@ The available targets are:
    - i586-pc-gnu
    - i686-linux-gnu
    - i686-w64-mingw32
+   - loongarch64-linux-gnu
    - mips64el-linux-gnu
    - or1k-elf
    - powerpc-linux-gnu
@@ -49356,6 +49357,10 @@ Platform targeting ARM v7 CPU running GNU/Linux.
 
 @defvar aarch64-linux
 Platform targeting ARM v8 CPU running GNU/Linux.
+@end defvar
+
+@defvar loongarch64-linux
+Platform targeting loongarch 64-bit CPU running GNU/Linux.
 @end defvar
 
 @defvar mips64-linux
