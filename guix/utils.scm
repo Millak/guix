@@ -113,6 +113,7 @@
             target-ppc64le?
             target-powerpc?
             target-riscv64?
+            target-loongarch64?
             target-mips64el?
             target-64bit?
             target-little-endian?
@@ -809,6 +810,10 @@ architecture (x86_64) using 32-bit data types?"
 (define* (target-avr? #:optional (target (%current-target-system)))
   "Is the architecture of TARGET a variant of Microchip's AVR architecture?"
   (or (string=? target "avr") (string-prefix? "avr-" target)))
+
+(define* (target-loongarch64? #:optional (target (or (%current-target-system)
+                                                     (%current-system))))
+  (string-prefix? "loongarch64-" target))
 
 (define* (target-ppc32? #:optional (target (or (%current-target-system)
                                                (%current-system))))
