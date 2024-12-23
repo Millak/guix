@@ -89759,8 +89759,42 @@ stream-based WebSocket implementation.")
     (description "Unix Domain sockets for Tokio.")
     (license license:expat)))
 
+(define-public rust-tokio-uring-0.5
+  (package
+    (name "rust-tokio-uring")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tokio-uring" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0rvrs9nwm0vyi3x4zak8v6qqr3h6sn51c457ci3a711mw7iq513l"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:tests? #f  ; IO Safety violation: owned file descriptor already closed
+           #:cargo-inputs (list rust-bytes-1
+                                rust-futures-util-0.3
+                                rust-io-uring-0.6
+                                rust-libc-0.2
+                                rust-slab-0.4
+                                rust-socket2-0.4
+                                rust-tokio-1)
+           #:cargo-development-inputs (list rust-criterion-0.4
+                                            rust-iai-0.1
+                                            rust-nix-0.26
+                                            rust-tempfile-3
+                                            rust-tokio-1
+                                            rust-tokio-test-0.4)))
+    (home-page "https://tokio.rs")
+    (synopsis "Tokio asynchronous runtime io-uring support")
+    (description
+     "This package provides io-uring support for the Tokio asynchronous runtime.")
+    (license license:expat)))
+
 (define-public rust-tokio-uring-0.4
   (package
+    (inherit rust-tokio-uring-0.5)
     (name "rust-tokio-uring")
     (version "0.4.0")
     (source
@@ -89770,11 +89804,9 @@ stream-based WebSocket implementation.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1vsmw482n01lj33dr7rnjxmdcdhq5yys6rbwahx0n0vy2fxh4phd"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
-       (list "--release" "--"
-             "--skip=vectored_write")
+       (list "--release" "--" "--skip=vectored_write")
        #:cargo-inputs (("rust-bytes" ,rust-bytes-1)
                        ("rust-io-uring" ,rust-io-uring-0.5)
                        ("rust-libc" ,rust-libc-0.2)
@@ -89787,12 +89819,7 @@ stream-based WebSocket implementation.")
                                    ("rust-iai" ,rust-iai-0.1)
                                    ("rust-tempfile" ,rust-tempfile-3)
                                    ("rust-tokio" ,rust-tokio-1)
-                                   ("rust-tokio-test" ,rust-tokio-test-0.4))))
-    (home-page "https://tokio.rs")
-    (synopsis "Tokio asynchronous runtime io-uring support")
-    (description
-     "This package provides io-uring support for the Tokio asynchronous runtime.")
-    (license license:expat)))
+                                   ("rust-tokio-test" ,rust-tokio-test-0.4))))))
 
 (define-public rust-tokio-util-0.7
   (package
