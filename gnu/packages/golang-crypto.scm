@@ -1759,7 +1759,14 @@ PKCS#5 (v2.0) algorithms.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "117p973ccgalaqg7byj0qcd1xapysplql9np1sr9jkca500khcgf"))))
+        (base32 "117p973ccgalaqg7byj0qcd1xapysplql9np1sr9jkca500khcgf"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/zeebo/blake3/avo
+            (delete-file-recursively "avo")))))
     (build-system go-build-system)
     (arguments
      (list
