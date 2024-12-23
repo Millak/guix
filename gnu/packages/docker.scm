@@ -196,6 +196,9 @@ Python without keeping their credentials in a Docker configuration file.")
                                "REVISION=0")))
        (list
         #:import-path "github.com/containerd/containerd"
+        ;; XXX: This package contains full vendor, tests fail when run with
+        ;; "...", limit to the project's root. Try to unvendor.
+        #:test-subdirs #~(list ".")
         #:phases
         #~(modify-phases %standard-phases
             (add-after 'unpack 'patch-paths
