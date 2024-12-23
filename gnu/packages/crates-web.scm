@@ -1859,8 +1859,87 @@ being mixed into a larger web page.")
      "This package provides an asynchronous HTTP 1.1 parser.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-awc-3
+  (package
+    (name "rust-awc")
+    (version "3.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "awc" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ywn4jhm2181v8yh4kfpi1xwrgky6ky7w47i8rp8i6r7c4j9n13r"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--"
+                            "--skip=client_brotli_encoding"
+                            "--skip=client_brotli_encoding_large_random"
+                            "--skip=client_gzip_encoding"
+                            "--skip=client_gzip_encoding_large"
+                            "--skip=client_gzip_encoding_large_random")
+       #:cargo-inputs (("rust-actix-codec" ,rust-actix-codec-0.5)
+                       ("rust-actix-http" ,rust-actix-http-3)
+                       ("rust-actix-rt" ,rust-actix-rt-2)
+                       ("rust-actix-service" ,rust-actix-service-2)
+                       ("rust-actix-tls" ,rust-actix-tls-3)
+                       ("rust-actix-utils" ,rust-actix-utils-3)
+                       ("rust-base64" ,rust-base64-0.22)
+                       ("rust-bytes" ,rust-bytes-1)
+                       ("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-cookie" ,rust-cookie-0.16)
+                       ("rust-derive-more" ,rust-derive-more-0.99)
+                       ("rust-futures-core" ,rust-futures-core-0.3)
+                       ("rust-futures-util" ,rust-futures-util-0.3)
+                       ("rust-h2" ,rust-h2-0.3)
+                       ("rust-http" ,rust-http-0.2)
+                       ("rust-itoa" ,rust-itoa-1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-mime" ,rust-mime-0.3)
+                       ("rust-openssl" ,rust-openssl-0.10)
+                       ("rust-percent-encoding" ,rust-percent-encoding-2)
+                       ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
+                       ("rust-rand" ,rust-rand-0.8)
+                       ("rust-rustls" ,rust-rustls-0.21)
+                       ("rust-rustls" ,rust-rustls-0.20)
+                       ("rust-rustls" ,rust-rustls-0.22)
+                       ("rust-rustls" ,rust-rustls-0.23)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-serde-urlencoded" ,rust-serde-urlencoded-0.7)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-trust-dns-resolver" ,rust-trust-dns-resolver-0.23))
+       #:cargo-development-inputs
+       (("rust-actix-http" ,rust-actix-http-3)
+        ("rust-actix-http-test" ,rust-actix-http-test-3)
+        ("rust-actix-server" ,rust-actix-server-2)
+        ("rust-actix-test" ,rust-actix-test-0.1)
+        ("rust-actix-tls" ,rust-actix-tls-3)
+        ("rust-actix-utils" ,rust-actix-utils-3)
+        ("rust-actix-web" ,rust-actix-web-4)
+        ("rust-brotli" ,rust-brotli-6)
+        ("rust-const-str" ,rust-const-str-0.5)
+        ("rust-env-logger" ,rust-env-logger-0.11)
+        ("rust-flate2" ,rust-flate2-1)
+        ("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-rcgen" ,rust-rcgen-0.13)
+        ("rust-rustls" ,rust-rustls-0.23)
+        ("rust-rustls-pemfile" ,rust-rustls-pemfile-2)
+        ("rust-static-assertions" ,rust-static-assertions-1)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-zstd" ,rust-zstd-0.13))))
+    (native-inputs (list pkg-config))
+    (inputs (list openssl (list zstd "lib")))
+    (home-page "https://actix.rs")
+    (synopsis "Async HTTP and WebSocket client library")
+    (description
+     "This package provides async HTTP and WebSocket client library
+built on the Actix ecosystem.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-awc-2
   (package
+    (inherit rust-awc-3)
     (name "rust-awc")
     (version "2.0.3")
     (source
@@ -1870,7 +1949,6 @@ being mixed into a larger web page.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "14g6m53zmxw3f1sf990l7ps3w2fq2c29n1slpizc7kxhwy8f90dk"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -1891,13 +1969,7 @@ being mixed into a larger web page.")
         ("rust-rustls" ,rust-rustls-0.18)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-serde-urlencoded" ,rust-serde-urlencoded-0.7))))
-    (home-page "https://actix.rs")
-    (synopsis "Async HTTP and WebSocket client library")
-    (description
-     "This package provides async HTTP and WebSocket client library
-built on the Actix ecosystem.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-serde-urlencoded" ,rust-serde-urlencoded-0.7))))))
 
 (define-public rust-awc-1
   (package
