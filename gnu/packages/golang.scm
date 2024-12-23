@@ -4399,30 +4399,6 @@ a cron spec parser and job runner.")
 Proxy functionality.")
     (license license:expat)))
 
-(define-public go-github-com-bits-and-blooms-bloom-v3
-  (package
-    (name "go-github-com-bits-and-blooms-bloom-v3")
-    (version "3.7.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/bits-and-blooms/bloom")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "022pyzjp862ysl30aj105i2xmapn400ambjh8h1dcyjy9c0f8agn"))))
-    (build-system go-build-system)
-    (arguments
-     (list #:import-path "github.com/bits-and-blooms/bloom"))
-    (propagated-inputs
-     (list go-github-com-twmb-murmur3 go-github-com-bits-and-blooms-bitset))
-    (synopsis "Bloom filters in Go")
-    (description "This package provides a Go implementation of bloom filters,
-based on murmurhash.")
-    (home-page "https://github.com/bits-and-blooms/bitset")
-    (license license:bsd-2)))
-
 (define-public go-golang-org-rainycape-unidecode
   (let ((commit "cb7f23ec59bec0d61b19c56cd88cee3d0cc1870c")
         (revision "1"))

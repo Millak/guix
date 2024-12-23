@@ -1373,6 +1373,33 @@ mapping between non-negative integers and boolean values focused on efficient
 space usage.")
     (license license:bsd-3)))
 
+(define-public go-github-com-bits-and-blooms-bloom-v3
+  (package
+    (name "go-github-com-bits-and-blooms-bloom-v3")
+    (version "3.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/bits-and-blooms/bloom")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "022pyzjp862ysl30aj105i2xmapn400ambjh8h1dcyjy9c0f8agn"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/bits-and-blooms/bloom"))
+    (propagated-inputs
+     (list go-github-com-bits-and-blooms-bitset
+           go-github-com-twmb-murmur3))
+    (home-page "https://github.com/bits-and-blooms/bitset")
+    (synopsis "Bloom filters in Go")
+    (description
+     "This package provides a Go implementation of bloom filters,
+based on murmurhash.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-blang-semver
   (package
     (name "go-github-com-blang-semver")
