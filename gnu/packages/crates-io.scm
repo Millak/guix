@@ -9767,6 +9767,24 @@ allocator and stream interface.  Disable this with --features=no-stdlib.  All
 included code is safe.")
     (license (list license:bsd-3 license:expat))))
 
+(define-public rust-brotli-6
+  (package
+    (inherit rust-brotli-7)
+    (name "rust-brotli")
+    (version "6.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "brotli" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0swvf6cgbwhwrpd5y23vq6wipb6q2wqvi2j0hy0xa9lkplfrgxvl"))))
+    (arguments
+     `(#:cargo-inputs (("rust-alloc-no-stdlib" ,rust-alloc-no-stdlib-2)
+                       ("rust-alloc-stdlib" ,rust-alloc-stdlib-0.2)
+                       ("rust-brotli-decompressor" ,rust-brotli-decompressor-4)
+                       ("rust-sha2" ,rust-sha2-0.10))))))
+
 (define-public rust-brotli-3
   (package
     (inherit rust-brotli-7)
