@@ -1238,6 +1238,7 @@ Any}.")
     (arguments
      (list
       #:import-path "github.com/cretz/bine"
+      #:test-subdirs #~(list "tests/..." "torutil/...")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'remove-examples
