@@ -601,8 +601,48 @@
         ("rust-trust-dns-resolver" ,rust-trust-dns-resolver-0.11)
         ("rust-webpki-roots" ,rust-webpki-roots-0.16))))))
 
+(define-public rust-actix-http-test-3
+  (package
+    (name "rust-actix-http-test")
+    (version "3.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "actix-http-test" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "104wwsnn6rk211fqzxn4g344wfnj57s1z5m0mkyniagylv12f786"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--" "--skip=test_server")
+       #:cargo-inputs (("rust-actix-codec" ,rust-actix-codec-0.5)
+                       ("rust-actix-rt" ,rust-actix-rt-2)
+                       ("rust-actix-server" ,rust-actix-server-2)
+                       ("rust-actix-service" ,rust-actix-service-2)
+                       ("rust-actix-tls" ,rust-actix-tls-3)
+                       ("rust-actix-utils" ,rust-actix-utils-3)
+                       ("rust-awc" ,rust-awc-3)
+                       ("rust-bytes" ,rust-bytes-1)
+                       ("rust-futures-core" ,rust-futures-core-0.3)
+                       ("rust-http" ,rust-http-0.2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-openssl" ,rust-openssl-0.10)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-serde-urlencoded" ,rust-serde-urlencoded-0.7)
+                       ("rust-slab" ,rust-slab-0.4)
+                       ("rust-socket2" ,rust-socket2-0.5)
+                       ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://actix.rs")
+    (synopsis "Helpers for Actix applications to use during testing")
+    (description
+     "This package provides various helpers for Actix applications to use
+during testing.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-actix-http-test-1
   (package
+    (inherit rust-actix-http-test-3)
     (name "rust-actix-http-test")
     (version "1.0.0")
     (source
@@ -612,7 +652,6 @@
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "06z6iy9ffsjcw3g8zwwghky5zpyg7c1z823x35lgc4y1yjzxfizq"))))
-    (build-system cargo-build-system)
     (arguments
      ;; XXX: The crate fails to't build with with the same error as
      ;; rust-actix-connect.  Skip build for now.
@@ -640,14 +679,7 @@
         ("rust-sha1" ,rust-sha1-0.6)
         ("rust-slab" ,rust-slab-0.4)
         ("rust-time" ,rust-time-0.1))
-       #:cargo-development-inputs
-       (("rust-actix-http" ,rust-actix-http-1))))
-    (home-page "https://actix.rs")
-    (synopsis "Helpers for Actix applications to use during testing")
-    (description
-     "This package provides various helpers for Actix applications to use
-during testing.")
-    (license (list license:expat license:asl2.0))))
+       #:cargo-development-inputs (("rust-actix-http" ,rust-actix-http-1))))))
 
 (define-public rust-actix-http-test-0.2
   (package
