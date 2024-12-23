@@ -189,7 +189,22 @@ SQL, Key/Value, XML/XQuery or Java Object storage for their data model.")
                (base32
                 "1kfapds42j1sjq6wl7fygipw5904wpbfa5kwppj3mwgz44fhicbl"))))
     (arguments `(#:configure-flags '("--enable-libgdbm-compat"
-                                     "--disable-static")))
+                                     "--disable-static")
+                 ,@(if (target-loongarch64?)
+                       `(#:phases
+                         (modify-phases %standard-phases
+                           (add-after 'unpack 'update-config
+                             (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                               (for-each (lambda (file)
+                                           (install-file
+                                            (search-input-file
+                                             (or native-inputs inputs)
+                                             (string-append "/bin/" file)) "build-aux"))
+                                         '("config.guess" "config.sub"))))))
+                       '())))
+    (native-inputs (if (target-loongarch64?)
+                       (list config)
+                       '()))
     (build-system gnu-build-system)
     (home-page "https://www.gnu.org.ua/software/gdbm")
     (synopsis
