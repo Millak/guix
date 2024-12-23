@@ -3589,14 +3589,14 @@ dependencies.")
   (package
     (inherit rust-hyper-1)
     (name "rust-hyper")
-    (version "0.14.31")
+    (version "0.14.32")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "hyper" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "11bf6mqcpzi0x2758p7q9zk3m877avzpbiw8nx8v2dd3iwp3024c"))))
+        (base32 "1rvcb0smz8q1i0y6p7rwxr02x5sclfg2hhxf3g0774zczn0cgps1"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
