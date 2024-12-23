@@ -74848,14 +74848,14 @@ data.  This crate provides a wrapper that works with any existing Serde
 (define-public rust-serde-json-core-0.5
   (package
     (name "rust-serde-json-core")
-    (version "0.5.0")
+    (version "0.5.1")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "serde-json-core" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1w2g6ylmxbj9fbz4f86i0nnyk2mbv7qbksx0mbimxx17wj7krv2q"))))
+                "0cxv1cp244f7mahw3snmdq91s44py3jwf3lj6i643g606fsim7iw"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
