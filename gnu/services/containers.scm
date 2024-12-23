@@ -17,6 +17,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu services containers)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages containers)
   #:use-module (gnu packages file-systems)
   #:use-module (gnu services)
@@ -134,7 +135,7 @@ available for each configured user."))
     (rootless-podman-configuration-group-name config))
   (program-file "cgroups2-fs-owner-entrypoint"
                 #~(system*
-                   "bash" "-c"
+                   (string-append #+bash-minimal "/bin/bash") "-c"
                    (string-append "echo Setting /sys/fs/cgroup "
                                   "group ownership to " #$group " && chown -v "
                                   "root:" #$group " /sys/fs/cgroup && "
@@ -166,7 +167,7 @@ available for each configured user."))
 (define cgroups-limits-entrypoint
   (program-file "cgroups2-limits-entrypoint"
                 #~(system*
-                   "bash" "-c"
+                   (string-append #+bash-minimal "/bin/bash") "-c"
                    (string-append "echo Setting cgroups v2 limits && "
                                   "echo +cpu +cpuset +memory +pids"
                                   " >> /sys/fs/cgroup/cgroup.subtree_control"))))
@@ -194,7 +195,7 @@ pids.")
 (define rootless-podman-shared-root-fs-entrypoint
   (program-file "rootless-podman-shared-root-fs-entrypoint"
                 #~(system*
-                   "mount" "--make-shared" "/")))
+                   "/run/privileged/bin/mount" "--make-shared" "/")))
 
 (define (rootless-podman-shared-root-fs-service config)
   (shepherd-service (provision '(rootless-podman-shared-root-fs))
