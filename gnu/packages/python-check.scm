@@ -2024,13 +2024,13 @@ libraries.")
 (define-public python-pytest-qt
   (package
     (name "python-pytest-qt")
-    (version "3.3.0")
+    (version "4.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest-qt" version))
        (sha256
-        (base32 "09c9psfn3zigpaw1l1cmynpa3csxa49wc2ih5lzl24skdkw0njvi"))))
+        (base32 "0i38qp2rqb44grbk9rn7zr5ffjvdlcl6k380759ji920m51632bn"))))
     (build-system python-build-system)
     (arguments
      `(#:test-target "pytest"
