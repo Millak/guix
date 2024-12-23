@@ -37,6 +37,7 @@
   #:use-module ((guix licenses)
                 #:select (gpl3+ gpl2+ lgpl2.1+ lgpl2.0+ fdl1.3+))
   #:use-module (gnu packages)
+  #:use-module (gnu packages autotools)
   #:use-module (gnu packages bootstrap)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages multiprecision)
@@ -1416,7 +1417,7 @@ provides the GNU compiler for the Go programming language."))
     (build-system gnu-build-system)
     (outputs '("out" "static"))
     (arguments
-     '(#:phases (modify-phases %standard-phases
+     `(#:phases (modify-phases %standard-phases
                   (add-after 'install 'move-static-library
                     (lambda* (#:key outputs #:allow-other-keys)
                       (let* ((out (assoc-ref outputs "out"))
@@ -1431,7 +1432,21 @@ provides the GNU compiler for the Go programming language."))
                         ;; libtool looks for it in the usual locations.
                         (substitute* (string-append out "/lib/libisl.la")
                           (("^old_library=.*")
-                           "old_library=''\n"))))))))
+                           "old_library=''\n")))))
+                  ,@(if (target-loongarch64?)
+                        `((add-after 'unpack 'update-config-scripts
+                            (lambda* (#:key inputs native-inputs #:allow-other-keys)
+                              ;; Replace outdated config.guess and config.sub.
+                              (for-each (lambda (file)
+                                          (install-file
+                                           (search-input-file
+                                            (or native-inputs inputs)
+                                            (string-append "/bin/" file)) "."))
+                                        '("config.guess" "config.sub")))))
+                        '()))))
+    (native-inputs (if (target-loongarch64?)
+                       (list config)
+                       '()))
     (inputs (list gmp))
     (home-page "https://libisl.sourceforge.io/") ;https://repo.or.cz/w/isl.git
     (properties `((release-monitoring-url . ,home-page)))
