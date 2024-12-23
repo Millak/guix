@@ -793,6 +793,11 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
   (make-linux-libre-headers "5.15.49" "gnu"
                             "13zqdcm4664vh7g57sxbfrlpsxm7zrma72mxdfdz7d9yndy2gfv8"))
 
+;; linux 5.19 include loongarch support.
+(define-public linux-libre-headers-5.19.17
+  (make-linux-libre-headers "5.19.17" "gnu"
+                            "0m1yabfvaanbzv0ip04r4kvs16aq0pp2dk93xzi5cq18i3vw351m"))
+
 (define-public linux-libre-headers linux-libre-headers-5.15.49)
 ;; linux-libre-headers-latest points to the latest headers package
 ;; and should be used as a dependency for packages that depend on
