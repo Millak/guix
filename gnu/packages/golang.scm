@@ -4399,29 +4399,6 @@ a cron spec parser and job runner.")
 Proxy functionality.")
     (license license:expat)))
 
-(define-public go-github-com-bits-and-blooms-bitset
-  (package
-    (name "go-github-com-bits-and-blooms-bitset")
-    (version "1.20.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/bits-and-blooms/bitset")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1m1rk1bf6i1jnhjxm774i3rhg8n8s88a3n5pnhg5a9gf34y7r8az"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:import-path "github.com/bits-and-blooms/bitset"))
-    (synopsis "Bitsets in Go")
-    (description "This package provides a Go implementation of bitsets, which
-are a mapping between non-negative integers and boolean values focused on
-efficient space usage.")
-    (home-page "https://github.com/bits-and-blooms/bitset")
-    (license license:bsd-3)))
-
 (define-public go-github-com-bits-and-blooms-bloom-v3
   (package
     (name "go-github-com-bits-and-blooms-bloom-v3")
