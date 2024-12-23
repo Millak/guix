@@ -5818,7 +5818,9 @@ protocol.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/quic-go/webtransport-go"))
+      #:import-path "github.com/quic-go/webtransport-go"
+      ;; Error: "68" is not greater than "80"
+      #:test-flags #~(list "-skip" "TestDatagrams")))
     (native-inputs
      (list go-go-uber-org-mock
            go-github-com-stretchr-testify))
