@@ -33730,12 +33730,16 @@ By default it uses the open Python vulnerability database Safety DB.")
                          "skip_test_conversion_with_data_files")) #t)))))
     ;; Ideally, we would supersede texlive-xpatch with texlive-regexpatch once
     ;; the missing etoolbox.sty file is added
-    (native-inputs (list python-poetry-core
-                         (texlive-updmap.cfg (list texlive-xpatch texlive-lm
-                                                   texlive-xcolor))))
+    (native-inputs
+     (list (texlive-updmap.cfg
+            (list texlive-xpatch texlive-lm
+                  texlive-xcolor))
+           python-pip
+           python-poetry-core
+           python-setuptools))
     (inputs (list pandoc python-pandocfilters))
     (propagated-inputs (list python-wheel))
-    (home-page "https://github.com/bebraw/pypandoc")
+    (home-page "https://github.com/JessicaTegner/pypandoc")
     (synopsis "Python wrapper for pandoc")
     (description "pypandoc is a thin Python wrapper around pandoc
 and pandoc-citeproc.")
