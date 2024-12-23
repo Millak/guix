@@ -369,6 +369,50 @@
         ("rust-quote" ,rust-quote-0.6)
         ("rust-syn" ,rust-syn-0.15))))))
 
+(define-public rust-actix-files-0.6
+  (package
+    (name "rust-actix-files")
+    (version "0.6.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "actix-files" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1gp9hvfwclxb38w0l4v01gzg534x3clnfk6hmsl4knyyc68dawq7"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-test-flags
+           '(list "--" "--skip=files::tests::custom_files_listing_renderer")
+           #:cargo-inputs (list rust-actix-http-3
+                                rust-actix-server-2
+                                rust-actix-service-2
+                                rust-actix-utils-3
+                                rust-actix-web-4
+                                rust-bitflags-2
+                                rust-bytes-1
+                                rust-derive-more-0.99
+                                rust-futures-core-0.3
+                                rust-http-range-0.1
+                                rust-log-0.4
+                                rust-mime-0.3
+                                rust-mime-guess-2
+                                rust-percent-encoding-2
+                                rust-pin-project-lite-0.2
+                                rust-tokio-uring-0.5
+                                rust-v-htmlescape-0.15)
+       #:cargo-development-inputs (list rust-actix-rt-2
+                                        rust-actix-test-0.1
+                                        rust-actix-web-4
+                                        rust-env-logger-0.11
+                                        rust-tempfile-3)))
+    (native-inputs (list pkg-config))
+    (inputs (list (list zstd "lib")))
+    (home-page "https://actix.rs")
+    (synopsis "Static file serving for Actix Web")
+    (description "This package provides static file serving for Actix Web.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-actix-http-3
   (package
     (name "rust-actix-http")
