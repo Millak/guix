@@ -934,27 +934,33 @@ during testing.")
 (define-public rust-actix-server-2
   (package
     (name "rust-actix-server")
-    (version "2.3.0")
+    (version "2.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "actix-server" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1m62qbg7vl1wddr6mm8sd4rnvd3w5v3zcn8fmdpfl8q4xxz3xc9y"))))
+        (base32 "1538ci00d6ln39v3sd327hpwr8k0282vdxhcqisnvpfqh6bm98kw"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f      ; unresolved import `actix_codec`
-       #:cargo-inputs (("rust-actix-rt" ,rust-actix-rt-2)
+     `(#:cargo-inputs (("rust-actix-rt" ,rust-actix-rt-2)
                        ("rust-actix-service" ,rust-actix-service-2)
                        ("rust-actix-utils" ,rust-actix-utils-3)
                        ("rust-futures-core" ,rust-futures-core-0.3)
                        ("rust-futures-util" ,rust-futures-util-0.3)
-                       ("rust-mio" ,rust-mio-0.8)
+                       ("rust-mio" ,rust-mio-1)
                        ("rust-socket2" ,rust-socket2-0.5)
                        ("rust-tokio" ,rust-tokio-1)
-                       ("rust-tokio-uring" ,rust-tokio-uring-0.4)
-                       ("rust-tracing" ,rust-tracing-0.1))))
+                       ("rust-tokio-uring" ,rust-tokio-uring-0.5)
+                       ("rust-tracing" ,rust-tracing-0.1))
+       #:cargo-development-inputs
+       (("rust-actix-codec" ,rust-actix-codec-0.5)
+        ("rust-actix-rt" ,rust-actix-rt-2)
+        ("rust-bytes" ,rust-bytes-1)
+        ("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-pretty-env-logger" ,rust-pretty-env-logger-0.5)
+        ("rust-tokio" ,rust-tokio-1))))
     (home-page "https://actix.rs")
     (synopsis "General purpose TCP server built for the Actix ecosystem")
     (description
