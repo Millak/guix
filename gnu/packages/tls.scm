@@ -59,11 +59,13 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages check)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages dns)
+  #:use-module (gnu packages docbook)
   #:use-module (gnu packages gawk)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages guile)
@@ -87,7 +89,7 @@
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages time)
   #:use-module (gnu packages version-control)
-  #:use-module (gnu packages base)
+  #:use-module (gnu packages xml)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35))
@@ -147,51 +149,33 @@ in intelligent transportation networks.")
 (define-public p11-kit
   (package
     (name "p11-kit")
-    (version "0.24.1")
+    (version "0.25.5")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/p11-glue/p11-kit/releases/"
                            "download/" version "/p11-kit-" version ".tar.xz"))
        (sha256
-        (base32 "1y5fm9gwhkh902r26p90qf1g2h1ziqrk4hgf9i9sxm2wzlz7ignq"))))
+        (base32 "1rcq2578aq3ag288qnvdmj4a2wbihncndbr6iw0vxcfda1jail04"))))
     (build-system gnu-build-system)
     (native-inputs
-     (append (list pkg-config)
-             (if (target-hurd?)
-                 (list autoconf automake gettext-minimal libtool)
-                 '())))
+     (list pkg-config
+           python-minimal))             ;to generate some headers
     (inputs
      (append (list libffi libtasn1)
              (if (target-hurd?)
                  (list libbsd)
                  '())))
     (arguments
-     (list #:configure-flags
-           ;; Use the default certificates so that users such as flatpak
-           ;; find them.  See <https://issues.guix.gnu.org/49957>.
-           #~'("--with-trust-paths=/etc/ssl/certs/ca-certificates.crt")
-           #:phases #~(modify-phases %standard-phases
-                        #$@(if (target-hurd?)
-                               #~((add-after 'unpack 'apply-hurd-patch
-                                    (lambda* (#:key inputs #:allow-other-keys)
-                                      (define patch
-                                        #$(local-file
-                                           (search-patch "p11-kit-hurd.patch")))
-                                      (invoke "patch" "-p1" "--batch" "-i"
-                                              patch)))
-                                  (replace 'bootstrap
-                                    (lambda _
-                                      (invoke "autoreconf" "-fiv"))))
-                               #~())
-                        (add-before 'check 'prepare-tests
-                          (lambda _
-                            ;; "test-runtime" expects XDG_RUNTIME_DIR to be set up
-                            ;; and looks for .cache and other directories (only).
-                            ;; For simplicity just drop it since it is irrelevant
-                            ;; in the build container.
-                            (substitute* "Makefile"
-                              (("test-runtime\\$\\(EXEEXT\\)") "")))))))
+     (list
+      #:configure-flags
+      #~(list (string-append
+               "--with-trust-paths="
+               (string-join
+                '("/etc/ssl/certs/ca-certificates.crt" ;guix, debian, gentoo, etc.
+                  "/etc/pki/tls/certs/ca-bundle.crt"   ;fedora, centos
+                  "/var/lib/ca-certificates/ca-bundle.pem") ;opensuse
+                ":")))))
     (home-page "https://p11-glue.github.io/p11-glue/p11-kit.html")
     (synopsis "PKCS#11 library")
     (description
