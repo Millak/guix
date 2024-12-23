@@ -29,6 +29,7 @@
   #:use-module (guix utils)
   #:use-module (guix build-system gnu)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages autotools)
   #:use-module (gnu packages hurd))
 
 (define-public libgc
@@ -155,6 +156,22 @@ C or C++ programs, though that is not its primary goal.")
                 "0glzah695wsf6c27hs5wwlw4mnq1vfivdshz1rb8pq7w4mp5dazh"))))
     (build-system gnu-build-system)
     (outputs '("out" "debug"))
+    (native-inputs (if (target-loongarch64?)
+                       (list config)
+                       '()))
+    (arguments (if (target-loongarch64?)
+                   (list #:phases
+                         #~(modify-phases %standard-phases
+                             (add-after 'unpack 'update-config-scripts
+                               (lambda* (#:key inputs native-inputs #:allow-other-keys)
+                                 ;; Replace outdated config.guess and config.sub.
+                                 (for-each (lambda (file)
+                                             (install-file
+                                              (search-input-file
+                                               (or native-inputs inputs)
+                                               (string-append "/bin/" file)) "."))
+                                           '("config.guess" "config.sub"))))))
+                   '()))
     (synopsis "Accessing hardware atomic memory update operations")
     (description
      "This C library provides semi-portable access to hardware-provided atomic
