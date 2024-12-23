@@ -1136,14 +1136,14 @@ grammars and BER/DER encodings, for example.")
 (define-public rust-rcgen-0.13
   (package
     (name "rust-rcgen")
-    (version "0.13.1")
+    (version "0.13.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rcgen" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0yb7lg0pd1j66jr0kacs5z8q66fb9izkvsp11ma8hry4f8c7w1sl"))
+        (base32 "18l0rz228pvnc44bjmvq8cchhh5d2rrkk98y9lqvan9243jnkrkm"))
        (modules '((guix build utils)))
        (snippet
         '(begin
