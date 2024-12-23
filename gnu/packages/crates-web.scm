@@ -6179,8 +6179,77 @@ robust clients and servers.")
         ("rust-tower-test" ,rust-tower-test-0.4)
         ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))))
 
+(define-public rust-tower-http-0.6
+  (package
+    (name "rust-tower-http")
+    (version "0.6.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tower-http" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "15wnvhl6cpir9125s73bqjzjsvfb0fmndmsimnl2ddnlhfvs6gs0"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-test-flags
+           '(list "--"
+                  "--skip=classify::status_in_range_is_error::StatusInRangeAsFailures"
+                  "--skip=src/lib.rs - (line 17)"
+                  "--skip=src/lib.rs - (line 91)")
+           #:cargo-inputs
+           (list rust-async-compression-0.4
+                 rust-base64-0.22
+                 rust-bitflags-2
+                 rust-bytes-1
+                 rust-futures-core-0.3
+                 rust-futures-util-0.3
+                 rust-http-1
+                 rust-http-body-1
+                 rust-http-body-util-0.1
+                 rust-http-range-header-0.4
+                 rust-httpdate-1
+                 rust-iri-string-0.7
+                 rust-mime-0.3
+                 rust-mime-guess-2
+                 rust-percent-encoding-2
+                 rust-pin-project-lite-0.2
+                 rust-tokio-1
+                 rust-tokio-util-0.7
+                 rust-tower-0.5
+                 rust-tower-layer-0.3
+                 rust-tower-service-0.3
+                 rust-tracing-0.1
+                 rust-uuid-1)
+           #:cargo-development-inputs
+           (list rust-async-trait-0.1
+                 rust-brotli-7
+                 rust-bytes-1
+                 rust-flate2-1
+                 rust-futures-util-0.3
+                 rust-http-body-1
+                 rust-http-body-util-0.1
+                 rust-hyper-util-0.1
+                 rust-once-cell-1
+                 rust-serde-json-1
+                 rust-sync-wrapper-1
+                 rust-tokio-1
+                 rust-tower-0.5
+                 rust-tracing-subscriber-0.3
+                 rust-uuid-1
+                 rust-zstd-0.13)))
+    (native-inputs (list pkg-config))
+    (inputs (list (list zstd "lib")))
+    (home-page "https://github.com/tower-rs/tower-http")
+    (synopsis "Tower middleware and utilities for HTTP clients and servers")
+    (description
+      "This package provides Tower middleware and utilities for HTTP
+clients and servers.")
+    (license license:expat)))
+
 (define-public rust-tower-http-0.5
   (package
+    (inherit rust-tower-http-0.6)
     (name "rust-tower-http")
     (version "0.5.2")
     (source
@@ -6196,7 +6265,6 @@ robust clients and servers.")
                    (substitute* "src/lib.rs" (("//!.*") ""))
                    (substitute* "src/classify/status_in_range_is_error.rs"
                                 (("///.*") ""))))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-async-compression" ,rust-async-compression-0.4)
                        ("rust-base64" ,rust-base64-0.21)
@@ -6235,15 +6303,7 @@ robust clients and servers.")
         ("rust-tower" ,rust-tower-0.4)
         ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3)
         ("rust-uuid" ,rust-uuid-1)
-        ("rust-zstd" ,rust-zstd-0.12))))
-    (native-inputs (list pkg-config))
-    (inputs (list (list zstd "lib")))
-    (home-page "https://github.com/tower-rs/tower-http")
-    (synopsis "Tower middleware and utilities for HTTP clients and servers")
-    (description
-      "This package provides Tower middleware and utilities for HTTP
-clients and servers.")
-    (license license:expat)))
+        ("rust-zstd" ,rust-zstd-0.12))))))
 
 (define-public rust-tower-http-0.4
   (package
