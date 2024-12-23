@@ -3556,6 +3556,25 @@ response bodies.")
     (description "This package provides types and traits for HTTP clients.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-http-range-0.1
+  (package
+    (name "rust-http-range")
+    (version "0.1.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "http-range" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0wvm2p9jhbj6f9fbl1i7a0iz85nga37kx739v4p8fpqg27dwkpi1"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.3))))
+    (home-page "https://github.com/bancek/rust-http-range.git")
+    (synopsis "HTTP Range header parser")
+    (description "This package provides HTTP Range header parser.")
+    (license license:expat)))
+
 (define-public rust-http-range-header-0.4
   (package
     (name "rust-http-range-header")
