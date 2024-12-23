@@ -124,7 +124,7 @@
 (define-public capypdf
   (package
     (name "capypdf")
-    (version "0.8.0")
+    (version "0.14.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -132,28 +132,19 @@
                     (commit version)))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "0kp1dcww5zl04wnbqbi8vjzpc5qgr8gr8rcx0s6s4xbjnzvqqw8d"))))
+               (base32 "05rpicxw76z4q48ax0dx5rm1k4lhp4lbdr2aw58kly402w8kjdwb"))))
     (build-system meson-build-system)
     (arguments
      (list #:configure-flags #~(list "-Dcpp_std=c++23")
-           #:test-options '(list "plainc")
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'fix-glib-application-flags
-                 (lambda _
-                   ;; XXX: remove when bumping glib
-                   (substitute* "src/pdfviewer.cpp"
-                     (("G_APPLICATION_DEFAULT_FLAGS")
-                      "G_APPLICATION_FLAGS_NONE")))))))
-    (inputs (list fmt
-                  freetype
+           #:test-options '(list "plainc")))
+    (inputs (list freetype
                   gtk
                   lcms
                   libjpeg-turbo
                   libpng
                   zlib))
     (native-inputs (list font-google-noto
-                         gcc-12
+                         gcc-14         ; for std::format
                          ghostscript
                          pkg-config
                          python
