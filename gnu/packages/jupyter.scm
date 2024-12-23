@@ -80,7 +80,8 @@
                              python-send2trash
                              python-terminado
                              python-tornado-6
-                             python-traitlets))
+                             python-traitlets
+                             python-webcolors-24))
     (native-inputs (list python-coverage
                          python-nbval
                          python-jupyter-packaging
