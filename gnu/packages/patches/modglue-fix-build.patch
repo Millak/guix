@@ -1,0 +1,17 @@
+Author: Danny Milosavljevic <dannym+c@friendly-machines.com>
+Date: 23 Dec 2024
+License: GPL2+
+
+diff -ru orig/l34h8423ap03vfm6xj8lby3363vgbg5l-modglue-1.20-checkout/src/pipe.cc l34h8423ap03vfm6xj8lby3363vgbg5l-modglue-1.20-checkout/src/pipe.cc
+--- orig/l34h8423ap03vfm6xj8lby3363vgbg5l-modglue-1.20-checkout/src/pipe.cc	2024-12-23 20:23:47.132475052 +0100
++++ l34h8423ap03vfm6xj8lby3363vgbg5l-modglue-1.20-checkout/src/pipe.cc	2024-12-23 20:24:08.028172621 +0100
+@@ -241,8 +241,8 @@
+ 		struct iovec iov[1];
+ 		struct msghdr msg;
+ 		struct {
+-				struct cmsghdr cm;
+ 				int  fd;
++				struct cmsghdr cm;
+ 		} cmsg;
+ 		
+ 		memset( &msg, 0, sizeof(msg) );
