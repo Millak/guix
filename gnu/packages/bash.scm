@@ -28,6 +28,7 @@
 (define-module (gnu packages bash)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages)
+  #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bootstrap)
   #:use-module (gnu packages compression)
@@ -150,6 +151,9 @@ number/base32-hash tuples, directly usable in the 'patch-series' form."
      (outputs '("out"
                 "doc"                         ;1.7 MiB of HTML and extra files
                 "include"))                   ;headers used by extensions
+     (native-inputs (if (target-loongarch64?)
+                        (list config)
+                        '()))
      (inputs (list readline ncurses))             ;TODO: add texinfo
      (arguments
       `(;; When cross-compiling, `configure' incorrectly guesses that job
@@ -219,7 +223,18 @@ number/base32-hash tuples, directly usable in the 'patch-series' form."
                                             "/Makefile.inc")
                   (("^INSTALL =.*")
                    "INSTALL = install -c\n"))
-                #t))))))
+                #t)))
+          ,@(if (target-loongarch64?)
+                `((add-after 'unpack 'update-config-scripts
+                    (lambda* (#:key inputs native-inputs #:allow-other-keys)
+                      ;; Replace outdated config.guess and config.sub.
+                      (for-each (lambda (file)
+                                  (install-file
+                                   (search-input-file
+                                    (or native-inputs inputs)
+                                    (string-append "/bin/" file)) "./support"))
+                                '("config.guess" "config.sub")))))
+                '()))))
 
      (native-search-paths
       (list (search-path-specification            ;new in 4.4
