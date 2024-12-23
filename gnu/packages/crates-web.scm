@@ -6085,8 +6085,62 @@ on high performance, interoperability, and flexibility.")
     (description "Codegen module of @code{tonic} @code{gRPC} implementation.")
     (license license:expat)))
 
+(define-public rust-tower-0.5
+  (package
+    (name "rust-tower")
+    (version "0.5.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tower" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ybmd59nm4abl9bsvy6rx31m4zvzp5rja2slzpn712y9b68ssffh"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-test-flags
+           '(list "--"
+                  "--skip=builder::ServiceBuilder<L>::check_clone"
+                  "--skip=builder::ServiceBuilder<L>::check_service"
+                  "--skip=builder::ServiceBuilder<L>::check_service_clone")
+           #:cargo-inputs
+           (list rust-futures-core-0.3
+                 rust-futures-util-0.3
+                 rust-hdrhistogram-7
+                 rust-indexmap-2
+                 rust-pin-project-lite-0.2
+                 rust-slab-0.4
+                 rust-sync-wrapper-1
+                 rust-tokio-1
+                 rust-tokio-stream-0.1
+                 rust-tokio-util-0.7
+                 rust-tower-layer-0.3
+                 rust-tower-service-0.3
+                 rust-tracing-0.1)
+           #:cargo-development-inputs
+           (list rust-futures-0.3
+                 rust-hdrhistogram-7
+                 rust-http-1
+                 rust-lazy-static-1
+                 rust-pin-project-lite-0.2
+                 rust-quickcheck-1
+                 rust-rand-0.8
+                 rust-tokio-1
+                 rust-tokio-stream-0.1
+                 rust-tokio-test-0.4
+                 rust-tower-test-0.4
+                 rust-tracing-0.1
+                 rust-tracing-subscriber-0.3)))
+    (home-page "https://github.com/tower-rs/tower")
+    (synopsis "Library for building clients and servers")
+    (description
+     "Tower is a library of modular and reusable components for building
+robust clients and servers.")
+    (license license:expat)))
+
 (define-public rust-tower-0.4
   (package
+    (inherit rust-tower-0.5)
     (name "rust-tower")
     (version "0.4.13")
     (source
@@ -6096,7 +6150,6 @@ on high performance, interoperability, and flexibility.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "073wncyqav4sak1p755hf6vl66njgfc1z1g1di9rxx3cvvh9pymq"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f ; no method named `map_request` found for struct `ServiceBuilder`
        #:cargo-inputs
@@ -6124,13 +6177,7 @@ on high performance, interoperability, and flexibility.")
         ("rust-tokio-stream" ,rust-tokio-stream-0.1)
         ("rust-tokio-test" ,rust-tokio-test-0.4)
         ("rust-tower-test" ,rust-tower-test-0.4)
-        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))
-    (home-page "https://github.com/tower-rs/tower")
-    (synopsis "Library for building clients and servers")
-    (description
-     "Tower is a library of modular and reusable components for building
-robust clients and servers.")
-    (license license:expat)))
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))))
 
 (define-public rust-tower-http-0.5
   (package
