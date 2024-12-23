@@ -217,7 +217,23 @@ including, for example, recursive directory searching.")
             (modules '((guix build utils)))))
    (build-system gnu-build-system)
    (synopsis "Stream editor")
-   (native-inputs (list perl))                    ;for tests
+   (native-inputs (append (if (target-loongarch64?)
+                              (list config)
+                              '())
+                          (list perl)))                    ;for tests
+    (arguments (if (target-loongarch64?)
+                   (list #:phases
+                         #~(modify-phases %standard-phases
+                             (add-after 'unpack 'update-config-scripts
+                               (lambda* (#:key inputs native-inputs #:allow-other-keys)
+                                 ;; Replace outdated config.guess and config.sub.
+                                 (for-each (lambda (file)
+                                             (install-file
+                                              (search-input-file
+                                               (or native-inputs inputs)
+                                               (string-append "/bin/" file)) "./build-aux"))
+                                           '("config.guess" "config.sub"))))))
+                   '()))
    (description
     "Sed is a non-interactive, text stream editor.  It receives a text
 input from a file or from standard input and it then applies a series of text
