@@ -15819,6 +15819,28 @@ literals.")
     (description "Implementation detail of the `const_panic` crate.")
     (license license:zlib)))
 
+(define-public rust-const-str-0.5
+  (package
+    (name "rust-const-str")
+    (version "0.5.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "const-str" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1agvan36a2fgks5w47kk8idym54rdk504p6q2nj8gf9v136cq61n"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-const-str-proc-macro" ,rust-const-str-proc-macro-0.5))
+       #:cargo-development-inputs (("rust-heck" ,rust-heck-0.4)
+                                   ("rust-http" ,rust-http-1)
+                                   ("rust-regex" ,rust-regex-1))))
+    (home-page "https://github.com/Nugine/const-str")
+    (synopsis "Compile-time string operations")
+    (description "This package provides compile-time string operations.")
+    (license license:expat)))
+
 (define-public rust-const-str-proc-macro-0.5
   (package
     (name "rust-const-str-proc-macro")
