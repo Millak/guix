@@ -37565,8 +37565,35 @@ library.")
              ("rust-tokio" ,rust-tokio-1)
              ("rust-windows-sys" ,rust-windows-sys-0.42))))))
 
+(define-public rust-io-uring-0.6
+  (package
+    (name "rust-io-uring")
+    (version "0.6.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "io-uring" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1rdhc23dx642smh8j81h3qslkhih9859f7pcnbz0i98iyjch6njr"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-inputs (list rust-bindgen-0.65
+                                rust-bitflags-1
+                                rust-libc-0.2
+                                rust-sc-0.2)
+           #:cargo-development-inputs (list rust-anyhow-1
+                                            rust-slab-0.4
+                                            rust-socket2-0.5)))
+    (home-page "https://github.com/tokio-rs/io-uring")
+    (synopsis "Low-level `io_uring` userspace interface for Rust")
+    (description
+     "This package provides the low-level `io_uring` userspace interface for Rust.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-io-uring-0.5
   (package
+    (inherit rust-io-uring-0.6)
     (name "rust-io-uring")
     (version "0.5.13")
     (source
@@ -37576,7 +37603,6 @@ library.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0k4qrzhnc8j50g79ki8n79d4yffvcmwq5dj3bj6gs95rrw0il7nx"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.61)
                        ("rust-bitflags" ,rust-bitflags-1)
@@ -37584,11 +37610,7 @@ library.")
                        ("rust-sc" ,rust-sc-0.2))
        #:cargo-development-inputs (("rust-anyhow" ,rust-anyhow-1)
                                    ("rust-slab" ,rust-slab-0.4)
-                                   ("rust-socket2" ,rust-socket2-0.4))))
-    (home-page "https://github.com/tokio-rs/io-uring")
-    (synopsis "Low-level `io_uring` userspace interface for Rust")
-    (description "The low-level `io_uring` userspace interface for Rust.")
-    (license (list license:expat license:asl2.0))))
+                                   ("rust-socket2" ,rust-socket2-0.4))))))
 
 (define-public rust-ioslice-0.6
   (package
