@@ -1389,7 +1389,7 @@ space usage.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/bits-and-blooms/bloom"))
+      #:import-path "github.com/bits-and-blooms/bloom/v3"))
     (propagated-inputs
      (list go-github-com-bits-and-blooms-bitset
            go-github-com-twmb-murmur3))
