@@ -1711,21 +1711,30 @@ the Actix ecosystem.")
 (define-public rust-actix-web-codegen-4
   (package
     (name "rust-actix-web-codegen")
-    (version "4.2.2")
+    (version "4.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "actix-web-codegen" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1xalrv1s7imzfgxyql6zii5bpxxkk11rlcc8n4ia3v1hpgmm07zb"))))
+        (base32 "1f12ss948vpanh98a1v7f2x893g7xfh1mpgiz9fhnjb85q73i4gm"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f      ; use of undeclared crate or module `rustversion`
-       #:cargo-inputs (("rust-actix-router" ,rust-actix-router-0.5)
+     `(#:cargo-inputs (("rust-actix-router" ,rust-actix-router-0.5)
                        ("rust-proc-macro2" ,rust-proc-macro2-1)
                        ("rust-quote" ,rust-quote-1)
-                       ("rust-syn" ,rust-syn-2))))
+                       ("rust-syn" ,rust-syn-2))
+       #:cargo-development-inputs (("rust-actix-macros" ,rust-actix-macros-0.2)
+                                   ("rust-actix-rt" ,rust-actix-rt-2)
+                                   ("rust-actix-test" ,rust-actix-test-0.1)
+                                   ("rust-actix-utils" ,rust-actix-utils-3)
+                                   ("rust-actix-web" ,rust-actix-web-4)
+                                   ("rust-futures-core" ,rust-futures-core-0.3)
+                                   ("rust-rustversion" ,rust-rustversion-1)
+                                   ("rust-trybuild" ,rust-trybuild-1))))
+    (native-inputs (list pkg-config))
+    (inputs (list (list zstd "lib")))
     (home-page "https://actix.rs")
     (synopsis "Routing and runtime macros for Actix Web")
     (description
