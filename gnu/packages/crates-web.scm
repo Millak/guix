@@ -2315,19 +2315,18 @@ built on the Actix ecosystem.")
 (define-public rust-axum-core-0.4
   (package
     (name "rust-axum-core")
-    (version "0.4.3")
+    (version "0.4.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "axum-core" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1qx28wg4j6qdcdrisqwyaavlzc0zvbsrcwa99zf9456lfbyn6p51"))))
+        (base32 "16b1496c4gm387q20hkv5ic3k5bd6xmnvk50kwsy6ymr8rhvvwh9"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
-       ;; The doc tests contain references to axum_extra.
-       '("--release" "--lib" "--bins" "--tests")
+       '("--" "--skip=ext_traits::request::RequestExt::extract_parts")
        #:cargo-inputs (("rust-async-trait" ,rust-async-trait-0.1)
                        ("rust-bytes" ,rust-bytes-1)
                        ("rust-futures-util" ,rust-futures-util-0.3)
@@ -2337,8 +2336,8 @@ built on the Actix ecosystem.")
                        ("rust-mime" ,rust-mime-0.3)
                        ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
                        ("rust-rustversion" ,rust-rustversion-1)
-                       ("rust-sync-wrapper" ,rust-sync-wrapper-0.1)
-                       ("rust-tower-http" ,rust-tower-http-0.5)
+                       ("rust-sync-wrapper" ,rust-sync-wrapper-1)
+                       ("rust-tower-http" ,rust-tower-http-0.6)
                        ("rust-tower-layer" ,rust-tower-layer-0.3)
                        ("rust-tower-service" ,rust-tower-service-0.3)
                        ("rust-tracing" ,rust-tracing-0.1))
@@ -2346,7 +2345,7 @@ built on the Actix ecosystem.")
                                    ("rust-futures-util" ,rust-futures-util-0.3)
                                    ("rust-hyper" ,rust-hyper-1)
                                    ("rust-tokio" ,rust-tokio-1)
-                                   ("rust-tower-http" ,rust-tower-http-0.5))))
+                                   ("rust-tower-http" ,rust-tower-http-0.6))))
     (home-page "https://github.com/tokio-rs/axum")
     (synopsis "Core types and traits for @code{axum}")
     (description "Core types and traits for @code{axum}.")
