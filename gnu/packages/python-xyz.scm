@@ -33716,18 +33716,20 @@ By default it uses the open Python vulnerability database Safety DB.")
         (base32 "15x161bxr7hky7rvq0jlgf1kxg6vdf069487casmpyxry7slak3b"))))
     (build-system pyproject-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-before 'check 'disable-tests
-                    (lambda _
-                      (substitute* "tests.py"
-                        ;; Disable test requiring network access
-                        (("test_basic_conversion_from_http_url")
-                         "skip_test_basic_conversion_from_http_url")
-                        ;; Disable tests with missing files
-                        (("test_basic_conversion_from_file_pattern")
-                         "skip_test_basic_conversion_from_file_pattern")
-                        (("test_conversion_with_data_files")
-                         "skip_test_conversion_with_data_files")) #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'disable-tests
+            (lambda _
+              (substitute* "tests.py"
+                ;; Disable test requiring network access
+                (("test_basic_conversion_from_http_url")
+                 "skip_test_basic_conversion_from_http_url")
+                ;; Disable tests with missing files
+                (("test_basic_conversion_from_file_pattern")
+                 "skip_test_basic_conversion_from_file_pattern")
+                (("test_conversion_with_data_files")
+                 "skip_test_conversion_with_data_files")))))))
     ;; Ideally, we would supersede texlive-xpatch with texlive-regexpatch once
     ;; the missing etoolbox.sty file is added
     (native-inputs
