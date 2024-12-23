@@ -1156,55 +1156,6 @@ library's internal ChaCha20 package.")
 the Go standard library's TLS 1.3 implementation.")
     (license license:bsd-3)))
 
-(define-public go-github-com-nats-io-jwt-v2
-  (package
-    (name "go-github-com-nats-io-jwt-v2")
-    (version "2.5.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/nats-io/jwt")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0wcqbfyd3b4qdspmf72cpsbi0y2a4b1qd0cv3qvhh17d1h1a6zib"))))
-    (build-system go-build-system)
-    (arguments
-     (list #:import-path "github.com/nats-io/jwt/v2"
-           #:unpack-path "github.com/nats-io/jwt"))
-    (propagated-inputs (list go-github-com-nats-io-nkeys))
-    (home-page "https://github.com/nats-io/jwt")
-    (synopsis "Go library signing JWT tokens with NKeys for the NATS ecosystem")
-    (description
-     "This library is a JWT implementation that uses nkeys to digitally sign
-JWT tokens.  Nkeys use Ed25519 to provide authentication of JWT claims.")
-    (license license:asl2.0)))
-
-(define-public go-github-com-nats-io-nkeys
-  (package
-    (name "go-github-com-nats-io-nkeys")
-    (version "0.4.7")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/nats-io/nkeys")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0779m4nn6n0ql23wnk50ybddslvb84mwx036gf7yw6ckmm4yybxs"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:import-path "github.com/nats-io/nkeys"))
-    (propagated-inputs (list go-golang-org-x-crypto))
-    (home-page "https://github.com/nats-io/nkeys")
-    (synopsis "Go library implementing public-key system for NATS ecosystem")
-    (description
-     "This package is an Ed25519 based public-key signature system that
-simplifies keys and seeds and performs signing and verification.")
-    (license license:asl2.0)))
-
 (define-public go-github-com-minio-blake2b-simd
   (let ((commit "3f5f724cb5b182a5c278d6d3d55b40e7f8c2efb4")
         (revision "0"))
@@ -1338,6 +1289,55 @@ Architecture Processors\" by J. Guilford et al.")
     (synopsis "Multihash implementation in Go")
     (description "Multihash implementation in Go.")
     (license license:expat)))
+
+(define-public go-github-com-nats-io-jwt-v2
+  (package
+    (name "go-github-com-nats-io-jwt-v2")
+    (version "2.5.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/nats-io/jwt")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0wcqbfyd3b4qdspmf72cpsbi0y2a4b1qd0cv3qvhh17d1h1a6zib"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/nats-io/jwt/v2"
+           #:unpack-path "github.com/nats-io/jwt"))
+    (propagated-inputs (list go-github-com-nats-io-nkeys))
+    (home-page "https://github.com/nats-io/jwt")
+    (synopsis "Go library signing JWT tokens with NKeys for the NATS ecosystem")
+    (description
+     "This library is a JWT implementation that uses nkeys to digitally sign
+JWT tokens.  Nkeys use Ed25519 to provide authentication of JWT claims.")
+    (license license:asl2.0)))
+
+(define-public go-github-com-nats-io-nkeys
+  (package
+    (name "go-github-com-nats-io-nkeys")
+    (version "0.4.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/nats-io/nkeys")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0779m4nn6n0ql23wnk50ybddslvb84mwx036gf7yw6ckmm4yybxs"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/nats-io/nkeys"))
+    (propagated-inputs (list go-golang-org-x-crypto))
+    (home-page "https://github.com/nats-io/nkeys")
+    (synopsis "Go library implementing public-key system for NATS ecosystem")
+    (description
+     "This package is an Ed25519 based public-key signature system that
+simplifies keys and seeds and performs signing and verification.")
+    (license license:asl2.0)))
 
 (define-public go-github-com-oneofone-xxhash
   (package
@@ -1633,71 +1633,6 @@ ssh-agent that uses UNIX sockets, and one could implement an alternative
 ssh-agent process using the sample server.")
     (license license:asl2.0)))
 
-(define-public go-gitlab-com-yawning-edwards25519-extra
-  (let ((commit "2149dcafc266f66d2487f45b156f6397f9c4760b")
-        (revision "0"))
-    (package
-      (name "go-gitlab-com-yawning-edwards25519-extra")
-      (version (git-version "0.0.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://gitlab.com/yawning/edwards25519-extra")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "08mz1qyi8ig515hh5blnzxhiwsav564ah7mzyhvmr6i48ndhhv98"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:unpack-path "gitlab.com/yawning/edwards25519-extra"
-         #:phases
-         (modify-phases %standard-phases
-           (replace 'build
-             (lambda arguments
-               (for-each
-                (lambda (directory)
-                  (apply (assoc-ref %standard-phases 'build)
-                         `(,@arguments #:import-path ,directory)))
-                (list
-                 "gitlab.com/yawning/edwards25519-extra/elligator2"
-                 "gitlab.com/yawning/edwards25519-extra/h2c"
-                 "gitlab.com/yawning/edwards25519-extra/internal/montgomery"
-                 "gitlab.com/yawning/edwards25519-extra/vrf"))))
-           (replace 'check
-             (lambda arguments
-               (for-each
-                (lambda (directory)
-                  (apply (assoc-ref %standard-phases 'check)
-                         `(,@arguments #:import-path ,directory)))
-                (list
-                 "gitlab.com/yawning/edwards25519-extra/elligator2"
-                 "gitlab.com/yawning/edwards25519-extra/h2c"
-                 "gitlab.com/yawning/edwards25519-extra/internal/montgomery"
-                 "gitlab.com/yawning/edwards25519-extra/vrf"))))
-           (replace 'install
-             (lambda arguments
-               (for-each
-                (lambda (directory)
-                  (apply (assoc-ref %standard-phases 'install)
-                         `(,@arguments #:import-path ,directory)))
-                (list
-                 "gitlab.com/yawning/edwards25519-extra/elligator2"
-                 "gitlab.com/yawning/edwards25519-extra/h2c"
-                 "gitlab.com/yawning/edwards25519-extra/internal/montgomery"
-                 "gitlab.com/yawning/edwards25519-extra/vrf")))))))
-      (propagated-inputs (list go-golang-org-x-crypto
-                               go-filippo-io-edwards25519))
-      (home-page "https://gitlab.com/yawning/edwards25519-extra")
-      (synopsis "Extensions to Go standard library' Ed25519 and curve25519 implementation")
-      (description "This package provides extensions to the Go standard
-library's Ed25519 and curve25519 implementations, primarily extracted from
-@@url{https://github.com/oasisprotocol/curve25519-voi,curve25519-voi}.  This
-package is intended for interoperability with the standard library and the
-@@url{https://filippo.io/edwards25519,edwards25519} package as much as
-possible.")
-      (license license:bsd-3))))
-
 (define-public go-github-com-youmark-pkcs8
   (package
     (name "go-github-com-youmark-pkcs8")
@@ -1780,6 +1715,71 @@ and SSE4.1 acceleration.")
 @url{https://en.wikipedia.org/wiki/Permuted_congruential_generator, Permuted
 Congruential Generator} (PCG) algorithm.")
     (license license:cc0)))
+
+(define-public go-gitlab-com-yawning-edwards25519-extra
+  (let ((commit "2149dcafc266f66d2487f45b156f6397f9c4760b")
+        (revision "0"))
+    (package
+      (name "go-gitlab-com-yawning-edwards25519-extra")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.com/yawning/edwards25519-extra")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "08mz1qyi8ig515hh5blnzxhiwsav564ah7mzyhvmr6i48ndhhv98"))))
+      (build-system go-build-system)
+      (arguments
+       '(#:unpack-path "gitlab.com/yawning/edwards25519-extra"
+         #:phases
+         (modify-phases %standard-phases
+           (replace 'build
+             (lambda arguments
+               (for-each
+                (lambda (directory)
+                  (apply (assoc-ref %standard-phases 'build)
+                         `(,@arguments #:import-path ,directory)))
+                (list
+                 "gitlab.com/yawning/edwards25519-extra/elligator2"
+                 "gitlab.com/yawning/edwards25519-extra/h2c"
+                 "gitlab.com/yawning/edwards25519-extra/internal/montgomery"
+                 "gitlab.com/yawning/edwards25519-extra/vrf"))))
+           (replace 'check
+             (lambda arguments
+               (for-each
+                (lambda (directory)
+                  (apply (assoc-ref %standard-phases 'check)
+                         `(,@arguments #:import-path ,directory)))
+                (list
+                 "gitlab.com/yawning/edwards25519-extra/elligator2"
+                 "gitlab.com/yawning/edwards25519-extra/h2c"
+                 "gitlab.com/yawning/edwards25519-extra/internal/montgomery"
+                 "gitlab.com/yawning/edwards25519-extra/vrf"))))
+           (replace 'install
+             (lambda arguments
+               (for-each
+                (lambda (directory)
+                  (apply (assoc-ref %standard-phases 'install)
+                         `(,@arguments #:import-path ,directory)))
+                (list
+                 "gitlab.com/yawning/edwards25519-extra/elligator2"
+                 "gitlab.com/yawning/edwards25519-extra/h2c"
+                 "gitlab.com/yawning/edwards25519-extra/internal/montgomery"
+                 "gitlab.com/yawning/edwards25519-extra/vrf")))))))
+      (propagated-inputs (list go-golang-org-x-crypto
+                               go-filippo-io-edwards25519))
+      (home-page "https://gitlab.com/yawning/edwards25519-extra")
+      (synopsis "Extensions to Go standard library' Ed25519 and curve25519 implementation")
+      (description "This package provides extensions to the Go standard
+library's Ed25519 and curve25519 implementations, primarily extracted from
+@@url{https://github.com/oasisprotocol/curve25519-voi,curve25519-voi}.  This
+package is intended for interoperability with the standard library and the
+@@url{https://filippo.io/edwards25519,edwards25519} package as much as
+possible.")
+      (license license:bsd-3))))
 
 (define-public go-lukechampine-com-blake3
   (package
