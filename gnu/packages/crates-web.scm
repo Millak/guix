@@ -768,22 +768,28 @@ during testing.")
 (define-public rust-actix-router-0.5
   (package
     (name "rust-actix-router")
-    (version "0.5.2")
+    (version "0.5.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "actix-router" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "04f5cdag2h9lbrgb0pzwznpfrl3ajbdxlsvb8a2kci1rcmcpa96j"))))
+        (base32 "1y1n086zgfgf6483vlm18651n5ga6rcvlwvynmkkixji9hb29lqk"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f      ; cannot find derive macro `Deserialize` in this scope
-       #:cargo-inputs (("rust-bytestring" ,rust-bytestring-0.1)
+     `(#:cargo-inputs (("rust-bytestring" ,rust-bytestring-0.1)
+                       ("rust-cfg-if" ,rust-cfg-if-1)
                        ("rust-http" ,rust-http-0.2)
                        ("rust-regex" ,rust-regex-1)
+                       ("rust-regex-lite" ,rust-regex-lite-0.1)
                        ("rust-serde" ,rust-serde-1)
-                       ("rust-tracing" ,rust-tracing-0.1))))
+                       ("rust-tracing" ,rust-tracing-0.1))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.5)
+        ("rust-http" ,rust-http-0.2)
+        ("rust-percent-encoding" ,rust-percent-encoding-2)
+        ("rust-serde" ,rust-serde-1))))
     (home-page "https://github.com/actix/actix-web")
     (synopsis "Resource path matching and router library")
     (description
