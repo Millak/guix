@@ -714,7 +714,9 @@ When VERSION is unspecified, the latest version available is used."
         (build-system go-build-system)
         (arguments
          (list ,@(if (version>? min-go-version (package-version (go-package)))
-                     `(#:go ,(string->number min-go-version))
+                     `(#:go ,(string->symbol
+                              (format #f "go-~a"
+                                      (string->number min-go-version))))
                      '())
                #:import-path ,module-path
                ,@(if (string=? module-path root-module-path)
