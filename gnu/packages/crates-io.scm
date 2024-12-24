@@ -15754,25 +15754,6 @@ minutes, seconds.")
     (description "Choose types at compile-time via boolean constants.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-const-cstr-0.3
-  (package
-    (name "rust-const-cstr")
-    (version "0.3.0")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "const-cstr" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "19ij6m8s16d0i7vma535l7w4x8bcanjcxs7c6n7sci86ydghnggd"))))
-    (build-system cargo-build-system)
-    (home-page "https://github.com/cybergeek94/const-cstr")
-    (synopsis "Create static C-compatible strings from Rust string literals")
-    (description
-     "This crate lets you create static C-compatible strings from Rust string
-literals.")
-    (license (list license:expat license:asl2.0))))
-
 ;; This package requires features which are unavailable
 ;; on the stable releases of Rust.
 (define-public rust-compiler-builtins-0.1
@@ -16689,6 +16670,25 @@ the browser's console.")
     (description
      "This package provides a logging facility that routes Rust log messages to
 the browser's console.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-const-cstr-0.3
+  (package
+    (name "rust-const-cstr")
+    (version "0.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "const-cstr" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "19ij6m8s16d0i7vma535l7w4x8bcanjcxs7c6n7sci86ydghnggd"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/cybergeek94/const-cstr")
+    (synopsis "Create static C-compatible strings from Rust string literals")
+    (description
+     "This crate lets you create static C-compatible strings from Rust string
+literals.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-const-fn-0.4
