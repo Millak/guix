@@ -56810,6 +56810,32 @@ algebra.")
     (description "This package provides Search for files in PATH.")
     (license license:expat)))
 
+(define-public rust-paw-1
+  (package
+    (name "rust-paw")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "paw" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1sc481y42rb08hmww525m4539ppl8k0w14kwxp13vg2dasdzrh09"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; `async_await` has been stable since `1.39.0`
+       #:cargo-inputs
+       (("rust-paw-attributes" ,rust-paw-attributes-1)
+        ("rust-paw-raw" ,rust-paw-raw-1))
+       #:cargo-development-inputs
+       (("rust-paw-structopt" ,rust-paw-structopt-1)
+        ("rust-runtime" ,rust-runtime-0.3)
+        ("rust-structopt" ,rust-structopt-0.2))))
+    (home-page "https://github.com/rust-cli/paw")
+    (synopsis "CLI argument parser")
+    (description "This package provides a CLI argument parser.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-pcap-1
   (package
     (name "rust-pcap")
@@ -78356,32 +78382,6 @@ designed for @code{immutable.rs}.")
     (description "This create provides a pre-allocated storage for a uniform
 data type.")
     (license license:expat)))
-
-(define-public rust-paw-1
-  (package
-    (name "rust-paw")
-    (version "1.0.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "paw" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1sc481y42rb08hmww525m4539ppl8k0w14kwxp13vg2dasdzrh09"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:tests? #f  ; `async_await` has been stable since `1.39.0`
-       #:cargo-inputs
-       (("rust-paw-attributes" ,rust-paw-attributes-1)
-        ("rust-paw-raw" ,rust-paw-raw-1))
-       #:cargo-development-inputs
-       (("rust-paw-structopt" ,rust-paw-structopt-1)
-        ("rust-runtime" ,rust-runtime-0.3)
-        ("rust-structopt" ,rust-structopt-0.2))))
-    (home-page "https://github.com/rust-cli/paw")
-    (synopsis "CLI argument parser")
-    (description "This package provides a CLI argument parser.")
-    (license (list license:expat license:asl2.0))))
 
 (define-public rust-paw-attributes-1
   (package
