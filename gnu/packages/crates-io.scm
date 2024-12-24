@@ -6787,6 +6787,35 @@ bytes or encoder from file extension.")
 audio/video metrics.")
     (license license:expat)))
 
+(define-public rust-av1-grain-0.2
+  (package
+    (name "rust-av1-grain")
+    (version "0.2.3")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "av1-grain" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "1gvqdh21bm1cfqiwyiinbqi0mg7x2lg2fwgmphma8ijxijfr0y36"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-arrayvec" ,rust-arrayvec-0.7)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-nom" ,rust-nom-7)
+        ("rust-num-rational" ,rust-num-rational-0.4)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-v-frame" ,rust-v-frame-0.3))
+       #:cargo-development-inputs
+       (("rust-quickcheck" ,rust-quickcheck-1)
+        ("rust-quickcheck-macros" ,rust-quickcheck-macros-1))))
+    (home-page "https://github.com/rust-av/av1-grain")
+    (synopsis "Helpers for generating and parsing AV1 film grain data")
+    (description "This package provides helpers for generating and parsing AV1
+film grain data.")
+    (license license:bsd-2)))
+
 (define-public rust-average-0.13
   (package
     (name "rust-average")
@@ -6868,35 +6897,6 @@ iteratively in Rust.")
     (description "This crate provides for calculating statistics iteratively
 in Rust.")
     (license (list license:asl2.0 license:expat))))
-
-(define-public rust-av1-grain-0.2
-  (package
-    (name "rust-av1-grain")
-    (version "0.2.3")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "av1-grain" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32 "1gvqdh21bm1cfqiwyiinbqi0mg7x2lg2fwgmphma8ijxijfr0y36"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-anyhow" ,rust-anyhow-1)
-        ("rust-arrayvec" ,rust-arrayvec-0.7)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-nom" ,rust-nom-7)
-        ("rust-num-rational" ,rust-num-rational-0.4)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-v-frame" ,rust-v-frame-0.3))
-       #:cargo-development-inputs
-       (("rust-quickcheck" ,rust-quickcheck-1)
-        ("rust-quickcheck-macros" ,rust-quickcheck-macros-1))))
-    (home-page "https://github.com/rust-av/av1-grain")
-    (synopsis "Helpers for generating and parsing AV1 film grain data")
-    (description "This package provides helpers for generating and parsing AV1
-film grain data.")
-    (license license:bsd-2)))
 
 (define-public rust-average-0.9
   (package
