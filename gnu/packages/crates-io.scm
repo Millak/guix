@@ -75423,34 +75423,6 @@ formats:
 standard formatting APIs.")
     (license (list license:asl2.0 license:expat))))
 
-(define-public rust-serde-html-form-0.2
-  (package
-    (name "rust-serde-html-form")
-    (version "0.2.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "serde_html_form" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "133ycw4zdw4jymnw38n4vnjnvhxf5im3hh6g4akr4rps3ip0dq90"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-form-urlencoded" ,rust-form-urlencoded-1)
-                       ("rust-indexmap" ,rust-indexmap-2)
-                       ("rust-itoa" ,rust-itoa-1)
-                       ("rust-ryu" ,rust-ryu-1)
-                       ("rust-serde" ,rust-serde-1))
-       #:cargo-development-inputs (("rust-assert-matches2" ,rust-assert-matches2-0.1)
-                                   ("rust-serde" ,rust-serde-1))))
-    (home-page "https://github.com/jplatte/serde_html_form")
-    (synopsis
-     "(De-)serialization support for the `application/x-www-form-urlencoded` format")
-    (description
-     "This package provides (de-)serialization support for the
-`application/x-www-form-urlencoded` format.")
-    (license license:expat)))
-
 (define-public rust-serde-derive-1
   (package
     (name "rust-serde-derive")
@@ -75591,6 +75563,34 @@ derive macros.")
      "This crate is a Rust library for parsing and generating Human JSON
 Hjson.  It is built upon Serde, a high performance generic serialization
 framework.")
+    (license license:expat)))
+
+(define-public rust-serde-html-form-0.2
+  (package
+    (name "rust-serde-html-form")
+    (version "0.2.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "serde_html_form" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "133ycw4zdw4jymnw38n4vnjnvhxf5im3hh6g4akr4rps3ip0dq90"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-form-urlencoded" ,rust-form-urlencoded-1)
+                       ("rust-indexmap" ,rust-indexmap-2)
+                       ("rust-itoa" ,rust-itoa-1)
+                       ("rust-ryu" ,rust-ryu-1)
+                       ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-assert-matches2" ,rust-assert-matches2-0.1)
+                                   ("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/jplatte/serde_html_form")
+    (synopsis
+     "(De-)serialization support for the `application/x-www-form-urlencoded` format")
+    (description
+     "This package provides (de-)serialization support for the
+`application/x-www-form-urlencoded` format.")
     (license license:expat)))
 
 (define-public rust-serde-ignored-0.1
