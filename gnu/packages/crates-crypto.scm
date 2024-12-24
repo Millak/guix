@@ -1020,26 +1020,6 @@ and block modes.")
         ("rust-cstr-core" ,rust-cstr-core-0.2)
         ("rust-cty" ,rust-cty-0.2))))))
 
-(define-public rust-botan-sys-0.10
-  (package
-    (name "rust-botan-sys")
-    (version "0.10.5")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "botan-sys" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1ji12rxvi4h7pap772cd2hw4xdgqdsgw6m8wqin9klpbp3hxsjcz"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-botan-src" ,rust-botan-src-0.30101))))
-    (inputs (list botan))
-    (home-page "https://botan.randombit.net/")
-    (synopsis "FFI wrapper for Botan cryptography library")
-    (description "FFI wrapper for Botan cryptography library")
-    (license license:expat)))
-
 (define-public rust-botan-src-0.30101
   (package
     (name "rust-botan-src")
@@ -1076,6 +1056,26 @@ and block modes.")
               (modules '((guix build utils)))
               (snippet
                '(begin (delete-file-recursively "botan")))))))
+
+(define-public rust-botan-sys-0.10
+  (package
+    (name "rust-botan-sys")
+    (version "0.10.5")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "botan-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1ji12rxvi4h7pap772cd2hw4xdgqdsgw6m8wqin9klpbp3hxsjcz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-botan-src" ,rust-botan-src-0.30101))))
+    (inputs (list botan))
+    (home-page "https://botan.randombit.net/")
+    (synopsis "FFI wrapper for Botan cryptography library")
+    (description "FFI wrapper for Botan cryptography library")
+    (license license:expat)))
 
 (define-public rust-botan-sys-0.8
   (package
