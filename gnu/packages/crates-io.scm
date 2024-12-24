@@ -35768,6 +35768,23 @@ Identifiers canonicalization.")
 Normalization Forms.")
     (license license:unicode)))
 
+(define-public rust-icu-normalizer-data-1
+  (package
+    (name "rust-icu-normalizer-data")
+    (version "1.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "icu_normalizer_data" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "05lmk0zf0q7nzjnj5kbmsigj3qgr0rwicnn5pqi9n7krmbvzpjpq"))))
+    (build-system cargo-build-system)
+    (home-page "https://icu4x.unicode.org")
+    (synopsis "Data for the icu_normalizer crate")
+    (description "This package provides data for the icu_normalizer crate.")
+    (license license:unicode)))
+
 (define-public rust-icu-provider-macros-1
   (package
     (name "rust-icu-provider-macros")
