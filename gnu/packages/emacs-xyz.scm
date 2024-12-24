@@ -35851,7 +35851,6 @@ time.")
     (build-system emacs-build-system)
     (arguments
      (list
-      #:emacs emacs
       #:phases #~(modify-phases %standard-phases
                    ;; Move the source files to the top level, which is
                    ;; included in the EMACSLOADPATH.
@@ -35862,7 +35861,8 @@ time.")
                                      (rename-file f
                                                   (basename f)))
                                    el-files)))))))
-    (propagated-inputs (list emacs-request emacs-tp emacs-persist))
+    (propagated-inputs
+     (list emacs-persist emacs-request emacs-tp emacs-transient))
     (home-page "https://codeberg.org/martianh/mastodon.el")
     (synopsis "Emacs client for Mastodon")
     (description "@code{mastodon.el} is an Emacs client for Mastodon, the
