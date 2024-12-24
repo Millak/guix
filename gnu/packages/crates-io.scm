@@ -99616,6 +99616,26 @@ file into an in-memory tree structure.")
      "This package provides fast pseudo-random number generators.")
     (license license:expat)))
 
+(define-public rust-xxhash-c-sys-0.8
+  (package
+    (name "rust-xxhash-c-sys")
+    (version "0.8.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "xxhash-c-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "13g8cy4w91nwmficbmkrqp40axpwidcna588gzxr47m0ld99jh6j"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cc" ,rust-cc-1)
+                       ("rust-libc" ,rust-libc-0.2))))
+    (home-page "https://github.com/DoumanAsh/xxhash-c-sys")
+    (synopsis "Bindings to xxhash")
+    (description "This package provides bindings to xxhash.")
+    (license license:boost1.0)))
+
 (define-public rust-xxhash-rust-0.8
   (package
     (name "rust-xxhash-rust")
@@ -99638,26 +99658,6 @@ file into an in-memory tree structure.")
     (synopsis "Implementation of xxHash in Rust")
     (description "This package provides an implementation of the xxHash
 algorithm in Rust.")
-    (license license:boost1.0)))
-
-(define-public rust-xxhash-c-sys-0.8
-  (package
-    (name "rust-xxhash-c-sys")
-    (version "0.8.6")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "xxhash-c-sys" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "13g8cy4w91nwmficbmkrqp40axpwidcna588gzxr47m0ld99jh6j"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-cc" ,rust-cc-1)
-                       ("rust-libc" ,rust-libc-0.2))))
-    (home-page "https://github.com/DoumanAsh/xxhash-c-sys")
-    (synopsis "Bindings to xxhash")
-    (description "This package provides bindings to xxhash.")
     (license license:boost1.0)))
 
 (define-public rust-xz-0.1
