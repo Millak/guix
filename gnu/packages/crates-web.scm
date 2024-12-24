@@ -3546,7 +3546,7 @@ requests and responses.")
      (list pkg-config))
     (home-page "https://github.com/scottlamb/http-auth")
     (synopsis "HTTP authentication for rust")
-    (description "This package provices HTTP authentication; it can parse
+    (description "This package provides HTTP authentication; it can parse
 challenge lists, respond to Basic and Digest challenges.  It is likely to be
 extended with server support and additional auth schemes.")
     (license (list license:expat license:asl2.0))))
