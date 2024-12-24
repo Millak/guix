@@ -17667,6 +17667,32 @@ numbers using the CORDIC method.")
         ("rust-num-cpus" ,rust-num-cpus-1)
         ("rust-winapi" ,rust-winapi-0.2))))))
 
+(define-public rust-core-arch-0.1
+  (package
+    (name "rust-core-arch")
+    (version "0.1.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "core_arch" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "04vdvr9vj0f1cv2p54nsszmrrk9w1js4c0z4i0bdlajl1lydslim"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-development-inputs
+       (("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.2))))
+    (home-page "https://github.com/rust-lang/stdarch")
+    (synopsis
+     "Rust's core library architecture-specific intrinsics")
+    (description
+     "@code{core::arch} - Rust's core library architecture-specific
+intrinsics.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-core-error-0.0.0
   (package
     (name "rust-core-error")
@@ -17813,32 +17839,6 @@ in @code{no_std}.  Alloc support is optional.")
         (sha256
          (base32 "1wzzy5iazdk5caadxvjfwrd312rbg7a55a1zpmsdrhk3kfpa77r3"))))
     (arguments `(#:cargo-inputs (("rust-memchr" ,rust-memchr-2))))))
-
-(define-public rust-core-arch-0.1
-  (package
-    (name "rust-core-arch")
-    (version "0.1.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "core_arch" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "04vdvr9vj0f1cv2p54nsszmrrk9w1js4c0z4i0bdlajl1lydslim"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-development-inputs
-       (("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.2))))
-    (home-page "https://github.com/rust-lang/stdarch")
-    (synopsis
-     "Rust's core library architecture-specific intrinsics")
-    (description
-     "@code{core::arch} - Rust's core library architecture-specific
-intrinsics.")
-    (license (list license:expat license:asl2.0))))
 
 (define-public rust-cov-mark-2
   (package
