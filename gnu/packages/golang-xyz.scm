@@ -1837,6 +1837,43 @@ well-suited for simple and complex terminal applications, either inline,
 full-window, or a mix of both.")
     (license license:asl2.0)))
 
+(define-public go-github-com-charmbracelet-glamour
+  (package
+    (name "go-github-com-charmbracelet-glamour")
+    (version "0.8.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/charmbracelet/glamour")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "112clivb9nsxlaqvypwcidmk4dkszg7vglb4apia43rdqqj82s6k"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:embed-files #~(list ".*\\.xml")
+      #:import-path "github.com/charmbracelet/glamour"))
+    (propagated-inputs
+     (list go-github-com-alecthomas-chroma-v2
+           go-github-com-charmbracelet-lipgloss
+           go-github-com-charmbracelet-x-ansi
+           go-github-com-charmbracelet-x-exp-golden
+           go-github-com-microcosm-cc-bluemonday
+           go-github-com-muesli-reflow
+           go-github-com-muesli-termenv
+           go-github-com-yuin-goldmark
+           go-github-com-yuin-goldmark-emoji
+           go-golang-org-x-term))
+    (home-page "https://github.com/charmbracelet/glamour/")
+    (synopsis "Write handsome command-line tools with glamour")
+    (description
+     "@code{glamour} lets you render markdown documents and templates on ANSI
+compatible terminals.  You can create your own stylesheet or use one of our
+glamorous default themes.")
+    (license license:expat)))
+
 (define-public go-github-com-charmbracelet-lipgloss
   (package
     (name "go-github-com-charmbracelet-lipgloss")
