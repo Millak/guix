@@ -35287,43 +35287,6 @@ characters in HTML, decoding and unescaping HTML entities as well.")
     (description "This library provides Rust bindings to HTSlib.")
     (license license:expat)))
 
-(define-public rust-jwalk-0.8
-  (package
-    (name "rust-jwalk")
-    (version "0.8.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "jwalk" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0miw0074ch6p89dbvrlnz9wp13rh7542cf1ak8bx4v1mcrsq8d97"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-crossbeam" ,rust-crossbeam-0.8)
-        ("rust-rayon" ,rust-rayon-1))
-       #:cargo-development-inputs
-       (("rust-criterion" ,rust-criterion-0.4)
-        ("rust-fs-extra" ,rust-fs-extra-1)
-        ("rust-ignore" ,rust-ignore-0.4)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-num-cpus" ,rust-num-cpus-1)
-        ("rust-tempfile" ,rust-tempfile-3)
-        ("rust-walkdir" ,rust-walkdir-2))))
-    (home-page "https://github.com/byron/jwalk")
-    (synopsis
-     "File system walk performed in parallel with streamed and sorted results")
-    (description
-     "This Rust crate implements a file system walk that runs in parallel
-using @code{rayon}.  It attempts to combine the parallelism of @code{ignore}
-with @code{walkdir}'s streaming iterator API.  Entries are streamed in sorted
-order with options for custom sorting, filtering, and skipping.
-
-Directory traversal is already pretty fast.  If you don't need this crate's
-speed then walkdir provides a smaller and more tested single threaded implementation.")
-    (license license:expat)))
-
 (define-public rust-human-date-parser-0.1
   (package
     (name "rust-human-date-parser")
@@ -39941,6 +39904,43 @@ debugging.")
        #:cargo-development-inputs
        (("rust-bencher" ,rust-bencher-0.1)
         ("rust-serde-json" ,rust-serde-json-1))))))
+
+(define-public rust-jwalk-0.8
+  (package
+    (name "rust-jwalk")
+    (version "0.8.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "jwalk" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0miw0074ch6p89dbvrlnz9wp13rh7542cf1ak8bx4v1mcrsq8d97"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-crossbeam" ,rust-crossbeam-0.8)
+        ("rust-rayon" ,rust-rayon-1))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.4)
+        ("rust-fs-extra" ,rust-fs-extra-1)
+        ("rust-ignore" ,rust-ignore-0.4)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-num-cpus" ,rust-num-cpus-1)
+        ("rust-tempfile" ,rust-tempfile-3)
+        ("rust-walkdir" ,rust-walkdir-2))))
+    (home-page "https://github.com/byron/jwalk")
+    (synopsis
+     "File system walk performed in parallel with streamed and sorted results")
+    (description
+     "This Rust crate implements a file system walk that runs in parallel
+using @code{rayon}.  It attempts to combine the parallelism of @code{ignore}
+with @code{walkdir}'s streaming iterator API.  Entries are streamed in sorted
+order with options for custom sorting, filtering, and skipping.
+
+Directory traversal is already pretty fast.  If you don't need this crate's
+speed then walkdir provides a smaller and more tested single threaded implementation.")
+    (license license:expat)))
 
 (define-public rust-katex-doc-0.1
   (package
