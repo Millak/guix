@@ -27923,32 +27923,6 @@ is defined in the HTML specification.")
     (description "This package provides a fast floating-point number parser.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-fasthash-0.4
-  (package
-    (name "rust-fasthash")
-    (version "0.4.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "fasthash" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "03v9g4ajw0zk9pv2ranq65xcly1b68hg0qzc2y8y1ajfdfa168h3"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-0.1)
-                       ("rust-fasthash-sys" ,rust-fasthash-sys-0.3)
-                       ("rust-num-traits" ,rust-num-traits-0.2)
-                       ("rust-seahash" ,rust-seahash-3)
-                       ("rust-xoroshiro128" ,rust-xoroshiro128-0.3))))
-    (home-page "https://github.com/flier/rust-fasthash")
-    (synopsis "Suite of non-cryptographic hash functions for Rust")
-    (description
-     "This package provides a suite of non-cryptographic hash functions for
-Rust.")
-    (license license:asl2.0)))
-
 (define-public rust-faster-hex-0.9
   (package
     (name "rust-faster-hex")
@@ -27998,6 +27972,32 @@ Rust.")
         ("rust-rustc-hex" ,rust-rustc-hex-1)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1))))))
+
+(define-public rust-fasthash-0.4
+  (package
+    (name "rust-fasthash")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "fasthash" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "03v9g4ajw0zk9pv2ranq65xcly1b68hg0qzc2y8y1ajfdfa168h3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-0.1)
+                       ("rust-fasthash-sys" ,rust-fasthash-sys-0.3)
+                       ("rust-num-traits" ,rust-num-traits-0.2)
+                       ("rust-seahash" ,rust-seahash-3)
+                       ("rust-xoroshiro128" ,rust-xoroshiro128-0.3))))
+    (home-page "https://github.com/flier/rust-fasthash")
+    (synopsis "Suite of non-cryptographic hash functions for Rust")
+    (description
+     "This package provides a suite of non-cryptographic hash functions for
+Rust.")
+    (license license:asl2.0)))
 
 (define-public rust-fasthash-sys-0.3
   (package
