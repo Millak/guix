@@ -24423,25 +24423,6 @@ This project is a fork of Faraday's boondock.")
 objects back to their original types.  The same as the rust-downcast-rs crate.")
     (license license:expat)))
 
-(define-public rust-downcast-rs-1
-  (package
-    (name "rust-downcast-rs")
-    (version "1.2.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "downcast-rs" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1lmrq383d1yszp7mg5i7i56b17x2lnn3kb91jwsq0zykvg2jbcvm"))))
-    (build-system cargo-build-system)
-    (home-page "https://github.com/marcianx/downcast-rs")
-    (synopsis "Trait object downcasting support using only safe Rust")
-    (description
-     "Trait object downcasting support using only safe Rust.  It supports type
-parameters, associated types, and type constraints.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-dogged-0.2
   (package
     (name "rust-dogged")
@@ -24581,6 +24562,25 @@ Rust.")
     (synopsis "Fork of the dotenv crate")
     (description "This package provides a fork of the dotenv crate.")
     (license license:expat)))
+
+(define-public rust-downcast-rs-1
+  (package
+    (name "rust-downcast-rs")
+    (version "1.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "downcast-rs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1lmrq383d1yszp7mg5i7i56b17x2lnn3kb91jwsq0zykvg2jbcvm"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/marcianx/downcast-rs")
+    (synopsis "Trait object downcasting support using only safe Rust")
+    (description
+     "Trait object downcasting support using only safe Rust.  It supports type
+parameters, associated types, and type constraints.")
+    (license (list license:expat license:asl2.0))))
 
 (define-public rust-draw-state-0.8
   (package
