@@ -18976,7 +18976,7 @@ using a convenient notation.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "19hhnx3n93qs2ym6qbffqzjm30fvd4n47pldmv08aiq4v8zn1gl6"))))
+                  "1j9v85wxahnm2h828c8dbjm0f81j9pxlf54dgcw443cl0kwcda9c"))))
       (build-system emacs-build-system)
       (arguments
        (list
