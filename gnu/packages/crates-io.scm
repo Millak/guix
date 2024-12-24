@@ -13717,6 +13717,36 @@ the chrono-tz Rust crate.")
 recovery.")
     (license license:expat)))
 
+(define-public rust-ci-info-0.3
+  (package
+    (name "rust-ci-info")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ci_info" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "00pr17g6q6i752acrkycg0hkq3lm0p634anm41g3m6lqg8q83s75"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=ci::ci_test::get_bamboo"
+         "--skip=ci::ci_test::get_taskcluster_runid"
+         "--skip=ci::ci_test::get_buildkite"
+         "--skip=ci::ci_test::get_tfs")
+       #:cargo-inputs
+       (("rust-serde" ,rust-serde-1)
+        ("rust-serde-derive" ,rust-serde-derive-1))))
+    (home-page "https://github.com/sagiegurari/ci_info")
+    (synopsis "Provides current CI environment information")
+    (description
+     "This package provides current CI environment information.")
+    (license license:asl2.0)))
+
 (define-public rust-ciborium-0.2
   (package
     (name "rust-ciborium")
@@ -13829,36 +13859,6 @@ interoperation between crates in Rust.")
     (description
      "This package provides a stream abstraction designed for use with nom.")
     (license license:expat)))
-
-(define-public rust-ci-info-0.3
-  (package
-    (name "rust-ci-info")
-    (version "0.3.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "ci_info" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "00pr17g6q6i752acrkycg0hkq3lm0p634anm41g3m6lqg8q83s75"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-test-flags
-       '("--release" "--"
-         "--skip=ci::ci_test::get_bamboo"
-         "--skip=ci::ci_test::get_taskcluster_runid"
-         "--skip=ci::ci_test::get_buildkite"
-         "--skip=ci::ci_test::get_tfs")
-       #:cargo-inputs
-       (("rust-serde" ,rust-serde-1)
-        ("rust-serde-derive" ,rust-serde-derive-1))))
-    (home-page "https://github.com/sagiegurari/ci_info")
-    (synopsis "Provides current CI environment information")
-    (description
-     "This package provides current CI environment information.")
-    (license license:asl2.0)))
 
 (define-public rust-clang-ast-0.1
   (package
