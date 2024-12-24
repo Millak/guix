@@ -5119,22 +5119,22 @@ feature pre-selected.")
 (define-public rust-gix-path-0.10
   (package
     (name "rust-gix-path")
-    (version "0.10.12")
+    (version "0.10.13")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gix-path" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0m75pki8sa7hl3qlz8pdis5l4ck8s656bwkxxf8iwsxmzna5lkn0"))))
+        (base32 "1ds5hvyjwic564jbvpy14ibrf1f8701q0877n2p41qsi3bpr5hmg"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f ;undeclared crate gix_testtools
+     `(#:tests? #f  ; use of undeclared crate or module `gix_testtools`
        #:cargo-inputs (("rust-bstr" ,rust-bstr-1)
                        ("rust-gix-trace" ,rust-gix-trace-0.1)
                        ("rust-home" ,rust-home-0.5)
                        ("rust-once-cell" ,rust-once-cell-1)
-                       ("rust-thiserror" ,rust-thiserror-1))
+                       ("rust-thiserror" ,rust-thiserror-2))
        #:cargo-development-inputs
        (("rust-known-folders" ,rust-known-folders-1)
         ("rust-serial-test" ,rust-serial-test-3)
