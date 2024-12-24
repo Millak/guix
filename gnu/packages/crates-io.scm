@@ -98726,14 +98726,14 @@ command-line, uniformly on all platforms")
 (define-public rust-wildmatch-2
   (package
     (name "rust-wildmatch")
-    (version "2.3.3")
+    (version "2.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "wildmatch" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "09dhkskicsyi74abcav57mschy7g16r9ibfsgwsl45bkpk0mk7lk"))))
+        (base32 "1zbi3q4djhlli496mg45sfacy1g5c6f5h3rmw7mma9n6z2qimkk8"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-serde" ,rust-serde-1))
