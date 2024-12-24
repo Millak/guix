@@ -55126,27 +55126,6 @@ platform-native strings.")
     (arguments
      `(#:cargo-inputs (("rust-ttf-parser" ,rust-ttf-parser-0.19))))))
 
-(define-public rust-owo-colors-4
-  (package
-    (name "rust-owo-colors")
-    (version "4.0.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "owo-colors" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0grsk47cllj0s4nc4qxvy4gdhj2lyiglbqx4lmw2m7grdmq59zya"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-supports-color" ,rust-supports-color-2))))
-    (home-page "https://github.com/jam1garner/owo-colors")
-    (synopsis "Zero-allocation terminal colors that'll make people go owo")
-    (description
-     "This package provides zero-allocation terminal colors that'll make people go
-owo.")
-    (license license:expat)))
-
 (define-public rust-owned-ttf-parser-0.6
   (package
     (name "rust-owned-ttf-parser")
@@ -55208,6 +55187,27 @@ normally prevent moving a type that has been borrowed from.")
     (arguments
      (list #:cargo-inputs
            `(("rust-stable-deref-trait" ,rust-stable-deref-trait-1))))))
+
+(define-public rust-owo-colors-4
+  (package
+    (name "rust-owo-colors")
+    (version "4.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "owo-colors" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0grsk47cllj0s4nc4qxvy4gdhj2lyiglbqx4lmw2m7grdmq59zya"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-supports-color" ,rust-supports-color-2))))
+    (home-page "https://github.com/jam1garner/owo-colors")
+    (synopsis "Zero-allocation terminal colors that'll make people go owo")
+    (description
+     "This package provides zero-allocation terminal colors that'll make people go
+owo.")
+    (license license:expat)))
 
 (define-public rust-owo-colors-3
   (package
