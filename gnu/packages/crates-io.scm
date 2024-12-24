@@ -76565,6 +76565,24 @@ Rust's serde.")
        #:cargo-development-inputs
        (("rust-env-logger" ,rust-env-logger-0.9))))))
 
+(define-public rust-serial-test-derive-0.10
+  (package
+    (inherit rust-serial-test-derive-3)
+    (name "rust-serial-test-derive")
+    (version "0.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "serial_test_derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1qvz5vwzhxs2j2dsripyrxqn08brw3p0rbcafys8hz793i9rwkxn"))))
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-1))
+       #:cargo-development-inputs (("rust-env-logger" ,rust-env-logger-0.9))))))
+
 (define-public rust-serial-test-derive-0.7
   (package
     (inherit rust-serial-test-derive-2)
