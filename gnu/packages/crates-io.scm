@@ -41213,14 +41213,14 @@ for raw deflate, zlib, and gzip data.")
 (define-public rust-libflate-2
   (package
     (name "rust-libflate")
-    (version "2.0.0")
+    (version "2.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "libflate" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1gxjqgbzzn6sdalrd2cfn7zb14c75if3dx3nzz3sz58pmra5czcz"))))
+        (base32 "07mj9z89vbhq837q58m4v2nblgsmrn6vrp8w1j8g0kpa2kfdzna5"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-adler32" ,rust-adler32-1)
@@ -41228,7 +41228,7 @@ for raw deflate, zlib, and gzip data.")
                        ("rust-crc32fast" ,rust-crc32fast-1)
                        ("rust-dary-heap" ,rust-dary-heap-0.3)
                        ("rust-libflate-lz77" ,rust-libflate-lz77-2))
-       #:cargo-development-inputs (("rust-clap" ,rust-clap-2))))
+       #:cargo-development-inputs (("rust-clap" ,rust-clap-4))))
     (home-page "https://github.com/sile/libflate")
     (synopsis "DEFLATE algorithm and related formats (ZLIB, GZIP)")
     (description "This package provides a Rust implementation of DEFLATE
