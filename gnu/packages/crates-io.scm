@@ -27653,6 +27653,31 @@ handling type for easy idiomatic error handling and reporting in Rust.")
      "Experimental error handling abstraction.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-failure-derive-0.1
+  (package
+    (name "rust-failure-derive")
+    (version "0.1.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "failure_derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1936adqqk080439kx2bjf1bds7h89sg6wcif4jw0syndcv3s6kda"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1)
+        ("rust-synstructure" ,rust-synstructure-0.12))
+       #:cargo-development-inputs
+       (("rust-failure" ,rust-failure-0.1))))
+    (home-page "https://rust-lang-nursery.github.io/failure/")
+    (synopsis "Derives for the failure crate")
+    (description "Derives for the failure crate.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-fake-simd-0.1
   (package
     (name "rust-fake-simd")
@@ -27735,31 +27760,6 @@ fallible format macro.")
         (base32 "1zf6ir26qbdwlywv9m266n19p6yzqqmi968qy8njc58aiiv6k358"))))
     (arguments
      `(#:cargo-inputs (("rust-hashbrown" ,rust-hashbrown-0.13))))))
-
-(define-public rust-failure-derive-0.1
-  (package
-    (name "rust-failure-derive")
-    (version "0.1.8")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "failure_derive" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1936adqqk080439kx2bjf1bds7h89sg6wcif4jw0syndcv3s6kda"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1)
-        ("rust-synstructure" ,rust-synstructure-0.12))
-       #:cargo-development-inputs
-       (("rust-failure" ,rust-failure-0.1))))
-    (home-page "https://rust-lang-nursery.github.io/failure/")
-    (synopsis "Derives for the failure crate")
-    (description "Derives for the failure crate.")
-    (license (list license:asl2.0 license:expat))))
 
 (define-public rust-fallible-iterator-0.3
   (package
