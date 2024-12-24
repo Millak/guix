@@ -35705,6 +35705,24 @@ Locale Identifiers.")
 Identifiers canonicalization.")
     (license license:unicode)))
 
+(define-public rust-icu-locid-transform-data-1
+  (package
+    (name "rust-icu-locid-transform-data")
+    (version "1.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "icu_locid_transform_data" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0vkgjixm0wzp2n3v5mw4j89ly05bg3lx96jpdggbwlpqi0rzzj7x"))))
+    (build-system cargo-build-system)
+    (home-page "https://icu4x.unicode.org")
+    (synopsis "Data for the icu_locid_transform crate")
+    (description
+     "This package provides data for the icu_locid_transform crate.")
+    (license license:unicode)))
+
 (define-public rust-icu-provider-macros-1
   (package
     (name "rust-icu-provider-macros")
