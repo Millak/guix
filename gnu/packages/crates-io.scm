@@ -99973,6 +99973,43 @@ implementation that works everywhere, even WASM!")
     (description "This crate provides custom derive support for Zeroize.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-zerovec-0.10
+  (package
+    (name "rust-zerovec")
+    (version "0.10.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "zerovec" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0yghix7n3fjfdppwghknzvx9v8cf826h2qal5nqvy8yzg4yqjaxa"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; use of undeclared crate or module `databake`
+       #:cargo-inputs (("rust-databake" ,rust-databake-0.1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-twox-hash" ,rust-twox-hash-1)
+                       ("rust-yoke" ,rust-yoke-0.7)
+                       ("rust-zerofrom" ,rust-zerofrom-0.1)
+                       ("rust-zerovec-derive" ,rust-zerovec-derive-0.10))
+       #:cargo-development-inputs (("rust-bincode" ,rust-bincode-1)
+                                   ("rust-criterion" ,rust-criterion-0.5)
+                                   ("rust-getrandom" ,rust-getrandom-0.2)
+                                   ("rust-iai" ,rust-iai-0.1)
+                                   ("rust-postcard" ,rust-postcard-1)
+                                   ("rust-rand" ,rust-rand-0.8)
+                                   ("rust-rand-distr" ,rust-rand-distr-0.4)
+                                   ("rust-rand-pcg" ,rust-rand-pcg-0.3)
+                                   ("rust-rmp-serde" ,rust-rmp-serde-1)
+                                   ("rust-serde" ,rust-serde-1)
+                                   ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/unicode-org/icu4x")
+    (synopsis "Zero-copy vector backed by a byte array")
+    (description
+     "This package provides zero-copy vector backed by a byte array.")
+    (license license:unicode)))
+
 (define-public rust-zerovec-derive-0.10
   (package
     (name "rust-zerovec-derive")
