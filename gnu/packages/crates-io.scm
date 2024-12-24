@@ -85932,8 +85932,29 @@ directories.")
 template language.")
     (license license:expat)))
 
+(define-public rust-term-1
+  (package
+    (name "rust-term")
+    (version "1.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "term" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0h8s95mpfbvhada0pgvdsk59x5nsnnvzi1q94qi83affmw0n1fx3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-home" ,rust-home-0.5)
+                       ("rust-windows-sys" ,rust-windows-sys-0.52))))
+    (home-page "https://github.com/Stebalien/term")
+    (synopsis "Terminal formatting library")
+    (description "This package provides a terminal formatting library.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-term-0.7
   (package
+    (inherit rust-term-1)
     (name "rust-term")
     (version "0.7.0")
     (source
@@ -85943,18 +85964,12 @@ template language.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "07xzxmg7dbhlirpyfq09v7cfb9gxn0077sqqvszgjvyrjnngi7f5"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-dirs-next" ,rust-dirs-next-2)
         ("rust-rustversion" ,rust-rustversion-1)
-        ("rust-winapi" ,rust-winapi-0.3))))
-    (home-page "https://github.com/Stebalien/term")
-    (synopsis "Terminal formatting library")
-    (description
-     "This package provides a terminal formatting library.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-winapi" ,rust-winapi-0.3))))))
 
 (define-public rust-term-0.6
   (package
