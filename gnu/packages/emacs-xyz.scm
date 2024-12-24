@@ -407,14 +407,14 @@ buffer, a file on your disk, or a string from the kill ring.")
 (define-public emacs-activities
   (package
     (name "emacs-activities")
-    (version "0.7.1")
+    (version "0.7.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
              "https://elpa.gnu.org/packages/activities-" version ".tar"))
        (sha256
-        (base32 "1khhkfyy251mag5zqybsvfg3sak0aac1qlsdl1wyiin7f6sq9563"))))
+        (base32 "1b6d77b5h2vikfxqjlb1jx5pnij5bif788nysvvn3wlzpwdi88s0"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-persist))
     (home-page "https://github.com/alphapapa/activities.el")
