@@ -78519,6 +78519,22 @@ stack.")
        #:cargo-development-inputs
        (("rust-bincode" ,rust-bincode-1))))))
 
+(define-public rust-smallvec-0.3
+  (package
+    (inherit rust-smallvec-1)
+    (name "rust-smallvec")
+    (version "0.3.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "smallvec" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "121d6ab60b2yi67gn82p9yw9ir9qa7g98qrkr0iwx3nc27pawhz1"))))
+    (arguments
+     `(#:cargo-test-flags '("--" "--skip=tests::test_truncate")
+       #:cargo-inputs (("rust-heapsize" ,rust-heapsize-0.3))))))
+
 (define-public rust-smart-default-0.7
   (package
     (name "rust-smart-default")
