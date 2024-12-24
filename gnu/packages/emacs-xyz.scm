@@ -11100,18 +11100,16 @@ identifiers in the MIT-Scheme documentation.")
 (define-public emacs-constants
   (package
     (name "emacs-constants")
-    (version "2.6")
-    (home-page "https://staff.fnwi.uva.nl/c.dominik/Tools/constants")
+    (version "2.11.1")
     (source
      (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/fedeinthemix/emacs-constants")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
+       (method url-fetch)
+       (uri (string-append "https://elpa.gnu.org/packages/constants-" version
+                           ".tar"))
        (sha256
-        (base32 "0f5sh6b45a8p9kancjp9jk44ws8ww6x50a0i6zgyyvr7dbvii1a0"))))
+        (base32 "0n1wa9hr0841733s6w30x1n5mmis8fpjfzl5mn7s9q12djpp20fy"))))
     (build-system emacs-build-system)
+    (home-page "https://github.com/cdominik/constants-for-Emacs")
     (synopsis "Enter definition of constants into an Emacs buffer")
     (description
      "This package provides functions for inserting the definition of natural
