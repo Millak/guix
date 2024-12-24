@@ -98366,19 +98366,19 @@ json-like data values.")
 (define-public rust-which-7
   (package
     (name "rust-which")
-    (version "7.0.0")
+    (version "7.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "which" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0swcnfhsbpzaakfq6l6madmdshvk3mj1lwrqdswlcwyyk8kx7jn9"))))
+        (base32 "0a2hvxcyx7c0gijny8l9w9462piqnchnxqxh88bdqfc3chrrwjpv"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-test-flags '("--release" "--" "--skip=it_works")
+     `(#:cargo-test-flags '("--" "--skip=it_works")
        #:cargo-inputs (("rust-either" ,rust-either-1)
-                       ("rust-home" ,rust-home-0.5)
+                       ("rust-env-home" ,rust-env-home-0.1)
                        ("rust-regex" ,rust-regex-1)
                        ("rust-rustix" ,rust-rustix-0.38)
                        ("rust-tracing" ,rust-tracing-0.1)
