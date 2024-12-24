@@ -76770,6 +76770,31 @@ TOML/JSON/MessagePack strings and serializable values.")
         ("rust-parking-lot" ,rust-parking-lot-0.11)
         ("rust-serial-test-derive" ,rust-serial-test-derive-0.5))))))
 
+(define-public rust-serial-test-0.4
+  (package
+    (name "rust-serial-test")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "serial_test" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1mkz246ax07nar0bmh3m98kl27lacja98vywi9cjqbsb8g3zgxgy"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-lazy-static" ,rust-lazy-static-1)
+("rust-parking-lot" ,rust-parking-lot-0.10)
+("rust-serial-test-derive" ,rust-serial-test-derive-0.4))))
+    (home-page
+     "https://github.com/palfrey/serial_test/")
+    (synopsis "Serialising Rust tests")
+    (description "Serialising Rust tests")
+    (license license:expat)))
+
 (define-public rust-serial-test-0.1
   (package
     (inherit rust-serial-test-0.5)
@@ -77038,31 +77063,6 @@ functionality and without weak references.")
        (("rust-nodrop" ,rust-nodrop-0.1)
         ("rust-serde" ,rust-serde-1)
         ("rust-stable-deref-trait" ,rust-stable-deref-trait-1))))))
-
-(define-public rust-serial-test-0.4
-  (package
-    (name "rust-serial-test")
-    (version "0.4.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "serial_test" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1mkz246ax07nar0bmh3m98kl27lacja98vywi9cjqbsb8g3zgxgy"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-lazy-static" ,rust-lazy-static-1)
-("rust-parking-lot" ,rust-parking-lot-0.10)
-("rust-serial-test-derive" ,rust-serial-test-derive-0.4))))
-    (home-page
-     "https://github.com/palfrey/serial_test/")
-    (synopsis "Serialising Rust tests")
-    (description "Serialising Rust tests")
-    (license license:expat)))
 
 (define-public rust-servo-fontconfig-0.5
   (package
