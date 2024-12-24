@@ -3517,17 +3517,17 @@ requests and responses.")
 (define-public rust-http-auth-0.1
   (package
     (name "rust-http-auth")
-    (version "0.1.9")
+    (version "0.1.10")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "http-auth" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
-               (base32 "0mf27f963mxpbyjw20sjmm0ziqvr9z9m7kdlsrbada2fdazrng34"))))
+               (base32 "08l8z75cpda5y25cnd5fzgsahb35xn29qlgl9j12dy9f8sls83qm"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-base64" ,rust-base64-0.21)
+       (("rust-base64" ,rust-base64-0.22)
         ("rust-digest" ,rust-digest-0.10)
         ("rust-hex" ,rust-hex-0.4)
         ("rust-http" ,rust-http-1)
@@ -3539,7 +3539,7 @@ requests and responses.")
         ("rust-sha2" ,rust-sha2-0.10))
        #:cargo-development-inputs
        (("rust-pretty-assertions" ,rust-pretty-assertions-1)
-        ("rust-reqwest" ,rust-reqwest-0.11))))
+        ("rust-reqwest" ,rust-reqwest-0.12))))
     (inputs
      (list openssl))
     (native-inputs
