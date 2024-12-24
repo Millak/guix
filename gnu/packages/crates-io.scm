@@ -31400,14 +31400,14 @@ timeouts and delays with futures.")
 (define-public rust-futures-util-0.3
   (package
     (name "rust-futures-util")
-    (version "0.3.30")
+    (version "0.3.31")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "futures-util" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0j0xqhcir1zf2dcbpd421kgw6wvsk0rpxflylcysn1rlp3g02r1x"))))
+        (base32 "10aa1ar8bgkgbr4wzxlidkqkcxf77gffyj8j7768h831pcaq784z"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; use of undeclared crate or module `futures`
