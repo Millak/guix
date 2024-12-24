@@ -35671,6 +35671,40 @@ SystemTime}}.")
 Locale Identifiers.")
     (license license:unicode)))
 
+(define-public rust-icu-locid-transform-1
+  (package
+    (name "rust-icu-locid-transform")
+    (version "1.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "icu_locid_transform" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0kmmi1kmj9yph6mdgkc7v3wz6995v7ly3n80vbg0zr78bp1iml81"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:tests? #f      ; use of undeclared crate or module `writeable`
+           #:cargo-inputs
+           (list rust-databake-0.1
+                 rust-displaydoc-0.2
+                 rust-icu-locid-1
+                 rust-icu-locid-transform-data-1
+                 rust-icu-provider-1
+                 rust-serde-1
+                 rust-tinystr-0.7
+                 rust-zerovec-0.10)
+           #:cargo-development-inputs
+           (list rust-criterion-0.5
+                 rust-serde-1
+                 rust-serde-json-1)))
+    (home-page "https://icu4x.unicode.org")
+    (synopsis "API for Unicode Language and Locale Identifiers canonicalization")
+    (description
+     "This package provides an API for Unicode Language and Locale
+Identifiers canonicalization.")
+    (license license:unicode)))
+
 (define-public rust-icu-provider-macros-1
   (package
     (name "rust-icu-provider-macros")
