@@ -7259,7 +7259,7 @@ This mode supports Apache HTTP Server 2.4 and major modules.")
 (define-public emacs-apheleia
   (package
     (name "emacs-apheleia")
-    (version "4.2")
+    (version "4.3")
     (source
      (origin
        (method git-fetch)
@@ -7268,7 +7268,7 @@ This mode supports Apache HTTP Server 2.4 and major modules.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1an8k1zgahsjscmdm5s4mp71afb1mf86s63vg3pc8kalj4yw9gbj"))))
+        (base32 "0pw16nh2pbb33fkwk2wmr73x6z405w2acsjfli77j2j9vg4nxh52"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/raxod502/apheleia")
     (synopsis "Reformat buffer stably")
