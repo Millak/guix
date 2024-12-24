@@ -97980,6 +97980,29 @@ combinators library.")
     (description "This package provides a Midi parsing library.")
     (license license:expat)))
 
+(define-public rust-writeable-0.5
+  (package
+    (name "rust-writeable")
+    (version "0.5.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "writeable" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0lawr6y0bwqfyayf3z8zmqlhpnzhdx0ahs54isacbhyjwa7g778y"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; use of undeclared crate or module `icu_benchmark_macros`
+       #:cargo-inputs (("rust-either" ,rust-either-1))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.5)
+                                   ("rust-rand" ,rust-rand-0.8))))
+    (home-page "https://github.com/unicode-org/icu4x")
+    (synopsis "Efficient alternative to fmt::Display")
+    (description
+     "This package provides a more efficient alternative to fmt::Display.")
+    (license license:unicode)))
+
 (define-public rust-wycheproof-0.5
   (package
     (name "rust-wycheproof")
