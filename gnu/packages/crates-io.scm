@@ -35638,6 +35638,39 @@ SystemTime}}.")
      "This package provides a collection of APIs for use in ICU libraries.")
     (license license:unicode)))
 
+(define-public rust-icu-locid-1
+  (package
+    (name "rust-icu-locid")
+    (version "1.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "icu_locid" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0dznvd1c5b02iilqm044q4hvar0sqibq1z46prqwjzwif61vpb0k"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; use of undeclared crate or module `icu_benchmark_macros`
+       #:cargo-inputs (("rust-databake" ,rust-databake-0.1)
+                       ("rust-displaydoc" ,rust-displaydoc-0.2)
+                       ("rust-litemap" ,rust-litemap-0.7)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-tinystr" ,rust-tinystr-0.7)
+                       ("rust-writeable" ,rust-writeable-0.5)
+                       ("rust-zerovec" ,rust-zerovec-0.10))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.5)
+                                   ("rust-iai" ,rust-iai-0.1)
+                                   ("rust-postcard" ,rust-postcard-1)
+                                   ("rust-serde" ,rust-serde-1)
+                                   ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://icu4x.unicode.org")
+    (synopsis "API for managing Unicode Language and Locale Identifiers")
+    (description
+     "This package provides an API for managing Unicode Language and
+Locale Identifiers.")
+    (license license:unicode)))
+
 (define-public rust-icu-provider-macros-1
   (package
     (name "rust-icu-provider-macros")
