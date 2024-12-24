@@ -736,7 +736,10 @@ highlighting and other features typical of a source code editor.")
        #:configure-flags '("-Dinstalled_tests=false"
                            ,@(if (%current-target-system)
                                  '()
-                                 '("-Dgtk_doc=true")))
+                                 '("-Dgtk_doc=true"))
+                           ;; GTK+ 3 needs the XPM loader, see
+                           ;; <https://gitlab.gnome.org/GNOME/gtk/-/issues/7143>.
+                           "-Dothers=enabled")
        #:phases
        (modify-phases %standard-phases
          (add-before 'configure 'disable-failing-tests
