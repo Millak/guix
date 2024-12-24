@@ -40498,10 +40498,10 @@ future.")
 (define-public emacs-code-cells
   ;; XXX: Upstream does not tag releases.  The commit below matches version
   ;; bump.
-  (let ((commit "44546ca256f3da29e3ac884e3d699c8455acbd6e"))
+  (let ((commit "caffb420be106cebbdfe4474ed0507a601603f83"))
     (package
       (name "emacs-code-cells")
-      (version "0.4")
+      (version "0.5")
       (source
        (origin
          (method git-fetch)
@@ -40510,7 +40510,7 @@ future.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1fc5l87kzmnwxmrq2v7x4jzcplq375v9j0h2yz4grzaql3jcc419"))))
+          (base32 "0ba5125pq0im27rl964il78543n56jm88129zv05dfq6pv7fkplv"))))
       (build-system emacs-build-system)
       (home-page "https://github.com/astoff/code-cells.el")
       (synopsis "Emacs utilities for code split into cells, including Jupyter
