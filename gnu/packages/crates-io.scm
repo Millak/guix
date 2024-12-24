@@ -9152,25 +9152,6 @@ streams in big-endian and little-endian formats.")
         ("rust-serde-test" ,rust-serde-test-1)
         ("rust-static-assertions" ,rust-static-assertions-1))))))
 
-(define-public rust-blas-sys-0.7
-  (package
-    (name "rust-blas-sys")
-    (version "0.7.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "blas-sys" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0h14zjycwc76v15h8qll9z1xiryvmpvsb5gam97pqpdjrrwv5c8k"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2))))
-    (home-page "https://github.com/blas-lapack-rs/blas-sys")
-    (synopsis "Rust bindings to BLAS (Fortran)")
-    (description "The package provides bindings to BLAS (Fortran).")
-    (license (list license:asl2.0 license:expat))))
-
 (define-public rust-blas-0.22
   (package
     (name "rust-blas")
@@ -9220,6 +9201,25 @@ streams in big-endian and little-endian formats.")
      "This package provides a simple macro to derive blanket implementations for
 your traits.")
     (license license:expat)))
+
+(define-public rust-blas-sys-0.7
+  (package
+    (name "rust-blas-sys")
+    (version "0.7.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "blas-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0h14zjycwc76v15h8qll9z1xiryvmpvsb5gam97pqpdjrrwv5c8k"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2))))
+    (home-page "https://github.com/blas-lapack-rs/blas-sys")
+    (synopsis "Rust bindings to BLAS (Fortran)")
+    (description "The package provides bindings to BLAS (Fortran).")
+    (license (list license:asl2.0 license:expat))))
 
 (define-public rust-blobby-0.3
   (package
