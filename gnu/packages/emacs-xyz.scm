@@ -13212,7 +13212,7 @@ call.")
 (define-public emacs-eglot-tempel
   (package
     (name "emacs-eglot-tempel")
-    (version "0.8")
+    (version "0.8.2")
     (source
      (origin
        (method git-fetch)
@@ -13221,7 +13221,7 @@ call.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1nbx0k6ly207j9lv686mqa554rhqpfxm6smgfqrdyrrfj6674zr8"))))
+        (base32 "00v94h3zvl2pm1yizjmdfqgmzwqq8aghjixdcb23x703inq5p82x"))))
     (build-system emacs-build-system)
     (arguments
      (list
