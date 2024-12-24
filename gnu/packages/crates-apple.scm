@@ -458,28 +458,6 @@ CommonCrypto library.")
      "This package provides a rust interface for Apple's CoreAudio API.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-coreaudio-sys-0.2
-  (package
-    (name "rust-coreaudio-sys")
-    (version "0.2.16")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "coreaudio-sys" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0asnnypbsqzj2lxx4irnmyi9b32sl0vkxb61mj3p5mvp1fm5gs1c"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t ; Only builds for macos or ios.
-       #:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.70))))
-    (home-page "https://github.com/RustAudio/coreaudio-sys")
-    (synopsis
-     "Bindings for Apple's CoreAudio frameworks generated via rust-bindgen")
-    (description
-     "Bindings for Apple's CoreAudio frameworks generated via rust-bindgen.")
-    (license license:expat)))
-
 (define-public rust-core-foundation-0.10
   (package
     (name "rust-core-foundation")
@@ -688,6 +666,28 @@ CommonCrypto library.")
         ("rust-core-graphics" ,rust-core-graphics-0.22)
         ("rust-foreign-types" ,rust-foreign-types-0.3)
         ("rust-libc" ,rust-libc-0.2))))))
+
+(define-public rust-coreaudio-sys-0.2
+  (package
+    (name "rust-coreaudio-sys")
+    (version "0.2.16")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "coreaudio-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0asnnypbsqzj2lxx4irnmyi9b32sl0vkxb61mj3p5mvp1fm5gs1c"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t ; Only builds for macos or ios.
+       #:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.70))))
+    (home-page "https://github.com/RustAudio/coreaudio-sys")
+    (synopsis
+     "Bindings for Apple's CoreAudio frameworks generated via rust-bindgen")
+    (description
+     "Bindings for Apple's CoreAudio frameworks generated via rust-bindgen.")
+    (license license:expat)))
 
 (define-public rust-dispatch-0.2
   (package
