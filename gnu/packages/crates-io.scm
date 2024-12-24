@@ -63223,34 +63223,6 @@ configuration file and/or environment variables.")
      "This package provides a library to work with PTY/TTY on Unix systems.")
     (license license:expat)))
 
-(define-public rust-publicsuffix-2
-  (package
-    (name "rust-publicsuffix")
-    (version "2.2.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "publicsuffix" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0mvls29klp6xk16n8114sr1llhahy6fy8qi9kbwzf6mflnyw3a4n"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-hashbrown" ,rust-hashbrown-0.12)
-        ("rust-idna" ,rust-idna-0.3)
-        ("rust-psl-types" ,rust-psl-types-2)
-        ("rust-unicase" ,rust-unicase-2))
-       #:cargo-development-inputs
-       (("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-rspec" ,rust-rspec-1))))
-    (home-page "https://github.com/rushmorem/publicsuffix")
-    (synopsis "Domain name parsing and email address validation")
-    (description "This package provides robust domain name parsing and RFC
-compliant email address validation.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-public-api-0.33
   (package
     (name "rust-public-api")
@@ -63312,6 +63284,34 @@ on rustdoc JSON output from the nightly toolchain.")
                                    ("rust-predicates" ,rust-predicates-3)
                                    ("rust-rustdoc-json" ,rust-rustdoc-json-0.8)
                                    ("rust-tempfile" ,rust-tempfile-3))))))
+
+(define-public rust-publicsuffix-2
+  (package
+    (name "rust-publicsuffix")
+    (version "2.2.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "publicsuffix" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0mvls29klp6xk16n8114sr1llhahy6fy8qi9kbwzf6mflnyw3a4n"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-hashbrown" ,rust-hashbrown-0.12)
+        ("rust-idna" ,rust-idna-0.3)
+        ("rust-psl-types" ,rust-psl-types-2)
+        ("rust-unicase" ,rust-unicase-2))
+       #:cargo-development-inputs
+       (("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-rspec" ,rust-rspec-1))))
+    (home-page "https://github.com/rushmorem/publicsuffix")
+    (synopsis "Domain name parsing and email address validation")
+    (description "This package provides robust domain name parsing and RFC
+compliant email address validation.")
+    (license (list license:expat license:asl2.0))))
 
 (define-public rust-publicsuffix-1
   (package
