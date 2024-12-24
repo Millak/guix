@@ -51315,30 +51315,6 @@ combinators library.")
       ;; This is an ancient version and all inputs are optional.
      `(#:skip-build? #t))))
 
-(define-public rust-nom8-0.2
-  (package
-    (name "rust-nom8")
-    (version "0.2.0")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "nom8" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32 "1y6jzabxyrl05vxnh63r66ac2fh0symg5fnynxm4ii3zkif580df"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:tests? #f              ; Not all files included.
-       #:cargo-inputs
-       (("rust-memchr" ,rust-memchr-2))
-       #:cargo-development-inputs
-       (("rust-doc-comment" ,rust-doc-comment-0.3)
-        ("rust-proptest" ,rust-proptest-1))))
-    (home-page "https://github.com/epage/nom-experimental")
-    (synopsis "Byte-oriented, zero-copy, parser combinators library")
-    (description "This package provides a byte-oriented, zero-copy, parser
-combinators library (fork for proposals for v8)")
-    (license license:expat)))
-
 (define-public rust-nom-derive-0.10
   (package
     (name "rust-nom-derive")
@@ -51409,6 +51385,30 @@ combinators library (fork for proposals for v8)")
     (description
      "This package provides a special input type for @code{nom} to locate
 tokens.")
+    (license license:expat)))
+
+(define-public rust-nom8-0.2
+  (package
+    (name "rust-nom8")
+    (version "0.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "nom8" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "1y6jzabxyrl05vxnh63r66ac2fh0symg5fnynxm4ii3zkif580df"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f              ; Not all files included.
+       #:cargo-inputs
+       (("rust-memchr" ,rust-memchr-2))
+       #:cargo-development-inputs
+       (("rust-doc-comment" ,rust-doc-comment-0.3)
+        ("rust-proptest" ,rust-proptest-1))))
+    (home-page "https://github.com/epage/nom-experimental")
+    (synopsis "Byte-oriented, zero-copy, parser combinators library")
+    (description "This package provides a byte-oriented, zero-copy, parser
+combinators library (fork for proposals for v8)")
     (license license:expat)))
 
 (define-public rust-nonempty-0.7
