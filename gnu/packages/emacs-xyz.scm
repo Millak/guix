@@ -22223,7 +22223,7 @@ which avoids some of the issues with using Emacs’s built-in Url library.")
 (define-public emacs-plz-media-type
   (package
     (name "emacs-plz-media-type")
-    (version "0.2.1")
+    (version "0.2.2")
     (source
      (origin
        (method git-fetch)
@@ -22232,7 +22232,7 @@ which avoids some of the issues with using Emacs’s built-in Url library.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1bxrinp276rzz1jwnqrs5xginm96vzxr0b1k5q3y56lnin8sp18x"))))
+        (base32 "1q11w5pxyf98rcczw6wsvmqwxwpchf6m9y5fy5xjvgx723v7iwdp"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-plz))
     (arguments (list #:tests? #f))
