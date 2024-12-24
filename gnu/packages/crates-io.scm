@@ -30900,7 +30900,7 @@ AsyncSeek, AsyncBufRead)]} for enums.")
 (define-public rust-futures-executor-0.3
   (package
     (name "rust-futures-executor")
-    (version "0.3.30")
+    (version "0.3.31")
     (source
      (origin
        (method url-fetch)
@@ -30908,7 +30908,7 @@ AsyncSeek, AsyncBufRead)]} for enums.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "07dh08gs9vfll2h36kq32q9xd86xm6lyl9xikmmwlkqnmrrgqxm5"))))
+         "17vcci6mdfzx4gbk0wx64chr2f13wwwpvyf3xd5fb1gmjzcx2a0y"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; use of undeclared crate or module `futures`
