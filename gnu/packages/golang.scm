@@ -2143,40 +2143,6 @@ incorporates ideas and concepts from Philipp Winter's ScrambleSuit protocol.")
 web browsing activities based on HTTP Upgrade (HTTPT).")
       (license license:bsd-2))))
 
-(define-public go-github-com-keybase-go-ps
-    (package
-      (name "go-github-com-keybase-go-ps")
-      (version "0.0.0-20190827175125-91aafc93ba19")
-      (source
-       (origin
-         (method git-fetch)
-         (uri
-          (git-reference
-           (url "https://github.com/keybase/go-ps")
-           (commit (go-version->git-ref version))))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1la7m9pd1rrij727g34k9d2iapqwrkwdkqwpkbsbcq8ig0fg634h"))))
-      (build-system go-build-system)
-      (arguments
-       `(#:import-path "github.com/keybase/go-ps"
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'fix-tests
-             (lambda* (#:key import-path #:allow-other-keys)
-               (with-directory-excursion (string-append "src/" import-path)
-                 (substitute* (find-files "." "test\\.go")
-                   (("/bin/sleep") (which "sleep")))
-                 (substitute* "process_openbsd.go"
-                   (("^// \\+build ignore") ""))))))))
-      (native-inputs
-       (list go-github-com-stretchr-testify))
-      (home-page "https://github.com/keybase/go-ps")
-      (synopsis "Process list library for Go")
-      (description "Go-Ps is a library for Go that implements OS-specific APIs
-to list and manipulate processes in a safe way.")
-      (license license:expat)))
-
 (define-public go-github-com-apparentlymart-go-openvpn-mgmt
   (let ((commit "4d2ce95ae600ee04eeb020ee0997aabb82752210")
         (revision "0"))
