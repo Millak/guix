@@ -399,14 +399,14 @@ inclusion of Windows resources in the most resilient fashion imaginable.")
 (define-public rust-fs-set-times-0.20
   (package
     (name "rust-fs-set-times")
-    (version "0.20.1")
+    (version "0.20.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "fs-set-times" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1yxqkl8khk1593ribn4s9v60vf375gi9sgw9hq6nk5svf9yk6fq3"))))
+        (base32 "1d4ww0f4143nda9cq0s9fl3986c0f09njs663k2z5w16mwin2bjy"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-io-lifetimes" ,rust-io-lifetimes-2)
