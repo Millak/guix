@@ -41820,45 +41820,6 @@ information.")
     (description "This package provides some mathematical utilities.")
     (license license:expat)))
 
-(define-public rust-libmimalloc-sys-0.1
-  (package
-    (name "rust-libmimalloc-sys")
-    (version "0.1.35")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "libmimalloc-sys" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0r4nrd9xbmhmipw4bvh4xlbzbc7xf74frrsibqglysffgv1vay9r"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin (substitute* "Cargo.toml"
-                  (("\\[build-dependencies\\.cc\\]" all)
-                   (string-append "[build-dependencies.pkg-config]\n"
-                                  "version = \"0.3\"\n\n"
-                                  all)))
-                (delete-file "build.rs")
-                (with-output-to-file "build.rs"
-                  (lambda _
-                    (format #t "fn main() {~@
-                            println!(\"cargo:rustc-link-lib=mimalloc\");~@
-                            }~%")))))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-cc" ,rust-cc-1)
-        ("rust-cty" ,rust-cty-0.2)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-pkg-config" ,rust-pkg-config-0.3))))
-    (inputs (list mimalloc))
-    (home-page "https://github.com/purpleprotocol/mimalloc_rust")
-    (synopsis "Sys crate wrapping the mimalloc allocator")
-    (description "This package provides a sys crate wrapping the mimalloc
-allocator.")
-    (license license:expat)))
-
 (define-public rust-libmdns-0.7
   (package
     (name "rust-libmdns")
@@ -41919,6 +41880,45 @@ advertised and discovered using this mechanism.")
              ("rust-tokio" ,rust-tokio-1))
            #:cargo-development-inputs
            `(("rust-env-logger" ,rust-env-logger-0.8))))))
+
+(define-public rust-libmimalloc-sys-0.1
+  (package
+    (name "rust-libmimalloc-sys")
+    (version "0.1.35")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libmimalloc-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0r4nrd9xbmhmipw4bvh4xlbzbc7xf74frrsibqglysffgv1vay9r"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (("\\[build-dependencies\\.cc\\]" all)
+                   (string-append "[build-dependencies.pkg-config]\n"
+                                  "version = \"0.3\"\n\n"
+                                  all)))
+                (delete-file "build.rs")
+                (with-output-to-file "build.rs"
+                  (lambda _
+                    (format #t "fn main() {~@
+                            println!(\"cargo:rustc-link-lib=mimalloc\");~@
+                            }~%")))))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cc" ,rust-cc-1)
+        ("rust-cty" ,rust-cty-0.2)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-pkg-config" ,rust-pkg-config-0.3))))
+    (inputs (list mimalloc))
+    (home-page "https://github.com/purpleprotocol/mimalloc_rust")
+    (synopsis "Sys crate wrapping the mimalloc allocator")
+    (description "This package provides a sys crate wrapping the mimalloc
+allocator.")
+    (license license:expat)))
 
 (define-public rust-libnghttp2-sys-0.1
   (package
