@@ -30747,7 +30747,7 @@ zero allocations, composability, and iterator-like interfaces.")
 (define-public rust-futures-channel-0.3
   (package
     (name "rust-futures-channel")
-    (version "0.3.30")
+    (version "0.3.31")
     (source
      (origin
        (method url-fetch)
@@ -30755,7 +30755,7 @@ zero allocations, composability, and iterator-like interfaces.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0y6b7xxqdjm9hlcjpakcg41qfl7lihf6gavk8fyqijsxhvbzgj7a"))))
+         "040vpqpqlbk099razq8lyn74m0f161zd0rp36hciqrwcg2zibzrd"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; use of undeclared crate or module `futures`
