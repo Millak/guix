@@ -71237,31 +71237,6 @@ the file-system during development.")
      "Rust bindings for hawktracer profiling library.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-rust-hawktracer-proc-macro-0.4
-  (package
-    (name "rust-rust-hawktracer-proc-macro")
-    (version "0.4.1")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "rust_hawktracer_proc_macro" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1qfksscfv8rbbzv2zb0i9sbbqmig0dr0vrma3c1kzsfmpsynlqnb"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-rust-hawktracer-sys" ,rust-rust-hawktracer-sys-0.4))))
-    (home-page "https://github.com/AlexEne/rust_hawktracer_proc_macro")
-    (synopsis
-     "Helper crate for hawktracer profiling library")
-    (description
-     "This package is a helper crate for hawktracer profiling library.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-rust-hawktracer-normal-macro-0.4
   (package
     (name "rust-rust-hawktracer-normal-macro")
@@ -71286,6 +71261,31 @@ the file-system during development.")
     (synopsis "Helper crate for hawktracer profiling library")
     (description
      "This package provides a helper crate for hawktracer profiling library.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-rust-hawktracer-proc-macro-0.4
+  (package
+    (name "rust-rust-hawktracer-proc-macro")
+    (version "0.4.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "rust_hawktracer_proc_macro" version))
+        (file-name
+         (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32
+          "1qfksscfv8rbbzv2zb0i9sbbqmig0dr0vrma3c1kzsfmpsynlqnb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-rust-hawktracer-sys" ,rust-rust-hawktracer-sys-0.4))))
+    (home-page "https://github.com/AlexEne/rust_hawktracer_proc_macro")
+    (synopsis
+     "Helper crate for hawktracer profiling library")
+    (description
+     "This package is a helper crate for hawktracer profiling library.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-rust-hawktracer-sys-0.4
