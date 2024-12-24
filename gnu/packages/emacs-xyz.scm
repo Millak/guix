@@ -4552,7 +4552,7 @@ you can press @samp{C-M-n} to input multiple email addresses.")
     (inputs
      (list bluez dbus))
     (propagated-inputs
-     (list emacs-dash))
+     (list emacs-compat emacs-dash emacs-transient))
     (home-page "https://gitlab.com/rstocker/emacs-bluetooth")
     (synopsis "Manage Bluetooth devices using Emacs")
     (description
