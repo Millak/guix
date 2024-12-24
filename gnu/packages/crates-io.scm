@@ -2878,25 +2878,6 @@ CLI parser, like @code{rust-clap}, by pre-processing the arguments, like
 @code{rust-wild}.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-argh-shared-0.1
-  (package
-    (name "rust-argh-shared")
-    (version "0.1.12")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "argh_shared" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0cbmf3n5fd7ha014m303f4bmsmj0v84an4a1rh77d9dx868z74sn"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-serde" ,rust-serde-1))))
-    (home-page "https://github.com/google/argh")
-    (synopsis "Derive-based argument parsing optimized for code size")
-    (description "Derive-based argument parsing optimized for code size.")
-    (license license:bsd-3)))
-
 (define-public rust-argh-derive-0.1
   (package
     (name "rust-argh-derive")
@@ -2939,6 +2920,25 @@ CLI parser, like @code{rust-clap}, by pre-processing the arguments, like
     (home-page "https://github.com/google/argh")
     (synopsis "Derive-based argument parser optimized for code size")
     (description "Derive-based argument parser optimized for code size.")
+    (license license:bsd-3)))
+
+(define-public rust-argh-shared-0.1
+  (package
+    (name "rust-argh-shared")
+    (version "0.1.12")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "argh_shared" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0cbmf3n5fd7ha014m303f4bmsmj0v84an4a1rh77d9dx868z74sn"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/google/argh")
+    (synopsis "Derive-based argument parsing optimized for code size")
+    (description "Derive-based argument parsing optimized for code size.")
     (license license:bsd-3)))
 
 (define-public rust-argmax-0.3
