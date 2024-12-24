@@ -39088,20 +39088,20 @@ format.")
 (define-public rust-java-locator-0.1
   (package
     (name "rust-java-locator")
-    (version "0.1.5")
+    (version "0.1.8")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "java-locator" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1hl06w62yzvfzrl6pwgzssx8006s508hylnq44n22by5v4pky04h"))))
+        (base32 "1dfyawm101s0qxx73dpdc9gyfm462xpc8ppd979mssmgjj4g49bg"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; Tests want java in the path
        #:cargo-inputs (("rust-docopt" ,rust-docopt-1)
-                       ("rust-glob" ,rust-glob-0.3)
-                       ("rust-lazy-static" ,rust-lazy-static-1))))
+                       ("rust-glob" ,rust-glob-0.3))))
+    (native-inputs (list which))
     (home-page "https://github.com/astonbitecode/java-locator")
     (synopsis "Locates a Java installation in the host")
     (description "Locates a Java installation in the host.")
