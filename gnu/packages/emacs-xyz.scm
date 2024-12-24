@@ -35821,7 +35821,7 @@ time.")
 (define-public emacs-mastodon
   (package
     (name "emacs-mastodon")
-    (version "1.0.27")
+    (version "1.1.8")
     (source
      (origin
        (method git-fetch)
@@ -35830,10 +35830,11 @@ time.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1jq54rz27xabwswwas9j254r9ldymza2la288vbh2w0nfbmnr1m9"))))
+        (base32 "0jc6fyqrc0ygd00vq9ga1d9srawm2c0f1l64xg31dbbmhq2js8li"))))
     (build-system emacs-build-system)
     (arguments
      (list
+      #:emacs emacs
       #:phases #~(modify-phases %standard-phases
                    ;; Move the source files to the top level, which is
                    ;; included in the EMACSLOADPATH.
@@ -35844,7 +35845,7 @@ time.")
                                      (rename-file f
                                                   (basename f)))
                                    el-files)))))))
-    (propagated-inputs (list emacs-request emacs-ts emacs-persist))
+    (propagated-inputs (list emacs-request emacs-tp emacs-ts emacs-persist))
     (home-page "https://codeberg.org/martianh/mastodon.el")
     (synopsis "Emacs client for Mastodon")
     (description "@code{mastodon.el} is an Emacs client for Mastodon, the
