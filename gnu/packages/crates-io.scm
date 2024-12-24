@@ -14075,32 +14075,6 @@ interoperation between crates in Rust.")
 command to Clap.")
     (license license:expat)))
 
-(define-public rust-clap-complete-fig-4
-  (package
-    (name "rust-clap-complete-fig")
-    (version "4.5.2")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "clap_complete_fig" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0sy88ybw33ba7qj02caxr9jv03wq1f8rdbrbqw81i5gkiwn1156l"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-clap" ,rust-clap-4)
-        ("rust-clap-complete" ,rust-clap-complete-4))
-       #:cargo-development-inputs
-       (("rust-clap" ,rust-clap-4)
-        ("rust-snapbox" ,rust-snapbox-0.6))))
-    (home-page "https://github.com/clap-rs/clap/tree/master/clap_complete_fig")
-    (synopsis "Generator library used with clap for Fig completion scripts")
-    (description
-     "This package provides a generator library used with clap for Fig
-completion scripts.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-clap-4
   (package
     (name "rust-clap")
@@ -14302,6 +14276,32 @@ Command Line Argument Parser.")
     (description
      "This package provides generation of shell completion scripts
 for programs written with Clap.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-clap-complete-fig-4
+  (package
+    (name "rust-clap-complete-fig")
+    (version "4.5.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "clap_complete_fig" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0sy88ybw33ba7qj02caxr9jv03wq1f8rdbrbqw81i5gkiwn1156l"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-clap" ,rust-clap-4)
+        ("rust-clap-complete" ,rust-clap-complete-4))
+       #:cargo-development-inputs
+       (("rust-clap" ,rust-clap-4)
+        ("rust-snapbox" ,rust-snapbox-0.6))))
+    (home-page "https://github.com/clap-rs/clap/tree/master/clap_complete_fig")
+    (synopsis "Generator library used with clap for Fig completion scripts")
+    (description
+     "This package provides a generator library used with clap for Fig
+completion scripts.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-clap-complete-fig-3
