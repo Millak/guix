@@ -45762,24 +45762,6 @@ whether an expression matches a pattern.")
      "This package provides a high performance, zero-copy URL router.")
     (license (list license:expat license:bsd-3))))
 
-(define-public rust-matrixcompare-core-0.1
-  (package
-    (name "rust-matrixcompare-core")
-    (version "0.1.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "matrixcompare-core" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0wqaj028ws2x2h16rf10arwvmpfbmk7afg8b57ahb25i1nrspgdh"))))
-    (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
-    (home-page "https://github.com/Andlon/matrixcompare")
-    (synopsis "Core traits for matrixcompare")
-    (description "This package provides core traits for matrixcompare.")
-    (license license:expat)))
-
 (define-public rust-matrixcompare-0.3
   (package
     (name "rust-matrixcompare")
@@ -45828,6 +45810,24 @@ matrices.")
     (synopsis "Tools for convenient comparison of matrices")
     (description "This package provides tools for convenient comparison of
 matrices.")
+    (license license:expat)))
+
+(define-public rust-matrixcompare-core-0.1
+  (package
+    (name "rust-matrixcompare-core")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "matrixcompare-core" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0wqaj028ws2x2h16rf10arwvmpfbmk7afg8b57ahb25i1nrspgdh"))))
+    (build-system cargo-build-system)
+    (arguments `(#:skip-build? #t))
+    (home-page "https://github.com/Andlon/matrixcompare")
+    (synopsis "Core traits for matrixcompare")
+    (description "This package provides core traits for matrixcompare.")
     (license license:expat)))
 
 (define-public rust-matrixcompare-mock-0.1
