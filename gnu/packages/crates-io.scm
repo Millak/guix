@@ -6207,6 +6207,22 @@ methods.")
     (description "Parse integers directly from `[u8]` slices in safe code.")
     (license license:expat)))
 
+(define-public rust-atoi-1
+  (package
+    (inherit rust-atoi-2)
+    (name "rust-atoi")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "atoi" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "13mycnr954w17lcvvbpzr4rmhl1h13cg8hq63j0rrx9g6497vifp"))))
+    (arguments
+     `(#:cargo-inputs (("rust-num-traits" ,rust-num-traits-0.2))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.3))))))
+
 (define-public rust-atoi-0.4
   (package
     (inherit rust-atoi-2)
