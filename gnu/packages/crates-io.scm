@@ -15773,22 +15773,6 @@ minutes, seconds.")
 literals.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-const-fn-assert-0.1
-  (package
-    (name "rust-const-fn-assert")
-    (version "0.1.2")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "const_fn_assert" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32 "1451yxndri5zj95lyjzckj7m3qlpyj8ibp3pb8bbbxrl7zr19mi7"))))
-    (build-system cargo-build-system)
-    (home-page "https://github.com/powlpy/const_fn_assert")
-    (synopsis "Assertions for const functions")
-    (description "Assertions for const functions.")
-    (license license:expat)))
-
 ;; This package requires features which are unavailable
 ;; on the stable releases of Rust.
 (define-public rust-compiler-builtins-0.1
@@ -16725,6 +16709,22 @@ the browser's console.")
     (description "This package provides an attribute for easy generation of
 const functions with conditional compilations.")
     (license (list license:asl2.0 license:expat))))
+
+(define-public rust-const-fn-assert-0.1
+  (package
+    (name "rust-const-fn-assert")
+    (version "0.1.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "const_fn_assert" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "1451yxndri5zj95lyjzckj7m3qlpyj8ibp3pb8bbbxrl7zr19mi7"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/powlpy/const_fn_assert")
+    (synopsis "Assertions for const functions")
+    (description "Assertions for const functions.")
+    (license license:expat)))
 
 (define-public rust-const-format-0.2
   (package
