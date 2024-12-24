@@ -46780,6 +46780,29 @@ file's MIME type by its extension.")
 library.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-minicov-0.3
+  (package
+    (name "rust-minicov")
+    (version "0.3.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "minicov" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0jsvi62lklfyvdmsiizipkqcfpsc7h4c4illgxlf28iwrkqyjzzj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cc" ,rust-cc-1)
+                       ("rust-walkdir" ,rust-walkdir-2))))
+    (inputs (list clang))
+    (home-page "https://github.com/Amanieu/minicov")
+    (synopsis "Code coverage and profile-guided optimization support")
+    (description
+     "This package provides Code coverage and profile-guided optimization
+support for no_std and embedded programs.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-miniflux-api-0.3
   (package
     (name "rust-miniflux-api")
