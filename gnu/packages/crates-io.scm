@@ -18450,6 +18450,18 @@ final xor value.  It has many built-in CRC functions.")
 http://reveng.sourceforge.net/crc-catalogue) expressed as simple Rust structs.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-crc-catalog-1
+  (package
+    (inherit rust-crc-catalog-2)
+    (name "rust-crc-catalog")
+    (version "1.1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "crc-catalog" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "00qlxgzg15fnyx6nwviibz94rjw803l2avi2k3shjfx0dnsyvbnc"))))))
+
 (define-public rust-crc32fast-1
   (package
     (name "rust-crc32fast")
@@ -18503,18 +18515,6 @@ http://reveng.sourceforge.net/crc-catalogue) expressed as simple Rust structs.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0469vp0q9431pqx1236g60if5q3xyxpv4h14smkd45dfzsa6aqjm"))))))
-
-(define-public rust-crc-catalog-1
-  (package
-    (inherit rust-crc-catalog-2)
-    (name "rust-crc-catalog")
-    (version "1.1.1")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "crc-catalog" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32 "00qlxgzg15fnyx6nwviibz94rjw803l2avi2k3shjfx0dnsyvbnc"))))))
 
 (define-public rust-criterion-0.5
   (package
