@@ -75471,35 +75471,6 @@ standard formatting APIs.")
     (description "Serializing indextree structure.")
     (license license:expat)))
 
-(define-public rust-serde-hjson-0.9
-  (package
-    (name "rust-serde-hjson")
-    (version "0.9.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "serde-hjson" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1y3lzs8556bxqa9jfdyg38pd5jjffblczikckwh571d8m074wfka"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-clippy" ,rust-clippy-0.0)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-linked-hash-map" ,rust-linked-hash-map-0.3)
-        ("rust-num-traits" ,rust-num-traits-0.1)
-        ("rust-regex" ,rust-regex-1)
-        ("rust-serde" ,rust-serde-0.8))))
-    (home-page "https://github.com/hjson/hjson-rust")
-    (synopsis "Human JSON (Hjson) serialization file format")
-    (description
-     "This crate is a Rust library for parsing and generating Human JSON
-Hjson.  It is built upon Serde, a high performance generic serialization
-framework.")
-    (license license:expat)))
-
 (define-public rust-serde-derive-1
   (package
     (name "rust-serde-derive")
@@ -75612,6 +75583,35 @@ derive macros.")
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))))))
+
+(define-public rust-serde-hjson-0.9
+  (package
+    (name "rust-serde-hjson")
+    (version "0.9.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "serde-hjson" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1y3lzs8556bxqa9jfdyg38pd5jjffblczikckwh571d8m074wfka"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-clippy" ,rust-clippy-0.0)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-linked-hash-map" ,rust-linked-hash-map-0.3)
+        ("rust-num-traits" ,rust-num-traits-0.1)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-serde" ,rust-serde-0.8))))
+    (home-page "https://github.com/hjson/hjson-rust")
+    (synopsis "Human JSON (Hjson) serialization file format")
+    (description
+     "This crate is a Rust library for parsing and generating Human JSON
+Hjson.  It is built upon Serde, a high performance generic serialization
+framework.")
+    (license license:expat)))
 
 (define-public rust-serde-ignored-0.1
   (package
