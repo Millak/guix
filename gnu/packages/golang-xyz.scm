@@ -9192,7 +9192,7 @@ is undetermined, a customizable spinner is shown.")
 (define-public go-github-com-sebdah-goldie-v2
   (package
     (name "go-github-com-sebdah-goldie-v2")
-    (version "2.5.3")
+    (version "2.5.5")
     (source
      (origin
        (method git-fetch)
@@ -9201,11 +9201,19 @@ is undetermined, a customizable spinner is shown.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "12gji9p6b6zlkisbd3ww103zwd5chlwkb6h5dppfrmgxim84n5n0"))))
+        (base32 "06hyzl7cl09dfsmd0lb88icklv5g59hgs5wqgngl39fbawkbc411"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (delete-file-recursively "vendor")
+                 (delete-file-recursively "v2/vendor")))))
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/sebdah/goldie/v2"))
+      #:import-path "github.com/sebdah/goldie/v2"
+      #:unpack-path "github.com/sebdah/goldie"
+      ;; Test requires to refresh test data: "The first time running go test,
+      ;; with -update, without -clean".
+      #:test-flags #~(list "-skip" "TestCleanFunction")))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
