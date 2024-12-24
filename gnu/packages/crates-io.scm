@@ -4353,25 +4353,6 @@ extracted from Askama.")
      "This package provide the procedural macro package for Askama.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-askama-derive-0.11
-  (package
-    (inherit rust-askama-derive-0.12)
-    (name "rust-askama-derive")
-    (version "0.11.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "askama_derive" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0wbb5l1x1bx8x8vvz4ayw196l9y64mi3vrmxm7pn8wmlx3k8ggw7"))))
-    (arguments
-     (list #:skip-build? #t
-           #:cargo-inputs
-           `(("rust-askama-shared" ,rust-askama-shared-0.12)
-             ("rust-proc-macro2" ,rust-proc-macro2-1)
-             ("rust-syn" ,rust-syn-1))))))
-
 (define-public rust-as-raw-xcb-connection-1
   (package
     (name "rust-as-raw-xcb-connection")
@@ -4563,6 +4544,25 @@ library for Rust.")
            `(("rust-askama-derive" ,rust-askama-derive-0.11)
              ("rust-askama-escape" ,rust-askama-escape-0.10)
              ("rust-askama-shared" ,rust-askama-shared-0.12))))))
+
+(define-public rust-askama-derive-0.11
+  (package
+    (inherit rust-askama-derive-0.12)
+    (name "rust-askama-derive")
+    (version "0.11.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "askama_derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0wbb5l1x1bx8x8vvz4ayw196l9y64mi3vrmxm7pn8wmlx3k8ggw7"))))
+    (arguments
+     (list #:skip-build? #t
+           #:cargo-inputs
+           `(("rust-askama-shared" ,rust-askama-shared-0.12)
+             ("rust-proc-macro2" ,rust-proc-macro2-1)
+             ("rust-syn" ,rust-syn-1))))))
 
 (define-public rust-askama-parser-0.2
   (package
