@@ -19849,27 +19849,6 @@ number ``crunching``.")
     (description "This package provides CSV parsing for async.")
     (license license:expat)))
 
-(define-public rust-csv-index-0.1
-  (package
-    (name "rust-csv-index")
-    (version "0.1.6")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "csv-index" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "01048y84y0bakqm0x4y1svjv6lzc753b9q598xp7xgcqrdgi6x7j"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-byteorder" ,rust-byteorder-1)
-        ("rust-csv" ,rust-csv-1))))
-    (home-page "https://github.com/BurntSushi/rust-csv")
-    (synopsis "On disk CSV indexing data structures")
-    (description "On disk CSV indexing data structures.")
-    (license (list license:unlicense license:expat))))
-
 (define-public rust-csv-1
   (package
     (name "rust-csv")
@@ -19933,6 +19912,27 @@ number ``crunching``.")
     (home-page "https://github.com/BurntSushi/rust-csv")
     (synopsis "Bare bones CSV parsing with no_std support")
     (description "Bare bones CSV parsing with no_std support.")
+    (license (list license:unlicense license:expat))))
+
+(define-public rust-csv-index-0.1
+  (package
+    (name "rust-csv-index")
+    (version "0.1.6")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "csv-index" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "01048y84y0bakqm0x4y1svjv6lzc753b9q598xp7xgcqrdgi6x7j"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-byteorder" ,rust-byteorder-1)
+        ("rust-csv" ,rust-csv-1))))
+    (home-page "https://github.com/BurntSushi/rust-csv")
+    (synopsis "On disk CSV indexing data structures")
+    (description "On disk CSV indexing data structures.")
     (license (list license:unlicense license:expat))))
 
 (define-public rust-cstr-0.2
