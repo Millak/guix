@@ -45657,26 +45657,6 @@ in html5ever/xml5ever")
 OAuth 2.0.")
     (license license:asl2.0)))
 
-(define-public rust-matchit-0.7
-  (package
-    (name "rust-matchit")
-    (version "0.7.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "matchit" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "156bgdmmlv4crib31qhgg49nsjk88dxkdqp80ha2pk2rk6n6ax0f"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t))   ; Cut the dependency tree.
-    (home-page "https://github.com/ibraheemdev/matchit")
-    (synopsis "High performance, zero-copy URL router")
-    (description
-     "This package provides a high performance, zero-copy URL router.")
-    (license (list license:expat license:bsd-3))))
-
 (define-public rust-match-cfg-0.1
   (package
     (name "rust-match-cfg")
@@ -45761,6 +45741,26 @@ matching, not parsing substrings.")
     (arguments
      `(#:cargo-inputs
        (("rust-regex-automata" ,rust-regex-automata-0.1))))))
+
+(define-public rust-matchit-0.7
+  (package
+    (name "rust-matchit")
+    (version "0.7.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "matchit" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "156bgdmmlv4crib31qhgg49nsjk88dxkdqp80ha2pk2rk6n6ax0f"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t))   ; Cut the dependency tree.
+    (home-page "https://github.com/ibraheemdev/matchit")
+    (synopsis "High performance, zero-copy URL router")
+    (description
+     "This package provides a high performance, zero-copy URL router.")
+    (license (list license:expat license:bsd-3))))
 
 (define-public rust-matrixcompare-core-0.1
   (package
