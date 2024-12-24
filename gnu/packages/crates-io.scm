@@ -45680,25 +45680,6 @@ depending on a large number of @code{#[cfg]} parameters.  Structured like match
 statement, the first matching branch is the item that gets emitted.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-matches-0.1
-  (package
-    (name "rust-matches")
-    (version "0.1.10")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "matches" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1994402fq4viys7pjhzisj4wcw894l53g798kkm2y74laxk0jci5"))))
-    (build-system cargo-build-system)
-    (home-page "https://github.com/SimonSapin/rust-std-candidates")
-    (synopsis "Macro to evaluate whether an expression matches a pattern")
-    (description "This package provides a macro to evaluate, as a boolean,
-whether an expression matches a pattern.")
-    (license license:expat)))
-
 (define-public rust-matchers-0.1
   (package
     (name "rust-matchers")
@@ -45741,6 +45722,25 @@ matching, not parsing substrings.")
     (arguments
      `(#:cargo-inputs
        (("rust-regex-automata" ,rust-regex-automata-0.1))))))
+
+(define-public rust-matches-0.1
+  (package
+    (name "rust-matches")
+    (version "0.1.10")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "matches" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32
+          "1994402fq4viys7pjhzisj4wcw894l53g798kkm2y74laxk0jci5"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/SimonSapin/rust-std-candidates")
+    (synopsis "Macro to evaluate whether an expression matches a pattern")
+    (description "This package provides a macro to evaluate, as a boolean,
+whether an expression matches a pattern.")
+    (license license:expat)))
 
 (define-public rust-matchit-0.7
   (package
