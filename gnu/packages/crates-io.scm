@@ -68998,6 +68998,25 @@ First In First Out} ring buffer with direct access to inner data.")
 deserialization framework.")
     (license license:expat)))
 
+(define-public rust-rkyv-derive-0.6
+  (package
+    (inherit rust-rkyv-derive-0.7)
+    (name "rust-rkyv-derive")
+    (version "0.6.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rkyv_derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1mc7rnps41gdywahsffqlypsp9jqmp0r6hlh2nxm31bddfgli3xs"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))))))
+
 (define-public rust-rle-decode-fast-1
   (package
     (name "rust-rle-decode-fast")
@@ -73094,25 +73113,6 @@ sub-processes using a fork-like interface.")
                        ("rust-twox-hash" ,rust-twox-hash-1))
        #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.3)
                                    ("rust-rand" ,rust-rand-0.8))))))
-
-(define-public rust-rkyv-derive-0.6
-  (package
-    (inherit rust-rkyv-derive-0.7)
-    (name "rust-rkyv-derive")
-    (version "0.6.7")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "rkyv_derive" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1mc7rnps41gdywahsffqlypsp9jqmp0r6hlh2nxm31bddfgli3xs"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))))
 
 (define-public rust-ryu-1
   (package
