@@ -31295,7 +31295,7 @@ futures-rs library.")
 (define-public rust-futures-test-0.3
   (package
     (name "rust-futures-test")
-    (version "0.3.30")
+    (version "0.3.31")
     (source
      (origin
        (method url-fetch)
@@ -31303,7 +31303,7 @@ futures-rs library.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1jcaj9ibj2mjq3dvbm6p0pqfm95x7gnmbfpi1p52xi1ancvq4f6f"))))
+         "04vi8sr3xbki38cfrshm4gbkyx76za5lm5n2rpi4cpv425iznqar"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; use of undeclared crate or module `futures`
@@ -31315,8 +31315,7 @@ futures-rs library.")
         ("rust-futures-sink" ,rust-futures-sink-0.3)
         ("rust-futures-task" ,rust-futures-task-0.3)
         ("rust-futures-util" ,rust-futures-util-0.3)
-        ("rust-pin-project" ,rust-pin-project-1)
-        ("rust-pin-utils" ,rust-pin-utils-0.1))))
+        ("rust-pin-project" ,rust-pin-project-1))))
     (home-page "https://rust-lang.github.io/futures-rs")
     (synopsis "Test components built off futures-rs")
     (description "This package provides common utilities for testing
