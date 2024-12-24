@@ -3160,34 +3160,6 @@ which satisfies the cron expression.")
       (license (list license:gpl3+
                      license:asl2.0)))))
 
-(define-public go-gopkg-in-yaml-v3
-  (package
-    (name "go-gopkg-in-yaml-v3")
-    (version "3.0.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://gopkg.in/yaml.v3")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "01b0wjb7yzv8wzzz2iim8mjpkwjnykcanrwiq06pkl89lr6gv8hn"))
-       (patches (search-patches "go-gopkg-in-yaml-v3-32bit.patch"))))
-    (build-system go-build-system)
-    (arguments
-     `(#:tests? ,(not (target-ppc32?))  ; Test killed with quit: ran too long (11m0s).
-       #:import-path "gopkg.in/yaml.v3"))
-    (native-inputs
-     (list go-gopkg-in-check-v1))
-    (home-page "https://gopkg.in/yaml.v3")
-    (synopsis "YAML reader and writer for the Go language")
-    (description
-     "This package provides a Go library for encode and decode YAML values.
-The yaml package supports most of YAML 1.2, but preserves some behavior from
-1.1 for backwards compatibility.")
-    (license license:asl2.0)))
-
 (define-public go-github-com-matrix-org-gomatrix
   (package
     (name "go-github-com-matrix-org-gomatrix")
