@@ -2324,14 +2324,14 @@ to interact with Git credentials helpers.")
 (define-public rust-gix-date-0.9
   (package
     (name "rust-gix-date")
-    (version "0.9.1")
+    (version "0.9.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gix-date" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1841zsw0899njpnkfx3p77vzl1nhkj4bgs782lm2k5rwq4x583fi"))))
+        (base32 "0gqij6pgbajq3a07a0y528pqfa6m5nspc4dvffqliqjycixlfz65"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
@@ -2339,8 +2339,10 @@ to interact with Git credentials helpers.")
                         ("rust-itoa" ,rust-itoa-1)
                         ("rust-jiff" ,rust-jiff-0.1)
                         ("rust-serde" ,rust-serde-1)
-                        ("rust-thiserror" ,rust-thiserror-1))
-       #:cargo-development-inputs (("rust-once-cell" ,rust-once-cell-1))))
+                        ("rust-thiserror" ,rust-thiserror-2))
+       #:cargo-development-inputs
+       (("rust-once-cell" ,rust-once-cell-1)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1))))
     (home-page "https://github.com/Byron/gitoxide")
     (synopsis "Part of Gitoxide, this crate parses dates the way Git does")
     (description
