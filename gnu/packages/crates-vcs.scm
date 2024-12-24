@@ -5540,20 +5540,20 @@ Rust implementation of Git.")
 (define-public rust-gix-quote-0.4
   (package
     (name "rust-gix-quote")
-    (version "0.4.13")
+    (version "0.4.14")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gix-quote" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0jcf59cbkw84c7yc341bry9rvl5hbagr7sl2w8wrdzfw4larm7zq"))))
+        (base32 "0qws02kwhnn0hcl5cizc99irw07qi3nycmyd2qlaphkf461f58b4"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bstr" ,rust-bstr-1)
         ("rust-gix-utils" ,rust-gix-utils-0.1)
-        ("rust-thiserror" ,rust-thiserror-1))))
+        ("rust-thiserror" ,rust-thiserror-2))))
     (home-page "https://github.com/Byron/gitoxide")
     (synopsis "Various quotations used by git")
     (description
