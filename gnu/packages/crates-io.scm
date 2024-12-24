@@ -88135,6 +88135,39 @@ system.")
         ("rust-ordered-float" ,rust-ordered-float-1)
         ("rust-threadpool" ,rust-threadpool-1))))))
 
+(define-public rust-tikv-jemalloc-ctl-0.4
+  (package
+    (name "rust-tikv-jemalloc-ctl")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tikv-jemalloc-ctl" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1pqs08dgnnrgbib8syldxmm8cjgyz80scs9i8jgn6mw86gj8137j"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-paste" ,rust-paste-0.1)
+        ("rust-tikv-jemalloc-sys"
+         ,rust-tikv-jemalloc-sys-0.4))
+       #:cargo-development-inputs
+       (("rust-tikv-jemallocator"
+         ,rust-tikv-jemallocator-0.4))))
+    (home-page
+     "https://github.com/tikv/jemallocator")
+    (synopsis
+     "Safe wrapper over jemalloc's control and introspection APIs")
+    (description
+     "This package provides a safe wrapper over jemalloc's control and
+introspection APIs.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-tikv-jemalloc-sys-0.6
   (package
     (name "rust-tikv-jemalloc-sys")
@@ -88243,39 +88276,6 @@ system.")
        #:cargo-inputs
        (("rust-libc" ,rust-libc-0.2)
         ("rust-tikv-jemalloc-sys" ,rust-tikv-jemalloc-sys-0.4))))))
-
-(define-public rust-tikv-jemalloc-ctl-0.4
-  (package
-    (name "rust-tikv-jemalloc-ctl")
-    (version "0.4.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "tikv-jemalloc-ctl" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1pqs08dgnnrgbib8syldxmm8cjgyz80scs9i8jgn6mw86gj8137j"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-libc" ,rust-libc-0.2)
-        ("rust-paste" ,rust-paste-0.1)
-        ("rust-tikv-jemalloc-sys"
-         ,rust-tikv-jemalloc-sys-0.4))
-       #:cargo-development-inputs
-       (("rust-tikv-jemallocator"
-         ,rust-tikv-jemallocator-0.4))))
-    (home-page
-     "https://github.com/tikv/jemallocator")
-    (synopsis
-     "Safe wrapper over jemalloc's control and introspection APIs")
-    (description
-     "This package provides a safe wrapper over jemalloc's control and
-introspection APIs.")
-    (license (list license:expat license:asl2.0))))
 
 (define-public rust-time-0.3
   (package
