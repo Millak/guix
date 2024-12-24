@@ -35785,6 +35785,35 @@ Normalization Forms.")
     (description "This package provides data for the icu_normalizer crate.")
     (license license:unicode)))
 
+(define-public rust-icu-properties-1
+  (package
+    (name "rust-icu-properties")
+    (version "1.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "icu_properties" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1xgf584rx10xc1p7zjr78k0n4zn3g23rrg6v2ln31ingcq3h5mlk"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; use of undeclared crate or module `icu`
+       #:cargo-inputs (("rust-databake" ,rust-databake-0.1)
+                       ("rust-displaydoc" ,rust-displaydoc-0.2)
+                       ("rust-icu-collections" ,rust-icu-collections-1)
+                       ("rust-icu-locid-transform" ,rust-icu-locid-transform-1)
+                       ("rust-icu-properties-data" ,rust-icu-properties-data-1)
+                       ("rust-icu-provider" ,rust-icu-provider-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-tinystr" ,rust-tinystr-0.7)
+                       ("rust-unicode-bidi" ,rust-unicode-bidi-0.3)
+                       ("rust-zerovec" ,rust-zerovec-0.10))))
+    (home-page "https://icu4x.unicode.org")
+    (synopsis "Definitions for Unicode properties")
+    (description "This package provides Definitions for Unicode properties.")
+    (license license:unicode)))
+
 (define-public rust-icu-provider-macros-1
   (package
     (name "rust-icu-provider-macros")
