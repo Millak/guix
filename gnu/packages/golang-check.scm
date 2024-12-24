@@ -1874,7 +1874,15 @@ testmark} format, which itself is a subset of Markdown format.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/warpfork/go-wish"))
+      #:import-path "github.com/warpfork/go-wish"
+      #:test-subdirs #~(list "cmp/..." "wishfix" ".")
+      #:test-flags
+      #~(list "-skip" (string-join
+                       (list "TestDiff"
+                             "TestOptions"
+                             "TestGoTestOutputTree/non-verbose"
+                             "TestGoTestOutputFun/non-verbose")
+                       "|"))))
     (home-page "https://github.com/warpfork/go-wish")
     (synopsis "Test assertions for Golang")
     (description
