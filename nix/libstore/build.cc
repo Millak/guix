@@ -1200,6 +1200,7 @@ void DerivationGoal::tryToBuild()
     if (buildMode != bmCheck && validPaths.size() == drv.outputs.size()) {
         debug(format("skipping build of derivation `%1%', someone beat us to it") % drvPath);
         outputLocks.setDeletion(true);
+        outputLocks.unlock();
         done(BuildResult::AlreadyValid);
         return;
     }
@@ -3070,6 +3071,7 @@ void SubstitutionGoal::tryToRun()
     if (!repair && worker.store.isValidPath(storePath)) {
         debug(format("store path `%1%' has become valid") % storePath);
         outputLock->setDeletion(true);
+        outputLock.reset();
         amDone(ecSuccess);
         return;
     }

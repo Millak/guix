@@ -597,6 +597,7 @@ SCM_TESTS =					\
   tests/size.scm				\
   tests/status.scm				\
   tests/store-database.scm			\
+  tests/store-deadlock.scm			\
   tests/store-deduplication.scm		\
   tests/store-roots.scm			\
   tests/store.scm				\
