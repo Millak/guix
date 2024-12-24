@@ -22140,28 +22140,24 @@ characters from end of lines.")
     (license license:gpl3+)))
 
 (define-public emacs-opencl-mode
-  ;; Upstream never makes any formal releases, there is only v1.0.
-  ;; Use the latest commit instead.
-  (let ((commit "204d5d9e0f5cb2cbe810f2933230eb08fe2c7695")
-        (revision "2"))
-    (package
-      (name "emacs-opencl-mode")
-      (version (git-version "1.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/salmanebah/opencl-mode")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32 "1x3h187r7waibrx5llsk6irb5afhqsrddb1f9hm3f9saks6n1ldv"))))
-      (build-system emacs-build-system)
-      (synopsis "Emacs major mode for editing OpenCL kernels")
-      (description "This Emacs package provides the @code{opencl-mode} major
+  (package
+    (name "emacs-opencl-mode")
+    (version "2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/salmanebah/opencl-mode")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "1x3h187r7waibrx5llsk6irb5afhqsrddb1f9hm3f9saks6n1ldv"))))
+    (build-system emacs-build-system)
+    (synopsis "Emacs major mode for editing OpenCL kernels")
+    (description "This Emacs package provides the @code{opencl-mode} major
 mode for editing OpenCL kernels.  It supports syntax highlighting and online
 access to the OpenCL documentation through the @code{opencl-lookup} function.")
-      (home-page "https://github.com/salmanebah/opencl-mode")
-      (license license:gpl3+))))
+    (home-page "https://github.com/salmanebah/opencl-mode")
+    (license license:gpl3+)))
 
 (define-public emacs-openwith
   ;; There is no release tag. Version is extracted from main file.
