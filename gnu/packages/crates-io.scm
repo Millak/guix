@@ -26147,6 +26147,27 @@ compact sets of enums.")
 It is not a public API.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-env-filter-0.1
+  (package
+    (name "rust-env-filter")
+    (version "0.1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "env_filter" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1l4p6f845cylripc3zkxa0lklk8rn2q86fqm522p6l2cknjhavhq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-log" ,rust-log-0.4)
+                       ("rust-regex" ,rust-regex-1))
+       #:cargo-development-inputs (("rust-snapbox" ,rust-snapbox-0.6))))
+    (home-page "https://github.com/rust-cli/env_logger")
+    (synopsis "Filter log events using environment variables")
+    (description "Filter log events using environment variables.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-env-logger-0.11
   (package
     (name "rust-env-logger")
@@ -26362,27 +26383,6 @@ is configured via an environment variable.")
        #:cargo-inputs
        (("rust-regex" ,rust-regex-0.1)
         ("rust-log" ,rust-log-0.3))))))
-
-(define-public rust-env-filter-0.1
-  (package
-    (name "rust-env-filter")
-    (version "0.1.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "env_filter" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1l4p6f845cylripc3zkxa0lklk8rn2q86fqm522p6l2cknjhavhq"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-log" ,rust-log-0.4)
-                       ("rust-regex" ,rust-regex-1))
-       #:cargo-development-inputs (("rust-snapbox" ,rust-snapbox-0.6))))
-    (home-page "https://github.com/rust-cli/env_logger")
-    (synopsis "Filter log events using environment variables")
-    (description "Filter log events using environment variables.")
-    (license (list license:expat license:asl2.0))))
 
 (define-public rust-env-proxy-0.4
   (package
