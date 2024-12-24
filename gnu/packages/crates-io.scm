@@ -64431,6 +64431,30 @@ ecosystem.")
 extension to python.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-pyo3-macros-0.23
+  (package
+    (name "rust-pyo3-macros")
+    (version "0.23.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pyo3-macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0mrjqfvrdw6dp0g4d1ja884vpp4vfk46z23ccb8ysp7sqs7dmdpx"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-pyo3-macros-backend" ,rust-pyo3-macros-backend-0.23)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))
+    (native-inputs (list python-minimal))
+    (home-page "https://github.com/pyo3/pyo3")
+    (synopsis "Proc macros for PyO3")
+    (description
+     "This package provides compiler macros for use with PyO3.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-pyo3-macros-backend-0.23
   (package
     (name "rust-pyo3-macros-backend")
@@ -64587,30 +64611,6 @@ extension to python.")
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))))
     (native-inputs (list python))))
-
-(define-public rust-pyo3-macros-0.23
-  (package
-    (name "rust-pyo3-macros")
-    (version "0.23.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "pyo3-macros" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0mrjqfvrdw6dp0g4d1ja884vpp4vfk46z23ccb8ysp7sqs7dmdpx"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
-                       ("rust-pyo3-macros-backend" ,rust-pyo3-macros-backend-0.23)
-                       ("rust-quote" ,rust-quote-1)
-                       ("rust-syn" ,rust-syn-2))))
-    (native-inputs (list python-minimal))
-    (home-page "https://github.com/pyo3/pyo3")
-    (synopsis "Proc macros for PyO3")
-    (description
-     "This package provides compiler macros for use with PyO3.")
-    (license (list license:expat license:asl2.0))))
 
 (define-public rust-pyo3-macros-0.22
   (package
