@@ -17648,6 +17648,25 @@ numbers using the CORDIC method.")
     (description "This package manages CPU affinities.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-core-affinity-0.5
+  (package
+    (inherit rust-core-affinity-0.8)
+    (name "rust-core-affinity")
+    (version "0.5.10")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "core_affinity" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "07qpwyxps4gp3gci2p6c5h4cmcql7551bp91qgbv0ky3bh8h72kz"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-kernel32-sys" ,rust-kernel32-sys-0.2)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-num-cpus" ,rust-num-cpus-1)
+        ("rust-winapi" ,rust-winapi-0.2))))))
+
 (define-public rust-core-error-0.0.0
   (package
     (name "rust-core-error")
@@ -17794,25 +17813,6 @@ in @code{no_std}.  Alloc support is optional.")
         (sha256
          (base32 "1wzzy5iazdk5caadxvjfwrd312rbg7a55a1zpmsdrhk3kfpa77r3"))))
     (arguments `(#:cargo-inputs (("rust-memchr" ,rust-memchr-2))))))
-
-(define-public rust-core-affinity-0.5
-  (package
-    (inherit rust-core-affinity-0.8)
-    (name "rust-core-affinity")
-    (version "0.5.10")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "core_affinity" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "07qpwyxps4gp3gci2p6c5h4cmcql7551bp91qgbv0ky3bh8h72kz"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-kernel32-sys" ,rust-kernel32-sys-0.2)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-num-cpus" ,rust-num-cpus-1)
-        ("rust-winapi" ,rust-winapi-0.2))))))
 
 (define-public rust-core-arch-0.1
   (package
