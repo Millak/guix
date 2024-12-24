@@ -1760,9 +1760,9 @@ accurate testing of your code.")
                 (with-directory-excursion (string-append "src/" import-path)
                   (invoke "go" "test" "-v" "./..."))))))))))
 
-(define-public go-gopkg-in-errgo-fmt-errors
+(define-public go-gopkg-in-errgo-v2
   (package
-    (name "go-gopkg-in-errgo-fmt-errors")
+    (name "go-gopkg-in-errgo-v2")
     (version "2.1.0")
     (source
      (origin

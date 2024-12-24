@@ -5378,7 +5378,7 @@ Gemini clients and servers.")
     (build-system go-build-system)
     (arguments
      `(#:import-path "mvdan.cc/gofumpt"))
-    (native-inputs (list go-gopkg-in-errgo-fmt-errors))
+    (native-inputs (list go-gopkg-in-errgo-v2))
     (propagated-inputs (list go-github-com-pkg-diff
                              go-github-com-kr-text
                              go-github-com-kr-pretty
