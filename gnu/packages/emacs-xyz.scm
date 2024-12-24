@@ -32974,7 +32974,7 @@ workspaces with a LSP-compliant server running.")
 (define-public emacs-helm-lsp
   (package
     (name "emacs-helm-lsp")
-    (version "0.2")
+    (version "0.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -32983,7 +32983,7 @@ workspaces with a LSP-compliant server running.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1vq3qpqm3ndqyvf5bk8qhqcr60x9ykc0ipk2a43rr3yjm4z1b6s9"))))
+                "0cmxdd3fgyiixg81zmxa0j68slhkq8rg5z840cx4dbb3j9w06yd1"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-helm emacs-lsp-mode emacs-dash))
