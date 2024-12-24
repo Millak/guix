@@ -35814,6 +35814,23 @@ Normalization Forms.")
     (description "This package provides Definitions for Unicode properties.")
     (license license:unicode)))
 
+(define-public rust-icu-properties-data-1
+  (package
+    (name "rust-icu-properties-data")
+    (version "1.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "icu_properties_data" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0scms7pd5a7yxx9hfl167f5qdf44as6r3bd8myhlngnxqgxyza37"))))
+    (build-system cargo-build-system)
+    (home-page "https://icu4x.unicode.org")
+    (synopsis "Data for the icu_properties crate")
+    (description "This package provides data for the icu_properties crate.")
+    (license license:unicode)))
+
 (define-public rust-icu-provider-macros-1
   (package
     (name "rust-icu-provider-macros")
