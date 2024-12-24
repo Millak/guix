@@ -44728,6 +44728,26 @@ to create LV2 plugins in Rust.")
     (description "This package provides a Rust LV2 wrapper for LV2 time types.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-lv2-units-0.1
+  (package
+    (name "rust-lv2-units")
+    (version "0.1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "lv2-units" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0fdamp3hxdr36hqi1j6y01rz1x17if1ibzr7rr4nrabidw74gf82"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-lv2-sys" ,rust-lv2-sys-2)
+                       ("rust-urid" ,rust-urid-0.1))))
+    (home-page "https://github.com/RustAudio/rust-lv2")
+    (synopsis "Rust LV2 wrapper of LV2 unit types")
+    (description "This package provides a Rust LV2 wrapper of LV2 unit types.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-lv2-urid-2
   (package
     (name "rust-lv2-urid")
@@ -44747,26 +44767,6 @@ to create LV2 plugins in Rust.")
     (home-page "https://github.com/RustAudio/rust-lv2")
     (synopsis "Rust LV2 URID handling library")
     (description "This package provides a LV2 URID handling library.")
-    (license (list license:expat license:asl2.0))))
-
-(define-public rust-lv2-units-0.1
-  (package
-    (name "rust-lv2-units")
-    (version "0.1.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "lv2-units" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0fdamp3hxdr36hqi1j6y01rz1x17if1ibzr7rr4nrabidw74gf82"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-lv2-sys" ,rust-lv2-sys-2)
-                       ("rust-urid" ,rust-urid-0.1))))
-    (home-page "https://github.com/RustAudio/rust-lv2")
-    (synopsis "Rust LV2 wrapper of LV2 unit types")
-    (description "This package provides a Rust LV2 wrapper of LV2 unit types.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-lv2-worker-0.1
