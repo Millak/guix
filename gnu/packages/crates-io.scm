@@ -76155,6 +76155,35 @@ the application/x-www-form-urlencoded format.")
 for later processing.")
     (license license:expat)))
 
+(define-public rust-serde-wasm-bindgen-0.3
+  (package
+    (name "rust-serde-wasm-bindgen")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "serde-wasm-bindgen" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1xzh1a3rhapirlca4rbvh6bycphxg5yjmdwjsqij3hl6wpl6b0v1"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-fnv" ,rust-fnv-1)
+        ("rust-js-sys" ,rust-js-sys-0.3)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2))
+       #:cargo-development-inputs
+       (("rust-maplit" ,rust-maplit-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-bytes" ,rust-serde-bytes-0.11)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))
+    (home-page "https://github.com/cloudflare/serde-wasm-bindgen")
+    (synopsis "Native Serde adapter for wasm-bindgen")
+    (description "Native Serde adapter for wasm-bindgen.")
+    (license license:expat)))
+
 (define-public rust-serde-with-3
   (package
     (name "rust-serde-with")
@@ -76542,35 +76571,6 @@ Rust's serde.")
     (synopsis "Serde backed Bencode encoding/decoding library for Rust.")
     (description
      "This package provides a Serde backed Bencode encoding/decoding library for Rust.")
-    (license license:expat)))
-
-(define-public rust-serde-wasm-bindgen-0.3
-  (package
-    (name "rust-serde-wasm-bindgen")
-    (version "0.3.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "serde-wasm-bindgen" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1xzh1a3rhapirlca4rbvh6bycphxg5yjmdwjsqij3hl6wpl6b0v1"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-fnv" ,rust-fnv-1)
-        ("rust-js-sys" ,rust-js-sys-0.3)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2))
-       #:cargo-development-inputs
-       (("rust-maplit" ,rust-maplit-1)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-bytes" ,rust-serde-bytes-0.11)
-        ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))
-    (home-page "https://github.com/cloudflare/serde-wasm-bindgen")
-    (synopsis "Native Serde adapter for wasm-bindgen")
-    (description "Native Serde adapter for wasm-bindgen.")
     (license license:expat)))
 
 (define-public rust-serdeconv-0.4
