@@ -14031,23 +14031,6 @@ interoperation between crates in Rust.")
     (description "This package provides re-usable CLI flags for `cargo` plugins.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-clap-cargo-0.12
-  (package
-    (inherit rust-clap-cargo-0.14)
-    (name "rust-clap-cargo")
-    (version "0.12.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "clap-cargo" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1r2f4ad1vpaljrfbyfsv986qiwmll0iask4sdvwllka658s22grq"))))
-    (arguments
-     `(#:cargo-inputs (("rust-anstyle" ,rust-anstyle-1)
-                       ("rust-cargo-metadata" ,rust-cargo-metadata-0.17)
-                       ("rust-clap" ,rust-clap-4))))))
-
 (define-public rust-clap-4
   (package
     (name "rust-clap")
@@ -14188,6 +14171,23 @@ Argument Parser.")
      "This package provides a simple to use, efficient, and full-featured
 Command Line Argument Parser.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-clap-cargo-0.12
+  (package
+    (inherit rust-clap-cargo-0.14)
+    (name "rust-clap-cargo")
+    (version "0.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "clap-cargo" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1r2f4ad1vpaljrfbyfsv986qiwmll0iask4sdvwllka658s22grq"))))
+    (arguments
+     `(#:cargo-inputs (("rust-anstyle" ,rust-anstyle-1)
+                       ("rust-cargo-metadata" ,rust-cargo-metadata-0.17)
+                       ("rust-clap" ,rust-clap-4))))))
 
 (define-public rust-clap-complete-4
   (package
