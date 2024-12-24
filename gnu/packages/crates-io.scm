@@ -33831,27 +33831,6 @@ higher performance on different key space sizes.")
 scientific applications with leap second support.")
     (license license:asl2.0)))
 
-(define-public rust-home-0.5
-  (package
-    (name "rust-home")
-    (version "0.5.11")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "home" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1kxb4k87a9sayr8jipr7nq9wpgmjk4hk4047hmf9kc24692k75aq"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-windows-sys" ,rust-windows-sys-0.59))))
-    (home-page "https://github.com/rust-lang/cargo")
-    (synopsis "Shared definitions of home directories")
-    (description "This package provides the definition of @code{home_dir}
-used by @command{cargo} and @command{rustup}, as well as functions to find the
-correct value of @samp{CARGO_HOME} and @samp{RUSTUP_HOME}.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-hamcrest2-0.3
   (package
     (name "rust-hamcrest2")
@@ -34910,6 +34889,27 @@ the C library @code{hidapi}.  Based off of @code{hidapi-rs} by Osspial.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1b2h0lvksn8748764x46729ygpz8grack24spin0k29ssmr6yabr"))))))
+
+(define-public rust-home-0.5
+  (package
+    (name "rust-home")
+    (version "0.5.11")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "home" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1kxb4k87a9sayr8jipr7nq9wpgmjk4hk4047hmf9kc24692k75aq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-windows-sys" ,rust-windows-sys-0.59))))
+    (home-page "https://github.com/rust-lang/cargo")
+    (synopsis "Shared definitions of home directories")
+    (description "This package provides the definition of @code{home_dir}
+used by @command{cargo} and @command{rustup}, as well as functions to find the
+correct value of @samp{CARGO_HOME} and @samp{RUSTUP_HOME}.")
+    (license (list license:expat license:asl2.0))))
 
 (define-public rust-hostname-0.4
   (package
