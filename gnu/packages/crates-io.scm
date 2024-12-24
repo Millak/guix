@@ -54996,6 +54996,24 @@ platform-native strings.")
        (("rust-aliasable" ,rust-aliasable-0.1)
         ("rust-ouroboros-macro" ,rust-ouroboros-macro-0.15))))))
 
+(define-public rust-ouroboros-0.14
+  (package
+    (inherit rust-ouroboros-0.15)
+    (name "rust-ouroboros")
+    (version "0.14.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ouroboros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ih1lna1d2is3a6aicmc7lpfhqmg046kssxpryk24kwg8j42ymh6"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-aliasable" ,rust-aliasable-0.1)
+        ("rust-ouroboros-macro" ,rust-ouroboros-macro-0.14)
+        ("rust-stable-deref-trait" ,rust-stable-deref-trait-1))))))
+
 (define-public rust-ouroboros-macro-0.17
   (package
     (name "rust-ouroboros-macro")
@@ -55052,24 +55070,6 @@ platform-native strings.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "11cav04x82liknlrv50lpl1i1ln2jw4isdqzdjnjsg0pcpvwik9r"))))))
-
-(define-public rust-ouroboros-0.14
-  (package
-    (inherit rust-ouroboros-0.15)
-    (name "rust-ouroboros")
-    (version "0.14.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "ouroboros" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1ih1lna1d2is3a6aicmc7lpfhqmg046kssxpryk24kwg8j42ymh6"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-aliasable" ,rust-aliasable-0.1)
-        ("rust-ouroboros-macro" ,rust-ouroboros-macro-0.14)
-        ("rust-stable-deref-trait" ,rust-stable-deref-trait-1))))))
 
 (define-public rust-overload-0.1
   (package
