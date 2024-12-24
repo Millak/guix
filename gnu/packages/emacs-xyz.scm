@@ -22065,16 +22065,16 @@ of commands is displayed in a handy popup.")
 (define-public emacs-ws-butler
   (package
     (name "emacs-ws-butler")
-    (version "0.6")
+    (version "0.7")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/lewang/ws-butler")
-             (commit "323b651dd70ee40a25accc940b8f80c3a3185205")))
+             (commit "v0.7")))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1a4b0lsmwq84qfx51c5xy4fryhb1ysld4fhgw2vr37izf53379sb"))))
+        (base32 "17f73isx2wdwzjcxparyy7ngl4cha0g69da1d72b3yidzim1kh6h"))))
     (build-system emacs-build-system)
     (arguments
      `(#:tests? #t
