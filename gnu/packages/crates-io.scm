@@ -57622,33 +57622,6 @@ known as PEP 508.")
      "This package provides a simple and simplistic string parsing library.")
     (license license:expat)))
 
-(define-public rust-perf-event-open-sys-1
-  (package
-    (name "rust-perf-event-open-sys")
-    (version "1.0.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "perf-event-open-sys" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "06jnb2jkwjinpj4hc41kbwsqbxdb1ywy5vci4ggly8rcvbsyv6yf"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-libc" ,rust-libc-0.2))))
-    (home-page
-     "https://github.com/jimblandy/perf-event-open-sys.git")
-    (synopsis
-     "Unsafe, direct bindings for Linux's perf_event_open system call")
-    (description
-     "This package provides a unsafe, direct bindings for Linux's
-perf_event_open system call, with associated types and constants.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-perf-event-0.4
   (package
     (name "rust-perf-event")
@@ -57674,6 +57647,33 @@ perf_event_open system call, with associated types and constants.")
      "Rust interface to Linux performance monitoring")
     (description
      "This package provides a Rust interface to Linux performance monitoring.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-perf-event-open-sys-1
+  (package
+    (name "rust-perf-event-open-sys")
+    (version "1.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "perf-event-open-sys" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "06jnb2jkwjinpj4hc41kbwsqbxdb1ywy5vci4ggly8rcvbsyv6yf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2))))
+    (home-page
+     "https://github.com/jimblandy/perf-event-open-sys.git")
+    (synopsis
+     "Unsafe, direct bindings for Linux's perf_event_open system call")
+    (description
+     "This package provides a unsafe, direct bindings for Linux's
+perf_event_open system call, with associated types and constants.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-permutohedron-0.2
