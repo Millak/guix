@@ -30696,7 +30696,7 @@ references by lifting access permissions into the trait system.")
 (define-public rust-futures-0.3
   (package
     (name "rust-futures")
-    (version "0.3.30")
+    (version "0.3.31")
     (source
      (origin
        (method url-fetch)
@@ -30704,7 +30704,7 @@ references by lifting access permissions into the trait system.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1c04g14bccmprwsvx2j9m2blhwrynq7vhl151lsvcv4gi0b6jp34"))))
+         "0xh8ddbkm9jy8kc5gbvjp9a4b6rqqxvc8471yb2qaz5wm2qhgg35"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; use of undeclared crate or module `futures_test`
@@ -30719,7 +30719,6 @@ references by lifting access permissions into the trait system.")
        #:cargo-development-inputs
        (("rust-assert-matches" ,rust-assert-matches-1)
         ("rust-pin-project" ,rust-pin-project-1)
-        ("rust-pin-utils" ,rust-pin-utils-0.1)
         ("rust-static-assertions" ,rust-static-assertions-1)
         ("rust-tokio" ,rust-tokio-0.1))))
     (home-page "https://rust-lang.github.io/futures-rs")
