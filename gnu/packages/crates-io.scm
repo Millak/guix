@@ -40920,6 +40920,29 @@ and authentication, easy email builders, and async support.")
 source audio format.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-lexical-6
+  (package
+    (name "rust-lexical")
+    (version "6.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "lexical" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1xk8g6k17ml0sjyx388qck9zqhxjfyzjqx1l6c0ggzj3zlvgpbn7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-lexical-core" ,rust-lexical-core-0.8))))
+    (home-page "https://github.com/Alexhuszagh/rust-lexical")
+    (synopsis "Lexical, to- and from-string conversion routines")
+    (description
+     "Lexical is high-performance numeric conversion routines for use in
+a no_std environment.  This does not depend on any standard library features,
+nor a system allocator.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-lexical-core-0.8
   (package
     (name "rust-lexical-core")
@@ -41090,29 +41113,6 @@ source audio format.")
     (synopsis "Efficient formatting of integers to strings")
     (description
      "This crate provides efficient formatting of integers to strings.")
-    (license (list license:expat license:asl2.0))))
-
-(define-public rust-lexical-6
-  (package
-    (name "rust-lexical")
-    (version "6.1.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "lexical" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1xk8g6k17ml0sjyx388qck9zqhxjfyzjqx1l6c0ggzj3zlvgpbn7"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-lexical-core" ,rust-lexical-core-0.8))))
-    (home-page "https://github.com/Alexhuszagh/rust-lexical")
-    (synopsis "Lexical, to- and from-string conversion routines")
-    (description
-     "Lexical is high-performance numeric conversion routines for use in
-a no_std environment.  This does not depend on any standard library features,
-nor a system allocator.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-lexical-5
