@@ -5558,7 +5558,7 @@ parser.")
 (define-public go-github-com-charmbracelet-bubbletea
   (package
     (name "go-github-com-charmbracelet-bubbletea")
-    (version "1.2.3")
+    (version "1.2.4")
     (source
      (origin
        (method git-fetch)
@@ -5568,7 +5568,7 @@ parser.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0ggkl29qixgin5av1mbnwfbb31kmwpczh8pgpjsx9z277fs55mph"))))
+         "0g5pj40lsdkh2gwixlpg53ji7fajncj512xj0v1x3mk5grgbc2zr"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -5596,19 +5596,11 @@ parser.")
      (list go-github-com-charmbracelet-lipgloss
            go-github-com-charmbracelet-x-ansi
            go-github-com-charmbracelet-x-term
-           go-github-com-containerd-console
-           go-github-com-lucasb-eyer-go-colorful
-           go-github-com-mattn-go-isatty
-           go-github-com-mattn-go-isatty
-           go-github-com-mattn-go-runewidth
+           go-github-com-erikgeiser-coninput
            go-github-com-muesli-ansi
            go-github-com-muesli-cancelreader
-           go-github-com-muesli-reflow
-           go-github-com-muesli-termenv
-           go-golang-org-x-crypto
            go-golang-org-x-sync
-           go-golang-org-x-sys
-           go-golang-org-x-term))
+           go-golang-org-x-sys))
     (home-page "https://github.com/charmbracelet/bubbletea")
     (synopsis "Powerful little TUI framework")
     (description
