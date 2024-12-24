@@ -94552,6 +94552,25 @@ Unix users and groups.")
      "Incremental, zero-copy UTF-8 decoding with error handling.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-utf8-iter-1
+  (package
+    (name "rust-utf8-iter")
+    (version "1.0.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "utf8_iter" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1gmna9flnj8dbyd8ba17zigrp9c4c3zclngf5lnb5yvz1ri41hdn"))))
+    (build-system cargo-build-system)
+    (home-page "https://docs.rs/utf8_iter/")
+    (synopsis "Iterator by char over potentially-invalid UTF-8 in &[u8]")
+    (description
+     "This package provides an iterator by char over potentially-invalid
+UTF-8 in &[u8].")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-utf8-ranges-1
   (package
     (name "rust-utf8-ranges")
