@@ -2163,16 +2163,14 @@ web browsing activities based on HTTP Upgrade (HTTPT).")
          #:phases
          (modify-phases %standard-phases
            (add-after 'unpack 'fix-tests
-             (lambda* (#:key native-inputs inputs #:allow-other-keys)
-               (substitute* (find-files "." "test\\.go")
-                 (("/bin/sleep" command)
-                  (string-append
-                   (assoc-ref (or native-inputs inputs) "coreutils")
-                   command)))
-               (substitute* "src/github.com/keybase/go-ps/process_openbsd.go"
-                 (("^// \\+build ignore") "")))))))
+             (lambda* (#:key import-path #:allow-other-keys)
+               (with-directory-excursion (string-append "src/" import-path)
+                 (substitute* (find-files "." "test\\.go")
+                   (("/bin/sleep") (which "sleep")))
+                 (substitute* "process_openbsd.go"
+                   (("^// \\+build ignore") ""))))))))
       (native-inputs
-       (list coreutils go-github-com-stretchr-testify))
+       (list go-github-com-stretchr-testify))
       (home-page "https://github.com/keybase/go-ps")
       (synopsis "Process list library for Go")
       (description "Go-Ps is a library for Go that implements OS-specific APIs
