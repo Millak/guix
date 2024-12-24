@@ -3568,27 +3568,29 @@ interactive applications.")
 (define-public rust-png-0.17
   (package
     (name "rust-png")
-    (version "0.17.14")
+    (version "0.17.16")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "png" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1w130qw3cngzppxk1yp3ls2pbw3f0spbzhkbarbnlnm06imd9yaj"))))
+        (base32 "09kmkms9fmkbkarw0lnf0scqvjwwg3r7riddag0i3q39r0pil5c2"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
-       '("--release" "--"
+       '("--"
          ;; Not all files included.
          "--skip=decoder::stream::tests::image_gamma"
          "--skip=decoder::stream::tests::image_source_chromaticities"
+         "--skip=decoder::stream::tests::image_source_sbit"
+         "--skip=decoder::stream::tests::test_mdcv_and_clli_chunks"
          "--skip=decoder::stream::tests::test_two_iccp_chunks"
          "--skip=decoder::stream::tests::test_png_with_broken_iccp"
          "--skip=encoder::tests::image_palette"
-         "--skip=src/decoder/mod.rs - decoder::Decoder<R>::set_ignore_text_chunk (line 267)"
-         "--skip=src/decoder/mod.rs - decoder::Decoder<R>::set_ignore_text_chunk (line 251)"
-         "--skip=src/decoder/mod.rs - decoder::Decoder<R>::set_limits (line 166)"
+         "--skip=decoder::Decoder<R>::set_ignore_iccp_chunk"
+         "--skip=decoder::Decoder<R>::set_ignore_text_chunk"
+         "--skip=decoder::Decoder<R>::set_limits"
          "--skip=src/lib.rs - (line 13)"
          "--skip=src/text_metadata.rs - text_metadata (line 25)")
        #:cargo-inputs
@@ -3598,14 +3600,15 @@ interactive applications.")
         ("rust-flate2" ,rust-flate2-1)
         ("rust-miniz-oxide" ,rust-miniz-oxide-0.8))
        #:cargo-development-inputs
-       (("rust-byteorder" ,rust-byteorder-1)
+       (("rust-approx" ,rust-approx-0.5)
+        ("rust-byteorder" ,rust-byteorder-1)
         ("rust-clap" ,rust-clap-3)
         ("rust-criterion" ,rust-criterion-0.4)
         ("rust-getopts" ,rust-getopts-0.2)
         ("rust-glium" ,rust-glium-0.32)
         ("rust-glob" ,rust-glob-0.3)
         ("rust-rand" ,rust-rand-0.8)
-        ("rust-term" ,rust-term-0.7))))
+        ("rust-term" ,rust-term-1))))
     (native-inputs (list pkg-config))
     (inputs (list expat fontconfig freetype))
     (home-page "https://github.com/image-rs/image-png")
