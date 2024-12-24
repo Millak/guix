@@ -9152,27 +9152,6 @@ streams in big-endian and little-endian formats.")
         ("rust-serde-test" ,rust-serde-test-1)
         ("rust-static-assertions" ,rust-static-assertions-1))))))
 
-(define-public rust-blas-0.22
-  (package
-    (name "rust-blas")
-    (version "0.22.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "blas" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1p1rs9y8fpxmrh9jj1rf4q517x5h960v4jf30f1gwnr1qdshz65f"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-blas-sys" ,rust-blas-sys-0.7)
-                       ("rust-libc" ,rust-libc-0.2)
-                       ("rust-num-complex" ,rust-num-complex-0.4))))
-    (home-page "https://github.com/blas-lapack-rs/blas")
-    (synopsis "Rust wrappers for BLAS (Fortran)")
-    (description "The package provides wrappers for BLAS (Fortran).")
-    (license (list license:asl2.0 license:expat))))
-
 (define-public rust-blanket-0.3
   (package
     (name "rust-blanket")
@@ -9201,6 +9180,27 @@ streams in big-endian and little-endian formats.")
      "This package provides a simple macro to derive blanket implementations for
 your traits.")
     (license license:expat)))
+
+(define-public rust-blas-0.22
+  (package
+    (name "rust-blas")
+    (version "0.22.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "blas" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1p1rs9y8fpxmrh9jj1rf4q517x5h960v4jf30f1gwnr1qdshz65f"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-blas-sys" ,rust-blas-sys-0.7)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-num-complex" ,rust-num-complex-0.4))))
+    (home-page "https://github.com/blas-lapack-rs/blas")
+    (synopsis "Rust wrappers for BLAS (Fortran)")
+    (description "The package provides wrappers for BLAS (Fortran).")
+    (license (list license:asl2.0 license:expat))))
 
 (define-public rust-blas-sys-0.7
   (package
