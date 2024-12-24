@@ -92476,28 +92476,6 @@ etc. distance calculations and string search.")
        (sha256
         (base32 "0v795l496crk3h6yff9zh1cjyrh5s9v23fbgccc4dpz25z70jav2"))))))
 
-(define-public rust-tryfn-0.2
-  (package
-    (name "rust-tryfn")
-    (version "0.2.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "tryfn" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "15n34ga7a1qyhfz45kph0yqx2gjlx10cb9bkmg4wwsk4kvp45qjz"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-ignore" ,rust-ignore-0.4)
-                       ("rust-libtest-mimic" ,rust-libtest-mimic-0.7)
-                       ("rust-snapbox" ,rust-snapbox-0.6))))
-    (home-page "https://github.com/assert-rs/trycmd")
-    (synopsis "File-driven snapshot testing for a function")
-    (description
-     "This package provides file-driven snapshot testing for a function.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-try-lock-0.2
   (package
     (name "rust-try-lock")
@@ -92659,6 +92637,28 @@ and run them to verify the results, taking inspiration from @code{trybuild} and
         ("rust-shlex" ,rust-shlex-1)
         ("rust-snapbox" ,rust-snapbox-0.4)
         ("rust-toml-edit" ,rust-toml-edit-0.14))))))
+
+(define-public rust-tryfn-0.2
+  (package
+    (name "rust-tryfn")
+    (version "0.2.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tryfn" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "15n34ga7a1qyhfz45kph0yqx2gjlx10cb9bkmg4wwsk4kvp45qjz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-ignore" ,rust-ignore-0.4)
+                       ("rust-libtest-mimic" ,rust-libtest-mimic-0.7)
+                       ("rust-snapbox" ,rust-snapbox-0.6))))
+    (home-page "https://github.com/assert-rs/trycmd")
+    (synopsis "File-driven snapshot testing for a function")
+    (description
+     "This package provides file-driven snapshot testing for a function.")
+    (license (list license:expat license:asl2.0))))
 
 (define-public rust-tss-esapi-7
   (package
