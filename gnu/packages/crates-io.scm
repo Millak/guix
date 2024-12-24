@@ -94908,6 +94908,25 @@ Unix users and groups.")
      "Incremental, zero-copy UTF-8 decoding with error handling.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-utf16-iter-1
+  (package
+    (name "rust-utf16-iter")
+    (version "1.0.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "utf16_iter" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ik2krdr73hfgsdzw0218fn35fa09dg2hvbi1xp3bmdfrp9js8y8"))))
+    (build-system cargo-build-system)
+    (home-page "https://docs.rs/utf16_iter/")
+    (synopsis "Iterator by char over potentially-invalid UTF-16 in &[u16]")
+    (description
+     "This package provides an iterator by char over potentially-invalid
+UTF-16 in &[u16].")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-utf8-iter-1
   (package
     (name "rust-utf8-iter")
