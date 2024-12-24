@@ -98092,6 +98092,30 @@ modifications.")
 against paths and directory trees.")
     (license license:expat)))
 
+(define-public rust-web-sys-0.3
+  (package
+    (name "rust-web-sys")
+    (version "0.3.76")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "web-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1g0j3kii20mh7hqmdajz2r4c21zynb9h9h026wymalkx88ip5p84"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-js-sys" ,rust-js-sys-0.3)
+        ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2))
+       #:cargo-development-inputs (("rust-futures" ,rust-futures-0.3))))
+    (home-page "https://rustwasm.github.io/wasm-bindgen/web-sys/index.html")
+    (synopsis
+     "Bindings for all Web APIs, a procedurally generated crate from WebIDL")
+    (description
+     "Bindings for all Web APIs, a procedurally generated crate from WebIDL.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-wl-clipboard-rs-0.8
   (package
     (name "rust-wl-clipboard-rs")
@@ -98190,30 +98214,6 @@ for terminal and other window-less applications.")
          ("rust-wayland-client" ,rust-wayland-client-0.28)
          ("rust-wayland-commons" ,rust-wayland-commons-0.28)
          ("rust-wayland-protocols" ,rust-wayland-protocols-0.28))))))
-
-(define-public rust-web-sys-0.3
-  (package
-    (name "rust-web-sys")
-    (version "0.3.76")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "web-sys" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1g0j3kii20mh7hqmdajz2r4c21zynb9h9h026wymalkx88ip5p84"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-js-sys" ,rust-js-sys-0.3)
-        ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2))
-       #:cargo-development-inputs (("rust-futures" ,rust-futures-0.3))))
-    (home-page "https://rustwasm.github.io/wasm-bindgen/web-sys/index.html")
-    (synopsis
-     "Bindings for all Web APIs, a procedurally generated crate from WebIDL")
-    (description
-     "Bindings for all Web APIs, a procedurally generated crate from WebIDL.")
-    (license (list license:expat license:asl2.0))))
 
 (define-public rust-web-time-1
   (package
