@@ -98355,6 +98355,26 @@ combinators library.")
     (description "This package provides a Midi parsing library.")
     (license license:expat)))
 
+(define-public rust-write16-1
+  (package
+    (name "rust-write16")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "write16" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0dnryvrrbrnl7vvf5vb1zkmwldhjkf2n5znliviam7bm4900z2fi"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-arrayvec" ,rust-arrayvec-0.7)
+                       ("rust-smallvec" ,rust-smallvec-1))))
+    (home-page "https://docs.rs/write16/")
+    (synopsis "UTF-16 analog of the Write trait")
+    (description "This package provides a UTF-16 analog of the Write trait.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-writeable-0.5
   (package
     (name "rust-writeable")
