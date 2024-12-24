@@ -4427,6 +4427,30 @@ the library more lightweight.")
          (package-arguments go-github-com-go-task-slim-sprig)
        ((#:import-path _) "github.com/go-task/slim-sprig/v3")))))
 
+(define-public go-github-com-go-yaml-yaml
+  (package
+    (name "go-github-com-go-yaml-yaml")
+    (version "0.0.0-20220527083530-f6f7691b1fde")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/go-yaml/yaml")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01b0wjb7yzv8wzzz2iim8mjpkwjnykcanrwiq06pkl89lr6gv8hn"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/go-yaml/yaml"))
+    (native-inputs (list go-gopkg-in-check-v1))
+    (propagated-inputs (list go-gopkg-in-yaml-v3))
+    (home-page "https://github.com/go-yaml/yaml")
+    (synopsis "YAML support for the Go language")
+    (description "Package yaml implements YAML support for the Go language.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-gobwas-glob
   (package
     (name "go-github-com-gobwas-glob")
