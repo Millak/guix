@@ -2381,35 +2381,6 @@ built on the Actix ecosystem.")
                                    ("rust-tokio" ,rust-tokio-1)
                                    ("rust-tower-http" ,rust-tower-http-0.4))))))
 
-(define-public rust-axum-macros-0.4
-  (package
-    (name "rust-axum-macros")
-    (version "0.4.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "axum-macros" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1klv77c889jm05bzayaaiinalarhvh2crc2w4nvp3l581xaj7lap"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
-                       ("rust-quote" ,rust-quote-1)
-                       ("rust-syn" ,rust-syn-2))
-       #:cargo-development-inputs (("rust-axum" ,rust-axum-0.7)
-                                   ("rust-axum-extra" ,rust-axum-extra-0.9)
-                                   ("rust-rustversion" ,rust-rustversion-1)
-                                   ("rust-serde" ,rust-serde-1)
-                                   ("rust-serde-json" ,rust-serde-json-1)
-                                   ("rust-syn" ,rust-syn-2)
-                                   ("rust-tokio" ,rust-tokio-1)
-                                   ("rust-trybuild" ,rust-trybuild-1))))
-    (home-page "https://github.com/tokio-rs/axum")
-    (synopsis "Macros for axum")
-    (description "This package provides macros for axum.")
-    (license license:expat)))
-
 (define-public rust-axum-extra-0.9
   (package
     (name "rust-axum-extra")
@@ -2512,6 +2483,35 @@ built on the Actix ecosystem.")
                                    ("rust-tokio" ,rust-tokio-1)
                                    ("rust-tower" ,rust-tower-0.4)
                                    ("rust-tower-http" ,rust-tower-http-0.4))))))
+
+(define-public rust-axum-macros-0.4
+  (package
+    (name "rust-axum-macros")
+    (version "0.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "axum-macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1klv77c889jm05bzayaaiinalarhvh2crc2w4nvp3l581xaj7lap"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))
+       #:cargo-development-inputs (("rust-axum" ,rust-axum-0.7)
+                                   ("rust-axum-extra" ,rust-axum-extra-0.9)
+                                   ("rust-rustversion" ,rust-rustversion-1)
+                                   ("rust-serde" ,rust-serde-1)
+                                   ("rust-serde-json" ,rust-serde-json-1)
+                                   ("rust-syn" ,rust-syn-2)
+                                   ("rust-tokio" ,rust-tokio-1)
+                                   ("rust-trybuild" ,rust-trybuild-1))))
+    (home-page "https://github.com/tokio-rs/axum")
+    (synopsis "Macros for axum")
+    (description "This package provides macros for axum.")
+    (license license:expat)))
 
 (define-public rust-axum-macros-0.3
   (package
