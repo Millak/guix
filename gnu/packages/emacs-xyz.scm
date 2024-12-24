@@ -28312,6 +28312,7 @@ can be configured to perform other key sequence translations.")
         (base32
          "1p5f2lf6jlsvyh6zhd6drc2njadlkn73djrykridsphzh92q88k0"))))
     (build-system emacs-build-system)
+    (propagated-inputs (list emacs-s))
     (home-page "https://github.com/cbowdon/daemons.el")
     (synopsis "Emacs UI for managing init system services")
     (description
