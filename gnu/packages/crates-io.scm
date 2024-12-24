@@ -92274,6 +92274,38 @@ recycle bin.")
         ("rust-rand" ,rust-rand-0.8)
         ("rust-serial-test" ,rust-serial-test-0.6))))))
 
+(define-public rust-tree-magic-0.2
+  (package
+    (name "rust-tree-magic")
+    (version "0.2.3")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "tree_magic" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32 "0adndj775gjcvkf7yxdfj3pl39fcdiibswwgff23lm9yrrkr7ndi"))))
+    (build-system cargo-build-system)
+    (arguments
+      `(#:skip-build?
+        #t
+        #:cargo-inputs
+        (("rust-clap" ,rust-clap-2)
+         ("rust-fnv" ,rust-fnv-1)
+         ("rust-lazy-static" ,rust-lazy-static-1)
+         ("rust-nom" ,rust-nom-3)
+         ("rust-num-cpus" ,rust-num-cpus-1)
+         ("rust-parking-lot" ,rust-parking-lot-0.10)
+         ("rust-petgraph" ,rust-petgraph-0.5)
+         ("rust-scoped-threadpool" ,rust-scoped-threadpool-0.1)
+         ("rust-tabwriter" ,rust-tabwriter-1)
+         ("rust-walkdir" ,rust-walkdir-2))))
+    (home-page "https://github.com/aahancoc/tree_magic/")
+    (synopsis "Determines the MIME type")
+    (description "This package determines the MIME type of a file by
+traversing a filetype tree.")
+    (license license:expat)))
+
 (define-public rust-tree-magic-db-3
   (package
     (name "rust-tree-magic-db")
@@ -92320,38 +92352,6 @@ tree_magic_mini.")
      "Determines the MIME type of a file by traversing a filetype tree")
     (description
      "Determines the MIME type of a file by traversing a filetype tree.")
-    (license license:expat)))
-
-(define-public rust-tree-magic-0.2
-  (package
-    (name "rust-tree-magic")
-    (version "0.2.3")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "tree_magic" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-          (base32 "0adndj775gjcvkf7yxdfj3pl39fcdiibswwgff23lm9yrrkr7ndi"))))
-    (build-system cargo-build-system)
-    (arguments
-      `(#:skip-build?
-        #t
-        #:cargo-inputs
-        (("rust-clap" ,rust-clap-2)
-         ("rust-fnv" ,rust-fnv-1)
-         ("rust-lazy-static" ,rust-lazy-static-1)
-         ("rust-nom" ,rust-nom-3)
-         ("rust-num-cpus" ,rust-num-cpus-1)
-         ("rust-parking-lot" ,rust-parking-lot-0.10)
-         ("rust-petgraph" ,rust-petgraph-0.5)
-         ("rust-scoped-threadpool" ,rust-scoped-threadpool-0.1)
-         ("rust-tabwriter" ,rust-tabwriter-1)
-         ("rust-walkdir" ,rust-walkdir-2))))
-    (home-page "https://github.com/aahancoc/tree_magic/")
-    (synopsis "Determines the MIME type")
-    (description "This package determines the MIME type of a file by
-traversing a filetype tree.")
     (license license:expat)))
 
 ;; The rust-tree-sitter packages are rust dependencies and are separate
