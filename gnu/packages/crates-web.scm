@@ -2793,8 +2793,48 @@ transfer coding.")
         ("rust-webpki" ,rust-webpki-0.21)
         ("rust-webpki-roots" ,rust-webpki-roots-0.17))))))
 
+(define-public rust-h3-0.0.6
+  (package
+    (name "rust-h3")
+    (version "0.0.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "h3" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ay6bfnj49wdyhvsqf78msdv3zxl32cjfk745z8scirvjsh7axjy"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:tests? #f                  ; not all files included
+           #:cargo-inputs
+           (list rust-bytes-1
+                 rust-fastrand-2
+                 rust-futures-util-0.3
+                 rust-http-1
+                 rust-pin-project-lite-0.2
+                 rust-tokio-1
+                 rust-tracing-0.1)
+           #:cargo-development-inputs
+           (list rust-assert-matches-1
+                 rust-futures-0.3
+                 rust-futures-util-0.3
+                 rust-proptest-1
+                 rust-quinn-0.11
+                 rust-quinn-proto-0.11
+                 rust-rcgen-0.13
+                 rust-rustls-0.23
+                 rust-tokio-1
+                 rust-tokio-util-0.7
+                 rust-tracing-subscriber-0.3)))
+    (home-page "https://github.com/hyperium/h3")
+    (synopsis "Async HTTP/3 implementation")
+    (description "This package provides an async HTTP/3 implementation.")
+    (license license:expat)))
+
 (define-public rust-h3-0.0.4
   (package
+    (inherit rust-h3-0.0.6)
     (name "rust-h3")
     (version "0.0.4")
     (source
@@ -2804,7 +2844,6 @@ transfer coding.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "04clhh6b5iqlgnbppikbz4zpxl78g4vkyhyrjgnyg4vfkrmqij5i"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f                      ;not all files included
        #:cargo-inputs
@@ -2826,11 +2865,7 @@ transfer coding.")
         ("rust-rustls" ,rust-rustls-0.21)
         ("rust-tokio" ,rust-tokio-1)
         ("rust-tokio-util" ,rust-tokio-util-0.7)
-        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))
-    (home-page "https://github.com/hyperium/h3")
-    (synopsis "Async HTTP/3 implementation")
-    (description "This package provides an async HTTP/3 implementation.")
-    (license license:expat)))
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))))
 
 (define-public rust-h3-0.0.3
   (package
