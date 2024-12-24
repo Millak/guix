@@ -64,6 +64,27 @@
 extension of blocks.")
     (license license:expat)))
 
+(define-public rust-block-sys-0.2
+  (package
+    (name "rust-block-sys")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "block-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1rzp0218mwigdmfd5rhmj5h7c1vp0bq0nxaklhsvi8vydrls11df"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f          ; Needs to bind to MacOS libraries.
+       #:cargo-inputs (("rust-objc-sys" ,rust-objc-sys-0.3))))
+    (home-page "https://github.com/madsmtm/objc2")
+    (synopsis "Raw bindings to Apple's C language extension of blocks")
+    (description "This package contains raw bindings to Apple's C language
+extension of blocks.")
+    (license license:expat)))
+
 (define-public rust-block2-0.5
   (package
     (name "rust-block2")
@@ -119,27 +140,6 @@ extension of blocks.")
        #:cargo-inputs
        (("rust-block-sys" ,rust-block-sys-0.1)
         ("rust-objc2-encode" ,rust-objc2-encode-2))))))
-
-(define-public rust-block-sys-0.2
-  (package
-    (name "rust-block-sys")
-    (version "0.2.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "block-sys" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1rzp0218mwigdmfd5rhmj5h7c1vp0bq0nxaklhsvi8vydrls11df"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:tests? #f          ; Needs to bind to MacOS libraries.
-       #:cargo-inputs (("rust-objc-sys" ,rust-objc-sys-0.3))))
-    (home-page "https://github.com/madsmtm/objc2")
-    (synopsis "Raw bindings to Apple's C language extension of blocks")
-    (description "This package contains raw bindings to Apple's C language
-extension of blocks.")
-    (license license:expat)))
 
 (define-public rust-block-sys-0.1
   (package
