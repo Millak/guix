@@ -674,9 +674,9 @@ IOCP and Async I/O abstractions.")
      `(#:skip-build? #t ; failed to resolve: could not find `shared` in `winapi`
        #:cargo-inputs (("rust-winapi" ,rust-winapi-0.3))))
     (home-page "https://github.com/blackbeam/named_pipe")
-    (synopsis "Wrapper for overlapped (asyncronous) IO of Windows's named pipes")
+    (synopsis "Wrapper for overlapped (asynchronous) IO of Windows's named pipes")
     (description
-     "This package provides a wrapper for overlapped (asyncronous) IO of
+     "This package provides a wrapper for overlapped (asynchronous) IO of
 Windows's named pipes.")
     (license (list license:expat license:asl2.0))))
 
