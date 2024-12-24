@@ -98689,15 +98689,14 @@ UTF-32 types are provided, including support for malformed encoding.")
   (package
     (inherit rust-widestring-0.5)
     (name "rust-widestring")
-    (version "0.4.2")
+    (version "0.4.3")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "widestring" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32
-          "13565qy4jhpg4x0xw8mwxzzsh0p8c93p5208lh6kpwp0q01y6qx7"))))
+         (base32 "0z3ba8qrxb62vpfgk7n2xs2grm9kdaj1cz4q8s0gs8fx8h0r8s61"))))
     (arguments
      `(#:cargo-development-inputs
        (("rust-winapi" ,rust-winapi-0.3))))))
