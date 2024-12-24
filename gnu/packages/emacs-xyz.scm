@@ -1744,7 +1744,7 @@ libgit2 bindings for Emacs, intended to boost the performance of Magit.")
 (define-public emacs-llama
   (package
     (name "emacs-llama")
-    (version "0.3.1")
+    (version "0.4.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1753,7 +1753,7 @@ libgit2 bindings for Emacs, intended to boost the performance of Magit.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0rgm5jv9iv8b0xabdwicrpih2d3slchmv17xdjk705dqhfc18f4w"))))
+                "1km89ks7xg89sjqxiri9lxj58hc17z13z7mzcq3y66yv1dfrrziz"))))
     (build-system emacs-build-system)
     (arguments
      (list #:tests? #true
