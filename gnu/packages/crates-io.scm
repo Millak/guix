@@ -3021,29 +3021,6 @@ integers.")
     (description "This package provides a fancy diagnostics & reporting crate.")
     (license license:expat)))
 
-(define-public rust-arr-macro-impl-0.1
-  (package
-    (name "rust-arr-macro-impl")
-    (version "0.1.3")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "arr_macro_impl" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1lbjilz3pvwav72dfkcbz99rsq7m04xbdpqh8g3yvx3jsn5wf286"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-proc-macro-hack" ,rust-proc-macro-hack-0.5)
-        ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))
-    (home-page "https://github.com/JoshMcguigan/arr_macro")
-    (synopsis "Private impl crate for arr_macro")
-    (description "This package provides a private @code{impl} crate for
-@code{arr_macro}.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-arr-macro-0.1
   (package
     (name "rust-arr-macro")
@@ -3065,6 +3042,29 @@ integers.")
     (description "Array macro helps initialize arrays.  It is useful when
 initializing large arrays (greater than 32 elements), or arrays of types which
 do not implement the copy or default traits.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-arr-macro-impl-0.1
+  (package
+    (name "rust-arr-macro-impl")
+    (version "0.1.3")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "arr_macro_impl" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1lbjilz3pvwav72dfkcbz99rsq7m04xbdpqh8g3yvx3jsn5wf286"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro-hack" ,rust-proc-macro-hack-0.5)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/JoshMcguigan/arr_macro")
+    (synopsis "Private impl crate for arr_macro")
+    (description "This package provides a private @code{impl} crate for
+@code{arr_macro}.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-array-init-2
