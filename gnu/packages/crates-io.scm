@@ -99903,6 +99903,26 @@ crate.")
        #:cargo-development-inputs
        (("rust-compiletest-rs" ,rust-compiletest-rs-0.3))))))
 
+(define-public rust-zerofrom-0.1
+  (package
+    (name "rust-zerofrom")
+    (version "0.1.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "zerofrom" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0bnd8vjcllzrvr3wvn8x14k2hkrpyy1fm3crkn2y3plmr44fxwyg"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-zerofrom-derive" ,rust-zerofrom-derive-0.1))))
+    (home-page "https://github.com/unicode-org/icu4x")
+    (synopsis "ZeroFrom trait for constructing")
+    (description
+     "This package provides @code{ZeroFrom} trait for constructing.")
+    (license license:unicode)))
+
 (define-public rust-zerofrom-derive-0.1
   (package
     (name "rust-zerofrom-derive")
