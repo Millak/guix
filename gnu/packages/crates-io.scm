@@ -98853,6 +98853,29 @@ for locating fonts.")
        (("rust-const-cstr" ,rust-const-cstr-0.3)
         ("rust-pkg-config" ,rust-pkg-config-0.3))))))
 
+(define-public rust-yoke-derive-0.7
+  (package
+    (name "rust-yoke-derive")
+    (version "0.7.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "yoke-derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0m4i4a7gy826bfvnqa9wy6sp90qf0as3wps3wb0smjaamn68g013"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; use of undeclared crate or module `zerovec`
+       #:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2)
+                       ("rust-synstructure" ,rust-synstructure-0.13))))
+    (home-page "https://github.com/unicode-org/icu4x")
+    (synopsis "Custom derive for the yoke crate")
+    (description "This package provides Custom derive for the yoke crate.")
+    (license license:unicode)))
+
 (define-public rust-z-base-32-0.1
   (package
     (name "rust-z-base-32")
