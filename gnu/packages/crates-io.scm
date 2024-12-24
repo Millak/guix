@@ -17474,6 +17474,34 @@ similar to the nom parser combinators library.")
         ("rust-time" ,rust-time-0.2)
         ("rust-url" ,rust-url-2))))))
 
+(define-public rust-cookie-store-0.12
+  (package
+    (inherit rust-cookie-store-0.15)
+    (name "rust-cookie-store")
+    (version "0.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cookie_store" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1lqhmdwgnyvi1mjmw4rbgd02fwav4aabpg4vcld23d8c9g5dy61q"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cookie" ,rust-cookie-0.14)
+        ("rust-idna" ,rust-idna-0.2)
+        ("rust-indexmap" ,rust-indexmap-1)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-publicsuffix" ,rust-publicsuffix-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-time" ,rust-time-0.2)
+        ("rust-url" ,rust-url-2))
+       #:cargo-development-inputs
+       (("rust-env-logger" ,rust-env-logger-0.7)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-0.6))))))
+
 (define-public rust-coolor-0.8
   (package
     (name "rust-coolor")
@@ -17745,34 +17773,6 @@ in @code{no_std}.  Alloc support is optional.")
         (sha256
          (base32 "1wzzy5iazdk5caadxvjfwrd312rbg7a55a1zpmsdrhk3kfpa77r3"))))
     (arguments `(#:cargo-inputs (("rust-memchr" ,rust-memchr-2))))))
-
-(define-public rust-cookie-store-0.12
-  (package
-    (inherit rust-cookie-store-0.15)
-    (name "rust-cookie-store")
-    (version "0.12.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "cookie_store" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1lqhmdwgnyvi1mjmw4rbgd02fwav4aabpg4vcld23d8c9g5dy61q"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-cookie" ,rust-cookie-0.14)
-        ("rust-idna" ,rust-idna-0.2)
-        ("rust-indexmap" ,rust-indexmap-1)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-publicsuffix" ,rust-publicsuffix-1)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-time" ,rust-time-0.2)
-        ("rust-url" ,rust-url-2))
-       #:cargo-development-inputs
-       (("rust-env-logger" ,rust-env-logger-0.7)
-        ("rust-pretty-assertions" ,rust-pretty-assertions-0.6))))))
 
 (define-public rust-core-affinity-0.8
   (package
