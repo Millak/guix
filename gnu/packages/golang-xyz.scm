@@ -740,7 +740,8 @@ with as little developer effort as possible.")
      (list
       #:import-path "github.com/alecthomas/participle/v2"))
     (native-inputs
-     (list go-github-com-alecthomas-assert-v2))
+     (list go-github-com-alecthomas-assert-v2
+           go-github-com-alecthomas-kong)) ; for CLI
     (home-page "https://github.com/alecthomas/participle")
     (synopsis "Parser library for Go")
     (description
