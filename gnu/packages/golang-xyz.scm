@@ -1783,6 +1783,60 @@ tools.")
 @@url{https://github.com/charmbracelet/bubbletea, Bubble Tea} applications.")
     (license license:expat)))
 
+(define-public go-github-com-charmbracelet-bubbletea
+  (package
+    (name "go-github-com-charmbracelet-bubbletea")
+    (version "1.2.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/charmbracelet/bubbletea")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0g5pj40lsdkh2gwixlpg53ji7fajncj512xj0v1x3mk5grgbc2zr"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/charmbracelet/bubbletea"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (for-each delete-file-recursively
+                          '("examples" "tutorials")))))
+          (add-before 'check 'fix-tests
+            (lambda _
+              ;; XXX: The package requires
+              ;; "go-github-com-charmbracelet-x-ansi" version 0.4.5; with the
+              ;; newer version of "ansi", some "bubbletea" screen tests fail
+              ;; as "ansi" 0.5.2 handles escape sequences a little bit
+              ;; differently.
+              (substitute* "src/github.com/charmbracelet/bubbletea/screen_test.go"
+                (("x1b\\[0K")
+                 "x1b[K")
+                (("x1b\\[2;0H")
+                 "x1b[2;H")))))))
+    (propagated-inputs
+     (list go-github-com-charmbracelet-lipgloss
+           go-github-com-charmbracelet-x-ansi
+           go-github-com-charmbracelet-x-term
+           go-github-com-erikgeiser-coninput
+           go-github-com-muesli-ansi
+           go-github-com-muesli-cancelreader
+           go-golang-org-x-sync
+           go-golang-org-x-sys))
+    (home-page "https://github.com/charmbracelet/bubbletea")
+    (synopsis "Powerful little TUI framework")
+    (description
+     "Bubble Tea is a Go framework based on The Elm Architecture.  It is
+well-suited for simple and complex terminal applications, either inline,
+full-window, or a mix of both.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-charmbracelet-lipgloss
   (package
     (name "go-github-com-charmbracelet-lipgloss")
