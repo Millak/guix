@@ -85,6 +85,23 @@ extension of blocks.")
 extension of blocks.")
     (license license:expat)))
 
+(define-public rust-block-sys-0.1
+  (package
+    (inherit rust-block-sys-0.2)
+    (name "rust-block-sys")
+    (version "0.1.0-beta.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "block-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0ihiar08hk0das4q0ii1gsmql975z3rslli1h13jb44hxr0mg98g"))))
+    (arguments
+     `(#:tests? #f  ; Tests require gcc-objc.
+       #:cargo-inputs
+       (("rust-objc-sys" ,rust-objc-sys-0.2))))))
+
 (define-public rust-block2-0.5
   (package
     (name "rust-block2")
@@ -140,23 +157,6 @@ extension of blocks.")
        #:cargo-inputs
        (("rust-block-sys" ,rust-block-sys-0.1)
         ("rust-objc2-encode" ,rust-objc2-encode-2))))))
-
-(define-public rust-block-sys-0.1
-  (package
-    (inherit rust-block-sys-0.2)
-    (name "rust-block-sys")
-    (version "0.1.0-beta.1")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "block-sys" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0ihiar08hk0das4q0ii1gsmql975z3rslli1h13jb44hxr0mg98g"))))
-    (arguments
-     `(#:tests? #f  ; Tests require gcc-objc.
-       #:cargo-inputs
-       (("rust-objc-sys" ,rust-objc-sys-0.2))))))
 
 (define-public rust-cargo-credential-macos-keychain-0.4
   (package
