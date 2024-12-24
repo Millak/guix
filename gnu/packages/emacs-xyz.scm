@@ -21886,7 +21886,7 @@ additions:
   (package
     (name "emacs-dired-sidebar")
     (home-page "https://github.com/jojojames/dired-sidebar")
-    (version "0.2.0")
+    (version "0.3.0")
     (source
      (origin
        (method git-fetch)
@@ -21895,7 +21895,7 @@ additions:
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "090dqaqyjmkzrz4szjpk1iip0bdvb0frp4l79393f8ki8w7c16c1"))))
+        (base32 "0f9cikyb53ybsawkm9g1sja2wsz2lmnc9zq63sx2h8d86acza2cp"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-dired-hacks))
