@@ -75500,36 +75500,6 @@ Hjson.  It is built upon Serde, a high performance generic serialization
 framework.")
     (license license:expat)))
 
-(define-public rust-serdeconv-0.4
-  (package
-    (name "rust-serdeconv")
-    (version "0.4.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "serdeconv" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0cal6qkzps92g7csycqij4ik1df3ccxn5sxnjvfvm473phnwbvbi"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-rmp-serde" ,rust-rmp-serde-0.15)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-toml" ,rust-toml-0.5)
-        ("rust-trackable" ,rust-trackable-1))
-       #:cargo-development-inputs
-       (("rust-serde-derive" ,rust-serde-derive-1))))
-    (home-page "https://github.com/sile/serdeconv")
-    (synopsis
-     "Convert between TOML/JSON/MessagePack strings and serializable values")
-    (description
-     "This crate provides traits and functions for converting between
-TOML/JSON/MessagePack strings and serializable values.")
-    (license license:expat)))
-
 (define-public rust-serde-derive-1
   (package
     (name "rust-serde-derive")
@@ -76601,6 +76571,36 @@ Rust's serde.")
     (home-page "https://github.com/cloudflare/serde-wasm-bindgen")
     (synopsis "Native Serde adapter for wasm-bindgen")
     (description "Native Serde adapter for wasm-bindgen.")
+    (license license:expat)))
+
+(define-public rust-serdeconv-0.4
+  (package
+    (name "rust-serdeconv")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "serdeconv" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0cal6qkzps92g7csycqij4ik1df3ccxn5sxnjvfvm473phnwbvbi"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-rmp-serde" ,rust-rmp-serde-0.15)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-toml" ,rust-toml-0.5)
+        ("rust-trackable" ,rust-trackable-1))
+       #:cargo-development-inputs
+       (("rust-serde-derive" ,rust-serde-derive-1))))
+    (home-page "https://github.com/sile/serdeconv")
+    (synopsis
+     "Convert between TOML/JSON/MessagePack strings and serializable values")
+    (description
+     "This crate provides traits and functions for converting between
+TOML/JSON/MessagePack strings and serializable values.")
     (license license:expat)))
 
 (define-public rust-serial-test-3
