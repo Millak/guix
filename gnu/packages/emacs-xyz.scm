@@ -24467,39 +24467,15 @@ object has been freed.")
       #:test-command #~(list "emacs" "-Q" "--batch"
                              "-L" "tests"
                              "-L" "."
-                             "-l" "tests/emacsql-tests.el"
+                             "-l" "tests/emacsql-compiler-tests.el"
+                             "-l" "tests/emacsql-external-tests.el"
                              "-f" "ert-run-tests-batch-and-exit")
-      #:modules '((guix build emacs-build-system)
-                  (guix build utils)
-                  (guix build emacs-utils)
-                  (srfi srfi-26))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'install 'patch-elisp-shell-shebangs
             (lambda _
               (substitute* (find-files "." "\\.el")
-                (("/bin/sh") (which "sh")))))
-          (add-after 'patch-elisp-shell-shebangs 'setenv-shell
-            (lambda _
-              (setenv "SHELL" "sh")))
-          (add-after 'setenv-shell 'build-emacsql-sqlite
-            (lambda _
-              (invoke "make" "binary" (string-append "CC=" #$(cc-for-target)))))
-          (add-after 'build-emacsql-sqlite 'install-emacsql-sqlite
-            ;; This build phase installs emacs-emacsql binary.
-            (lambda _
-              (install-file "sqlite/emacsql-sqlite"
-                            (string-append #$output "/bin"))))
-          (add-after 'install-emacsql-sqlite 'patch-emacsql-sqlite.el
-            ;; This build phase removes interactive prompts
-            ;; and makes sure Emacs look for binaries in the right places.
-            (lambda _
-              (emacs-substitute-variables "emacsql-sqlite.el"
-                ("emacsql-sqlite-executable"
-                 (string-append #$output "/bin/emacsql-sqlite"))
-                ;; Make sure Emacs looks for ‘GCC’ binary in the right place.
-                ("emacsql-sqlite-c-compilers"
-                 `(list ,(which "gcc")))))))))
+                (("/bin/sh") (which "sh"))))))))
     (inputs
      (list emacs-minimal `(,mariadb "dev") `(,mariadb "lib") postgresql))
     (propagated-inputs
@@ -35875,7 +35851,7 @@ time.")
                                      (rename-file f
                                                   (basename f)))
                                    el-files)))))))
-    (propagated-inputs (list emacs-request emacs-tp emacs-ts emacs-persist))
+    (propagated-inputs (list emacs-request emacs-tp emacs-persist))
     (home-page "https://codeberg.org/martianh/mastodon.el")
     (synopsis "Emacs client for Mastodon")
     (description "@code{mastodon.el} is an Emacs client for Mastodon, the
