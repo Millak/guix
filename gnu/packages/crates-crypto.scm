@@ -5444,7 +5444,7 @@ function.")
     (synopsis
      "Rust implementation of SEC1: Elliptic Curve Cryptography encoding formats")
     (description
-     "This package procides a pure Rust implementation of SEC1: Elliptic Curve
+     "This package provides a pure Rust implementation of SEC1: Elliptic Curve
 Cryptography encoding formats including ASN.1 DER-serialized private keys as
 well as the Elliptic-Curve-Point-to-Octet-String encoding.")
     (license (list license:asl2.0 license:expat))))
