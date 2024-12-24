@@ -2144,18 +2144,16 @@ web browsing activities based on HTTP Upgrade (HTTPT).")
       (license license:bsd-2))))
 
 (define-public go-github-com-keybase-go-ps
-  (let ((commit "91aafc93ba19d1988cff338c1929d35b6c6f5b50")
-        (revision "0"))
     (package
       (name "go-github-com-keybase-go-ps")
-      (version (git-version "0.0.0" revision commit))
+      (version "0.0.0-20190827175125-91aafc93ba19")
       (source
        (origin
          (method git-fetch)
          (uri
           (git-reference
            (url "https://github.com/keybase/go-ps")
-           (commit commit)))
+           (commit (go-version->git-ref version))))
          (file-name (git-file-name name version))
          (sha256
           (base32 "1la7m9pd1rrij727g34k9d2iapqwrkwdkqwpkbsbcq8ig0fg634h"))))
@@ -2179,7 +2177,7 @@ web browsing activities based on HTTP Upgrade (HTTPT).")
       (synopsis "Process list library for Go")
       (description "Go-Ps is a library for Go that implements OS-specific APIs
 to list and manipulate processes in a safe way.")
-      (license license:expat))))
+      (license license:expat)))
 
 (define-public go-github-com-apparentlymart-go-openvpn-mgmt
   (let ((commit "4d2ce95ae600ee04eeb020ee0997aabb82752210")
