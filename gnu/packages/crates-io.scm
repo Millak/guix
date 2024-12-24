@@ -35723,6 +35723,51 @@ Identifiers canonicalization.")
      "This package provides data for the icu_locid_transform crate.")
     (license license:unicode)))
 
+(define-public rust-icu-normalizer-1
+  (package
+    (name "rust-icu-normalizer")
+    (version "1.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "icu_normalizer" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0kx8qryp8ma8fw1vijbgbnf7zz9f2j4d14rw36fmjs7cl86kxkhr"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-test-flags
+           '(list "--"
+                  "--skip=properties::CanonicalCombiningClassMap"
+                  "--skip=properties::CanonicalComposition::compose"
+                  "--skip=properties::CanonicalDecomposition::decompose")
+           #:cargo-inputs
+           (list rust-databake-0.1
+                 rust-displaydoc-0.2
+                 rust-icu-collections-1
+                 rust-icu-normalizer-data-1
+                 rust-icu-properties-1
+                 rust-icu-provider-1
+                 rust-serde-1
+                 rust-smallvec-1
+                 rust-utf16-iter-1
+                 rust-utf8-iter-1
+                 rust-write16-1
+                 rust-zerovec-0.10)
+           #:cargo-development-inputs
+           (list rust-arraystring-0.3
+                 rust-arrayvec-0.7
+                 rust-atoi-1
+                 rust-criterion-0.5
+                 rust-detone-1
+                 rust-write16-1)))
+    (home-page "https://icu4x.unicode.org")
+    (synopsis "API for normalizing text into Unicode Normalization Forms")
+    (description
+     "This package provides an API for normalizing text into Unicode
+Normalization Forms.")
+    (license license:unicode)))
+
 (define-public rust-icu-provider-macros-1
   (package
     (name "rust-icu-provider-macros")
