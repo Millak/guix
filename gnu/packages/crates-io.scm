@@ -38183,31 +38183,6 @@ Resource Identifiers} and @acronym{URIs, Uniform Resource Identifiers}.")
 or not without much fuss.")
     (license license:isc)))
 
-(define-public rust-is-macro-0.1
-  (package
-    (name "rust-is-macro")
-    (version "0.1.9")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "is-macro" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0pq1x1r8pk6fv0qf9vpxw60jw2jg3961nm1gv71j5qv0v4bds8m3"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-inflector" ,rust-inflector-0.11)
-        ("rust-pmutil" ,rust-pmutil-0.5)
-        ("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))
-    (home-page "https://github.com/kdy1/is-macro")
-    (synopsis "Create methods to use custom enum like Option/Result")
-    (description "This package lets you easily create methods to use a custom
-enum like Option/Result.")
-    (license license:expat)))
-
 (define-public rust-ipnet-2
   (package
     (name "rust-ipnet")
@@ -38381,6 +38356,31 @@ process is running inside a Docker container.")
      "This package provides a small helper function which determines
 whether or not a given path points to an executable file.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-is-macro-0.1
+  (package
+    (name "rust-is-macro")
+    (version "0.1.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "is-macro" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0pq1x1r8pk6fv0qf9vpxw60jw2jg3961nm1gv71j5qv0v4bds8m3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-inflector" ,rust-inflector-0.11)
+        ("rust-pmutil" ,rust-pmutil-0.5)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/kdy1/is-macro")
+    (synopsis "Create methods to use custom enum like Option/Result")
+    (description "This package lets you easily create methods to use a custom
+enum like Option/Result.")
+    (license license:expat)))
 
 (define-public rust-is-terminal-0.4
   (package
