@@ -38164,25 +38164,6 @@ ABI compatible with @code{std} and @code{lbc}.")
 Resource Identifiers} and @acronym{URIs, Uniform Resource Identifiers}.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-is-ci-1
-  (package
-    (name "rust-is-ci")
-    (version "1.2.0")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "is_ci" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0ifwvxmrsj4r29agfzr71bjq6y1bihkx38fbzafq5vl0jn1wjmbn"))))
-    (build-system cargo-build-system)
-    (home-page "https://github.com/zkat/is_ci")
-    (synopsis "Lightweight CI environment checker")
-    (description
-     "Super lightweight CI environment checker.  Just tells you if you're in CI
-or not without much fuss.")
-    (license license:isc)))
-
 (define-public rust-ipnet-2
   (package
     (name "rust-ipnet")
@@ -38296,6 +38277,25 @@ Rust.")
     (synopsis "Rust bindings for iptables")
     (description "Rust bindings for iptables.")
     (license license:expat)))
+
+(define-public rust-is-ci-1
+  (package
+    (name "rust-is-ci")
+    (version "1.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "is_ci" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0ifwvxmrsj4r29agfzr71bjq6y1bihkx38fbzafq5vl0jn1wjmbn"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/zkat/is_ci")
+    (synopsis "Lightweight CI environment checker")
+    (description
+     "Super lightweight CI environment checker.  Just tells you if you're in CI
+or not without much fuss.")
+    (license license:isc)))
 
 (define-public rust-is-debug-1
   (package
