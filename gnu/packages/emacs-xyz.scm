@@ -28282,7 +28282,7 @@ can be configured to perform other key sequence translations.")
 (define-public emacs-daemons
   (package
     (name "emacs-daemons")
-    (version "2.0.0")
+    (version "2.1.0")
     (source
      (origin
        (method git-fetch)
@@ -28292,7 +28292,7 @@ can be configured to perform other key sequence translations.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "00bkzfaw3bqykcks610vk9wlpa2z360xn32bpsrycacwfv29j7g4"))))
+         "1p5f2lf6jlsvyh6zhd6drc2njadlkn73djrykridsphzh92q88k0"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/cbowdon/daemons.el")
     (synopsis "Emacs UI for managing init system services")
