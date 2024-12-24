@@ -48467,22 +48467,6 @@ quick compile time, and minimal dependencies.")
     (description "This package provides NASM during your Cargo build.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-nasm-rs-0.2
-  (package
-    (inherit rust-nasm-rs-0.3)
-    (name "rust-nasm-rs")
-    (version "0.2.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "nasm-rs" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1lgc3gg32hj4pcbfp07vzwy013smdm27469fyy4rqgyil3x46vx7"))))
-    (arguments
-     `(#:cargo-inputs (("rust-arrayvec" ,rust-arrayvec-0.5)
-                       ("rust-rayon" ,rust-rayon-1))))))
-
 (define-public rust-nalgebra-0.32
   (package
     (name "rust-nalgebra")
@@ -49015,6 +48999,22 @@ linear algebra library.")
     (synopsis "NodeJS N-API raw binding")
     (description "This package provides a NodeJS N-API raw binding.")
     (license license:expat)))
+
+(define-public rust-nasm-rs-0.2
+  (package
+    (inherit rust-nasm-rs-0.3)
+    (name "rust-nasm-rs")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "nasm-rs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1lgc3gg32hj4pcbfp07vzwy013smdm27469fyy4rqgyil3x46vx7"))))
+    (arguments
+     `(#:cargo-inputs (("rust-arrayvec" ,rust-arrayvec-0.5)
+                       ("rust-rayon" ,rust-rayon-1))))))
 
 (define-public rust-natord-1
   (package
