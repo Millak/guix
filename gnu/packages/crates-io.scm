@@ -96675,20 +96675,19 @@ result.")
 (define-public rust-wasm-bindgen-backend-0.2
   (package
     (name "rust-wasm-bindgen-backend")
-    (version "0.2.91")
+    (version "0.2.99")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "wasm-bindgen-backend" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "02zpi9sjzhd8kfv1yj9m1bs4a41ik9ii5bc8hjf60arm1j8f3ry9"))))
+        (base32 "0ycwa4c68j34687k513djgyy2asn3fw3yp4g9rkq2kvbchwbp2az"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bumpalo" ,rust-bumpalo-3)
         ("rust-log" ,rust-log-0.4)
-        ("rust-once-cell" ,rust-once-cell-1)
         ("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-2)
