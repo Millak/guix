@@ -38141,29 +38141,6 @@ ABI compatible with @code{std} and @code{lbc}.")
     (license (list license:asl2.0
                    license:expat))))
 
-(define-public rust-iri-string-0.7
-  (package
-    (name "rust-iri-string")
-    (version "0.7.7")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "iri-string" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1siv0qq612v8d25ryy8n74n2h6g9zwr9yxjgzzi5dzlg5rbhl3yw"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-memchr" ,rust-memchr-2)
-                       ("rust-serde" ,rust-serde-1))
-       #:cargo-development-inputs (("rust-serde-test" ,rust-serde-test-1))))
-    (home-page "https://github.com/lo48576/iri-string")
-    (synopsis "IRI as string types")
-    (description
-      "This package provides string types for @acronym{IRIs, Internationalized
-Resource Identifiers} and @acronym{URIs, Uniform Resource Identifiers}.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-ipnet-2
   (package
     (name "rust-ipnet")
@@ -38277,6 +38254,29 @@ Rust.")
     (synopsis "Rust bindings for iptables")
     (description "Rust bindings for iptables.")
     (license license:expat)))
+
+(define-public rust-iri-string-0.7
+  (package
+    (name "rust-iri-string")
+    (version "0.7.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "iri-string" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1siv0qq612v8d25ryy8n74n2h6g9zwr9yxjgzzi5dzlg5rbhl3yw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-memchr" ,rust-memchr-2)
+                       ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-serde-test" ,rust-serde-test-1))))
+    (home-page "https://github.com/lo48576/iri-string")
+    (synopsis "IRI as string types")
+    (description
+      "This package provides string types for @acronym{IRIs, Internationalized
+Resource Identifiers} and @acronym{URIs, Uniform Resource Identifiers}.")
+    (license (list license:expat license:asl2.0))))
 
 (define-public rust-is-ci-1
   (package
