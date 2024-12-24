@@ -5913,33 +5913,31 @@ aware of your profiles and configuration in ~/.aws/config.")
     (propagated-inputs (list go-github-com-stretchr-testify))))
 
 (define-public go-github-com-skratchdot-open-golang
-  (let ((commit "79abb63cd66e41cb1473e26d11ebdcd68b04c8e5")
-        (revision "0"))
     (package
       (name "go-github-com-skratchdot-open-golang")
-      (version "1.42.0")
+      (version "0.0.0-20200116055534-eef842397966")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
                       (url "https://github.com/skratchdot/open-golang")
-                      (commit commit)))
+                      (commit (go-version->git-ref version))))
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0jc13jn8cj7p14n79zhav2nwga6kf9rqs01ic5k7j7agwzzly3ww"))))
+                  "0n6387csjn024db8wldadsiy8ljz7lk7szl6ls28fcbkax7rw86y"))))
       (build-system go-build-system)
       (arguments
-       '(#:import-path "github.com/skratchdot/open-golang"
-         #:phases (modify-phases %standard-phases
-                    (delete 'build)
-                    (delete 'check))))
+       (list
+        #:skip-build? #t
+        #:tests? #f ; requires xdg-open and firefox in the PATH
+        #:import-path "github.com/skratchdot/open-golang"))
       (synopsis "Open a file, directory, or URI using the default application")
       (description
        "Open a file, directory, or URI using the OS's default application for
 that object type.  Optionally, you can specify an application to use.  On
 GNU/Linux, this is a proxy for the @command{xdg-open} command.")
       (home-page "https://github.com/skratchdot/open-golang")
-      (license license:expat))))
+      (license license:expat)))
 
 (define-public go-github-com-dreamacro-go-shadowsocks2
   (package
