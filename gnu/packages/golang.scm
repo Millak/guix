@@ -4602,34 +4602,6 @@ maps (because they are not addressable using Go reflection).")
 size of the terminal.")
       (license license:expat))))
 
-(define-public go-github-com-charmbracelet-harmonica
-  (package
-    (name "go-github-com-charmbracelet-harmonica")
-    (version "0.2.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/charmbracelet/harmonica")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1aasg0c0xxhwav4ivm1mqmsqab6lk407xky8c19pb85r1hdbq0n7"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/charmbracelet/harmonica"
-      #:phases #~(modify-phases %standard-phases
-                   (add-after 'unpack 'remove-examples
-                     (lambda* (#:key import-path #:allow-other-keys)
-                       (delete-file-recursively
-                        (string-append "src/" import-path "/examples")))))))
-    (home-page "https://github.com/charmbracelet/harmonica")
-    (synopsis "Simple, physics-based animation library")
-    (description
-     "A simple, efficient spring animation library for smooth, natural motion.")
-    (license license:expat)))
-
 (define-public go-github-com-jba-templatecheck
   (package
     (name "go-github-com-jba-templatecheck")
