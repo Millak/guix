@@ -63,6 +63,7 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages certs)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages dns)
   #:use-module (gnu packages docbook)
@@ -159,7 +160,8 @@ in intelligent transportation networks.")
         (base32 "1rcq2578aq3ag288qnvdmj4a2wbihncndbr6iw0vxcfda1jail04"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list pkg-config
+     (list nss-certs                    ;default certificates
+           pkg-config
            python-minimal))             ;to generate some headers
     (inputs
      (append (list libffi libtasn1)
@@ -172,9 +174,20 @@ in intelligent transportation networks.")
       #~(list (string-append
                "--with-trust-paths="
                (string-join
-                '("/etc/ssl/certs/ca-certificates.crt" ;guix, debian, gentoo, etc.
+                '("/etc/ssl/certs/ca-certificates.crt" ;debian, gentoo, etc.
                   "/etc/pki/tls/certs/ca-bundle.crt"   ;fedora, centos
-                  "/var/lib/ca-certificates/ca-bundle.pem") ;opensuse
+                  "/var/lib/ca-certificates/ca-bundle.pem"
+                  ;; It's not enough to point directly to the nss-certs'
+                  ;; etc/ssl/certs directory; we must ensure the .pem
+                  ;; certificates from a directory are found under the
+                  ;; anchors/ subdirectory to be trusted (see:
+                  ;; https://p11-glue.github.io/p11-glue/p11-kit/
+                  ;; manual/trust-module.html#trust-files).
+                  #$(file-union
+                     "nss-certs"
+                     `(("anchors"
+                        ,(file-append (this-package-native-input "nss-certs")
+                                      "/etc/ssl/certs")))))
                 ":")))))
     (home-page "https://p11-glue.github.io/p11-glue/p11-kit.html")
     (synopsis "PKCS#11 library")
