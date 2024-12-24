@@ -46590,31 +46590,6 @@ non-interactive protocols can be implemented as if they were interactive.")
          ("rust-rand-core" ,rust-rand-core-0.5)
          ("rust-zeroize" ,rust-zeroize-1))))))
 
-(define-public rust-metrics-macros-0.2
-  (package
-    (name "rust-metrics-macros")
-    (version "0.2.0")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "metrics-macros" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0yy2dc9g3m1h8df6bmnqh1sngyvrgznz1fjpkp9rz1is9p6n1b0i"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-proc-macro-hack" ,rust-proc-macro-hack-0.5)
-        ("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-quote" ,rust-quote-1)
-        ("rust-regex" ,rust-regex-1)
-        ("rust-syn" ,rust-syn-1))))
-    (home-page "https://github.com/metrics-rs/metrics")
-    (synopsis "Macros for the metrics crate")
-    (description "This package provides macros for the metrics crate.")
-    (license license:expat)))
-
 (define-public rust-metrics-0.14
   (package
     (name "rust-metrics")
@@ -46638,6 +46613,31 @@ non-interactive protocols can be implemented as if they were interactive.")
     (home-page "https://github.com/metrics-rs/metrics")
     (synopsis "Lightweight metrics facade")
     (description "This package provides a lightweight metrics facade.")
+    (license license:expat)))
+
+(define-public rust-metrics-macros-0.2
+  (package
+    (name "rust-metrics-macros")
+    (version "0.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "metrics-macros" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0yy2dc9g3m1h8df6bmnqh1sngyvrgznz1fjpkp9rz1is9p6n1b0i"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-proc-macro-hack" ,rust-proc-macro-hack-0.5)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/metrics-rs/metrics")
+    (synopsis "Macros for the metrics crate")
+    (description "This package provides macros for the metrics crate.")
     (license license:expat)))
 
 (define-public rust-metrohash-1
