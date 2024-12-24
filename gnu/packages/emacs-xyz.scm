@@ -16847,6 +16847,29 @@ color-name strings (such as \"blue\") and hex RGB color strings (such as
 multiple project types.")
       (license license:gpl3+))))
 
+(define-public emacs-tp
+  (package
+    (name "emacs-tp")
+    (version "0.6")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://codeberg.org/martianh/tp.el")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "14vdn5syv7jghxvqlih9gvh82755r5gd8yxskq8bv6wkm4b0y0cs"))))
+    (build-system emacs-build-system)
+    (home-page "https://codeberg.org/martianh/tp.el")
+    (synopsis "Utilities to create transient menus for POSTing to an API")
+    (description
+     "This package provides functions, classes and methods to make it easier
+to create transient menus that send complex POST, PUT, or PATCH requests to
+JSON APIs.")
+    (license license:gpl3+)))
+
+
 (define-public emacs-ivy-taskrunner
   (let ((commit "75d8d67cfe3c29663fe0f5508a887adf40ed5162")
         (revision "1"))
