@@ -1920,8 +1920,61 @@ PEM-encodings commonly used to store keys and certificates at rest.")
      "This crate provides shared types for the rustls PKI ecosystem.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-rustls-platform-verifier-0.5
+  (package
+    (name "rust-rustls-platform-verifier")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rustls-platform-verifier" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1nlrxbw2i5q7dxz2gnif14hz5ph67b5d8viqr4r06yd18icc84p0"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-test-flags
+           '(list "--"
+                  "--skip=tests::verification_mock::test_verification_without_mock_root"
+                  "--skip=tests::verification_real_world::tests::_1password_com_valid"
+                  "--skip=tests::verification_real_world::tests::letsencrypt"
+                  "--skip=tests::verification_real_world::tests::my_1password_com_valid"
+                  "--skip=tests::verification_real_world::tests::my_1password_com_valid_no_stapled"
+                  "--skip=tests::verification_real_world::tests::unrelated_chain_not_valid_for_my_1password_com"
+                  "--skip=tests::verification_real_world::tests::unrelated_chain_valid_for_unrelated_domain"
+                  "--skip=tests::verification_real_world::tests::unrelated_domain_invalid")
+           #:cargo-inputs
+           (list rust-android-logger-0.13
+                 rust-base64-0.22
+                 rust-core-foundation-0.10
+                 rust-core-foundation-sys-0.8
+                 rust-jni-0.21
+                 rust-log-0.4
+                 rust-once-cell-1
+                 rust-paste-1
+                 rust-rustls-0.23
+                 rust-rustls-native-certs-0.8
+                 rust-rustls-platform-verifier-android-0.1
+                 rust-rustls-webpki-0.102
+                 rust-security-framework-3
+                 rust-security-framework-sys-2
+                 rust-webpki-root-certs-0.26
+                 rust-windows-sys-0.52)
+           #:cargo-development-inputs
+           (list rust-paste-1
+                 rust-rustls-0.23
+                 rust-webpki-root-certs-0.26)))
+    (home-page "https://github.com/rustls/rustls-platform-verifier")
+    (synopsis
+     "Verify TLS certificates in rustls with the operating system verifier")
+    (description
+     "This package provides rustls-platform-verifier a way to support verifying
+TLS certificates in rustls with the operating system verifier.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-rustls-platform-verifier-0.3
   (package
+    (inherit rust-rustls-platform-verifier-0.5)
     (name "rust-rustls-platform-verifier")
     (version "0.3.4")
     (source
@@ -1931,7 +1984,6 @@ PEM-encodings commonly used to store keys and certificates at rest.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "145lhjn9w5khp0fn4lagaa8qqyjyhfqn2dg6llva6qyzvy5qgfxg"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
        '("--release" "--"
@@ -1960,14 +2012,7 @@ PEM-encodings commonly used to store keys and certificates at rest.")
         ("rust-webpki-roots" ,rust-webpki-roots-0.26)
         ("rust-winapi" ,rust-winapi-0.3))
        #:cargo-development-inputs (("rust-rustls" ,rust-rustls-0.23)
-                                   ("rust-webpki-roots" ,rust-webpki-roots-0.26))))
-    (home-page "https://github.com/rustls/rustls-platform-verifier")
-    (synopsis
-     "Verify TLS certificates in rustls with the operating system verifier")
-    (description
-     "This package provides rustls-platform-verifier a way to support verifying
-TLS certificates in rustls with the operating system verifier.")
-    (license (list license:expat license:asl2.0))))
+                                   ("rust-webpki-roots" ,rust-webpki-roots-0.26))))))
 
 (define-public rust-rustls-platform-verifier-android-0.1
   (package
