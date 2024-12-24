@@ -6755,6 +6755,38 @@ bytes or encoder from file extension.")
     (description "Pull in every source file in a directory as a module.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-av-metrics-0.9
+  (package
+    (name "rust-av-metrics")
+    (version "0.9.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "av-metrics" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0c1m5rrrx88y1hm4i17qh0fd2rqd3jwck86lj5dkw85hpmdyjv4r"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-crossbeam" ,rust-crossbeam-0.8)
+        ("rust-itertools" ,rust-itertools-0.10)
+        ("rust-lab" ,rust-lab-0.11)
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-rayon" ,rust-rayon-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-v-frame" ,rust-v-frame-0.3))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.4)
+        ("rust-y4m" ,rust-y4m-0.8))))
+    (home-page "https://github.com/rust-av/av-metrics")
+    (synopsis "Collection of algorithms for measuring audio/video metrics")
+    (description
+     "This package provides a collection of algorithms for measuring
+audio/video metrics.")
+    (license license:expat)))
+
 (define-public rust-average-0.13
   (package
     (name "rust-average")
@@ -6836,38 +6868,6 @@ iteratively in Rust.")
     (description "This crate provides for calculating statistics iteratively
 in Rust.")
     (license (list license:asl2.0 license:expat))))
-
-(define-public rust-av-metrics-0.9
-  (package
-    (name "rust-av-metrics")
-    (version "0.9.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "av-metrics" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0c1m5rrrx88y1hm4i17qh0fd2rqd3jwck86lj5dkw85hpmdyjv4r"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-crossbeam" ,rust-crossbeam-0.8)
-        ("rust-itertools" ,rust-itertools-0.10)
-        ("rust-lab" ,rust-lab-0.11)
-        ("rust-num-traits" ,rust-num-traits-0.2)
-        ("rust-rayon" ,rust-rayon-1)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-thiserror" ,rust-thiserror-1)
-        ("rust-v-frame" ,rust-v-frame-0.3))
-       #:cargo-development-inputs
-       (("rust-criterion" ,rust-criterion-0.4)
-        ("rust-y4m" ,rust-y4m-0.8))))
-    (home-page "https://github.com/rust-av/av-metrics")
-    (synopsis "Collection of algorithms for measuring audio/video metrics")
-    (description
-     "This package provides a collection of algorithms for measuring
-audio/video metrics.")
-    (license license:expat)))
 
 (define-public rust-av1-grain-0.2
   (package
