@@ -86696,26 +86696,6 @@ color of the terminal.")
      "This package provides a handle to the terminal of the current process.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-termini-1
-  (package
-    (name "rust-termini")
-    (version "1.0.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "termini" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0n8dvbwkp2k673xqwivb01iqg5ir91zgpwhwngpcb2yrgpc43m1a"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:tests? #f      ; Not all files included.
-       #:cargo-inputs (("rust-home" ,rust-home-0.5))))
-    (home-page "https://github.com/pascalkuthe/termini")
-    (synopsis "Minimal terminfo library")
-    (description "This package provides a minimal terminfo library.")
-    (license license:expat)))
-
 (define-public rust-terminfo-0.8
   (package
     (name "rust-terminfo")
@@ -86762,6 +86742,26 @@ color of the terminal.")
                        ("rust-nom" ,rust-nom-5)
                        ("rust-phf" ,rust-phf-0.8)
                        ("rust-phf-codegen" ,rust-phf-codegen-0.8))))))
+
+(define-public rust-termini-1
+  (package
+    (name "rust-termini")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "termini" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0n8dvbwkp2k673xqwivb01iqg5ir91zgpwhwngpcb2yrgpc43m1a"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Not all files included.
+       #:cargo-inputs (("rust-home" ,rust-home-0.5))))
+    (home-page "https://github.com/pascalkuthe/termini")
+    (synopsis "Minimal terminfo library")
+    (description "This package provides a minimal terminfo library.")
+    (license license:expat)))
 
 (define-public rust-termion-3
   (package
