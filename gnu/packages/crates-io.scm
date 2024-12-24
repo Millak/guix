@@ -56836,6 +56836,29 @@ algebra.")
     (description "This package provides a CLI argument parser.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-paw-attributes-1
+  (package
+    (name "rust-paw-attributes")
+    (version "1.0.2")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "paw-attributes" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32 "0fda1v7y5pfmg8d2v7m0pyvif6c44qjz914jjn718pdyclrmhd8g"))))
+    (build-system cargo-build-system)
+    (arguments
+      `(#:cargo-inputs
+        (("rust-proc-macro2" ,rust-proc-macro2-1)
+         ("rust-quote" ,rust-quote-1)
+         ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/rust-cli/paw")
+    (synopsis "Proc Macro attributes for the Paw crate")
+    (description "This package provides Proc Macro attributes for the Paw
+crate.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-pcap-1
   (package
     (name "rust-pcap")
@@ -78382,29 +78405,6 @@ designed for @code{immutable.rs}.")
     (description "This create provides a pre-allocated storage for a uniform
 data type.")
     (license license:expat)))
-
-(define-public rust-paw-attributes-1
-  (package
-    (name "rust-paw-attributes")
-    (version "1.0.2")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "paw-attributes" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-          (base32 "0fda1v7y5pfmg8d2v7m0pyvif6c44qjz914jjn718pdyclrmhd8g"))))
-    (build-system cargo-build-system)
-    (arguments
-      `(#:cargo-inputs
-        (("rust-proc-macro2" ,rust-proc-macro2-1)
-         ("rust-quote" ,rust-quote-1)
-         ("rust-syn" ,rust-syn-1))))
-    (home-page "https://github.com/rust-cli/paw")
-    (synopsis "Proc Macro attributes for the Paw crate")
-    (description "This package provides Proc Macro attributes for the Paw
-crate.")
-    (license (list license:expat license:asl2.0))))
 
 (define-public rust-paw-raw-1
   (package
