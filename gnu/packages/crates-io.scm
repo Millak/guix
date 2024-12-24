@@ -36064,6 +36064,26 @@ Normalization Forms.")
        (("rust-rustc-serialize" ,rust-rustc-serialize-0.3)
         ("rust-rustc-test" ,rust-rustc-test-0.3))))))
 
+(define-public rust-idna-adapter-1
+  (package
+    (name "rust-idna-adapter")
+    (version "1.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "idna_adapter" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0wggnkiivaj5lw0g0384ql2d7zk4ppkn3b1ry4n0ncjpr7qivjns"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-icu-normalizer" ,rust-icu-normalizer-1)
+                       ("rust-icu-properties" ,rust-icu-properties-1))))
+    (home-page "https://docs.rs/crate/idna_adapter/latest")
+    (synopsis "Back end adapter for idna")
+    (description "This package provides the back end adapter for idna.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-ieee754-0.2
   (package
     (name "rust-ieee754")
