@@ -35451,30 +35451,6 @@ machines are still at bay.")
      "This package provides Human sort (natural sort) implementation.")
     (license license:expat)))
 
-(define-public rust-humantime-serde-1
-  (package
-    (name "rust-humantime-serde")
-    (version "1.1.1")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "humantime-serde" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0310ri4zb33qbwqv0n51xysfjpnwc6rgxscl5i09jgcjlmgdp8sp"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-test-flags '("--" "--skip=test::test_html_root_url")
-       #:cargo-inputs (("rust-humantime" ,rust-humantime-2)
-                       ("rust-serde" ,rust-serde-1))
-       #:cargo-development-inputs (("rust-serde-json" ,rust-serde-json-1)
-                                   ("rust-version-sync" ,rust-version-sync-0.8))))
-    (home-page "https://github.com/jean-airoldie/humantime-serde")
-    (synopsis "Humantime serialization timestamp format")
-    (description
-     "This package provides a Humantime serialization timestamp format.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-humansize-2
   (package
     (name "rust-humansize")
@@ -35558,6 +35534,30 @@ SystemTime}}.")
        (("rust-chrono" ,rust-chrono-0.4)
         ("rust-rand" ,rust-rand-0.4)
         ("rust-time" ,rust-time-0.1))))))
+
+(define-public rust-humantime-serde-1
+  (package
+    (name "rust-humantime-serde")
+    (version "1.1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "humantime-serde" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0310ri4zb33qbwqv0n51xysfjpnwc6rgxscl5i09jgcjlmgdp8sp"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--" "--skip=test::test_html_root_url")
+       #:cargo-inputs (("rust-humantime" ,rust-humantime-2)
+                       ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-serde-json" ,rust-serde-json-1)
+                                   ("rust-version-sync" ,rust-version-sync-0.8))))
+    (home-page "https://github.com/jean-airoldie/humantime-serde")
+    (synopsis "Humantime serialization timestamp format")
+    (description
+     "This package provides a Humantime serialization timestamp format.")
+    (license (list license:expat license:asl2.0))))
 
 (define-public rust-hyphenation-commons-0.8
   (package
