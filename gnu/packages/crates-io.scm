@@ -65124,8 +65124,51 @@ numbers.")
         ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3)
         ("rust-url" ,rust-url-2))))))
 
+(define-public rust-quinn-proto-0.11
+  (package
+    (name "rust-quinn-proto")
+    (version "0.11.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "quinn-proto" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0p8k3iqd0rcxc7b6m2yyijhw4bpfwa61lyzigwvjwzax97rmxzm2"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-inputs
+           (list rust-arbitrary-1
+                 rust-aws-lc-rs-1
+                 rust-bytes-1
+                 rust-getrandom-0.2
+                 rust-rand-0.8
+                 rust-ring-0.17
+                 rust-rustc-hash-2
+                 rust-rustls-0.23
+                 rust-rustls-pki-types-1
+                 rust-rustls-platform-verifier-0.4
+                 rust-slab-0.4
+                 rust-thiserror-2
+                 rust-tinyvec-1
+                 rust-tracing-0.1
+                 rust-web-time-1)
+           #:cargo-development-inputs
+           (list rust-assert-matches-1
+                 rust-hex-literal-0.4
+                 rust-lazy-static-1
+                 rust-rcgen-0.13
+                 rust-tracing-subscriber-0.3
+                 rust-wasm-bindgen-test-0.3)))
+    (home-page "https://github.com/quinn-rs/quinn")
+    (synopsis "State machine for the QUIC transport protocol")
+    (description
+     "This package provides the state machine for the QUIC transport protocol.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-quinn-proto-0.10
   (package
+    (inherit rust-quinn-proto-0.11)
     (name "rust-quinn-proto")
     (version "0.10.6")
     (source
@@ -65135,7 +65178,6 @@ numbers.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "06ibzy0i7gf7hs65slxgv7xv095aalj2zq9zzmmj9g1gvvgzf6ql"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
        '("--release" "--"
@@ -65157,11 +65199,7 @@ numbers.")
         ("rust-hex-literal" ,rust-hex-literal-0.4)
         ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-rcgen" ,rust-rcgen-0.10)
-        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))
-    (home-page "https://github.com/quinn-rs/quinn")
-    (synopsis "State machine for the QUIC transport protocol")
-    (description "State machine for the QUIC transport protocol.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))))
 
 (define-public rust-quinn-proto-0.8
   (package
