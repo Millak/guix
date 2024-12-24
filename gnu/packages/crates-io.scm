@@ -96637,14 +96637,14 @@ result.")
 (define-public rust-wasm-bindgen-0.2
   (package
     (name "rust-wasm-bindgen")
-    (version "0.2.91")
+    (version "0.2.99")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "wasm-bindgen" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0zwbb07ln4m5hh6axamc701nnj090nd66syxbf6bagzf189j9qf1"))
+        (base32 "15k3rzb3kjrxyqnh0916gq99mrpwhwy62smawxxc2w0x3llgcx54"))
        (modules '((guix build utils)))
        (snippet
         '(begin (substitute* "Cargo.toml"
@@ -96654,18 +96654,13 @@ result.")
     (arguments
      `(#:cargo-inputs
       (("rust-cfg-if" ,rust-cfg-if-1)
+       ("rust-once-cell" ,rust-once-cell-1)
        ("rust-serde" ,rust-serde-1)
        ("rust-serde-json" ,rust-serde-json-1)
        ("rust-wasm-bindgen-macro" ,rust-wasm-bindgen-macro-0.2))
       #:cargo-development-inputs
-      (("rust-js-sys" ,rust-js-sys-0.3)
-       ("rust-serde-derive" ,rust-serde-derive-1)
-       ("rust-wasm-bindgen-futures" ,rust-wasm-bindgen-futures-0.4)
-       ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3)
-       ("rust-wasm-bindgen-test-crate-a"
-        ,rust-wasm-bindgen-test-crate-a-0.1)
-       ("rust-wasm-bindgen-test-crate-b"
-        ,rust-wasm-bindgen-test-crate-b-0.1))))
+      (("rust-paste" ,rust-paste-1)
+       ("rust-serde-derive" ,rust-serde-derive-1))))
     (home-page "https://rustwasm.github.io/")
     (synopsis "Easy support for interacting between JS and Rust")
     (description
