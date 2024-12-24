@@ -26802,6 +26802,29 @@ libraries generally do not give you a choice in terms of which standards/convent
 they follow.  Etcetera, on the other hand, gives you the choice.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-etherparse-0.13
+  (package
+    (name "rust-etherparse")
+    (version "0.13.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "etherparse" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "146rcbnhlpcbl6c6csfhvz0227wbiwhk13md6acq8211b7m94wl2"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-arrayvec" ,rust-arrayvec-0.7))
+       #:cargo-development-inputs (("rust-assert-matches" ,rust-assert-matches-1)
+                                   ("rust-proptest" ,rust-proptest-1))))
+    (home-page "https://github.com/JulianSchmid/etherparse")
+    (synopsis "Library for parsing & writing a bunch of packet based protocols")
+    (description
+     "This package provides a library for parsing & writing a bunch of packet
+based protocols (@code{EthernetII}, IPv4, IPv6, UDP, TCP ...).")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-ethnum-1
   (package
     (name "rust-ethnum")
@@ -70949,29 +70972,6 @@ the file-system during development.")
         (base32 "0vc7492a6qlq7r899p7vyx5cwiqwkw2pf85mfw5anwr42ccj4l9a"))))
     (arguments
      `(#:cargo-inputs (("rust-walkdir" ,rust-walkdir-2))))))
-
-(define-public rust-etherparse-0.13
-  (package
-    (name "rust-etherparse")
-    (version "0.13.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "etherparse" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "146rcbnhlpcbl6c6csfhvz0227wbiwhk13md6acq8211b7m94wl2"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-arrayvec" ,rust-arrayvec-0.7))
-       #:cargo-development-inputs (("rust-assert-matches" ,rust-assert-matches-1)
-                                   ("rust-proptest" ,rust-proptest-1))))
-    (home-page "https://github.com/JulianSchmid/etherparse")
-    (synopsis "Library for parsing & writing a bunch of packet based protocols")
-    (description
-     "This package provides a library for parsing & writing a bunch of packet
-based protocols (@code{EthernetII}, IPv4, IPv6, UDP, TCP ...).")
-    (license (list license:expat license:asl2.0))))
 
 (define-public rust-etherparse-0.9
   (package
