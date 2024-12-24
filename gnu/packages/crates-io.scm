@@ -63698,6 +63698,66 @@ in codeblocks, while assuring quality with a powerful test suite.")
     (description "This package provides a safe interface to @code{pwd.h}.")
     (license license:public-domain)))
 
+(define-public rust-pyo3-0.23
+  (package
+    (name "rust-pyo3")
+    (version "0.23.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pyo3" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "05bclbdhj210gpq0i7w16369y6cgzbb1z3ribaq7mdjcicngv174"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-chrono-tz" ,rust-chrono-tz-0.10)
+                       ("rust-either" ,rust-either-1)
+                       ("rust-eyre" ,rust-eyre-0.6)
+                       ("rust-hashbrown" ,rust-hashbrown-0.15)
+                       ("rust-indexmap" ,rust-indexmap-2)
+                       ("rust-indoc" ,rust-indoc-2)
+                       ("rust-inventory" ,rust-inventory-0.3)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-memoffset" ,rust-memoffset-0.9)
+                       ("rust-num-bigint" ,rust-num-bigint-0.4)
+                       ("rust-num-complex" ,rust-num-complex-0.4)
+                       ("rust-num-rational" ,rust-num-rational-0.4)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-portable-atomic" ,rust-portable-atomic-1)
+                       ("rust-pyo3-build-config" ,rust-pyo3-build-config-0.23)
+                       ("rust-pyo3-ffi" ,rust-pyo3-ffi-0.23)
+                       ("rust-pyo3-macros" ,rust-pyo3-macros-0.23)
+                       ("rust-rust-decimal" ,rust-rust-decimal-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-unindent" ,rust-unindent-0.2))
+       #:cargo-development-inputs
+       (("rust-assert-approx-eq" ,rust-assert-approx-eq-1)
+        ("rust-chrono" ,rust-chrono-0.4)
+        ("rust-chrono-tz" ,rust-chrono-tz-0.10)
+        ("rust-futures" ,rust-futures-0.3)
+        ("rust-proptest" ,rust-proptest-1)
+        ("rust-rayon" ,rust-rayon-1)
+        ("rust-send-wrapper" ,rust-send-wrapper-0.6)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-static-assertions" ,rust-static-assertions-1)
+        ("rust-tempfile" ,rust-tempfile-3)
+        ("rust-trybuild" ,rust-trybuild-1)
+        ("rust-uuid" ,rust-uuid-1))))
+    (inputs (list python-minimal))
+    (home-page "https://github.com/pyo3/pyo3")
+    (synopsis "Rust bindings for the Python interpreter")
+    (description
+     "This package provides Rust bindings for Python, including tools for
+creating native Python extension modules.  Running and interacting with
+Python code from a Rust binary is also supported.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-pyo3-build-config-0.23
   (package
     (name "rust-pyo3-build-config")
@@ -64335,66 +64395,6 @@ extension to python.")
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))))
     (native-inputs (list python))))
-
-(define-public rust-pyo3-0.23
-  (package
-    (name "rust-pyo3")
-    (version "0.23.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "pyo3" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "05bclbdhj210gpq0i7w16369y6cgzbb1z3ribaq7mdjcicngv174"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
-                       ("rust-cfg-if" ,rust-cfg-if-1)
-                       ("rust-chrono" ,rust-chrono-0.4)
-                       ("rust-chrono-tz" ,rust-chrono-tz-0.10)
-                       ("rust-either" ,rust-either-1)
-                       ("rust-eyre" ,rust-eyre-0.6)
-                       ("rust-hashbrown" ,rust-hashbrown-0.15)
-                       ("rust-indexmap" ,rust-indexmap-2)
-                       ("rust-indoc" ,rust-indoc-2)
-                       ("rust-inventory" ,rust-inventory-0.3)
-                       ("rust-libc" ,rust-libc-0.2)
-                       ("rust-memoffset" ,rust-memoffset-0.9)
-                       ("rust-num-bigint" ,rust-num-bigint-0.4)
-                       ("rust-num-complex" ,rust-num-complex-0.4)
-                       ("rust-num-rational" ,rust-num-rational-0.4)
-                       ("rust-once-cell" ,rust-once-cell-1)
-                       ("rust-portable-atomic" ,rust-portable-atomic-1)
-                       ("rust-pyo3-build-config" ,rust-pyo3-build-config-0.23)
-                       ("rust-pyo3-ffi" ,rust-pyo3-ffi-0.23)
-                       ("rust-pyo3-macros" ,rust-pyo3-macros-0.23)
-                       ("rust-rust-decimal" ,rust-rust-decimal-1)
-                       ("rust-serde" ,rust-serde-1)
-                       ("rust-smallvec" ,rust-smallvec-1)
-                       ("rust-unindent" ,rust-unindent-0.2))
-       #:cargo-development-inputs
-       (("rust-assert-approx-eq" ,rust-assert-approx-eq-1)
-        ("rust-chrono" ,rust-chrono-0.4)
-        ("rust-chrono-tz" ,rust-chrono-tz-0.10)
-        ("rust-futures" ,rust-futures-0.3)
-        ("rust-proptest" ,rust-proptest-1)
-        ("rust-rayon" ,rust-rayon-1)
-        ("rust-send-wrapper" ,rust-send-wrapper-0.6)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-static-assertions" ,rust-static-assertions-1)
-        ("rust-tempfile" ,rust-tempfile-3)
-        ("rust-trybuild" ,rust-trybuild-1)
-        ("rust-uuid" ,rust-uuid-1))))
-    (inputs (list python-minimal))
-    (home-page "https://github.com/pyo3/pyo3")
-    (synopsis "Rust bindings for the Python interpreter")
-    (description
-     "This package provides Rust bindings for Python, including tools for
-creating native Python extension modules.  Running and interacting with
-Python code from a Rust binary is also supported.")
-    (license (list license:expat license:asl2.0))))
 
 (define-public rust-pyo3-0.22
   (package
