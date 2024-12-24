@@ -8061,6 +8061,36 @@ Verification.")
        #:cargo-development-inputs
        (("rust-base64" ,rust-base64-0.9))))))
 
+(define-public rust-webpki-root-certs-0.26
+  (package
+    (name "rust-webpki-root-certs")
+    (version "0.26.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "webpki-root-certs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0p15xwdlibwqlmkqjb6qqikypyxqb0lwxf70rxa01wzipm4xmmcw"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:tests? #f  ; use of undeclared crate or module `webpki_ccadb`
+           #:cargo-inputs
+           (list rust-rustls-pki-types-1)
+           #:cargo-development-inputs
+           (list rust-hex-0.4
+                 rust-percent-encoding-2
+                 rust-ring-0.17
+                 rust-rustls-webpki-0.102
+                 rust-tokio-1
+                 rust-x509-parser-0.16)))
+    (home-page "https://github.com/rustls/webpki-roots")
+    (synopsis "Mozilla trusted certificate authorities in self-signed X.509 format")
+    (description
+     "This package provides Mozilla trusted certificate authorities in
+self-signed X.509 format for use with crates other than webpki.")
+    (license license:mpl2.0)))
+
 (define-public rust-webpki-roots-0.26
   (package
     (name "rust-webpki-roots")
