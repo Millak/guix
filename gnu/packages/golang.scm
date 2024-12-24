@@ -3720,21 +3720,19 @@ required by Go's standard Hash interface.")
       (license license:expat))))
 
 (define-public go-github-com-mitchellh-go-homedir
-  (let ((commit "ae18d6b8b3205b561c79e8e5f69bff09736185f4")
-        (revision "0"))
     (package
       (name "go-github-com-mitchellh-go-homedir")
-      (version (git-version "1.0.0" revision commit))
+      (version "1.1.0")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/mitchellh/go-homedir")
-               (commit commit)))
+               (commit (string-append "v" version))))
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "0f0z0aa4wivk4z1y503dmnw0k0g0g403dly8i4q263gfshs82sbq"))))
+           "0ydzkipf28hwj2bfxqmwlww47khyk6d152xax4bnyh60f4lq3nx1"))))
       (build-system go-build-system)
       (arguments
        (quote (#:import-path "github.com/mitchellh/go-homedir"
@@ -3756,7 +3754,7 @@ package cannot cross compile.  But 99% of the time the use for
 @command{os/user} is just to retrieve the home directory, which we can do for
 the current user without cgo.  This library does that, enabling
 cross-compilation.")
-      (license license:expat))))
+      (license license:expat)))
 
 (define-public go-github-com-mitchellh-reflectwalk
   (package
