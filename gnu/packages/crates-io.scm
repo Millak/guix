@@ -70693,6 +70693,32 @@ please consider using @code{async-std} or @code{tokio}.")
     (description "This package provides a Tokio-based asynchronous runtime.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-rusb-0.9
+  (package
+    (name "rust-rusb")
+    (version "0.9.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rusb" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1905rijhabvylblh24379229hjmkfhxr80jc79aqd9v3bgq9z7xb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2)
+                       ("rust-libusb1-sys" ,rust-libusb1-sys-0.7)
+                       ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-regex" ,rust-regex-1)
+                                   ("rust-usb-ids" ,rust-usb-ids-1))))
+    (inputs (list libusb))
+    (native-inputs (list pkg-config))
+    (home-page "https://github.com/a1ien/rusb")
+    (synopsis "Library for accessing USB devices")
+    (description
+     "This package provides a Rust library for accessing USB devices.")
+    (license license:expat)))
+
 (define-public rust-rusqlite-0.32
   (package
     (name "rust-rusqlite")
@@ -71184,32 +71210,6 @@ the file-system during development.")
         (base32 "0vc7492a6qlq7r899p7vyx5cwiqwkw2pf85mfw5anwr42ccj4l9a"))))
     (arguments
      `(#:cargo-inputs (("rust-walkdir" ,rust-walkdir-2))))))
-
-(define-public rust-rusb-0.9
-  (package
-    (name "rust-rusb")
-    (version "0.9.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "rusb" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1905rijhabvylblh24379229hjmkfhxr80jc79aqd9v3bgq9z7xb"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2)
-                       ("rust-libusb1-sys" ,rust-libusb1-sys-0.7)
-                       ("rust-serde" ,rust-serde-1))
-       #:cargo-development-inputs (("rust-regex" ,rust-regex-1)
-                                   ("rust-usb-ids" ,rust-usb-ids-1))))
-    (inputs (list libusb))
-    (native-inputs (list pkg-config))
-    (home-page "https://github.com/a1ien/rusb")
-    (synopsis "Library for accessing USB devices")
-    (description
-     "This package provides a Rust library for accessing USB devices.")
-    (license license:expat)))
 
 (define-public rust-rust-hawktracer-0.7
   (package
