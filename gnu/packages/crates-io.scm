@@ -42735,40 +42735,6 @@ C parser and toolkit developed for the GNOME project.")
        (sha256
         (base32 "1xx1bsay6c0jy9vi7qcvliidya33lvbkxwpdfz9qmzl23f11xxxh"))))))
 
-(define-public rust-libz-sys-1
-  (package
-    (name "rust-libz-sys")
-    (version "1.1.20")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "libz-sys" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-           "0wp4i6zl385ilmcqafv61jwsk1mpk6yb8gpws9nwza00x19n9lfj"))
-        (modules '((guix build utils)))
-        (snippet
-         '(begin (delete-file-recursively "src/zlib")
-                 (delete-file-recursively "src/zlib-ng")))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-libc" ,rust-libc-0.2)
-        ;; Build dependencies:
-        ("rust-cc" ,rust-cc-1)
-        ("rust-cmake" ,rust-cmake-0.1)
-        ("rust-pkg-config" ,rust-pkg-config-0.3)
-        ("rust-vcpkg" ,rust-vcpkg-0.2))))
-    (native-inputs
-     (list pkg-config zlib))
-    (home-page "https://github.com/rust-lang/libz-sys")
-    (synopsis "Bindings to the system libz library")
-    (description
-     "This package provides bindings to the system @code{libz} library (also
-known as zlib).")
-    (license (list license:asl2.0 license:expat))))
-
 (define-public rust-libz-ng-sys-1
   ;; TODO: Unbundle zlib-ng.
   (package
@@ -42832,6 +42798,40 @@ high-performance zlib library.")
      `(#:tests? #f      ; zlib-ng isn't packaged.
        #:cargo-inputs (("rust-libc" ,rust-libc-0.2)
                        ("rust-zlib-rs" ,rust-zlib-rs-0.1))))))
+
+(define-public rust-libz-sys-1
+  (package
+    (name "rust-libz-sys")
+    (version "1.1.20")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "libz-sys" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32
+           "0wp4i6zl385ilmcqafv61jwsk1mpk6yb8gpws9nwza00x19n9lfj"))
+        (modules '((guix build utils)))
+        (snippet
+         '(begin (delete-file-recursively "src/zlib")
+                 (delete-file-recursively "src/zlib-ng")))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ;; Build dependencies:
+        ("rust-cc" ,rust-cc-1)
+        ("rust-cmake" ,rust-cmake-0.1)
+        ("rust-pkg-config" ,rust-pkg-config-0.3)
+        ("rust-vcpkg" ,rust-vcpkg-0.2))))
+    (native-inputs
+     (list pkg-config zlib))
+    (home-page "https://github.com/rust-lang/libz-sys")
+    (synopsis "Bindings to the system libz library")
+    (description
+     "This package provides bindings to the system @code{libz} library (also
+known as zlib).")
+    (license (list license:asl2.0 license:expat))))
 
 (define-public rust-lifeguard-0.6
   (package
