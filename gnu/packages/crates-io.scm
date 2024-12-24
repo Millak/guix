@@ -98387,21 +98387,23 @@ executable.")
   (package
     (inherit rust-which-5)
     (name "rust-which")
-    (version "4.3.0")
+    (version "4.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "which" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0yybp94wikf21vkcl8b6w6l5pnd95nl4fxryz669l4lyxsxiz0qw"))))
+        (base32 "1ixzmx3svsv5hbdvd8vdhd3qwvf6ns8jdpif1wmwsy10k90j9fl7"))))
     (arguments
-     (list #:skip-build? #t
+     (list #:cargo-test-flags '(list "--" "--skip=it_works")
            #:cargo-inputs
            `(("rust-either" ,rust-either-1)
-             ("rust-libc" ,rust-libc-0.2)
+             ("rust-home" ,rust-home-0.5)
              ("rust-once-cell" ,rust-once-cell-1)
-             ("rust-regex" ,rust-regex-1))))))
+             ("rust-regex" ,rust-regex-1)
+             ("rust-rustix" ,rust-rustix-0.38))
+           #:cargo-development-inputs `(("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-which-3
   (package
