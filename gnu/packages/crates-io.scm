@@ -63367,24 +63367,6 @@ compliant email address validation.")
     (description "Simple instrumentation profiler for games.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-pulldown-cmark-escape-0.11
-  (package
-    (name "rust-pulldown-cmark-escape")
-    (version "0.11.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "pulldown-cmark-escape" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1bp13akkz52p43vh2ffpgv604l3xd9b67b4iykizidnsbpdqlz80"))))
-    (build-system cargo-build-system)
-    (home-page "https://github.com/pulldown-cmark/pulldown-cmark")
-    (synopsis "Escape library for HTML created in the pulldown-cmark project")
-    (description "This package provides an escape library for HTML created in
-the pulldown-cmark project.")
-    (license license:expat)))
-
 (define-public rust-pulldown-cmark-0.12
   (package
     (name "rust-pulldown-cmark")
@@ -63568,6 +63550,24 @@ the pulldown-cmark project.")
        #:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-0.9)
         ("rust-getopts" ,rust-getopts-0.2))))))
+
+(define-public rust-pulldown-cmark-escape-0.11
+  (package
+    (name "rust-pulldown-cmark-escape")
+    (version "0.11.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pulldown-cmark-escape" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1bp13akkz52p43vh2ffpgv604l3xd9b67b4iykizidnsbpdqlz80"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/pulldown-cmark/pulldown-cmark")
+    (synopsis "Escape library for HTML created in the pulldown-cmark project")
+    (description "This package provides an escape library for HTML created in
+the pulldown-cmark project.")
+    (license license:expat)))
 
 (define-public rust-pulldown-cmark-to-cmark-10
   (package
