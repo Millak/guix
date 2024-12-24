@@ -13413,6 +13413,25 @@ by providing decoding for UTF-7 in addition to the encodings defined by the
 Encoding Standard.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-chic-1
+  (package
+    (name "rust-chic")
+    (version "1.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "chic" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "037pkdccj25gr4my8fq1qni9v87rydpyhfi2naf86mimkxhxpdd5"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-annotate-snippets" ,rust-annotate-snippets-0.6))))
+    (home-page "https://github.com/yoshuawuyts/chic")
+    (synopsis "Pretty parser error reporting")
+    (description "This package provides pretty parser error reporting.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-chrono-0.4
   (package
     (name "rust-chrono")
@@ -13448,25 +13467,6 @@ Encoding Standard.")
     (home-page "https://github.com/chronotope/chrono")
     (synopsis "Date and time library for Rust")
     (description "Date and time library for Rust.")
-    (license (list license:expat license:asl2.0))))
-
-(define-public rust-chic-1
-  (package
-    (name "rust-chic")
-    (version "1.2.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "chic" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "037pkdccj25gr4my8fq1qni9v87rydpyhfi2naf86mimkxhxpdd5"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-annotate-snippets" ,rust-annotate-snippets-0.6))))
-    (home-page "https://github.com/yoshuawuyts/chic")
-    (synopsis "Pretty parser error reporting")
-    (description "This package provides pretty parser error reporting.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-chrono-humanize-0.2
