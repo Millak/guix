@@ -9124,6 +9124,25 @@ same frame (in an extra window).  You can customize the initial width of
 the speedbar window.")
       (license license:gpl3+))))
 
+(define-public emacs-shell-maker
+  (package
+    (name "emacs-shell-maker")
+    (version "0.74.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/xenodium/shell-maker")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "06prky3c8hfvbnb705qa436vznq05zjicdz870l7m2760h6803iz"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/xenodium/shell-maker")
+    (synopsis "Create Emacs shells")
+    (description "Shell Maker is a convenience wrapper around Comint mode.")
+    (license license:gpl3+)))
+
 (define-public emacs-shell-switcher
   (package
     (name "emacs-shell-switcher")
