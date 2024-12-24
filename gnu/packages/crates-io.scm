@@ -39776,37 +39776,6 @@ allocation per spawned future, whereas the futures Threadpool uses std
 concurrency primitives and multiple allocations.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-juniper-codegen-0.15
-  (package
-    (name "rust-juniper-codegen")
-    (version "0.15.9")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "juniper_codegen" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1nvigsc1yrfv09wx1yv830dd60ay556haz87p80h7m8s0rqpdsdf"))))
-    (build-system cargo-build-system)
-    (arguments
-     ;; XXX: Tests fail with "error[E0599]: no variant or associated item
-     ;; named `__TestExhaustive` found for enum `syn::Type` in the current
-     ;; scope".
-     `(#:tests? #false
-       #:cargo-inputs
-       (("rust-proc-macro-error" ,rust-proc-macro-error-1)
-        ("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))
-       #:cargo-development-inputs
-       (("rust-juniper" ,rust-juniper-0.15))))
-    (home-page "https://github.com/graphql-rust/juniper")
-    (synopsis "Internal custom derive trait for Juniper GraphQL")
-    (description
-     "This package provides an internal custom derive trait for Juniper
-GraphQL.")
-    (license license:bsd-2)))
-
 (define-public rust-juniper-0.15
   (package
     (name "rust-juniper")
@@ -39883,6 +39852,37 @@ debugging.")
        #:cargo-development-inputs
        (("rust-bencher" ,rust-bencher-0.1)
         ("rust-serde-json" ,rust-serde-json-1))))))
+
+(define-public rust-juniper-codegen-0.15
+  (package
+    (name "rust-juniper-codegen")
+    (version "0.15.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "juniper_codegen" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1nvigsc1yrfv09wx1yv830dd60ay556haz87p80h7m8s0rqpdsdf"))))
+    (build-system cargo-build-system)
+    (arguments
+     ;; XXX: Tests fail with "error[E0599]: no variant or associated item
+     ;; named `__TestExhaustive` found for enum `syn::Type` in the current
+     ;; scope".
+     `(#:tests? #false
+       #:cargo-inputs
+       (("rust-proc-macro-error" ,rust-proc-macro-error-1)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))
+       #:cargo-development-inputs
+       (("rust-juniper" ,rust-juniper-0.15))))
+    (home-page "https://github.com/graphql-rust/juniper")
+    (synopsis "Internal custom derive trait for Juniper GraphQL")
+    (description
+     "This package provides an internal custom derive trait for Juniper
+GraphQL.")
+    (license license:bsd-2)))
 
 (define-public rust-juniper-codegen-0.14
   (package
