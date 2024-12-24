@@ -43232,6 +43232,36 @@ harness used by @code{rustc --test}.")
 the outside, such as systemd/catflap socket activation.")
     (license license:asl2.0)))
 
+(define-public rust-litemap-0.7
+  (package
+    (name "rust-litemap")
+    (version "0.7.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "litemap" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0157lf44c3s2piqiwpppnynzzpv1rxyddl2z9l089hpwsjwb0g34"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; undeclared crate or module `icu_locid`
+       #:cargo-inputs (("rust-databake" ,rust-databake-0.1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-yoke" ,rust-yoke-0.7))
+       #:cargo-development-inputs (("rust-bincode" ,rust-bincode-1)
+                                   ("rust-criterion" ,rust-criterion-0.5)
+                                   ("rust-postcard" ,rust-postcard-1)
+                                   ("rust-rkyv" ,rust-rkyv-0.7)
+                                   ("rust-serde" ,rust-serde-1)
+                                   ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/unicode-org/icu4x")
+    (synopsis "Key-value Map implementation based on a flat, sorted Vec")
+    (description
+     "This package provides a key-value Map implementation based on a flat,
+sorted Vec.")
+    (license license:unicode)))
+
 (define-public rust-litrs-0.4
   (package
     (name "rust-litrs")
