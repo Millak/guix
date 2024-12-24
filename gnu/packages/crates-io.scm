@@ -68976,6 +68976,28 @@ First In First Out} ring buffer with direct access to inner data.")
         ("rust-rkyv-derive" ,rust-rkyv-derive-0.6)
         ("rust-seahash" ,rust-seahash-4))))))
 
+(define-public rust-rkyv-derive-0.7
+  (package
+    (name "rust-rkyv-derive")
+    (version "0.7.44")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "rkyv_derive" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0rbwvbxka171bvhj60yjaxn77ipi5d1nwknnp5i6ypp2ipzxzpd7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/rkyv/rkyv")
+    (synopsis "Derive macro for zero-copy deserialization framework")
+    (description "This package provides a Derive macro for the rkyv
+deserialization framework.")
+    (license license:expat)))
+
 (define-public rust-rle-decode-fast-1
   (package
     (name "rust-rle-decode-fast")
@@ -73072,29 +73094,6 @@ sub-processes using a fork-like interface.")
                        ("rust-twox-hash" ,rust-twox-hash-1))
        #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.3)
                                    ("rust-rand" ,rust-rand-0.8))))))
-
-
-(define-public rust-rkyv-derive-0.7
-  (package
-    (name "rust-rkyv-derive")
-    (version "0.7.44")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "rkyv_derive" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0rbwvbxka171bvhj60yjaxn77ipi5d1nwknnp5i6ypp2ipzxzpd7"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
-                       ("rust-quote" ,rust-quote-1)
-                       ("rust-syn" ,rust-syn-1))))
-    (home-page "https://github.com/rkyv/rkyv")
-    (synopsis "Derive macro for zero-copy deserialization framework")
-    (description "This package provides a Derive macro for the rkyv
-deserialization framework.")
-    (license license:expat)))
 
 (define-public rust-rkyv-derive-0.6
   (package
