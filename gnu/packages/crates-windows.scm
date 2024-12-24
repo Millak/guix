@@ -1394,18 +1394,22 @@ icons to windows executables and dynamic libraries.")
 (define-public rust-winresource-0.1
   (package
     (name "rust-winresource")
-    (version "0.1.17")
+    (version "0.1.19")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "winresource" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0aakwh8llq2zvm7qihkrg7sz50hzccyl4x831j60g4psijpsmqkp"))))
+        (base32 "0fv9xlgg9a6gp1jhrp7zj7kln7ris64889n3z1x59m1s6ldnjxkj"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f      ; failed to resolve: could not find `um` in `winapi`
-       #:cargo-inputs (("rust-toml" ,rust-toml-0.7)
+     `(#:cargo-test-flags '("--"
+                            "--skip=tests::toolkit_include_win10"
+                            "--skip=tests::toolkit_include_win8"
+                            "--skip=WindowsResource::set_language"
+                            "--skip=WindowsResource::set_manifest")
+       #:cargo-inputs (("rust-toml" ,rust-toml-0.8)
                        ("rust-version-check" ,rust-version-check-0.9))
        #:cargo-development-inputs (("rust-winapi" ,rust-winapi-0.3))))
     (home-page "https://github.com/BenjaminRi/winresource")
