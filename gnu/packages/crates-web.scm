@@ -3886,14 +3886,14 @@ dependencies.")
 (define-public rust-hyper-1
   (package
     (name "rust-hyper")
-    (version "1.5.1")
+    (version "1.5.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "hyper" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "07s87id0566m2p5dc5q6nqmxz5r8drqd81b7w4q44djgxwkqi0cp"))))
+        (base32 "1q7akfb443yrjzkmnnbp2vs8zi15hgbk466rr4y144v4ppabhvr5"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f  ; unresolved imports `super::DecodedLength`, `super::Sender`
@@ -3917,6 +3917,7 @@ dependencies.")
         ("rust-futures-channel" ,rust-futures-channel-0.3)
         ("rust-futures-util" ,rust-futures-util-0.3)
         ("rust-http-body-util" ,rust-http-body-util-0.1)
+        ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
         ("rust-pretty-env-logger" ,rust-pretty-env-logger-0.5)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1)
