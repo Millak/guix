@@ -100979,6 +100979,30 @@ implementation that works everywhere, even WASM!")
                                    ("rust-libloading" ,rust-libloading-0.8)
                                    ("rust-libz-ng-sys" ,rust-libz-ng-sys-1))))))
 
+(define-public rust-zoneinfo-compiled-0.5
+  (package
+    (name "rust-zoneinfo-compiled")
+    (version "0.5.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "zoneinfo_compiled" version))
+        (file-name
+         (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32
+          "1pm50w4vv34r08mrajfvyhc1254gv8zv4q6p7gs315c9bvkfpyv4"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-byteorder" ,rust-byteorder-1)
+        ("rust-datetime" ,rust-datetime-0.5))))
+    (home-page "https://github.com/rust-datetime/zoneinfo-compiled/")
+    (synopsis "Library for parsing compiled zoneinfo files")
+    (description
+     "This package provides a library for parsing compiled zoneinfo files.")
+    (license license:expat)))
+
 (define-public rust-zopfli-0.8
   (package
     (name "rust-zopfli")
@@ -101009,30 +101033,6 @@ implementation that works everywhere, even WASM!")
     (description
      "This package provides a Rust implementation of the Zopfli compression algorithm.")
     (license license:asl2.0)))
-
-(define-public rust-zoneinfo-compiled-0.5
-  (package
-    (name "rust-zoneinfo-compiled")
-    (version "0.5.1")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "zoneinfo_compiled" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1pm50w4vv34r08mrajfvyhc1254gv8zv4q6p7gs315c9bvkfpyv4"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-byteorder" ,rust-byteorder-1)
-        ("rust-datetime" ,rust-datetime-0.5))))
-    (home-page "https://github.com/rust-datetime/zoneinfo-compiled/")
-    (synopsis "Library for parsing compiled zoneinfo files")
-    (description
-     "This package provides a library for parsing compiled zoneinfo files.")
-    (license license:expat)))
 
 (define-public rust-zstd-0.13
   (package
