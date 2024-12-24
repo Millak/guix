@@ -39341,21 +39341,21 @@ introspection APIs.")
 (define-public rust-jetscii-0.5
   (package
     (name "rust-jetscii")
-    (version "0.5.0")
+    (version "0.5.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "jetscii" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1x4z5ixlxv1wa70d3d6ad3n8qxz6z00i13zwnv219v45qcwybbnb"))))
+        (base32 "0pppbawc1v6lshz6zi3d4bkz7xbalph9sd78a5299jd94kz45wa7"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-development-inputs
        (("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-memmap" ,rust-memmap-0.7)
         ("rust-proptest" ,rust-proptest-1)
-        ("rust-region" ,rust-region-2))))
+        ("rust-region" ,rust-region-3))))
     (home-page "https://github.com/shepmaster/jetscii")
     (synopsis
      "Search strings and byte slices for sets of ASCII characters or bytes")
