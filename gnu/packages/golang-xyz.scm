@@ -8078,6 +8078,32 @@ list of sentences.")
 pretty printed rendering in Golang.")
     (license license:expat)))
 
+(define-public go-github.com-nsf-termbox-go
+  (package
+    (name "go-github.com-nsf-termbox-go")
+    (version "1.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/nsf/termbox-go")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0n5jwnx53nkjvq8rcqzv2scs532iq9w06pd83w6cipniccqp4m2i"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/nsf/termbox-go"))
+    (propagated-inputs
+     (list go-github-com-mattn-go-runewidth))
+    (home-page "https://github.com/nsf/termbox-go")
+    (synopsis "@code{termbox} provides a minimal API for text-based user interfaces")
+    (description
+     "Termbox is a library that provides a minimalistic API which allows the
+programmer to write text-based user interfaces.")
+    (license license:expat)))
+
 (define-public go-github-com-nsqio-go-diskqueue
   (package
     (name "go-github-com-nsqio-go-diskqueue")
