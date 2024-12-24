@@ -35386,23 +35386,6 @@ speed then walkdir provides a smaller and more tested single threaded implementa
      "Const equivalents of std functions, compile-time comparison, and parsing.")
     (license license:zlib)))
 
-(define-public rust-konst-macro-rules-0.2
-  (package
-    (name "rust-konst-macro-rules")
-    (version "0.2.19")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "konst_macro_rules" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0dswja0dqcww4x3fwjnirc0azv2n6cazn8yv0kddksd8awzkz4x4"))))
-    (build-system cargo-build-system)
-    (home-page "https://github.com/rodrimati1992/konst/")
-    (synopsis "Implementation detail of the konst crate")
-    (description "Implementation detail of the konst crate.")
-    (license license:zlib)))
-
 (define-public rust-human-date-parser-0.1
   (package
     (name "rust-human-date-parser")
@@ -40094,6 +40077,23 @@ passwords/credentials.")
     (description
      "The Khronos XML API Registry, exposed as byte string constants.")
     (license license:asl2.0)))
+
+(define-public rust-konst-macro-rules-0.2
+  (package
+    (name "rust-konst-macro-rules")
+    (version "0.2.19")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "konst_macro_rules" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0dswja0dqcww4x3fwjnirc0azv2n6cazn8yv0kddksd8awzkz4x4"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/rodrimati1992/konst/")
+    (synopsis "Implementation detail of the konst crate")
+    (description "Implementation detail of the konst crate.")
+    (license license:zlib)))
 
 (define-public rust-konst-proc-macros-0.2
   (package
