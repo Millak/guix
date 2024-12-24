@@ -39807,27 +39807,6 @@ concurrency primitives and multiple allocations.")
 GraphQL.")
     (license license:bsd-2)))
 
-(define-public rust-juniper-codegen-0.14
-  (package
-    (inherit rust-juniper-codegen-0.15)
-    (name "rust-juniper-codegen")
-    (version "0.14.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "juniper_codegen" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "06ym8568k9p75kvnfc4ywqbkzaa4ib6gngx9vpbsjwg9v0sg42nl"))))
-    (arguments
-     `(#:tests? #false                  ;FIXME: fail due to unresolved import
-       #:cargo-inputs
-       (("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))
-       #:cargo-development-inputs
-       (("rust-juniper" ,rust-juniper-0.14))))))
-
 (define-public rust-juniper-0.15
   (package
     (name "rust-juniper")
@@ -39904,6 +39883,27 @@ debugging.")
        #:cargo-development-inputs
        (("rust-bencher" ,rust-bencher-0.1)
         ("rust-serde-json" ,rust-serde-json-1))))))
+
+(define-public rust-juniper-codegen-0.14
+  (package
+    (inherit rust-juniper-codegen-0.15)
+    (name "rust-juniper-codegen")
+    (version "0.14.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "juniper_codegen" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "06ym8568k9p75kvnfc4ywqbkzaa4ib6gngx9vpbsjwg9v0sg42nl"))))
+    (arguments
+     `(#:tests? #false                  ;FIXME: fail due to unresolved import
+       #:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))
+       #:cargo-development-inputs
+       (("rust-juniper" ,rust-juniper-0.14))))))
 
 (define-public rust-jwalk-0.8
   (package
