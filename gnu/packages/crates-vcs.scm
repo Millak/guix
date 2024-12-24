@@ -5273,21 +5273,21 @@ part of Gitoxide, a Rust implementation of Git.")
 (define-public rust-gix-prompt-0.8
   (package
     (name "rust-gix-prompt")
-    (version "0.8.8")
+    (version "0.8.9")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gix-prompt" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "01nhvxzc1a7bn7gipnyq80vblkpzk5p2fckhj29rhykzp2ylp52p"))))
+        (base32 "1505js24g8dziljc7jl5frmk0af1847v106fqsxmz75wqjpj4y3s"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-gix-command" ,rust-gix-command-0.3)
                        ("rust-gix-config-value" ,rust-gix-config-value-0.14)
                        ("rust-parking-lot" ,rust-parking-lot-0.12)
                        ("rust-rustix" ,rust-rustix-0.38)
-                       ("rust-thiserror" ,rust-thiserror-1))
+                       ("rust-thiserror" ,rust-thiserror-2))
        #:cargo-development-inputs (("rust-expectrl" ,rust-expectrl-0.7)
                                    ("rust-serial-test" ,rust-serial-test-3))))
     (home-page "https://github.com/Byron/gitoxide")
