@@ -2053,6 +2053,37 @@ them.  Conversions and promotions are defined to allow performing operations on
 combinations of dual numbers with predefined Julia numeric types.")
     (license license:expat)))
 
+(define-public julia-dynamicpolynomials
+  (package
+    (name "julia-dynamicpolynomials")
+    (version "0.6.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/JuliaAlgebra/DynamicPolynomials.jl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "07fis5d7paz9s0zf5riw63wmqy8xb95h501p7plajd3w15zar5gh"))))
+    (build-system julia-build-system)
+    (arguments
+     (list
+      #:julia-package-name "DynamicPolynomials"
+      #:julia-package-uuid "7c1d4256-1411-5781-91ec-d7bc3513ac07"
+      #:julia-package-dependencies #~(list '("Future" . "9fa8497b-333b-5362-9e8d-4d0656e87820")
+                                           '("LinearAlgebra" . "37e2e46d-f89d-539d-b4ee-838fcccc9c8e")
+                                           '("Test" . "8dfed614-e22c-5e08-85e1-65c5234f0b40"))))
+    (native-inputs (list julia-chainrulescore julia-combinatorics))
+    (propagated-inputs (list julia-multivariatepolynomials
+                             julia-mutablearithmetics julia-reexport))
+    (home-page "https://github.com/JuliaAlgebra/DynamicPolynomials.jl")
+    (synopsis "Multivariate polynomials implementation in Julia")
+    (description
+     "This package provides a multivariate polynomials implementation of commutative and
+ non-commutative variables.")
+    (license license:expat)))
+
 (define-public julia-earthorientation
   (package
     (name "julia-earthorientation")
