@@ -27631,6 +27631,28 @@ handling type for easy idiomatic error handling and reporting in Rust.")
     (description "Simple file accessibility checks in rust.")
     (license license:expat)))
 
+(define-public rust-failure-0.1
+  (package
+    (name "rust-failure")
+    (version "0.1.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "failure" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "11jg1wmbkijrs6bk9fqnbrm9zf0850whnqpgnxyswbn0dk8rnbnk"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-backtrace" ,rust-backtrace-0.3)
+        ("rust-failure-derive" ,rust-failure-derive-0.1))))
+    (home-page "https://rust-lang-nursery.github.io/failure/")
+    (synopsis "Experimental error handling abstraction")
+    (description
+     "Experimental error handling abstraction.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-fake-simd-0.1
   (package
     (name "rust-fake-simd")
@@ -27713,28 +27735,6 @@ fallible format macro.")
         (base32 "1zf6ir26qbdwlywv9m266n19p6yzqqmi968qy8njc58aiiv6k358"))))
     (arguments
      `(#:cargo-inputs (("rust-hashbrown" ,rust-hashbrown-0.13))))))
-
-(define-public rust-failure-0.1
-  (package
-    (name "rust-failure")
-    (version "0.1.8")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "failure" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "11jg1wmbkijrs6bk9fqnbrm9zf0850whnqpgnxyswbn0dk8rnbnk"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-backtrace" ,rust-backtrace-0.3)
-        ("rust-failure-derive" ,rust-failure-derive-0.1))))
-    (home-page "https://rust-lang-nursery.github.io/failure/")
-    (synopsis "Experimental error handling abstraction")
-    (description
-     "Experimental error handling abstraction.")
-    (license (list license:asl2.0 license:expat))))
 
 (define-public rust-failure-derive-0.1
   (package
