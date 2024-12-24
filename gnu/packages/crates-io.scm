@@ -48132,6 +48132,27 @@ debug_assert_* macros.")
 C++ symbols mangled by MSVC.")
     (license (list license:expat license:ncsa))))
 
+(define-public rust-muldiv-1
+  (package
+    (name "rust-muldiv")
+    (version "1.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "muldiv" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1c6ljsp41n8ijsx7zicwfm135drgyhcms12668ivvsbm1r98frwm"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-inputs `(("rust-quickcheck" ,rust-quickcheck-1))))
+    (home-page "https://github.com/sdroege/rust-muldiv")
+    (synopsis "Trait for numeric types to combine multiplication and division")
+    (description
+     "This package provides a trait for numeric types to perform combined
+multiplication and division with overflow protection.")
+    (license license:expat)))
+
 (define-public rust-multer-3
   (package
     (name "rust-multer")
@@ -48203,27 +48224,6 @@ async Rust environment e.g. any async server.")
        #:cargo-development-inputs (("rust-hyper" ,rust-hyper-0.14)
                                    ("rust-serde" ,rust-serde-1)
                                    ("rust-tokio" ,rust-tokio-1))))))
-
-(define-public rust-muldiv-1
-  (package
-    (name "rust-muldiv")
-    (version "1.0.1")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "muldiv" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1c6ljsp41n8ijsx7zicwfm135drgyhcms12668ivvsbm1r98frwm"))))
-    (build-system cargo-build-system)
-    (arguments
-     (list #:cargo-inputs `(("rust-quickcheck" ,rust-quickcheck-1))))
-    (home-page "https://github.com/sdroege/rust-muldiv")
-    (synopsis "Trait for numeric types to combine multiplication and division")
-    (description
-     "This package provides a trait for numeric types to perform combined
-multiplication and division with overflow protection.")
-    (license license:expat)))
 
 (define-public rust-multimap-0.8
   (package
