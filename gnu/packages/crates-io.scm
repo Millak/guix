@@ -97856,22 +97856,20 @@ for terminal and other window-less applications.")
 (define-public rust-web-sys-0.3
   (package
     (name "rust-web-sys")
-    (version "0.3.68")
+    (version "0.3.76")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "web-sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0il4nbsf782l5y1jb7s75vc7214a19vh7z65bfrwwykzd03mjmln"))))
+        (base32 "1g0j3kii20mh7hqmdajz2r4c21zynb9h9h026wymalkx88ip5p84"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-js-sys" ,rust-js-sys-0.3)
         ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2))
-       #:cargo-development-inputs
-       (("rust-wasm-bindgen-futures" ,rust-wasm-bindgen-futures-0.4)
-        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))
+       #:cargo-development-inputs (("rust-futures" ,rust-futures-0.3))))
     (home-page "https://rustwasm.github.io/wasm-bindgen/web-sys/index.html")
     (synopsis
      "Bindings for all Web APIs, a procedurally generated crate from WebIDL")
