@@ -35606,6 +35606,28 @@ SystemTime}}.")
      "This package provides the IANA time zone for the current system.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-icu-provider-macros-1
+  (package
+    (name "rust-icu-provider-macros")
+    (version "1.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "icu_provider_macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1mjs0w7fcm2lcqmbakhninzrjwqs485lkps4hz0cv3k36y9rxj0y"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--" "--skip=src/lib.rs - data_struct (line 53)")
+       #:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))
+    (home-page "https://icu4x.unicode.org")
+    (synopsis "Proc macros for ICU data providers")
+    (description "This package provides proc macros for ICU data providers.")
+    (license license:unicode)))
+
 (define-public rust-idea-0.5
   (package
     (name "rust-idea")
