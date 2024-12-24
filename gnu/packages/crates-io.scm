@@ -52006,6 +52006,23 @@ enhances the built-in library with some useful features.")
         ("rust-ntest-timeout" ,rust-ntest-timeout-0.7))
        #:cargo-development-inputs (("rust-tokio" ,rust-tokio-1))))))
 
+(define-public rust-ntest-proc-macro-helper-0.8
+  (package
+    (name "rust-ntest-proc-macro-helper")
+    (version "0.8.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "ntest_proc_macro_helper" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "154r3r9nnnp6qjzlayc54213bdrgdk8b68jjnn1xcyd6cz92iqx0"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/becheran/ntest")
+    (synopsis "Helper functions for the procedural macros used in ntest")
+    (description "This package provides helper functions for the procedural
+macros used in ntest.")
+    (license license:expat)))
+
 (define-public rust-ntest-test-cases-0.9
   (package
     (name "rust-ntest-test-cases")
@@ -52122,23 +52139,6 @@ framework.")
         ("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))))))
-
-(define-public rust-ntest-proc-macro-helper-0.8
-  (package
-    (name "rust-ntest-proc-macro-helper")
-    (version "0.8.0")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "ntest_proc_macro_helper" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32 "154r3r9nnnp6qjzlayc54213bdrgdk8b68jjnn1xcyd6cz92iqx0"))))
-    (build-system cargo-build-system)
-    (home-page "https://github.com/becheran/ntest")
-    (synopsis "Helper functions for the procedural macros used in ntest")
-    (description "This package provides helper functions for the procedural
-macros used in ntest.")
-    (license license:expat)))
 
 (define-public rust-ntest-proc-macro-helper-0.7
   (package
