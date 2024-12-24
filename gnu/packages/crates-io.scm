@@ -68922,6 +68922,39 @@ Rhai, a scripting language and engine for Rust.")
 First In First Out} ring buffer with direct access to inner data.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-rkyv-0.7
+  (package
+    (name "rust-rkyv")
+    (version "0.7.44")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "rkyv" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1h4rpjn15bfldwb2j3zlmv3zaksvizzl1yf6vg24yfdk5534dfjw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-arrayvec" ,rust-arrayvec-0.7)
+        ("rust-bitvec" ,rust-bitvec-1)
+        ("rust-bytecheck" ,rust-bytecheck-0.6)
+        ("rust-bytes" ,rust-bytes-1)
+        ("rust-hashbrown" ,rust-hashbrown-0.12)
+        ("rust-indexmap" ,rust-indexmap-1)
+        ("rust-ptr-meta" ,rust-ptr-meta-0.1)
+        ("rust-rend" ,rust-rend-0.4)
+        ("rust-rkyv-derive" ,rust-rkyv-derive-0.7)
+        ("rust-seahash" ,rust-seahash-4)
+        ("rust-smallvec" ,rust-smallvec-1)
+        ("rust-smol-str" ,rust-smol-str-0.2)
+        ("rust-tinyvec" ,rust-tinyvec-1)
+        ("rust-uuid" ,rust-uuid-1))))
+    (home-page "https://github.com/rkyv/rkyv")
+    (synopsis "Zero-copy deserialization framework for Rust")
+    (description "Rkyv is a zero-copy deserialization framework for Rust.")
+    (license license:expat)))
+
 (define-public rust-rle-decode-fast-1
   (package
     (name "rust-rle-decode-fast")
@@ -73018,39 +73051,6 @@ sub-processes using a fork-like interface.")
                        ("rust-twox-hash" ,rust-twox-hash-1))
        #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.3)
                                    ("rust-rand" ,rust-rand-0.8))))))
-
-(define-public rust-rkyv-0.7
-  (package
-    (name "rust-rkyv")
-    (version "0.7.44")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "rkyv" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1h4rpjn15bfldwb2j3zlmv3zaksvizzl1yf6vg24yfdk5534dfjw"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-arrayvec" ,rust-arrayvec-0.7)
-        ("rust-bitvec" ,rust-bitvec-1)
-        ("rust-bytecheck" ,rust-bytecheck-0.6)
-        ("rust-bytes" ,rust-bytes-1)
-        ("rust-hashbrown" ,rust-hashbrown-0.12)
-        ("rust-indexmap" ,rust-indexmap-1)
-        ("rust-ptr-meta" ,rust-ptr-meta-0.1)
-        ("rust-rend" ,rust-rend-0.4)
-        ("rust-rkyv-derive" ,rust-rkyv-derive-0.7)
-        ("rust-seahash" ,rust-seahash-4)
-        ("rust-smallvec" ,rust-smallvec-1)
-        ("rust-smol-str" ,rust-smol-str-0.2)
-        ("rust-tinyvec" ,rust-tinyvec-1)
-        ("rust-uuid" ,rust-uuid-1))))
-    (home-page "https://github.com/rkyv/rkyv")
-    (synopsis "Zero-copy deserialization framework for Rust")
-    (description "Rkyv is a zero-copy deserialization framework for Rust.")
-    (license license:expat)))
 
 (define-public rust-rkyv-0.6
   (package
