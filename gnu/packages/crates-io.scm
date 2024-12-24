@@ -56769,6 +56769,27 @@ path.")
 algebra.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-pathfinder-simd-0.5
+  (package
+    (name "rust-pathfinder-simd")
+    (version "0.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pathfinder_simd" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1zx6yjch2zwlnbrsq3ljnkwzs9jdf4cbh5wwjkjradahqnn4dzir"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-rustc-version" ,rust-rustc-version-0.3))))
+    (home-page "https://github.com/servo/pathfinder")
+    (synopsis "Simple SIMD Rust library")
+    (description "This package provides a simple SIMD Rust library.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-pathsearch-0.2
   (package
     (name "rust-pathsearch")
@@ -78335,27 +78356,6 @@ designed for @code{immutable.rs}.")
     (description "This create provides a pre-allocated storage for a uniform
 data type.")
     (license license:expat)))
-
-(define-public rust-pathfinder-simd-0.5
-  (package
-    (name "rust-pathfinder-simd")
-    (version "0.5.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "pathfinder_simd" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1zx6yjch2zwlnbrsq3ljnkwzs9jdf4cbh5wwjkjradahqnn4dzir"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-rustc-version" ,rust-rustc-version-0.3))))
-    (home-page "https://github.com/servo/pathfinder")
-    (synopsis "Simple SIMD Rust library")
-    (description "This package provides a simple SIMD Rust library.")
-    (license (list license:expat license:asl2.0))))
 
 (define-public rust-paw-1
   (package
