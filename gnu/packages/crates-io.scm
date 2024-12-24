@@ -76422,6 +76422,30 @@ Rust's serde.")
        (("rust-itertools" ,rust-itertools-0.10)
         ("rust-tokio" ,rust-tokio-1))))))
 
+(define-public rust-serial-test-0.10
+  (package
+    (inherit rust-serial-test-3)
+    (name "rust-serial-test")
+    (version "0.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "serial_test" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1wh6jl0wddnyra9f57c3y64lha6n1ipg8p20l8id11s6gz49wy0w"))))
+    (arguments
+     `(#:cargo-inputs (("rust-dashmap" ,rust-dashmap-5)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-fslock" ,rust-fslock-0.2)
+                       ("rust-futures" ,rust-futures-0.3)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-parking-lot" ,rust-parking-lot-0.12)
+                       ("rust-serial-test-derive" ,rust-serial-test-derive-0.10))
+       #:cargo-development-inputs (("rust-itertools" ,rust-itertools-0.10)
+                                   ("rust-tokio" ,rust-tokio-1))))))
+
 (define-public rust-serial-test-0.7
   (package
     (inherit rust-serial-test-2)
