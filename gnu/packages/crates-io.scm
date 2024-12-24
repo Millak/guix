@@ -35324,24 +35324,6 @@ Directory traversal is already pretty fast.  If you don't need this crate's
 speed then walkdir provides a smaller and more tested single threaded implementation.")
     (license license:expat)))
 
-(define-public rust-katex-doc-0.1
-  (package
-    (name "rust-katex-doc")
-    (version "0.1.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "katex-doc" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1fa0fi3bv9qdab0cb49q8971vszf0nzmvnvm70lns5xrpyyq0nqy"))))
-    (build-system cargo-build-system)
-    (home-page "https://github.com/CAD97/katex-doc")
-    (synopsis "XaaS for KaTeX on docs.rs")
-    (description
-     "This package provides a XSS as a Service for KaTeX on docs.rs")
-    (license (list license:unlicense license:expat))))
-
 (define-public rust-human-date-parser-0.1
   (package
     (name "rust-human-date-parser")
@@ -39959,6 +39941,24 @@ debugging.")
        #:cargo-development-inputs
        (("rust-bencher" ,rust-bencher-0.1)
         ("rust-serde-json" ,rust-serde-json-1))))))
+
+(define-public rust-katex-doc-0.1
+  (package
+    (name "rust-katex-doc")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "katex-doc" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1fa0fi3bv9qdab0cb49q8971vszf0nzmvnvm70lns5xrpyyq0nqy"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/CAD97/katex-doc")
+    (synopsis "XaaS for KaTeX on docs.rs")
+    (description
+     "This package provides a XSS as a Service for KaTeX on docs.rs")
+    (license (list license:unlicense license:expat))))
 
 (define-public rust-keccak-0.1
   (package
