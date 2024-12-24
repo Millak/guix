@@ -7400,19 +7400,19 @@ feature toggles.")
 (define-public rust-gix-validate-0.9
   (package
     (name "rust-gix-validate")
-    (version "0.9.1")
+    (version "0.9.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gix-validate" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0s7zfzr546p8wqfxvkins03n5g2kfxb420b52zm6rhqv8riv51z1"))))
+        (base32 "0dq9flm4iz1pzsiqqjmmxxzsp2fsdarx18db695v71gmz44hslnd"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bstr" ,rust-bstr-1)
-        ("rust-thiserror" ,rust-thiserror-1))))
+        ("rust-thiserror" ,rust-thiserror-2))))
     (home-page "https://github.com/Byron/gitoxide")
     (synopsis "Validation functions for various kinds of names in Git")
     (description "Part of Gitoxide, a pure Rust implementation of Git.  This
