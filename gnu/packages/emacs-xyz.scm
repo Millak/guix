@@ -612,6 +612,7 @@ API key.")
                    (call-with-output-file ".emacs.d/.chatgpt-shell.el"
                      (lambda (port)
                        (display "nil" port))))))))
+    (propagated-inputs (list emacs-shell-maker))
     (home-page "https://github.com/xenodium/chatgpt-shell")
     (synopsis "ChatGPT and DALL-E Emacs shells and Org Babel libraries")
     (description
