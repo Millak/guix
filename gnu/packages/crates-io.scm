@@ -73186,35 +73186,6 @@ quickly convert floating point numbers to decimal strings.")
      "This package is a s3 handler for S3 Rich Support client (S3RS).")
     (license license:expat)))
 
-(define-public rust-salsa-macros-0.17
-  (package
-    (name "rust-salsa-macros")
-    (version "0.17.0-pre.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "salsa-macros" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1xrgb38l5fhv3lqx2lwnqc3s2zrgxmj63cd7kl0vyl7m5lsjwv5c"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build?
-       #t
-       #:cargo-inputs
-       (("rust-heck" ,rust-heck-0.3)
-        ("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))
-    (home-page "https://github.com/salsa-rs/salsa")
-    (synopsis
-     "Procedural macros for the salsa crate")
-    (description
-     "This package provides a procedural macros for the salsa crate.")
-    (license (list license:asl2.0 license:expat))))
-
 (define-public rust-safe-arch-0.7
   (package
     (name "rust-safe-arch")
@@ -73349,6 +73320,35 @@ and no @code{unsafe}.")
     (description
      "This package provides a generic framework for on-demand, incrementalized
 computation (experimental)")
+    (license (list license:asl2.0 license:expat))))
+
+(define-public rust-salsa-macros-0.17
+  (package
+    (name "rust-salsa-macros")
+    (version "0.17.0-pre.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "salsa-macros" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1xrgb38l5fhv3lqx2lwnqc3s2zrgxmj63cd7kl0vyl7m5lsjwv5c"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build?
+       #t
+       #:cargo-inputs
+       (("rust-heck" ,rust-heck-0.3)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/salsa-rs/salsa")
+    (synopsis
+     "Procedural macros for the salsa crate")
+    (description
+     "This package provides a procedural macros for the salsa crate.")
     (license (list license:asl2.0 license:expat))))
 
 (define-public rust-same-file-1
