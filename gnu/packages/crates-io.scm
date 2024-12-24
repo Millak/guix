@@ -11161,6 +11161,31 @@ and little-endian.")
        #:cargo-development-inputs
        (("rust-rand" ,rust-rand-0.3))))))
 
+(define-public rust-bytesize-1
+  (package
+    (name "rust-bytesize")
+    (version "1.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "bytesize" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1k3aak70iwz4s2gsjbxf0ws4xnixqbdz6p2ha96s06748fpniqx3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+       (("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-toml" ,rust-toml-0.7))))
+    (home-page "https://github.com/hyunsik/bytesize/")
+    (synopsis "Human-readable byte count representation library for Rust")
+    (description "ByteSize is an utility for human-readable byte count
+representation, with support for both SI and binary units.")
+    (license license:asl2.0)))
+
 (define-public rust-bytestring-1
   (package
     (name "rust-bytestring")
@@ -11254,31 +11279,6 @@ and little-endian.")
      "Bindings to @code{libbzip2} for @code{bzip2} compression and decompression
 exposed as Reader/Writer streams.")
     (license (list license:expat license:asl2.0))))
-
-(define-public rust-bytesize-1
-  (package
-    (name "rust-bytesize")
-    (version "1.3.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "bytesize" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1k3aak70iwz4s2gsjbxf0ws4xnixqbdz6p2ha96s06748fpniqx3"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-serde" ,rust-serde-1))
-       #:cargo-development-inputs
-       (("rust-serde" ,rust-serde-1)
-        ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-toml" ,rust-toml-0.7))))
-    (home-page "https://github.com/hyunsik/bytesize/")
-    (synopsis "Human-readable byte count representation library for Rust")
-    (description "ByteSize is an utility for human-readable byte count
-representation, with support for both SI and binary units.")
-    (license license:asl2.0)))
 
 (define-public rust-bzip2-0.3
   (package
