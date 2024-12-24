@@ -1972,6 +1972,51 @@ PEM-encodings commonly used to store keys and certificates at rest.")
 TLS certificates in rustls with the operating system verifier.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-rustls-platform-verifier-0.4
+  (package
+    (inherit rust-rustls-platform-verifier-0.5)
+    (name "rust-rustls-platform-verifier")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rustls-platform-verifier" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0dnij2d9029i06x4bhyzj5izwv3370233czaqkk1fmgc1wjdrix4"))))
+    (arguments
+     (list #:cargo-test-flags
+           '(list "--"
+                  "--skip=tests::verification_mock::test_verification_without_mock_root"
+                  "--skip=tests::verification_real_world::tests::_1password_com_valid"
+                  "--skip=tests::verification_real_world::tests::letsencrypt"
+                  "--skip=tests::verification_real_world::tests::my_1password_com_valid"
+                  "--skip=tests::verification_real_world::tests::my_1password_com_valid_no_stapled"
+                  "--skip=tests::verification_real_world::tests::unrelated_chain_not_valid_for_my_1password_com"
+                  "--skip=tests::verification_real_world::tests::unrelated_chain_valid_for_unrelated_domain"
+                  "--skip=tests::verification_real_world::tests::unrelated_domain_invalid")
+           #:cargo-inputs
+           (list rust-android-logger-0.13
+                 rust-base64-0.22
+                 rust-core-foundation-0.9
+                 rust-core-foundation-sys-0.8
+                 rust-jni-0.19
+                 rust-log-0.4
+                 rust-once-cell-1
+                 rust-paste-1
+                 rust-rustls-0.23
+                 rust-rustls-native-certs-0.7
+                 rust-rustls-platform-verifier-android-0.1
+                 rust-rustls-webpki-0.102
+                 rust-security-framework-2
+                 rust-security-framework-sys-2
+                 rust-webpki-root-certs-0.26
+                 rust-windows-sys-0.52)
+           #:cargo-development-inputs
+           (list rust-paste-1
+                 rust-rustls-0.23
+                 rust-webpki-root-certs-0.26)))))
+
 (define-public rust-rustls-platform-verifier-0.3
   (package
     (inherit rust-rustls-platform-verifier-0.5)
