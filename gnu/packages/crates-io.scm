@@ -63948,6 +63948,55 @@ Python code from a Rust binary is also supported.")
         ("rust-trybuild" ,rust-trybuild-1)
         ("rust-widestring" ,rust-widestring-0.5))))))
 
+(define-public rust-pyo3-0.18
+  (package
+    (inherit rust-pyo3-0.19)
+    (name "rust-pyo3")
+    (version "0.18.3")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "pyo3" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "02914yszvcg7qzh1kkrhiz8qqi0p9pbzi1cpmbyk9fii6xdsrcg3"))))
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=test_compile_errors"
+         "--skip=exceptions::PyUnicodeDecodeError::new_utf8")
+       #:cargo-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-cfg-if" ,rust-cfg-if-1)
+        ("rust-chrono" ,rust-chrono-0.4)
+        ("rust-eyre" ,rust-eyre-0.6)
+        ("rust-hashbrown" ,rust-hashbrown-0.12)
+        ("rust-indexmap" ,rust-indexmap-1)
+        ("rust-indoc" ,rust-indoc-1)
+        ("rust-inventory" ,rust-inventory-0.3)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-memoffset" ,rust-memoffset-0.8)
+        ("rust-num-bigint" ,rust-num-bigint-0.4)
+        ("rust-num-complex" ,rust-num-complex-0.4)
+        ("rust-parking-lot" ,rust-parking-lot-0.12)
+        ("rust-pyo3-build-config" ,rust-pyo3-build-config-0.18)
+        ("rust-pyo3-ffi" ,rust-pyo3-ffi-0.18)
+        ("rust-pyo3-macros" ,rust-pyo3-macros-0.18)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-unindent" ,rust-unindent-0.1))
+       #:cargo-development-inputs
+       (("rust-assert-approx-eq" ,rust-assert-approx-eq-1)
+        ("rust-chrono" ,rust-chrono-0.4)
+        ("rust-criterion" ,rust-criterion-0.3)
+        ("rust-proptest" ,rust-proptest-0.10)
+        ("rust-rayon" ,rust-rayon-1)
+        ("rust-rustversion" ,rust-rustversion-1)
+        ("rust-send-wrapper" ,rust-send-wrapper-0.6)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-trybuild" ,rust-trybuild-1)
+        ("rust-widestring" ,rust-widestring-0.5))))))
+
 (define-public rust-pyo3-build-config-0.23
   (package
     (name "rust-pyo3-build-config")
@@ -64585,55 +64634,6 @@ extension to python.")
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))))
     (native-inputs (list python))))
-
-(define-public rust-pyo3-0.18
-  (package
-    (inherit rust-pyo3-0.19)
-    (name "rust-pyo3")
-    (version "0.18.3")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "pyo3" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "02914yszvcg7qzh1kkrhiz8qqi0p9pbzi1cpmbyk9fii6xdsrcg3"))))
-    (arguments
-     `(#:cargo-test-flags
-       '("--release" "--"
-         "--skip=test_compile_errors"
-         "--skip=exceptions::PyUnicodeDecodeError::new_utf8")
-       #:cargo-inputs
-       (("rust-anyhow" ,rust-anyhow-1)
-        ("rust-cfg-if" ,rust-cfg-if-1)
-        ("rust-chrono" ,rust-chrono-0.4)
-        ("rust-eyre" ,rust-eyre-0.6)
-        ("rust-hashbrown" ,rust-hashbrown-0.12)
-        ("rust-indexmap" ,rust-indexmap-1)
-        ("rust-indoc" ,rust-indoc-1)
-        ("rust-inventory" ,rust-inventory-0.3)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-memoffset" ,rust-memoffset-0.8)
-        ("rust-num-bigint" ,rust-num-bigint-0.4)
-        ("rust-num-complex" ,rust-num-complex-0.4)
-        ("rust-parking-lot" ,rust-parking-lot-0.12)
-        ("rust-pyo3-build-config" ,rust-pyo3-build-config-0.18)
-        ("rust-pyo3-ffi" ,rust-pyo3-ffi-0.18)
-        ("rust-pyo3-macros" ,rust-pyo3-macros-0.18)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-unindent" ,rust-unindent-0.1))
-       #:cargo-development-inputs
-       (("rust-assert-approx-eq" ,rust-assert-approx-eq-1)
-        ("rust-chrono" ,rust-chrono-0.4)
-        ("rust-criterion" ,rust-criterion-0.3)
-        ("rust-proptest" ,rust-proptest-0.10)
-        ("rust-rayon" ,rust-rayon-1)
-        ("rust-rustversion" ,rust-rustversion-1)
-        ("rust-send-wrapper" ,rust-send-wrapper-0.6)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-trybuild" ,rust-trybuild-1)
-        ("rust-widestring" ,rust-widestring-0.5))))))
 
 (define-public rust-pyo3-0.16
   (package
