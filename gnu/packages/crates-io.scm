@@ -33489,6 +33489,33 @@ across inserts.")
      "This package aggregates groups of values from key-value iterators.")
     (license license:expat)))
 
+(define-public rust-guess-host-triple-0.1
+  (package
+    (name "rust-guess-host-triple")
+    (version "0.1.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "guess_host_triple" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "062fs1jkg157240cdn6dw11zm1c02llm9kp95knq6b4s6iijgmjx"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-errno" ,rust-errno-0.2)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-winapi" ,rust-winapi-0.3))
+       #:cargo-development-inputs (("rust-env-logger" ,rust-env-logger-0.5)
+                                   ("rust-version-sync" ,rust-version-sync-0.9))))
+    (home-page "https://gitlab.com/Screwtapello/guess_host_triple/")
+    (synopsis
+     "Guess which Rust-supported platform is running the current code")
+    (description
+     "This package provides Guess which Rust-supported platform is running the
+current code.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gumdrop-0.8
   (package
     (name "rust-gumdrop")
@@ -33532,33 +33559,6 @@ support.")
     (home-page "https://github.com/murarth/gumdrop")
     (synopsis "Custom derive support for gumdrop")
     (description "This package provides custom derive support for gumdrop.")
-    (license (list license:expat license:asl2.0))))
-
-(define-public rust-guess-host-triple-0.1
-  (package
-    (name "rust-guess-host-triple")
-    (version "0.1.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "guess_host_triple" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "062fs1jkg157240cdn6dw11zm1c02llm9kp95knq6b4s6iijgmjx"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-errno" ,rust-errno-0.2)
-                       ("rust-libc" ,rust-libc-0.2)
-                       ("rust-log" ,rust-log-0.4)
-                       ("rust-winapi" ,rust-winapi-0.3))
-       #:cargo-development-inputs (("rust-env-logger" ,rust-env-logger-0.5)
-                                   ("rust-version-sync" ,rust-version-sync-0.9))))
-    (home-page "https://gitlab.com/Screwtapello/guess_host_triple/")
-    (synopsis
-     "Guess which Rust-supported platform is running the current code")
-    (description
-     "This package provides Guess which Rust-supported platform is running the
-current code.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-gzip-header-1
