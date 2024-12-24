@@ -40523,6 +40523,27 @@ language tags.")
        (("rust-heapsize" ,rust-heapsize-0.3)
         ("rust-heapsize-plugin" ,rust-heapsize-plugin-0.1))))))
 
+(define-public rust-lapack-0.19
+  (package
+    (name "rust-lapack")
+    (version "0.19.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "lapack" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "01yja6fdjr7h6nqhlamn0mhqv5533735030av2gnmrzp9mmnlrxd"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-lapack-sys" ,rust-lapack-sys-0.14)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-num-complex" ,rust-num-complex-0.4))))
+    (home-page "https://github.com/blas-lapack-rs/lapack")
+    (synopsis "Rust wrappers for LAPACK (Fortran)")
+    (description "The package provides wrappers for LAPACK (Fortran).")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-lapack-sys-0.14
   (package
     (name "rust-lapack-sys")
@@ -40548,27 +40569,6 @@ language tags.")
     (home-page "https://github.com/blas-lapack-rs/lapack-sys")
     (synopsis "Rust bindings to LAPACK (Fortran)")
     (description "The package provides bindings to LAPACK (Fortran).")
-    (license (list license:asl2.0 license:expat))))
-
-(define-public rust-lapack-0.19
-  (package
-    (name "rust-lapack")
-    (version "0.19.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "lapack" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "01yja6fdjr7h6nqhlamn0mhqv5533735030av2gnmrzp9mmnlrxd"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-lapack-sys" ,rust-lapack-sys-0.14)
-                       ("rust-libc" ,rust-libc-0.2)
-                       ("rust-num-complex" ,rust-num-complex-0.4))))
-    (home-page "https://github.com/blas-lapack-rs/lapack")
-    (synopsis "Rust wrappers for LAPACK (Fortran)")
-    (description "The package provides wrappers for LAPACK (Fortran).")
     (license (list license:asl2.0 license:expat))))
 
 (define-public rust-layout-rs-0.1
