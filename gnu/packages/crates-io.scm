@@ -15837,31 +15837,6 @@ literals.")
     (description "Implementation detail of the @code{const_format} crate.")
     (license license:zlib)))
 
-(define-public rust-const-panic-0.2
-  (package
-    (name "rust-const-panic")
-    (version "0.2.8")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "const_panic" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "16w72mnzjqgwfhlq8cqm6xhd2n6lc1wan08987izv1pcxhwz4lb0"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-test-flags
-       '("--release" "--features=test")
-       #:cargo-inputs
-       (("rust-const-panic-proc-macros" ,rust-const-panic-proc-macros-0.2)
-        ("rust-typewit" ,rust-typewit-1))
-       #:cargo-development-inputs (("rust-arrayvec" ,rust-arrayvec-0.7)
-                                   ("rust-rand" ,rust-rand-0.8))))
-    (home-page "https://github.com/rodrimati1992/const_panic/")
-    (synopsis "Const panic with formatting")
-    (description "This package provides const panic with formatting.")
-    (license license:zlib)))
-
 ;; This package requires features which are unavailable
 ;; on the stable releases of Rust.
 (define-public rust-compiler-builtins-0.1
@@ -16851,6 +16826,31 @@ encoding/decoding as well as heapless no_std (i.e., embedded) support.")
        (sha256
         (base32 "12vv7csqqjj0x1l5mf51lgqiw76k5c3mb1yzfhfcqysks2j2lvwx"))))
     (arguments `(#:skip-build? #t))))
+
+(define-public rust-const-panic-0.2
+  (package
+    (name "rust-const-panic")
+    (version "0.2.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "const_panic" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "16w72mnzjqgwfhlq8cqm6xhd2n6lc1wan08987izv1pcxhwz4lb0"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--features=test")
+       #:cargo-inputs
+       (("rust-const-panic-proc-macros" ,rust-const-panic-proc-macros-0.2)
+        ("rust-typewit" ,rust-typewit-1))
+       #:cargo-development-inputs (("rust-arrayvec" ,rust-arrayvec-0.7)
+                                   ("rust-rand" ,rust-rand-0.8))))
+    (home-page "https://github.com/rodrimati1992/const_panic/")
+    (synopsis "Const panic with formatting")
+    (description "This package provides const panic with formatting.")
+    (license license:zlib)))
 
 (define-public rust-const-panic-proc-macros-0.2
   (package
