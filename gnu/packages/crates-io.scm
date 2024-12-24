@@ -26825,6 +26825,23 @@ they follow.  Etcetera, on the other hand, gives you the choice.")
 based protocols (@code{EthernetII}, IPv4, IPv6, UDP, TCP ...).")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-etherparse-0.9
+  (package
+    (inherit rust-etherparse-0.13)
+    (name "rust-etherparse")
+    (version "0.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "etherparse" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "01s86nj0k663mgxpj3r7y5wr50l5c3aq0pm4rpzyb7hz50i0k8ig"))))
+    (arguments
+     `(#:cargo-inputs (("rust-byteorder" ,rust-byteorder-1))
+       #:cargo-development-inputs (("rust-assert-matches" ,rust-assert-matches-1)
+                                   ("rust-proptest" ,rust-proptest-0.9))))))
+
 (define-public rust-ethnum-1
   (package
     (name "rust-ethnum")
@@ -70972,23 +70989,6 @@ the file-system during development.")
         (base32 "0vc7492a6qlq7r899p7vyx5cwiqwkw2pf85mfw5anwr42ccj4l9a"))))
     (arguments
      `(#:cargo-inputs (("rust-walkdir" ,rust-walkdir-2))))))
-
-(define-public rust-etherparse-0.9
-  (package
-    (inherit rust-etherparse-0.13)
-    (name "rust-etherparse")
-    (version "0.9.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "etherparse" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "01s86nj0k663mgxpj3r7y5wr50l5c3aq0pm4rpzyb7hz50i0k8ig"))))
-    (arguments
-     `(#:cargo-inputs (("rust-byteorder" ,rust-byteorder-1))
-       #:cargo-development-inputs (("rust-assert-matches" ,rust-assert-matches-1)
-                                   ("rust-proptest" ,rust-proptest-0.9))))))
 
 (define-public rust-rusb-0.9
   (package
