@@ -25789,16 +25789,16 @@ subscription.")
 (define-public emacs-pulsar
   (package
     (name "emacs-pulsar")
-    (version "1.0.0")
+    (version "1.2.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://git.sr.ht/~protesilaos/pulsar")
+                    (url "https://github.com/protesilaos/pulsar")
                     (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0kpsjzp65vqaay7m19z1iv97xnf5s76c741q3dil2s6ch0b7866i"))))
+                "1494f0fn6q99lhsfyjnfm69m31hi9snm3zc6bal67iddkqhc9mfc"))))
     (native-inputs (list texinfo))
     (build-system emacs-build-system)
     (arguments
