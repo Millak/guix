@@ -65041,8 +65041,55 @@ also has (optional) support for efficient and robust sorting of floating point
 numbers.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-quinn-0.11
+  (package
+    (name "rust-quinn")
+    (version "0.11.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "quinn" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1vq55p4kfc4zjxj58xrpf3kcjjqi4mn0wf52a5rzkiky4w46isb2"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-inputs
+           (list rust-async-io-2
+                 rust-async-std-1
+                 rust-bytes-1
+                 rust-futures-io-0.3
+                 rust-pin-project-lite-0.2
+                 rust-quinn-proto-0.11
+                 rust-quinn-udp-0.5
+                 rust-rustc-hash-2
+                 rust-rustls-0.23
+                 rust-smol-2
+                 rust-socket2-0.5
+                 rust-thiserror-2
+                 rust-tokio-1
+                 rust-tracing-0.1)
+           #:cargo-development-inputs
+           (list rust-anyhow-1
+                 rust-bencher-0.1
+                 rust-clap-4
+                 rust-crc-3
+                 rust-directories-next-2
+                 rust-rand-0.8
+                 rust-rcgen-0.13
+                 rust-rustls-pemfile-2
+                 rust-tokio-1
+                 rust-tracing-futures-0.2
+                 rust-tracing-subscriber-0.3
+                 rust-url-2)))
+    (home-page "https://github.com/quinn-rs/quinn")
+    (synopsis "Versatile QUIC transport protocol implementation")
+    (description "Versatile QUIC transport protocol implementation.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-quinn-0.10
   (package
+    (inherit rust-quinn-0.11)
     (name "rust-quinn")
     (version "0.10.2")
     (source
@@ -65052,7 +65099,6 @@ numbers.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0x9xjkz2vw7p10llsrm9q0299q618sy1g8yfbncxahsbgq0wbhlc"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-async-io" ,rust-async-io-1)
@@ -65079,11 +65125,7 @@ numbers.")
         ("rust-tokio" ,rust-tokio-1)
         ("rust-tracing-futures" ,rust-tracing-futures-0.2)
         ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3)
-        ("rust-url" ,rust-url-2))))
-    (home-page "https://github.com/quinn-rs/quinn")
-    (synopsis "Versatile QUIC transport protocol implementation")
-    (description "Versatile QUIC transport protocol implementation.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-url" ,rust-url-2))))))
 
 (define-public rust-quinn-0.8
   (package
