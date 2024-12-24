@@ -2117,14 +2117,14 @@ Gitoxide project.  Gitoxide is a pure Rust implementation of Git.")
 (define-public rust-gix-config-value-0.14
   (package
     (name "rust-gix-config-value")
-    (version "0.14.9")
+    (version "0.14.10")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gix-config-value" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0q26nzp4rhj90whwvsw8n3k1v6x4bwk3sn3n7awa8py7m7f3zppk"))))
+        (base32 "13mjjpljpc07qiyk36gdycdksy8ba85l9invz6ya7443v7syxaj9"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
@@ -2133,7 +2133,7 @@ Gitoxide project.  Gitoxide is a pure Rust implementation of Git.")
                        ("rust-gix-path" ,rust-gix-path-0.10)
                        ("rust-libc" ,rust-libc-0.2)
                        ("rust-serde" ,rust-serde-1)
-                       ("rust-thiserror" ,rust-thiserror-1))))
+                       ("rust-thiserror" ,rust-thiserror-2))))
     (home-page "https://github.com/Byron/gitoxide")
     (synopsis "This crate implements @code{git-config} value parsing")
     (description
