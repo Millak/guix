@@ -1436,29 +1436,6 @@ icons and metadata for executables.")
      "This package provides Windows API and GUI in safe, idiomatic Rust.")
     (license license:expat)))
 
-(define-public rust-winutil-0.1
-  (package
-    (name "rust-winutil")
-    (version "0.1.1")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "winutil" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "0vkyl3fbbf05n5ph5yz8sfaccrk9x3qsr25560w6w68ldf5i7bvx"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-winapi" ,rust-winapi-0.3))))
-    (build-system cargo-build-system)
-    (home-page "https://bitbucket.org/DaveLancaster/winutil")
-    (synopsis "Library wrapping a handful of useful winapi functions")
-    (description
-     "A simple library wrapping a handful of useful winapi functions.")
-    (license license:expat)))
-
 (define-public rust-windows-0.58
   (package
     (name "rust-windows")
@@ -3340,6 +3317,29 @@ windows crate.")
               (sha256
                (base32
                 "17z8q25pd3dp6b84qm9nlayd3ym78sbryxlqmgcxvz9vpmy8qarz"))))))
+
+(define-public rust-winutil-0.1
+  (package
+    (name "rust-winutil")
+    (version "0.1.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "winutil" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32
+          "0vkyl3fbbf05n5ph5yz8sfaccrk9x3qsr25560w6w68ldf5i7bvx"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-winapi" ,rust-winapi-0.3))))
+    (build-system cargo-build-system)
+    (home-page "https://bitbucket.org/DaveLancaster/winutil")
+    (synopsis "Library wrapping a handful of useful winapi functions")
+    (description
+     "A simple library wrapping a handful of useful winapi functions.")
+    (license license:expat)))
 
 (define-public rust-wio-0.2
   (package
