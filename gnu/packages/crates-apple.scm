@@ -727,14 +727,14 @@ Central Dispatch.")
 (define-public rust-fat-macho-0.4
   (package
     (name "rust-fat-macho")
-    (version "0.4.8")
+    (version "0.4.9")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "fat-macho" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1pqsjf13pdbhki2sdh70575hwqd18gm3vp8hpir3vl5djgrr6k0d"))
+                "0idkn366wipv2l757yqfgzgibqc6jvm89gdk9kpgmvf6lv54b72c"))
               (snippet
                #~(begin (use-modules (guix build utils))
                         (delete-file-recursively "tests/fixtures")))))
@@ -742,7 +742,7 @@ Central Dispatch.")
     (arguments
      `(#:tests? #f      ; Test files removed.
        #:cargo-inputs
-       (("rust-goblin" ,rust-goblin-0.8)
+       (("rust-goblin" ,rust-goblin-0.9)
         ("rust-llvm-bitcode" ,rust-llvm-bitcode-0.1))))
     (home-page "https://github.com/messense/fat-macho-rs.git")
     (synopsis "Mach-O Fat Binary Reader and Writer")
