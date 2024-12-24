@@ -1516,30 +1516,6 @@ API but without hiding any functionality.")
 for Rust.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-ws2-32-sys-0.2
-  (package
-    (name "rust-ws2-32-sys")
-    (version "0.2.1")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "ws2_32-sys" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "0ppscg5qfqaw0gzwv2a4nhn5bn01ff9iwn6ysqnzm4n8s3myz76m"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-winapi" ,rust-winapi-0.2)
-        ("rust-winapi-build" ,rust-winapi-build-0.1))))
-    (home-page "https://github.com/retep998/winapi-rs")
-    (synopsis "Function definitions for the Windows API library ws2_32")
-    (description
-     "Contains function definitions for the Windows API library ws2_32.")
-    (license license:expat)))
-
 (define-public rust-windows-0.58
   (package
     (name "rust-windows")
@@ -3421,3 +3397,27 @@ windows crate.")
               (sha256
                (base32
                 "17z8q25pd3dp6b84qm9nlayd3ym78sbryxlqmgcxvz9vpmy8qarz"))))))
+
+(define-public rust-ws2-32-sys-0.2
+  (package
+    (name "rust-ws2-32-sys")
+    (version "0.2.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "ws2_32-sys" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32
+          "0ppscg5qfqaw0gzwv2a4nhn5bn01ff9iwn6ysqnzm4n8s3myz76m"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-winapi" ,rust-winapi-0.2)
+        ("rust-winapi-build" ,rust-winapi-build-0.1))))
+    (home-page "https://github.com/retep998/winapi-rs")
+    (synopsis "Function definitions for the Windows API library ws2_32")
+    (description
+     "Contains function definitions for the Windows API library ws2_32.")
+    (license license:expat)))
