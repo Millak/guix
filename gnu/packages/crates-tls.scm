@@ -959,10 +959,10 @@ implementation.")
                                    ("rust-serde-derive" ,rust-serde-derive-1))))
     (home-page "https://labs.unnecessary.engineering/oid")
     (synopsis
-     "Library for building, parsing, and formating Object Identifiers (OIDs)")
+     "Library for building, parsing, and formatting Object Identifiers (OIDs)")
     (description
      "This package provides a Rust-native library for building, parsing, and
-formating Object Identifiers (OIDs).")
+formatting Object Identifiers (OIDs).")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-oid-registry-0.7
