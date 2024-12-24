@@ -6503,6 +6503,22 @@ platform-specific getters provided by winit, or another library.")
                (setenv "DISPLAY" display)
                (system (string-append xvfb " " display " &"))))))))))
 
+(define-public rust-x11-clipboard-0.7
+  (package
+    (inherit rust-x11-clipboard-0.8)
+    (name "rust-x11-clipboard")
+    (version "0.7.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "x11-clipboard" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0r3lgslbbdf0mb914n0f9q2pqci407r1pcddwbl7sfvc4alrl2wq"))))
+    (arguments
+     `(#:tests? #f      ; Wants a running X server.
+       #:cargo-inputs (("rust-x11rb" ,rust-x11rb-0.10))))))
+
 (define-public rust-x11rb-0.13
   (package
     (name "rust-x11rb")
@@ -6700,22 +6716,6 @@ platform-specific getters provided by winit, or another library.")
         ("rust-serde" ,rust-serde-1))
        #:cargo-development-inputs
        (("rust-criterion" ,rust-criterion-0.3))))))
-
-(define-public rust-x11-clipboard-0.7
-  (package
-    (inherit rust-x11-clipboard-0.8)
-    (name "rust-x11-clipboard")
-    (version "0.7.1")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "x11-clipboard" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0r3lgslbbdf0mb914n0f9q2pqci407r1pcddwbl7sfvc4alrl2wq"))))
-    (arguments
-     `(#:tests? #f      ; Wants a running X server.
-       #:cargo-inputs (("rust-x11rb" ,rust-x11rb-0.10))))))
 
 (define-public rust-x11-dl-2
   (package
