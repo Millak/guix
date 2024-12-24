@@ -9775,14 +9775,14 @@ source code using IPython.")
 (define-public emacs-ob-asymptote
   (package
     (name "emacs-ob-asymptote")
-    (version "1.0")
+    (version "1.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/ob-asymptote-"
                            version ".tar"))
        (sha256
-        (base32 "1hmqbkrqg18w454xg37rg5cg0q3vd0b0fm14n5chihqrwwnwrf4l"))))
+        (base32 "0f1vpq691pna1p1lgqw2nzmdw25sjsmpcvgm2lj7n14kg7dizxal"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/hurrja/ob-asymptote")
     (synopsis "Babel functions for Asymptote")
