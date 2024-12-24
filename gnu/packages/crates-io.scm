@@ -65196,8 +65196,38 @@ numbers.")
         ("rust-rcgen" ,rust-rcgen-0.8)
         ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))))
 
+(define-public rust-quinn-udp-0.5
+  (package
+    (name "rust-quinn-udp")
+    (version "0.5.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "quinn-udp" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "016rir0w5q6brwd33id2nvqi67xpl3k55ms4srqkmfml2xi2hh0w"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cfg-aliases" ,rust-cfg-aliases-0.2)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-socket2" ,rust-socket2-0.5)
+                       ("rust-tracing" ,rust-tracing-0.1)
+                       ("rust-windows-sys" ,rust-windows-sys-0.52))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.5)
+                                   ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/quinn-rs/quinn")
+    (synopsis "UDP sockets with ECN information for the QUIC transport protocol")
+    (description
+     "This package provodes UDP sockets with ECN information for the QUIC
+transport protocol in Rust.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-quinn-udp-0.4
   (package
+    (inherit rust-quinn-udp-0.5)
     (name "rust-quinn-udp")
     (version "0.4.1")
     (source
@@ -65207,19 +65237,12 @@ numbers.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1mxiy36w9a3rw6cvfcmlc0rz2vhmq8fzffg4qj9rzswgirvlwnq5"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bytes" ,rust-bytes-1)
                        ("rust-libc" ,rust-libc-0.2)
                        ("rust-socket2" ,rust-socket2-0.5)
                        ("rust-tracing" ,rust-tracing-0.1)
-                       ("rust-windows-sys" ,rust-windows-sys-0.48))))
-    (home-page "https://github.com/quinn-rs/quinn")
-    (synopsis "UDP sockets with ECN information for the QUIC transport protocol")
-    (description
-     "This package provodes UDP sockets with ECN information for the QUIC
-transport protocol in Rust.")
-    (license (list license:expat license:asl2.0))))
+                       ("rust-windows-sys" ,rust-windows-sys-0.48))))))
 
 (define-public rust-quinn-udp-0.1
   (package
