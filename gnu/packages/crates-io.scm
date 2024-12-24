@@ -31275,14 +31275,14 @@ futures-rs library.")
 (define-public rust-futures-task-0.3
   (package
     (name "rust-futures-task")
-    (version "0.3.30")
+    (version "0.3.31")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "futures-task" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "013h1724454hj8qczp8vvs10qfiqrxr937qsrv6rhii68ahlzn1q"))))
+        (base32 "124rv4n90f5xwfsm9qw6y99755y021cmi5dhzh253s920z77s3zr"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f))    ; use of undeclared crate or module `futures`
