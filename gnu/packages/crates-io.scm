@@ -45152,28 +45152,6 @@ lexer.")
      "This package provides test harness for macro expansion in Rust.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-magma-0.8
-  (package
-    (name "rust-magma")
-    (version "0.8.1")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "magma" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32 "1w321p30599kc85bb35ps32ykqc9gzpi5b99dsw793nxrypnj9xb"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-cipher" ,rust-cipher-0.4))
-       #:cargo-development-inputs
-       (("rust-cipher" ,rust-cipher-0.4)
-        ("rust-hex-literal" ,rust-hex-literal-0.3))))
-    (home-page "https://github.com/RustCrypto/block-ciphers")
-    (synopsis "Magma (GOST R 34.12-2015) block cipher")
-    (description "Magma (GOST R 34.12-2015) block cipher")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-magic-crypt-3
   (package
     (name "rust-magic-crypt")
@@ -45232,6 +45210,28 @@ algorithms.  It supports CBC block cipher mode, PKCS5 padding and 64, 128,
     (description
      "This package provides a MagicString port driven by Rust and N-API.")
     (license license:expat)))
+
+(define-public rust-magma-0.8
+  (package
+    (name "rust-magma")
+    (version "0.8.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "magma" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "1w321p30599kc85bb35ps32ykqc9gzpi5b99dsw793nxrypnj9xb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cipher" ,rust-cipher-0.4))
+       #:cargo-development-inputs
+       (("rust-cipher" ,rust-cipher-0.4)
+        ("rust-hex-literal" ,rust-hex-literal-0.3))))
+    (home-page "https://github.com/RustCrypto/block-ciphers")
+    (synopsis "Magma (GOST R 34.12-2015) block cipher")
+    (description "Magma (GOST R 34.12-2015) block cipher")
+    (license (list license:expat license:asl2.0))))
 
 (define-public rust-maildir-0.6
   (package
