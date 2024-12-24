@@ -1686,17 +1686,17 @@ implementing the standard git bitmap format.")
 (define-public rust-gix-chunk-0.4
   (package
     (name "rust-gix-chunk")
-    (version "0.4.9")
+    (version "0.4.10")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gix-chunk" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1kyl2i0xld5rmy0ikgl4pf7qi1dwknpr0hrl493h032gl25vaa3c"))))
+        (base32 "1xxl7rfh5vgcc83qvzmf9hprdyl2iipkl4z47x6bif60lnrvxzy6"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-thiserror" ,rust-thiserror-1))))
+     `(#:cargo-inputs (("rust-thiserror" ,rust-thiserror-2))))
     (home-page "https://github.com/Byron/gitoxide")
     (synopsis "Interact with the git chunk file format")
     (description
