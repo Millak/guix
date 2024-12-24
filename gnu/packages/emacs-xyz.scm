@@ -35375,20 +35375,22 @@ text-property translator.")
 (define-public emacs-org-noter
   (package
     (name "emacs-org-noter")
-    (version "1.4.1")
+    (version "1.6.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-              (url "https://github.com/weirdNox/org-noter")
-              (commit version)))
+              (url "https://github.com/org-noter/org-noter")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1vwfpdi7hfkxx4vi0cwg7rvqby3i0mymzdkyzrqzv30dazmcjpag"))))
+         "14n9bq0vxz6gnd5d8nzfc327647iww7gxly43rd4lw7fza8dk380"))))
     (build-system emacs-build-system)
+    (arguments (list #:exclude #~(list "emacs-devel.el")))
+    (native-inputs (list emacs-log4e emacs-with-simulated-input))
     (propagated-inputs (list emacs-org))
-    (home-page "https://github.com/weirdNox/org-noter")
+    (home-page "https://github.com/org-noter/org-noter")
     (synopsis "Synchronized, Org-mode, document annotator")
     (description
      "This package lets you create notes that are kept in sync when you
