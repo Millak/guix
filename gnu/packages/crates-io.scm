@@ -35931,21 +35931,22 @@ Normalization Forms.")
      "Utility for applying case rules to Rust identifiers.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-idna-0.5
+(define-public rust-idna-1
   (package
     (name "rust-idna")
-    (version "0.5.0")
+    (version "1.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "idna" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1xhjrcjqq0l5bpzvdgylvpkgk94panxgsirzhjnnqfdgc4a9nkb3"))))
+        (base32 "0zlajvm2k3wy0ay8plr07w22hxkkmrxkffa6ah57ac6nci984vv8"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-unicode-bidi" ,rust-unicode-bidi-0.3)
-                       ("rust-unicode-normalization" ,rust-unicode-normalization-0.1))
+     `(#:cargo-inputs (("rust-idna-adapter" ,rust-idna-adapter-1)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-utf8-iter" ,rust-utf8-iter-1))
        #:cargo-development-inputs (("rust-assert-matches" ,rust-assert-matches-1)
                                    ("rust-bencher" ,rust-bencher-0.1)
                                    ("rust-serde-json" ,rust-serde-json-1)
@@ -35955,6 +35956,26 @@ Normalization Forms.")
     (description
      "IDNA (Internationalizing Domain Names in Applications) and Punycode.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-idna-0.5
+  (package
+    (inherit rust-idna-1)
+    (name "rust-idna")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "idna" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1xhjrcjqq0l5bpzvdgylvpkgk94panxgsirzhjnnqfdgc4a9nkb3"))))
+    (arguments
+     `(#:cargo-inputs (("rust-unicode-bidi" ,rust-unicode-bidi-0.3)
+                       ("rust-unicode-normalization" ,rust-unicode-normalization-0.1))
+       #:cargo-development-inputs (("rust-assert-matches" ,rust-assert-matches-1)
+                                   ("rust-bencher" ,rust-bencher-0.1)
+                                   ("rust-serde-json" ,rust-serde-json-1)
+                                   ("rust-tester" ,rust-tester-0.9))))))
 
 (define-public rust-idna-0.4
   (package
