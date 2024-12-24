@@ -24739,26 +24739,6 @@ Rust.")
     (description "A library for running child processes.")
     (license license:expat)))
 
-(define-public rust-dyn-clone-1
-  (package
-    (name "rust-dyn-clone")
-    (version "1.0.17")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "dyn-clone" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "09cig7dgg6jnqa10p4233nd8wllbjf4ffsw7wj0m4lwa5w3z0vhd"))))
-    (arguments
-     `(#:cargo-development-inputs (("rust-rustversion" ,rust-rustversion-1)
-                                   ("rust-trybuild" ,rust-trybuild-1))))
-    (build-system cargo-build-system)
-    (home-page "https://crates.io/crates/dyn-clone")
-    (synopsis "Clone trait that is object-safe")
-    (description "This package provides a clone trait that is object-safe.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-dwrote-0.11
   (package
     (name "rust-dwrote")
@@ -24785,6 +24765,26 @@ Rust.")
     (description
      "This package provides lightweight binding to DirectWrite.")
     (license license:mpl2.0)))
+
+(define-public rust-dyn-clone-1
+  (package
+    (name "rust-dyn-clone")
+    (version "1.0.17")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "dyn-clone" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "09cig7dgg6jnqa10p4233nd8wllbjf4ffsw7wj0m4lwa5w3z0vhd"))))
+    (arguments
+     `(#:cargo-development-inputs (("rust-rustversion" ,rust-rustversion-1)
+                                   ("rust-trybuild" ,rust-trybuild-1))))
+    (build-system cargo-build-system)
+    (home-page "https://crates.io/crates/dyn-clone")
+    (synopsis "Clone trait that is object-safe")
+    (description "This package provides a clone trait that is object-safe.")
+    (license (list license:expat license:asl2.0))))
 
 (define-public rust-easy-cast-0.5
   (package
