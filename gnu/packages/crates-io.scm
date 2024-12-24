@@ -78473,6 +78473,27 @@ I/O programming.")
 inline storage.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-smallstring-0.1
+  (package
+    (name "rust-smallstring")
+    (version "0.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "smallstring" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0zq8xgxcfg908x8k59kylx7vcfd5cknmdbl1w6h5d3xknnyhm59h"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-smallvec" ,rust-smallvec-0.3))))
+    (home-page "https://github.com/jFransham/smallstring")
+    (synopsis "Store small strings on the stack using smallvec")
+    (description
+     "This package provides Small string optimization: store small strings on
+the stack using smallvec.")
+    (license license:expat)))
+
 (define-public rust-smallvec-1
   (package
     (name "rust-smallvec")
