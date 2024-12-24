@@ -99251,6 +99251,35 @@ for locating fonts.")
        (("rust-const-cstr" ,rust-const-cstr-0.3)
         ("rust-pkg-config" ,rust-pkg-config-0.3))))))
 
+(define-public rust-yoke-0.7
+  (package
+    (name "rust-yoke")
+    (version "0.7.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "yoke" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0h3znzrdmll0a7sglzf9ji0p5iqml11wrj1dypaf6ad6kbpnl3hj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--" "--skip=convert_cart_into_option_pointer")
+       #:cargo-inputs (("rust-serde" ,rust-serde-1)
+                       ("rust-stable-deref-trait" ,rust-stable-deref-trait-1)
+                       ("rust-yoke-derive" ,rust-yoke-derive-0.7)
+                       ("rust-zerofrom" ,rust-zerofrom-0.1))
+       #:cargo-development-inputs (("rust-bincode" ,rust-bincode-1)
+                                   ("rust-postcard" ,rust-postcard-1)
+                                   ("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/unicode-org/icu4x")
+    (synopsis
+     "Abstraction pairing borrowed data with the backing data it borrows from")
+    (description
+     "This package provides an abstraction allowing borrowed data to be carried
+along with the backing data it borrows from.")
+    (license license:unicode)))
+
 (define-public rust-yoke-derive-0.7
   (package
     (name "rust-yoke-derive")
