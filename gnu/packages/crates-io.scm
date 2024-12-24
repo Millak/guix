@@ -7411,9 +7411,9 @@ c6e7d37.  However, this package works only up to 128 bytes.")
                        ("rust-lalrpop-util" ,rust-lalrpop-util-0.20)
                        ("rust-regex" ,rust-regex-1))))
     (home-page "https://github.com/drjokepu/basic-cookies")
-    (synopsis "Low-level RFC 6265 combatible cookie handling library for Rust")
+    (synopsis "Low-level RFC 6265 compatible cookie handling library for Rust")
     (description
-     "This package provides a low-level RFC 6265 combatible cookie handling
+     "This package provides a low-level RFC 6265 compatible cookie handling
 library for Rust.")
     (license license:expat)))
 
@@ -9469,7 +9469,7 @@ programs.")
     (home-page "https://borsh.io")
     (synopsis "Borsch is the binary object representation serializer for hashing")
     (description "This crate implements @code{borsh}, the binary object
-representation serializer for hasing.  It is meant to be used in
+representation serializer for hashing.  It is meant to be used in
 security-critical projects as it prioritizes consistency, safety, speed, and
 comes with a strict specification.")
     (license (list license:expat license:asl2.0))))
@@ -10079,7 +10079,7 @@ almost the same speed for encoding: about 3% slower when encoding 32 bytes.
     (home-page "https://github.com/dalance/bsd-kvm-sys")
     (synopsis "BSD Kernel Data Access Library (libkvm) binding")
     (description
-     "This package provies BSD Kernel Data Access Library (libkvm) bindings.")
+     "This package provides BSD Kernel Data Access Library (libkvm) bindings.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-bson-2
@@ -12975,9 +12975,9 @@ archive to be linked into Rustcode.")
        (("rust-criterion" ,rust-criterion-0.4)
         ("rust-rand" ,rust-rand-0.8))))
     (home-page "https://github.com/cds-astro/cds-healpix-rust/")
-    (synopsis "HEALPix tesselation")
+    (synopsis "HEALPix tessellation")
     (description
-     "This library is an implementation in Rust of the HEALPix tesselation.
+     "This library is an implementation in Rust of the HEALPix tessellation.
 This implementation has been made by the Strasbourg astronomical Data
 Centre (Centre de Données astronomique de Strasbourg,
 @url{http://cdsweb.u-strasbg.fr/,CDS}).")
@@ -17510,9 +17510,9 @@ numbers using the CORDIC method.")
         ("rust-static-assertions" ,rust-static-assertions-1))))
     (home-page "https://github.com/rodrimati1992/core_extensions")
     (synopsis
-     "Extensions for core/std library types, and other miscelaneous features")
+     "Extensions for core/std library types, and other miscellaneous features")
     (description
-     "Extensions for core/std library types, and other miscelaneous features.")
+     "Extensions for core/std library types, and other miscellaneous features.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-core-extensions-0.1
@@ -20294,7 +20294,7 @@ requests.")
         ("rust-vek" ,rust-vek-0.15))))
     (home-page "https://github.com/Rust-GPU/Rust-CUDA")
     (synopsis "Core library for cust that can be shared across CPU and GPU")
-    (description "This package provices the core library for cust that can be
+    (description "This package provides the core library for cust that can be
 shared across CPU and GPU.")
     (license (list license:expat license:asl2.0))))
 
@@ -20317,7 +20317,7 @@ shared across CPU and GPU.")
         ("rust-syn" ,rust-syn-1))))
     (home-page "https://github.com/Rust-GPU/Rust-CUDA")
     (synopsis "Macros for cust")
-    (description "This package provices macros for cust.")
+    (description "This package provides macros for cust.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-cust-derive-0.1
@@ -21610,8 +21610,8 @@ of any type.")
      `(#:cargo-inputs (("rust-async-std" ,rust-async-std-1)
                        ("rust-tokio" ,rust-tokio-1))))
     (home-page "https://github.com/bikeshedder/deadpool")
-    (synopsis "Dead simple async pool utitities for sync managers")
-    (description "This package provides dead simple async pool utitities
+    (synopsis "Dead simple async pool utilities for sync managers")
+    (description "This package provides dead simple async pool utilities
 for sync managers.")
     (license (list license:expat license:asl2.0))))
 
@@ -21631,8 +21631,8 @@ for sync managers.")
      `(#:cargo-inputs (("rust-deadpool-runtime" ,rust-deadpool-runtime-0.1)
                        ("rust-tracing" ,rust-tracing-0.1))))
     (home-page "https://github.com/bikeshedder/deadpool")
-    (synopsis "Dead simple async pool utitities for sync managers")
-    (description "This package provides dead simple async pool utitities
+    (synopsis "Dead simple async pool utilities for sync managers")
+    (description "This package provides dead simple async pool utilities
 for sync managers.")
     (license (list license:expat license:asl2.0))))
 
@@ -21796,9 +21796,9 @@ verifying the contents.")
     (build-system cargo-build-system)
     (home-page "https://github.com/andrewhickman/defer/")
     (synopsis
-     "Utility to defer excecution of code")
+     "Utility to defer execution of code")
     (description
-     "Utility to defer excecution of code, inspired by Go's defer statement.")
+     "Utility to defer execution of code, inspired by Go's defer statement.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-defer-0.1
@@ -27394,9 +27394,9 @@ like Don libes expect.")
        #:cargo-development-inputs
        (("rust-serde-json" ,rust-serde-json-1))))
     (home-page "https://github.com/GnomedDev/extract_map")
-    (synopsis "HashMap for memory efficent storage of value types")
+    (synopsis "HashMap for memory efficient storage of value types")
     (description
-     "This package provides a @code{HashMap} for memory efficent storage of value
+     "This package provides a @code{HashMap} for memory efficient storage of value
 types which contain their own keys.")
     (license license:expat)))
 
@@ -29047,8 +29047,8 @@ enumeration-based bit flags in rust.")
        (("rust-flaky-test-impl" ,rust-flaky-test-impl-0.2)
         ("rust-future-utils" ,rust-futures-util-0.3))))
     (home-page "https://github.com/denoland/flaky_test")
-    (synopsis "Atttribute macro for running a flaky test multiple times")
-    (description "This package provides an atttribute macro for running a flaky
+    (synopsis "Attribute macro for running a flaky test multiple times")
+    (description "This package provides an attribute macro for running a flaky
 test multiple times.")
     (license license:expat)))
 
@@ -29861,7 +29861,7 @@ implementation that is more efficient for smaller hash keys.")
      "Library for creating a new process detached from the controlling terminal")
     (description
      "This package provides library for creating a new process detached from
-the controling terminal (daemon) using the fork and setsid syscalls.")
+the controlling terminal (daemon) using the fork and setsid syscalls.")
     (license license:bsd-3)))
 
 (define-public rust-fork-0.1
@@ -35565,7 +35565,7 @@ SystemTime}}.")
     (home-page "https://github.com/hyprland-community/hyprland-rs")
     (synopsis "Unofficial rust wrapper for Hyprland's IPC")
     (description
-     "This package provides a unoffical rust wrapper for hyprland's IPC.")
+     "This package provides an unofficial rust wrapper for hyprland's IPC.")
     (license license:gpl3+)))
 
 (define-public rust-hyprland-macros-0.3
@@ -36381,8 +36381,8 @@ variant of this library is available separately as @code{im}.")
        (("rust-ahash" ,rust-ahash-0.8)
         ("rust-hashbrown" ,rust-hashbrown-0.12))))
     (home-page "https://github.com/pascalkuthe/imara-diff")
-    (synopsis "Minimal terminfo libary")
-    (description "This package provides a minimal terminfo libary.")
+    (synopsis "Minimal terminfo library")
+    (description "This package provides a minimal terminfo library.")
     (license license:asl2.0)))
 
 (define-public rust-imbl-2
@@ -41073,7 +41073,7 @@ values of all the exported APIs match the platform that libc is compiled for.")
      `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2))))
     (home-page "https://github.com/mmastrac/rust-libc-print")
     (synopsis "Println! and eprintln! without stdlib")
-    (description "This package provices @code{println!} and @code{eprintln!}
+    (description "This package provides @code{println!} and @code{eprintln!}
 macros on libc without stdlib.")
     (license (list license:asl2.0 license:expat))))
 
@@ -44976,7 +44976,7 @@ lexer.")
        #:cargo-development-inputs (("rust-assert-matches" ,rust-assert-matches-1))))
     (home-page "https://github.com/svartalf/rust-macaddr")
     (synopsis "MAC address types")
-    (description "This pakcage provides MAC address types.")
+    (description "This package provides MAC address types.")
     (license (list license:asl2.0 license:expat))))
 
 (define-public rust-macrotest-1
@@ -56700,9 +56700,9 @@ library.")
      `(#:cargo-inputs (("rust-rand-core" ,rust-rand-core-0.6)
                        ("rust-serde" ,rust-serde-1))))
     (home-page "https://github.com/tkaitchuck/Mwc256XXA64")
-    (synopsis "Non-cryptographic psudo random number generator")
+    (synopsis "Non-cryptographic pseudo random number generator")
     (description
-     "This package provides a fast non-cryptographic psudo random number generator.")
+     "This package provides a fast non-cryptographic pseudo random number generator.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-pciid-parser-0.6
@@ -65445,7 +65445,7 @@ numbers.")
     (home-page "https://github.com/quinn-rs/quinn")
     (synopsis "UDP sockets with ECN information for the QUIC transport protocol")
     (description
-     "This package provodes UDP sockets with ECN information for the QUIC
+     "This package provides UDP sockets with ECN information for the QUIC
 transport protocol in Rust.")
     (license (list license:expat license:asl2.0))))
 
@@ -75167,7 +75167,7 @@ standard formatting APIs.")
     (synopsis
      "(De-)serialization support for the `application/x-www-form-urlencoded` format")
     (description
-     "This package provies (de-)serialization support for the
+     "This package provides (de-)serialization support for the
 `application/x-www-form-urlencoded` format.")
     (license license:expat)))
 
@@ -76169,7 +76169,7 @@ Rust's serde.")
         ("rust-simple-logger" ,rust-simple-logger-2))))
     (home-page "https://github.com/RReverser/serde-xml-rs")
     (synopsis "xml-rs based deserializer for Serde")
-    (description "This package provies a xml-rs based deserializer for Serde
+    (description "This package provides a xml-rs based deserializer for Serde
 (compatible with 0.9+).")
     (license license:expat)))
 
@@ -80373,7 +80373,7 @@ SPIR-V.")
     (home-page "https://github.com/sqlparser-rs/sqlparser-rs")
     (synopsis "Implementation for sqlparser")
     (description
-     "This package contains the implementaion details for sqlparser.")
+     "This package contains the implementation details for sqlparser.")
     (license license:asl2.0)))
 
 (define-public rust-sqlparser-derive-0.1
@@ -83018,7 +83018,7 @@ executed by swayipc.")
     (home-page "https://github.com/jaycefayne/swayipc-rs")
     (synopsis "Type definitions from sway's IPC interface")
     (description
-     "This package provides a library containing type defintions from
+     "This package provides a library containing type definitions from
 sway's IPC interface.")
     (license license:expat)))
 
@@ -86401,8 +86401,8 @@ color of the terminal.")
      `(#:tests? #f      ; Not all files included.
        #:cargo-inputs (("rust-home" ,rust-home-0.5))))
     (home-page "https://github.com/pascalkuthe/termini")
-    (synopsis "Minimal terminfo libary")
-    (description "This package provides a minimal terminfo libary.")
+    (synopsis "Minimal terminfo library")
+    (description "This package provides a minimal terminfo library.")
     (license license:expat)))
 
 (define-public rust-terminfo-0.8
@@ -94042,7 +94042,7 @@ in Rust.")
        #:cargo-inputs
        (("rust-unic-ucd-segment" ,rust-unic-ucd-segment-0.9))))
     (home-page "https://github.com/open-i18n/rust-unic/")
-    (synopsis "Text segmentation algorithmes for UNIC")
+    (synopsis "Text segmentation algorithms for UNIC")
     (description
      "This UNIC component implements algorithms from Unicode Standard
 Annex #29 - Unicode Text Segmentation, used for detecting boundaries
@@ -95532,7 +95532,7 @@ first byte.")
                                    ("rust-tempfile" ,rust-tempfile-3))))
     (home-page "https://github.com/uutils/coreutils")
     (synopsis "uutils ~ 'core' uutils code library")
-    (description "This packge provides the core uutils code library.")
+    (description "This package provides the core uutils code library.")
     (license license:expat)))
 
 (define-public rust-uucore-procs-0.0.25
@@ -96484,7 +96484,7 @@ numbers.")
         ("rust-sha2" ,rust-sha2-0.10))))
     (home-page "https://github.com/rust-vsock/vsock-rs")
     (synopsis "Virtio socket support for Rust")
-    (description "This package provdies virtio socket support for Rust.")
+    (description "This package provides virtio socket support for Rust.")
     (license license:asl2.0)))
 
 (define-public rust-vsock-0.3
