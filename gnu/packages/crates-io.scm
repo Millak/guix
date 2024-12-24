@@ -6657,6 +6657,26 @@ automatically generated enum.")
        (("rust-rustversion" ,rust-rustversion-1)
         ("rust-trybuild" ,rust-trybuild-1))))))
 
+(define-public rust-autocfg-1
+  (package
+    (name "rust-autocfg")
+    (version "1.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "autocfg" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "09lz3by90d2hphbq56znag9v87gfpd9gb8nr82hll8z6x2nhprdc"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-test-flags '(list "--" "--skip=test_wrappers")))
+    (home-page "https://github.com/cuviper/autocfg")
+    (synopsis "Automatic configuration for Rust compiler features")
+    (description
+     "This package utomatically configures Rust compiler features.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-autocompress-0.2
   (package
     (name "rust-autocompress")
@@ -6696,26 +6716,6 @@ automatically generated enum.")
      "This crate lets you automatically select a suitable decoder from magic
 bytes or encoder from file extension.")
     (license license:asl2.0)))
-
-(define-public rust-autocfg-1
-  (package
-    (name "rust-autocfg")
-    (version "1.4.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "autocfg" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "09lz3by90d2hphbq56znag9v87gfpd9gb8nr82hll8z6x2nhprdc"))))
-    (build-system cargo-build-system)
-    (arguments
-     (list #:cargo-test-flags '(list "--" "--skip=test_wrappers")))
-    (home-page "https://github.com/cuviper/autocfg")
-    (synopsis "Automatic configuration for Rust compiler features")
-    (description
-     "This package utomatically configures Rust compiler features.")
-    (license (list license:asl2.0 license:expat))))
 
 (define-public rust-autocfg-0.1
   (package
