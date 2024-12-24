@@ -541,6 +541,28 @@ syntax (e.g.  EasyList, EasyPrivacy) filter parsing and matching.")
         ("rust-sha2" ,rust-sha2-0.9)
         ("rust-tokio" ,rust-tokio-1))))))
 
+(define-public rust-addchain-0.2
+  (package
+    (name "rust-addchain")
+    (version "0.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "addchain" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0w45hpybsx9gzhlxf6x9451kycg8xwj3x8qzjnk8wqm55926jbiv"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-num-bigint" ,rust-num-bigint-0.3)
+        ("rust-num-integer" ,rust-num-integer-0.1)
+        ("rust-num-traits" ,rust-num-traits-0.2))))
+    (home-page "https://github.com/str4d/addchain")
+    (synopsis "Generate addition chains")
+    (description "Generate addition chains")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-addr2line-0.24
   (package
     (name "rust-addr2line")
@@ -639,28 +661,6 @@ Rust, using gimli.")
         ("rust-memmap2" ,rust-memmap2-0.5)
         ("rust-rustc-test" ,rust-rustc-test-0.3)
         ("rust-typed-arena" ,rust-typed-arena-2))))))
-
-(define-public rust-addchain-0.2
-  (package
-    (name "rust-addchain")
-    (version "0.2.0")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "addchain" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0w45hpybsx9gzhlxf6x9451kycg8xwj3x8qzjnk8wqm55926jbiv"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-num-bigint" ,rust-num-bigint-0.3)
-        ("rust-num-integer" ,rust-num-integer-0.1)
-        ("rust-num-traits" ,rust-num-traits-0.2))))
-    (home-page "https://github.com/str4d/addchain")
-    (synopsis "Generate addition chains")
-    (description "Generate addition chains")
-    (license (list license:expat license:asl2.0))))
 
 (define-public rust-addr-0.14
   (package
