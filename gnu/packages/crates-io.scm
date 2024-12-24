@@ -42861,6 +42861,25 @@ harness used by @code{rustc --test}.")
         ("rust-rayon" ,rust-rayon-1)
         ("rust-termcolor" ,rust-termcolor-1))))))
 
+(define-public rust-libtest-mimic-0.3
+  (package
+    (inherit rust-libtest-mimic-0.4)
+    (name "rust-libtest-mimic")
+    (version "0.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "libtest-mimic" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1bp2jllwpciljr14g6s9bk4835g46kszgrjwi66vxxsk3ynbi9q8"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-crossbeam-channel" ,rust-crossbeam-channel-0.4)
+        ("rust-rayon" ,rust-rayon-1)
+        ("rust-structopt" ,rust-structopt-0.3)
+        ("rust-termcolor" ,rust-termcolor-1))))))
+
 (define-public rust-libxml-0.3
   (package
     (name "rust-libxml")
@@ -43375,25 +43394,6 @@ Linux userspace APIs.")
            #:cargo-development-inputs
            `(("rust-libc" ,rust-libc-0.2)
              ("rust-static-assertions" ,rust-static-assertions-1))))))
-
-(define-public rust-libtest-mimic-0.3
-  (package
-    (inherit rust-libtest-mimic-0.4)
-    (name "rust-libtest-mimic")
-    (version "0.3.0")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "libtest-mimic" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1bp2jllwpciljr14g6s9bk4835g46kszgrjwi66vxxsk3ynbi9q8"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-crossbeam-channel" ,rust-crossbeam-channel-0.4)
-        ("rust-rayon" ,rust-rayon-1)
-        ("rust-structopt" ,rust-structopt-0.3)
-        ("rust-termcolor" ,rust-termcolor-1))))))
 
 (define-public rust-libudev-sys-0.1
   (package
