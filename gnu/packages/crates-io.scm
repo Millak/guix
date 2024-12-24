@@ -92398,6 +92398,25 @@ tree_magic_mini.")
      "This package provides a library for visualizing tree structured data.")
     (license license:expat)))
 
+(define-public rust-trim-in-place-0.1
+  (package
+    (name "rust-trim-in-place")
+    (version "0.1.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "trim-in-place" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1z04g79xkrpf3h4g3cc8wax72dn6h6v9l4m39zg8rg39qrpr4gil"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs (("rust-bencher" ,rust-bencher-0.1))))
+    (home-page "https://magiclen.org/trim-in-place")
+    (synopsis "In-place trimming strings")
+    (description "This package provides In-place trimming strings.")
+    (license license:expat)))
+
 (define-public rust-triomphe-0.1
   (package
     (name "rust-triomphe")
@@ -92422,25 +92441,6 @@ tree_magic_mini.")
      "This package provides a fork of @code{std::sync::Arc} with some extra
 functionality and without weak references (originally servo_arc).")
     (license (list license:expat license:asl2.0))))
-
-(define-public rust-trim-in-place-0.1
-  (package
-    (name "rust-trim-in-place")
-    (version "0.1.7")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "trim-in-place" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1z04g79xkrpf3h4g3cc8wax72dn6h6v9l4m39zg8rg39qrpr4gil"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-development-inputs (("rust-bencher" ,rust-bencher-0.1))))
-    (home-page "https://magiclen.org/trim-in-place")
-    (synopsis "In-place trimming strings")
-    (description "This package provides In-place trimming strings.")
-    (license license:expat)))
 
 (define-public rust-triple-accel-0.4
   (package
