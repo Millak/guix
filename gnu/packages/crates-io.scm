@@ -39942,6 +39942,44 @@ Directory traversal is already pretty fast.  If you don't need this crate's
 speed then walkdir provides a smaller and more tested single threaded implementation.")
     (license license:expat)))
 
+(define-public rust-k9-0.12
+  (package
+    (name "rust-k9")
+    (version "0.12.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "k9" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "056ngrvyla95qj737h7xjw5ja697h07mpw6pci5v3cb8bfxwx2q8"))
+              (snippet
+               #~(begin (use-modules (guix build utils))
+                        (substitute* "Cargo.toml"
+                          ;; k9@0.11.7 was yanked by upstream, provide 0.11.6.
+                          (("0\\.11\\.7") "0.11.6"))))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-colored" ,rust-colored-2)
+                       ("rust-diff" ,rust-diff-0.1)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-syn" ,rust-syn-2)
+                       ("rust-terminal-size" ,rust-terminal-size-0.2))
+       #:cargo-development-inputs
+       (("rust-derive-builder" ,rust-derive-builder-0.9)
+        ("rust-k9" ,rust-k9-0.11)
+        ("rust-rand" ,rust-rand-0.7)
+        ("rust-sha2" ,rust-sha2-0.9)
+        ("rust-strip-ansi-escapes" ,rust-strip-ansi-escapes-0.1))))
+    (home-page "https://github.com/aaronabramov/k9")
+    (synopsis "Testing library")
+    (description "This package contains helper macros for writing unit tests.")
+    (license license:expat)))
+
 (define-public rust-katex-doc-0.1
   (package
     (name "rust-katex-doc")
@@ -40230,44 +40268,6 @@ and traversing, manipulating, and querying the document tree.")
     (description
      "This package provides a Log macro for log's kv-unstable backend.")
     (license (list license:expat license:asl2.0))))
-
-(define-public rust-k9-0.12
-  (package
-    (name "rust-k9")
-    (version "0.12.0")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "k9" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "056ngrvyla95qj737h7xjw5ja697h07mpw6pci5v3cb8bfxwx2q8"))
-              (snippet
-               #~(begin (use-modules (guix build utils))
-                        (substitute* "Cargo.toml"
-                          ;; k9@0.11.7 was yanked by upstream, provide 0.11.6.
-                          (("0\\.11\\.7") "0.11.6"))))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
-                       ("rust-colored" ,rust-colored-2)
-                       ("rust-diff" ,rust-diff-0.1)
-                       ("rust-lazy-static" ,rust-lazy-static-1)
-                       ("rust-libc" ,rust-libc-0.2)
-                       ("rust-proc-macro2" ,rust-proc-macro2-1)
-                       ("rust-regex" ,rust-regex-1)
-                       ("rust-syn" ,rust-syn-2)
-                       ("rust-terminal-size" ,rust-terminal-size-0.2))
-       #:cargo-development-inputs
-       (("rust-derive-builder" ,rust-derive-builder-0.9)
-        ("rust-k9" ,rust-k9-0.11)
-        ("rust-rand" ,rust-rand-0.7)
-        ("rust-sha2" ,rust-sha2-0.9)
-        ("rust-strip-ansi-escapes" ,rust-strip-ansi-escapes-0.1))))
-    (home-page "https://github.com/aaronabramov/k9")
-    (synopsis "Testing library")
-    (description "This package contains helper macros for writing unit tests.")
-    (license license:expat)))
 
 (define-public rust-k9-0.11
   (package
