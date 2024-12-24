@@ -55473,39 +55473,6 @@ rustified API consider using pam.")
     (description "@code{pancurses} is a @code{curses} library for Rust.")
     (license license:expat)))
 
-(define-public rust-parasail-sys-0.2
-  (package
-    (name "rust-parasail-sys")
-    (version "0.2.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "parasail-sys" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "156fwfdbcfpzmx4k274jqdp8jzmllmdnhd1ibnh7kgd9cp7ni6ac"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-build-flags '("-vv")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'set-shell-for-configure-script
-           (lambda _
-             (setenv "SHELL" (which "sh"))
-             (setenv "CONFIG_SHELL" (which "sh")))))
-       #:cargo-inputs
-       (("rust-libc" ,rust-libc-0.2))))
-    (inputs
-     (list zlib))
-    (native-inputs
-     (list libtool))
-    (home-page "https://github.com/anp/parasailors")
-    (synopsis "Bindings to the parasail pairwise genetic sequence alignment library")
-    (description
-     "This packgae provides native bindings to the parasail pairwise genetic
-sequence alignment library.")
-    (license license:expat)))
-
 (define-public rust-pandoc-0.8
   (package
     (name "rust-pandoc")
@@ -55573,6 +55540,39 @@ executable.")
                        ("rust-fnv" ,rust-fnv-1)
                        ("rust-unicode-width" ,rust-unicode-width-0.1))
        #:cargo-development-inputs (("rust-owo-colors" ,rust-owo-colors-3))))))
+
+(define-public rust-parasail-sys-0.2
+  (package
+    (name "rust-parasail-sys")
+    (version "0.2.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "parasail-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "156fwfdbcfpzmx4k274jqdp8jzmllmdnhd1ibnh7kgd9cp7ni6ac"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-build-flags '("-vv")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'set-shell-for-configure-script
+           (lambda _
+             (setenv "SHELL" (which "sh"))
+             (setenv "CONFIG_SHELL" (which "sh")))))
+       #:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2))))
+    (inputs
+     (list zlib))
+    (native-inputs
+     (list libtool))
+    (home-page "https://github.com/anp/parasailors")
+    (synopsis "Bindings to the parasail pairwise genetic sequence alignment library")
+    (description
+     "This packgae provides native bindings to the parasail pairwise genetic
+sequence alignment library.")
+    (license license:expat)))
 
 (define-public rust-parasailors-0.3
   (package
