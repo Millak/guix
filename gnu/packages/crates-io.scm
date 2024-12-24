@@ -42880,6 +42880,28 @@ harness used by @code{rustc --test}.")
         ("rust-structopt" ,rust-structopt-0.3)
         ("rust-termcolor" ,rust-termcolor-1))))))
 
+(define-public rust-libudev-sys-0.1
+  (package
+    (name "rust-libudev-sys")
+    (version "0.1.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libudev-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "09236fdzlx9l0dlrsc6xx21v5x8flpfm3d5rjq9jr5ivlas6k11w"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2)
+                       ("rust-pkg-config" ,rust-pkg-config-0.3))))
+    (native-inputs (list pkg-config))
+    (inputs (list eudev))
+    (home-page "https://github.com/dcuddeback/libudev-sys")
+    (synopsis "FFI bindings to libudev")
+    (description "This package provides FFI bindings to libudev.")
+    (license license:expat)))
+
 (define-public rust-libxml-0.3
   (package
     (name "rust-libxml")
@@ -43394,28 +43416,6 @@ Linux userspace APIs.")
            #:cargo-development-inputs
            `(("rust-libc" ,rust-libc-0.2)
              ("rust-static-assertions" ,rust-static-assertions-1))))))
-
-(define-public rust-libudev-sys-0.1
-  (package
-    (name "rust-libudev-sys")
-    (version "0.1.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "libudev-sys" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "09236fdzlx9l0dlrsc6xx21v5x8flpfm3d5rjq9jr5ivlas6k11w"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2)
-                       ("rust-pkg-config" ,rust-pkg-config-0.3))))
-    (native-inputs (list pkg-config))
-    (inputs (list eudev))
-    (home-page "https://github.com/dcuddeback/libudev-sys")
-    (synopsis "FFI bindings to libudev")
-    (description "This package provides FFI bindings to libudev.")
-    (license license:expat)))
 
 (define-public rust-libusb1-sys-0.7
   (package
