@@ -35342,26 +35342,6 @@ speed then walkdir provides a smaller and more tested single threaded implementa
      "This package provides a XSS as a Service for KaTeX on docs.rs")
     (license (list license:unlicense license:expat))))
 
-(define-public rust-koibumi-base32-0.0.2
-  (package
-    (name "rust-koibumi-base32")
-    (version "0.0.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "koibumi-base32" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1frb232m6rw50ly8ijhsbllcqfif5kcma1l6hrgm5g22c3c3il94"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-lazy-static" ,rust-lazy-static-1))))
-    (home-page "https://kashiko.gitlab.io/koibumi-rust/")
-    (synopsis "Base32 encoder/decoder library")
-    (description "This package provides a Base32 encoder/decoder library.")
-    (license license:gpl3+)))
-
 (define-public rust-human-date-parser-0.1
   (package
     (name "rust-human-date-parser")
@@ -40053,6 +40033,26 @@ passwords/credentials.")
     (description
      "The Khronos XML API Registry, exposed as byte string constants.")
     (license license:asl2.0)))
+
+(define-public rust-koibumi-base32-0.0.2
+  (package
+    (name "rust-koibumi-base32")
+    (version "0.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "koibumi-base32" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1frb232m6rw50ly8ijhsbllcqfif5kcma1l6hrgm5g22c3c3il94"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-lazy-static" ,rust-lazy-static-1))))
+    (home-page "https://kashiko.gitlab.io/koibumi-rust/")
+    (synopsis "Base32 encoder/decoder library")
+    (description "This package provides a Base32 encoder/decoder library.")
+    (license license:gpl3+)))
 
 (define-public rust-konst-0.2
   (package
