@@ -26305,6 +26305,7 @@ without disturbing alignment.")
                 (invoke "emacs" "--batch" "-L" "."
                         "-l" "macrostep-test.el"
                         "-f" "ert-run-tests-batch-and-exit")))))))
+    (propagated-inputs (list emacs-compat))
     (home-page "https://github.com/emacsorphanage/macrostep")
     (synopsis "Interactive macro-expander for Emacs")
     (description "@code{macrostep} is an Emacs minor mode for interactively
