@@ -77855,7 +77855,7 @@ designed for @code{immutable.rs}.")
 (define-public rust-slab-0.4
   (package
     (name "rust-slab")
-    (version "0.4.8")
+    (version "0.4.9")
     (source
       (origin
         (method url-fetch)
@@ -77863,17 +77863,15 @@ designed for @code{immutable.rs}.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "0bgwxig8gkqp6gz8rvrpdj6qwa10karnsxwx7wsj5ay8kcf3aa35"))))
+          "0rxvsgir0qw5lkycrqgb1cxsvxzjv9bmx73bk5y42svnzfba94lg"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-development-inputs
+     `(#:cargo-inputs (("rust-autocfg" ,rust-autocfg-1)
+                       ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
        (("rust-rustversion" ,rust-rustversion-1)
         ("rust-serde" ,rust-serde-1)
-        ("rust-serde-test" ,rust-serde-test-1))
-       #:cargo-inputs (("rust-autocfg" ,rust-autocfg-1)
-                       ("rust-serde" ,rust-serde-1))))
-    (native-inputs
-     (list rust-autocfg-1))
+        ("rust-serde-test" ,rust-serde-test-1))))
     (home-page "https://github.com/carllerche/slab")
     (synopsis "Pre-allocated storage for a uniform data type")
     (description "This create provides a pre-allocated storage for a uniform
