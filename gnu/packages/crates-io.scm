@@ -4326,33 +4326,6 @@ extracted from Askama.")
     (description "This package provides shared code for Askama.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-askama-derive-0.12
-  (package
-    (name "rust-askama-derive")
-    (version "0.12.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "askama_derive" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "10qxszzrwbabpd3jh6lvk3q1a81ryfba8bh75jb18irwn5n8vzhr"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-askama-parser" ,rust-askama-parser-0.2)
-                       ("rust-basic-toml" ,rust-basic-toml-0.1)
-                       ("rust-mime" ,rust-mime-0.3)
-                       ("rust-mime-guess" ,rust-mime-guess-2)
-                       ("rust-proc-macro2" ,rust-proc-macro2-1)
-                       ("rust-quote" ,rust-quote-1)
-                       ("rust-serde" ,rust-serde-1)
-                       ("rust-syn" ,rust-syn-2))))
-    (home-page "https://github.com/djc/askama")
-    (synopsis "Procedural macro package for Askama")
-    (description
-     "This package provide the procedural macro package for Askama.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-as-raw-xcb-connection-1
   (package
     (name "rust-as-raw-xcb-connection")
@@ -4544,6 +4517,33 @@ library for Rust.")
            `(("rust-askama-derive" ,rust-askama-derive-0.11)
              ("rust-askama-escape" ,rust-askama-escape-0.10)
              ("rust-askama-shared" ,rust-askama-shared-0.12))))))
+
+(define-public rust-askama-derive-0.12
+  (package
+    (name "rust-askama-derive")
+    (version "0.12.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "askama_derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "10qxszzrwbabpd3jh6lvk3q1a81ryfba8bh75jb18irwn5n8vzhr"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-askama-parser" ,rust-askama-parser-0.2)
+                       ("rust-basic-toml" ,rust-basic-toml-0.1)
+                       ("rust-mime" ,rust-mime-0.3)
+                       ("rust-mime-guess" ,rust-mime-guess-2)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/djc/askama")
+    (synopsis "Procedural macro package for Askama")
+    (description
+     "This package provide the procedural macro package for Askama.")
+    (license (list license:expat license:asl2.0))))
 
 (define-public rust-askama-derive-0.11
   (package
