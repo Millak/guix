@@ -14184,26 +14184,6 @@ how to behave across the three main input sources")
      "This package provides the procedural macro crate for Clap.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-clap-derive-3
-  (package
-    (inherit rust-clap-derive-4)
-    (name "rust-clap-derive")
-    (version "3.2.25")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "clap_derive" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "025hh66cyjk5xhhq8s1qw5wkxvrm8hnv5xwwksax7dy8pnw72qxf"))))
-    (arguments
-     (list #:cargo-inputs
-           `(("rust-heck" ,rust-heck-0.4)
-             ("rust-proc-macro-error" ,rust-proc-macro-error-1)
-             ("rust-proc-macro2" ,rust-proc-macro2-1)
-             ("rust-quote" ,rust-quote-1)
-             ("rust-syn" ,rust-syn-1))))))
-
 (define-public rust-clap-4
   (package
     (name "rust-clap")
@@ -14431,6 +14411,26 @@ for programs written with Clap.")
      "This package provides a generator library for Rust used
 with Clap to generate Fig completion scripts.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-clap-derive-3
+  (package
+    (inherit rust-clap-derive-4)
+    (name "rust-clap-derive")
+    (version "3.2.25")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "clap_derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "025hh66cyjk5xhhq8s1qw5wkxvrm8hnv5xwwksax7dy8pnw72qxf"))))
+    (arguments
+     (list #:cargo-inputs
+           `(("rust-heck" ,rust-heck-0.4)
+             ("rust-proc-macro-error" ,rust-proc-macro-error-1)
+             ("rust-proc-macro2" ,rust-proc-macro2-1)
+             ("rust-quote" ,rust-quote-1)
+             ("rust-syn" ,rust-syn-1))))))
 
 (define-public rust-clap-lex-0.7
   (package
