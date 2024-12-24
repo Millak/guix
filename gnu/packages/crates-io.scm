@@ -6894,7 +6894,7 @@ audio/video metrics.")
         ("rust-quickcheck-macros" ,rust-quickcheck-macros-1))))
     (home-page "https://github.com/rust-av/av1-grain")
     (synopsis "Helpers for generating and parsing AV1 film grain data")
-    (description "This package procides helpers for generating and parsing AV1
+    (description "This package provides helpers for generating and parsing AV1
 film grain data.")
     (license license:bsd-2)))
 
