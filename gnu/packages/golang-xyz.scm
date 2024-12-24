@@ -8409,6 +8409,8 @@ goroutines as a unit whole.")
     (arguments
      (list
       #:import-path "github.com/oklog/ulid"))
+    (native-inputs
+     (list go-github-com-pborman-getopt-v2)) ; for CLI
     (home-page "https://github.com/oklog/ulid")
     (synopsis "Universally Unique Lexicographically Sortable Identifier in Golang")
     (description
