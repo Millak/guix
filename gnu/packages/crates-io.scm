@@ -26168,6 +26168,24 @@ It is not a public API.")
     (description "Filter log events using environment variables.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-env-home-0.1
+  (package
+    (name "rust-env-home")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "env_home" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1zn08mk95rjh97831rky1n944k024qrwjhbcgb0xv9zhrh94xy67"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/notpeter/env-home")
+    (synopsis "Get the user home directory in a cross-platform way")
+    (description
+     "This package gets the user home directory in a cross-platform way.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-env-logger-0.11
   (package
     (name "rust-env-logger")
