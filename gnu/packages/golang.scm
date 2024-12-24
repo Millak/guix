@@ -3719,43 +3719,6 @@ required by Go's standard Hash interface.")
       (description "Just a type for protocol strings.  Nothing more.")
       (license license:expat))))
 
-(define-public go-github-com-mitchellh-go-homedir
-    (package
-      (name "go-github-com-mitchellh-go-homedir")
-      (version "1.1.0")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/mitchellh/go-homedir")
-               (commit (string-append "v" version))))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "0ydzkipf28hwj2bfxqmwlww47khyk6d152xax4bnyh60f4lq3nx1"))))
-      (build-system go-build-system)
-      (arguments
-       (quote (#:import-path "github.com/mitchellh/go-homedir"
-               ;; TODO: Tests fail because it tries to access home.
-               #:tests? #f)))
-      (home-page "https://github.com/mitchellh/go-homedir")
-      (synopsis "Go library for detecting and expanding the user's home directory without cgo")
-      (description "This is a Go library for detecting the user's home
-directory without the use of @command{cgo}, so the library can be used in
-cross-compilation environments.
-
-Usage is simple, just call homedir.Dir() to get the home directory for a user,
-and homedir.Expand() to expand the @command{~} in a path to the home
-directory.
-
-Why not just use @command{os/user}?  The built-in @command{os/user} package
-requires cgo on Darwin systems.  This means that any Go code that uses that
-package cannot cross compile.  But 99% of the time the use for
-@command{os/user} is just to retrieve the home directory, which we can do for
-the current user without cgo.  This library does that, enabling
-cross-compilation.")
-      (license license:expat)))
-
 (define-public go-github-com-mitchellh-reflectwalk
   (package
     (name "go-github-com-mitchellh-reflectwalk")
