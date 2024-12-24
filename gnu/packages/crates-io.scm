@@ -21263,6 +21263,33 @@ hexadecimal, base32, and base64.")
                                    ("rust-serde-json" ,rust-serde-json-1)
                                    ("rust-tester" ,rust-tester-0.9))))))
 
+(define-public rust-databake-0.1
+  (package
+    (name "rust-databake")
+    (version "0.1.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "databake" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0kb0lnhka1fklrii3qaj40zcrbclfn8fyvy0r1whd3yaxkxzn13a"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--"
+                            "--skip=src/lib.rs - (line 27)"
+                            "--skip=src/lib.rs - (line 46)")
+       #:cargo-inputs (("rust-databake-derive" ,rust-databake-derive-0.1)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1))))
+    (home-page "https://github.com/unicode-org/icu4x")
+    (synopsis
+     "Trait that lets structs represent themselves as (const) Rust expressions")
+    (description
+     "This package provides a trait that lets structs represent themselves as
+(const) Rust expressions.")
+    (license license:unicode)))
+
 (define-public rust-databake-derive-0.1
   (package
     (name "rust-databake-derive")
