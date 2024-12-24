@@ -34849,6 +34849,19 @@ float literals.  Two functions @code{parse_hexf32} and @code{parse_hexf64} are
 provided for each type.")
     (license license:cc0)))
 
+(define-public rust-hexf-parse-0.1
+  (package
+    (inherit rust-hexf-parse-0.2)
+    (name "rust-hexf-parse")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "hexf-parse" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1b2h0lvksn8748764x46729ygpz8grack24spin0k29ssmr6yabr"))))))
+
 (define-public rust-hidapi-2
   (package
     (name "rust-hidapi")
@@ -34876,19 +34889,6 @@ provided for each type.")
     (description "This crate provides a Rust abstraction over the features of
 the C library @code{hidapi}.  Based off of @code{hidapi-rs} by Osspial.")
     (license license:expat)))
-
-(define-public rust-hexf-parse-0.1
-  (package
-    (inherit rust-hexf-parse-0.2)
-    (name "rust-hexf-parse")
-    (version "0.1.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "hexf-parse" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1b2h0lvksn8748764x46729ygpz8grack24spin0k29ssmr6yabr"))))))
 
 (define-public rust-home-0.5
   (package
