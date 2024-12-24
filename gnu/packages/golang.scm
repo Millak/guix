@@ -5194,12 +5194,11 @@ configuration languages, but other uses may be possible too.")
                 "065mbihiy7q67wnql0bzl9y1kkvck5ivra68254zbih52jxwrgr2"))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "gopkg.in/errgo.v2"
-       #:tests? #f
-       ;; Source-only package
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'build))))
+     (list
+      #:skip-build? #t
+      #:import-path "gopkg.in/errgo.v2"))
+    (native-inputs
+     (list go-gopkg-in-check-v1))
     (home-page "https://godoc.org/gopkg.in/errgo.v2")
     (synopsis "Functions that use the fmt package to format error messages")
     (description "This package is the same as @code{gopkg.in/errgo.v2/errors}
