@@ -30797,7 +30797,7 @@ zero allocations, composability, and iterator-like interfaces.")
 (define-public rust-futures-core-0.3
   (package
     (name "rust-futures-core")
-    (version "0.3.30")
+    (version "0.3.31")
     (source
      (origin
        (method url-fetch)
@@ -30805,7 +30805,7 @@ zero allocations, composability, and iterator-like interfaces.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "07aslayrn3lbggj54kci0ishmd1pr367fp7iks7adia1p05miinz"))))
+         "0gk6yrxgi5ihfanm2y431jadrll00n5ifhnpx090c2f2q1cr1wh5"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; use of undeclared crate or module `futures`
