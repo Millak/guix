@@ -64550,6 +64550,25 @@ extension to python.")
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))))))
 
+(define-public rust-pyo3-macros-0.16
+  (package
+    (inherit rust-pyo3-macros-0.19)
+    (name "rust-pyo3-macros")
+    (version "0.16.6")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "pyo3-macros" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32 "089z1x8fm7078kyhpjcsaipd6745jf2rp86rpbkppbam5504k1sn"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-pyo3-macros-backend" ,rust-pyo3-macros-backend-0.16)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))))))
+
 (define-public rust-pyo3-macros-backend-0.23
   (package
     (name "rust-pyo3-macros-backend")
@@ -64723,25 +64742,6 @@ extension to python.")
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))))
-
-(define-public rust-pyo3-macros-0.16
-  (package
-    (inherit rust-pyo3-macros-0.19)
-    (name "rust-pyo3-macros")
-    (version "0.16.6")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "pyo3-macros" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-          (base32 "089z1x8fm7078kyhpjcsaipd6745jf2rp86rpbkppbam5504k1sn"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-pyo3-macros-backend" ,rust-pyo3-macros-backend-0.16)
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))))))
 
