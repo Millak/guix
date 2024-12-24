@@ -9533,6 +9533,36 @@ files which are intended to be packages.")
       (description "This package adds support for @code{proselint} in Flymake.")
       (license license:gpl3+))))
 
+(define-public emacs-el-job
+  (package
+    (name "emacs-el-job")
+    (version "0.3.18")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/meedstrom/el-job")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1n9yg804z778cwcdrfvdf087nsy2x2g13kvrf47gg5zdp5wa1fnc"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list #:tests? #true
+           #:test-command #~(list "emacs" "-Q" "--batch"
+                                  "-l" "el-job-test.el"
+                                  "-f" "ert-run-tests-batch-and-exit")))
+    (propagated-inputs (list emacs-compat))
+    (home-page "https://github.com/meedstrom/el-job")
+    (synopsis "Split up the inputs of a function in many sub-processes")
+    (description
+     "This library gives you the tools to split up the inputs and run the
+function in many sub-processes (one per CPU core), then merges their outputs
+and passes it back to the current Emacs.  In the meantime, current Emacs does
+not hang at all.")
+    (license license:gpl3+)))
+
+
 (define-public emacs-elisp-demos
   (package
     (name "emacs-elisp-demos")
