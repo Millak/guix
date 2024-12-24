@@ -79424,19 +79424,6 @@ output from
 It is also flexible enough to build your own test harness like @code{trycmd}.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-snapbox-macros-0.2
-  (package
-    (inherit rust-snapbox-macros-0.3)
-    (name "rust-snapbox-macros")
-    (version "0.2.1")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "snapbox-macros" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0c79lnjcs9yp62y665swv5y5y6088qc256bfr3s7xcnb0izfl7f0"))))))
-
 (define-public rust-snapbox-0.6
   (package
     (name "rust-snapbox")
@@ -79591,6 +79578,19 @@ It is also flexible enough to build your own test harness like @code{trycmd}.")
         ("rust-wait-timeout" ,rust-wait-timeout-0.2)
         ("rust-walkdir" ,rust-walkdir-2)
         ("rust-yansi" ,rust-yansi-0.5))))))
+
+(define-public rust-snapbox-macros-0.2
+  (package
+    (inherit rust-snapbox-macros-0.3)
+    (name "rust-snapbox-macros")
+    (version "0.2.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "snapbox-macros" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0c79lnjcs9yp62y665swv5y5y6088qc256bfr3s7xcnb0izfl7f0"))))))
 
 (define-public rust-snappy-cpp-0.1
   (package
