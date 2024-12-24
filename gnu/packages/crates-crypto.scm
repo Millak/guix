@@ -3645,6 +3645,28 @@ implementation suitable for use with cryptographic private keys.")
     (arguments
      `(#:cargo-inputs (("rust-base64ct" ,rust-base64ct-1))))))
 
+(define-public rust-pem-rfc7468-0.2
+  (package
+    (inherit rust-pem-rfc7468-0.7)
+    (name "rust-pem-rfc7468")
+    (version "0.2.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pem-rfc7468" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1m1c9jypydzabg4yscplmvff7pdcc8gg4cqg081hnlf03hxkmsc4"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (((string-append ">=([[:digit:]]+(\\.[[:digit:]]+)*),"
+                                   " <([[:digit:]]+(\\.[[:digit:]]+)*)")
+                    _ version _)
+                   (string-append ">=" version)))))))
+    (arguments
+     `(#:cargo-inputs (("rust-base64ct" ,rust-base64ct-1))))))
+
 (define-public rust-pkcs1-0.7
   (package
     (name "rust-pkcs1")
@@ -3946,28 +3968,6 @@ with additional support for PKCS#8v2 asymmetric key packages (RFC 5958).")
         ("rust-rand-core" ,rust-rand-core-0.6)
         ("rust-spki" ,rust-spki-0.4)
         ("rust-zeroize" ,rust-zeroize-1))))))
-
-(define-public rust-pem-rfc7468-0.2
-  (package
-    (inherit rust-pem-rfc7468-0.7)
-    (name "rust-pem-rfc7468")
-    (version "0.2.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "pem-rfc7468" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1m1c9jypydzabg4yscplmvff7pdcc8gg4cqg081hnlf03hxkmsc4"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin (substitute* "Cargo.toml"
-                  (((string-append ">=([[:digit:]]+(\\.[[:digit:]]+)*),"
-                                   " <([[:digit:]]+(\\.[[:digit:]]+)*)")
-                    _ version _)
-                   (string-append ">=" version)))))))
-    (arguments
-     `(#:cargo-inputs (("rust-base64ct" ,rust-base64ct-1))))))
 
 (define-public rust-poly1305-0.8
   (package
