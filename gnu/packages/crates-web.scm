@@ -6634,7 +6634,7 @@ server @code{Service} tests.")
      "Trust-DNS is a DNS library.  This is the Client library with DNSSEC
 support.  DNSSEC with NSEC validation for negative records, is complete.  The
 client supports dynamic DNS with SIG0 authenticated requests, implementing
-easy to use high level funtions.  Trust-DNS is based on the Tokio and Futures
+easy to use high level functions.  Trust-DNS is based on the Tokio and Futures
 libraries, which means it should be easily integrated into other software that
 also use those libraries.")
     (license (list license:expat license:asl2.0))))
