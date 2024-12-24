@@ -75400,29 +75400,6 @@ formats:
      "Unstable AST representation used by Serde codegen.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-serde-fmt-1
-  (package
-    (name "rust-serde-fmt")
-    (version "1.0.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "serde_fmt" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "195sp3zxbdgrnaqxwn9z3pij04fd7yyihnm4fpfc261r5fdacqr9"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-serde" ,rust-serde-1))))
-    (home-page "https://github.com/KodrAus/serde_fmt.git")
-    (synopsis "Write any @code{serde::Serialize} using standard formatting APIs")
-    (description
-     "This package allows one to Write any @code{serde::Serialize} using the
-standard formatting APIs.")
-    (license (list license:asl2.0 license:expat))))
-
 (define-public rust-serde-derive-1
   (package
     (name "rust-serde-derive")
@@ -75535,6 +75512,29 @@ derive macros.")
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))))))
+
+(define-public rust-serde-fmt-1
+  (package
+    (name "rust-serde-fmt")
+    (version "1.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "serde_fmt" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "195sp3zxbdgrnaqxwn9z3pij04fd7yyihnm4fpfc261r5fdacqr9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/KodrAus/serde_fmt.git")
+    (synopsis "Write any @code{serde::Serialize} using standard formatting APIs")
+    (description
+     "This package allows one to Write any @code{serde::Serialize} using the
+standard formatting APIs.")
+    (license (list license:asl2.0 license:expat))))
 
 (define-public rust-serde-hjson-0.9
   (package
