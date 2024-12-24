@@ -83985,28 +83985,6 @@ a syntax tree of Rust source code.")
     (description "Test suite of the syn crate.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-synchronoise-1
-  (package
-    (name "rust-synchronoise")
-    (version "1.0.1")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "synchronoise" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1wnylkdf84520ks7a70fnwds2wibxmnkgqzz3j6ww9n61wwh3g1x"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-crossbeam-queue" ,rust-crossbeam-queue-0.3))))
-    (home-page "https://github.com/QuietMisdreavus/synchronoise")
-    (synopsis "Synchronization primitives")
-    (description
-     "This package provides synchronization primitives that build upon the
-standard library.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-sync-wrapper-1
   (package
     (name "rust-sync-wrapper")
@@ -84049,6 +84027,28 @@ the absence of concurrency.")
        #:cargo-development-inputs
        (("rust-futures" ,rust-futures-0.3)
         ("rust-pin-project-lite" ,rust-pin-project-lite-0.2))))))
+
+(define-public rust-synchronoise-1
+  (package
+    (name "rust-synchronoise")
+    (version "1.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "synchronoise" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1wnylkdf84520ks7a70fnwds2wibxmnkgqzz3j6ww9n61wwh3g1x"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-crossbeam-queue" ,rust-crossbeam-queue-0.3))))
+    (home-page "https://github.com/QuietMisdreavus/synchronoise")
+    (synopsis "Synchronization primitives")
+    (description
+     "This package provides synchronization primitives that build upon the
+standard library.")
+    (license (list license:expat license:asl2.0))))
 
 (define-public rust-synom-0.11
   (package
