@@ -25578,27 +25578,24 @@ and @code{erc-send-modify-hook} to download and show images.")
     (license license:gpl3+)))
 
 (define-public emacs-list-utils
-  ;; Use a git snapshot until upstream fixes the build with emacs 28.1.
-  ;; See <http://issues.guix.gnu.org/55558>.
-  (let ((commit "0dec8c02962d2591766739e37c5714ba21133093") (revision "1"))
-    (package
-      (name "emacs-list-utils")
-      (version (git-version "0.4.6" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/rolandwalker/list-utils")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "11nm8649a131bn2kwj4fxkiijdx2d4f1byx7a985zlb3bzdwnaw8"))))
-      (build-system emacs-build-system)
-      (home-page "https://github.com/rolandwalker/list-utils")
-      (synopsis "List-manipulation utility functions")
-      (description
-       "This package provides a list manipulation library for Emacs.")
-      (license license:gpl3+))))
+  (package
+    (name "emacs-list-utils")
+    (version "0.4.7")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/rolandwalker/list-utils")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0rc7ql78qraa35lv6igkd81j5ap9zgn6ri9rp9cajp86s2b46dg6"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/rolandwalker/list-utils")
+    (synopsis "List-manipulation utility functions")
+    (description
+     "This package provides a list manipulation library for Emacs.")
+    (license license:gpl3+)))
 
 (define-public emacs-parsec
   (package
