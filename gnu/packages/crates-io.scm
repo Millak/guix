@@ -17840,6 +17840,27 @@ in @code{no_std}.  Alloc support is optional.")
          (base32 "1wzzy5iazdk5caadxvjfwrd312rbg7a55a1zpmsdrhk3kfpa77r3"))))
     (arguments `(#:cargo-inputs (("rust-memchr" ,rust-memchr-2))))))
 
+(define-public rust-count-instructions-0.1
+  (package
+    (name "rust-count-instructions")
+    (version "0.1.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "count_instructions" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ps0254pvx3nmnxs2v60kv7fqayh82r3jqypb4l3ql3i7s3rzr1n"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-rustix" ,rust-rustix-0.38))))
+    (home-page "https://github.com/cesarb/count_instructions")
+    (synopsis "Counts the instructions executed within a single function")
+    (description "Counts the instructions executed within a single function.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-cov-mark-2
   (package
     (name "rust-cov-mark")
@@ -17924,27 +17945,6 @@ in @code{no_std}.  Alloc support is optional.")
                        "unexpected_cfgs = { level = \"warn\", "
                        "check-cfg = ['cfg(coverage_nightly)'] }"
                        "\n" "\n" all)))))))))
-
-(define-public rust-count-instructions-0.1
-  (package
-    (name "rust-count-instructions")
-    (version "0.1.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "count_instructions" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0ps0254pvx3nmnxs2v60kv7fqayh82r3jqypb4l3ql3i7s3rzr1n"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-libc" ,rust-libc-0.2)
-        ("rust-rustix" ,rust-rustix-0.38))))
-    (home-page "https://github.com/cesarb/count_instructions")
-    (synopsis "Counts the instructions executed within a single function")
-    (description "Counts the instructions executed within a single function.")
-    (license (list license:expat license:asl2.0))))
 
 (define-public rust-countme-3
   (package
