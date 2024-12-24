@@ -96938,23 +96938,23 @@ attribute that is not in the shared backend crate.")
 (define-public rust-wasm-bindgen-test-macro-0.3
   (package
     (name "rust-wasm-bindgen-test-macro")
-    (version "0.3.41")
+    (version "0.3.49")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "wasm-bindgen-test-macro" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "12bgbvygyi04d1gcrgl7w7m94mn7is59f7ds5cqmfs30a1sin8d5"))))
+        (base32 "0cd0wjqfb4l35s0h90k7rphwxgj2nlycqlbv6yf0pakkrqb185sl"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f          ; could not find `wasm_bindgen_test`
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-2))
        #:cargo-development-inputs
-       (("rust-trybuild" ,rust-trybuild-1))))
+       (("rust-tokio" ,rust-tokio-1)
+        ("rust-trybuild" ,rust-trybuild-1))))
     (home-page "https://github.com/rustwasm/wasm-bindgen")
     (synopsis "Internal testing macro for wasm-bindgen")
     (description
