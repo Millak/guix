@@ -98859,19 +98859,18 @@ combinators library.")
 (define-public rust-wycheproof-0.5
   (package
     (name "rust-wycheproof")
-    (version "0.5.0")
+    (version "0.5.2")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "wycheproof" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "072rq77c9jp4ida3ag55hd4fn30q8zvi1k5adzvgf6cwyqcggbnc"))))
+                "0fn5y8g6irzr620m9jizhg6hxssrsbr0lh6dzfrsijwlibxrl0vi"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-base64" ,rust-base64-0.13)
-        ("rust-hex" ,rust-hex-0.4)
+       (("rust-data-encoding" ,rust-data-encoding-2)
         ("rust-num-bigint" ,rust-num-bigint-0.4)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1))))
