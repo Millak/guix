@@ -33724,6 +33724,29 @@ IEEE 754-2008 binary16 type.")
 higher performance on different key space sizes.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-hamcrest2-0.3
+  (package
+    (name "rust-hamcrest2")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "hamcrest2" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0x8hx7jyzz2bl0wf6nir62imd26yhp6qcr7zf76cjpg05p33gy29"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-num" ,rust-num-0.2)
+        ("rust-regex" ,rust-regex-1))))
+    (home-page "https://github.com/Valloric/hamcrest2-rust")
+    (synopsis "Rust port of the Hamcrest testing library")
+    (description
+     "This package provides a port of the Hamcrest testing library.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-handlebars-5
   (package
     (name "rust-handlebars")
@@ -33790,29 +33813,6 @@ higher performance on different key space sizes.")
                                    ("rust-time" ,rust-time-0.3)
                                    ("rust-tiny-http" ,rust-tiny-http-0.11))))
     (native-inputs (list protobuf))))
-
-(define-public rust-hamcrest2-0.3
-  (package
-    (name "rust-hamcrest2")
-    (version "0.3.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "hamcrest2" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0x8hx7jyzz2bl0wf6nir62imd26yhp6qcr7zf76cjpg05p33gy29"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-num" ,rust-num-0.2)
-        ("rust-regex" ,rust-regex-1))))
-    (home-page "https://github.com/Valloric/hamcrest2-rust")
-    (synopsis "Rust port of the Hamcrest testing library")
-    (description
-     "This package provides a port of the Hamcrest testing library.")
-    (license (list license:expat license:asl2.0))))
 
 (define-public rust-hash-hasher-2
   (package
