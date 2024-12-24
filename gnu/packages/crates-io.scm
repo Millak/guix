@@ -99482,6 +99482,29 @@ crate.")
        #:cargo-development-inputs
        (("rust-compiletest-rs" ,rust-compiletest-rs-0.3))))))
 
+(define-public rust-zerofrom-derive-0.1
+  (package
+    (name "rust-zerofrom-derive")
+    (version "0.1.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "zerofrom-derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "022q55phhb44qbrcfbc48k0b741fl8gnazw3hpmmndbx5ycfspjr"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; use of undeclared crate or module `zerovec`
+       #:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2)
+                       ("rust-synstructure" ,rust-synstructure-0.13))))
+    (home-page "https://github.com/unicode-org/icu4x")
+    (synopsis "Custom derive for the zerofrom crate")
+    (description "This package provides Custom derive for the zerofrom crate.")
+    (license license:unicode)))
+
 (define-public rust-zeroize-1
   (package
     (name "rust-zeroize")
