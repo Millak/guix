@@ -7158,6 +7158,29 @@ trace (backtrace) at runtime in a Rust program.")
 API for Rust.")
     (license (list license:expat license:x11 license:asl2.0))))
 
+(define-public rust-base-x-0.2
+  (package
+    (name "rust-base-x")
+    (version "0.2.11")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "base-x" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0w02sdqvg7zwm91agb2phikw4ri8jmncw32paxsv8ra1jv8ckfsc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs
+       (("rust-bencher" ,rust-bencher-0.1)
+        ("rust-json" ,rust-json-0.12)
+        ("rust-rand" ,rust-rand-0.8))))
+    (home-page "https://github.com/OrKoN/base-x-rs")
+    (synopsis "Encode/decode any base")
+    (description "This library provides for encoding and decoding any base.")
+    (license license:expat)))
+
 (define-public rust-base32-0.4
   (package
     (name "rust-base32")
@@ -7370,29 +7393,6 @@ c6e7d37.  However, this package works only up to 128 bytes.")
         ("rust-safemem" ,rust-safemem-0.3))
        #:cargo-development-inputs
        (("rust-rand" ,rust-rand-0.4))))))
-
-(define-public rust-base-x-0.2
-  (package
-    (name "rust-base-x")
-    (version "0.2.11")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "base-x" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0w02sdqvg7zwm91agb2phikw4ri8jmncw32paxsv8ra1jv8ckfsc"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-development-inputs
-       (("rust-bencher" ,rust-bencher-0.1)
-        ("rust-json" ,rust-json-0.12)
-        ("rust-rand" ,rust-rand-0.8))))
-    (home-page "https://github.com/OrKoN/base-x-rs")
-    (synopsis "Encode/decode any base")
-    (description "This library provides for encoding and decoding any base.")
-    (license license:expat)))
 
 (define-public rust-basic-cookies-0.1
   (package
