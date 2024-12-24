@@ -96849,15 +96849,17 @@ specified across Unix and Windows platforms.")
 (define-public rust-waker-fn-1
   (package
     (name "rust-waker-fn")
-    (version "1.1.1")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "waker-fn" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "142n74wlmpwcazfb5v7vhnzj3lb3r97qy8mzpjdpg345aizm3i7k"))))
+        (base32 "1dvk0qsv88kiq22x8w0qz0k9nyrxxm5a9a9czdwdvvhcvjh12wii"))))
     (build-system cargo-build-system)
+     (arguments
+      (list #:cargo-inputs (list rust-portable-atomic-util-0.2)))
     (home-page "https://github.com/smol-rs/waker-fn")
     (synopsis "Convert closures into wakers")
     (description
