@@ -35831,6 +35831,44 @@ Normalization Forms.")
     (description "This package provides data for the icu_properties crate.")
     (license license:unicode)))
 
+(define-public rust-icu-provider-1
+  (package
+    (name "rust-icu-provider")
+    (version "1.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "icu_provider" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1nb8vvgw8dv2inqklvk05fs0qxzkw8xrg2n9vgid6y7gm3423m3f"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; use of undeclared crate or module `serde`
+       #:cargo-inputs (("rust-bincode" ,rust-bincode-1)
+                       ("rust-databake" ,rust-databake-0.1)
+                       ("rust-displaydoc" ,rust-displaydoc-0.2)
+                       ("rust-erased-serde" ,rust-erased-serde-0.3)
+                       ("rust-icu-locid" ,rust-icu-locid-1)
+                       ("rust-icu-provider-macros" ,rust-icu-provider-macros-1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-postcard" ,rust-postcard-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-stable-deref-trait" ,rust-stable-deref-trait-1)
+                       ("rust-tinystr" ,rust-tinystr-0.7)
+                       ("rust-writeable" ,rust-writeable-0.5)
+                       ("rust-yoke" ,rust-yoke-0.7)
+                       ("rust-zerofrom" ,rust-zerofrom-0.1)
+                       ("rust-zerovec" ,rust-zerovec-0.10))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.5)
+                                   ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://icu4x.unicode.org")
+    (synopsis "Trait and struct definitions for the ICU data provider")
+    (description
+     "This package provides trait and struct definitions for the ICU data provider.")
+    (license license:unicode)))
+
 (define-public rust-icu-provider-macros-1
   (package
     (name "rust-icu-provider-macros")
