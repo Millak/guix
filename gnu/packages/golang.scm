@@ -1608,7 +1608,9 @@ retry strategies, such as fixed delay, backoff delay, and random delay.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "howett.net/plist"))
+      #:import-path "howett.net/plist"
+      ;; cmd requires gopkg.in/yaml.v1
+      #:test-subdirs #~(list "internal/..." ".")))
     (propagated-inputs
      (list go-github-com-jessevdk-go-flags
            go-gopkg-in-check-v1))
