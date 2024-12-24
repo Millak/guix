@@ -4,6 +4,7 @@
 ;;; Copyright © 2022, 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2023 Benjamin <benjamin@uvy.fr>
 ;;; Copyright © 2024 jgart <jgart@dismail.de>
+;;; Copyright © 2024 Jordan Moore <lockbox@struct.foo>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -70,7 +71,7 @@
 (define-public haproxy
   (package
     (name "haproxy")
-    (version "3.0.3")
+    (version "3.1.1")
     (source
      (origin
        (method url-fetch)
@@ -78,7 +79,7 @@
                            (version-major+minor version)
                            "/src/haproxy-" version ".tar.gz"))
        (sha256
-        (base32 "1pqrgndf5ciyq3l4ywrjj3q917dms59cmzxk5ihd400bg8c3r9rr"))))
+        (base32 "0wyjyzazlwpi3hm4ri699lhyzbb703i5fp240bk7icm4kd1ms6wc"))))
     (build-system gnu-build-system)
     (arguments
      (list
