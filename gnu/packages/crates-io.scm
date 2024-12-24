@@ -56859,6 +56859,24 @@ algebra.")
 crate.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-paw-raw-1
+  (package
+    (name "rust-paw-raw")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "paw-raw" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1wk76ipp34gjh42vivmgdkb2rgr26gwhn34gk7z5l378ixk5j2vz"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/rust-cli/paw")
+    (synopsis "Traits to implement custom Paw implementations")
+    (description "This package provides traits to implement custom Paw
+implementations.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-pcap-1
   (package
     (name "rust-pcap")
@@ -78405,24 +78423,6 @@ designed for @code{immutable.rs}.")
     (description "This create provides a pre-allocated storage for a uniform
 data type.")
     (license license:expat)))
-
-(define-public rust-paw-raw-1
-  (package
-    (name "rust-paw-raw")
-    (version "1.0.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "paw-raw" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1wk76ipp34gjh42vivmgdkb2rgr26gwhn34gk7z5l378ixk5j2vz"))))
-    (build-system cargo-build-system)
-    (home-page "https://github.com/rust-cli/paw")
-    (synopsis "Traits to implement custom Paw implementations")
-    (description "This package provides traits to implement custom Paw
-implementations.")
-    (license (list license:expat license:asl2.0))))
 
 (define-public rust-paw-structopt-1
   (package
