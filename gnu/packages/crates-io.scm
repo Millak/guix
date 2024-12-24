@@ -14127,39 +14127,6 @@ completion scripts.")
 completion scripts.")
     (license license:expat)))
 
-(define-public rust-clap-conf-0.1
-  (package
-    (name "rust-clap-conf")
-    (version "0.1.5")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "clap_conf" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1n29wr6ns660hi63mc30zvs7dhidaycw35am9spzknsal3nrs0sn"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-test-flags
-       (list "--release" "--"
-             "--skip=tests::try_holder")
-       #:cargo-inputs
-       (("rust-anyhow" ,rust-anyhow-1)
-        ("rust-clap" ,rust-clap-2)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-thiserror" ,rust-thiserror-1)
-        ("rust-toml" ,rust-toml-0.5))))
-    (home-page "https://github.com/storyfeet/clap_conf")
-    (synopsis
-     "Library to unify commandline arguments, config files and environment variables")
-    (description
-     "This package provides a library to unify commandline arguments with config
-files and environment variables.  And make it easier for users to tell your program
-how to behave across the three main input sources")
-    (license license:expat)))
-
 (define-public rust-clap-4
   (package
     (name "rust-clap")
@@ -14387,6 +14354,39 @@ for programs written with Clap.")
      "This package provides a generator library for Rust used
 with Clap to generate Fig completion scripts.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-clap-conf-0.1
+  (package
+    (name "rust-clap-conf")
+    (version "0.1.5")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "clap_conf" version))
+        (file-name
+         (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32
+          "1n29wr6ns660hi63mc30zvs7dhidaycw35am9spzknsal3nrs0sn"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       (list "--release" "--"
+             "--skip=tests::try_holder")
+       #:cargo-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-clap" ,rust-clap-2)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-toml" ,rust-toml-0.5))))
+    (home-page "https://github.com/storyfeet/clap_conf")
+    (synopsis
+     "Library to unify commandline arguments, config files and environment variables")
+    (description
+     "This package provides a library to unify commandline arguments with config
+files and environment variables.  And make it easier for users to tell your program
+how to behave across the three main input sources")
+    (license license:expat)))
 
 (define-public rust-clap-derive-4
   (package
