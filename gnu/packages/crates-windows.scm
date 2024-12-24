@@ -1391,33 +1391,6 @@ color in a Windows console.")
 icons to windows executables and dynamic libraries.")
     (license license:expat)))
 
-(define-public rust-winresource-0.1
-  (package
-    (name "rust-winresource")
-    (version "0.1.19")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "winresource" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0fv9xlgg9a6gp1jhrp7zj7kln7ris64889n3z1x59m1s6ldnjxkj"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-test-flags '("--"
-                            "--skip=tests::toolkit_include_win10"
-                            "--skip=tests::toolkit_include_win8"
-                            "--skip=WindowsResource::set_language"
-                            "--skip=WindowsResource::set_manifest")
-       #:cargo-inputs (("rust-toml" ,rust-toml-0.8)
-                       ("rust-version-check" ,rust-version-check-0.9))
-       #:cargo-development-inputs (("rust-winapi" ,rust-winapi-0.3))))
-    (home-page "https://github.com/BenjaminRi/winresource")
-    (synopsis "Create and set windows icons and metadata for executables")
-    (description "This package provides functions to create and set windows
-icons and metadata for executables.")
-    (license license:expat)))
-
 (define-public rust-windows-0.58
   (package
     (name "rust-windows")
@@ -3299,6 +3272,33 @@ windows crate.")
               (sha256
                (base32
                 "17z8q25pd3dp6b84qm9nlayd3ym78sbryxlqmgcxvz9vpmy8qarz"))))))
+
+(define-public rust-winresource-0.1
+  (package
+    (name "rust-winresource")
+    (version "0.1.19")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "winresource" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0fv9xlgg9a6gp1jhrp7zj7kln7ris64889n3z1x59m1s6ldnjxkj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--"
+                            "--skip=tests::toolkit_include_win10"
+                            "--skip=tests::toolkit_include_win8"
+                            "--skip=WindowsResource::set_language"
+                            "--skip=WindowsResource::set_manifest")
+       #:cargo-inputs (("rust-toml" ,rust-toml-0.8)
+                       ("rust-version-check" ,rust-version-check-0.9))
+       #:cargo-development-inputs (("rust-winapi" ,rust-winapi-0.3))))
+    (home-page "https://github.com/BenjaminRi/winresource")
+    (synopsis "Create and set windows icons and metadata for executables")
+    (description "This package provides functions to create and set windows
+icons and metadata for executables.")
+    (license license:expat)))
 
 (define-public rust-winsafe-0.0.19
   (package
