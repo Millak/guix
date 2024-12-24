@@ -92077,6 +92077,30 @@ tree_magic_mini.")
 traversing a filetype tree.")
     (license license:expat)))
 
+;; The rust-tree-sitter packages are rust dependencies and are separate
+;; from the tree-sitter and tree-sitter-cli package.
+(define-public rust-tree-sitter-0.20
+  (package
+    (name "rust-tree-sitter")
+    (version "0.20.10")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tree-sitter" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0g9xd1nadhb2ikhxkj0z7kg9f50h97hzmha8llwyscdrnzwv2iz7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cc" ,rust-cc-1)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-regex" ,rust-regex-1))))
+    (home-page "https://tree-sitter.github.io/tree-sitter")
+    (synopsis "Rust bindings to the Tree-sitter parsing library")
+    (description
+     "This package provides Rust bindings to the Tree-sitter parsing library.")
+    (license license:expat)))
+
 (define-public rust-treeline-0.1
   (package
     (name "rust-treeline")
