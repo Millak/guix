@@ -35459,29 +35459,6 @@ SystemTime}}.")
      "This package provides a Humantime serialization timestamp format.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-hyphenation-commons-0.8
-  (package
-    (name "rust-hyphenation-commons")
-    (version "0.8.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "hyphenation_commons" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1gq59h9h8597k04yl53an0j56cvb0in98pxpp27dkiz5mnifgssz"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-fst" ,rust-fst-0.4)
-        ("rust-serde" ,rust-serde-1))))
-    (home-page "https://github.com/tapeinosyne/hyphenation")
-    (synopsis "Proemial code for the @code{hyphenation} library")
-    (description
-     "This package provides a proemial code for the @code{hyphenation} library.")
-    (license (list license:asl2.0 license:expat))))
-
 (define-public rust-hyphenation-0.8
   (package
     (name "rust-hyphenation")
@@ -35512,6 +35489,29 @@ SystemTime}}.")
     (synopsis "Knuth-Liang hyphenation for a variety of languages")
     (description
      "This package provides a Knuth-Liang hyphenation for a variety of languages.")
+    (license (list license:asl2.0 license:expat))))
+
+(define-public rust-hyphenation-commons-0.8
+  (package
+    (name "rust-hyphenation-commons")
+    (version "0.8.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "hyphenation_commons" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1gq59h9h8597k04yl53an0j56cvb0in98pxpp27dkiz5mnifgssz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-fst" ,rust-fst-0.4)
+        ("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/tapeinosyne/hyphenation")
+    (synopsis "Proemial code for the @code{hyphenation} library")
+    (description
+     "This package provides a proemial code for the @code{hyphenation} library.")
     (license (list license:asl2.0 license:expat))))
 
 (define-public rust-hyprland-0.3
