@@ -21236,6 +21236,29 @@ hexadecimal, base32, and base64.")
                                    ("rust-serde-json" ,rust-serde-json-1)
                                    ("rust-tester" ,rust-tester-0.9))))))
 
+(define-public rust-databake-derive-0.1
+  (package
+    (name "rust-databake-derive")
+    (version "0.1.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "databake-derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0yymbr1z93k7lg0pl5mw9mjhw8fpsfykg7bmkvmir9h1wmfjfy20"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; use of undeclared crate or module `databake`
+       #:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2)
+                       ("rust-synstructure" ,rust-synstructure-0.13))))
+    (home-page "https://github.com/unicode-org/icu4x")
+    (synopsis "Custom derive for the databake crate")
+    (description "This package provides Custom derive for the databake crate.")
+    (license license:unicode)))
+
 (define-public rust-datetime-0.5
   (package
     (name "rust-datetime")
