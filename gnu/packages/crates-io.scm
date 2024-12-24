@@ -35623,26 +35623,6 @@ SystemTime}}.")
     (description "Custom Test Framework macro for Iai.")
     (license (list license:asl2.0 license:expat))))
 
-(define-public rust-iana-time-zone-haiku-0.1
-  (package
-    (name "rust-iana-time-zone-haiku")
-    (version "0.1.2")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "iana-time-zone-haiku" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32 "17r6jmj31chn7xs9698r122mapq85mfnv98bb4pg6spm0si2f67k"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-cc" ,rust-cc-1))))
-    (home-page "https://github.com/strawlab/iana-time-zone")
-    (synopsis "IANA-time-zone support crate for Haiku OS")
-    (description
-     "This package provides iana-time-zone support crate for Haiku OS.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-iana-time-zone-0.1
   (package
     (name "rust-iana-time-zone")
@@ -35670,6 +35650,26 @@ SystemTime}}.")
     (synopsis "IANA time zone")
     (description
      "This package provides the IANA time zone for the current system.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-iana-time-zone-haiku-0.1
+  (package
+    (name "rust-iana-time-zone-haiku")
+    (version "0.1.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "iana-time-zone-haiku" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "17r6jmj31chn7xs9698r122mapq85mfnv98bb4pg6spm0si2f67k"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cc" ,rust-cc-1))))
+    (home-page "https://github.com/strawlab/iana-time-zone")
+    (synopsis "IANA-time-zone support crate for Haiku OS")
+    (description
+     "This package provides iana-time-zone support crate for Haiku OS.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-icu-collections-1
