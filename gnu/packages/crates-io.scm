@@ -98628,17 +98628,20 @@ terms of allowing LLVM's auto-vectorizer to do its job.")
 (define-public rust-widestring-1
   (package
     (name "rust-widestring")
-    (version "1.0.2")
+    (version "1.1.0")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "widestring" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1a11qxmqf8jhh0vbyb6cc614d9qdqsh01r5bqnivn5pc74gi8gv5"))))
+                "048kxd6iykzi5la9nikpc5hvpp77hmjf1sw43sl3z2dcdrmx66bj"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-development-inputs (("rust-winapi" ,rust-winapi-0.3))))
+     `(#:cargo-development-inputs
+       (("rust-debugger-test" ,rust-debugger-test-0.1)
+        ("rust-debugger-test-parser" ,rust-debugger-test-parser-0.1)
+        ("rust-winapi" ,rust-winapi-0.3))))
     (home-page "https://github.com/starkat99/widestring-rs")
     (synopsis "Wide string Rust FFI library")
     (description
