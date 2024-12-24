@@ -731,14 +731,14 @@ Windows's named pipes.")
 (define-public rust-python3-dll-a-0.2
   (package
     (name "rust-python3-dll-a")
-    (version "0.2.11")
+    (version "0.2.12")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "python3-dll-a" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0v8v3h4xbhk1s8s9h15l1zzfarwgyqwnic1yl69rwq5yw672d7lv"))))
+                "1a57r12py9zy7hw48j63wl4a3k5k3ghmcd5d9gk79rjh34bzjrlv"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f                      ;Windows-like targets only
