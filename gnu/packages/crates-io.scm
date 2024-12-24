@@ -14160,30 +14160,6 @@ files and environment variables.  And make it easier for users to tell your prog
 how to behave across the three main input sources")
     (license license:expat)))
 
-(define-public rust-clap-derive-4
-  (package
-    (name "rust-clap-derive")
-    (version "4.5.18")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "clap_derive" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1ardb26bvcpg72q9myr7yir3a8c83gx7vxk1cccabsd9n73s1ija"))))
-    (build-system cargo-build-system)
-    (arguments
-     (list #:cargo-inputs
-           `(("rust-heck" ,rust-heck-0.5)
-             ("rust-proc-macro2" ,rust-proc-macro2-1)
-             ("rust-quote" ,rust-quote-1)
-             ("rust-syn" ,rust-syn-2))))
-    (home-page "https://clap.rs/")
-    (synopsis "Procedural macro crate for Clap")
-    (description
-     "This package provides the procedural macro crate for Clap.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-clap-4
   (package
     (name "rust-clap")
@@ -14410,6 +14386,30 @@ for programs written with Clap.")
     (description
      "This package provides a generator library for Rust used
 with Clap to generate Fig completion scripts.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-clap-derive-4
+  (package
+    (name "rust-clap-derive")
+    (version "4.5.18")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "clap_derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ardb26bvcpg72q9myr7yir3a8c83gx7vxk1cccabsd9n73s1ija"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-inputs
+           `(("rust-heck" ,rust-heck-0.5)
+             ("rust-proc-macro2" ,rust-proc-macro2-1)
+             ("rust-quote" ,rust-quote-1)
+             ("rust-syn" ,rust-syn-2))))
+    (home-page "https://clap.rs/")
+    (synopsis "Procedural macro crate for Clap")
+    (description
+     "This package provides the procedural macro crate for Clap.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-clap-derive-3
