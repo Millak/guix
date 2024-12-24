@@ -15862,28 +15862,6 @@ literals.")
     (description "This package provides const panic with formatting.")
     (license license:zlib)))
 
-(define-public rust-const-panic-proc-macros-0.2
-  (package
-    (name "rust-const-panic-proc-macros")
-    (version "0.2.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "const_panic_proc_macros" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1addx3a8vi02cdak3ygrqivv02jj73251h85x49aic78yznrhlrr"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
-                       ("rust-quote" ,rust-quote-1)
-                       ("rust-syn" ,rust-syn-1)
-                       ("rust-unicode-xid" ,rust-unicode-xid-0.2))))
-    (home-page "https://github.com/rodrimati1992/const_panic/")
-    (synopsis "Implementation detail of the `const_panic` crate")
-    (description "Implementation detail of the `const_panic` crate.")
-    (license license:zlib)))
-
 ;; This package requires features which are unavailable
 ;; on the stable releases of Rust.
 (define-public rust-compiler-builtins-0.1
@@ -16873,6 +16851,28 @@ encoding/decoding as well as heapless no_std (i.e., embedded) support.")
        (sha256
         (base32 "12vv7csqqjj0x1l5mf51lgqiw76k5c3mb1yzfhfcqysks2j2lvwx"))))
     (arguments `(#:skip-build? #t))))
+
+(define-public rust-const-panic-proc-macros-0.2
+  (package
+    (name "rust-const-panic-proc-macros")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "const_panic_proc_macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1addx3a8vi02cdak3ygrqivv02jj73251h85x49aic78yznrhlrr"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-1)
+                       ("rust-unicode-xid" ,rust-unicode-xid-0.2))))
+    (home-page "https://github.com/rodrimati1992/const_panic/")
+    (synopsis "Implementation detail of the `const_panic` crate")
+    (description "Implementation detail of the `const_panic` crate.")
+    (license license:zlib)))
 
 (define-public rust-const-random-0.1
   (package
