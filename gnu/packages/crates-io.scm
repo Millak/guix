@@ -97998,25 +97998,44 @@ for Wasm in browsers.")
 (define-public rust-webbrowser-0.8
   (package
     (name "rust-webbrowser")
-    (version "0.8.8")
+    (version "0.8.15")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "webbrowser" version))
        (file-name (string-append name "-" version ".tar.gz"))
-       ;; Explicitely remove dependencies for unsupported operating systems,
-       ;; to avoid pulling many dependencies and causing rust world rebuilds.
-       (patches (search-patches "rust-webbrowser-remove-unsupported-os.patch"))
-       (patch-flags '("-p0"))
        (sha256
-        (base32 "0zk1qidyksspa8pgvq8bh2lyqmmrs0fr5r1qsyhbzrawpn2w972p"))))
+        (base32 "12zw844al9kf32p5llv6dbqzaky9fa3ng497i3sk8mj0m5sswryv"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs (("rust-dirs" ,rust-dirs-4)
+     `(#:cargo-test-flags '("--"
+                            "--skip=os::tests_xdg::test_xdg_open_local_file"
+                            "--skip=tests::test_existence_default"
+                            "--skip=tests::test_local_file_abs_path"
+                            "--skip=tests::test_local_file_rel_path"
+                            "--skip=tests::test_local_file_uri"
+                            "--skip=tests::test_open_default")
+       #:cargo-inputs (("rust-core-foundation" ,rust-core-foundation-0.9)
+                       ("rust-home" ,rust-home-0.5)
+                       ("rust-jni" ,rust-jni-0.21)
                        ("rust-log" ,rust-log-0.4)
+                       ("rust-ndk-context" ,rust-ndk-context-0.1)
+                       ("rust-objc" ,rust-objc-0.2)
+                       ("rust-raw-window-handle" ,rust-raw-window-handle-0.5)
                        ("rust-url" ,rust-url-2)
-                       ("rust-web-sys" ,rust-web-sys-0.3))))
+                       ("rust-web-sys" ,rust-web-sys-0.3))
+       #:cargo-development-inputs
+       (("rust-actix-files" ,rust-actix-files-0.6)
+        ("rust-actix-web" ,rust-actix-web-4)
+        ("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
+        ("rust-env-logger" ,rust-env-logger-0.9)
+        ("rust-ndk-glue" ,rust-ndk-glue-0.5)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-serial-test" ,rust-serial-test-0.10)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-urlencoding" ,rust-urlencoding-2))))
+    (native-inputs (list pkg-config))
+    (inputs (list (list zstd "lib")))
     (home-page "https://github.com/amodm/webbrowser-rs")
     (synopsis "Open URLs in web browsers available on a platform")
     (description
