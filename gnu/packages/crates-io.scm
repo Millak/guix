@@ -3187,6 +3187,37 @@ on the stack.")
     (description "Macros to take array references of slices.")
     (license license:bsd-2)))
 
+(define-public rust-arraystring-0.3
+  (package
+    (name "rust-arraystring")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "arraystring" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1181rr76jqlldrpy586cj2bzgxvzhn8crj2vg75diq8pf537qlad"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-diesel" ,rust-diesel-1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-typenum" ,rust-typenum-1))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.2)
+        ("rust-diesel" ,rust-diesel-1)
+        ("rust-env-logger" ,rust-env-logger-0.5)
+        ("rust-inlinable-string" ,rust-inlinable-string-0.1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-smallstring" ,rust-smallstring-0.1))))
+    (home-page "https://github.com/paulocsanz/arraystring")
+    (synopsis "Fixed capacity stack based generic string")
+    (description
+     "This package provides fixed capacity stack based generic string.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-arrayvec-0.7
   (package
     (name "rust-arrayvec")
