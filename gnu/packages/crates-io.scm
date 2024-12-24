@@ -27949,29 +27949,6 @@ is defined in the HTML specification.")
 Rust.")
     (license license:asl2.0)))
 
-(define-public rust-fasthash-sys-0.3
-  (package
-    (name "rust-fasthash-sys")
-    (version "0.3.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "fasthash-sys" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1y18v8yya5pnzgfji9lwnrz5jl7q8q2xj2a0sg6ibrz2pwd99pmn"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.37)
-                       ("rust-gcc" ,rust-gcc-0.3))))
-    (home-page "https://github.com/flier/rust-fasthash")
-    (synopsis "Suite of non-cryptographic hash functions for Rust")
-    (description
-     "This package provides a suite of non-cryptographic hash functions for
-Rust.")
-    (license license:asl2.0)))
-
 (define-public rust-faster-hex-0.9
   (package
     (name "rust-faster-hex")
@@ -28021,6 +27998,29 @@ Rust.")
         ("rust-rustc-hex" ,rust-rustc-hex-1)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1))))))
+
+(define-public rust-fasthash-sys-0.3
+  (package
+    (name "rust-fasthash-sys")
+    (version "0.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "fasthash-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1y18v8yya5pnzgfji9lwnrz5jl7q8q2xj2a0sg6ibrz2pwd99pmn"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.37)
+                       ("rust-gcc" ,rust-gcc-0.3))))
+    (home-page "https://github.com/flier/rust-fasthash")
+    (synopsis "Suite of non-cryptographic hash functions for Rust")
+    (description
+     "This package provides a suite of non-cryptographic hash functions for
+Rust.")
+    (license license:asl2.0)))
 
 (define-public rust-fastq-0.6
   (package
