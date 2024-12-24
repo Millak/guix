@@ -44289,6 +44289,25 @@ key-value pairs.")
 Server Protocol.")
     (license license:expat)))
 
+(define-public rust-lsp-types-0.94
+  (package
+    (inherit rust-lsp-types-0.95)
+    (name "rust-lsp-types")
+    (version "0.94.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "lsp-types" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "18aym1qfgyaf9f9504yz911gssck5rv190izzr3hdqbal12gssy6"))))
+    (arguments
+     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-serde-repr" ,rust-serde-repr-0.1)
+                       ("rust-url" ,rust-url-2))))))
+
 (define-public rust-lsp-types-0.91
   (package
     (inherit rust-lsp-types-0.95)
