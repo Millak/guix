@@ -31227,11 +31227,10 @@ other frame parameters.")
     (license license:gpl3+)))
 
 (define-public emacs-arduino-mode
-  (let ((commit "652c6a328fa8f2db06534d5f231c6b6933be3edc")
-        (revision "0"))
+  (let ((commit "b2ffd8441851659cb1cc844156073967729585e5")) ;version bump
     (package
       (name "emacs-arduino-mode")
-      (version (git-version "1.3.0" revision commit))
+      (version "1.3.1")
       (source
        (origin
          (method git-fetch)
@@ -31239,7 +31238,7 @@ other frame parameters.")
                (url "https://repo.or.cz/arduino-mode")
                (commit commit)))
          (sha256
-          (base32 "16izwrk1dfsa14kylfhsxdwkx76g0jdk0znl1z7cypxh5q9ijy1x"))
+          (base32 "0jk7l9y3x8p6c6m6qpg7vmzn3yirv0m5h483plq1i2qs8njk5v23"))
          (file-name (git-file-name name version))))
       (build-system emacs-build-system)
       (inputs
