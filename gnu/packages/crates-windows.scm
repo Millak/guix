@@ -2325,6 +2325,27 @@ Windows crate.")
        (sha256
         (base32 "00h56znmak3p8bh28y3s48m5zv6q7dn40vnvf3dzf0sz5rszrym2"))))))
 
+(define-public rust-windows-macros-0.9
+  (package
+    (name "rust-windows-macros")
+    (version "0.9.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "windows_macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0xivsg3lf023hs83xiab2k40fmrl11nbihcdrdkc8pc4ab398xqg"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-syn" ,rust-syn-1) ("rust-windows-gen" ,rust-windows-gen-0.9))))
+    (home-page "https://github.com/microsoft/windows-rs")
+    (synopsis "Macros for the windows crate")
+    (description "Macros for the windows crate")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-windows-metadata-0.57
   (package
     (name "rust-windows-metadata")
@@ -2606,27 +2627,6 @@ if they were just another Rust module.")
              ("rust-windows-i686-msvc" ,rust-windows-i686-msvc-0.28)
              ("rust-windows-x86-64-gnu" ,rust-windows-x86-64-gnu-0.28)
              ("rust-windows-x86-64-msvc" ,rust-windows-x86-64-msvc-0.28))))))
-
-(define-public rust-windows-macros-0.9
-  (package
-    (name "rust-windows-macros")
-    (version "0.9.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "windows_macros" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0xivsg3lf023hs83xiab2k40fmrl11nbihcdrdkc8pc4ab398xqg"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-syn" ,rust-syn-1) ("rust-windows-gen" ,rust-windows-gen-0.9))))
-    (home-page "https://github.com/microsoft/windows-rs")
-    (synopsis "Macros for the windows crate")
-    (description "Macros for the windows crate")
-    (license (list license:expat license:asl2.0))))
 
 (define-public rust-windows-targets-0.52
   (package
