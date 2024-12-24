@@ -10278,6 +10278,27 @@ UTF-8.")
 @code{std::io}, with extra features.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-buffer-redux-1
+  (package
+    (name "rust-buffer-redux")
+    (version "1.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "buffer-redux" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1waq39blrj7j6qp1sp2fvplwmq10yhks7fgbsdy8kxdrqn3wz2jf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-memchr" ,rust-memchr-2)
+                       ("rust-slice-ring-buffer" ,rust-slice-ring-buffer-0.3))))
+    (home-page "https://github.com/dignifiedquire/buffer-redux")
+    (synopsis "Replacements for buffered I/O in `std::io` with extra features")
+    (description "This crate provides a drop-in replacements for buffered I/O in
+@code{std::io} with extra features.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-buffered-reader-1
   (package
     (name "rust-buffered-reader")
@@ -10323,27 +10344,6 @@ with data in place, which avoids another copy.")
        (("rust-bzip2" ,rust-bzip2-0.3)
         ("rust-flate2" ,rust-flate2-1)
         ("rust-libc" ,rust-libc-0.2))))))
-
-(define-public rust-buffer-redux-1
-  (package
-    (name "rust-buffer-redux")
-    (version "1.0.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "buffer-redux" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1waq39blrj7j6qp1sp2fvplwmq10yhks7fgbsdy8kxdrqn3wz2jf"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-memchr" ,rust-memchr-2)
-                       ("rust-slice-ring-buffer" ,rust-slice-ring-buffer-0.3))))
-    (home-page "https://github.com/dignifiedquire/buffer-redux")
-    (synopsis "Replacements for buffered I/O in `std::io` with extra features")
-    (description "This crate provides a drop-in replacements for buffered I/O in
-@code{std::io} with extra features.")
-    (license (list license:expat license:asl2.0))))
 
 (define-public rust-buffering-0.4
   (package
