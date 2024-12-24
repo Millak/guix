@@ -3613,38 +3613,6 @@
      "This package provides Rust bindings for GStreamer GL library.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-gstreamer-gl-sys-0.21
-  (package
-    (name "rust-gstreamer-gl-sys")
-    (version "0.21.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "gstreamer-gl-sys" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1kgi8rrlw2qx1p6q9ybk52wxpjn5wscx84lqfg4ng9lr7hdrg06m"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-test-flags '("--"
-                            "--skip=cross_validate_constants_with_c"
-                            "--skip=cross_validate_layout_with_c")
-       #:cargo-inputs (("rust-glib-sys" ,rust-glib-sys-0.18)
-                       ("rust-gobject-sys" ,rust-gobject-sys-0.18)
-                       ("rust-gstreamer-base-sys" ,rust-gstreamer-base-sys-0.21)
-                       ("rust-gstreamer-sys" ,rust-gstreamer-sys-0.21)
-                       ("rust-gstreamer-video-sys" ,rust-gstreamer-video-sys-0.21)
-                       ("rust-libc" ,rust-libc-0.2)
-                       ("rust-system-deps" ,rust-system-deps-6))
-       #:cargo-development-inputs (("rust-shell-words" ,rust-shell-words-1)
-                                   ("rust-tempfile" ,rust-tempfile-3))))
-    (native-inputs (list pkg-config))
-    (inputs (list glib gstreamer gst-plugins-base mesa))
-    (home-page "https://gstreamer.freedesktop.org")
-    (synopsis "FFI bindings to libgstgl-1.0")
-    (description "This package provides FFI bindings to libgstgl-1.0.")
-    (license license:expat)))
-
 (define-public rust-gstreamer-gl-egl-0.21
   (package
     (name "rust-gstreamer-gl-egl")
@@ -3699,6 +3667,38 @@
     (synopsis "FFI bindings to libgstgl-1.0 (EGL support)")
     (description
      "This package provides FFI bindings to libgstgl-1.0 (EGL support).")
+    (license license:expat)))
+
+(define-public rust-gstreamer-gl-sys-0.21
+  (package
+    (name "rust-gstreamer-gl-sys")
+    (version "0.21.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gstreamer-gl-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1kgi8rrlw2qx1p6q9ybk52wxpjn5wscx84lqfg4ng9lr7hdrg06m"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--"
+                            "--skip=cross_validate_constants_with_c"
+                            "--skip=cross_validate_layout_with_c")
+       #:cargo-inputs (("rust-glib-sys" ,rust-glib-sys-0.18)
+                       ("rust-gobject-sys" ,rust-gobject-sys-0.18)
+                       ("rust-gstreamer-base-sys" ,rust-gstreamer-base-sys-0.21)
+                       ("rust-gstreamer-sys" ,rust-gstreamer-sys-0.21)
+                       ("rust-gstreamer-video-sys" ,rust-gstreamer-video-sys-0.21)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-system-deps" ,rust-system-deps-6))
+       #:cargo-development-inputs (("rust-shell-words" ,rust-shell-words-1)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
+    (native-inputs (list pkg-config))
+    (inputs (list glib gstreamer gst-plugins-base mesa))
+    (home-page "https://gstreamer.freedesktop.org")
+    (synopsis "FFI bindings to libgstgl-1.0")
+    (description "This package provides FFI bindings to libgstgl-1.0.")
     (license license:expat)))
 
 (define-public rust-gstreamer-gl-wayland-0.21
