@@ -78051,36 +78051,6 @@ extensions.")
 diff output.")
     (license license:asl2.0)))
 
-(define-public rust-simplelog-0.12
-  (package
-    (name "rust-simplelog")
-    (version "0.12.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "simplelog" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1h59cp84gwdmbxiljq6qmqq1x3lv9ikc1gb32f5ya7pgzbdpl98n"))
-       (snippet
-        #~(begin (use-modules (guix build utils))
-                 (substitute* "Cargo.toml"
-                   (("1\\.1\\.\\*") "1.1"))))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-ansi-term" ,rust-ansi-term-0.12)
-                       ("rust-log" ,rust-log-0.4)
-                       ("rust-paris" ,rust-paris-1)
-                       ("rust-termcolor" ,rust-termcolor-1)
-                       ("rust-time" ,rust-time-0.3))))
-    (home-page "https://github.com/drakulix/simplelog.rs")
-    (synopsis "Simple and easy-to-use logging facility for Rust's log crate")
-    (description
-     "This package provides a simple and easy-to-use logging facility for Rust's
-@code{log} crate.  It aims to be a maintainable, easy to integrate facility for
-small to medium sized project")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-simple-logger-4
   (package
     (name "rust-simple-logger")
@@ -78191,6 +78161,36 @@ a readable output format.")
      "This package provides a mutex more efficient than @code{std} and
 simpler than @code{parking_lot}.")
     (license (list license:asl2.0 license:expat))))
+
+(define-public rust-simplelog-0.12
+  (package
+    (name "rust-simplelog")
+    (version "0.12.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "simplelog" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1h59cp84gwdmbxiljq6qmqq1x3lv9ikc1gb32f5ya7pgzbdpl98n"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (substitute* "Cargo.toml"
+                   (("1\\.1\\.\\*") "1.1"))))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-ansi-term" ,rust-ansi-term-0.12)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-paris" ,rust-paris-1)
+                       ("rust-termcolor" ,rust-termcolor-1)
+                       ("rust-time" ,rust-time-0.3))))
+    (home-page "https://github.com/drakulix/simplelog.rs")
+    (synopsis "Simple and easy-to-use logging facility for Rust's log crate")
+    (description
+     "This package provides a simple and easy-to-use logging facility for Rust's
+@code{log} crate.  It aims to be a maintainable, easy to integrate facility for
+small to medium sized project")
+    (license (list license:expat license:asl2.0))))
 
 (define-public rust-simplerand-1
   (package
