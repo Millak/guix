@@ -1699,14 +1699,14 @@ currently pressed on macOS.")
 (define-public rust-security-framework-3
   (package
     (name "rust-security-framework")
-    (version "3.0.1")
+    (version "3.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "security-framework" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1j1rpyiwq698dyyq2lnnws8hzknw8r32dy9cx9jc7gljgrh5lhg1"))))
+        (base32 "1g1wq04rb6gsyfawphv5vhmmicbm5l25gsvr05mvng6cpz4zilw1"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; unresolved import `security_framework::secure_transport`
