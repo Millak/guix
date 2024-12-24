@@ -96788,14 +96788,14 @@ dependency.")
 (define-public rust-wasm-bindgen-macro-support-0.2
   (package
     (name "rust-wasm-bindgen-macro-support")
-    (version "0.2.91")
+    (version "0.2.99")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "wasm-bindgen-macro-support" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0rlyl3yzwbcnc691mvx78m1wbqf1qs52mlc3g88bh7ihwrdk4bv4"))))
+        (base32 "1hihsgyg0kf46kjhgfv8x5g9x0q1d0aizj6n7s84ag1xfrdskmrh"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
