@@ -6677,6 +6677,21 @@ automatically generated enum.")
      "This package utomatically configures Rust compiler features.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-autocfg-0.1
+  (package
+    (inherit rust-autocfg-1)
+    (name "rust-autocfg")
+    (version "0.1.8")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "autocfg" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32
+          "0y4vw4l4izdxq1v0rrhvmlbqvalrqrmk60v1z0dqlgnlbzkl7phd"))))
+    (arguments `(#:cargo-inputs (("rust-autocfg" ,rust-autocfg-1))))))
+
 (define-public rust-autocompress-0.2
   (package
     (name "rust-autocompress")
@@ -6716,21 +6731,6 @@ automatically generated enum.")
      "This crate lets you automatically select a suitable decoder from magic
 bytes or encoder from file extension.")
     (license license:asl2.0)))
-
-(define-public rust-autocfg-0.1
-  (package
-    (inherit rust-autocfg-1)
-    (name "rust-autocfg")
-    (version "0.1.8")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "autocfg" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "0y4vw4l4izdxq1v0rrhvmlbqvalrqrmk60v1z0dqlgnlbzkl7phd"))))
-    (arguments `(#:cargo-inputs (("rust-autocfg" ,rust-autocfg-1))))))
 
 (define-public rust-automod-1
   (package
