@@ -35606,6 +35606,38 @@ SystemTime}}.")
      "This package provides the IANA time zone for the current system.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-icu-collections-1
+  (package
+    (name "rust-icu-collections")
+    (version "1.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "icu_collections" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "09j5kskirl59mvqc8kabhy7005yyy7dp88jw9f6f3gkf419a8byv"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; use of undeclared crate or module `icu_benchmark_macros`
+       #:cargo-inputs (("rust-databake" ,rust-databake-0.1)
+                       ("rust-displaydoc" ,rust-displaydoc-0.2)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-yoke" ,rust-yoke-0.7)
+                       ("rust-zerofrom" ,rust-zerofrom-0.1)
+                       ("rust-zerovec" ,rust-zerovec-0.10))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.5)
+                                   ("rust-iai" ,rust-iai-0.1)
+                                   ("rust-postcard" ,rust-postcard-1)
+                                   ("rust-serde" ,rust-serde-1)
+                                   ("rust-serde-json" ,rust-serde-json-1)
+                                   ("rust-toml" ,rust-toml-0.5))))
+    (home-page "https://icu4x.unicode.org")
+    (synopsis "Collection of API for use in ICU libraries")
+    (description
+     "This package provides a collection of APIs for use in ICU libraries.")
+    (license license:unicode)))
+
 (define-public rust-icu-provider-macros-1
   (package
     (name "rust-icu-provider-macros")
