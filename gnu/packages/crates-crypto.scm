@@ -3590,6 +3590,31 @@ in pure Rust.")
              ("rust-sha-1" ,rust-sha-1-0.9)
              ("rust-sha2" ,rust-sha2-0.9))))))
 
+(define-public rust-pem-rfc7468-0.7
+  (package
+    (name "rust-pem-rfc7468")
+    (version "0.7.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "pem-rfc7468" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "04l4852scl4zdva31c1z6jafbak0ni5pi0j38ml108zwzjdrrcw8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-base64ct" ,rust-base64ct-1))))
+    (home-page "https://github.com/RustCrypto/formats/tree/master/pem-rfc7468")
+    (synopsis
+     "PEM Encoding implementing a subset of Privacy-Enhanced Mail encoding")
+    (description
+     "This package provides PEM Encoding (RFC 7468) for PKIX, PKCS, and CMS
+Structures, implementing a strict subset of the original Privacy-Enhanced Mail
+encoding intended specifically for use with cryptographic keys, certificates,
+and other messages.  It provides a no_std-friendly, constant-time
+implementation suitable for use with cryptographic private keys.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-pkcs1-0.7
   (package
     (name "rust-pkcs1")
@@ -3891,31 +3916,6 @@ with additional support for PKCS#8v2 asymmetric key packages (RFC 5958).")
         ("rust-rand-core" ,rust-rand-core-0.6)
         ("rust-spki" ,rust-spki-0.4)
         ("rust-zeroize" ,rust-zeroize-1))))))
-
-(define-public rust-pem-rfc7468-0.7
-  (package
-    (name "rust-pem-rfc7468")
-    (version "0.7.0")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "pem-rfc7468" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "04l4852scl4zdva31c1z6jafbak0ni5pi0j38ml108zwzjdrrcw8"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-base64ct" ,rust-base64ct-1))))
-    (home-page "https://github.com/RustCrypto/formats/tree/master/pem-rfc7468")
-    (synopsis
-     "PEM Encoding implementing a subset of Privacy-Enhanced Mail encoding")
-    (description
-     "This package provides PEM Encoding (RFC 7468) for PKIX, PKCS, and CMS
-Structures, implementing a strict subset of the original Privacy-Enhanced Mail
-encoding intended specifically for use with cryptographic keys, certificates,
-and other messages.  It provides a no_std-friendly, constant-time
-implementation suitable for use with cryptographic private keys.")
-    (license (list license:asl2.0 license:expat))))
 
 (define-public rust-pem-rfc7468-0.6
   (package
