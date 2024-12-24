@@ -60715,19 +60715,19 @@ particularly useful for printing structured recursive data like trees.")
 (define-public rust-pretty-assertions-1
   (package
     (name "rust-pretty-assertions")
-    (version "1.4.0")
+    (version "1.4.1")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "pretty_assertions" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0rmsnqlpmpfjp5gyi31xgc48kdhc1kqn246bnc494nwadhdfwz5g"))))
+                "0v8iq35ca4rw3rza5is3wjxwsf88303ivys07anc5yviybi31q9s"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-diff" ,rust-diff-0.1)
-        ("rust-yansi" ,rust-yansi-0.5))))
+        ("rust-yansi" ,rust-yansi-1))))
     (home-page "https://github.com/rust-pretty-assertions/rust-pretty-assertions")
     (synopsis "Drop-in replacements for assert_eq! and assert_ne!")
     (description
