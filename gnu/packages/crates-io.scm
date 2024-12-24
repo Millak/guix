@@ -54032,29 +54032,6 @@ the default program configured on the system.")
        #:cargo-development-inputs
        (("rust-version-sync" ,rust-version-sync-0.9))))))
 
-(define-public rust-openssl-macros-0.1
-  (package
-    (name "rust-openssl-macros")
-    (version "0.1.1")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "openssl-macros" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "173xxvfc63rr5ybwqwylsir0vq6xsj4kxiv4hmg4c3vscdmncj59"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-2))))
-    (home-page "https://github.com/sfackler/rust-openssl")
-    (synopsis "Internal macros used by the openssl crate")
-    (description "This package provides internal macros used by the openssl
-crate.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-openssl-0.10
   (package
     (name "rust-openssl")
@@ -54126,6 +54103,29 @@ crate.")
              (substitute* "Cargo.toml"
                ((", path =.*}") "}"))
              #t)))))))
+
+(define-public rust-openssl-macros-0.1
+  (package
+    (name "rust-openssl-macros")
+    (version "0.1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "openssl-macros" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "173xxvfc63rr5ybwqwylsir0vq6xsj4kxiv4hmg4c3vscdmncj59"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/sfackler/rust-openssl")
+    (synopsis "Internal macros used by the openssl crate")
+    (description "This package provides internal macros used by the openssl
+crate.")
+    (license (list license:expat license:asl2.0))))
 
 (define-public rust-openssl-probe-0.1
   (package
