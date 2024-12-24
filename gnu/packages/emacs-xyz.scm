@@ -12490,13 +12490,12 @@ variants.")
     (license license:gpl3+)))
 
 (define-public emacs-color-theme-sanityinc-tomorrow
-  ;; Use the latest commit as there are no recent release/tag; the version
-  ;; metadata in the Elisp source file is also defined as '0'.
-  (let ((commit "d34e8db507ee0c7b465ff18a8f220c33ed77cd79")
+  ;; Use the latest commit as there are no recent release/tag.
+  (let ((commit "7690d8e97c992f538d9b1abbd26099f426c8ab7c")
         (revision "0"))
     (package
       (name "emacs-color-theme-sanityinc-tomorrow")
-      (version (git-version "0" revision commit))
+      (version (git-version "1.17" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -12506,7 +12505,7 @@ variants.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1mfildi7rav2j42avii7z4gp4ghl04cqv8wp1vyxzl8vkyj60nkb"))))
+          (base32 "11mgwq5dlx0ffkxmyyhfzg0ilg8ih8rf2km4js5gypi8mvmczjih"))))
       (build-system emacs-build-system)
       (home-page "https://github.com/purcell/color-theme-sanityinc-tomorrow")
       (synopsis "Emacs color themes based on Chris Kempson's 'tomorrow' themes")
