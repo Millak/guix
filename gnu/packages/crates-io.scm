@@ -11390,7 +11390,7 @@ exposed as Reader/Writer streams.")
         ("rust-libc" ,rust-libc-0.2))))
     (home-page "https://github.com/GuillaumeGomez/c_vec-rs.git")
     (synopsis "Structures to wrap C arrays")
-    (description "This package procides structures to wrap C arrays in Rust.")
+    (description "This package provides structures to wrap C arrays in Rust.")
     (license (list license:asl2.0 license:expat))))
 
 (define-public rust-cache-padded-1
