@@ -4290,42 +4290,6 @@ variants to `Option`s.")
 extracted from Askama.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-askama-shared-0.12
-  (package
-    (name "rust-askama-shared")
-    (version "0.12.2")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "askama_shared" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1l4fycmw65zyvfabf672sj2pc0ilfcj0y6a0csygq1wa26a2nwmz"))))
-    (build-system cargo-build-system)
-    (arguments
-     (list #:skip-build? #t
-           #:cargo-inputs
-           `(("rust-askama-escape" ,rust-askama-escape-0.10)
-             ("rust-comrak" ,rust-comrak-0.12)
-             ("rust-humansize" ,rust-humansize-1)
-             ("rust-mime" ,rust-mime-0.3)
-             ("rust-mime-guess" ,rust-mime-guess-2)
-             ("rust-nom" ,rust-nom-7)
-             ("rust-num-traits" ,rust-num-traits-0.2)
-             ("rust-percent-encoding"
-              ,rust-percent-encoding-2)
-             ("rust-proc-macro2" ,rust-proc-macro2-1)
-             ("rust-quote" ,rust-quote-1)
-             ("rust-serde" ,rust-serde-1)
-             ("rust-serde-json" ,rust-serde-json-1)
-             ("rust-serde-yaml" ,rust-serde-yaml-0.8)
-             ("rust-syn" ,rust-syn-1)
-             ("rust-toml" ,rust-toml-0.5))))
-    (home-page "https://github.com/djc/askama")
-    (synopsis "Shared code for Askama")
-    (description "This package provides shared code for Askama.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-as-raw-xcb-connection-1
   (package
     (name "rust-as-raw-xcb-connection")
@@ -4581,6 +4545,42 @@ library for Rust.")
     (home-page "https://github.com/djc/askama")
     (synopsis "Parser for Askama templates")
     (description "Parser for Askama templates.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-askama-shared-0.12
+  (package
+    (name "rust-askama-shared")
+    (version "0.12.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "askama_shared" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1l4fycmw65zyvfabf672sj2pc0ilfcj0y6a0csygq1wa26a2nwmz"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:skip-build? #t
+           #:cargo-inputs
+           `(("rust-askama-escape" ,rust-askama-escape-0.10)
+             ("rust-comrak" ,rust-comrak-0.12)
+             ("rust-humansize" ,rust-humansize-1)
+             ("rust-mime" ,rust-mime-0.3)
+             ("rust-mime-guess" ,rust-mime-guess-2)
+             ("rust-nom" ,rust-nom-7)
+             ("rust-num-traits" ,rust-num-traits-0.2)
+             ("rust-percent-encoding"
+              ,rust-percent-encoding-2)
+             ("rust-proc-macro2" ,rust-proc-macro2-1)
+             ("rust-quote" ,rust-quote-1)
+             ("rust-serde" ,rust-serde-1)
+             ("rust-serde-json" ,rust-serde-json-1)
+             ("rust-serde-yaml" ,rust-serde-yaml-0.8)
+             ("rust-syn" ,rust-syn-1)
+             ("rust-toml" ,rust-toml-0.5))))
+    (home-page "https://github.com/djc/askama")
+    (synopsis "Shared code for Askama")
+    (description "This package provides shared code for Askama.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-assert-0.7
