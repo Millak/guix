@@ -42776,6 +42776,27 @@ This package contains the protobuf logic.")
 harness used by @code{rustc --test}.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-libtest-mimic-0.7
+  (package
+    (inherit rust-libtest-mimic-0.8)
+    (name "rust-libtest-mimic")
+    (version "0.7.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libtest-mimic" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0n4vdf4wz4zglammhdzgwxqal9v1a8gbj6rc4q22jfjvxm2xl2yc"))))
+    (arguments
+     `(#:cargo-inputs (("rust-clap" ,rust-clap-4)
+                       ("rust-escape8259" ,rust-escape8259-0.5)
+                       ("rust-termcolor" ,rust-termcolor-1)
+                       ("rust-threadpool" ,rust-threadpool-1))
+       #:cargo-development-inputs
+       (("rust-fastrand" ,rust-fastrand-1)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1))))))
+
 (define-public rust-libxml-0.3
   (package
     (name "rust-libxml")
@@ -43290,27 +43311,6 @@ Linux userspace APIs.")
            #:cargo-development-inputs
            `(("rust-libc" ,rust-libc-0.2)
              ("rust-static-assertions" ,rust-static-assertions-1))))))
-
-(define-public rust-libtest-mimic-0.7
-  (package
-    (inherit rust-libtest-mimic-0.8)
-    (name "rust-libtest-mimic")
-    (version "0.7.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "libtest-mimic" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0n4vdf4wz4zglammhdzgwxqal9v1a8gbj6rc4q22jfjvxm2xl2yc"))))
-    (arguments
-     `(#:cargo-inputs (("rust-clap" ,rust-clap-4)
-                       ("rust-escape8259" ,rust-escape8259-0.5)
-                       ("rust-termcolor" ,rust-termcolor-1)
-                       ("rust-threadpool" ,rust-threadpool-1))
-       #:cargo-development-inputs
-       (("rust-fastrand" ,rust-fastrand-1)
-        ("rust-pretty-assertions" ,rust-pretty-assertions-1))))))
 
 (define-public rust-libtest-mimic-0.6
   (package
