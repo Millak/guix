@@ -698,6 +698,31 @@ sequences.")
 and amino acids that are used ny otherBioJulia packages.")
     (license license:expat)))
 
+(define-public julia-bittwiddlingconveniencefunctions
+  (package
+    (name "julia-bittwiddlingconveniencefunctions")
+    (version "0.1.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url
+              "https://github.com/JuliaSIMD/BitTwiddlingConvenienceFunctions.jl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0qn36wpj7bk4ysizhx0a13ajajjzlc6cxsqhhx9w99d5wciplx4a"))))
+    (build-system julia-build-system)
+    (propagated-inputs (list julia-static))
+    (home-page
+     "https://github.com/JuliaSIMD/BitTwiddlingConvenienceFunctions.jl")
+    (synopsis "Bit twiddling convenience functions")
+    (description
+     "This package provides bit twiddling convenience functions in Julia.
+These are useful for going to the next or previous mask size or for
+calculating corresponding shifts.")
+    (license license:expat)))
+
 (define-public julia-blockarrays
   (package
     (name "julia-blockarrays")
