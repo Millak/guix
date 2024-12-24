@@ -79395,35 +79395,6 @@ algorithm.  Includes streaming compression and decompression.")
         ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-snappy-cpp" ,rust-snappy-cpp-0.1))))))
 
-(define-public rust-snapbox-macros-0.3
-  (package
-    (name "rust-snapbox-macros")
-    (version "0.3.10")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "snapbox-macros" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1bv4lq1kw1vrd9lk7yk79a0z8q8nma2502ifysv1p913r99rymhn"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-anstream" ,rust-anstream-0.6))))
-    (home-page "https://github.com/assert-rs/trycmd/tree/main/crates/snapbox")
-    (synopsis "Snapshot testing toolbox")
-    (description
-     "Snapbox is a snapshot-testing toolbox that is ready to use for verifying
-output from
-
-@itemize
-@item Function return values
-@item CLI stdout/stderr
-@item Filesystem changes
-@end itemize
-
-It is also flexible enough to build your own test harness like @code{trycmd}.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-snapbox-0.6
   (package
     (name "rust-snapbox")
@@ -79578,6 +79549,35 @@ It is also flexible enough to build your own test harness like @code{trycmd}.")
         ("rust-wait-timeout" ,rust-wait-timeout-0.2)
         ("rust-walkdir" ,rust-walkdir-2)
         ("rust-yansi" ,rust-yansi-0.5))))))
+
+(define-public rust-snapbox-macros-0.3
+  (package
+    (name "rust-snapbox-macros")
+    (version "0.3.10")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "snapbox-macros" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1bv4lq1kw1vrd9lk7yk79a0z8q8nma2502ifysv1p913r99rymhn"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anstream" ,rust-anstream-0.6))))
+    (home-page "https://github.com/assert-rs/trycmd/tree/main/crates/snapbox")
+    (synopsis "Snapshot testing toolbox")
+    (description
+     "Snapbox is a snapshot-testing toolbox that is ready to use for verifying
+output from
+
+@itemize
+@item Function return values
+@item CLI stdout/stderr
+@item Filesystem changes
+@end itemize
+
+It is also flexible enough to build your own test harness like @code{trycmd}.")
+    (license (list license:expat license:asl2.0))))
 
 (define-public rust-snapbox-macros-0.2
   (package
