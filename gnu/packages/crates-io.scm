@@ -94230,24 +94230,6 @@ arithmetic.")
      "This package provides a DSL for describing concrete syntax trees.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-unidecode-0.3
-  (package
-    (name "rust-unidecode")
-    (version "0.3.0")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "unidecode" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1p0sm8j9223kw3iincv60s746s88k09xcaqf8nkx3w83isfv2as0"))))
-    (build-system cargo-build-system)
-    (home-page "https://github.com/chowdhurya/rust-unidecode/")
-    (synopsis "Provides pure ASCII transliterations of Unicode strings")
-    (description
-     "This package provides pure ASCII transliterations of Unicode strings.")
-    (license license:bsd-3)))
-
 (define-public rust-unic-char-property-0.9
   (package
     (name "rust-unic-char-property")
@@ -94908,6 +94890,24 @@ to Unicode Standard Annex #31.")
        (sha256
         (base32
          "1p5l9h3n3i53cp95fb65p8q3vbwib79ryd9z5z5h5kr9gl6qc7wc"))))))
+
+(define-public rust-unidecode-0.3
+  (package
+    (name "rust-unidecode")
+    (version "0.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "unidecode" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1p0sm8j9223kw3iincv60s746s88k09xcaqf8nkx3w83isfv2as0"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/chowdhurya/rust-unidecode/")
+    (synopsis "Provides pure ASCII transliterations of Unicode strings")
+    (description
+     "This package provides pure ASCII transliterations of Unicode strings.")
+    (license license:bsd-3)))
 
 (define-public rust-unindent-0.2
   (package
