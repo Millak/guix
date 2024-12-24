@@ -89578,21 +89578,33 @@ futures.")
 (define-public rust-tokio-socks-0.5
   (package
     (name "rust-tokio-socks")
-    (version "0.5.1")
+    (version "0.5.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tokio-socks" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1h6qixh17yjf98bjyw4q8i36pf2lyfbcr9hkjjb6aalx0bx5s5ji"))))
+        (base32 "0gq40sgggz21wfpshiq8pryh062vp7m36rrz3c8c2wj60aw70iqd"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
+     `(#:cargo-test-flags
+       '("--"
+         ;; This will skip the various tests dependant on network
+         ;; or on missing files.
+         "--skip=auth"
+         "--skip=user")
        #:cargo-inputs
        (("rust-either" ,rust-either-1)
+        ("rust-futures-io" ,rust-futures-io-0.3)
         ("rust-futures-util" ,rust-futures-util-0.3)
         ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-tokio" ,rust-tokio-1))
+       #:cargo-development-inputs
+       (("rust-futures-executor" ,rust-futures-executor-0.3)
+        ("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-smol" ,rust-smol-2)
         ("rust-tokio" ,rust-tokio-1))))
     (home-page "https://github.com/sticnarf/tokio-socks")
     (synopsis "Asynchronous SOCKS proxy support for Rust")
