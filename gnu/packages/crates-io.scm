@@ -99529,6 +99529,31 @@ implementation that works everywhere, even WASM!")
     (description "This crate provides custom derive support for Zeroize.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-zerovec-derive-0.10
+  (package
+    (name "rust-zerovec-derive")
+    (version "0.10.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "zerovec-derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ik322dys6wnap5d3gcsn09azmssq466xryn5czfm13mn7gsdbvf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; use of undeclared crate or module `zerovec`
+       #:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))
+       #:cargo-development-inputs (("rust-bincode" ,rust-bincode-1)
+                                   ("rust-serde" ,rust-serde-1)
+                                   ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/unicode-org/icu4x")
+    (synopsis "Custom derive for the zerovec crate")
+    (description "This package provides custom derive for the zerovec crate.")
+    (license license:unicode)))
+
 (define-public rust-zip-2
   (package
     (name "rust-zip")
