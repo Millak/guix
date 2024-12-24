@@ -42724,6 +42724,31 @@ This package contains the protobuf logic.")
      "This package provides native rust bindings to the @code{libssh2} library.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-libssh2-sys-0.2
+  (package
+    (inherit rust-libssh2-sys-0.3)
+    (name "rust-libssh2-sys")
+    (version "0.2.19")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "libssh2-sys" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32 "0mkhw4pksbz7gldj8hia7k6npc479n1x09i8r0pm275sac424ina"))
+        (modules '((guix build utils)))
+        (snippet
+         '(begin (delete-file-recursively "libssh2") #t))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-libz-sys" ,rust-libz-sys-1)
+        ("rust-openssl-sys" ,rust-openssl-sys-0.9)
+        ;; Build dependencies:
+        ("rust-cc" ,rust-cc-1)
+        ("rust-pkg-config" ,rust-pkg-config-0.3)
+        ("rust-vcpkg" ,rust-vcpkg-0.2))))))
+
 (define-public rust-libxml-0.3
   (package
     (name "rust-libxml")
@@ -43238,31 +43263,6 @@ Linux userspace APIs.")
            #:cargo-development-inputs
            `(("rust-libc" ,rust-libc-0.2)
              ("rust-static-assertions" ,rust-static-assertions-1))))))
-
-(define-public rust-libssh2-sys-0.2
-  (package
-    (inherit rust-libssh2-sys-0.3)
-    (name "rust-libssh2-sys")
-    (version "0.2.19")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "libssh2-sys" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32 "0mkhw4pksbz7gldj8hia7k6npc479n1x09i8r0pm275sac424ina"))
-        (modules '((guix build utils)))
-        (snippet
-         '(begin (delete-file-recursively "libssh2") #t))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-libc" ,rust-libc-0.2)
-        ("rust-libz-sys" ,rust-libz-sys-1)
-        ("rust-openssl-sys" ,rust-openssl-sys-0.9)
-        ;; Build dependencies:
-        ("rust-cc" ,rust-cc-1)
-        ("rust-pkg-config" ,rust-pkg-config-0.3)
-        ("rust-vcpkg" ,rust-vcpkg-0.2))))))
 
 (define-public rust-libtest-mimic-0.8
   (package
