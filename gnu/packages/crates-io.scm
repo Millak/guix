@@ -64040,6 +64040,54 @@ Python code from a Rust binary is also supported.")
        ;; SIGSEGV: invalid memory reference
        #:tests? #f))))
 
+(define-public rust-pyo3-0.15
+  (package
+    (inherit rust-pyo3-0.16)
+    (name "rust-pyo3")
+    (version "0.15.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pyo3" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ljp3m1frg8y50al4cbadwxfwwrgsvslmljclp4cf20y4ykm07fl"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (("\"=([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                   (string-append "\"^" version)))))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-cfg-if" ,rust-cfg-if-1)
+        ("rust-eyre" ,rust-eyre-0.6)
+        ("rust-hashbrown" ,rust-hashbrown-0.11)
+        ("rust-indexmap" ,rust-indexmap-1.7)
+        ("rust-indoc" ,rust-indoc-0.3)
+        ("rust-inventory" ,rust-inventory-0.1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-num-bigint" ,rust-num-bigint-0.4)
+        ("rust-num-complex" ,rust-num-complex-0.4)
+        ("rust-parking-lot" ,rust-parking-lot-0.11)
+        ("rust-paste" ,rust-paste-0.1)
+        ("rust-pyo3-build-config" ,rust-pyo3-build-config-0.15)
+        ("rust-pyo3-macros" ,rust-pyo3-macros-0.15)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-unindent" ,rust-unindent-0.1))
+       #:cargo-development-inputs
+       (("rust-assert-approx-eq" ,rust-assert-approx-eq-1)
+        ("rust-bitflags" ,rust-bitflags-1)
+        ("rust-clap" ,rust-clap-2)
+        ("rust-criterion" ,rust-criterion-0.3)
+        ("rust-half" ,rust-half-1)
+        ("rust-proptest" ,rust-proptest-0.10)
+        ("rust-rustversion" ,rust-rustversion-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-trybuild" ,rust-trybuild-1))
+       ;; FIXME: fails to initialize Python interpreter.
+       #:tests? #f))))
+
 (define-public rust-pyo3-build-config-0.23
   (package
     (name "rust-pyo3-build-config")
@@ -64696,54 +64744,6 @@ extension to python.")
        (("rust-pyo3-macros-backend" ,rust-pyo3-macros-backend-0.13)
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))))))
-
-(define-public rust-pyo3-0.15
-  (package
-    (inherit rust-pyo3-0.16)
-    (name "rust-pyo3")
-    (version "0.15.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "pyo3" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0ljp3m1frg8y50al4cbadwxfwwrgsvslmljclp4cf20y4ykm07fl"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin (substitute* "Cargo.toml"
-                  (("\"=([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
-                   (string-append "\"^" version)))))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-anyhow" ,rust-anyhow-1)
-        ("rust-cfg-if" ,rust-cfg-if-1)
-        ("rust-eyre" ,rust-eyre-0.6)
-        ("rust-hashbrown" ,rust-hashbrown-0.11)
-        ("rust-indexmap" ,rust-indexmap-1.7)
-        ("rust-indoc" ,rust-indoc-0.3)
-        ("rust-inventory" ,rust-inventory-0.1)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-num-bigint" ,rust-num-bigint-0.4)
-        ("rust-num-complex" ,rust-num-complex-0.4)
-        ("rust-parking-lot" ,rust-parking-lot-0.11)
-        ("rust-paste" ,rust-paste-0.1)
-        ("rust-pyo3-build-config" ,rust-pyo3-build-config-0.15)
-        ("rust-pyo3-macros" ,rust-pyo3-macros-0.15)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-unindent" ,rust-unindent-0.1))
-       #:cargo-development-inputs
-       (("rust-assert-approx-eq" ,rust-assert-approx-eq-1)
-        ("rust-bitflags" ,rust-bitflags-1)
-        ("rust-clap" ,rust-clap-2)
-        ("rust-criterion" ,rust-criterion-0.3)
-        ("rust-half" ,rust-half-1)
-        ("rust-proptest" ,rust-proptest-0.10)
-        ("rust-rustversion" ,rust-rustversion-1)
-        ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-trybuild" ,rust-trybuild-1))
-       ;; FIXME: fails to initialize Python interpreter.
-       #:tests? #f))))
 
 (define-public rust-pyo3-0.13
   (package
