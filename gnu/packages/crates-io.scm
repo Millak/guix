@@ -96702,26 +96702,31 @@ result.")
 (define-public rust-wasm-bindgen-futures-0.4
   (package
     (name "rust-wasm-bindgen-futures")
-    (version "0.4.41")
+    (version "0.4.49")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "wasm-bindgen-futures" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "15zd36y0jpzvh18x963hd905rlpk2cxp918r6db0xsnfc4zrqyw7"))))
+        (base32 "18pc937q8kg549czxk3ah57h9vb7q56c62zz9qcfk17a8jdns5rq"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (("\"=([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                   (string-append "\"^" version)))))))
     (build-system cargo-build-system)
     (arguments
       `(#:cargo-inputs
         (("rust-cfg-if" ,rust-cfg-if-1)
          ("rust-futures-core" ,rust-futures-core-0.3)
          ("rust-js-sys" ,rust-js-sys-0.3)
+         ("rust-once-cell" ,rust-once-cell-1)
          ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
          ("rust-web-sys" ,rust-web-sys-0.3))
         #:cargo-development-inputs
         (("rust-futures-channel-preview" ,rust-futures-channel-preview-0.3)
-         ("rust-futures-lite" ,rust-futures-lite-1)
-         ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))
+         ("rust-futures-lite" ,rust-futures-lite-1))))
     (home-page "https://rustwasm.github.io/wasm-bindgen/")
     (synopsis
      "Bridging the gap between Rust Futures and JavaScript Promises")
