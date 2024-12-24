@@ -46484,30 +46484,6 @@ for Rust structs.")
     (description "Traits for measuring dynamic memory usage of types.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-merge-derive-0.1
-  (package
-    (name "rust-merge-derive")
-    (version "0.1.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "merge_derive" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "01wxhi7mqmp34l540wcfb24hb13vcbps4wlynas66bnsfra0g790"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-proc-macro-error" ,rust-proc-macro-error-1)
-        ("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))
-    (home-page "https://sr.ht/~ireas/merge-rs")
-    (synopsis "Derive macro for the merge crate")
-    (description "This crate provides a derive macro for the
-@code{merge::Merge} crate.")
-    (license (list license:asl2.0 license:expat))))
-
 (define-public rust-merge-0.1
   (package
     (name "rust-merge")
@@ -46535,6 +46511,30 @@ for Rust structs.")
     (synopsis "Rust trait for objects that can be merged")
     (description "This package provides a merge trait that can be used
 to merge two objects of the same type into one.")
+    (license (list license:asl2.0 license:expat))))
+
+(define-public rust-merge-derive-0.1
+  (package
+    (name "rust-merge-derive")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "merge_derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "01wxhi7mqmp34l540wcfb24hb13vcbps4wlynas66bnsfra0g790"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro-error" ,rust-proc-macro-error-1)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))))
+    (home-page "https://sr.ht/~ireas/merge-rs")
+    (synopsis "Derive macro for the merge crate")
+    (description "This crate provides a derive macro for the
+@code{merge::Merge} crate.")
     (license (list license:asl2.0 license:expat))))
 
 (define-public rust-merlin-3
