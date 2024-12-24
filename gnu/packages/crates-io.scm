@@ -8330,28 +8330,6 @@ bindings to C and C++ libraries.")
 rust-bio and rust-htslib.")
     (license license:expat)))
 
-(define-public rust-bio-types-0.12
-  (package
-    (inherit rust-bio-types-1)
-    (name "rust-bio-types")
-    (version "0.12.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "bio-types" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1dmcjwky9fszmwwg7ywv52xhz93zibsgl7nj9x7gadvz8yb45g0k"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-derive-new" ,rust-derive-new-0.5)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-petgraph" ,rust-petgraph-0.6)
-        ("rust-regex" ,rust-regex-1)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-strum-macros" ,rust-strum-macros-0.21)
-        ("rust-thiserror" ,rust-thiserror-1))))))
-
 (define-public rust-bio-1
   (package
     (name "rust-bio")
@@ -8560,6 +8538,28 @@ useful for bioinformatics, but also in other fields.")
        (("rust-proptest" ,rust-proptest-1)
         ("rust-rand" ,rust-rand-0.8)
         ("rust-tempfile" ,rust-tempfile-3))))))
+
+(define-public rust-bio-types-0.12
+  (package
+    (inherit rust-bio-types-1)
+    (name "rust-bio-types")
+    (version "0.12.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "bio-types" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1dmcjwky9fszmwwg7ywv52xhz93zibsgl7nj9x7gadvz8yb45g0k"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-derive-new" ,rust-derive-new-0.5)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-petgraph" ,rust-petgraph-0.6)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-strum-macros" ,rust-strum-macros-0.21)
+        ("rust-thiserror" ,rust-thiserror-1))))))
 
 (define-public rust-bit-field-0.10
   (package
