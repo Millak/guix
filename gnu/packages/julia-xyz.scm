@@ -5107,6 +5107,34 @@ Hessian and g the gradient) may not be a descent direction if H is not positive
 definite.")
     (license license:expat)))
 
+(define-public julia-precompiletools
+  (package
+    (name "julia-precompiletools")
+    (version "1.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/JuliaLang/PrecompileTools.jl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "07b69gmgs3zxs86l9g9dymv3sfgncm8sl86sp0ck6xf5ly10phiy"))))
+    (build-system julia-build-system)
+    ;; Tests try to download other repositories
+    ;; Tests try to install "fake" packages
+    (arguments
+     (list
+      #:tests? #f))
+    (propagated-inputs (list julia-preferences))
+    (home-page "https://github.com/JuliaLang/PrecompileTools.jl")
+    (synopsis "Reduce time-to-first-execution of Julia code")
+    (description
+     "This package allows you to reduce the latency of the first
+execution of Julia code.  It is applicable to both package developers and
+end users in their personal workflows.")
+    (license license:expat)))
+
 (define-public julia-preferences
   (package
     (name "julia-preferences")
