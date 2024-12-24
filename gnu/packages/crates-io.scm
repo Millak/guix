@@ -42797,6 +42797,27 @@ harness used by @code{rustc --test}.")
        (("rust-fastrand" ,rust-fastrand-1)
         ("rust-pretty-assertions" ,rust-pretty-assertions-1))))))
 
+(define-public rust-libtest-mimic-0.6
+  (package
+    (inherit rust-libtest-mimic-0.7)
+    (name "rust-libtest-mimic")
+    (version "0.6.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "libtest-mimic" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                 "1rwwdrzc5hmfisc9c3zcvnab14rgh0zfa636c2jbhv4az5qf73bd"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-clap" ,rust-clap-4)
+        ("rust-termcolor" ,rust-termcolor-1)
+        ("rust-threadpool" ,rust-threadpool-1))
+       #:cargo-development-inputs
+       (("rust-fastrand" ,rust-fastrand-1)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1))))))
+
 (define-public rust-libxml-0.3
   (package
     (name "rust-libxml")
@@ -43311,27 +43332,6 @@ Linux userspace APIs.")
            #:cargo-development-inputs
            `(("rust-libc" ,rust-libc-0.2)
              ("rust-static-assertions" ,rust-static-assertions-1))))))
-
-(define-public rust-libtest-mimic-0.6
-  (package
-    (inherit rust-libtest-mimic-0.7)
-    (name "rust-libtest-mimic")
-    (version "0.6.1")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "libtest-mimic" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                 "1rwwdrzc5hmfisc9c3zcvnab14rgh0zfa636c2jbhv4az5qf73bd"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-clap" ,rust-clap-4)
-        ("rust-termcolor" ,rust-termcolor-1)
-        ("rust-threadpool" ,rust-threadpool-1))
-       #:cargo-development-inputs
-       (("rust-fastrand" ,rust-fastrand-1)
-        ("rust-pretty-assertions" ,rust-pretty-assertions-1))))))
 
 (define-public rust-libtest-mimic-0.5
   (package
