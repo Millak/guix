@@ -39689,14 +39689,14 @@ JSON-RPC 2.0 specification.")
 (define-public rust-js-sys-0.3
   (package
     (name "rust-js-sys")
-    (version "0.3.68")
+    (version "0.3.76")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "js-sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1vm98fhnhs4w6yakchi9ip7ar95900k9vkr24a21qlwd6r5xlv20"))
+        (base32 "1dz7v777h2j38wkf8k5iwkfxskn6nff2cdv2jsslyxkpn2svc5v7"))
        (modules '((guix build utils)))
        (snippet
         '(begin (substitute* "Cargo.toml"
@@ -39705,11 +39705,8 @@ JSON-RPC 2.0 specification.")
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2))
-       #:cargo-development-inputs
-       (("rust-wasm-bindgen-futures" ,rust-wasm-bindgen-futures-0.4)
-        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3)
-        ("rust-web-sys" ,rust-web-sys-0.3))))
+       (("rust-once-cell" ,rust-once-cell-1)
+        ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2))))
     (home-page "https://rustwasm.github.io/wasm-bindgen/")
     (synopsis "Bindings for all JS global objects and functions in WASM")
     (description
