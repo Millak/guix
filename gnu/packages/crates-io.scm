@@ -51721,28 +51721,6 @@ notification library.")
        (("rust-tempfile" ,rust-tempfile-3))))
     (license license:cc0)))
 
-(define-public rust-notify-debouncer-mini-0.4
-  (package
-    (name "rust-notify-debouncer-mini")
-    (version "0.4.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "notify-debouncer-mini" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0hwxdbzyx01pzwyld1dk7sc7ak5k3xkjz2l59ppwa7rajwhv4h2x"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
-                       ("rust-log" ,rust-log-0.4)
-                       ("rust-notify" ,rust-notify-6)
-                       ("rust-serde" ,rust-serde-1))))
-    (home-page "https://github.com/notify-rs/notify")
-    (synopsis "Notify mini debouncer")
-    (description "This crate is notify mini debouncer for events.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-notify-debouncer-full-0.3
   (package
     (name "rust-notify-debouncer-full")
@@ -51773,6 +51751,28 @@ notification library.")
     (synopsis "Notify event debouncer optimized for ease of use")
     (description
      "This package provides a notify event debouncer optimized for ease of use.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-notify-debouncer-mini-0.4
+  (package
+    (name "rust-notify-debouncer-mini")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "notify-debouncer-mini" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0hwxdbzyx01pzwyld1dk7sc7ak5k3xkjz2l59ppwa7rajwhv4h2x"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-notify" ,rust-notify-6)
+                       ("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/notify-rs/notify")
+    (synopsis "Notify mini debouncer")
+    (description "This crate is notify mini debouncer for events.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-notify-rust-4
