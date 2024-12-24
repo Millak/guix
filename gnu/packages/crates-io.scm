@@ -53733,6 +53733,35 @@ spec in pure Rust.")
     (description "This package provides a path utility library.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-once-cell-1
+  (package
+    (name "rust-once-cell")
+    (version "1.20.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "once_cell" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0xb7rw1aqr7pa4z3b00y7786gyf8awx2gca3md73afy76dzgwq8j"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-critical-section" ,rust-critical-section-1)
+        ("rust-parking-lot-core" ,rust-parking-lot-core-0.9)
+        ("rust-portable-atomic" ,rust-portable-atomic-1))
+       #:cargo-development-inputs
+       (("rust-critical-section" ,rust-critical-section-1)
+        ("rust-regex" ,rust-regex-1))))
+    (home-page "https://github.com/matklad/once_cell")
+    (synopsis "Single assignment cells and lazy values")
+    (description
+     "This package provides two new cell-like types, @code{unsync::OnceCell}
+and @code{sync::OnceCell}.  OnceCell might store arbitrary non-copy types, can
+be assigned to at most once and provide direct access to the stored
+contents.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-onig-6
   (package
     (name "rust-onig")
@@ -53785,35 +53814,6 @@ library.")
 This crate exposes a set of unsafe functions which can then be used by
 other crates to create safe wrappers around Oniguruma.")
     (license license:expat)))
-
-(define-public rust-once-cell-1
-  (package
-    (name "rust-once-cell")
-    (version "1.20.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "once_cell" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0xb7rw1aqr7pa4z3b00y7786gyf8awx2gca3md73afy76dzgwq8j"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-critical-section" ,rust-critical-section-1)
-        ("rust-parking-lot-core" ,rust-parking-lot-core-0.9)
-        ("rust-portable-atomic" ,rust-portable-atomic-1))
-       #:cargo-development-inputs
-       (("rust-critical-section" ,rust-critical-section-1)
-        ("rust-regex" ,rust-regex-1))))
-    (home-page "https://github.com/matklad/once_cell")
-    (synopsis "Single assignment cells and lazy values")
-    (description
-     "This package provides two new cell-like types, @code{unsync::OnceCell}
-and @code{sync::OnceCell}.  OnceCell might store arbitrary non-copy types, can
-be assigned to at most once and provide direct access to the stored
-contents.")
-    (license (list license:expat license:asl2.0))))
 
 (define-public rust-oorandom-11
   (package
