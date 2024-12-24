@@ -97403,14 +97403,14 @@ attribute that is not in the shared backend crate.")
 (define-public rust-wasm-streams-0.4
   (package
     (name "rust-wasm-streams")
-    (version "0.4.0")
+    (version "0.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "wasm-streams" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0ad17c59xb8fffsnbrqbyqz93hb66nzxhizpii31icb31g4w8pdn"))))
+        (base32 "0rddn007hp6k2cm91mm9y33n79b0jxv0c3znzszcvv67hn6ks18m"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -97420,7 +97420,8 @@ attribute that is not in the shared backend crate.")
         ("rust-wasm-bindgen-futures" ,rust-wasm-bindgen-futures-0.4)
         ("rust-web-sys" ,rust-web-sys-0.3))
        #:cargo-development-inputs
-       (("rust-pin-project" ,rust-pin-project-1)
+       (("rust-gloo-timers" ,rust-gloo-timers-0.3)
+        ("rust-pin-project" ,rust-pin-project-1)
         ("rust-tokio" ,rust-tokio-1)
         ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3)
         ("rust-web-sys" ,rust-web-sys-0.3))))
