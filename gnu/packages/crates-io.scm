@@ -63251,29 +63251,6 @@ configuration file and/or environment variables.")
 compliant email address validation.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-publicsuffix-1
-  (package
-    (inherit rust-publicsuffix-2)
-    (name "rust-publicsuffix")
-    (version "1.5.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "publicsuffix" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0yvmjpywfyypfr17kxiwy6ssykgv8nmcdhfakas6548pfn8a9fiv"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-error-chain" ,rust-error-chain-0.12)
-        ("rust-idna" ,rust-idna-0.2)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-native-tls" ,rust-native-tls-0.2)
-        ("rust-regex" ,rust-regex-1)
-        ("rust-url" ,rust-url-2))))))
-
 (define-public rust-public-api-0.33
   (package
     (name "rust-public-api")
@@ -63335,6 +63312,29 @@ on rustdoc JSON output from the nightly toolchain.")
                                    ("rust-predicates" ,rust-predicates-3)
                                    ("rust-rustdoc-json" ,rust-rustdoc-json-0.8)
                                    ("rust-tempfile" ,rust-tempfile-3))))))
+
+(define-public rust-publicsuffix-1
+  (package
+    (inherit rust-publicsuffix-2)
+    (name "rust-publicsuffix")
+    (version "1.5.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "publicsuffix" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0yvmjpywfyypfr17kxiwy6ssykgv8nmcdhfakas6548pfn8a9fiv"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-error-chain" ,rust-error-chain-0.12)
+        ("rust-idna" ,rust-idna-0.2)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-native-tls" ,rust-native-tls-0.2)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-url" ,rust-url-2))))))
 
 (define-public rust-puffin-0.18
   (package
