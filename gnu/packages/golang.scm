@@ -4603,7 +4603,7 @@ size of the terminal.")
 (define-public go-github-com-charmbracelet-glamour
   (package
     (name "go-github-com-charmbracelet-glamour")
-    (version "0.7.0")
+    (version "0.8.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4612,33 +4612,23 @@ size of the terminal.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "073kyx94r9f0hpjv5c3x9pfdd3dbpyqcy7jhx4yxz0ps25j1a41p"))))
+                "112clivb9nsxlaqvypwcidmk4dkszg7vglb4apia43rdqqj82s6k"))))
     (build-system go-build-system)
     (arguments
      (list
       #:embed-files #~(list ".*\\.xml")
-      #:import-path "github.com/charmbracelet/glamour"
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-tests
-            (lambda _
-              ;; Some tests fail due to different number of '^[0m' symbols at
-              ;; the beginning and the end of paragraphs.  To fix that we
-              ;; re-generate 'readme.test' so the test output will match the
-              ;; 'readme.test' contents.
-              (chmod "src/github.com/charmbracelet/glamour/testdata/readme.test"
-                     #o644)
-              (substitute* "src/github.com/charmbracelet/glamour/glamour_test.go"
-                (("	generate = false")
-                 "	generate = true")))))))
+      #:import-path "github.com/charmbracelet/glamour"))
     (propagated-inputs
      (list go-github-com-alecthomas-chroma-v2
+           go-github-com-charmbracelet-lipgloss
+           go-github-com-charmbracelet-x-ansi
+           go-github-com-charmbracelet-x-exp-golden
            go-github-com-microcosm-cc-bluemonday
            go-github-com-muesli-reflow
            go-github-com-muesli-termenv
-           go-github-com-olekukonko-tablewriter
            go-github-com-yuin-goldmark
-           go-github-com-yuin-goldmark-emoji))
+           go-github-com-yuin-goldmark-emoji
+           go-golang-org-x-term))
     (home-page "https://github.com/charmbracelet/glamour/")
     (synopsis "Write handsome command-line tools with glamour")
     (description "@code{glamour} lets you render markdown documents and
