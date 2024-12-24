@@ -68399,14 +68399,14 @@ decoding, and compression.")
 (define-public rust-rmp-0.8
   (package
     (name "rust-rmp")
-    (version "0.8.12")
+    (version "0.8.14")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rmp" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "083bbqw8ibqp63v6scmaxmy5x8yznj4j0i2n6jjivv9qrjk6163z"))))
+        (base32 "1i1l6dhv7vws5vp0ikakj44fk597xi59g3j6ng1q55x3dz0xg3i2"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
