@@ -5315,14 +5315,14 @@ in the Rust programming language.")
 (define-public rust-rfc7239-0.1
   (package
     (name "rust-rfc7239")
-    (version "0.1.2")
+    (version "0.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rfc7239" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0yc7fbygp4q49026bscj04ijysxkrds71mdvsb8sliyyl68i6s0c"))))
+        (base32 "03rmb1l2l2pqn311wn6qii7ckwnn5vravkzzb2xqb6lfwg8z30ja"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-uncased" ,rust-uncased-0.9))))
