@@ -18431,6 +18431,25 @@ providing the length of bits, expression, reflection, an initial value and a
 final xor value.  It has many built-in CRC functions.")
     (license license:expat)))
 
+(define-public rust-crc-catalog-2
+  (package
+    (name "rust-crc-catalog")
+    (version "2.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "crc-catalog" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1xg7sz82w3nxp1jfn425fvn1clvbzb3zgblmxsyqpys0dckp9lqr"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/akhilles/crc-catalog.git")
+    (synopsis "Catalog of CRC algorithms expressed as simple Rust structs")
+    (description
+     "This package contains a catalog of CRC algorithms (generated from
+http://reveng.sourceforge.net/crc-catalogue) expressed as simple Rust structs.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-crc32fast-1
   (package
     (name "rust-crc32fast")
@@ -18484,25 +18503,6 @@ final xor value.  It has many built-in CRC functions.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0469vp0q9431pqx1236g60if5q3xyxpv4h14smkd45dfzsa6aqjm"))))))
-
-(define-public rust-crc-catalog-2
-  (package
-    (name "rust-crc-catalog")
-    (version "2.4.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "crc-catalog" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1xg7sz82w3nxp1jfn425fvn1clvbzb3zgblmxsyqpys0dckp9lqr"))))
-    (build-system cargo-build-system)
-    (home-page "https://github.com/akhilles/crc-catalog.git")
-    (synopsis "Catalog of CRC algorithms expressed as simple Rust structs")
-    (description
-     "This package contains a catalog of CRC algorithms (generated from
-http://reveng.sourceforge.net/crc-catalogue) expressed as simple Rust structs.")
-    (license (list license:expat license:asl2.0))))
 
 (define-public rust-crc-catalog-1
   (package
