@@ -26451,6 +26451,23 @@ variables.")
 deserialized from environment variables.")
      (license license:expat)))
 
+(define-public rust-equivalent-1
+  (package
+    (name "rust-equivalent")
+    (version "1.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "equivalent" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1malmx5f4lkfvqasz319lq6gb3ddg19yzf9s8cykfsgzdmyq0hsl"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/cuviper/equivalent")
+    (synopsis "Traits for key comparison in maps")
+    (description "Traits for key comparison in maps.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-erased-serde-0.4
   (package
     (name "rust-erased-serde")
@@ -70897,23 +70914,6 @@ the file-system during development.")
         (base32 "0vc7492a6qlq7r899p7vyx5cwiqwkw2pf85mfw5anwr42ccj4l9a"))))
     (arguments
      `(#:cargo-inputs (("rust-walkdir" ,rust-walkdir-2))))))
-
-(define-public rust-equivalent-1
-  (package
-    (name "rust-equivalent")
-    (version "1.0.1")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "equivalent" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1malmx5f4lkfvqasz319lq6gb3ddg19yzf9s8cykfsgzdmyq0hsl"))))
-    (build-system cargo-build-system)
-    (home-page "https://github.com/cuviper/equivalent")
-    (synopsis "Traits for key comparison in maps")
-    (description "Traits for key comparison in maps.")
-    (license (list license:asl2.0 license:expat))))
 
 (define-public rust-ethtool-0.2
   (package
