@@ -15906,30 +15906,6 @@ literals.")
     (description "This package provides compile-time string operations.")
     (license license:expat)))
 
-(define-public rust-const-str-proc-macro-0.5
-  (package
-    (name "rust-const-str-proc-macro")
-    (version "0.5.7")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "const-str-proc-macro" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1gw4kzrrgrsgggi765xkq0svqdjw6rqp97nyyvp3a96dghbhfc1x"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-heck" ,rust-heck-0.4)
-                       ("rust-http" ,rust-http-1)
-                       ("rust-proc-macro2" ,rust-proc-macro2-1)
-                       ("rust-quote" ,rust-quote-1)
-                       ("rust-regex" ,rust-regex-1)
-                       ("rust-syn" ,rust-syn-2))))
-    (home-page "https://github.com/Nugine/const-str")
-    (synopsis "Compile-time string operations")
-    (description "This package provides compile-time string operations.")
-    (license license:expat)))
-
 ;; This package requires features which are unavailable
 ;; on the stable releases of Rust.
 (define-public rust-compiler-builtins-0.1
@@ -16983,6 +16959,30 @@ generation.")
     (description
      "This package provides a sha1 implementation for use in const contexts.")
     (license (list license:asl2.0 license:expat))))
+
+(define-public rust-const-str-proc-macro-0.5
+  (package
+    (name "rust-const-str-proc-macro")
+    (version "0.5.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "const-str-proc-macro" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1gw4kzrrgrsgggi765xkq0svqdjw6rqp97nyyvp3a96dghbhfc1x"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-heck" ,rust-heck-0.4)
+                       ("rust-http" ,rust-http-1)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/Nugine/const-str")
+    (synopsis "Compile-time string operations")
+    (description "This package provides compile-time string operations.")
+    (license license:expat)))
 
 (define-public rust-constant-time-eq-0.3
   (package
