@@ -25869,30 +25869,6 @@ type (e.g. all variants of an enumeration)")
     (description "This package provides a procedural macro to derive Sequence.")
     (license license:bsd-0)))
 
-(define-public rust-enum-map-derive-0.4
-  (package
-    (name "rust-enum-map-derive")
-    (version "0.4.6")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "enum-map-derive" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0mg43p1x90cz604zddk9qzss077v2id04qmmbpa1i7jc637m1i75"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))
-    (home-page "https://gitlab.com/KonradBorowski/enum-map")
-    (synopsis "Macros 1.1 implementation of #[derive(Enum)]")
-    (description "This package provides a macros 1.1 implementation of
-@code{#[derive(Enum)]}.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-enum-map-0.6
   (package
     (name "rust-enum-map")
@@ -25920,6 +25896,30 @@ type (e.g. all variants of an enumeration)")
     (description
      "This package provides a map with C-like enum keys represented internally
 as an array.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-enum-map-derive-0.4
+  (package
+    (name "rust-enum-map-derive")
+    (version "0.4.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "enum-map-derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0mg43p1x90cz604zddk9qzss077v2id04qmmbpa1i7jc637m1i75"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))))
+    (home-page "https://gitlab.com/KonradBorowski/enum-map")
+    (synopsis "Macros 1.1 implementation of #[derive(Enum)]")
+    (description "This package provides a macros 1.1 implementation of
+@code{#[derive(Enum)]}.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-enum-primitive-0.1
