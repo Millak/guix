@@ -56877,6 +56877,30 @@ crate.")
 implementations.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-paw-structopt-1
+  (package
+    (name "rust-paw-structopt")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "paw-structopt" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1iwg83xqjpfgpy8wrq173cy7zgkyxfryd230sh34f5qsjdx7zap4"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; use of undeclared crate or module `paw`
+       #:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-0.4)
+        ("rust-quote" ,rust-quote-0.6)
+        ("rust-structopt" ,rust-structopt-0.2)
+        ("rust-syn" ,rust-syn-0.15))))
+    (home-page "https://github.com/rust-cli/paw")
+    (synopsis "Structopt support for the Paw crate")
+    (description "This package provides Structopt support for the Paw crate.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-pcap-1
   (package
     (name "rust-pcap")
@@ -78423,30 +78447,6 @@ designed for @code{immutable.rs}.")
     (description "This create provides a pre-allocated storage for a uniform
 data type.")
     (license license:expat)))
-
-(define-public rust-paw-structopt-1
-  (package
-    (name "rust-paw-structopt")
-    (version "1.0.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "paw-structopt" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1iwg83xqjpfgpy8wrq173cy7zgkyxfryd230sh34f5qsjdx7zap4"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:tests? #f      ; use of undeclared crate or module `paw`
-       #:cargo-inputs
-       (("rust-proc-macro2" ,rust-proc-macro2-0.4)
-        ("rust-quote" ,rust-quote-0.6)
-        ("rust-structopt" ,rust-structopt-0.2)
-        ("rust-syn" ,rust-syn-0.15))))
-    (home-page "https://github.com/rust-cli/paw")
-    (synopsis "Structopt support for the Paw crate")
-    (description "This package provides Structopt support for the Paw crate.")
-    (license (list license:expat license:asl2.0))))
 
 ;; TODO: Unbundle sleef.
 (define-public rust-sleef-sys-0.1
