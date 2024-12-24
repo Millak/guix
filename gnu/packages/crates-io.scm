@@ -14048,33 +14048,6 @@ interoperation between crates in Rust.")
                        ("rust-cargo-metadata" ,rust-cargo-metadata-0.17)
                        ("rust-clap" ,rust-clap-4))))))
 
-(define-public rust-clap-complete-command-0.5
-  (package
-    (name "rust-clap-complete-command")
-    (version "0.5.1")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "clap_complete_command" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0gcsj6ls8y0jpjp5172gdqwx5zj6gm4wdgrqysglr3d73qvrad0q"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-carapace-spec-clap" ,rust-carapace-spec-clap-0.1)
-        ("rust-clap" ,rust-clap-4)
-        ("rust-clap-complete" ,rust-clap-complete-4)
-        ("rust-clap-complete-fig" ,rust-clap-complete-fig-4)
-        ("rust-clap-complete-nushell" ,rust-clap-complete-nushell-0.1))
-       #:cargo-development-inputs (("rust-clap" ,rust-clap-4))))
-    (home-page "https://github.com/nihaals/clap-complete-command")
-    (synopsis
-     "Reduces boilerplate for adding a shell completion command to Clap")
-    (description "This package reduces boilerplate for adding a shell completion
-command to Clap.")
-    (license license:expat)))
-
 (define-public rust-clap-4
   (package
     (name "rust-clap")
@@ -14277,6 +14250,33 @@ Command Line Argument Parser.")
      "This package provides generation of shell completion scripts
 for programs written with Clap.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-clap-complete-command-0.5
+  (package
+    (name "rust-clap-complete-command")
+    (version "0.5.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "clap_complete_command" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0gcsj6ls8y0jpjp5172gdqwx5zj6gm4wdgrqysglr3d73qvrad0q"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-carapace-spec-clap" ,rust-carapace-spec-clap-0.1)
+        ("rust-clap" ,rust-clap-4)
+        ("rust-clap-complete" ,rust-clap-complete-4)
+        ("rust-clap-complete-fig" ,rust-clap-complete-fig-4)
+        ("rust-clap-complete-nushell" ,rust-clap-complete-nushell-0.1))
+       #:cargo-development-inputs (("rust-clap" ,rust-clap-4))))
+    (home-page "https://github.com/nihaals/clap-complete-command")
+    (synopsis
+     "Reduces boilerplate for adding a shell completion command to Clap")
+    (description "This package reduces boilerplate for adding a shell completion
+command to Clap.")
+    (license license:expat)))
 
 (define-public rust-clap-complete-fig-4
   (package
