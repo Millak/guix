@@ -56746,6 +56746,29 @@ relative path from a provided base directory path to the provided
 path.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-pathfinder-geometry-0.5
+  (package
+    (name "rust-pathfinder-geometry")
+    (version "0.5.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "pathfinder_geometry" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32 "1lssir0s1cmrpzzrk49jm31nkssh2j715gryww6700x79rxpwyqb"))))
+    (build-system cargo-build-system)
+    (arguments
+      `(#:skip-build? #t
+        #:cargo-inputs
+        (("rust-log" ,rust-log-0.4)
+         ("rust-pathfinder-simd" ,rust-pathfinder-simd-0.5))))
+    (home-page "https://github.com/servo/pathfinder")
+    (synopsis "Basic SIMD-accelerated geometry/linear algebra")
+    (description "This package provides basic SIMD-accelerated geometry/linear
+algebra.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-pathsearch-0.2
   (package
     (name "rust-pathsearch")
@@ -78312,29 +78335,6 @@ designed for @code{immutable.rs}.")
     (description "This create provides a pre-allocated storage for a uniform
 data type.")
     (license license:expat)))
-
-(define-public rust-pathfinder-geometry-0.5
-  (package
-    (name "rust-pathfinder-geometry")
-    (version "0.5.1")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "pathfinder_geometry" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-          (base32 "1lssir0s1cmrpzzrk49jm31nkssh2j715gryww6700x79rxpwyqb"))))
-    (build-system cargo-build-system)
-    (arguments
-      `(#:skip-build? #t
-        #:cargo-inputs
-        (("rust-log" ,rust-log-0.4)
-         ("rust-pathfinder-simd" ,rust-pathfinder-simd-0.5))))
-    (home-page "https://github.com/servo/pathfinder")
-    (synopsis "Basic SIMD-accelerated geometry/linear algebra")
-    (description "This package provides basic SIMD-accelerated geometry/linear
-algebra.")
-    (license (list license:expat license:asl2.0))))
 
 (define-public rust-pathfinder-simd-0.5
   (package
