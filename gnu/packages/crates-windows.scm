@@ -1259,25 +1259,6 @@ color in a Windows console.")
                                    ("rust-serde-derive" ,rust-serde-derive-1)
                                    ("rust-tempfile" ,rust-tempfile-3))))))
 
-(define-public rust-winreg-0.10
-  (package
-    (inherit rust-winreg-0.50)
-    (name "rust-winreg")
-    (version "0.10.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "winreg" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "17c6h02z88ijjba02bnxi5k94q5cz490nf3njh9yypf8fbig9l40"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-chrono" ,rust-chrono-0.4)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-winapi" ,rust-winapi-0.3))))))
-
 (define-public rust-windows-0.58
   (package
     (name "rust-windows")
@@ -3159,6 +3140,25 @@ windows crate.")
               (sha256
                (base32
                 "17z8q25pd3dp6b84qm9nlayd3ym78sbryxlqmgcxvz9vpmy8qarz"))))))
+
+(define-public rust-winreg-0.10
+  (package
+    (inherit rust-winreg-0.50)
+    (name "rust-winreg")
+    (version "0.10.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "winreg" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "17c6h02z88ijjba02bnxi5k94q5cz490nf3njh9yypf8fbig9l40"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-chrono" ,rust-chrono-0.4)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-winapi" ,rust-winapi-0.3))))))
 
 (define-public rust-winreg-0.8
   (package
