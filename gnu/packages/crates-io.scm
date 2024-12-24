@@ -68427,14 +68427,14 @@ MessagePack format.")
 (define-public rust-rmp-serde-1
   (package
     (name "rust-rmp-serde")
-    (version "1.1.2")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rmp-serde" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "12i5aglyni58hlq19pi58z1z6a1hv6l04p9y8ms8l3cqx9gaizmz"))))
+        (base32 "1nylmh7w2vpa1bwrnx1jfp2l4yz6i5qrmpic5zll166gfyj9kraj"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; use of undeclared crate or module `rmpv`
@@ -68443,8 +68443,8 @@ MessagePack format.")
         ("rust-rmp" ,rust-rmp-0.8)
         ("rust-serde" ,rust-serde-1))
        #:cargo-development-inputs
-       (("rust-serde-bytes" ,rust-serde-bytes-0.11)
-        ("rust-serde-derive" ,rust-serde-derive-1))))
+       (("rust-serde" ,rust-serde-1)
+        ("rust-serde-bytes" ,rust-serde-bytes-0.11))))
     (home-page "https://github.com/3Hren/msgpack-rust")
     (synopsis "Serde bindings for RMP")
     (description "This crate provides Serde bindings for RMP.")
