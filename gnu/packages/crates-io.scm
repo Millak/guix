@@ -96758,26 +96758,22 @@ result.")
 (define-public rust-wasm-bindgen-macro-0.2
   (package
     (name "rust-wasm-bindgen-macro")
-    (version "0.2.91")
+    (version "0.2.99")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "wasm-bindgen-macro" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1va6dilw9kcnvsg5043h5b9mwc5sgq0lyhj9fif2n62qsgigj2mk"))))
+        (base32 "1znlcrk5bvisr3vscwlqkdby959n3sb367zgdzpjwjd7v4giiiic"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f      ; 'Async blocks are unstable'
+     `(#:tests? #f      ; use of undeclared crate or module `web_sys`
        #:cargo-inputs
        (("rust-quote" ,rust-quote-1)
-        ("rust-wasm-bindgen-macro-support"
-         ,rust-wasm-bindgen-macro-support-0.2))
+        ("rust-wasm-bindgen-macro-support" ,rust-wasm-bindgen-macro-support-0.2))
        #:cargo-development-inputs
-       (("rust-trybuild" ,rust-trybuild-1)
-        ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
-        ("rust-wasm-bindgen-futures" ,rust-wasm-bindgen-futures-0.4)
-        ("rust-web-sys" ,rust-web-sys-0.3))))
+       (("rust-trybuild" ,rust-trybuild-1))))
     (home-page "https://rustwasm.github.io/wasm-bindgen/")
     (synopsis "Definition of the @code{#[wasm_bindgen]} attribute")
     (description
