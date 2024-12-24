@@ -98154,34 +98154,6 @@ against paths and directory trees.")
 for terminal and other window-less applications.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-wl-clipboard-rs-0.7
-  (package
-    (inherit rust-wl-clipboard-rs-0.8)
-    (name "rust-wl-clipboard-rs")
-    (version "0.7.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "wl-clipboard-rs" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1n8sg981h3d08hnnlrsgs81w2qz3n8a5ml0jcsgnapdpzcyk06lq"))))
-    (arguments
-     `(#:tests? #f  ; Failed to create a server socket.
-       #:cargo-inputs (("rust-derive-new" ,rust-derive-new-0.5)
-                       ("rust-libc" ,rust-libc-0.2)
-                       ("rust-log" ,rust-log-0.4)
-                       ("rust-nix" ,rust-nix-0.24)
-                       ("rust-os-pipe" ,rust-os-pipe-1)
-                       ("rust-tempfile" ,rust-tempfile-3)
-                       ("rust-thiserror" ,rust-thiserror-1)
-                       ("rust-tree-magic-mini" ,rust-tree-magic-mini-3)
-                       ("rust-wayland-client" ,rust-wayland-client-0.29)
-                       ("rust-wayland-protocols" ,rust-wayland-protocols-0.29))
-       #:cargo-development-inputs
-       (("rust-wayland-protocols" ,rust-wayland-protocols-0.29)
-        ("rust-wayland-server" ,rust-wayland-server-0.29))))))
-
 (define-public rust-web-time-1
   (package
     (name "rust-web-time")
@@ -99001,6 +98973,34 @@ combinators library.")
                        ("rust-is-terminal" ,rust-is-terminal-0.4)
                        ("rust-memchr" ,rust-memchr-2)
                        ("rust-terminal-size" ,rust-terminal-size-0.2))))))
+
+(define-public rust-wl-clipboard-rs-0.7
+  (package
+    (inherit rust-wl-clipboard-rs-0.8)
+    (name "rust-wl-clipboard-rs")
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wl-clipboard-rs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1n8sg981h3d08hnnlrsgs81w2qz3n8a5ml0jcsgnapdpzcyk06lq"))))
+    (arguments
+     `(#:tests? #f  ; Failed to create a server socket.
+       #:cargo-inputs (("rust-derive-new" ,rust-derive-new-0.5)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-nix" ,rust-nix-0.24)
+                       ("rust-os-pipe" ,rust-os-pipe-1)
+                       ("rust-tempfile" ,rust-tempfile-3)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-tree-magic-mini" ,rust-tree-magic-mini-3)
+                       ("rust-wayland-client" ,rust-wayland-client-0.29)
+                       ("rust-wayland-protocols" ,rust-wayland-protocols-0.29))
+       #:cargo-development-inputs
+       (("rust-wayland-protocols" ,rust-wayland-protocols-0.29)
+        ("rust-wayland-server" ,rust-wayland-server-0.29))))))
 
 (define-public rust-wl-clipboard-rs-0.4
   (package
