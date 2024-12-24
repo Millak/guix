@@ -28636,6 +28636,27 @@ prime field implementations in rust.")
                        ("rust-quote" ,rust-quote-1)
                        ("rust-syn" ,rust-syn-1))))))
 
+(define-public rust-field-offset-0.3
+  (package
+    (name "rust-field-offset")
+    (version "0.3.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "field-offset" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0zq5sssaa2ckmcmxxbly8qgz3sxpb8g1lwv90sdh1z74qif2gqiq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-memoffset" ,rust-memoffset-0.9)
+        ("rust-rustc-version" ,rust-rustc-version-0.4))))
+    (home-page "https://github.com/Diggsey/rust-field-offset")
+    (synopsis "Safe pointer-to-member implementation")
+    (description "This package provides safe pointer-to-member implementation.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-figment-0.10
   (package
     (name "rust-figment")
@@ -28877,27 +28898,6 @@ creation time on Windows before Rust 1.75.")
      "Filetree abstraction based on a sorted path list, supports key based
 navigation events, folding, scrolling and more.")
     (license license:expat)))
-
-(define-public rust-field-offset-0.3
-  (package
-    (name "rust-field-offset")
-    (version "0.3.6")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "field-offset" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0zq5sssaa2ckmcmxxbly8qgz3sxpb8g1lwv90sdh1z74qif2gqiq"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-memoffset" ,rust-memoffset-0.9)
-        ("rust-rustc-version" ,rust-rustc-version-0.4))))
-    (home-page "https://github.com/Diggsey/rust-field-offset")
-    (synopsis "Safe pointer-to-member implementation")
-    (description "This package provides safe pointer-to-member implementation.")
-    (license (list license:expat license:asl2.0))))
 
 (define-public rust-find-crate-0.6
   (package
