@@ -17627,6 +17627,27 @@ contents of the OS-level clipboard.")
 numbers using the CORDIC method.")
     (license license:bsd-3)))
 
+(define-public rust-core-affinity-0.8
+  (package
+    (name "rust-core-affinity")
+    (version "0.8.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "core_affinity" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0113rfzyvjpl1camxnrf92pn9vakhn9zqvgir0wgrqawcgsr4a32"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2)
+                       ("rust-num-cpus" ,rust-num-cpus-1)
+                       ("rust-winapi" ,rust-winapi-0.3))))
+    (home-page "https://github.com/Elzair/core_affinity_rs")
+    (synopsis "Manage CPU affinities")
+    (description "This package manages CPU affinities.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-core-error-0.0.0
   (package
     (name "rust-core-error")
@@ -17773,27 +17794,6 @@ in @code{no_std}.  Alloc support is optional.")
         (sha256
          (base32 "1wzzy5iazdk5caadxvjfwrd312rbg7a55a1zpmsdrhk3kfpa77r3"))))
     (arguments `(#:cargo-inputs (("rust-memchr" ,rust-memchr-2))))))
-
-(define-public rust-core-affinity-0.8
-  (package
-    (name "rust-core-affinity")
-    (version "0.8.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "core_affinity" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0113rfzyvjpl1camxnrf92pn9vakhn9zqvgir0wgrqawcgsr4a32"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2)
-                       ("rust-num-cpus" ,rust-num-cpus-1)
-                       ("rust-winapi" ,rust-winapi-0.3))))
-    (home-page "https://github.com/Elzair/core_affinity_rs")
-    (synopsis "Manage CPU affinities")
-    (description "This package manages CPU affinities.")
-    (license (list license:expat license:asl2.0))))
 
 (define-public rust-core-affinity-0.5
   (package
