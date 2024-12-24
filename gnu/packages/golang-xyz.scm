@@ -6545,6 +6545,37 @@ word-splitting rules.")
       (home-page "https://github.com/kballard/go-shellquote")
       (license license:expat))))
 
+(define-public go-github-com-keybase-dbus
+  (package
+    (name "go-github-com-keybase-dbus")
+    (version "0.0.0-20220506165403-5aa21ea2c23a")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/keybase/dbus")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ihicxqq685jy47dw522b5c7b8vcikay0xph6y55jcas3m3zj1lj"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f; tests require running D-bus
+      #:import-path "github.com/keybase/dbus"))
+    (home-page "https://github.com/keybase/dbus")
+    (synopsis "Native Go bindings for D-Bus")
+    (description
+     "Package dbus implements bindings to the D-Bus message bus system.
+Features:
+@itemize
+@item complete native implementation of the D-Bus message protocol
+@item go-like API (channels for signals / asynchronous method calls,
+Goroutine-safe connections)
+@item subpackages that help with the introspection / property interfaces
+@end itemize")
+    (license license:bsd-2)))
+
 (define-public go-github-com-keybase-go-ps
   (package
     (name "go-github-com-keybase-go-ps")
