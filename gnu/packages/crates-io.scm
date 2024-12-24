@@ -79273,6 +79273,27 @@ clone.")
     (description "Snafu aims to be an ergonomic error handling library.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-snafu-0.7
+  (package
+    (inherit rust-snafu-0.8)
+    (name "rust-snafu")
+    (version "0.7.5")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "snafu" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1mj2j2gfbf8mm1hr02zrbrqrh2zp01f61xgkx0lpln2w0ankgpp4"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-backtrace" ,rust-backtrace-0.3)
+        ("rust-doc-comment" ,rust-doc-comment-0.3)
+        ("rust-futures" ,rust-futures-0.3)
+        ("rust-futures-core" ,rust-futures-core-0.3)
+        ("rust-pin-project" ,rust-pin-project-1)
+        ("rust-snafu-derive" ,rust-snafu-derive-0.7))))))
+
 (define-public rust-snafu-derive-0.8
   (package
     (name "rust-snafu-derive")
@@ -79332,27 +79353,6 @@ package provides derive macros.")
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))))))
-
-(define-public rust-snafu-0.7
-  (package
-    (inherit rust-snafu-0.8)
-    (name "rust-snafu")
-    (version "0.7.5")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "snafu" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1mj2j2gfbf8mm1hr02zrbrqrh2zp01f61xgkx0lpln2w0ankgpp4"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-backtrace" ,rust-backtrace-0.3)
-        ("rust-doc-comment" ,rust-doc-comment-0.3)
-        ("rust-futures" ,rust-futures-0.3)
-        ("rust-futures-core" ,rust-futures-core-0.3)
-        ("rust-pin-project" ,rust-pin-project-1)
-        ("rust-snafu-derive" ,rust-snafu-derive-0.7))))))
 
 (define-public rust-snap-1
   (package
