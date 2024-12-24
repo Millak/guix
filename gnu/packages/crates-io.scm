@@ -98182,39 +98182,6 @@ for terminal and other window-less applications.")
        (("rust-wayland-protocols" ,rust-wayland-protocols-0.29)
         ("rust-wayland-server" ,rust-wayland-server-0.29))))))
 
-(define-public rust-wl-clipboard-rs-0.4
-  (package
-    (inherit rust-wl-clipboard-rs-0.7)
-    (name "rust-wl-clipboard-rs")
-    (version "0.4.1")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "wl-clipboard-rs" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (patches (search-patches "rust-wl-clipboard-rs-newer-wl.patch"))
-        (sha256
-          (base32 "1252cm67pkrr6ik5ys2cdyfr2zzw6ds7v351i1cmyi94yiv01l13"))))
-    (arguments
-      `(#:skip-build? #t
-        #:cargo-inputs
-        (("rust-derive-new" ,rust-derive-new-0.5)
-         ("rust-derive-more" ,rust-derive-more-0.99)
-         ("rust-exitfailure" ,rust-exitfailure-0.5)
-         ("rust-failure" ,rust-failure-0.1)
-         ("rust-libc" ,rust-libc-0.2)
-         ("rust-log" ,rust-log-0.4)
-         ("rust-mime-guess" ,rust-mime-guess-2)
-         ("rust-nix" ,rust-nix-0.18)
-         ("rust-os-pipe" ,rust-os-pipe-0.9)
-         ("rust-stderrlog" ,rust-stderrlog-0.4)
-         ("rust-structopt" ,rust-structopt-0.3)
-         ("rust-tempfile" ,rust-tempfile-3)
-         ("rust-tree-magic" ,rust-tree-magic-0.2)
-         ("rust-wayland-client" ,rust-wayland-client-0.28)
-         ("rust-wayland-commons" ,rust-wayland-commons-0.28)
-         ("rust-wayland-protocols" ,rust-wayland-protocols-0.28))))))
-
 (define-public rust-web-time-1
   (package
     (name "rust-web-time")
@@ -99034,6 +99001,39 @@ combinators library.")
                        ("rust-is-terminal" ,rust-is-terminal-0.4)
                        ("rust-memchr" ,rust-memchr-2)
                        ("rust-terminal-size" ,rust-terminal-size-0.2))))))
+
+(define-public rust-wl-clipboard-rs-0.4
+  (package
+    (inherit rust-wl-clipboard-rs-0.7)
+    (name "rust-wl-clipboard-rs")
+    (version "0.4.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "wl-clipboard-rs" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (patches (search-patches "rust-wl-clipboard-rs-newer-wl.patch"))
+        (sha256
+          (base32 "1252cm67pkrr6ik5ys2cdyfr2zzw6ds7v351i1cmyi94yiv01l13"))))
+    (arguments
+      `(#:skip-build? #t
+        #:cargo-inputs
+        (("rust-derive-new" ,rust-derive-new-0.5)
+         ("rust-derive-more" ,rust-derive-more-0.99)
+         ("rust-exitfailure" ,rust-exitfailure-0.5)
+         ("rust-failure" ,rust-failure-0.1)
+         ("rust-libc" ,rust-libc-0.2)
+         ("rust-log" ,rust-log-0.4)
+         ("rust-mime-guess" ,rust-mime-guess-2)
+         ("rust-nix" ,rust-nix-0.18)
+         ("rust-os-pipe" ,rust-os-pipe-0.9)
+         ("rust-stderrlog" ,rust-stderrlog-0.4)
+         ("rust-structopt" ,rust-structopt-0.3)
+         ("rust-tempfile" ,rust-tempfile-3)
+         ("rust-tree-magic" ,rust-tree-magic-0.2)
+         ("rust-wayland-client" ,rust-wayland-client-0.28)
+         ("rust-wayland-commons" ,rust-wayland-commons-0.28)
+         ("rust-wayland-protocols" ,rust-wayland-protocols-0.28))))))
 
 (define-public rust-wmidi-3
   (package
