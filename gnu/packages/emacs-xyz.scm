@@ -18918,16 +18918,16 @@ structure, or any other pattern.")
 (define-public emacs-tmr
   (package
     (name "emacs-tmr")
-    (version "0.4.0")
+    (version "1.0.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://git.sr.ht/~protesilaos/tmr")
+             (url "https://github.com/protesilaos/tmr")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1vz9zfqap221baiy41wpxph33g6h2plnanzgpjs0wk8dz1fpwfky"))))
+        (base32 "1xhnr3hiw6h1qbcazd4b76q7299wd50z8v5wfzdakmdc1bfl9vmv"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -18954,6 +18954,7 @@ structure, or any other pattern.")
                             (string-append #$output "/share/info")))))))
     (native-inputs (list texinfo))
     (inputs (list ffmpeg sound-theme-freedesktop))
+    (propagated-inputs (list emacs-compat))
     (home-page "https://protesilaos.com/emacs/tmr/")
     (synopsis "Set timers using a convenient notation")
     (description
