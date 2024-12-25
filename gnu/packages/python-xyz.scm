@@ -37401,6 +37401,27 @@ Python, with static types.")
     (description "This package provides typing stubs for requests.")
     (license license:asl2.0)))
 
+(define-public python-types-simplejson
+  (package
+    (name "python-types-simplejson")
+    (version "3.19.0.20241221")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "types_simplejson" version))
+       (sha256
+        (base32 "0w7wvr84d7bj27hc2bsyh69s9d84zpkdhsibbmsibba91zdzjjhi"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f)) ; no tests in PyPI archive, no release or tags on GitHub
+    (native-inputs
+     (list python-setuptools python-wheel))
+    (home-page "https://github.com/python/typeshed")
+    (synopsis "Typing stubs for simplejson")
+    (description "Typing stubs for simplejson.")
+    (license license:asl2.0)))
+
 (define-public python-types-setuptools
   (package
     (name "python-types-setuptools")
