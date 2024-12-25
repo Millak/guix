@@ -82438,8 +82438,46 @@ automated acceptance tests for systems and software.")
 another project's @code{build.rs} module.")
     (license license:expat-0)))
 
+(define-public rust-subplotlib-0.11
+  (package
+    (name "rust-subplotlib")
+    (version "0.11.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "subplotlib" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "12a748llbc9ywqcybn8n9bplk1dpkxvxb7x1s0ylxqdfcmj93ns1"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Not all files included.
+       #:cargo-inputs (("rust-base64" ,rust-base64-0.22)
+                       ("rust-culpa" ,rust-culpa-1)
+                       ("rust-filetime" ,rust-filetime-0.2)
+                       ("rust-fs2" ,rust-fs2-0.4)
+                       ("rust-glob" ,rust-glob-0.3)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-remove-dir-all" ,rust-remove-dir-all-0.8)
+                       ("rust-shell-words" ,rust-shell-words-1)
+                       ("rust-state" ,rust-state-0.5)
+                       ("rust-subplot-build" ,rust-subplot-build-0.11)
+                       ("rust-subplotlib-derive" ,rust-subplotlib-derive-0.11)
+                       ("rust-tempfile" ,rust-tempfile-3)
+                       ("rust-time" ,rust-time-0.3)
+                       ("rust-unescape" ,rust-unescape-0.1))
+       #:cargo-development-inputs (("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://subplot.tech/")
+    (synopsis "Utility functions and types for @code{subplot codegen}")
+    (description
+     "Utility functions and types for @code{subplot codegen} generated Rust
+based test suites.  Relies on @code{subplotlib-derive} for associated macros.")
+    (license license:expat-0)))
+
 (define-public rust-subplotlib-0.7
   (package
+    (inherit rust-subplotlib-0.11)
     (name "rust-subplotlib")
     (version "0.7.1")
     (source (origin
@@ -82449,7 +82487,6 @@ another project's @code{build.rs} module.")
               (sha256
                (base32
                 "0cbsrsk9pkyhs3fqzmxgf19x2bhr22pic5wqwvphv3sk4nc1ysiw"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; Not all files included.
        #:cargo-inputs
@@ -82469,13 +82506,7 @@ another project's @code{build.rs} module.")
         ("rust-time" ,rust-time-0.3)
         ("rust-unescape" ,rust-unescape-0.1))
        #:cargo-development-inputs
-       (("rust-serde-json" ,rust-serde-json-1))))
-    (home-page "https://subplot.tech/")
-    (synopsis "Utility functions and types for @code{subplot codegen}")
-    (description
-     "Utility functions and types for @code{subplot codegen} generated Rust
-based test suites.  Relies on @code{subplotlib-derive} for associated macros.")
-    (license license:expat-0)))
+       (("rust-serde-json" ,rust-serde-json-1))))))
 
 (define-public rust-subplotlib-derive-0.11
   (package
