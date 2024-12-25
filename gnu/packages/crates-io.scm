@@ -23724,27 +23724,41 @@ Diesel.")
      "This crate provides all necessary tools for comparing word sequences.")
     (license license:expat)))
 
+(define-public rust-diffs-0.5
+  (package
+    (name "rust-diffs")
+    (version "0.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "diffs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "01f8bp77kgahgvr3s2igmnmsxynjklq830lmp2wp2jyph6bnq4gz"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:tests? #f))    ; unresolved imports `myers`, `Diff`, `Replace`
+    (home-page "https://nest.pijul.com/pijul/diffs")
+    (synopsis "Diff algorithms, also called longest common subsequence")
+    (description
+     "This package provides a number of diff algorithms, also called longest
+common subsequence.  The diff algorithms include Myer's diff and Patience
+diff.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-diffs-0.3
   (package
+    (inherit rust-diffs-0.5)
     (name "rust-diffs")
     (version "0.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "diffs" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "036sqycmir4bbl4016jprsyjq4hicc31r68dyqadmc8ac9pk55d1"))))
-    (build-system cargo-build-system)
-    (home-page "https://nest.pijul.com/pijul_org/pijul")
-    (synopsis "Diff algorithms, also called longest common subsequence")
-    (description
-     "This package provides a number of diff algorithms, also called longest
-common subsequence.  The diff algorithms include Myer's diff and Patience
-diff.")
-    (license (list license:asl2.0 license:expat))))
+        (base32 "036sqycmir4bbl4016jprsyjq4hicc31r68dyqadmc8ac9pk55d1"))))
+    (arguments `())))
 
 (define-public rust-dircpy-0.3
   (package
