@@ -7822,6 +7822,43 @@ design abstracts away all the internals of the WebSocket protocol but still
 makes them accessible for those who wants full control over the network.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-tungstenite-0.23
+  (package
+    (inherit rust-tungstenite-0.24)
+    (name "rust-tungstenite")
+    (version "0.23.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tungstenite" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1j6rxlcdky8lrwkl1qsyvnmlr38033vch11vsi7rklkywkhjqbkf"))))
+    (arguments
+     (list #:cargo-inputs
+           (list rust-byteorder-1
+                 rust-bytes-1
+                 rust-data-encoding-2
+                 rust-http-1
+                 rust-httparse-1
+                 rust-log-0.4
+                 rust-native-tls-0.2
+                 rust-rand-0.8
+                 rust-rustls-0.23
+                 rust-rustls-native-certs-0.7
+                 rust-rustls-pki-types-1
+                 rust-sha1-0.10
+                 rust-thiserror-1
+                 rust-url-2
+                 rust-utf-8-0.7
+                 rust-webpki-roots-0.26)
+           #:cargo-development-inputs
+           (list rust-criterion-0.5
+                 rust-env-logger-0.10
+                 rust-input-buffer-0.5
+                 rust-rand-0.8
+                 rust-socket2-0.5)))))
+
 (define-public rust-tungstenite-0.21
   (package
     (inherit rust-tungstenite-0.24)
