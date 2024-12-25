@@ -67,14 +67,14 @@
 (define-public asymptote
   (package
     (name "asymptote")
-    (version "2.91")
+    (version "2.95")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/asymptote/"
                            version "/asymptote-" version ".src.tgz"))
        (sha256
-        (base32 "0562lfkh9i9zkqyizl6qzggrxhylnihi30lwadkbggplrdgb48za"))
+        (base32 "1rvqmjp6gich2fvxgl2d31d84z31zkkd4abmh1dvrpdn5k84yq0m"))
        (modules '((guix build utils)))
        (snippet
         ;; Remove bundled RapidJSON.
@@ -152,19 +152,6 @@
               (substitute* (list "Makefile.in")
                 (("\\$\\(CMAKE\\)" all)
                  (string-append all " -DUSE_SYSTEM_RAPIDJSON=ON")))))
-          (add-after 'unpack 'fix-includes
-            (lambda _
-              (substitute* (find-files "." "\\.in$")
-                (("#include <primitives.h>") "#include \"primitives.h\""))
-              (substitute* (find-files "prc" "\\.h$")
-                (("#include \"config.h\"") "#include \"../config.h\""))
-              (substitute* "prc/oPRCFile.h"
-                (("#include \"xstream.h\"") "#include \"../xstream.h\""))
-              (substitute* "v3dfile.h"
-                (("#include <prc/oPRCFile.h>") "#include \"prc/oPRCFile.h\""))
-              (substitute* "LspCpp/src/lsp/ParentProcessWatcher.cpp"
-                (("#include <boost/process.hpp>" all)
-                 (string-append "#include <algorithm>\n" all)))))
           (replace 'bootstrap
             (lambda _
               (invoke "autoreconf" "-vfi")))
