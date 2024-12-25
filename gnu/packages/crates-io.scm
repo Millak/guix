@@ -43972,20 +43972,17 @@ explosion.")
 (define-public rust-loom-0.4
   (package
     (name "rust-loom")
-    (version "0.4.0")
+    (version "0.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "loom" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1941ji91nvriqqkgzlx285kq38zg74sw68gb2x4pnjbfcfs76k6l"))))
+        (base32 "0c1m2j1zy7ig6didj1n29x32768cz03nvi7bwb0fhakj5w5nb9i7"))))
     (build-system cargo-build-system)
     (arguments
-     ;; FIXME: build phase fails with the error: "the
-     ;; `#[track_caller]` attribute is an experimental feature".
-     `(#:skip-build? #true
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-futures-util" ,rust-futures-util-0.3)
         ("rust-generator" ,rust-generator-0.6)
