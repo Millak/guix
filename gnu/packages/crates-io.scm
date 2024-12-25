@@ -43933,19 +43933,19 @@ consumption.")
 (define-public rust-loom-0.7
   (package
     (name "rust-loom")
-    (version "0.7.1")
+    (version "0.7.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "loom" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0xcibbxcxm8fxq543xinpxn8ykjk378dwr59rzm89jgvvmq5s13y"))))
+        (base32 "1jpszf9qxv8ydpsm2h9vcyvxvyxcfkhmmfbylzd4gfbc0k40v7j1"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-cfg-if" ,rust-cfg-if-1)
-        ("rust-generator" ,rust-generator-0.7)
+        ("rust-generator" ,rust-generator-0.8)
         ("rust-pin-utils" ,rust-pin-utils-0.1)
         ("rust-scoped-tls" ,rust-scoped-tls-1)
         ("rust-serde" ,rust-serde-1)
