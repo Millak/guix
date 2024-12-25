@@ -43424,14 +43424,14 @@ Linux userspace APIs.")
   (package
     (inherit rust-linux-raw-sys-0.4)
     (name "rust-linux-raw-sys")
-    (version "0.3.7")
+    (version "0.3.8")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "linux-raw-sys" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "17s7qr5h82blrxy29014zzhr30jcxcjc8r16v2p31rzcfal7xsgc"))))
+                "068mbigb3frrxvbi5g61lx25kksy98f2qgkvc4xg8zxznwp98lzg"))))
     (arguments
      `(#:cargo-inputs
        (("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
