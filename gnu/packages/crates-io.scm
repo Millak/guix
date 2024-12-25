@@ -14908,7 +14908,7 @@ descriptors.")
 contains all syscalls and related types.")
     (license license:bsd-2)))
 
-(define-public rust-cloudabi-0.0
+(define-public rust-cloudabi-0.0.3
   (package
     (inherit rust-cloudabi-0.1)
     (name "rust-cloudabi")
@@ -56163,7 +56163,7 @@ synchronization primitives.")
      `(#:cargo-inputs
        (("rust-backtrace" ,rust-backtrace-0.3)
         ("rust-cfg-if" ,rust-cfg-if-0.1)
-        ("rust-cloudabi" ,rust-cloudabi-0.0)
+        ("rust-cloudabi" ,rust-cloudabi-0.0.3)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-petgraph" ,rust-petgraph-0.5)
         ("rust-redox-syscall" ,rust-redox-syscall-0.1)
@@ -56187,7 +56187,7 @@ synchronization primitives.")
      `(#:cargo-inputs
        (("rust-backtrace" ,rust-backtrace-0.3)
         ("rust-cfg-if" ,rust-cfg-if-0.1)
-        ("rust-cloudabi" ,rust-cloudabi-0.0)
+        ("rust-cloudabi" ,rust-cloudabi-0.0.3)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-petgraph" ,rust-petgraph-0.4)
         ("rust-redox-syscall" ,rust-redox-syscall-0.1)
@@ -56214,7 +56214,7 @@ synchronization primitives.")
      `(#:cargo-inputs
        (("rust-backtrace" ,rust-backtrace-0.3)
         ("rust-cfg-if" ,rust-cfg-if-0.1)
-        ("rust-cloudabi" ,rust-cloudabi-0.0)
+        ("rust-cloudabi" ,rust-cloudabi-0.0.3)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-petgraph" ,rust-petgraph-0.4)
         ("rust-rand" ,rust-rand-0.6)
@@ -66393,7 +66393,7 @@ useful types and distributions, and some randomness-related algorithms.")
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
-       (("rust-cloudabi" ,rust-cloudabi-0.0)
+       (("rust-cloudabi" ,rust-cloudabi-0.0.3)
         ("rust-fuchsia-cprng" ,rust-fuchsia-cprng-0.1)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-log" ,rust-log-0.4)
@@ -66895,7 +66895,7 @@ generators.")
           "0wahppm0s64gkr2vmhcgwc0lij37in1lgfxg5rbgqlz0l5vgcxbv"))))
     (arguments
      `(#:cargo-inputs
-       (("rust-cloudabi" ,rust-cloudabi-0.0)
+       (("rust-cloudabi" ,rust-cloudabi-0.0.3)
         ("rust-fuchsia-cprng" ,rust-fuchsia-cprng-0.1)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-log" ,rust-log-0.4)
