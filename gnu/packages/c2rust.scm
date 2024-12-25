@@ -181,13 +181,12 @@
         (base32 "0b2liaxbqksgfbsmr6hacdia6czlq7m0pyqx3l2rrcfcnb2ksgv0"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs (("rust-print-bytes" ,rust-print-bytes-1))))
+     `(#:cargo-inputs (("rust-print-bytes" ,rust-print-bytes-1))))
     (home-page "https://c2rust.com/")
-    (synopsis
-     "C2Rust utilities related to build paths, primarily at build time")
+    (synopsis "C2Rust utilities related to build paths, primarily at build time")
     (description
-     "This package provides C2Rust utilities related to build paths, primarily at build time.")
+     "This package provides C2Rust utilities related to build paths, primarily
+at build time.")
     (license license:bsd-3)))
 
 ;; Note: It has expat license.
