@@ -21186,7 +21186,7 @@ encoding algorithms to do fuzzy string matching.")
 (define-public python-pdfminer-six
   (package
     (name "python-pdfminer-six")
-    (version "20231228")
+    (version "20240706")
     ;; There are no tests in the PyPI tarball.
     (source
      (origin
@@ -21196,7 +21196,7 @@ encoding algorithms to do fuzzy string matching.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1anyr0gm7amwls8qifflql1viz5rq6q95lfwcg43v3180h4w8wrd"))))
+        (base32 "0vdwps38q2414lwjz266rabxrcw2a5s1pgxyjsffiifi010cd3k9"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:phases
@@ -21208,7 +21208,7 @@ encoding algorithms to do fuzzy string matching.")
     (propagated-inputs
      (list python-charset-normalizer python-cryptography))
     (native-inputs
-     (list python-pytest))
+     (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/pdfminer/pdfminer.six")
     (synopsis "PDF parser and analyzer")
     (description "@code{pdfminer.six} is a community maintained fork of
