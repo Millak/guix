@@ -40611,14 +40611,14 @@ language tags.")
 (define-public rust-lazy-regex-3
   (package
     (name "rust-lazy-regex")
-    (version "3.1.0")
+    (version "3.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "lazy-regex" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0k3sjdcr13j119kgz1h7f1k2mnl787ig9ag436ymipxgjm2vw4jx"))))
+        (base32 "1nmzfxkaycxrv61cb272img06pdvkywp8qh1aasyrivbgv4l33ld"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
