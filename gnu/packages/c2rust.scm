@@ -44,13 +44,13 @@
         (base32 "0w63rp66g6axkymxd16avxp3gjnphy3mg9938gsh52p4aak83nq5"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
                        ("rust-syn" ,rust-syn-1))))
     (home-page "https://c2rust.com/")
     (synopsis "Rust AST builder support crate for the C2Rust project")
     (description
-     "This package provides Rust AST builder support crate for the C2Rust project.")
+     "This package provides the rust AST builder support crate for the
+C2Rust project.")
     (license license:bsd-3)))
 
 (define-public rust-c2rust-ast-exporter-0.18
