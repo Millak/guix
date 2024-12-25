@@ -72854,7 +72854,8 @@ rustc compiler.")
         ("rust-tempdir" ,rust-tempdir-0.3))))))
 
 (define-public rust-rustfix-0.4
-  (package/inherit rust-rustfix-0.5
+  (package
+    (inherit rust-rustfix-0.5)
     (name "rust-rustfix")
     (version "0.4.6")
     (source
