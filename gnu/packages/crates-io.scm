@@ -30681,6 +30681,36 @@ duplication.")
      "This package provides cross-platform file locks and file duplication.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-fs4-0.8
+  (package
+    (name "rust-fs4")
+    (version "0.8.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "fs4" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1y0m3pk9iq16b61p3g643234bfy0kdbyjymxczklafy2fsn81qgp"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; `#![feature]` may not be used on the stable release channel
+       #:cargo-inputs (("rust-async-std" ,rust-async-std-1)
+                       ("rust-rustix" ,rust-rustix-0.38)
+                       ("rust-smol" ,rust-smol-2)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-windows-sys" ,rust-windows-sys-0.52))
+       #:cargo-development-inputs (("rust-async-std" ,rust-async-std-1)
+                                   ("rust-libc" ,rust-libc-0.2)
+                                   ("rust-smol-potat" ,rust-smol-potat-1)
+                                   ("rust-tempdir" ,rust-tempdir-0.3)
+                                   ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/al8n/fs4-rs")
+    (synopsis "Pure Rust cross-platform file locks")
+    (description
+     "This package provides a no libc, pure Rust cross-platform file locks.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-fsio-0.4
   (package
     (name "rust-fsio")
