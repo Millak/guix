@@ -38297,19 +38297,19 @@ ABI compatible with @code{std} and @code{lbc}.")
 (define-public rust-ipnet-2
   (package
     (name "rust-ipnet")
-    (version "2.7.2")
+    (version "2.10.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "ipnet" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "0zxmnidy5qha1i384fzjfxcsi0qvkbcp730h26q4z3dg54hyxdhj"))))
+        (base32 "025p9wm94q1w2l13hbbr4cbmfygly3a2ag8g5s618l2jhq4l3hnx"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-schemars" ,rust-schemars-0.8)
+       (("rust-heapless" ,rust-heapless-0.5)
+        ("rust-schemars" ,rust-schemars-0.8)
         ("rust-serde" ,rust-serde-1))
        #:cargo-development-inputs
        (("rust-serde-test" ,rust-serde-test-1))))
