@@ -82364,8 +82364,58 @@ easier in Rust.")
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))))))
 
+(define-public rust-subplot-0.11
+  (package
+    (name "rust-subplot")
+    (version "0.11.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "subplot" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1a1x5yxkqmhpkwakzxm1r8wsbb58xfap0mphq71pj35f7mz1b0zm"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--"
+                            "--skip=diagrams::DotMarkup"
+                            "--skip=diagrams::PlantumlMarkup")
+       #:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-base64" ,rust-base64-0.22)
+                       ("rust-clap" ,rust-clap-4)
+                       ("rust-env-logger" ,rust-env-logger-0.11)
+                       ("rust-file-diff" ,rust-file-diff-1)
+                       ("rust-getopts" ,rust-getopts-0.2)
+                       ("rust-git-testament" ,rust-git-testament-0.2)
+                       ("rust-html-escape" ,rust-html-escape-0.2)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-line-col" ,rust-line-col-0.2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-marked-yaml" ,rust-marked-yaml-0.7)
+                       ("rust-pikchr" ,rust-pikchr-0.1)
+                       ("rust-pulldown-cmark" ,rust-pulldown-cmark-0.12)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-roadmap" ,rust-roadmap-0.6)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-slug" ,rust-slug-0.1)
+                       ("rust-tempfile" ,rust-tempfile-3)
+                       ("rust-tempfile-fast" ,rust-tempfile-fast-0.3)
+                       ("rust-tera" ,rust-tera-1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-time" ,rust-time-0.3)
+                       ("rust-walkdir" ,rust-walkdir-2))))
+    (home-page "https://subplot.tech/")
+    (synopsis "Tools for automated acceptance tests")
+    (description
+     "This package provides tools for specifying, documenting, and implementing
+automated acceptance tests for systems and software.")
+    (license license:expat-0)))
+
 (define-public rust-subplot-0.7
   (package
+    (inherit rust-subplot-0.11)
     (name "rust-subplot")
     (version "0.7.1")
     (source (origin
@@ -82375,7 +82425,6 @@ easier in Rust.")
               (sha256
                (base32
                 "1la2vsjlxarld2w7farzlbmiy2hvascmd8bhi29ssm816m571jc8"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
        (list "--release" "--"
@@ -82406,13 +82455,7 @@ easier in Rust.")
         ("rust-tera" ,rust-tera-1)
         ("rust-thiserror" ,rust-thiserror-1)
         ("rust-time" ,rust-time-0.3)
-        ("rust-walkdir" ,rust-walkdir-2))))
-    (home-page "https://subplot.tech/")
-    (synopsis "Tools for automated acceptance tests")
-    (description
-     "This package provides tools for specifying, documenting, and implementing
-automated acceptance tests for systems and software.")
-    (license license:expat-0)))
+        ("rust-walkdir" ,rust-walkdir-2))))))
 
 (define-public rust-subplot-build-0.11
   (package
