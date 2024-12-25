@@ -82890,11 +82890,13 @@ standard library.")
      (origin
        (method url-fetch)
        (uri (crate-uri "synstructure" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "03r1lydbf3japnlpc4wka7y90pmz1i0danaj3f9a7b431akdlszk"))))
+        (base32 "03r1lydbf3japnlpc4wka7y90pmz1i0danaj3f9a7b431akdlszk"))
+       (modules '((guix build utils)))
+       (snippet #~(substitute* "src/lib.rs"
+                    (("non_upper_case_globals )")
+                     "non_upper_case_globals)")))))
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -82903,14 +82905,8 @@ standard library.")
         ("rust-syn" ,rust-syn-1)
         ("rust-quote" ,rust-quote-1))
        #:cargo-development-inputs
-       (("rust-synstructure-test-traits" ,rust-synstructure-test-traits-0.1))
-       #:phases
-       (modify-phases %standard-phases
-         ;; https://github.com/mystor/synstructure/issues/51
-         (add-after 'unpack 'fix-test
-           (lambda _
-             (substitute* "src/lib.rs"
-               (("non_upper_case_globals )") "non_upper_case_globals)")))))))))
+       (("rust-synstructure-test-traits"
+         ,rust-synstructure-test-traits-0.1))))))
 
 (define-public rust-synstructure-test-traits-0.1
   (package
