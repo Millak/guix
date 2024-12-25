@@ -62915,8 +62915,34 @@ trait of proptest.")
      "This package provides Procedural macros for the proptest crate.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-prost-0.13
+  (package
+    (name "rust-prost")
+    (version "0.13.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "prost" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1v22ds00ixxga07m09w4vqvylpg1xpbmjp5333vcrr1h89nfy3rc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bytes" ,rust-bytes-1)
+                       ("rust-prost-derive" ,rust-prost-derive-0.13))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.5)
+                                   ("rust-proptest" ,rust-proptest-1)
+                                   ("rust-rand" ,rust-rand-0.8))))
+    (home-page "https://github.com/tokio-rs/prost")
+    (synopsis "Protocol Buffers implementation for the Rust language")
+    (description
+     "This package provides a Protocol Buffers implementation for the Rust
+language.")
+    (license license:asl2.0)))
+
 (define-public rust-prost-0.12
   (package
+    (inherit rust-prost-0.13)
     (name "rust-prost")
     (version "0.12.3")
     (source
@@ -62926,7 +62952,6 @@ trait of proptest.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0jmrhlb4jkiylz72xb14vlkfbmlq0jwv7j20ini9harhvaf2hv0l"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bytes" ,rust-bytes-1)
                        ("rust-prost-derive" ,rust-prost-derive-0.12))
@@ -62934,13 +62959,7 @@ trait of proptest.")
                                    ("rust-env-logger" ,rust-env-logger-0.10)
                                    ("rust-log" ,rust-log-0.4)
                                    ("rust-proptest" ,rust-proptest-1)
-                                   ("rust-rand" ,rust-rand-0.8))))
-    (home-page "https://github.com/tokio-rs/prost")
-    (synopsis "Protocol Buffers implementation for the Rust language")
-    (description
-     "This package provides a Protocol Buffers implementation for the Rust
-language.")
-    (license license:asl2.0)))
+                                   ("rust-rand" ,rust-rand-0.8))))))
 
 (define-public rust-prost-0.11
   (package
