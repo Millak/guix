@@ -63157,8 +63157,31 @@ the most part, users of @code{prost} shouldn't need to interact with
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))))))
 
+(define-public rust-prost-types-0.13
+  (package
+    (name "rust-prost-types")
+    (version "0.13.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "prost-types" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1z78yxzxfhxy7kgzrq3mcbv70jqksbs1mhpb799r67m6p9b1wbyc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-prost" ,rust-prost-0.13))
+       #:cargo-development-inputs (("rust-proptest" ,rust-proptest-1))))
+    (home-page "https://github.com/tokio-rs/prost")
+    (synopsis "Prost definitions of Protocol Buffers well known types")
+    (description
+     "Prost definitions of Protocol Buffers well known types.  See the
+Protobuf reference for more information about well known types.")
+    (license license:asl2.0)))
+
 (define-public rust-prost-types-0.12
   (package
+    (inherit rust-prost-types-0.13)
     (name "rust-prost-types")
     (version "0.12.3")
     (source
@@ -63168,16 +63191,9 @@ the most part, users of @code{prost} shouldn't need to interact with
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "03j73llzljdxv9cdxp4m3vb9j3gh4y24rkbx48k3rx6wkvsrhf0r"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-prost" ,rust-prost-0.12))
-       #:cargo-development-inputs (("rust-proptest" ,rust-proptest-1))))
-    (home-page "https://github.com/tokio-rs/prost")
-    (synopsis "Prost definitions of Protocol Buffers well known types")
-    (description
-     "Prost definitions of Protocol Buffers well known types.  See the
-Protobuf reference for more information about well known types.")
-    (license license:asl2.0)))
+       #:cargo-development-inputs (("rust-proptest" ,rust-proptest-1))))))
 
 (define-public rust-prost-types-0.10
   (package
