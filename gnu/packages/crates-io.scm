@@ -75470,7 +75470,7 @@ formats:
 (define-public rust-serde-derive-1
   (package
     (name "rust-serde-derive")
-    (version "1.0.215")
+    (version "1.0.216")
     (source
      (origin
        (method url-fetch)
@@ -75478,7 +75478,7 @@ formats:
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1h2nswy0rmzblil38h12wxsgni1ik63rk22wy19g48v9hrpqc7md"))))
+         "0pm5bm4354n40ir12bbs829arlqwjrw0wmzd4xk5r1kkpzdmky26"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
