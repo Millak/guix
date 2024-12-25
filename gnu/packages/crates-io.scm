@@ -14149,7 +14149,7 @@ Argument Parser.")
        (("rust-ansi-term" ,rust-ansi-term-0.12)
         ("rust-atty" ,rust-atty-0.2)
         ("rust-bitflags" ,rust-bitflags-1)
-        ("rust-clippy" ,rust-clippy-0.0)
+        ("rust-clippy" ,rust-clippy-0.0.302)
         ("rust-strsim" ,rust-strsim-0.8)
         ("rust-term-size" ,rust-term-size-0.3)
         ("rust-textwrap" ,rust-textwrap-0.11)
@@ -14787,7 +14787,7 @@ the OS-level clipboard.")
 colorization.")
     (license license:expat)))
 
-(define-public rust-clippy-0.0
+(define-public rust-clippy-0.0.302
   (package
     (name "rust-clippy")
     (version "0.0.302")
@@ -25510,7 +25510,7 @@ experimentation.")
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-ascii" ,rust-ascii-1)
-        ("rust-clippy" ,rust-clippy-0.0))
+        ("rust-clippy" ,rust-clippy-0.0.302))
        #:cargo-development-inputs
        (("rust-lazy-static" ,rust-lazy-static-1))))
     (home-page "https://github.com/tormol/encode_unicode")
@@ -40889,7 +40889,7 @@ requires non-const function calls to be computed.")
          "0m8gw7dn30i0zjjpjdyf6pc16c34nl71lpv461mix50x3p70h3c3"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-clippy" ,rust-clippy-0.0))))
+     `(#:cargo-inputs (("rust-clippy" ,rust-clippy-0.0.302))))
     (home-page "https://github.com/indiv0/lazycell")
     (synopsis "Lazily filled Cell struct")
     (description
@@ -43395,7 +43395,7 @@ pairs in insertion order.")
     (arguments
      `(#:tests? #f  ; thread 'test_into_iter_drop' panicked
        #:cargo-inputs
-       (("rust-clippy" ,rust-clippy-0.0)
+       (("rust-clippy" ,rust-clippy-0.0.302)
         ("rust-heapsize" ,rust-heapsize-0.3)
         ("rust-serde" ,rust-serde-0.9)
         ("rust-serde-test" ,rust-serde-test-0.9))))))
@@ -43416,7 +43416,7 @@ pairs in insertion order.")
     (arguments
      `(#:tests? #f      ; Tests don't compile correctly.
        #:cargo-inputs
-       (("rust-clippy" ,rust-clippy-0.0)
+       (("rust-clippy" ,rust-clippy-0.0.302)
         ("rust-serde" ,rust-serde-0.8)
         ("rust-serde-test" ,rust-serde-test-0.8))))))
 
@@ -57124,7 +57124,7 @@ implementations.")
     (arguments
      `(#:tests? #f  ; can't find crate for `futures`
        #:cargo-inputs
-       (("rust-clippy" ,rust-clippy-0.0)
+       (("rust-clippy" ,rust-clippy-0.0.302)
         ("rust-futures" ,rust-futures-0.1)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-mio" ,rust-mio-0.6)
@@ -75370,7 +75370,7 @@ formats:
          "1j4ajipn0sf4ya0crgcb94s848qp7mfc35n6d0q2rf8rk5skzbcx"))))
     (arguments
      `(#:cargo-development-inputs
-       (("rust-clippy" ,rust-clippy-0.0))
+       (("rust-clippy" ,rust-clippy-0.0.302))
        #:tests? #f))))
 
 (define-public rust-serde-aux-4
@@ -75761,7 +75761,7 @@ standard formatting APIs.")
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
-       (("rust-clippy" ,rust-clippy-0.0)
+       (("rust-clippy" ,rust-clippy-0.0.302)
         ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-linked-hash-map" ,rust-linked-hash-map-0.3)
         ("rust-num-traits" ,rust-num-traits-0.1)
@@ -86566,7 +86566,7 @@ template language.")
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
-       (("rust-clippy" ,rust-clippy-0.0)
+       (("rust-clippy" ,rust-clippy-0.0.302)
         ("rust-kernel32-sys" ,rust-kernel32-sys-0.2)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-winapi" ,rust-winapi-0.3))))
@@ -99978,7 +99978,7 @@ Read/Write streams as well as low-level in-memory encoding and decoding.")
          "14m9dzwb8fb05f4jjb4nqp49rxd9c5vcmwpv3a04d2y5iphncqz6"))))
     (arguments
      `(#:cargo-inputs
-       (("rust-clippy" ,rust-clippy-0.0)
+       (("rust-clippy" ,rust-clippy-0.0.302)
         ("rust-linked-hash-map" ,rust-linked-hash-map-0.3))))))
 
 (define-public rust-yaml-rust2-0.9

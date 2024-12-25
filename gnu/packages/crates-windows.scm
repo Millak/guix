@@ -3247,7 +3247,7 @@ windows crate.")
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
-       (("rust-clippy" ,rust-clippy-0.0)
+       (("rust-clippy" ,rust-clippy-0.0.302)
         ("rust-serde" ,rust-serde-1)
         ("rust-winapi" ,rust-winapi-0.3))))))
 

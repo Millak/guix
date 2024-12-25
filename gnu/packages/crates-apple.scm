@@ -402,7 +402,7 @@ extension of blocks.")
     (arguments
       `(#:skip-build? #t
         #:cargo-inputs
-        (("rust-clippy" ,rust-clippy-0.0)
+        (("rust-clippy" ,rust-clippy-0.0.302)
          ("rust-commoncrypto-sys" ,rust-commoncrypto-sys-0.2))))
     (home-page "https://github.com/malept/rust-commoncrypto")
     (synopsis "Idiomatic Rust wrappers for Mac OS X's CommonCrypto library")
@@ -427,7 +427,7 @@ idiomatic wrappers for Mac OS X's CommonCrypto library.")
     (arguments
       `(#:skip-build? #t                ;requires the Mac OS library
         #:cargo-inputs
-        (("rust-clippy" ,rust-clippy-0.0)
+        (("rust-clippy" ,rust-clippy-0.0.302)
          ("rust-libc" ,rust-libc-0.2))))
     (home-page "https://github.com/malept/rust-commoncrypto")
     (synopsis "FFI bindings to Mac OS X's CommonCrypto library")

@@ -4820,7 +4820,7 @@ which speaks Serde.")
     (arguments
      `(#:cargo-inputs
        (("rust-buf-redux" ,rust-buf-redux-0.8)
-        ("rust-clippy" ,rust-clippy-0.0)
+        ("rust-clippy" ,rust-clippy-0.0.302)
         ("rust-httparse" ,rust-httparse-1)
         ("rust-hyper" ,rust-hyper-0.10)
         ("rust-iron" ,rust-iron-0.6)
@@ -4861,7 +4861,7 @@ client and server.")
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-buf-redux" ,rust-buf-redux-0.8)
-        ("rust-clippy" ,rust-clippy-0.0)
+        ("rust-clippy" ,rust-clippy-0.0.302)
         ("rust-httparse" ,rust-httparse-1)
         ("rust-hyper" ,rust-hyper-0.10)
         ("rust-iron" ,rust-iron-0.6)
@@ -5781,7 +5781,7 @@ Web.")
                 "0gjk7ch31a3kgdc39kj4zqinf10yqaf717wanh9kwwbbwg430m7g"))))
     (arguments
      (list #:skip-build? #t
-           #:cargo-inputs `(("rust-clippy" ,rust-clippy-0.0)
+           #:cargo-inputs `(("rust-clippy" ,rust-clippy-0.0.302)
                             ("rust-serde" ,rust-serde-1)
                             ("rust-serde-json" ,rust-serde-json-1))))))
 
