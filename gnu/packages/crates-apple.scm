@@ -57,7 +57,7 @@
     (arguments
      `(#:skip-build? #t
        #:cargo-development-inputs
-       (("rust-objc-test-utils" ,rust-objc-test-utils-0.0))))
+       (("rust-objc-test-utils" ,rust-objc-test-utils-0.0.2))))
     (home-page "https://github.com/SSheldon/rust-block")
     (synopsis "Rust interface for Apple's C language extension of blocks")
     (description "This package provides a rust interface for Apple's C language
@@ -1152,7 +1152,7 @@ Foundation framework.")
      `(#:skip-build? #t         ; Needs gcc-objc
        #:cargo-inputs (("rust-cc" ,rust-cc-1))))))
 
-(define-public rust-objc-test-utils-0.0
+(define-public rust-objc-test-utils-0.0.2
   (package
     (name "rust-objc-test-utils")
     (version "0.0.2")
