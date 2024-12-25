@@ -15958,6 +15958,43 @@ Rust compiler.")
      "This package provides running completions for your program.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-completest-nu-0.4
+  (package
+    (name "rust-completest-nu")
+    (version "0.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "completest-nu" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "08vcq18m92xlsfyaikks1ql3ipj42gqa2psnr9hmmnlcnkr1pk7z"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (substitute* "Cargo.toml"
+                   ;; Allow any version of nushell we have packaged:
+                   (("0\\.88\\.1") "*")
+                   ;; Why this version of reedline specifically?
+                   ;; Make sure it matches the version used by nushell.
+                   (("0\\.27\\.1") "*"))))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-completest" ,rust-completest-0.4)
+                       ("rust-dunce" ,rust-dunce-1)
+                       ("rust-nu-cli" ,rust-nu-cli-0.91)
+                       ("rust-nu-cmd-lang" ,rust-nu-cmd-lang-0.91)
+                       ("rust-nu-command" ,rust-nu-command-0.91)
+                       ("rust-nu-parser" ,rust-nu-parser-0.91)
+                       ("rust-nu-protocol" ,rust-nu-protocol-0.91)
+                       ("rust-nu-test-support" ,rust-nu-test-support-0.91)
+                       ("rust-reedline" ,rust-reedline-0.30))))
+    (native-inputs (list pkg-config))
+    (inputs (list openssl))
+    (home-page "https://github.com/assert-rs/completest")
+    (synopsis "Run completions for your program")
+    (description "This package provides run completions for your program.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-completest-pty-0.5
   (package
     (name "rust-completest-pty")
