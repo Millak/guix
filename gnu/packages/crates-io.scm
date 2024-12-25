@@ -63791,23 +63791,23 @@ compliant email address validation.")
 the pulldown-cmark project.")
     (license license:expat)))
 
-(define-public rust-pulldown-cmark-to-cmark-10
+(define-public rust-pulldown-cmark-to-cmark-18
   (package
     (name "rust-pulldown-cmark-to-cmark")
-    (version "10.0.4")
+    (version "18.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "pulldown-cmark-to-cmark" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0gc366cmd5jxal9m95l17rvqsm4dn62lywc8v5gwq8vcjvhyd501"))))
+        (base32 "0l06qfh9gb97hz4jrzlxajzyv7ry7d0lnsdifnv2x7xlvhxbc0hy"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-pulldown-cmark" ,rust-pulldown-cmark-0.9))
+     `(#:cargo-inputs (("rust-pulldown-cmark" ,rust-pulldown-cmark-0.12))
        #:cargo-development-inputs
-       (("rust-indoc" ,rust-indoc-1)
-        ("rust-pretty-assertions" ,rust-pretty-assertions-0.7))))
+       (("rust-indoc" ,rust-indoc-2)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1))))
     (home-page "https://github.com/Byron/pulldown-cmark-to-cmark")
     (synopsis
      "Convert pulldown-cmark Events back to the string they were parsed from")
@@ -63820,6 +63820,24 @@ This library takes great pride in supporting everything that
 @code{pulldown-cmark} supports, including tables and footnotes and codeblocks
 in codeblocks, while assuring quality with a powerful test suite.")
     (license license:asl2.0)))
+
+(define-public rust-pulldown-cmark-to-cmark-10
+  (package
+    (inherit rust-pulldown-cmark-to-cmark-18)
+    (name "rust-pulldown-cmark-to-cmark")
+    (version "10.0.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pulldown-cmark-to-cmark" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0gc366cmd5jxal9m95l17rvqsm4dn62lywc8v5gwq8vcjvhyd501"))))
+    (arguments
+     `(#:cargo-inputs (("rust-pulldown-cmark" ,rust-pulldown-cmark-0.9))
+       #:cargo-development-inputs
+       (("rust-indoc" ,rust-indoc-1)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-0.7))))))
 
 (define-public rust-pulldown-cmark-to-cmark-7
   (package
