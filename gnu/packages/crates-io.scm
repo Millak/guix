@@ -72628,7 +72628,8 @@ rustc compiler.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-rustc-version-0.3
-  (package/inherit rust-rustc-version-0.4
+  (package
+    (inherit rust-rustc-version-0.4)
     (name "rust-rustc-version")
     (version "0.3.3")
     (source
