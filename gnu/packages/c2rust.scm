@@ -68,8 +68,7 @@
        (modules '((guix build utils)))))
     (build-system cargo-build-system)
     (native-inputs
-     `(("cmake" ,cmake)
-       ("clang" ,clang)))
+     (list cmake-minimal clang))
     (inputs
      `(("llvm" ,llvm)
        ("tinycbor-src" ,%tinycbor-source)))
@@ -82,7 +81,6 @@
              (copy-recursively (assoc-ref inputs "tinycbor-src")
                                "/tmp/tinycbor")
              (setenv "GUIX_TINYCBOR_SOURCE_DIR" "/tmp/tinycbor"))))
-       #:skip-build? #f
        #:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.65)
                        ("rust-c2rust-build-paths" ,rust-c2rust-build-paths-0.18)
                        ("rust-clang-sys" ,rust-clang-sys-1)
@@ -95,7 +93,8 @@
     (home-page "https://c2rust.com/")
     (synopsis "Clang AST extraction API for use in the C2Rust project")
     (description
-     "This package provides Clang AST extraction API for use in the C2Rust project.")
+     "This package provides the Clang AST extraction API for use in the
+C2Rust project.")
     (license license:bsd-3)))
 
 (define-public rust-c2rust-ast-printer-0.18
