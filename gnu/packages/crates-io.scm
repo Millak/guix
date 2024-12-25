@@ -96836,6 +96836,28 @@ updated when the crate version changes.")
         ("rust-toml" ,rust-toml-0.4)
         ("rust-url" ,rust-url-1))))))
 
+(define-public rust-version-track-0.1
+  (package
+    (name "rust-version-track")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "version-track" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0bz1b96iqh4z4r90xc0ya5gmywps072g5w6q1vrv2qsfdgnzz6kd"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; `pointer_structural_match` converted into hard error
+       #:cargo-inputs (("rust-uuid" ,rust-uuid-1))))
+    (home-page "https://github.com/MitMaro/version-track")
+    (synopsis "Library used to track changes to complex data")
+    (description
+     "This package provides a library used to track changes to complex data,
+when direct comparison or hashing is too expensive.")
+    (license license:isc)))
+
 (define-public rust-versions-6
   (package
     (name "rust-versions")
