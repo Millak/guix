@@ -79261,8 +79261,48 @@ crate.")
      "This package provides the Unix terminal drain and formatter for slog.")
     (license (list license:mpl2.0 license:expat license:asl2.0))))
 
+(define-public rust-sloggers-2
+  (package
+    (name "rust-sloggers")
+    (version "2.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sloggers" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "16yvn2v8vs7bsg11vnma03ml6grrwfm3qqikwrdd8b5q70kjq1km"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-libflate" ,rust-libflate-2)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-slog" ,rust-slog-2)
+                       ("rust-slog-async" ,rust-slog-async-2)
+                       ("rust-slog-json" ,rust-slog-json-2)
+                       ("rust-slog-kvfilter" ,rust-slog-kvfilter-0.7)
+                       ("rust-slog-scope" ,rust-slog-scope-4)
+                       ("rust-slog-stdlog" ,rust-slog-stdlog-4)
+                       ("rust-slog-term" ,rust-slog-term-2)
+                       ("rust-trackable" ,rust-trackable-1)
+                       ("rust-winapi" ,rust-winapi-0.3)
+                       ("rust-windows-acl" ,rust-windows-acl-0.3))
+       #:cargo-development-inputs (("rust-clap" ,rust-clap-4)
+                                   ("rust-log" ,rust-log-0.4)
+                                   ("rust-serdeconv" ,rust-serdeconv-0.4)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/sile/sloggers")
+    (synopsis "Frequently used slog loggers and convenient functions")
+    (description
+     "This library provides frequently used slog loggers and convenient functions.")
+    (license license:expat)))
+
 (define-public rust-sloggers-1
   (package
+    (inherit rust-sloggers-2)
     (name "rust-sloggers")
     (version "1.0.1")
     (source
@@ -79272,7 +79312,6 @@ crate.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0sbdflswmivykx5sx1f2hip905lvcgi733d0ry879wx6g983f7gh"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -79290,13 +79329,7 @@ crate.")
        #:cargo-development-inputs
        (("rust-clap" ,rust-clap-2)
         ("rust-serdeconv" ,rust-serdeconv-0.4)
-        ("rust-tempfile" ,rust-tempfile-3))))
-    (home-page "https://github.com/sile/sloggers")
-    (synopsis "Frequently used slog loggers and convenient functions")
-    (description
-     "This library provides frequently used slog loggers and convenient
-functions.")
-    (license license:expat)))
+        ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-slotmap-1
   (package
