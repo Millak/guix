@@ -39690,7 +39690,7 @@ libraries.")
        #:cargo-development-inputs
        (("rust-lazy-static" ,rust-lazy-static-1))))))
 
-(define-public rust-jni-glue-0.0
+(define-public rust-jni-glue-0.0.10
   (package
     (name "rust-jni-glue")
     (version "0.0.10")
@@ -49460,7 +49460,7 @@ general elements and for numerics.")
        #:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-1)
         ("rust-jni" ,rust-jni-0.19)
-        ("rust-jni-glue" ,rust-jni-glue-0.0)
+        ("rust-jni-glue" ,rust-jni-glue-0.0.10)
         ("rust-jni-sys" ,rust-jni-sys-0.3)
         ("rust-ndk-sys" ,rust-ndk-sys-0.4)
         ("rust-num-enum" ,rust-num-enum-0.5)
@@ -49483,7 +49483,7 @@ general elements and for numerics.")
      `(#:skip-build? #t     ; Android only
        #:cargo-inputs (("rust-bitflags" ,rust-bitflags-1)
                        ("rust-jni" ,rust-jni-0.18)
-                       ("rust-jni-glue" ,rust-jni-glue-0.0)
+                       ("rust-jni-glue" ,rust-jni-glue-0.0.10)
                        ("rust-jni-sys" ,rust-jni-sys-0.3)
                        ("rust-ndk-sys" ,rust-ndk-sys-0.3)
                        ("rust-num-enum" ,rust-num-enum-0.5)
@@ -49506,7 +49506,7 @@ general elements and for numerics.")
        #:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-1)
         ("rust-jni" ,rust-jni-0.18)
-        ("rust-jni-glue" ,rust-jni-glue-0.0)
+        ("rust-jni-glue" ,rust-jni-glue-0.0.10)
         ("rust-jni-sys" ,rust-jni-sys-0.3)
         ("rust-ndk-sys" ,rust-ndk-sys-0.2)
         ("rust-num-enum" ,rust-num-enum-0.5)
@@ -49528,7 +49528,7 @@ general elements and for numerics.")
      `(#:skip-build? #true              ;XXX: Android only
        #:cargo-inputs
        (("rust-jni" ,rust-jni-0.14)
-        ("rust-jni-glue" ,rust-jni-glue-0.0)
+        ("rust-jni-glue" ,rust-jni-glue-0.0.10)
         ("rust-jni-sys" ,rust-jni-sys-0.3)
         ("rust-ndk-sys" ,rust-ndk-sys-0.2)
         ("rust-num-enum" ,rust-num-enum-0.4)
