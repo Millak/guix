@@ -75803,13 +75803,15 @@ formats:
         (base32 "0gj17p1w5hyi69fngv55dai4nb4fmdij76gqwyb9if9qfixzq3d7"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs (("rust-serde" ,rust-serde-1)
-                       ("rust-serde-bytes" ,rust-serde-bytes-0.11))))
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1)
+                       ("rust-serde-bytes" ,rust-serde-bytes-0.11))
+       #:cargo-development-inputs (("rust-serde-derive" ,rust-serde-derive-1)
+                                   ("rust-serde-test" ,rust-serde-test-1))))
     (home-page "https://github.com/toby/serde-bencode")
     (synopsis "Serde backed Bencode encoding/decoding library for Rust.")
     (description
-     "This package provides a Serde backed Bencode encoding/decoding library for Rust.")
+     "This package provides a Serde backed Bencode encoding/decoding library
+for Rust.")
     (license license:expat)))
 
 (define-public rust-serde-big-array-0.5
