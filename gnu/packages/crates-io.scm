@@ -50173,23 +50173,23 @@ implementation of the netlink protocol.")
 (define-public rust-netlink-sys-0.8
   (package
     (name "rust-netlink-sys")
-    (version "0.8.5")
+    (version "0.8.7")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "netlink-sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "04842pp457q7g14d6a61j70k60zg2wrbz0cmda3ka0dcww4bywb4"))))
+        (base32 "08xxx1ng7fxkvqrh81y95hni5mnir1ksg5xzj4vbj32rf2m07j8n"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
-       #:cargo-inputs (("rust-async-io" ,rust-async-io-1)
+       #:cargo-inputs (("rust-async-io" ,rust-async-io-2)
                        ("rust-bytes" ,rust-bytes-1)
                        ("rust-futures" ,rust-futures-0.3)
                        ("rust-libc" ,rust-libc-0.2)
                        ("rust-log" ,rust-log-0.4)
-                       ("rust-mio" ,rust-mio-0.8)
+                       ("rust-mio" ,rust-mio-1)
                        ("rust-tokio" ,rust-tokio-1))
        #:cargo-development-inputs
        (("rust-async-std" ,rust-async-std-1)
