@@ -43444,14 +43444,14 @@ Linux userspace APIs.")
   (package
     (inherit rust-linux-raw-sys-0.3)
     (name "rust-linux-raw-sys")
-    (version "0.1.3")
+    (version "0.1.4")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "linux-raw-sys" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0zxlp1c4h7kkc4ldgcj5cn7dzynvlksg8y0s9czn2v1sjvc0i7wg"))))
+                "1926520si5wkn4m6iz6ka97ya5q1dgr8ib3fd705fscfgixgflgh"))))
     (arguments
      `(#:cargo-development-inputs
        (("rust-libc" ,rust-libc-0.2)
