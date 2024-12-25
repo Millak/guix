@@ -13860,6 +13860,26 @@ interoperation between crates in Rust.")
      "This package provides a stream abstraction designed for use with nom.")
     (license license:expat)))
 
+(define-public rust-claims-0.7
+  (package
+    (name "rust-claims")
+    (version "0.7.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "claims" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1da6z2r4zz4fw4a69286s54jzr7g7sz3dspq0xiw6mk432z5p6dn"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-autocfg" ,rust-autocfg-1))))
+    (home-page "https://github.com/Anders429/claims")
+    (synopsis "Additional assertion macros for testing")
+    (description
+     "This package provides additional assertion macros for testing.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-clang-ast-0.1
   (package
     (name "rust-clang-ast")
