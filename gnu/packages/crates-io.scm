@@ -88162,14 +88162,14 @@ handle Unicode characters correctly.")
 (define-public rust-thiserror-impl-2
   (package
     (name "rust-thiserror-impl")
-    (version "2.0.6")
+    (version "2.0.9")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "thiserror-impl" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "04k3dz901mymm06j3x6f65hpbsqlk6g51fmiky9g2kqgnk550myn"))))
+        (base32 "1m77z5vb4w7xn7y12zxnbwncva4bwbi45y45xvkf5aki20kzll3v"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
