@@ -12037,6 +12037,32 @@ capabilities.")
         ("rust-error-chain" ,rust-error-chain-0.12)
         ("rust-libc" ,rust-libc-0.2))))))
 
+(define-public rust-captur-0.1
+  (package
+    (name "rust-captur")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "captur" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "10mi8mz5l9wq6pv1p26237pw4bywn90nra076ghh4ini90jv7ykh"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (substitute* "src/lib.rs"
+                   (("or_patterns_back_compat")
+                    "rust_2021_incompatible_or_patterns"))))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:tests? #f))    ; `pointer_structural_match` converted into hard error
+    (home-page "https://github.com/MitMaro/captur")
+    (synopsis "Macro to capture whole structs from disjoint fields in a closure")
+    (description
+     "This package provides a macro to capture whole structs from disjoint
+fields in a closure.")
+    (license license:isc)))
+
 (define-public rust-carapace-spec-clap-0.1
   (package
     (name "rust-carapace-spec-clap")
