@@ -4515,10 +4515,6 @@ with hyper.")
        (sha256
         (base32
          "1vcfyz7dxavf4brns15afmj5fxz88lbn05rrpbfqsnybdp2sqyfr"))))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list openssl))
     (arguments
      `(#:cargo-inputs
        (("rust-bytes" ,rust-bytes-0.5)
