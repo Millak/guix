@@ -33,6 +33,29 @@
   #:use-module (gnu packages llvm)
   #:use-module ((guix licenses) #:prefix license:))
 
+
+(define-public rust-c2rust-ast-builder-0.18
+  (package
+    (name "rust-c2rust-ast-builder")
+    (version "0.18.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "c2rust-ast-builder" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0w63rp66g6axkymxd16avxp3gjnphy3mg9938gsh52p4aak83nq5"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-syn" ,rust-syn-1))))
+    (home-page "https://c2rust.com/")
+    (synopsis "Rust AST builder support crate for the C2Rust project")
+    (description
+     "This package provides Rust AST builder support crate for the C2Rust project.")
+    (license license:bsd-3)))
+
 (define-public rust-c2rust-bitfields-derive-0.18
   (package
     (name "rust-c2rust-bitfields-derive")
@@ -102,28 +125,6 @@
     (description
      "This package provides Customized version of libsyntax rust pretty-printer.")
     (license (list license:expat license:asl2.0))))
-
-(define-public rust-c2rust-ast-builder-0.18
-  (package
-    (name "rust-c2rust-ast-builder")
-    (version "0.18.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "c2rust-ast-builder" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0w63rp66g6axkymxd16avxp3gjnphy3mg9938gsh52p4aak83nq5"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
-                       ("rust-syn" ,rust-syn-1))))
-    (home-page "https://c2rust.com/")
-    (synopsis "Rust AST builder support crate for the C2Rust project")
-    (description
-     "This package provides Rust AST builder support crate for the C2Rust project.")
-    (license license:bsd-3)))
 
 (define-public rust-c2rust-build-paths-0.18
   (package
