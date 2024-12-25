@@ -85049,7 +85049,7 @@ well.")
         ("rust-strum-macros" ,rust-strum-macros-0.21)
         ("rust-thiserror" ,rust-thiserror-1)
         ("rust-toml" ,rust-toml-0.5)
-        ("rust-version-compare" ,rust-version-compare-0.0))
+        ("rust-version-compare" ,rust-version-compare-0.0.11))
        #:cargo-development-inputs
        (("rust-assert-matches" ,rust-assert-matches-1)
         ("rust-itertools" ,rust-itertools-0.10)
@@ -96848,8 +96848,6 @@ and test them against various comparison operators.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "06v688jg6gd00zvm3cp7qh2h3mz8cs2ngr09bnwxhyddxrcwh60w"))))))
-
-(define-public rust-version-compare-0.0 rust-version-compare-0.0.11)
 
 (define-public rust-version-sync-0.9
   (package
