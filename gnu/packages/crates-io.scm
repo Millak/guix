@@ -14375,8 +14375,36 @@ completion scripts.")
 with Clap to generate Fig completion scripts.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-clap-complete-nushell-4
+  (package
+    (name "rust-clap-complete-nushell")
+    (version "4.5.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "clap_complete_nushell" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0xvnl61gnc3j76b9y50y35zvg7fls30i7lyb43fmsvncj3kh4n9i"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-clap" ,rust-clap-4)
+                       ("rust-clap-complete" ,rust-clap-complete-4)
+                       ("rust-completest" ,rust-completest-0.4)
+                       ("rust-completest-nu" ,rust-completest-nu-0.4))
+       #:cargo-development-inputs (("rust-clap" ,rust-clap-4)
+                                   ("rust-snapbox" ,rust-snapbox-0.6))))
+    (home-page
+     "https://github.com/clap-rs/clap/tree/master/clap_complete_nushell")
+    (synopsis "Generator library used with clap for Nushell completion scripts")
+    (description
+     "This package provides a generator library used with clap for Nushell
+completion scripts.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-clap-complete-nushell-0.1
   (package
+    (inherit rust-clap-complete-nushell-4)
     (name "rust-clap-complete-nushell")
     (version "0.1.10")
     (source (origin
@@ -14386,20 +14414,11 @@ with Clap to generate Fig completion scripts.")
               (sha256
                (base32
                 "0b15s7d9xpqjr1fpj8lmcv6nhgbhxvm0rzbh3cavv0xawvsl3yn7"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-clap" ,rust-clap-4)
         ("rust-clap-complete" ,rust-clap-complete-4))
-       #:cargo-development-inputs (("rust-snapbox" ,rust-snapbox-0.4))))
-    (home-page
-     "https://github.com/clap-rs/clap/tree/master/clap_complete_nushell")
-    (synopsis
-     "Generator library used with clap for Nushell completion scripts")
-    (description
-     "This package provides a generator library used with clap for Nushell
-completion scripts.")
-    (license license:expat)))
+       #:cargo-development-inputs (("rust-snapbox" ,rust-snapbox-0.4))))))
 
 (define-public rust-clap-conf-0.1
   (package
