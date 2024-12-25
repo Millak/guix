@@ -20172,6 +20172,28 @@ use with bindgen.")
     (description "This package provides macros for cuda_std.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-culpa-macros-1
+  (package
+    (name "rust-culpa-macros")
+    (version "1.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "culpa-macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ya207axxrjixibdnqfk0h9f96b2b1xmxdw9rwfwglv6f1qy2d0j"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/Nullus157/culpa")
+    (synopsis "Internal implementation details of `culpa`")
+    (description
+     "This package provides internal implementation details of `culpa`.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-curl-0.4
   (package
     (name "rust-curl")
