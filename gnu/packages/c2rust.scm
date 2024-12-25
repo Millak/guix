@@ -191,7 +191,7 @@
        #:skip-build? #f
        #:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.65)
                        ("rust-c2rust-build-paths" ,rust-c2rust-build-paths-0.18)
-                       ("rust-clang-sys" ,rust-clang-sys-1.8)
+                       ("rust-clang-sys" ,rust-clang-sys-1)
                        ("rust-cmake" ,rust-cmake-0.1)
                        ("rust-env-logger" ,rust-env-logger-0.10)
                        ("rust-libc" ,rust-libc-0.2)

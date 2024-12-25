@@ -13959,31 +13959,6 @@ interoperation between crates in Rust.")
 (define-public rust-clang-sys-1
   (package
     (name "rust-clang-sys")
-    (version "1.0.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "clang-sys" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0695kfrqx7n091fzm6msbqg2q2kyhka64q08lm63f3l9d964i8cx"))))
-    (build-system cargo-build-system)
-    (inputs
-     (list clang))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-glob" ,rust-glob-0.3)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-libloading" ,rust-libloading-0.6))))
-    (home-page "https://github.com/KyleMayes/clang-sys")
-    (synopsis "Rust bindings for libclang")
-    (description "This package provides Rust bindings for libclang.")
-    (license license:asl2.0)))
-
-(define-public rust-clang-sys-1.8
-  (package
-    (name "rust-clang-sys")
     (version "1.8.1")
     (source
      (origin
@@ -13991,13 +13966,24 @@ interoperation between crates in Rust.")
        (uri (crate-uri "clang-sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1x1r9yqss76z8xwpdanw313ss6fniwc1r7dzb5ycjn0ph53kj0hb"))))
+        (base32 "1x1r9yqss76z8xwpdanw313ss6fniwc1r7dzb5ycjn0ph53kj0hb"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           (substitute* "Cargo.toml"
+             (("version = \">=([[:digit:]]+(\\.[[:digit:]]+)*), <.*\"" _ version)
+              (string-append "version = \"^" version "\"")))))))
     (build-system cargo-build-system)
+    (inputs
+     (list clang))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs (("rust-glob" ,rust-glob-0.3)
-                       ("rust-libc" ,rust-libc-0.2)
-                       ("rust-libloading" ,rust-libloading-0.8))))
+     `(#:cargo-inputs
+       (("rust-glob" ,rust-glob-0.3)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-libloading" ,rust-libloading-0.8))
+       #:cargo-development-inputs (("rust-glob" ,rust-glob-0.3)
+                                   ("rust-lazy-static" ,rust-lazy-static-1)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
     (home-page "https://github.com/KyleMayes/clang-sys")
     (synopsis "Rust bindings for libclang")
     (description "This package provides Rust bindings for libclang.")
