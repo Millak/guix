@@ -30411,8 +30411,32 @@ from_variants crate.")
 various platforms.")
     (license license:asl2.0)))
 
+(define-public rust-fs-err-3
+  (package
+    (name "rust-fs-err")
+    (version "3.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "fs-err" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0zw01xqj302la1c7gnbfwi7b4pcgxv2xkjavk1czjkpk15s0xdlb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-autocfg" ,rust-autocfg-1)
+                       ("rust-tokio" ,rust-tokio-1))
+       #:cargo-development-inputs (("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/andrewhickman/fs-err")
+    (synopsis "@code{std::fs} with more helpful errors")
+    (description
+     "This package provides an alternative to @code{std::fs} with
+more helpful error messages.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-fs-err-2
   (package
+    (inherit rust-fs-err-3)
     (name "rust-fs-err")
     (version "2.11.0")
     (source (origin
@@ -30422,19 +30446,12 @@ various platforms.")
               (sha256
                (base32
                 "0hdajzh5sjvvdjg0n15j91mv8ydvb7ff6m909frvdmg1bw81z948"))))
-    (build-system cargo-build-system)
     (arguments
      (list #:cargo-inputs
            `(("rust-autocfg" ,rust-autocfg-1)
              ("rust-tokio" ,rust-tokio-1))
            #:cargo-development-inputs
-           `(("rust-serde-json" ,rust-serde-json-1))))
-    (home-page "https://github.com/andrewhickman/fs-err")
-    (synopsis "@code{std::fs} with more helpful errors")
-    (description
-     "This package provides an alternative to @code{std::fs} with
-more helpful error messages.")
-    (license (list license:expat license:asl2.0))))
+           `(("rust-serde-json" ,rust-serde-json-1))))))
 
 (define-public rust-fs-extra-1
   (package
