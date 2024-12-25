@@ -23958,9 +23958,7 @@ standard locations of directories for config, cache and other data.")
     (arguments
      `(#:cargo-inputs
        (("rust-cfg-if" ,rust-cfg-if-0.1)
-        ("rust-dirs-sys" ,rust-dirs-sys-0.3))))
-    (inputs
-     (list rust-cfg-if-0.1 rust-dirs-sys-0.3))))
+        ("rust-dirs-sys" ,rust-dirs-sys-0.3))))))
 
 (define-public rust-dirs-1
   (package
