@@ -40634,14 +40634,14 @@ language tags.")
 (define-public rust-lazy-regex-proc-macros-3
   (package
     (name "rust-lazy-regex-proc-macros")
-    (version "3.1.0")
+    (version "3.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "lazy-regex-proc_macros" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "02zgaxdq95s0xm4svbdz6f4xkf4kncl5gjfdzyxgr9wpdj7dbg24"))))
+        (base32 "0qs13g4047fvlc16w1qb9yp4af3qm2xhp4kvkk5m6b37bnqdiqbn"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; cannot find macro `regex_replace_all` in this scope
