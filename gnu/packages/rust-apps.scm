@@ -4008,7 +4008,7 @@ Full featured offline client with caching support.")
 (define-public git-absorb
   (package
     (name "git-absorb")
-    (version "0.6.11")
+    (version "0.6.16")
     (source
      (origin
        ;; crates.io does not include the manual page.
@@ -4018,19 +4018,18 @@ Full featured offline client with caching support.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1mgqmbk2rz87blas86k340nshiy0zbw9pq76b8nqknpgghm4k029"))
+        (base32 "0az15qskgpbsbbm6sx7mqbka85n9j2xk3h2yir0d2wz6myp85475"))
        (snippet
-        #~(begin (use-modules (guix build utils))
-                 (substitute* "Cargo.toml"
-                   (("\"~") "\""))
-                 (delete-file "Documentation/git-absorb.1")))))
+        #~(begin (delete-file "Documentation/git-absorb.1")))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
        #:cargo-inputs
        (("rust-anyhow" ,rust-anyhow-1)
-        ("rust-clap" ,rust-clap-2)
-        ("rust-git2" ,rust-git2-0.18)
+        ("rust-clap" ,rust-clap-4)
+        ("rust-clap-complete" ,rust-clap-complete-4)
+        ("rust-clap-complete-nushell" ,rust-clap-complete-nushell-4)
+        ("rust-git2" ,rust-git2-0.19)
         ("rust-memchr" ,rust-memchr-2)
         ("rust-slog" ,rust-slog-2)
         ("rust-slog-async" ,rust-slog-async-2)
@@ -4041,15 +4040,47 @@ Full featured offline client with caching support.")
        (modify-phases %standard-phases
          (add-after 'install 'install-manual-page
            (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out   (assoc-ref outputs "out"))
-                    (man   (string-append out "/share/man/man1")))
+             (let* ((out (assoc-ref outputs "out"))
+                    (man (string-append out "/share/man/man1")))
                (with-directory-excursion "Documentation"
-                 (invoke "a2x" "-L" "-d" "manpage" "-f" "manpage" "git-absorb.txt"))
-               (install-file "Documentation/git-absorb.1" man)))))))
+                 (invoke "a2x"
+                         "--no-xmllint"
+                         "--doctype=manpage"
+                         "--format=manpage"
+                         "git-absorb.txt"))
+               (install-file "Documentation/git-absorb.1" man))))
+         (add-after 'install 'install-completions
+           (lambda* (#:key native-inputs outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (share (string-append out "/share"))
+                    (git-absorb
+                      (if ,(%current-target-system)
+                          (search-input-file native-inputs "/bin/git-absorb")
+                          (string-append out "/bin/git-absorb"))))
+               (mkdir-p (string-append out "/etc/bash_completion.d"))
+               (with-output-to-file
+                 (string-append out "/etc/bash_completion.d/git-absorb")
+                 (lambda _ (invoke git-absorb "--gen-completions" "bash")))
+               (mkdir-p (string-append share "/fish/vendor_completions.d"))
+               (with-output-to-file
+                 (string-append share "/fish/vendor_completions.d/git-absorb.fish")
+                 (lambda _ (invoke git-absorb "--gen-completions" "fish")))
+               (mkdir-p (string-append share "/zsh/site-functions"))
+               (with-output-to-file
+                 (string-append share "/zsh/site-functions/_git-absorb")
+                 (lambda _ (invoke git-absorb "--gen-completions" "zsh")))
+               (mkdir-p (string-append share "/elvish/lib"))
+               (with-output-to-file
+                 (string-append share "/elvish/lib/git-absorb")
+                 (lambda _ (invoke git-absorb "--gen-completions" "elvish")))))))))
     (native-inputs
-     (list asciidoc pkg-config))
+     (append
+       (if (%current-target-system)
+           (list this-package)
+           '())
+       (list asciidoc pkg-config)))
     (inputs
-     (list libgit2-1.7 zlib))
+     (list libgit2-1.8 zlib))
     (home-page "https://github.com/tummychow/git-absorb")
     (synopsis "Git tool for making automatic fixup commits")
     (description
