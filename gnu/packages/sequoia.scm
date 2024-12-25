@@ -21,6 +21,7 @@
   #:use-module (guix build-system cargo)
   #:use-module (guix build-system trivial)
   #:use-module (guix download)
+  #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix gexp)
@@ -1119,15 +1120,48 @@ constraints on the signature into account.
 This Guix package is built to use the nettle cryptographic library.")
     (license license:lgpl2.0+)))
 
-(define-public sequoia-wot
+;; There hasn't been a release cut since the tools were split from the library
+;; so we use the 0.1.0 number from tools/Cargo.toml and the tag from the library.
+(define-public sequoia-wot-tools
   (package
-    (inherit rust-sequoia-wot-0.12)
-    (name "sequoia-wot")
+    (name "sequoia-wot-tools")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://gitlab.com/sequoia-pgp/sequoia-wot")
+              (commit "sequoia-wot/v0.13.2")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0vvq2izz2088x9jvii1xj14z4hls948wn18wb53fpahyhx8kkbvx"))))
+    (build-system cargo-build-system)
     (arguments
-     (substitute-keyword-arguments (package-arguments rust-sequoia-wot-0.12)
-       ((#:install-source? _ #t) #f)
-       ((#:phases phases '%standard-phases)
-        `(modify-phases ,phases
+     (list
+       #:features '(list "sequoia-openpgp/crypto-nettle")
+       #:cargo-test-flags '(list "--" "--skip=gpg_trust_roots")
+       #:install-source? #f
+       #:cargo-inputs
+       (list rust-anyhow-1
+             rust-chrono-0.4
+             rust-clap-4
+             rust-clap-complete-4
+             rust-clap-mangen-0.2
+             rust-dot-writer-0.1
+             rust-enumber-0.3
+             rust-sequoia-cert-store-0.6
+             rust-sequoia-openpgp-1
+             rust-sequoia-policy-config-0.7)
+       #:cargo-development-inputs
+       (list rust-assert-cmd-2
+             rust-predicates-3
+             rust-tempfile-3)
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'chdir
+             (lambda _
+               (delete-file "Cargo.lock")
+               (chdir "tools")))
            (add-after 'install 'install-more
              (lambda* (#:key outputs #:allow-other-keys)
                (let* ((out   (assoc-ref outputs "out"))
@@ -1148,10 +1182,18 @@ This Guix package is built to use the nettle cryptographic library.")
                             (string-append share "/elvish/lib/sq-wot"))
                  (install-file (car (find-files "target/release" "_sq-wot"))
                                (string-append
-                                 share "/zsh/site-functions")))))))))
-    (description "An implementation of OpenPGP's web of trust.
+                                 share "/zsh/site-functions"))))))))
+    (inputs
+     (list nettle openssl sqlite))
+    (native-inputs
+     (list clang pkg-config))
+    (home-page "https://sequoia-pgp.org/")
+    (synopsis "Implementation of OpenPGP's web of trust")
+    (description
+     "This package provides an implementation of @code{OpenPGP's} web of trust.
 
-This Guix package is built to use the nettle cryptographic library.")))
+This Guix package is built to use the nettle cryptographic library.")
+    (license license:lgpl2.0+)))
 
 ;;
 
