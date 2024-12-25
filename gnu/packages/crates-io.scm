@@ -63304,17 +63304,17 @@ This library takes great pride in supporting everything that
 in codeblocks, while assuring quality with a powerful test suite.")
     (license license:asl2.0)))
 
-(define-public rust-pulldown-cmark-0.11
+(define-public rust-pulldown-cmark-0.12
   (package
     (name "rust-pulldown-cmark")
-    (version "0.11.3")
+    (version "0.12.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "pulldown-cmark" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "09a6q582pblnj8xflbx6zb29zgnwg0r6rg9wi54wdikq5k9434v7"))))
+        (base32 "055v2bzzrkrbrc1s6l9mbkvpdkhkid5j7vdkpcnc9k7b582s4szq"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
@@ -63327,10 +63327,34 @@ in codeblocks, while assuring quality with a powerful test suite.")
                                    ("rust-lazy-static" ,rust-lazy-static-1)
                                    ("rust-regex" ,rust-regex-1)
                                    ("rust-serde-json" ,rust-serde-json-1))))
-    (home-page "https://github.com/pulldown-cmark/pulldown-cmark")
+    (home-page "https://github.com/raphlinus/pulldown-cmark")
     (synopsis "Pull parser for CommonMark")
-    (description "This package provides a pull parser for CommonMark.")
+    (description "This package provides a pull parser for @code{CommonMark}.")
     (license license:expat)))
+
+(define-public rust-pulldown-cmark-0.11
+  (package
+    (inherit rust-pulldown-cmark-0.12)
+    (name "rust-pulldown-cmark")
+    (version "0.11.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pulldown-cmark" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "09a6q582pblnj8xflbx6zb29zgnwg0r6rg9wi54wdikq5k9434v7"))))
+    (arguments
+     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-getopts" ,rust-getopts-0.2)
+                       ("rust-memchr" ,rust-memchr-2)
+                       ("rust-pulldown-cmark-escape" ,rust-pulldown-cmark-escape-0.11)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-unicase" ,rust-unicase-2))
+       #:cargo-development-inputs (("rust-bincode" ,rust-bincode-1)
+                                   ("rust-lazy-static" ,rust-lazy-static-1)
+                                   ("rust-regex" ,rust-regex-1)
+                                   ("rust-serde-json" ,rust-serde-json-1))))))
 
 (define-public rust-pulldown-cmark-0.9
   (package
