@@ -38389,19 +38389,19 @@ Rust.")
 (define-public rust-iptables-0.5
   (package
     (name "rust-iptables")
-    (version "0.5.1")
+    (version "0.5.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "iptables" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0a96p8fq70v3z2rjf4c461pqhad6nkibs7sfgydkrf7ys1r0v7yk"))))
+        (base32 "1f8k90bhs34py78cw97jxh1hnxncfzbbr8my2d36ap9gba9jgdj3"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; Tests can't be run in the build environment.
        #:cargo-inputs (("rust-lazy-static" ,rust-lazy-static-1)
-                       ("rust-nix" ,rust-nix-0.27)
+                       ("rust-nix" ,rust-nix-0.29)
                        ("rust-regex" ,rust-regex-1))))
     (home-page "https://github.com/yaa110/rust-iptables")
     (synopsis "Rust bindings for iptables")
