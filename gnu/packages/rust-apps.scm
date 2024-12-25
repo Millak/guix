@@ -4340,20 +4340,19 @@ advanced keybindings, word-level diff highlighting, syntax highlighting for
 (define-public zoxide
   (package
     (name "zoxide")
-    (version "0.9.2")
+    (version "0.9.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "zoxide" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1dqndbxpnv0g82d52jaszsgh62y9cv9hq8rgypsimgkk9yxhn4rw"))))
+        (base32 "0r8rhz01s3ar5i2pkmplp36rhspsk65jyp4sq7vav1dr4vx9fs4a"))))
     (build-system cargo-build-system)
     (arguments
      (list #:install-source? #f
            #:cargo-inputs
            `(("rust-anyhow" ,rust-anyhow-1)
-             ("rust-askama" ,rust-askama-0.12)
              ("rust-bincode" ,rust-bincode-1)
              ("rust-clap" ,rust-clap-4)
              ("rust-clap-complete" ,rust-clap-complete-4)
@@ -4363,10 +4362,11 @@ advanced keybindings, word-level diff highlighting, syntax highlighting for
              ("rust-dunce" ,rust-dunce-1)
              ("rust-fastrand" ,rust-fastrand-2)
              ("rust-glob" ,rust-glob-0.3)
-             ("rust-nix" ,rust-nix-0.26)
-             ("rust-ouroboros" ,rust-ouroboros-0.17)
+             ("rust-nix" ,rust-nix-0.27)
+             ("rust-ouroboros" ,rust-ouroboros-0.18)
+             ("rust-rinja" ,rust-rinja-0.3)
              ("rust-serde" ,rust-serde-1)
-             ("rust-which" ,rust-which-4))
+             ("rust-which" ,rust-which-6))
            #:cargo-development-inputs
            `(("rust-assert-cmd" ,rust-assert-cmd-2)
              ("rust-rstest" ,rust-rstest-0.18)
