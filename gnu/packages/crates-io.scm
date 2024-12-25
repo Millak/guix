@@ -88185,14 +88185,14 @@ handle Unicode characters correctly.")
   (package
     (inherit rust-thiserror-impl-2)
     (name "rust-thiserror-impl")
-    (version "1.0.64")
+    (version "1.0.69")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "thiserror-impl" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1hvzmjx9iamln854l74qyhs0jl2pg3hhqzpqm9p8gszmf9v4x408"))))
+        (base32 "1h84fmn2nai41cxbhk6pqf46bxqq1b344v8yz089w1chzi76rvjg"))))
     (arguments
      `(#:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
