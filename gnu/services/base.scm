@@ -3092,6 +3092,10 @@ to CONFIG."
                       #f))))
 
 (define (network-set-up/linux config)
+  (define max-set-up-duration
+    ;; Maximum waiting time in seconds for devices to be up.
+    60)
+
   (match-record config <static-networking>
     (addresses links routes)
     (program-file "set-up-network"
@@ -3169,12 +3173,19 @@ to CONFIG."
                                              (format #t (G_ "Interface with mac-address '~a' not found~%") #$mac-address)))))))
                                 links)
 
+                        ;; 'wait-for-link' below could wait forever when
+                        ;; passed a non-existent device.  To ensure timely
+                        ;; completion, install an alarm.
+                        (alarm #$max-set-up-duration)
+
                         #$@(map (lambda (address)
-                                  #~(begin
+                                  #~(let ((device
+                                           #$(network-address-device address)))
                                       ;; Before going any further, wait for the
                                       ;; device to show up.
-                                      (wait-for-link
-                                       #$(network-address-device address))
+                                      (format #t "Waiting for network device '~a'...~%"
+                                              device)
+                                      (wait-for-link device)
 
                                       (addr-add #$(network-address-device address)
                                                 #$(network-address-value address)

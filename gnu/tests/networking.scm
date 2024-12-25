@@ -4,7 +4,7 @@
 ;;; Copyright © 2018 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2018 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
-;;; Copyright © 2021, 2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2021, 2023-2024 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -39,6 +39,7 @@
   #:use-module (gnu services shepherd)
   #:use-module (ice-9 match)
   #:export (%test-static-networking
+            %test-static-networking-failure
             %test-static-networking-advanced
             %test-inetd
             %test-openvswitch
@@ -124,7 +125,75 @@
                #:imported-modules '((gnu services herd)
                                     (guix combinators)))))
       (run-static-networking-test (virtual-machine os))))))
+
 
+(define %static-networking-with-nonexistent-device
+  ;; Similar to %QEMU-STATIC-NETWORKING except that the device does not exist.
+  (static-networking
+   (addresses (list (network-address
+                     (device "does-not-exist")    ;<- really
+                     (value "10.0.2.15/24"))))
+   (routes (list (network-route
+                  (destination "default")
+                  (gateway "10.0.2.2"))))
+   (requirement '())
+   (provision '(networking))
+   (name-servers '("10.0.2.3"))))
+
+(define (run-static-networking-failure-test vm)
+  (define test
+    (with-imported-modules '((gnu build marionette)
+                             (guix build syscalls))
+      #~(begin
+          (use-modules (gnu build marionette)
+                       (guix build syscalls)
+                       (srfi srfi-64))
+
+          (define marionette
+            (make-marionette '(#$vm)))
+
+          (test-runner-current (system-test-runner #$output))
+          (test-begin "static-networking")
+
+          (test-equal "service fails to start"
+            #f
+            ;; The 'start' method of the 'networking' service should fail
+            ;; within a minute or so.  Previously it would never complete:
+            ;; <https://issues.guix.gnu.org/71173>.
+            (marionette-eval
+             '(begin
+                (use-modules (gnu services herd))
+                (alarm 180)                 ;must complete in a timely fashion
+                (start-service 'networking))
+             marionette))
+
+          (test-equal "network interfaces"
+            '("lo")
+            (marionette-eval
+             '(begin
+                (use-modules (guix build syscalls))
+                (network-interface-names))
+             marionette))
+
+          (test-end))))
+
+  (gexp->derivation "static-networking-failure" test))
+
+(define %test-static-networking-failure
+  (system-test
+   (name "static-networking-failure")
+   (description "Test the behavior of the 'static-networking' service when
+passed an invalid device.")
+   (value
+    (let ((os (marionette-operating-system
+               (simple-operating-system
+                (service static-networking-service-type
+                         (list %static-networking-with-nonexistent-device)))
+               #:imported-modules '((gnu services herd)
+                                    (guix combinators)))))
+      (run-static-networking-failure-test (virtual-machine os))))))
+
+
 (define (run-static-networking-advanced-test vm)
   (define test
     (with-imported-modules '((gnu build marionette)
