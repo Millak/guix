@@ -5766,23 +5766,17 @@ for data that potentially contains secrets (e.g. cryptographic keys).")
      (origin
        (method url-fetch)
        (uri (crate-uri "sha1" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "0p09zfhd27z6yr5in07gfjcx345010rw51ivlcf14364x3hv2c6c"))))
+        (base32 "0p09zfhd27z6yr5in07gfjcx345010rw51ivlcf14364x3hv2c6c"))
+       (modules '((guix build utils)))
+       (snippet #~(substitute* "Cargo.toml"
+                    ((", path =.*}") "}")))))
     (arguments
      `(#:tests? #f  ; Tests require openssl-1.0
        #:cargo-development-inputs
        (("rust-openssl" ,rust-openssl-0.7)
-        ("rust-rand" ,rust-rand-0.3))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-cargo-toml
-           (lambda _
-             (substitute* "Cargo.toml"
-               ((", path =.*}") "}"))
-             #t)))))))
+        ("rust-rand" ,rust-rand-0.3))))))
 
 (define-public rust-sha1-asm-0.5
   (package
