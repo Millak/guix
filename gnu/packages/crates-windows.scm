@@ -1547,6 +1547,29 @@ crate.")
                (base32
                 "1hpk0n2z0jzzvwlvs98b75sa4q920953nqfc119rv19nwm0mlsaj"))))))
 
+(define-public rust-windows-acl-0.3
+  (package
+    (name "rust-windows-acl")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "windows-acl" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1hyfng4dagfndxpwxynjk9zird8lhrp7zrsqc1h4rjvbk0iifyqp"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-field-offset" ,rust-field-offset-0.3)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-widestring" ,rust-widestring-0.4)
+                       ("rust-winapi" ,rust-winapi-0.3))))
+    (home-page "https://trailofbits.github.io/windows-acl")
+    (synopsis "Rust crate to simplify Windows ACL operations")
+    (description
+     "This package provides a rust crate to simplify Windows ACL operations.")
+    (license license:expat)))
+
 (define-public rust-windows-bindgen-0.57
   (package
     (name "rust-windows-bindgen")
