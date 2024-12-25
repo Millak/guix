@@ -40046,24 +40046,24 @@ keccak-f and keccak-p variants.")
 (define-public rust-keyring-2
   (package
     (name "rust-keyring")
-    (version "2.0.5")
+    (version "2.3.3")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "keyring" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "14i4qxz6kpy1ijkx1gwig494f3bq54kwxldjf459w508plls2jcm"))))
+                "184mshdrgghlvmlz0n7w1167yx0sa3zb82n31jk4lwcx07q8fcrn"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f      ; Tests need a TTY.
+     `(#:tests? #f      ; Can't set password for empty user: NoEntry
        #:cargo-inputs
        (("rust-byteorder" ,rust-byteorder-1)
         ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-linux-keyutils" ,rust-linux-keyutils-0.2)
         ("rust-secret-service" ,rust-secret-service-3)
         ("rust-security-framework" ,rust-security-framework-2)
-        ("rust-winapi" ,rust-winapi-0.3))
+        ("rust-windows-sys" ,rust-windows-sys-0.52))
        #:cargo-development-inputs
        (("rust-clap" ,rust-clap-4)
         ("rust-doc-comment" ,rust-doc-comment-0.3)
