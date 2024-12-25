@@ -45853,7 +45853,7 @@ grammars.  It provides the subset of the regex crate that only deals with
 matching, not parsing substrings.")
     (license license:expat)))
 
-(define-public rust-matchers-0.0
+(define-public rust-matchers-0.0.1
   (package
     (inherit rust-matchers-0.1)
     (name "rust-matchers")
@@ -92162,7 +92162,7 @@ application authors using tracing to instrument their applications.")
        (("rust-ansi-term" ,rust-ansi-term-0.12)
         ("rust-chrono" ,rust-chrono-0.4)
         ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-matchers" ,rust-matchers-0.0)
+        ("rust-matchers" ,rust-matchers-0.0.1)
         ("rust-parking-lot" ,rust-parking-lot-0.11)
         ("rust-regex" ,rust-regex-1)
         ("rust-serde" ,rust-serde-1)
