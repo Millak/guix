@@ -3253,13 +3253,13 @@ cryptographic library.")
 (define-public rust-nettle-5
   (package
     (inherit rust-nettle-7)
+    (name "rust-nettle")
     (version "5.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "nettle" version))
-       (file-name
-        (string-append (package-name rust-nettle-7) "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0zfplqdf3mag8r7lc124hl24vri8yg711jmm8gl1mpwnlhass2n4"))
        (patches (search-patches "rust-nettle-disable-vendor.patch"))))
