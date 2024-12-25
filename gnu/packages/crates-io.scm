@@ -10004,7 +10004,7 @@ decompression and compression to Rust.")
        (("rust-assert-matches" ,rust-assert-matches-1)
         ("rust-base58" ,rust-base58-0.1)
         ("rust-criterion" ,rust-criterion-0.5)
-        ("rust-rust-base58" ,rust-rust-base58-0.0)
+        ("rust-rust-base58" ,rust-rust-base58-0.0.4)
         ("rust-tinyvec" ,rust-tinyvec-1))))
     (home-page "https://github.com/Nullus157/bs58-rs")
     (synopsis "Another Base58 codec implementation")
@@ -10034,7 +10034,7 @@ almost the same speed for encoding: about 3% slower when encoding 32 bytes.
        #:cargo-development-inputs
        (("rust-assert-matches" ,rust-assert-matches-1)
         ("rust-base58" ,rust-base58-0.1)
-        ("rust-rust-base58" ,rust-rust-base58-0.0))))))
+        ("rust-rust-base58" ,rust-rust-base58-0.0.4))))))
 
 (define-public rust-bsd-kvm-0.1
   (package
@@ -71234,7 +71234,7 @@ please consider using @code{async-std} or @code{tokio}.")
      `(#:cargo-inputs (("rust-fallible-iterator" ,rust-fallible-iterator-0.3)
                        ("rust-sqlite3-parser" ,rust-sqlite3-parser-0.12))))))
 
-(define-public rust-rust-base58-0.0
+(define-public rust-rust-base58-0.0.4
   (package
     (name "rust-rust-base58")
     (version "0.0.4")
