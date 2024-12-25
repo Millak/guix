@@ -1200,7 +1200,7 @@ This Guix package is built to use the nettle cryptographic library.")
 (define-public sequoia
   (package
     (name "sequoia")
-    (version "1.21.2")
+    (version "1.22.0")
     (source #f)
     (build-system trivial-build-system)
     (arguments
@@ -1231,7 +1231,7 @@ This Guix package is built to use the nettle cryptographic library.")
      (list ;glibc ;; for ldconfig in make-dynamic-linker-cache
            sequoia-sq
            sequoia-sqv
-           sequoia-wot))
+           sequoia-wot-tools))
     (home-page "https://sequoia-pgp.org")
     (synopsis "New OpenPGP implementation (meta-package)")
     (description "Sequoia is a new OpenPGP implementation, written in Rust,
