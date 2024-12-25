@@ -79707,6 +79707,27 @@ monotone matrix.")
         ("rust-piper" ,rust-piper-0.1)
         ("rust-tempfile" ,rust-tempfile-3))))))
 
+(define-public rust-smol-potat-macro-0.6
+  (package
+    (name "rust-smol-potat-macro")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "smol-potat-macro" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0cirpy1309cr3n6zbmia66miyidih88sinpanj2r61hqk89dhz3b"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/wusyong/smol-potat")
+    (synopsis "Proc macro for smol runtime")
+    (description "This package provides a proc macro for smol runtime.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-smol-str-0.2
   (package
     (name "rust-smol-str")
