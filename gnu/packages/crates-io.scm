@@ -37277,12 +37277,13 @@ at compile time so the leftmost non-space character is in the first column.")
 (define-public rust-indoc-0.3
   (package
     (inherit rust-indoc-1)
+    (name "rust-indoc")
     (version "0.3.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "indoc" version))
-       (file-name (string-append "rust-indoc-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1n2fd2wm1h005hd7pjgx4gv5ymyq4sxqn8z0ssw6xchgqs5ilx27"))))
     (arguments
