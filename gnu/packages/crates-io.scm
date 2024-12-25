@@ -31766,8 +31766,33 @@ archive to be linked into Rustcode.")
 suffering from the ABA problem by using generational indices.")
     (license license:mpl2.0)))
 
+(define-public rust-generator-0.8
+  (package
+    (name "rust-generator")
+    (version "0.8.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "generator" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1p9qqk9nzarjdcl5fr4iylvsv446g0svlpk63lxis4ysrqad2syc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-rustversion" ,rust-rustversion-1)
+                       ("rust-windows" ,rust-windows-0.58))))
+    (home-page "https://github.com/Xudong-Huang/generator-rs.git")
+    (synopsis "Stackful Generator Library in Rust")
+    (description "This package provides a sackful generator library in
+Rust.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-generator-0.7
   (package
+    (inherit rust-generator-0.8)
     (name "rust-generator")
     (version "0.7.5")
     (source (origin
@@ -31777,19 +31802,13 @@ suffering from the ABA problem by using generational indices.")
               (sha256
                (base32
                 "0knp7cllkf90l4wmfbhmb3c0ha9xn9afrzmphain1d12zy26bhaw"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-cc" ,rust-cc-1)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-log" ,rust-log-0.4)
         ("rust-rustversion" ,rust-rustversion-1)
-        ("rust-windows" ,rust-windows-0.48))))
-    (home-page "https://github.com/Xudong-Huang/generator-rs.git")
-    (synopsis "Stackfull Generator Library in Rust")
-    (description "This package provides a stackfull generator library in
-Rust.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-windows" ,rust-windows-0.48))))))
 
 (define-public rust-generator-0.6
   (package
