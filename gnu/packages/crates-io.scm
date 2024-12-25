@@ -40361,35 +40361,35 @@ grammars.")
   (package
     (inherit rust-lalrpop-0.20)
     (name "rust-lalrpop")
-    (version "0.19.1")
+    (version "0.19.12")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "lalrpop" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1j52sybjhn82ydgsmnw7nkywjyb7pvg50mvyb48m7vdq3wcmdyv0"))))
+        (base32 "0yw3m7br8zsby1vb7d0v952hdllg6splc85ba4l9yn1746avy70a"))))
     (arguments
-     `(#:skip-build? #t
+     `(#:install-source? #f     ; README is missing.
        #:cargo-inputs
-      (("rust-ascii-canvas" ,rust-ascii-canvas-2)
-       ("rust-atty" ,rust-atty-0.2)
-       ("rust-bit-set" ,rust-bit-set-0.5)
-       ("rust-diff" ,rust-diff-0.1)
-       ("rust-docopt" ,rust-docopt-1)
-       ("rust-ena" ,rust-ena-0.14)
-       ("rust-itertools" ,rust-itertools-0.9)
-       ("rust-lalrpop-util" ,rust-lalrpop-util-0.19)
-       ("rust-petgraph" ,rust-petgraph-0.5)
-       ("rust-regex" ,rust-regex-1)
-       ("rust-regex-syntax" ,rust-regex-syntax-0.6)
-       ("rust-serde" ,rust-serde-1)
-       ("rust-serde-derive" ,rust-serde-derive-1)
-       ("rust-sha2" ,rust-sha2-0.8)
-       ("rust-string-cache" ,rust-string-cache-0.8)
-       ("rust-term" ,rust-term-0.5)
-       ("rust-unicode-xid" ,rust-unicode-xid-0.2))
-      #:cargo-development-inputs (("rust-rand" ,rust-rand-0.7))))))
+       (("rust-ascii-canvas" ,rust-ascii-canvas-3)
+        ("rust-bit-set" ,rust-bit-set-0.5)
+        ("rust-diff" ,rust-diff-0.1)
+        ("rust-ena" ,rust-ena-0.14)
+        ("rust-is-terminal" ,rust-is-terminal-0.4)
+        ("rust-itertools" ,rust-itertools-0.10)
+        ("rust-lalrpop-util" ,rust-lalrpop-util-0.19)
+        ("rust-petgraph" ,rust-petgraph-0.6)
+        ("rust-pico-args" ,rust-pico-args-0.4)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-regex-syntax" ,rust-regex-syntax-0.6)
+        ("rust-string-cache" ,rust-string-cache-0.8)
+        ("rust-term" ,rust-term-0.7)
+        ("rust-tiny-keccak" ,rust-tiny-keccak-2)
+        ("rust-unicode-xid" ,rust-unicode-xid-0.2))
+      #:cargo-development-inputs (("rust-rand" ,rust-rand-0.8)
+                                  ("rust-regex" ,rust-regex-1)
+                                  ("rust-regex-syntax" ,rust-regex-syntax-0.6))))))
 
 (define-public rust-lalrpop-0.17
   (package
