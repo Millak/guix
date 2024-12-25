@@ -124,6 +124,7 @@
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-web)
@@ -2036,29 +2037,14 @@ generate a variety of reports from them, and provides a web interface.")
 (define-public fava
   (package
     (name "fava")
-    ;; XXX: A newer version requires Flask > 2.2, which is not available in
-    ;; Guix yet.
-    (version "1.24.4")
+    (version "1.27")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "fava" version))
        (sha256
-        (base32 "1iwha9vx223iiyjqbixpz1lp8q766ikhi7xcap3pscjhldxlym4j"))))
+        (base32 "0cw3pmyrknsw0h4w3v9vyk6wrii68zwkywsyyvjzyl2qz3xq8srk"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-         (add-after 'unpack 'relax-requirements
-           (lambda _
-             (substitute* "setup.cfg"
-               ((">=8,<10") ">8"))))
-          ;; Tests write to $HOME.
-          ;; FileNotFoundError: [Errno 2] No such file or directory
-          (add-before 'check 'set-home
-            (lambda _
-              (setenv "HOME" "/tmp"))))))
     (propagated-inputs
      (list beancount
            python-babel
@@ -2072,10 +2058,15 @@ generate a variety of reports from them, and provides a web interface.")
            python-simplejson
            python-werkzeug))
     (native-inputs
-     (list python-pytest
-           python-chardet
-           python-dateutil
-           python-setuptools-scm))
+     (list python-babel
+           python-mypy
+           python-pytest
+           python-pytest-cov
+           python-setuptools
+           python-twine
+           python-types-setuptools
+           python-types-simplejson
+           python-wheel))
     (home-page "https://beancount.github.io/fava/")
     (synopsis "Web interface for the accounting tool Beancount")
     (description "Fava is a web interface for the double-entry bookkeeping
