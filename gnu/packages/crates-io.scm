@@ -75047,17 +75047,12 @@ by dynamically growing the stack.")
        (uri (crate-uri "serde_test" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "1m939j7cgs7i58r6vxf0ffp3nbr8advr8p9dqa9w8zk0z2yks2qi"))))
+        (base32 "1m939j7cgs7i58r6vxf0ffp3nbr8advr8p9dqa9w8zk0z2yks2qi"))
+       (modules '((guix build utils)))
+       (snippet #~(substitute* "Cargo.toml"
+                    ((", path = \"../serde\"") "")))))
     (arguments
-     `(#:cargo-inputs (("rust-serde" ,rust-serde-0.8))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-Cargo-toml
-           (lambda _
-             (substitute* "Cargo.toml"
-               ((", path = \"../serde\"") ""))
-             #t)))))))
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-0.8))))))
 
 (define-public rust-serde-transcode-1
   (package
