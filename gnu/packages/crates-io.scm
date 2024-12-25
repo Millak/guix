@@ -44033,14 +44033,15 @@ and attach/detach semantics.")
         (base32 "00mw91qd2ibaawl7x1pxc1kryki0ixyirnlx64qx78d9g6k3n6kl"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs (("rust-arc-swap" ,rust-arc-swap-1)
+     `(#:cargo-inputs (("rust-arc-swap" ,rust-arc-swap-1)
                        ("rust-log" ,rust-log-0.4)
-                       ("rust-once-cell" ,rust-once-cell-1))))
+                       ("rust-once-cell" ,rust-once-cell-1))
+       #:cargo-development-inputs (("rust-fern" ,rust-fern-0.6)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
     (home-page "https://github.com/vorner/log-reroute")
     (synopsis "Support to change logging target for the log crate")
     (description
-     "This package provides Support to change logging target for the log crate.")
+     "This package provides support to change logging target for the log crate.")
     ;; This means asl2.0 OR expat.
     (license (list license:asl2.0 license:expat))))
 
