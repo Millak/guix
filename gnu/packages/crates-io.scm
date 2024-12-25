@@ -2660,7 +2660,8 @@ coverage-guided, mutation-based fuzzers.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-arbitrary-0.4
-  (package/inherit rust-arbitrary-1
+  (package
+    (inherit rust-arbitrary-1)
     (name "rust-arbitrary")
     (version "0.4.7")
     (source
