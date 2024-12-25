@@ -666,14 +666,14 @@ HKP protocol, and searching and publishing Web Key Directories.")
 (define-public rust-sequoia-openpgp-1
   (package
     (name "rust-sequoia-openpgp")
-    (version "1.21.2")
+    (version "1.22.0")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "sequoia-openpgp" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32 "1mh2rc7briyggsvwbg34g3vvx6aisisllb9vz4p96kdl2vi1w9hk"))))
+         (base32 "0ngg32kqcrg6lz1c0g2fkb76cm1ajifb9qcjvv77kw4gwkly8n78"))))
     (build-system cargo-build-system)
     (arguments
      `(#:features '("crypto-nettle")
@@ -704,7 +704,7 @@ HKP protocol, and searching and publishing Web Key Directories.")
         ("rust-flate2" ,rust-flate2-1)
         ("rust-getrandom" ,rust-getrandom-0.2)
         ("rust-idea" ,rust-idea-0.5)
-        ("rust-idna" ,rust-idna-0.5)
+        ("rust-idna" ,rust-idna-1)
         ("rust-lalrpop" ,rust-lalrpop-0.20)
         ("rust-lalrpop-util" ,rust-lalrpop-util-0.20)
         ("rust-lazy-static" ,rust-lazy-static-1)
