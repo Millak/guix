@@ -1679,7 +1679,7 @@ reload its settings file.")))
    (start #~(make-forkexec-constructor
              (list #$(syslog-configuration-syslogd config)
                    ;; the -f option here is compatible with rsyslog
-                   #$(string-append "-f " syslog.conf)
+                   "-f" #$syslog.conf
                    #$@(syslog-configuration-extra-options config))
              #:file-creation-mask #o137
              #:pid-file "/var/run/syslog.pid"))
