@@ -6099,11 +6099,9 @@ handles finding names and parsing specifications.")
      (origin
        (method url-fetch)
        (uri (crate-uri "gix-revision" version))
-       (file-name (string-append name "-" version
-                        ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-        "128fi6mblg4ic6h1q5vy2zq6vly8hxhi9vxkpkskaymby9fb3i68"))))
+        (base32 "128fi6mblg4ic6h1q5vy2zq6vly8hxhi9vxkpkskaymby9fb3i68"))))
     (arguments
      `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
                        ("rust-document-features" ,rust-document-features-0.2)
