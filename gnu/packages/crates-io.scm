@@ -19740,24 +19740,24 @@ number ``crunching``.")
     (description "This crate is a CSS color parser library.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-cssparser-0.33
+(define-public rust-cssparser-0.34
   (package
     (name "rust-cssparser")
-    (version "0.33.0")
+    (version "0.34.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "cssparser" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "07i8k47fmym7kzs95qfhg6zrh4yyf2vl4460rmdyvyx06vck9scv"))))
+        (base32 "1qx3hha392szcl812l6hp0d4029gg8x62cl4nf0byqgdv0f6vimp"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f  ; Not all files included in the tarball.
        #:cargo-inputs (("rust-cssparser-macros" ,rust-cssparser-macros-0.6)
                        ("rust-dtoa-short" ,rust-dtoa-short-0.3)
                        ("rust-itoa" ,rust-itoa-1)
-                       ("rust-phf" ,rust-phf-0.8)
+                       ("rust-phf" ,rust-phf-0.11)
                        ("rust-serde" ,rust-serde-1)
                        ("rust-smallvec" ,rust-smallvec-1))
        #:cargo-development-inputs (("rust-difference" ,rust-difference-2)
@@ -19768,6 +19768,30 @@ number ``crunching``.")
     (description
      "This package contains a Rust implementation of CSS Syntax Level 3.")
     (license license:mpl2.0)))
+
+(define-public rust-cssparser-0.33
+  (package
+    (inherit rust-cssparser-0.34)
+    (name "rust-cssparser")
+    (version "0.33.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cssparser" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "07i8k47fmym7kzs95qfhg6zrh4yyf2vl4460rmdyvyx06vck9scv"))))
+    (arguments
+     `(#:tests? #f  ; Not all files included in the tarball.
+       #:cargo-inputs (("rust-cssparser-macros" ,rust-cssparser-macros-0.6)
+                       ("rust-dtoa-short" ,rust-dtoa-short-0.3)
+                       ("rust-itoa" ,rust-itoa-1)
+                       ("rust-phf" ,rust-phf-0.8)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-smallvec" ,rust-smallvec-1))
+       #:cargo-development-inputs (("rust-difference" ,rust-difference-2)
+                                   ("rust-encoding-rs" ,rust-encoding-rs-0.8)
+                                   ("rust-serde-json" ,rust-serde-json-1))))))
 
 (define-public rust-cssparser-0.31
   (package
