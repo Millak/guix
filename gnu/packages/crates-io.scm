@@ -74472,20 +74472,14 @@ for Rust.")
      (origin
        (method url-fetch)
        (uri (crate-uri "serde_derive" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "1fkldf0lnl6pwxs00qpyp79m30qmfpi3bk0wm22211ylyikdi3wp"))))
+        (base32 "1fkldf0lnl6pwxs00qpyp79m30qmfpi3bk0wm22211ylyikdi3wp"))
+       (modules '((guix build utils)))
+       (snippet #~(substitute* "Cargo.toml"
+                    ((", path =.*}") "}")))))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-cargo-toml
-           (lambda _
-             (substitute* "Cargo.toml"
-               ((", path =.*}") "}"))
-             #t)))
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-quote" ,rust-quote-0.3)
         ("rust-serde-codegen-internals" ,rust-serde-codegen-internals-0.14)
         ("rust-syn" ,rust-syn-0.11))))))
