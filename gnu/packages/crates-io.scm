@@ -55129,8 +55129,30 @@ platform-native strings.")
          "11agh8n3x2l4sr3sxvx6byc1j3ryb1g6flb1ywn0qhq7xv1y3cmg"))))
     (arguments `(#:skip-build? #t))))
 
+(define-public rust-ouroboros-0.18
+  (package
+    (name "rust-ouroboros")
+    (version "0.18.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ouroboros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0rsazk2hh2w626585scb7ylaf500y5insp3rnkbdwnm2jq4s4kwl"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-aliasable" ,rust-aliasable-0.1)
+                       ("rust-ouroboros-macro" ,rust-ouroboros-macro-0.18)
+                       ("rust-static-assertions" ,rust-static-assertions-1))))
+    (home-page "https://github.com/someguynamedjosh/ouroboros")
+    (synopsis "Self-referential struct generation")
+    (description "Easy, safe self-referential struct generation for Rust.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-ouroboros-0.17
   (package
+    (inherit rust-ouroboros-0.18)
     (name "rust-ouroboros")
     (version "0.17.2")
     (source
@@ -55140,15 +55162,10 @@ platform-native strings.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0m69j8288k3b3iyblngdfgraahnk9d5maw5a5y4fmprr1lr0gfp2"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-aliasable" ,rust-aliasable-0.1)
                        ("rust-ouroboros-macro" ,rust-ouroboros-macro-0.17)
-                       ("rust-static-assertions" ,rust-static-assertions-1))))
-    (home-page "https://github.com/someguynamedjosh/ouroboros")
-    (synopsis "Self-referential struct generation")
-    (description "Easy, safe self-referential struct generation for Rust.")
-    (license (list license:expat license:asl2.0))))
+                       ("rust-static-assertions" ,rust-static-assertions-1))))))
 
 (define-public rust-ouroboros-0.15
   (package
