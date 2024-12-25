@@ -55185,8 +55185,35 @@ platform-native strings.")
         ("rust-ouroboros-macro" ,rust-ouroboros-macro-0.14)
         ("rust-stable-deref-trait" ,rust-stable-deref-trait-1))))))
 
+(define-public rust-ouroboros-macro-0.18
+  (package
+    (name "rust-ouroboros-macro")
+    (version "0.18.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ouroboros_macro" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1gb5njxh9clp9krjc7kfbz17g5racjlld1bsjkjx13sjs7mdxc1r"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-heck" ,rust-heck-0.4)
+        ("rust-itertools" ,rust-itertools-0.12)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-proc-macro2-diagnostics" ,rust-proc-macro2-diagnostics-0.10)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/someguynamedjosh/ouroboros")
+    (synopsis "Proc macro for ouroboros")
+    (description
+     "This package provides a proc macro for the @code{ouroboros} crate.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-ouroboros-macro-0.17
   (package
+    (inherit rust-ouroboros-macro-0.18)
     (name "rust-ouroboros-macro")
     (version "0.17.2")
     (source
@@ -55196,18 +55223,12 @@ platform-native strings.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1y5nmgnng4i23g333cvp8p7j3i3438r9g85fq1wafk4vqqjn4k7c"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-heck" ,rust-heck-0.4)
                        ("rust-proc-macro-error" ,rust-proc-macro-error-1)
                        ("rust-proc-macro2" ,rust-proc-macro2-1)
                        ("rust-quote" ,rust-quote-1)
-                       ("rust-syn" ,rust-syn-2))))
-    (home-page "https://github.com/someguynamedjosh/ouroboros")
-    (synopsis "Proc macro for ouroboros")
-    (description
-     "This package provides a proc macro for the @code{ouroboros} crate.")
-    (license (list license:expat license:asl2.0))))
+                       ("rust-syn" ,rust-syn-2))))))
 
 (define-public rust-ouroboros-macro-0.15
   (package
