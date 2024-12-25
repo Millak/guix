@@ -6262,8 +6262,8 @@ is an attempt to combine both into something useful.")
       (license license:asl2.0))))
 
 (define-public guile-knots
-  (let ((commit "e8ab6f23d8611c6ebb308007306a9ec5752cfbf0")
-        (revision "2"))
+  (let ((commit "6119ece5cba6cbdc638ccfb19aba52ea246dfe50")
+        (revision "3"))
     (package
     (name "guile-knots")
     (version (git-version "0" revision commit))
@@ -6274,7 +6274,7 @@ is an attempt to combine both into something useful.")
                     (commit commit)))
               (sha256
                (base32
-                "1gbf6g0irjndvbycr3ygi6sh6y19v0h3h45460xgz46p62jiphsp"))
+                "1dn9mrla0inhmfcyl725jh6dfwrg6xd56jp7c3n3plmjz3knyfmj"))
               (file-name (string-append name "-" version "-checkout"))))
     (build-system gnu-build-system)
     (native-inputs
@@ -6282,6 +6282,7 @@ is an attempt to combine both into something useful.")
            autoconf
            automake
            guile-3.0
+           guile-lib
            guile-fibers))
     (inputs
      (list guile-3.0))
