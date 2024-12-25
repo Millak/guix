@@ -59432,17 +59432,17 @@ both WASM and native applications")
     (description "This package provides utils for proc-macro.")
     (license (list license:asl2.0 license:expat))))
 
-(define-public rust-pnet-base-0.34
+(define-public rust-pnet-base-0.35
   (package
     (name "rust-pnet-base")
-    (version "0.34.0")
+    (version "0.35.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "pnet_base" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0k2z3jh6vw99bwl0ckpsd142n4yiscza1bmj3b86i2xk7bxzck7y"))))
+        (base32 "1xxj1ym32zqmy7m7ciiisv513rk9qis3p6x4mgrnmwbx0va91hgz"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-no-std-net" ,rust-no-std-net-0.6)
@@ -59453,6 +59453,23 @@ both WASM and native applications")
     (description
      "This crate implements fundamental base types and code used by pnet.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-pnet-base-0.34
+  (package
+    (inherit rust-pnet-base-0.35)
+    (name "rust-pnet-base")
+    (version "0.34.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pnet_base" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0k2z3jh6vw99bwl0ckpsd142n4yiscza1bmj3b86i2xk7bxzck7y"))))
+    (arguments
+     `(#:cargo-inputs (("rust-no-std-net" ,rust-no-std-net-0.6)
+                       ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-serde-test" ,rust-serde-test-1))))))
 
 (define-public rust-pnet-base-0.27
   (package
