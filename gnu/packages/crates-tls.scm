@@ -2153,8 +2153,39 @@ rustls-platform-verifier crate.  You shouldn't depend on this directly.")
        #:cargo-development-inputs (("rust-base64" ,rust-base64-0.13)
                                    ("rust-rcgen" ,rust-rcgen-0.11))))))
 
+(define-public rust-tls-parser-0.12
+  (package
+    (name "rust-tls-parser")
+    (version "0.12.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tls-parser" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0hf7k9fn1ziy6lmskkz6gcch4lfzv9mhzrr4yaqq8988qr4n5hr2"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f ;; requires assets not included in crates.io tarball
+       #:cargo-inputs (("rust-cookie-factory" ,rust-cookie-factory-0.3)
+                       ("rust-nom" ,rust-nom-7)
+                       ("rust-nom-derive" ,rust-nom-derive-0.10)
+                       ("rust-num-enum" ,rust-num-enum-0.7)
+                       ("rust-phf" ,rust-phf-0.11)
+                       ("rust-phf-codegen" ,rust-phf-codegen-0.11)
+                       ("rust-rusticata-macros" ,rust-rusticata-macros-4))
+       #:cargo-development-inputs
+       (("rust-clap" ,rust-clap-4)
+        ("rust-hex-literal" ,rust-hex-literal-0.4)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1))))
+    (home-page "https://github.com/rusticata/tls-parser")
+    (synopsis "Parser for the TLS protocol")
+    (description "This package provides a Rust parser for the TLS protocol.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-tls-parser-0.11
   (package
+    (inherit rust-tls-parser-0.12)
     (name "rust-tls-parser")
     (version "0.11.0")
     (source
@@ -2171,7 +2202,6 @@ rustls-platform-verifier crate.  You shouldn't depend on this directly.")
                  ;; Accept newer versions of rust-clap.
                  (substitute* "Cargo.toml"
                    (("~2\\.33") "^2.33"))))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f ;; requires assets not included in crates.io tarball
        #:cargo-inputs
@@ -2185,11 +2215,7 @@ rustls-platform-verifier crate.  You shouldn't depend on this directly.")
        #:cargo-development-inputs
        (("rust-clap" ,rust-clap-2)
         ("rust-hex-literal" ,rust-hex-literal-0.3)
-        ("rust-pretty-assertions" ,rust-pretty-assertions-0.7))))
-    (home-page "https://github.com/rusticata/tls-parser")
-    (synopsis "Parser for the TLS protocol")
-    (description "This package provides a Rust parser for the TLS protocol.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-pretty-assertions" ,rust-pretty-assertions-0.7))))))
 
 (define-public rust-x509-cert-0.2
   (package
