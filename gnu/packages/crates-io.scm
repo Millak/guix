@@ -63071,17 +63071,17 @@ files as part of a Cargo build.")
                        ("rust-which" ,rust-which-4))
        #:cargo-development-inputs (("rust-env-logger" ,rust-env-logger-0.8))))))
 
-(define-public rust-prost-derive-0.12
+(define-public rust-prost-derive-0.13
   (package
     (name "rust-prost-derive")
-    (version "0.12.3")
+    (version "0.13.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "prost-derive" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "03l4yf6pdjvc4sgbvln2srq1avzm1ai86zni4hhqxvqxvnhwkdpg"))))
+        (base32 "1qv2040663cgjyilp9dfgrn83xsr8yv9bx5qkwnyvhm5gsfmlz0m"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
@@ -63097,6 +63097,25 @@ implementations for Rust types annotated with @code{prost} annotation.  For
 the most part, users of @code{prost} shouldn't need to interact with
 @code{prost-derive} directly.")
     (license license:asl2.0)))
+
+(define-public rust-prost-derive-0.12
+  (package
+    (inherit rust-prost-derive-0.13)
+    (name "rust-prost-derive")
+    (version "0.12.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "prost-derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "03l4yf6pdjvc4sgbvln2srq1avzm1ai86zni4hhqxvqxvnhwkdpg"))))
+    (arguments
+     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-itertools" ,rust-itertools-0.10)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))))
 
 (define-public rust-prost-derive-0.11
   (package
