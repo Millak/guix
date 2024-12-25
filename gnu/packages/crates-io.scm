@@ -68981,8 +68981,34 @@ MessagePack format.")
    (description "This create provides a value variant for @code{rust-rmp}.")
    (license license:expat)))
 
+(define-public rust-roadmap-0.6
+  (package
+    (name "rust-roadmap")
+    (version "0.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "roadmap" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1qm35hdx3cjzvhn18p2gj93nrjb1d5ln86614ikcbx7hhmhfqkx8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-clap" ,rust-clap-4)
+                       ("rust-marked-yaml" ,rust-marked-yaml-0.7)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-tempfile" ,rust-tempfile-3)
+                       ("rust-textwrap" ,rust-textwrap-0.16)
+                       ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://gitlab.com/larswirzenius/roadmap")
+    (synopsis "Model a project roadmap as a directed acyclic graph")
+    (description "Model a project roadmap as a directed acyclic graph.")
+    (license license:expat-0)))
+
 (define-public rust-roadmap-0.5
   (package
+    (inherit rust-roadmap-0.6)
     (name "rust-roadmap")
     (version "0.5.0")
     (source (origin
@@ -68992,18 +69018,13 @@ MessagePack format.")
               (sha256
                (base32
                 "0d0j88wn59sfxwh2k4f609w56n6bmcgf54m0jk9rwc3vci5f8ad1"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-anyhow" ,rust-anyhow-1)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-yaml" ,rust-serde-yaml-0.8)
         ("rust-textwrap" ,rust-textwrap-0.15)
-        ("rust-thiserror" ,rust-thiserror-1))))
-    (home-page "https://gitlab.com/larswirzenius/roadmap")
-    (synopsis "Model a project roadmap as a directed acyclic graph")
-    (description "Model a project roadmap as a directed acyclic graph.")
-    (license license:expat-0)))
+        ("rust-thiserror" ,rust-thiserror-1))))))
 
 (define-public rust-roaring-0.10
   (package
