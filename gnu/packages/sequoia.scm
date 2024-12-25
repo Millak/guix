@@ -422,14 +422,14 @@ than just headers; it requires tight integration with the MUA.")
 (define-public rust-sequoia-keystore-gpg-agent-0.4
   (package
     (name "rust-sequoia-keystore-gpg-agent")
-    (version "0.4.0")
+    (version "0.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "sequoia-keystore-gpg-agent" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0s5spxk7v6cdcfzrya4y1n29m09kkrlmqacnrq2azik92kwva1mk"))))
+        (base32 "1qnpcydrw0l3i0i082cy9mghjjq3l25clxwfj6gcpf72d6hq0wkq"))))
     (build-system cargo-build-system)
     (arguments
      `(#:features '("sequoia-openpgp/crypto-nettle")
@@ -440,7 +440,7 @@ than just headers; it requires tight integration with the MUA.")
         ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-log" ,rust-log-0.4)
         ("rust-openpgp-cert-d" ,rust-openpgp-cert-d-0.3)
-        ("rust-sequoia-gpg-agent" ,rust-sequoia-gpg-agent-0.4)
+        ("rust-sequoia-gpg-agent" ,rust-sequoia-gpg-agent-0.5)
         ("rust-sequoia-ipc" ,rust-sequoia-ipc-0.35)
         ("rust-sequoia-keystore-backend" ,rust-sequoia-keystore-backend-0.6)
         ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1)
