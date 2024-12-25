@@ -997,19 +997,19 @@ transactions from C or Python.")
     (license license:gpl2+)))
 
 (define-public bffe
-  (let ((commit "06bed4724d131c085b23c7a806170bf16d58c25f")
-        (revision "8"))
+  (let ((commit "d2ff7c36f379dc2c9b619b9941b4cd612df95857")
+        (revision "9"))
     (package
       (name "bffe")
       (version (git-version "0" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
-                      (url "https://git.cbaines.net/guix/bffe")
+                      (url "https://git.cbaines.net/git/guix/bffe")
                       (commit commit)))
                 (sha256
                  (base32
-                  "0gwvcgsxmwnm90v3phq17m6x4iikz98cp6s82s3d6iw346l257w9"))
+                  "0q8hlcj2fqza0wlcd21f1q13hmj7vp2gsapkxkprxl7d72g5l3ma"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (native-inputs
@@ -1025,6 +1025,7 @@ transactions from C or Python.")
              guix-data-service
              guix-build-coordinator
              guile-fibers
+             guile-knots
              guile-prometheus
              guile-lib))
       (propagated-inputs
@@ -1034,6 +1035,7 @@ transactions from C or Python.")
              guix-data-service
              guix-build-coordinator
              guile-fibers
+             guile-knots
              guile-prometheus
              guile-lib))
       (home-page "https://git.cbaines.net/guix/bffe")
