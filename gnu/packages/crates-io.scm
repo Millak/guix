@@ -69110,6 +69110,28 @@ Rhai, a scripting language and engine for Rust.")
 First In First Out} ring buffer with direct access to inner data.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-rinja-parser-0.3
+  (package
+    (name "rust-rinja-parser")
+    (version "0.3.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rinja_parser" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "046602hy9x1q3np3qm64xpkw1xx64kiyjikyn8gpl2p0w9kaiyck"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-memchr" ,rust-memchr-2)
+                       ("rust-nom" ,rust-nom-7)
+                       ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.5))))
+    (home-page "https://github.com/rinja-rs/rinja")
+    (synopsis "Parser for Rinja templates")
+    (description "This package provides a parser for Rinja templates.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-rkyv-0.7
   (package
     (name "rust-rkyv")
