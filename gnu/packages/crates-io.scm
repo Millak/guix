@@ -48788,8 +48788,7 @@ transformations and statically-sized or dynamically-sized matrices.")
         (uri (crate-uri "nalgebra" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-          (base32 "1zri11vkrbk3ayvy8xqcdvvyjvfcbl5a18x8z82racnn11zfn1nm"))
-       (modules '((guix build utils)))))
+         (base32 "1zri11vkrbk3ayvy8xqcdvvyjvfcbl5a18x8z82racnn11zfn1nm"))))
     (arguments
       `(#:tests? #f       ;TODO: how to enable required features?
         #:cargo-inputs
