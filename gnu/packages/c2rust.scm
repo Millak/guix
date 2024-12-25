@@ -135,13 +135,16 @@
         (base32 "0h9cnyijk65zypv8dqbmr5r238pqq9pa8njrdzx09xhfmc3kyg5l"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs (("rust-c2rust-bitfields-derive" ,rust-c2rust-bitfields-derive-0.18))))
+     (list #:cargo-inputs
+           (list rust-c2rust-bitfields-derive-0.18)
+           #:cargo-development-inputs
+           (list rust-libc-0.2)))
     (home-page "https://c2rust.com/")
     (synopsis
      "C-compatible struct bitfield implementation used in the C2Rust project")
     (description
-     "This package provides C-compatible struct bitfield implementation used in the C2Rust project.")
+     "This package provides a C-compatible struct bitfield implementation used
+in the C2Rust project.")
     (license license:bsd-3)))
 
 (define-public rust-c2rust-bitfields-derive-0.18
