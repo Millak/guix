@@ -19,6 +19,7 @@
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
 ;;; Copyright © 2024 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2024 Jakob Kirsch <jakob.kirsch@web.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -909,7 +910,7 @@ coolers, fan controllers and other devices.")
 (define-public memtest86+
   (package
     (name "memtest86+")
-    (version "6.20")
+    (version "7.20")
     (source
      (origin
        (method git-fetch)
@@ -918,7 +919,7 @@ coolers, fan controllers and other devices.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1wsrdgpxi2nrcazihi1ghkn681iqkpwd8wnp533avcfg16n0jd17"))
+        (base32 "0ifly0jbq4xy81mc6k621a8rr0ipjzn7783v2b535s1s55xrz7i5"))
        (patches
         (search-patches "memtest86+-build-reproducibly.patch"))))
     (build-system gnu-build-system)
