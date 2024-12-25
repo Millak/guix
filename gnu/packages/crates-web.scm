@@ -6163,8 +6163,34 @@ on high performance, interoperability, and flexibility.")
         ("rust-tokio" ,rust-tokio-1)
         ("rust-tower" ,rust-tower-0.4))))))
 
+(define-public rust-tonic-build-0.12
+  (package
+    (name "rust-tonic-build")
+    (version "0.12.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tonic-build" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "04baqblgrlc0g8scnhpky5s0n4cljaixrrdrr6cv6wx7kq8cwmwm"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-prettyplease" ,rust-prettyplease-0.2)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-prost-build" ,rust-prost-build-0.13)
+                       ("rust-prost-types" ,rust-prost-types-0.13)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/hyperium/tonic")
+    (synopsis "Codegen module of @code{tonic} gRPC implementation")
+    (description
+     "This package provides a codegen module of `tonic` @code{gRPC} implementation.")
+    (license license:expat)))
+
 (define-public rust-tonic-build-0.10
   (package
+    (inherit rust-tonic-build-0.12)
     (name "rust-tonic-build")
     (version "0.10.2")
     (source
@@ -6174,17 +6200,12 @@ on high performance, interoperability, and flexibility.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "129qd12ka65h5f1dzi5mrlz6wndi0pfx1320lawq51f18k01y0lx"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-prettyplease" ,rust-prettyplease-0.2)
                        ("rust-proc-macro2" ,rust-proc-macro2-1)
                        ("rust-prost-build" ,rust-prost-build-0.12)
                        ("rust-quote" ,rust-quote-1)
-                       ("rust-syn" ,rust-syn-2))))
-    (home-page "https://github.com/hyperium/tonic")
-    (synopsis "Codegen module of @code{tonic} gRPC implementation")
-    (description "Codegen module of @code{tonic} @code{gRPC} implementation.")
-    (license license:expat)))
+                       ("rust-syn" ,rust-syn-2))))))
 
 (define-public rust-tower-0.5
   (package
