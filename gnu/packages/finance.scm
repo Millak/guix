@@ -2007,6 +2007,12 @@ that allows you to run services and through them access the Bitcoin Cash network
           (add-before 'check 'build-extensions
             (lambda _
               (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (native-inputs
+     (list gnupg
+           python-pdfminer-six
+           python-pytest
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-beautifulsoup4
            python-bottle
@@ -2019,8 +2025,6 @@ that allows you to run services and through them access the Bitcoin Cash network
            python-oauth2client
            python-ply
            python-requests))
-    (native-inputs
-     (list gnupg python-pdfminer-six python-pytest))
     (home-page "https://beancount.github.io/")
     (synopsis "Command-line double-entry accounting tool")
     (description
