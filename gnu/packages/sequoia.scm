@@ -340,14 +340,14 @@ than just headers; it requires tight integration with the MUA.")
 (define-public rust-sequoia-keystore-0.6
   (package
     (name "rust-sequoia-keystore")
-    (version "0.6.1")
+    (version "0.6.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "sequoia-keystore" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "168scr1nv5h1fm67p1p59ym267db07kg3fw3shrramaq0af2smx8"))))
+        (base32 "1qy3nk2r39m5mzvx58ij7a1r9hiw0fmgmjrad6j4nf8djids5lsx"))))
     (build-system cargo-build-system)
     (arguments
      `(#:features '("sequoia-openpgp/crypto-nettle")
