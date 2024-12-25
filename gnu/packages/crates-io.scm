@@ -51220,9 +51220,7 @@ while still providing platform specific APIs.")
         ("rust-rand" ,rust-rand-0.6)
         ("rust-semver" ,rust-semver-0.9)
         ("rust-sysctl" ,rust-sysctl-0.1)
-        ("rust-tempfile" ,rust-tempfile-3))))
-    (inputs
-     (list rust-bitflags-1 rust-cc-1 rust-cfg-if-0.1 rust-libc-0.2))))
+        ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-nix-0.15
   (package
