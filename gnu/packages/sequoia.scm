@@ -578,8 +578,57 @@ private key store.")
      "This package provides a TPM backend for Sequoia's private key store.")
     (license license:lgpl2.0+)))
 
+(define-public rust-sequoia-net-0.29
+  (package
+    (name "rust-sequoia-net")
+    (version "0.29.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sequoia-net" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0xdraqrjlpjpzyn8sc8c8xfq13pr1gp6sd4c0n80x30i6kc60zjl"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:features '("sequoia-openpgp/crypto-nettle")
+       #:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-base64" ,rust-base64-0.21)
+                       ("rust-futures-util" ,rust-futures-util-0.3)
+                       ("rust-hickory-client" ,rust-hickory-client-0.24)
+                       ("rust-hickory-resolver" ,rust-hickory-resolver-0.24)
+                       ("rust-http" ,rust-http-1)
+                       ("rust-hyper" ,rust-hyper-1)
+                       ("rust-hyper-tls" ,rust-hyper-tls-0.6)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-percent-encoding" ,rust-percent-encoding-2)
+                       ("rust-reqwest" ,rust-reqwest-0.12)
+                       ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-url" ,rust-url-2)
+                       ("rust-z-base-32" ,rust-z-base-32-0.1))
+       #:cargo-development-inputs (("rust-bytes" ,rust-bytes-1)
+                                   ("rust-http-body-util" ,rust-http-body-util-0.1)
+                                   ("rust-hyper" ,rust-hyper-1)
+                                   ("rust-hyper-util" ,rust-hyper-util-0.1)
+                                   ("rust-rand" ,rust-rand-0.8)
+                                   ("rust-reqwest" ,rust-reqwest-0.12)
+                                   ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
+    (native-inputs
+     (list clang pkg-config))
+    (inputs
+     (list gmp nettle openssl))
+    (home-page "https://sequoia-pgp.org/")
+    (synopsis "Discover and publish OpenPGP certificates over the network")
+    (description "This package provides a crate to access keyservers using the
+HKP protocol, and searching and publishing Web Key Directories.")
+    (license license:lgpl2.0+)))
+
 (define-public rust-sequoia-net-0.28
   (package
+    (inherit rust-sequoia-net-0.29)
     (name "rust-sequoia-net")
     (version "0.28.0")
     (source
@@ -589,7 +638,6 @@ private key store.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0jw1p8gwf505q6dh1281fl7kmh8mr1f4hswl5crrycwqlq5q3gva"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:features '("sequoia-openpgp/crypto-nettle")
        #:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
@@ -609,19 +657,11 @@ private key store.")
                        ("rust-tokio" ,rust-tokio-1)
                        ("rust-url" ,rust-url-2)
                        ("rust-z-base-32" ,rust-z-base-32-0.1))
-       #:cargo-development-inputs (("rust-hyper" ,rust-hyper-0.14)
-                                   ("rust-rand" ,rust-rand-0.8)
-                                   ("rust-reqwest" ,rust-reqwest-0.11)
-                                   ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1))))
-    (native-inputs
-     (list clang pkg-config))
-    (inputs
-     (list gmp nettle openssl))
-    (home-page "https://sequoia-pgp.org/")
-    (synopsis "Discover and publish OpenPGP certificates over the network")
-    (description "This package provides a crate to access keyservers using the
-HKP protocol, and searching and publishing Web Key Directories.")
-    (license license:lgpl2.0+)))
+       #:cargo-development-inputs
+       (("rust-hyper" ,rust-hyper-0.14)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-reqwest" ,rust-reqwest-0.11)
+        ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1))))))
 
 (define-public rust-sequoia-openpgp-1
   (package
