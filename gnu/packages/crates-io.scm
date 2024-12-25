@@ -82414,8 +82414,32 @@ easier in Rust.")
 automated acceptance tests for systems and software.")
     (license license:expat-0)))
 
+(define-public rust-subplot-build-0.11
+  (package
+    (name "rust-subplot-build")
+    (version "0.11.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "subplot-build" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1w0ihzj8z13c7lkfbiihd5njmy824zb0cw2w41hklpg7l1f862mi"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-subplot" ,rust-subplot-0.11)
+                       ("rust-tempfile" ,rust-tempfile-3)
+                       ("rust-tracing" ,rust-tracing-0.1))))
+    (home-page "https://subplot.tech/")
+    (synopsis "Library for using Subplot code generation")
+    (description
+     "This package provides a library for using Subplot code generation from
+another project's @code{build.rs} module.")
+    (license license:expat-0)))
+
 (define-public rust-subplot-build-0.7
   (package
+    (inherit rust-subplot-build-0.11)
     (name "rust-subplot-build")
     (version "0.7.1")
     (source (origin
@@ -82425,18 +82449,11 @@ automated acceptance tests for systems and software.")
               (sha256
                (base32
                 "1p38kq7fmg6gpwqmkymn68f2qiaw7k35s7i4k0ifs6g5c0d70xfw"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-subplot" ,rust-subplot-0.7)
         ("rust-tempfile" ,rust-tempfile-3)
-        ("rust-tracing" ,rust-tracing-0.1))))
-    (home-page "https://subplot.tech/")
-    (synopsis "Library for using Subplot code generation")
-    (description
-     "This package provides a library for using Subplot code generation from
-another project's @code{build.rs} module.")
-    (license license:expat-0)))
+        ("rust-tracing" ,rust-tracing-0.1))))))
 
 (define-public rust-subplotlib-0.11
   (package
