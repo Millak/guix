@@ -51012,7 +51012,7 @@ environment variable is set.")
 (define-public rust-no-panic-0.1
   (package
     (name "rust-no-panic")
-    (version "0.1.26")
+    (version "0.1.33")
     (source
      (origin
        (method url-fetch)
@@ -51020,7 +51020,7 @@ environment variable is set.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0sp4d9815f8vdz31qm10wpnswi0x89hlbzw78nxy0p2g88kd39ki"))))
+         "1s4p4r6p6gv3fy2dm1cx19hmnxc9szvb5x3f51wn0i7ycrjahzcg"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -51029,7 +51029,7 @@ environment variable is set.")
         ("rust-syn" ,rust-syn-2))
        #:cargo-development-inputs
        (("rust-rustversion" ,rust-rustversion-1)
-        ("rust-tempfile" ,rust-tempfile-3)
+        ("rust-scratch" ,rust-scratch-1)
         ("rust-trybuild" ,rust-trybuild-1))))
     (home-page "https://github.com/dtolnay/no-panic")
     (synopsis "Prove a function can't ever panic")
