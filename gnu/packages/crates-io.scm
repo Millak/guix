@@ -44227,17 +44227,17 @@ image together with its neighboring pixels.")
 (define-public rust-lru-0.12
   (package
     (name "rust-lru")
-    (version "0.12.1")
+    (version "0.12.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "lru" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1myillpwqfcins062g28jvj48cxw8818zcx08ydzsl6misxfx519"))))
+        (base32 "0f1a7cgqxbyhrmgaqqa11m3azwhcc36w0v5r4izgbhadl3sg8k13"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-hashbrown" ,rust-hashbrown-0.14))
+     `(#:cargo-inputs (("rust-hashbrown" ,rust-hashbrown-0.15))
        #:cargo-development-inputs
        (("rust-scoped-threadpool" ,rust-scoped-threadpool-0.1)
         ("rust-stats-alloc" ,rust-stats-alloc-0.1))))
