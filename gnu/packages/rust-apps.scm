@@ -2867,7 +2867,7 @@ command.")
 (define-public sniffglue
   (package
     (name "sniffglue")
-    (version "0.16.0")
+    (version "0.16.1")
     (source
      (origin
        (method url-fetch)
@@ -2875,7 +2875,7 @@ command.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0q63dysxzzqyknm3kqk0dff1vm8j6g05dkjwn7kqaglmf9ksd7v3"))))
+         "0dkkw8gwrgawd2s5bg47508i3kjnsv1dwmqa3hlijdvdw4wgm9gz"))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
@@ -2889,24 +2889,22 @@ command.")
         ("rust-dhcp4r" ,rust-dhcp4r-0.2)
         ("rust-dirs-next" ,rust-dirs-next-2)
         ("rust-dns-parser" ,rust-dns-parser-0.8)
-        ("rust-env-logger" ,rust-env-logger-0.10)
+        ("rust-env-logger" ,rust-env-logger-0.11)
         ("rust-httparse" ,rust-httparse-1)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-log" ,rust-log-0.4)
-        ("rust-nix" ,rust-nix-0.27)
+        ("rust-nix" ,rust-nix-0.29)
         ("rust-nom" ,rust-nom-7)
         ("rust-num-cpus" ,rust-num-cpus-1)
         ("rust-pcap-sys" ,rust-pcap-sys-0.1)
         ("rust-pktparse" ,rust-pktparse-0.7)
-        ("rust-reduce" ,rust-reduce-0.1)
         ("rust-serde" ,rust-serde-1)
-        ("rust-serde-derive" ,rust-serde-derive-1)
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-sha2" ,rust-sha2-0.10)
         ("rust-syscallz" ,rust-syscallz-0.17)
-        ("rust-tls-parser" ,rust-tls-parser-0.11)
+        ("rust-tls-parser" ,rust-tls-parser-0.12)
         ("rust-toml" ,rust-toml-0.8)
-        ("rust-uzers" ,rust-uzers-0.11))
+        ("rust-uzers" ,rust-uzers-0.12))
        #:cargo-development-inputs
        (("rust-boxxy" ,rust-boxxy-0.13))))
     (inputs
