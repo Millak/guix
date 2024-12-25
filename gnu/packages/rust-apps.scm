@@ -3358,9 +3358,9 @@ runs a command whenever it detects modifications.")
                     (rbw (if ,(%current-target-system)
                           (search-input-file native-inputs "/bin/rbw")
                           (string-append out "/bin/rbw"))))
-               (mkdir-p (string-append share "/bash-completion/completions"))
+               (mkdir-p (string-append out "/etc/bash_completion.d"))
                (with-output-to-file
-                 (string-append share "/bash-completion/completions/rbw")
+                 (string-append out "/etc/bash_completion.d/rbw")
                  (lambda _ (invoke rbw "gen-completions" "bash")))
                (mkdir-p (string-append share "/fish/vendor_completions.d"))
                (with-output-to-file
