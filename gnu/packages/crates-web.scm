@@ -7755,10 +7755,6 @@ the Trust-DNS client to use rustls for TLS.")
        (sha256
         (base32
          "0vbh2y7w2s5gcw33fn4hb5f927kgjm6603vw63slg9riikmsiq43"))))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list openssl))
     (arguments
      `(#:cargo-test-flags
        '("--release" "--" "--skip=tests::test_tls_client_stream_ipv4")
