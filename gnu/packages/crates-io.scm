@@ -2349,14 +2349,14 @@ reductions on 32-bit ARM.")
 (define-public rust-anyhow-1
   (package
     (name "rust-anyhow")
-    (version "1.0.89")
+    (version "1.0.95")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "anyhow" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1xh1vg89n56h6nqikcmgbpmkixjds33492klrp9m96xrbmhgizc6"))))
+        (base32 "010vd1ki8w84dzgx6c81sc8qm9n02fxic1gkpv52zp4nwrn0kb1l"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -2365,7 +2365,7 @@ reductions on 32-bit ARM.")
        (("rust-futures" ,rust-futures-0.3)
         ("rust-rustversion" ,rust-rustversion-1)
         ("rust-syn" ,rust-syn-2)
-        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-thiserror" ,rust-thiserror-2)
         ("rust-trybuild" ,rust-trybuild-1))))
     (home-page "https://github.com/dtolnay/anyhow")
     (synopsis "Flexible concrete Error type")
