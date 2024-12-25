@@ -2554,7 +2554,7 @@ by modifying your @file{Cargo.toml} file from the command line.")
 (define-public git-interactive-rebase-tool
   (package
     (name "git-interactive-rebase-tool")
-    (version "2.1.0")
+    (version "2.4.1")
     (source
      (origin
        ;; crates.io does not provide the test data.
@@ -2565,32 +2565,47 @@ by modifying your @file{Cargo.toml} file from the command line.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "173spqqpyc00kvfmldjmjfqizh9b4spq4xw4bskd4dny8qcpz28d"))))
+         "1asf1nlnbd915hs288ga67sr6540slgi2a0kmvxy7q4skd4w8n9n"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-test-flags
-       ;; https://github.com/MitMaro/git-interactive-rebase-tool/issues/586
-       '("--release" "--" "--skip=tests::success")
+     `(#:install-source? #f
        #:cargo-inputs
        (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-bitflags" ,rust-bitflags-2)
+        ("rust-captur" ,rust-captur-0.1)
         ("rust-chrono" ,rust-chrono-0.4)
-        ("rust-clap" ,rust-clap-2)
-        ("rust-crossterm" ,rust-crossterm-0.19)
-        ("rust-git2" ,rust-git2-0.13)
+        ("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
+        ("rust-crossterm" ,rust-crossterm-0.27)
+        ("rust-git2" ,rust-git2-0.18)
+        ("rust-if-chain" ,rust-if-chain-1)
+        ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-num-format" ,rust-num-format-0.4)
+        ("rust-parking-lot" ,rust-parking-lot-0.12)
+        ("rust-pico-args" ,rust-pico-args-0.5)
+        ("rust-rustc-version" ,rust-rustc-version-0.4)
+        ("rust-thiserror" ,rust-thiserror-1)
         ("rust-unicode-segmentation" ,rust-unicode-segmentation-1)
         ("rust-unicode-width" ,rust-unicode-width-0.1)
+        ("rust-uuid" ,rust-uuid-1)
+        ("rust-version-track" ,rust-version-track-0.1)
         ("rust-xi-unicode" ,rust-xi-unicode-0.3))
        #:cargo-development-inputs
-       (("rust-concat-idents" ,rust-concat-idents-1)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-rstest" ,rust-rstest-0.6)
-        ("rust-serial-test" ,rust-serial-test-0.5)
-        ("rust-tempfile" ,rust-tempfile-3))))
+       (("rust-claims" ,rust-claims-0.7)
+        ("rust-itertools" ,rust-itertools-0.13)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-rstest" ,rust-rstest-0.19)
+        ("rust-serial-test" ,rust-serial-test-3)
+        ("rust-tempfile" ,rust-tempfile-3))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'set-release-variable
+           (lambda _
+             (setenv "GIRT_BUILD_GIT_HASH" "GNUGUIX"))))))
     (native-inputs
      (list pkg-config))
     (inputs
-     (list libgit2-1.3 zlib))
+     (list libgit2-1.7 zlib))
     (home-page "https://gitrebasetool.mitmaro.ca/")
     (synopsis "Terminal based sequence editor for git interactive rebase")
     (description
