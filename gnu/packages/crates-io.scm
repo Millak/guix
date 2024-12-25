@@ -99379,6 +99379,42 @@ for terminal and other window-less applications.")
          ("rust-wayland-commons" ,rust-wayland-commons-0.28)
          ("rust-wayland-protocols" ,rust-wayland-protocols-0.28))))))
 
+(define-public rust-wl-nl80211-0.2
+  (package
+    (name "rust-wl-nl80211")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wl-nl80211" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "12cp8ar0wa0kvxz756dxnfvz357jqyznh9z2g5vlcf6a3lgczzsw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-async-std" ,rust-async-std-1)
+        ("rust-bitflags" ,rust-bitflags-2)
+        ("rust-byteorder" ,rust-byteorder-1)
+        ("rust-futures" ,rust-futures-0.3)
+        ("rust-genetlink" ,rust-genetlink-0.2)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-netlink-packet-core" ,rust-netlink-packet-core-0.7)
+        ("rust-netlink-packet-generic" ,rust-netlink-packet-generic-0.3)
+        ("rust-netlink-packet-utils" ,rust-netlink-packet-utils-0.5)
+        ("rust-netlink-proto" ,rust-netlink-proto-0.11)
+        ("rust-netlink-sys" ,rust-netlink-sys-0.8)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-tokio" ,rust-tokio-1))
+       #:cargo-development-inputs (("rust-env-logger" ,rust-env-logger-0.9)
+                                   ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/rust-netlink/wl-nl80211")
+    (synopsis "Linux kernel wireless(802.11) netlink Library")
+    (description
+     "This package provides Linux kernel wireless(802.11) netlink Library.")
+    (license license:expat)))
+
 (define-public rust-wmidi-3
   (package
     (name "rust-wmidi")
