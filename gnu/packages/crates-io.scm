@@ -4685,16 +4685,14 @@ assertions on the result of your program's run.")
   (package
     (inherit rust-assert-cmd-2)
     (name "rust-assert-cmd")
-    (version "1.0.7")
+    (version "1.0.8")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "assert_cmd" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "0pz938z0wipy2czmp5aym6agfsgkpzd9rhbjqg3s9p84s0dq681x"))))
+        (base32 "1zhz7bgzsmwc50bknw658q6i0lcwk67v6zp74fmh31ixcz3370n9"))))
     (arguments
      `(#:cargo-inputs
        (("rust-bstr" ,rust-bstr-0.2)
