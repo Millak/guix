@@ -57314,7 +57314,6 @@ implementations.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "14blflnbj87z3ajlj1hszsl6k7rwa338y4aw2yjm2j0xdpjvj4pr"))))
-    (native-inputs (list libpcap))
     (arguments
      `(#:tests? #f  ; can't find crate for `futures`
        #:cargo-inputs
