@@ -60992,19 +60992,19 @@ functions.")
 (define-public rust-predicates-tree-1
   (package
     (name "rust-predicates-tree")
-    (version "1.0.9")
+    (version "1.0.12")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "predicates-tree" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32 "1kyfq3r0s2vg94a9r59n7ar5gv66zvpa0s1fd6mm4l4czcas72rn"))))
+         (base32 "0p223d9y02ywwxs3yl68kziswz4da4vabz67jfhp7yqx71njvpbj"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-predicates-core" ,rust-predicates-core-1)
-        ("rust-termtree" ,rust-termtree-0.4))
+        ("rust-termtree" ,rust-termtree-0.5))
        #:cargo-development-inputs
        (("rust-predicates" ,rust-predicates-3))))
     (home-page
