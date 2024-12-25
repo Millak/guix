@@ -117,14 +117,14 @@
 (define-public aardvark-dns
   (package
     (name "aardvark-dns")
-    (version "1.12.2")
+    (version "1.13.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "aardvark-dns" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1np7n7hiawllrmli4h0m7vvap10pghyr1rzz09gl4fi93janznn6"))
+        (base32 "0765p0jscj9c061rvb3dv922lnysvsk2xw88scjf41gr20hly3g6"))
        (modules '((guix build utils)))
        (snippet
         '(begin (substitute* (find-files "." "^Cargo\\.toml$")
@@ -144,7 +144,6 @@
                        ("rust-libc" ,rust-libc-0.2)
                        ("rust-log" ,rust-log-0.4)
                        ("rust-nix" ,rust-nix-0.29)
-                       ("rust-resolv-conf" ,rust-resolv-conf-0.7)
                        ("rust-syslog" ,rust-syslog-7)
                        ("rust-tokio" ,rust-tokio-1))))
     (home-page "https://github.com/containers/aardvark-dns")
