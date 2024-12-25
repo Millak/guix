@@ -40200,20 +40200,20 @@ passwords/credentials.")
 (define-public rust-kqueue-sys-1
   (package
     (name "rust-kqueue-sys")
-    (version "1.0.3")
+    (version "1.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "kqueue-sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "11z5labbms9vn9m6csi5383dmrlmdgsxq13ls9fwa6zhi5a5hrw3"))))
+        (base32 "12w3wi90y4kwis4k9g6fp0kqjdmc6l00j16g8mgbhac7vbzjb5pd"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build?
-       #t
+     `(#:skip-build? #t     ; cannot find type `EventFilter` in this scope
        #:cargo-inputs
-       (("rust-bitflags" ,rust-bitflags-1) ("rust-libc" ,rust-libc-0.2))))
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-libc" ,rust-libc-0.2))))
     (home-page "https://gitlab.com/worr/rust-kqueue-sys")
     (synopsis "Low-level kqueue interface for BSDs")
     (description "This package provides a low-level kqueue interface for BSDs.")
