@@ -84126,7 +84126,7 @@ a syntax tree of Rust source code.")
        #:cargo-inputs
        (("rust-quote" ,rust-quote-0.3)
         ("rust-synom" ,rust-synom-0.11)
-        ("rust-unicode-xid" ,rust-unicode-xid-0.0))
+        ("rust-unicode-xid" ,rust-unicode-xid-0.0.4))
        #:cargo-development-inputs
        (("rust-syntex-pos" ,rust-syntex-pos-0.58)
         ("rust-syntex-syntax" ,rust-syntex-syntax-0.58)
@@ -84262,7 +84262,7 @@ standard library.")
                (("^path =.*") ""))
              #t)))
        #:cargo-inputs
-       (("rust-unicode-xid" ,rust-unicode-xid-0.0))
+       (("rust-unicode-xid" ,rust-unicode-xid-0.0.4))
        #:cargo-development-inputs
        (("rust-syn" ,rust-syn-0.11))))
     (home-page "https://github.com/dtolnay/syn")
@@ -84451,7 +84451,7 @@ intelligence using Sublime Text's grammars.")
         ("rust-rustc-serialize" ,rust-rustc-serialize-0.3)
         ("rust-syntex-pos" ,rust-syntex-pos-0.58)
         ("rust-term" ,rust-term-0.4)
-        ("rust-unicode-xid" ,rust-unicode-xid-0.0))))
+        ("rust-unicode-xid" ,rust-unicode-xid-0.0.4))))
     (home-page "https://github.com/serde-rs/syntex")
     (synopsis "Backport of librustc_errors")
     (description "This package provides a backport of @code{librustc_errors}.")
@@ -84503,7 +84503,7 @@ intelligence using Sublime Text's grammars.")
         ("rust-rustc-serialize" ,rust-rustc-serialize-0.3)
         ("rust-syntex-errors" ,rust-syntex-errors-0.58)
         ("rust-syntex-pos" ,rust-syntex-pos-0.58)
-        ("rust-unicode-xid" ,rust-unicode-xid-0.0))))
+        ("rust-unicode-xid" ,rust-unicode-xid-0.0.4))))
     (home-page "https://github.com/serde-rs/syntex")
     (synopsis "Backport of libsyntax")
     (description "This package provides a backport of libsyntax.")
@@ -95080,7 +95080,7 @@ to Unicode Standard Annex #31.")
          (base32
           "1z57lqh4s18rr4x0j4fw4fmp9hf9346h0kmdgqsqx0fhjr3k0wpw"))))))
 
-(define-public rust-unicode-xid-0.0
+(define-public rust-unicode-xid-0.0.4
   (package
     (inherit rust-unicode-xid-0.2)
     (name "rust-unicode-xid")
