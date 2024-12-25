@@ -939,55 +939,68 @@ rules are rather complex.  This crate implements the whole grammar." )
 (define-public sequoia-sq
   (package
     (name "sequoia-sq")
-    (version "0.38.0")
+    (version "1.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "sequoia-sq" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "060dsh7ws9mwamc1jcp093j2g54sm9v5fy1mdhlw8kw2wybqybrj"))))
+        (base32 "0gkj0d1xz14wivnnhylq7c6a6wpk9qp8414nmnsvp1agc8ywzhfh"))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
+       #:features '("crypto-nettle"
+                    "sequoia-keystore/gpg-agent"
+                    "sequoia-keystore/softkeys")
        #:cargo-test-flags
        (list "--"
              ;; The certificate has an expiration date.
              "--skip=sq_autocrypt_import")
        #:cargo-inputs
-       (("rust-anyhow" ,rust-anyhow-1)
+       (("rust-aho-corasick" ,rust-aho-corasick-1)
+        ("rust-anyhow" ,rust-anyhow-1)
         ("rust-buffered-reader" ,rust-buffered-reader-1)
         ("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-chrono" ,rust-chrono-0.4)
         ("rust-clap" ,rust-clap-4)
         ("rust-clap-complete" ,rust-clap-complete-4)
+        ("rust-culpa" ,rust-culpa-1)
         ("rust-dirs" ,rust-dirs-5)
+        ("rust-filetime" ,rust-filetime-0.2)
         ("rust-fs-extra" ,rust-fs-extra-1)
+        ("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-gethostname" ,rust-gethostname-0.4)
         ("rust-humantime" ,rust-humantime-2)
         ("rust-indicatif" ,rust-indicatif-0.17)
         ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-reqwest" ,rust-reqwest-0.12)
         ("rust-roff" ,rust-roff-0.2)
         ("rust-rpassword" ,rust-rpassword-7)
+        ("rust-rusqlite" ,rust-rusqlite-0.31)
         ("rust-sequoia-autocrypt" ,rust-sequoia-autocrypt-0.25)
         ("rust-sequoia-cert-store" ,rust-sequoia-cert-store-0.6)
         ("rust-sequoia-directories" ,rust-sequoia-directories-0.1)
+        ("rust-sequoia-ipc" ,rust-sequoia-ipc-0.35)
         ("rust-sequoia-keystore" ,rust-sequoia-keystore-0.6)
-        ("rust-sequoia-net" ,rust-sequoia-net-0.28)
+        ("rust-sequoia-net" ,rust-sequoia-net-0.29)
         ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1)
-        ("rust-sequoia-policy-config" ,rust-sequoia-policy-config-0.6)
-        ("rust-sequoia-wot" ,rust-sequoia-wot-0.12)
+        ("rust-sequoia-policy-config" ,rust-sequoia-policy-config-0.7)
+        ("rust-sequoia-wot" ,rust-sequoia-wot-0.13)
         ("rust-serde" ,rust-serde-1)
-        ("rust-subplot-build" ,rust-subplot-build-0.7)
-        ("rust-subplotlib" ,rust-subplotlib-0.7)
+        ("rust-subplot-build" ,rust-subplot-build-0.11)
+        ("rust-subplotlib" ,rust-subplotlib-0.11)
         ("rust-tempfile" ,rust-tempfile-3)
         ("rust-termcolor" ,rust-termcolor-1)
         ("rust-terminal-size" ,rust-terminal-size-0.2)
         ("rust-textwrap" ,rust-textwrap-0.15)
         ("rust-thiserror" ,rust-thiserror-1)
-        ("rust-tokio" ,rust-tokio-1))
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-toml-edit" ,rust-toml-edit-0.22)
+        ("rust-typenum" ,rust-typenum-1))
        #:cargo-development-inputs
        (("rust-assert-cmd" ,rust-assert-cmd-2)
-        ("rust-fehler" ,rust-fehler-1)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-predicates" ,rust-predicates-2)
         ("rust-regex" ,rust-regex-1))
@@ -1032,7 +1045,8 @@ rules are rather complex.  This crate implements the whole grammar." )
     (description "This package provides the command-line frontend for Sequoia
 OpenPGP.
 
-This Guix package is built to use the nettle cryptographic library.")
+This Guix package is built to use the nettle cryptographic library and the
+gpg-agent and softkeys keystore backends.")
     (license license:lgpl2.0+)))
 
 (define-public sequoia-sqv
