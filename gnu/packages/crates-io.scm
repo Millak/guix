@@ -40025,14 +40025,14 @@ speed then walkdir provides a smaller and more tested single threaded implementa
 (define-public rust-keccak-0.1
   (package
     (name "rust-keccak")
-    (version "0.1.4")
+    (version "0.1.5")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "keccak" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0h7rcvwvf20g4k8cx2brnrqvah6jwzs84w09vrj4743dczc5wvcg"))))
+                "0m06swsyd58hvb1z17q6picdwywprf1yf1s6l491zi8r26dazhpc"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-cpufeatures" ,rust-cpufeatures-0.2))))
