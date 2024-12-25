@@ -378,7 +378,7 @@ lost.
 (define-public pacemaker
   (package
     (name "pacemaker")
-    (version "2.1.7")
+    (version "2.1.9")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -387,7 +387,7 @@ lost.
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0vhimylbkwabi0hksgs66awn9iq3ik02k1n4xghxh81nhz7kjmdz"))))
+                "154wnh7yrblq3jlcyqy19yvncjcy5sh73nphakhm0kq8qq64m208"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags #~(list "--with-corosync" "--disable-static"
