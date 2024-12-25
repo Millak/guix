@@ -251,17 +251,17 @@ than just headers; it requires tight integration with the MUA.")
     (description "This package provides Directories used by Sequoia.")
     (license license:lgpl2.0+)))
 
-(define-public rust-sequoia-gpg-agent-0.4
+(define-public rust-sequoia-gpg-agent-0.5
   (package
     (name "rust-sequoia-gpg-agent")
-    (version "0.4.2")
+    (version "0.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "sequoia-gpg-agent" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "119njpmhg0is0vlba199bmyp7fi19w8y555i89njkyrfv7yvakds"))))
+        (base32 "1f8vzxzkwdaa1v0yh5c1pb3wry734wrf2wwsa1zvypwxgvs129fc"))))
     (build-system cargo-build-system)
     (arguments
      `(#:features '("sequoia-openpgp/crypto-nettle")
