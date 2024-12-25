@@ -24075,7 +24075,6 @@ and @code{directories} crates.")
 
 (define-public rust-dirs-sys-next-0.1
   (package
-    (inherit rust-dirs-sys-0.3)
     (name "rust-dirs-sys-next")
     (version "0.1.2")
     (source
@@ -24086,12 +24085,18 @@ and @code{directories} crates.")
        (sha256
         (base32
          "0kavhavdxv4phzj4l0psvh55hszwnr0rcz8sxbvx20pyqi2a3gaf"))))
+    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-libc" ,rust-libc-0.2)
         ("rust-redox-users" ,rust-redox-users-0.4)
         ("rust-winapi" ,rust-winapi-0.3))))
-    (home-page "https://github.com/xdg-rs/dirs/tree/master/dirs-sys")))
+    (home-page "https://github.com/xdg-rs/dirs/tree/master/dirs-sys")
+    (synopsis "Shared code for dirs-next and directories-next")
+    (description
+     "This package only exists to facilitate code sharing between
+dirs-next and directories-next.")
+    (license (list license:expat license:asl2.0))))
 
 (define-public rust-discard-1
   (package
