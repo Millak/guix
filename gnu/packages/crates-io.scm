@@ -94009,8 +94009,7 @@ strings.")
        (uri (crate-uri "twoway" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-		"1lbf64snscr3vz71jbl6i2c8zr2ndsiqbk6316z39fj1a8mipcar"))))))
+        (base32 "1lbf64snscr3vz71jbl6i2c8zr2ndsiqbk6316z39fj1a8mipcar"))))))
 
 (define-public rust-twox-hash-1
   (package
