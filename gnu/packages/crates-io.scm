@@ -45808,8 +45808,36 @@ template engine for Rust.")
         (base32
          "08ayl9aqjnmf7ly1ipy6dk3wjvyfn4w51l40jzh1fh984ykldbzi"))))))
 
+(define-public rust-markup5ever-rcdom-0.3
+  (package
+    (name "rust-markup5ever-rcdom")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "markup5ever_rcdom" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "065yb6zn9sfn7kqk5wwc48czsls5z3hzgrddk58fxgq16ymj3apd"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-html5ever" ,rust-html5ever-0.27)
+                       ("rust-markup5ever" ,rust-markup5ever-0.12)
+                       ("rust-tendril" ,rust-tendril-0.4)
+                       ("rust-xml5ever" ,rust-xml5ever-0.18))
+       #:cargo-development-inputs (("rust-rustc-test" ,rust-rustc-test-0.3)
+                                   ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/servo/html5ever")
+    (synopsis
+     "Basic, unsupported DOM structure for use by tests in html5ever/xml5ever")
+    (description
+     "This package provides a basic, unsupported DOM structure for use by tests
+in html5ever/xml5ever")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-markup5ever-rcdom-0.2
   (package
+    (inherit rust-markup5ever-rcdom-0.3)
     (name "rust-markup5ever-rcdom")
     (version "0.2.0")
     (source (origin
@@ -45819,7 +45847,6 @@ template engine for Rust.")
               (sha256
                (base32
                 "1hir73wmvl0i5mfplfjg0qvxxmsn8qp5xmjkdkp813hgfpb1slmr"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-html5ever" ,rust-html5ever-0.26)
@@ -45828,14 +45855,7 @@ template engine for Rust.")
         ("rust-xml5ever" ,rust-xml5ever-0.17))
        #:cargo-development-inputs
        (("rust-rustc-test" ,rust-rustc-test-0.3)
-        ("rust-serde-json" ,rust-serde-json-1))))
-    (home-page "https://github.com/servo/html5ever")
-    (synopsis
-     "Basic, unsupported DOM structure for use by tests in html5ever/xml5ever")
-    (description
-     "This package provides a basic, unsupported DOM structure for use by tests
-in html5ever/xml5ever")
-    (license (list license:expat license:asl2.0))))
+        ("rust-serde-json" ,rust-serde-json-1))))))
 
 (define-public rust-markup5ever-rcdom-0.1
   (package
