@@ -4502,14 +4502,14 @@ with hyper.")
 (define-public rust-hyper-util-0.1
   (package
     (name "rust-hyper-util")
-    (version "0.1.5")
+    (version "0.1.10")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "hyper-util" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0mhw6n1s40ifr5a8z0nij2yirpdi81jhcyxfp7byb5hblqj5k1vv"))))
+        (base32 "1d1iwrkysjhq63pg54zk3vfby1j7zmxzm9zzyfr4lwvp0szcybfz"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; could not find `client` in `hyper_util`
@@ -4522,14 +4522,13 @@ with hyper.")
                        ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
                        ("rust-socket2" ,rust-socket2-0.5)
                        ("rust-tokio" ,rust-tokio-1)
-                       ("rust-tower" ,rust-tower-0.4)
                        ("rust-tower-service" ,rust-tower-service-0.3)
                        ("rust-tracing" ,rust-tracing-0.1))
        #:cargo-development-inputs
        (("rust-bytes" ,rust-bytes-1)
         ("rust-http-body-util" ,rust-http-body-util-0.1)
         ("rust-hyper" ,rust-hyper-1)
-        ("rust-pnet-datalink" ,rust-pnet-datalink-0.34)
+        ("rust-pnet-datalink" ,rust-pnet-datalink-0.35)
         ("rust-pretty-env-logger" ,rust-pretty-env-logger-0.5)
         ("rust-tokio" ,rust-tokio-1)
         ("rust-tokio-test" ,rust-tokio-test-0.4))))
