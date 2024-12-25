@@ -79184,6 +79184,30 @@ data type.")
 logging library.")
     (license (list license:mpl2.0 license:expat license:asl2.0))))
 
+(define-public rust-slog-json-2
+  (package
+    (name "rust-slog-json")
+    (version "2.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "slog-json" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "06gjy1n7ivrcy7rr8dyndmfza24hwbgakw7faawciqzi3bv567iy"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-erased-serde" ,rust-erased-serde-0.3)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-slog" ,rust-slog-2)
+                       ("rust-time" ,rust-time-0.3))
+       #:cargo-development-inputs (("rust-slog-async" ,rust-slog-async-2))))
+    (home-page "https://github.com/slog-rs/slog")
+    (synopsis "JSON drain for slog-rs")
+    (description "This package provides JSON drain for slog-rs.")
+    (license (list license:mpl2.0 license:expat license:asl2.0))))
+
 (define-public rust-slog-kvfilter-0.7
   (package
     (name "rust-slog-kvfilter")
