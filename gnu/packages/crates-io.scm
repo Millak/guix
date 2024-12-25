@@ -4651,14 +4651,14 @@ approximately equal.")
 (define-public rust-assert-cmd-2
   (package
     (name "rust-assert-cmd")
-    (version "2.0.14")
+    (version "2.0.16")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "assert_cmd" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1a3k03dl57psaky6brb53awzmgbjdivb62j8gy1h8n3dqqx4jwpd"))))
+        (base32 "0gdj0710k3lnvyjmpv8a4dgwrk9ib85l2wfw4n2xwy3qyavka66w"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -4666,12 +4666,14 @@ approximately equal.")
         ("rust-anstyle" ,rust-anstyle-1)
         ("rust-bstr" ,rust-bstr-1)
         ("rust-doc-comment" ,rust-doc-comment-0.3)
+        ("rust-libc" ,rust-libc-0.2)
         ("rust-predicates" ,rust-predicates-3)
         ("rust-predicates-core" ,rust-predicates-core-1)
         ("rust-predicates-tree" ,rust-predicates-tree-1)
         ("rust-wait-timeout" ,rust-wait-timeout-0.2))
        #:cargo-development-inputs
-       (("rust-escargot" ,rust-escargot-0.5))))
+       (("rust-automod" ,rust-automod-1)
+        ("rust-escargot" ,rust-escargot-0.5))))
     (home-page "https://github.com/assert-rs/assert_cmd")
     (synopsis "Test CLI Applications")
     (description "@code{assert_cmd} aims to simplify the process for doing
