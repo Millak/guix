@@ -42895,8 +42895,6 @@ This package contains the protobuf logic.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1g9gbjjpm9phhs991abkzmacszibp94m5nrh331ycd99y9ci1lv4"))))
-    (inputs
-     (list sqlite))
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
