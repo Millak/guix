@@ -77112,22 +77112,21 @@ Rust's serde.")
 (define-public rust-serdeconv-0.4
   (package
     (name "rust-serdeconv")
-    (version "0.4.0")
+    (version "0.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "serdeconv" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0cal6qkzps92g7csycqij4ik1df3ccxn5sxnjvfvm473phnwbvbi"))))
+        (base32 "08bjyh38pr9ssg9vivk66r461j3piq78w5jb55afa98xxxnnk5w8"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-rmp-serde" ,rust-rmp-serde-0.15)
+     `(#:cargo-inputs
+       (("rust-rmp-serde" ,rust-rmp-serde-1)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-toml" ,rust-toml-0.5)
+        ("rust-toml" ,rust-toml-0.7)
         ("rust-trackable" ,rust-trackable-1))
        #:cargo-development-inputs
        (("rust-serde-derive" ,rust-serde-derive-1))))
