@@ -2111,17 +2111,27 @@ support for merging, minifying and compiling CSS and Javascript files.")
 (define-public python-flask-babel
   (package
     (name "python-flask-babel")
-    (version "2.0.0")
+    (version "4.0.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "Flask-Babel" version))
-        (sha256
-          (base32
-            "0z95v77vib5il8hphyh16n7i15a2gmc06i615vm346ifvdfg9ypr"))))
-    (build-system python-build-system)
+     (origin
+       (method git-fetch) ;no tests in pypi release
+       (uri (git-reference
+             (url "https://github.com/python-babel/flask-babel")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32
+         "19yq3f5rixbwhv7wxdarvi9hdj98a9dq8y76in9c1q3jxaigw104"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-poetry-core
+           python-pytest
+           python-pytest-cov
+           python-pytest-mock))
     (propagated-inputs
-     (list python-flask python-babel python-jinja2 python-pytz))
+     (list python-babel
+           python-flask
+           python-jinja2
+           python-pytz))
     (home-page "https://github.com/python-babel/flask-babel")
     (synopsis "Add i18n/l10n support to Flask applications")
     (description "This package implements internationalization and localization
