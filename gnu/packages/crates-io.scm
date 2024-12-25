@@ -71964,9 +71964,7 @@ the file-system during development.")
     (source
       (origin
         (method url-fetch)
-        (uri (crate-uri
-               "rust_hawktracer_normal_macro"
-               version))
+        (uri (crate-uri "rust_hawktracer_normal_macro" version))
         (file-name
          (string-append name "-" version ".tar.gz"))
         (sha256
