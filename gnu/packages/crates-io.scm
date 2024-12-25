@@ -84587,8 +84587,7 @@ a syntax tree of Rust source code.")
         ("rust-ref-cast" ,rust-ref-cast-0.2)
         ("rust-regex" ,rust-regex-1)
         ("rust-termcolor" ,rust-termcolor-1)
-        ("rust-walkdir" ,rust-walkdir-2))))
-    (properties '())))
+        ("rust-walkdir" ,rust-walkdir-2))))))
 
 (define-public rust-syn-0.14
   (package
