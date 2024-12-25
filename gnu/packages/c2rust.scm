@@ -56,30 +56,6 @@
      "This package provides Rust AST builder support crate for the C2Rust project.")
     (license license:bsd-3)))
 
-(define-public rust-c2rust-bitfields-derive-0.18
-  (package
-    (name "rust-c2rust-bitfields-derive")
-    (version "0.18.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "c2rust-bitfields-derive" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0i95j6q1d61h1m1pk84i3ih00hsmbn8ib35xr129fz2rw81c3jyk"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
-                       ("rust-quote" ,rust-quote-1)
-                       ("rust-syn" ,rust-syn-1))))
-    (home-page "https://c2rust.com/")
-    (synopsis
-     "C-compatible struct bitfield derive implementation used in the C2Rust project")
-    (description
-     "This package provides C-compatible struct bitfield derive implementation used in the C2Rust project.")
-    (license license:bsd-3)))
-
 (define-public rust-c2rust-ast-printer-0.18
   (package
     (name "rust-c2rust-ast-printer")
@@ -124,6 +100,30 @@
      "C-compatible struct bitfield implementation used in the C2Rust project")
     (description
      "This package provides C-compatible struct bitfield implementation used in the C2Rust project.")
+    (license license:bsd-3)))
+
+(define-public rust-c2rust-bitfields-derive-0.18
+  (package
+    (name "rust-c2rust-bitfields-derive")
+    (version "0.18.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "c2rust-bitfields-derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0i95j6q1d61h1m1pk84i3ih00hsmbn8ib35xr129fz2rw81c3jyk"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-1))))
+    (home-page "https://c2rust.com/")
+    (synopsis
+     "C-compatible struct bitfield derive implementation used in the C2Rust project")
+    (description
+     "This package provides C-compatible struct bitfield derive implementation used in the C2Rust project.")
     (license license:bsd-3)))
 
 (define-public rust-c2rust-build-paths-0.18
