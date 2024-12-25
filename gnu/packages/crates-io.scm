@@ -7181,8 +7181,29 @@ API for Rust.")
     (description "This library provides for encoding and decoding any base.")
     (license license:expat)))
 
+(define-public rust-base32-0.5
+  (package
+    (name "rust-base32")
+    (version "0.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "base32" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0xp0a3xml25xw2bp5pyac2nld7vmmfjl02qynnyfn6aznfggwb82"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs (("rust-quickcheck" ,rust-quickcheck-1))))
+    (home-page "https://github.com/andreasots/base32")
+    (synopsis "Base32 encoder/decoder for Rust")
+    (description "This library lets you encode and decode in either
+RFC4648 Base32 or in Crockford Base32.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-base32-0.4
   (package
+    (inherit rust-base32-0.5)
     (name "rust-base32")
     (version "0.4.0")
     (source
@@ -7191,18 +7212,11 @@ API for Rust.")
        (uri (crate-uri "base32" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "1ykwx8jhksqxghfgyw2pzikzjf4n9wqm1x2ww5wqyn68ssf6dki3"))))
-    (build-system cargo-build-system)
+        (base32 "1ykwx8jhksqxghfgyw2pzikzjf4n9wqm1x2ww5wqyn68ssf6dki3"))))
     (arguments
      `(#:cargo-development-inputs
        (("rust-quickcheck" ,rust-quickcheck-0.7)
-        ("rust-rand" ,rust-rand-0.5))))
-    (home-page "https://github.com/andreasots/base32")
-    (synopsis "Base32 encoder/decoder for Rust")
-    (description "This library lets you encode and decode in either
-RFC4648 Base32 or in Crockford Base32.")
-    (license (list license:asl2.0 license:expat))))
+        ("rust-rand" ,rust-rand-0.5))))))
 
 (define-public rust-base58-0.1
   (package
