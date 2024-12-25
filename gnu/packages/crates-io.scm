@@ -69110,6 +69110,39 @@ Rhai, a scripting language and engine for Rust.")
 First In First Out} ring buffer with direct access to inner data.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-rinja-derive-0.3
+  (package
+    (name "rust-rinja-derive")
+    (version "0.3.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rinja_derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "12x1dfrjxhzfai2izmrqpbplj1aifkq1a58vby1f5xmf8q0yvn88"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-basic-toml" ,rust-basic-toml-0.1)
+                       ("rust-memchr" ,rust-memchr-2)
+                       ("rust-mime" ,rust-mime-0.3)
+                       ("rust-mime-guess" ,rust-mime-guess-2)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-pulldown-cmark" ,rust-pulldown-cmark-0.12)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-rinja-parser" ,rust-rinja-parser-0.3)
+                       ("rust-rustc-hash" ,rust-rustc-hash-2)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-syn" ,rust-syn-2))
+       #:cargo-development-inputs (("rust-console" ,rust-console-0.15)
+                                   ("rust-prettyplease" ,rust-prettyplease-0.2)
+                                   ("rust-similar" ,rust-similar-2)
+                                   ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/rinja-rs/rinja")
+    (synopsis "Procedural macro package for Rinja")
+    (description "This package provides a procedural macro package for Rinja.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-rinja-parser-0.3
   (package
     (name "rust-rinja-parser")
