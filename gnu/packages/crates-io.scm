@@ -40763,20 +40763,20 @@ requires non-const function calls to be computed.")
 (define-public rust-lddtree-0.3
   (package
     (name "rust-lddtree")
-    (version "0.3.3")
+    (version "0.3.7")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "lddtree" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "15f24jcglphqdjxmzafp8fnzslczzr6q1rls36akmb9hd32gwnrg"))))
+                "13mh4y1bwlqpa8jpsgj3zb0mxi4syzdqh8x13xwapdnp9g4rlxz0"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-fs-err" ,rust-fs-err-2)
+       (("rust-fs-err" ,rust-fs-err-3)
         ("rust-glob" ,rust-glob-0.3)
-        ("rust-goblin" ,rust-goblin-0.7))))
+        ("rust-goblin" ,rust-goblin-0.9))))
     (home-page "https://github.com/messense/lddtree-rs")
     (synopsis "Read the ELF dependency tree")
     (description "Read the ELF dependency tree.")
