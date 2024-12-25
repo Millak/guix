@@ -3055,172 +3055,139 @@ to CONFIG."
   ;; The Hurd implements SIOCGIFADDR and other old-style ioctls, but the only
   ;; way to set up IPv6 is by starting pfinet with the right options.
   (if (equal? (static-networking-provision config) '(loopback))
-      (scheme-file "set-up-pflocal" #~(begin 'nothing-to-do! #t))
-      (scheme-file "set-up-pfinet"
-                   (with-imported-modules '((guix build utils))
-                     #~(begin
-                         (use-modules (guix build utils)
-                                      (ice-9 format))
+      (program-file "set-up-pflocal" #~(begin 'nothing-to-do! #t))
+      (program-file "set-up-pfinet"
+                    (with-imported-modules '((guix build utils))
+                      #~(begin
+                          (use-modules (guix build utils)
+                                       (ice-9 format))
 
-                         ;; TODO: Do that without forking.
-                         (let ((options '#$(static-networking->hurd-pfinet-options
-                                            config)))
-                           (format #t "starting '~a~{ ~s~}'~%"
+                          ;; TODO: Do that without forking.
+                          (let ((options '#$(static-networking->hurd-pfinet-options
+                                             config)))
+                            (format #t "starting '~a~{ ~s~}'~%"
+                                    #$(file-append hurd "/hurd/pfinet")
+                                    options)
+                            (apply invoke #$(file-append hurd "/bin/settrans")
+                                   "--active"
+                                   "--create"
+                                   "--keep-active"
+                                   "/servers/socket/2"
                                    #$(file-append hurd "/hurd/pfinet")
-                                   options)
-                           (apply invoke #$(file-append hurd "/bin/settrans")
-                                  "--active"
-                                  "--create"
-                                  "--keep-active"
-                                  "/servers/socket/2"
-                                  #$(file-append hurd "/hurd/pfinet")
-                                  options)))))))
+                                   options)))))))
 
 (define (network-tear-down/hurd config)
-  (scheme-file "tear-down-pfinet"
-               (with-imported-modules '((guix build utils))
-                 #~(begin
-                     (use-modules (guix build utils))
+  (program-file "tear-down-pfinet"
+                (with-imported-modules '((guix build utils))
+                  #~(begin
+                      (use-modules (guix build utils))
 
-                     ;; Forcefully terminate pfinet.  XXX: In theory this
-                     ;; should just undo the addresses and routes of CONFIG;
-                     ;; this could be done using ioctls like SIOCDELRT, but
-                     ;; these are IPv4-only; another option would be to use
-                     ;; fsysopts but that seems to crash pfinet.
-                     (invoke #$(file-append hurd "/bin/settrans") "-fg"
-                             "/servers/socket/2")
-                     #f))))
+                      ;; Forcefully terminate pfinet.  XXX: In theory this
+                      ;; should just undo the addresses and routes of CONFIG;
+                      ;; this could be done using ioctls like SIOCDELRT, but
+                      ;; these are IPv4-only; another option would be to use
+                      ;; fsysopts but that seems to crash pfinet.
+                      (invoke #$(file-append hurd "/bin/settrans") "-fg"
+                              "/servers/socket/2")
+                      #f))))
 
 (define (network-set-up/linux config)
   (match-record config <static-networking>
     (addresses links routes)
-    (scheme-file "set-up-network"
-                 (with-extensions (list guile-netlink)
-                   #~(begin
-                       (use-modules (ip addr) (ip link) (ip route)
-                                    (srfi srfi-1)
-                                    (ice-9 format)
-                                    (ice-9 match))
+    (program-file "set-up-network"
+                  (with-extensions (list guile-netlink)
+                    #~(begin
+                        (use-modules (ip addr) (ip link) (ip route)
+                                     (srfi srfi-1)
+                                     (ice-9 format)
+                                     (ice-9 match))
 
-                       (define (match-link-by field-accessor value)
-                         (fold (lambda (link result)
-                                 (if (equal? (field-accessor link) value)
-                                     link
-                                     result))
-                               #f
-                               (get-links)))
+                        (define (match-link-by field-accessor value)
+                          (fold (lambda (link result)
+                                  (if (equal? (field-accessor link) value)
+                                      link
+                                      result))
+                                #f
+                                (get-links)))
 
-                       (define (alist->keyword+value alist)
-                         (fold (match-lambda*
-                                 (((k . v) r)
-                                  (cons* (symbol->keyword k) v r))) '() alist))
+                        (define (alist->keyword+value alist)
+                          (fold (match-lambda*
+                                  (((k . v) r)
+                                   (cons* (symbol->keyword k) v r))) '() alist))
 
-                       ;; FIXME: It is interesting that "modprobe bonding" creates an
-                       ;; interface bond0 straigt away.  If we won't have bonding
-                       ;; module, and execute `ip link add name bond0 type bond' we
-                       ;; will get
-                       ;;
-                       ;; RTNETLINK answers: File exists
-                       ;;
-                       ;; This breaks our configuration if we want to
-                       ;; use `bond0' name.  Create (force modprobe
-                       ;; bonding) and delete the interface to free up
-                       ;; bond0 name.
-                       #$(let lp ((links links))
-                           (cond
-                            ((null? links) #f)
-                            ((and (network-link? (car links))
-                                  ;; Type is not mandatory
-                                  (false-if-exception
-                                   (eq? (network-link-type (car links)) 'bond)))
-                             #~(begin
-                                 (false-if-exception (link-add "bond0" "bond"))
-                                 (link-del "bond0")))
-                            (else (lp (cdr links)))))
+                        ;; FIXME: It is interesting that "modprobe bonding" creates an
+                        ;; interface bond0 straigt away.  If we won't have bonding
+                        ;; module, and execute `ip link add name bond0 type bond' we
+                        ;; will get
+                        ;;
+                        ;; RTNETLINK answers: File exists
+                        ;;
+                        ;; This breaks our configuration if we want to
+                        ;; use `bond0' name.  Create (force modprobe
+                        ;; bonding) and delete the interface to free up
+                        ;; bond0 name.
+                        #$(let lp ((links links))
+                            (cond
+                             ((null? links) #f)
+                             ((and (network-link? (car links))
+                                   ;; Type is not mandatory
+                                   (false-if-exception
+                                    (eq? (network-link-type (car links)) 'bond)))
+                              #~(begin
+                                  (false-if-exception (link-add "bond0" "bond"))
+                                  (link-del "bond0")))
+                             (else (lp (cdr links)))))
 
-                       #$@(map (match-lambda
-                                 (($ <network-link> name type mac-address arguments)
-                                  (cond
-                                   ;; Create a new interface
-                                   ((and (string? name) (symbol? type))
-                                    #~(begin
-                                        (link-add #$name (symbol->string '#$type) #:type-args '#$arguments)
-                                        ;; XXX: If we add routes, addresses must be
-                                        ;; already assigned, and interfaces must be
-                                        ;; up. It doesn't matter if they won't have
-                                        ;; carrier or anything.
-                                        (link-set #$name #:up #t)))
+                        #$@(map (match-lambda
+                                  (($ <network-link> name type mac-address arguments)
+                                   (cond
+                                    ;; Create a new interface
+                                    ((and (string? name) (symbol? type))
+                                     #~(begin
+                                         (link-add #$name (symbol->string '#$type) #:type-args '#$arguments)
+                                         ;; XXX: If we add routes, addresses must be
+                                         ;; already assigned, and interfaces must be
+                                         ;; up. It doesn't matter if they won't have
+                                         ;; carrier or anything.
+                                         (link-set #$name #:up #t)))
 
-                                   ;; Amend an existing interface
-                                   ((and (string? name)
-                                         (eq? type #f))
-                                    #~(let ((link (match-link-by link-name #$name)))
-                                        (if link
-                                            (apply link-set
-                                                   (link-id link)
-                                                   (alist->keyword+value '#$arguments))
-                                            (format #t (G_ "Interface with name '~a' not found~%") #$name))))
-                                   ((string? mac-address)
-                                    #~(let ((link (match-link-by link-addr #$mac-address)))
-                                        (if link
-                                            (apply link-set
-                                                   (link-id link)
-                                                   (alist->keyword+value '#$arguments))
-                                            (format #t (G_ "Interface with mac-address '~a' not found~%") #$mac-address)))))))
-                                        links)
+                                    ;; Amend an existing interface
+                                    ((and (string? name)
+                                          (eq? type #f))
+                                     #~(let ((link (match-link-by link-name #$name)))
+                                         (if link
+                                             (apply link-set
+                                                    (link-id link)
+                                                    (alist->keyword+value '#$arguments))
+                                             (format #t (G_ "Interface with name '~a' not found~%") #$name))))
+                                    ((string? mac-address)
+                                     #~(let ((link (match-link-by link-addr #$mac-address)))
+                                         (if link
+                                             (apply link-set
+                                                    (link-id link)
+                                                    (alist->keyword+value '#$arguments))
+                                             (format #t (G_ "Interface with mac-address '~a' not found~%") #$mac-address)))))))
+                                links)
 
-                       #$@(map (lambda (address)
-                                 #~(begin
-                                     ;; Before going any further, wait for the
-                                     ;; device to show up.
-                                     (wait-for-link
-                                      #$(network-address-device address)
-                                      #:blocking? #f)
+                        #$@(map (lambda (address)
+                                  #~(begin
+                                      ;; Before going any further, wait for the
+                                      ;; device to show up.
+                                      (wait-for-link
+                                       #$(network-address-device address))
 
-                                     (addr-add #$(network-address-device address)
-                                               #$(network-address-value address)
-                                               #:ipv6?
-                                               #$(network-address-ipv6? address))
-                                     ;; FIXME: loopback?
-                                     (link-set #$(network-address-device address)
-                                               #:multicast-on #t
-                                               #:up #t)))
-                               addresses)
+                                      (addr-add #$(network-address-device address)
+                                                #$(network-address-value address)
+                                                #:ipv6?
+                                                #$(network-address-ipv6? address))
+                                      ;; FIXME: loopback?
+                                      (link-set #$(network-address-device address)
+                                                #:multicast-on #t
+                                                #:up #t)))
+                                addresses)
 
-                       #$@(map (lambda (route)
-                                 #~(route-add #$(network-route-destination route)
-                                              #:device
-                                              #$(network-route-device route)
-                                              #:ipv6?
-                                              #$(network-route-ipv6? route)
-                                              #:via
-                                              #$(network-route-gateway route)
-                                              #:src
-                                              #$(network-route-source route)))
-                               routes)
-                       #t)))))
-
-(define (network-tear-down/linux config)
-  (match-record config <static-networking>
-    (addresses links routes)
-    (scheme-file "tear-down-network"
-                 (with-extensions (list guile-netlink)
-                   #~(begin
-                       (use-modules (ip addr) (ip link) (ip route)
-                                    (netlink error)
-                                    (srfi srfi-34))
-
-                       (define-syntax-rule (false-if-netlink-error exp)
-                         (guard (c ((netlink-error? c) #f))
-                           exp))
-
-                       ;; Wrap calls in 'false-if-netlink-error' so this
-                       ;; script goes as far as possible undoing the effects
-                       ;; of "set-up-network".
-
-                       #$@(map (lambda (route)
-                                 #~(false-if-netlink-error
-                                    (route-del #$(network-route-destination route)
+                        #$@(map (lambda (route)
+                                  #~(route-add #$(network-route-destination route)
                                                #:device
                                                #$(network-route-device route)
                                                #:ipv6?
@@ -3228,31 +3195,63 @@ to CONFIG."
                                                #:via
                                                #$(network-route-gateway route)
                                                #:src
-                                               #$(network-route-source route))))
-                               routes)
+                                               #$(network-route-source route)))
+                                routes)
+                        #t)))))
 
-                       ;; Cleanup addresses first, they might be assigned to
-                       ;; created bonds, vlans or bridges.
-                       #$@(map (lambda (address)
-                                 #~(false-if-netlink-error
-                                    (addr-del #$(network-address-device
-                                                 address)
-                                              #$(network-address-value address)
-                                              #:ipv6?
-                                              #$(network-address-ipv6? address))))
-                               addresses)
+(define (network-tear-down/linux config)
+  (match-record config <static-networking>
+    (addresses links routes)
+    (program-file "tear-down-network"
+                  (with-extensions (list guile-netlink)
+                    #~(begin
+                        (use-modules (ip addr) (ip link) (ip route)
+                                     (netlink error)
+                                     (srfi srfi-34))
 
-                       ;; It is now safe to delete some links
-                       #$@(map (match-lambda
-                                 (($ <network-link> name type mac-address arguments)
-                                  (cond
-                                   ;; We delete interfaces that were created
-                                   ((and (string? name) (symbol? type))
-                                    #~(false-if-netlink-error
-                                       (link-del #$name)))
-                                   (else #t))))
-                               links)
-                       #f)))))
+                        (define-syntax-rule (false-if-netlink-error exp)
+                          (guard (c ((netlink-error? c) #f))
+                            exp))
+
+                        ;; Wrap calls in 'false-if-netlink-error' so this
+                        ;; script goes as far as possible undoing the effects
+                        ;; of "set-up-network".
+
+                        #$@(map (lambda (route)
+                                  #~(false-if-netlink-error
+                                     (route-del #$(network-route-destination route)
+                                                #:device
+                                                #$(network-route-device route)
+                                                #:ipv6?
+                                                #$(network-route-ipv6? route)
+                                                #:via
+                                                #$(network-route-gateway route)
+                                                #:src
+                                                #$(network-route-source route))))
+                                routes)
+
+                        ;; Cleanup addresses first, they might be assigned to
+                        ;; created bonds, vlans or bridges.
+                        #$@(map (lambda (address)
+                                  #~(false-if-netlink-error
+                                     (addr-del #$(network-address-device
+                                                  address)
+                                               #$(network-address-value address)
+                                               #:ipv6?
+                                               #$(network-address-ipv6? address))))
+                                addresses)
+
+                        ;; It is now safe to delete some links
+                        #$@(map (match-lambda
+                                  (($ <network-link> name type mac-address arguments)
+                                   (cond
+                                    ;; We delete interfaces that were created
+                                    ((and (string? name) (symbol? type))
+                                     #~(false-if-netlink-error
+                                        (link-del #$name)))
+                                    (else #t))))
+                                links)
+                        #f)))))
 
 (define (static-networking-shepherd-service config)
   (match-record config <static-networking>
@@ -3267,16 +3266,18 @@ to CONFIG."
 
        (start #~(lambda _
                   ;; Return #t if successfully started.
-                  (load #$(let-system (system target)
-                            (if (string-contains (or target system) "-linux")
-                                (network-set-up/linux config)
-                                (network-set-up/hurd config))))))
+                  (zero? (system*
+                          #$(let-system (system target)
+                              (if (string-contains (or target system) "-linux")
+                                  (network-set-up/linux config)
+                                  (network-set-up/hurd config)))))))
        (stop #~(lambda _
                  ;; Return #f is successfully stopped.
-                 (load #$(let-system (system target)
-                           (if (string-contains (or target system) "-linux")
-                               (network-tear-down/linux config)
-                               (network-tear-down/hurd config))))))
+                 (zero? (system*
+                         #$(let-system (system target)
+                             (if (string-contains (or target system) "-linux")
+                                 (network-tear-down/linux config)
+                                 (network-tear-down/hurd config)))))))
        (respawn? #f)))))
 
 (define (static-networking-shepherd-services networks)
