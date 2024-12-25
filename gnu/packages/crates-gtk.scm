@@ -2745,12 +2745,13 @@
 (define-public rust-gobject-sys-0.14
   (package
     (inherit rust-gobject-sys-0.15)
+    (name "rust-gobject-sys")
     (version "0.14.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gobject-sys" version))
-       (file-name (string-append "rust-gobject-sys-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1xf3jiwzrjingq8jr15bjkbv6m5dypzp67cjnm5f7njrjzicm4ma"))))
     (arguments
