@@ -53013,11 +53013,12 @@ the default program configured on the system.")
      (origin
        (method url-fetch)
        (uri (crate-uri "openssl" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "0cw767rbasg4dbsfcsnxqm3q5ljkv6s1jq0a2p82xi5a8ii7n4f4"))))
+        (base32 "0cw767rbasg4dbsfcsnxqm3q5ljkv6s1jq0a2p82xi5a8ii7n4f4"))
+       (modules '((guix build utils)))
+       (snippet #~(substitute* "Cargo.toml"
+                    ((", path =.*}") "}")))))
     (arguments
      `(#:skip-build? #t ; Build depends on openssl-1.0.
        #:cargo-inputs
@@ -53031,14 +53032,7 @@ the default program configured on the system.")
        (("rust-net2" ,rust-net2-0.2)
         ("rust-rustc-serialize" ,rust-rustc-serialize-0.3)
         ("rust-winapi" ,rust-winapi-0.2)
-        ("rust-ws2-32-sys" ,rust-ws2-32-sys-0.2))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-cargo-toml
-           (lambda _
-             (substitute* "Cargo.toml"
-               ((", path =.*}") "}"))
-             #t)))))))
+        ("rust-ws2-32-sys" ,rust-ws2-32-sys-0.2))))))
 
 (define-public rust-openssl-macros-0.1
   (package
