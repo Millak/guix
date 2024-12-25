@@ -43350,21 +43350,21 @@ punctuation.")
 (define-public rust-linux-keyutils-0.2
   (package
     (name "rust-linux-keyutils")
-    (version "0.2.3")
+    (version "0.2.4")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "linux-keyutils" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0jxq2bsrr80diyh8h4a0ls6yaljhyvj6ha2qmfshn7fxyrkvn9rz"))))
+                "13nipvk2mzk76y7yfsqwnwsqk21x6xy8fkmqz5is99fqbzn4j7kn"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-bitflags" ,rust-bitflags-1)
+       (("rust-bitflags" ,rust-bitflags-2)
         ("rust-libc" ,rust-libc-0.2))
        #:cargo-development-inputs
-       (("rust-clap" ,rust-clap-3)
+       (("rust-clap" ,rust-clap-4)
         ("rust-zeroize" ,rust-zeroize-1))))
     (home-page "https://github.com/landhb/linux-keyutils")
     (synopsis "Rust interface to the Linux key-management facility")
