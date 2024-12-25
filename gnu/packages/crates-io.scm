@@ -8218,8 +8218,6 @@ bindings to C and C++ libraries.")
        (sha256
         (base32
          "0hxlvy9q9984rr3rqaxwmgxjrd9wh11mcc161hv3shz6b7jkrcbm"))))
-    (inputs
-     (list clang))
     (arguments
      `(#:cargo-test-flags
        (list "--release" "--"
