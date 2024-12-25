@@ -48191,14 +48191,14 @@ debug_assert_* macros.")
 (define-public rust-mozim-0.2
   (package
     (name "rust-mozim")
-    (version "0.2.2")
+    (version "0.2.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "mozim" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "14f4k92zfr1mm2qhq6j3bq277j4wfdlj24lb96py0jrivz81a70c"))))
+        (base32 "1bg8xkvcpxr06a1kp1dp78gjkgsgq5a9i1qzcf43az007l8k83k1"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; Tests can't run in the build environment.
@@ -48209,13 +48209,13 @@ debug_assert_* macros.")
                        ("rust-libc" ,rust-libc-0.2)
                        ("rust-log" ,rust-log-0.4)
                        ("rust-nispor" ,rust-nispor-1)
-                       ("rust-nix" ,rust-nix-0.26)
+                       ("rust-nix" ,rust-nix-0.27)
                        ("rust-rand" ,rust-rand-0.8))
-       #:cargo-development-inputs (("rust-env-logger" ,rust-env-logger-0.10)
+       #:cargo-development-inputs (("rust-env-logger" ,rust-env-logger-0.11)
                                    ("rust-tokio" ,rust-tokio-1))))
     (home-page "https://github.com/nispor/mozim")
     (synopsis "DHCP Client Library")
-    (description "DHCP Client Library.")
+    (description "This package provides a DHCP Client Library.")
     (license license:asl2.0)))
 
 (define-public rust-mp4-0.9
