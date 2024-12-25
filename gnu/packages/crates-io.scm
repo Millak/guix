@@ -26369,30 +26369,6 @@ It is not a public API.")
 is configured via an environment variable.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-log-reroute-0.1
-  (package
-    (name "rust-log-reroute")
-    (version "0.1.8")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "log-reroute" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "00mw91qd2ibaawl7x1pxc1kryki0ixyirnlx64qx78d9g6k3n6kl"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs (("rust-arc-swap" ,rust-arc-swap-1)
-                       ("rust-log" ,rust-log-0.4)
-                       ("rust-once-cell" ,rust-once-cell-1))))
-    (home-page "https://github.com/vorner/log-reroute")
-    (synopsis "Support to change logging target for the log crate")
-    (description
-     "This package provides Support to change logging target for the log crate.")
-    ;; This means asl2.0 OR expat.
-    (license (list license:asl2.0 license:expat))))
-
 (define-public rust-env-logger-0.10
   (package
     (inherit rust-env-logger-0.11)
@@ -44043,6 +44019,30 @@ and attach/detach semantics.")
     (arguments
      `(#:cargo-inputs
        (("rust-log" ,rust-log-0.4))))))
+
+(define-public rust-log-reroute-0.1
+  (package
+    (name "rust-log-reroute")
+    (version "0.1.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "log-reroute" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "00mw91qd2ibaawl7x1pxc1kryki0ixyirnlx64qx78d9g6k3n6kl"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-arc-swap" ,rust-arc-swap-1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-once-cell" ,rust-once-cell-1))))
+    (home-page "https://github.com/vorner/log-reroute")
+    (synopsis "Support to change logging target for the log crate")
+    (description
+     "This package provides Support to change logging target for the log crate.")
+    ;; This means asl2.0 OR expat.
+    (license (list license:asl2.0 license:expat))))
 
 (define-public rust-logos-0.13
   (package
