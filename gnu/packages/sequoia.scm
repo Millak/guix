@@ -902,48 +902,38 @@ rules are rather complex.  This crate implements the whole grammar." )
      "This package provides machinery for working with TPM from Sequoia.")
     (license (list license:lgpl2.0+ license:asl2.0))))
 
-(define-public rust-sequoia-wot-0.12
+(define-public rust-sequoia-wot-0.13
   (package
     (name "rust-sequoia-wot")
-    (version "0.12.0")
+    (version "0.13.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "sequoia-wot" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1nrx1cn58d8lkp2g0ahw2320zmil3ryxl13inpwf61v4vqi5svj8"))))
+        (base32 "17npdicfxfp9v59y6nsr3lhz510c97bicqrzyw0s6infizpshf8b"))))
     (build-system cargo-build-system)
     (arguments
      `(#:features '("sequoia-openpgp/crypto-nettle")
-       #:cargo-test-flags '("--"
-                            ;; Not all files included.
-                            "--skip=gpg_trust_roots")
        #:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
                        ("rust-chrono" ,rust-chrono-0.4)
-                       ("rust-clap" ,rust-clap-4)
-                       ("rust-clap-complete" ,rust-clap-complete-4)
-                       ("rust-clap-mangen" ,rust-clap-mangen-0.2)
                        ("rust-crossbeam" ,rust-crossbeam-0.8)
-                       ("rust-dot-writer" ,rust-dot-writer-0.1)
-                       ("rust-enumber" ,rust-enumber-0.3)
                        ("rust-num-cpus" ,rust-num-cpus-1)
                        ("rust-sequoia-cert-store" ,rust-sequoia-cert-store-0.6)
                        ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1)
-                       ("rust-sequoia-policy-config" ,rust-sequoia-policy-config-0.6)
                        ("rust-thiserror" ,rust-thiserror-1))
-       #:cargo-development-inputs (("rust-assert-cmd" ,rust-assert-cmd-2)
-                                   ("rust-predicates" ,rust-predicates-2)
-                                   ("rust-quickcheck" ,rust-quickcheck-1)
-                                   ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1)
-                                   ("rust-tempfile" ,rust-tempfile-3))))
+       #:cargo-development-inputs
+       (("rust-quickcheck" ,rust-quickcheck-1)
+        ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1))))
     (inputs
      (list nettle openssl sqlite))
     (native-inputs
      (list clang pkg-config))
     (home-page "https://sequoia-pgp.org/")
     (synopsis "Implementation of OpenPGP's web of trust")
-    (description "An implementation of OpenPGP's web of trust.")
+    (description
+     "This package provides an implementation of @code{OpenPGP's} web of trust.")
     (license license:lgpl2.0+)))
 
 (define-public sequoia-sq
