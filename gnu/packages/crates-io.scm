@@ -47993,7 +47993,7 @@ possible over the OS abstractions.")
     (synopsis "Windows named pipe bindings for mio")
     (description
      "A library for integrating Windows Named Pipes with mio.")
-    (license `(,license:asl2.0 ,license:expat))))
+    (license (list license:asl2.0 license:expat))))
 
 (define-public rust-mio-uds-0.6
   (package
