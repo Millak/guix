@@ -88072,14 +88072,14 @@ handle Unicode characters correctly.")
 (define-public rust-thiserror-2
   (package
     (name "rust-thiserror")
-    (version "2.0.6")
+    (version "2.0.9")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "thiserror" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0izahgy0lzcmcg2i72h9jk9lqd5zpq3z0k8cp7i7gl7b40c2mv4g"))))
+        (base32 "1k5j0ri0kjrnlblv5ikaglbkg1sxxwh0qrxbidxgc38rs0zn8wph"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-thiserror-impl" ,rust-thiserror-impl-2))
