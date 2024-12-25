@@ -215,8 +215,7 @@
         (base32 "09fvi2id0qjhfvsqcz9222ac81lyl2j6rbq280dhn06y1nvy000c"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs (("rust-c2rust-ast-builder" ,rust-c2rust-ast-builder-0.18)
+     `(#:cargo-inputs (("rust-c2rust-ast-builder" ,rust-c2rust-ast-builder-0.18)
                        ("rust-c2rust-ast-exporter" ,rust-c2rust-ast-exporter-0.18)
                        ("rust-c2rust-ast-printer" ,rust-c2rust-ast-printer-0.18)
                        ("rust-c2rust-bitfields" ,rust-c2rust-bitfields-0.18)
@@ -241,10 +240,23 @@
                        ("rust-smallvec" ,rust-smallvec-1)
                        ("rust-strum" ,rust-strum-0.24)
                        ("rust-strum-macros" ,rust-strum-macros-0.24)
-                       ("rust-syn" ,rust-syn-1))))
+                       ("rust-syn" ,rust-syn-1))
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'build 'patch
+           (lambda* (#:key inputs #:allow-other-keys)
+             ;; The build process will slightly patch the sources.
+             (copy-recursively (assoc-ref inputs "tinycbor-src")
+                               "/tmp/tinycbor")
+             (setenv "GUIX_TINYCBOR_SOURCE_DIR" "/tmp/tinycbor"))))))
+    (native-inputs
+     `(("clang" ,clang)
+       ("cmake" ,cmake-minimal)
+       ("tinycbor-src" ,%tinycbor-source)))
+    (inputs (list llvm))
     (home-page "https://c2rust.com/")
     (synopsis "C2Rust transpiler implementation")
-    (description "This package provides C2Rust transpiler implementation.")
+    (description "This package provides the C2Rust transpiler implementation.")
     (license license:bsd-3)))
 
 (define-public c2rust
