@@ -3915,7 +3915,7 @@ window manager.")
 (define-public tealdeer
   (package
     (name "tealdeer")
-    (version "1.6.1")
+    (version "1.7.1")
     (source
      (origin
        ;; Completions aren't in the release tarball.
@@ -3926,7 +3926,7 @@ window manager.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0ipd23b30pqvyh20mxfd13ps0rnvg7zfpysv7wambfbb92xdh36d"))))
+         "1qwg2xifazg39qxra5r7ficvgcprianzi02frz853s7dly7q10si"))))
     (build-system cargo-build-system)
     (arguments
      `(#:phases
@@ -3948,7 +3948,7 @@ window manager.")
                           (string-append zsh "_tealdeer"))))))
        #:install-source? #f
        #:cargo-test-flags
-       '("--release" "--"
+       '("--"
          ;; These tests go to the network
          "--skip=test_quiet_old_cache"
          "--skip=test_quiet_cache"
@@ -3962,23 +3962,22 @@ window manager.")
        #:cargo-inputs
        (("rust-anyhow" ,rust-anyhow-1)
         ("rust-app-dirs2" ,rust-app-dirs2-2)
-        ("rust-atty" ,rust-atty-0.2)
-        ("rust-clap" ,rust-clap-3)
-        ("rust-env-logger" ,rust-env-logger-0.9)
+        ("rust-clap" ,rust-clap-4)
+        ("rust-env-logger" ,rust-env-logger-0.11)
         ("rust-log" ,rust-log-0.4)
         ("rust-pager" ,rust-pager-0.16)
-        ("rust-reqwest" ,rust-reqwest-0.11)
+        ("rust-reqwest" ,rust-reqwest-0.12)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-derive" ,rust-serde-derive-1)
-        ("rust-toml" ,rust-toml-0.5)
+        ("rust-toml" ,rust-toml-0.8)
         ("rust-walkdir" ,rust-walkdir-2)
-        ("rust-yansi" ,rust-yansi-0.5)
-        ("rust-zip" ,rust-zip-0.6))
+        ("rust-yansi" ,rust-yansi-1)
+        ("rust-zip" ,rust-zip-2))
        #:cargo-development-inputs
        (("rust-assert-cmd" ,rust-assert-cmd-2)
         ("rust-escargot" ,rust-escargot-0.5)
         ("rust-filetime" ,rust-filetime-0.2)
-        ("rust-predicates" ,rust-predicates-2)
+        ("rust-predicates" ,rust-predicates-3)
         ("rust-tempfile" ,rust-tempfile-3))))
     (native-inputs
      (list pkg-config))
