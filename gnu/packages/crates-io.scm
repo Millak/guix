@@ -38456,14 +38456,15 @@ functions, and macros.")
     (name "rust-itertools")
     (version "0.9.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "itertools" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "0jyml7ygr7kijkcjdl3fk5f34y5h5jsavclim7l13zjiavw1hkr8"))))
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "itertools" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0jyml7ygr7kijkcjdl3fk5f34y5h5jsavclim7l13zjiavw1hkr8"))
+       (modules '((guix build utils)))
+       (snippet #~(substitute* "Cargo.toml"
+                    (("=0.3.0") "0.3")))))
     (arguments
      `(#:cargo-inputs
        (("rust-either" ,rust-either-1))
@@ -38471,14 +38472,7 @@ functions, and macros.")
        (("rust-criterion" ,rust-criterion-0.3)
         ("rust-permutohedron" ,rust-permutohedron-0.2)
         ("rust-quickcheck" ,rust-quickcheck-0.9)
-        ("rust-rand" ,rust-rand-0.7))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-cargo-toml
-           (lambda _
-             (substitute* "Cargo.toml"
-               (("=0.3.0") "0.3"))
-             #t)))))))
+        ("rust-rand" ,rust-rand-0.7))))))
 
 (define-public rust-itertools-0.8
   (package
