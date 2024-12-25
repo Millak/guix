@@ -58474,6 +58474,19 @@ function data structures.")
     (description "This package provides an ultra simple CLI arguments parser.")
     (license license:expat)))
 
+(define-public rust-pico-args-0.4
+  (package
+    (inherit rust-pico-args-0.5)
+    (name "rust-pico-args")
+    (version "0.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pico-args" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0s646i0pbcck300rqldb21m151zxp66m3mdskha063blrfbcv2yv"))))))
+
 (define-public rust-pikchr-0.1
   (package
     (name "rust-pikchr")
