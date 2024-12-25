@@ -953,6 +953,7 @@ rules are rather complex.  This crate implements the whole grammar." )
      `(#:install-source? #f
        #:features '("crypto-nettle"
                     "sequoia-keystore/gpg-agent"
+                    "sequoia-keystore/openpgp-card"
                     "sequoia-keystore/softkeys")
        #:cargo-test-flags
        (list "--"
@@ -1038,7 +1039,7 @@ rules are rather complex.  This crate implements the whole grammar." )
                (copy-file "target/assets/shell-completions/sq.elv"
                           (string-append elvish-completions-dir "/sq"))))))))
     (inputs
-     (list nettle openssl sqlite))
+     (list nettle openssl pcsc-lite sqlite))
     (native-inputs
      (list capnproto clang pkg-config))
     (home-page "https://sequoia-pgp.org/")
@@ -1047,7 +1048,7 @@ rules are rather complex.  This crate implements the whole grammar." )
 OpenPGP.
 
 This Guix package is built to use the nettle cryptographic library and the
-gpg-agent and softkeys keystore backends.")
+gpg-agent, openpgp-card and softkeys keystore backends.")
     (license license:lgpl2.0+)))
 
 (define-public sequoia-sqv
