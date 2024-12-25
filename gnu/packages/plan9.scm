@@ -188,6 +188,5 @@ reconstruct a Plan 9 terminal-like experience from a non-Plan 9 system.")
        "Plan 9 from User Space (aka plan9port) is a port of many Plan 9
 programs from their native Plan 9 environment to Unix-like operating
 systems.")
-      (license (list license:expat ;modifications
-                     license:lpl1.02 ;original Plan9 code
+      (license (list license:expat
                      license:zlib))))) ;src/cmd/bzip2
