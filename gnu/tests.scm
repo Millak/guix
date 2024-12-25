@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016-2020, 2022-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2020, 2022-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2017 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
@@ -243,6 +243,7 @@ the system under test."
                           (mount-point "/")
                           (type "ext4"))
                         %base-file-systems))
+    (kernel-arguments (delete "quiet" %default-kernel-arguments))
     (firmware '())
 
     (users (cons (user-account
