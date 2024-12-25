@@ -3003,24 +3003,23 @@ by @code{binstar}, @code{binstar-build}, and @code{chalmers}.")
 (define-public python-babel
   (package
     (name "python-babel")
-    (version "2.10.3")
+    (version "2.16.0")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "Babel" version))
+       (uri (pypi-uri "babel" version))
        (sha256
-        (base32
-         "0l9cvfmsz0hlvcinxaf6xf2f02ldgw3xq9i1fc7lk5zf24vma53n"))))
-    (build-system python-build-system)
+        (base32 "05p3k0i5h8v4vqsg36s94kwl4nhgfmgwdq1x7wbzw1b6l965bwyi"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-freezegun python-pytest tzdata-for-tests))
+     (list python-freezegun
+           python-pytest
+           python-pytest-cov
+           python-setuptools
+           python-wheel
+           tzdata-for-tests))
     (propagated-inputs
      (list python-pytz))
-    (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda _
-                      (invoke "pytest" "-vv"))))))
     (home-page "https://babel.pocoo.org/")
     (synopsis
      "Tools for internationalizing Python applications")
