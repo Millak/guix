@@ -37301,7 +37301,7 @@ at compile time so the leftmost non-space character is in the first column.")
      (origin
        (method url-fetch)
        (uri (crate-uri "indoc-impl" version))
-       (file-name (string-append "rust-indoc-impl-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1w58yg249kmzsn75kcj34qaxqh839l1hsaj3bzggy3q03wb6s16f"))))
     (build-system cargo-build-system)
