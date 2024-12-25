@@ -59519,8 +59519,33 @@ both WASM and native applications")
                        ("rust-serde" ,rust-serde-1)
                        ("rust-winapi" ,rust-winapi-0.3))))))
 
+(define-public rust-pnet-sys-0.35
+  (package
+    (name "rust-pnet-sys")
+    (version "0.35.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pnet_sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0jqgl34w5jckvby74nh89hjc94m8m6pz7hjh21s0hsyvsk9l6ikx"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--"
+                            "--skip=test_get_socket_receive_timeout"
+                            "--skip=test_set_socket_receive_timeout")
+       #:cargo-inputs (("rust-libc" ,rust-libc-0.2)
+                       ("rust-winapi" ,rust-winapi-0.3))))
+    (home-page "https://github.com/libpnet/libpnet")
+    (synopsis "Access to network related system functions")
+    (description
+     "This crate providess access to network related system function and calls.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-pnet-sys-0.34
   (package
+    (inherit rust-pnet-sys-0.35)
     (name "rust-pnet-sys")
     (version "0.34.0")
     (source
@@ -59530,16 +59555,10 @@ both WASM and native applications")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "004d28vbaxv3m55cd741mpjm34031c3p2dpp8kazcwxms7n0nz21"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f  ; Tries to use sockets.
        #:cargo-inputs (("rust-libc" ,rust-libc-0.2)
-                       ("rust-winapi" ,rust-winapi-0.3))))
-    (home-page "https://github.com/libpnet/libpnet")
-    (synopsis "Access to network related system functions")
-    (description
-     "This crate providess access to network related system function and calls.")
-    (license (list license:expat license:asl2.0))))
+                       ("rust-winapi" ,rust-winapi-0.3))))))
 
 (define-public rust-pnet-sys-0.27
   (package
