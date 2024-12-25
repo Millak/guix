@@ -50427,14 +50427,14 @@ rulesets in Rust and parse existing nftables rulesets from JSON.")
 (define-public rust-nispor-1
   (package
     (name "rust-nispor")
-    (version "1.2.17")
+    (version "1.2.21")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "nispor" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0jp0fs6sy8cpg0gi7jkh215czbx3b8p0kygimpx0abgg6mx2955b"))))
+        (base32 "1j8nw3i4cxgglizrkp8vcd1ghr1hd8rkclg56b3gc17zy0ml4g2l"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; Tests can't run in the build environment.
@@ -50449,10 +50449,11 @@ rulesets in Rust and parse existing nftables rulesets from JSON.")
                        ("rust-rtnetlink" ,rust-rtnetlink-0.14)
                        ("rust-serde" ,rust-serde-1)
                        ("rust-serde-json" ,rust-serde-json-1)
-                       ("rust-tokio" ,rust-tokio-1))
-       #:cargo-development-inputs (("rust-pretty-assertions"
-                                    ,rust-pretty-assertions-1)
-                                   ("rust-serde-yaml" ,rust-serde-yaml-0.9))))
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-wl-nl80211" ,rust-wl-nl80211-0.2))
+       #:cargo-development-inputs
+       (("rust-pretty-assertions" ,rust-pretty-assertions-1)
+        ("rust-serde-yaml" ,rust-serde-yaml-0.9))))
     (home-page "https://github.com/nispor/nispor")
     (synopsis "Unified interface for Linux network state querying")
     (description "Unified interface for Linux network state querying.")
