@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2024 Danny Milosavljevic <dannym@friendly-machines.com>
+;;; Copyright © 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -256,15 +257,21 @@
        (uri (crate-uri "c2rust" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1rg9cvvmh9zw89mz2bpyvqlwbfhzl5dw2hab9z6d5rasr8mir7nh"))))
+        (base32 "1rg9cvvmh9zw89mz2bpyvqlwbfhzl5dw2hab9z6d5rasr8mir7nh"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (("\"= ?([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                   (string-append "\"^" version)))))))
     (build-system cargo-build-system)
     (native-inputs
      `(("tinycbor-src" ,%tinycbor-source)
-       ("cmake" ,cmake)
+       ("cmake" ,cmake-minimal)
        ("clang" ,clang)))
     (inputs (list llvm))
     (arguments
-     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+     `(#:install-source? #f
+       #:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
                        ("rust-c2rust-build-paths" ,rust-c2rust-build-paths-0.18)
                        ("rust-c2rust-transpile" ,rust-c2rust-transpile-0.18)
                        ("rust-clap" ,rust-clap-3)
@@ -277,11 +284,6 @@
                        ("rust-time-macros" ,rust-time-macros-0.2))
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'patch-deps
-           (lambda _
-             ;; This is incorrect in the release to begin with.
-             (substitute* "Cargo.toml"
-              (("=0.2.6") "=0.2.18"))))
          (add-before 'build 'patch
            (lambda* (#:key inputs #:allow-other-keys)
              ;; The build process will slightly patch the sources.
