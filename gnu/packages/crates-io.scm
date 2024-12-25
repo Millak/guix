@@ -45426,6 +45426,30 @@ algorithms.  It supports CBC block cipher mode, PKCS5 padding and 64, 128,
 defined in the FITS World Coordinate System (WCS).")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-marked-yaml-0.7
+  (package
+    (name "rust-marked-yaml")
+    (version "0.7.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "marked-yaml" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "13ddwcjd55ysa5ccw22zawy16p72abmdyx3ssrc40vqlmfkjbszj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-doc-comment" ,rust-doc-comment-0.3)
+                       ("rust-hashlink" ,rust-hashlink-0.9)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-path-to-error" ,rust-serde-path-to-error-0.1)
+                       ("rust-yaml-rust2" ,rust-yaml-rust2-0.9))))
+    (home-page "https://github.com/kinnison/marked-yaml/")
+    (synopsis "Simplified YAML structure with provenance spans")
+    (description
+     "This package provides a simplified YAML structure with provenance spans.")
+    (license license:expat)))
+
 (define-public rust-markup-proc-macro-0.13
   (package
     (name "rust-markup-proc-macro")
