@@ -880,30 +880,22 @@ rules are rather complex.  This crate implements the whole grammar." )
 (define-public rust-sequoia-tpm-0.1
   (package
     (name "rust-sequoia-tpm")
-    (version "0.1.0")
+    (version "0.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "sequoia-tpm" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0xh0m7yybkwpc0f858da27y82a2vlsdfch35hjaykih5lf4xmdri"))))
+        (base32 "0n6qa5kxsq8m2m1b7rqgcdhfjd67jql0vsinl7x0j9vma9r38brk"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:features '("sequoia-openpgp/crypto-nettle")
-       #:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
-                       ("rust-env-logger" ,rust-env-logger-0.11)
-                       ("rust-hex" ,rust-hex-0.4)
-                       ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1)
+     `(#:cargo-inputs (("rust-hex" ,rust-hex-0.4)
                        ("rust-serde" ,rust-serde-1)
-                       ("rust-serde-yaml" ,rust-serde-yaml-0.8)
-                       ("rust-structopt" ,rust-structopt-0.3)
                        ("rust-tss-esapi" ,rust-tss-esapi-7)
-                       ("rust-tss-esapi-sys" ,rust-tss-esapi-sys-0.5))
-       #:cargo-development-inputs
-       (("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1))))
-    (native-inputs (list clang pkg-config))
-    (inputs (list nettle tpm2-tss))
+                       ("rust-tss-esapi-sys" ,rust-tss-esapi-sys-0.5))))
+    (native-inputs (list pkg-config))
+    (inputs (list tpm2-tss))
     (home-page "https://sequoia-pgp.org/")
     (synopsis "Machinery for working with TPM from Sequoia")
     (description
