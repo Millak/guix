@@ -41905,9 +41905,7 @@ loading utilities.")
         ("rust-winapi" ,rust-winapi-0.3))
        #:cargo-development-inputs
        (("rust-libc" ,rust-libc-0.2)
-        ("rust-static-assertions" ,rust-static-assertions-1))))
-    (inputs
-     (list rust-cfg-if-1 rust-winapi-0.3))))
+        ("rust-static-assertions" ,rust-static-assertions-1))))))
 
 (define-public rust-libloading-0.5
   (package
