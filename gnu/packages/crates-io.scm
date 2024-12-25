@@ -60867,23 +60867,23 @@ dependency to expose a precomputed hash.")
 (define-public rust-predicates-3
   (package
     (name "rust-predicates")
-    (version "3.1.0")
+    (version "3.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "predicates" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1s676s13sva6ikv2qmfmm7n3y3jnzvwbbhy1xzgnr4h58vyppf38"))))
+        (base32 "0wrm57acvagx0xmh5xffx5xspsr2kbggm698x0vks132fpjrxld5"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
-       '("--release" "--"
+       '("--"
          "--skip=path::fc::PredicateFileContentExt::from_file_path")
        #:cargo-inputs
        (("rust-anstyle" ,rust-anstyle-1)
         ("rust-difflib" ,rust-difflib-0.4)
-        ("rust-float-cmp" ,rust-float-cmp-0.9)
+        ("rust-float-cmp" ,rust-float-cmp-0.10)
         ("rust-normalize-line-endings" ,rust-normalize-line-endings-0.3)
         ("rust-predicates-core" ,rust-predicates-core-1)
         ("rust-regex" ,rust-regex-1))
