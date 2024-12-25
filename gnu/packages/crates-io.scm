@@ -91371,6 +91371,39 @@ implementation of TLS for nonblocking I/O streams.")
 stream-based @code{WebSocket} implementation.")
     (license license:expat)))
 
+(define-public rust-tokio-tungstenite-0.23
+  (package
+    (inherit rust-tokio-tungstenite-0.24)
+    (name "rust-tokio-tungstenite")
+    (version "0.23.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tokio-tungstenite" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1k9ijv208hsps5qhq2ii2cl8lwik7lpasssfy6m9016irr09b666"))))
+    (arguments
+     (list #:cargo-inputs
+           (list rust-futures-util-0.3
+                 rust-log-0.4
+                 rust-native-tls-0.2
+                 rust-rustls-0.23
+                 rust-rustls-native-certs-0.7
+                 rust-rustls-pki-types-1
+                 rust-tokio-1
+                 rust-tokio-native-tls-0.3
+                 rust-tokio-rustls-0.26
+                 rust-tungstenite-0.23
+                 rust-webpki-roots-0.26)
+           #:cargo-development-inputs
+           (list rust-env-logger-0.10
+                 rust-futures-channel-0.3
+                 rust-http-body-util-0.1
+                 rust-hyper-1
+                 rust-hyper-util-0.1
+                 rust-tokio-1)))))
+
 (define-public rust-tokio-tungstenite-0.21
   (package
     (inherit rust-tokio-tungstenite-0.24)
