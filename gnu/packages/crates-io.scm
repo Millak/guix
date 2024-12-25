@@ -69110,6 +69110,33 @@ Rhai, a scripting language and engine for Rust.")
 First In First Out} ring buffer with direct access to inner data.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-rinja-0.3
+  (package
+    (name "rust-rinja")
+    (version "0.3.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rinja" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "198ppf5bnm6q53dhn4nijl9vbrdm49i1z86msyrk0m2r006r9i1x"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-humansize" ,rust-humansize-2)
+                       ("rust-itoa" ,rust-itoa-1)
+                       ("rust-num-traits" ,rust-num-traits-0.2)
+                       ("rust-percent-encoding" ,rust-percent-encoding-2)
+                       ("rust-rinja-derive" ,rust-rinja-derive-0.3)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.5))))
+    (home-page "https://rinja.readthedocs.io/")
+    (synopsis "Type-safe, compiled Jinja-like templates for Rust")
+    (description
+     "This package provides a type-safe, compiled Jinja-like templates for Rust.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-rinja-derive-0.3
   (package
     (name "rust-rinja-derive")
