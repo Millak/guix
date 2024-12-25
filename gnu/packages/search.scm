@@ -263,53 +263,6 @@ files and directories.")
 command line tool for interacting with libtocc.")
     (license license:gpl3+)))
 
-(define-public searx
-  (package
-    (name "searx")
-    (version "1.0.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/searx/searx")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0ghkx8g8jnh8yd46p4mlbjn2zm12nx27v7qflr4c8xhlgi0px0mh"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f ;what tests do is make online requests to each engine
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'relax-requirements
-           (lambda _
-             ;; Tests can run after build with 'searx-checker' tool in /bin.
-             ;; allow using a higher dependency version
-             (substitute* "requirements.txt"
-               (("==") ">="))))
-         (add-before 'sanity-check 'set-debug
-           (lambda _
-             ;; the user will need to change the secret key
-             ;; https://github.com/searx/searx/issues/2278
-             (setenv "SEARX_DEBUG" "1"))))))
-    (propagated-inputs
-     (list python-babel
-           python-certifi
-           python-dateutil
-           python-flask
-           python-flask-babel
-           python-idna
-           python-jinja2
-           python-langdetect
-           python-lxml
-           python-pygments
-           python-pyyaml
-           python-requests))
-    (home-page "https://searx.github.io/searx/")
-    (synopsis "Privacy-respecting metasearch engine")
-    (description "Searx is a privacy-respecting, hackable metasearch engine.")
-    (license license:agpl3+)))
-
 (define-public bool
   (package
     (name "bool")
