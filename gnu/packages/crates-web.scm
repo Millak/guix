@@ -6007,8 +6007,65 @@ alike.  It's completely modular, and built directly for @code{async/await}.")
        #:cargo-development-inputs (("rust-rustc-serialize" ,rust-rustc-serialize-0.3)
                                    ("rust-sha1" ,rust-sha1-0.6))))))
 
+(define-public rust-tonic-0.12
+  (package
+    (name "rust-tonic")
+    (version "0.12.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tonic" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ljd1lfjpw0vrm5wbv15x6nq2i38llsanls5rkzmdn2n0wrmnz47"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-async-stream" ,rust-async-stream-0.3)
+                       ("rust-async-trait" ,rust-async-trait-0.1)
+                       ("rust-axum" ,rust-axum-0.7)
+                       ("rust-base64" ,rust-base64-0.22)
+                       ("rust-bytes" ,rust-bytes-1)
+                       ("rust-flate2" ,rust-flate2-1)
+                       ("rust-h2" ,rust-h2-0.4)
+                       ("rust-http" ,rust-http-1)
+                       ("rust-http-body" ,rust-http-body-1)
+                       ("rust-http-body-util" ,rust-http-body-util-0.1)
+                       ("rust-hyper" ,rust-hyper-1)
+                       ("rust-hyper-timeout" ,rust-hyper-timeout-0.5)
+                       ("rust-hyper-util" ,rust-hyper-util-0.1)
+                       ("rust-percent-encoding" ,rust-percent-encoding-2)
+                       ("rust-pin-project" ,rust-pin-project-1)
+                       ("rust-prost" ,rust-prost-0.13)
+                       ("rust-rustls-native-certs" ,rust-rustls-native-certs-0.8)
+                       ("rust-rustls-pemfile" ,rust-rustls-pemfile-2)
+                       ("rust-socket2" ,rust-socket2-0.5)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-tokio-rustls" ,rust-tokio-rustls-0.26)
+                       ("rust-tokio-stream" ,rust-tokio-stream-0.1)
+                       ("rust-tower" ,rust-tower-0.4)
+                       ("rust-tower-layer" ,rust-tower-layer-0.3)
+                       ("rust-tower-service" ,rust-tower-service-0.3)
+                       ("rust-tracing" ,rust-tracing-0.1)
+                       ("rust-webpki-roots" ,rust-webpki-roots-0.26)
+                       ("rust-zstd" ,rust-zstd-0.13))
+       #:cargo-development-inputs
+       (("rust-bencher" ,rust-bencher-0.1)
+        ("rust-quickcheck" ,rust-quickcheck-1)
+        ("rust-quickcheck-macros" ,rust-quickcheck-macros-1)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-static-assertions" ,rust-static-assertions-1)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tower" ,rust-tower-0.4))))
+    (home-page "https://github.com/hyperium/tonic")
+    (synopsis "Rust implementation of gRPC over HTTP/2")
+    (description
+     "This package provides a @code{gRPC} over HTTP/2 implementation focused
+on high performance, interoperability, and flexibility.")
+    (license license:expat)))
+
 (define-public rust-tonic-0.10
   (package
+    (inherit rust-tonic-0.12)
     (name "rust-tonic")
     (version "0.10.2")
     (source
@@ -6018,7 +6075,6 @@ alike.  It's completely modular, and built directly for @code{async/await}.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "03hx1b2810p4jmsphbql8cn3r22c9n1ar73bj8azf7761lx96q6m"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-async-stream" ,rust-async-stream-0.3)
                        ("rust-async-trait" ,rust-async-trait-0.1)
@@ -6052,13 +6108,7 @@ alike.  It's completely modular, and built directly for @code{async/await}.")
         ("rust-rand" ,rust-rand-0.8)
         ("rust-static-assertions" ,rust-static-assertions-1)
         ("rust-tokio" ,rust-tokio-1)
-        ("rust-tower" ,rust-tower-0.4))))
-    (home-page "https://github.com/hyperium/tonic")
-    (synopsis "Rust implementation of gRPC over HTTP/2")
-    (description
-     "This package provides a @code{gRPC} over HTTP/2 implementation focused
-on high performance, interoperability, and flexibility.")
-    (license license:expat)))
+        ("rust-tower" ,rust-tower-0.4))))))
 
 (define-public rust-tonic-0.8
   (package
