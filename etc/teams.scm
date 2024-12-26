@@ -707,7 +707,7 @@ GLib/GIO, GTK, GStreamer and Webkit."
 
 (define-member (person "("
                        "paren@disroot.org")
-  home mentors)
+  )
 
 (define-member (person "Simon Tournier"
                        "zimon.toutoune@gmail.com")
