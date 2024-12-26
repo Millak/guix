@@ -630,3 +630,66 @@ deflate, zlib, and gzip data.")
     (arguments
      `(#:cargo-inputs (("rust-cc" ,rust-cc-1))))))
 
+(define-public rust-libdeflater-1
+  (package
+    (name "rust-libdeflater")
+    (version "1.23.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "libdeflater" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "0fj5a7766kk25rb8fr0i0grypdz1a3g5ij2nkh5mbh7f2z4pd0yp"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-libdeflate-sys" ,rust-libdeflate-sys-1))
+       #:cargo-development-inputs
+       (("rust-adler32" ,rust-adler32-1)
+        ("rust-criterion" ,rust-criterion-0.3)
+        ("rust-flate2" ,rust-flate2-1))))
+    (native-inputs (list pkg-config))
+    (inputs (list libdeflate))
+    (home-page "https://github.com/adamkewley/libdeflater")
+    (synopsis "Bindings to libdeflate for DEFLATE")
+    (description "This package provides bindings to libdeflate for DEFLATE
+(de)compression exposed as non-streaming buffer operations.  Contains bindings
+for raw deflate, zlib, and gzip data.")
+    (license license:asl2.0)))
+
+(define-public rust-libdeflater-0.12
+  (package
+    (inherit rust-libdeflater-1)
+    (name "rust-libdeflater")
+    (version "0.12.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "libdeflater" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "0cbrdvwhilvmk919izkp5bqgwfa7b8nj2ar9gp67nb345wl667k7"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-libdeflate-sys" ,rust-libdeflate-sys-0.12))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.3)
+        ("rust-flate2" ,rust-flate2-1))))))
+
+(define-public rust-libdeflater-0.11
+  (package
+    (inherit rust-libdeflater-1)
+    (name "rust-libdeflater")
+    (version "0.11.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "libdeflater" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "0385hpai7fsnpfvxd3hki43v1cj8w6z1cb2rn8wd6vq4dam8bqnq"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-libdeflate-sys" ,rust-libdeflate-sys-0.11))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.3)
+        ("rust-flate2" ,rust-flate2-1))))))
+
