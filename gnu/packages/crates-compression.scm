@@ -1,12 +1,14 @@
 ;;; GNU Guix --- Functional package management for GNU
+;;; Copyright © 2019 John Soo <jsoo1@asu.edu>
 ;;; Copyright © 2020 Valentin Ignatev <valentignatev@gmail.com>
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
-;;; Copyright © 2020 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2020, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2024 Steve George <steve@futurile.net>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -436,3 +438,33 @@ written in rust.")
     (description "Deflate64 implementation based on .NET's implementation.")
     (license license:expat)))
 
+(define-public rust-flate2-1
+  (package
+    (name "rust-flate2")
+    (version "1.0.34")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "flate2" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1w1nf2ap4q1sq1v6v951011wcvljk449ap7q7jnnjf8hvjs8kdd1"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cloudflare-zlib-sys" ,rust-cloudflare-zlib-sys-0.3)
+        ("rust-crc32fast" ,rust-crc32fast-1)
+        ("rust-libz-ng-sys" ,rust-libz-ng-sys-1)
+        ("rust-libz-sys" ,rust-libz-sys-1)
+        ("rust-libz-rs-sys" ,rust-libz-rs-sys-0.3)
+        ("rust-miniz-oxide" ,rust-miniz-oxide-0.7))
+       #:cargo-development-inputs
+       (("rust-quickcheck" ,rust-quickcheck-1)
+        ("rust-rand" ,rust-rand-0.8))))
+    (home-page "https://github.com/rust-lang/flate2-rs")
+    (synopsis "Bindings to miniz.c for DEFLATE compression and decompression")
+    (description
+     "Bindings to miniz.c for DEFLATE compression and decompression exposed as
+Reader/Writer streams.  Contains bindings for zlib, deflate, and gzip-based
+streams.")
+    (license (list license:expat license:asl2.0))))
