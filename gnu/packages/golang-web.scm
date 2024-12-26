@@ -6446,7 +6446,7 @@ encoding library for the MessagePack, CBOR, JSON and the Binc formats.")
 (define-public go-github-com-valyala-fasthttp
   (package
     (name "go-github-com-valyala-fasthttp")
-    (version "1.39.0")
+    (version "1.58.0")
     (source
      (origin
        (method git-fetch)
@@ -6455,11 +6455,17 @@ encoding library for the MessagePack, CBOR, JSON and the Binc formats.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "12qwx0yk7wjj25v4fswgmj28r69gk94kqdmzavca8k9f0yznniz1"))))
+        (base32 "0r823fikgyhnmcn322anhs3ivkbzhdgbywvwi81v9kvfhi35plli"))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/valyala/fasthttp"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       ;; Network set up is required.
+                       (list "TestClientConfigureClientFailed"
+                             "TestDialer_GetDialFunc")
+                       "|"))
       #:phases
       #~(modify-phases %standard-phases
           (replace 'check
