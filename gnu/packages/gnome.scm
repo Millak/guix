@@ -117,6 +117,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crates-check)
   #:use-module (gnu packages crates-crypto)
+  #:use-module (gnu packages crates-database)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages crates-graphics)
   #:use-module (gnu packages crates-gtk)

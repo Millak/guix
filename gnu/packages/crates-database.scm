@@ -2,7 +2,10 @@
 ;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2021 Léo Le Bouter <lle-bout@zaclys.net>
+;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2024 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -32,6 +35,235 @@
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages sqlite))
+
+(define-public rust-diesel-2
+  (package
+    (name "rust-diesel")
+    (version "2.1.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "diesel" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ndmiv98xq2glkr4bqfq58fc3qncscfzx63xpj4ipwlqf30hbz03"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release"
+         "--features" "sqlite")
+       #:cargo-inputs (("rust-bigdecimal" ,rust-bigdecimal-0.1)
+                       ("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-byteorder" ,rust-byteorder-1)
+                       ("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-diesel-derives" ,rust-diesel-derives-2)
+                       ("rust-ipnet" ,rust-ipnet-2)
+                       ("rust-ipnetwork" ,rust-ipnetwork-0.17)
+                       ("rust-itoa" ,rust-itoa-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-libsqlite3-sys" ,rust-libsqlite3-sys-0.20)
+                       ("rust-mysqlclient-sys" ,rust-mysqlclient-sys-0.2)
+                       ("rust-num-bigint" ,rust-num-bigint-0.2)
+                       ("rust-num-integer" ,rust-num-integer-0.1)
+                       ("rust-num-traits" ,rust-num-traits-0.2)
+                       ("rust-percent-encoding" ,rust-percent-encoding-2)
+                       ("rust-pq-sys" ,rust-pq-sys-0.4)
+                       ("rust-quickcheck" ,rust-quickcheck-1)
+                       ("rust-r2d2" ,rust-r2d2-0.8)
+                       ("rust-serde-json" ,rust-serde-json-0.9)
+                       ("rust-time" ,rust-time-0.3)
+                       ("rust-url" ,rust-url-2)
+                       ("rust-uuid" ,rust-uuid-0.7))
+       #:cargo-development-inputs (("rust-cfg-if" ,rust-cfg-if-1)
+                                   ("rust-dotenvy" ,rust-dotenvy-0.15)
+                                   ("rust-ipnetwork" ,rust-ipnetwork-0.17)
+                                   ("rust-quickcheck" ,rust-quickcheck-1))))
+    (native-inputs (list sqlite))
+    (home-page "https://diesel.rs")
+    (synopsis "Safe, extensible ORM and Query Builder")
+    (description "This package provides a safe, extensible ORM and Query
+Builder for PostgreSQL, SQLite, and MySQL.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-diesel-1
+  (package
+    (inherit rust-diesel-2)
+    (name "rust-diesel")
+    (version "1.4.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "diesel" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0kcfkfhsv5yv3ksj440ajgic930359i2bqi77ss4dm5pyvn3b0dj"))))
+    (arguments
+     `(#:cargo-test-flags
+       '("--release"
+         "--features" "sqlite"
+         "--"
+         "--skip=expression::count::count"
+         "--skip=macros::internal::parse_type_args_with_bounds"
+         "--skip=macros::internal::parse_type_args_with_bounds_containing_braces_and_commas"
+         "--skip=macros::internal::parse_type_args_with_existentials_and_lifetimes"
+         "--skip=macros::internal::parse_type_args_with_trailer")
+       #:cargo-inputs
+       (("rust-bigdecimal" ,rust-bigdecimal-0.1)
+        ("rust-bitflags" ,rust-bitflags-1)
+        ("rust-byteorder" ,rust-byteorder-1)
+        ("rust-chrono" ,rust-chrono-0.4)
+        ("rust-diesel-derives" ,rust-diesel-derives-1)
+        ("rust-ipnetwork" ,rust-ipnetwork-0.17)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-libsqlite3-sys" ,rust-libsqlite3-sys-0.20)
+        ("rust-mysqlclient-sys" ,rust-mysqlclient-sys-0.2)
+        ("rust-num-bigint" ,rust-num-bigint-0.2)
+        ("rust-num-integer" ,rust-num-integer-0.1)
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-pq-sys" ,rust-pq-sys-0.4)
+        ("rust-quickcheck" ,rust-quickcheck-0.4)
+        ("rust-r2d2" ,rust-r2d2-0.8)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-time" ,rust-time-0.1)
+        ("rust-url" ,rust-url-1)
+        ("rust-uuid" ,rust-uuid-0.5)
+        ("rust-uuid" ,rust-uuid-0.8))
+       #:cargo-development-inputs
+       (("rust-cfg-if" ,rust-cfg-if-0.1)
+        ("rust-dotenv" ,rust-dotenv-0.10)
+        ("rust-quickcheck" ,rust-quickcheck-0.4)
+        ("rust-tempdir" ,rust-tempdir-0.3))))))
+
+(define-public rust-diesel-derives-2
+  (package
+    (name "rust-diesel-derives")
+    (version "2.1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "diesel_derives" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "036f3i1hsl2m2c0basg28adc9rh3vnr2vp0xwvzi9rsah75yw0jx"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=derive_insertable"
+         "--skip=derive_multiconnection"
+         "--skip=derive_queryable"
+         "--skip=derive_queryable_by_name")
+       #:cargo-inputs
+       (("rust-diesel-table-macro-syntax" ,rust-diesel-table-macro-syntax-0.1)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-2))
+       #:cargo-development-inputs (("rust-cfg-if" ,rust-cfg-if-1)
+                                   ("rust-diesel" ,rust-diesel-2)
+                                   ("rust-dotenvy" ,rust-dotenvy-0.15))))
+    (native-inputs (list sqlite))
+    (home-page "https://diesel.rs")
+    (synopsis "Crate internal to Diesel")
+    (description "You should not use this crate directly, it is internal to
+Diesel.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-diesel-derives-1
+  (package
+    (inherit rust-diesel-derives-2)
+    (name "rust-diesel-derives")
+    (version "1.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "diesel_derives" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1lsq133fwk0zj8xvxhdxqgg0xs31zf3abnwdyshaf0ldca7hkxa5"))))
+    (arguments
+     `(#:tests? #f      ; cannot find type `SqliteConnection` in this scope
+       #:cargo-test-flags
+       '("--release"
+         "--features" "sqlite"
+         "--"
+         "--skip=expression::count::count")
+       #:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))
+       #:cargo-development-inputs
+       (("rust-cfg-if" ,rust-cfg-if-0.1)
+        ("rust-diesel" ,rust-diesel-1)
+        ("rust-dotenv" ,rust-dotenv-0.10))))))
+
+(define-public rust-diesel-migrations-2
+  (package
+    (name "rust-diesel-migrations")
+    (version "2.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "diesel_migrations" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1b0ld4azk73rg2axwq7a4wnpwba3085f43jp3cw62n8c2bqb6dk0"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-diesel" ,rust-diesel-2)
+        ("rust-migrations-internals" ,rust-migrations-internals-2)
+        ("rust-migrations-macros" ,rust-migrations-macros-2))
+       #:cargo-development-inputs
+       (("rust-cfg-if" ,rust-cfg-if-0.1)
+        ("rust-dotenvy" ,rust-dotenvy-0.15)
+        ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://diesel.rs")
+    (synopsis "Migration management for diesel")
+    (description "This package provides migration management for Diesel.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-diesel-migrations-1
+  (package
+    (inherit rust-diesel-migrations-2)
+    (name "rust-diesel-migrations")
+    (version "1.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "diesel_migrations" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0k4g03ciqwya2xc1xvy5s9cs6q55k45wxa1gszswfg9m2f2dwg5z"))))
+    (arguments
+     `(#:tests? #f ;doctest_setup.rs: No such file or directory
+       #:cargo-inputs
+       (("rust-migrations-internals" ,rust-migrations-internals-1)
+        ("rust-migrations-macros" ,rust-migrations-macros-1))
+       #:cargo-development-inputs
+       (("rust-cfg-if" ,rust-cfg-if-0.1)
+        ("rust-diesel" ,rust-diesel-1)
+        ("rust-dotenv" ,rust-dotenv-0.10))))))
+
+(define-public rust-diesel-table-macro-syntax-0.1
+  (package
+    (name "rust-diesel-table-macro-syntax")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "diesel_table_macro_syntax" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1i9115qgsnargr6a707lqcjc45wqzq351a2gbvnnyw2kqkpmfmgw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-syn" ,rust-syn-2))))
+    (home-page "https://diesel.rs")
+    (synopsis "Internal diesel crate")
+    (description "Internal diesel crate.")
+    (license (list license:expat license:asl2.0))))
 
 (define-public rust-libsqlite3-sys-0.30
   (package
