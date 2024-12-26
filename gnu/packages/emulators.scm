@@ -2574,14 +2574,14 @@ that compiles to WebAssembly.")
 (define-public scummvm
   (package
     (name "scummvm")
-    (version "2.8.1")
+    (version "2.9.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://downloads.scummvm.org/frs/scummvm/" version
                            "/scummvm-" version ".tar.xz"))
        (sha256
-        (base32 "1dr70z1dkfw2gp43jq0qp7g73glr36a7qdcv1jvp1m927nhz95vy"))))
+        (base32 "0lllm5fsmb5gdrxnpfryyl85i4sb1dkrqw97j7q4glkhplr3bcym"))))
     (build-system gnu-build-system)
     (arguments
      (list
