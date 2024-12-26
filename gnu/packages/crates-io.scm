@@ -52830,57 +52830,6 @@ uniformly interacting with AWS S3, Google Cloud Storage, Azure Blob Storage and
 local files.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-oboe-0.4
-  (package
-    (name "rust-oboe")
-    (version "0.4.6")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "oboe" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1hd5626s8qkpgrl2alwz73i8rh1rzifbxj6pxz7zp82gicskrxi7"))))
-    (build-system cargo-build-system)
-    (arguments
-     (list #:skip-build? #t ; requires Android libs
-           #:cargo-inputs `(("rust-jni" ,rust-jni-0.19)
-                            ("rust-ndk" ,rust-ndk-0.6)
-                            ("rust-ndk-context" ,rust-ndk-context-0.1)
-                            ("rust-num-derive" ,rust-num-derive-0.3)
-                            ("rust-num-traits" ,rust-num-traits-0.2)
-                            ("rust-oboe-sys" ,rust-oboe-sys-0.4))))
-    (home-page "https://github.com/katyo/oboe-rs")
-    (synopsis
-     "Safe interface for oboe an android library for low latency audio IO")
-    (description
-     "Safe interface for oboe an android library for low latency audio IO.")
-    (license license:asl2.0)))
-
-(define-public rust-oboe-sys-0.4
-  (package
-    (name "rust-oboe-sys")
-    (version "0.4.5")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "oboe-sys" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1gcl494yy880h2gfgsbdd32g2h0s1n94v58j5hil9mrf6yvsnw1k"))))
-    (build-system cargo-build-system)
-    (arguments
-     (list #:skip-build? #t ; requires Android libs
-           #:cargo-inputs `(("rust-bindgen" ,rust-bindgen-0.59)
-                            ("rust-cc" ,rust-cc-1)
-                            ("rust-fetch-unroll" ,rust-fetch-unroll-0.3))))
-    (home-page "https://github.com/katyo/oboe-rs")
-    (synopsis
-     "Unsafe bindings for oboe an android library for low latency audio IO")
-    (description
-     "Unsafe bindings for oboe an android library for low latency audio IO.")
-    (license license:asl2.0)))
-
 (define-public rust-odbc-api-0.36
   (package
     (name "rust-odbc-api")
