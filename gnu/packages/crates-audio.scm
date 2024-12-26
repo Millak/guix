@@ -1,4 +1,5 @@
 ;;; Copyright © 2023 Steve George <steve@futurile.net>
+;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2024 Roman Scherer <roman@burningswell.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -20,15 +21,18 @@
   #:use-module (guix build-system cargo)
   #:use-module (guix download)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages audio)
+  #:use-module (gnu packages crates-apple)
   #:use-module (gnu packages crates-crypto)
   #:use-module (gnu packages crates-graphics)
   #:use-module (gnu packages crates-gtk)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages crates-web)
+  #:use-module (gnu packages crates-windows)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages pkg-config))
 
@@ -61,6 +65,63 @@
      "Low-level interface and binding generation for the Steinberg ASIO SDK")
     (description
      "Low-level interface and binding generation for the Steinberg ASIO SDK.")
+    (license license:asl2.0)))
+
+(define-public rust-cpal-0.13
+  (package
+    (name "rust-cpal")
+    (version "0.13.5")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "cpal" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32 "05j11vz8rw19gqqvpd48i7wvm6j77v8fwx5lwhlkckqjllv7h4bl"))
+        (snippet
+         #~(begin (use-modules (guix build utils))
+                  ;; Force cpal-0.13.5 to accept any version of jack, so
+                  ;; that other packages like librespot-playback can use
+                  ;; the one they want.
+                  (substitute* "Cargo.toml.orig"
+                    (("(jack = \\{ version = \").*(\", optional.*)" _ jack optional)
+                     (string-append jack "*" optional))
+                    ;; Remove path for asio-sys, use packaged crate.
+                    ((", path =.*,") ","))
+                  (copy-file "Cargo.toml.orig" "Cargo.toml")))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-alsa" ,rust-alsa-0.6)
+                       ("rust-asio-sys" ,rust-asio-sys-0.2)
+                       ("rust-core-foundation-sys" ,rust-core-foundation-sys-0.8)
+                       ("rust-coreaudio-rs" ,rust-coreaudio-rs-0.10)
+                       ("rust-jack" ,rust-jack-0.8)
+                       ("rust-jni" ,rust-jni-0.19)
+                       ("rust-js-sys" ,rust-js-sys-0.3)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-mach" ,rust-mach-0.3)
+                       ("rust-ndk" ,rust-ndk-0.6)
+                       ("rust-ndk-glue" ,rust-ndk-glue-0.6)
+                       ("rust-nix" ,rust-nix-0.23)
+                       ("rust-num-traits" ,rust-num-traits-0.2)
+                       ("rust-oboe" ,rust-oboe-0.4)
+                       ("rust-parking-lot" ,rust-parking-lot-0.11)
+                       ("rust-stdweb" ,rust-stdweb-0.1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
+                       ("rust-web-sys" ,rust-web-sys-0.3)
+                       ("rust-winapi" ,rust-winapi-0.3))
+       #:cargo-development-inputs (("rust-anyhow" ,rust-anyhow-1)
+                                   ("rust-clap" ,rust-clap-3)
+                                   ("rust-hound" ,rust-hound-3)
+                                   ("rust-ringbuf" ,rust-ringbuf-0.2))))
+    (native-inputs (list pkg-config))
+    (inputs (list alsa-lib))
+    (home-page "https://github.com/rustaudio/cpal")
+    (synopsis "Low-level cross-platform audio I/O library in pure Rust")
+    (description "Low-level cross-platform audio I/O library in pure Rust.
+Supports Linux through either JACK or ALSA.")
     (license license:asl2.0)))
 
 (define-public rust-jack-0.10
