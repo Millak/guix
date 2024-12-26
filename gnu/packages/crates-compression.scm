@@ -1383,6 +1383,30 @@ streaming API for miniz_oxide.")
     (arguments
      `(#:cargo-inputs (("rust-adler32" ,rust-adler32-1))))))
 
+(define-public rust-rust-lzma-0.5
+  (package
+    (name "rust-rust-lzma")
+    (version "0.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rust-lzma" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1njlmh9hq2qg5ssdangwbdkz1lrfj2brf8kfp65k7vmfmr6w0pc9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-pkg-config" ,rust-pkg-config-0.3))))
+    (native-inputs
+      (list pkg-config xz))
+    (home-page "https://github.com/fpgaminer/rust-lzma")
+    (synopsis
+      "Simple interface for LZMA compression and decompression")
+    (description
+     "This package provides Simple interface for LZMA compression and decompression.")
+    (license license:expat)))
+
 (define-public rust-ruzstd-0.7
   (package
     (name "rust-ruzstd")

@@ -67970,30 +67970,6 @@ reading and writing BAM files.")
         (base32 "1hifnbgaz01zja5995chy6vjacbif2m76nlxsisw7y1pxx4c2liy"))))
     (arguments `(#:skip-build? #t))))
 
-(define-public rust-rust-lzma-0.5
-  (package
-    (name "rust-rust-lzma")
-    (version "0.5.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "rust-lzma" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1njlmh9hq2qg5ssdangwbdkz1lrfj2brf8kfp65k7vmfmr6w0pc9"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-pkg-config" ,rust-pkg-config-0.3))))
-    (native-inputs
-      (list pkg-config xz))
-    (home-page "https://github.com/fpgaminer/rust-lzma")
-    (synopsis
-      "Simple interface for LZMA compression and decompression")
-    (description
-     "This package provides Simple interface for LZMA compression and decompression.")
-    (license license:expat)))
-
 (define-public rust-rustbox-0.11
   (package
     (name "rust-rustbox")
