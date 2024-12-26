@@ -468,3 +468,46 @@ written in rust.")
 Reader/Writer streams.  Contains bindings for zlib, deflate, and gzip-based
 streams.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-gzip-header-1
+  (package
+    (name "rust-gzip-header")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gzip-header" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "18lm2y96mahkmcd76pzyam2sl3v6lsl9mn8ajri9l0p6j9xm5k4m"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-crc32fast" ,rust-crc32fast-1))))
+    (home-page "https://github.com/oyvindln/gzip-header")
+    (synopsis "Decoding and encoding the header part of gzip files")
+    (description
+     "This package provides a crate for decoding and encoding the header part
+of gzip files based on the gzip header implementation in the @code{flate2} crate.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-gzip-header-0.3
+  (package
+    (inherit rust-gzip-header-1)
+    (name "rust-gzip-header")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gzip-header" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0fg6vm8sgsm69szwqyz7abfbyziv6pv0jkcailimlamvsfrzwc81"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-crc32fast" ,rust-crc32fast-1))))))
+
