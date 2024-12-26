@@ -23,7 +23,9 @@
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (gnu packages)
-  #:use-module (gnu packages crates-io))
+  #:use-module (gnu packages audio)
+  #:use-module (gnu packages crates-io)
+  #:use-module (gnu packages pkg-config))
 
 ;;;
 ;;; Please: Try to add new module packages in alphabetic order.
@@ -55,6 +57,101 @@
     (description
      "Low-level interface and binding generation for the Steinberg ASIO SDK.")
     (license license:asl2.0)))
+
+(define-public rust-jack-0.10
+  (package
+    (name "rust-jack")
+    (version "0.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "jack" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0djs3j0icxbzbivhj73vgjrvjw6ncpfak2vyxjcbn4wvl9ajcwnf"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:tests? #f
+           #:cargo-inputs
+           `(("rust-bitflags" ,rust-bitflags-1)
+             ("rust-jack-sys" ,rust-jack-sys-0.4)
+             ("rust-lazy-static" ,rust-lazy-static-1)
+             ("rust-libc" ,rust-libc-0.2)
+             ("rust-log" ,rust-log-0.4))
+           #:cargo-development-inputs
+           `(("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5))))
+    (native-inputs (list pkg-config))
+    (inputs (list jack-2))
+    (home-page "https://github.com/RustAudio/rust-jack")
+    (synopsis "Real time audio and midi with JACK")
+    (description "Real time audio and midi with JACK.")
+    (license license:expat)))
+
+(define-public rust-jack-0.8
+  (package
+    (inherit rust-jack-0.10)
+    (name "rust-jack")
+    (version "0.8.4")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "jack" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0lz10s0n2gy128m65pf96is9ip00vfgvnkfja0y9ydmv24pw2ajx"))))
+    (arguments
+     (list #:tests? #f
+           #:cargo-inputs `(("rust-bitflags" ,rust-bitflags-1)
+                            ("rust-jack-sys" ,rust-jack-sys-0.2)
+                            ("rust-lazy-static" ,rust-lazy-static-1)
+                            ("rust-libc" ,rust-libc-0.2)
+                            ("rust-log" ,rust-log-0.4)
+                            ("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5))))))
+
+(define-public rust-jack-sys-0.4
+  (package
+    (name "rust-jack-sys")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "jack-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "17vaq4i8q5nx39rjqx9sixqn1xraf1vxs3bmrf618v8nzxchbmz9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; cannot find value `library` in this scope
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-1)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-libloading" ,rust-libloading-0.7)
+        ("rust-pkg-config" ,rust-pkg-config-0.3))))
+    (native-inputs (list pkg-config))
+    (inputs (list jack-2))
+    (home-page "https://github.com/RustAudio/rust-jack/tree/main/jack-sys")
+    (synopsis "Low-level binding to the JACK audio API")
+    (description "Low-level binding to the JACK audio API.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-jack-sys-0.2
+  (package
+    (inherit rust-jack-sys-0.4)
+    (name "rust-jack-sys")
+    (version "0.2.3")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "jack-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1h9c9za19nyr1prx77gkia18ia93f73lpyjdiyrvmhhbs79g54bv"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-inputs `(("rust-lazy-static" ,rust-lazy-static-1)
+                            ("rust-libc" ,rust-libc-0.2)
+                            ("rust-libloading" ,rust-libloading-0.6)
+                            ("rust-pkg-config" ,rust-pkg-config-0.3))))))
 
 (define-public rust-lv2-0.6
   (package
