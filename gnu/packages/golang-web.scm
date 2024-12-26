@@ -2581,6 +2581,34 @@ from CloudFlare's github.com/cloudflare/cfssl/revoke.")
 compatible text protocols headers.")
     (license license:expat)))
 
+(define-public go-github-com-gobwas-ws
+  (package
+    (name "go-github-com-gobwas-ws")
+    (version "1.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gobwas/ws")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1nqgb75cizx11igwjqx6b6mlzl7yxy6x683m9aaalgcx9n1qxan7"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/gobwas/ws"))
+    (propagated-inputs
+     (list go-github-com-gobwas-httphead
+           go-github-com-gobwas-pool))
+    (home-page "https://github.com/gobwas/ws")
+    (synopsis "Tiny WebSocket library for Golang")
+    (description
+     "Package ws implements a client and server for the @code{WebSocket}
+protocol as specified in @url{https://rfc-editor.org/rfc/rfc6455.html, RFC
+6455}.")
+    (license license:expat)))
+
 (define-public go-github-com-goccy-go-json
   (package
     (name "go-github-com-goccy-go-json")
