@@ -1897,6 +1897,34 @@ OpenAPI v3.1}.")
 logging system.")
       (license license:bsd-3))))
 
+(define-public go-github-com-gin-contrib-sse
+  (package
+    (name "go-github-com-gin-contrib-sse")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gin-contrib/sse")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "072nq91a65n5xvwslqjyvydfd0mfpnvb3vwjyfvmzm1ym96wr1nd"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/gin-contrib/sse"))
+    (native-inputs (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/gin-contrib/sse")
+    (synopsis "Server-Sent Events implementation in Golang")
+    (description
+     "@acronym{Server-sent events, SSE} is a technology where a browser
+receives automatic updates from a server via HTTP connection.  The SSE
+@code{EventSource} API is
+@url{http://www.w3.org/TR/2009/WD-eventsource-20091029/,standardized as part
+of HTML5[1] by the W3C}.")
+    (license license:expat)))
+
 (define-public go-github-com-go-chi-chi-v5
   (package
     (name "go-github-com-go-chi-chi-v5")
