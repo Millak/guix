@@ -217,10 +217,13 @@ for xls and xlsx files support to all @code{agate.Table} instances.")))
               (uri (pypi-uri "csvkit" version))
               (sha256
                (base32
-                "08wj0hlmbdmklar12cjzqp91vcxzwifsvmgasszas8kbiyvvgpdy"))))
+                "08wj0hlmbdmklar12cjzqp91vcxzwifsvmgasszas8kbiyvvgpdy"))
+              (patches
+               (search-patches "csvkit-set-locale-for-tests.patch"))))
     (build-system python-build-system)
     (native-inputs
-     (list python-psycopg2 ; to test PostgreSQL support
+     (list (libc-utf8-locales-for-target)
+           python-psycopg2 ; to test PostgreSQL support
            python-sphinx python-sphinx-rtd-theme))
     (inputs
      (list python-agate-dbf python-agate-excel python-agate-sql
@@ -234,8 +237,7 @@ for xls and xlsx files support to all @code{agate.Table} instances.")))
                     (man1 (string-append out "/share/man/man1")))
                (with-directory-excursion "docs"
                  (invoke "make" "man")
-                 (copy-recursively "_build/man" man1))
-               #t))))))
+                 (copy-recursively "_build/man" man1))))))))
     (home-page "https://csvkit.rtfd.org")
     (synopsis "Command-line tools for working with CSV")
     (description "csvkit is a suite of command-line tools for converting to
