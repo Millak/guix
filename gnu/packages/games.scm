@@ -7627,7 +7627,7 @@ at their peak of economic growth and military prowess.
 (define-public open-adventure
   (package
     (name "open-adventure")
-    (version "1.19")
+    (version "1.20")
     (source
      (origin
        (method git-fetch)
@@ -7636,7 +7636,7 @@ at their peak of economic growth and military prowess.
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19nspsvkzh3xw70mwlvralfr2ia7a8knd9s7x7abmjvk8p5rx468"))))
+        (base32 "0lbggjmh9g4zvnzzqz0qspmc24yg25bjalm06dlvhd22vz7hrfy5"))))
     (build-system gnu-build-system)
     (arguments
      (list
