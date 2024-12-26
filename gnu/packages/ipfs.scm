@@ -925,7 +925,7 @@ their levels to be controlled individually.")
 (define-public go-github-com-libp2p-go-libp2p
   (package
     (name "go-github-com-libp2p-go-libp2p")
-    (version "0.36.3")
+    (version "0.36.5")
     (source
      (origin
        (method git-fetch)
@@ -934,12 +934,35 @@ their levels to be controlled individually.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1bpjqrb2zdp86va7ms36lpci1l6lgkx85rc3q13fmzks38mqqw8s"))))
+        (base32 "0fmalwb0g0nykd1v22nm5gmif9mvapshsja8w1ihlm8ahbqq9vb2"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separatly:
+            ;;
+            ;; - github.com/libp2p/go-libp2p/scripts/test_analysis
+            ;; - github.com/libp2p/go-libp2p/test-plans/m/v2
+            (for-each delete-file-recursively
+                      (list "scripts/test_analysis" "test-plans"))))))
     (build-system go-build-system)
     (arguments
      (list
       #:embed-files #~(list "sorted-network-list.bin")
-      #:import-path "github.com/libp2p/go-libp2p"))
+      #:import-path "github.com/libp2p/go-libp2p"
+      ;; XXX: Check how to enable the most of the tests, see GitHub Actions
+      ;; workflow files of the project.
+      #:test-subdirs #~(list "core/..." ".")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+              (delete-file-recursively "examples")))))))
+    (native-inputs
+     (list go-github-com-libp2p-go-libp2p-testing
+           go-github-com-stretchr-testify
+           go-go-uber-org-mock
+           go-go-uber-org-goleak))
     (propagated-inputs
      (list go-github-com-benbjohnson-clock
            go-github-com-davidlazar-go-crypto
@@ -989,10 +1012,8 @@ their levels to be controlled individually.")
            go-github-com-quic-go-quic-go
            go-github-com-quic-go-webtransport-go
            go-github-com-raulk-go-watchdog
-           go-github-com-stretchr-testify
            go-go-uber-org-fx
-           go-go-uber-org-goleak
-           go-go-uber-org-mock
+           go-go-uber-org-zap
            go-golang-org-x-crypto
            go-golang-org-x-exp
            go-golang-org-x-sync
