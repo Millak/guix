@@ -11480,7 +11480,7 @@ object dependencies graph during the process startup.")
 (define-public go-go-uber-org-fx
   (package
     (name "go-go-uber-org-fx")
-    (version "1.21.0")
+    (version "1.23.0")
     (source
      (origin
        (method git-fetch)
@@ -11489,11 +11489,25 @@ object dependencies graph during the process startup.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "16pbqmkij02zw6xa4660k905y0r0rc50vyqhg41i2411r68jrdnn"))))
+        (base32 "03m26d2k9gwcdjjmwajz1fnihdjvb46l6c5ws07r8l8skcz1jx16"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - go.uber.org/fx/tools
+            (delete-file-recursively "tools")))))
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "go.uber.org/fx"))
+      #:import-path "go.uber.org/fx"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       ;; Tests require networking set up.
+                       (list "TestNopLoggerOptionString"
+                             "TestRun"
+                             "TestDeepStack")
+                       "|"))))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
