@@ -2059,7 +2059,8 @@ incorporates ideas and concepts from Philipp Winter's ScrambleSuit protocol.")
           (base32 "0nvd0qp1mdy7w32arnkhghxm5k2g6gy33cxlarxc6vdm4yh6v5nv"))))
       (build-system go-build-system)
       (arguments
-       `(#:import-path "gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/webtunnel"))
+       `(#:import-path "gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/webtunnel"
+         #:test-subdirs '(".")))
       (home-page "https://gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/webtunnel")
       (synopsis "Go WebTunnel Pluggable Transport")
       (description "WebTunnel is a Go Pluggable Transport that attempts to imitate
