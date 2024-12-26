@@ -19773,16 +19773,16 @@ number on the left margin in Emacs.")
 (define-public emacs-lin
   (package
     (name "emacs-lin")
-    (version "1.0.0")
+    (version "1.1.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://git.sr.ht/~protesilaos/lin")
+                    (url "https://github.com/protesilaos/lin")
                     (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0bbxm2ndp6hcpdiv34dl9smgx5l0m4pdzm7csp283f6q9kwwdf3v"))))
+                "00l74ldkv0nb58v6la12k36b43y3qxlcgccygpph5fhzj47v1gn4"))))
     (native-inputs (list texinfo))
     (build-system emacs-build-system)
     (arguments
@@ -19798,11 +19798,12 @@ number on the left margin in Emacs.")
                       "--eval=(org-texinfo-export-to-info)")
               (install-file "lin.info" (string-append #$output "/share/info")))))))
     (home-page "https://protesilaos.com/emacs/lin")
-    (synopsis "Make @command{hl-line-mode} more suitable for selection UIs")
-    (description "Lin is a stylistic enhancement for Emacs’ built-in
-@command{hl-line-mode}.  It remaps the hl-line face (or equivalent)
-buffer-locally to a style that is optimal for major modes where line selection
-is the primary mode of interaction.")
+    (synopsis "Make Hl Line mode more suitable for selection UIs")
+    (description
+     "Lin is a stylistic enhancement for Emacs’ built-in Hl Line mode.  It
+remaps the @code{hl-line} face (or equivalent) buffer-locally to a style that is
+optimal for major modes where line selection is the primary mode of
+interaction.")
     (license (list license:gpl3+
                    license:fdl1.3+)))) ; GFDLv1.3+ for the manual
 
