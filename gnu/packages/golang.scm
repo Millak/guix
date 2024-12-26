@@ -1786,88 +1786,12 @@ protocol from the Pluggable Transports 2.0 specification.")
         (base32 "0s730xagdxs66wfh65hb5v9a5h01q5ncic3pyij0a043scagizgr"))))
     (build-system go-build-system)
     (arguments
-     `(#:unpack-path "github.com/OperatorFoundation/obfs4"
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'build
-           (lambda arguments
-             (for-each
-              (lambda (directory)
-                (apply (assoc-ref %standard-phases 'build)
-                       `(,@arguments #:import-path ,directory)))
-              (list
-               "github.com/OperatorFoundation/obfs4/common/csrand"
-               "github.com/OperatorFoundation/obfs4/common/drbg"
-               "github.com/OperatorFoundation/obfs4/common/log"
-               "github.com/OperatorFoundation/obfs4/common/ntor"
-               "github.com/OperatorFoundation/obfs4/common/probdist"
-               "github.com/OperatorFoundation/obfs4/common/pt_extras"
-               "github.com/OperatorFoundation/obfs4/common/replayfilter"
-               "github.com/OperatorFoundation/obfs4/common/socks5"
-               "github.com/OperatorFoundation/obfs4/common/termmon"
-               "github.com/OperatorFoundation/obfs4/common/uniformdh"
-               "github.com/OperatorFoundation/obfs4/modes/pt_socks5"
-               "github.com/OperatorFoundation/obfs4/modes/stun_udp"
-               "github.com/OperatorFoundation/obfs4/modes/transparent_tcp"
-               "github.com/OperatorFoundation/obfs4/modes/transparent_udp"
-               "github.com/OperatorFoundation/obfs4/obfs4proxy"
-               "github.com/OperatorFoundation/obfs4/proxy_dialers/proxy_http"
-               "github.com/OperatorFoundation/obfs4/proxy_dialers/proxy_socks4"
-               "github.com/OperatorFoundation/obfs4/transports"))))
-         (replace 'check
-           (lambda arguments
-             (for-each
-              (lambda (directory)
-                (apply (assoc-ref %standard-phases 'check)
-                       `(,@arguments #:import-path ,directory)))
-              (list
-               "github.com/OperatorFoundation/obfs4/common/csrand"
-               "github.com/OperatorFoundation/obfs4/common/drbg"
-               "github.com/OperatorFoundation/obfs4/common/log"
-               "github.com/OperatorFoundation/obfs4/common/ntor"
-               "github.com/OperatorFoundation/obfs4/common/probdist"
-               "github.com/OperatorFoundation/obfs4/common/pt_extras"
-               "github.com/OperatorFoundation/obfs4/common/replayfilter"
-               "github.com/OperatorFoundation/obfs4/common/socks5"
-               "github.com/OperatorFoundation/obfs4/common/termmon"
-               "github.com/OperatorFoundation/obfs4/common/uniformdh"
-               ;; ERROR: Println arg dialFn is a func value, not called.
-               ;;"github.com/OperatorFoundation/obfs4/modes/pt_socks5"
-               ;; ERROR: Infof format %s has arg ln of wrong type *net.UDPConn.
-               ;;"github.com/OperatorFoundation/obfs4/modes/stun_udp"
-               "github.com/OperatorFoundation/obfs4/modes/transparent_tcp"
-               ;; ERROR: Infof format %s has arg ln of wrong type *net.UDPConn
-               ;;"github.com/OperatorFoundation/obfs4/modes/transparent_udp"
-               ;; ERROR: Println call has possible formatting directive %s.
-               ;;"github.com/OperatorFoundation/obfs4/obfs4proxy"
-               "github.com/OperatorFoundation/obfs4/proxy_dialers/proxy_http"
-               "github.com/OperatorFoundation/obfs4/proxy_dialers/proxy_socks4"
-               "github.com/OperatorFoundation/obfs4/transports"))))
-         (replace 'install
-           (lambda arguments
-             (for-each
-              (lambda (directory)
-                (apply (assoc-ref %standard-phases 'install)
-                       `(,@arguments #:import-path ,directory)))
-              (list
-               "github.com/OperatorFoundation/obfs4/common/csrand"
-               "github.com/OperatorFoundation/obfs4/common/drbg"
-               "github.com/OperatorFoundation/obfs4/common/log"
-               "github.com/OperatorFoundation/obfs4/common/ntor"
-               "github.com/OperatorFoundation/obfs4/common/probdist"
-               "github.com/OperatorFoundation/obfs4/common/pt_extras"
-               "github.com/OperatorFoundation/obfs4/common/replayfilter"
-               "github.com/OperatorFoundation/obfs4/common/socks5"
-               "github.com/OperatorFoundation/obfs4/common/termmon"
-               "github.com/OperatorFoundation/obfs4/common/uniformdh"
-               "github.com/OperatorFoundation/obfs4/modes/pt_socks5"
-               "github.com/OperatorFoundation/obfs4/modes/stun_udp"
-               "github.com/OperatorFoundation/obfs4/modes/transparent_tcp"
-               "github.com/OperatorFoundation/obfs4/modes/transparent_udp"
-               "github.com/OperatorFoundation/obfs4/obfs4proxy"
-               "github.com/OperatorFoundation/obfs4/proxy_dialers/proxy_http"
-               "github.com/OperatorFoundation/obfs4/proxy_dialers/proxy_socks4"
-               "github.com/OperatorFoundation/obfs4/transports")))))))
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/OperatorFoundation/obfs4"
+      #:test-subdirs #~(list "common/..."
+                             "proxy_dialers/..."
+                             "transports/obfs4/...")))
     (propagated-inputs
      (list go-github-com-dchest-siphash
            go-github-com-operatorfoundation-ed25519
