@@ -8225,7 +8225,7 @@ varints.")
 (define-public go-github-com-nats-io-nats-go
   (package
     (name "go-github-com-nats-io-nats-go")
-    (version "1.32.0")
+    (version "1.38.0")
     (source
      (origin
        (method git-fetch)
@@ -8234,15 +8234,22 @@ varints.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "08b3n5mdpxvn9hipz0j001bp5r67i43cqji9x9dyzikypqdfg38k"))))
+        (base32 "1b21sxzds2x5a8b13hmf5n1pf1bf770ky7q12147gqq7vsw39fa1"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/nats-io/nats.go"))
-    (propagated-inputs (list go-golang-org-x-text
-                         go-github-com-nats-io-nuid
-                         go-github-com-nats-io-nkeys
-                         go-github-com-klauspost-compress))
+      #:import-path "github.com/nats-io/nats.go"
+      ;; Most tests in "test" directory fail to set up, limit to project's
+      ;; root tests.
+      #:test-subdirs #~(list ".")))
+    (native-inputs
+     (list go-github-com-nats-io-jwt-v2))
+    (propagated-inputs
+     (list go-github-com-klauspost-compress
+           go-github-com-nats-io-nkeys
+           go-github-com-nats-io-nuid
+           go-golang-org-x-text
+           go-google-golang-org-protobuf)) ; for encoders
     (home-page "https://github.com/nats-io/nats.go")
     (synopsis "Go Client for NATS server")
     (description
