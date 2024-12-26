@@ -11512,7 +11512,7 @@ applications out of reusable, composable modules.")
 (define-public go-go-uber-org-multierr
   (package
     (name "go-go-uber-org-multierr")
-    (version "1.6.0")
+    (version "1.11.0")
     (source
      (origin
        (method git-fetch)
@@ -11521,7 +11521,7 @@ applications out of reusable, composable modules.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "162941s8f6a9x2w04qm4qa3zz0zylwag9149hywrj9ibp2nzcsqz"))))
+        (base32 "1s6skad93nbsq4b0sy5dsgacrdh2kzg0p8wjlhvff49vasqsi3qx"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "go.uber.org/multierr"))
