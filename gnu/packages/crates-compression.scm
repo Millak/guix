@@ -1536,6 +1536,38 @@ streaming API for miniz_oxide.")
      "This package provides a 7z decompressor/compressor written in pure rust.")
     (license license:asl2.0)))
 
+(define-public rust-tar-0.4
+  (package
+    (name "rust-tar")
+    (version "0.4.43")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "tar" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32
+          "1xm1l6gg180wq9xrq9vhyyxxpr4kvyh933yjagax05wf7wqrhnf6"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Test tarballs not included in crate.
+       #:cargo-inputs
+       (("rust-filetime" ,rust-filetime-0.2)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-xattr" ,rust-xattr-1))
+       #:cargo-development-inputs
+       (("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/alexcrichton/tar-rs")
+    (synopsis "Tar file reading/writing for Rust")
+    (description
+     "This package provides a Rust implementation of a TAR file reader and
+writer.  This library does not currently handle compression, but it is abstract
+over all I/O readers and writers.  Additionally, great lengths are taken to
+ensure that the entire contents are never required to be entirely resident in
+memory all at once.")
+    (license (list license:asl2.0
+                   license:expat))))
+
 (define-public rust-unrar-0.5
   (package
     (name "rust-unrar")
