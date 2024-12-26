@@ -1,4 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
+;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2023 Steve George <steve@futurile.net>
 ;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2024 Roman Scherer <roman@burningswell.com>
@@ -37,7 +38,8 @@
   #:use-module (gnu packages crates-windows)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages mp3)
-  #:use-module (gnu packages pkg-config))
+  #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages pulseaudio))
 
 ;;;
 ;;; Please: Try to add new module packages in alphabetic order.
@@ -248,6 +250,121 @@ Supports Linux through either JACK or ALSA.")
     (synopsis "Pure Rust Vorbis decoder")
     (description "A pure Rust Vorbis decoder.  Vorbis is a free and open
 source audio format.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-libpulse-binding-2
+  (package
+    (name "rust-libpulse-binding")
+    (version "2.28.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libpulse-binding" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1zza12f22wf1qs6h71lq1i73aj3kmv3036hqc7qci063vyi5fdgd"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-libpulse-sys" ,rust-libpulse-sys-1)
+        ("rust-num-derive" ,rust-num-derive-0.3)
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-winapi" ,rust-winapi-0.3))
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'check 'set-HOME
+           (lambda _ (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list pulseaudio))
+    (home-page "https://github.com/jnqnfe/pulse-binding-rust")
+    (synopsis "Binding for the PulseAudio libpulse library")
+    (description
+     "This package provides a Rust language binding for the PulseAudio libpulse
+library.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-libpulse-simple-binding-2
+  (package
+    (name "rust-libpulse-simple-binding")
+    (version "2.28.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "libpulse-simple-binding" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                 "139hiksmxrmj8zcdqvswgjnwl1rivh915vg6cl92asizydl6pz85"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-libpulse-binding" ,rust-libpulse-binding-2)
+                       ("rust-libpulse-simple-sys" ,rust-libpulse-simple-sys-1)
+                       ("rust-libpulse-sys" ,rust-libpulse-sys-1))
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'check 'set-HOME
+           (lambda _ (setenv "HOME" "/tmp"))))))
+    (native-inputs (list pkg-config))
+    (inputs (list pulseaudio))
+    (home-page "https://github.com/jnqnfe/pulse-binding-rust")
+    (synopsis "Rust language bindings for PulseAudio's libpulse-simple library")
+    (description
+     "A Rust language binding for the PulseAudio libpulse-simple library.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-libpulse-simple-sys-1
+  (package
+    (name "rust-libpulse-simple-sys")
+    (version "1.21.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "libpulse-simple-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "0lj13ibdwf69ghy1zlldxq5vsyxi1h13wqpvvh79z2wx36s16rpa"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-libpulse-sys" ,rust-libpulse-sys-1)
+                       ("rust-pkg-config" ,rust-pkg-config-0.3))))
+    (native-inputs (list pkg-config))
+    (inputs (list pulseaudio))
+    (home-page "https://github.com/jnqnfe/pulse-binding-rust")
+    (synopsis "FFI indings for PulseAudio's libpulse-simple system library")
+    (description
+     "FFI bindings for the PulseAudio libpulse-simple system library.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-libpulse-sys-1
+  (package
+    (name "rust-libpulse-sys")
+    (version "1.21.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libpulse-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "16vs0qk6xadckb5qxlrhg0f4jn2zakfd7xih1lk1fb7lzc8f26dw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-num-derive" ,rust-num-derive-0.3)
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-pkg-config" ,rust-pkg-config-0.3)
+        ("rust-winapi" ,rust-winapi-0.3))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list pulseaudio))
+    (home-page "https://github.com/jnqnfe/pulse-binding-rust")
+    (synopsis "FFI bindings for the PulseAudio")
+    (description
+     "This package provides FFI bindings for the PulseAudio libpulse system
+library.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-librespot-audio-0.4
