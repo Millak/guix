@@ -928,3 +928,92 @@ libmysqlclient.")
        (("rust-libc" ,rust-libc-0.2)
         ("rust-sqlite3-src" ,rust-sqlite3-src-0.3))))))
 
+(define-public rust-sqlparser-0.43
+  (package
+    (name "rust-sqlparser")
+    (version "0.43.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sqlparser" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1m7mddhgj9j0hpw8lxzxbbzkrrmd4q019xq6sl5x6z5sbap4np7r"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bigdecimal" ,rust-bigdecimal-0.4)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-sqlparser-derive" ,rust-sqlparser-derive-0.2))
+       #:cargo-development-inputs (("rust-matches" ,rust-matches-0.1)
+                                   ("rust-pretty-assertions" ,rust-pretty-assertions-1)
+                                   ("rust-simple-logger" ,rust-simple-logger-4))))
+    (home-page "https://github.com/sqlparser-rs/sqlparser-rs")
+    (synopsis "Extensible SQL Lexer and Parser")
+    (description
+     "Extensible SQL Lexer and Parser with support for ANSI SQL:2011.")
+    (license license:asl2.0)))
+
+(define-public rust-sqlparser-0.39
+  (package
+    (inherit rust-sqlparser-0.43)
+    (name "rust-sqlparser")
+    (version "0.39.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sqlparser" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1mrbqjdqr179qnhy43d0dnrl3yipsp4qyji5rc68j4fyrg14sfvl"))))
+    (arguments
+     `(#:cargo-inputs (("rust-bigdecimal" ,rust-bigdecimal-0.4)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-sqlparser-derive" ,rust-sqlparser-derive-0.1))
+       #:cargo-development-inputs
+       (("rust-matches" ,rust-matches-0.1)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1)
+        ("rust-simple-logger" ,rust-simple-logger-4))))))
+
+(define-public rust-sqlparser-derive-0.2
+  (package
+    (name "rust-sqlparser-derive")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sqlparser_derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0m05d4cxcsk1ljgy8zx79dibq62pdfbgp4zmfm9z2r2ma62y3ch1"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/sqlparser-rs/sqlparser-rs")
+    (synopsis "Implementation for sqlparser")
+    (description
+     "This package contains the implementation details for sqlparser.")
+    (license license:asl2.0)))
+
+(define-public rust-sqlparser-derive-0.1
+  (package
+    (inherit rust-sqlparser-derive-0.2)
+    (name "rust-sqlparser-derive")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sqlparser_derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "07knj4cvqd9r7jb7b6fzdifxipabv34bnzbcw1x7yk1n9b5pbzjm"))))
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-1))))))
+
