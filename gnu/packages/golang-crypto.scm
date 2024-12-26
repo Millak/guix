@@ -519,6 +519,36 @@ cryptographic algorithms targeting Post-Quantum (PQ) and Elliptic Curve
 Cryptography (ECC).")
     (license license:bsd-3)))
 
+(define-public go-github-com-cloudwego-base64x
+  (package
+    (name "go-github-com-cloudwego-base64x")
+    (version "0.1.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cloudwego/base64x")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1lgs28mj5w350vp6pazz2265hx2kab3kbjw7vnk0w1skslxbj8kx"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/cloudwego/base64x"))
+    (native-inputs
+     (list go-github-com-davecgh-go-spew
+           go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-bytedance-sonic-loader
+           go-github-com-klauspost-cpuid-v2))
+    (home-page "https://github.com/cloudwego/base64x")
+    (synopsis "Drop-in replacement of the std @code{encoding/base64} library")
+    (description
+     "This package provides a drop-in replacement of the Golang standard
+@code{encoding/base64} library.")
+    (license (list license:asl2.0 license:asl2.0))))
+
 (define-public go-github-com-davidlazar-go-crypto
   (package
     (name "go-github-com-davidlazar-go-crypto")
