@@ -213,6 +213,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/crates-apple.scm		\
   %D%/packages/crates-audio.scm		\
   %D%/packages/crates-check.scm			\
+  %D%/packages/crates-compression.scm		\
   %D%/packages/crates-crypto.scm		\
   %D%/packages/crates-database.scm		\
   %D%/packages/crates-io.scm			\
