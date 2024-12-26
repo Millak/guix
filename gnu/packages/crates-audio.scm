@@ -24,7 +24,11 @@
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages audio)
+  #:use-module (gnu packages crates-crypto)
+  #:use-module (gnu packages crates-graphics)
+  #:use-module (gnu packages crates-gtk)
   #:use-module (gnu packages crates-io)
+  #:use-module (gnu packages crates-web)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages pkg-config))
 
@@ -181,6 +185,269 @@
     (description "A pure Rust Vorbis decoder.  Vorbis is a free and open
 source audio format.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-librespot-audio-0.4
+  (package
+    (name "rust-librespot-audio")
+    (version "0.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "librespot-audio" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "178djijj7fkg5ca5rhk10rvy9gs797gikvackh5qxsp1al9s6xn1"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-inputs
+           `(("rust-aes-ctr" ,rust-aes-ctr-0.6)
+             ("rust-byteorder" ,rust-byteorder-1)
+             ("rust-bytes" ,rust-bytes-1)
+             ("rust-futures-util" ,rust-futures-util-0.3)
+             ("rust-librespot-core" ,rust-librespot-core-0.4)
+             ("rust-log" ,rust-log-0.4)
+             ("rust-tempfile" ,rust-tempfile-3)
+             ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/librespot-org/librespot")
+    (synopsis "The audio fetching logic for Librespot")
+    (description
+     "Part of Librespot, an open source client library for Spotify.  This
+package contains the audio fetching logic.")
+    (license license:expat)))
+
+(define-public rust-librespot-connect-0.4
+  (package
+    (name "rust-librespot-connect")
+    (version "0.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "librespot-connect" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1v6k20173hx27g34d24vkb4a67av7dbr3mfmng64b51y8imgpyjg"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-form-urlencoded" ,rust-form-urlencoded-1)
+                       ("rust-futures-util" ,rust-futures-util-0.3)
+                       ("rust-librespot-core" ,rust-librespot-core-0.4)
+                       ("rust-librespot-discovery" ,rust-librespot-discovery-0.4)
+                       ("rust-librespot-playback" ,rust-librespot-playback-0.4)
+                       ("rust-librespot-protocol" ,rust-librespot-protocol-0.4)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-protobuf" ,rust-protobuf-2)
+                       ("rust-rand" ,rust-rand-0.8)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-tokio-stream" ,rust-tokio-stream-0.1))))
+    (home-page "https://github.com/librespot-org/librespot")
+    (synopsis "Discovery and Spotify Connect logic for Librespot")
+    (description
+     "Librespot is an open source client library for Spotify.  This package
+contains the discovery and Spotify Connect logic.")
+    (license license:expat)))
+
+(define-public rust-librespot-core-0.4
+  (package
+    (name "rust-librespot-core")
+    (version "0.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "librespot-core" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0vaxnnlnsx8bmphiikm4kb99795jch0xxifr0azl9rl8b3r4jqq4"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-test-flags
+           ``("--release" "--"
+              "--skip=test_connection"
+              "--skip=test_apresolve"
+              "--skip=test_apresolve_port_443")
+           #:cargo-inputs
+           `(("rust-aes" ,rust-aes-0.6)
+             ("rust-base64" ,rust-base64-0.13)
+             ("rust-byteorder" ,rust-byteorder-1)
+             ("rust-bytes" ,rust-bytes-1)
+             ("rust-form-urlencoded" ,rust-form-urlencoded-1)
+             ("rust-futures-core" ,rust-futures-core-0.3)
+             ("rust-futures-util" ,rust-futures-util-0.3)
+             ("rust-hmac" ,rust-hmac-0.11)
+             ("rust-http" ,rust-http-0.2)
+             ("rust-httparse" ,rust-httparse-1)
+             ("rust-hyper" ,rust-hyper-0.14)
+             ("rust-hyper-proxy" ,rust-hyper-proxy-0.9)
+             ("rust-librespot-protocol" ,rust-librespot-protocol-0.4)
+             ("rust-log" ,rust-log-0.4)
+             ("rust-num-bigint" ,rust-num-bigint-0.4)
+             ("rust-num-integer" ,rust-num-integer-0.1)
+             ("rust-num-traits" ,rust-num-traits-0.2)
+             ("rust-once-cell" ,rust-once-cell-1)
+             ("rust-pbkdf2" ,rust-pbkdf2-0.8)
+             ("rust-priority-queue" ,rust-priority-queue-1)
+             ("rust-protobuf" ,rust-protobuf-2)
+             ("rust-rand" ,rust-rand-0.8)
+             ("rust-serde" ,rust-serde-1)
+             ("rust-serde-json" ,rust-serde-json-1)
+             ("rust-sha-1" ,rust-sha-1-0.10)
+             ("rust-shannon" ,rust-shannon-0.2)
+             ("rust-thiserror" ,rust-thiserror-1)
+             ("rust-tokio" ,rust-tokio-1)
+             ("rust-tokio-stream" ,rust-tokio-stream-0.1)
+             ("rust-tokio-util" ,rust-tokio-util-0.7)
+             ("rust-url" ,rust-url-2)
+             ("rust-uuid" ,rust-uuid-1)
+             ("rust-vergen" ,rust-vergen-3))
+           #:cargo-development-inputs
+           `(("rust-env-logger" ,rust-env-logger-0.9)
+             ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/librespot-org/librespot")
+    (synopsis "The core functionality provided by librespot")
+    (description
+     "Part of Librespot, an open source client library for
+Spotify.  This package contains core functionality, such as authentication,
+channel and session.")
+    (license license:expat)))
+
+(define-public rust-librespot-discovery-0.4
+  (package
+    (name "rust-librespot-discovery")
+    (version "0.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "librespot-discovery" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "01igbv0xf3vj046jvblbr09cgmv25mlfajyb2903cl31iz8pga1a"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-inputs
+           `(("rust-aes-ctr" ,rust-aes-ctr-0.6)
+             ("rust-base64" ,rust-base64-0.13)
+             ("rust-form-urlencoded" ,rust-form-urlencoded-1)
+             ("rust-futures-core" ,rust-futures-core-0.3)
+             ("rust-hmac" ,rust-hmac-0.11)
+             ("rust-hyper" ,rust-hyper-0.14)
+             ("rust-libmdns" ,rust-libmdns-0.7)
+             ("rust-librespot-core" ,rust-librespot-core-0.4)
+             ("rust-log" ,rust-log-0.4)
+             ("rust-rand" ,rust-rand-0.8)
+             ("rust-serde-json" ,rust-serde-json-1)
+             ("rust-sha-1" ,rust-sha-1-0.9)
+             ("rust-thiserror" ,rust-thiserror-1)
+             ("rust-tokio" ,rust-tokio-1)
+             ("rust-dns-sd" ,rust-dns-sd-0.1))
+           #:cargo-development-inputs
+           `(("rust-futures" ,rust-futures-0.3)
+             ("rust-hex" ,rust-hex-0.4)
+             ("rust-simple-logger" ,rust-simple-logger-2)
+             ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/librespot-org/librespot")
+    (synopsis "The discovery logic of Librespot")
+    (description "Part of Librespot, an open source client library for
+Spotify.  This package contains the discovery logic.")
+    (license license:expat)))
+
+(define-public rust-librespot-metadata-0.4
+  (package
+    (name "rust-librespot-metadata")
+    (version "0.4.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "librespot-metadata" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "07626b84cghd3jabdvyqhn1v0lax9p1hhz6ldw2r4l6brcgkd03b"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-inputs
+           `(("rust-async-trait" ,rust-async-trait-0.1)
+             ("rust-byteorder" ,rust-byteorder-1)
+             ("rust-librespot-core" ,rust-librespot-core-0.4)
+             ("rust-librespot-protocol" ,rust-librespot-protocol-0.4)
+             ("rust-log" ,rust-log-0.4)
+             ("rust-protobuf" ,rust-protobuf-2))))
+    (home-page "https://github.com/librespot-org/librespot")
+    (synopsis "The metadata elements of Librespot")
+    (description "Part of Librespot, an open source client library for
+Spotify.  This package contains the metadata logic.")
+    (license license:expat)))
+
+(define-public rust-librespot-playback-0.4
+  (package
+    (name "rust-librespot-playback")
+    (version "0.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "librespot-playback" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1dygnzldvkv1qpagr9nl62hmqh0xfcf4lsva37j0xxy7pjws142i"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-alsa" ,rust-alsa-0.6)
+        ("rust-byteorder" ,rust-byteorder-1)
+        ("rust-cpal" ,rust-cpal-0.13)
+        ("rust-futures-executor" ,rust-futures-executor-0.3)
+        ("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-glib" ,rust-glib-0.15)
+        ("rust-gstreamer" ,rust-gstreamer-0.18)
+        ("rust-gstreamer-app" ,rust-gstreamer-app-0.18)
+        ("rust-gstreamer-audio" ,rust-gstreamer-audio-0.18)
+        ("rust-jack" ,rust-jack-0.10)
+        ("rust-lewton" ,rust-lewton-0.10)
+        ("rust-libpulse-binding" ,rust-libpulse-binding-2)
+        ("rust-libpulse-simple-binding" ,rust-libpulse-simple-binding-2)
+        ("rust-librespot-audio" ,rust-librespot-audio-0.4)
+        ("rust-librespot-core" ,rust-librespot-core-0.4)
+        ("rust-librespot-metadata" ,rust-librespot-metadata-0.4)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-ogg" ,rust-ogg-0.8)
+        ("rust-parking-lot" ,rust-parking-lot-0.12)
+        ("rust-portaudio-rs" ,rust-portaudio-rs-0.3)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-rand-distr" ,rust-rand-distr-0.4)
+        ("rust-rodio" ,rust-rodio-0.15)
+        ("rust-sdl2" ,rust-sdl2-0.35)
+        ("rust-shell-words" ,rust-shell-words-1)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-zerocopy" ,rust-zerocopy-0.6))))
+    (home-page "https://github.com/librespot-org/librespot")
+    (synopsis "Audio playback for Librespot")
+    (description "Audio playback for Librespot, an open source client
+library for Spotify.")
+    (license license:expat)))
+
+(define-public rust-librespot-protocol-0.4
+  (package
+    (name "rust-librespot-protocol")
+    (version "0.4.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "librespot-protocol" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "17xkvhlxfkjh1z79pvq22nrxi99hcxnzafg0pdkymh3a3733lvax"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+       #:cargo-inputs
+       `(("rust-protobuf" ,rust-protobuf-2)
+         ("rust-glob" ,rust-glob-0.3)
+         ("rust-protobuf-codegen-pure" ,rust-protobuf-codegen-pure-2))))
+    (home-page "https://github.com/librespot-org/librespot")
+    (synopsis "The protobuf logic for communicating with Spotify servers")
+    (description "Part of Librespot, an open source, Spotify client library.
+This package contains the protobuf logic.")
+    (license license:expat)))
 
 (define-public rust-lv2-0.6
   (package
