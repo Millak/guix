@@ -42125,26 +42125,6 @@ Server Protocol.")
         ("rust-serde-repr" ,rust-serde-repr-0.1)
         ("rust-url" ,rust-url-2))))))
 
-(define-public rust-lzw-0.10
-  (package
-    (name "rust-lzw")
-    (version "0.10.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "lzw" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1170dfskhzlh8h2bm333811hykjvpypgnvxyhhm1rllyi2xpr53x"))))
-    (build-system cargo-build-system)
-    (home-page "https://github.com/nwin/lzw.git")
-    (synopsis "LZW compression and decompression")
-    (description
-     "This package provides LZW compression and decompression.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-lzzzz-1
   (package
     (name "rust-lzzzz")
