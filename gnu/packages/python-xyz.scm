@@ -33008,7 +33008,7 @@ accessor layer.")
 (define-public pyzo
   (package
     (name "pyzo")
-    (version "4.16.0")
+    (version "4.18.0")
     (source
      (origin
        (method git-fetch)
@@ -33018,7 +33018,7 @@ accessor layer.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "18775dhd5z7l505khrh1vsv5w1x1icshv34av8bbhfj8dz8nvgx5"))))
+         "0agq171cz7y10cknjypwrvsvikja3w9d28hlr3kw5k2sdvfqnpam"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
