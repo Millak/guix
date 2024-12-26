@@ -1122,6 +1122,67 @@ algorithm and related formats (ZLIB, GZIP).")
     (native-inputs '())
     (inputs '())))
 
+(define-public rust-zlib-rs-0.4
+  (package
+    (name "rust-zlib-rs")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "zlib-rs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1y24i695cwvm4frs98bhjznfa19by6hkb42np7abl4lk79ah3nma"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-arbitrary" ,rust-arbitrary-1)
+                       ("rust-quickcheck" ,rust-quickcheck-1))
+       #:cargo-development-inputs (("rust-crc32fast" ,rust-crc32fast-1)
+                                   ("rust-quickcheck" ,rust-quickcheck-1))))
+    (home-page "https://github.com/trifectatechfoundation/zlib-rs")
+    (synopsis "Memory-safe zlib implementation written in Rust")
+    (description
+     "This package provides a memory-safe zlib implementation written in Rust.")
+    (license license:zlib)))
+
+(define-public rust-zlib-rs-0.3
+  (package
+    (inherit rust-zlib-rs-0.4)
+    (name "rust-zlib-rs")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "zlib-rs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "06kkjpqddvb5n8c24mmd3lmmcsy2yfwfsjyni8dggysayfd7r50b"))))
+    (arguments
+     `(#:cargo-inputs (("rust-arbitrary" ,rust-arbitrary-1)
+                       ("rust-libz-sys" ,rust-libz-sys-1)
+                       ("rust-quickcheck" ,rust-quickcheck-1))))))
+
+(define-public rust-zlib-rs-0.1
+  (package
+    (inherit rust-zlib-rs-0.3)
+    (name "rust-zlib-rs")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "zlib-rs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "18a49npwcrpbvsxs3dzk51kizd81qffnaxjqfn4fqq37vki0a8f5"))))
+    (arguments
+     `(#:tests? #f      ; zlib-ng isn't packaged.
+       #:cargo-inputs (("rust-arbitrary" ,rust-arbitrary-1)
+                       ("rust-libz-sys" ,rust-libz-sys-1)
+                       ("rust-quickcheck" ,rust-quickcheck-1))
+       #:cargo-development-inputs (("rust-crc32fast" ,rust-crc32fast-1)
+                                   ("rust-libloading" ,rust-libloading-0.8)
+                                   ("rust-libz-ng-sys" ,rust-libz-ng-sys-1))))))
+
 (define-public rust-zopfli-0.8
   (package
     (name "rust-zopfli")
