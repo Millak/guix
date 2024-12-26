@@ -1,11 +1,11 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2020, 2021, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2021 Léo Le Bouter <lle-bout@zaclys.net>
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Domagoj Stolfa <domagoj.stolfa@gmail.com>
-;;; Copyright © 2021, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
 ;;; Copyright © 2024 Giacomo Leidi <goodoldpaul@autistici.org>
@@ -37,6 +37,8 @@
   #:use-module (guix utils)
   #:use-module (guix gexp)
   #:use-module (gnu packages crates-check)
+  #:use-module (gnu packages crates-crypto)
+  #:use-module (gnu packages crates-graphics)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages sqlite))
@@ -570,6 +572,31 @@ libmysqlclient.")
     (description
      "This package provides a Rust implementation for conversions between Rust
 and Postgres values.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-pq-sys-0.4
+  (package
+    (name "rust-pq-sys")
+    (version "0.4.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pq-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1npz9756283pjq3lcpwss8xh1rw4sx8f6dz8cxdg90h5bbp5xhka"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-pkg-config" ,rust-pkg-config-0.3)
+        ("rust-vcpkg" ,rust-vcpkg-0.2))))
+    (native-inputs
+     (list postgresql))
+    (home-page "https://crates.io/crates/pq-sys")
+    (synopsis "Auto-generated rust bindings for libpq")
+    (description "This package provides auto-generated rust bindings for
+libpq.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-rusqlite-0.32
