@@ -47168,31 +47168,6 @@ library.")
     (description "This package provides a Rust implementation of Mustache.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-mysqlclient-sys-0.2
-  (package
-    (name "rust-mysqlclient-sys")
-    (version "0.2.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "mysqlclient-sys" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "16wndr59cbpc2wgli45zfgi0hi837pbrsh1aqh2k0ads50akh6zn"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-pkg-config" ,rust-pkg-config-0.3)
-        ("rust-vcpkg" ,rust-vcpkg-0.2))))
-    (native-inputs
-     (list `(,mariadb "lib")))
-    (home-page "https://github.com/sgrif/mysqlclient-sys")
-    (synopsis "Auto-generated rust bindings for libmysqlclient")
-    (description "This package provides auto-generated rust bindings for
-libmysqlclient.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-nalgebra-0.32
   (package
     (name "rust-nalgebra")

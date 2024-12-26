@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
+;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2021, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;;
@@ -29,6 +30,7 @@
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (gnu packages crates-io)
+  #:use-module (gnu packages databases)
   #:use-module (gnu packages sqlite))
 
 (define-public rust-libsqlite3-sys-0.30
@@ -184,6 +186,31 @@
         ("rust-cc" ,rust-cc-1)
         ("rust-pkg-config" ,rust-pkg-config-0.3)
         ("rust-vcpkg" ,rust-vcpkg-0.2))))))
+
+(define-public rust-mysqlclient-sys-0.2
+  (package
+    (name "rust-mysqlclient-sys")
+    (version "0.2.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "mysqlclient-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "16wndr59cbpc2wgli45zfgi0hi837pbrsh1aqh2k0ads50akh6zn"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-pkg-config" ,rust-pkg-config-0.3)
+        ("rust-vcpkg" ,rust-vcpkg-0.2))))
+    (native-inputs
+     (list `(,mariadb "lib")))
+    (home-page "https://github.com/sgrif/mysqlclient-sys")
+    (synopsis "Auto-generated rust bindings for libmysqlclient")
+    (description "This package provides auto-generated rust bindings for
+libmysqlclient.")
+    (license (list license:expat license:asl2.0))))
 
 (define-public rust-rusqlite-0.32
   (package
