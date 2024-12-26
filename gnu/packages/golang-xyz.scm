@@ -9102,25 +9102,25 @@ Pion}.")
 (define-public go-github-com-polydawn-refmt
   (package
     (name "go-github-com-polydawn-refmt")
-    (version "0.89.1-0.20231129105047-37766d95467a")
+    (version "0.89.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/polydawn/refmt/")
-             (commit (go-version->git-ref version))))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0grgzacc7igfndk1v3n1g6k4wdz6bjsiqfq3n5br2zpr7n40ha9n"))))
+        (base32 "1v4av75nlgvps5q2h3q6w3cmry0gg316l82zmj6sph9bp2c87621"))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/polydawn/refmt"))
     (propagated-inputs
-     (list go-github-com-urfave-cli
-           go-github-com-warpfork-go-wish
+     (list go-github-com-go-yaml-yaml
            go-github-com-smartystreets-goconvey
-           go-gopkg-in-yaml-v2))
+           go-github-com-urfave-cli
+           go-github-com-warpfork-go-wish))
     (home-page "https://github.com/polydawn/refmt/")
     (synopsis "Object mapping for Go language")
     (description
