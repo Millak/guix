@@ -9,6 +9,7 @@
 ;;; Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2022 Oleg Pykhalov <go.wigust@gmail.com>
+;;; Copyright © 2024 Noah Evans <noahevans256@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -988,18 +989,27 @@ fdatasync(2) on the underlying file descriptor."
   (spare            (array fsword 4)))
 
 (define statfs
-  (let ((proc (syscall->procedure int (if musl-libc? "statfs" "statfs64") '(* *))))
-    (lambda (file)
-      "Return a <file-system> data structure describing the file system
+  ;; Check whether we are using the statically-linked Guile, which provides
+  ;; 'statfs-raw' from libguile via a patch.
+  (if (module-defined? the-scm-module 'statfs-raw)
+      (lambda (file)
+        "Return a <file-system> data structure describing the file system
 mounted at FILE."
-      (let*-values (((stat)    (make-bytevector sizeof-statfs))
-                    ((ret err) (proc (string->pointer file)
-                                     (bytevector->pointer stat))))
-        (if (zero? ret)
-            (read-statfs stat)
-            (throw 'system-error "statfs" "~A: ~A"
-                   (list file (strerror err))
-                   (list err)))))))
+        (read-statfs ((module-ref the-scm-module 'statfs-raw) file)))
+      (let ((proc (syscall->procedure int
+                                      (if musl-libc? "statfs" "statfs64")
+                                      '(* *))))
+        (lambda (file)
+          "Return a <file-system> data structure describing the file system
+mounted at FILE."
+          (let*-values (((stat)    (make-bytevector sizeof-statfs))
+                        ((ret err) (proc (string->pointer file)
+                                         (bytevector->pointer stat))))
+            (if (zero? ret)
+                (read-statfs stat)
+                (throw 'system-error "statfs" "~A: ~A"
+                       (list file (strerror err))
+                       (list err))))))))
 
 (define (free-disk-space file)
   "Return the free disk space, in bytes, on the file system that hosts FILE."

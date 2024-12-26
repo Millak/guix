@@ -7,7 +7,7 @@ diff --git a/libguile/posix.c b/libguile/posix.c
 index b0fcad5fd..1343186e3 100644
 --- a/libguile/posix.c
 +++ b/libguile/posix.c
-@@ -2341,6 +2341,335 @@ scm_init_popen (void)
+@@ -2341,6 +2341,367 @@ scm_init_popen (void)
  }
  #endif /* HAVE_START_CHILD */
  
@@ -339,6 +339,38 @@ index b0fcad5fd..1343186e3 100644
 +}
 +#undef FUNC_NAME
 +#endif
++
++#include <sys/statfs.h>
++
++SCM_DEFINE (scm_statfs_raw, "statfs-raw", 1, 0, 0,
++        (SCM filesystem),
++        "Return a bytevector describing @var{filesystem}")
++#define FUNC_NAME s_scm_statfs_raw
++{
++  int err;
++  char *c_filesystem;
++  SCM bv;
++
++  c_filesystem = scm_to_locale_string (filesystem);
++
++  bv = scm_c_make_bytevector (sizeof (struct statfs));
++  struct statfs *bv_pointer = scm_to_pointer (scm_bytevector_to_pointer (bv, scm_from_int (0)));
++
++  err = statfs (c_filesystem, bv_pointer);
++  if (err != 0)
++    err = errno;
++
++  free (c_filesystem);
++
++  if (err != 0)
++    {
++      errno = err;
++      SCM_SYSERROR;
++    }
++
++  return bv;
++}
++#undef FUNC_NAME
 +
  void
  scm_init_posix ()
