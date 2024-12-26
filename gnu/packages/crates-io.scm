@@ -70233,6 +70233,21 @@ can handle huge texts and memory-incoherent edits with ease.")
      "@code{roxmltree} represents an XML 1.0 document as a read-only tree.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-roxmltree-0.18
+  (package
+    (inherit rust-roxmltree-0.19)
+    (name "rust-roxmltree")
+    (version "0.18.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "roxmltree" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "00mkd2xyrxm8ap39sxpkhzdzfn2m98q3zicf6wd2f6yfa7il08w6"))))
+    (arguments
+     `(#:cargo-inputs (("rust-xmlparser" ,rust-xmlparser-0.13))))))
+
 (define-public rust-roxmltree-0.14
   (package
     (inherit rust-roxmltree-0.19)
