@@ -12,6 +12,7 @@
 ;;; Copyright © 2024 Steve George <steve@futurile.net>
 ;;; Copyright © 2024 Wilko Meyer <w@wmeyer.eu>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
+;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -692,4 +693,116 @@ for raw deflate, zlib, and gzip data.")
        #:cargo-development-inputs
        (("rust-criterion" ,rust-criterion-0.3)
         ("rust-flate2" ,rust-flate2-1))))))
+
+(define-public rust-libflate-2
+  (package
+    (name "rust-libflate")
+    (version "2.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libflate" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "07mj9z89vbhq837q58m4v2nblgsmrn6vrp8w1j8g0kpa2kfdzna5"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-adler32" ,rust-adler32-1)
+                       ("rust-core2" ,rust-core2-0.4)
+                       ("rust-crc32fast" ,rust-crc32fast-1)
+                       ("rust-dary-heap" ,rust-dary-heap-0.3)
+                       ("rust-libflate-lz77" ,rust-libflate-lz77-2))
+       #:cargo-development-inputs (("rust-clap" ,rust-clap-4))))
+    (home-page "https://github.com/sile/libflate")
+    (synopsis "DEFLATE algorithm and related formats (ZLIB, GZIP)")
+    (description "This package provides a Rust implementation of DEFLATE
+algorithm and related formats (ZLIB, GZIP).")
+    (license license:expat)))
+
+(define-public rust-libflate-1
+  (package
+    (inherit rust-libflate-2)
+    (name "rust-libflate")
+    (version "1.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libflate" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "063xw2z477h3vh7j32y0f54a6nbndd7yf7rr5wpsvfw5nrqsxx2z"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-adler32" ,rust-adler32-1)
+        ("rust-core2" ,rust-core2-0.4)
+        ("rust-crc32fast" ,rust-crc32fast-1)
+        ("rust-libflate-lz77" ,rust-libflate-lz77-1))
+       #:cargo-development-inputs
+       (("rust-clap" ,rust-clap-2))))))
+
+(define-public rust-libflate-0.1
+  (package
+    (inherit rust-libflate-1)
+    (name "rust-libflate")
+    (version "0.1.27")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libflate" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1p8z839c5lpl0g01mf8iglys9lgcjxw6xjw56crhwp8z7gs5s4yr"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-adler32" ,rust-adler32-1)
+        ("rust-crc32fast" ,rust-crc32fast-1)
+        ("rust-rle-decode-fast" ,rust-rle-decode-fast-1)
+        ("rust-take-mut" ,rust-take-mut-0.2))
+       #:cargo-development-inputs
+       (("rust-clap" ,rust-clap-2))))))
+
+(define-public rust-libflate-lz77-2
+  (package
+    (name "rust-libflate-lz77")
+    (version "2.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libflate_lz77" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0gc6h98jwigscasz8vw1vv65b3rismqcbndb8hf6yf4z6qxxgq76"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-core2" ,rust-core2-0.4)
+        ("rust-hashbrown" ,rust-hashbrown-0.14)
+        ("rust-rle-decode-fast" ,rust-rle-decode-fast-1))
+       #:cargo-development-inputs (("rust-libflate" ,rust-libflate-2))))
+    (home-page "https://github.com/sile/libflate")
+    (synopsis "LZ77 encoder for libflate crate")
+    (description "This package provides a LZ77 encoder for libflate crate.")
+    (license license:expat)))
+
+(define-public rust-libflate-lz77-1
+  (package
+    (inherit rust-libflate-lz77-2)
+    (name "rust-libflate-lz77")
+    (version "1.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libflate_lz77" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1gxc75fb2sk0xgrh3qxvxcx1l93yhmyxn9241r251wl5zj5klbd5"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-core2" ,rust-core2-0.4)
+        ("rust-hashbrown" ,rust-hashbrown-0.13)
+        ("rust-rle-decode-fast" ,rust-rle-decode-fast-1))
+       #:cargo-development-inputs
+       (("rust-libflate" ,rust-libflate-1))))))
 
