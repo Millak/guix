@@ -2581,6 +2581,49 @@ from CloudFlare's github.com/cloudflare/cfssl/revoke.")
      "Fast JSON encoder/decoder compatible with encoding/json for Go.")
     (license license:expat)))
 
+(define-public go-github-com-gofiber-fiber-v2
+  (package
+    (name "go-github-com-gofiber-fiber-v2")
+    (version "2.52.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gofiber/fiber")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12gr7a38dd02p7b9fimrk16ybxfp93krh7wah0jzc0v6syjmzfi0"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/gofiber/fiber/v2"
+      #:test-flags
+      #~(list "-skip"
+              (string-join
+               (list "Test_Proxy_DoRedirects_TooManyRedirects"
+                     "Test_Proxy_Do_WithRealURL"
+                     "Test_Proxy_DoRedirects_RestoreOriginalURL"
+                     "Test_Proxy_Do_WithRedirect")
+               "|"))))
+    (propagated-inputs
+     (list go-github-com-google-uuid
+           go-github-com-mattn-go-colorable
+           go-github-com-mattn-go-isatty
+           go-github-com-mattn-go-runewidth
+           go-github-com-tinylib-msgp
+           go-github-com-valyala-bytebufferpool
+           go-github-com-valyala-fasthttp
+           go-golang-org-x-sys))
+    (home-page "https://github.com/gofiber/fiber")
+    (synopsis "Express inspired web framework written in Golang")
+    (description
+     "Package fiber is an @code{https://github.com/expressjs/express, Express}
+inspired web framework built on top of Fasthttp, the fastest HTTP engine for
+Go.  Designed to ease things up for fast development with zero memory
+allocation and performance in mind.")
+    (license license:expat)))
+
 (define-public go-github-com-gogo-protobuf
   (package
     (name "go-github-com-gogo-protobuf")
