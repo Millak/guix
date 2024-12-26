@@ -424,6 +424,32 @@ to create LV2 plugins in Rust.")
     (description "This package provides a Rust LV2 work offloading library.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-ogg-0.8
+  (package
+    (name "rust-ogg")
+    (version "0.8.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "ogg" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0vjxmqcv9252aj8byy70iy2krqfjknfcxg11lcyikj11pzlb8lb9"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-inputs
+           `(("rust-byteorder" ,rust-byteorder-1)
+             ("rust-bytes" ,rust-bytes-0.4)
+             ("rust-futures" ,rust-futures-0.1)
+             ("rust-tokio-io" ,rust-tokio-io-0.1))
+           #:cargo-development-inputs
+           `(("rust-rand" ,rust-rand-0.3))))
+    (home-page "https://github.com/RustAudio/ogg")
+    (synopsis "Ogg container decoder and encoder written in pure Rust")
+    (description "An Ogg decoder and encoder.  Implements the xiph.org Ogg
+spec in pure Rust.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
