@@ -1,10 +1,10 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019 John Soo <jsoo1@asu.edu>
+;;; Copyright © 2019, 2020, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Valentin Ignatev <valentignatev@gmail.com>
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
-;;; Copyright © 2020, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
@@ -40,6 +40,7 @@
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (guix gexp)
+  #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crates-check)
   #:use-module (gnu packages crates-crypto)
@@ -874,6 +875,104 @@ algorithm and related formats (ZLIB, GZIP).")
         ("rust-rle-decode-fast" ,rust-rle-decode-fast-1))
        #:cargo-development-inputs
        (("rust-libflate" ,rust-libflate-1))))))
+
+(define-public rust-libz-ng-sys-1
+  ;; TODO: Unbundle zlib-ng.
+  (package
+    (name "rust-libz-ng-sys")
+    (version "1.1.16")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "libz-ng-sys" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32
+          "0f54ffm7bzqdvmcxkv2as6ir9bgzhkaq0g1jgwkz2mns04d7adj4"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cmake" ,rust-cmake-0.1)
+        ("rust-libc" ,rust-libc-0.2))))
+    (native-inputs
+     (list cmake-minimal pkg-config zlib))
+    (home-page "https://github.com/rust-lang/libz-sys")
+    (synopsis "Low-level bindings to zlib-ng (libz-ng)")
+    (description
+     "This package provides low-level bindings to zlib-ng (libz-ng), a
+high-performance zlib library.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-libz-rs-sys-0.3
+  (package
+    (name "rust-libz-rs-sys")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libz-rs-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0vsnvkff9i4qxnid1xl7wrmhz8alvqw9z5lnpimpzzgrxr4r56q0"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-zlib-rs" ,rust-zlib-rs-0.3))))
+    (home-page "https://github.com/trifectatechfoundation/zlib-rs")
+    (synopsis "Memory-safe zlib implementation written in Rust")
+    (description
+     "This package provides a memory-safe zlib implementation written in Rust.")
+    (license license:zlib)))
+
+(define-public rust-libz-rs-sys-0.1
+  (package
+    (inherit rust-libz-rs-sys-0.3)
+    (name "rust-libz-rs-sys")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libz-rs-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0a1vx9gpyc6aizq7d1v76lribxchqkfxc3295a4z7q0b4lil8g6d"))))
+    (arguments
+     `(#:tests? #f      ; zlib-ng isn't packaged.
+       #:cargo-inputs (("rust-libc" ,rust-libc-0.2)
+                       ("rust-zlib-rs" ,rust-zlib-rs-0.1))))))
+
+(define-public rust-libz-sys-1
+  (package
+    (name "rust-libz-sys")
+    (version "1.1.20")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "libz-sys" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32
+           "0wp4i6zl385ilmcqafv61jwsk1mpk6yb8gpws9nwza00x19n9lfj"))
+        (modules '((guix build utils)))
+        (snippet
+         '(begin (delete-file-recursively "src/zlib")
+                 (delete-file-recursively "src/zlib-ng")))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ;; Build dependencies:
+        ("rust-cc" ,rust-cc-1)
+        ("rust-cmake" ,rust-cmake-0.1)
+        ("rust-pkg-config" ,rust-pkg-config-0.3)
+        ("rust-vcpkg" ,rust-vcpkg-0.2))))
+    (native-inputs
+     (list pkg-config zlib))
+    (home-page "https://github.com/rust-lang/libz-sys")
+    (synopsis "Bindings to the system libz library")
+    (description
+     "This package provides bindings to the system @code{libz} library (also
+known as zlib).")
+    (license (list license:asl2.0 license:expat))))
 
 (define-public rust-ruzstd-0.7
   (package
