@@ -3587,13 +3587,13 @@ verification of the SSL peer.")
 (define-public python-nh3
   (package
     (name "python-nh3")
-    (version "0.2.17")
+    (version "0.2.20")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "nh3" version))
        (sha256
-        (base32 "0a7hrca5bbbrz20cbqy16n8vaxf4v2q1r9zv9vjlbmn334d79l20"))))
+        (base32 "1mcf3y5294glji9lhzh57wymw4srbvzdg0kcakm0p2pqgwnw81cp"))))
     (build-system cargo-build-system)
     (arguments
      (list
@@ -3615,7 +3615,7 @@ verification of the SSL peer.")
                 (invoke "pytest" "-vv" "tests")))))
       #:cargo-inputs
       `(("rust-ammonia" ,rust-ammonia-4)
-        ("rust-pyo3" ,rust-pyo3-0.21))
+        ("rust-pyo3" ,rust-pyo3-0.23))
       #:install-source? #false))
     (native-inputs (list maturin python-pytest python-wrapper))
     (home-page "https://nh3.readthedocs.io")
