@@ -219,6 +219,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/crates-io.scm			\
   %D%/packages/crates-graphics.scm		\
   %D%/packages/crates-gtk.scm			\
+  %D%/packages/crates-shell.scm		\
   %D%/packages/crates-tls.scm			\
   %D%/packages/crates-vcs.scm			\
   %D%/packages/crates-web.scm			\
@@ -508,6 +509,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/noweb.scm			\
   %D%/packages/nss.scm				\
   %D%/packages/ntp.scm				\
+  %D%/packages/nushell.scm			\
   %D%/packages/nutrition.scm			\
   %D%/packages/nvi.scm				\
   %D%/packages/nx.scm				\

@@ -58,6 +58,7 @@
   #:use-module (gnu packages crates-check)
   #:use-module (gnu packages crates-crypto)
   #:use-module (gnu packages crates-io)
+  #:use-module (gnu packages crates-shell)
   #:use-module (gnu packages crates-vcs)
   #:use-module (gnu packages crates-windows)
   #:use-module (gnu packages flex)
