@@ -809,8 +809,9 @@ code prior to it getting merged into @code{go-cid}.")
     (build-system go-build-system)
     (arguments
      (list
-      #:unpack-path "github.com/ipld/go-ipld-prime/"
-      #:import-path "github.com/ipld/go-ipld-prime/"
+      #:import-path "github.com/ipld/go-ipld-prime"
+      ;; XXX: More input requires to cover all shipped go packages.
+      #:test-subdirs #~(list ".")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'copy-ipld-specfs
