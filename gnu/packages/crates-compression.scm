@@ -836,3 +836,232 @@ algorithm and related formats (ZLIB, GZIP).")
     (description
      "This package provides a Rust implementation of the Zopfli compression algorithm.")
     (license license:asl2.0)))
+
+(define-public rust-zstd-0.13
+  (package
+    (name "rust-zstd")
+    (version "0.13.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "zstd" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+          "1ygkr6wspm9clbp7ykyl0rv69cfsf9q4lic9wcqiwn34lrwbgwpw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Not all files included.
+       #:cargo-inputs (("rust-zstd-safe" ,rust-zstd-safe-7))
+       #:cargo-development-inputs (("rust-clap" ,rust-clap-4)
+                                   ("rust-humansize" ,rust-humansize-2)
+                                   ("rust-partial-io" ,rust-partial-io-0.5)
+                                   ("rust-walkdir" ,rust-walkdir-2))))
+    (native-inputs (list pkg-config))
+    (inputs (list (list zstd "lib")))
+    (home-page "https://github.com/gyscos/zstd-rs")
+    (synopsis "Binding to the zstd compression library")
+    (description
+     "This package provides a binding to the Zstd compression library.")
+    (license license:expat)))
+
+(define-public rust-zstd-0.12
+  (package
+    (inherit rust-zstd-0.13)
+    (name "rust-zstd")
+    (version "0.12.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "zstd" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0g654jj8z25rvzli2b1231pcp9y7n6vk44jaqwgifh9n2xg5j9qs"))))
+    (arguments
+     `(#:tests? #f      ; Not all files included.
+       #:cargo-inputs (("rust-zstd-safe" ,rust-zstd-safe-6))
+       #:cargo-development-inputs (("rust-clap" ,rust-clap-4)
+                                   ("rust-humansize" ,rust-humansize-2)
+                                   ("rust-partial-io" ,rust-partial-io-0.5)
+                                   ("rust-walkdir" ,rust-walkdir-2))))))
+
+(define-public rust-zstd-0.11
+  (package
+    (inherit rust-zstd-0.13)
+    (name "rust-zstd")
+    (version "0.11.2+zstd.1.5.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "zstd" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1r7xlmgnifhxbfyid8vkcnd5ip16gx9hf89d1l0lzrpc4q1rdk10"))))
+    (arguments
+     `(#:tests? #f      ; Not all files included.
+       #:cargo-inputs
+       (("rust-zstd-safe" ,rust-zstd-safe-5))
+       #:cargo-development-inputs
+       (("rust-clap" ,rust-clap-3)
+        ("rust-humansize" ,rust-humansize-1)
+        ("rust-partial-io" ,rust-partial-io-0.5)
+        ("rust-walkdir" ,rust-walkdir-2))))))
+
+(define-public rust-zstd-0.9
+  (package
+    (inherit rust-zstd-0.11)
+    (name "rust-zstd")
+    (version "0.9.2+zstd.1.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "zstd" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0m5aik2jy2w1g68i4isa0c3gq9a7avq9abgjfjbc6f60yqdym413"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (("\"=([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                   (string-append "\"^" version)))))))
+    (arguments
+     `(#:tests? #f      ; Not all files included.
+       #:cargo-inputs
+       (("rust-zstd-safe" ,rust-zstd-safe-4))
+       #:cargo-development-inputs
+       (("rust-clap" ,rust-clap-3)
+        ("rust-humansize" ,rust-humansize-1)
+        ("rust-partial-io" ,rust-partial-io-0.5)
+        ("rust-walkdir" ,rust-walkdir-2))))
+    (native-inputs '())
+    (inputs '())))
+
+(define-public rust-zstd-safe-7
+  (package
+    (name "rust-zstd-safe")
+    (version "7.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "zstd-safe" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+          "0nch85m5cr493y26yvndm6a8j6sd9mxpr2awrim3dslcnr6sp8sl"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-zstd-sys" ,rust-zstd-sys-2))))
+    (native-inputs (list pkg-config))
+    (inputs (list (list zstd "lib")))
+    (home-page "https://github.com/gyscos/zstd-rs")
+    (synopsis "Safe low-level bindings to the zstd compression library")
+    (description
+     "This package provides safe low-level bindings to the zstd compression
+library.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-zstd-safe-6
+  (package
+    (inherit rust-zstd-safe-7)
+    (name "rust-zstd-safe")
+    (version "6.0.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "zstd-safe" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "10cm0v8sw3jz3pi0wlwx9mbb2l25lm28w638a5n5xscfnk8gz67f"))))
+    (arguments
+     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2)
+                       ("rust-zstd-sys" ,rust-zstd-sys-2))))))
+
+(define-public rust-zstd-safe-5
+  (package
+    (inherit rust-zstd-safe-7)
+    (name "rust-zstd-safe")
+    (version "5.0.2+zstd.1.5.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "zstd-safe" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1nzl4q3xl68pq58g9xlym299bvjdii8cl7ix595ym7jgw22maahx"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-zstd-sys" ,rust-zstd-sys-2))))))
+
+(define-public rust-zstd-safe-4
+  (package
+    (inherit rust-zstd-safe-5)
+    (name "rust-zstd-safe")
+    (version "4.1.6+zstd.1.5.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "zstd-safe" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1fz97qn7galkwl31n28cil44nxfj81ryd33v2vb041r7pd8irdll"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-zstd-sys" ,rust-zstd-sys-1))))
+    (native-inputs '())
+    (inputs '())))
+
+(define-public rust-zstd-sys-2
+  (package
+    (name "rust-zstd-sys")
+    (version "2.0.13+zstd.1.5.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "zstd-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1almbackh06am0d2kc4a089n3al91jg3ahgg9kcrg3zfrwhhzzrq"))
+       (snippet #~(begin
+                    (use-modules (guix build utils))
+                    (delete-file-recursively "zstd")))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.69)
+                       ("rust-cc" ,rust-cc-1)
+                       ("rust-pkg-config" ,rust-pkg-config-0.3))))
+    (native-inputs (list pkg-config))
+    (inputs (list (list zstd "lib")))
+    (home-page "https://github.com/gyscos/zstd-rs")
+    (synopsis "Low-level bindings to the zstd compression library")
+    (description "This package provides low-level Rust bindings to the zstd
+compression library.")
+    (license (list license:expat license:asl2.0))))
+
+;; TODO: Unbundle zstd.
+(define-public rust-zstd-sys-1
+  (package
+    (inherit rust-zstd-sys-2)
+    (name "rust-zstd-sys")
+    (version "1.6.3+zstd.1.5.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "zstd-sys" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1a1f839k3mxh3qhjga1vd2sfxrsi41cqrnpyc5byfd6nr2jsyjgw"))))
+    (arguments
+     `(#:install-source? #f     ; invalid inclusion of reserved file name
+       #:cargo-inputs
+       (("rust-bindgen" ,rust-bindgen-0.59)
+        ("rust-cc" ,rust-cc-1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-pkg-config" ,rust-pkg-config-0.3))))))
+
