@@ -25509,8 +25509,8 @@ Denote packages to enable create managing bibliographic notes and citations.")
     (license license:gpl3+)))
 
 (define-public emacs-helm-bibtex
-  (let ((commit "8ebf50d5bd368082d0b7ab79d26a52f372cdef98")
-        (revision "1"))
+  (let ((commit "6064e8625b2958f34d6d40312903a85c173b5261")
+        (revision "2"))
     (package
       (name "emacs-helm-bibtex")
       (version (git-version "2.0.1" revision commit))
@@ -25522,20 +25522,20 @@ Denote packages to enable create managing bibliographic notes and citations.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1x6nfkprj95cp4ldb485v13hrkd7rvzp750d9xz80vk76gpvaw3l"))))
+          (base32 "1q8dm14wdxx14rnlgmz88j6gskvrrsc0f2z2639jwmfhyibw7d77"))))
       (build-system emacs-build-system)
-      (propagated-inputs
-       (list emacs-helm
-             emacs-parsebib
-             emacs-s
-             emacs-dash
-             emacs-f
-             emacs-biblio
-             emacs-ivy))
+      (propagated-inputs (list emacs-biblio
+                               emacs-dash
+                               emacs-f
+                               emacs-helm
+                               emacs-ivy
+                               emacs-parsebib
+                               emacs-s))
       (home-page "https://github.com/tmalsburg/helm-bibtex")
       (synopsis "Bibliography manager based on Helm")
-      (description "This package provides bibliography manager for Emacs,
-based on Helm and the bibtex-completion backend.
+      (description
+       "This package provides bibliography manager for Emacs,
+based on Helm and the BibTeX completion backend.
 
 Key features:
 
@@ -25551,7 +25551,7 @@ BibTeX entries, or plain text references at point, attach PDFs to emails
 @item Quick access to online bibliographic databases such as Pubmed,
 arXiv, Google Scholar, Library of Congress, etc.
 @item Imports BibTeX entries from CrossRef and other sources.
-@end itemize\n")
+@end itemize")
       (license license:gpl3+))))
 
 (define-public emacs-ewmctrl
