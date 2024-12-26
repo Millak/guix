@@ -847,6 +847,95 @@ algorithm and related formats (ZLIB, GZIP).")
        #:cargo-development-inputs
        (("rust-libflate" ,rust-libflate-1))))))
 
+(define-public rust-ruzstd-0.7
+  (package
+    (name "rust-ruzstd")
+    (version "0.7.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ruzstd" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "17z83lw00pd3190yvdk2lksdi7my6wc0psgg07is6gf7pyb2kl7s"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f                      ;missing data files
+       #:cargo-inputs
+       (("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
+        ("rust-rustc-std-workspace-alloc" ,rust-rustc-std-workspace-alloc-1)
+        ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1)
+        ("rust-twox-hash" ,rust-twox-hash-1))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.5)
+                                   ("rust-rand" ,rust-rand-0.8))))
+    (home-page "https://github.com/KillingSpark/zstd-rs")
+    (synopsis "Decoder for the zstd compression format")
+    (description
+     "This package provides a decoder for the zstd compression format.")
+    (license license:expat)))
+
+(define-public rust-ruzstd-0.5
+  (package
+    (inherit rust-ruzstd-0.7)
+    (name "rust-ruzstd")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ruzstd" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ga8jciw7ka3mxrzl39skmsbdslajghzglcil10g0z4rh65fpi2q"))))
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--"
+         ;; not all files included
+         "--skip=tests::decode_corpus::test_decode_corpus_files"
+         "--skip=tests::dict_test::test_dict_decoding"
+         "--skip=tests::fuzz_regressions::test_all_artifacts"
+         "--skip=tests::test_block_header_reading"
+         "--skip=tests::test_decode_from_to"
+         "--skip=tests::test_frame_decoder"
+         "--skip=tests::test_frame_header_reading"
+         "--skip=tests::test_specific_file"
+         "--skip=tests::test_streaming")
+       #:cargo-inputs (("rust-byteorder" ,rust-byteorder-1)
+                       ("rust-derive-more" ,rust-derive-more-0.99)
+                       ("rust-twox-hash" ,rust-twox-hash-1))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.3)
+                                   ("rust-rand" ,rust-rand-0.8))))))
+
+(define-public rust-ruzstd-0.4
+  (package
+    (inherit rust-ruzstd-0.5)
+    (name "rust-ruzstd")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ruzstd" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1p4ghqzkq36dy1x1ijnk7jmml4wi3v9bkfzlbm2hsnkiz6wglgxc"))))
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--"
+         ;; not all files included
+         "--skip=tests::decode_corpus::test_decode_corpus_files"
+         "--skip=tests::dict_test::test_dict_decoding"
+         "--skip=tests::fuzz_regressions::test_all_artifacts"
+         "--skip=tests::test_block_header_reading"
+         "--skip=tests::test_decode_from_to"
+         "--skip=tests::test_frame_decoder"
+         "--skip=tests::test_frame_header_reading"
+         "--skip=tests::test_specific_file"
+         "--skip=tests::test_streaming")
+       #:cargo-inputs (("rust-byteorder" ,rust-byteorder-1)
+                       ("rust-thiserror-core" ,rust-thiserror-core-1)
+                       ("rust-twox-hash" ,rust-twox-hash-1))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.3)
+                                   ("rust-rand" ,rust-rand-0.8))))))
+
 (define-public rust-sevenz-rust-0.5
   (package
     (name "rust-sevenz-rust")
