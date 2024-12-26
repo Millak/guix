@@ -38,6 +38,7 @@
   #:use-module (gnu packages crates-apple)
   #:use-module (gnu packages crates-check)
   #:use-module (gnu packages crates-crypto)
+  #:use-module (gnu packages crates-database)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages crates-gtk)
   #:use-module (gnu packages crates-tls)

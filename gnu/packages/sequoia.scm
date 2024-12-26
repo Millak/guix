@@ -30,6 +30,7 @@
   #:use-module (gnu packages base)  ; glibc
   #:use-module (gnu packages crates-check)
   #:use-module (gnu packages crates-crypto)
+  #:use-module (gnu packages crates-database)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages crates-tls)
   #:use-module (gnu packages crates-web)

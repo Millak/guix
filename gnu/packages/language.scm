@@ -37,6 +37,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages crates-io)
+  #:use-module (gnu packages crates-database)
   #:use-module (gnu packages crates-tls)
   #:use-module (gnu packages dbm)
   #:use-module (gnu packages docbook)
