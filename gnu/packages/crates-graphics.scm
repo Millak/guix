@@ -4528,6 +4528,35 @@ applications.")
                (setenv "DISPLAY" display)
                (system (string-append xvfb " " display " &"))))))))))
 
+(define-public rust-svg-metadata-0.4
+  (package
+    (name "rust-svg-metadata")
+    (version "0.4.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "svg_metadata" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "002j0na1kfz4pgi43hdcz5baygzk6irnjd5lrmbqqfjldwn3sbx4"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--"
+                            "--skip=readme_sect_usage_example_line_19")
+       #:cargo-inputs (("rust-doc-comment" ,rust-doc-comment-0.3)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-roxmltree" ,rust-roxmltree-0.18)
+                       ("rust-skeptic" ,rust-skeptic-0.13))
+       #:cargo-development-inputs (("rust-skeptic" ,rust-skeptic-0.13))))
+    (home-page "https://github.com/mre/svg-metadata")
+    (synopsis
+     "Extracts metadata (like the viewBox, width, and height) from SVG graphics")
+    (description
+     "This package provides extracts metadata (like the @code{viewBox}, width,
+and height) from SVG graphics.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-tiff-0.9
   (package
     (name "rust-tiff")
