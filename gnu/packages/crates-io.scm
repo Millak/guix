@@ -35804,27 +35804,6 @@ signature.")
 profiling tool suite.")
     (license license:cddl1.0)))
 
-(define-public rust-inflate-0.4
-  (package
-    (name "rust-inflate")
-    (version "0.4.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "inflate" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1zxjdn8iwa0ssxrnjmywm3r1v284wryvzrf8vkc7nyf5ijbjknqw"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-adler32" ,rust-adler32-1))))
-    (home-page "https://github.com/PistonDevelopers/inflate.git")
-    (synopsis "DEFLATE decoding")
-    (description "This package provides DEFLATE decoding.")
-    (license license:expat)))
-
 (define-public rust-inflections-1
   (package
     (name "rust-inflections")
