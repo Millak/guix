@@ -1691,6 +1691,55 @@ strings into words like a POSIX or Windows shell would.")
 similar to Go's standard library @code{json} and @code{xml} package.")
     (license license:expat)))
 
+(define-public go-github-com-bytedance-sonic
+  (package
+    (name "go-github-com-bytedance-sonic")
+    (version "1.12.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/bytedance/sonic")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "011hp6lvqvx4facxsmy6vya02g9q3rlnmxcii827sbf6bssy7wxp"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/bytedance/sonic/external_jsonlib_test
+            ;; - github.com/bytedance/sonic/fuzz
+            ;; - github.com/bytedance/sonic/generic_test
+            ;; - github.com/bytedance/sonic/loader
+            (for-each delete-file-recursively
+                      (list "external_jsonlib_test"
+                            "fuzz"
+                            "generic_test"
+                            "loader"))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/bytedance/sonic"))
+    (native-inputs
+     (list go-github-com-davecgh-go-spew
+           go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-bytedance-sonic-loader
+           go-github-com-cloudwego-base64x
+           go-github-com-klauspost-cpuid-v2
+           go-github-com-twitchyliquid64-golang-asm
+           go-golang-org-x-arch))
+    (home-page "https://github.com/bytedance/sonic")
+    (synopsis "JSON serializing and deserializing library")
+    (description
+     "This package implements a functionality to serialize/deserialize JSON by
+using JIT and SIMD approaches.")
+    ;; There some other licenses in "licenses" but all of them look like ASL
+    ;; compatible.
+    (license license:asl2.0)))
+
 (define-public go-github-com-bytedance-sonic-loader
   (package
     (name "go-github-com-bytedance-sonic-loader")
