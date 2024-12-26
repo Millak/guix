@@ -4580,6 +4580,30 @@ the library more lightweight.")
      "This package provides a Go implementation of globs.")
     (license license:expat)))
 
+(define-public go-github-com-gobwas-pool
+  (package
+    (name "go-github-com-gobwas-pool")
+    (version "0.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gobwas/pool")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0imipsf8nslc78in78wcri2ir2zzajp2h543dp2cshrrdbwkybx7"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/gobwas/pool"))
+    (home-page "https://github.com/gobwas/pool")
+    (synopsis "Go Pooling Helpers")
+    (description
+     "Package pool contains helpers for pooling structures distinguishable by
+size.")
+    (license license:expat)))
+
 (define-public go-github-com-goccy-go-yaml
   (package
     (name "go-github-com-goccy-go-yaml")
