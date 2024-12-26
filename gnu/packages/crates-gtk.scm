@@ -4854,7 +4854,12 @@ library.")
        (uri (crate-uri "pango-sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1iaxalcaaj59cl9n10svh4g50v8jrc1a36kd7n9yahx8j7ikfrs3"))))
+        (base32 "1iaxalcaaj59cl9n10svh4g50v8jrc1a36kd7n9yahx8j7ikfrs3"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; Don't try to use a version of pango newer than we have packaged.
+        '(begin (substitute* "Cargo.toml"
+                  (("1\\.51") "1.50"))))))
     (arguments
      `(#:cargo-inputs (("rust-glib-sys" ,rust-glib-sys-0.18)
                        ("rust-gobject-sys" ,rust-gobject-sys-0.18)
