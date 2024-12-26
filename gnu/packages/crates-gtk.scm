@@ -28,6 +28,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (gnu packages)
+  #:use-module (gnu packages crates-audio)
   #:use-module (gnu packages crates-check)
   #:use-module (gnu packages crates-crypto)
   #:use-module (gnu packages crates-graphics)

@@ -3,6 +3,7 @@
 ;;; Copyright © 2023 Steve George <steve@futurile.net>
 ;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
+;;; Copyright © 2024 Sergio Pastor Pérez <sergio.pastorperez@outlook.es>
 ;;; Copyright © 2024 Roman Scherer <roman@burningswell.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -38,6 +39,7 @@
   #:use-module (gnu packages crates-web)
   #:use-module (gnu packages crates-windows)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages llvm)
   #:use-module (gnu packages mp3)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pulseaudio))
@@ -1121,6 +1123,63 @@ to create LV2 plugins in Rust.")
     (synopsis "Ogg container decoder and encoder written in pure Rust")
     (description "An Ogg decoder and encoder.  Implements the xiph.org Ogg
 spec in pure Rust.")
+    (license license:expat)))
+
+(define-public rust-pipewire-0.7
+  (package
+    (name "rust-pipewire")
+    (version "0.7.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pipewire" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1sg9cbvhp0s07a337zwli0xm40f8wkvm06d72nsr1s35vp40kl52"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-libspa" ,rust-libspa-0.7)
+                       ("rust-libspa-sys" ,rust-libspa-sys-0.7)
+                       ("rust-nix" ,rust-nix-0.26)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-pipewire-sys" ,rust-pipewire-sys-0.7)
+                       ("rust-thiserror" ,rust-thiserror-1))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list pipewire clang))
+    (home-page "https://pipewire.org")
+    (synopsis "Rust bindings for PipeWire")
+    (description "This package provides Rust bindings for @code{PipeWire}.")
+    (license license:expat)))
+
+(define-public rust-pipewire-sys-0.7
+  (package
+    (name "rust-pipewire-sys")
+    (version "0.7.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pipewire-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0r4z0farzflycgfp6x7z65h57np4l1qnpj4r8z5lcwkkgd70h349"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.66)
+                       ("rust-libspa-sys" ,rust-libspa-sys-0.7)
+                       ("rust-system-deps" ,rust-system-deps-6))))
+    (native-inputs
+     (list pkg-config clang))
+    (inputs
+     (list pipewire))
+    (home-page "https://pipewire.org")
+    (synopsis "Rust FFI bindings for PipeWire")
+    (description
+     "This package provides Rust FFI bindings for @code{PipeWire}.")
     (license license:expat)))
 
 (define-public rust-portaudio-rs-0.3
