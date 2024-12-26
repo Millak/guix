@@ -2547,6 +2547,29 @@ built on the Actix ecosystem.")
     (description "Macros for @code{axum}.")
     (license license:expat)))
 
+(define-public rust-basic-cookies-0.1
+  (package
+    (name "rust-basic-cookies")
+    (version "0.1.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "basic-cookies" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1xwnmmcn32m18nis7azfxylkqyhirkqcag94i23b1g8n5ka8zgb7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-lalrpop" ,rust-lalrpop-0.20)
+                       ("rust-lalrpop-util" ,rust-lalrpop-util-0.20)
+                       ("rust-regex" ,rust-regex-1))))
+    (home-page "https://github.com/drjokepu/basic-cookies")
+    (synopsis "Low-level RFC 6265 compatible cookie handling library for Rust")
+    (description
+     "This package provides a low-level RFC 6265 compatible cookie handling
+library for Rust.")
+    (license license:expat)))
+
 (define-public rust-chardetng-0.1
   (package
     (name "rust-chardetng")
