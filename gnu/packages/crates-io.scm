@@ -110,7 +110,6 @@
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages mail)
   #:use-module (gnu packages maths)
-  #:use-module (gnu packages mp3)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages nettle)
   #:use-module (gnu packages pcre)
@@ -46934,53 +46933,6 @@ support for no_std and embedded programs.")
 efficient round-trip float parsing.  Minimal-lexical implements a correct,
 fast float parser.")
     (license (list license:expat license:asl2.0))))
-
-(define-public rust-minimp3-0.5
-  (package
-    (name "rust-minimp3")
-    (version "0.5.1")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "minimp3" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0wj3nzj1swnvwsk3a4a3hkfj1d21jsi7babi40wlrxzbbzvkhm4q"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:tests? #f  ; no method named `next_frame_future` found for struct `Decoder`
-       #:cargo-inputs (("rust-minimp3-sys" ,rust-minimp3-sys-0.3)
-                       ("rust-slice-deque" ,rust-slice-deque-0.3)
-                       ("rust-thiserror" ,rust-thiserror-1)
-                       ("rust-tokio" ,rust-tokio-1))
-       #:cargo-development-inputs (("rust-futures" ,rust-futures-0.3)
-                                   ("rust-tokio" ,rust-tokio-1))))
-    (home-page "https://github.com/germangb/minimp3-rs")
-    (synopsis "Rust bindings for the minimp3 library")
-    (description "Rust bindings for the minimp3 library.")
-    (license license:expat)))
-
-(define-public rust-minimp3-sys-0.3
-  (package
-    (name "rust-minimp3-sys")
-    (version "0.3.2")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "minimp3-sys" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "144vmf3s89kad0smjprzigcp2c9r5dm95n4ydilrbp399irp6772"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:tests? #f      ; Not all files included.
-       #:cargo-inputs (("rust-cc" ,rust-cc-1))))
-    (native-inputs (list pkg-config))
-    (inputs (list minimp3))
-    (home-page "https://github.com/germangb/minimp3-rs")
-    (synopsis "Rust bindings for the minimp3 library")
-    (description "Rust bindings for the minimp3 library.")
-    (license license:expat)))
 
 (define-public rust-miniz-oxide-0.8
   (package
