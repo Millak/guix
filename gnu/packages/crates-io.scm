@@ -60547,53 +60547,6 @@ overloading without macros in Rust.")
     (arguments
      `(#:cargo-inputs (("rust-portable-atomic" ,rust-portable-atomic-1))))))
 
-(define-public rust-portaudio-rs-0.3
-  (package
-    (name "rust-portaudio-rs")
-    (version "0.3.2")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "portaudio-rs" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0qnmc7amk0fzbcs985ixv0k4955f0fmpkhrl9ps9pk3cz7pvbdnd"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-1)
-                       ("rust-libc" ,rust-libc-0.2)
-                       ("rust-portaudio-sys" ,rust-portaudio-sys-0.1))))
-    (native-inputs (list pkg-config))
-    (inputs (list portaudio alsa-lib))
-    (home-page "https://github.com/RustAudio/rust-portaudio")
-    (synopsis "Rust bindings for PortAudio a cross-platfomr audio library")
-    (description "Rusting bindings for PortAudio an open source, cross-platform
-audio I/O library.")
-    (license license:expat)))
-
-(define-public rust-portaudio-sys-0.1
-  (package
-    (name "rust-portaudio-sys")
-    (version "0.1.1")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "portaudio-sys" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1xdpywirpr1kqkbak7hnny62gmsc93qgc3ij3j2zskrvjpxa952i"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2)
-                       ("rust-pkg-config" ,rust-pkg-config-0.3))))
-    (native-inputs (list pkg-config))
-    (inputs (list portaudio alsa-lib))
-    (home-page "https://github.com/RustAudio/rust-portaudio")
-    (synopsis "Bindings for PortAudio a cross-platform audio library")
-    (description "Bindings for PortAudio an open source, cross-platform audio
-I/O library.")
-    (license license:expat)))
-
 (define-public rust-postcard-1
   (package
     (name "rust-postcard")
