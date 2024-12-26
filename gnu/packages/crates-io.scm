@@ -91190,52 +91190,6 @@ clear display in the output.")
     (description "This package provides unix domain socket bindings.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-unrar-0.5
-  (package
-    (name "rust-unrar")
-    (version "0.5.6")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "unrar" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0a8cd2l2hgmc7h5vjkvsl71vas5l7xqjwmx4kh8z48m26mvnm7f9"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-1)
-                       ("rust-regex" ,rust-regex-1)
-                       ("rust-unrar-sys" ,rust-unrar-sys-0.5)
-                       ("rust-widestring" ,rust-widestring-1))
-       #:cargo-development-inputs (("rust-tempfile" ,rust-tempfile-3))))
-    (home-page "https://github.com/muja/unrar.rs")
-    (synopsis "List and extract RAR archives")
-    (description
-     "This package provides functionality to list and extract RAR archives.")
-    (license (list license:expat license:asl2.0))))
-
-(define-public rust-unrar-sys-0.5
-  (package
-    (name "rust-unrar-sys")
-    (version "0.5.6")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "unrar_sys" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1npkjbqx77rsls2f2nhi6x83ass4cw9d27xl647gmzvr6h82b0rz"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-cc" ,rust-cc-1)
-                       ("rust-libc" ,rust-libc-0.2)
-                       ("rust-winapi" ,rust-winapi-0.3))))
-    (home-page "https://github.com/muja/unrar.rs")
-    (synopsis "FFI bindings to unrar")
-    (description
-     "This package provides FFI bindings to unrar (with minimal abstractions).")
-    (license license:expat)))
-
 (define-public rust-unreachable-1
   (package
     (name "rust-unreachable")
