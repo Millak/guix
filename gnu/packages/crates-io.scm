@@ -37288,10 +37288,12 @@ at compile time so the leftmost non-space character is in the first column.")
        (sha256
         (base32 "1n2fd2wm1h005hd7pjgx4gv5ymyq4sxqn8z0ssw6xchgqs5ilx27"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-indoc-impl" ,rust-indoc-impl-0.3)
-        ("rust-proc-macro-hack" ,rust-proc-macro-hack-0.5))))))
+        ("rust-proc-macro-hack" ,rust-proc-macro-hack-0.5))
+       #:cargo-development-inputs
+       (("rust-rustversion" ,rust-rustversion-1)
+        ("rust-trybuild" ,rust-trybuild-1))))))
 
 (define-public rust-indoc-impl-0.3
   (package
