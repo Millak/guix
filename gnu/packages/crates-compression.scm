@@ -11,6 +11,7 @@
 ;;; Copyright © 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2024 Steve George <steve@futurile.net>
 ;;; Copyright © 2024 Wilko Meyer <w@wmeyer.eu>
+;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -551,3 +552,81 @@ of gzip files based on the gzip header implementation in the @code{flate2} crate
     (synopsis "Parallel compression library")
     (description "This package provides a library for parallel compression.")
     (license (list license:unlicense license:expat))))
+
+(define-public rust-libdeflate-sys-1
+  (package
+    (name "rust-libdeflate-sys")
+    (version "1.23.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "libdeflate-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "0hbrhz3jxjs4a3lnyw9c2wlfknmijb7ahxbs53kcnpvri9y6cfs1"))
+              (snippet
+               #~(begin (use-modules (guix build utils))
+                        ;; Prefer the system libdeflate.
+                        (substitute* "Cargo.toml"
+                          (("^dynamic") "default = [\"dynamic\"]\ndynamic"))
+                        ;; Accept any version of libdeflate.
+                        (substitute* "build.rs"
+                          ((".*exactly_version.*") ""))
+                        (delete-file-recursively "libdeflate")))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cc" ,rust-cc-1)
+                       ("rust-pkg-config" ,rust-pkg-config-0.3))))
+    (native-inputs (list pkg-config))
+    (inputs (list libdeflate))
+    (home-page "https://github.com/adamkewley/libdeflater")
+    (synopsis "Bindings to libdeflate")
+    (description
+     "This package provides bindings to libdeflate for DEFLATE (de)compression
+exposed as non-streaming buffer operations.  It contains bindings for raw
+deflate, zlib, and gzip data.")
+    (license license:asl2.0)))
+
+;; TODO: Unbundle libdeflate
+(define-public rust-libdeflate-sys-0.12
+  (package
+    (inherit rust-libdeflate-sys-1)
+    (name "rust-libdeflate-sys")
+    (version "0.12.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "libdeflate-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "11a7nn3p73vw3cnra36vz7mz60wx9jzhzwwji1hbmql5gy0v1xz1"))))
+    (arguments
+     `(#:cargo-inputs (("rust-cc" ,rust-cc-1))))))
+
+(define-public rust-libdeflate-sys-0.11
+  (package
+    (inherit rust-libdeflate-sys-1)
+    (name "rust-libdeflate-sys")
+    (version "0.11.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "libdeflate-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "0xs2wdly73ar7r9qyrbwnkwjjz4wd92kv5h78cdxfrsbp2v88ryb"))))
+    (arguments
+     `(#:cargo-inputs (("rust-cc" ,rust-cc-1))))))
+
+(define-public rust-libdeflate-sys-0.7
+  (package
+    (inherit rust-libdeflate-sys-0.11)
+    (name "rust-libdeflate-sys")
+    (version "0.7.5")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "libdeflate-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0a5pkrxa7zcb0nab2j48dn6j8d8g1pjvz196c308wrax6dpazkjc"))))
+    (arguments
+     `(#:cargo-inputs (("rust-cc" ,rust-cc-1))))))
+
