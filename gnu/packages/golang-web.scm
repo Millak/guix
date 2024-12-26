@@ -1068,10 +1068,19 @@ browser window.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "172v9mqghswf50ga512qghb6ii0ivz5fi2iyjzdnbm42g0cr4fjj"))))
+        (base32 "172v9mqghswf50ga512qghb6ii0ivz5fi2iyjzdnbm42g0cr4fjj"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/coder/websocket/internal/thirdparty
+            (delete-file-recursively "internal/thirdparty")))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "github.com/coder/websocket"))
+    (native-inputs
+     (list go-golang-org-x-time)) ; for examples
     (home-page "https://github.com/coder/websocket")
     (synopsis "WebSocket library for Go")
     (description
