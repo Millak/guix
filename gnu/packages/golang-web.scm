@@ -3069,7 +3069,7 @@ sessions, flash messages, custom backends, and more.")
 (define-public go-github-com-gorilla-websocket
   (package
     (name "go-github-com-gorilla-websocket")
-    (version "1.5.0")
+    (version "1.5.3")
     (home-page "https://github.com/gorilla/websocket")
     (source
      (origin
@@ -3079,7 +3079,7 @@ sessions, flash messages, custom backends, and more.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1xrr6snvs9g1nzxxg05w4i4pq6k1xjljl5mvavd838qc468n118i"))))
+        (base32 "1k84plbz6bxarbdrdcsrm9vhiy971prpvfnkcpsfv2q4ac80ccmx"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/gorilla/websocket"))
