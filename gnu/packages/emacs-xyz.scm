@@ -23333,19 +23333,19 @@ literate programming tools for exporting, weaving and tangling.")
 (define-public emacs-ansible
   (package
     (name "emacs-ansible")
-    (version "0.3.2")
+    (version "0.4.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/k1LoW/emacs-ansible")
+             (url "https://gitlab.com/emacs-ansible/emacs-ansible")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "12k8mwlyiipsdjq5h1v04g3aa7ymjyhmy14j6vzjil4w9l6xyvdh"))))
+        (base32 "1i9fymfw8s05s3cy4rbldd6pya6y7gpaqcjcrkcyd96y5awb0w34"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-f emacs-s))
-    (home-page "https://github.com/k1LoW/emacs-ansible")
+    (home-page "https://gitlab.com/emacs-ansible/emacs-ansible")
     (synopsis "Emacs minor mode for Ansible files")
     (description
      "This is an Emacs minor mode for editing Ansible files.")
