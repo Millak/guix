@@ -1,8 +1,10 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019 John Soo <jsoo1@asu.edu>
-;;; Copyright © 2020, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2020, 2022-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Valentin Ignatev <valentignatev@gmail.com>
 ;;; Copyright © 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2023 Steve George <steve@futurile.net>
 ;;; Copyright © 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -33,7 +35,288 @@
   #:use-module (guix download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
+  #:use-module (guix utils)
   #:use-module (gnu packages crates-io))
+
+(define-public rust-criterion-0.5
+  (package
+    (name "rust-criterion")
+    (version "0.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "criterion" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0bv9ipygam3z8kk6k771gh9zi0j0lb9ir0xi1pc075ljg80jvcgj"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (("\"~([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                   (string-append "\"^" version)))))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-anes" ,rust-anes-0.1)
+        ("rust-async-std" ,rust-async-std-1)
+        ("rust-cast" ,rust-cast-0.3)
+        ("rust-ciborium" ,rust-ciborium-0.2)
+        ("rust-clap" ,rust-clap-4)
+        ("rust-criterion-plot" ,rust-criterion-plot-0.5)
+        ("rust-csv" ,rust-csv-1)
+        ("rust-futures" ,rust-futures-0.3)
+        ("rust-is-terminal" ,rust-is-terminal-0.4)
+        ("rust-itertools" ,rust-itertools-0.10)
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-oorandom" ,rust-oorandom-11)
+        ("rust-plotters" ,rust-plotters-0.3)
+        ("rust-rayon" ,rust-rayon-1)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-smol" ,rust-smol-1)
+        ("rust-tinytemplate" ,rust-tinytemplate-1)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-walkdir" ,rust-walkdir-2))
+       #:cargo-development-inputs
+       (("rust-approx" ,rust-approx-0.5)
+        ("rust-futures" ,rust-futures-0.3)
+        ("rust-quickcheck" ,rust-quickcheck-1)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://bheisler.github.io/criterion.rs/book/index.html")
+    (synopsis "Statistics-driven micro-benchmarking library")
+    (description
+     "This package provides a statistics-driven micro-benchmarking library.")
+    ;; The user can choose either license.
+    (license (list license:asl2.0 license:expat))))
+
+(define-public rust-criterion-0.4
+  (package
+    (inherit rust-criterion-0.5)
+    (name "rust-criterion")
+    (version "0.4.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "criterion" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1jsl4r0yc3fpkyjbi8aa1jrm69apqq9rxwnjnd9brqmaq44nxiz7"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-anes" ,rust-anes-0.1)
+        ("rust-async-std" ,rust-async-std-1)
+        ("rust-atty" ,rust-atty-0.2)
+        ("rust-cast" ,rust-cast-0.3)
+        ("rust-ciborium" ,rust-ciborium-0.2)
+        ("rust-clap" ,rust-clap-3)
+        ("rust-criterion-plot" ,rust-criterion-plot-0.5)
+        ("rust-csv" ,rust-csv-1)
+        ("rust-futures" ,rust-futures-0.3)
+        ("rust-itertools" ,rust-itertools-0.10)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-oorandom" ,rust-oorandom-11)
+        ("rust-plotters" ,rust-plotters-0.3)
+        ("rust-rayon" ,rust-rayon-1)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-smol" ,rust-smol-1)
+        ("rust-tinytemplate" ,rust-tinytemplate-1)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-walkdir" ,rust-walkdir-2))
+       #:cargo-development-inputs
+       (("rust-approx" ,rust-approx-0.5)
+        ("rust-futures" ,rust-futures-0.3)
+        ("rust-quickcheck" ,rust-quickcheck-1)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-tempfile" ,rust-tempfile-3))))))
+
+(define-public rust-criterion-0.3
+  (package
+    (inherit rust-criterion-0.4)
+    (name "rust-criterion")
+    (version "0.3.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "criterion" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "13yd64ah93gkbdv7qq4cr6rhgl9979jjcjk3gkhnav1b7glns7dh"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-async-std" ,rust-async-std-1)
+        ("rust-atty" ,rust-atty-0.2)
+        ("rust-cast" ,rust-cast-0.3)
+        ("rust-clap" ,rust-clap-2)
+        ("rust-criterion-plot" ,rust-criterion-plot-0.4)
+        ("rust-csv" ,rust-csv-1)
+        ("rust-futures" ,rust-futures-0.3)
+        ("rust-itertools" ,rust-itertools-0.10)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-oorandom" ,rust-oorandom-11)
+        ("rust-plotters" ,rust-plotters-0.3)
+        ("rust-rayon" ,rust-rayon-1)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-cbor" ,rust-serde-cbor-0.11)
+        ("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-smol" ,rust-smol-1)
+        ("rust-tinytemplate" ,rust-tinytemplate-1)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-walkdir" ,rust-walkdir-2))
+       #:cargo-development-inputs
+       (("rust-approx" ,rust-approx-0.5)
+        ("rust-futures" ,rust-futures-0.3)
+        ("rust-quickcheck" ,rust-quickcheck-1)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-tempfile" ,rust-tempfile-3))))))
+
+(define-public rust-criterion-0.2
+  (package
+    (inherit rust-criterion-0.3)
+    (name "rust-criterion")
+    (version "0.2.11")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "criterion" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1543wlpc4p1kz7sqqa7ylr8bkdr8l4f34hy4bxj7krpkahwhaqq3"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-atty" ,rust-atty-0.2)
+        ("rust-cast" ,rust-cast-0.2)
+        ("rust-clap" ,rust-clap-2)
+        ("rust-criterion-plot" ,rust-criterion-plot-0.3)
+        ("rust-csv" ,rust-csv-1)
+        ("rust-itertools" ,rust-itertools-0.8)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-rand-core" ,rust-rand-core-0.3)
+        ("rust-rand-os" ,rust-rand-os-0.1)
+        ("rust-rand-xoshiro" ,rust-rand-xoshiro-0.1)
+        ("rust-rayon" ,rust-rayon-1)
+        ("rust-rayon-core" ,rust-rayon-core-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-tinytemplate" ,rust-tinytemplate-1)
+        ("rust-walkdir" ,rust-walkdir-2))
+       #:cargo-development-inputs
+       (("rust-approx" ,rust-approx-0.3)
+        ("rust-quickcheck" ,rust-quickcheck-0.8)
+        ("rust-rand" ,rust-rand-0.6)
+        ("rust-tempdir" ,rust-tempdir-0.3))))))
+
+(define-public rust-criterion-cycles-per-byte-0.1
+  (package
+    (name "rust-criterion-cycles-per-byte")
+    (version "0.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "criterion-cycles-per-byte" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "15iw8zvyilx6k3a7z79vpzmpm6kkyds4c1ng3jlwfc43axd4hd4d"))))
+    (build-system cargo-build-system)
+    (arguments
+     ;; error: criterion-cycles-per-byte currently relies on x86 or x86_64
+     `(#:skip-build? ,(not (target-x86?))
+       #:cargo-inputs
+       (("rust-criterion" ,rust-criterion-0.3))))
+    (home-page "https://crates.io/crates/criterion-cycles-per-byte")
+    (synopsis "Measure time with CPU cycles for criterion")
+    (description "This package lets you measure time with CPU cycles for
+criterion.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-criterion-plot-0.5
+  (package
+    (name "rust-criterion-plot")
+    (version "0.5.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "criterion-plot" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1c866xkjqqhzg4cjvg01f8w6xc1j3j7s58rdksl52skq89iq4l3b"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs
+       (("rust-itertool-num" ,rust-itertools-num-0.1)
+        ("rust-num-complex" ,rust-num-complex-0.4)
+        ("rust-rand" ,rust-rand-0.8))
+       #:cargo-inputs
+       (("rust-cast" ,rust-cast-0.3)
+        ("rust-itertools" ,rust-itertools-0.10))))
+    (home-page "https://github.com/bheisler/criterion.rs")
+    (synopsis "Criterion's plotting library")
+    (description "This package provides criterion's plotting library.")
+    ;; The user can choose either license.
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-criterion-plot-0.4
+  (package
+    (inherit rust-criterion-plot-0.5)
+    (name "rust-criterion-plot")
+    (version "0.4.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "criterion-plot" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0mys2zkizh5az6ax77m5aqifk0vz35rn0a6wykvmjx9gkzg9c2fh"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cast" ,rust-cast-0.2)
+        ("rust-itertools" ,rust-itertools-0.10))
+       #:cargo-development-inputs
+       (("rust-itertools-num" ,rust-itertools-num-0.1)
+        ("rust-num-complex" ,rust-num-complex-0.2)
+        ("rust-rand" ,rust-rand-0.4))))))
+
+(define-public rust-criterion-plot-0.3
+  (package
+    (inherit rust-criterion-plot-0.4)
+    (name "rust-criterion-plot")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "criterion-plot" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "13pv09z4ryp70qyzablkibwa2mh6c2852qq1sjr9wjigvwnj3ybn"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-byteorder" ,rust-byteorder-1)
+        ("rust-cast" ,rust-cast-0.2)
+        ("rust-itertools" ,rust-itertools-0.8))
+       #:cargo-development-inputs
+       (("rust-itertools-num" ,rust-itertools-num-0.1)
+        ("rust-num-complex" ,rust-num-complex-0.2)
+        ("rust-rand" ,rust-rand-0.4))))))
 
 (define-public rust-mark-flaky-tests-1
   (package
