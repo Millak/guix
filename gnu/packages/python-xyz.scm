@@ -5360,14 +5360,14 @@ Prefix) - Encode and decode data structures.")
 (define-public python-pyicu
   (package
     (name "python-pyicu")
-    (version "2.9")
+    (version "2.14")
     (source
      (origin
       (method url-fetch)
       (uri (pypi-uri "PyICU" version))
       (sha256
        (base32
-        "0y2qhh443vydi3y7kmhyb6kz3z6d7qq7ld0sg88mfqalcp7dca9w"))))
+        "0ci1l21b79xka80lf0bgmahfskqa8mw6k714fzalwmawpn9fpixc"))))
     (build-system python-build-system)
     (inputs
      (list icu4c))
