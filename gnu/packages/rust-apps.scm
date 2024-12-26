@@ -420,7 +420,7 @@ paging.")
 (define-public complgen
   (package
     (name "complgen")
-    (version "0.2.0")
+    (version "0.3.0")
     (source
      (origin
        (method git-fetch)
@@ -429,7 +429,7 @@ paging.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "026bv2cync6qgdkn1ifhspy6z9v25plziqhnn58rlgffx2a0dqn2"))))
+        (base32 "1v94lg7p79j5706d520jfvidpkw5pqv1a8hgg6cy3fpkghgr375j"))))
     (build-system cargo-build-system)
     (arguments
      (list
@@ -440,6 +440,7 @@ paging.")
                        ("rust-clap" ,rust-clap-4)
                        ("rust-env-logger" ,rust-env-logger-0.10)
                        ("rust-hashbrown" ,rust-hashbrown-0.13)
+                       ("rust-indexmap" ,rust-indexmap-2)
                        ("rust-itertools" ,rust-itertools-0.10)
                        ("rust-log" ,rust-log-0.4)
                        ("rust-nom" ,rust-nom-7)
