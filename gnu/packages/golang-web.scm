@@ -2557,6 +2557,30 @@ from CloudFlare's github.com/cloudflare/cfssl/revoke.")
               ;; For the WebAuthn's fork: LICENSE.
               license:bsd-3))))
 
+(define-public go-github-com-gobwas-httphead
+  (package
+    (name "go-github-com-gobwas-httphead")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gobwas/httphead")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "106l8ml5yihld3rrf45q5fhlsx64hrpj2dsvnnm62av4ya5nf0gb"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/gobwas/httphead"))
+    (home-page "https://github.com/gobwas/httphead")
+    (synopsis "Tiny HTTP header value parsing library in Golang")
+    (description
+     "Package httphead contains utils for parsing HTTP and HTTP-grammar
+compatible text protocols headers.")
+    (license license:expat)))
+
 (define-public go-github-com-goccy-go-json
   (package
     (name "go-github-com-goccy-go-json")
