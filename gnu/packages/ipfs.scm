@@ -1007,6 +1007,31 @@ their levels to be controlled individually.")
 @url{https://github.com/libp2p/specs,libp2p}.")
     (license license:expat)))
 
+(define-public go-github-com-libp2p-go-libp2p-testing
+  (package
+    (name "go-github-com-libp2p-go-libp2p-testing")
+    (version "0.12.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/libp2p/go-libp2p-testing")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "08n17mqskdj5il6lws53wk1zsf9d8c55f58bap1rjngf2d669p39"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t ; to break cycle with  go-github-com-libp2p-go-libp2p
+      #:tests? #f
+      #:import-path "github.com/libp2p/go-libp2p-testing"))
+    (home-page "https://github.com/libp2p/go-libp2p-testing")
+    (synopsis "Test toolbox for go-libp2p modules")
+    (description
+     "This package provides a testing toolbox for go-libp2p modules.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public go-github-com-whyrusleeping-cbor-gen
   (package
     (name "go-github-com-whyrusleeping-cbor-gen")
