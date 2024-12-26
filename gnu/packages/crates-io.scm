@@ -99601,23 +99601,6 @@ for terminal and other window-less applications.")
      "This package provides Linux kernel wireless(802.11) netlink Library.")
     (license license:expat)))
 
-(define-public rust-wmidi-3
-  (package
-    (name "rust-wmidi")
-    (version "3.1.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "wmidi" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1kxnbs18nmpzm2hfwaaa5h2s77cmk5w53srzxqmrqlkdpdcrjafa"))))
-    (build-system cargo-build-system)
-    (home-page "https://github.com/RustAudio/wmidi")
-    (synopsis "Midi parsing library")
-    (description "This package provides a Midi parsing library.")
-    (license license:expat)))
-
 (define-public rust-write16-1
   (package
     (name "rust-write16")

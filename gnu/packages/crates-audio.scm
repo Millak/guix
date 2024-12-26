@@ -538,6 +538,23 @@ I/O library.")
     (description "This package provides procedural macros for urid.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-wmidi-3
+  (package
+    (name "rust-wmidi")
+    (version "3.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wmidi" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1kxnbs18nmpzm2hfwaaa5h2s77cmk5w53srzxqmrqlkdpdcrjafa"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/RustAudio/wmidi")
+    (synopsis "Midi parsing library")
+    (description "This package provides a Midi parsing library.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
