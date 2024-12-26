@@ -1932,15 +1932,23 @@ decompose request handling into many smaller layers.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0kbkplhzqv9ai28r4smhdsxxwh20d96srr3am37pwwnh48ivwch8"))))
+        (base32 "0kbkplhzqv9ai28r4smhdsxxwh20d96srr3am37pwwnh48ivwch8"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separatly:
+            ;;
+            ;; - github.com/go-jose/go-jose/jose-util
+            (delete-file-recursively "jose-util")))))
     (build-system go-build-system)
     (arguments
-     '( #:import-path "github.com/go-jose/go-jose/v3"))
-    (propagated-inputs
-     (list go-golang-org-x-crypto))
+     (list
+      #:import-path "github.com/go-jose/go-jose/v3"))
     (native-inputs
      (list go-github-com-google-go-cmp
            go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-golang-org-x-crypto))
     (home-page "https://github.com/go-jose/go-jose")
     (synopsis "Implementation of JOSE standards (JWE, JWS, JWT) in Go")
     (description
