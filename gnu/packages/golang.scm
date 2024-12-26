@@ -1890,30 +1890,29 @@ obfuscated via the Elligator 2 mapping.
     (license license:bsd-2)))
 
 (define-public go-github-com-willscott-goturn
-  (let ((commit "19f41278d0c9251d64e0ee29f37d51e87a24a97b")
-        (revision "0"))
     (package
       (name "go-github-com-willscott-goturn")
-      (version (git-version "0.0.0" revision commit))
+      (version "0.0.0-20170802220503-19f41278d0c9")
       (source
        (origin
          (method git-fetch)
          (uri
           (git-reference
            (url "https://github.com/willscott/goturn")
-           (commit commit)))
+           (commit (go-version->git-ref version))))
          (file-name (git-file-name name version))
          (sha256
           (base32 "0zwvhfznr84ayzknn9flh65nvqjsixisgy9fkhz2jlahl1ldqcq7"))))
       (build-system go-build-system)
       (arguments
-       `(#:import-path "github.com/willscott/goturn"))
+       `(#:tests? #f ; tests are broken on a newer go, starting from 1.17.
+         #:import-path "github.com/willscott/goturn"))
       (home-page "https://github.com/willscott/goturn")
       (synopsis "Go TURN dialer")
       (description "GoTURN is a library providing a Go interface compatible with
 the golang proxy package which connects through a TURN relay.  It provides
 parsing and encoding support for STUN and TURN protocols.")
-      (license license:bsd-3))))
+      (license license:bsd-3)))
 
 (define-public go-github-com-flopp-go-findfont
   (package
