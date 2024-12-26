@@ -1,4 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
+;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2021, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;;
@@ -29,6 +30,160 @@
   #:use-module (guix utils)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages sqlite))
+
+(define-public rust-libsqlite3-sys-0.30
+  (package
+    (name "rust-libsqlite3-sys")
+    (version "0.30.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libsqlite3-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0jcikvgbj84xc7ikdmpc8m4y5lyqgrb9aqblphwk67kv95xgp69f"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.69)
+                       ("rust-cc" ,rust-cc-1)
+                       ("rust-openssl-sys" ,rust-openssl-sys-0.9)
+                       ("rust-pkg-config" ,rust-pkg-config-0.3)
+                       ("rust-prettyplease" ,rust-prettyplease-0.2)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2)
+                       ("rust-vcpkg" ,rust-vcpkg-0.2))))
+    (inputs (list sqlite))
+    (home-page "https://github.com/rusqlite/rusqlite")
+    (synopsis "Native bindings to the libsqlite3 library")
+    (description
+     "This package provides native Rust bindings to the libsqlite3 library.")
+    (license license:expat)))
+
+(define-public rust-libsqlite3-sys-0.28
+  (package
+    (inherit rust-libsqlite3-sys-0.30)
+    (name "rust-libsqlite3-sys")
+    (version "0.28.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libsqlite3-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0gzwfw0n2wqgaihcgj65wzd3lclfxyy62gixq8sv6z04fi15h40c"))))
+    (arguments
+     `(#:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.69)
+                       ("rust-cc" ,rust-cc-1)
+                       ("rust-openssl-sys" ,rust-openssl-sys-0.9)
+                       ("rust-pkg-config" ,rust-pkg-config-0.3)
+                       ("rust-prettyplease" ,rust-prettyplease-0.2)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2)
+                       ("rust-vcpkg" ,rust-vcpkg-0.2))))))
+
+(define-public rust-libsqlite3-sys-0.27
+  (package
+    (inherit rust-libsqlite3-sys-0.28)
+    (name "rust-libsqlite3-sys")
+    (version "0.27.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libsqlite3-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "05pp60ncrmyjlxxjj187808jkvpxm06w5lvvdwwvxd2qrmnj4kng"))))
+    (arguments
+     `(#:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.69)
+                       ("rust-cc" ,rust-cc-1)
+                       ("rust-openssl-sys" ,rust-openssl-sys-0.9)
+                       ("rust-pkg-config" ,rust-pkg-config-0.3)
+                       ("rust-prettyplease" ,rust-prettyplease-0.2)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2)
+                       ("rust-vcpkg" ,rust-vcpkg-0.2))))))
+
+(define-public rust-libsqlite3-sys-0.26
+  (package
+    (inherit rust-libsqlite3-sys-0.27)
+    (name "rust-libsqlite3-sys")
+    (version "0.26.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "libsqlite3-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "09j3v5nhgvjdyskgwajhg9g6v3b2ij0lxiz8qqav2cxic7zjxhmg"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bindgen" ,rust-bindgen-0.64)
+        ("rust-cc" ,rust-cc-1)
+        ("rust-openssl-sys" ,rust-openssl-sys-0.9)
+        ("rust-pkg-config" ,rust-pkg-config-0.3)
+        ("rust-vcpkg" ,rust-vcpkg-0.2))))))
+
+(define-public rust-libsqlite3-sys-0.23
+  (package
+    (inherit rust-libsqlite3-sys-0.26)
+    (name "rust-libsqlite3-sys")
+    (version "0.23.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libsqlite3-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0n6b4mlpw9l74cl5mahnpaanyjsgpmz5y517kmnk6v09fiygrjnj"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bindgen" ,rust-bindgen-0.59)
+        ("rust-cc" ,rust-cc-1)
+        ("rust-openssl-sys" ,rust-openssl-sys-0.9)
+        ("rust-pkg-config" ,rust-pkg-config-0.3)
+        ("rust-vcpkg" ,rust-vcpkg-0.2))))))
+
+(define-public rust-libsqlite3-sys-0.22
+  (package
+    (inherit rust-libsqlite3-sys-0.23)
+    (name "rust-libsqlite3-sys")
+    (version "0.22.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libsqlite3-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "17gqc2mwih81j3ds479gl5zmsxqzzrcrj3yyv62vh34bgy8n82r9"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       ;; build dependencies
+       (("rust-bindgen" ,rust-bindgen-0.58)
+        ("rust-cc" ,rust-cc-1)
+        ("rust-pkg-config" ,rust-pkg-config-0.3)
+        ("rust-vcpkg" ,rust-vcpkg-0.2))))))
+
+(define-public rust-libsqlite3-sys-0.20
+  (package
+    (inherit rust-libsqlite3-sys-0.22)
+    (name "rust-libsqlite3-sys")
+    (version "0.20.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libsqlite3-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1g9gbjjpm9phhs991abkzmacszibp94m5nrh331ycd99y9ci1lv4"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       ;; build dependencies
+       (("rust-bindgen" ,rust-bindgen-0.55)
+        ("rust-cc" ,rust-cc-1)
+        ("rust-pkg-config" ,rust-pkg-config-0.3)
+        ("rust-vcpkg" ,rust-vcpkg-0.2))))))
 
 (define-public rust-rusqlite-0.32
   (package
