@@ -793,6 +793,305 @@ I/O library.")
 many formats including AAC, FLAC, MP3, MP4 and WAV.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-symphonia-0.4
+  (package
+    (name "rust-symphonia")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "symphonia" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1dx4v5libbksi4rd6b9290nci3h8xqyakymhxd72yybyl25g7rd7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-symphonia-bundle-flac" ,rust-symphonia-bundle-flac-0.4)
+                       ("rust-symphonia-bundle-mp3" ,rust-symphonia-bundle-mp3-0.4)
+                       ("rust-symphonia-codec-aac" ,rust-symphonia-codec-aac-0.4)
+                       ("rust-symphonia-codec-pcm" ,rust-symphonia-codec-pcm-0.4)
+                       ("rust-symphonia-codec-vorbis" ,rust-symphonia-codec-vorbis-0.4)
+                       ("rust-symphonia-core" ,rust-symphonia-core-0.4)
+                       ("rust-symphonia-format-isomp4" ,rust-symphonia-format-isomp4-0.4)
+                       ("rust-symphonia-format-ogg" ,rust-symphonia-format-ogg-0.4)
+                       ("rust-symphonia-format-wav" ,rust-symphonia-format-wav-0.4)
+                       ("rust-symphonia-metadata" ,rust-symphonia-metadata-0.4))))
+    (home-page "https://github.com/pdeljanov/Symphonia")
+    (synopsis
+     "Symphonia is a pure Rust media container and audio decoding library")
+    (description
+     "Symphonia is a pure Rust media container and audio decoding library
+that supports a wide range of audio formats.")
+    (license license:mpl2.0)))
+
+(define-public rust-symphonia-bundle-flac-0.4
+  (package
+    (name "rust-symphonia-bundle-flac")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "symphonia-bundle-flac" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "00jxn9izfg1g07srhgglpqgadmzwsr88sqnnxw3mskpvyl958vhi"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-log" ,rust-log-0.4)
+                       ("rust-symphonia-core" ,rust-symphonia-core-0.4)
+                       ("rust-symphonia-metadata" ,rust-symphonia-metadata-0.4)
+                       ("rust-symphonia-utils-xiph" ,rust-symphonia-utils-xiph-0.4))))
+    (home-page "https://github.com/pdeljanov/Symphonia")
+    (synopsis "FLAC demuxer and decoder for the Symphonia library")
+    (description
+     "Symphonia is a pure Rust audio decoding and media demuxing library
+supporting a wide range of audio formats.  This package contains a FLAC demuxer
+and decoder.")
+    (license license:mpl2.0)))
+
+(define-public rust-symphonia-bundle-mp3-0.4
+  (package
+    (name "rust-symphonia-bundle-mp3")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "symphonia-bundle-mp3" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "14074njhgrcgh2p5iryrd68mgdzcxf9v7p8xfm8ldkhylv29fkgc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-1)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-symphonia-core" ,rust-symphonia-core-0.4)
+                       ("rust-symphonia-metadata" ,rust-symphonia-metadata-0.4))))
+    (home-page "https://github.com/pdeljanov/Symphonia")
+    (synopsis "MP1, MP2, and MP3 demuxers and decoders written in pure Rust")
+    (description
+     "Symphonia is a pure Rust audio decoding and media demuxing library
+supporting a wide range of aduio formats.  This package contains support for
+MP1, MP2 and MP3.")
+    (license license:mpl2.0)))
+
+(define-public rust-symphonia-codec-aac-0.4
+  (package
+    (name "rust-symphonia-codec-aac")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "symphonia-codec-aac" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "13smaxgb1jadl4jyay7hixqgwaiqrjvsvmzdvlbdzdxrgsrplgdx"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-symphonia-core" ,rust-symphonia-core-0.4))))
+    (home-page "https://github.com/pdeljanov/Symphonia")
+    (synopsis "Pure Rust AAC decoder from Symphonia")
+    (description
+     "Symphonia is a pure Rust audio decoding and media demuxing library
+that supports a wide range of audio formats.  This package contains an AAC
+decoder.")
+    (license license:mpl2.0)))
+
+(define-public rust-symphonia-codec-pcm-0.4
+  (package
+    (name "rust-symphonia-codec-pcm")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "symphonia-codec-pcm" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1is49qjnfy541zpgzz498hnpz0nsq7i4nfky2133b6aqhxrm87ds"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-log" ,rust-log-0.4)
+                       ("rust-symphonia-core" ,rust-symphonia-core-0.4))))
+    (home-page "https://github.com/pdeljanov/Symphonia")
+    (synopsis "Pure Rust PCM audio decoder, part of Symphonia")
+    (description
+     "Symphonia is a pure Rust audio decoding and media demuxing library
+that supports a wide range of audio formats.  This package contains a
+@acronym{PCM, Pulse-Code Modulation} audio decoder.")
+    (license license:mpl2.0)))
+
+(define-public rust-symphonia-codec-vorbis-0.4
+  (package
+    (name "rust-symphonia-codec-vorbis")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "symphonia-codec-vorbis" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1yj1si92fnnzdfkw27cq324h6y1s958s8r2hl0szpvvqh1sdd7m2"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-log" ,rust-log-0.4)
+                       ("rust-symphonia-core" ,rust-symphonia-core-0.4)
+                       ("rust-symphonia-utils-xiph" ,rust-symphonia-utils-xiph-0.4))))
+    (home-page "https://github.com/pdeljanov/Symphonia")
+    (synopsis "Pure Rust Vorbis decoder, part of the Symphonia project")
+    (description
+     "Symphonia is a pure Rust audio decoding and media demuxing library
+that supports a wide range of audio formats.  This package is a Vorbis
+decoder.")
+    (license license:mpl2.0)))
+
+(define-public rust-symphonia-core-0.4
+  (package
+    (name "rust-symphonia-core")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "symphonia-core" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1j84q4a9p9qa23976spxap9s6ns3fm6fzrfz65n6cjhgpsbmw4zs"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-arrayvec" ,rust-arrayvec-0.7)
+                       ("rust-bitflags" ,rust-bitflags-1)
+                       ("rust-bytemuck" ,rust-bytemuck-1)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-log" ,rust-log-0.4))))
+    (home-page "https://github.com/pdeljanov/Symphonia")
+    (synopsis "Shared elements for Symphonia a Rust audio library")
+    (description
+     "Symphonia is a pure Rust audio decoding and media demuxing
+library supporting a wide range of audio formats.  This package contains
+shared structs, traits, and features.")
+    (license license:mpl2.0)))
+
+(define-public rust-symphonia-format-isomp4-0.4
+  (package
+    (name "rust-symphonia-format-isomp4")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "symphonia-format-isomp4" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1dap5yh286j74sybjsam378v1jxkpdl3hvvm81sipv7725vkmvpy"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-encoding-rs" ,rust-encoding-rs-0.8)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-symphonia-core" ,rust-symphonia-core-0.4)
+                       ("rust-symphonia-metadata" ,rust-symphonia-metadata-0.4))))
+    (home-page "https://github.com/pdeljanov/Symphonia")
+    (synopsis "Rust ISO/MP4 demuxer from the Symphonia project")
+    (description
+     "Symphonia is a pure Rust audio decoding and media demuxing library
+that supports a wide range of audio formats.  This package contains an
+ISO/MP4 demuxer.")
+    (license license:mpl2.0)))
+
+(define-public rust-symphonia-format-ogg-0.4
+  (package
+    (name "rust-symphonia-format-ogg")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "symphonia-format-ogg" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "06d5327m4yk8a6yq7zzyiv2sbkwnjq28dz9cagndz6m7i1r3bcnp"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-log" ,rust-log-0.4)
+                       ("rust-symphonia-core" ,rust-symphonia-core-0.4)
+                       ("rust-symphonia-metadata" ,rust-symphonia-metadata-0.4)
+                       ("rust-symphonia-utils-xiph" ,rust-symphonia-utils-xiph-0.4))))
+    (home-page "https://github.com/pdeljanov/Symphonia")
+    (synopsis "Pure Rust OGG demuxer, part of Symphonia")
+    (description
+     "Symphonia is a pure Rust decoding and media demuxing library that
+supports a wide range of audio formats.  This package is an OGG demuxer.")
+    (license license:mpl2.0)))
+
+(define-public rust-symphonia-format-wav-0.4
+  (package
+    (name "rust-symphonia-format-wav")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "symphonia-format-wav" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1b8x213s44xis4pb1ibnqr1a20hsxf3phm527dvadpi0nkjsb7vd"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-log" ,rust-log-0.4)
+                       ("rust-symphonia-core" ,rust-symphonia-core-0.4)
+                       ("rust-symphonia-metadata" ,rust-symphonia-metadata-0.4))))
+    (home-page "https://github.com/pdeljanov/Symphonia")
+    (synopsis "Rust WAV demuxer from the Symphonia project")
+    (description
+     "Symphonia is a pure Rust decoding and media demuxing library that
+supports a wide range of audio formats.  This package is a WAV demuxer.")
+    (license license:mpl2.0)))
+
+(define-public rust-symphonia-metadata-0.4
+  (package
+    (name "rust-symphonia-metadata")
+    (version "0.4.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "symphonia-metadata" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "06lvwy24kirc84r6d23ncad544525fsb6gna0plqz3d1mffmjq2j"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-encoding-rs" ,rust-encoding-rs-0.8)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-symphonia-core" ,rust-symphonia-core-0.4))))
+    (home-page "https://github.com/pdeljanov/Symphonia")
+    (synopsis "Multimedia tag and metadata readers for the Symphonia library")
+    (description "Symphonia is a pure Rust audio decoding and media demuxing
+library supporting a wide range of audio formats.  This package contains
+multimedia tag and metadata readers.")
+    (license license:mpl2.0)))
+
+(define-public rust-symphonia-utils-xiph-0.4
+  (package
+    (name "rust-symphonia-utils-xiph")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "symphonia-utils-xiph" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1sg1y7s607rk1akrrzyhdsqimiwwaw440jzr1cp89zs8d5n04dva"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-symphonia-core" ,rust-symphonia-core-0.4)
+                       ("rust-symphonia-metadata" ,rust-symphonia-metadata-0.4))))
+    (home-page "https://github.com/pdeljanov/Symphonia")
+    (synopsis "Xiph codecs and formats for Rust's Symphonia")
+    (description
+     "Symphonia is a pure Rust audio decoding and media demuxing
+library that supports a wide range of audio formats.  This package contains Xiph
+codecs and formats.")
+    (license license:mpl2.0)))
+
 (define-public rust-urid-0.1
   (package
     (name "rust-urid")
