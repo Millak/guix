@@ -95880,46 +95880,6 @@ mile, ...).")
     (description "This package provides minimal request library in Rust.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-urid-0.1
-  (package
-    (name "rust-urid")
-    (version "0.1.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "urid" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "195672gs136vczn1r4hkjg5vfa7vdzr26bzv6lwhk0z7cvbvaa38"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-urid-derive" ,rust-urid-derive-0.1))))
-    (home-page "https://github.com/RustAudio/rust-lv2")
-    (synopsis "Library for idiomatic URID support")
-    (description "This package provides Library for idiomatic URID support.")
-    (license (list license:expat license:asl2.0))))
-
-(define-public rust-urid-derive-0.1
-  (package
-    (name "rust-urid-derive")
-    (version "0.1.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "urid-derive" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0i1nf0sgq4ai051h17s9msaavl3jfzdmdlsy8455pr88y0pfx7l1"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
-                       ("rust-quote" ,rust-quote-1)
-                       ("rust-syn" ,rust-syn-1))))
-    (home-page "https://github.com/RustAudio/rust-lv2")
-    (synopsis "Procedural macros for urid")
-    (description "This package provides procedural macros for urid.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-url-2
   (package
     (name "rust-url")
