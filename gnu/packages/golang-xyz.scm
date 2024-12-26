@@ -91,6 +91,7 @@
   #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages golang-maths)
   #:use-module (gnu packages golang-web)
+  #:use-module (gnu packages libedit)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages specifications)
   #:use-module (gnu packages xdisorg)
@@ -6656,6 +6657,44 @@ very eas to use.")
     (arguments
      (list
       #:import-path "github.com/klauspost/cpuid/v2"))))
+
+(define-public go-github-com-knz-go-libedit
+  (package
+    (name "go-github-com-knz-go-libedit")
+    (version "1.10.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/knz/go-libedit")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04a5ryzldsk7agybcz4rpd7g1v5vh7smawlky58bwj0341083p44"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/knz/go-libedit"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; These steps are taken from the project's README.
+          (add-after 'unpack 'use-system-wide-libedit
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (substitute* "unix/editline_unix.go"
+                  ((".*#cgo linux CFLAGS.*") "")
+                  (("#cgo linux CPPFLAGS.*")
+                   (string-append "#cgo linux CPPFLAGS: -I"
+                                  #$(this-package-input "libedit")
+                                  "/include -Ishim\n"))
+                  (("#cgo linux LDFLAGS.*") "#cgo linux LDFLAGS: -ledit\n"))))))))
+    (inputs
+     (list libedit))
+    (home-page "https://github.com/knz/go-libedit")
+    (synopsis "Go wrapper around @code{libedit}")
+    (description
+     "This packae provides a wrapper around @code{libedit} for Golang.")
+     (license license:asl2.0)))
 
 (define-public go-github-com-kpango-glg
   (package
