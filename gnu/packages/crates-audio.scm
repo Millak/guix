@@ -1,3 +1,4 @@
+;;; Copyright © 2023 Steve George <steve@futurile.net>
 ;;; Copyright © 2024 Roman Scherer <roman@burningswell.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -27,6 +28,33 @@
 ;;;
 ;;; Please: Try to add new module packages in alphabetic order.
 ;;;
+
+(define-public rust-asio-sys-0.2
+  (package
+    (name "rust-asio-sys")
+    (version "0.2.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "asio-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "16lbavksj2aasadyxbdnbrll6a1m8cwl4skbxgbvr1ma2wpwv82c"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:skip-build? #t
+           #:cargo-inputs `(("rust-bindgen" ,rust-bindgen-0.56)
+                            ("rust-cc" ,rust-cc-1)
+                            ("rust-num-derive" ,rust-num-derive-0.3)
+                            ("rust-num-traits" ,rust-num-traits-0.2)
+                            ("rust-once-cell" ,rust-once-cell-1)
+                            ("rust-walkdir" ,rust-walkdir-2))))
+    (home-page "https://github.com/RustAudio/cpal/")
+    (synopsis
+     "Low-level interface and binding generation for the Steinberg ASIO SDK")
+    (description
+     "Low-level interface and binding generation for the Steinberg ASIO SDK.")
+    (license license:asl2.0)))
 
 (define-public rust-lv2-0.6
   (package
