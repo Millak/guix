@@ -65559,6 +65559,25 @@ extension to python.")
 PNG and SVG formats.")
     (license license:expat)))
 
+(define-public rust-qrcodegen-1
+  (package
+    (name "rust-qrcodegen")
+    (version "1.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "qrcodegen" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0hn1j12q31nzlkra42s20p0wh198bx8f7xc73mic3j9121xgqfa3"))))
+    (build-system cargo-build-system)
+    (arguments (list #:tests? #f))  ; use of undeclared type `QrCode`
+    (home-page "https://www.nayuki.io/page/qr-code-generator-library")
+    (synopsis "QR Code generator library")
+    (description
+     "This package provides a QR Code generator library.")
+    (license license:expat)))
+
 (define-public rust-qrencode-0.14
   (package
     (name "rust-qrencode")
