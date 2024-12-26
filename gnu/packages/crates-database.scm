@@ -5,6 +5,8 @@
 ;;; Copyright © 2021 Léo Le Bouter <lle-bout@zaclys.net>
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
+;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
 ;;; Copyright © 2024 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -32,6 +34,8 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix utils)
+  #:use-module (guix gexp)
+  #:use-module (gnu packages crates-check)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages sqlite))
@@ -675,4 +679,252 @@ libmysqlclient.")
     (arguments
      `(#:cargo-inputs (("rust-fallible-iterator" ,rust-fallible-iterator-0.3)
                        ("rust-sqlite3-parser" ,rust-sqlite3-parser-0.12))))))
+
+(define-public rust-sqlite-0.30
+  (package
+    (name "rust-sqlite")
+    (version "0.30.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sqlite" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1lbfa0gjkqlhcmj4jy72kzfgd6a57z8gs1y7g34cbp4msvm4rk3f"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2)
+                       ("rust-sqlite3-sys" ,rust-sqlite3-sys-0.15))
+       #:cargo-development-inputs (("rust-temporary" ,rust-temporary-0.6))))
+    (inputs (list sqlite))
+    (home-page "https://github.com/stainless-steel/sqlite")
+    (synopsis "Interface to SQLite")
+    (description "The package provides an interface to SQLite.")
+    (license (list license:asl2.0 license:expat))))
+
+(define-public rust-sqlite-0.27
+  (package
+    (inherit rust-sqlite-0.30)
+    (name "rust-sqlite")
+    (version "0.27.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sqlite" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "11f1fw5gffni7mqr6mrliacr86v0yg9zmgvj3lhfdv1iz54vjv76"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-sqlite3-sys" ,rust-sqlite3-sys-0.14))
+       #:cargo-development-inputs (("rust-temporary" ,rust-temporary-0.6))))))
+
+(define-public rust-sqlite-0.26
+  (package
+    (inherit rust-sqlite-0.30)
+    (name "rust-sqlite")
+    (version "0.26.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sqlite" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0snvg09bs0n8skcxkx52lcymdn0l130a2m8fpvxpdhkyq0sabc9z"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-sqlite3-sys" ,rust-sqlite3-sys-0.13))))))
+
+(define-public rust-sqlite3-parser-0.13
+  (package
+    (name "rust-sqlite3-parser")
+    (version "0.13.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sqlite3-parser" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "02sjybc8r2nwpgi54bcp2vjmzyaczxbdxvxxx067716bsvd0flzb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-cc" ,rust-cc-1)
+                       ("rust-fallible-iterator" ,rust-fallible-iterator-0.3)
+                       ("rust-indexmap" ,rust-indexmap-2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-memchr" ,rust-memchr-2)
+                       ("rust-phf" ,rust-phf-0.11)
+                       ("rust-phf-codegen" ,rust-phf-codegen-0.11)
+                       ("rust-phf-shared" ,rust-phf-shared-0.11)
+                       ("rust-uncased" ,rust-uncased-0.9)
+                       ("rust-uncased" ,rust-uncased-0.9))
+       #:cargo-development-inputs (("rust-env-logger" ,rust-env-logger-0.11))))
+    (home-page "https://github.com/gwenn/lemon-rs")
+    (synopsis "SQL parser (as understood by SQLite)")
+    (description "This package provides an SQL parser (as understood by SQLite).")
+    (license (list license:asl2.0 license:expat))))
+
+(define-public rust-sqlite3-parser-0.12
+  (package
+    (inherit rust-sqlite3-parser-0.13)
+    (name "rust-sqlite3-parser")
+    (version "0.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sqlite3-parser" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1dx8j16ki2fsrwn1p36wnf079pvcs17549rin29x99vhkcpjbpcs"))))
+    (arguments
+     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-cc" ,rust-cc-1)
+                       ("rust-fallible-iterator" ,rust-fallible-iterator-0.3)
+                       ("rust-indexmap" ,rust-indexmap-2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-memchr" ,rust-memchr-2)
+                       ("rust-phf" ,rust-phf-0.11)
+                       ("rust-phf-codegen" ,rust-phf-codegen-0.11)
+                       ("rust-phf-shared" ,rust-phf-shared-0.11)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-uncased" ,rust-uncased-0.9)
+                       ("rust-uncased" ,rust-uncased-0.9))
+       #:cargo-development-inputs (("rust-env-logger" ,rust-env-logger-0.10))))))
+
+(define-public rust-sqlite3-src-0.5
+  (package
+    (name "rust-sqlite3-src")
+    (version "0.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sqlite3-src" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0m74wrkpify3z0xvrw4i2yssn9m9sjwqa5ipk6aq6f7fl58mmjdz"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 ;; Only allow for linking to system sqlite3.
+                 (delete-file-recursively "source")
+                 (delete-file "build.rs")
+                 (with-output-to-file "build.rs"
+                   (lambda _
+                     (format #t "fn main (){~@
+                             println!(\"cargo:rustc-link-lib=sqlite3\");~@
+                             }~%")))))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cc" ,rust-cc-1)
+                       ("rust-pkg-config" ,rust-pkg-config-0.3))))
+    (inputs (list sqlite))
+    (home-page "https://github.com/stainless-steel/sqlite3-src")
+    (synopsis "Provider of SQLite")
+    (description "The package provides SQLite.")
+    (license (list license:asl2.0 license:expat))))
+
+(define-public rust-sqlite3-src-0.4
+  (package
+    (inherit rust-sqlite3-src-0.5)
+    (name "rust-sqlite3-src")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sqlite3-src" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "14ancc9jafw5ql9carg27icjxcfrdz5izxk4bj7fp5n909x5m0fi"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 ;; Only allow for linking to system sqlite3.
+                 (delete-file-recursively "source")
+                 (delete-file "build.rs")
+                 (with-output-to-file "build.rs"
+                   (lambda _
+                     (format #t "fn main (){~@
+                             println!(\"cargo:rustc-link-lib=sqlite3\");~@
+                             }~%")))))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cc" ,rust-cc-1)
+        ("rust-pkg-config" ,rust-pkg-config-0.3))))))
+
+(define-public rust-sqlite3-src-0.3
+  (package
+    (inherit rust-sqlite3-src-0.5)
+    (name "rust-sqlite3-src")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sqlite3-src" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "18ygmfcpkccs8s9m5s9q31rrx1mrdps387w9yp3481jswxyb0q52"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cc" ,rust-cc-1)
+        ("rust-pkg-config" ,rust-pkg-config-0.3))))))
+
+(define-public rust-sqlite3-sys-0.15
+  (package
+    (name "rust-sqlite3-sys")
+    (version "0.15.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sqlite3-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0fq6m21dnd5yqrzknsmnl2565nahdwa29s7x12xhxr1kjik2qxgj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2)
+                       ("rust-sqlite3-src" ,rust-sqlite3-src-0.5))
+       #:cargo-development-inputs (("rust-temporary" ,rust-temporary-0.6))))
+    (inputs (list sqlite))
+    (home-page "https://github.com/stainless-steel/sqlite3-sys")
+    (synopsis "Bindings to SQLite")
+    (description "The package provides bindings to SQLite.")
+    (license (list license:asl2.0 license:expat))))
+
+(define-public rust-sqlite3-sys-0.14
+  (package
+    (inherit rust-sqlite3-sys-0.15)
+    (name "rust-sqlite3-sys")
+    (version "0.14.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sqlite3-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1vmrzgchmbqk9jk1dq1jp1lq6id0p3h8vwna02x60ly59y19jz6l"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-sqlite3-src" ,rust-sqlite3-src-0.4))
+       #:cargo-development-inputs (("rust-temporary" ,rust-temporary-0.6))))))
+
+(define-public rust-sqlite3-sys-0.13
+  (package
+    (inherit rust-sqlite3-sys-0.15)
+    (name "rust-sqlite3-sys")
+    (version "0.13.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sqlite3-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0m1f5r4xg5i3r6795q8vwqfdcq3gh1qlfjwkywnka57bz8lg1lh4"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-sqlite3-src" ,rust-sqlite3-src-0.3))))))
 
