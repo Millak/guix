@@ -516,6 +516,21 @@ editor (with xwidgets support)")
      (modify-inputs (package-inputs emacs-pgtk)
        (prepend gsettings-desktop-schemas webkitgtk-with-libsoup2)))))
 
+(define-public emacs-lucid
+  (package/inherit emacs-no-x
+    (name "emacs-lucid")
+    (synopsis
+     "The extensible, customizable, self-documenting text editor (with Lucid toolkit)")
+    (inputs (modify-inputs (package-inputs emacs)
+              (delete "gtk+")
+              (prepend libxaw)))
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments emacs-no-x)
+       ((#:configure-flags flags #~'())
+        #~(cons "--with-x-toolkit=lucid"
+                #$flags))))))
+
 (define-public emacs-motif
   (package/inherit emacs-no-x
     (name "emacs-motif")
