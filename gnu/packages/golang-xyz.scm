@@ -1699,6 +1699,36 @@ strings into words like a POSIX or Windows shell would.")
 similar to Go's standard library @code{json} and @code{xml} package.")
     (license license:expat)))
 
+(define-public go-github-com-bytedance-sonic-loader
+  (package
+    (name "go-github-com-bytedance-sonic-loader")
+    (version "0.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/bytedance/sonic")
+             (commit (go-version->git-ref version
+                                          #:subdir "loader"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0fyjq3hr4cmai2r06ppzil314bcqz416gd1zpw7lfp9h7mcwxwa4"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/bytedance/sonic/loader"
+      #:unpack-path "github.com/bytedance/sonic"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-cloudwego-iasm))
+    (home-page "https://github.com/bytedance/sonic")
+    (synopsis "Function loader for Sonic Golang library")
+    (description
+     "This package provides functionality to load functions used in Sonic JSON
+library.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-caarlos0-env
   (package
     (name "go-github-com-caarlos0-env")
