@@ -1133,6 +1133,86 @@ known as zlib).")
     (description "This is the Rust LZ4 sys package.")
     (license license:expat)))
 
+(define-public rust-lzma-rs-0.3
+  (package
+    (name "rust-lzma-rs")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "lzma-rs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0phif4pnjrn28zcxgz3a7z86hhx5gdajmkrndfw4vrkahd682zi9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-byteorder" ,rust-byteorder-1)
+        ("rust-crc" ,rust-crc-3)
+        ("rust-env-logger" ,rust-env-logger-0.9)
+        ("rust-log" ,rust-log-0.4))
+       #:cargo-development-inputs
+       (("rust-rust-lzma" ,rust-rust-lzma-0.5)))) ;; called rust-lzma in crates-io
+    (native-inputs
+      (list pkg-config xz))
+    (home-page "https://github.com/gendx/lzma-rs")
+    (synopsis "Codec for LZMA, LZMA2 and XZ written in pure Rust")
+    (description
+     "This package provides a codec for LZMA, LZMA2 and XZ written in pure Rust.")
+    (license license:expat)))
+
+(define-public rust-lzma-rust-0.1
+  (package
+    (name "rust-lzma-rust")
+    (version "0.1.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "lzma-rust" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "12dj3w2pnvx014pzjl8pc115rldgk6cbc7w6lwg24y2d3xfwzvfm"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; Only doc tests, which all fail.
+       #:cargo-inputs (("rust-byteorder" ,rust-byteorder-1))))
+    (home-page "https://github.com/dyz1990/sevenz-rust/tree/main/lzma-rust")
+    (synopsis "Codec LZMA/LZMA2")
+    (description
+     "This package provides LZMA/LZMA2 codec ported from tukaani xz for java'.")
+    (license license:asl2.0)))
+
+(define-public rust-lzma-sys-0.1
+  (package
+    (name "rust-lzma-sys")
+    (version "0.1.20")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "lzma-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "09sxp20waxyglgn3cjz8qjkspb3ryz2fwx4rigkwvrk46ymh9njz"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (delete-file-recursively "xz-5.2")))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-cc" ,rust-cc-1)
+        ("rust-pkg-config" ,rust-pkg-config-0.3))))
+    (native-inputs
+     (list pkg-config xz))
+    (home-page "https://github.com/alexcrichton/xz2-rs")
+    (synopsis "Bindings to liblzma for lzma and xz stream encoding/decoding")
+    (description
+     "This package contains the raw bindings to liblzma which contains an
+implementation of LZMA and xz stream encoding/decoding.")
+    (license (list license:asl2.0
+                   license:expat))))
+
 (define-public rust-miniz-oxide-0.8
   (package
     (name "rust-miniz-oxide")
