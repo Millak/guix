@@ -13453,6 +13453,25 @@ by providing decoding for UTF-7 in addition to the encodings defined by the
 Encoding Standard.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-checked-int-cast-1
+  (package
+    (name "rust-checked-int-cast")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "checked_int_cast" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "06brva5agm6g12q15f8fidz17akb85q211496p1k2qxhb9mmxk0p"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/PeterReid/checked_int_cast")
+    (synopsis "Conversions between primitive integers")
+    (description
+     "This package provides conversions between primitive integers with
+overflow and underflow checking.")
+    (license license:expat)))
+
 (define-public rust-chic-1
   (package
     (name "rust-chic")
