@@ -2331,6 +2331,38 @@ levels that works by wrapping the standard @code{log} library.")
 dependencies and is intended to be used in long running processes.")
     (license license:expat)))
 
+(define-public go-github-com-cloudwego-iasm
+  (package
+    (name "go-github-com-cloudwego-iasm")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cloudwego/iasm")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0j9jvx6ijlr2xz3am4qrz5py68xpl8np7m7yfq9m2ilkli3ksq9x"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/cloudwego/iasm"))
+    (native-inputs
+     (list go-github-com-davecgh-go-spew
+           go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-klauspost-cpuid-v2
+           go-github-com-knz-go-libedit
+           go-nullprogram-com-x-optparse))
+    (home-page "https://github.com/cloudwego/iasm")
+    (synopsis "Interactive Assembler for Golang")
+    (description
+     "This package provides x86_64 variant of ported from a Python module
+@url{https://github.com/Maratyszcza/PeachPy,PeachPy}, with some adaption to
+the Go language features.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-containerd-cgroups
   (package
     (name "go-github-com-containerd-cgroups")
