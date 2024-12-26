@@ -95406,63 +95406,6 @@ file into an in-memory tree structure.")
 algorithm in Rust.")
     (license license:boost1.0)))
 
-(define-public rust-xz-0.1
-  (package
-    (name "rust-xz")
-    (version "0.1.0")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "xz" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0d6sq57g1969hjl5k7gzzdbyr60za9hk8qs9iqz26biazy87d21w"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-xz2" ,rust-xz2-0.1))))
-    (native-inputs
-     (list pkg-config xz))
-    (home-page "https://github.com/alexcrichton/xz2-rs")
-    (synopsis "Alias of `xz2` crate")
-    (description
-     "Rust bindings to @code{liblzma} providing Read/Write streams as well as
-low-level in-memory encoding/decoding.  Alias of @code{xz2} crate.")
-    (license (list license:expat license:asl2.0))))
-
-(define-public rust-xz2-0.1
-  (package
-    (name "rust-xz2")
-    (version "0.1.7")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "xz2" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1qk7nzpblizvayyq4xzi4b0zacmmbqr6vb9fc0v1avyp17f4931q"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-test-flags
-       '("--release" "--"
-         ;; Not all files included in the tarball.
-         "--skip=standard_files")
-       #:cargo-inputs
-       (("rust-futures" ,rust-futures-0.1)
-        ("rust-lzma-sys" ,rust-lzma-sys-0.1)
-        ("rust-tokio-io" ,rust-tokio-io-0.1))
-       #:cargo-development-inputs
-       (("rust-quickcheck" ,rust-quickcheck-1)
-        ("rust-rand" ,rust-rand-0.8)
-        ("rust-tokio-core" ,rust-tokio-core-0.1))))
-    (native-inputs
-     (list pkg-config xz))
-    (home-page "https://github.com/alexcrichton/xz2-rs")
-    (synopsis "Rust bindings to liblzma")
-    (description "This package provides Rust bindings to liblzma providing
-Read/Write streams as well as low-level in-memory encoding and decoding.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-yaml-rust-0.4
   (package
     (name "rust-yaml-rust")
