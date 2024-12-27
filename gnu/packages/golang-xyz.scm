@@ -9453,6 +9453,30 @@ Pion}.")
 and bash completion for the go command line.")
     (license license:expat)))
 
+(define-public go-github-com-prometheus-community-go-runit
+  (package
+    (name "go-github-com-prometheus-community-go-runit")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/prometheus-community/go-runit")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1f5z10ynf67xx566ahnp5ndwxqz0i8rd8xnjiw7za6pz0wgj6wmk"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/prometheus-community/go-runit"))
+    (home-page "https://github.com/prometheus-community/go-runit")
+    (synopsis "Wrapping runit service status")
+    (description
+     "This package provides a wrapper round runit service status.")
+    (license license:expat)))
+
 (define-public go-github-com-pterm-pterm
   (package
     (name "go-github-com-pterm-pterm")
