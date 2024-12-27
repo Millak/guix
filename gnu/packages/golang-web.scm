@@ -4350,6 +4350,30 @@ supported by HTTP PATCH method, allowing for standards based partial updates
 via REST APIs.")
     (license license:asl2.0)))
 
+(define-public go-github-com-mattn-go-xmlrpc
+  (package
+    (name "go-github-com-mattn-go-xmlrpc")
+    (version "0.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mattn/go-xmlrpc")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0hv843qf8lzyn01mgk4lwwhirzpzpz33a1cz2ws998shhvq75dvg"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/mattn/go-xmlrpc"))
+    (home-page "https://github.com/mattn/go-xmlrpc")
+    (synopsis "XML RPC interface for Golang")
+    (description
+     "This package implements XML RPC interface for Go programming
+language.")
+    (license license:expat)))
+
 (define-public go-github-com-mdlayher-netlink
   (package
     (name "go-github-com-mdlayher-netlink")
