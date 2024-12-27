@@ -6060,7 +6060,11 @@ Caching.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/pquerna/ffjson"))
+      #:import-path "github.com/pquerna/ffjson"
+      #:test-subdirs #~(list "fflib/v1/...")))
+    (native-inputs
+     (list go-github-com-google-gofuzz
+           go-github-com-stretchr-testify))
     (home-page "https://github.com/pquerna/ffjson")
     (synopsis "Faster JSON for Golang")
     (description
