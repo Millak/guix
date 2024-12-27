@@ -4374,6 +4374,39 @@ via REST APIs.")
 language.")
     (license license:expat)))
 
+(define-public go-github-com-mdlayher-ethtool
+  (package
+    (name "go-github-com-mdlayher-ethtool")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mdlayher/ethtool")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1pwm4cg1yf364k0c4i0jrrvgn82k14b163xcvnm3bvpglfbcy2ks"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/mdlayher/ethtool"))
+    (native-inputs
+     (list go-github-com-google-go-cmp))
+    (propagated-inputs
+     (list go-github-com-josharian-native
+           go-github-com-mdlayher-genetlink
+           go-github-com-mdlayher-netlink
+           go-golang-org-x-sys))
+    (home-page "https://github.com/mdlayher/ethtool")
+    (synopsis "Control of the Linux ethtool generic netlink interface")
+    (description
+     "Package ethtool allows control of the Linux ethtool generic netlink
+interface. as it's described in
+@url{https://www.kernel.org/doc/html/latest/networking/ethtool-netlink.html,
+ethtool-netlink}.")
+    (license license:expat)))
+
 (define-public go-github-com-mdlayher-genetlink
   (package
     (name "go-github-com-mdlayher-genetlink")
