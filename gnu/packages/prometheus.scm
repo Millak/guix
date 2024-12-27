@@ -297,16 +297,17 @@ metrics.")
 (define-public go-github-com-prometheus-common-assets
   (package
     (name "go-github-com-prometheus-common-assets")
-    (version "0.55.0")
+    (version "0.2.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/prometheus/common")
-             (commit (string-append "v" version))))
+             (commit (go-version->git-ref version
+                                          #:subdir "assets"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0bsbxil7qz8rhckhv0844nmn38g7i7347cjv5m6na47hbdpi0rqh"))))
+        (base32 "0r7sym4yaysbkc5anyypl57v9ay0a1flq00j85j7lcficl2scwrs"))))
     (build-system go-build-system)
     (arguments
      (list
