@@ -68118,14 +68118,14 @@ It is automatically published using the compiler repository at
 (define-public rust-rustc-hash-2
   (package
     (name "rust-rustc-hash")
-    (version "2.0.0")
+    (version "2.1.0")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "rustc-hash" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32 "0lni0lf846bzrf3jvci6jaf4142n1mdqxvcpczk5ch9pfgyk8c2q"))))
+         (base32 "15yln6fmqlbg0k35r748h8g9xsd637ri23xihq81jb03ncwq1yy7"))))
     (build-system cargo-build-system)
     (arguments `(#:cargo-inputs (("rust-rand" ,rust-rand-0.8))))
     (home-page "https://github.com/rust-lang/rustc-hash")
