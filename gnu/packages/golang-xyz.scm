@@ -12221,6 +12221,35 @@ The yaml package supports most of YAML 1.2, but preserves some behavior from
 1.1 for backwards compatibility.")
     (license license:asl2.0)))
 
+(define-public go-howett-net-plist
+  (package
+    (name "go-howett-net-plist")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/DHowett/go-plist")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1gcrxkmdj87xq01458asgxvvijrkih74ydbzfmir1p16xr9z0x39"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "howett.net/plist"
+      ;; cmd requires gopkg.in/yaml.v1
+      #:test-subdirs #~(list "internal/..." ".")))
+    (propagated-inputs
+     (list go-github-com-jessevdk-go-flags
+           go-gopkg-in-check-v1))
+    (home-page "https://github.com/DHowett/go-plist")
+    (synopsis "Apple property list transcoder")
+    (description
+     "This list transcoder supports encoding/decoding property lists (Apple
+XML, Apple Binary, OpenStep, and GNUStep) from/to arbitrary Go types.")
+    (license license:giftware)))
+
 (define-public go-k8s-io-gengo-v2
   (package
     (name "go-k8s-io-gengo-v2")
