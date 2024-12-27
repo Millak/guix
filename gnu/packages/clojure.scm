@@ -45,8 +45,8 @@
          (libraries
           `(("core-specs-alpha-src"
              ,(lib "core.specs.alpha/archive/v"
-                   "0.2.62"
-                   "0v6nhghsigpzm8y7dykfm318q5dvk5l8sykmn1hr0qgs1jsjqh9j"))
+                   "0.4.74"
+                   "1hgl3222381349s4w5bnz02gghxfc8jjsqxhrvgadvn8ybh3dcsp"))
             ("data-generators-src"
              ,(lib "data.generators/archive/data.generators-"
                    "1.0.0"
@@ -57,16 +57,16 @@
                    "178zajjsc9phk5l61r8w9hcpk0wgc9a811pl7kjgvn7rg4l7fh7j"))
             ("spec-alpha-src"
              ,(lib "spec.alpha/archive/v"
-                   "0.3.218"
-                   "0h5nd9xlind1a2vmllr2yfhnirgj2pm5dndgqzrly78l5iwcc3wa"))
+                   "0.5.238"
+                   "0h15q9cmxaa7l2pqwwcykfyql8vbw6ns2a4lqfchik1mpfpr9jrb"))
             ("test-check-src"
              ,(lib "test.check/archive/v"
                    "1.1.1"
                    "0kx8l79mhpnn94rpsgc7nac7gb222g7a47mzrycj8crfc54wf0c1"))
             ("test-generative-src"
-             ,(lib "test.generative/archive/test.generative-"
-                   "1.0.0"
-                   "0yy2vc38s4j5n94jdcjx1v7l2gdq0lywam31id1jh07sx37lv5il"))
+             ,(lib "test.generative/archive/v"
+                   "1.1.0"
+                   "0sm3q4jkcn06b3r0m0p29z159zqc8jk3k02yz92xwvdbnywaqnfz"))
             ("tools-namespace-src"
              ,(lib "tools.namespace/archive/tools.namespace-"
                    "1.0.0"
@@ -81,7 +81,7 @@
 
     (package
       (name "clojure")
-      (version "1.11.1")
+      (version "1.12.0")
       (source (let ((name+version (string-append name "-" version)))
                 (origin
                   (method git-fetch)
@@ -90,7 +90,7 @@
                         (commit name+version)))
                   (file-name (string-append name+version "-checkout"))
                   (sha256
-                   (base32 "1xbab21rm9zvhmw1i2h5lqm7612vrdkxprq0rgb2i3sbgsxcdsn4")))))
+                   (base32 "17f62x9qq71yhcfpg2npv19xi9wcpgqj255nmvpfy1z2md64gawz")))))
       (build-system ant-build-system)
       (inputs
        `(("jre" ,icedtea)))
