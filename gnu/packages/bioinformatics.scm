@@ -5962,14 +5962,14 @@ Note that this package has been deprecated in favor of @code{pyfaidx}.")
 (define-public python-schema-salad
   (package
     (name "python-schema-salad")
-    (version "8.5.20240102191335")
+    (version "8.8.20241206093842")
     (source
       (origin
         (method url-fetch)
-        (uri (pypi-uri "schema-salad" version))
+        (uri (pypi-uri "schema_salad" version))
         (sha256
          (base32
-          "035202p696i3jylb8b3nm9qcxsqby15hhqn1dl4nrz73a17p0ckx"))))
+          "13vx3lqivfzsh1qdvx89vxnn25l3ssmzyh06g74psl4kmf9pj51a"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -5983,6 +5983,8 @@ Note that this package has been deprecated in favor of @code{pyfaidx}.")
                  (string-append "version=\"" #$version "\"")))))
           (add-before 'check 'skip-failing-tests
             (lambda _
+              (substitute* "tox.ini"
+                (("^addopts=.*") ""))
               ;; Skip tests that require network access.
               (let ((skip-test
                      (lambda (test-pattern)
@@ -6000,16 +6002,22 @@ Note that this package has been deprecated in favor of @code{pyfaidx}.")
                    (skip-test all)))))))))
     (propagated-inputs
      (list python-cachecontrol
-           python-importlib-resources
            python-mistune
            python-mypy-extensions
            python-rdflib
            python-requests
-           python-ruamel.yaml
-           python-setuptools ; For pkg_resources.
-           python-typing-extensions))
+           python-ruamel.yaml))
     (native-inputs
-     (list python-black python-pytest python-pytest-runner
+     (list python-black
+           python-cachecontrol
+           python-mypy
+           python-pytest
+           python-pytest-runner
+           python-setuptools
+           python-setuptools-scm
+           python-types-dataclasses
+           python-types-requests
+           python-types-setuptools
            python-wheel))
     (home-page "https://github.com/common-workflow-language/schema_salad")
     (synopsis "Schema Annotations for Linked Avro Data (SALAD)")
