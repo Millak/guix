@@ -1581,7 +1581,7 @@ Sans Pro family.")
 (define-public font-microsoft-cascadia
   (package
     (name "font-microsoft-cascadia")
-    (version "2111.01")
+    (version "2407.24")
     (source (origin
               (method url-fetch/zipbomb)
               (uri (string-append
@@ -1593,7 +1593,7 @@ Sans Pro family.")
                     ".zip"))
               (sha256
                (base32
-                "04p72jmbafblrliy5phqi6sqi52wgzpilf3rphppxf7zdlbnizai"))))
+                "0x441jjkswz6vidg6kdv9rmbqlm7dqcvsm4higs67nw66gp6hyp6"))))
     (build-system font-build-system)
     (home-page "https://github.com/microsoft/cascadia-code")
     (synopsis "Monospaced font with programming ligatures")
