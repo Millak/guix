@@ -693,6 +693,37 @@ credentials sources.")
 Manager,NTLM}/Negotiate authentication over HTTP.")
     (license license:expat)))
 
+(define-public go-github-com-beevik-ntp
+  (package
+    (name "go-github-com-beevik-ntp")
+    (version "1.4.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/beevik/ntp")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0n2mr4nnbsv5f0w3hkk3kmyn3wd2xqi5zxgcm8s50fdizk0nqmi9"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/beevik/ntp"
+      ;; Tests requir access to <0.beevik-ntp.pool.ntp.org:53>.
+      #:test-flags #~(list "-skip" "TestOnlineQuery|TestOnlineTime")))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-golang-org-x-net))
+    (home-page "https://github.com/beevik/ntp")
+    (synopsis "NTP client package for Golang")
+    (description
+     "Package ntp provides an implementation of a Simple NTP (SNTP) client
+capable of querying the current time from a remote NTP server as specified in
+@url{https://rfc-editor.org/rfc/rfc5905.html, RFC 5905}.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-bep-golibsass
   (package
     (name "go-github-com-bep-golibsass")
