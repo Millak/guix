@@ -1085,7 +1085,7 @@ types.")
 (define-public kubo
   (package
     (name "kubo")
-    (version "0.30.0")
+    (version "0.31.0")
     (source
      (origin
        (method url-fetch/tarbomb)
@@ -1093,7 +1093,7 @@ types.")
              "https://dist.ipfs.io/kubo/v" version
              "/kubo-source.tar.gz"))
        (sha256
-        (base32 "0kwbwbrlvgcb8lcg85gpab6czyrnq7r9139i5gp827231zfbcqzq"))
+        (base32 "0271rh54xbwikbllzsjnkjlj29cb2xy5lnhia47qlf2ymvl48kvf"))
        (file-name (string-append name "-" version "-source"))
        (modules '((guix build utils)))
        (snippet '(for-each delete-file-recursively
@@ -1208,6 +1208,7 @@ types.")
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.22
       #:embed-files #~(list "sorted-network-list.bin")
       #:unpack-path "github.com/ipfs/kubo"
       #:import-path "github.com/ipfs/kubo/cmd/ipfs"
