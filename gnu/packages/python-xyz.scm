@@ -26369,29 +26369,33 @@ in pure Python.")
 (define-public python-prov
   (package
     (name "python-prov")
-    (version "2.0.0")
+    (version "2.0.1")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "prov" version))
         (sha256
          (base32
-          "1vi2fj31vygfcqrkimdmk52q2ldw08g9fn4v4zlgdfgcjlhqyhxn"))))
-    (build-system python-build-system)
+          "0zv1lllrm8ck0vnb5ym7s3cvyykg7pbvdcrrpmr5r9fi0la8q8qf"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-rdflib-6-compatibility
-            (lambda _
-              ;; See https://github.com/trungdong/prov/issues/151
-              (substitute* "src/prov/tests/test_rdf.py"
-                (("\\.serialize\\(format=\"nt\"\\)")
-                 ".serialize(format=\"nt\", encoding=\"utf-8\")")))))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "python" "setup.py" "test")))))))
     (propagated-inputs
-     (list python-dateutil python-lxml python-networkx python-rdflib-6))
+     (list python-dateutil
+           python-lxml
+           python-networkx
+           python-rdflib-6))
     (native-inputs
-     (list graphviz python-pydot))
+     (list graphviz
+           python-pydot
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/trungdong/prov")
     (synopsis
      "W3C Provenance Data Model supporting PROV-JSON, PROV-XML and PROV-O (RDF)")
