@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2010-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2010-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2019, 2022-2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
@@ -430,23 +430,29 @@ string such as \"xz\".  Otherwise return #f."
                 (string-contains extension "tar"))
             extension)))))
 
+(define (preferred-upstream-source-url source package)
+  "Return two values: a source URL that matches the archive type of
+PACKAGE (gz, xz, bz2, etc.) and the corresponding signature URL or #f if there
+is no signature.  Return #f and #f when this is not applicable."
+  (let ((archive-type (package-archive-type package)))
+    (find2 (lambda (url sig-url)
+             ;; Some URIs lack a file extension, like
+             ;; 'https://crates.io/???/0.1/download'.  In that case, pick the
+             ;; first URL.
+             (or (not archive-type)
+                 (string-suffix? archive-type url)))
+           (upstream-source-urls source)
+           (or (upstream-source-signature-urls source)
+               (circular-list #f)))))
+
 (define* (package-update/url-fetch store package source
                                    #:key key-download key-server)
   "Return the version, tarball, and SOURCE, to update PACKAGE to
 SOURCE, an <upstream-source>."
   (match source
     (($ <upstream-source> _ version urls signature-urls)
-     (let* ((archive-type (package-archive-type package))
-            (url signature-url
-                 ;; Try to find a URL that matches ARCHIVE-TYPE.
-                 (find2 (lambda (url sig-url)
-                          ;; Some URIs lack a file extension, like
-                          ;; 'https://crates.io/???/0.1/download'.  In that
-                          ;; case, pick the first URL.
-                          (or (not archive-type)
-                              (string-suffix? archive-type url)))
-                        urls
-                        (or signature-urls (circular-list #f)))))
+     (let ((url signature-url
+                (preferred-upstream-source-url source package)))
        ;; If none of URLS matches ARCHIVE-TYPE, then URL is #f; in that case,
        ;; pick up the first element of URLS.
        (let ((tarball (download-tarball store
