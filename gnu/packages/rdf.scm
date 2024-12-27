@@ -390,7 +390,16 @@ powerful language for representing information.")
              "--ignore=rdflib/__init__.py"
              "--ignore=test/test_misc/test_parse_file_guess_format.py"
              ;; Exceeds maximum recursion depth
-             "-k" "not test_literal_addsub")))
+             "-k" "not test_literal_addsub")
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'compatibility
+           (lambda _
+             (substitute* "pyproject.toml"
+               (("^isodate = .*") "isodate = \">0.6.0\"\n"))
+             (substitute* "PKG-INFO"
+               (("^Requires-Dist: isodate .*")
+                "Requires-Dist: isodate (>=0.6.0)\n")))))))
     (native-inputs
      (list python-poetry-core python-pytest python-pytest-cov))
     (propagated-inputs
