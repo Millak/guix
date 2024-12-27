@@ -134,6 +134,7 @@ Copyright @copyright{} 2024 Arnaud Daby-Seesaram@*
 Copyright @copyright{} 2024 Nigko Yerden@*
 Copyright @copyright{} 2024 Troy Figiel@*
 Copyright @copyright{} 2024 Sharlatan Hellseher@*
+Copyright @copyright{} 2024 45mg@*
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -25373,6 +25374,32 @@ Data type representing the configuration of @command{elogind}.
 
 @item @code{suspend-estimation-seconds} (default: @code{*unspecified*}) (type: integer)
 ...
+
+@item @code{system-sleep-hook-files} (default: @code{'()}) (type: list)
+A list of executables (file-like objects) that will be installed into
+the @file{/etc/elogind/system-sleep/} hook directory. For example:
+
+@lisp
+(elogind-configuration
+ (system-sleep-hook-files
+  (list (local-file "sleep-script"))))
+@end lisp
+
+See `Hook directories' in the @code{loginctl(1)} man page for more information.
+
+@item @code{system-shutdown-hook-files} (default: @code{'()}) (type: list)
+A list of executables (file-like objects) that will be installed into
+the @file{/etc/elogind/system-shutdown/} hook directory.
+
+@item @code{allow-power-off-interrupts?} (default: @code{#f}) (type: boolean)
+@itemx @code{allow-suspend-interrupts?} (default: @code{#f}) (type: boolean)
+Whether the executables in elogind's hook directories (see above) can
+cause a power-off or suspend action to be cancelled (interrupted) by
+printing an appropriate error message to stdout.
+
+@item @code{broadcast-power-off-interrupts?} (default: @code{#t}) (type: boolean)
+@itemx @code{broadcast-suspend-interrupts?} (default: @code{#t}) (type: boolean)
+Whether an interrupt of a power-off or suspend action is broadcasted.
 
 @end table
 @end deftp

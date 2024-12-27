@@ -17,6 +17,7 @@
 ;;; Copyright © 2021, 2022 muradm <mail@muradm.net>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2024 45mg <45mg.writes@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1084,7 +1085,19 @@ and many other) available for GIO applications.")
   (hibernate-delay-seconds          elogind-hibernate-delay-seconds
                                     (default *unspecified*))
   (suspend-estimation-seconds       elogind-suspend-estimation-seconds
-                                    (default *unspecified*)))
+                                    (default *unspecified*))
+  (system-sleep-hook-files          elogind-system-sleep-hook-files
+                                    (default '()))
+  (system-shutdown-hook-files       elogind-system-shutdown-hook-files
+                                    (default '()))
+  (allow-power-off-interrupts?      elogind-allow-power-off-interrupts?
+                                    (default #f))
+  (allow-suspend-interrupts?        elogind-allow-suspend-interrupts?
+                                    (default #f))
+  (broadcast-power-off-interrupts?  elogind-broadcast-power-off-interrupts?
+                                    (default #t))
+  (broadcast-suspend-interrupts?    elogind-broadcast-suspend-interrupts?
+                                    (default #t)))
 
 (define (elogind-configuration-file config)
   (define (yesno x)
@@ -1172,7 +1185,38 @@ and many other) available for GIO applications.")
    ("HybridSleepState" (sleep-list elogind-hybrid-sleep-state))
    ("HybridSleepMode" (sleep-list elogind-hybrid-sleep-mode))
    ("HibernateDelaySec" (maybe-non-negative-integer elogind-hibernate-delay-seconds))
-   ("SuspendEstimationSec" (maybe-non-negative-integer elogind-suspend-estimation-seconds))))
+   ("SuspendEstimationSec" (maybe-non-negative-integer elogind-suspend-estimation-seconds))
+   ("AllowPowerOffInterrupts" (yesno elogind-allow-power-off-interrupts?))
+   ("AllowSuspendInterrupts" (yesno elogind-allow-suspend-interrupts?))
+   ("BroadcastPowerOffInterrupts" (yesno elogind-broadcast-power-off-interrupts?))
+   ("BroadcastSuspendInterrupts" (yesno elogind-broadcast-suspend-interrupts?))))
+
+(define (elogind-etc-directory config)
+  "Return the /etc/elogind directory for CONFIG."
+  (with-imported-modules (source-module-closure '((guix build utils)))
+    (computed-file
+     "etc-elogind"
+
+     #~(begin
+         (use-modules (guix build utils))
+
+         (define sleep-directory (string-append #$output "/system-sleep/"))
+         (define shutdown-directory (string-append #$output "/system-shutdown/"))
+
+         (define (copy-script file directory)
+           "Copy FILE into DIRECTORY, giving rx (500) permissions."
+           (let ((dest (string-append directory "/" (basename file))))
+             (mkdir-p directory)
+             (copy-file file dest)
+             (chmod dest #o500)))
+
+         (mkdir-p #$output)            ;in case neither directory gets created
+         (for-each (lambda (f)
+                     (copy-script f sleep-directory))
+                   '#$(elogind-system-sleep-hook-files config))
+         (for-each (lambda (f)
+                     (copy-script f shutdown-directory))
+                   '#$(elogind-system-shutdown-hook-files config))))))
 
 (define (elogind-dbus-service config)
   "Return a @file{org.freedesktop.login1.service} file that tells D-Bus how to
@@ -1293,6 +1337,12 @@ seats.)"
                        ;; Extend PAM with pam_elogind.so.
                        (service-extension pam-root-service-type
                                           pam-extension-procedure)
+
+                       ;; Install sleep/shutdown hook files.
+                       (service-extension etc-service-type
+                                          (lambda (config)
+                                            `(("elogind"
+                                               ,(elogind-etc-directory config)))))
 
                        ;; We need /run/user, /run/systemd, etc.
                        (service-extension file-system-service-type
