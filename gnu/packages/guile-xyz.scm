@@ -51,6 +51,7 @@
 ;;; Copyright © 2024 Artyom Bologov <mail@aartaka.me>
 ;;; Copyright © 2024 Felix Lechner <felix.lechner@lease-up.com>
 ;;; Copyright © 2024 Alec Barreto <mrh57@posteo.net>
+;;; Copyright © 2024 Josep Bigorra <jjbigorra@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1984,6 +1985,7 @@ bindings to the @code{yaml-cpp} C++ library.")
                   ,@%default-gnu-modules)
        #:imported-modules ((guix build guile-build-system)
                            ,@%default-gnu-imported-modules)
+       #:make-flags '("LDFLAGS=\"-Wl,-allow-multiple-definition\"")
        #:configure-flags
        (list (string-append
               "--with-guile-site-dir=" %output "/share/guile/site/"
@@ -2005,9 +2007,9 @@ bindings to the @code{yaml-cpp} C++ library.")
                     (ext (string-append out "/lib/libguile-dbi")))
                (substitute* dbi.scm (("libguile-dbi") ext))))))))
     (native-inputs
-     (list autoconf automake libtool perl texinfo))
+     (list autoconf automake libtool perl texinfo libltdl))
     (propagated-inputs
-     (list guile-2.2))
+     (list guile-3.0))
     (synopsis "Guile database abstraction layer")
     (home-page "https://github.com/opencog/guile-dbi")
     (description
