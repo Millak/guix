@@ -1460,7 +1460,13 @@ functions and even in applications.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/smarty/gunit"))
+      #:import-path "github.com/smarty/gunit"
+      ;; Expected: [&{ BowlingGameScoringTests [0xc000080020
+      ;; 0xc000080040 0xc000080060 0xc000080080 0xc0000800a0]}]
+      ;; Actual:   [&{ BowlingGameScoringTests [0xc0000da920
+      ;; 0xc0000da940 0xc0000da960 0xc0000da9a0 0xc0000da9c0]}]
+      #:test-flags
+      #~(list "-skip" "TestParseFileWithValidFixturesAndConstructs")))
     (home-page "https://github.com/smarty/gunit")
     (synopsis "Golang xUnit-style test fixture test adapter")
     (description
