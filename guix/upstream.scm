@@ -44,7 +44,6 @@
   #:use-module (guix monads)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-9)
-  #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
@@ -339,12 +338,11 @@ the OpenPGP key server where the key should be looked up."
                              (mbegin %store-monad
                                (built-derivations (list drv))
                                (return (derivation->output-path drv))))))))
-          (let-values (((status data)
-                        (if sig
-                            (gnupg-verify* sig data
-                                           #:server key-server
-                                           #:key-download key-download)
-                            (values 'missing-signature data))))
+          (let ((status data (if sig
+                                 (gnupg-verify* sig data
+                                                #:server key-server
+                                                #:key-download key-download)
+                                 (values 'missing-signature data))))
             (match status
               ('valid-signature
                tarball)
@@ -438,18 +436,17 @@ string such as \"xz\".  Otherwise return #f."
 SOURCE, an <upstream-source>."
   (match source
     (($ <upstream-source> _ version urls signature-urls)
-     (let*-values (((archive-type)
-                    (package-archive-type package))
-                   ((url signature-url)
-                    ;; Try to find a URL that matches ARCHIVE-TYPE.
-                    (find2 (lambda (url sig-url)
-                             ;; Some URIs lack a file extension, like
-                             ;; 'https://crates.io/???/0.1/download'.  In that
-                             ;; case, pick the first URL.
-                             (or (not archive-type)
-                                 (string-suffix? archive-type url)))
-                           urls
-                           (or signature-urls (circular-list #f)))))
+     (let* ((archive-type (package-archive-type package))
+            (url signature-url
+                 ;; Try to find a URL that matches ARCHIVE-TYPE.
+                 (find2 (lambda (url sig-url)
+                          ;; Some URIs lack a file extension, like
+                          ;; 'https://crates.io/???/0.1/download'.  In that
+                          ;; case, pick the first URL.
+                          (or (not archive-type)
+                              (string-suffix? archive-type url)))
+                        urls
+                        (or signature-urls (circular-list #f)))))
        ;; If none of URLS matches ARCHIVE-TYPE, then URL is #f; in that case,
        ;; pick up the first element of URLS.
        (let ((tarball (download-tarball store
