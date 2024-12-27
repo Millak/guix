@@ -8918,6 +8918,33 @@ syslog, file and memory.  Multiple backends can be utilized with different log
 levels per backend and logger.")
     (license license:bsd-3)))
 
+(define-public go-github-com-opencontainers-go-digest
+  (package
+    (name "go-github-com-opencontainers-go-digest")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/opencontainers/go-digest")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0i5acjajvr6hi9zb7gxwifd8w28y884cv7cx36adj8lngj647xbi"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/opencontainers/go-digest"))
+    (home-page "https://github.com/opencontainers/go-digest")
+    (synopsis "Common digest package used across the container ecosystem")
+    (description
+     "Package digest provides a generalized type to opaquely represent message
+digests and their operations within the registry.  The Digest type is designed
+to serve as a flexible identifier in a content-addressable system.  More
+importantly, it provides tools and wrappers to work with hash.Hash-based
+digests with little effort.")
+    (license (list license:asl2.0 license:cc-by-sa4.0))))
+
 ;; XXX: Find a way to source from specification-runtime-spec.
 (define-public go-github-com-opencontainers-runtime-spec
   (package
