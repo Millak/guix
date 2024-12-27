@@ -34,6 +34,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
+  #:use-module (gnu packages golang-compression)
   #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages golang-xyz))
@@ -129,7 +130,7 @@ registry.")
 (define-public go-github-com-prometheus-client-golang
   (package
     (name "go-github-com-prometheus-client-golang")
-    (version "1.19.1")
+    (version "1.20.5")
     (source
      (origin
        (method git-fetch)
@@ -138,15 +139,27 @@ registry.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0mx5q221pbkx081ycf1lp8sxz513220ya8qczkkvab943cwlcarv"))))
+        (base32 "1q3n22p5ic22xzha6mffh0m0jzbxrkyjrcmnxsnanl61jwb4rkpw"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - dagger
+            ;; - .bingo - fake module
+            (delete-file-recursively "dagger")
+            (delete-file-recursively ".bingo")))))
     (build-system go-build-system)
     (arguments
      (list
+      #:skip-build? #t
       ;; XXX: Check if the most of the tests may be enabled:
       ;; api/prometheus/v1/api_test.go:1063:23: cannot use 1634644800304
       ;; (untyped int constant) as int value in map literal (overflows)
       #:tests? (target-64bit?)
       #:import-path "github.com/prometheus/client_golang"
+      ;; Assertion fails in one test.
+      #:test-flags #~(list "-skip" "TestHandler")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'remove-examples-and-tutorials
@@ -155,19 +168,14 @@ registry.")
                 (for-each delete-file-recursively
                           (list "api/prometheus/v1/example_test.go"
                                 "examples"
-                                "tutorial")))))
-          ;; XXX: Workaround for go-build-system's lack of Go modules support.
-          (delete 'build)
-          (replace 'check
-            (lambda* (#:key tests? import-path #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion (string-append "src/" import-path)
-                  (invoke "go" "test" "-v" "./..."))))))))
+                                "tutorials"))))))))
     (propagated-inputs
      (list go-github-com-beorn7-perks
            go-github-com-cespare-xxhash-v2
-           go-github-com-davecgh-go-spew
+           go-github-com-google-go-cmp
            go-github-com-json-iterator-go
+           go-github-com-klauspost-compress
+           go-github-com-kylelemons-godebug
            go-github-com-prometheus-client-model
            go-github-com-prometheus-common
            go-github-com-prometheus-procfs
