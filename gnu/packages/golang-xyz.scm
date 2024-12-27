@@ -6830,6 +6830,10 @@ customized globally.")
     (arguments
      (list
       #:import-path "github.com/karrick/godirwalk"))
+    ;; To build all examples as a test scenario.
+    (native-inputs
+     (list go-github-com-karrick-golf
+           go-github-com-mattn-go-isatty))
     (home-page "https://github.com/karrick/godirwalk")
     (synopsis "Fast directory traversal library for Go")
     (description
