@@ -5011,6 +5011,31 @@ configuration.")
 wrapping errors and checking if an error contains another error.")
     (license license:mpl2.0)))
 
+(define-public go-github-com-hashicorp-go-envparse
+  (package
+    (name "go-github-com-hashicorp-go-envparse")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hashicorp/go-envparse")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0wqb96gbfrj5986a1cg1sa0412dk7qpnh9l2w3y5q7a38v2dlh9j"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/hashicorp/go-envparse"))
+    (home-page "https://github.com/hashicorp/go-envparse")
+    (synopsis "Environment variable parser for Golang")
+    (description
+     "Package envparse is a minimal environment variable parser.  It handles
+empty lines, comments, single quotes, double quotes, and JSON escape
+sequences.")
+    (license license:mpl2.0)))
+
 (define-public go-github-com-hashicorp-go-hclog
   (package
     (name "go-github-com-hashicorp-go-hclog")
