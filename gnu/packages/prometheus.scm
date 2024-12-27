@@ -410,7 +410,7 @@ Protocol,ICMP} echo (ping) functionality.")
 (define-public go-github-com-prometheus-exporter-toolkit
   (package
     (name "go-github-com-prometheus-exporter-toolkit")
-    (version "0.11.0")
+    (version "0.13.2")
     (source
      (origin
        (method git-fetch)
@@ -419,7 +419,7 @@ Protocol,ICMP} echo (ping) functionality.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1n46jw3b13g355iv8phxxnnci7a877y5dscc1rlj3rpz4vy6yfzx"))))
+        (base32 "05k4sfrc1zs96iprgnap0gd42vwfq47j6vg2bv83nckcv731gmiv"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -441,6 +441,7 @@ Protocol,ICMP} echo (ping) functionality.")
      (list go-github-com-alecthomas-kingpin-v2
            go-github-com-coreos-go-systemd-v22
            go-github-com-go-kit-log
+           go-github-com-mdlayher-vsock
            ; Imported for go-github-com-prometheus-common to break the cycle.
            go-github-com-prometheus-client-golang
            go-github-com-prometheus-common
