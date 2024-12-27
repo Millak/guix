@@ -9398,7 +9398,13 @@ protocols.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/pierrec/cmdflag"))
+      #:import-path "github.com/pierrec/cmdflag"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "examples")))))))
     (home-page "https://github.com/pierrec/cmdflag")
     (synopsis "Augment the flag package with commands")
     (description
