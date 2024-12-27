@@ -5559,6 +5559,54 @@ anniversaries.")
 @end itemize")
     (license license:bsd-3)))
 
+(define-public go-github-com-hodgesds-perf-utils
+  (package
+    (name "go-github-com-hodgesds-perf-utils")
+    (version "0.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hodgesds/perf-utils")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1wrma5rn0pybav8lwmv5xjwjl6slgnr8ya64f1npijam59r7afzj"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/hodgesds/perf-utils"
+      #:test-flags
+      ;; XXX: Tests requiring root access to mount file system or shaky, check
+      ;; if they may be fixed.
+      #~(list "-skip"
+              (string-join
+               (list "TestAvailableEvents"
+                     "TestAvailablePMUs"
+                     "TestBusCycles"
+                     "TestCPURefCycles"
+                     "TestDebugFSMount"
+                     "TestGroupProfiler"
+                     "TestLLCache"
+                     "TestMSR"
+                     "TestMSRPaths"
+                     "TestNodeCache"
+                     "TestProfiler"
+                     "TestSoftwareProfiler"
+                     "TestTraceFSMount")
+               "|"))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-golang-org-x-sys
+           go-go-uber-org-multierr))
+    (home-page "https://github.com/hodgesds/perf-utils")
+    (synopsis "Perf Utilities for Golang")
+    (description
+     "This package is a Go library for interacting with the @code{perf}
+subsystem in Linux.")
+    (license license:expat)))
+
 (define-public go-github-com-ianlancetaylor-demangle
   ;; No release, see <https://github.com/ianlancetaylor/demangle/issues/21>.
   (package
