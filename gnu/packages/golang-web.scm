@@ -4505,6 +4505,37 @@ integrates with Go's runtime network poller to provide asynchronous I/O and
 deadline support.")
     (license license:expat)))
 
+(define-public go-github-com-mdlayher-vsock
+  (package
+    (name "go-github-com-mdlayher-vsock")
+    (version "1.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mdlayher/vsock")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1pnhxz9jz25469gnd5p9a8jl10w3affcjxlvzhlni2c434s3l6kx"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/mdlayher/vsock"))
+    (native-inputs
+     (list go-github-com-google-go-cmp))
+    (propagated-inputs
+     (list go-github-com-mdlayher-socket
+           go-golang-org-x-net
+           go-golang-org-x-sync
+           go-golang-org-x-sys))
+    (home-page "https://github.com/mdlayher/vsock")
+    (synopsis "Access to Linux VM sockets for Golang")
+    (description
+     "Package vsock provides access to Linux VM sockets (AF_VSOCK) for
+communication between a hypervisor and its virtual machines.")
+    (license license:expat)))
+
 (define-public go-github-com-mdlayher-wifi
   (package
     (name "go-github-com-mdlayher-wifi")
