@@ -822,7 +822,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
   (package
     (inherit go-1.20)
     (name "go")
-    (version "1.21.5")
+    (version "1.21.13")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -831,7 +831,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0f11kya6rpqfldpw82g0yiknz657i655d3c0yh3qy6f8xa8x7zn2"))))
+                "0x4qdib1d3gzgz620aysi1rrg682g93710dar4ga32b0j0w5kbhj"))))
     (arguments
      (substitute-keyword-arguments (package-arguments go-1.20)
        ;; Source patching phases are broken up into discrete steps to allow
