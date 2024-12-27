@@ -507,7 +507,7 @@ kernel, and process metrics from the @file{/proc} pseudo file system.")
 (define-public go-github-com-prometheus-statsd-exporter
   (package
     (name "go-github-com-prometheus-statsd-exporter")
-    (version "0.27.1")
+    (version "0.28.0")
     (source
      (origin
        (method git-fetch)
@@ -516,7 +516,7 @@ kernel, and process metrics from the @file{/proc} pseudo file system.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0y8n02h46q22wkcm2yy62bzsi9hxrarmvjamfpn2sygqhbb1pv38"))))
+        (base32 "0h7ypmsx1j6x1p5wdj03i3jzwms7ab03asn2capl1gg6x07k57w7"))))
     (build-system go-build-system)
     (arguments
      (list
