@@ -33,6 +33,7 @@
   #:autoload   (guix git) (git-checkout git-checkout? git-checkout-url)
   #:autoload   (guix upstream) (upstream-source
                                 package-latest-release
+                                preferred-upstream-source
                                 upstream-source-version
                                 upstream-source-signature-urls)
   #:autoload   (guix cpu) (current-cpu
@@ -865,12 +866,14 @@ additional patches."
 (define* (package-with-upstream-version p #:optional version
                                         #:key
                                         (preserve-patches? #f)
-                                        (authenticate? #t))
+                                        (authenticate? #t)
+                                        (preserve-archive-type? #t))
   "Return package P changed to use the given upstream VERSION or, if VERSION
 is #f, the latest known upstream version.  When PRESERVE-PATCHES? is true,
 preserve patches and snippets found in the source of P, provided it's an
 origin.  When AUTHENTICATE? is false, disable OpenPGP signature verification
-of upstream source code."
+of upstream source code.  When PRESERVE-ARCHIVE-TYPE? is true, use the same
+archive type as P's source (gz, xz, zstd, etc.)"
   (let ((source (and=> (package-latest-release p #:version version)
                        (if authenticate?
                            identity
@@ -899,24 +902,27 @@ version (~a)~%")
                       (upstream-source-version source)
                       (package-version p)))
 
-           (unless (pair? (upstream-source-signature-urls source))
-             (warning (G_ "cannot authenticate source of '~a', version ~a~%")
-                      (package-name p)
-                      (upstream-source-version source)))
+           (let ((source (if preserve-archive-type?
+                             (preferred-upstream-source source p)
+                             source)))
+             (unless (pair? (upstream-source-signature-urls source))
+               (warning (G_ "cannot authenticate source of '~a', version ~a~%")
+                        (package-name p)
+                        (upstream-source-version source)))
 
-           ;; TODO: Take 'upstream-source-input-changes' into account.
-           (package
-             (inherit p)
-             (version (upstream-source-version source))
-             (source (if (and preserve-patches?
-                              (origin? (package-source p)))
-                         ;; Inherit P's origin so snippets and patches are
-                         ;; applied as if we had run 'guix refresh -u'.
-                         (origin
-                           (inherit (package-source p))
-                           (method upstream-fetch)
-                           (uri source))
-                         source)))))))
+             ;; TODO: Take 'upstream-source-input-changes' into account.
+             (package
+               (inherit p)
+               (version (upstream-source-version source))
+               (source (if (and preserve-patches?
+                                (origin? (package-source p)))
+                           ;; Inherit P's origin so snippets and patches are
+                           ;; applied as if we had run 'guix refresh -u'.
+                           (origin
+                             (inherit (package-source p))
+                             (method upstream-fetch)
+                             (uri source))
+                           source))))))))
 
 (define (transform-package-latest specs)
   "Return a procedure that rewrites package graphs such that those in SPECS
