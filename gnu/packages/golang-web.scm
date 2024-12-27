@@ -1408,6 +1408,32 @@ target of this project is to offer an optimized proxy server, usable with
 reasonable amount of traffic, yet customizable and programmable.")
     (license license:bsd-3)))
 
+(define-public go-github-com-ema-qdisc
+  (package
+    (name "go-github-com-ema-qdisc")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ema/qdisc")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1v2k2z1xjxfa0qrrnafvb51dxwxm0s3nbsi6n64cm2rylxjskfmy"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ema/qdisc"))
+    (propagated-inputs
+     (list go-github-com-mdlayher-netlink))
+    (home-page "https://github.com/ema/qdisc")
+    (synopsis "Queuing discipline information via netlink")
+    (description
+     "Package @code{qdisc} allows getting queuing discipline information via
+netlink,similarly to what @code{tc -s qdisc show} does.")
+    (license license:expat)))
+
 (define-public go-github-com-emersion-go-imap
   (package
     (name "go-github-com-emersion-go-imap")
