@@ -378,7 +378,7 @@ from the default AWS credential chain.")
 (define-public go-github-com-prometheus-community-pro-bing
   (package
     (name "go-github-com-prometheus-community-pro-bing")
-    (version "0.4.1")
+    (version "0.5.0")
     (source
      (origin
        (method git-fetch)
@@ -387,15 +387,19 @@ from the default AWS credential chain.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1yz4cf1qrm1jrzw2yd5p08663hynk4ihlf5mi2fn6irnzh343a7b"))))
+        (base32 "19757nqz0cpq7ir2w5xgjxpblhmkpk0j7spfw4j68agavbx6hxpm"))))
     (build-system go-build-system)
     (arguments
      (list
-      ;; Tests requiring network setup.
+      ;; Tests requiring network setup, and root access.
       #:test-flags
-      #~(list "-skip" (string-append "TestNewPingerValid"
-                                     "|TestSetIPAddr"
-                                     "|TestSetResolveTimeout"))
+      #~(list "-skip"
+              (string-join
+               (list "TestNewPingerValid"
+                     "TestSetIPAddr"
+                     "TestSetInterfaceName"
+                     "TestSetResolveTimeout")
+               "|"))
       #:import-path "github.com/prometheus-community/pro-bing"))
     (propagated-inputs
      (list go-github-com-google-uuid
