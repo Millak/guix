@@ -6245,8 +6245,10 @@ documents.")
               (substitute* "setup.py"
                 (("use_scm_version=True")
                  (string-append "version=\"" #$version "\"")))))
-          (add-after 'unpack 'modify-tests
+          (add-after 'unpack 'patch-tests
             (lambda _
+              (substitute* "tox.ini"
+                (("-n auto") ""))
               (substitute* '("tests/subgraph/env-tool2.cwl"
                              "tests/subgraph/env-tool2_req.cwl"
                              "tests/subgraph/env-wf2_subwf-packed.cwl"
