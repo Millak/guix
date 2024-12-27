@@ -741,20 +741,20 @@ console.")
 (define-public eza
   (package
     (name "eza")
-    (version "0.19.4")
+    (version "0.20.14")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "eza" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "16zc0j1x7clbjlrg1kc1szy0x1lbsfshij0qhdq8vx0zj6b7dlys"))))
+        (base32 "0lk94dwala52hc7jfk89wjky0p5szfirm6v3awpwhw99928jsx4n"))))
     (build-system cargo-build-system)
     (arguments
      (list
       #:install-source? #f
       #:cargo-inputs `(("rust-ansi-width" ,rust-ansi-width-0.1)
-                       ("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-backtrace" ,rust-backtrace-0.3)
                        ("rust-chrono" ,rust-chrono-0.4)
                        ("rust-dirs" ,rust-dirs-5)
                        ("rust-git2" ,rust-git2-0.19)
@@ -775,57 +775,54 @@ console.")
                        ("rust-rayon" ,rust-rayon-1)
                        ("rust-serde" ,rust-serde-1)
                        ("rust-serde-norway" ,rust-serde-norway-0.9)
-                       ("rust-terminal-size" ,rust-terminal-size-0.3)
+                       ("rust-terminal-size" ,rust-terminal-size-0.4)
                        ("rust-timeago" ,rust-timeago-0.4)
-                       ("rust-unicode-width" ,rust-unicode-width-0.1)
+                       ("rust-unicode-width" ,rust-unicode-width-0.2)
                        ("rust-uutils-term-grid" ,rust-uutils-term-grid-0.6)
                        ("rust-uzers" ,rust-uzers-0.12)
                        ("rust-windows-sys" ,rust-windows-sys-0.59)
                        ("rust-zoneinfo-compiled" ,rust-zoneinfo-compiled-0.5))
       #:cargo-development-inputs `(("rust-criterion" ,rust-criterion-0.5)
                                    ("rust-trycmd" ,rust-trycmd-0.15))
-      #:phases #~(modify-phases %standard-phases
-                   (add-after 'build 'build-manual
-                     (lambda* (#:key inputs #:allow-other-keys)
-                       (when (assoc-ref inputs "pandoc")
-                         (map (lambda (page)
-                                (with-output-to-file page
-                                  (lambda _
-                                    (invoke "pandoc" "--standalone"
-                                            "-f" "markdown"
-                                            "-t" "man"
-                                            (string-append "man/" page ".md")))))
-                              (list "eza.1"
-                                    "eza_colors.5"
-                                    "eza_colors-explanation.5")))))
-                   (add-after 'install 'install-extras
-                     (lambda* (#:key outputs #:allow-other-keys)
-                       (let* ((out (assoc-ref outputs "out"))
-                              (share (string-append out "/share"))
-                              (bash-completions-dir (string-append share
-                                                     "/bash-completion/completions"))
-                              (zsh-completions-dir (string-append share
-                                                    "/zsh/site-functions"))
-                              (fish-completions-dir (string-append share
-                                                     "/fish/vendor_completions.d"))
-                              (man1 (string-append share "/man/man1"))
-                              (man5 (string-append share "/man/man5")))
-                         (when (file-exists? "eza.1")
-                           (install-file "eza.1" man1))
-                         (when (file-exists? "eza_colors.5")
-                           (install-file "eza_colors.5" man5))
-                         (when (file-exists? "eza_colors-explanation.5")
-                           (install-file "eza_colors-explanation.5" man5))
-                         (mkdir-p bash-completions-dir)
-                         (mkdir-p zsh-completions-dir)
-                         (mkdir-p fish-completions-dir)
-                         (copy-file "completions/bash/eza"
-                                    (string-append bash-completions-dir "/eza"))
-                         (copy-file "completions/zsh/_eza"
-                                    (string-append zsh-completions-dir "/_eza"))
-                         (copy-file "completions/fish/eza.fish"
-                                    (string-append fish-completions-dir
-                                                   "/eza.fish"))))))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'build 'build-manual
+            (lambda* (#:key inputs #:allow-other-keys)
+              (when (assoc-ref inputs "pandoc")
+                (map (lambda (page)
+                       (with-output-to-file page
+                         (lambda _
+                           (invoke "pandoc" "--standalone"
+                                   "-f" "markdown"
+                                   "-t" "man"
+                                   (string-append "man/" page ".md")))))
+                     (list "eza.1"
+                           "eza_colors.5"
+                           "eza_colors-explanation.5")))))
+          (add-after 'install 'install-extras
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (share (string-append out "/share"))
+                     (bash-completions-dir
+                       (string-append share "/bash-completion/completions"))
+                     (zsh-completions-dir
+                       (string-append share "/zsh/site-functions"))
+                     (fish-completions-dir
+                       (string-append share "/fish/vendor_completions.d"))
+                     (nu-completions-dir
+                       (string-append share "/nushell/vendor/autoload"))
+                     (man1 (string-append share "/man/man1"))
+                     (man5 (string-append share "/man/man5")))
+                (when (file-exists? "eza.1")
+                  (install-file "eza.1" man1))
+                (when (file-exists? "eza_colors.5")
+                  (install-file "eza_colors.5" man5))
+                (when (file-exists? "eza_colors-explanation.5")
+                  (install-file "eza_colors-explanation.5" man5))
+                (install-file "completions/bash/eza" bash-completions-dir)
+                (install-file "completions/zsh/_eza" zsh-completions-dir)
+                (install-file "completions/fish/eza.fish" fish-completions-dir)
+                (install-file "completions/nush/eza.nu" nu-completions-dir)))))))
     (native-inputs
      (append (list pkg-config)
              (if (supported-package? pandoc)
