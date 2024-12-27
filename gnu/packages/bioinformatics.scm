@@ -6150,7 +6150,7 @@ code formatter.  It outputs CWL in a standardized YAML format.")
          "12j6z8nvwnzjjyypz59hwj5hmrcri2r6aknw52n9dbj6lbzbdd2p"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest))
+     (list python-pytest python-setuptools python-wheel))
     (propagated-inputs
      (list python-ruamel.yaml
            python-schema-salad))
