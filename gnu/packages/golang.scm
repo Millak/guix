@@ -3176,33 +3176,6 @@ Looks for an identical word on a list of words, if none is found, look for a
 similar word.")
       (license license:expat))))
 
-(define-public go-github-com-client9-misspell
-  (package
-    (name "go-github-com-client9-misspell")
-    (version "0.3.4")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/client9/misspell")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1vwf33wsc4la25zk9nylpbp9px3svlmldkm0bha4hp56jws4q9cs"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/client9/misspell"
-      #:test-subdirs #~(list "ignore" ".")))
-    (propagated-inputs (list go-github-com-gobwas-glob))
-    (home-page "https://github.com/client9/misspell")
-    (synopsis "Correct commonly misspelled English words in source files")
-    (description
-     "misspell assists with correcting commonly misspelled English words in
-source files.  A neutral variety of English is used by default, but a US or UK
-locale can be selected.")
-    (license license:expat)))
-
 (define-public go-github-com-cli-safeexec
   (package
     (name "go-github-com-cli-safeexec")
@@ -3224,16 +3197,6 @@ locale can be selected.")
     (description "This package provides a Go module that provides a stabler
 alternative to @@code{exec.LookPath()}.")
     (license license:bsd-2)))
-
-(define-public misspell
-  (package
-    (inherit go-github-com-client9-misspell)
-    (name "misspell")
-    (arguments
-     `(#:import-path "github.com/client9/misspell/cmd/misspell"
-       #:unpack-path "github.com/client9/misspell"
-       #:tests? #f
-       #:install-source? #t))))
 
 (define-public go-github-com-stevedonovan-luar
   (let ((commit "22d247e5366095f491cd83edf779ee99a78f5ead")
