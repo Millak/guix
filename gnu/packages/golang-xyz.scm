@@ -3089,14 +3089,9 @@ more complicated parallel cases.")
     (arguments
      (list
       #:import-path "github.com/dennwc/varint"
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'disable-failing-tests
-            (lambda* (#:key tests? import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (substitute* (find-files "." "\\_test.go$")
-                  ;; XXX: varint_test.go:94: unexpected error: -11.
-                  (("TestUvarint") "OffTestUvarint"))))))))
+      ;; XXX: varint_test.go:94: unexpected error: -11.
+      #:test-flags
+      #~(list "-skip" "TestUvarint/overflow|TestUvarint/overflow_short")))
     (home-page "https://github.com/dennwc/varint")
     (synopsis "Fast varint library for Golang")
     (description
