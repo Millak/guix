@@ -4505,6 +4505,37 @@ integrates with Go's runtime network poller to provide asynchronous I/O and
 deadline support.")
     (license license:expat)))
 
+(define-public go-github-com-mdlayher-wifi
+  (package
+    (name "go-github-com-mdlayher-wifi")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mdlayher/wifi")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "18h5n58gr3i4jbf7c4hfvx3w87bjjiaavcnpcl0j310bgrc6dnzi"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/mdlayher/wifi"))
+    (native-inputs
+     (list go-github-com-google-go-cmp))
+    (propagated-inputs
+     (list go-github-com-mdlayher-genetlink
+           go-github-com-mdlayher-netlink
+           go-golang-org-x-crypto
+           go-golang-org-x-sys))
+    (home-page "https://github.com/mdlayher/wifi")
+    (synopsis "Access to IEEE 802.11 WiFi device actions")
+    (description
+     "Package wifi provides access to IEEE 802.11 @code{WiFi} device
+operations on Linux using nl80211.")
+    (license license:expat)))
+
 (define-public go-github-com-mholt-acmez
   (package
     (name "go-github-com-mholt-acmez")
