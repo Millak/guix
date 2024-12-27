@@ -3048,6 +3048,30 @@ more complicated parallel cases.")
     (propagated-inputs
      (list go-github-com-elliotchance-orderedmap-v2))))
 
+(define-public go-github-com-dennwc-ioctl
+  (package
+    (name "go-github-com-dennwc-ioctl")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dennwc/ioctl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01b5d6fywrzs0q4q1j2c3qb15hwslb405w7bbc54w4qav0f61l55"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/dennwc/ioctl"))
+    (home-page "https://github.com/dennwc/ioctl")
+    (synopsis "Golang implementation of ioctl")
+    (description
+     "This package provides @code{ioctl} wrapper to std @code{syscall} and
+@code{os}.")
+    (license license:expat)))
+
 (define-public go-github-com-dennwc-varint
   (package
     (name "go-github-com-dennwc-varint")
