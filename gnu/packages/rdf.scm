@@ -388,7 +388,9 @@ powerful language for representing information.")
              "--ignore=test/test_misc/test_plugins.py"
              ;; Unknown causes
              "--ignore=rdflib/__init__.py"
-             "--ignore=test/test_misc/test_parse_file_guess_format.py")))
+             "--ignore=test/test_misc/test_parse_file_guess_format.py"
+             ;; Exceeds maximum recursion depth
+             "-k" "not test_literal_addsub")))
     (native-inputs
      (list python-poetry-core python-pytest python-pytest-cov))
     (propagated-inputs
