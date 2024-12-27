@@ -764,6 +764,23 @@ integers, floats, tuples, booleans, lists, strings, options and results.")
        #:cargo-development-inputs
        (("rust-quickcheck" ,rust-quickcheck-0.8))))))
 
+(define-public rust-tiny-bench-0.3
+  (package
+    (name "rust-tiny-bench")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tiny-bench" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0j2rsyspqbk89y6zjndpc6d36ljir1ymyj15vv6jxhaphl6q9nng"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/EmbarkStudios/tiny-bench")
+    (synopsis "tiny benchmarking library")
+    (description "This package provides a tiny benchmarking library.")
+    (license (list license:expat license:asl2.0))))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
