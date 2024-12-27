@@ -4374,6 +4374,36 @@ via REST APIs.")
 language.")
     (license license:expat)))
 
+(define-public go-github-com-mdlayher-genetlink
+  (package
+    (name "go-github-com-mdlayher-genetlink")
+    (version "1.3.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mdlayher/genetlink")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0vppn8071nh8pnbyq9769j1zcgq76iadd5fry90xkmfq429if356"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/mdlayher/genetlink"))
+    (native-inputs
+     (list go-github-com-google-go-cmp))
+    (propagated-inputs
+     (list go-github-com-mdlayher-netlink
+           go-golang-org-x-net
+           go-golang-org-x-sys))
+    (home-page "https://github.com/mdlayher/genetlink")
+    (synopsis "Generic netlink interactions and data types")
+    (description
+     "Package genetlink implements generic netlink interactions and data
+types.")
+    (license license:expat)))
+
 (define-public go-github-com-mdlayher-netlink
   (package
     (name "go-github-com-mdlayher-netlink")
