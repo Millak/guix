@@ -8947,6 +8947,31 @@ levels per backend and logger.")
 specification-runtime-spec.")
     (license license:asl2.0)))
 
+(define-public go-github-com-opencontainers-selinux
+  (package
+    (name "go-github-com-opencontainers-selinux")
+    (version "1.11.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/opencontainers/selinux")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19j92lj9037d94lsls97b9d6cr0y8qavi8rampyawlykcp7gknqz"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/opencontainers/selinux"))
+    (propagated-inputs (list go-golang-org-x-sys))
+    (home-page "https://github.com/opencontainers/selinux")
+    (synopsis "Common SELinux implementation")
+    (description
+     "Common SELinux package used across the container ecosystem.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-openhistogram-circonusllhist
   (package
     (name "go-github-com-openhistogram-circonusllhist")
