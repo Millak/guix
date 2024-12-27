@@ -2797,22 +2797,22 @@ support, watch support (like @command{top}) and a tree view.")
 (define-public rust-bindgen-cli
   (package
     (name "rust-bindgen-cli")
-    (version "0.70.1")
+    (version "0.71.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "bindgen-cli" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1anm1gci1ycbv6sz4a5dan7phqbypcnw48xribxmm1wdsm39wgrk"))))
+        (base32 "1p2lmkl7vfhpr8gnav11p1jrwrqsmrqwr2fgwp5x1bsn17511vgx"))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
-       #:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.70)
-                       ("rust-clap" ,rust-clap-4)
+       #:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.71)
                        ("rust-clap-complete" ,rust-clap-complete-4)
                        ("rust-env-logger" ,rust-env-logger-0.10)
                        ("rust-log" ,rust-log-0.4)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
                        ("rust-shlex" ,rust-shlex-1))
        #:phases
        (modify-phases %standard-phases
