@@ -4133,7 +4133,7 @@ also favors portability, and includes support for all POSIX systems.")
     (propagated-inputs
      (list go-github-com-mattn-go-runewidth
            go-github-com-mitchellh-go-wordwrap
-           go-github.com-nsf-termbox-go))
+           go-github-com-nsf-termbox-go))
     (home-page "https://github.com/gizak/termui")
     (synopsis "Terminal dashboard widget Go library")
     (description
@@ -8524,9 +8524,9 @@ list of sentences.")
 pretty printed rendering in Golang.")
     (license license:expat)))
 
-(define-public go-github.com-nsf-termbox-go
+(define-public go-github-com-nsf-termbox-go
   (package
-    (name "go-github.com-nsf-termbox-go")
+    (name "go-github-com-nsf-termbox-go")
     (version "1.1.1")
     (source
      (origin

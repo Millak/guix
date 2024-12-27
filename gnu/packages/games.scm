@@ -10650,7 +10650,7 @@ terminal full-window applications.")
      '(#:import-path "git.tuxfamily.org/harmonist/harmonist"))
     (inputs
      `(("go-github-com-gdamore-tcell-v2" ,go-github-com-gdamore-tcell-v2)
-       ("go-github.com-nsf-termbox-go" ,go-github.com-nsf-termbox-go)
+       ("go-github-com-nsf-termbox-go" ,go-github-com-nsf-termbox-go)
        ("go-github-com-anaseto-gruid" ,go-github-com-anaseto-gruid)
        ("go-github-com-anaseto-gruid-tcell" ,go-github-com-anaseto-gruid-tcell)))
     (home-page "https://harmonist.tuxfamily.org/")
