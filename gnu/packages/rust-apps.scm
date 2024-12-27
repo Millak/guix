@@ -1232,18 +1232,14 @@ gitoxide CLI.")
 (define-public hexyl
   (package
     (name "hexyl")
-    (version "0.14.0")
+    (version "0.15.0")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "hexyl" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32 "0fhbc4ibpbbgcgx2v6wzxcn63jz76cvdp2f8jdg747h65hvp5bcm"))
-        (snippet
-         #~(begin (use-modules (guix build utils))
-                  (substitute* "doc/hexyl.1.md"
-                    (("0\\.12\\.0") "0.14.0"))))))
+         (base32 "19i9g18nnyizas2af2s3ikivcpazmgfh3n71v5fmfm9ibnkjp1a2"))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
@@ -1252,9 +1248,9 @@ gitoxide CLI.")
         ("rust-clap" ,rust-clap-4)
         ("rust-const-format" ,rust-const-format-0.2)
         ("rust-libc" ,rust-libc-0.2)
-        ("rust-owo-colors" ,rust-owo-colors-3)
-        ("rust-supports-color" ,rust-supports-color-2)
-        ("rust-terminal-size" ,rust-terminal-size-0.2)
+        ("rust-owo-colors" ,rust-owo-colors-4)
+        ("rust-supports-color" ,rust-supports-color-3)
+        ("rust-terminal-size" ,rust-terminal-size-0.4)
         ("rust-thiserror" ,rust-thiserror-1))
        #:cargo-development-inputs
        (("rust-assert-cmd" ,rust-assert-cmd-2)
