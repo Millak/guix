@@ -3048,6 +3048,45 @@ more complicated parallel cases.")
     (propagated-inputs
      (list go-github-com-elliotchance-orderedmap-v2))))
 
+(define-public go-github-com-dennwc-btrfs
+  (package
+    (name "go-github-com-dennwc-btrfs")
+    (version "0.0.0-20241002142654-12ae127e0bf6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dennwc/btrfs")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0afc1clhzzhvshxp6xqs4d1hq681pzm85fqwjdgs9yh0j5bxjnhg"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/dennwc/btrfs"
+      #:test-flags
+      ;; Tests require "mount" and "mkfs.btrfs" in the PATH.
+      #~(list "-skip"
+              (string-join
+               (list "TestCloneFile"
+                     "TestCompression"
+                     "TestIsSubvolume"
+                     "TestOpen"
+                     "TestResize"
+                     "TestSubvolumes")
+               "|"))))
+    (native-inputs
+     (list go-github-com-spf13-cobra)) ; for CLI
+    (propagated-inputs (list go-github-com-dennwc-ioctl))
+    (home-page "https://github.com/dennwc/btrfs")
+    (synopsis "Btrfs library in a pure Golang")
+    ;; XXX: Projects lacks README or any other documentation describing the
+    ;; functionality.
+    (description
+     "This package implements Btrfs functionality in a pure Go.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-dennwc-ioctl
   (package
     (name "go-github-com-dennwc-ioctl")
