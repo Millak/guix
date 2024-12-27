@@ -386,7 +386,12 @@ LZ4 data blocks.  The implementation is based on the reference C
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/pierrec/lz4/v4"))))
+      #:import-path "github.com/pierrec/lz4/v4"))
+    ;; For CLI.
+    (native-inputs
+     (list go-code-cloudfoundry-org-bytefmt
+           go-github-com-pierrec-cmdflag
+           go-github-com-schollz-progressbar-v3))))
 
 (define-public go-github-com-ulikunitz-xz
   (package
@@ -469,10 +474,6 @@ tool."))))
       #:install-source? #f
       #:import-path "github.com/pierrec/lz4/cmd/lz4c"
       #:unpack-path "github.com/pierrec/lz4"))
-    (native-inputs
-     (list go-code-cloudfoundry-org-bytefmt
-           go-github-com-pierrec-cmdflag
-           go-github-com-schollz-progressbar-v3))
     (description
      (string-append (package-description go-github-com-pierrec-lz4-v4)
                     "  This package provides an additional command line
