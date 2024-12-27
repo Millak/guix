@@ -6222,6 +6222,17 @@ documents.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags
+      ;; These tests try to connect to the internet.
+      '(list "--ignore=tests/test_content_type.py"
+             "--ignore=tests/test_udocker.py"
+             "--ignore=tests/test_http_input.py"
+             "-k"
+             (string-append
+              "not test_env_filtering"
+              " and not test_load_graph_fragment_from_packed"
+              ;; Tries to use cwl-runners.
+              " and not test_v1_0_arg_empty_prefix_separate_false"))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'loosen-version-restrictions
@@ -6236,23 +6247,6 @@ documents.")
                  (string-append "version=\"" #$version "\"")))))
           (add-after 'unpack 'modify-tests
             (lambda _
-              ;; Tries to connect to the internet.
-              (delete-file "tests/test_content_type.py")
-              (delete-file "tests/test_udocker.py")
-              (delete-file "tests/test_http_input.py")
-              (substitute* "tests/test_load_tool.py"
-                (("def test_load_graph_fragment_from_packed")
-                 (string-append "@pytest.mark.skip(reason=\"Disabled by Guix\")\n"
-                                "def test_load_graph_fragment_from_packed")))
-              (substitute* "tests/test_examples.py"
-                (("def test_env_filtering")
-                 (string-append "@pytest.mark.skip(reason=\"Disabled by Guix\")\n"
-                                "def test_env_filtering")))
-              ;; Tries to use cwl-runners.
-              (substitute* "tests/test_examples.py"
-                (("def test_v1_0_arg_empty_prefix_separate_false")
-                 (string-append "@pytest.mark.skip(reason=\"Disabled by Guix\")\n"
-                                "def test_v1_0_arg_empty_prefix_separate_false")))
               (substitute* '("tests/subgraph/env-tool2.cwl"
                              "tests/subgraph/env-tool2_req.cwl"
                              "tests/subgraph/env-wf2_subwf-packed.cwl"
