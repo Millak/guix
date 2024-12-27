@@ -50,8 +50,9 @@
 
 (define-module (gnu packages rust-apps)
   #:use-module (guix build-system cargo)
-  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system glib-or-gtk)
+  #:use-module (guix build-system meson)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix deprecation)
   #:use-module (guix download)
   #:use-module (guix gexp)
@@ -63,6 +64,7 @@
   #:use-module (gnu packages admin)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages build-tools)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crates-apple)
@@ -93,6 +95,7 @@
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages networking)
+  #:use-module (gnu packages ninja)
   #:use-module (gnu packages shells)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages pcre)
@@ -1167,67 +1170,57 @@ gitoxide CLI.")
         (base32 "1q8gkx7djrfdl8fykppsqkxiadsq47v0xhj612nxlrvjz8n77ygn"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-glib" ,rust-glib-0.18)
+     `(#:install-source? #f
+       #:vendor-dir "vendor"
+       #:cargo-inputs (("rust-glib" ,rust-glib-0.18)
                        ("rust-libadwaita" ,rust-libadwaita-0.5)
                        ("rust-libc" ,rust-libc-0.2)
                        ("rust-log" ,rust-log-0.4)
                        ("rust-once-cell" ,rust-once-cell-1)
                        ("rust-pipewire" ,rust-pipewire-0.7))
-       #:imported-modules (,@%glib-or-gtk-build-system-modules
+       #:imported-modules (,@%meson-build-system-modules
+                           ,@%glib-or-gtk-build-system-modules
                            ,@%cargo-build-system-modules)
        #:modules ((guix build cargo-build-system)
                   ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
+                  ((guix build meson-build-system) #:prefix meson:)
                   (guix build utils))
        #:phases
        (modify-phases %standard-phases
-         (add-before 'install 'install-extra
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (source (assoc-ref inputs "source"))
-                    (share (string-append out "/share"))
-                    (hicolor (string-append share "/icons/hicolor")))
-               (mkdir-p hicolor)
-               (with-directory-excursion hicolor
-                 (mkdir-p "scalable/apps")
-                 (install-file
-                  (string-append source "/data/icons/org.pipewire.Helvum.svg")
-                  "scalable/apps")
-                 (mkdir-p "symbolic/apps")
-                 (install-file
-                  (string-append
-                   source "/data/icons/org.pipewire.Helvum-symbolic.svg")
-                  "symbolic/apps"))
-               (with-directory-excursion share
-                 (mkdir-p "applications")
-                 (with-directory-excursion "applications"
-                   (install-file
-                    (string-append
-                     source "/data/org.pipewire.Helvum.desktop.in") ".")
-                   (substitute* "org.pipewire.Helvum.desktop.in"
-                     (("@icon@") "org.pipewire.Helvum")
-                     (("Exec=helvum")
-                      (string-append "Exec="
-                                     (string-append out "/bin/helvum"))))
-                   (rename-file "org.pipewire.Helvum.desktop.in"
-                                "org.pipewire.Helvum.desktop"))
-                 (mkdir-p "metainfo")
-                 (with-directory-excursion "metainfo"
-                   (install-file
-                    (string-append
-                     source
-                     "/data/org.pipewire.Helvum.metainfo.xml.in") ".")
-                   (substitute* "org.pipewire.Helvum.metainfo.xml.in"
-                     (("@app-id@") "org.pipewire.Helvum"))
-                   (rename-file "org.pipewire.Helvum.metainfo.xml.in"
-                                "org.pipewire.Helvum.metainfo.xml"))))))
          (add-after 'unpack 'generate-gdk-pixbuf-loaders-cache-file
            (assoc-ref glib-or-gtk:%standard-phases
                       'generate-gdk-pixbuf-loaders-cache-file))
+         (add-after 'unpack 'prepare-for-build
+           (lambda _
+             (substitute* "meson.build"
+               (("gtk_update_icon_cache: true")
+                "gtk_update_icon_cache: false")
+               (("update_desktop_database: true")
+                "update_desktop_database: false"))
+             (delete-file "Cargo.lock")))
+         ;; Add meson-configure phase here and not before 'configure because
+         ;; the meson 'configure phase changes to a different directory and
+         ;; we need it created before unpacking the crates.
+         (add-before 'unpack-rust-crates 'meson-configure
+           (lambda args
+             (apply (assoc-ref meson:%standard-phases 'configure)
+                    #:build-type "debugoptimized"
+                    #:configure-flags '()
+                    args)))
+         (replace 'build
+           (assoc-ref meson:%standard-phases 'build))
+         (replace 'check
+           (lambda args
+             (apply (assoc-ref meson:%standard-phases 'check)
+                    #:test-options '()
+                    args)))
+         (replace 'install
+           (assoc-ref meson:%standard-phases 'install))
          (add-after 'install 'glib-or-gtk-compile-schemas
            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-compile-schemas))
          (add-after 'install 'glib-or-gtk-wrap
            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))))
-    (native-inputs (list pkg-config clang))
+    (native-inputs (list clang pkg-config meson ninja))
     (inputs (list glib gtk libadwaita pipewire))
     (home-page "https://gitlab.freedesktop.org/pipewire/helvum")
     (synopsis "GTK patchbay for pipewire")
