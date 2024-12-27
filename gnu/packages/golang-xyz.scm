@@ -9152,6 +9152,34 @@ Pion}.")
      "@code{refmt} is a serialization and object-mapping library.")
     (license license:expat)))
 
+(define-public go-github-com-posener-complete
+  (package
+    (name "go-github-com-posener-complete")
+    (version "1.2.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/posener/complete")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0nri6hkfb0z3dkxf2fsfidr4bxbn91rjsqhg5s0c2jplf0aclppz"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/posener/complete"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-hashicorp-go-multierror))
+    (home-page "https://github.com/posener/complete")
+    (synopsis "Bash completion implemented in Golang")
+    (description
+     "Package complete provides a tool for bash writing bash completion in go,
+and bash completion for the go command line.")
+    (license license:expat)))
+
 (define-public go-github-com-pterm-pterm
   (package
     (name "go-github-com-pterm-pterm")
