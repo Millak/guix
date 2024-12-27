@@ -6171,6 +6171,45 @@ per host/process
 @end itemize")
     (license license:expat)))
 
+(define-public go-github-com-safchain-ethtool
+  (package
+    (name "go-github-com-safchain-ethtool")
+    (version "0.5.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/safchain/ethtool")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01q0qfyksnhd4a2w2824yzdmyb4g4xr0y2z4ffnpbzz1wp60rydg"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/safchain/ethtool"
+      #:test-flags
+      ;; Unable to retrieve driver from any interface of this system.
+      #~(list "-skip"
+              (string-join
+               (list "TestCmdGet"
+                     "TestCmdGetMapped"
+                     "TestMsglvlGet"
+                     "TestStats"
+                     "TestDriverName"
+                     "TestBusInfo")
+               "|"))))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
+    (home-page "https://github.com/safchain/ethtool")
+    (synopsis "Ethtool library for Golang")
+    (description
+     "The ethtool package aims to provide a library that implements easy
+access to the Linux SIOCETHTOOL ioctl operations.  It can be used to retrieve
+information from a network device such as statistics, driver related
+information or even the peer of a VETH interface.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-sherclockholmes-webpush-go
   (package
     (name "go-github-com-sherclockholmes-webpush-go")
