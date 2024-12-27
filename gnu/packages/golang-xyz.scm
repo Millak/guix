@@ -6836,6 +6836,35 @@ customized globally.")
      "This package provides functions to read and traverse directory trees.")
     (license license:bsd-2)))
 
+(define-public go-github-com-karrick-golf
+  (package
+    (name "go-github-com-karrick-golf")
+    (version "1.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/karrick/golf")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0iskalk32zqiwwrfmi9lcd1s69xgn3yl056xcm5q4y5znbs96fac"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/karrick/golf"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "example")))))))
+    (home-page "https://github.com/karrick/golf")
+    (synopsis "Light-weight long and short command line option parser")
+    (description
+     "Go long flag: a light-weight long and short command line option parser.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-kballard-go-shellquote
   ;; No release, see <https://github.com/kballard/go-shellquote/issues/13>.
   (let ((commit "95032a82bc518f77982ea72343cc1ade730072f0")
