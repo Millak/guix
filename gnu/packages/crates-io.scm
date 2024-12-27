@@ -80848,6 +80848,55 @@ that exposes the same functionality at the command line.")
         (base32
          "0hvd6vk4ksgg2y99498jw52ric4lxm0i6ygpzqm95gdrhvsxyynp"))))))
 
+(define-public rust-tame-index-0.13
+  (package
+    (name "rust-tame-index")
+    (version "0.13.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tame-index" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "15rgvi2pw852g3bydsv9i0ljlbg24f2zcw3fp778qd760c87nbnj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--"
+                            "--skip=krate_name::test::rejects_reserved"
+                            "--skip=parses_current_cargo_cache"
+                            "--skip=serializes_current_cargo_cache"
+                            "--skip=can_take_shared_lock"
+                            "--skip=wait_lock_times_out"
+                            "--skip=waits_lock")
+       #:cargo-inputs (("rust-bytes" ,rust-bytes-1)
+                       ("rust-camino" ,rust-camino-1)
+                       ("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
+                       ("rust-gix" ,rust-gix-0.64)
+                       ("rust-home" ,rust-home-0.5)
+                       ("rust-http" ,rust-http-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-memchr" ,rust-memchr-2)
+                       ("rust-rayon" ,rust-rayon-1)
+                       ("rust-reqwest" ,rust-reqwest-0.12)
+                       ("rust-semver" ,rust-semver-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-sha2" ,rust-sha2-0.10)
+                       ("rust-smol-str" ,rust-smol-str-0.2)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-toml-span" ,rust-toml-span-0.3)
+                       ("rust-twox-hash" ,rust-twox-hash-1))
+       #:cargo-development-inputs (("rust-cargo-metadata" ,rust-cargo-metadata-0.18)
+                                   ("rust-rayon" ,rust-rayon-1)
+                                   ("rust-tempfile" ,rust-tempfile-3)
+                                   ("rust-tiny-bench" ,rust-tiny-bench-0.3))))
+    (home-page "https://github.com/EmbarkStudios/tame-index")
+    (synopsis "Provides access to local and remote cargo registry indices")
+    (description
+     "This package provides access to local and remote cargo registry indices.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-tap-1
   (package
     (name "rust-tap")
