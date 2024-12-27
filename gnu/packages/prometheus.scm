@@ -221,7 +221,7 @@ Prometheus metrics.")
 (define-public go-github-com-prometheus-common
   (package
     (name "go-github-com-prometheus-common")
-    (version "0.55.0")
+    (version "0.61.0")
     (source
      (origin
        (method git-fetch)
@@ -230,7 +230,7 @@ Prometheus metrics.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0bsbxil7qz8rhckhv0844nmn38g7i7347cjv5m6na47hbdpi0rqh"))
+        (base32 "0wng61rzvh27s2rlaadvjbffwgpn74p1wjrz6insl57k1pg3cmcn"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
