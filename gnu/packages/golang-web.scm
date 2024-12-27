@@ -7194,6 +7194,35 @@ programming language.")
 programming language, which supports draft-04, draft-06 and draft-07.")
     (license license:asl2.0)))
 
+(define-public go-github-com-xo-dburl
+  (package
+    (name "go-github-com-xo-dburl")
+    (version "0.23.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/xo/dburl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0yxyfrm45dqd26513r2cvgkqfsclijsfzqrckbw45wydk45mq442"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/xo/dburl"))
+    (home-page "https://github.com/xo/dburl")
+    (synopsis
+     "URL style mechanism for parsing and opening SQL database connection strings")
+    (description
+     "Package dburl provides a standard, @code{net/url.URL} style mechanism
+for parsing and opening SQL database connection strings for Go.  Provides
+standardized way to parse and open @@url{#URL,URL}'s for popular databases
+@code{PostgreSQL}, @code{MySQL}, SQLite3, Oracle Database, Microsoft SQL
+Server, in addition to most other SQL databases with a publicly available Go
+driver.")
+    (license license:expat)))
+
 (define-public go-github-com-xtaci-lossyconn
   (package
     (name "go-github-com-xtaci-lossyconn")
