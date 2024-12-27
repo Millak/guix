@@ -4779,7 +4779,7 @@ falling, themeable graphics and sounds, and replays.")
 (define-public wesnoth
   (package
     (name "wesnoth")
-    (version "1.18.0")
+    (version "1.18.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4788,7 +4788,7 @@ falling, themeable graphics and sounds, and replays.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ar0zkyl4rzqgambmdqhklscx478liql1k458ax64bp4xw441kfc"))))
+                "0habv0whb0y0r52sjln7yin1nfm3vjjxqlavm7jarcrg2s3v743k"))))
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #f                  ;no test target
