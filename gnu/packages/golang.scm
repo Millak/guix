@@ -3176,9 +3176,9 @@ Looks for an identical word on a list of words, if none is found, look for a
 similar word.")
       (license license:expat))))
 
-(define-public misspell
+(define-public go-github-com-client9-misspell
   (package
-    (name "misspell")
+    (name "go-github-com-client9-misspell")
     (version "0.3.4")
     (source (origin
               (method git-fetch)
@@ -3191,14 +3191,9 @@ similar word.")
                 "1vwf33wsc4la25zk9nylpbp9px3svlmldkm0bha4hp56jws4q9cs"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/client9/misspell"
-       #:phases (modify-phases %standard-phases
-                  (replace 'build
-                    (lambda arguments
-                      (apply (assoc-ref %standard-phases
-                                        'build)
-                             `(,@arguments #:import-path
-                               "github.com/client9/misspell/cmd/misspell")))))))
+     (list
+      #:import-path "github.com/client9/misspell"
+      #:test-subdirs #~(list "ignore" ".")))
     (propagated-inputs (list go-github-com-gobwas-glob))
     (home-page "https://github.com/client9/misspell")
     (synopsis "Correct commonly misspelled English words in source files")
@@ -3230,19 +3225,15 @@ locale can be selected.")
 alternative to @@code{exec.LookPath()}.")
     (license license:bsd-2)))
 
-(define-public go-github-com-client9-misspell
+(define-public misspell
   (package
-    (inherit misspell)
-    (name "go-github-com-client9-misspell")
+    (inherit go-github-com-client9-misspell)
+    (name "misspell")
     (arguments
-     `(#:import-path "github.com/client9/misspell"
+     `(#:import-path "github.com/client9/misspell/cmd/misspell"
+       #:unpack-path "github.com/client9/misspell"
        #:tests? #f
-       #:install-source? #t
-       #:phases (modify-phases %standard-phases
-                  (delete 'build))))
-    (propagated-inputs (package-inputs misspell))
-    (native-inputs '())
-    (inputs '())))
+       #:install-source? #t))))
 
 (define-public go-github-com-stevedonovan-luar
   (let ((commit "22d247e5366095f491cd83edf779ee99a78f5ead")
