@@ -731,6 +731,8 @@ cache.size = 100 * MB
   dnsmasq-configuration?
   (package          dnsmasq-configuration-package
                     (default dnsmasq))  ;file-like
+  (provision        dnsmasq-provision
+                    (default '(dnsmasq)))
   (no-hosts?        dnsmasq-configuration-no-hosts?
                     (default #f))       ;boolean
   (port             dnsmasq-configuration-port
@@ -802,7 +804,7 @@ cache.size = 100 * MB
      tftp-lowercase? tftp-port-range
      tftp-root tftp-unique-root extra-options)
     (shepherd-service
-     (provision '(dnsmasq))
+     (provision (dnsmasq-provision config))
      (requirement '(networking))
      (documentation "Run the dnsmasq DNS server.")
      (start #~(make-forkexec-constructor

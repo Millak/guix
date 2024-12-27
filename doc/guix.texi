@@ -34169,6 +34169,10 @@ Data type representing the configuration of dnsmasq.
 @item @code{package} (default: @var{dnsmasq})
 Package object of the dnsmasq server.
 
+@item @code{provision} (default: @code{'(dnsmasq)})
+A list of symbols for the Shepherd service corresponding to this dnsmasq
+configuration.
+
 @item @code{no-hosts?} (default: @code{#f})
 When true, don't read the hostnames in /etc/hosts.
 
