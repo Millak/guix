@@ -7176,6 +7176,32 @@ allocator.  This is primarily useful for long lived buffers that usually sit emp
 length-delimited slices.  It's helpful for building wire protocols.")
     (license license:expat)))
 
+(define-public go-github-com-lithammer-dedent
+  (package
+    (name "go-github-com-lithammer-dedent")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/lithammer/dedent")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zqdlz3csraphk12q91vmv5zhap3abscjn9v725d8r55qblwrvs0"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/lithammer/dedent"))
+    (home-page "https://github.com/lithammer/dedent")
+    (synopsis "Remove any common leading whitespace from multiline strings")
+    (description
+     "This package provides a functionality to remove common leading
+whitespace from multiline strings.  Inspired by
+@url{https://docs.python.org/3/library/textwrap.html#textwrap.dedent,(code
+textwrap.dedent)} in Python.")
+    (license license:expat)))
+
 (define-public go-github-com-lithammer-fuzzysearch
   (package
     (name "go-github-com-lithammer-fuzzysearch")
