@@ -76,6 +76,7 @@
             url-predicate
             url-prefix-predicate
             coalesce-sources
+            preferred-upstream-source
 
             upstream-updater
             upstream-updater?
@@ -444,6 +445,17 @@ is no signature.  Return #f and #f when this is not applicable."
            (upstream-source-urls source)
            (or (upstream-source-signature-urls source)
                (circular-list #f)))))
+
+(define (preferred-upstream-source source package)
+  "Return a variant of SOURCE that uses the same archive type as PACKAGE's
+source (gz, xz, zst, etc.).  Return SOURCE if this is not applicable."
+  (let ((url signature-url (preferred-upstream-source-url source package)))
+    (if url
+        (upstream-source
+         (inherit source)
+         (urls (list url))
+         (signature-urls (and=> signature-url list)))
+        source)))
 
 (define* (package-update/url-fetch store package source
                                    #:key key-download key-server)
