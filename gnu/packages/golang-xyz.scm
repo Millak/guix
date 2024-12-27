@@ -84,6 +84,7 @@
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gcc)
+  #:use-module (gnu packages glib)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
@@ -4711,6 +4712,64 @@ size.")
 @item Extract value or AST by YAMLPath (YAMLPath is like a JSONPath)
 @end itemize")
     (license license:expat)))
+
+(define-public go-github-com-godbus-dbus
+  (package
+    (name "go-github-com-godbus-dbus")
+    (version "0.0.0-20190726142602-4481cbc300e2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/godbus/dbus")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0h0cl1r136g0kxbw3i7ggb9mhavpi1yr7d7312iwhkxm93dxkphg"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/godbus/dbus"
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "dbus-run-session" "--"
+                          "go" "test" "./..."
+                          ;; Disable tests which require a system D-Bus
+                          ;; instance.
+                          "-skip" "TestSystemBus|TestConnectSystemBus"))))))))
+    (native-inputs
+     (list dbus)) ;dbus-launch
+    (home-page "https://github.com/godbus/dbus/")
+    (synopsis "Native Go client bindings for the D-Bus")
+    (description
+     "@code{dbus} is a library that implements native Go client bindings for
+the D-Bus message bus system.")
+    (license license:bsd-2)))
+
+(define-public go-github-com-godbus-dbus-v5
+  (package
+    (inherit go-github-com-godbus-dbus)
+    (name "go-github-com-godbus-dbus-v5")
+    (version "5.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/godbus/dbus")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1kayd4x7idrhi06ahh5kqkgwzgh9icvv71mjar2d0jl486dfs8r5"))))
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-godbus-dbus)
+       ((#:import-path _ "github.com/godbus/dbus")
+        "github.com/godbus/dbus/v5")))))
+
 
 (define-public go-github-com-gofrs-flock
   (package
