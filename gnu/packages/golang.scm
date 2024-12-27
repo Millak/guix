@@ -4732,18 +4732,15 @@ and @url{https://rfc-editor.org/rfc/rfc8018.html,RFC 8018}.")
       #:import-path "github.com/godbus/dbus"
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'disable-failing-tests
-            (lambda* (#:key tests? unpack-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" unpack-path)
-                (substitute* (find-files "." "\\_test.go$")
-                  ;; Disable tests which require a system D-Bus instance.
-                  (("TestSystemBus") "OffTestSystemBus")
-                  (("TestConnectSystemBus") "OffTestConnectSystemBus")))))
           (replace 'check
             (lambda* (#:key tests? import-path #:allow-other-keys)
               (when tests?
                 (with-directory-excursion (string-append "src/" import-path)
-                  (invoke "dbus-run-session" "--" "go" "test" "./..."))))))))
+                  (invoke "dbus-run-session" "--"
+                          "go" "test" "./..."
+                          ;; Disable tests which require a system D-Bus
+                          ;; instance.
+                          "-skip" "TestSystemBus|TestConnectSystemBus"))))))))
     (native-inputs
      (list dbus)) ;dbus-launch
     (home-page "https://github.com/godbus/dbus/")
