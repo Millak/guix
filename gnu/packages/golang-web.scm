@@ -3205,6 +3205,43 @@ standard @code{net/http} client library and exposes nearly the same public
 API.")
     (license license:mpl2.0)))
 
+(define-public go-github-com-hashicorp-yamux
+  (package
+    (name "go-github-com-hashicorp-yamux")
+    (version "0.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hashicorp/yamux")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1c46zdj94lv28sb9rmhinzcckl72vs3gwm197nsa80ca3b161yi6"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/hashicorp/yamux"))
+    (home-page "https://github.com/hashicorp/yamux")
+    (synopsis "Golang connection multiplexing library")
+    (description
+     "Yamux (Yet another Multiplexer) relies on an underlying connection to
+provide reliability and ordering, such as TCP or Unix domain sockets, and
+provides stream-oriented multiplexing.  It is inspired by SPDY but is not
+interoperable with it.
+
+Features:
+@itemize
+@item streams can be opened by either client or server
+@item useful for nat traversal
+@item server-side push support
+@item avoid starvation
+@item back-pressure to prevent overwhelming a receiver
+@item enables persistent connections over a load balancer
+@item enables thousands of logical streams with low overhead
+@end itemize")
+    (license license:mpl2.0)))
+
 (define-public go-github-com-hjson-hjson-go-v4
   (package
     (name "go-github-com-hjson-hjson-go-v4")
