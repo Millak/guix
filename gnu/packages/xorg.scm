@@ -3068,7 +3068,7 @@ the same level of support for generic VGA or 8514/A adapters.")
 (define-public xf86-video-mga
   (package
     (name "xf86-video-mga")
-    (version "2.0.1")
+    (version "2.1.0")
     (source
       (origin
         (method url-fetch)
@@ -3078,7 +3078,7 @@ the same level of support for generic VGA or 8514/A adapters.")
                ".tar.xz"))
         (sha256
           (base32
-           "1aq3aqh2yg09gy864kkshfx5pjl5w05jdz97bx5bnrbrhdq3p8r7"))))
+           "0wxbcgg5i4yq22pbc50567877z8irxhqzgl3sk6vf5zs9szmvy3v"))))
     (build-system gnu-build-system)
     (inputs (list mesa xorgproto xorg-server))
     (native-inputs (list pkg-config))
