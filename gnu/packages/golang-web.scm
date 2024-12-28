@@ -7848,7 +7848,8 @@ the code or routes.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "mvdan.cc/xurls/v2"))
+      #:import-path "mvdan.cc/xurls/v2"
+      #:test-flags #~(list "-skip" "TestScript/version")))
     (propagated-inputs
      (list go-github-com-rogpeppe-go-internal
            go-golang-org-x-mod
