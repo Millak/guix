@@ -462,14 +462,14 @@ Resources file.")
 (define-public encodings
   (package
     (name "encodings")
-    (version "1.0.6")
+    (version "1.1.0")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "mirror://xorg/individual/font/encodings-"
                             version ".tar.xz"))
         (sha256
-          (base32 "09pwhj8arm9hx0819m1yykaw9n77lxavaq4gn4iacd8zcvg03qvp"))))
+          (base32 "0xg99nmpvik6vaz4h03xay7rx0r3bf5a8azkjlpa3ksn2xi3rwcz"))))
     (build-system gnu-build-system)
     (inputs
       (list mkfontscale))
