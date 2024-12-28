@@ -4467,17 +4467,17 @@ cannot be adequately worked around on the client side of the wire.")
 (define-public libxdamage
   (package
     (name "libxdamage")
-    (version "1.1.5")
+    (version "1.1.6")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/lib/libXdamage-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
           (base32
-            "0igaw2akjf712y3rv7lx473jigxmcv9rs9y8sbrvbhya8f30cd5p"))))
+            "04axzdx75w0wcb4na7lfpa0ai0fddw60dmg7cigs7z32a8gkqwsj"))))
     (build-system gnu-build-system)
     (propagated-inputs
       ;; These are all in the Requires or Requires.private field of xdamage.pc
