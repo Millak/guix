@@ -73721,6 +73721,30 @@ multiple threads.")
      "Escape characters that may have a special meaning in a shell.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-shell-quote-0.7
+  (package
+    (name "rust-shell-quote")
+    (version "0.7.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "shell-quote" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0znflgk3wlbahip3yblqmlnd8c5cslabjh99asds9vhirjyn6k5f"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.5)
+                                   ("rust-semver" ,rust-semver-1)
+                                   ("rust-test-case" ,rust-test-case-3))))
+    (home-page "https://github.com/allenap/shell-quote")
+    (synopsis "Rust library for shell-quoting strings")
+    (description
+     "This package provides a Rust library for shell-quoting strings, e.g. for
+interpolating into a Bash script.")
+    (license license:asl2.0)))
+
 (define-public rust-shell-words-1
   (package
     (name "rust-shell-words")
