@@ -490,20 +490,23 @@ applications menu, workspace switcher and more.")
 (define-public xfce4-battery-plugin
   (package
     (name "xfce4-battery-plugin")
-    (version "1.1.5")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://archive.xfce.org/src/panel-plugins/"
-                                  name "/" (version-major+minor version) "/"
-                                  name "-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "04z2bic6c2cgl6wy4qrhfdigb6c2hsxnqraa20k1xvi0nfzk68km"))))
+    (version "1.1.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.xfce.org/panel-plugins/xfce4-battery-plugin")
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1bd912j22pf6rmqvkc80g5axjil88pbzxqa68krw65l11v73icmm"))))
     (build-system gnu-build-system)
-    (native-inputs (list pkg-config intltool))
+    (arguments
+     (list
+      #:configure-flags #~(list "--enable-maintainer-mode")))
+    (native-inputs (list xfce4-dev-tools))
     (inputs (list glib gtk+ libxfce4util libxfce4ui xfce4-panel))
-    (home-page
-     "https://goodies.xfce.org/projects/panel-plugins/xfce4-battery-plugin")
+    (home-page "https://docs.xfce.org/panel-plugins/xfce4-battery-plugin/")
     (synopsis "Battery monitor panel plugin for Xfce4")
     (description
      "A battery monitor panel plugin for Xfce4, compatible with APM and ACPI.")
