@@ -375,42 +375,30 @@ merging features essential for loading menus modified with menu editors.")
   (package
     (name "tumbler")
     (version "4.20.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://archive.xfce.org/src/xfce/"
-                                  "tumbler/" (version-major+minor version) "/"
-                                  "tumbler-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "102qwa8an7wdqf0hrqd5k51aiib3zww0iizsigllfrcjamyn9cbl"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.xfce.org/xfce/tumbler")
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "18bp1ckv6mzbxhbk7aqp2mxbni1pw8hv8rzxmc9xx488dxs0qq8s"))))
     (build-system gnu-build-system)
-    (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-before 'configure 'patch-configure
-                 (lambda _
-                   (substitute* "configure"
-                     ;; XDG_CHECK_PACKAGE_BINARY requires an absolute path.
-                     (("\\$PKG_CONFIG --variable=gdbus_codegen gio-2.0")
-                      "type -p gdbus-codegen")))))))
-    (native-inputs
-     (list pkg-config intltool
-           `(,glib "bin")))       ; need glib-genmarshal and gdbus-codegen
-    (propagated-inputs
-     (list glib))                 ; required by tumbler-1.pc
-    (inputs
-     (list dbus
-           gdk-pixbuf
-           cairo ;; Needed for pdf thumbnails (poppler-glibc.pc)
-           freetype
-           libjpeg-turbo
-           libgsf
-           libxfce4util
-           poppler
-           ;; FIXME Provide gstreamer and gstreamer-tag to get video thumbnails
-           ;; ("gstreamer" ,gstreamer)
-           ))
-    (home-page "https://www.xfce.org/")
+    (native-inputs (list xfce4-dev-tools))
+    (propagated-inputs (list glib)) ;required by tumbler-1.pc
+    (inputs (list dbus
+                  gdk-pixbuf
+                  cairo ;Needed for pdf thumbnails (poppler-glibc.pc)
+                  freetype
+                  libjpeg-turbo
+                  libgsf
+                  libxfce4util
+                  poppler
+                  ;; FIXME Provide gstreamer and gstreamer-tag to get video thumbnails
+                  ;; ("gstreamer" ,gstreamer)
+                  ))
+    (home-page "https://docs.xfce.org/xfce/tumbler/")
     (synopsis "D-Bus service for applications to request thumbnails")
     (description
      "Tumbler is a D-Bus service for applications to request thumbnails for
