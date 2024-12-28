@@ -5034,7 +5034,7 @@ protocol.")
 (define-public libxcb
   (package
     (name "libxcb")
-    (version "1.15")
+    (version "1.17.0")
     (source
       (origin
         (method url-fetch)
@@ -5042,13 +5042,14 @@ protocol.")
                             "libxcb-" version ".tar.xz"))
         (sha256
           (base32
-           "0nd035rf83xf531cnjzsf9ykb5w9rdzz6bbyhi683xkwh57p8f6c"))))
+           "0mbdkajqhg0j0zjc9a2z1qyv9mca797ihvifc9qyl3vijscvz7jr"))))
     (build-system gnu-build-system)
     (outputs '("out" "doc"))                      ;5.5 MiB of man pages
     (propagated-inputs
-      (list libpthread-stubs libxau libxdmcp))
+      (list libxau libxdmcp))
     (inputs
-      (list xcb-proto libxslt))
+      (list xcb-proto
+            check))                               ;for tests
     (native-inputs
      (list pkg-config python-minimal-wrapper))
     (arguments
