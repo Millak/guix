@@ -2074,14 +2074,14 @@ server.")
 (define-public xauth
   (package
     (name "xauth")
-    (version "1.1.2")
+    (version "1.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://xorg/individual/app/xauth-" version
                            ".tar.xz"))
        (sha256
-        (base32 "0072ivzn4z59ysanz838nh8s4mcmdsx6q9xkvlfysv2k37ynmfkq"))))
+        (base32 "0cwxzq7lv932rcfad3baanr541qcjjdhyrhxy0bzjcp3pac581z7"))))
     (build-system gnu-build-system)
     (inputs
      (list libxmu libxext libxau libx11))
