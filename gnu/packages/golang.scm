@@ -3420,7 +3420,7 @@ required by Go's standard Hash interface.")
 (define-public go-github-com-mitchellh-reflectwalk
   (package
     (name "go-github-com-mitchellh-reflectwalk")
-    (version "1.0.1")
+    (version "1.0.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3429,7 +3429,7 @@ required by Go's standard Hash interface.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0pa6a3nhzwv5s5yqcmsmsfhdp5ggxsg2wa86f3akawxrhrkjarnx"))))
+                "1nxgb4gskzv045539vb312n0a443308dvh1akz7vi6x1l0z46zsm"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/mitchellh/reflectwalk"))
