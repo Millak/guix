@@ -8204,6 +8204,35 @@ colored strings.")
      "Colorstring provides functions for colorizing strings for terminal output.")
     (license license:expat)))
 
+(define-public go-github-com-mitchellh-copystructure
+  (package
+    (name "go-github-com-mitchellh-copystructure")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mitchellh/copystructure")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1izw243b3r03nvgnnxvk706l3s3v3q7k69kq3n4asnzjkcymq7sm"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/mitchellh/copystructure"))
+    (propagated-inputs
+     (list go-github-com-mitchellh-reflectwalk))
+    (home-page "https://github.com/mitchellh/copystructure")
+    (synopsis "Go library for decoding deep copying values")
+    (description "@code{copystructure} is a Go library for deep copying values
+in Go.
+
+This allows you to copy Go values that may contain reference values such as
+maps, slices, or pointers, and copy their data as well instead of just their
+references.")
+    (license license:expat)))
+
 (define-public go-github-com-mitchellh-go-homedir
   (package
     (name "go-github-com-mitchellh-go-homedir")
