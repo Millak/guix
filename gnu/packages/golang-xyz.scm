@@ -27,7 +27,6 @@
 ;;; Copyright © 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
-;;; Copyright © 2021 raingloom <raingloom@riseup.net>
 ;;; Copyright © 2021, 2023, 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2022 (unmatched-parenthesis <paren@disroot.org>
 ;;; Copyright © 2022 Dhruvin Gandhi <contact@dhruvin.dev>
@@ -4892,6 +4891,30 @@ execution.")
     (description
      "The chardet package ports character set detection from ICU to Go.")
     (license license:expat)))
+
+(define-public go-github-com-gologme-log
+  (package
+    (name "go-github-com-gologme-log")
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gologme/log")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0m7dszaisviq7fgwyxg9lwhxyzdab0w7d1zbilrnarzvyx9wh3ax"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/gologme/log"))
+    (home-page "https://github.com/gologme/log/")
+    (synopsis "Fork of the golang built in log package to add support for levels")
+    (description
+     "This package is a drop in replacement for the built-in Go log package.
+All the functionality of the built-in package still exists and is unchanged.
+This package contains a series of small enhancements and additions.")
+    (license license:bsd-3)))
 
 (define-public go-github-com-google-gnostic-models
   (package
