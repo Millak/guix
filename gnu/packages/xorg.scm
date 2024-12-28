@@ -4360,17 +4360,17 @@ dump and twice when the dump is completed.")
 (define-public xwininfo
   (package
     (name "xwininfo")
-    (version "1.1.5")
+    (version "1.1.6")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/app/xwininfo-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
           (base32
-            "03h8clirhw5ki1xxp18xbf5vynm7r0dwspsgfin6cxn4vx0m8h3s"))))
+            "0gr5m4lyvkil3cl63zf0sw7bq5qgraqrnvddk6xgk3a42xy8j61m"))))
     (build-system gnu-build-system)
     (inputs
       (list libx11 xorgproto))
