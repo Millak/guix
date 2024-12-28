@@ -79234,30 +79234,26 @@ references")
     (description "Utilities for testing sval::Value implementations.")
     (license (list license:asl2.0 license:expat))))
 
-(define-public rust-svd-parser-0.10
+(define-public rust-svd-parser-0.14
   (package
     (name "rust-svd-parser")
-    (version "0.10.2")
+    (version "0.14.7")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "svd-parser" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "1fbr4m9cla6xvmrib7pad9hv29sn2d5hjbc77pz12lwzmm2pczk9"))))
+        (base32 "0azfqnzbsvwkf2jm685ynv8r3fwi6q20mqai00c3mvlhlaw87fir"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-anyhow" ,rust-anyhow-1)
-        ("rust-once-cell" ,rust-once-cell-1)
-        ("rust-rayon" ,rust-rayon-1)
-        ("rust-regex" ,rust-regex-1)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-thiserror" ,rust-thiserror-1)
-        ("rust-xmltree" ,rust-xmltree-0.8))
-       #:cargo-development-inputs
-       (("rust-serde-json" ,rust-serde-json-1))))
+     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-roxmltree" ,rust-roxmltree-0.20)
+                       ("rust-svd-rs" ,rust-svd-rs-0.14)
+                       ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs (("rust-serde-json" ,rust-serde-json-1)
+                                   ("rust-serde-yaml" ,rust-serde-yaml-0.8)
+                                   ("rust-svd-rs" ,rust-svd-rs-0.14))))
     (home-page "https://github.com/rust-embedded/svd")
     (synopsis "CMSIS-SVD file parser")
     (description "This package provides a CMSIS-SVD file parser.")
