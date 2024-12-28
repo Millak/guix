@@ -1070,17 +1070,17 @@ of new capabilities and controls for text keyboards.")
 (define-public libdmx
   (package
     (name "libdmx")
-    (version "1.1.4")
+    (version "1.1.5")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/lib/libdmx-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
           (base32
-            "0hvjfhrcym770cr0zpqajdy3cda30aiwbjzv16iafkqkbl090gr5"))))
+            "0kzprd1ak3m3042m5hra50nsagswciis9p21ckilyaqbidmf591m"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--disable-static")))
