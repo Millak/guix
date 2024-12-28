@@ -5088,6 +5088,32 @@ underneath and returns only matching files or direcories, depending on the
 configuration.")
     (license license:expat)))
 
+(define-public go-github-com-gorhill-cronexpr
+  (package
+    (name "go-github-com-gorhill-cronexpr")
+    (version "0.0.0-20180427100037-88b0669f7d75")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gorhill/cronexpr")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0hc7xdfclp2qgkr1581jb3ckjvl34nxmqrnraci5jzmqx5av9j1r"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/gorhill/cronexpr"))
+    (home-page "https://github.com/gorhill/cronexpr")
+    (synopsis "Cron expression parser in the Go language")
+    (description
+     "This package provides a cron expression parser in the Go language.
+Given a cron expression and a time stamp, you can get the next time stamp
+which satisfies the cron expression.")
+    (license (list license:gpl3+
+                   license:asl2.0))))
+
 (define-public go-github-com-hanwen-go-fuse
   (package
     (name "go-github-com-hanwen-go-fuse")
