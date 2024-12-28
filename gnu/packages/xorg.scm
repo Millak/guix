@@ -4155,7 +4155,7 @@ an X server.")
 (define-public xrandr
   (package
     (name "xrandr")
-    (version "1.5.2")
+    (version "1.5.3")
     (source
       (origin
         (method url-fetch)
@@ -4164,7 +4164,7 @@ an X server.")
                version ".tar.xz"))
         (sha256
           (base32
-            "0h7jy4c5zgrr06fimnnxhy5ba782b1n4aik29g6bln4h1mwy9gn8"))))
+            "0744kfafd98q2zswyzva837qgvmdpfv80ilnp7x4fhdpmmk7bpgq"))))
     (build-system gnu-build-system)
     (inputs
       (list libxrender libxrandr xorgproto libx11))
