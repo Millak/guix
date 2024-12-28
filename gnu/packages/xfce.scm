@@ -116,19 +116,26 @@
   (package
     (name "libxfce4util")
     (version "4.20.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://archive.xfce.org/src/xfce/"
-                                  "libxfce4util/" (version-major+minor version)
-                                  "/" name "-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "14mml8rdj16gkax92h89vcgf6sphp7v3jf5r7n1858lmk6f3yj91"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://gitlab.xfce.org/xfce/" name))
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0r24hx200jvixn8rhcg0cbvv6b3jc4hj1iw2bkvmrcf74m4ck9nj"))))
     (build-system gnu-build-system)
-    (native-inputs
-     (list pkg-config gobject-introspection intltool vala))
-    (propagated-inputs (list glib)) ; required by libxfce4util-1.0.pc
-    (home-page "https://www.xfce.org/")
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "--enable-maintainer-mode" ;for libxfce4util-visibility.c
+              "--enable-gtk-doc")))
+    (native-inputs (list gobject-introspection
+                         vala
+                         xfce4-dev-tools))
+    (propagated-inputs (list glib)) ;required by libxfce4util-1.0.pc
+    (home-page "https://docs.xfce.org/xfce/libxfce4util/")
     (synopsis "Basic utility library for Xfce")
     (description
      "A general-purpose utility library with core application support for the
