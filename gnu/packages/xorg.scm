@@ -4281,17 +4281,17 @@ a display running X server.")
 (define-public xtrans
   (package
     (name "xtrans")
-    (version "1.4.0")
+    (version "1.5.2")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/lib/xtrans-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
           (base32
-            "0wyp0yc6gi72hwc3kjmvm3vkj9p6s407cb6dxx37jh9wb68l8z1p"))))
+            "0v7qvys42md6nvm16xynhb3b8zz534fc60wg0hfi7ab48zivyp2w"))))
     (build-system gnu-build-system)
     (native-inputs (list pkg-config))
     (home-page "https://www.x.org/wiki/")
