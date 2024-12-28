@@ -1865,7 +1865,7 @@ functionality to display information about the most commonly used services.")
 (define-public wlroots
   (package
     (name "wlroots")
-    (version "0.18.0")
+    (version "0.18.2")
     (source
      (origin
        (method git-fetch)
@@ -1874,7 +1874,7 @@ functionality to display information about the most commonly used services.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "13avi2805wrfkghgc7ar273p61svmm85k3g3hg9bf2gaxsz6f91f"))))
+        (base32 "1l1c4m8m1h8rl00y9yi6qjma5m3lhai9hqv5578q69yg2dcwraxw"))))
     (build-system meson-build-system)
     (arguments
      `(#:phases
