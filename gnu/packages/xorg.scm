@@ -3823,14 +3823,14 @@ one from a running X server.")
 (define-public xkbutils
   (package
     (name "xkbutils")
-    (version "1.0.5")
+    (version "1.0.6")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://xorg/individual/app/xkbutils-"
                            version ".tar.xz"))
        (sha256
-        (base32 "197f4pgw3jdnlp7sj37f3xf15ayad20sl7vvg2rvx0j5qplsi97n"))))
+        (base32 "0pp2bsksblvvw0fx667k2bl5sm0baj7pp2cjvq0vmk093vpbp8ii"))))
     (build-system gnu-build-system)
     (inputs
       (list libxt libxaw xorgproto))
