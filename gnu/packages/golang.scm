@@ -4734,21 +4734,19 @@ configuration languages, but other uses may be possible too.")
     (license license:expat)))
 
 (define-public go-github-com-gologme-log
-  ;; this is the same as v1.2.0, only the LICENSE file changed
-  (let ((commit "720ba0b3ccf0a91bc6018c9967a2479f93f56a55"))
     (package
       (name "go-github-com-gologme-log")
-      (version "1.2.0")
+      (version "1.3.0")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/gologme/log")
-               (commit commit)))
+               (commit (string-append "v" version))))
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "0z3gs5ngv2jszp42ypp3ai0pn410v3b2m674g73ma7vsbn2yjk1n"))))
+           "0m7dszaisviq7fgwyxg9lwhxyzdab0w7d1zbilrnarzvyx9wh3ax"))))
       (build-system go-build-system)
       (arguments
        '(#:import-path "github.com/gologme/log"))
@@ -4759,7 +4757,7 @@ configuration languages, but other uses may be possible too.")
 log package.  All the functionality of the built-in package still exists and
 is unchanged.  This package contains a series of small enhancements and
 additions.")
-      (license license:bsd-3))))
+      (license license:bsd-3)))
 
 (define-public go-github-com-kardianos-minwinsvc
   (package
