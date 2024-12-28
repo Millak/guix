@@ -4412,17 +4412,17 @@ formatted dump file, such as produced by xwd.")
 (define-public xorg-rgb
   (package
     (name "xorg-rgb")
-    (version "1.0.6")
+    (version "1.1.0")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/app/rgb-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
           (base32
-            "1c76zcjs39ljil6f6jpx1x17c8fnvwazz7zvl3vbjfcrlmm7rjmv"))))
+            "0yykkr3py1sny3cwrrwp63wm9klcjhkqjzqnd1v62ajvdvsxf0zw"))))
     (build-system gnu-build-system)
     (inputs
      (list xorgproto))
