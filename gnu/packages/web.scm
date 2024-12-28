@@ -370,12 +370,6 @@ and its related documentation.")
                #$version))
       #:phases
       #~(modify-phases %standard-phases
-          ;; XXX: Replace when go-build-system supports nested path.
-          (replace 'check
-            (lambda* (#:key import-path tests? #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion (string-append "src/" import-path)
-                  (invoke "go" "test" "-v" "./...")))))
           (add-after 'install 'install-manpage
             (lambda* (#:key import-path #:allow-other-keys)
               (let ((man1 (string-append #$output "/share/man/man1/"))
@@ -402,8 +396,7 @@ and its related documentation.")
            go-golang-org-x-net
            go-golang-org-x-oauth2
            go-golang-org-x-term
-           go-golang-org-x-text
-           go-mvdan-cc-xurls-v2))
+           go-golang-org-x-text))
     (home-page "https://miniflux.app/")
     (synopsis "Minimalist and opinionated feed reader")
     (description
