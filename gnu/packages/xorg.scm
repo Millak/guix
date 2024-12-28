@@ -207,7 +207,7 @@ autotools system.")
 (define-public lndir
   (package
     (name "lndir")
-    (version "1.0.4")
+    (version "1.0.5")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -215,7 +215,7 @@ autotools system.")
                     "lndir-" version ".tar.xz"))
               (sha256
                (base32
-                "11syg5hx3f7m1d2p7zw717lryk819h6wk8h4vmapfdxvsflkfd1y"))))
+                "1nsd23kz6iqxfcis3432zq01i54n98b94m2gcsay1k3mamx5fr9v"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
