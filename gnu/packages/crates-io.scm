@@ -13733,21 +13733,17 @@ Argument Parser.")
 (define-public rust-clap-builder-4
   (package
     (name "rust-clap-builder")
-    (version "4.5.21")
+    (version "4.5.23")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "clap_builder" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1v10zx5v43yk7f4wwr0wxxlr1mx0k8c70lxa6aymwyyccym9aymi"))))
+        (base32 "0f28rgc09kdgfq1hgg1bb1ydaw243w6dwyw74syz439k6b32yn1h"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-test-flags (list "--release" "--"
-                                ;; Some of the doc tests fail.
-                                "--skip=builder::range::ValueRange::new"
-                                "--skip=builder::value_parser::value_parser")
-       #:cargo-inputs (("rust-anstream" ,rust-anstream-0.6)
+     `(#:cargo-inputs (("rust-anstream" ,rust-anstream-0.6)
                        ("rust-anstyle" ,rust-anstyle-1)
                        ("rust-backtrace" ,rust-backtrace-0.3)
                        ("rust-clap-lex" ,rust-clap-lex-0.7)
@@ -13755,9 +13751,10 @@ Argument Parser.")
                        ("rust-terminal-size" ,rust-terminal-size-0.4)
                        ("rust-unicase" ,rust-unicase-2)
                        ("rust-unicode-width" ,rust-unicode-width-0.2))
-       #:cargo-development-inputs (("rust-color-print" ,rust-color-print-0.3)
-                                   ("rust-static-assertions" ,rust-static-assertions-1)
-                                   ("rust-unic-emoji-char" ,rust-unic-emoji-char-0.9))))
+       #:cargo-development-inputs
+       (("rust-color-print" ,rust-color-print-0.3)
+        ("rust-static-assertions" ,rust-static-assertions-1)
+        ("rust-unic-emoji-char" ,rust-unic-emoji-char-0.9))))
     (home-page "https://github.com/clap-rs/clap")
     (synopsis "Full-featured Command Line Argument Parser")
     (description
