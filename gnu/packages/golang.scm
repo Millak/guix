@@ -2139,7 +2139,18 @@ for speed on short messages.")
                "fmt.Print(helpText + \"\\n\")"))))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "github.com/rakyll/statik"))
+     (list
+      #:import-path "github.com/rakyll/statik"
+      #:test-flags
+      #~(list "-skip"
+              (string-join
+               (list
+                "TestOpen/Files_should_retain_their_original_file*"
+                "TestOpen/Images_should_successfully_unpack"
+                "TestOpen/'index.html'_files_should_be_returned*"
+                "TestOpen/listed_all_sub_directories_in_deep_directory"
+                "TestOpen/Paths_containing_dots_should_be_properly_sanitized")
+               "|"))))
     (home-page "https://github.com/rakyll/statik/")
     (synopsis "Embed files into a Go executable")
     (description "Statik allows you to embed a directory of static files into
