@@ -5416,7 +5416,7 @@ Wayland.")
 (define-public libxcursor
   (package
     (name "libxcursor")
-    (version "1.2.1")
+    (version "1.2.3")
     (source
      (origin
        (method url-fetch)
@@ -5424,7 +5424,7 @@ Wayland.")
                            version ".tar.xz"))
        (sha256
         (base32
-         "011195an3w4xld3x0dr534kar1xjf52q96hmf0hgvfhh2rrl7ha6"))))
+         "1h62narayrhrkqalrmx7z3s6yppw1acbp5id3skrvrygshnl1sgx"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--disable-static")))
