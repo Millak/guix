@@ -254,14 +254,14 @@ which can be read by any architecture.")
 (define-public xorgproto
   (package
     (name "xorgproto")
-    (version "2023.2")
+    (version "2024.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://xorg/individual/proto"
                                   "/xorgproto-" version ".tar.xz"))
               (sha256
                (base32
-                "0b4c27aq25w1fccks49p020avf9jzh75kaq5qwnww51bp1yvq7xn"))))
+                "0nfbbi4j130m2gxzp20hp642xizbbl68jpbzahiq8nw183yja8ip"))))
     (build-system gnu-build-system)
     (propagated-inputs
      ;; To get util-macros in (almost?) all package inputs.
@@ -272,18 +272,6 @@ which can be read by any architecture.")
      "This package provides the headers and specification documents defining
 the core protocol and (many) extensions for the X Window System.")
     (license license:x11)))
-
-(define-public xorgproto-2024
-  (package
-    (inherit xorgproto)
-    (version "2024.1")
-        (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://xorg/individual/proto"
-                                  "/xorgproto-" version ".tar.xz"))
-              (sha256
-               (base32
-                "0nfbbi4j130m2gxzp20hp642xizbbl68jpbzahiq8nw183yja8ip"))))))
 
 (define-public bigreqsproto
   (package
@@ -5379,7 +5367,7 @@ EGLStream families of extensions.")
                   wayland-protocols
                   xkbcomp
                   xkeyboard-config
-                  xorgproto-2024
+                  xorgproto
                   xtrans))
     (native-inputs (cons pkg-config
                          (if (%current-target-system)
