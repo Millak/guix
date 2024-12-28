@@ -3643,6 +3643,14 @@ consecutive lines and since program start.")
                              (bin (string-append out "/bin"))
                              (sk  (car (find-files "target" "^sk$"))))
                         (install-file sk bin))))
+                  (add-after 'build 'build-extras
+                    (lambda _
+                      ;; Delete the manpages and completions before rebuilding.
+                      (for-each delete-file '("man/man1/sk.1"
+                                              "shell/completion.bash"
+                                              "shell/completion.zsh"))
+                      (invoke "cargo" "run" "--package" "xtask" "mangen")
+                      (invoke "cargo" "run" "--package" "xtask" "compgen")))
                   (add-after 'install 'install-extras
                     (lambda* (#:key outputs #:allow-other-keys)
                       (let* ((out (assoc-ref outputs "out"))
