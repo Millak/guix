@@ -21157,8 +21157,34 @@ Instead, enable the @code{derive} feature of the @code{arbitrary} crate.")
                        ("rust-quote" ,rust-quote-1)
                        ("rust-syn" ,rust-syn-1))))))
 
+(define-public rust-derive-builder-0.20
+  (package
+    (name "rust-derive-builder")
+    (version "0.20.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "derive_builder" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0is9z7v3kznziqsxa5jqji3ja6ay9wzravppzhcaczwbx84znzah"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-derive-builder-macro" ,rust-derive-builder-macro-0.20))
+       #:cargo-development-inputs (("rust-rustversion" ,rust-rustversion-1)
+                                   ("rust-serde" ,rust-serde-1)
+                                   ("rust-serde-json" ,rust-serde-json-1)
+                                   ("rust-trybuild" ,rust-trybuild-1))))
+    (home-page "https://github.com/colin-kiegel/rust-derive-builder")
+    (synopsis "Builder pattern for arbitrary structs")
+    (description "Rust macro to automatically implement the builder pattern
+for arbitrary structs.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-derive-builder-0.13
   (package
+    (inherit rust-derive-builder-0.20)
     (name "rust-derive-builder")
     (version "0.13.1")
     (source (origin
@@ -21168,7 +21194,6 @@ Instead, enable the @code{derive} feature of the @code{arbitrary} crate.")
               (sha256
                (base32
                 "1irqx6bz74kx48ivdwqp2xl1ibr8dbdwgh6573r8g00d82gicncg"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-derive-builder-macro" ,rust-derive-builder-macro-0.13))
@@ -21177,12 +21202,7 @@ Instead, enable the @code{derive} feature of the @code{arbitrary} crate.")
         ("rust-rustversion" ,rust-rustversion-1)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-trybuild" ,rust-trybuild-1))))
-    (home-page "https://github.com/colin-kiegel/rust-derive-builder")
-    (synopsis "Builder pattern for arbitrary structs")
-    (description "Rust macro to automatically implement the builder pattern
-for arbitrary structs.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-trybuild" ,rust-trybuild-1))))))
 
 (define-public rust-derive-builder-0.12
   (package
