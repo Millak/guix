@@ -34,6 +34,25 @@
 
 (channel-news
  (version 0)
+
+ (entry (commit "1305f78d05f4e0027162c1b7e783fc127a49fb8e")
+        (title
+         (en "@command{guix system reconfigure} now supports kexec"))
+        (body
+         (en "If you are using Guix System, you'll be delighted to know that
+@command{guix system reconfigure} now loads the new system for fast reboot
+@i{via} Linux's kexec mechanism---unless given the @option{--no-kexec} option.
+The same goes for @command{guix deploy}.
+
+Kexec allows Linux to reboot straight into a new kernel (and operating
+system), bypassing the BIOS and the bootloader.  The @command{reboot} command,
+starting from Shepherd 1.0.0, has a new @option{--kexec} (or @option{-k})
+option that lets you reboot into a previously-loaded system; use
+@command{reboot --kexec} to take advantage of this new @command{guix system
+reconfigure} feature.
+
+Run @command{info \"(guix) Invoking guix system\"}, for more info.")))
+
  (entry (commit "ccf72d5074b0c5ba793e686cbb1d6eaad39824bf")
         (title
          (de "Neues Format @samp{appimage} für den Befehl @command{guix pack}")
