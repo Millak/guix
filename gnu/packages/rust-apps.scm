@@ -3844,24 +3844,24 @@ terminal won't have to take up any space.")
 (define-public swayr
   (package
    (name "swayr")
-   (version "0.27.3")
+   (version "0.27.4")
    (source
     (origin
      (method url-fetch)
      (uri (crate-uri "swayr" version))
      (file-name (string-append name "-" version ".tar.gz"))
      (sha256
-      (base32 "1akmq1qa3v8jxn7qgwmr70dhgamb1mvn2jkqdawc6i8accz33gca"))))
+      (base32 "19p7pwcfbcbia8hbx7ql9krl2fcdib2db9xs57ylv6cfccgipv9q"))))
    (build-system cargo-build-system)
    (arguments
     `(#:cargo-test-flags
-      '("--release" "--"
+      '("--"
         "--skip=config::test_load_swayr_config")
       #:install-source? #f
       #:cargo-inputs
       (("rust-clap" ,rust-clap-4)
        ("rust-directories" ,rust-directories-5)
-       ("rust-env-logger" ,rust-env-logger-0.10)
+       ("rust-env-logger" ,rust-env-logger-0.11)
        ("rust-log" ,rust-log-0.4)
        ("rust-once-cell" ,rust-once-cell-1)
        ("rust-peg" ,rust-peg-0.8)
