@@ -3759,34 +3759,42 @@ Spotify Connect protocol, which includes the official Spotify mobile apps.")
 (define-public svd2rust
   (package
     (name "svd2rust")
-    (version "0.19.0")
+    (version "0.35.0")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "svd2rust" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
+        (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32
-          "0q8slfgjfhpljzlk2myb0i538mfq99q1ljn398jm17r1q2pjjxhv"))))
+         (base32 "0fjkd9b0c2pfxa9czaxjg6bcqy1bnc6s423mv069krbpbyxf2a5g"))
+        (snippet
+         #~(begin (use-modules (guix build utils))
+                  (substitute* "Cargo.toml"
+                    (("\"=([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                     (string-append "\"^" version)))))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:install-source? #f
+       #:cargo-inputs
        (("rust-anyhow" ,rust-anyhow-1)
-        ("rust-cast" ,rust-cast-0.2)
-        ("rust-clap" ,rust-clap-2)
-        ("rust-clap-conf" ,rust-clap-conf-0.1)
-        ("rust-env-logger" ,rust-env-logger-0.7)
+        ("rust-clap" ,rust-clap-4)
+        ("rust-env-logger" ,rust-env-logger-0.11)
         ("rust-inflections" ,rust-inflections-1)
+        ("rust-irx-config" ,rust-irx-config-3)
         ("rust-log" ,rust-log-0.4)
-        ("rust-proc-macro2" ,rust-proc-macro2-0.4)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-svd-parser" ,rust-svd-parser-0.10)
-        ("rust-syn" ,rust-syn-1)
-        ("rust-thiserror" ,rust-thiserror-1))))
+        ("rust-regex" ,rust-regex-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-serde-yaml" ,rust-serde-yaml-0.9)
+        ("rust-svd-parser" ,rust-svd-parser-0.14)
+        ("rust-svd-rs" ,rust-svd-rs-0.14)
+        ("rust-syn" ,rust-syn-2)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-url" ,rust-url-2))))
     (home-page "https://github.com/rust-embedded/svd2rust/")
-    (synopsis
-     "Generate Rust register maps (`struct`s) from SVD files")
+    (synopsis "Generate Rust register maps (`struct`s) from SVD files")
     (description
      "This program can be used to generate Rust register maps (`struct`s) from SVD
 files.")
