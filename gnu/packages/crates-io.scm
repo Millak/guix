@@ -36944,6 +36944,40 @@ Rust.")
 Resource Identifiers} and @acronym{URIs, Uniform Resource Identifiers}.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-irx-config-3
+  (package
+    (name "rust-irx-config")
+    (version "3.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "irx-config" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0slp6f0ysnfwi1fyhd5bh2jy0h1a5ck4kgfppzzmsqy5z63a0rk2"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-blake2b-simd" ,rust-blake2b-simd-1)
+                       ("rust-blake3" ,rust-blake3-1)
+                       ("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-clap" ,rust-clap-4)
+                       ("rust-derive-builder" ,rust-derive-builder-0.20)
+                       ("rust-json5" ,rust-json5-0.4)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-serde-yaml" ,rust-serde-yaml-0.9)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-toml" ,rust-toml-0.8))
+       #:cargo-development-inputs
+       (("rust-serde" ,rust-serde-1)
+        ("rust-version-sync" ,rust-version-sync-0.9))))
+    (home-page "https://github.com/abakay/irx-config/")
+    (synopsis "Represent/parse configuration from different sources")
+    (description
+     "This library provides a convenient way to represent/parse configuration
+from different sources.")
+    (license license:bsd-2)))
+
 (define-public rust-is-ci-1
   (package
     (name "rust-is-ci")
