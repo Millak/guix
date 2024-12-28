@@ -992,7 +992,7 @@ generation XML files and parses these XML files into Haskell data structures.")
 (define-public iceauth
   (package
     (name "iceauth")
-    (version "1.0.9")
+    (version "1.0.10")
     (source
       (origin
         (method url-fetch)
@@ -1001,7 +1001,7 @@ generation XML files and parses these XML files into Haskell data structures.")
                version
                ".tar.xz"))
         (sha256
-         (base32 "01cc816fvdkkfcnqnyvgcshcip2jzjivwa8hzdvsz0snak5xzf9c"))))
+         (base32 "0ad0kbr5bfdk9na3jmjpg26gd6hwv4lxja2nkdwxrybal9yzpvix"))))
     (build-system gnu-build-system)
     (inputs
       (list libice))
