@@ -8001,6 +8001,40 @@ facilitate dealing with JOSE messages when testing or debugging.")
      "This package provides a command line tool to generate gojay's marshaling
 and unmarshaling interface implementation for custom struct type(s).")))
 
+(define-public go-gqlclient
+  (package
+    (inherit go-git-sr-ht-emersion-gqlclient)
+    (name "go-gqlclient")
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-git-sr-ht-emersion-gqlclient)
+       ((#:tests? _ #t) #f)
+       ((#:install-source? _ #t) #f)
+       ((#:phases _ '%standard-phases)
+        #~(modify-phases %standard-phases
+            (replace 'build
+              (lambda arguments
+                (for-each
+                 (lambda (cmd)
+                   (apply (assoc-ref %standard-phases 'build)
+                          `(,@arguments #:import-path ,cmd)))
+                 (list "git.sr.ht/~emersion/gqlclient/cmd/gqlclient"
+                       "git.sr.ht/~emersion/gqlclient/cmd/gqlclientgen"
+                       "git.sr.ht/~emersion/gqlclient/cmd/gqlintrospect"))))
+            (replace 'install
+              (lambda arguments
+                (for-each
+                 (lambda (cmd)
+                   (apply (assoc-ref %standard-phases 'install)
+                          `(,@arguments #:import-path ,cmd)))
+                 (list "git.sr.ht/~emersion/gqlclient/cmd/gqlclient"
+                       "git.sr.ht/~emersion/gqlclient/cmd/gqlclientgen"
+                       "git.sr.ht/~emersion/gqlclient/cmd/gqlintrospect"))))))))
+    (description
+     "This package provides command line tools: @code{gqlclient},
+@code{gqlclientgen}, and @code{gqlintrospect}.  For the Golang libriray, see
+go-git-sr-ht-emersion-gqlclient package.")))
+
 (define-public go-html2text
   (package
     (inherit go-github-com-jaytaylor-html2text)
