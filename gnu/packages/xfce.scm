@@ -308,23 +308,29 @@ upstream occasionally.")
   (package
     (name "exo")
     (version "4.20.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://archive.xfce.org/src/xfce/"
-                                  "exo/" (version-major+minor version) "/"
-                                  "exo-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "1387xib59z9m43z772lz3kwjrcd6id9zs5yr3khgs7jz4jczfxs2"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.xfce.org/xfce/exo")
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zbj5q0ih5kvxvays4ajjsmxm2938jmn4648062agxxjl8asqlcs"))))
     (build-system gnu-build-system)
-    (native-inputs
-     (list pkg-config intltool))
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "--enable-maintainer-mode" ;for exo-enum-types.c, etc.
+              "--enable-gtk-doc")))
+    (native-inputs (list docbook-xsl
+                         libxslt
+                         xfce4-dev-tools))
     (propagated-inputs
      ;; exo-2.pc refers to all these.
      (list gtk+ libxfce4util))
-    (inputs
-     (list libxfce4ui))
-    (home-page "https://www.xfce.org/")
+    (inputs (list libxfce4ui))
+    (home-page "https://docs.xfce.org/xfce/exo/")
     (synopsis "Extension library for Xfce")
     (description
      "An extension library to Xfce.  While Xfce comes with quite a few libraries
