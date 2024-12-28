@@ -275,31 +275,30 @@ it to your needs by using several command line options.")
   (package
     (name "elementary-xfce-icon-theme")
     (version "0.20")
-    (source (origin
-              (method git-fetch)
-              (uri
-               (git-reference
-                (url "https://github.com/shimmerproject/elementary-xfce")
-                (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0fdfqf98rk3z30qcs5ca3i3ybwg4icvq6yrxwv8i3yl0ikw6rc4k"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/shimmerproject/elementary-xfce")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0fdfqf98rk3z30qcs5ca3i3ybwg4icvq6yrxwv8i3yl0ikw6rc4k"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:tests? #f                      ; no check target
-       #:make-flags '("CC=gcc")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'make-git-checkout-writable
-           (lambda _
-             (for-each make-file-writable (find-files "."))
-             #t)))))
-    (native-inputs
-     (list gtk+ optipng pkg-config))
+     (list
+      #:tests? #f ;no check target
+      #:make-flags #~(list "CC=gcc")
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'make-git-checkout-writable
+                     (lambda _
+                       (for-each make-file-writable
+                                 (find-files ".")) #t)))))
+    (native-inputs (list gtk+ optipng pkg-config))
     (home-page "https://shimmerproject.org/")
     (synopsis "Elementary icons extended and maintained for Xfce")
-    (description "This is a fork of the upstream elementary project.  This icon
+    (description
+     "This is a fork of the upstream elementary project. This icon
 theme is supposed to keep everything working for Xfce, but gets updates from
 upstream occasionally.")
     (license gpl2+)))
