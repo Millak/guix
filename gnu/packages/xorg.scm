@@ -428,7 +428,7 @@ provided.")
 (define-public editres
   (package
     (name "editres")
-    (version "1.0.8")
+    (version "1.0.9")
     (source
       (origin
         (method url-fetch)
@@ -437,14 +437,14 @@ provided.")
                version
                ".tar.xz"))
         (sha256
-         (base32 "1ydn32x9qh2zkn90w6nfv33gcq75z67w93bakkykadl8n7zmvkw3"))))
+         (base32 "1imk7mgdc3q9lf058xisajij374x8r31ynvqmwbs9khfdxx3zz6d"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
        (list (string-append "--with-appdefaultdir="
                             %output ,%app-defaults-dir))))
     (inputs
-     (list libxaw libxmu libxt))
+     (list libxaw libxkbfile libxmu libxt))
     (native-inputs
      (list pkg-config))
     (home-page "https://www.x.org/wiki/")
