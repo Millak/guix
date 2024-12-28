@@ -10669,3 +10669,52 @@ Mathics3.")
     (synopsis "A Django front end for Mathics3.")
     (description "This package provides a Django front end for Mathics3.")
     (license license:gpl3)))
+
+(define-public lie
+  (package
+    (name "lie")
+    (version "2.2.2")
+    ;; Original: <http://www-math.univ-poitiers.fr/~maavl/LiE/conLiE.tar.gz>
+    ;; This source has the license file added as allowed on
+    ;; <http://www-math.univ-poitiers.fr/~maavl/LiE/>.
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/daym/LiE")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0qb9y08mdl2wr77lf61wv4xks429sw99xacb9gh91w242z0nbcqn"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:parallel-build? #f
+       ;; There are test input files under progs/--but no expected results.
+       #:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'configure
+           (lambda* (#:key outputs #:allow-other-keys)
+             (substitute* "make_lie"
+              (("`/bin/pwd`")
+               (string-append (assoc-ref outputs "out")
+                              "/bin")))))
+         (add-after 'install 'install-lie-program
+           (lambda* (#:key outputs #:allow-other-keys)
+             (for-each
+               (lambda (name)
+                 (install-file name
+                               (string-append (assoc-ref outputs "out")
+                                              "/bin")))
+                  '("lie" "Lie.exe")))))))
+    (native-inputs
+     (list bison))
+    (inputs
+     (list readline))
+    (synopsis "Lie group computer algebra module")
+    (description "This package provides a computer algebra module for Lie
+groups.  Documentation is available on
+@url{http://www-math.univ-poitiers.fr/~maavl/pdf/LiE-manual.pdf}.")
+    (home-page "http://www-math.univ-poitiers.fr/~maavl/LiE/")
+    ;; <http://www-math.univ-poitiers.fr/~maavl/LiE/> says LGPL.
+    (license license:lgpl3+)))
