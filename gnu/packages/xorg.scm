@@ -4917,17 +4917,17 @@ new API's in libXft, or the legacy API's in libX11.")
 (define-public libxi
   (package
     (name "libxi")
-    (version "1.7.10")
+    (version "1.8.2")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/lib/libXi-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
           (base32
-            "0q8hz3slga3w3ch8wp0k7ay9ilhz315qnab0w1y2x9w3cf7hv8rn"))))
+            "0161qsac0dgvkkcihpm2062p1lk2l5mj4i7smd713qnnadg5bq6h"))))
     (build-system gnu-build-system)
     (outputs '("out" "doc"))             ;man pages represent 28% of the total
     (arguments
