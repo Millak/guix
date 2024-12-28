@@ -2371,8 +2371,26 @@ Windows crate.")
     (description "Macros for the windows crate")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-windows-metadata-0.58
+  (package
+    (name "rust-windows-metadata")
+    (version "0.58.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "windows-metadata" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "028qjb9gdljm1m9lrbg1kd1rjy8s8hzsj0k313kykkqj60y7z0rf"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/microsoft/windows-rs")
+    (synopsis "Windows metadata reader")
+    (description "This package provides Windows metadata reader.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-windows-metadata-0.57
   (package
+    (inherit rust-windows-metadata-0.58)
     (name "rust-windows-metadata")
     (version "0.57.0")
     (source
@@ -2381,12 +2399,7 @@ Windows crate.")
        (uri (crate-uri "windows-metadata" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1z1xl76p0zjwsvyj16w6pbp2layhjqz13y34pid9x7avh9vd0243"))))
-    (build-system cargo-build-system)
-    (home-page "https://github.com/microsoft/windows-rs")
-    (synopsis "Windows metadata reader")
-    (description "This package provides Windows metadata reader.")
-    (license (list license:expat license:asl2.0))))
+        (base32 "1z1xl76p0zjwsvyj16w6pbp2layhjqz13y34pid9x7avh9vd0243"))))))
 
 (define-public rust-windows-metadata-0.56
   (package
