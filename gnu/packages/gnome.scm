@@ -3237,6 +3237,33 @@ features including, but not limited to: multiple extension points; on-demand
 API.")
     (license license:lgpl2.0+)))
 
+(define-public libpeas-2
+  (package
+    (inherit libpeas)
+    (name "libpeas")
+    (version "2.0.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://gnome/sources/" name "/"
+                           (version-major+minor version)  "/"
+                           name "-" version ".tar.xz"))
+       (sha256
+        (base32
+         "1pg6km41bp9ayr6z9pi40nc6mkw2ccdxkcdsvl9lxd9isxrjyvrp"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments libpeas)
+       ((#:configure-flags flags #~(list))
+        #~(cons* "-Dlua51=false" #$flags))))
+    (inputs
+     (list gtk
+           gjs
+           glade3
+           ;; lua-5.1
+           ;; lua5.1-lgi
+           python
+           python-pygobject))))
+
 (define-public gtkglext
   (package
     (name "gtkglext")
