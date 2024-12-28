@@ -491,6 +491,7 @@ The plug-in is made to work with 1 or 2 channels (LADSPA plugin),
     (arguments
      `(#:import-path "github.com/noisetorch/NoiseTorch"
        #:install-source? #f
+       #:test-subdirs '(".")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'copy-rnnoise-library
