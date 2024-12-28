@@ -13627,19 +13627,18 @@ interoperation between crates in Rust.")
 (define-public rust-clap-4
   (package
     (name "rust-clap")
-    (version "4.5.21")
+    (version "4.5.23")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "clap" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0kv0n5jbpfpl9xyags5lpyq5cccbx6g36s98lpgi8xbwbag4nfzv"))))
+        (base32 "110cf0i9fmkfqzqhi1h8za9y0vnr5rwhy3wmv1p0rcgp5vnffd9i"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-clap-builder" ,rust-clap-builder-4)
-                       ("rust-clap-derive" ,rust-clap-derive-4)
-                       ("rust-terminal-size" ,rust-terminal-size-0.4))
+                       ("rust-clap-derive" ,rust-clap-derive-4))
        #:cargo-development-inputs (("rust-automod" ,rust-automod-1)
                                    ("rust-clap-cargo" ,rust-clap-cargo-0.14)
                                    ("rust-humantime" ,rust-humantime-2)
