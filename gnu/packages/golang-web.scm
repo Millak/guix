@@ -1363,6 +1363,33 @@ client in Golang.")
      (modify-inputs (package-native-inputs go-github-com-datadog-datadog-go)
        (append go-github-com-golang-mock)))))
 
+(define-public go-github-com-davecgh-go-xdr
+  (package
+    (name "go-github-com-davecgh-go-xdr")
+    (version "0.0.0-20161123171359-e6a2ba005892")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/davecgh/go-xdr")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0vifrz4iil4r7k8sz5iqlfbh80ysgs5abp2simgyhsbrkxrrsrrd"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/davecgh/go-xdr/xdr2"
+      #:unpack-path "github.com/davecgh/go-xdr"))
+    (home-page "https://github.com/davecgh/go-xdr")
+    (synopsis "Pure Go implementation of the XDR standard")
+    (description
+     "@code{go-xdr} implements the data representation portion of the External
+Data Representation (XDR) standard protocol as specified in RFC
+4506 (obsoletes RFC 1832 and RFC 1014) in pure Go.")
+    (license license:isc)))
+
 (define-public go-github-com-elazarl-goproxy
   (package
     (name "go-github-com-elazarl-goproxy")
