@@ -5693,14 +5693,14 @@ The XCB util-image module provides the following library:
 (define-public xcb-util-keysyms
   (package
     (name "xcb-util-keysyms")
-    (version "0.4.0")
+    (version "0.4.1")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://xorg/individual/xcb/"
-                                 name "-" version ".tar.bz2"))
+                                 name "-" version ".tar.xz"))
              (sha256
               (base32
-               "1nbd45pzc1wm6v5drr5338j4nicbgxa5hcakvsvm5pnyy47lky0f"))))
+               "0f66snk179hmp8ppgv1zp9y7pl1vzn52znpikm1fsaj1ji90l9kw"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--disable-static")))
