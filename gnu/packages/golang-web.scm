@@ -6628,7 +6628,7 @@ an interface to implement any other minifier.")
 (define-public go-github-com-tdewolff-parse-v2
   (package
     (name "go-github-com-tdewolff-parse-v2")
-    (version "2.6.6")
+    (version "2.7.19")
     (source
      (origin
        (method git-fetch)
@@ -6637,7 +6637,7 @@ an interface to implement any other minifier.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1dqki9ima079k9a3l72igmx5dml8qsl9z8rzw8a433f4gjhlv320"))))
+        (base32 "17yswndnxgdj425h5q25wfvchjxnjf6nxyx76k9yn12r16arbl44"))))
     (build-system go-build-system)
     (arguments
      (list
