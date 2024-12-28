@@ -4105,7 +4105,7 @@ refers to the included common xorg.css stylesheet.")
 (define-public xpr
   (package
     (name "xpr")
-    (version "1.1.0")
+    (version "1.2.0")
     (source
       (origin
         (method url-fetch)
@@ -4115,7 +4115,7 @@ refers to the included common xorg.css stylesheet.")
                ".tar.xz"))
         (sha256
           (base32
-            "1iaphm96kha6bzz34cj82r2lp5hrdpqwdca04iij4rinflab3fx0"))))
+            "1hyf6mc2l7lzkf21d5j4z6glg9y455hlsg8lv2lz028k6gw0554b"))))
     (build-system gnu-build-system)
     (inputs
       (list xorgproto libxmu libx11))
