@@ -1406,22 +1406,23 @@ configuration files.")
 (define-public libxmu
   (package
     (name "libxmu")
-    (version "1.1.3")
+    (version "1.2.1")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/lib/libXmu-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
           (base32
-            "0cdpqnx6258i4l6qhphvkdiyspysg0i5caqjy820kp63wwjk4d4w"))))
+            "1cp82iz7yki63iykvb3alwy4nwy01k2axi5rqpyfafca4j9pgcpw"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--disable-static")))
-    (inputs
-      (list libxt xorgproto libxext))
+    (propagated-inputs
+     ;; In Requires or Requires.private of xmu.pc
+     (list libx11 libxt xorgproto libxext))
     (native-inputs
       (list pkg-config))
     (home-page "https://www.x.org/wiki/")
