@@ -146,53 +146,38 @@ Xfce Desktop Environment.")
   (package
     (name "xfconf")
     (version "4.20.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://archive.xfce.org/src/xfce/"
-                                  "xfconf/" (version-major+minor version) "/"
-                                  "xfconf-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "1zbyar9hzvqf498z1a3q6kf6r77a6qm9x2gw6p7i6sviy5h3ri4b"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.xfce.org/xfce/xfconf")
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1k4d2gg77p3jdr0rankz2mv50hy7ddf5xl32si1mdby1wvpa9r2k"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:phases
-       ;; Run check after install phase to test dbus activation.
-       (modify-phases %standard-phases
-         (add-before 'configure 'patch-configure
-           (lambda _
-             (substitute* "configure"
-               ;; XDG_CHECK_PACKAGE_BINARY requires an absolute path.
-               (("\\$PKG_CONFIG --variable=gdbus_codegen gio-2.0")
-                "type -p gdbus-codegen"))))
-         ;; tests-end seems to hang forever
-         (add-before 'configure 'patchout-tests-end
-           (lambda _
-             (substitute* "tests/Makefile.in"
-               (("tests-end") ""))))
-         (add-after 'install 'custom-check
-           (lambda _
-             (setenv "HOME" (getenv "TMPDIR")) ; xfconfd requires a writable HOME
-             ;; Run test-suite under a dbus session.
-             (setenv "XDG_DATA_DIRS" ; for finding org.xfce.Xfconf.service
-                     (string-append %output "/share"))
-             ;; For the missing '/etc/machine-id'.
-             (setenv "DBUS_FATAL_WARNINGS" "0")
-             (invoke "dbus-launch" "make" "check")))
-         (delete 'check))))
-    (native-inputs
-     (list pkg-config
-           intltool
-           `(,glib "bin") ;; for gdbus-codegen
-           gobject-introspection
-           vala
-           dbus))
+     (list
+      #:configure-flags #~(list "--enable-gtk-doc")
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda _
+              (setenv "HOME"
+                      (getenv "TMPDIR")) ;xfconfd requires a writable HOME
+              ;; For the missing '/etc/machine-id'.
+              (setenv "DBUS_FATAL_WARNINGS" "0")
+              ;; Run test-suite under a dbus session.
+              (invoke "dbus-launch" "make" "check"))))))
+    (native-inputs (list dbus
+                         gobject-introspection
+                         vala
+                         xfce4-dev-tools))
     (propagated-inputs
      ;; libxfconf-0.pc refers to all these.
      (list glib))
-    (inputs
-     (list libxfce4util))
-    (home-page "https://www.xfce.org/")
+    (inputs (list libxfce4util))
+    (home-page "https://docs.xfce.org/xfce/xfconf/")
     (synopsis "Configuration storage and query system for Xfce")
     (description
      "Settings daemon for Xfce, implemented as a D-Bus-based configuration
