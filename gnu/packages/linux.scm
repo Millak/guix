@@ -8013,7 +8013,7 @@ monitoring tools for Linux.  These include @code{mpstat}, @code{iostat},
      (list #:tests? #f                  ; no tests
            #:make-flags
            #~(list (string-append "prefix=" #$output)
-                   (string-append "sysconfdir=" #$output "/etc"))
+                   (string-append "sysconfdir=" #$output "/lib"))  ;udev rule
            #:phases
            #~(modify-phases %standard-phases
                (delete 'configure)
