@@ -14148,14 +14148,14 @@ stream of tokens.")
 (define-public rust-clap-mangen-0.2
   (package
     (name "rust-clap-mangen")
-    (version "0.2.23")
+    (version "0.2.24")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "clap_mangen" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1ssfnb9fihhdf3xjlxslhqsrnlc4h8v8vkag4zildspv9pyiax7i"))))
+                "1psbhrshcyz4ydxgjny338l4ijs4ys1ppg893iqshksxvjzrrbpv"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
