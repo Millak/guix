@@ -6684,14 +6684,14 @@ a configuration file reusable by xcursorgen.")
 (define-public gccmakedep
   (package
     (name "gccmakedep")
-    (version "1.0.3")
+    (version "1.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://xorg/individual/util/gccmakedep-"
-                           version ".tar.bz2"))
+                           version ".tar.xz"))
        (sha256
-        (base32 "1r1fpy5ni8chbgx7j5sz0008fpb6vbazpy1nifgdhgijyzqxqxdj"))))
+        (base32 "1di5rxv930nhf5ls07fx04l0lqsakxycplmrx4kc6qzvd63zk22h"))))
     (build-system gnu-build-system)
     (synopsis "Create dependencies in makefiles using 'gcc -M'")
     (description
