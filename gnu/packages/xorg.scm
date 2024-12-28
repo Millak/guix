@@ -4578,17 +4578,17 @@ cannot be adequately worked around on the client side of the wire.")
 (define-public libxrender
   (package
     (name "libxrender")
-    (version "0.9.10")
+    (version "0.9.12")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/lib/libXrender-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
           (base32
-            "0j89cnb06g8x79wmmnwzykgkkfdhin9j7hjpvsxwlr3fz1wmjvf0"))))
+            "15qv3lbxyx61x55lwmafpy8idb836is82i1213bchfcblj6i4cmq"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
