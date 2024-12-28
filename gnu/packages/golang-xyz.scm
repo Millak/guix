@@ -10667,6 +10667,34 @@ storage system.")
 @url{https://en.wikipedia.org/wiki/Bloom_filter, bloom filter}.")
     (license license:bsd-2)))
 
+(define-public go-github-com-tdewolff-argp
+  (package
+    (name "go-github-com-tdewolff-argp")
+    (version "0.0.0-20240625173203-87b04d5d3e52")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tdewolff/argp")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0d2xqir997qrxkwmbb6pn5hgl9ii0nz19f19lrgc4ixjhxxjwyy5"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/tdewolff/argp"))
+    (native-inputs
+     (list go-github-com-tdewolff-test))
+    (propagated-inputs
+     (list go-github-com-go-sql-driver-mysql
+           go-github-com-jmoiron-sqlx
+           go-github-com-pelletier-go-toml))
+    (home-page "https://github.com/tdewolff/argp")
+    (synopsis "GNU command line argument parser")
+    (description "Command line argument parser following the GNU standard.")
+    (license license:expat)))
+
 (define-public go-github-com-teambition-rrule-go
   (package
     (name "go-github-com-teambition-rrule-go")
