@@ -18,6 +18,7 @@
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 45mg <45mg.writes@gmail.com>
+;;; Copyright © 2024 Raven Hallsby <karl@hallsby.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1862,6 +1863,7 @@ rules."
            "libksysguard"
            "ktexteditor"
            "powerdevil"
+           "bluedevil"
            "kwallet"
            "plasma-firewall"))))
 
