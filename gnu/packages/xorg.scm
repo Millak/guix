@@ -2854,17 +2854,17 @@ X server.")
 (define-public xf86-video-fbdev
   (package
     (name "xf86-video-fbdev")
-    (version "0.5.0")
+    (version "0.5.1")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/driver/xf86-video-fbdev-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
           (base32
-            "16a66zr0l1lmssa07i3rzy07djxnb45c17ks8c71h8l06xgxihyw"))))
+            "11zk8whari4m99ad3w30xwcjkgya4xbcpmg8710q14phkbxw0aww"))))
     (build-system gnu-build-system)
     (inputs (list xorg-server))
     (native-inputs (list pkg-config))
