@@ -411,23 +411,28 @@ management D-Bus specification.")
   (package
     (name "libxfce4windowing")
     (version "4.20.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://archive.xfce.org/src/xfce/"
-                                  name "/" (version-major+minor version) "/"
-                                  name "-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "0s4zjf7bwzski7zsmb7i5frd4xr8w7ng8gn8285b0vv0g4frpwjn"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.xfce.org/xfce/libxfce4windowing")
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "158jhw5kq3dzmgmy9wr9fgspwcdq84r6hjfnvbn48wx9d2q9pwdp"))))
     (build-system gnu-build-system)
-    (native-inputs (list pkg-config xfce4-dev-tools))
-    (propagated-inputs (list gtk+))     ; required by libxfce4windowing-0.pc
+    (arguments
+     (list
+      #:configure-flags #~(list "--enable-gtk-doc")))
+    (native-inputs (list xfce4-dev-tools))
+    (propagated-inputs (list gtk+)) ;required by libxfce4windowing-0.pc
     (inputs (list libdisplay-info
                   libwnck
                   libxrandr
                   wayland
-                  wayland-protocols))
-    (home-page "https://www.xfce.org/")
+                  wayland-protocols
+                  wlr-protocols))
+    (home-page "https://docs.xfce.org/xfce/libxfce4windowing/")
     (synopsis "Windowing concept abstraction library for X11 and Wayland")
     (description
      "Libxfce4windowing is an abstraction library that attempts to present
