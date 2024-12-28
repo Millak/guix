@@ -546,6 +546,34 @@ XDG defined locations instead of hardcoding paths.  The package also includes
 the locations of well known user directories.")
     (license license:expat)))
 
+(define-public go-github-com-agnivade-levenshtein
+  (package
+    (name "go-github-com-agnivade-levenshtein")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/agnivade/levenshtein")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0vg9aj9k4qv96nqqp261qrm9g7kj0axqhv3mm9qvw932l72943hn"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/agnivade/levenshtein"))
+    (native-inputs ; for tests only
+     (list go-github-com-arbovm-levenshtein
+           go-github-com-dgryski-trifles))
+    (home-page "https://github.com/agnivade/levenshtein")
+    (synopsis "Golang implementation to calculate Levenshtein Distance")
+    (description
+     "This package implements a functionality to calculate
+@url{https://en.wikipedia.org/wiki/Levenshtein_distance, Levenshtein
+Distance}.")
+    (license license:expat)))
+
 (define-public go-github-com-alecthomas-chroma
   (package
     (name "go-github-com-alecthomas-chroma")
