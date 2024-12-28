@@ -4234,28 +4234,6 @@ various ways.  It is a Go implementation of some string manipulation libraries
 of Java Apache Commons.")
     (license license:asl2.0)))
 
-(define-public go-github-com-huandu-xstrings
-  (package
-    (name "go-github-com-huandu-xstrings")
-    (version "1.5.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/huandu/xstrings")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "04z4xb22mi03a772f1si2fqwi5vn5584afzxas73jc6n6sppz0db"))))
-    (build-system go-build-system)
-    (arguments
-     `(#:import-path "github.com/huandu/xstrings"))
-    (home-page "https://github.com/huandu/xstrings/")
-    (synopsis "Collection of string functions")
-    (description "Go package xstrings is a collection of string functions,
-which are widely used in other languages but absent in Go package strings.")
-    (license license:expat)))
-
 (define-public go-github-com-imdario-mergo
   (package
     (name "go-github-com-imdario-mergo")
