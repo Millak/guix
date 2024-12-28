@@ -5777,14 +5777,14 @@ The XCB util-renderutil module provides the following library:
 (define-public xcb-util-wm
   (package
     (name "xcb-util-wm")
-    (version "0.4.1")
+    (version "0.4.2")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://xorg/individual/xcb/"
-                                 name "-" version ".tar.bz2"))
+                                 name "-" version ".tar.xz"))
              (sha256
               (base32
-               "0gra7hfyxajic4mjd63cpqvd20si53j1q3rbdlkqkahfciwq3gr8"))))
+               "02wai17mxfbvlnj4l4bjbvah97rccdivzvd7mrznhr32s0hlxhv2"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags '("--disable-static")
