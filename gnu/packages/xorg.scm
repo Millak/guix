@@ -3040,7 +3040,7 @@ It supports a variety of Intel graphics chipsets.")
 (define-public xf86-video-mach64
   (package
     (name "xf86-video-mach64")
-    (version "6.9.7")
+    (version "6.10.0")
     (source
       (origin
         (method url-fetch)
@@ -3050,7 +3050,7 @@ It supports a variety of Intel graphics chipsets.")
                ".tar.xz"))
         (sha256
           (base32
-           "1fl1jjx0zdr9alkxw23zx6aj1bj4l8inz5w7y7k2g0kwzazqmmsh"))))
+           "0917498pgm629v84h7ddsmhqa6nc3z2msbv1x9nxrlkwl93npffn"))))
     (build-system gnu-build-system)
     (inputs (list mesa xorgproto xorg-server))
     (native-inputs
