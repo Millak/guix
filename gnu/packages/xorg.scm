@@ -4333,14 +4333,14 @@ extension.")
 (define-public xwd
   (package
     (name "xwd")
-    (version "1.0.8")
+    (version "1.0.9")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "mirror://xorg/individual/app/xwd-"
-                            version ".tar.bz2"))
+                            version ".tar.xz"))
         (sha256
-          (base32 "06q36fh55r62ms0igfxsanrn6gv8lh794q1bw9xzw51p2qs2papv"))))
+          (base32 "0gxx3y9zlh13jgwkayxljm6i58ng8jc1xzqv2g8s7d3yjj21n4nw"))))
     (build-system gnu-build-system)
     (inputs
       (list libxt libxkbfile xorgproto))
