@@ -2002,17 +2002,17 @@ management to participate in an X11R6 session.")
 (define-public util-macros
   (package
     (name "util-macros")
-    (version "1.19.3")
+    (version "1.20.2")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/util/util-macros-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
           (base32
-            "0w8ryfqylprz37zj9grl4jzdsqq67ibfwq5raj7vm1i7kmp2x08g"))))
+            "13ifr0dabci130xk04kp9bq16g9kbyzf8x1mgdyjsrsglbmnkhls"))))
     (build-system gnu-build-system)
     (native-inputs (list pkg-config))
     (arguments
