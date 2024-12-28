@@ -5114,6 +5114,30 @@ which satisfies the cron expression.")
     (license (list license:gpl3+
                    license:asl2.0))))
 
+(define-public go-github-com-gosuri-uilive
+  (package
+    (name "go-github-com-gosuri-uilive")
+    (version "0.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gosuri/uilive")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0pwxx0w4mv908dascnxkdjq865ks01niqy71imv4kllz0a84zkag"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/gosuri/uilive"))
+    (home-page "https://github.com/gosuri/uilive")
+    (synopsis "Updating terminal output in realtime")
+    (description
+     "Package uilive provides a writer that live updates the terminal.  It
+provides a buffered io.Writer that is flushed at a timed interval.")
+    (license license:expat)))
+
 (define-public go-github-com-hanwen-go-fuse
   (package
     (name "go-github-com-hanwen-go-fuse")
