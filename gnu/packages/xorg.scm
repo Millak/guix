@@ -3140,7 +3140,7 @@ the same level of support for generic VGA or 8514/A adapters.")
 (define-public xf86-video-nv
   (package
     (name "xf86-video-nv")
-    (version "2.1.22")
+    (version "2.1.23")
     (source
       (origin
         (method url-fetch)
@@ -3150,7 +3150,7 @@ the same level of support for generic VGA or 8514/A adapters.")
                ".tar.xz"))
         (sha256
           (base32
-           "126j60dgnmiahjk5mxbnaav23hv7nvxvh49vhn6qg2f3nlnr6632"))))
+           "1jlap6xjn4pfwg9ab8fxm5mwf4dqfywp70bgc0071m7k66jbv3f6"))))
     (build-system gnu-build-system)
     (inputs (list xorg-server))
     (native-inputs (list pkg-config))
