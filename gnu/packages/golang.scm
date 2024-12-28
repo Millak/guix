@@ -3417,30 +3417,6 @@ required by Go's standard Hash interface.")
       (description "Just a type for protocol strings.  Nothing more.")
       (license license:expat))))
 
-(define-public go-github-com-mitchellh-reflectwalk
-  (package
-    (name "go-github-com-mitchellh-reflectwalk")
-    (version "1.0.2")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/mitchellh/reflectwalk")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1nxgb4gskzv045539vb312n0a443308dvh1akz7vi6x1l0z46zsm"))))
-    (build-system go-build-system)
-    (arguments
-     `(#:import-path "github.com/mitchellh/reflectwalk"))
-    (home-page "https://github.com/mitchellh/reflectwalk/")
-    (synopsis "Walk a value in Go using reflection")
-    (description "reflectwalk is a Go library for \"walking\" a value in Go
-using reflection, in the same way a directory tree can be \"walked\" on the
-file system.  Walking a complex structure can allow you to do manipulations on
-unknown structures such as those decoded from JSON.")
-    (license license:expat)))
-
 (define-public go-github-com-whyrusleeping-tar-utils
   (let ((commit "8c6c8ba81d5c71fd69c0f48dbde4b2fb422b6dfc")
         (revision "0"))
