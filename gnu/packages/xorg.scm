@@ -1149,14 +1149,14 @@ synchronization between the X server and direct-rendering clients.")
 (define-public libfs
   (package
     (name "libfs")
-    (version "1.0.9")
+    (version "1.0.10")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
               "mirror://xorg/individual/lib/libFS-" version ".tar.xz"))
         (sha256
-          (base32 "12i0zh1v5zlba617nam8sjhfqi68qqnl7z5hsz3wqhijid1pjwsr"))))
+          (base32 "0xrv9x5v6km7ib3d5k9xr704xkhfvigh8i507mb9i706hqybvawv"))))
     (build-system gnu-build-system)
     (inputs
       (list xtrans xorgproto))
