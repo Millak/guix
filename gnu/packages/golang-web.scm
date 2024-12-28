@@ -6912,6 +6912,37 @@ encoding library for the MessagePack, CBOR, JSON and the Binc formats.")
 replacement for native @code{net/http} module.")
     (license license:expat)))
 
+(define-public go-github-com-vektah-gqlparser-v2
+  (package
+    (name "go-github-com-vektah-gqlparser-v2")
+    (version "2.5.21")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/vektah/gqlparser")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0hrzm9f3kvcblff4hypf1p95kxsv5pww7vcghhw2jb7r8r4kmdf0"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/vektah/gqlparser/v2"))
+    (native-inputs
+     (list go-github-com-andreyvit-diff
+           go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-agnivade-levenshtein
+           go-gopkg-in-yaml-v3))
+    (home-page "https://github.com/vektah/gqlparser")
+    (synopsis "Port of the parser from @code{graphql-js} into golang")
+    (description
+     "This is a parser for GraphQL, written to mirror the
+@url{https://github.com/graphql/graphql-js, graphql-js} reference
+implementation as closely while remaining idiomatic and easy to use.")
+    (license license:expat)))
+
 (define-public go-github-com-vishvananda-netlink
   (package
     (name "go-github-com-vishvananda-netlink")
