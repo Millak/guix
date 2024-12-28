@@ -5997,7 +5997,7 @@ to answer a question.  Xmessage can also exit after a specified time.")
 (define-public xterm
   (package
     (name "xterm")
-    (version "390")
+    (version "397")
     (source
      (origin
        (method url-fetch)
@@ -6007,7 +6007,7 @@ to answer a question.  Xmessage can also exit after a specified time.")
              (string-append "ftp://ftp.invisible-island.net/xterm/"
                             "xterm-" version ".tgz")))
        (sha256
-        (base32 "03wwdwnpj5dg1ah5sfp00ppzawjd81lnw47g4p20jjhpqly7q4bm"))
+        (base32 "0ql6mvs2amjfdarpqwzi4dcnvkgn6wr52kh7b3nfqi5skhmp96rf"))
        (patches
          (search-patches "xterm-370-explicit-xcursor.patch"))))
     (build-system gnu-build-system)
