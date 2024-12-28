@@ -5537,14 +5537,14 @@ keyboard focus, and user-specified key and pointer button bindings.")
 (define-public xcb-util
   (package
     (name "xcb-util")
-    (version "0.4.0")
+    (version "0.4.1")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://xorg/individual/xcb/"
-                                 name "-" version ".tar.bz2"))
+                                 name "-" version ".tar.xz"))
              (sha256
               (base32
-               "1sahmrgbpyki4bb72hxym0zvxwnycmswsxiisgqlln9vrdlr9r26"))))
+               "04p54r0zjc44fpw1hdy4rhygv37sx2vr2lllxjihykz5v2xkpgjs"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--disable-static")))
