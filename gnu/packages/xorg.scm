@@ -5079,14 +5079,14 @@ over Xlib, including:
 (define-public libxcvt
   (package
     (name "libxcvt")
-    (version "0.1.1")
+    (version "0.1.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.x.org/releases/individual"
                                   "/lib/libxcvt-" version ".tar.xz"))
               (sha256
                (base32
-                "0acc7vrj5kfb19zvyl7f29rnsvx383dvwc19k70r8prm1lccxsr7"))))
+                "009f8kr53cv7lzsg4507cgnk9vxyrm8lgnnn6vx7vpk7hy59jad9"))))
     (build-system meson-build-system)
     (home-page "https://gitlab.freedesktop.org/xorg/lib/libxcvt")
     (synopsis "VESA Coordinated Video Timings (CVT) library")
