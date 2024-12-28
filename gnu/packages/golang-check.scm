@@ -121,6 +121,32 @@ value and call @code{t.Fatal()} if the assertion fails.")
 @end itemize")
     (license license:expat)))
 
+(define-public go-github-com-andreyvit-diff
+  (package
+    (name "go-github-com-andreyvit-diff")
+    (version "0.0.0-20170406064948-c7f18ee00883")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/andreyvit/diff")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1s4qjkxig5yqahpzfl4xqh4kzi9mymdpkzq6kj3f4dr5dl3hlynr"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/andreyvit/diff"))
+    (propagated-inputs
+     (list go-github-com-sergi-go-diff))
+    (home-page "https://github.com/andreyvit/diff")
+    (synopsis "Diffing strings in tests")
+    (description
+     "This package provides a quick and easy string diffing functions based on
+github.com/sergi/go-diff, mainly for diffing strings in tests.")
+    (license license:expat)))
+
 (define-public go-github-com-bitfield-gotestdox
   (package
     (name "go-github-com-bitfield-gotestdox")
