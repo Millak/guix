@@ -13670,6 +13670,33 @@ libraries.  Applications do not need to be recompiled--or even restarted.")
                             (("gtk-update-icon-cache") "true")
                             (("update-desktop-database") "true"))))))))))
 
+(define-public libspelling
+  (package
+    (name "libspelling")
+    (version "0.4.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.gnome.org/GNOME/libspelling")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "030s821sb9rsr1ysl79x7id1bsin9idy8z7p85qr9cvw1w3f2s7r"))))
+    (build-system meson-build-system)
+    (inputs (list enchant gtk gtksourceview sysprof))
+    (native-inputs
+     (list gi-docgen
+           gobject-introspection
+           pkg-config
+           vala
+           ;; For testing.
+           aspell aspell-dict-en))
+    (home-page "https://gitlab.gnome.org/GNOME/libspelling/")
+    (synopsis "Spell-checking library for GTK 4")
+    (description "This package provides a spell-checker for
+GtkTextView widgets.")
+    (license license:lgpl2.1+)))
+
 (define-public gnome-builder
   (package
     (name "gnome-builder")
