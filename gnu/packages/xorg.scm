@@ -4386,7 +4386,7 @@ Various information is displayed depending on which options are selected.")
 (define-public xwud
   (package
     (name "xwud")
-    (version "1.0.6")
+    (version "1.0.7")
     (source
       (origin
         (method url-fetch)
@@ -4396,7 +4396,7 @@ Various information is displayed depending on which options are selected.")
                ".tar.xz"))
         (sha256
           (base32
-            "1zhsih1l3x1038fi1wi9npvfnn8j7580ca73saixjg5sbv8qq134"))))
+            "07n6q1z33sjkx8lx8lbd26m8ri5gi145k3mz39kmyykdngdbwp75"))))
     (build-system gnu-build-system)
     (inputs
       (list xorgproto libx11))
