@@ -188,27 +188,29 @@ storage system.")
   (package
     (name "libxfce4ui")
     (version "4.20.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://archive.xfce.org/src/xfce/"
-                                  name "/" (version-major+minor version) "/"
-                                  name "-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "1vpafvmn2x95n0d8dmr6pp81w8bw2ksicp6dvsm7a0zjhilrks3m"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.xfce.org/xfce/libxfce4ui")
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ps8sq8g43dx12qp0shrdb45bjrfhhgkziscj5jnrzfhy6j9mqrk"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
-       (list "--with-vendor-info=GNU Guix")))
-    (native-inputs
-     (list pkg-config intltool gobject-introspection))
-    (propagated-inputs
-     (list gtk+    ; required by libxfce4ui-2.pc
-           ;; libxfce4kbd-private-3.pc refers to all these.
-           libxfce4util
-           xfconf))
+     (list #:configure-flags
+           #~(list "--with-vendor-info=GNU Guix"
+                   "--enable-maintainer-mode" ; for about-dialog-ui.h, etc.
+                   "--enable-gtk-doc")))
+    (native-inputs (list gobject-introspection xfce4-dev-tools))
+    (propagated-inputs (list
+                        ;; required by libxfce4ui-2.pc
+                        gtk+
+                        ;; libxfce4kbd-private-3.pc refers to all these.
+                        libxfce4util xfconf))
     (inputs (list libgtop libice libsm startup-notification))
-    (home-page "https://www.xfce.org/")
+    (home-page "https://docs.xfce.org/xfce/libxfce4ui/")
     (synopsis "Widgets library for Xfce")
     (description
      "Libxfce4ui is the replacement of the old libxfcegui4 library.  It is used
