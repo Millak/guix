@@ -517,22 +517,23 @@ applications menu, workspace switcher and more.")
 (define-public xfce4-clipman-plugin
   (package
     (name "xfce4-clipman-plugin")
-    (version "1.6.6")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://archive.xfce.org/src/panel-plugins/"
-                                  "xfce4-clipman-plugin/" (version-major+minor version) "/"
-                                  "xfce4-clipman-plugin-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "083i9pbcqjkdzzjx055ld4gd4gn3xnc3rn10vpsqv1vg01dlgb88"))))
+    (version "1.6.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.xfce.org/panel-plugins/xfce4-clipman-plugin")
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0spg9mdlcx98kjisv0c9axp7knhh8am5dqfa2lspj1jbgvah1dwi"))))
     (build-system gnu-build-system)
-    (native-inputs
-     (list intltool pkg-config))
-    (inputs
-     (list exo libxfce4ui libxtst xfce4-panel))
-    (home-page
-     "https://goodies.xfce.org/projects/panel-plugins/xfce4-clipman-plugin")
+    (arguments
+     (list
+      #:configure-flags #~(list "--enable-maintainer-mode")))
+    (native-inputs (list xfce4-dev-tools))
+    (inputs (list exo libxfce4ui libxtst wlr-protocols xfce4-panel))
+    (home-page "https://docs.xfce.org/panel-plugins/xfce4-clipman-plugin/")
     (synopsis "Clipboard manager for Xfce")
     (description
      "Clipman is a clipboard manager for Xfce.  It keeps the clipboard contents
