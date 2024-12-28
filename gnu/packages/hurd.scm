@@ -48,7 +48,7 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages onc-rpc)
-  #:use-module (gnu packages xorg) ;libpciaccess-0.17
+  #:use-module (gnu packages xorg) ;libpciaccess
   #:use-module (guix git-download)
   #:use-module (ice-9 match))
 
@@ -572,7 +572,7 @@ exec ${system}/rc \"$@\"
      `(("libgcrypt" ,libgcrypt)                  ;for /hurd/random
        ("libdaemon" ,libdaemon)                  ;for /bin/console --daemonize
        ("unifont" ,unifont)
-       ("libpciaccess" ,libpciaccess-0.17)       ;need libpciaccess > 0.16
+       ("libpciaccess" ,libpciaccess)
 
        ;; For NFS support
        ("libtirpc" ,libtirpc/hurd)
@@ -700,7 +700,7 @@ implementing them.")
                  (install-file "netdde" hurd)
                  (install-file "netdde.static" hurd)))))))
       (inputs
-       (list hurd libpciaccess-0.17 zlib `(,zlib "static")))
+       (list hurd libpciaccess zlib `(,zlib "static")))
       (native-inputs
        `(("coreutils" ,coreutils)
          ("gawk" ,gawk)
@@ -912,7 +912,7 @@ in userland processes thanks to the DDE layer.")
                    (append (find-files "buildrump.sh/src" "librump.*[.](a|so.*)")
                            (find-files "obj" "librump.*[.](a|so.*)")))))))))
       (inputs
-       (list gnumach-headers libpciaccess-0.17))
+       (list gnumach-headers libpciaccess))
       (native-inputs
        (list autoconf
              automake

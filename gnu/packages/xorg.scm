@@ -1173,71 +1173,37 @@ themselves.")
 (define-public libpciaccess
   (package
     (name "libpciaccess")
-    (version "0.16")
+    (version "0.18.1")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/lib/libpciaccess-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
           (base32
-            "12glp4w1kgvmqn89lk19cgr6jccd3awxra4dxisp7pagi06rsk11"))))
-    (build-system gnu-build-system)
+            "0xpslrjnfrc1a7y8f8qwnd3wq24ndpj2q77ds12mbnwand239x2a"))))
+    (build-system meson-build-system)
     (arguments
      (list
       ;; Make sure libpciaccess can read compressed 'pci.ids' files as
       ;; provided by pciutils.
       #:configure-flags
-      #~(list "--with-zlib"
-             (string-append "--with-pciids-path="
-                            (assoc-ref %build-inputs "pciutils")
-                            "/share/hwdata"))
-
-       #:phases
-       #~(modify-phases %standard-phases
-         (add-after 'install 'add-L-zlib
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             ;; Provide '-LZLIB/lib' next to '-lz' in the .la file.
-             (let ((zlib (assoc-ref inputs "zlib"))
-                   (out  (assoc-ref outputs "out")))
-               (substitute* (string-append out "/lib/libpciaccess.la")
-                 (("-lz")
-                  (string-append "-L" zlib "/lib -lz")))
-               #t)))
-         #$@(if (target-hurd64?)
-                #~((add-after 'unpack 'apply-hurd64-patch
-                     (lambda _
-                       (let ((patch-file
-                              #$(local-file
-                                 (search-patch "libpciaccess-hurd64.patch"))))
-                         (invoke "patch" "--force" "-p1" "-i" patch-file)))))
-                #~()))))
+      #~(list "-Dzlib=enabled"
+              (string-append "-Dpci-ids="
+                             (assoc-ref %build-inputs "pciutils")
+                             "/share/hwdata"))))
     (inputs
-     (list zlib pciutils))                   ;for 'pci.ids.gz'
+     (list pciutils))                   ;for 'pci.ids.gz'
+    (propagated-inputs
+     (list zlib))                       ;in Requires.private of pciaccess.pc
     (native-inputs
-       (list pkg-config))
+     (list pkg-config))
     (home-page "https://www.x.org/wiki/")
     (synopsis "Xorg PCI access library")
     (description "Xorg Generic PCI access library.")
     (license license:x11)))
-
-(define-public libpciaccess-0.17
-  (package
-    (inherit libpciaccess)
-    (name "libpciaccess")
-    (version "0.17")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append
-             "mirror://xorg/individual/lib/libpciaccess-"
-             version
-             ".tar.xz"))
-       (sha256
-        (base32
-         "0wsvv5d05maqbidvnavka7n0fnql55m4jix5wwlk14blr6ikna3l"))))))
 
 (define-public libpthread-stubs
   (package
