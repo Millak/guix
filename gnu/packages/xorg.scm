@@ -230,14 +230,14 @@ directory tree.")
 (define-public bdftopcf
   (package
     (name "bdftopcf")
-    (version "1.1.1")
+    (version "1.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://xorg/individual/util/"
                            "bdftopcf-" version ".tar.xz"))
        (sha256
-        (base32 "026rzs92h9jsc7r0kvvyvwhm22q0805gp38rs14x6ghg7kam7j8i"))))
+        (base32 "0fjjn1z0cbsmhxkms93w73j2jbzf9f3xgbnjvnisl3rk0icvwq5w"))))
     (build-system gnu-build-system)
     (inputs
       (list libxfont2))
