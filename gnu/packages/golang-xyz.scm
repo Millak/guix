@@ -7730,16 +7730,16 @@ functions.")
 (define-public go-github-com-matryer-try
   (package
     (name "go-github-com-matryer-try")
-    (version "1")
+    (version "0.0.0-20161228173917-9ac251b645a2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/matryer/try")
-             (commit (string-append "v" version))))
+             (commit (go-version->git-ref version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "15f0m5ywihivnvwzcw0mh0sg27aky9rkywvxqszxka9q051qvsmy"))))
+        (base32 "19fnqmpl3p54vmxgm1hmqvdc87brqx754wf3cdhq1bj04fcbb5h9"))))
     (build-system go-build-system)
     (arguments
      (list
