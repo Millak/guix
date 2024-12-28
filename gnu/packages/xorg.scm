@@ -6163,7 +6163,7 @@ Conventions Manual) and some of the @dfn{EWMH}
 (define-public xcompmgr
   (package
     (name "xcompmgr")
-    (version "1.1.8")
+    (version "1.1.10")
     (source
      (origin
        ;; There's no current tarball.
@@ -6172,7 +6172,7 @@ Conventions Manual) and some of the @dfn{EWMH}
              (url "https://anongit.freedesktop.org/git/xorg/app/xcompmgr.git")
              (commit (string-append "xcompmgr-" version))))
        (sha256
-        (base32 "11i7vyk3pynw8q8aczpy56qncm84y0cmhlvyja3sj8dgy60g03q2"))
+        (base32 "11bi5xa3wkvjl1v5xpfi6c9fhxsxx6smivwwj24zq5gidl72xjhk"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (native-inputs
