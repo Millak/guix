@@ -4180,14 +4180,14 @@ and Reflect (RandR) extension.")
 (define-public xrdb
   (package
     (name "xrdb")
-    (version "1.2.1")
+    (version "1.2.2")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "mirror://xorg/individual/app/xrdb-"
-                            version ".tar.bz2"))
+                            version ".tar.xz"))
         (sha256
-          (base32 "1d78prd8sfszq2rwwlb32ksph4fymf988lp75aj8iysg44f06pag"))))
+          (base32 "1x1ka0zbcw66a06jvsy92bvnsj9vxbvnq1hbn1az4f0v4fmzrx9i"))))
     (build-system gnu-build-system)
     (inputs
       (list libxmu libx11))
