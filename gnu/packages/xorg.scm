@@ -4492,17 +4492,17 @@ cannot be adequately worked around on the client side of the wire.")
 (define-public libxext
   (package
     (name "libxext")
-    (version "1.3.4")
+    (version "1.3.6")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/lib/libXext-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
           (base32
-            "0azqxllcsfxc3ilhz6kwc6x7m8wc477p59ir9p0yrsldx766zbar"))))
+            "0lwpx0b7lid47pff6dagp5h63bi0b3gsy05lqpyhbr4l76i9zdgd"))))
     (build-system gnu-build-system)
     (outputs '("out" "doc"))             ;man pages represent 40% of the total
     (arguments
