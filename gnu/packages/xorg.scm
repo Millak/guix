@@ -5969,14 +5969,14 @@ of an X11 screen.")
 (define-public xmessage
   (package
     (name "xmessage")
-    (version "1.0.6")
+    (version "1.0.7")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://xorg/individual/app/xmessage-"
                            version ".tar.xz"))
        (sha256
-        (base32 "04kahkk3kd6p1xlzf0jwfgnrb5z2r3y55q3p12b6n59py52wbsnj"))))
+        (base32 "0mh3lclzh82l4wkwg1d9gflnm1irjydihg30gqfxcwmpl2vwqgvh"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
