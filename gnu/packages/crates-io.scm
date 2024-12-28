@@ -79263,6 +79263,28 @@ references")
     (description "This package provides a CMSIS-SVD file parser.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-svd-rs-0.14
+  (package
+    (name "rust-svd-rs")
+    (version "0.14.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "svd-rs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1fwkw26rc9p9bqcf09lwrx6d97rl1yq427g8hwbdh0sd7h7sjj9y"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/rust-embedded/svd")
+    (synopsis "CMSIS-SVD base structures")
+    (description "This package provides a CMSIS-SVD base structures.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-svgtypes-0.5
   (package
     (name "rust-svgtypes")
