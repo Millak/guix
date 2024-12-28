@@ -7782,7 +7782,7 @@ semantic versions.  Specifically it provides the ability to:
 (define-public go-github-com-masterminds-sprig-v3
   (package
     (name "go-github-com-masterminds-sprig-v3")
-    (version "3.2.3")
+    (version "3.3.0")
     (source
      (origin
        (method git-fetch)
@@ -7791,29 +7791,21 @@ semantic versions.  Specifically it provides the ability to:
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1gkwalx8j8h1jdhk6dz8bq8zp7vivxvcivr83dcq0h6nrn4xjqnl"))))
+        (base32 "1ljpizbfjh29xb4f40ipkrqriyixhdsfnd72y3pdzrjf2kbmgw9n"))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/Masterminds/sprig/v3"
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; Tests tries to reach Google:
-          ;; tpl := `{{"www.google.com" | getHostByName}}`
-          (add-after 'unpack 'remove-network-tests
-            (lambda* (#:key import-path #:allow-other-keys)
-              (delete-file
-               (string-append "src/" import-path "/network_test.go")))))))
+      #:test-flags #~(list "-skip" "TestGetHostByName")))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
-     (list go-github-com-google-uuid
+     (list go-dario-cat-mergo
+           go-github-com-google-uuid
            go-github-com-huandu-xstrings
-           go-github-com-imdario-mergo
            go-github-com-masterminds-goutils
            go-github-com-masterminds-semver-v3
            go-github-com-mitchellh-copystructure
-           go-github-com-mitchellh-reflectwalk
            go-github-com-shopspring-decimal
            go-github-com-spf13-cast
            go-golang-org-x-crypto))
