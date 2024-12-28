@@ -361,6 +361,26 @@ tests.")
     (home-page "https://gitlab.gnome.org/pwithnall/libglib-testing")
     (license license:lgpl2.1+)))
 
+(define-public libsfdo
+  (package
+    (name "libsfdo")
+    (version "0.1.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.freedesktop.org/vyivel/libsfdo")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1fi9hlg9ms8sszb0ylx4v0q49265vbsix455x64nkvklh049yc7n"))))
+    (build-system meson-build-system)
+    (home-page "https://gitlab.freedesktop.org/vyivel/libsfdo")
+    (synopsis "Implementation of some of the freedesktop.org specifications")
+    (description "libsfdo is a collection of libraries which implement
+some of the freedesktop.org specifications.")
+    (license license:bsd-2)))
+
 (define-public libliftoff
   (package
     (name "libliftoff")
