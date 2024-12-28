@@ -2514,17 +2514,17 @@ devices, thus making direct access unnecessary.")
 (define-public xf86-input-evdev
   (package
     (name "xf86-input-evdev")
-    (version "2.10.6")
+    (version "2.11.0")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/driver/xf86-input-evdev-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
           (base32
-           "1h1y0fwnawlp4yc5llr1l7hwfcxxpln2fxhy6arcf6w6h4z0f9l7"))))
+           "058k0xdf4hkn8lz5gx4c08mgbzvv58haz7a32axndhscjgg2403k"))))
     (build-system gnu-build-system)
     (inputs
       `(("udev" ,eudev)
