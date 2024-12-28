@@ -1903,20 +1903,20 @@ used with other display managers such as gdm or kdm.")
 (define-public setxkbmap
   (package
     (name "setxkbmap")
-    (version "1.3.2")
+    (version "1.3.4")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/app/setxkbmap-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
           (base32
-            "1xdrxs65v7d0rw1yaz0vsz55w4hxym99216p085ya9978j379wlg"))))
+            "1pps0x66512y3f7v6xgnb6gjbllsgi4q5zxmjcdiv60fsia8b3dy"))))
     (build-system gnu-build-system)
     (inputs
-      (list libxkbfile xkeyboard-config libx11))
+      (list libxkbfile libxrandr xkeyboard-config libx11))
     (native-inputs
       (list pkg-config))
     (arguments
