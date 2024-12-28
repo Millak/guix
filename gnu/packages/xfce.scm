@@ -443,50 +443,43 @@ windowing-system-independent manner.")
   (package
     (name "xfce4-panel")
     (version "4.20.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://archive.xfce.org/src/xfce/"
-                                  name "/" (version-major+minor version) "/"
-                                  name "-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "1f235lwmqavvsay9899gm7p2z3fdha6qgx05wczikhhnbmgwsczz"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.xfce.org/xfce/xfce4-panel")
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "049dhis9106zig5awr9ppnxm357d93z842h015pd8rni9sayc7m0"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'patch-configure
-           (lambda _
-             (substitute* "configure"
-               ;; XDG_CHECK_PACKAGE_BINARY requires an absolute path.
-               (("\\$PKG_CONFIG --variable=gdbus_codegen gio-2.0")
-                "type -p gdbus-codegen"))))
-         (add-after 'unpack 'fix-tzdata-path
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* (string-append "plugins/clock/clock.c")
-               (("/usr/share/zoneinfo")
-                (search-input-directory inputs "share/zoneinfo"))))))))
-    (native-inputs
-     (list pkg-config
-           intltool
-           `(,glib "bin")))
-    (propagated-inputs
-     (list gtk+ ; required by libxfce4panel-2.0.pc
-           libxfce4util)) ; required by libxfce4panel-2.0.pc
-    (inputs
-     (list tzdata ;; For fix-tzdata-path phase only.
-           exo
-           xfconf
-           garcon
-           gtk-layer-shell
-           libwnck
-           libxfce4ui
-           libxfce4windowing))
+     (list
+      #:configure-flags
+      #~(list "--enable-maintainer-mode" ;for panel-marshal.h, etc
+              "--enable-gtk-doc")
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'fix-tzdata-path
+                     (lambda* (#:key inputs #:allow-other-keys)
+                       (substitute* (string-append "plugins/clock/clock.c")
+                         (("/usr/share/zoneinfo")
+                          (search-input-directory inputs "share/zoneinfo"))))))))
+    (native-inputs (list xfce4-dev-tools))
+    (propagated-inputs (list gtk+ ;required by libxfce4panel-2.0.pc
+                             libxfce4util)) ;required by libxfce4panel-2.0.pc
+    (inputs (list tzdata ;For fix-tzdata-path phase only.
+                  exo
+                  xfconf
+                  garcon
+                  gtk-layer-shell
+                  libwnck
+                  libxfce4ui
+                  libxfce4windowing))
     (native-search-paths
      (list (search-path-specification
             (variable "XDG_DATA_DIRS")
             (files '("share")))))
-    (home-page "https://www.xfce.org/")
+    (home-page "https://docs.xfce.org/xfce/xfce4-panel/")
     (synopsis "Xfce desktop panel")
     (description
      "Desktop panel for Xfce, which contains program launchers, window buttons,
