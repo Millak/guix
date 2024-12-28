@@ -2520,7 +2520,7 @@ capabilities.")
 (define-public guile-g-golf
   (package
     (name "guile-g-golf")
-    (version "0.8.0-a.1")
+    (version "0.8.0-rc9")
     (source
      (origin
        (method git-fetch)
@@ -2529,7 +2529,7 @@ capabilities.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1lszlssa6k8dhhya5px271gfzas7fyy1iwjqmlxibz5vdirzi565"))))
+        (base32 "1x340xr2ki1y3w1cg37fhjsfw27268vlsyc8hby9lmv13l349l8b"))))
     (build-system gnu-build-system)
     (arguments
      (list
