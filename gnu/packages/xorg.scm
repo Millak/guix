@@ -2049,17 +2049,17 @@ server.")
 (define-public x11perf
   (package
     (name "x11perf")
-    (version "1.6.1")
+    (version "1.7.0")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
-               "mirror://xorg/individual/app/x11perf-"
+               "mirror://xorg/individual/test/x11perf-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
           (base32
-            "0d3wh6z6znwhfdiv0zaggfj0xgish98xa10yy76b9517zj7hnzhw"))))
+            "0a0qm7y9qyyma4pd8plpm5npglcgd43z0bwkk2lp2qg9n220vy14"))))
     (build-system gnu-build-system)
     (inputs
       (list libx11 libxft libxmu libxrender))
