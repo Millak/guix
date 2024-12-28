@@ -13806,14 +13806,14 @@ Command Line Argument Parser.")
 (define-public rust-clap-complete-4
   (package
     (name "rust-clap-complete")
-    (version "4.5.38")
+    (version "4.5.40")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "clap_complete" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "00bsiq6jn6br4wrq3165hfl80mk4sdrdq97pgkqpa88ikiaplr6r"))))
+        (base32 "1sdf0gw2k5cib7n66hm0k7k0dlys4i041a35s0r2vv9v7qz6cbmc"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-clap" ,rust-clap-4)
