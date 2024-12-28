@@ -4816,7 +4816,7 @@ common definitions and porting layer.")
 (define-public libxau
   (package
     (name "libxau")
-    (version "1.0.10")
+    (version "1.0.12")
     (source
       (origin
         (method url-fetch)
@@ -4825,7 +4825,7 @@ common definitions and porting layer.")
                version ".tar.xz"))
         (sha256
           (base32
-            "02hc3azypiiahr9y1cyn0mqc5zd997hh3h0rp7jqfbsd6f9g5rlb"))))
+            "1yy0gx3psxyjcj284xhh44labav7b5zs7gcrks9xi6nklggy9l3l"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--disable-static")))
