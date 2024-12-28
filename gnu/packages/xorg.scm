@@ -5658,14 +5658,14 @@ numbers.")
 (define-public xcb-util-image
   (package
     (name "xcb-util-image")
-    (version "0.4.0")
+    (version "0.4.1")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://xorg/individual/xcb/"
-                                 name "-" version ".tar.bz2"))
+                                 name "-" version ".tar.xz"))
              (sha256
               (base32
-               "1z1gxacg7q4cw6jrd26gvi5y04npsyavblcdad1xccc8swvnmf9d"))))
+               "0g8dwknrlz96k176qxh8ar84x9kpppci9b978zyp24nvvbjqxbfc"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--disable-static")))
