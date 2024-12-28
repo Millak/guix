@@ -4678,7 +4678,7 @@ protocol and arbitrary X extension protocol.")
 (define-public libxv
   (package
     (name "libxv")
-    (version "1.0.12")
+    (version "1.0.13")
     (source
       (origin
         (method url-fetch)
@@ -4688,7 +4688,7 @@ protocol and arbitrary X extension protocol.")
                ".tar.xz"))
         (sha256
           (base32
-            "0j1qqrhbhdi3kqz0am5i1lhs31ql9pbc14z41w0a5xw9yq4zmxxa"))))
+            "0m9pl0xh0bv9y1x46d8a52bj46fsnyhzwa6qjg8zihg1b04r2d3x"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags '(,@(malloc0-flags) "--disable-static")))
