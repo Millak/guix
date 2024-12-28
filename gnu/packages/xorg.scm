@@ -5381,7 +5381,7 @@ Wayland.")
 (define-public libx11
   (package
     (name "libx11")
-    (version "1.8.7")
+    (version "1.8.10")
     (source
      (origin
        (method url-fetch)
@@ -5389,7 +5389,7 @@ Wayland.")
                            version ".tar.xz"))
        (sha256
         (base32
-         "1vlrgrdibp4lr84wgmsdy1ihzaai8bvvqc68npi1m19wir36gwh5"))))
+         "0lywvwsz92j7isglvw2227g3na4ghyspvsvblpf43ns7jfnksfrb"))))
     (build-system gnu-build-system)
     (outputs '("out"
                "doc"))                  ;8 MiB of man pages + XML
@@ -5405,7 +5405,7 @@ Wayland.")
     (inputs
      (list xtrans))
     (native-inputs
-     (list pkg-config xorgproto))
+     (list pkg-config))
     (home-page "https://www.x.org/wiki/")
     (synopsis "Xorg Core X11 protocol client library")
     (description "Xorg Core X11 protocol client library.")
