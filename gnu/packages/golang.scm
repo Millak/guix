@@ -4237,7 +4237,7 @@ of Java Apache Commons.")
 (define-public go-github-com-huandu-xstrings
   (package
     (name "go-github-com-huandu-xstrings")
-    (version "1.3.2")
+    (version "1.5.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4246,7 +4246,7 @@ of Java Apache Commons.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0pwar6rc0fqb6pll38a44s81g5kb65vbg71jg5lx8caphjnikq5r"))))
+                "04z4xb22mi03a772f1si2fqwi5vn5584afzxas73jc6n6sppz0db"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/huandu/xstrings"))
