@@ -1379,17 +1379,17 @@ configuration files.")
 (define-public libxkbfile
   (package
     (name "libxkbfile")
-    (version "1.1.0")
+    (version "1.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
              "mirror://xorg/individual/lib/libxkbfile-"
              version
-             ".tar.bz2"))
+             ".tar.xz"))
        (sha256
         (base32
-         "1irq9crvscd3yb8sr802dhvvfr35jdy1n2yz094xplmd42mbv3bm"))))
+         "1v2bhw1q1cj3wjfs0igq393iz10whcavbyxlm3k9xfvsk7m3xdm9"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--disable-static")))
