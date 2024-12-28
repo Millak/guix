@@ -5002,17 +5002,17 @@ new API's in libXft, or the legacy API's in libX11.")
 (define-public libxxf86vm
   (package
     (name "libxxf86vm")
-    (version "1.1.4")
+    (version "1.1.6")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/lib/libXxf86vm-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
           (base32
-            "0mydhlyn72i7brjwypsqrpkls3nm6vxw0li8b2nw0caz7kwjgvmg"))))
+            "1qryzfzf3qr2xx1sipdn8kw310zs4ygpzgh4mm4m87fffd643bwn"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags '("--disable-static" ,@(malloc0-flags))))
