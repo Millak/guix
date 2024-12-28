@@ -343,21 +343,26 @@ development.")
   (package
     (name "garcon")
     (version "4.20.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://archive.xfce.org/src/xfce/"
-                                  "garcon/" (version-major+minor version) "/"
-                                  "garcon-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "13ysx9gl22a5rjzl4m3v0zm3hpii1jy38b5lz3fs971h29y53f3z"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.xfce.org/xfce/garcon")
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "076pdyssl5lhm88s2xx94w3rk6glcc4kgfl3jqd6704hpl6n9rii"))))
     (build-system gnu-build-system)
-    (native-inputs
-     (list `(,glib "bin") gobject-introspection intltool pkg-config))
-    (propagated-inputs
-     (list gtk+ ; required by garcon-gtk3-1.pc
-           libxfce4ui))     ; required by garcon-gtk3-1.pc
-    (home-page "https://www.xfce.org/")
+    (arguments
+     (list
+      #:configure-flags #~(list "--enable-gtk-doc")))
+    (native-inputs (list docbook-xsl
+                         gobject-introspection
+                         libxslt
+                         xfce4-dev-tools))
+    (propagated-inputs (list gtk+ ;required by garcon-gtk3-1.pc
+                             libxfce4ui)) ;required by garcon-gtk3-1.pc
+    (home-page "https://docs.xfce.org/xfce/garcon/")
     (synopsis "Implementation of the freedesktop.org menu specification")
     (description
      "Garcon is a freedesktop.org compliant menu implementation based on
