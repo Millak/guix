@@ -13700,7 +13700,7 @@ GtkTextView widgets.")
 (define-public gnome-builder
   (package
     (name "gnome-builder")
-    (version "44.2")
+    (version "47.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -13708,7 +13708,7 @@ GtkTextView widgets.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1c192xzjv5hsbp1p3wil595810k49kgmf5a7lwf260izip3qk9ng"))))
+                "15dlm6zvq54djx6h1z3jg21fw4v21dwh7i9db9k367nd8wybk1s6"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -13716,14 +13716,6 @@ GtkTextView widgets.")
       #:configure-flags #~(list "-Dnetwork_tests=false" "-Ddocs=true")
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-source
-            (lambda _
-              ;; With Gnome 4.14, GtkStackPage has an autoptr already, so it'd
-              ;; get redefined.  Drop this phase when updating gnome-builder to
-              ;; 46.0 or newer.  See also
-              ;; <https://gitlab.gnome.org/GNOME/gnome-builder/-/commit/7aaaecefc2ea8a37eaeae8b4d726d119d4eb8fa3>
-              (substitute* "src/libide/tweaks/ide-tweaks-window.c"
-                (("G_DEFINE_AUTOPTR_CLEANUP_FUNC \\(GtkStackPage, .*\\)") ""))))
           (add-after 'unpack 'patch-meson
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "meson.build"
@@ -13763,7 +13755,7 @@ GtkTextView widgets.")
              '(gnu packages text-editors))
             'editorconfig-core-c)
            flatpak
-           gspell
+           gom
            gtk
            json-glib
            jsonrpc-glib
@@ -13772,9 +13764,10 @@ GtkTextView widgets.")
            libdex
            libgit2-glib
            libpanel
-           libpeas
+           libpeas-2
            libportal
            libsoup
+           libspelling
            llvm
            libostree
            python
@@ -13789,6 +13782,10 @@ GtkTextView widgets.")
      (list desktop-file-utils           ;for desktop-file-validate
            `(,glib "bin")
            gettext-minimal
+           ;; GCC 14 seems to be required to not end up in a compilation
+           ;; failure.
+           ;; See <https://gitlab.gnome.org/GNOME/gnome-builder/-/issues/2176>.
+           gcc-14
            gi-docgen
            pkg-config
            python                       ;for meson scripts
