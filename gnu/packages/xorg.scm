@@ -1097,15 +1097,15 @@ of new capabilities and controls for text keyboards.")
 (define-public libxshmfence
   (package
     (name "libxshmfence")
-    (version "1.3")
+    (version "1.3.3")
     (source (origin
               (method url-fetch)
               (uri (string-append
                     "mirror://xorg/individual/lib/"
-                    name "-" version ".tar.bz2"))
+                    name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1ir0j92mnd1nk37mrv9bz5swnccqldicgszvfsh62jd14q6k115q"))))
+                "046y7zn8agp8kdr1lg11yyvpx90i9sjf77h25jhgx5msd84xz96l"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--disable-static")))
