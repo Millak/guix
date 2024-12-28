@@ -3980,7 +3980,7 @@ protocol.")
 (define-public xfontsel
   (package
     (name "xfontsel")
-    (version "1.1.0")
+    (version "1.1.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3988,7 +3988,7 @@ protocol.")
                     version ".tar.xz"))
               (sha256
                (base32
-                "1d6ifx6sw97mmr00bhfakyx2f94w14yswxc68sw49zmvawrjq18p"))))
+                "1j827aiv7lsr2y7jgmv6pb5wmr2l3r3nd2pys0z2a0bpi9jqcjvs"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -3997,7 +3997,7 @@ protocol.")
     (inputs
      (list libx11 libxaw libxmu libxt))
     (native-inputs
-     (list pkg-config))
+     (list gettext-minimal pkg-config))
     (home-page "https://www.x.org/wiki/")
     (synopsis "Browse and select X font names")
     (description
