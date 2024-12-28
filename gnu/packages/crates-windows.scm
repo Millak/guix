@@ -1572,8 +1572,33 @@ crate.")
      "This package provides a rust crate to simplify Windows ACL operations.")
     (license license:expat)))
 
+(define-public rust-windows-bindgen-0.58
+  (package
+    (name "rust-windows-bindgen")
+    (version "0.58.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "windows-bindgen" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "12gm2nmwbgspvmmrrjg1pqqf6mk7qmkmaqg5lvrm28v97kcjikci"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-rayon" ,rust-rayon-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-syn" ,rust-syn-2)
+                       ("rust-windows-metadata" ,rust-windows-metadata-0.58))))
+    (home-page "https://github.com/microsoft/windows-rs")
+    (synopsis "Windows metadata compiler")
+    (description "This package provides Windows metadata compiler.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-windows-bindgen-0.57
   (package
+    (inherit rust-windows-bindgen-0.58)
     (name "rust-windows-bindgen")
     (version "0.57.0")
     (source
@@ -1583,18 +1608,13 @@ crate.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1d67wwhbdwf3rmdbiyfsz55hky2a972y2xqg7iablxv27l8rdjqw"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
                        ("rust-rayon" ,rust-rayon-1)
                        ("rust-serde" ,rust-serde-1)
                        ("rust-serde-json" ,rust-serde-json-1)
                        ("rust-syn" ,rust-syn-2)
-                       ("rust-windows-metadata" ,rust-windows-metadata-0.57))))
-    (home-page "https://github.com/microsoft/windows-rs")
-    (synopsis "Windows metadata compiler")
-    (description "This package provides Windows metadata compiler.")
-    (license (list license:expat license:asl2.0))))
+                       ("rust-windows-metadata" ,rust-windows-metadata-0.57))))))
 
 (define-public rust-windows-bindgen-0.56
   (package
