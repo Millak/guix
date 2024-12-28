@@ -2552,7 +2552,7 @@ command-line parsers.")
     (name "gopls")
     ;; XXX: Starting from 0.14.0 gppls needs golang.org/x/telemetry, which
     ;; needs to be discussed if it may be included in Guix.
-    (version "0.16.2")
+    (version "0.17.1")
     (source
      (origin
        (method git-fetch)
@@ -2561,13 +2561,20 @@ command-line parsers.")
              (commit (go-version->git-ref version #:subdir "gopls"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1l6mkh4v0f602spw3zdmkxqizk32zvgpfy461sinqwhlag8v8v3a"))))
+        (base32 "1qksn79nc94fig5bia0l8h7fzm1zbn9rvya25hwf0f18v8a0id9l"))))
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.23
       #:install-source? #f
       #:import-path "golang.org/x/tools/gopls"
       #:unpack-path "golang.org/x/tools"
+      ;; XXX: No tests in project's root, limit to some of subdris, try to
+      ;; enable more.
+      #:test-subdirs
+      #~(list "internal/protocol/..."
+              "internal/util/..."
+              "internal/vulncheck/...")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'unpack 'override-tools
