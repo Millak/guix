@@ -1234,25 +1234,26 @@ hit when running single-threaded.")
 (define-public libsm
   (package
     (name "libsm")
-    (version "1.2.3")
+    (version "1.2.5")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/lib/libSM-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
           (base32
-            "1fwwfq9v3sqmpzpscymswxn76xhxnysa24pfim1mcpxhvjcl89id"))))
+            "1g10pn1zhcyc1ys8skp6p46gn6qgkif8kqdwlz1hsrzgllny3y9a"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--disable-static")))
     (propagated-inputs
-      (list libice)) ; SMlib.h includes ICElib.h
-    (inputs
-      `(("xtrans" ,xtrans)
-        ("libuuid" ,util-linux "lib")))
+     ;; In Require.private of sm.pc
+     (list libice
+           (list util-linux "lib")
+           xorgproto))
+    (inputs (list xtrans))
     (native-inputs
       (list pkg-config))
     (home-page "https://www.x.org/wiki/")
