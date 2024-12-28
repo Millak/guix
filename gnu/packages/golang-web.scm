@@ -128,7 +128,13 @@ API service accounts for Go.")
         (base32 "0x64kcryawdr0daq1w6fada60zqrddw75yi397835b9ij7wb5gmh"))))
     (build-system go-build-system)
     (arguments
-     (list #:import-path "git.sr.ht/~emersion/gqlclient"))
+     (list
+      #:embed-files #~(list "prelude.graphql")
+      #:import-path "git.sr.ht/~emersion/gqlclient"))
+    ;; For the CLI.
+    (native-inputs
+     (list go-github-com-dave-jennifer
+           go-github-com-vektah-gqlparser-v2))
     (home-page "https://git.sr.ht/~emersion/gqlclient")
     (synopsis "GraphQL client and code generator")
     (description
