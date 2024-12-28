@@ -548,25 +548,29 @@ matching them against regular expressions.")
     (version "0.4.9")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://archive.xfce.org/src/panel-plugins/"
-                           "xfce4-pulseaudio-plugin/"
-                           (version-major+minor version) "/"
-                           "xfce4-pulseaudio-plugin-" version ".tar.bz2"))
+       (method git-fetch)
+       (uri (git-reference
+             (url
+              "https://gitlab.xfce.org/panel-plugins/xfce4-pulseaudio-plugin")
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "16n9vnzwi1j90yxcf4c0lkyqkl969yj6hiby3cvd0j18zcapd050"))))
+        (base32 "1hmajys3g56xlpja9hx0rvap54bw0g6vmirh068zn5004wg7i6kc"))))
     (build-system gnu-build-system)
-    (native-inputs
-     (list intltool pkg-config dbus-glib dbus))
-    (inputs
-     (list exo
-           keybinder
-           libnotify
-           libxfce4ui
-           pavucontrol
-           pulseaudio
-           xfce4-panel))
-    (home-page "https://git.xfce.org/panel-plugins/xfce4-pulseaudio-plugin/")
+    (arguments
+     (list
+      #:configure-flags #~(list "--enable-maintainer-mode")))
+    (native-inputs (list dbus
+                         dbus-glib
+                         xfce4-dev-tools))
+    (inputs (list exo
+                  keybinder
+                  libnotify
+                  libxfce4ui
+                  pulseaudio
+                  xfce4-panel))
+    (home-page
+     "https://docs.xfce.org/panel-plugins/xfce4-pulseaudio-plugin/")
     (synopsis "PulseAudio panel plugin for Xfce")
     (description
      "Xfce PulseAudio plugin is a plugin for the Xfce panel which provides a
