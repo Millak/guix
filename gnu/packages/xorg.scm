@@ -4843,17 +4843,17 @@ an X Window System display.")
 (define-public libxfixes
   (package
     (name "libxfixes")
-    (version "6.0.0")
+    (version "6.0.1")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/lib/libXfixes-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
           (base32
-            "0k2v4i4r24y3kdr5ici1qqhp69djnja919xfqp54c2rylm6s5hd7"))))
+            "0n1dq2mi60i0c06i7j6lq64cq335ir2l89yj0amj3529s8ygk5dn"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--disable-static")))
