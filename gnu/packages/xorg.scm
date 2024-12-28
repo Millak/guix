@@ -4046,17 +4046,17 @@ containing one glyph per cell.")
 (define-public xmodmap
   (package
     (name "xmodmap")
-    (version "1.0.10")
+    (version "1.0.11")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/app/xmodmap-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
           (base32
-            "0z28331i2pm16x671fa9qwsfqdmr6a43bzwmp0dm17a3sx0hjgs7"))))
+            "10byhzdfv1xckqc3d2v52xg1ggxn5j806x4450l3ig5hyxl82bws"))))
     (build-system gnu-build-system)
     (inputs
       (list xorgproto libx11))
