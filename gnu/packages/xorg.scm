@@ -1320,21 +1320,21 @@ with the Cygwin XWin server when running X11 in a rootless mode.")
 (define-public libxdmcp
   (package
     (name "libxdmcp")
-    (version "1.1.3")
+    (version "1.1.5")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/lib/libXdmcp-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
           (base32
-            "0ab53h0rkq721ihk5hi469x500f3pgbkm1wy01yf24x5m923nli0"))))
+            "1312l8x3asib77wgf123w3nbabnky61mb6pnmmqapbf350l259fq"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--disable-static")))
-    (inputs (list xorgproto))
+    (propagated-inputs (list xorgproto)) ;required by xdmcp.pc
     (native-inputs
        (list pkg-config))
     (home-page "https://www.x.org/wiki/")
