@@ -3722,15 +3722,15 @@ alternative implementations like XRandR or TwinView.")
 (define-public xkbcomp-intermediate        ;used as input for xkeyboard-config
   (package
     (name "xkbcomp-intermediate")
-    (version "1.4.5")
+    (version "1.4.7")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://xorg/individual/app/xkbcomp-"
-                           version ".tar.bz2"))
+                           version ".tar.xz"))
        (sha256
         (base32
-         "0pmhshqinwqh5rip670l3szjpywky67hv232ql6gvdj489n0hlb8"))))
+         "0xqzz209m9i43jbyrf2lh4xdbyhzzzn9mis2f2c32kplwla82a0a"))))
     (build-system gnu-build-system)
     (inputs
      (list xorgproto libxkbfile libx11))
