@@ -5887,13 +5887,16 @@ Intrinsics (Xt) Library.")
 (define-public libxpresent
   (package
     (name "libxpresent")
-    (version "1.0.0")
+    (version "1.0.1")
     (source (origin
               (method url-fetch)
-              (uri "mirror://xorg/individual/lib/libXpresent-1.0.0.tar.bz2")
+              (uri (string-append
+                    "mirror://xorg/individual/lib/libXpresent-"
+                    version
+                    ".tar.xz"))
               (sha256
                (base32
-                "12kvvar3ihf6sw49h6ywfdiwmb8i1gh8wasg1zhzp6hs2hay06n1"))))
+                "06r34v7z3jb0x7l5ghlc1g82gjjp5ilq5p6j11galv86bagdyr5r"))))
     (inputs
      (list libx11 xorgproto libxext libxfixes libxrandr))
     (native-inputs
