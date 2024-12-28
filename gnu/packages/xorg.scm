@@ -2179,7 +2179,7 @@ emulate a TI-30 or an HP-10C.")
 (define-public xcb-proto
   (package
     (name "xcb-proto")
-    (version "1.15.2")
+    (version "1.17.0")
     (source
       (origin
         (method url-fetch)
@@ -2188,7 +2188,7 @@ emulate a TI-30 or an HP-10C.")
                version ".tar.xz"))
         (sha256
          (base32
-          "1vak6q53abwxnkfn6by7j24m48kd2iy7jnskkqzzx8l0ysqvwwkh"))))
+          "130lc8jx43s83496nc8jn47zixjcp4abgsz69pvrjiqg279aq6rc"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config python-minimal-wrapper))
