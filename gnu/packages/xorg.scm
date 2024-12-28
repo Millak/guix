@@ -5446,17 +5446,17 @@ Wayland.")
 (define-public libxt
   (package
     (name "libxt")
-    (version "1.2.1")
+    (version "1.3.1")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/lib/libXt-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
           (base32
-           "0q1x7842r8rcn2m0q4q9f69h4qa097fyizs8brzx5ns62s7w1737"))
+           "120jjd6l7fjdxy5myrc1dmc0cwpqa18a97hrbg0d9x146frp99z0"))
         (patches (search-patches "libxt-guix-search-paths.patch"))))
     (build-system gnu-build-system)
     (outputs '("out"

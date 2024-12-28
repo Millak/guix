@@ -1,12 +1,12 @@
 diff --git a/src/Intrinsic.c b/src/Intrinsic.c
 --- a/src/Intrinsic.c
 +++ b/src/Intrinsic.c
-@@ -1345,21 +1345,99 @@ FillInLangSubs(Substitution subs, XtPerDisplay pd)
+@@ -1310,21 +1310,98 @@ FillInLangSubs(Substitution subs, XtPerD
  }
  
  /*
 - * default path used if environment variable XFILESEARCHPATH
-- * is not defined.  Also substitued for %D.
+- * is not defined.  Also substituted for %D.
 - * The exact value should be documented in the implementation
 - * notes for any Xt implementation.
 +   Return the default search path for the function
@@ -65,11 +65,6 @@ diff --git a/src/Intrinsic.c b/src/Intrinsic.c
 +      bytesAllocd += SIZEOF_STEMS;
 +      bytesAllocd += 6 * (1 + strlen (guix_profile));
 +    }
- 
--    return xfilesearchpath;
--#else
--    return XFILESEARCHPATHDEFAULT;
--#endif
 +  if (home != NULL)
 +    {
 +      bytesAllocd += SIZEOF_STEMS;
@@ -107,12 +102,16 @@ diff --git a/src/Intrinsic.c b/src/Intrinsic.c
 +
 +  /* Remove final : */
 +  path[strlen(path) - 1] = '\0';
-+
+ 
+-    return xfilesearchpath;
+-#else
+-    return XFILESEARCHPATHDEFAULT;
+-#endif
 +  return path;
  }
  
  
-@@ -1388,7 +1466,7 @@ XtResolvePathname(Display *dpy,
+@@ -1353,7 +1430,7 @@ XtResolvePathname(Display *dpy,
  {
      XtPerDisplay pd;
      static const char *defaultPath = NULL;
