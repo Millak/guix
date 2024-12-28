@@ -66275,8 +66275,27 @@ can handle huge texts and memory-incoherent edits with ease.")
      "This package provides a library for generic lossless syntax trees.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-roxmltree-0.20
+  (package
+    (name "rust-roxmltree")
+    (version "0.20.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "roxmltree" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "15vw91ps91wkmmgy62khf9zb63bdinvm80957dascbsw7dwvc83c"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/RazrFalcon/roxmltree")
+    (synopsis "Represent an XML as a read-only tree")
+    (description
+     "@code{roxmltree} represents an XML 1.0 document as a read-only tree.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-roxmltree-0.19
   (package
+    (inherit rust-roxmltree-0.20)
     (name "rust-roxmltree")
     (version "0.19.0")
     (source
@@ -66285,13 +66304,7 @@ can handle huge texts and memory-incoherent edits with ease.")
        (uri (crate-uri "roxmltree" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0zs0q8hg5nnh91s1ib6r0fky7xm8ay63ayfa5i1afxxpwgalzl9w"))))
-    (build-system cargo-build-system)
-    (home-page "https://github.com/RazrFalcon/roxmltree")
-    (synopsis "Represent an XML as a read-only tree")
-    (description
-     "@code{roxmltree} represents an XML 1.0 document as a read-only tree.")
-    (license (list license:expat license:asl2.0))))
+        (base32 "0zs0q8hg5nnh91s1ib6r0fky7xm8ay63ayfa5i1afxxpwgalzl9w"))))))
 
 (define-public rust-roxmltree-0.18
   (package
