@@ -81,7 +81,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
-  #:use-module (guix build-system python)
+  #:use-module (guix build-system meson)
   #:use-module (guix build-system trivial)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -220,50 +220,49 @@ to share commonly used Xfce widgets among the Xfce applications.")
 (define-public catfish
   (package
     (name "catfish")
-    (version "4.18.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://archive.xfce.org/src/apps/"
-                                  "catfish/" (version-major+minor version)
-                                  "/catfish-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "16cbsnki7qragwhbfs3h0ja7xg8xlf59ajxhddqm0jkmrirrpbpx"))))
-    (build-system python-build-system)
+    (version "4.20.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.xfce.org/apps/catfish")
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1vyf62n8j2pgxd30j8hf1x6d0yz8r86ng39p9smfpq7m3vll8i7c"))))
+    (build-system meson-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-command-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "catfish/CatfishSearchEngine.py"
-               (("'which'") (string-append "'" (which "which") "'")))
-             (substitute* "catfish/CatfishWindow.py"
-               (("xdg-mime") (which "xdg-mime"))
-               (("xdg-open") (which "xdg-open")))))
-         ;; setup.py script does not support one of the Python build
-         ;; system's default flags, "--single-version-externally-managed".
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (invoke "python" "setup.py" "install"
-                     (string-append "--prefix=" (assoc-ref outputs "out"))
-                     "--root=/")))
-         ;; The check failed to spawn a message bus without /etc/machine-id.
-         (delete 'sanity-check)
-         (add-after 'install 'wrap-program
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (wrap-program (string-append out "/bin/catfish")
-                 `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH")))
-                 `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH"))))))))
-       #:tests? #f))
-    (native-inputs
-     (list pkg-config python-distutils-extra intltool))
-    (inputs
-     (list bash-minimal which xfconf xdg-utils))
-    (propagated-inputs
-     (list gtk+ python-dbus python-pexpect python-pycairo
-           python-pygobject))
-    (home-page "https://docs.xfce.org/apps/catfish/start")
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'patch-command-paths
+                     (lambda* (#:key inputs #:allow-other-keys)
+                       (substitute* "catfish/CatfishSearchEngine.py"
+                         (("'which'")
+                          (string-append "'"
+                                         (which "which") "'")))
+                       (substitute* "catfish/CatfishWindow.py"
+                         (("xdg-mime")
+                          (which "xdg-mime"))
+                         (("xdg-open")
+                          (which "xdg-open")))))
+                   (add-after 'install 'wrap-program
+                     (lambda* (#:key outputs #:allow-other-keys)
+                       (let ((out (assoc-ref outputs "out")))
+                         (wrap-program (string-append out "/bin/catfish")
+                           `("GUIX_PYTHONPATH" =
+                             (,(getenv "GUIX_PYTHONPATH")))
+                           `("GI_TYPELIB_PATH" =
+                             (,(getenv "GI_TYPELIB_PATH"))))))))
+      #:tests? #f))
+    (native-inputs (list desktop-file-utils ;for update-desktop-database
+                         gettext-minimal
+                         (list gtk+ "bin") ;for gtk-update-icon-cache
+                         pkg-config
+                         python))
+    (inputs (list bash-minimal which xfconf xdg-utils))
+    (propagated-inputs (list gtk+ python-dbus python-pexpect python-pycairo
+                             python-pygobject))
+    (home-page "https://docs.xfce.org/apps/catfish/")
     (synopsis "File searching tool for Xfce")
     (description
      "Catfish is a file searching tool for Linux and Unix.  The interface is
