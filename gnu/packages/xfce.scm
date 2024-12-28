@@ -36,11 +36,13 @@
   #:use-module (gnu artwork)
   #:use-module (gnu packages)
   #:use-module (gnu packages apr)
+  #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages calendar)
   #:use-module (gnu packages cdrom)
+  #:use-module (gnu packages docbook)
   #:use-module (gnu packages fonts)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
@@ -2310,23 +2312,28 @@ local weather in the panel, using forecast data provided by the
   (package
     (name "xfce4-dev-tools")
     (version "4.20.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://archive.xfce.org/src/xfce/"
-                                  "xfce4-dev-tools/" (version-major+minor version) "/"
-                                  "xfce4-dev-tools-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "1ak68k6r0q6dh3knc3vxqvkvkw54f916wfrsm8g7gk0fiah3kfhz"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.xfce.org/xfce/xfce4-dev-tools")
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0k7qj7vka2ys1ld4bfkdvsbxhpjnvb8lc0awnn5b1c34zxmwsivr"))))
     (build-system gnu-build-system)
-    (native-inputs
-     (list meson
-           pkg-config
-           libxslt))
-    (inputs
-     (list glib python))
-    (propagated-inputs
-     (list `(,glib "bin")))    ; 'glib-genmarshal' required by 'xdt-depends.m4'
+    (arguments
+     (list
+      #:configure-flags #~(list "--enable-maintainer-mode"))) ;for xdt-csource.1
+    (native-inputs (list autoconf
+                         automake
+                         docbook-xsl
+                         libtool
+                         libxslt
+                         meson
+                         pkg-config))
+    (inputs (list glib python))
+    (propagated-inputs (list (list glib "bin"))) ;'glib-genmarshal' required by 'xdt-depends.m4'
     (home-page "https://docs.xfce.org/xfce/xfce4-dev-tools/")
     (synopsis "Xfce developer tools")
     (description
