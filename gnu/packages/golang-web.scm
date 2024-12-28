@@ -6587,7 +6587,7 @@ provided @code{http.FileSystem}.")
 (define-public go-github-com-tdewolff-minify-v2
   (package
     (name "go-github-com-tdewolff-minify-v2")
-    (version "2.12.7")
+    (version "2.21.2")
     (source
      (origin
        (method git-fetch)
@@ -6596,7 +6596,7 @@ provided @code{http.FileSystem}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qhslaq885zbqs83nvbi29yh09b89kkb6ycami8lz28wkwrlayap"))))
+        (base32 "0vhblx1xim14i4npglzdp9hpjz92q2k29wbf9kp9m7id9cm7c7l9"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -6611,13 +6611,18 @@ provided @code{http.FileSystem}.")
                      (format #f "src/~a/~a" import-path dir)
                    (make-file-writable "hash.go")
                    (format #t "Generating `hash.go' for ~a...~%" dir)
-                   (invoke "go" "generate")))
+                   (invoke "go" "generate" "-v" "-n")))
                '("css" "html" "svg")))))))
+    ;; For tests and the CLI.
+    (native-inputs
+     (list go-github-com-djherbis-atime
+           go-github-com-fsnotify-fsnotify
+           go-github-com-matryer-try
+           go-github-com-tdewolff-argp
+           go-github-com-tdewolff-hasher ; to generate go files
+           go-github-com-tdewolff-test))
     (propagated-inputs
      (list go-github-com-tdewolff-parse-v2))
-    (native-inputs
-     (list go-github-com-tdewolff-hasher
-           go-github-com-tdewolff-test))
     (home-page "https://go.tacodewolff.nl/minify")
     (synopsis "Go minifiers for web formats")
     (description
@@ -7966,17 +7971,11 @@ go-github-com-multiformats-go-multiaddr-dns.")))
     (inherit go-github-com-tdewolff-minify-v2)
     (name "go-minify")
     (arguments
-     (substitute-keyword-arguments
-         (package-arguments go-github-com-tdewolff-minify-v2)
-       ((#:install-source? _ #t) #f)
-       ((#:import-path _ "github.com/tdewolff/minify/v2")
-        "github.com/tdewolff/minify/cmd/minify")))
-    (inputs
-     (list go-github-com-djherbis-atime
-           go-github-com-dustin-go-humanize
-           go-github-com-fsnotify-fsnotify
-           go-github-com-matryer-try
-           go-github-com-spf13-pflag))
+     (list
+      #:install-source?  #f
+      #:tests? #f ; tested in the library
+      #:import-path "github.com/tdewolff/minify/cmd/minify"
+      #:unpack-path "github.com/tdewolff/minify"))
     (description "This package provides a CLI binary executible built from
 go-github-com-tdewolff-minify-v2 source.")))
 
