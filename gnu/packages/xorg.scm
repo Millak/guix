@@ -2737,18 +2737,17 @@ X server.")
 (define-public xf86-video-ark
   (package
     (name "xf86-video-ark")
-    (version "0.7.5")
+    (version "0.7.6")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/driver/xf86-video-ark-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
           (base32
-           "07p5vdsj2ckxb6wh02s61akcv4qfg6s1d5ld3jn3lfaayd3f1466"))
-        (patches (search-patches "xf86-video-ark-remove-mibstore.patch"))))
+           "0p88blr3zgy47jc4aqivc6ypj4zq9pad1cl70wwz9xig29w9xk2s"))))
     (build-system gnu-build-system)
     (inputs (list xorg-server))
     (native-inputs (list pkg-config))
