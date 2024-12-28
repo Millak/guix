@@ -1123,17 +1123,17 @@ synchronization between the X server and direct-rendering clients.")
 (define-public libfontenc
   (package
     (name "libfontenc")
-    (version "1.1.4")
+    (version "1.1.8")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/lib/libfontenc-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
           (base32
-            "0y90170dp8wsidr1dzza0grxr1lfh30ji3b5vkjz4j6x1n0wxz1c"))))
+            "1ihlznj4m49jn1887cr86qqhrrlghvbfj7bbh230svi30pac60kv"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--disable-static")))
