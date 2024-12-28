@@ -5482,17 +5482,17 @@ Wayland.")
 (define-public libxaw
   (package
     (name "libxaw")
-    (version "1.0.14")
+    (version "1.0.16")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/lib/libXaw-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
           (base32
-            "13kg59r3086383g1dyhnwxanhp2frssh9062mrgn34nzlf7gkbkn"))))
+            "13wwqfwaahm6dh35w0nkvw32x3li2s0glsks34ggh267ahmmf7bk"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--disable-static")))
