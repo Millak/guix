@@ -3691,17 +3691,17 @@ alternative implementations like XRandR or TwinView.")
 (define-public xinput
   (package
     (name "xinput")
-    (version "1.6.3")
+    (version "1.6.4")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/app/xinput-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
           (base32
-            "1vb6xdd1xmk5f7pwc5zcbxfray5sf1vbnscqwf2yl8lv7gfq38im"))))
+            "1j2pf28c54apr56v1fmvprp657n6x4sdrv8f24rx3138cl6x015d"))))
     (build-system gnu-build-system)
     (inputs
       (list libxrender
