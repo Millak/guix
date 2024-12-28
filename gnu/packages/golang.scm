@@ -3444,7 +3444,7 @@ unknown structures such as those decoded from JSON.")
 (define-public go-github-com-mitchellh-copystructure
   (package
     (name "go-github-com-mitchellh-copystructure")
-    (version "1.0.0")
+    (version "1.2.0")
     (source
      (origin
        (method git-fetch)
@@ -3454,11 +3454,11 @@ unknown structures such as those decoded from JSON.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "05njg92w1088v4yl0js0zdrpfq6k37i9j14mxkr3p90p5yd9rrrr"))))
+         "1izw243b3r03nvgnnxvk706l3s3v3q7k69kq3n4asnzjkcymq7sm"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/mitchellh/copystructure"))
-    (native-inputs
+    (propagated-inputs
      (list go-github-com-mitchellh-reflectwalk))
     (home-page "https://github.com/mitchellh/copystructure")
     (synopsis "Go library for decoding deep copying values")
