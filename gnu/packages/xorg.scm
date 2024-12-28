@@ -2097,17 +2097,17 @@ information used in connecting to the X server.")
 (define-public xbacklight
   (package
     (name "xbacklight")
-    (version "1.2.3")
+    (version "1.2.4")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/app/xbacklight-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
           (base32
-            "1plssg0s3pbslg6rfzxp9sx8ryvn8l32zyvc8zp9zsbsfwjg69rs"))))
+            "1vp890ic26y4k2l0haw94z4nim3j7gp3g9w5flw2zj0qdw70phyl"))))
     (build-system gnu-build-system)
     (inputs
      (list libxcb xcb-util))
