@@ -2924,14 +2924,14 @@ It supports a variety of Adreno graphics chipsets.")
 (define-public xf86-video-geode
   (package
     (name "xf86-video-geode")
-    (version "2.11.20")
+    (version "2.11.21")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://xorg/individual/driver/xf86-video-geode-"
-                           version ".tar.bz2"))
+                           version ".tar.xz"))
        (sha256
-        (base32 "0r2dz0agg0k5wrqdbicji6mh6svzyl0xgqk76hpcfdlzn2zx15zl"))))
+        (base32 "07lzbyxss0m5i4j58z43zri2baawci9q1ykv1g828wqi2hzsqml2"))))
     (build-system gnu-build-system)
     (inputs (list xorg-server))
     (native-inputs (list pkg-config))
