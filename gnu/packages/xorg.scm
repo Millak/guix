@@ -1607,7 +1607,7 @@ input from UTF-8 into the locale's encoding.")
 (define-public mkfontscale
   (package
     (name "mkfontscale")
-    (version "1.2.2")
+    (version "1.2.3")
     (source
       (origin
         (method url-fetch)
@@ -1616,7 +1616,7 @@ input from UTF-8 into the locale's encoding.")
                version
                ".tar.xz"))
         (sha256
-          (base32 "1i6mw97r2s1rb6spjj8fbdsgw6197smaqq2haqgnwhz73xdzpqwa"))))
+          (base32 "0pp7dyfrrkrqxslk9q8660k0h4swaqlixsnnph2fxb7i8k1ws899"))))
     (build-system gnu-build-system)
     (inputs
       (list zlib xorgproto freetype libfontenc))
