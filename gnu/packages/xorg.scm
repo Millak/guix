@@ -4078,17 +4078,17 @@ tastes.")
 (define-public xorg-sgml-doctools
   (package
     (name "xorg-sgml-doctools")
-    (version "1.12")
+    (version "1.12.1")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/doc/xorg-sgml-doctools-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
           (base32
-            "01n8zqlkqjcxk1c59pk279y08gzhc14r03dhq3lxayy1xpfzvab5"))))
+            "0vvdnl1x82mr2phcq9z6dg94mas56zdmbm6lmkaqjkkbf3058p8a"))))
     (build-system gnu-build-system)
     (native-inputs (list pkg-config))
     (home-page "https://www.x.org/wiki/")
