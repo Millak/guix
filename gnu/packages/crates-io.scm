@@ -13043,14 +13043,14 @@ overflow and underflow checking.")
 (define-public rust-chrono-0.4
   (package
     (name "rust-chrono")
-    (version "0.4.38")
+    (version "0.4.39")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "chrono" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "009l8vc5p8750vn02z30mblg4pv2qhkbfizhfwmzc6vpy5nr67x2"))))
+        (base32 "09g8nf409lb184kl9j4s85k0kn8wzgjkp5ls9zid50b886fwqdky"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -13069,9 +13069,8 @@ overflow and underflow checking.")
         ("rust-serde-derive" ,rust-serde-derive-1)
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3)
-        ("rust-windows-bindgen" ,rust-windows-bindgen-0.56))
-       #:features '("unstable-locales")
-       #:tests? #f))
+        ("rust-windows-bindgen" ,rust-windows-bindgen-0.58))
+       #:features '("unstable-locales")))
     (home-page "https://github.com/chronotope/chrono")
     (synopsis "Date and time library for Rust")
     (description "Date and time library for Rust.")
