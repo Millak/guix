@@ -2977,17 +2977,17 @@ compositing.  Both support Xv overlay and dynamic rotation with XRandR.")
 (define-public xf86-video-i128
   (package
     (name "xf86-video-i128")
-    (version "1.4.0")
+    (version "1.4.1")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/driver/xf86-video-i128-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
           (base32
-           "1snhpv1igrhifcls3r498kjd14ml6x2xvih7zk9xlsd1ymmhlb4g"))))
+           "0imwmkam09wpp3z3iaw9i4hysxicrrax7i3p0l2glgp3zw9var3h"))))
     (build-system gnu-build-system)
     (inputs (list xorg-server))
     (native-inputs (list pkg-config))
