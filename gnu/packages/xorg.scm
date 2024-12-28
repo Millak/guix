@@ -4623,17 +4623,17 @@ cannot be adequately worked around on the client side of the wire.")
 (define-public libxtst
   (package
     (name "libxtst")
-    (version "1.2.3")
+    (version "1.2.5")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/lib/libXtst-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
           (base32
-            "012jpyj7xfm653a9jcfqbzxyywdmwb2b5wr1dwylx14f3f54jma6"))))
+            "0hljblisw72fk60y7zf9214ydn7lk32kj43cf12af2bhp4jlq3dm"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags '("--disable-static")
