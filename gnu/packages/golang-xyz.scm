@@ -936,6 +936,31 @@ commands.")
      "This package implements optimal parameters for data-types.")
     (license license:expat)))
 
+(define-public go-github-com-arbovm-levenshtein
+  (package
+    (name "go-github-com-arbovm-levenshtein")
+    (version "0.0.0-20160628152529-48b4e1c0c4d0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/arbovm/levenshtein")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0nmx2iip8xpnbmy6gvqpc9ikizr33dr40xgv746h0b0by8n7rv7y"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/arbovm/levenshtein"))
+    (home-page "https://github.com/arbovm/levenshtein")
+    (synopsis "Levenshtein Distance in Golang")
+    (description
+     "This package implements a functionality to calculate the
+@url{http://en.wikipedia.org/wiki/Levenshtein_distance, Levenshtein
+Distance}.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-arceliar-phony
   (package
     (name "go-github-com-arceliar-phony")
