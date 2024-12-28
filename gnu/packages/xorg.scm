@@ -5726,14 +5726,14 @@ The XCB util-keysyms module provides the following library:
 (define-public xcb-util-renderutil
   (package
     (name "xcb-util-renderutil")
-    (version "0.3.9")
+    (version "0.3.10")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://xorg/individual/xcb/"
-                                 name "-" version ".tar.bz2"))
+                                 name "-" version ".tar.xz"))
              (sha256
               (base32
-               "0nza1csdvvxbmk8vgv8vpmq7q8h05xrw3cfx9lwxd1hjzd47xsf6"))))
+               "1fh4dnlwlqyccrhmmwlv082a7mxc7ss7vmzmp7xxp39dwbqd859y"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags '("--disable-static")
