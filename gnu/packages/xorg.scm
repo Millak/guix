@@ -867,14 +867,14 @@ For example: @code{6x10}, @code{9x15bold}, etc.")
 (define-public font-util
   (package
     (name "font-util")
-    (version "1.3.3")
+    (version "1.4.1")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "mirror://xorg/individual/font/font-util-"
                             version ".tar.xz"))
         (sha256
-          (base32 "1lpb5qd2drilql4wl644m682hvmv67hdbbisnrm0ah4wfy8ci4g7"))))
+          (base32 "15fcd3rzlgm51fwgfapg6vzyd1kkd28rj149xq7iajqr7h9697sw"))))
     (build-system gnu-build-system)
     (native-inputs (list pkg-config))
     (home-page "https://www.x.org/wiki/")
