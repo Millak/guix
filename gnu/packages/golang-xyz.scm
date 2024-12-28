@@ -6639,6 +6639,38 @@ way of specifying command line options.")
 struct to another.")
     (license license:expat)))
 
+(define-public go-github-com-jmoiron-sqlx
+  (package
+    (name "go-github-com-jmoiron-sqlx")
+    (version "1.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jmoiron/sqlx")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "10rg9b6cl1j7jjr6z95xa1k45016mhicii3cmz0pkwrxw3dpfzfh"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/jmoiron/sqlx"))
+    (propagated-inputs
+     (list go-github-com-go-sql-driver-mysql
+           go-github-com-lib-pq
+           go-github-com-mattn-go-sqlite3))
+    (home-page "https://github.com/jmoiron/sqlx")
+    (synopsis "General purpose extensions to golang's @code{database/sql}")
+    (description
+     "sqlx is a library which provides a set of extensions on go's standard
+@code{database/sql} library.  The sqlx versions of @code{sql.DB},
+@code{sql.TX}, @code{sql.Stmt}, et al. all leave the underlying interfaces
+untouched, so that their interfaces are a superset on the standard ones.  This
+makes it relatively painless to integrate existing codebases using
+database/sql with sqlx.")
+    (license license:expat)))
+
 (define-public go-github-com-johnkerl-lumin
   (package
     (name "go-github-com-johnkerl-lumin")
