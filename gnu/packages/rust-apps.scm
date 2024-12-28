@@ -2964,64 +2964,81 @@ model.")
 (define-public tectonic
   (package
     (name "tectonic")
-    (version "0.12.0")
+    (version "0.15.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (crate-uri "tectonic" version))
-       (file-name (string-append name "-" version ".tar.gz"))
+       ;; Grab all the sources instead of each packaged crate in the workspace.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tectonic-typesetting/tectonic")
+             (commit (string-append name "@" version))
+             (recursive? #t)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1q4mz2c32gfypx33zlzgd1q9h4322jrk13fzvsf8h676ylclqzpc"))))
+        (base32 "02wchm7kmfsw8y71x84hlk9qf5ldvj2ir7j8pcq2a09wlj4xi4f5"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (delete-file-recursively "crates/bridge_harfbuzz/harfbuzz")))))
     (build-system cargo-build-system)
     (arguments
-     `(#:install-source? #f
+     (list
+       #:install-source? #f
+       #:features '(list "external-harfbuzz")
+       #:cargo-test-flags '(list "--features" "external-harfbuzz")
        #:cargo-inputs
-       (("rust-atty" ,rust-atty-0.2)
-        ("rust-byte-unit" ,rust-byte-unit-4)
-        ("rust-cfg-if" ,rust-cfg-if-1)
-        ("rust-error-chain" ,rust-error-chain-0.12)
-        ("rust-flate2" ,rust-flate2-1)
-        ("rust-fs2" ,rust-fs2-0.4)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-md-5" ,rust-md-5-0.9)
-        ("rust-open" ,rust-open-1)
-        ("rust-quick-xml" ,rust-quick-xml-0.22)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-sha2" ,rust-sha2-0.9)
-        ("rust-structopt" ,rust-structopt-0.3)
-        ("rust-tectonic-bridge-core" ,rust-tectonic-bridge-core-0.3)
-        ("rust-tectonic-bundles" ,rust-tectonic-bundles-0.3)
-        ("rust-tectonic-docmodel" ,rust-tectonic-docmodel-0.2)
-        ("rust-tectonic-engine-bibtex" ,rust-tectonic-engine-bibtex-0.1)
-        ("rust-tectonic-engine-spx2html" ,rust-tectonic-engine-spx2html-0.1)
-        ("rust-tectonic-engine-xdvipdfmx" ,rust-tectonic-engine-xdvipdfmx-0.4)
-        ("rust-tectonic-engine-xetex" ,rust-tectonic-engine-xetex-0.4)
-        ("rust-tectonic-errors" ,rust-tectonic-errors-0.2)
-        ("rust-tectonic-geturl" ,rust-tectonic-geturl-0.3)
-        ("rust-tectonic-io-base" ,rust-tectonic-io-base-0.4)
-        ("rust-tectonic-status-base" ,rust-tectonic-status-base-0.2)
-        ("rust-tectonic-xdv" ,rust-tectonic-xdv-0.2)
-        ("rust-tempfile" ,rust-tempfile-3)
-        ("rust-termcolor" ,rust-termcolor-1)
-        ("rust-toml" ,rust-toml-0.5)
-        ("rust-url" ,rust-url-2)
-        ("rust-watchexec" ,rust-watchexec-1)
-        ("rust-zip" ,rust-zip-0.5))
+       (list rust-app-dirs2-2
+             rust-anyhow-1
+             rust-atty-0.2
+             rust-byte-unit-4
+             rust-byteorder-1
+             rust-cc-1
+             rust-cfg-if-1
+             rust-curl-0.4
+             rust-error-chain-0.12
+             rust-flate2-1
+             rust-fs2-0.4
+             rust-html-escape-0.2
+             rust-lazy-static-1
+             rust-libc-0.2
+             rust-md-5-0.10
+             rust-nom-7
+             rust-open-4
+             rust-percent-encoding-2
+             rust-pinot-0.1
+             rust-pkg-config-0.3
+             rust-quick-xml-0.28
+             rust-reqwest-0.11
+             rust-serde-1
+             rust-serde-json-1
+             rust-sha2-0.10
+             rust-structopt-0.3
+             rust-tempfile-3
+             rust-tera-1
+             rust-termcolor-1
+             rust-thiserror-1
+             rust-tokio-1
+             rust-toml-0.7
+             rust-url-2
+             rust-vcpkg-0.2
+             rust-watchexec-2
+             rust-watchexec-filterer-globset-1
+             rust-watchexec-signals-1
+             rust-zip-0.6)
        #:cargo-development-inputs
-       (("rust-filetime" ,rust-filetime-0.2)
-        ("rust-futures" ,rust-futures-0.1)
-        ("rust-headers" ,rust-headers-0.2)
-        ("rust-hyper" ,rust-hyper-0.12)
-        ("rust-tempfile" ,rust-tempfile-3)
-        ("rust-tokio" ,rust-tokio-0.1))
+       (list rust-clap-2
+             rust-filetime-0.2
+             rust-futures-0.3
+             rust-headers-0.3
+             rust-hyper-0.14
+             rust-structopt-0.3
+             rust-tempfile-3)
        #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'install-doc
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (doc (string-append out "/share/doc/" ,name "-" ,version)))
-               (copy-recursively "docs/src" doc)))))))
+       #~(modify-phases %standard-phases
+           (add-after 'install 'install-doc
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let* ((out (assoc-ref outputs "out"))
+                      (doc (string-append out "/share/doc/" #$name "-" #$version)))
+                 (copy-recursively "docs/src" doc)))))))
     (native-inputs
      (list pkg-config))
     (inputs
@@ -3030,9 +3047,7 @@ model.")
            graphite2
            harfbuzz
            icu4c
-           libpng
-           openssl
-           zlib))
+           openssl))
     (home-page "https://tectonic-typesetting.github.io/")
     (synopsis "Complete, embeddable TeX/LaTeX engine")
     (description
