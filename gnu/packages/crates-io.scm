@@ -11021,8 +11021,43 @@ Tagging Specification.  This library comes with functionality to, among
 others, add a tag, ensure/check a tag exists and get the state of a tag.")
     (license license:expat)))
 
+(define-public rust-calamine-0.26
+  (package
+    (name "rust-calamine")
+    (version "0.26.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "calamine" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1cbfjwb37c28gkb42wsgpp93fxsrzhxgjjza0hc7yp9cmywld1hk"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Doc tests segfault.
+       #:cargo-inputs (("rust-byteorder" ,rust-byteorder-1)
+                       ("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-codepage" ,rust-codepage-0.1)
+                       ("rust-encoding-rs" ,rust-encoding-rs-0.8)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-quick-xml" ,rust-quick-xml-0.31)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-zip" ,rust-zip-2))
+       #:cargo-development-inputs (("rust-env-logger" ,rust-env-logger-0.11)
+                                   ("rust-glob" ,rust-glob-0.3)
+                                   ("rust-rstest" ,rust-rstest-0.21)
+                                   ("rust-serde-derive" ,rust-serde-derive-1)
+                                   ("rust-sha2" ,rust-sha2-0.10))))
+    (home-page "https://github.com/tafia/calamine")
+    (synopsis "Reader and deserializer for spreadsheet files")
+    (description
+     "@code{calamine} is a pure Rust library to read and deserialize any
+spreadsheet file.")
+    (license license:expat)))
+
 (define-public rust-calamine-0.24
   (package
+    (inherit rust-calamine-0.26)
     (name "rust-calamine")
     (version "0.24.0")
     (source
@@ -11032,7 +11067,6 @@ others, add a tag, ensure/check a tag exists and get the state of a tag.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1nilccwz0vqzzxjxcr06pi25k80j2wz0f89mwg1v3igx4r932fla"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; Doc tests segfault.
        #:cargo-inputs (("rust-byteorder" ,rust-byteorder-1)
@@ -11047,13 +11081,7 @@ others, add a tag, ensure/check a tag exists and get the state of a tag.")
        #:cargo-development-inputs (("rust-env-logger" ,rust-env-logger-0.10)
                                    ("rust-glob" ,rust-glob-0.3)
                                    ("rust-serde-derive" ,rust-serde-derive-1)
-                                   ("rust-sha256" ,rust-sha256-1))))
-    (home-page "https://github.com/tafia/calamine")
-    (synopsis "Reader and deserializer for spreadsheet files")
-    (description
-     "@code{calamine} is a pure Rust library to read and deserialize any
-spreadsheet file.")
-    (license license:expat)))
+                                   ("rust-sha256" ,rust-sha256-1))))))
 
 (define-public rust-calamine-0.18
   (package
