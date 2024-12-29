@@ -65714,8 +65714,34 @@ functionality as retain but gives mutable borrow to the predicate.")
        (sha256
         (base32 "11j09lp1wqwc2r9bw58my2474zj95jz5fihff3ldv3rz0g2baccc"))))))
 
+(define-public rust-rfc2047-decoder-1
+  (package
+    (name "rust-rfc2047-decoder")
+    (version "1.0.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rfc2047-decoder" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0afyg0k2hagnirvv5rk2ysr3khz8ab5ifdap3dsnli9121fm8dmw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-base64" ,rust-base64-0.22)
+                       ("rust-charset" ,rust-charset-0.1)
+                       ("rust-chumsky" ,rust-chumsky-0.9)
+                       ("rust-memchr" ,rust-memchr-2)
+                       ("rust-quoted-printable" ,rust-quoted-printable-0.5)
+                       ("rust-thiserror" ,rust-thiserror-2))))
+    (home-page "https://github.com/TornaxO7/rfc2047-decoder")
+    (synopsis "Rust library for decoding RFC 2047 MIME Message Headers")
+    (description "This package provides a rust library for decoding RFC 2047
+MIME Message Headers.")
+    (license license:expat)))
+
 (define-public rust-rfc2047-decoder-0.2
   (package
+    (inherit rust-rfc2047-decoder-1)
     (name "rust-rfc2047-decoder")
     (version "0.2.2")
     (source (origin
@@ -65725,7 +65751,6 @@ functionality as retain but gives mutable borrow to the predicate.")
               (sha256
                (base32
                 "0bpc2k7dp3nxc3pnsvz6zd3vc58j8q29nzibn4q3wz49a974pz31"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-base64" ,rust-base64-0.21)
@@ -65733,12 +65758,7 @@ functionality as retain but gives mutable borrow to the predicate.")
         ("rust-chumsky" ,rust-chumsky-0.9)
         ("rust-memchr" ,rust-memchr-2)
         ("rust-quoted-printable" ,rust-quoted-printable-0.4)
-        ("rust-thiserror" ,rust-thiserror-1))))
-    (home-page "https://github.com/soywod/rfc2047-decoder")
-    (synopsis "Rust library for decoding RFC 2047 MIME Message Headers")
-    (description "This package provides a rust library for decoding RFC 2047
-MIME Message Headers.")
-    (license license:expat)))
+        ("rust-thiserror" ,rust-thiserror-1))))))
 
 (define-public rust-rhai-1
   (package
