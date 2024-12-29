@@ -58388,21 +58388,20 @@ priority of an object.")
 (define-public rust-proc-macro-crate-3
   (package
     (name "rust-proc-macro-crate")
-    (version "3.1.0")
+    (version "3.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "proc-macro-crate" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-          "110jcl9vnj92ihbhjqmkp19m8rzxc14a7i60knlmv99qlwfcadvd"))))
+        (base32 "0yzsqnavb3lmrcsmbrdjfrky9vcbl46v59xi9avn0796rb3likwf"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-test-flags '("--release" "--"
+     `(#:cargo-test-flags '("--"
                             ;; Not all files included.
                             "--skip=workspace_deps_working")
-       #:cargo-inputs (("rust-toml-edit" ,rust-toml-edit-0.21))
+       #:cargo-inputs (("rust-toml-edit" ,rust-toml-edit-0.22))
        #:cargo-development-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
