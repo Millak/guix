@@ -1508,10 +1508,11 @@ configuration file.")
       (propagated-inputs (list go-github-com-jcmturner-gokrb5-v8
                                go-golang-org-x-net))
       (home-page "https://github.com/dpotapov/go-spnego")
-      (synopsis "Simple golang library for retry mechanism")
-      (description "This package is a simple Go library that provides retry
-functionality for functions that may fail.  It includes various customizable
-retry strategies, such as fixed delay, backoff delay, and random delay.")
+      (synopsis "HTTP calls with Kerberos authentication")
+      (description
+       "The package extends Go's HTTP Transport allowing Kerberos
+authentication through Negotiate mechanism (see
+@url{https://tools.ietf.org/html/rfc4559, RFC4559}).")
       (license license:expat)))
 
 (define-public go-github-com-blanu-dust
