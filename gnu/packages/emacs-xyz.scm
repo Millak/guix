@@ -23987,8 +23987,8 @@ the pipeline, featuring the support for running @code{emacsclient}.")
     (license license:gpl3+)))
 
 (define-public emacs-jupyter
-  (let ((commit "f97f4b5d8c83e0b901020f835183dde8a2bf649e")
-        (revision "1"))
+  (let ((commit "db8a9e233a010a61063f34220821ec76157a2d84")
+        (revision "2"))
     (package
       (name "emacs-jupyter")
       (version (git-version "1.0" revision commit))
@@ -24000,7 +24000,7 @@ the pipeline, featuring the support for running @code{emacsclient}.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0jmhh9ncnf4ai8rr2g474n6dv9m7v983s2w0smy0h7l07sp43klq"))))
+          (base32 "0gjxi84d95sx5fw8q2a8szfhq6kb4xzwq0xr9a3pirkiga9hxymz"))))
       (build-system emacs-build-system)
       (propagated-inputs
        (list emacs-company              ;optional
