@@ -91494,21 +91494,21 @@ first byte.")
     (description "This package provides the @code{cp} command from uutils.")
     (license license:expat)))
 
-(define-public rust-uu-mkdir-0.0.23
+(define-public rust-uu-mkdir-0.0.28
   (package
     (name "rust-uu-mkdir")
-    (version "0.0.23")
+    (version "0.0.28")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "uu_mkdir" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0lf84gxjw1ii53xmlr4rnlgpqci5zw8scqf1qpmid3bkkry6bgyw"))))
+        (base32 "0fhdg1vqbdq679j42m2gykjh0fmb66hai9f5n53bgjzffpw7rfpy"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-clap" ,rust-clap-4)
-                       ("rust-uucore" ,rust-uucore-0.0.25))))
+                       ("rust-uucore" ,rust-uucore-0.0.28))))
     (home-page "https://github.com/uutils/coreutils")
     (synopsis "mkdir ~ (uutils) create DIRECTORY")
     (description "This package provides the @code{mkdir} command from uutils.")
