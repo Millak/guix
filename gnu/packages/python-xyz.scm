@@ -30444,13 +30444,13 @@ project.")
 (define-public python-trio
   (package
     (name "python-trio")
-    (version "0.27.0")
+    (version "0.28.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trio" version))
        (sha256
-        (base32 "0cb8qy1yj274xa21nf2jpmwssjzp39vgva7y982xmci62ymrbk0x"))))
+        (base32 "019wqwlbj185skknbjd7paxqqx6vl5gpqk2fwmc5d2lyzsb7hm2f"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -30492,6 +30492,10 @@ _cyclic_garbage"
              "src/trio/_tests")
       #:phases
       '(modify-phases %standard-phases
+         (add-after 'unpack 'ignore-deprecations
+           (lambda _
+             (substitute* "pyproject.toml"
+               (("  \"error\",") "  \"ignore\","))))
          (add-before 'check 'set-env
            (lambda _
              ;; Tests require a writable home.
@@ -30499,18 +30503,13 @@ _cyclic_garbage"
              ;; #$output is first in path which causes "import file mismatch"
              (setenv "PYTHONPATH" (string-append (getcwd) "/src:$PYTHONPATH")))))))
     (native-inputs
-     (list python-astor
-           python-jedi
-           python-pyopenssl
+     (list python-pyopenssl
            python-pytest
-           python-isort
-           python-pytest-asyncio
-           python-trustme
            python-setuptools
+           python-trustme
            python-wheel))
     (propagated-inputs
-     (list python-async-generator
-           python-attrs
+     (list python-attrs
            python-cffi
            python-exceptiongroup
            python-idna
