@@ -91653,17 +91653,17 @@ first byte.")
     (description "This package provides the uucore proc-macros.")
     (license license:expat)))
 
-(define-public rust-uuhelp-parser-0.0.25
+(define-public rust-uuhelp-parser-0.0.28
   (package
     (name "rust-uuhelp-parser")
-    (version "0.0.25")
+    (version "0.0.28")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "uuhelp_parser" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0gsfy0dkwzlyyq4abwf0c7gks7m1qm0yzl58sl265n5dllr6hymc"))))
+        (base32 "173fzyid13yfzp2gvwd73h6sydifhh6qv5d29r5js9fcj74xid46"))))
     (build-system cargo-build-system)
     (home-page "https://github.com/uutils/coreutils")
     (synopsis
