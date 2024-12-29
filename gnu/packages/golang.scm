@@ -1488,32 +1488,31 @@ configuration file.")
         (base32 "066bqlgw5h7a3kxswqlv734asb7nw2y6snsn09yqk0ixj23qw22s"))))))
 
 (define-public go-github-com-dpotapov-go-spnego
-  (let ((commit "298b63a544303a239753d04314aada5bdbad7e4a")
-        (revision "0"))
     (package
       (name "go-github-com-dpotapov-go-spnego")
-      (version (git-version "0.0.0" revision commit))
+      (version "0.0.0-20220426193508-b7f82e4507db")
       (source
        (origin
          (method git-fetch)
          (uri
           (git-reference
            (url "https://github.com/dpotapov/go-spnego")
-           (commit commit)))
+           (commit (go-version->git-ref version))))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0d3b0kazm0jskfml0pkhjn2v49m8dvqj4zymm49ldgvkhl9hcf6w"))))
+          (base32 "1rpcgzkqhdwfsi8a9f9qar16i663pdx3gvwd6c0vfppy7qjmpjfr"))))
       (build-system go-build-system)
       (arguments `(#:import-path "github.com/dpotapov/go-spnego"))
-      (propagated-inputs (list go-github-com-stretchr-testify
-                               go-github-com-jcmturner-gokrb5-v8
+      (native-inputs
+       (list go-github-com-stretchr-testify))
+      (propagated-inputs (list go-github-com-jcmturner-gokrb5-v8
                                go-golang-org-x-net))
       (home-page "https://github.com/dpotapov/go-spnego")
       (synopsis "Simple golang library for retry mechanism")
       (description "This package is a simple Go library that provides retry
 functionality for functions that may fail.  It includes various customizable
 retry strategies, such as fixed delay, backoff delay, and random delay.")
-      (license license:expat))))
+      (license license:expat)))
 
 (define-public go-github-com-blanu-dust
   (package
