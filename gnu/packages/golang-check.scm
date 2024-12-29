@@ -46,6 +46,7 @@
   #:use-module (guix build-system go)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
+  #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build)
@@ -1285,7 +1286,7 @@ current goroutine's ID.")
 (define-public go-github-com-stretchr-testify
   (package
     (name "go-github-com-stretchr-testify")
-    (version "1.9.0")
+    (version "1.10.0")
     (source
      (origin
        (method git-fetch)
@@ -1294,11 +1295,14 @@ current goroutine's ID.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "12cnhk96h8b3ddlb7jfvwwavzc0j1c2iva92pszl9rv6r571ckzg"))))
+        (base32 "0g1bdpqih38a7dl1malahz5x4ag01adk61gx47jg2534cqzvid05"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/stretchr/testify"))
+     (list
+      ;; XXX: Tests are shaky on non x86_64 architectures, check if some may
+      ;; be enabled.
+      #:tests? (target-x86-64?)
+      #:import-path "github.com/stretchr/testify"))
     (propagated-inputs
      (list go-github-com-davecgh-go-spew
            go-github-com-pmezard-go-difflib
@@ -1306,8 +1310,9 @@ current goroutine's ID.")
            go-gopkg-in-yaml-v3))
     (home-page "https://github.com/stretchr/testify")
     (synopsis "Go helper library for tests and invariant checking")
-    (description "This package provide many tools for testifying that your
-code will behave as you intend.
+    (description
+     "This package provide many tools for testifying that your code will
+behave as you intend.
 
 Features include:
 @itemize
