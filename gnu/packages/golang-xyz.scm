@@ -4045,7 +4045,16 @@ more similar API to regexp."))))
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "08p7gcxm7psgn1rzhhy2s2va59ssy77x8wd706gdp2pif7wln883"))))
+        (base32 "08p7gcxm7psgn1rzhhy2s2va59ssy77x8wd706gdp2pif7wln883"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/expr-lang/expr/repl
+            ;; - github.com/expr-lang/expr/debug
+            (for-each delete-file-recursively
+                      (list "repl" "debug"))))))
     (build-system go-build-system)
     (arguments
      (list
