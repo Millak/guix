@@ -15065,6 +15065,26 @@ based on color-backtrace.")
        #:cargo-development-inputs (("rust-ansi-term" ,rust-ansi-term-0.12)
                                    ("rust-rspec" ,rust-rspec-1.0.0-beta.3))))))
 
+(define-public rust-colorz-1
+  (package
+    (name "rust-colorz")
+    (version "1.1.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "colorz" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0yq6wvrajh73b9hwjr03brc2znhr1x1nym6bd5ry68c8g72kgsvc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ;  `#![feature]` may not be used on the stable release channel
+       #:cargo-inputs (("rust-supports-color" ,rust-supports-color-3))))
+    (home-page "https://github.com/RustyYato/colorz")
+    (synopsis "terminal text-coloring library")
+    (description "This package provides a terminal text-coloring library.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-combine-4
   (package
     (name "rust-combine")
