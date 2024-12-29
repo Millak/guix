@@ -12658,6 +12658,33 @@ machine readable.  It is modeled after the Go standard library's @code{io} and
          (package-arguments go-github-com-op-go-logging)
        ((#:import-path _) "gopkg.in/op/go-logging.v1")))))
 
+(define-public go-gopkg-in-vmihailenco-msgpack-v2
+  (package
+    (name "go-gopkg-in-vmihailenco-msgpack-v2")
+    (version "2.9.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/vmihailenco/msgpack")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "08rcdnshc252nmlxkswx8xgiwr2ry7cq806gcw1836b00hwlwmmz"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "gopkg.in/vmihailenco/msgpack.v2"
+      #:test-flags #~(list "-skip" "TestTypes")))
+    (native-inputs
+     (list go-gopkg-in-check-v1))
+    (home-page "https://msgpack.uptrace.dev/")
+    (synopsis "MessagePack encoding for Golang")
+    (description
+     "This package provides implementation of MessagePack encoding for Go
+programming language.")
+    (license license:bsd-2)))
+
 (define-public go-gopkg-in-warnings-v0
   (package
     (name "go-gopkg-in-warnings-v0")
