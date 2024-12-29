@@ -96,7 +96,7 @@
 (define-public libgpg-error
   (package
     (name "libgpg-error")
-    (version "1.47")
+    (version "1.51")
     (source
      (origin
       (method url-fetch)
@@ -104,7 +104,7 @@
                           version ".tar.bz2"))
       (sha256
        (base32
-        "1nwvpg5inpjzbq7r6wqsgmwcnfqyahcw9hi8discqvmrcq4nfg4y"))))
+        "1cp64xa58977fysj1z1rgj60qxbjkzqpkpww6raysgmrnqnin3xy"))))
     (build-system gnu-build-system)
     (arguments
      (list
