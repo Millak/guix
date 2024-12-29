@@ -34059,20 +34059,20 @@ characters in HTML, decoding and unescaping HTML entities as well.")
     (description "This library provides Rust bindings to HTSlib.")
     (license license:expat)))
 
-(define-public rust-human-date-parser-0.1
+(define-public rust-human-date-parser-0.2
   (package
     (name "rust-human-date-parser")
-    (version "0.1.2")
+    (version "0.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "human-date-parser" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "06jflxqah06cnbc5d9mmffmzrhw3ybj9aigyxag39k2pf5mgkjy5"))))
+        (base32 "0qqwf20wz13ww06i1xqr9hfbg4c598f34n442q90qxzyxd6wy5hi"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f      ; use of undeclared crate or module `concat_idents`
+     `(#:tests? #f      ; unresolved import `concat_idents`
        #:cargo-inputs (("rust-chrono" ,rust-chrono-0.4)
                        ("rust-pest" ,rust-pest-2)
                        ("rust-pest-derive" ,rust-pest-derive-2)
@@ -34083,6 +34083,25 @@ characters in HTML, decoding and unescaping HTML entities as well.")
      "This package parses strings that express dates in a human way into ones
 usable by code.")
     (license license:expat)))
+
+(define-public rust-human-date-parser-0.1
+  (package
+    (inherit rust-human-date-parser-0.2)
+    (name "rust-human-date-parser")
+    (version "0.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "human-date-parser" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "06jflxqah06cnbc5d9mmffmzrhw3ybj9aigyxag39k2pf5mgkjy5"))))
+    (arguments
+     `(#:tests? #f      ; use of undeclared crate or module `concat_idents`
+       #:cargo-inputs (("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-pest" ,rust-pest-2)
+                       ("rust-pest-derive" ,rust-pest-derive-2)
+                       ("rust-thiserror" ,rust-thiserror-1))))))
 
 (define-public rust-human-format-1
   (package
