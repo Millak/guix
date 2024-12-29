@@ -1662,6 +1662,30 @@ wide-block encryption mode developed by Halevi and Rogaway.")
       (description "Go-Bloom implements bloom filter using double hashing.")
       (license license:asl2.0))))
 
+(define-public go-github-com-sean--seed
+  (package
+    (name "go-github-com-sean--seed")
+    (version "0.0.0-20170313163322-e2103e2c3529")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sean-/seed")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0glir8jxi1w7aga2jwdb63pp1h8q4whknili7xixsqzwyy716125"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/sean-/seed"))
+    (home-page "https://github.com/sean-/seed")
+    (synopsis "Seed random number generator")
+    (description
+     "Boiler-plate to securely @url{https://en.wikipedia.org/wiki/Random_seed,
+seed} Go's random number generator (if possible).")
+    (license license:expat)))
+
 (define-public go-github-com-shadowsocks-go-shadowsocks2
   (package
     (name "go-github-com-shadowsocks-go-shadowsocks2")
