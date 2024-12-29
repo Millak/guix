@@ -91536,23 +91536,23 @@ first byte.")
     (description "This package provides the @code{mktemp} command from uutils.")
     (license license:expat)))
 
-(define-public rust-uu-mv-0.0.23
+(define-public rust-uu-mv-0.0.28
   (package
     (name "rust-uu-mv")
-    (version "0.0.23")
+    (version "0.0.28")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "uu_mv" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1z2cdcnf1q6zgzycimlbg0xyqh43v8x49vsr0sx1sbjdsdhpwc2y"))))
+        (base32 "086swwxq6lc26n51nwsxhaslkzmc2z7b1fj3akvhiwfdzhqj54xz"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-clap" ,rust-clap-4)
                        ("rust-fs-extra" ,rust-fs-extra-1)
                        ("rust-indicatif" ,rust-indicatif-0.17)
-                       ("rust-uucore" ,rust-uucore-0.0.25))))
+                       ("rust-uucore" ,rust-uucore-0.0.28))))
     (home-page "https://github.com/uutils/coreutils")
     (synopsis "mv ~ (uutils) move (rename) SOURCE to DESTINATION")
     (description "This package provides the @code{mv} command from uutils.")
