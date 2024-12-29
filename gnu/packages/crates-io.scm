@@ -68842,18 +68842,17 @@ require unstable language features.")
 (define-public rust-rustc-version-0.4
   (package
     (name "rust-rustc-version")
-    (version "0.4.0")
+    (version "0.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rustc_version" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0rpk9rcdk405xhbmgclsh4pai0svn49x35aggl4nhbkd4a2zb85z"))))
+        (base32 "14lvdsmr5si5qbqzrajgb6vfn69k0sfygrvfvr2mps26xwi3mjyg"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-semver" ,rust-semver-1))
        #:cargo-development-inputs
        (("rust-doc-comment" ,rust-doc-comment-0.3))))
