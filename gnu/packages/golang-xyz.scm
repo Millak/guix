@@ -7193,6 +7193,51 @@ way of specifying command line options.")
 struct to another.")
     (license license:expat)))
 
+(define-public go-github-com-jmattheis-goverter
+  (package
+    (name "go-github-com-jmattheis-goverter")
+    (version "1.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jmattheis/goverter")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ph8470wxpf8p2cdr5w3hkchlgpiyzljlsdna9jvhgw53sf2c32n"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/jmattheis/goverter"
+      ;; Test requiring compplex set-up, fails during build but passed outside
+      ;; build-system.
+      #:test-flags #~(list "-skip" "TestScenario")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-broken-examples
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (for-each delete-file-recursively
+                          (list "example/enum/transform-custom"
+                                "example/wrap-errors-using"
+                                "example/protobuf"))))))))
+    (native-inputs
+     (list go-github-com-stretchr-testify
+           go-github-com-goverter-patherr))
+    (propagated-inputs
+     (list go-github-com-dave-jennifer
+           go-golang-org-x-tools
+           go-gopkg-in-yaml-v3))
+    (home-page "https://github.com/jmattheis/goverter")
+    (synopsis "Type-safe Go converters by defining function signatures")
+    (description
+     "This package provides a functionality to generate type-safe converters
+for Go.  The project is meant as alternative to
+@url{https://github.com/jinzhu/copier, jinzhu/copier} that doesn't use
+reflection.")
+    (license license:expat)))
+
 (define-public go-github-com-jmoiron-sqlx
   (package
     (name "go-github-com-jmoiron-sqlx")
