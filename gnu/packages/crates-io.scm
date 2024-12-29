@@ -45936,6 +45936,28 @@ quick compile time, and minimal dependencies.")
         ("rust-random-fast-rng" ,rust-random-fast-rng-0.1)
         ("rust-randomize" ,rust-randomize-4))))))
 
+(define-public rust-nanoserde-0.1
+  (package
+    (name "rust-nanoserde")
+    (version "0.1.37")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "nanoserde" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "168vga2z8inldwahsjps2mi3m149p16dfnsjac1mmqmi9a2czsax"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-hashbrown" ,rust-hashbrown-0.12)
+                       ("rust-nanoserde-derive" ,rust-nanoserde-derive-0.1))))
+    (home-page "https://github.com/not-fl3/nanoserde")
+    (synopsis "Fork of makepad-tinyserde without any external dependencies")
+    (description
+     "This package provides Fork of makepad-tinyserde without any external
+dependencies.  It supports json, binary and ron.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-nanoserde-derive-0.1
   (package
     (name "rust-nanoserde-derive")
