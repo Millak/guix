@@ -83268,6 +83268,33 @@ unstable language features.")
     (description "Supports writing tests to verify `log` crate calls.")
     (license license:bsd-3)))
 
+(define-public rust-testing-table-0.1
+  (package
+    (name "rust-testing-table")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "testing_table" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1wl7i9q1hyaabcajh8pf8pflazazgpb60s61xjl9fv1xdvgbzd9y"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (("\"=([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                   (string-append "\"^" version)))))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-ansitok" ,rust-ansitok-0.2)
+                       ("rust-unicode-width" ,rust-unicode-width-0.1))))
+    (home-page "https://github.com/zhiburt/tabled")
+    (synopsis "Library for pretty print tables of Rust `struct`s and `enum`s")
+    (description
+     "This package provides an easy to use library for pretty print tables of
+Rust @code{struct}s and @code{enum}s.")
+    (license license:expat)))
+
 (define-public rust-text-block-macros-0.1
   (package
     (name "rust-text-block-macros")
