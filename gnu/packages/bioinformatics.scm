@@ -3107,36 +3107,29 @@ phylogenetic markers, and can also scale to very large phylogenies comprising
 (define-public python-pybedtools
   (package
     (name "python-pybedtools")
-    (version "0.9.0")
+    (version "0.10.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "pybedtools" version))
               (sha256
                (base32
-                "18rhzk08d3rpxhi5xh6pqg64x6v5q3daw6y3v54k85v4swncjrwj"))))
+                "0q8if5bd8zgv5xvr5zs4pj8y60yzl8i5jz8xfk6bw4xh4fnvlvqs"))))
     (build-system pyproject-build-system)
     (arguments
-     `(#:modules ((srfi srfi-26)
+     (list
+      #:modules '((srfi srfi-26)
                   (guix build utils)
                   (guix build python-build-system)
                   (guix build pyproject-build-system))
-       ;; See https://github.com/daler/pybedtools/issues/192
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'disable-broken-tests
+      #:test-flags
+      ;; Requires internet access.
+      '(list "-k" "not test_chromsizes")
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'fix-references
            (lambda _
-             (substitute* "pybedtools/test/test_helpers.py"
-               ;; Requires internet access.
-               (("def test_chromsizes")
-                "def _do_not_test_chromsizes")
-               ;; Broken as a result of the workaround used in the check phase
-               ;; (see: https://github.com/daler/pybedtools/issues/192).
-               (("def test_getting_example_beds")
-                "def _do_not_test_getting_example_beds"))
-             ;; This issue still occurs on python2
              (substitute* "pybedtools/test/test_issues.py"
-               (("def test_issue_303")
-                "def _test_issue_303"))))
+               (("'/bin/bash'") (string-append "'" (which "bash") "'")))))
          ;; Force the Cythonization of C++ files to guard against compilation
          ;; problems.
          (add-after 'unpack 'remove-cython-generated-files
@@ -3152,27 +3145,25 @@ phylogenetic markers, and can also scale to very large phylogenies comprising
          (add-after 'remove-cython-generated-files 'generate-cython-extensions
            (lambda _
              (invoke "python" "setup.py" "cythonize")))
-         (replace 'check
+         (add-before 'check 'build-extensions
            (lambda _
-             ;; The tests need to be run from elsewhere...
-             (mkdir-p "/tmp/test")
-             (copy-recursively "pybedtools/test" "/tmp/test")
-             (with-directory-excursion "/tmp/test"
-               (invoke "pytest" "-v" "--doctest-modules")))))))
+             ;; Cython extensions have to be built before running the tests.
+             (invoke "python" "setup.py" "build_ext" "--inplace"))))))
     (propagated-inputs
-     (list bedtools samtools python-matplotlib python-pysam
-           python-pyyaml))
-    (native-inputs
-     (list python-numpy
+     (list bedtools samtools
+           kentutils ;for bedGraphToBigWig
+           python-numpy
            python-pandas
-           python-cython
-           kentutils ; for bedGraphToBigWig
-           python-six
-           python-setuptools
-           python-wheel
-           ;; For the test suite.
+           python-psutil
+           python-pysam
+           python-pyyaml))
+    (inputs
+     (list zlib))
+    (native-inputs
+     (list python-cython
            python-pytest
-           python-psutil))
+           python-setuptools
+           python-wheel))
     (home-page "https://pythonhosted.org/pybedtools/")
     (synopsis "Python wrapper for BEDtools programs")
     (description
