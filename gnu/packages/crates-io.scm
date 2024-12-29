@@ -8430,29 +8430,43 @@ methods for operating on individual bits and ranges of bits on Rust's integral
 types.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-bit-set-0.8
+  (package
+    (name "rust-bit-set")
+    (version "0.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "bit-set" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "18riaa10s6n59n39vix0cr7l2dgwdhcpbcm97x1xbyfp1q47x008"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bit-vec" ,rust-bit-vec-0.8)
+                       ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-rand" ,rust-rand-0.8)
+                                   ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/contain-rs/bit-set")
+    (synopsis "Set of bits")
+    (description "This package provides a set of bits.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-bit-set-0.5
   (package
+    (inherit rust-bit-set-0.8)
     (name "rust-bit-set")
     (version "0.5.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "bit-set" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1wcm9vxi00ma4rcxkl3pzzjli6ihrpn9cfdi0c5b4cvga2mxs007"))))
-    (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-bit-vec" ,rust-bit-vec-0.6))
-       #:cargo-development-inputs
-       (("rust-rand" ,rust-rand-0.3))))
-    (home-page "https://github.com/contain-rs/bit-set")
-    (synopsis "Set of bits")
-    (description
-     "This package provides a set of bits.")
-    (license (list license:asl2.0 license:expat))))
+     `(#:cargo-inputs (("rust-bit-vec" ,rust-bit-vec-0.6))
+       #:cargo-development-inputs (("rust-rand" ,rust-rand-0.3))))))
 
 (define-public rust-bit-set-0.4
   (package
