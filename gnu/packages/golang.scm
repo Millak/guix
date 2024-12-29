@@ -1420,20 +1420,18 @@ configuration file.")
     (license license:isc)))
 
 (define-public go-github-com-savsgio-gotils
-  (let ((commit "52f3993e8d6d2629f18e7b7383b7f54a3d3f1d1f")
-        (revision "0"))
     (package
       (name "go-github-com-savsgio-gotils")
-      (version (git-version "0.0.0" revision commit))
+      (version "0.0.0-20240704082632-aef3928b8a38")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/savsgio/gotils")
-               (commit commit)))
+               (commit (go-version->git-ref version))))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0qr7i62h53frcig26vj027r2hn9zxsjzd7113wvbxy7qpprjjbjb"))))
+          (base32 "0s3xsq4wy2xi17wq0kzw2zszj9vwndzvvmkx7pp7crx8k43x16ll"))))
       (build-system go-build-system)
       (arguments
        (list
@@ -1446,7 +1444,7 @@ configuration file.")
       (synopsis "Golang utilities")
       (description
        "Golang utilities to make your life easier with zero allocations.")
-      (license license:asl2.0))))
+      (license license:asl2.0)))
 
 (define-public go-github-com-mufti1-interconv
   (let ((commit "d7c72925c6568d60d361757bb9f2d252dcca745c")
