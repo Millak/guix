@@ -22,6 +22,7 @@
   #:use-module (gnu packages c)
   #:use-module (gnu packages crates-apple)
   #:use-module (gnu packages crates-check)
+  #:use-module (gnu packages crates-compression)
   #:use-module (gnu packages crates-crypto)
   #:use-module (gnu packages crates-database)
   #:use-module (gnu packages crates-graphics)
@@ -123,49 +124,53 @@ underline).")
         ("rust-serde" ,rust-serde-1)
         ("rust-winapi" ,rust-winapi-0.3))))))
 
-(define-public rust-nu-cli-0.91
+(define-public rust-nu-cli-0.101
   (package
     (name "rust-nu-cli")
-    (version "0.91.0")
+    (version "0.101.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "nu-cli" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1v7xz13n5gzhwkn4d8wq1v22zbdvfqd2zxnqf2q3k8cnnj51ql63"))))
+        (base32 "1nfyfbgjdgkn1vs1qi4xfyc8b7czsprv5bdpn2fvr44ynqw8njiw"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f      ; 42 of 45 of the completions tests fail.
+     `(#:cargo-test-flags '("--"
+                            "--skip=repl::are_session_ids_in_sync"
+                            "--skip=repl::test_auto_cd::auto_cd_tilde"
+                            "--skip=commands"
+                            "--skip=completions")
        #:cargo-inputs (("rust-chrono" ,rust-chrono-0.4)
-                       ("rust-crossterm" ,rust-crossterm-0.27)
-                       ("rust-fancy-regex" ,rust-fancy-regex-0.13)
+                       ("rust-crossterm" ,rust-crossterm-0.28)
+                       ("rust-fancy-regex" ,rust-fancy-regex-0.14)
                        ("rust-fuzzy-matcher" ,rust-fuzzy-matcher-0.3)
                        ("rust-is-executable" ,rust-is-executable-1)
                        ("rust-log" ,rust-log-0.4)
                        ("rust-lscolors" ,rust-lscolors-0.17)
                        ("rust-miette" ,rust-miette-7)
                        ("rust-nu-ansi-term" ,rust-nu-ansi-term-0.50)
-                       ("rust-nu-cmd-base" ,rust-nu-cmd-base-0.91)
-                       ("rust-nu-color-config" ,rust-nu-color-config-0.91)
-                       ("rust-nu-engine" ,rust-nu-engine-0.91)
-                       ("rust-nu-parser" ,rust-nu-parser-0.91)
-                       ("rust-nu-path" ,rust-nu-path-0.91)
-                       ("rust-nu-protocol" ,rust-nu-protocol-0.91)
-                       ("rust-nu-utils" ,rust-nu-utils-0.91)
-                       ("rust-once-cell" ,rust-once-cell-1)
-                       ("rust-pathdiff" ,rust-pathdiff-0.2)
+                       ("rust-nu-cmd-base" ,rust-nu-cmd-base-0.101)
+                       ("rust-nu-color-config" ,rust-nu-color-config-0.101)
+                       ("rust-nu-engine" ,rust-nu-engine-0.101)
+                       ("rust-nu-parser" ,rust-nu-parser-0.101)
+                       ("rust-nu-path" ,rust-nu-path-0.101)
+                       ("rust-nu-plugin-engine" ,rust-nu-plugin-engine-0.101)
+                       ("rust-nu-protocol" ,rust-nu-protocol-0.101)
+                       ("rust-nu-utils" ,rust-nu-utils-0.101)
                        ("rust-percent-encoding" ,rust-percent-encoding-2)
-                       ("rust-reedline" ,rust-reedline-0.30)
-                       ("rust-sysinfo" ,rust-sysinfo-0.30)
+                       ("rust-reedline" ,rust-reedline-0.38)
+                       ("rust-sysinfo" ,rust-sysinfo-0.32)
                        ("rust-unicode-segmentation" ,rust-unicode-segmentation-1)
                        ("rust-uuid" ,rust-uuid-1)
-                       ("rust-which" ,rust-which-6))
+                       ("rust-which" ,rust-which-7))
        #:cargo-development-inputs
-       (("rust-nu-cmd-lang" ,rust-nu-cmd-lang-0.91)
-        ("rust-nu-command" ,rust-nu-command-0.91)
-        ("rust-nu-test-support" ,rust-nu-test-support-0.91)
-        ("rust-rstest" ,rust-rstest-0.18))))
+       (("rust-nu-cmd-lang" ,rust-nu-cmd-lang-0.101)
+        ("rust-nu-command" ,rust-nu-command-0.101)
+        ("rust-nu-test-support" ,rust-nu-test-support-0.101)
+        ("rust-rstest" ,rust-rstest-0.23)
+        ("rust-tempfile" ,rust-tempfile-3))))
     (native-inputs (list pkg-config))
     (inputs (list openssl))
     (home-page "https://github.com/nushell/nushell/tree/main/crates/nu-cli")
@@ -173,25 +178,25 @@ underline).")
     (description "This package provides CLI-related functionality for Nushell.")
     (license license:expat)))
 
-(define-public rust-nu-cmd-base-0.91
+(define-public rust-nu-cmd-base-0.101
   (package
     (name "rust-nu-cmd-base")
-    (version "0.91.0")
+    (version "0.101.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "nu-cmd-base" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0i2bdvhl1qmpzrip4b45xr4vg0himfsi120xq5al9vs5y80x2lla"))))
+        (base32 "06x1rz652jwkvf2nf2r9q7pawm7nv2sdz17b6ihhlai3l3mjr896"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-indexmap" ,rust-indexmap-2)
                        ("rust-miette" ,rust-miette-7)
-                       ("rust-nu-engine" ,rust-nu-engine-0.91)
-                       ("rust-nu-parser" ,rust-nu-parser-0.91)
-                       ("rust-nu-path" ,rust-nu-path-0.91)
-                       ("rust-nu-protocol" ,rust-nu-protocol-0.91))))
+                       ("rust-nu-engine" ,rust-nu-engine-0.101)
+                       ("rust-nu-parser" ,rust-nu-parser-0.101)
+                       ("rust-nu-path" ,rust-nu-path-0.101)
+                       ("rust-nu-protocol" ,rust-nu-protocol-0.101))))
     (home-page
      "https://github.com/nushell/nushell/tree/main/crates/nu-cmd-base")
     (synopsis "Foundation tools to build Nushell commands")
@@ -199,76 +204,42 @@ underline).")
      "This package provides the foundation tools to build Nushell commands.")
     (license license:expat)))
 
-(define-public rust-nu-cmd-dataframe-0.91
-  (package
-    (name "rust-nu-cmd-dataframe")
-    (version "0.91.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "nu-cmd-dataframe" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1avsx50kr0snbm62l91v7a7wfq05igv5aagwhczm1g4xdpl448x9"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-chrono" ,rust-chrono-0.4)
-                       ("rust-chrono-tz" ,rust-chrono-tz-0.8)
-                       ("rust-fancy-regex" ,rust-fancy-regex-0.13)
-                       ("rust-indexmap" ,rust-indexmap-2)
-                       ("rust-nu-engine" ,rust-nu-engine-0.91)
-                       ("rust-nu-parser" ,rust-nu-parser-0.91)
-                       ("rust-nu-protocol" ,rust-nu-protocol-0.91)
-                       ("rust-num" ,rust-num-0.4)
-                       ("rust-polars" ,rust-polars-0.37)
-                       ("rust-polars-arrow" ,rust-polars-arrow-0.37)
-                       ("rust-polars-io" ,rust-polars-io-0.37)
-                       ("rust-polars-ops" ,rust-polars-ops-0.37)
-                       ("rust-polars-plan" ,rust-polars-plan-0.37)
-                       ("rust-polars-utils" ,rust-polars-utils-0.37)
-                       ("rust-serde" ,rust-serde-1)
-                       ("rust-sqlparser" ,rust-sqlparser-0.43))
-       #:cargo-development-inputs (("rust-nu-cmd-lang" ,rust-nu-cmd-lang-0.91))))
-    (home-page
-     "https://github.com/nushell/nushell/tree/main/crates/nu-cmd-dataframe")
-    (synopsis "Nushell's dataframe commands based on polars")
-    (description
-     "This package contains nushell's dataframe commands based on polars.")
-    (license license:expat)))
-
-(define-public rust-nu-cmd-extra-0.91
+(define-public rust-nu-cmd-extra-0.101
   (package
     (name "rust-nu-cmd-extra")
-    (version "0.91.0")
+    (version "0.101.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "nu-cmd-extra" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0x905m6yci5n3ir89arq7vdvx0czqpjvr3j8i32f7bqh0z3jisc3"))))
+        (base32 "1salamvy8cckv600w8jyr7i47g7hg51dybk5gbjw73bzlwfn1v8m"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-fancy-regex" ,rust-fancy-regex-0.13)
-                       ("rust-heck" ,rust-heck-0.4)
-                       ("rust-itertools" ,rust-itertools-0.12)
+     `(#:cargo-test-flags '("--"
+                            "--skip=commands::bits"
+                            "--skip=commands::bytes")
+       #:cargo-inputs (("rust-fancy-regex" ,rust-fancy-regex-0.14)
+                       ("rust-heck" ,rust-heck-0.5)
+                       ("rust-itertools" ,rust-itertools-0.13)
                        ("rust-nu-ansi-term" ,rust-nu-ansi-term-0.50)
-                       ("rust-nu-cmd-base" ,rust-nu-cmd-base-0.91)
-                       ("rust-nu-engine" ,rust-nu-engine-0.91)
-                       ("rust-nu-json" ,rust-nu-json-0.91)
-                       ("rust-nu-parser" ,rust-nu-parser-0.91)
-                       ("rust-nu-pretty-hex" ,rust-nu-pretty-hex-0.91)
-                       ("rust-nu-protocol" ,rust-nu-protocol-0.91)
-                       ("rust-nu-utils" ,rust-nu-utils-0.91)
+                       ("rust-nu-cmd-base" ,rust-nu-cmd-base-0.101)
+                       ("rust-nu-engine" ,rust-nu-engine-0.101)
+                       ("rust-nu-json" ,rust-nu-json-0.101)
+                       ("rust-nu-parser" ,rust-nu-parser-0.101)
+                       ("rust-nu-pretty-hex" ,rust-nu-pretty-hex-0.101)
+                       ("rust-nu-protocol" ,rust-nu-protocol-0.101)
+                       ("rust-nu-utils" ,rust-nu-utils-0.101)
                        ("rust-num-traits" ,rust-num-traits-0.2)
                        ("rust-rust-embed" ,rust-rust-embed-8)
                        ("rust-serde" ,rust-serde-1)
                        ("rust-serde-urlencoded" ,rust-serde-urlencoded-0.7)
                        ("rust-v-htmlescape" ,rust-v-htmlescape-0.15))
        #:cargo-development-inputs
-       (("rust-nu-cmd-lang" ,rust-nu-cmd-lang-0.91)
-        ("rust-nu-command" ,rust-nu-command-0.91)
-        ("rust-nu-test-support" ,rust-nu-test-support-0.91))))
+       (("rust-nu-cmd-lang" ,rust-nu-cmd-lang-0.101)
+        ("rust-nu-command" ,rust-nu-command-0.101)
+        ("rust-nu-test-support" ,rust-nu-test-support-0.101))))
     (native-inputs (list pkg-config))
     (inputs (list openssl))
     (home-page
@@ -278,172 +249,207 @@ underline).")
 part of the 1.0 api standard.")
     (license license:expat)))
 
-(define-public rust-nu-cmd-lang-0.91
+(define-public rust-nu-cmd-lang-0.101
   (package
     (name "rust-nu-cmd-lang")
-    (version "0.91.0")
+    (version "0.101.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "nu-cmd-lang" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0zwdw3y4jn6s6h41jnwljpj9cfyhr68av61idikjkhi7l6hygy5c"))))
+        (base32 "0f1lpk4c93ijw9hfkb2p9izxs1c0zcndbq6iy7ir30p8n8m645k1"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-itertools" ,rust-itertools-0.12)
-                       ("rust-nu-engine" ,rust-nu-engine-0.91)
-                       ("rust-nu-parser" ,rust-nu-parser-0.91)
-                       ("rust-nu-protocol" ,rust-nu-protocol-0.91)
-                       ("rust-nu-utils" ,rust-nu-utils-0.91)
-                       ("rust-shadow-rs" ,rust-shadow-rs-0.26))))
+     `(#:cargo-inputs (("rust-itertools" ,rust-itertools-0.13)
+                       ("rust-nu-engine" ,rust-nu-engine-0.101)
+                       ("rust-nu-parser" ,rust-nu-parser-0.101)
+                       ("rust-nu-protocol" ,rust-nu-protocol-0.101)
+                       ("rust-nu-utils" ,rust-nu-utils-0.101)
+                       ("rust-shadow-rs" ,rust-shadow-rs-0.37))))
     (home-page
      "https://github.com/nushell/nushell/tree/main/crates/nu-cmd-lang")
     (synopsis "Nushell's core language commands")
     (description "This package provides nushell's core language commands.")
     (license license:expat)))
 
-(define-public rust-nu-color-config-0.91
+(define-public rust-nu-cmd-plugin-0.101
+  (package
+    (name "rust-nu-cmd-plugin")
+    (version "0.101.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "nu-cmd-plugin" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0fy7nl176ms5l7wshad2wky7f0afzz9ay2p15l0dr88g39mm03mh"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-itertools" ,rust-itertools-0.13)
+                       ("rust-nu-engine" ,rust-nu-engine-0.101)
+                       ("rust-nu-path" ,rust-nu-path-0.101)
+                       ("rust-nu-plugin-engine" ,rust-nu-plugin-engine-0.101)
+                       ("rust-nu-protocol" ,rust-nu-protocol-0.101))))
+    (home-page
+     "https://github.com/nushell/nushell/tree/main/crates/nu-cmd-plugin")
+    (synopsis "Commands for managing Nushell plugins")
+    (description
+     "This package provides commands for managing Nushell plugins.")
+    (license license:expat)))
+
+(define-public rust-nu-color-config-0.101
   (package
     (name "rust-nu-color-config")
-    (version "0.91.0")
+    (version "0.101.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "nu-color-config" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "115bha7r4sy19w80vbbfc3av9g0pa1fcksdaqznm0yjlykv49czy"))))
+        (base32 "0ral2glvvqfrvmhgh8v13bdv3lix017hgc9ka1gsxaf2fnacrg0b"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
-       '("--release" "--"
+       '("--"
          "--skip=style_computer::test_computable_style_closure_basic"
          "--skip=style_computer::test_computable_style_closure_errors")
        #:cargo-inputs (("rust-nu-ansi-term" ,rust-nu-ansi-term-0.50)
-                       ("rust-nu-engine" ,rust-nu-engine-0.91)
-                       ("rust-nu-json" ,rust-nu-json-0.91)
-                       ("rust-nu-protocol" ,rust-nu-protocol-0.91)
+                       ("rust-nu-engine" ,rust-nu-engine-0.101)
+                       ("rust-nu-json" ,rust-nu-json-0.101)
+                       ("rust-nu-protocol" ,rust-nu-protocol-0.101)
                        ("rust-serde" ,rust-serde-1))
        #:cargo-development-inputs
-       (("rust-nu-test-support" ,rust-nu-test-support-0.91))))
+       (("rust-nu-test-support" ,rust-nu-test-support-0.101))))
     (home-page
      "https://github.com/nushell/nushell/tree/main/crates/nu-color-config")
     (synopsis "Color configuration code used by Nushell")
     (description "This package contains color configuration code used by Nushell.")
     (license license:expat)))
 
-(define-public rust-nu-command-0.91
+(define-public rust-nu-command-0.101
   (package
     (name "rust-nu-command")
-    (version "0.91.0")
+    (version "0.101.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "nu-command" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0jiz6bndkwfnhs4cc74am8krnhyb5kyq310nf7ma5038q6vqs8q9"))))
+        (base32 "10j6krmkjcj8avylf8yq81ja8dhg9d496nnb345l1nj70m330g63"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; Not all files included.
        #:cargo-inputs (("rust-alphanumeric-sort" ,rust-alphanumeric-sort-1)
-                       ("rust-base64" ,rust-base64-0.21)
+                       ("rust-base64" ,rust-base64-0.22)
                        ("rust-bracoxide" ,rust-bracoxide-0.1)
+                       ("rust-brotli" ,rust-brotli-6)
                        ("rust-byteorder" ,rust-byteorder-1)
                        ("rust-bytesize" ,rust-bytesize-1)
-                       ("rust-calamine" ,rust-calamine-0.24)
+                       ("rust-calamine" ,rust-calamine-0.26)
                        ("rust-chardetng" ,rust-chardetng-0.1)
                        ("rust-chrono" ,rust-chrono-0.4)
                        ("rust-chrono-humanize" ,rust-chrono-humanize-0.2)
-                       ("rust-chrono-tz" ,rust-chrono-tz-0.8)
-                       ("rust-crossterm" ,rust-crossterm-0.27)
+                       ("rust-chrono-tz" ,rust-chrono-tz-0.10)
+                       ("rust-crossterm" ,rust-crossterm-0.28)
                        ("rust-csv" ,rust-csv-1)
+                       ("rust-data-encoding" ,rust-data-encoding-2)
                        ("rust-dialoguer" ,rust-dialoguer-0.11)
                        ("rust-digest" ,rust-digest-0.10)
                        ("rust-dtparse" ,rust-dtparse-2)
                        ("rust-encoding-rs" ,rust-encoding-rs-0.8)
-                       ("rust-fancy-regex" ,rust-fancy-regex-0.13)
+                       ("rust-fancy-regex" ,rust-fancy-regex-0.14)
                        ("rust-filesize" ,rust-filesize-0.2)
                        ("rust-filetime" ,rust-filetime-0.2)
-                       ("rust-fs-extra" ,rust-fs-extra-1)
-                       ("rust-human-date-parser" ,rust-human-date-parser-0.1)
+                       ("rust-getrandom" ,rust-getrandom-0.2)
+                       ("rust-human-date-parser" ,rust-human-date-parser-0.2)
                        ("rust-indexmap" ,rust-indexmap-2)
                        ("rust-indicatif" ,rust-indicatif-0.17)
-                       ("rust-itertools" ,rust-itertools-0.12)
-                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-itertools" ,rust-itertools-0.13)
                        ("rust-log" ,rust-log-0.4)
                        ("rust-lscolors" ,rust-lscolors-0.17)
                        ("rust-md-5" ,rust-md-5-0.10)
                        ("rust-mime" ,rust-mime-0.3)
                        ("rust-mime-guess" ,rust-mime-guess-2)
+                       ("rust-multipart-rs" ,rust-multipart-rs-0.1)
                        ("rust-native-tls" ,rust-native-tls-0.2)
-                       ("rust-nix" ,rust-nix-0.27)
+                       ("rust-nix" ,rust-nix-0.29)
                        ("rust-notify-debouncer-full" ,rust-notify-debouncer-full-0.3)
                        ("rust-nu-ansi-term" ,rust-nu-ansi-term-0.50)
-                       ("rust-nu-cmd-base" ,rust-nu-cmd-base-0.91)
-                       ("rust-nu-color-config" ,rust-nu-color-config-0.91)
-                       ("rust-nu-engine" ,rust-nu-engine-0.91)
-                       ("rust-nu-glob" ,rust-nu-glob-0.91)
-                       ("rust-nu-json" ,rust-nu-json-0.91)
-                       ("rust-nu-parser" ,rust-nu-parser-0.91)
-                       ("rust-nu-path" ,rust-nu-path-0.91)
-                       ("rust-nu-pretty-hex" ,rust-nu-pretty-hex-0.91)
-                       ("rust-nu-protocol" ,rust-nu-protocol-0.91)
-                       ("rust-nu-system" ,rust-nu-system-0.91)
-                       ("rust-nu-table" ,rust-nu-table-0.91)
-                       ("rust-nu-term-grid" ,rust-nu-term-grid-0.91)
-                       ("rust-nu-utils" ,rust-nu-utils-0.91)
+                       ("rust-nu-cmd-base" ,rust-nu-cmd-base-0.101)
+                       ("rust-nu-color-config" ,rust-nu-color-config-0.101)
+                       ("rust-nu-engine" ,rust-nu-engine-0.101)
+                       ("rust-nu-glob" ,rust-nu-glob-0.101)
+                       ("rust-nu-json" ,rust-nu-json-0.101)
+                       ("rust-nu-parser" ,rust-nu-parser-0.101)
+                       ("rust-nu-path" ,rust-nu-path-0.101)
+                       ("rust-nu-pretty-hex" ,rust-nu-pretty-hex-0.101)
+                       ("rust-nu-protocol" ,rust-nu-protocol-0.101)
+                       ("rust-nu-system" ,rust-nu-system-0.101)
+                       ("rust-nu-table" ,rust-nu-table-0.101)
+                       ("rust-nu-term-grid" ,rust-nu-term-grid-0.101)
+                       ("rust-nu-utils" ,rust-nu-utils-0.101)
                        ("rust-num-format" ,rust-num-format-0.4)
                        ("rust-num-traits" ,rust-num-traits-0.2)
-                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-nuon" ,rust-nuon-0.101)
+                       ("rust-oem-cp" ,rust-oem-cp-2)
                        ("rust-open" ,rust-open-5)
                        ("rust-os-pipe" ,rust-os-pipe-1)
                        ("rust-pathdiff" ,rust-pathdiff-0.2)
                        ("rust-percent-encoding" ,rust-percent-encoding-2)
                        ("rust-print-positions" ,rust-print-positions-0.6)
-                       ("rust-procfs" ,rust-procfs-0.16)
-                       ("rust-quick-xml" ,rust-quick-xml-0.31)
+                       ("rust-procfs" ,rust-procfs-0.17)
+                       ("rust-quick-xml" ,rust-quick-xml-0.37)
                        ("rust-rand" ,rust-rand-0.8)
                        ("rust-rayon" ,rust-rayon-1)
                        ("rust-regex" ,rust-regex-1)
-                       ("rust-roxmltree" ,rust-roxmltree-0.19)
+                       ("rust-rmp" ,rust-rmp-0.8)
+                       ("rust-roxmltree" ,rust-roxmltree-0.20)
                        ("rust-rusqlite" ,rust-rusqlite-0.31)
-                       ("rust-same-file" ,rust-same-file-1)
+                       ("rust-scopeguard" ,rust-scopeguard-1)
                        ("rust-serde" ,rust-serde-1)
                        ("rust-serde-json" ,rust-serde-json-1)
                        ("rust-serde-urlencoded" ,rust-serde-urlencoded-0.7)
                        ("rust-serde-yaml" ,rust-serde-yaml-0.9)
                        ("rust-sha2" ,rust-sha2-0.10)
-                       ("rust-sysinfo" ,rust-sysinfo-0.30)
-                       ("rust-tabled" ,rust-tabled-0.14)
-                       ("rust-terminal-size" ,rust-terminal-size-0.3)
-                       ("rust-titlecase" ,rust-titlecase-2)
+                       ("rust-sysinfo" ,rust-sysinfo-0.32)
+                       ("rust-tabled" ,rust-tabled-0.16)
+                       ("rust-titlecase" ,rust-titlecase-3)
                        ("rust-toml" ,rust-toml-0.8)
-                       ("rust-trash" ,rust-trash-3)
+                       ("rust-trash" ,rust-trash-5)
                        ("rust-umask" ,rust-umask-2)
                        ("rust-unicode-segmentation" ,rust-unicode-segmentation-1)
+                       ("rust-unicode-width" ,rust-unicode-width-0.2)
                        ("rust-ureq" ,rust-ureq-2)
                        ("rust-url" ,rust-url-2)
-                       ("rust-uu-cp" ,rust-uu-cp-0.0.23)
-                       ("rust-uu-mkdir" ,rust-uu-mkdir-0.0.23)
-                       ("rust-uu-mktemp" ,rust-uu-mktemp-0.0.23)
-                       ("rust-uu-mv" ,rust-uu-mv-0.0.23)
-                       ("rust-uu-whoami" ,rust-uu-whoami-0.0.23)
+                       ("rust-uu-cp" ,rust-uu-cp-0.0.28)
+                       ("rust-uu-mkdir" ,rust-uu-mkdir-0.0.28)
+                       ("rust-uu-mktemp" ,rust-uu-mktemp-0.0.28)
+                       ("rust-uu-mv" ,rust-uu-mv-0.0.28)
+                       ("rust-uu-touch" ,rust-uu-touch-0.0.28)
+                       ("rust-uu-uname" ,rust-uu-uname-0.0.28)
+                       ("rust-uu-whoami" ,rust-uu-whoami-0.0.28)
+                       ("rust-uucore" ,rust-uucore-0.0.28)
                        ("rust-uuid" ,rust-uuid-1)
                        ("rust-v-htmlescape" ,rust-v-htmlescape-0.15)
                        ("rust-wax" ,rust-wax-0.6)
-                       ("rust-which" ,rust-which-6)
-                       ("rust-windows" ,rust-windows-0.52)
+                       ("rust-which" ,rust-which-7)
+                       ("rust-windows" ,rust-windows-0.56)
                        ("rust-winreg" ,rust-winreg-0.52))
        #:cargo-development-inputs
-       (("rust-dirs-next" ,rust-dirs-next-2)
+       (("rust-dirs" ,rust-dirs-5)
         ("rust-mockito" ,rust-mockito-1)
-        ("rust-nu-cmd-lang" ,rust-nu-cmd-lang-0.91)
-        ("rust-nu-test-support" ,rust-nu-test-support-0.91)
+        ("rust-nu-cmd-lang" ,rust-nu-cmd-lang-0.101)
+        ("rust-nu-test-support" ,rust-nu-test-support-0.101)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1)
         ("rust-quickcheck" ,rust-quickcheck-1)
         ("rust-quickcheck-macros" ,rust-quickcheck-macros-1)
-        ("rust-rstest" ,rust-rstest-0.18))))
+        ("rust-rand-chacha" ,rust-rand-chacha-0.3)
+        ("rust-rstest" ,rust-rstest-0.23)
+        ("rust-tempfile" ,rust-tempfile-3))))
     (native-inputs (list pkg-config))
     (inputs (list openssl))
     (home-page
@@ -452,78 +458,107 @@ part of the 1.0 api standard.")
     (description "This package contains nushell's built-in commands.")
     (license license:expat)))
 
-(define-public rust-nu-engine-0.91
+(define-public rust-nu-derive-value-0.101
+  (package
+    (name "rust-nu-derive-value")
+    (version "0.101.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "nu-derive-value" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "07rd7jl4f8y77nfzinlc7fwmlim8lzacmi7pqrz5d2m8dgnwixvi"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-heck" ,rust-heck-0.5)
+                       ("rust-proc-macro-error" ,rust-proc-macro-error-1)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))
+    (home-page
+     "https://github.com/nushell/nushell/tree/main/crates/nu-derive-value")
+    (synopsis "Macros implementation of #[derive(FromValue, IntoValue)]")
+    (description
+     "This package provides macros with an implementation of
+#[derive(@code{FromValue}, @code{IntoValue})].")
+    (license license:expat)))
+
+(define-public rust-nu-engine-0.101
   (package
     (name "rust-nu-engine")
-    (version "0.91.0")
+    (version "0.101.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "nu-engine" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0j4g3nhg9yw7nilnf3n1k4yfn5glmd3vbap1zxwzz24xw7ap62c7"))))
+        (base32 "054vlid5xwv56283nw2fr5q874ga5r9z98x0kq50d0fj7rc1jrjw"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-nu-glob" ,rust-nu-glob-0.91)
-                       ("rust-nu-path" ,rust-nu-path-0.91)
-                       ("rust-nu-protocol" ,rust-nu-protocol-0.91)
-                       ("rust-nu-utils" ,rust-nu-utils-0.91))))
+     `(#:cargo-inputs (("rust-log" ,rust-log-0.4)
+                       ("rust-nu-glob" ,rust-nu-glob-0.101)
+                       ("rust-nu-path" ,rust-nu-path-0.101)
+                       ("rust-nu-protocol" ,rust-nu-protocol-0.101)
+                       ("rust-nu-utils" ,rust-nu-utils-0.101)
+                       ("rust-terminal-size" ,rust-terminal-size-0.4))))
     (home-page "https://github.com/nushell/nushell/tree/main/crates/nu-engine")
     (synopsis "Nushell's evaluation engine")
     (description "This package provides nushell's evaluation engine.")
     (license license:expat)))
 
-(define-public rust-nu-explore-0.91
+(define-public rust-nu-explore-0.101
   (package
     (name "rust-nu-explore")
-    (version "0.91.0")
+    (version "0.101.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "nu-explore" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0j1xry4idjxrnyfz9l227s5hd82635dqc72gyw4zwq35izjrgqmm"))))
+        (base32 "1ah81jh3zrcfffjbc0wyncscpvh650nl9sq2aj2jnmngwwir47nc"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-ansi-str" ,rust-ansi-str-0.8)
-                       ("rust-crossterm" ,rust-crossterm-0.27)
+                       ("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-crossterm" ,rust-crossterm-0.28)
+                       ("rust-log" ,rust-log-0.4)
                        ("rust-lscolors" ,rust-lscolors-0.17)
                        ("rust-nu-ansi-term" ,rust-nu-ansi-term-0.50)
-                       ("rust-nu-color-config" ,rust-nu-color-config-0.91)
-                       ("rust-nu-engine" ,rust-nu-engine-0.91)
-                       ("rust-nu-json" ,rust-nu-json-0.91)
-                       ("rust-nu-parser" ,rust-nu-parser-0.91)
-                       ("rust-nu-protocol" ,rust-nu-protocol-0.91)
-                       ("rust-nu-table" ,rust-nu-table-0.91)
-                       ("rust-nu-utils" ,rust-nu-utils-0.91)
+                       ("rust-nu-color-config" ,rust-nu-color-config-0.101)
+                       ("rust-nu-engine" ,rust-nu-engine-0.101)
+                       ("rust-nu-json" ,rust-nu-json-0.101)
+                       ("rust-nu-parser" ,rust-nu-parser-0.101)
+                       ("rust-nu-path" ,rust-nu-path-0.101)
+                       ("rust-nu-pretty-hex" ,rust-nu-pretty-hex-0.101)
+                       ("rust-nu-protocol" ,rust-nu-protocol-0.101)
+                       ("rust-nu-table" ,rust-nu-table-0.101)
+                       ("rust-nu-utils" ,rust-nu-utils-0.101)
                        ("rust-ratatui" ,rust-ratatui-0.26)
                        ("rust-strip-ansi-escapes" ,rust-strip-ansi-escapes-0.2)
-                       ("rust-terminal-size" ,rust-terminal-size-0.3)
-                       ("rust-unicode-width" ,rust-unicode-width-0.1))))
+                       ("rust-unicode-width" ,rust-unicode-width-0.2))))
     (home-page
      "https://github.com/nushell/nushell/tree/main/crates/nu-explore")
     (synopsis "Nushell table pager")
     (description "This package contains the nushell table pager.")
     (license license:expat)))
 
-(define-public rust-nu-glob-0.91
+(define-public rust-nu-glob-0.101
   (package
     (name "rust-nu-glob")
-    (version "0.91.0")
+    (version "0.101.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "nu-glob" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "094jkfb7rlcl0dxs5gnw8x30zv75s372l72zsg1wmv8lblzbfybx"))))
+        (base32 "0q3np4fgxp8lgfawn8rqv4cw3jpr668g2phza34csaj1d7zakl5c"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-test-flags '("--release" "--"
-                            "--skip=test::test_iteration_errors")
-       #:cargo-development-inputs (("rust-doc-comment" ,rust-doc-comment-0.3))))
+     `(#:cargo-development-inputs (("rust-doc-comment" ,rust-doc-comment-0.3))))
     (home-page "https://github.com/nushell/nushell/tree/main/crates/nu-glob")
     (synopsis "Support for matching file paths against Unix shell style patterns")
     (description
@@ -531,22 +566,29 @@ part of the 1.0 api standard.")
 style patterns.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-nu-json-0.91
+(define-public rust-nu-json-0.101
   (package
     (name "rust-nu-json")
-    (version "0.91.0")
+    (version "0.101.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "nu-json" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1ga6kmmavd3rxjkk3j7jm6kjg2ny066a713ccca9nj0i9gbm6b1h"))))
+        (base32 "0l0kj7dyg1kpy4qrl5hvmkp0lxm4w206mgg8227z0gsvl2936zd8"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-linked-hash-map" ,rust-linked-hash-map-0.5)
+     `(#:cargo-test-flags '("--" "--skip=test_hjson")
+       #:cargo-inputs (("rust-linked-hash-map" ,rust-linked-hash-map-0.5)
                        ("rust-num-traits" ,rust-num-traits-0.2)
-                       ("rust-serde" ,rust-serde-1))))
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1))
+       #:cargo-development-inputs
+       (("rust-fancy-regex" ,rust-fancy-regex-0.14)
+        ("rust-nu-path" ,rust-nu-path-0.101)
+        ("rust-nu-test-support" ,rust-nu-test-support-0.101)
+        ("rust-serde-json" ,rust-serde-json-1))))
     (home-page "https://github.com/nushell/nushell/tree/main/crates/nu-json")
     (synopsis "Human JSON (Hjson) serialization file format")
     (description "This crate is a Rust library for parsing and generating Human
@@ -554,52 +596,36 @@ JSON Hjson.  It is built upon Serde, a high performance generic serialization
 framework.")
     (license license:expat)))
 
-(define-public rust-nu-lsp-0.91
+(define-public rust-nu-lsp-0.101
   (package
     (name "rust-nu-lsp")
-    (version "0.91.0")
+    (version "0.101.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "nu-lsp" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1sj61lnw74jrd7az9b5367gk4qry06s783k5vqgjznx4nqvr80xj"))))
+        (base32 "1c4wp44251qczc0w2dbn55q2i0j0n4xrfjaxh5rzj451vzxjc7yd"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-test-flags
-       '("--release" "--"
-         ;; Not all files included.
-         "--skip=diagnostics::tests::publish_diagnostics_fixed_unknown_variable"
-         "--skip=diagnostics::tests::publish_diagnostics_variable_does_not_exists"
-         "--skip=notification::tests::hover_correct_documentation_on_let"
-         "--skip=notification::tests::hover_on_command_after_full_content_change"
-         "--skip=notification::tests::hover_on_command_after_partial_content_change"
-         "--skip=notification::tests::open_document_with_utf_char"
-         "--skip=tests::complete_command_with_space"
-         "--skip=tests::complete_command_with_utf_line"
-         "--skip=tests::complete_on_variable"
-         "--skip=tests::goto_definition_of_command"
-         "--skip=tests::goto_definition_of_command_parameter"
-         "--skip=tests::goto_definition_of_variable"
-         "--skip=tests::hover_on_command"
-         "--skip=tests::hover_on_variable")
+     `(#:tests? #f      ; Not all files included
        #:cargo-inputs (("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
                        ("rust-lsp-server" ,rust-lsp-server-0.7)
                        ("rust-lsp-types" ,rust-lsp-types-0.95)
                        ("rust-miette" ,rust-miette-7)
-                       ("rust-nu-cli" ,rust-nu-cli-0.91)
-                       ("rust-nu-parser" ,rust-nu-parser-0.91)
-                       ("rust-nu-protocol" ,rust-nu-protocol-0.91)
-                       ("rust-reedline" ,rust-reedline-0.30)
+                       ("rust-nu-cli" ,rust-nu-cli-0.101)
+                       ("rust-nu-parser" ,rust-nu-parser-0.101)
+                       ("rust-nu-protocol" ,rust-nu-protocol-0.101)
+                       ("rust-reedline" ,rust-reedline-0.38)
                        ("rust-ropey" ,rust-ropey-1)
                        ("rust-serde" ,rust-serde-1)
                        ("rust-serde-json" ,rust-serde-json-1))
        #:cargo-development-inputs
        (("rust-assert-json-diff" ,rust-assert-json-diff-2)
-        ("rust-nu-cmd-lang" ,rust-nu-cmd-lang-0.91)
-        ("rust-nu-command" ,rust-nu-command-0.91)
-        ("rust-nu-test-support" ,rust-nu-test-support-0.91))))
+        ("rust-nu-cmd-lang" ,rust-nu-cmd-lang-0.101)
+        ("rust-nu-command" ,rust-nu-command-0.101)
+        ("rust-nu-test-support" ,rust-nu-test-support-0.101))))
     (native-inputs (list pkg-config))
     (inputs (list openssl))
     (home-page "https://github.com/nushell/nushell/tree/main/crates/nu-lsp")
@@ -607,48 +633,49 @@ framework.")
     (description "This package contains nushell'e integrated LSP server.")
     (license license:expat)))
 
-(define-public rust-nu-parser-0.91
+(define-public rust-nu-parser-0.101
   (package
     (name "rust-nu-parser")
-    (version "0.91.0")
+    (version "0.101.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "nu-parser" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "110jgz6lr0bi6904k63yqbsrcgfrpn044j2xz9if8akprk4p5w4z"))))
+        (base32 "13dmw30vw71zkdbdzf541zbsk0can0ndzkl6azhkpj3vpmv2ip1a"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bytesize" ,rust-bytesize-1)
                        ("rust-chrono" ,rust-chrono-0.4)
-                       ("rust-itertools" ,rust-itertools-0.12)
+                       ("rust-itertools" ,rust-itertools-0.13)
                        ("rust-log" ,rust-log-0.4)
-                       ("rust-nu-engine" ,rust-nu-engine-0.91)
-                       ("rust-nu-path" ,rust-nu-path-0.91)
-                       ("rust-nu-plugin" ,rust-nu-plugin-0.91)
-                       ("rust-nu-protocol" ,rust-nu-protocol-0.91)
+                       ("rust-nu-engine" ,rust-nu-engine-0.101)
+                       ("rust-nu-path" ,rust-nu-path-0.101)
+                       ("rust-nu-plugin-engine" ,rust-nu-plugin-engine-0.101)
+                       ("rust-nu-protocol" ,rust-nu-protocol-0.101)
+                       ("rust-nu-utils" ,rust-nu-utils-0.101)
                        ("rust-serde-json" ,rust-serde-json-1))
-       #:cargo-development-inputs (("rust-rstest" ,rust-rstest-0.18))))
+       #:cargo-development-inputs (("rust-rstest" ,rust-rstest-0.23))))
     (home-page "https://github.com/nushell/nushell/tree/main/crates/nu-parser")
     (synopsis "Nushell's parser")
     (description "This package contains nushell's parser")
     (license license:expat)))
 
-(define-public rust-nu-path-0.91
+(define-public rust-nu-path-0.101
   (package
     (name "rust-nu-path")
-    (version "0.91.0")
+    (version "0.101.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "nu-path" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "146lm48vna9w5kr46dclqmzl1cbz5k7j1zz6jl8i6d83np4nn1sa"))))
+        (base32 "0gsjnp81padgp9k95bnha5kkilfq0yxpm00splc93mvhyfx1pk9w"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-dirs-next" ,rust-dirs-next-2)
+     `(#:cargo-inputs (("rust-dirs" ,rust-dirs-5)
                        ("rust-omnipath" ,rust-omnipath-0.1)
                        ("rust-pwd" ,rust-pwd-1))))
     (home-page "https://github.com/nushell/nushell/tree/main/crates/nu-path")
@@ -656,52 +683,138 @@ framework.")
     (description "This package provides path handling library for Nushell.")
     (license license:expat)))
 
-(define-public rust-nu-plugin-0.91
+(define-public rust-nu-plugin-0.101
   (package
     (name "rust-nu-plugin")
-    (version "0.91.0")
+    (version "0.101.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "nu-plugin" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "054hmmz78njl6qhpcbbifip5r879ipa2j3y5ndlj588b9qaijvva"))))
+        (base32 "1g2bpmibd0k125vnicfr10ndpyms3f3rdplk5wjh6a2l3450yq7b"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-bincode" ,rust-bincode-1)
-                       ("rust-log" ,rust-log-0.4)
-                       ("rust-miette" ,rust-miette-7)
-                       ("rust-nu-engine" ,rust-nu-engine-0.91)
-                       ("rust-nu-protocol" ,rust-nu-protocol-0.91)
-                       ("rust-rmp-serde" ,rust-rmp-serde-1)
-                       ("rust-semver" ,rust-semver-1)
-                       ("rust-serde" ,rust-serde-1)
-                       ("rust-serde-json" ,rust-serde-json-1)
-                       ("rust-typetag" ,rust-typetag-0.2))))
+     `(#:cargo-inputs (("rust-log" ,rust-log-0.4)
+                       ("rust-nix" ,rust-nix-0.29)
+                       ("rust-nu-engine" ,rust-nu-engine-0.101)
+                       ("rust-nu-plugin-core" ,rust-nu-plugin-core-0.101)
+                       ("rust-nu-plugin-protocol" ,rust-nu-plugin-protocol-0.101)
+                       ("rust-nu-protocol" ,rust-nu-protocol-0.101)
+                       ("rust-nu-utils" ,rust-nu-utils-0.101)
+                       ("rust-thiserror" ,rust-thiserror-2))
+       #:cargo-development-inputs (("rust-serde" ,rust-serde-1)
+                                   ("rust-typetag" ,rust-typetag-0.2))))
     (home-page "https://github.com/nushell/nushell/tree/main/crates/nu-plugin")
     (synopsis "Functionality for building Nushell plugins")
     (description
      "This package contains functionality for building Nushell plugins.")
     (license license:expat)))
 
-(define-public rust-nu-pretty-hex-0.91
+(define-public rust-nu-plugin-core-0.101
+  (package
+    (name "rust-nu-plugin-core")
+    (version "0.101.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "nu-plugin-core" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0axa72lfpdsci3f0yfd52cf1xdgrz3b0rb219495ifyc3h5xc7xh"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-interprocess" ,rust-interprocess-2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-nu-plugin-protocol" ,rust-nu-plugin-protocol-0.101)
+                       ("rust-nu-protocol" ,rust-nu-protocol-0.101)
+                       ("rust-rmp-serde" ,rust-rmp-serde-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-windows" ,rust-windows-0.56))))
+    (home-page
+     "https://github.com/nushell/nushell/tree/main/crates/nu-plugin-core")
+    (synopsis "Shared internal functionality to support Nushell plugins")
+    (description
+     "This package provides shared internal functionality to support
+Nushell plugins.")
+    (license license:expat)))
+
+(define-public rust-nu-plugin-engine-0.101
+  (package
+    (name "rust-nu-plugin-engine")
+    (version "0.101.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "nu-plugin-engine" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "14anf95z6fwyajnr0blp7hd1ah05vdjq0ypvrhfvi9qk07f6yxyg"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-log" ,rust-log-0.4)
+                       ("rust-nu-engine" ,rust-nu-engine-0.101)
+                       ("rust-nu-plugin-core" ,rust-nu-plugin-core-0.101)
+                       ("rust-nu-plugin-protocol" ,rust-nu-plugin-protocol-0.101)
+                       ("rust-nu-protocol" ,rust-nu-protocol-0.101)
+                       ("rust-nu-system" ,rust-nu-system-0.101)
+                       ("rust-nu-utils" ,rust-nu-utils-0.101)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-windows" ,rust-windows-0.56))
+       #:cargo-development-inputs (("rust-typetag" ,rust-typetag-0.2))))
+    (home-page
+     "https://github.com/nushell/nushell/tree/main/crates/nu-plugin-engine")
+    (synopsis "Functionality for running Nushell plugins from a Nushell engine")
+    (description
+     "This package provides functionality for running Nushell plugins from a
+Nushell engine.")
+    (license license:expat)))
+
+(define-public rust-nu-plugin-protocol-0.101
+  (package
+    (name "rust-nu-plugin-protocol")
+    (version "0.101.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "nu-plugin-protocol" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0s18gqkjjxc9jq9ivrqrp9cdq9a4kngd6ki87iv5r6bgwg1xbjqz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-nu-protocol" ,rust-nu-protocol-0.101)
+                       ("rust-nu-utils" ,rust-nu-utils-0.101)
+                       ("rust-rmp-serde" ,rust-rmp-serde-1)
+                       ("rust-semver" ,rust-semver-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-typetag" ,rust-typetag-0.2))))
+    (home-page
+     "https://github.com/nushell/nushell/tree/main/crates/nu-plugin-protocol")
+    (synopsis "Protocol type definitions for Nushell plugins")
+    (description
+     "This package provides protocol type definitions for Nushell plugins.")
+    (license license:expat)))
+
+(define-public rust-nu-pretty-hex-0.101
   (package
     (name "rust-nu-pretty-hex")
-    (version "0.91.0")
+    (version "0.101.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "nu-pretty-hex" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1iq8amp5hqf2xxp5n74l5sgqv2bj204zwbjcnarhy88ijzjicrl6"))))
+        (base32 "00bxf27y31kr5w8hh2v65hrs09b5r53yilwjjwbzxn7hpmpra5fg"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-nu-ansi-term" ,rust-nu-ansi-term-0.50))
-                       #:cargo-development-inputs
-                       (("rust-heapless" ,rust-heapless-0.8)
-                        ("rust-rand" ,rust-rand-0.8))))
+       #:cargo-development-inputs
+       (("rust-heapless" ,rust-heapless-0.8)
+        ("rust-rand" ,rust-rand-0.8))))
     (home-page
      "https://github.com/nushell/nushell/tree/main/crates/nu-pretty-hex")
     (synopsis "Pretty hex dump of bytes slice in the common style")
@@ -709,17 +822,17 @@ framework.")
      "This package provides pretty hex dump of bytes slice in the common style.")
     (license license:expat)))
 
-(define-public rust-nu-protocol-0.91
+(define-public rust-nu-protocol-0.101
   (package
     (name "rust-nu-protocol")
-    (version "0.91.0")
+    (version "0.101.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "nu-protocol" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0h6ikglmx79w5izcb7jv66s7cdsq6302pgwzyjyaxyw8jyprvx2g"))))
+        (base32 "0fr7jbzapqr68z5v7bvhgxkj697lqy1l3lkgykbk09b3bcwrmx3j"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
@@ -740,27 +853,42 @@ framework.")
          "--skip=filesize_metric_true"
          "--skip=narratable_errors"
          "--skip=plugins")
-       #:cargo-inputs (("rust-byte-unit" ,rust-byte-unit-5)
+       #:cargo-inputs (("rust-brotli" ,rust-brotli-6)
+                       ("rust-byte-unit" ,rust-byte-unit-5)
+                       ("rust-bytes" ,rust-bytes-1)
                        ("rust-chrono" ,rust-chrono-0.4)
                        ("rust-chrono-humanize" ,rust-chrono-humanize-0.2)
-                       ("rust-fancy-regex" ,rust-fancy-regex-0.13)
+                       ("rust-dirs" ,rust-dirs-5)
+                       ("rust-dirs-sys" ,rust-dirs-sys-0.4)
+                       ("rust-fancy-regex" ,rust-fancy-regex-0.14)
+                       ("rust-heck" ,rust-heck-0.5)
                        ("rust-indexmap" ,rust-indexmap-2)
+                       ("rust-log" ,rust-log-0.4)
                        ("rust-lru" ,rust-lru-0.12)
                        ("rust-miette" ,rust-miette-7)
-                       ("rust-nu-path" ,rust-nu-path-0.91)
-                       ("rust-nu-system" ,rust-nu-system-0.91)
-                       ("rust-nu-utils" ,rust-nu-utils-0.91)
+                       ("rust-nix" ,rust-nix-0.29)
+                       ("rust-nu-derive-value" ,rust-nu-derive-value-0.101)
+                       ("rust-nu-path" ,rust-nu-path-0.101)
+                       ("rust-nu-system" ,rust-nu-system-0.101)
+                       ("rust-nu-utils" ,rust-nu-utils-0.101)
                        ("rust-num-format" ,rust-num-format-0.4)
+                       ("rust-os-pipe" ,rust-os-pipe-1)
+                       ("rust-rmp-serde" ,rust-rmp-serde-1)
                        ("rust-serde" ,rust-serde-1)
                        ("rust-serde-json" ,rust-serde-json-1)
-                       ("rust-thiserror" ,rust-thiserror-1)
-                       ("rust-typetag" ,rust-typetag-0.2))
+                       ("rust-thiserror" ,rust-thiserror-2)
+                       ("rust-typetag" ,rust-typetag-0.2)
+                       ("rust-windows-sys" ,rust-windows-sys-0.48))
        #:cargo-development-inputs
-       (("rust-nu-test-support" ,rust-nu-test-support-0.91)
-        ("rust-rstest" ,rust-rstest-0.18)
+       (("rust-nu-test-support" ,rust-nu-test-support-0.101)
+        ("rust-nu-utils" ,rust-nu-utils-0.101)
+        ("rust-os-pipe" ,rust-os-pipe-1)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1)
+        ("rust-rstest" ,rust-rstest-0.23)
         ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-strum" ,rust-strum-0.25)
-        ("rust-strum-macros" ,rust-strum-macros-0.26))))
+        ("rust-strum" ,rust-strum-0.26)
+        ("rust-strum-macros" ,rust-strum-macros-0.26)
+        ("rust-tempfile" ,rust-tempfile-3))))
     (home-page
      "https://github.com/nushell/nushell/tree/main/crates/nu-protocol")
     (synopsis "Nushell's internal protocols, including its abstract syntax tree")
@@ -769,152 +897,157 @@ framework.")
 syntax tree.")
     (license license:expat)))
 
-(define-public rust-nu-std-0.91
+(define-public rust-nu-std-0.101
   (package
     (name "rust-nu-std")
-    (version "0.91.0")
+    (version "0.101.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "nu-std" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1igdid80qbfgqdmcg6szq2rsi7i5qlyhplw74byh81vkqsn5z74w"))))
+        (base32 "078bald5fn2np7hj9vd8xyi02al8z79qiapj6jdfnicaf7jlqzb8"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-miette" ,rust-miette-7)
-                       ("rust-nu-engine" ,rust-nu-engine-0.91)
-                       ("rust-nu-parser" ,rust-nu-parser-0.91)
-                       ("rust-nu-protocol" ,rust-nu-protocol-0.91))))
+     `(#:cargo-inputs (("rust-log" ,rust-log-0.4)
+                       ("rust-miette" ,rust-miette-7)
+                       ("rust-nu-engine" ,rust-nu-engine-0.101)
+                       ("rust-nu-parser" ,rust-nu-parser-0.101)
+                       ("rust-nu-protocol" ,rust-nu-protocol-0.101))))
     (home-page "https://github.com/nushell/nushell/tree/main/crates/nu-std")
     (synopsis "Standard library of Nushell")
     (description "This package provides the standard library of Nushell.")
     (license license:expat)))
 
-(define-public rust-nu-system-0.91
+(define-public rust-nu-system-0.101
   (package
     (name "rust-nu-system")
-    (version "0.91.0")
+    (version "0.101.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "nu-system" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1jq87rjbmgpkf2cr2ajfs12f3wzpsh43m0drmrgj7b8lk2g6q9by"))))
+        (base32 "0xrh2vybh7vhyhcw987mjmnx12g3g07y9n24p1md2pdxciz2y641"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-itertools" ,rust-itertools-0.13)
                        ("rust-libc" ,rust-libc-0.2)
                        ("rust-libproc" ,rust-libproc-0.14)
                        ("rust-log" ,rust-log-0.4)
                        ("rust-mach2" ,rust-mach2-0.4)
-                       ("rust-nix" ,rust-nix-0.27)
+                       ("rust-nix" ,rust-nix-0.29)
                        ("rust-ntapi" ,rust-ntapi-0.4)
-                       ("rust-once-cell" ,rust-once-cell-1)
-                       ("rust-procfs" ,rust-procfs-0.16)
-                       ("rust-sysinfo" ,rust-sysinfo-0.30)
-                       ("rust-windows" ,rust-windows-0.52))))
+                       ("rust-procfs" ,rust-procfs-0.17)
+                       ("rust-sysinfo" ,rust-sysinfo-0.32)
+                       ("rust-windows" ,rust-windows-0.56))))
     (home-page "https://github.com/nushell/nushell/tree/main/crates/nu-system")
     (synopsis "Nushell system querying")
-    (description "Nushell system querying")
+    (description "This package provides Nushell system querying.")
     (license license:expat)))
 
-(define-public rust-nu-table-0.91
+(define-public rust-nu-table-0.101
   (package
     (name "rust-nu-table")
-    (version "0.91.0")
+    (version "0.101.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "nu-table" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0r3b0lvkmjfkkcpxq6pls0sc5jp08a25ykfi0hifn0lsb9nady9m"))))
+        (base32 "0pf6l401inns1w9x8wd3s3c7ymqkd1qrh94b0cp8q5hi431vr7my"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-fancy-regex" ,rust-fancy-regex-0.13)
+     `(#:cargo-inputs (("rust-fancy-regex" ,rust-fancy-regex-0.14)
                        ("rust-nu-ansi-term" ,rust-nu-ansi-term-0.50)
-                       ("rust-nu-color-config" ,rust-nu-color-config-0.91)
-                       ("rust-nu-engine" ,rust-nu-engine-0.91)
-                       ("rust-nu-protocol" ,rust-nu-protocol-0.91)
-                       ("rust-nu-utils" ,rust-nu-utils-0.91)
-                       ("rust-once-cell" ,rust-once-cell-1)
-                       ("rust-tabled" ,rust-tabled-0.14))))
+                       ("rust-nu-color-config" ,rust-nu-color-config-0.101)
+                       ("rust-nu-engine" ,rust-nu-engine-0.101)
+                       ("rust-nu-protocol" ,rust-nu-protocol-0.101)
+                       ("rust-nu-utils" ,rust-nu-utils-0.101)
+                       ("rust-tabled" ,rust-tabled-0.16)
+                       ("rust-terminal-size" ,rust-terminal-size-0.4))))
     (home-page "https://github.com/nushell/nushell/tree/main/crates/nu-table")
     (synopsis "Nushell table printing")
     (description "This package provides nushell table printing.")
     (license license:expat)))
 
-(define-public rust-nu-term-grid-0.91
+(define-public rust-nu-term-grid-0.101
   (package
     (name "rust-nu-term-grid")
-    (version "0.91.0")
+    (version "0.101.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "nu-term-grid" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "12f0i7m6flpkf1valkjfg6chalifpb65cknq91p22sii4dx0x89r"))))
+        (base32 "0q60ginwdpqqd862nb407km3yx7x4ql4lhb8y6ly1ldwzj1x9lbn"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-nu-utils" ,rust-nu-utils-0.91)
-                       ("rust-unicode-width" ,rust-unicode-width-0.1))))
+     `(#:cargo-inputs (("rust-nu-utils" ,rust-nu-utils-0.101)
+                       ("rust-unicode-width" ,rust-unicode-width-0.2))))
     (home-page
      "https://github.com/nushell/nushell/tree/main/crates/nu-term-grid")
     (synopsis "Nushell grid printing")
     (description "This package provides nushell grid printing.")
     (license license:expat)))
 
-(define-public rust-nu-test-support-0.91
+(define-public rust-nu-test-support-0.101
   (package
     (name "rust-nu-test-support")
-    (version "0.91.0")
+    (version "0.101.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "nu-test-support" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "146ncw3318hcbhb7cpz3bdz0ypd8x4cpzhhl0q55r2mxxci7ik38"))))
+        (base32 "1jb0nr252q5pl7jkkvhpzj06j22r059mda5mid9fqm3rhka4dyky"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
-       '("--release" "--"
+       '("--"
          ;; Not all files included.
          "--skip=playground::tests::current_working_directory_back_to_root_from_anywhere"
          "--skip=playground::tests::current_working_directory_in_sandbox_directory_created")
-       #:cargo-inputs (("rust-hamcrest2" ,rust-hamcrest2-0.3)
-                       ("rust-nu-glob" ,rust-nu-glob-0.91)
-                       ("rust-nu-path" ,rust-nu-path-0.91)
-                       ("rust-nu-utils" ,rust-nu-utils-0.91)
+       #:cargo-inputs (("rust-nu-glob" ,rust-nu-glob-0.101)
+                       ("rust-nu-path" ,rust-nu-path-0.101)
+                       ("rust-nu-utils" ,rust-nu-utils-0.101)
                        ("rust-num-format" ,rust-num-format-0.4)
                        ("rust-tempfile" ,rust-tempfile-3)
-                       ("rust-which" ,rust-which-6))))
+                       ("rust-which" ,rust-which-7))))
     (home-page
      "https://github.com/nushell/nushell/tree/main/crates/nu-test-support")
     (synopsis "Support for writing Nushell tests")
     (description "This package contains support for writing Nushell tests.")
     (license license:expat)))
 
-(define-public rust-nu-utils-0.91
+(define-public rust-nu-utils-0.101
   (package
     (name "rust-nu-utils")
-    (version "0.91.0")
+    (version "0.101.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "nu-utils" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0xlnhli0zmv4nxznmjb2azq62ywq252zqvpx4668xv70japd74ag"))))
+        (base32 "0i9png2l28qjbwa0v8yp09sxhdqss7rl82y9affjvqg6m27ldlak"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-crossterm-winapi" ,rust-crossterm-winapi-0.9)
+     `(#:cargo-inputs (("rust-crossterm" ,rust-crossterm-0.28)
+                       ("rust-crossterm-winapi" ,rust-crossterm-winapi-0.9)
+                       ("rust-fancy-regex" ,rust-fancy-regex-0.14)
                        ("rust-log" ,rust-log-0.4)
                        ("rust-lscolors" ,rust-lscolors-0.17)
+                       ("rust-nix" ,rust-nix-0.29)
                        ("rust-num-format" ,rust-num-format-0.4)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
                        ("rust-strip-ansi-escapes" ,rust-strip-ansi-escapes-0.2)
                        ("rust-sys-locale" ,rust-sys-locale-0.3)
                        ("rust-unicase" ,rust-unicase-2))))
@@ -922,3 +1055,28 @@ syntax tree.")
     (synopsis "Nushell utility functions")
     (description "This package contains utility functions for nushell.")
     (license license:expat)))
+
+(define-public rust-nuon-0.101
+  (package
+    (name "rust-nuon")
+    (version "0.101.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "nuon" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1j3pd7nwk150krakqjh5jbyqsnzd4ywsyjm50kgrg0mf9flihz28"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Not all files included.
+       #:cargo-inputs (("rust-nu-engine" ,rust-nu-engine-0.101)
+                       ("rust-nu-parser" ,rust-nu-parser-0.101)
+                       ("rust-nu-protocol" ,rust-nu-protocol-0.101)
+                       ("rust-nu-utils" ,rust-nu-utils-0.101))
+       #:cargo-development-inputs (("rust-chrono" ,rust-chrono-0.4))))
+    (home-page "https://github.com/nushell/nushell/tree/main/crates/nuon")
+    (synopsis "Support for the NUON format")
+    (description "This package provides support for the NUON format.")
+    (license license:expat)))
+
