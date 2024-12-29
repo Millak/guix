@@ -764,6 +764,38 @@ integers, floats, tuples, booleans, lists, strings, options and results.")
        #:cargo-development-inputs
        (("rust-quickcheck" ,rust-quickcheck-0.8))))))
 
+(define-public rust-tango-bench-0.6
+  (package
+    (name "rust-tango-bench")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tango-bench" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0gj2jgfdmwhrdggqh3yp8h33n1jrz6f3drmzg3nny83gihsj4y15"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-alloca" ,rust-alloca-0.4)
+                       ("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-clap" ,rust-clap-4)
+                       ("rust-colorz" ,rust-colorz-1)
+                       ("rust-glob-match" ,rust-glob-match-0.2)
+                       ("rust-goblin" ,rust-goblin-0.7)
+                       ("rust-libloading" ,rust-libloading-0.8)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-num-traits" ,rust-num-traits-0.2)
+                       ("rust-rand" ,rust-rand-0.8)
+                       ("rust-scroll" ,rust-scroll-0.11)
+                       ("rust-tempfile" ,rust-tempfile-3)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/bazhenov/tango")
+    (synopsis "Tango benchmarking harness")
+    (description "This package provides tango benchmarking harness.")
+    (license license:expat)))
+
 (define-public rust-tiny-bench-0.3
   (package
     (name "rust-tiny-bench")
