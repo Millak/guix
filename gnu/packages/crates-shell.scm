@@ -1080,3 +1080,43 @@ syntax tree.")
     (description "This package provides support for the NUON format.")
     (license license:expat)))
 
+(define-public rust-reedline-0.38
+  (package
+    (name "rust-reedline")
+    (version "0.38.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "reedline" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1wq9j74bs306qyh7bnnj6fj44w1xf0abiayq6v4rdhw4mnq8rylv"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-arboard" ,rust-arboard-3)
+                       ("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-crossbeam" ,rust-crossbeam-0.8)
+                       ("rust-crossterm" ,rust-crossterm-0.28)
+                       ("rust-fd-lock" ,rust-fd-lock-4)
+                       ("rust-itertools" ,rust-itertools-0.12)
+                       ("rust-nu-ansi-term" ,rust-nu-ansi-term-0.50)
+                       ("rust-rusqlite" ,rust-rusqlite-0.31)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-strip-ansi-escapes" ,rust-strip-ansi-escapes-0.2)
+                       ("rust-strum" ,rust-strum-0.26)
+                       ("rust-strum-macros" ,rust-strum-macros-0.26)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-unicode-segmentation" ,rust-unicode-segmentation-1)
+                       ("rust-unicode-width" ,rust-unicode-width-0.1))
+       #:cargo-development-inputs
+       (("rust-gethostname" ,rust-gethostname-0.4)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1)
+        ("rust-rstest" ,rust-rstest-0.23)
+        ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/nushell/reedline")
+    (synopsis "Readline-like crate for CLI text input")
+    (description
+     "This package provides a readline-like crate for CLI text input.")
+    (license license:expat)))
+
