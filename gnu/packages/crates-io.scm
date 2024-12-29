@@ -66860,8 +66860,43 @@ contains the API endpoint response objects.")
                                    ("rust-rand-hc" ,rust-rand-hc-0.2)
                                    ("rust-serde-json" ,rust-serde-json-1))))))
 
+(define-public rust-rstest-0.23
+  (package
+    (name "rust-rstest")
+    (version "0.23.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rstest" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0d90hr3i2yajzgpzvsh6p2yjzmcb3nm8884xdbb5sswvwmdmhb0a"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; use of undeclared crate or module `rstest_test`
+       #:cargo-inputs (("rust-futures" ,rust-futures-0.3)
+                       ("rust-futures-timer" ,rust-futures-timer-3)
+                       ("rust-rstest-macros" ,rust-rstest-macros-0.23)
+                       ("rust-rustc-version" ,rust-rustc-version-0.4))
+       #:cargo-development-inputs
+       (("rust-actix-rt" ,rust-actix-rt-2)
+        ("rust-async-std" ,rust-async-std-1)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1)
+        ("rust-rstest" ,rust-rstest-0.22)
+        ("rust-temp-testdir" ,rust-temp-testdir-0.2)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-unindent" ,rust-unindent-0.2))))
+    (home-page "https://github.com/la10736/rstest")
+    (synopsis "Rust fixture based test framework")
+    (description
+     "This package provides a Rust fixture based test framework.  It uses a
+procedural macro to implement fixtures and table based tests.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-rstest-0.21
   (package
+    (inherit rust-rstest-0.23)
     (name "rust-rstest")
     (version "0.21.0")
     (source
@@ -66871,7 +66906,6 @@ contains the API endpoint response objects.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "10inb7hv1p42i981bf6705dakbgfbdgl2qaim4sf9mk9f2k5bzcs"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f  ; use of undeclared crate or module `rstest_test`
        #:cargo-inputs (("rust-futures" ,rust-futures-0.3)
@@ -66885,13 +66919,7 @@ contains the API endpoint response objects.")
                                    ("rust-rstest" ,rust-rstest-0.20)
                                    ("rust-temp-testdir" ,rust-temp-testdir-0.2)
                                    ("rust-tokio" ,rust-tokio-1)
-                                   ("rust-unindent" ,rust-unindent-0.2))))
-    (home-page "https://github.com/la10736/rstest")
-    (synopsis "Rust fixture based test framework")
-    (description
-     "This package provides a Rust fixture based test framework.  It uses a
-procedural macro to implement fixtures and table based tests.")
-    (license (list license:expat license:asl2.0))))
+                                   ("rust-unindent" ,rust-unindent-0.2))))))
 
 (define-public rust-rstest-0.20
   (package
