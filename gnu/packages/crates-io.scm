@@ -52614,17 +52614,22 @@ rustified API consider using pam.")
 executable.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-papergrid-0.11
+(define-public rust-papergrid-0.12
   (package
     (name "rust-papergrid")
-    (version "0.11.0")
+    (version "0.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "papergrid" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1yzppnq3v1ivwqbrp4f7b13ijxirfykb64072vwngxsf083krm4s"))))
+        (base32 "09b7x34znfnm7lyzk8vajbazpw9xzsh8a4716c6vdsbx5barlhf7"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (("\"=([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                   (string-append "\"^" version)))))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f  ; use of undeclared crate or module `testing_table`
@@ -52637,8 +52642,29 @@ executable.")
     (home-page "https://github.com/zhiburt/tabled")
     (synopsis "Core library to print a table")
     (description
-     "Papergrid is a core library to print a table.")
+     "This package provides Papergrid is a core library to print a table.")
     (license license:expat)))
+
+(define-public rust-papergrid-0.11
+  (package
+    (inherit rust-papergrid-0.12)
+    (name "rust-papergrid")
+    (version "0.11.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "papergrid" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1yzppnq3v1ivwqbrp4f7b13ijxirfykb64072vwngxsf083krm4s"))))
+    (arguments
+     `(#:tests? #f  ; use of undeclared crate or module `testing_table`
+       #:cargo-inputs (("rust-ansi-str" ,rust-ansi-str-0.8)
+                       ("rust-ansitok" ,rust-ansitok-0.2)
+                       ("rust-bytecount" ,rust-bytecount-0.6)
+                       ("rust-fnv" ,rust-fnv-1)
+                       ("rust-unicode-width" ,rust-unicode-width-0.1))
+       #:cargo-development-inputs (("rust-owo-colors" ,rust-owo-colors-3))))))
 
 (define-public rust-papergrid-0.10
   (package
