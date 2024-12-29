@@ -37107,16 +37107,15 @@ or not without much fuss.")
 (define-public rust-is-debug-1
   (package
     (name "rust-is-debug")
-    (version "1.0.1")
+    (version "1.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "is_debug" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "12bwspph88wgmzcyl8dg3s28gph41r9shfq8yzaj564xj7lril86"))))
+        (base32 "02053pms1isigxdqmkqcj6p6rmdl09sy654b7nysaf36kn685sp8"))))
     (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
     (home-page "https://github.com/baoyachi/rust_is_debug")
     (synopsis "Get build model is debug")
     (description "Get build model is debug.")
