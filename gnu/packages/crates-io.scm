@@ -34596,8 +34596,29 @@ SystemTime}}.")
      "This package provides iana-time-zone support crate for Haiku OS.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-ical-0.11
+  (package
+    (name "rust-ical")
+    (version "0.11.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ical" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1xkrs9a48qzbzf6mbrnsvj9i51h2z44l7h7236d75dx88dssnz4v"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/Peltoche/ical-rs")
+    (synopsis "Ical/Vcard parser for Rust")
+    (description "This package provides an Ical/Vcard parser for Rust.")
+    (license license:asl2.0)))
+
 (define-public rust-ical-0.10
   (package
+    (inherit rust-ical-0.11)
     (name "rust-ical")
     (version "0.10.0")
     (source
@@ -34607,14 +34628,9 @@ SystemTime}}.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0w3nj8xjmhdgl5qljn61ldgfmd35xpni88b43s5fad7fk7mx9fnl"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-serde" ,rust-serde-1)
-                       ("rust-thiserror" ,rust-thiserror-1))))
-    (home-page "https://github.com/Peltoche/ical-rs")
-    (synopsis "Ical/Vcard parser for Rust")
-    (description "This package provides an Ical/Vcard parser for Rust.")
-    (license license:asl2.0)))
+                       ("rust-thiserror" ,rust-thiserror-1))))))
 
 (define-public rust-icu-collections-1
   (package
