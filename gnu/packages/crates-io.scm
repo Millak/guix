@@ -30217,20 +30217,21 @@ components built off futures-rs.")
 (define-public rust-futures-timer-3
   (package
     (name "rust-futures-timer")
-    (version "3.0.2")
+    (version "3.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "futures-timer" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0b5v7lk9838ix6jdcrainsyrh7xrf24pwm61dp13907qkn806jz6"))))
+        (base32 "094vw8k37djpbwv74bwf2qb7n6v6ghif4myss6smd6hgyajb127j"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-gloo-timers" ,rust-gloo-timers-0.2)
-        ("rust-send-wrapper" ,rust-send-wrapper-0.4))))
+        ("rust-send-wrapper" ,rust-send-wrapper-0.4))
+       #:cargo-development-inputs (("rust-async-std" ,rust-async-std-1)
+                                   ("rust-futures" ,rust-futures-0.3))))
     (home-page "https://github.com/async-rs/futures-timer")
     (synopsis "Timeouts for futures")
     (description "This package is a general purpose crate for working with
