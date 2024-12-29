@@ -1338,16 +1338,8 @@ can use the realtime clock while tests can use the mock clock.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/beorn7/perks"
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; XXX: Workaround for go-build-system's lack of Go modules support.
-          (delete 'build)
-          (replace 'check
-            (lambda* (#:key tests? import-path #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion (string-append "src/" import-path)
-                  (invoke "go" "test" "-v" "./..."))))))))
+      #:skip-build? #t
+      #:import-path "github.com/beorn7/perks"))
     (home-page "https://github.com/beorn7/perks")
     (synopsis "Compute approximate quantiles over an unbounded data stream")
     (description
