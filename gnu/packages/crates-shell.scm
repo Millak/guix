@@ -798,6 +798,37 @@ Nushell engine.")
      "This package provides protocol type definitions for Nushell plugins.")
     (license license:expat)))
 
+(define-public rust-nu-plugin-test-support-0.101
+  (package
+    (name "rust-nu-plugin-test-support")
+    (version "0.101.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "nu-plugin-test-support" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "17r036lxhscs05hpc4q0bz3prcqq3k5wz9xqmrca44cwyb0wilcm"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-nu-ansi-term" ,rust-nu-ansi-term-0.50)
+                       ("rust-nu-cmd-lang" ,rust-nu-cmd-lang-0.101)
+                       ("rust-nu-engine" ,rust-nu-engine-0.101)
+                       ("rust-nu-parser" ,rust-nu-parser-0.101)
+                       ("rust-nu-plugin" ,rust-nu-plugin-0.101)
+                       ("rust-nu-plugin-core" ,rust-nu-plugin-core-0.101)
+                       ("rust-nu-plugin-engine" ,rust-nu-plugin-engine-0.101)
+                       ("rust-nu-plugin-protocol" ,rust-nu-plugin-protocol-0.101)
+                       ("rust-nu-protocol" ,rust-nu-protocol-0.101)
+                       ("rust-similar" ,rust-similar-2))
+       #:cargo-development-inputs (("rust-serde" ,rust-serde-1)
+                                   ("rust-typetag" ,rust-typetag-0.2))))
+    (home-page
+     "https://github.com/nushell/nushell/tree/main/crates/nu-plugin-test-support")
+    (synopsis "Testing support for Nushell plugins")
+    (description "This package provides Testing support for Nushell plugins.")
+    (license license:expat)))
+
 (define-public rust-nu-pretty-hex-0.101
   (package
     (name "rust-nu-pretty-hex")
