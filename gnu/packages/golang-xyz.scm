@@ -7141,6 +7141,39 @@ as work arounds until issues are addressed in the official distribution.")
      "NLP-related string utility functions for Golang.")
     (license license:expat)))
 
+(define-public go-github-com-jedib0t-go-pretty-v6
+  (package
+    (name "go-github-com-jedib0t-go-pretty-v6")
+    (version "6.6.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jedib0t/go-pretty")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0sy8fia04lxi07yga7z3h3fp19y4bla5p16v1n7ldip0ymdmvjnx"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/jedib0t/go-pretty/v6"))
+    (native-inputs
+     (list go-github-com-pkg-profile ; for the CLI
+           go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-mattn-go-runewidth
+           go-golang-org-x-sys
+           go-golang-org-x-term
+           go-golang-org-x-text))
+    (home-page "https://github.com/jedib0t/go-pretty")
+    (synopsis "Table-writer and more in Golang")
+    (description
+     "Utilities to prettify console output of tables, lists, progress-bars,
+text, etc. with a heavy emphasis on customization.")
+    (license license:expat)))
+
 (define-public go-github-com-jessevdk-go-flags
   (package
     (name "go-github-com-jessevdk-go-flags")
