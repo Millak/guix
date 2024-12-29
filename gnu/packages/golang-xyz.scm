@@ -12804,6 +12804,34 @@ the Jaro distance, the Jaro-Winkler distance, and more.")
 detection.")
     (license license:asl2.0)))
 
+;; XXX: The latest release v0.1.1 was in 2014, master branch has more changes
+;; since that time, use the latest commit.
+(define-public go-github-com-yosuke-furukawa-json5
+  (let ((commit "cf7bb3f354ffe5d5ad4c9b714895eab7e0498b5f")
+        (revision "0"))
+    (package
+      (name "go-github-com-yosuke-furukawa-json5")
+      (version (git-version "0.1.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/yosuke-furukawa/json5")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "05h9ipfjr2ww8b89zq1sm1q9wfasjnmzwlxa241wppqajn3rvr7s"))))
+      (build-system go-build-system)
+      (arguments
+       (list
+        #:import-path "github.com/yosuke-furukawa/json5"))
+      (home-page "https://github.com/yosuke-furukawa/json5")
+      (synopsis "JSON5 implemented in Golang")
+      (description
+       "This package provides an implementation of
+@url{https://github.com/yosuke-furukawa/json5, JSON5}.")
+      (license license:bsd-3))))
+
 (define-public go-github-com-yuin-gopher-lua
   (package
     (name "go-github-com-yuin-gopher-lua")
