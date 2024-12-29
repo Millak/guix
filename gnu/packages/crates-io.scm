@@ -8475,32 +8475,50 @@ types.")
        #:cargo-development-inputs
        (("rust-rand" ,rust-rand-0.3))))))
 
+(define-public rust-bit-vec-0.8
+  (package
+    (name "rust-bit-vec")
+    (version "0.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "bit-vec" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1xxa1s2cj291r7k1whbxq840jxvmdsq9xgh7bvrxl46m80fllxjy"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-borsh" ,rust-borsh-1)
+                       ("rust-miniserde" ,rust-miniserde-0.1)
+                       ("rust-nanoserde" ,rust-nanoserde-0.1)
+                       ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-rand" ,rust-rand-0.8)
+                                   ("rust-rand-xorshift" ,rust-rand-xorshift-0.3)
+                                   ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/contain-rs/bit-vec")
+    (synopsis "Vector of bits")
+    (description "This package provides a vector of bits.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-bit-vec-0.6
   (package
+    (inherit rust-bit-vec-0.8)
     (name "rust-bit-vec")
     (version "0.6.3")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "bit-vec" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
+        (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32
-          "1ywqjnv60cdh1slhz67psnp422md6jdliji6alq0gmly2xm9p7rl"))))
-    (build-system cargo-build-system)
+         (base32 "1ywqjnv60cdh1slhz67psnp422md6jdliji6alq0gmly2xm9p7rl"))))
     (arguments
      `(#:cargo-inputs
        (("rust-serde" ,rust-serde-1))
        #:cargo-development-inputs
        (("rust-rand" ,rust-rand-0.7)
         ("rust-rand-xorshift" ,rust-rand-xorshift-0.2)
-        ("rust-serde-json" ,rust-serde-json-1))))
-    (home-page "https://github.com/contain-rs/bit-vec")
-    (synopsis "Vector of bits")
-    (description
-     "This package provides a vector of bits.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-serde-json" ,rust-serde-json-1))))))
 
 (define-public rust-bit-vec-0.5
   (package
