@@ -90345,7 +90345,7 @@ Unicode and Internationalization Crates (UNIC) project.")
 (define-public rust-unicase-2
   (package
     (name "rust-unicase")
-    (version "2.7.0")
+    (version "2.8.1")
     (source
       (origin
         (method url-fetch)
@@ -90353,11 +90353,8 @@ Unicode and Internationalization Crates (UNIC) project.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "12gd74j79f94k4clxpf06l99wiv4p30wjr0qm04ihqk9zgdd9lpp"))))
+          "0fd5ddbhpva7wrln2iah054ar2pc1drqjcll0f493vj3fv8l9f3m"))))
     (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-version-check" ,rust-version-check-0.9))))
     (home-page "https://github.com/seanmonstar/unicase")
     (synopsis "Case-insensitive wrapper around strings")
     (description
