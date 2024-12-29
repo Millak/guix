@@ -4490,7 +4490,7 @@ system.")
 (define-public go-github-com-delthas-go-localeinfo
   (package
     (name "go-github-com-delthas-go-localeinfo")
-    (version "0.0.0-20240607105203-b2e834fc307d")
+    (version "0.0.0-20240813094314-e5413e186769")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4499,10 +4499,11 @@ system.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0817lhic77sz9lxizy2rchwssp0vzl7qxbsfghcddg6ssy1n0zhj"))))
+                "0nw21gv3j7cc9x4gq4avlg4s7xzgc7gxrkmq4v451zrvx0mnv0bn"))))
     (build-system go-build-system)
-    (arguments `(#:tests? #f ; FIXME: tests assume certain locale
-                 #:import-path "github.com/delthas/go-localeinfo"))
+    (arguments
+     (list
+      #:import-path "github.com/delthas/go-localeinfo"))
     (home-page "https://github.com/delthas/go-localeinfo")
     (synopsis "Library for extracting locale information")
     (description "@code{go-localeinfo} extracts monetary/numeric/time
