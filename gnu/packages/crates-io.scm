@@ -70848,30 +70848,29 @@ with one of the implemented strategies.")
     (description "This create is for logging runtime of arbitrary scope.")
     (license license:expat)))
 
-(define-public rust-scraper-0.12
+(define-public rust-scraper-0.18
   (package
     (name "rust-scraper")
-    (version "0.12.0")
+    (version "0.18.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "scraper" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "04icx88wdrlz1qv0dz1zc0inlfq34ajwdpih854jw368j2kjmq28"))))
+        (base32 "1qf3vfj8xrggq9cwrr6yq88807sckjfirnvklmw1nccvf7iq0m2q"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-cssparser" ,rust-cssparser-0.27)
-        ("rust-ego-tree" ,rust-ego-tree-0.6)
-        ("rust-getopts" ,rust-getopts-0.2)
-        ("rust-html5ever" ,rust-html5ever-0.25)
-        ("rust-matches" ,rust-matches-0.1)
-        ("rust-selectors" ,rust-selectors-0.22)
-        ("rust-smallvec" ,rust-smallvec-1)
-        ("rust-tendril" ,rust-tendril-0.4))))
-    (home-page "https://github.com/programble/scraper")
+     `(#:cargo-inputs (("rust-ahash" ,rust-ahash-0.8)
+                       ("rust-cssparser" ,rust-cssparser-0.31)
+                       ("rust-ego-tree" ,rust-ego-tree-0.6)
+                       ("rust-getopts" ,rust-getopts-0.2)
+                       ("rust-html5ever" ,rust-html5ever-0.26)
+                       ("rust-indexmap" ,rust-indexmap-2)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-selectors" ,rust-selectors-0.25)
+                       ("rust-tendril" ,rust-tendril-0.4))))
+    (home-page "https://github.com/causal-agent/scraper")
     (synopsis "HTML parsing and querying with CSS selectors")
     (description
      "Scraper provides an interface to Servo's html5ever and selectors crates,
