@@ -44489,6 +44489,27 @@ file's MIME type by its extension.")
         ("rust-phf-codegen" ,rust-phf-codegen-0.7)
         ("rust-unicase" ,rust-unicase-1))))))
 
+(define-public rust-mini-internal-0.1
+  (package
+    (name "rust-mini-internal")
+    (version "0.1.41")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "mini-internal" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ks7vwcgmkkg3lsqzjwmrfzm4ly5y6b41b2sfn4jy3bz18sg3dq7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/dtolnay/miniserde")
+    (synopsis "Derive macros for miniserde")
+    (description "This package provides derive macros for miniserde.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-mini-moka-0.10
   (package
     (name "rust-mini-moka")
