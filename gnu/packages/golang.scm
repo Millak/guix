@@ -1435,61 +1435,13 @@ configuration file.")
          (sha256
           (base32 "0qr7i62h53frcig26vj027r2hn9zxsjzd7113wvbxy7qpprjjbjb"))))
       (build-system go-build-system)
-      (native-inputs
+      (arguments
+       (list
+        #:skip-build? #t
+        #:import-path "github.com/savsgio/gotils"))
+      (propagated-inputs
        (list go-github-com-google-uuid
              go-github-com-valyala-bytebufferpool))
-      (arguments
-       '(#:import-path "github.com/savsgio/gotils"
-         #:phases
-         (modify-phases %standard-phases
-           (replace 'build
-             (lambda arguments
-               (for-each
-                (lambda (directory)
-                  (apply (assoc-ref %standard-phases 'build)
-                         `(,@arguments #:import-path ,directory)))
-                (list
-                 "github.com/savsgio/gotils/bytes"
-                 "github.com/savsgio/gotils/encoding/base64"
-                 "github.com/savsgio/gotils/math"
-                 "github.com/savsgio/gotils/nocopy"
-                 "github.com/savsgio/gotils/strconv"
-                 "github.com/savsgio/gotils/strings"
-                 "github.com/savsgio/gotils/sync"
-                 "github.com/savsgio/gotils/time"
-                 "github.com/savsgio/gotils/uuid"))))
-           (replace 'check
-             (lambda arguments
-               (for-each
-                (lambda (directory)
-                  (apply (assoc-ref %standard-phases 'check)
-                         `(,@arguments #:import-path ,directory)))
-                (list
-                 "github.com/savsgio/gotils/bytes"
-                 "github.com/savsgio/gotils/encoding/base64"
-                 "github.com/savsgio/gotils/math"
-                 "github.com/savsgio/gotils/nocopy"
-                 "github.com/savsgio/gotils/strconv"
-                 "github.com/savsgio/gotils/strings"
-                 "github.com/savsgio/gotils/sync"
-                 "github.com/savsgio/gotils/time"
-                 "github.com/savsgio/gotils/uuid"))))
-           (replace 'install
-             (lambda arguments
-               (for-each
-                (lambda (directory)
-                  (apply (assoc-ref %standard-phases 'install)
-                         `(,@arguments #:import-path ,directory)))
-                (list
-                 "github.com/savsgio/gotils/bytes"
-                 "github.com/savsgio/gotils/encoding/base64"
-                 "github.com/savsgio/gotils/math"
-                 "github.com/savsgio/gotils/nocopy"
-                 "github.com/savsgio/gotils/strconv"
-                 "github.com/savsgio/gotils/strings"
-                 "github.com/savsgio/gotils/sync"
-                 "github.com/savsgio/gotils/time"
-                 "github.com/savsgio/gotils/uuid")))))))
       (home-page "https://github.com/savsgio/gotils")
       (synopsis "Golang utilities")
       (description
