@@ -3264,6 +3264,52 @@ standard @code{net/http} client library and exposes nearly the same public
 API.")
     (license license:mpl2.0)))
 
+(define-public go-github-com-hashicorp-go-sockaddr
+  (package
+    (name "go-github-com-hashicorp-go-sockaddr")
+    (version "1.0.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hashicorp/go-sockaddr")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ajcffaqxrbqyg00b04a1ia7np0180x7z5q3bcxqxm0smqqag54z"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            (delete-file-recursively "cmd/sockaddr/vendor")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/hashicorp/go-sockaddr"
+      #:test-flags
+      #~(list "-skip"
+              (string-join
+               ;; Tests require network set-up or fail randomly.
+               (list "TestGetDefaultInterface"
+                     "TestGetDefaultInterfaces"
+                     "TestGetIfAddrs"
+                     "TestGetPrivateIP"
+                     "TestGetPrivateIPs"
+                     "TestGetPrivateInterfaces"
+                     "TestSockAddr_IPAddrs_IPAddrsByNetworkSize/0"
+                     "TestSockAddr_Parse")
+               "|"))))
+    (propagated-inputs
+     (list go-github-com-hashicorp-errwrap
+           go-github-com-mitchellh-cli
+           go-github-com-mitchellh-go-wordwrap
+           go-github-com-ryanuber-columnize))
+    (home-page "https://github.com/hashicorp/go-sockaddr")
+    (synopsis "IP Address/UNIX Socket convenience functions for Golang")
+    (description
+     "This package provides an implementation of the UNIX socket family data
+types and related helper functions.")
+    (license license:mpl2.0)))
+
 (define-public go-github-com-hashicorp-yamux
   (package
     (name "go-github-com-hashicorp-yamux")
