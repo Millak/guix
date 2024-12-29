@@ -23195,6 +23195,26 @@ This project is a fork of Faraday's boondock.")
         ("rust-rustc-serialize" ,rust-rustc-serialize-0.3)
         ("rust-strsim" ,rust-strsim-0.5))))))
 
+(define-public rust-doctest-file-1
+  (package
+    (name "rust-doctest-file")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "doctest-file" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0qkmnrsx2kszm58wxyry63bs35msj9chdb6jlh54a8cdwaiizj5a"))))
+    (build-system cargo-build-system)
+    (arguments `(#:tests? #f))  ; Tests are incorrectly written.
+    (home-page "https://codeberg.org/Goat7658/doctest-file/")
+    (synopsis "Procedural macro that sources doctests from dedicated files")
+    (description
+     "This package provides a procedural macro that sources doctests from
+dedicated files into Rustdoc documentation with support for hiding lines.")
+    (license license:bsd-0)))
+
 (define-public rust-document-features-0.2
   (package
     (name "rust-document-features")
