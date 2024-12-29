@@ -81274,8 +81274,41 @@ well.")
 cross-platform way.")
     (license license:unlicense)))
 
+(define-public rust-tabled-0.16
+  (package
+    (name "rust-tabled")
+    (version "0.16.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tabled" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "06ybawqbcf1qk4laxff9cwxa26viwfda4bh14bvyv6qbwqz31jbp"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (("\"=([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                   (string-append "\"^" version)))))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Not all files included.
+       #:cargo-inputs (("rust-ansi-str" ,rust-ansi-str-0.8)
+                       ("rust-ansitok" ,rust-ansitok-0.2)
+                       ("rust-papergrid" ,rust-papergrid-0.12)
+                       ("rust-tabled-derive" ,rust-tabled-derive-0.8))
+       #:cargo-development-inputs (("rust-owo-colors" ,rust-owo-colors-3)
+                                   ("rust-testing-table" ,rust-testing-table-0.1))))
+    (home-page "https://github.com/zhiburt/tabled")
+    (synopsis
+     "Library for pretty printing tables of Rust `struct`s and `enum`s")
+    (description "This package provides a library for pretty printing tables of
+Rust @code{struct}s and @code{enum}s.")
+    (license license:expat)))
+
 (define-public rust-tabled-0.15
   (package
+    (inherit rust-tabled-0.16)
     (name "rust-tabled")
     (version "0.15.0")
     (source
@@ -81285,7 +81318,6 @@ cross-platform way.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "03h5j83pp5pp0hbf6dh1fvh8pwhzj3qvmaj8d8cra54jic68p6ac"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f ; use of undeclared crate or module `testing_table`
        #:cargo-inputs
@@ -81294,13 +81326,7 @@ cross-platform way.")
         ("rust-papergrid" ,rust-papergrid-0.11)
         ("rust-tabled-derive" ,rust-tabled-derive-0.7)
         ("rust-unicode-width" ,rust-unicode-width-0.1))
-       #:cargo-development-inputs (("rust-owo-colors" ,rust-owo-colors-3))))
-    (home-page "https://github.com/zhiburt/tabled")
-    (synopsis
-     "Library for pretty printing tables of Rust `struct`s and `enum`s")
-    (description "This package provides a library for pretty printing tables of
-Rust @code{struct}s and @code{enum}s.")
-    (license license:expat)))
+       #:cargo-development-inputs (("rust-owo-colors" ,rust-owo-colors-3))))))
 
 (define-public rust-tabled-0.14
   (package
