@@ -541,19 +541,16 @@ is used by the Requests library to verify HTTPS requests.")
 (define-public python-cryptography
   (package
     (name "python-cryptography")
-    (version "43.0.3")
+    (version "44.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "cryptography" version))
        (sha256
         (base32
-         "01d8anh4crjvpa0s044rxkdi9cjnz4w15dj3yipjljba4q0r0nri"))
+         "00is2nzcl2pyhr90llga5mnbw3rvakn75rq10x1r6hhb6i7q6knd"))
        (snippet
         #~(begin (use-modules (guix build utils))
-                 ;; Help the configure phase.  Remove this next release.
-                 (with-output-to-file "Cargo.toml"
-                   (lambda () (newline)))
                  (for-each delete-file
                            (find-files "." "Cargo\\.lock$"))
                  (substitute* "pyproject.toml"
@@ -567,7 +564,7 @@ is used by the Requests library to verify HTTPS requests.")
                   ((guix build pyproject-build-system) #:prefix py:)
                   (guix build utils))
       #:cargo-inputs
-      (list rust-asn1-0.16
+      (list rust-asn1-0.20
             rust-cc-1
             rust-cfg-if-1
             rust-foreign-types-0.3
@@ -576,7 +573,7 @@ is used by the Requests library to verify HTTPS requests.")
             rust-openssl-0.10
             rust-openssl-sys-0.9
             rust-pem-3
-            rust-pyo3-0.22
+            rust-pyo3-0.23
             rust-self-cell-1)
       #:install-source? #false
       #:phases
@@ -585,7 +582,7 @@ is used by the Requests library to verify HTTPS requests.")
             (lambda* (#:key vendor-dir #:allow-other-keys)
               ;; Don't keep the whole tarball in the vendor directory
               (delete-file-recursively
-                (string-append vendor-dir "/cryptography-" #$version ".tar.zst"))))
+               (string-append vendor-dir "/cryptography-" #$version ".tar.zst"))))
           (replace 'build
             (assoc-ref py:%standard-phases 'build))
           (delete 'check)
@@ -598,12 +595,16 @@ is used by the Requests library to verify HTTPS requests.")
             (assoc-ref py:%standard-phases 'install)))))
     (native-inputs
      (list python-certifi
+           python-cffi
+           python-click
            python-cryptography-vectors
-           python-iso8601
+           python-mypy
            python-pretend
-           python-pytest                ;for subtests
+           python-pytest
            python-pytest-benchmark
-           python-pytest-subtests
+           python-pytest-cov
+           python-pytest-randomly
+           python-pytest-xdist
            python-setuptools
            python-wheel))
     (inputs (list maturin openssl python-wrapper))
