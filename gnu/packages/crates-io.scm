@@ -1321,6 +1321,25 @@ be used with the stdlib.")
 in no_std.")
     (license license:expat)))
 
+(define-public rust-alloca-0.4
+  (package
+    (name "rust-alloca")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "alloca" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1x6p4387rz6j7h342kp3b7bgvqzyl9mibf959pkfk9xflrgd19z5"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cc" ,rust-cc-1))))
+    (home-page "https://github.com/playXE/alloca-rs")
+    (synopsis "Mostly safe wrapper for alloca")
+    (description "This package provides a mostly safe wrapper for alloca.")
+    (license license:expat)))
+
 (define-public rust-allocator-api2-0.2
   (package
     (name "rust-allocator-api2")
