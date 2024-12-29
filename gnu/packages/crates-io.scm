@@ -73609,14 +73609,14 @@ TOML/JSON/MessagePack strings and serializable values.")
 (define-public rust-serial-test-derive-3
   (package
     (name "rust-serial-test-derive")
-    (version "3.1.1")
+    (version "3.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "serial_test_derive" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0rrx13r2kdahbgs9qfvbx63zgzafrjjpiq42vsy1zvxw4nrrvzl2"))))
+        (base32 "1vwyz2k5kiy5jmba0fvp6ph8ia707801bz918n2ff7bm11d2csax"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
