@@ -1396,6 +1396,36 @@ Data Representation (XDR) standard protocol as specified in RFC
 4506 (obsoletes RFC 1832 and RFC 1014) in pure Go.")
     (license license:isc)))
 
+(define-public go-github-com-dpotapov-go-spnego
+  (package
+    (name "go-github-com-dpotapov-go-spnego")
+    (version "0.0.0-20220426193508-b7f82e4507db")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dpotapov/go-spnego")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1rpcgzkqhdwfsi8a9f9qar16i663pdx3gvwd6c0vfppy7qjmpjfr"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/dpotapov/go-spnego"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-jcmturner-gokrb5-v8
+           go-golang-org-x-net))
+    (home-page "https://github.com/dpotapov/go-spnego")
+    (synopsis "HTTP calls with Kerberos authentication")
+    (description
+     "The package extends Go's HTTP Transport allowing Kerberos
+authentication through Negotiate mechanism (see
+@url{https://tools.ietf.org/html/rfc4559, RFC4559}).")
+    (license license:expat)))
+
 (define-public go-github-com-elazarl-goproxy
   (package
     (name "go-github-com-elazarl-goproxy")
