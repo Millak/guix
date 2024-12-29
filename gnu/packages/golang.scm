@@ -1419,33 +1419,6 @@ https://en.wikipedia.org/wiki/Extended_file_attributes}
 configuration file.")
     (license license:isc)))
 
-(define-public go-github-com-savsgio-gotils
-    (package
-      (name "go-github-com-savsgio-gotils")
-      (version "0.0.0-20240704082632-aef3928b8a38")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/savsgio/gotils")
-               (commit (go-version->git-ref version))))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0s3xsq4wy2xi17wq0kzw2zszj9vwndzvvmkx7pp7crx8k43x16ll"))))
-      (build-system go-build-system)
-      (arguments
-       (list
-        #:skip-build? #t
-        #:import-path "github.com/savsgio/gotils"))
-      (propagated-inputs
-       (list go-github-com-google-uuid
-             go-github-com-valyala-bytebufferpool))
-      (home-page "https://github.com/savsgio/gotils")
-      (synopsis "Golang utilities")
-      (description
-       "Golang utilities to make your life easier with zero allocations.")
-      (license license:asl2.0)))
-
 (define-public go-github-com-mufti1-interconv
   (let ((commit "d7c72925c6568d60d361757bb9f2d252dcca745c")
         (revision "0"))
