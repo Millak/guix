@@ -3914,6 +3914,35 @@ router.")
 @acronym{Simple Service Discovery Protocol, SSDP}} library for Golang.")
     (license license:expat)))
 
+(define-public go-github-com-levigross-grequests
+  (package
+    (name "go-github-com-levigross-grequests")
+    (version "0.0.0-20231203190023-9c307ef1f48d")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/levigross/grequests")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "13r24vrcgfkps8r09crjlhsywpxs8bnnmlgn5qhbhqiqag754xdc"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ; most of them need network access
+      #:embed-files #~(list "children" "nodes" "text")
+      #:import-path "github.com/levigross/grequests"))
+    (propagated-inputs
+     (list go-github-com-google-go-querystring
+           go-golang-org-x-net))
+    (home-page "https://github.com/levigross/grequests")
+    (synopsis "Requests library for Golang")
+    (description
+     "Package grequests implements a friendly API over Go's existing
+@code{net/http} library.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-libdns-libdns
   (package
     (name "go-github-com-libdns-libdns")
