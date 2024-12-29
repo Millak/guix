@@ -4325,16 +4325,16 @@ temporal directories.")
 (define-public go-github-com-pkg-diff
   (package
     (name "go-github-com-pkg-diff")
-    (version "0.0.0-20210226163009-20ebb0f2a09e")
+    (version "0.0.0-20241224192749-4e6772a4315c")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/pkg/diff")
-                    (commit "20ebb0f2a09e612109b224b32f79370409108bcc")))
+                    (commit (go-version->git-ref version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1g3dzgwhz4fx3ddpsv7fsa4r1v5clsp2lbw2qrkdk9y1vc5gi8yi"))))
+                "1iwaa6g3mbbi1k6rw7fn85sg6lm6rlnjz07yb91hq1kll6494s18"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/pkg/diff"))
