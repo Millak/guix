@@ -88033,8 +88033,47 @@ be used directly.  See @code{rust-trackable} for more information.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-trash-5
+  (package
+    (name "rust-trash")
+    (version "5.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "trash" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0bzxzyjywb6sdyfshr9fp3fbpjf7gfhznh9ybrlb8rh3q9icmrd8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-objc2" ,rust-objc2-0.5)
+                       ("rust-objc2-foundation" ,rust-objc2-foundation-0.2)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-percent-encoding" ,rust-percent-encoding-2)
+                       ("rust-scopeguard" ,rust-scopeguard-1)
+                       ("rust-urlencoding" ,rust-urlencoding-2)
+                       ("rust-windows" ,rust-windows-0.56))
+       #:cargo-development-inputs (("rust-chrono" ,rust-chrono-0.4)
+                                   ("rust-defer" ,rust-defer-0.2)
+                                   ("rust-env-logger" ,rust-env-logger-0.10)
+                                   ("rust-once-cell" ,rust-once-cell-1)
+                                   ("rust-rand" ,rust-rand-0.8)
+                                   ("rust-serial-test" ,rust-serial-test-2)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/ArturKovacs/trash")
+    (synopsis "Library for moving files and folders to the recycle bin")
+    (description
+     "This package provides a library for moving files and folders to the
+recycle bin.")
+    (license license:expat)))
+
 (define-public rust-trash-3
   (package
+    (inherit rust-trash-5)
     (name "rust-trash")
     (version "3.3.1")
     (source
@@ -88044,7 +88083,6 @@ be used directly.  See @code{rust-trackable} for more information.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0mssqp3qyv2jwihkkmc5zga51bbrhn6xikdmld9s3mfr8s6lan66"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-chrono" ,rust-chrono-0.4)
                        ("rust-libc" ,rust-libc-0.2)
@@ -88060,13 +88098,7 @@ be used directly.  See @code{rust-trackable} for more information.")
                                    ("rust-once-cell" ,rust-once-cell-1)
                                    ("rust-rand" ,rust-rand-0.8)
                                    ("rust-serial-test" ,rust-serial-test-2)
-                                   ("rust-tempfile" ,rust-tempfile-3))))
-    (home-page "https://github.com/ArturKovacs/trash")
-    (synopsis "Library for moving files and folders to the recycle bin")
-    (description
-     "This package provides a library for moving files and folders to the
-recycle bin.")
-    (license license:expat)))
+                                   ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-trash-2
   (package
