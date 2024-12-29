@@ -53415,6 +53415,29 @@ parallelism and safety in mind.")
     (native-inputs '())
     (inputs '())))
 
+(define-public rust-parse-datetime-0.6
+  (package
+    (name "rust-parse-datetime")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "parse_datetime" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1l4n9gsflf1fksfrvyhqyf8bdwxrk0s705l7x86g4jnxwds08wm8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-nom" ,rust-nom-7)
+                       ("rust-regex" ,rust-regex-1))))
+    (home-page "https://github.com/uutils/parse_datetime")
+    (synopsis "Parse human-readable time strings and converting them to a DateTime")
+    (description
+     "This package provides parsing human-readable time strings and converting
+them to a @code{DateTime}.")
+    (license license:expat)))
+
 (define-public rust-parse-display-0.8
   (package
     (name "rust-parse-display")
