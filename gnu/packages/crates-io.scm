@@ -45386,6 +45386,33 @@ async Rust environment e.g. any async server.")
     (description "This package provides a multimap implementation.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-multipart-rs-0.1
+  (package
+    (name "rust-multipart-rs")
+    (version "0.1.13")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "multipart-rs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1wj5jgbrq7svcqdahxi17j8vws8nsz6a5y9f6ir51ajjgq7f1jk4"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bytes" ,rust-bytes-1)
+                       ("rust-futures-core" ,rust-futures-core-0.3)
+                       ("rust-futures-util" ,rust-futures-util-0.3)
+                       ("rust-memchr" ,rust-memchr-2)
+                       ("rust-mime" ,rust-mime-0.3)
+                       ("rust-uuid" ,rust-uuid-1))
+       #:cargo-development-inputs (("rust-futures-test" ,rust-futures-test-0.3))))
+    (home-page "https://github.com/feliwir/multipart-rs")
+    (synopsis "Async multipart reader & writer for Rust")
+    (description
+     "This package provides a simple, zero-allocation, streaming, async multipart
+reader & writer for Rust.")
+    (license license:expat)))
+
 (define-public rust-multiversion-0.7
   (package
     (name "rust-multiversion")
