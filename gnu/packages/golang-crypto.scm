@@ -599,6 +599,29 @@ one-time authenticator as specified in
 @end itemize")
     (license license:expat)))
 
+(define-public go-github-com-dchest-siphash
+  (package
+    (name "go-github-com-dchest-siphash")
+    (version "1.2.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dchest/siphash")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1d6vbg5i5r6pgfk3vh93a20jdj67lgr17dk2iml7fffw67i25a2c"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/dchest/siphash"))
+    (home-page "https://github.com/dchest/siphash")
+    (synopsis "Go library for pseudorandom functions")
+    (description
+     "SipHash is a family of pseudorandom functions (PRFs) optimized
+for speed on short messages.")
+    (license license:cc0)))
+
 (define-public go-github-com-decred-dcrd-crypto-blake256
   (package
     (name "go-github-com-decred-dcrd-crypto-blake256")
