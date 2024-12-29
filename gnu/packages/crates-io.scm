@@ -36615,6 +36615,33 @@ bytestring representations.")
      "Simple procedural macro attribute for repetitive tests.")
     (license license:expat)))
 
+(define-public rust-interprocess-2
+  (package
+    (name "rust-interprocess")
+    (version "2.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "interprocess" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1sv2hf9ylxyn77sr1p92sl479ca6mjw1g03pdxmv6z413m4lhhc9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-doctest-file" ,rust-doctest-file-1)
+                       ("rust-futures-core" ,rust-futures-core-0.3)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-recvmsg" ,rust-recvmsg-1)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-widestring" ,rust-widestring-1)
+                       ("rust-windows-sys" ,rust-windows-sys-0.52))
+       #:cargo-development-inputs (("rust-color-eyre" ,rust-color-eyre-0.6)
+                                   ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/kotauskas/interprocess")
+    (synopsis "Interprocess communication toolkit")
+    (description "This package provides an interprocess communication toolkit.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-invalidstring-0.1
   (package
     (name "rust-invalidstring")
