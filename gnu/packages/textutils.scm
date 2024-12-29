@@ -1520,31 +1520,26 @@ of a Unix terminal to HTML code.")
       #:embed-files #~(list ".*\\.gob")
       #:import-path "github.com/errata-ai/vale/cmd/vale"
       #:unpack-path "github.com/errata-ai/vale"
+      ;; Disable tests requring network access: Get
+      ;; "https://raw.githubusercontent.com/errata-ai/styles/master/library.json":
+      ;; dial tcp: lookup raw.githubusercontent.com on [::1]:53: read udp
+      ;; [::1]:52621->[::1]:53: read: connection refused.
+      #:test-flags
+      #~(list "-skip"
+              (string-join
+               (list "TestLibrary"
+                     "TestLocalComplete"
+                     "TestLocalDir"
+                     "TestLocalOnlyStyles"
+                     "TestLocalZip"
+                     "TestNoPkgFound"
+                     "TestV3Pkg")
+               "|"))
       #:phases
       #~(modify-phases %standard-phases
-          ;; Disable tests requring network access: Get
-          ;; "https://raw.githubusercontent.com/errata-ai/styles/master/library.json":
-          ;; dial tcp: lookup raw.githubusercontent.com on [::1]:53:
-          ;; read udp [::1]:52621->[::1]:53: read: connection refused.
-          (add-after 'unpack 'disable-failing-tests
-            (lambda* (#:key tests? unpack-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" unpack-path)
-                (substitute* (find-files "." "\\_test.go$")
-                  (("TestLibrary") "OffTestLibrary")
-                  (("TestLocalComplete") "OffTestLocalComplete")
-                  (("TestLocalDir") "OffTestLocalDir")
-                  (("TestLocalOnlyStyles") "OffTestLocalOnlyStyles")
-                  (("TestLocalZip") "OffTestLocalZip")
-                  (("TestNoPkgFound") "OffTestNoPkgFound")
-                  (("TestV3Pkg") "OffTestV3Pkg")))))
-          ;; XXX: Workaround for go-build-system's lack of Go modules
-          ;; support.
-          (replace 'check
-            (lambda* (#:key tests? unpack-path #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion (string-append "src/" unpack-path)
-                  (setenv "HOME" "/tmp")
-                  (invoke "go" "test" "-v" "./..."))))))))
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
     (native-inputs
      (list go-github-com-masterminds-sprig-v3
            go-github-com-adrg-strutil
