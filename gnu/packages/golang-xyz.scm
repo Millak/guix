@@ -6275,6 +6275,30 @@ the C++ ABI defined at https://codesourcery.com/cxx-abi/ and the
 ABI}.")
     (license license:bsd-3)))
 
+(define-public go-github-com-iancoleman-orderedmap
+  (package
+    (name "go-github-com-iancoleman-orderedmap")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/iancoleman/orderedmap")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1rkahhb86ngvzjmdlrpw9rx24a0b1yshq2add1ry2ii6nkx0xbfs"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/iancoleman/orderedmap"))
+    (home-page "https://github.com/iancoleman/orderedmap")
+    (synopsis "Ordered map in Golang")
+    (description
+     "This package provides a Golang data type for ordered maps where the keys
+keep the order that they're added.  It can be de/serialized from/to JSON.")
+    (license license:expat)))
+
 (define-public go-github-com-iancoleman-strcase
   (package
     (name "go-github-com-iancoleman-strcase")
