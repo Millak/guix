@@ -19,12 +19,16 @@
 
 (define-module (gnu packages nushell)
   #:use-module (gnu packages c)
+  #:use-module (gnu packages compression)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages crates-check)
   #:use-module (gnu packages crates-shell)
+  #:use-module (gnu packages crates-vcs)
   #:use-module (gnu packages crates-windows)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages ssh)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages version-control)
   #:use-module (guix build-system cargo)
   #:use-module (guix download)
   #:use-module (guix gexp)
@@ -113,3 +117,31 @@ get back is a table of rows, where each row represents an item in that
 directory.  These values can be piped through a series of steps, in a series
 of commands called a ``pipeline''.")
     (license license:expat)))
+
+;; Nushell plugins need to be built against the same nu-plugin protocol
+;; version as nushell itself.
+
+(define-public nu-plugin-gstat
+  (package
+    (name "nu-plugin-gstat")
+    (version "0.101.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "nu_plugin_gstat" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1jpxbgkffwxh02ccjxd9mkb0z1j0c58mh75vw1c62g74775mdkpc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-git2" ,rust-git2-0.19)
+                       ("rust-nu-plugin" ,rust-nu-plugin-0.101)
+                       ("rust-nu-protocol" ,rust-nu-protocol-0.101))))
+    (native-inputs (list pkg-config))
+    (inputs (list libgit2-1.8 libssh2 openssl zlib))
+    (home-page
+     "https://github.com/nushell/nushell/tree/main/crates/nu_plugin_gstat")
+    (synopsis "Git status plugin for Nushell")
+    (description "This package provides a git status plugin for Nushell.")
+    (license license:expat)))
+
