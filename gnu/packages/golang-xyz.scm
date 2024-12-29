@@ -4269,6 +4269,29 @@ Alphanum Algorithm} developed by Dave Koelle in Go.")
 defined output to the standard output.")
     (license license:expat)))
 
+(define-public go-github-com-fatih-structs
+  (package
+    (name "go-github-com-fatih-structs")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/fatih/structs")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1wrhb8wp8zpzggl61lapb627lw8yv281abvr6vqakmf569nswa9q"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/fatih/structs"))
+    (home-page "https://github.com/fatih/structs")
+    (synopsis "Utilities for Go structs")
+    (description "This package provides various utilitiy functions to work
+with Go structs.")
+    (license license:expat)))
+
 ;; XXX: This repository has been archived by the owner on Nov 9, 2017. It is
 ;; now read-only.
 (define-public go-github-com-flynn-archive-go-shlex
