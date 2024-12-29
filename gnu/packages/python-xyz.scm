@@ -22967,7 +22967,13 @@ until the object is actually required, and caches the result of said call.")
          ;; AssertionError: assert False
          "--deselect=tests/test_features.py::test_have"
          ;; dns.exception.SyntaxError: protocol not found
-         "--deselect=tests/test_rdata.py::RdataTestCase::test_misc_good_WKS_text")
+         "--deselect=tests/test_rdata.py::RdataTestCase::test_misc_good_WKS_text"
+         ;; ECDSA with deterministic signature (RFC 6979) is not supported by
+         ;; this version of OpenSSL.
+         "-k" (string-append "not testDeterministicSignatureECDSAP256SHA256"
+                             " and not testSignatureECDSAP256SHA256"
+                             " and not testSignatureECDSAP384SHA384"
+                             " and not test_ecdsa"))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-getprotobyname-calls
