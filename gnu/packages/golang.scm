@@ -1991,7 +1991,7 @@ running with its management port enabled.")
 (define-public go-github-com-dchest-siphash
   (package
     (name "go-github-com-dchest-siphash")
-    (version "1.2.1")
+    (version "1.2.3")
     (source
      (origin
        (method git-fetch)
@@ -2001,7 +2001,7 @@ running with its management port enabled.")
          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "08s076y7vmjqnq7jz0762hkm896r6r31v8b31a3gy0n8rfa01k8k"))))
+        (base32 "1d6vbg5i5r6pgfk3vh93a20jdj67lgr17dk2iml7fffw67i25a2c"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/dchest/siphash"))
