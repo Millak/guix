@@ -40326,7 +40326,7 @@ advertised and discovered using this mechanism.")
 (define-public rust-libmimalloc-sys-0.1
   (package
     (name "rust-libmimalloc-sys")
-    (version "0.1.35")
+    (version "0.1.39")
     (source
      (origin
        (method url-fetch)
@@ -40334,7 +40334,7 @@ advertised and discovered using this mechanism.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0r4nrd9xbmhmipw4bvh4xlbzbc7xf74frrsibqglysffgv1vay9r"))
+         "0i3b0dzz7cp0ik7ys66q92r16va78gwlbrnxhj5fnkdxsc8niai3"))
        (modules '((guix build utils)))
        (snippet
         '(begin (substitute* "Cargo.toml"
