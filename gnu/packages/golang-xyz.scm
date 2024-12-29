@@ -8340,6 +8340,52 @@ colored strings.")
      "The datacounter package provides counters for Go readers and writers.")
     (license license:expat)))
 
+(define-public go-github-com-mitchellh-cli
+  (package
+    (name "go-github-com-mitchellh-cli")
+    (version "1.1.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mitchellh/cli")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1gp1p7pqc27ps8njv49hmzsfnbxq4wg5azmqpqdw91qxw3prs3kr"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/mitchellh/cli"))
+    (propagated-inputs
+     (list go-github-com-armon-go-radix
+           go-github-com-bgentry-speakeasy
+           go-github-com-fatih-color
+           go-github-com-masterminds-sprig-v3
+           go-github-com-mattn-go-isatty
+           go-github-com-posener-complete))
+    (home-page "https://github.com/mitchellh/cli")
+    (synopsis "Go library for implementing command-line interfaces")
+    (description
+     "cli is a library for implementing command-line interfaces.
+Features:
+@itemize
+@item easy sub-command based CLIs: @code{cli foo}, @code{cli bar}, etc.
+@item support for nested subcommands such as @code{cli foo bar}
+@item optional support for default subcommands so @code{cli} does something
+other than error
+@item support for shell autocompletion of subcommands, flags, and arguments
+with callbacks in Go
+@item automatic help generation for listing subcommands
+@item automatic help flag recognition of @code{-h}, @code{--help}, etc.
+@item automatic version flag recognition of @code{-v}, @code{--version}
+@item helpers for interacting with the terminal, such as outputting
+information, asking for input, etc.
+@item use of Go interfaces/types makes augmenting various parts of the library
+a piece of cake
+@end itemize")
+    (license license:mpl2.0)))
+
 (define-public go-github-com-mitchellh-colorstring
   (package
     (name "go-github-com-mitchellh-colorstring")
