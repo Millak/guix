@@ -24077,6 +24077,29 @@ Emacs' support for dynamic modules.")
                        ("rust-log" ,rust-log-0.4)
                        ("rust-tokio" ,rust-tokio-1))))))
 
+(define-public rust-eml-parser-0.1
+  (package
+    (name "rust-eml-parser")
+    (version "0.1.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "eml-parser" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0bhgx1i952g2v7w0icnqkylvhfiyb2am2mbw89v8zq0jz0aqvnx7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--"
+                            "--skip=parser::tests::test_parse_phishing_emails"
+                            "--skip=parser::tests::test_parse_rfc2047")
+       #:cargo-inputs (("rust-regex" ,rust-regex-1)
+                       ("rust-rfc2047-decoder" ,rust-rfc2047-decoder-1))))
+    (home-page "https://github.com/aeshirey/EmlParser/")
+    (synopsis "Library for parsing .eml files.")
+    (description "This package provides a library for parsing .eml files.")
+    (license license:asl2.0)))
+
 (define-public rust-emojis-0.5
   (package
     (name "rust-emojis")
