@@ -91632,22 +91632,22 @@ first byte.")
     (description "This package provides the core uutils code library.")
     (license license:expat)))
 
-(define-public rust-uucore-procs-0.0.25
+(define-public rust-uucore-procs-0.0.28
   (package
     (name "rust-uucore-procs")
-    (version "0.0.25")
+    (version "0.0.28")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "uucore_procs" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "02bkjwh4fp1cc8cmp6jqda8f48kpav9iqss424cb2lrfhfa1bxgp"))))
+        (base32 "0485141khwfy7gdxfvhq93g0nwsvz3fbkc0y7qvxjx92z665j7fr"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
                        ("rust-quote" ,rust-quote-1)
-                       ("rust-uuhelp-parser" ,rust-uuhelp-parser-0.0.25))))
+                       ("rust-uuhelp-parser" ,rust-uuhelp-parser-0.0.28))))
     (home-page "https://github.com/uutils/coreutils")
     (synopsis "uutils ~ 'uucore' proc-macros")
     (description "This package provides the uucore proc-macros.")
