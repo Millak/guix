@@ -50840,6 +50840,34 @@ Things in odds may move to more appropriate crates if we find them.")
         ("rust-memchr" ,rust-memchr-2)
         ("rust-quickcheck" ,rust-quickcheck-0.4))))))
 
+(define-public rust-oem-cp-2
+  (package
+    (name "rust-oem-cp")
+    (version "2.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "oem_cp" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1r0fn4bnmc78pkqhvzjjbm1zidgzvryspdz6hsdb1nml5a83h09k"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-phf" ,rust-phf-0.11)
+                       ("rust-phf-codegen" ,rust-phf-codegen-0.11)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1))
+       #:cargo-development-inputs (("rust-itertools" ,rust-itertools-0.5)
+                                   ("rust-once-cell" ,rust-once-cell-1)
+                                   ("rust-winapi" ,rust-winapi-0.3))))
+    (home-page "https://github.com/tats-u/rust-oem-cp/")
+    (synopsis
+     "Handle OEM code pages (e.g. CP{437,737,850}) for single byte character sets")
+    (description
+     "This package provides a rust library that handles OEM code pages (e.g.
+CP{437,737,850}) for single byte character sets.")
+    (license license:expat)))
+
 (define-public rust-omnipath-0.1
   (package
     (name "rust-omnipath")
