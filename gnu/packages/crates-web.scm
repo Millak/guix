@@ -3816,6 +3816,27 @@ means it should be easily integrated into other software that also use those
 libraries.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-hoot-0.1
+  (package
+    (name "rust-hoot")
+    (version "0.1.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "hoot" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0mjfrn3yxhd2ll8kk5jhgasn8m2rbhb7va7s6dihin15afvf7spw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-httparse" ,rust-httparse-1)
+                       ("rust-log" ,rust-log-0.4))
+       #:cargo-development-inputs (("rust-memoffset" ,rust-memoffset-0.9))))
+    (home-page "https://github.com/algesten/hoot")
+    (synopsis "Http 1.1 library")
+    (description "This package provides an http 1.1 library.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-http-1
   (package
     (name "rust-http")
