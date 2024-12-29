@@ -12458,7 +12458,7 @@ based on code from chapter 24 of the book @emph{Practical Common Lisp}.")
 (define-public sbcl-command-line-args
   (package
     (name "sbcl-command-line-args")
-    (version "0.1.1")
+    (version "0.1.2")
     (source
      (origin
        (method git-fetch)
@@ -12467,7 +12467,7 @@ based on code from chapter 24 of the book @emph{Practical Common Lisp}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name "cl-command-line-args" version))
        (sha256
-        (base32 "140xnz2v0v3hfg3dp2fhidw8ns6lxd3a5knm07wqdp48ksg119wy"))))
+        (base32 "1ds3s26lbl7j8i3m8d7c69jdcpwdc21qjqd9sarrz6mw1i26xfd5"))))
     (build-system asdf-build-system/sbcl)
     (arguments
      '(#:asd-systems '("whereiseveryone.command-line-args")))
