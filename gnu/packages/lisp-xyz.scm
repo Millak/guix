@@ -12490,7 +12490,13 @@ interface is meant to be easy and non-intrusive.")
   (sbcl-package->cl-source-package sbcl-command-line-args))
 
 (define-public ecl-command-line-args
-  (sbcl-package->ecl-package sbcl-command-line-args))
+  (let ((pkg (sbcl-package->ecl-package sbcl-command-line-args)))
+    (package
+      (inherit pkg)
+      (arguments
+       (substitute-keyword-arguments (package-arguments pkg)
+         ;; The tests only work on SBCL.
+         ((#:tests? _ #f) #f))))))
 
 (define-public sbcl-command-line-arguments
   (let ((commit "fbac862fb01c0e368141204f3f639920462c23fe")
