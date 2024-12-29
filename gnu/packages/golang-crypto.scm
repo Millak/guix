@@ -1702,16 +1702,7 @@ seed} Go's random number generator (if possible).")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/shadowsocks/go-shadowsocks2"
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; XXX: Workaround for go-build-system's lack of Go modules
-          ;; support.
-          (replace 'check
-            (lambda* (#:key tests? import-path #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion (string-append "src/" import-path)
-                  (invoke "go" "test" "-v" "./..."))))))))
+      #:import-path "github.com/shadowsocks/go-shadowsocks2"))
     (propagated-inputs
      (list go-github-com-riobard-go-bloom
            go-golang-org-x-crypto))
