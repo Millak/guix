@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2021, 2023, 2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2021, 2023-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013, 2015, 2018 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2014, 2018 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2014, 2015, 2016, 2020 Mark H Weaver <mhw@netris.org>
@@ -237,7 +237,7 @@ generation.")
 (define-public libassuan
   (package
     (name "libassuan")
-    (version "2.5.6")
+    (version "3.0.1")
     (source
      (origin
       (method url-fetch)
@@ -245,7 +245,7 @@ generation.")
                           version ".tar.bz2"))
       (sha256
        (base32
-        "09pllidbv01km8qrls21dcz1qwa22ydqyy1r9r79152kilhjgzg9"))))
+        "1ccly6aqyxv3hgshhls6qw177salcrawp0x4lsqs9ph3c4pg9w68"))))
     (build-system gnu-build-system)
     (arguments (if (%current-target-system)
                    (list #:configure-flags
@@ -253,8 +253,7 @@ generation.")
                                   "--with-libgpg-error-prefix="
                                   #$(this-package-input "libgpg-error"))))
                    '()))
-    (propagated-inputs
-     (list libgpg-error pth))
+    (propagated-inputs (list libgpg-error))
     (home-page "https://gnupg.org")
     (synopsis
      "IPC library used by GnuPG and related software")
