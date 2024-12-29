@@ -1954,7 +1954,7 @@ UTS#46.")
 (define-public esbuild
   (package
     (name "esbuild")
-    (version "0.14.0")
+    (version "0.24.0")
     (source
      (origin
        (method git-fetch)
@@ -1963,7 +1963,7 @@ UTS#46.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "09r1xy0kk6c9cpz6q0mxr4why373pwxbm439z2ihq3k1d5kk7x4w"))
+        (base32 "1j99m7rdql6iq3llrr8bm85hq34ssc8bmb6vhwr1ibgspjl0jd3k"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -1992,8 +1992,6 @@ UTS#46.")
              #t)))))
     (inputs
      `(("golang.org/x/sys" ,go-golang-org-x-sys-for-esbuild)))
-    (native-inputs
-     `(("github.com/kylelemons/godebug" ,go-github-com-kylelemons-godebug)))
     (home-page "https://esbuild.github.io/")
     (synopsis "Bundler and minifier tool for JavaScript and TypeScript")
     (description
