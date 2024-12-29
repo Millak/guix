@@ -147,7 +147,9 @@
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-compression)
+  #:use-module (gnu packages golang-web)
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages groff)
   #:use-module (gnu packages gtk)
@@ -283,6 +285,53 @@ digest algorithms that are used to check the integrity of files.  All of the
 usual file attributes can be checked for inconsistencies.")
     (home-page "https://aide.github.io/")
     (license license:gpl2+)))
+
+(define-public hetznercloud-cli
+  (package
+    (name "hetznercloud-cli")
+    (version "1.49.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hetznercloud/cli")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0mgd1rv0i18h7jbzl034ffpfxvnjirp60qwxsjpfy42jh1d8xbjm"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ; XXX: figure out hot to enable them
+      #:install-source? #f
+      #:import-path "github.com/hetznercloud/cli/cmd/hcloud"
+      #:unpack-path "github.com/hetznercloud/cli"))
+    (native-inputs
+     (list go-github-com-burntsushi-toml
+           go-github-com-cheggaaa-pb-v3
+           go-github-com-dustin-go-humanize
+           go-github-com-fatih-color
+           go-github-com-fatih-structs
+           go-github-com-goccy-go-yaml
+           go-github-com-guptarohit-asciigraph
+           go-github-com-hetznercloud-hcloud-go-v2
+           go-github-com-jedib0t-go-pretty-v6
+           go-github-com-spf13-cast
+           go-github-com-spf13-cobra
+           go-github-com-spf13-pflag
+           go-github-com-spf13-viper
+           go-github-com-stretchr-testify
+           go-github-com-swaggest-assertjson
+           go-go-uber-org-mock
+           go-golang-org-x-crypto
+           go-golang-org-x-term))
+    (home-page "https://github.com/hetznercloud/cli")
+    (synopsis "Command-line interface for the Hetzner Cloud service")
+    (description
+     "This package provides the @code{hcloud} binary, a command-line interface
+for interacting with the @url{https://www.hetzner.com/,Hetzner Cloud}
+service.")
+    (license license:expat)))
 
 (define-public progress
   (package
