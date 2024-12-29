@@ -90489,14 +90489,14 @@ according to Unicode Standard Annex #31.")
 (define-public rust-unicode-ident-1
   (package
     (name "rust-unicode-ident")
-    (version "1.0.12")
+    (version "1.0.14")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "unicode-ident" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0jzf1znfpb2gx8nr8mvmyqs1crnv79l57nxnbiszc7xf7ynbjm1k"))))
+                "10ywa1pg0glgkr4l3dppjxizr9r2b7im0ycbfa0137l69z5fdfdd"))))
     (build-system cargo-build-system)
     ;; Most development inputs are competing implementations
     ;; for benchmarks.
