@@ -519,20 +519,18 @@ is used by the Requests library to verify HTTPS requests.")
 (define-public python-cryptography-vectors
   (package
     (name "python-cryptography-vectors")
-    (version "43.0.3")
+    (version "44.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "cryptography_vectors" version))
        (sha256
         (base32
-         "1d46wj4831g2vmixffk2b0bb0x67x5rlnqbpfa8fi17lcm98hspz"))))
+         "1aw06msy65rs27yxfp4xlwfq432ny1af5cx8s7zsbfa5div2hqhh"))))
     (build-system pyproject-build-system)
     (arguments (list #:tests? #f))  ; No tests included.
     (native-inputs
-     (list python-flit-core
-           python-setuptools
-           python-wheel))
+     (list python-flit-core))
     (home-page "https://github.com/pyca/cryptography")
     (synopsis "Test vectors for the cryptography package")
     (description
