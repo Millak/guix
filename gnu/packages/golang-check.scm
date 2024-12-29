@@ -178,6 +178,30 @@ github.com/sergi/go-diff, mainly for diffing strings in tests.")
 results, converting test names WrittenInCamelCase into ordinary sentences.")
     (license license:expat)))
 
+(define-public go-github-com-bool64-dev
+  (package
+    (name "go-github-com-bool64-dev")
+    (version "0.2.37")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/bool64/dev")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "041ng9z0qbmbj0l7lpj55d681b7p35lrr8vcyv3iqc1m6jzqqg5q"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/bool64/dev"))
+    (home-page "https://github.com/bool64/dev")
+    (synopsis "Go development helpers")
+    (description
+     "This package provides scripts and workflows to automate common routines
+for Golang projects via modular Makefiles and GitHub Actions.")
+    (license license:expat)))
+
 (define-public go-github-com-caarlos0-testfs
   (package
     (name "go-github-com-caarlos0-testfs")
