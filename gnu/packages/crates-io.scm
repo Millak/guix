@@ -81324,8 +81324,33 @@ Rust @code{struct}s and @code{enum}s.")
                        ("rust-unicode-width" ,rust-unicode-width-0.1))
        #:cargo-development-inputs (("rust-owo-colors" ,rust-owo-colors-3))))))
 
+(define-public rust-tabled-derive-0.8
+  (package
+    (name "rust-tabled-derive")
+    (version "0.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tabled_derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0sbh8x67frl69j8ns0z3jyp67ywkfivncjp2ak0qd5vhvjzvh3xz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-heck" ,rust-heck-0.4)
+                       ("rust-proc-macro-error" ,rust-proc-macro-error-1)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/zhiburt/tabled")
+    (synopsis "Derive macros which are used by the Tabled crate")
+    (description
+     "This package provides derive macros which is used by Tabled crate.")
+    (license license:expat)))
+
 (define-public rust-tabled-derive-0.7
   (package
+    (inherit rust-tabled-derive-0.8)
     (name "rust-tabled-derive")
     (version "0.7.0")
     (source
@@ -81335,19 +81360,12 @@ Rust @code{struct}s and @code{enum}s.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "05sbyjc8warywzldz1bn8v4cyd2nc5ix5nhw6wx6apby6ycqy4sc"))))
-    (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #f
-       #:cargo-inputs (("rust-heck" ,rust-heck-0.4)
+     `(#:cargo-inputs (("rust-heck" ,rust-heck-0.4)
                        ("rust-proc-macro-error" ,rust-proc-macro-error-1)
                        ("rust-proc-macro2" ,rust-proc-macro2-1)
                        ("rust-quote" ,rust-quote-1)
-                       ("rust-syn" ,rust-syn-1))))
-    (home-page "https://github.com/zhiburt/tabled")
-    (synopsis "Derive macros which are used by the Tabled crate")
-    (description
-     "Provides Derive macros which are used by Tabled crate.")
-    (license license:expat)))
+                       ("rust-syn" ,rust-syn-1))))))
 
 (define-public rust-tabled-derive-0.6
   (package
