@@ -3146,6 +3146,30 @@ more complicated parallel cases.")
     (propagated-inputs
      (list go-github-com-elliotchance-orderedmap-v2))))
 
+(define-public go-github-com-delthas-go-localeinfo
+  (package
+    (name "go-github-com-delthas-go-localeinfo")
+    (version "0.0.0-20240813094314-e5413e186769")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/delthas/go-localeinfo")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0nw21gv3j7cc9x4gq4avlg4s7xzgc7gxrkmq4v451zrvx0mnv0bn"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/delthas/go-localeinfo"))
+    (home-page "https://github.com/delthas/go-localeinfo")
+    (synopsis "Library for extracting locale information")
+    (description
+     "@code{go-localeinfo} extracts monetary/numeric/time
+formatting information, rather than the current locale name.")
+    (license license:expat)))
+
 (define-public go-github-com-dennwc-btrfs
   (package
     (name "go-github-com-dennwc-btrfs")
