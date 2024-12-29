@@ -91558,6 +91558,28 @@ first byte.")
     (description "This package provides the @code{mv} command from uutils.")
     (license license:expat)))
 
+(define-public rust-uu-uname-0.0.28
+  (package
+    (name "rust-uu-uname")
+    (version "0.0.28")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "uu_uname" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0439n012in9wkqymhda7gd9cg7afqw2zzcf1pf62ixz6l9ql0aqq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-clap" ,rust-clap-4)
+                       ("rust-platform-info" ,rust-platform-info-2)
+                       ("rust-uucore" ,rust-uucore-0.0.28))))
+    (home-page "https://github.com/uutils/coreutils")
+    (synopsis "uname ~ (uutils) display system information")
+    (description
+     "This package provides uname ~ (uutils) display system information.")
+    (license license:expat)))
+
 (define-public rust-uu-whoami-0.0.28
   (package
     (name "rust-uu-whoami")
