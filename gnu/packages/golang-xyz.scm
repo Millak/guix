@@ -12176,6 +12176,38 @@ distributable command line applications in an expressive way.")
            go-github-com-xrash-smetrics
            go-gopkg-in-yaml-v3))))
 
+(define-public go-github-com-vburenin-ifacemaker
+  (package
+    (name "go-github-com-vburenin-ifacemaker")
+    (version "1.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/vburenin/ifacemaker")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00031373i4xqrsaf7yv93czfmcf5qzn94mmqwamyjd6gpq37p1hl"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/vburenin/ifacemaker"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-jessevdk-go-flags
+           go-golang-org-x-tools))
+    (home-page "https://github.com/vburenin/ifacemaker")
+    (synopsis "Generate interfaces from structure methods in Golang")
+    (description
+     "This is a development helper program that generates a Golang interface
+by inspecting the structure methods of an existing @code{.go} file.  The
+primary use case is to generate interfaces for gomock, so that gomock can
+generate mocks from those interfaces.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-viant-toolbox
   (package
     (name "go-github-com-viant-toolbox")
@@ -14146,6 +14178,17 @@ correctly.")))
                      #:unpack-path "zgo.at/jfmt"))
     (description
      (string-append (package-description go-zgo-at-jfmt)
+                    "  This package provides a command line interface (CLI) tool."))))
+
+(define-public go-ifacemaker
+  (package/inherit go-github-com-vburenin-ifacemaker
+    (name "go-ifacemaker")
+    (arguments
+     (list #:install-source? #f
+           #:tests? #f
+           #:import-path "github.com/vburenin/ifacemaker"))
+    (description
+     (string-append (package-description go-github-com-vburenin-ifacemaker)
                     "  This package provides a command line interface (CLI) tool."))))
 
 (define-public go-msgio
