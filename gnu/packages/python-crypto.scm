@@ -623,15 +623,15 @@ ciphers, message digests and key derivation functions.")
 (define-public python-pyopenssl
   (package
     (name "python-pyopenssl")
-    (version "24.2.1")
+    (version "24.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyopenssl" version))
        (sha256
         (base32
-         "158fpy6fsmkrci67qpzg06ha3ygh3ah3xzxjrc6md3blwgdz0is2"))))
-    (build-system python-build-system)
+         "0dmv720kn5ws7bs1rkn59qmhzv5wxkkgriampi34g0vxawcs1xs9"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
@@ -649,8 +649,12 @@ ciphers, message digests and key derivation functions.")
                         "not test_fallback_default_verify_paths ")))))))
     (propagated-inputs (list python-cryptography))
     (inputs (list openssl))
-    (native-inputs (list libfaketime python-pretend python-pytest
-                         python-pytest-rerunfailures))
+    (native-inputs
+     (list libfaketime
+           python-pretend
+           python-pytest
+           python-pytest-rerunfailures
+           python-wheel))
     (home-page "https://github.com/pyca/pyopenssl")
     (synopsis "Python wrapper module around the OpenSSL library")
     (description "PyOpenSSL is a high-level wrapper around a subset of the
