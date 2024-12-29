@@ -3883,28 +3883,19 @@ router.")
     (arguments
      (list
       #:import-path "github.com/koron/go-ssdp"
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'disable-failing-tests
-            (lambda* (#:key tests? import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (substitute* (find-files "." "\\_test.go$")
-                  ;; Test requiring network setup.
-                  (("TestAdvertise_Alive") "OffTestAdvertise_Alive")
-                  (("TestAdvertise_Bye") "OffTestAdvertise_Bye")
-                  (("TestAnnounceAlive") "OffTestAnnounceAlive")
-                  (("TestAnnounceBye") "OffTestAnnounceBye")
-                  (("TestInterfaces") "OffTestInterfaces")
-                  (("TestSearch_Request") "OffTestSearch_Request")
-                  (("TestSearch_Response") "OffTestSearch_Response")
-                  (("TestSearch_ServiceRawHeader") "OffTestSearch_ServiceRawHeader")))))
-          ;; XXX: Run all tests, workaround for go-build-system's lack of Go
-          ;; modules support.
-          (replace 'check
-            (lambda* (#:key tests? import-path #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion (string-append "src/" import-path)
-                  (invoke "go" "test" "-v" "./..."))))))))
+      #:test-flags
+      #~(list "-skip"
+              (string-join
+               ;; Tests requiring network setup.
+               (list "TestAdvertise_Alive"
+                     "TestAdvertise_Bye"
+                     "TestAnnounceAlive"
+                     "TestAnnounceBye"
+                     "TestInterfaces"
+                     "TestSearch_Request"
+                     "TestSearch_Response"
+                     "TestSearch_ServiceRawHeader")
+               "|"))))
     (propagated-inputs
      (list go-golang-org-x-net))
     (home-page "https://github.com/koron/go-ssdp")
