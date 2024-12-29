@@ -67145,17 +67145,17 @@ procedural macro to implement fixtures and table based tests.")
                (base32
                 "0f3wdwfhf4dh7yf49cmi0r40qnwi4gwrqdki1bffyxvr2ny4ii6y"))))))
 
-(define-public rust-rstest-macros-0.21
+(define-public rust-rstest-macros-0.23
   (package
     (name "rust-rstest-macros")
-    (version "0.21.0")
+    (version "0.23.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rstest_macros" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "13brqq64wp8gjaiq1d7g8jbzcwdwpwy0swpcilfx97d3b6pdyra1"))))
+        (base32 "0nmdm7a4ysihnh0zz6w6gqrmw205zfp7xqkb2id3858vg20afpl2"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; unresolved import `rstest`
@@ -67169,15 +67169,47 @@ procedural macro to implement fixtures and table based tests.")
                        ("rust-rustc-version" ,rust-rustc-version-0.4)
                        ("rust-syn" ,rust-syn-2)
                        ("rust-unicode-ident" ,rust-unicode-ident-1))
-       #:cargo-development-inputs (("rust-actix-rt" ,rust-actix-rt-2)
-                                   ("rust-async-std" ,rust-async-std-1)
-                                   ("rust-maplit" ,rust-maplit-1)
-                                   ("rust-pretty-assertions" ,rust-pretty-assertions-1))))
+       #:cargo-development-inputs
+       (("rust-actix-rt" ,rust-actix-rt-2)
+        ("rust-async-std" ,rust-async-std-1)
+        ("rust-maplit" ,rust-maplit-1)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1)
+        ("rust-rstest" ,rust-rstest-0.22))))
     (home-page "https://github.com/la10736/rstest")
     (synopsis "Procedural macros for @code{rstest}.")
     (description
      "This package provides the procedural macro crate for @code{rstest}.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-rstest-macros-0.21
+  (package
+    (inherit rust-rstest-macros-0.23)
+    (name "rust-rstest-macros")
+    (version "0.21.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rstest_macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "13brqq64wp8gjaiq1d7g8jbzcwdwpwy0swpcilfx97d3b6pdyra1"))))
+    (arguments
+     `(#:tests? #f      ; unresolved import `rstest`
+       #:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-glob" ,rust-glob-0.3)
+                       ("rust-proc-macro-crate" ,rust-proc-macro-crate-3)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-relative-path" ,rust-relative-path-1)
+                       ("rust-rustc-version" ,rust-rustc-version-0.4)
+                       ("rust-syn" ,rust-syn-2)
+                       ("rust-unicode-ident" ,rust-unicode-ident-1))
+       #:cargo-development-inputs
+       (("rust-actix-rt" ,rust-actix-rt-2)
+        ("rust-async-std" ,rust-async-std-1)
+        ("rust-maplit" ,rust-maplit-1)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1))))))
 
 (define-public rust-rstest-macros-0.20
   (package
