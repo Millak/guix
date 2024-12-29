@@ -44698,6 +44698,36 @@ efficient round-trip float parsing.  Minimal-lexical implements a correct,
 fast float parser.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-miniserde-0.1
+  (package
+    (name "rust-miniserde")
+    (version "0.1.41")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "miniserde" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0rhbii3v1sflzfz6zx36j42a6j5zh0c08f4kv7k5y9chpjvhhlk2"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-itoa" ,rust-itoa-1)
+                       ("rust-mini-internal" ,rust-mini-internal-0.1)
+                       ("rust-ryu" ,rust-ryu-1))
+       #:cargo-development-inputs (("rust-automod" ,rust-automod-1)
+                                   ("rust-indoc" ,rust-indoc-2)
+                                   ("rust-rustversion" ,rust-rustversion-1)
+                                   ("rust-serde" ,rust-serde-1)
+                                   ("rust-serde-derive" ,rust-serde-derive-1)
+                                   ("rust-serde-json" ,rust-serde-json-1)
+                                   ("rust-trybuild" ,rust-trybuild-1))))
+    (home-page "https://github.com/dtolnay/miniserde")
+    (synopsis "Data structure serialization library")
+    (description
+     "This package provides a data structure serialization library with several
+opposite design goals from Serde.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-mint-0.5
   (package
     (name "rust-mint")
