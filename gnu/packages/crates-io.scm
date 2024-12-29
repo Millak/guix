@@ -56052,14 +56052,14 @@ serialization library.")
 (define-public rust-platform-info-2
   (package
     (name "rust-platform-info")
-    (version "2.0.2")
+    (version "2.0.5")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "platform-info" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "03rhwsfhdr3sb6fxr0bmf7xav745m132y6vg05jzcfz5c149q9fn"))))
+                "06j5v6hg914lbdr732jfx5syx703l5qwy1qk6dm4zjyqznrswfbm"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
