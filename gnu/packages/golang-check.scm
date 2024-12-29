@@ -9,21 +9,21 @@
 ;;; Copyright © 2020 Joseph LaFreniere <joseph@lafreniere.xyz>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Ryan Prior <rprior@protonmail.com>
+;;; Copyright © 2020, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2022 ( <paren@disroot.org>
-;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2023 Benjamin <benjamin@uvy.fr>
 ;;; Copyright © 2023 Felix Lechner <felix.lechner@lease-up.com>
 ;;; Copyright © 2023 Fries <fries1234@protonmail.com>
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2023 Katherine Cox-Buday <cox.katherine.e@gmail.com>
+;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 Greg Hogan <code@greghogan.com>
+;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
 ;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
-;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
-;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -935,6 +935,51 @@ implements exact URL and regexp matches.")
 Many times certain facilities are not available, or tests must run
 differently.")
     (license license:expat)))
+
+(define-public go-github-com-maruel-panicparse
+  (package
+    (name "go-github-com-maruel-panicparse")
+    (version "1.6.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/maruel/panicparse")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "07hj3z47v4mzppi8r7ja20arh2kd0dih913xgb9ylapf7w5q98bn"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/maruel/panicparse"
+      #:test-flags
+      #~(list "-skip"
+              (string-join
+               ;; Failed with panic.
+               (list "TestAugment"
+                     "TestPanic"
+                     "TestPanicweb"
+                     "TestProcessTwoSnapshots"
+                     "TestSnapshotHandler"
+                     "TestSnapshotHandler_Err"
+                     "TestSnapshotHandler_LargeMemory"
+                     )
+               "|"))))
+    (native-inputs
+     (list go-github-com-google-go-cmp))
+    (propagated-inputs
+     (list go-github-com-mattn-go-colorable
+           go-github-com-mattn-go-isatty
+           go-github-com-mgutz-ansi
+           go-golang-org-x-sys))
+    (home-page "https://github.com/maruel/panicparse")
+    (synopsis "Toolkit for parsing Go stack traces")
+    (description
+     "This package provides a toolkit for parsing Go language panic stack
+traces.  It simplifies the traces to make salient information more visible and
+aid debugging.")
+    (license license:asl2.0)))
 
 (define-public go-github-com-marvinjwendt-testza
   (package

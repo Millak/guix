@@ -3884,50 +3884,6 @@ designed to clean up raw terminal output by stripping escape sequences,
 optionally preserving color.")
     (license license:expat)))
 
-(define-public go-github-com-maruel-panicparse
-  (package
-    (name "go-github-com-maruel-panicparse")
-    (version "1.6.2")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/maruel/panicparse")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "07hj3z47v4mzppi8r7ja20arh2kd0dih913xgb9ylapf7w5q98bn"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/maruel/panicparse"
-      #:test-flags
-      #~(list "-skip"
-              (string-join
-               ;; Failed with panic.
-               (list "TestAugment"
-                     "TestPanic"
-                     "TestPanicweb"
-                     "TestProcessTwoSnapshots"
-                     "TestSnapshotHandler"
-                     "TestSnapshotHandler_Err"
-                     "TestSnapshotHandler_LargeMemory"
-                     )
-               "|"))))
-    (native-inputs
-     (list go-github-com-google-go-cmp))
-    (propagated-inputs
-     (list go-github-com-mattn-go-colorable
-           go-github-com-mattn-go-isatty
-           go-github-com-mgutz-ansi
-           go-golang-org-x-sys))
-    (synopsis "Toolkit for parsing Go stack traces")
-    (description "This package provides a toolkit for parsing Go language panic
-stack traces.  It simplifies the traces to make salient information more visible
-and aid debugging.")
-    (home-page "https://github.com/maruel/panicparse")
-    (license license:asl2.0)))
-
 (define-public go-github-com-robfig-cron
   (package
     (name "go-github-com-robfig-cron")
