@@ -1721,6 +1721,30 @@ seed} Go's random number generator (if possible).")
 tunnel proxy protocol.")
     (license license:asl2.0)))
 
+(define-public go-github-com-shogo82148-go-shuffle
+  (package
+    (name "go-github-com-shogo82148-go-shuffle")
+    (version "1.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/shogo82148/go-shuffle")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0z5n5jp57b68pq70wkrmw9z3vibjnq7b7f6i62pjhh1a83kknfg1"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/shogo82148/go-shuffle"))
+    (home-page "https://github.com/shogo82148/go-shuffle")
+    (synopsis "Shuffling slices and user-defined collections")
+    (description
+     "Package shuffle provides primitives for shuffling slices and
+user-defined collections.")
+    (license license:expat)))
+
 (define-public go-github-com-skeema-knownhosts
   (package
     (name "go-github-com-skeema-knownhosts")
