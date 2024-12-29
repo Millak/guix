@@ -320,9 +320,10 @@ compatible to GNU Pth.")
 (define-public gnupg
   (package
     (name "gnupg")
-    ;; Note: The 2.2.X releases are Long Term Support (LTS), so stick to it
-    ;; for our stable 'gnupg'.
-    (version "2.2.39")
+    ;; Note: Odd minor versions are usually for development purposes.  See
+    ;; <https://gnupg.org/download/index.html> for how to pick the right
+    ;; version.
+    (version "2.4.7")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnupg/gnupg/gnupg-" version
@@ -330,7 +331,7 @@ compatible to GNU Pth.")
               (patches (search-patches "gnupg-default-pinentry.patch"))
               (sha256
                (base32
-                "0bscgv9gg9yhlpyia7b9l438cq6dvv6pwlhbl70df9phhmkdnx5b"))))
+                "0ipbhlxwr79l66b907640a0j67s04w826s50djqf7q579mp7093v"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
@@ -391,9 +392,7 @@ compatible to GNU Pth.")
                  (string-append (getcwd) "/tests/gpgscm/gpgscm")))))
           (add-before 'build 'patch-test-paths
             (lambda _
-              (substitute* '("tests/inittests"
-                             "tests/pkits/inittests"
-                             "tests/Makefile"
+              (substitute* '("tests/pkits/inittests"
                              "tests/pkits/common.sh"
                              "tests/pkits/Makefile")
                 (("/bin/pwd") (which "pwd")))
