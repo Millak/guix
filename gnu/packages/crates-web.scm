@@ -3837,6 +3837,30 @@ libraries.")
     (description "This package provides an http 1.1 library.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-hootbin-0.1
+  (package
+    (name "rust-hootbin")
+    (version "0.1.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "hootbin" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1f616q6z7z97p1ylns8hdbikcpbazyad0370mfihkq8sj4brxkzb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-fastrand" ,rust-fastrand-2)
+                       ("rust-hoot" ,rust-hoot-0.1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/algesten/hoot")
+    (synopsis "Hoot based library to emulate httpbin")
+    (description
+     "This package provides a hoot based library to emulate httpbin.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-http-1
   (package
     (name "rust-http")
