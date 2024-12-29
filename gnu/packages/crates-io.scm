@@ -91558,6 +91558,31 @@ first byte.")
     (description "This package provides the @code{mv} command from uutils.")
     (license license:expat)))
 
+(define-public rust-uu-touch-0.0.28
+  (package
+    (name "rust-uu-touch")
+    (version "0.0.28")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "uu_touch" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0z2c28apr1v5siz6rmn5bzbf0n2hd17yk8ikh9bhrdym27n6nism"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-clap" ,rust-clap-4)
+                       ("rust-filetime" ,rust-filetime-0.2)
+                       ("rust-parse-datetime" ,rust-parse-datetime-0.6)
+                       ("rust-uucore" ,rust-uucore-0.0.28)
+                       ("rust-windows-sys" ,rust-windows-sys-0.59))))
+    (home-page "https://github.com/uutils/coreutils")
+    (synopsis "touch ~ (uutils) change FILE timestamps")
+    (description
+     "This package provides touch ~ (uutils) change FILE timestamps.")
+    (license license:expat)))
+
 (define-public rust-uu-uname-0.0.28
   (package
     (name "rust-uu-uname")
