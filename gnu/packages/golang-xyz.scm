@@ -1356,6 +1356,32 @@ approximate quantiles over an unbounded data stream within low memory and CPU
 bounds.")
     (license license:expat)))
 
+(define-public go-github-com-bgentry-speakeasy
+  (package
+    (name "go-github-com-bgentry-speakeasy")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/bgentry/speakeasy")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1pasgmb9gcchprc06fbn7yjgp6caz03j6pgj14mmr8bcx0zfq7ag"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/bgentry/speakeasy"))
+    (home-page "https://github.com/bgentry/speakeasy")
+    (synopsis "Reading password input without cgo")
+    (description
+     "This package provides cross-platform Golang helpers for taking user
+input from the terminal while not echoing the input back (similar to
+@code{getpasswd}).  The package uses syscalls to avoid any dependence on cgo,
+and is therefore compatible with cross-compiling.")
+    (license license:expat)))
+
 (define-public go-github-com-bitly-go-hostpool
   (package
     (name "go-github-com-bitly-go-hostpool")
