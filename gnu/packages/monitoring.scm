@@ -525,13 +525,13 @@ Metrics can be exposed through a standalone web server, or through Twisted,
 WSGI and the node exporter textfile collector.")
     (license license:asl2.0)))
 
-(define-public go-github-com-prometheus-node-exporter
+(define-public prometheus-node-exporter
   ;; The latest release is failing to build, use the latest commit from the
   ;; master branch.
   (let ((commit "b8aac7c92e2d7f3dea56b2d4802d4ef3ee29c3cc")
         (revision "0"))
     (package
-      (name "go-github-com-prometheus-node-exporter")
+      (name "prometheus-node-exporter")
       (version (git-version "1.8.2" revision commit))
       (source (origin
                 (method git-fetch)
@@ -607,6 +607,10 @@ WSGI and the node exporter textfile collector.")
        "Prometheus exporter for metrics exposed by *NIX kernels,
 written in Go with pluggable metric collectors.")
       (license license:asl2.0))))
+
+(define-public go-github-com-prometheus-node-exporter
+  (deprecated-package "go-github-com-prometheus-node-exporter"
+                      prometheus-node-exporter))
 
 (define-public temper-exporter
   (let ((commit "a87bbab19c05609d62d9e4c7941178700c1ef84d")
