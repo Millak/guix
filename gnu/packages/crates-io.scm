@@ -65375,7 +65375,7 @@ crate unless you're working on a regex implementation.")
 (define-public rust-relative-path-1
   (package
     (name "rust-relative-path")
-    (version "1.9.0")
+    (version "1.9.3")
     (source
      (origin
        (method url-fetch)
@@ -65383,7 +65383,7 @@ crate unless you're working on a regex implementation.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1jl32g41ww8pm8lbdmxm6ahagzwkz8b02q1gxzps47g1zj52j1y7"))))
+         "1limlh8fzwi21g0473fqzd6fln9iqkwvzp3816bxi31pkilz6fds"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags       ; Skip the doctests.
@@ -65391,7 +65391,8 @@ crate unless you're working on a regex implementation.")
        #:cargo-inputs
        (("rust-serde" ,rust-serde-1))
        #:cargo-development-inputs
-       (("rust-serde" ,rust-serde-1))))
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-serde" ,rust-serde-1))))
     (home-page "https://docs.rs/crate/relative-path/")
     (synopsis "Portable, relative paths for Rust")
     (description "This package provides portable, relative paths for Rust.")
