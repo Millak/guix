@@ -2873,7 +2873,16 @@ to interact with distribution components.")
         (base32 "0svfa9g4xvbn87l5kiww1jkijmci9g5821wjp81xz1rfp13cqrk8"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/docker/go-connections"))
+     (list
+      #:import-path "github.com/docker/go-connections"
+      #:test-flags
+      #~(list "-skip"
+              (string-join
+               ;;  Unable to verify certificate 1: x509: certificate signed by
+               ;;  unknown authority.
+               (list "TestConfigClientExclusiveRootPools"
+                     "TestConfigServerExclusiveRootPools")
+               "|"))))
     (home-page "https://github.com/docker/go-connections")
     (synopsis "Networking library for Go")
     (description
