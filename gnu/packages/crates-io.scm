@@ -91090,46 +91090,42 @@ mile, ...).")
 (define-public rust-ureq-2
   (package
     (name "rust-ureq")
-    (version "2.9.1")
+    (version "2.12.1")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "ureq" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "15rz5g61fqbxh5w77mbinz4jhljfh58i9s2dzqlh284y6dfd5kgq"))))
+                "07f0qdn6459k4rmdnkivkz0y7j28vxh5c8q8sr0gcxgdfxiadl82"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-test-flags
-       (list "--release" "--"
-             ;; These tests want network access.
-             "--skip=test::range::read_range_rustls"
-             "--skip=tests::connect_http_google"
-             "--skip=tests::connect_https_google_rustls")
+     `(#:tests? #f      ; Many network test failures.
        #:cargo-inputs
-       (("rust-base64" ,rust-base64-0.21)
-        ("rust-brotli-decompressor" ,rust-brotli-decompressor-2)
-        ("rust-cookie" ,rust-cookie-0.17)
-        ("rust-cookie-store" ,rust-cookie-store-0.20)
+       (("rust-base64" ,rust-base64-0.22)
+        ("rust-brotli-decompressor" ,rust-brotli-decompressor-4)
+        ("rust-cookie" ,rust-cookie-0.18)
+        ("rust-cookie-store" ,rust-cookie-store-0.21)
         ("rust-encoding-rs" ,rust-encoding-rs-0.8)
         ("rust-flate2" ,rust-flate2-1)
-        ("rust-http" ,rust-http-0.2)
+        ("rust-hootbin" ,rust-hootbin-0.1)
         ("rust-http" ,rust-http-1)
+        ("rust-http" ,rust-http-0.2)
         ("rust-log" ,rust-log-0.4)
         ("rust-native-tls" ,rust-native-tls-0.2)
         ("rust-once-cell" ,rust-once-cell-1)
-        ("rust-rustls" ,rust-rustls-0.21)
-        ("rust-rustls-native-certs" ,rust-rustls-native-certs-0.6)
-        ("rust-rustls-webpki" ,rust-rustls-webpki-0.101)
+        ("rust-rustls" ,rust-rustls-0.23)
+        ("rust-rustls-native-certs" ,rust-rustls-native-certs-0.7)
+        ("rust-rustls-pki-types" ,rust-rustls-pki-types-1)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-socks" ,rust-socks-0.3)
         ("rust-url" ,rust-url-2)
-        ("rust-webpki-roots" ,rust-webpki-roots-0.25))
+        ("rust-webpki-roots" ,rust-webpki-roots-0.26))
        #:cargo-development-inputs
        (("rust-env-logger" ,rust-env-logger-0.10)
-        ("rust-rustls" ,rust-rustls-0.21)
-        ("rust-rustls-pemfile" ,rust-rustls-pemfile-1)
+        ("rust-rustls" ,rust-rustls-0.23)
+        ("rust-rustls-pemfile" ,rust-rustls-pemfile-2)
         ("rust-serde" ,rust-serde-1))))
     (home-page "https://github.com/algesten/ureq")
     (synopsis "Simple, safe HTTP client")
