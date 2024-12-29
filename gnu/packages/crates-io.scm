@@ -44289,15 +44289,14 @@ embedded migrations.")
 (define-public rust-mimalloc-0.1
   (package
     (name "rust-mimalloc")
-    (version "0.1.39")
+    (version "0.1.43")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "mimalloc" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "176w9gf5qxs07kd2q39f0k25rzmp4kyx5r13wc8sk052bqmr40gs"))))
+        (base32 "0csnyrxc16i592gm5ffham07jyj2w98qsh9jyy1rv59lmr8474b8"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
