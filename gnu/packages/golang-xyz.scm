@@ -7856,6 +7856,54 @@ Printf/Sprintf etc.")
     (native-inputs
      (list go-github-com-stretchr-testify))))
 
+(define-public go-github-com-lyft-protoc-gen-star-v2
+  (package
+    (name "go-github-com-lyft-protoc-gen-star-v2")
+    (version "2.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/lyft/protoc-gen-star")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0c0w7xlarzkmbfsxdknakmnm562q3whxgs3ck3icwrva3dim94qc"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/lyft/protoc-gen-star/v2"
+      #:test-flags
+      #~(list "-skip"
+              (string-join
+               (list "TestGraph_Bidirectional"
+                     "TestGraph_Bidirectional_Messages_Enums"
+                     "TestGraph_Bidirectional_Recursive"
+                     "TestGraph_Extensions"
+                     "TestGraph_FDSet"
+                     "TestGraph_Messages"
+                     "TestGraph_Packageless"
+                     "TestGraph_Services"
+                     "TestGraph_SourceCodeInfo")
+               "|"))
+      ;; XXX: To enable all tests require more complex set up, check how to
+      ;; enable most of them.
+      #:test-subdirs #~(list ".")))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-spf13-afero
+           go-golang-org-x-tools
+           go-google-golang-org-protobuf))
+    (home-page "https://github.com/lyft/protoc-gen-star")
+    (synopsis "Protoc plugin library for efficient proto-based code generation")
+    ;; The Project lacks a good README, suggesting to read source code
+    ;; "... the true documentation source is the code itself ...".
+    (description
+     "PG* is a protoc plugin library for efficient proto-based code
+generation.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-makenowjust-heredoc
   (package
     (name "go-github-com-makenowjust-heredoc")
