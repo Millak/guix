@@ -3143,7 +3143,13 @@ to do spectral analysis in Python.")
     (arguments
      (list
       ;; This one test fails because it doesn't raise an expected exception.
-      #:test-flags #~(list "-k" "not test_bad_values")))
+      #:test-flags '(list "-k" "not test_bad_values")
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'numpy-compatibility
+           (lambda _
+             (substitute* "traittypes/tests/test_traittypes.py"
+               (("np\\.int") "int")))))))
     (propagated-inputs (list python-traitlets))
     (native-inputs
      (list python-numpy
