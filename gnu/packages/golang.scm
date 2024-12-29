@@ -4239,13 +4239,13 @@ that might only rarely be reached.")
 (define-public go-github-com-juju-ansiterm
   (package
     (name "go-github-com-juju-ansiterm")
-    (version "0.0.0-20210929141451-8b71cc96ebdc")
+    (version "1.0.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/juju/ansiterm")
-             (commit (go-version->git-ref version))))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "05mk7mlvg11dd6b0j0wlq547ghbmx2ywwrlbcb4kddpg7qaqp1va"))))
