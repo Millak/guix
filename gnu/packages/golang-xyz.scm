@@ -12832,6 +12832,40 @@ detection.")
 @url{https://github.com/yosuke-furukawa/json5, JSON5}.")
       (license license:bsd-3))))
 
+(define-public go-github-com-yudai-gojsondiff
+  (package
+    (name "go-github-com-yudai-gojsondiff")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/yudai/gojsondiff")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0qnymi0027mb8kxm24mmd22bvjrdkc56c7f4q3lbdf93x1vxbbc2"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (delete-file-recursively "vendor")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/yudai/gojsondiff"
+      #:test-subdirs #~(list "formatter/...")))
+    (native-inputs
+     (list go-github-com-onsi-ginkgo))
+    (propagated-inputs
+     (list go-github-com-sergi-go-diff
+           go-github-com-yudai-golcs))
+    (home-page "https://github.com/yudai/gojsondiff")
+    (synopsis "JSON Diff and Patch for Golang")
+    (description
+     "This package implements a \"diff\" algorithm that compares two JSON
+objects and generates deltas that describe the differences between them.  The
+deltas can be applied to a JSON object to \"patch\" them.")
+    (license license:expat)))
+
 (define-public go-github-com-yudai-golcs
   (package
     (name "go-github-com-yudai-golcs")
