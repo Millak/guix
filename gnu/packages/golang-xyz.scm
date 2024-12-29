@@ -8552,6 +8552,34 @@ system.  Walking a complex structure can allow you to do manipulations on
 unknown structures such as those decoded from JSON.")
     (license license:expat)))
 
+(define-public go-github-com-mmcdole-goxpp
+  (package
+    (name "go-github-com-mmcdole-goxpp")
+    (version "1.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mmcdole/goxpp")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0g9va3vhc5s60s00kyp4agfhb6kjp8j8i41vkj3lwbz5sx947mif"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/mmcdole/goxpp"))
+    (native-inputs (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/mmcdole/goxpp")
+    (synopsis "XML pull prser for Golang")
+    (description
+     "The @code{goxpp} library, inspired by
+@url{http://www.xmlpull.org/v1/download/unpacked/doc/quick_intro.html, Java's
+XML@code{PullParser}}, is a lightweight wrapper for Go's standard XML
+Decoder,tailored for developers who need fine-grained control over XML
+parsing.")
+    (license license:expat)))
+
 (define-public go-github-com-moby-sys-mountinfo
   (package
     (name "go-github-com-moby-sys-mountinfo")
