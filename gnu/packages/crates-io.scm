@@ -73400,14 +73400,14 @@ TOML/JSON/MessagePack strings and serializable values.")
 (define-public rust-serial-test-3
   (package
     (name "rust-serial-test")
-    (version "3.1.1")
+    (version "3.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "serial_test" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0zfpzr8jl7dpf4m8dk8fr9w1wfwhnjrccmyg46h41wmcw9zlhjsb"))))
+        (base32 "1a8zg87gi28952hzj363ykwd8p1ssrakl1gi3f4xdqa4y84q298v"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-document-features" ,rust-document-features-0.2)
@@ -73419,8 +73419,7 @@ TOML/JSON/MessagePack strings and serializable values.")
                        ("rust-parking-lot" ,rust-parking-lot-0.12)
                        ("rust-scc" ,rust-scc-2)
                        ("rust-serial-test-derive" ,rust-serial-test-derive-3))
-       #:cargo-development-inputs (("rust-itertools" ,rust-itertools-0.10)
-                                   ("rust-tokio" ,rust-tokio-1))))
+       #:cargo-development-inputs (("rust-itertools" ,rust-itertools-0.10))))
     (home-page "https://github.com/palfrey/serial_test")
     (synopsis "Allows for the creation of serialised Rust tests")
     (description
