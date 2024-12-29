@@ -1578,6 +1578,45 @@ Features include:
 strings must or must not be sent to a given local UDP listener.")
     (license license:expat)))
 
+(define-public go-github-com-swaggest-assertjson
+  (package
+    (name "go-github-com-swaggest-assertjson")
+    (version "1.9.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/swaggest/assertjson")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0smxcs548dnchqqk4bys167xaawzz125qsvlvpa267fkhqrxk7f9"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/swaggest/assertjson"
+      #:test-flags #~(list "-skip" "TestEquals_message")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (for-each delete-file
+                          (list "example_test.go"))))))))
+    (native-inputs
+     (list go-github-com-bool64-dev
+           go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-bool64-shared
+           go-github-com-iancoleman-orderedmap
+           go-github-com-yosuke-furukawa-json5
+           go-github-com-yudai-gojsondiff))
+    (home-page "https://github.com/swaggest/assertjson")
+    (synopsis "JSON equality assertions for Golang")
+    (description
+     "This package provides JSON equality assertions for Golang.")
+    (license license:expat)))
+
 (define-public go-github-com-tdewolff-test
   (package
     (name "go-github-com-tdewolff-test")
