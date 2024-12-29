@@ -30528,18 +30528,21 @@ programs that do multiple things at the same time with parallelized I/O.")
 (define-public python-trio-typing
   (package
     (name "python-trio-typing")
-    (version "0.8.0")
+    (version "0.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trio-typing" version))
        (sha256
-        (base32 "15wa66cs165wawh4pi808ac43n67b8jqddi5ppdcbkj5gfi68hpi"))))
+        (base32 "1hvsj3w500i33ykfgh3sfkjnxhxf05incx131smshlkd562fcph6"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-attrs python-pytest python-setuptools
-                         python-wheel))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (propagated-inputs
-     (list python-mypy python-mypy-extensions python-trio
+     (list python-async-generator
+           python-importlib-metadata
+           python-mypy-extensions
+           python-packaging
+           python-trio
            python-typing-extensions))
     (home-page "https://github.com/python-trio/trio-typing")
     (synopsis "Static type checking support for Trio and related projects")
