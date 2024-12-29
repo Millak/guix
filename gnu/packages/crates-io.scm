@@ -31803,6 +31803,27 @@ shell style patterns.")
          (base32
           "1ysvi72slkw784fcsymgj4308c3y03gwjjzqxp80xdjnkbh8vqcb"))))))
 
+(define-public rust-glob-match-0.2
+  (package
+    (name "rust-glob-match")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "glob-match" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "178bjn684dd50px9n8lwa72fn94566d9wmcp86m9h8a17d8ck1cr"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.4)
+                                   ("rust-glob" ,rust-glob-0.3)
+                                   ("rust-globset" ,rust-globset-0.4))))
+    (home-page "https://docs.rs/glob-match/0.2.1")
+    (synopsis "An extremely fast glob matcher")
+    (description "This package provides an extremely fast glob matcher.")
+    (license license:expat)))
+
 (define-public rust-globset-0.4
   (package
     (name "rust-globset")
