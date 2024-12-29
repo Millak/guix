@@ -1966,38 +1966,25 @@ UTS#46.")
         (base32 "1j99m7rdql6iq3llrr8bm85hq34ssc8bmb6vhwr1ibgspjl0jd3k"))
        (modules '((guix build utils)))
        (snippet
-        '(begin
-           ;; Remove prebuilt binaries
-           (delete-file-recursively "npm")
-           #t))))
+        #~(begin
+            ;; Remove prebuilt binaries
+            (delete-file-recursively "npm")))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "github.com/evanw/esbuild/cmd/esbuild"
-       #:unpack-path "github.com/evanw/esbuild"
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? unpack-path #:allow-other-keys)
-             (when tests?
-               ;; The "Go Race Detector" is only supported on 64-bit
-               ;; platforms, this variable disables it.
-               ;; TODO: Causes too many rebuilds, rewrite to limit to x86_64,
-               ;; aarch64 and ppc64le.
-               ,(if (target-riscv64?)
-                  `(setenv "ESBUILD_RACE" "")
-                  `(unless ,(target-64bit?)
-                     (setenv "ESBUILD_RACE" "")))
-               (with-directory-excursion (string-append "src/" unpack-path)
-                 (invoke "make" "test-go")))
-             #t)))))
+     (list
+      #:import-path "github.com/evanw/esbuild/cmd/esbuild"
+      #:unpack-path "github.com/evanw/esbuild"
+      #:test-flags #~(list #$(if (target-64bit?) "-race" "-short"))
+      ;; Test subdirectories are compiled from #:import-path.
+      #:test-subdirs #~(list "../../internal/..." "../../pkg/..." )))
     (inputs
-     `(("golang.org/x/sys" ,go-golang-org-x-sys-for-esbuild)))
+     (list go-golang-org-x-sys-for-esbuild))
     (home-page "https://esbuild.github.io/")
     (synopsis "Bundler and minifier tool for JavaScript and TypeScript")
     (description
-     "The esbuild tool provides a unified bundler, transpiler and
-minifier.  It packages up JavaScript and TypeScript code, along with JSON
-and other data, for distribution on the web.")
+     "The esbuild tool provides a unified bundler, transpiler and minifier.
+It packages up JavaScript and TypeScript code, along with JSON and other data,
+for distribution on the web.")
     (license license:expat)))
 
 (define-public tinyproxy
