@@ -64572,6 +64572,30 @@ from another process.")
 using tokio's @code{RwLock}")
     (license license:mpl2.0)))
 
+(define-public rust-recvmsg-1
+  (package
+    (name "rust-recvmsg")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "recvmsg" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0xa173gbg1cx8q7wyzi6c4kmcsz5rka68r4jb6kg14icskax9vfk"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-windows-sys" ,rust-windows-sys-0.52))
+       #:cargo-development-inputs (("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://docs.rs/recvmsg/1.0.0")
+    (synopsis "Traits for receiving datagrams reliably, without truncation")
+    (description
+     "This package provides traits for receiving datagrams reliably,
+without truncation.")
+    (license license:bsd-0)))
+
 (define-public rust-recycler-0.1
   (package
     (name "rust-recycler")
