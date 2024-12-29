@@ -68369,9 +68369,9 @@ reading and writing BAM files.")
      "This package provides An Ini configuration file parsing library in Rust.")
     (license license:expat)))
 
-
 (define-public rust-rust-ini-0.18
   (package
+    (inherit rust-rust-ini-0.21)
     (name "rust-rust-ini")
     (version "0.18.0")
     (source
@@ -68381,17 +68381,11 @@ reading and writing BAM files.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1px22l3m84v7f46pa3p4bsjykivw8ryq6af8kpkzdd16c11z5mgn"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-ordered-multimap" ,rust-ordered-multimap-0.4)
-        ("rust-unicase" ,rust-unicase-2))))
-    (home-page "https://github.com/zonyitoo/rust-ini")
-    (synopsis "INI configuration file parsing library in Rust")
-    (description
-     "This package is an INI configuration file parsing library in Rust.")
-    (license license:expat)))
+        ("rust-unicase" ,rust-unicase-2))))))
 
 (define-public rust-rust-ini-0.17
   (package
