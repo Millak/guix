@@ -26674,20 +26674,20 @@ provides implementations for @code{HashMap} and @code{HashSet}.")
     (description "Fallible streaming iteration")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-fancy-regex-0.13
+(define-public rust-fancy-regex-0.14
   (package
     (name "rust-fancy-regex")
-    (version "0.13.0")
+    (version "0.14.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "fancy-regex" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1wjbqjsdj8fkq6z2i9llq25iaqzd9f208vxnwg8mdbr2ba1lc7jk"))))
+        (base32 "162j2qx2ikgl79grq12mawyflwkirnjzrvxh11a1xbmwjidcn93f"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-bit-set" ,rust-bit-set-0.5)
+     `(#:cargo-inputs (("rust-bit-set" ,rust-bit-set-0.8)
                        ("rust-regex-automata" ,rust-regex-automata-0.4)
                        ("rust-regex-syntax" ,rust-regex-syntax-0.8))
        #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.5)
@@ -26703,6 +26703,27 @@ a relatively rich set of features.  In particular, it uses backtracking to
 implement features such as look-around and backtracking, which are not
 supported in purely NFA-based implementations.")
     (license license:expat)))
+
+(define-public rust-fancy-regex-0.13
+  (package
+    (inherit rust-fancy-regex-0.14)
+    (name "rust-fancy-regex")
+    (version "0.13.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "fancy-regex" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1wjbqjsdj8fkq6z2i9llq25iaqzd9f208vxnwg8mdbr2ba1lc7jk"))))
+    (arguments
+     `(#:cargo-inputs (("rust-bit-set" ,rust-bit-set-0.5)
+                       ("rust-regex-automata" ,rust-regex-automata-0.4)
+                       ("rust-regex-syntax" ,rust-regex-syntax-0.8))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.5)
+                                   ("rust-matches" ,rust-matches-0.1)
+                                   ("rust-quickcheck" ,rust-quickcheck-1)
+                                   ("rust-regex" ,rust-regex-1))))))
 
 (define-public rust-fancy-regex-0.11
   (package
