@@ -4322,28 +4322,6 @@ can manipulate a @file{ssh_config} file from a program.")
 temporal directories.")
       (license license:expat))))
 
-(define-public go-github-com-pkg-diff
-  (package
-    (name "go-github-com-pkg-diff")
-    (version "0.0.0-20241224192749-4e6772a4315c")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/pkg/diff")
-                    (commit (go-version->git-ref version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1iwaa6g3mbbi1k6rw7fn85sg6lm6rlnjz07yb91hq1kll6494s18"))))
-    (build-system go-build-system)
-    (arguments
-     `(#:import-path "github.com/pkg/diff"))
-    (home-page "https://github.com/pkg/diff/")
-    (synopsis "Create and print diffs")
-    (description
-     "This package provides a Go library to create and print diffs.")
-    (license license:bsd-3)))
-
 (define-public go-github-com-twpayne-go-shell
   (package
     (name "go-github-com-twpayne-go-shell")
