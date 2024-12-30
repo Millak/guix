@@ -4675,7 +4675,15 @@ targeting the GNOME stack simple.")
                                   "vala-" version ".tar.xz"))
               (sha256
                (base32
-                "12y6p8wdjp01vmfhxg2cgh32xnyqq6ivblvrar9clnj6vc867qhx"))))))
+                "12y6p8wdjp01vmfhxg2cgh32xnyqq6ivblvrar9clnj6vc867qhx"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments vala)
+       ((#:configure-flags flags #~'())
+        #~(cons*
+           (string-append "CFLAGS=-g -O2"
+                          " -Wno-error=address"
+                          " -Wno-error=incompatible-pointer-types")
+           #$flags))))))
 
 (define-public vte
   (package
