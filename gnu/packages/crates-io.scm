@@ -73959,6 +73959,32 @@ Rust's serde.")
         ("rust-indoc" ,rust-indoc-1)
         ("rust-serde-derive" ,rust-serde-derive-1))))))
 
+(define-public rust-serde-yaml-ng-0.10
+  (package
+    (name "rust-serde-yaml-ng")
+    (version "0.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "serde_yaml_ng" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "07ylpzx9xykdj4fqfa0vb6xz4c1pazrqqibv78hd8dlbp4kvckbv"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-indexmap" ,rust-indexmap-2)
+                       ("rust-itoa" ,rust-itoa-1)
+                       ("rust-ryu" ,rust-ryu-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-unsafe-libyaml" ,rust-unsafe-libyaml-0.2))
+       #:cargo-development-inputs (("rust-anyhow" ,rust-anyhow-1)
+                                   ("rust-indoc" ,rust-indoc-2)
+                                   ("rust-serde-derive" ,rust-serde-derive-1))))
+    (home-page "https://github.com/acatton/serde-yaml-ng")
+    (synopsis "YAML data format for Serde")
+    (description "This package provides YAML data format for Serde.")
+    (license license:expat)))
+
 (define-public rust-serdeconv-0.4
   (package
     (name "rust-serdeconv")
