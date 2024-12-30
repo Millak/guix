@@ -25,6 +25,7 @@
 ;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2024 Skylar Hill <stellarskylark@posteo.net>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -607,14 +608,24 @@ mixed.")
         (base32 "02zq35hdbi03rmmamx6ml4ihsigdl4mmbf6d9ysazv8ciiln5v4b"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (delete 'configure))           ; no configure script
-       #:make-flags (let ((out (assoc-ref %outputs "out")))
-                      (list (string-append "PREFIX=" out)
-                            (string-append "CC=" ,(cc-for-target))
-                            (string-append "LDFLAGS=-Wl,-rpath=" out "/lib")))
-       #:test-target "test"))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure))           ; no configure script
+           #:make-flags
+           #~(list
+              #$@(if
+                  (%current-target-system)
+                  #~((string-append
+                      "CHIBI=" #+(this-package-native-input "chibi-scheme")
+                      "/bin/chibi-scheme"))
+                  #~())
+              (string-append "PREFIX=" #$output)
+              (string-append "CC=" #$(cc-for-target))
+              (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib"))
+           #:test-target "test"))
+    (native-inputs (if (%current-target-system)
+                       (list this-package)
+                       (list)))
     (synopsis "Small embeddable Scheme implementation")
     (description
      "Chibi-Scheme is a very small library with no external dependencies
