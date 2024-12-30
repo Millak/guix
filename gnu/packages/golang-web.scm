@@ -527,21 +527,29 @@ functions.")
 (define-public go-github-com-aws-aws-sdk-go-v2-credentials
   (package
     (name "go-github-com-aws-aws-sdk-go-v2-credentials")
-    (version "1.17.27")
+    (version "1.17.48")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/aws/aws-sdk-go-v2")
-             (commit (string-append "credentials/v" version))))
+             (commit (go-version->git-ref version
+                                          #:subdir "credentials"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0jdj7wim98g80hjbw3av7ffrr3dqxzbygprmhjs0cxc16cw62wj7"))))
+        (base32 "1n3spqncpw6w11pwkqaiq7jyv6dv0229jsbshibg24l2g3accdqi"))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/aws/aws-sdk-go-v2/credentials"
-      #:unpack-path "github.com/aws/aws-sdk-go-v2"))
+      #:unpack-path "github.com/aws/aws-sdk-go-v2"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-tests
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (substitute* (find-files "." "test\\.go")
+                  (("/bin/sleep") (which "sleep")))))))))
     (propagated-inputs
      (list go-github-com-google-go-cmp
            go-github-com-aws-smithy-go))
