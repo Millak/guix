@@ -7388,9 +7388,13 @@ file links.")
       #~(modify-phases %standard-phases
           (add-after 'unpack 'relax-cargo-requirements
             (lambda _
-              (substitute* "Cargo.toml" (("~") "")))))
-      #:cargo-test-flags
-      '(list "--" "--skip=absolute_url::test_make_absolute_just_path")
+              (substitute* "Cargo.toml" (("~") ""))))
+          (add-after 'install 'install-data
+            (lambda _
+              (invoke "make" (string-append "PREFIX=" #$output)
+                      "copy-data"))))
+      #:parallel-tests? #f  ; As per the Makefile
+      #:install-source? #f
       #:cargo-inputs
       `(("rust-ansi-parser" ,rust-ansi-parser-0.6)
         ("rust-dirs" ,rust-dirs-3)
