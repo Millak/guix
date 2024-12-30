@@ -60842,6 +60842,32 @@ configuration file and/or environment variables.")
      "This package provides a library to work with PTY/TTY on Unix systems.")
     (license license:expat)))
 
+(define-public rust-pubgrub-0.2
+  (package
+    (name "rust-pubgrub")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pubgrub" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1z9qdzjfq4yqfzrh2rjx6m2a08k8y9vda41w68x78pazmm94blfd"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-rustc-hash" ,rust-rustc-hash-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.3)
+                                   ("rust-proptest" ,rust-proptest-0.10)
+                                   ("rust-ron" ,rust-ron-0.6)
+                                   ("rust-varisat" ,rust-varisat-0.2))))
+    (home-page "https://github.com/pubgrub-rs/pubgrub")
+    (synopsis "PubGrub version solving algorithm")
+    (description
+     "This package provides the @code{PubGrub} version solving algorithm.")
+    (license license:mpl2.0)))
+
 (define-public rust-public-api-0.33
   (package
     (name "rust-public-api")
