@@ -11,6 +11,7 @@
 ;;; Copyright © 2022 Jean-Pierre De Jesus DIAZ <me@jeandudey.tech>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -114,6 +115,10 @@
                      '()))
       #:phases
       #~(modify-phases %standard-phases
+          (add-before 'configure 'relax-gcc-14-strictness
+            (lambda _
+              (setenv "CFLAGS"
+                      "-g -O2 -Wno-error=implicit-function-declaration")))
           (add-before 'check 'patch-bash
             (lambda _
               (substitute* (list "subprojects/mocklibc-1.0/bin/mocklibc"
