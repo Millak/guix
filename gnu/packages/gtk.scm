@@ -993,7 +993,11 @@ is part of the GNOME accessibility project.")
      (list
       #:parallel-tests? #f
       #:configure-flags
-      #~(list "--with-xinput=yes"
+      #~(list #$(string-append
+                 "CFLAGS=-g -O2"
+                 " -Wno-error=implicit-int"
+                 " -Wno-error=incompatible-pointer-types")
+              "--with-xinput=yes"
               (string-append "--with-html-dir=" #$output
                              "/share/gtk-doc/html"))
       #:phases
