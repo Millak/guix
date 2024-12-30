@@ -88954,14 +88954,14 @@ tree_magic_mini.")
 (define-public rust-triomphe-0.1
   (package
     (name "rust-triomphe")
-    (version "0.1.11")
+    (version "0.1.14")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "triomphe" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1crf71hndy3fc68x8v4aikkdjynp4n5sdhq28sck8x7frx8bd7l5"))))
+        (base32 "11fciha522hrz6pkafy3xlq20w405w9dqvy9ln7ba1s8v8k7g3zg"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-arc-swap" ,rust-arc-swap-1)
