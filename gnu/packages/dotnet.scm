@@ -48,13 +48,12 @@
     (source (origin
               (method url-fetch)
               (uri (string-append
-                    "https://download.savannah.gnu.org/releases/dotgnu-pnet/treecc-"
-                    version ".tar.gz"))
+                    "mirror://savannah/dotgnu-pnet/treecc-" version ".tar.gz"))
               (sha256
                (base32
                 "1rzgnspg2xccdq3qsx0vi3j28h4qkrzbrjnhzvnny34fjfk217ay"))))
     (build-system gnu-build-system)
-    (home-page "https://www.gnu.org/software/dotgnu")
+    (home-page "https://www.gnu.org/software/dotgnu/")
     (synopsis "Tree Compiler-Compiler")
     (description "The treecc program is designed to assist in the development
 of compilers and other language-based tools.  It manages the generation of
