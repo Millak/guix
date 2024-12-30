@@ -42314,7 +42314,7 @@ systems.
 
 @table @asis
 
-@item @code{file-system} (default: @code{#f}) (type: file-system)
+@item @code{file-system} (type: file-system)
 The file-system object to resize (@pxref{File Systems}).  This object
 must have the @code{device} and @code{type} fields set.  Other fields
 are ignored.

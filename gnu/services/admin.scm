@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016 Jan Nieuwenhuizen <janneke@gnu.org>
-;;; Copyright © 2016-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2023 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2024 Gabriel Wicki <gabriel@erlikon.ch>
@@ -572,8 +572,7 @@ which lets you search for packages that provide a given file.")
 (define-record-type* <resize-file-system-configuration>
   resize-file-system-configuration make-resize-file-system-configuration
   resize-file-system-configuration?
-  (file-system    resize-file-system-file-system
-                  (default #f))
+  (file-system    resize-file-system-file-system)
   (cloud-utils    resize-file-system-cloud-utils
                   (default cloud-utils))
   (e2fsprogs      resize-file-system-e2fsprogs
@@ -678,7 +677,6 @@ are booted from a system image flashed onto a larger medium.")
    (extensions
     (list
      (service-extension shepherd-root-service-type
-                        (compose list resize-file-system-shepherd-service))))
-   (default-value (resize-file-system-configuration))))
+                        (compose list resize-file-system-shepherd-service))))))
 
 ;;; admin.scm ends here
