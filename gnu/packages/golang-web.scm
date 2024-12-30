@@ -620,25 +620,34 @@ credentials sources.")
 (define-public go-github-com-aws-smithy-go
   (package
     (name "go-github-com-aws-smithy-go")
-    (version "1.21.0")
+    (version "1.22.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/aws/smithy-go")
-             (commit "v1.21.0")))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1pcq9d154l41c4k23q6ri51ba5i2kc8ihrv4sgkv4q59cw70rspi"))))
+        (base32 "16jbv7cyj85048f4kcrib8k2yif165sc099h0aklal5dwlf85xcg"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/aws/smithy-go/aws-http-auth
+            ;; - github.com/aws/smithy-go/codegen
+            ;; - github.com/aws/smithy-go/metrics/smithyotelmetrics
+            ;; - github.com/aws/smithy-go/tracing/smithyoteltracing
+            (for-each delete-file-recursively
+                      (list "aws-http-auth"
+                            "codegen"
+                            "metrics/smithyotelmetrics"
+                            "tracing/smithyoteltracing"))))))
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/aws/smithy-go"
-      ;; XXX: It contains a lot of sub packages defined with go.mod, consider
-      ;; to pack them separately.
-      #:test-subdirs #~(list ".")))
-    (propagated-inputs
-     (list go-github-com-jmespath-go-jmespath go-github-com-google-go-cmp))
+      #:import-path "github.com/aws/smithy-go"))
     (home-page "https://github.com/aws/smithy-go")
     (synopsis "Smithy code generators for Go")
     (description
