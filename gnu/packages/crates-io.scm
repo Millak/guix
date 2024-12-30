@@ -71921,14 +71921,14 @@ dropped.")
 (define-public rust-self-cell-1
   (package
     (name "rust-self-cell")
-    (version "1.0.1")
+    (version "1.1.0")
     (source (origin
               (method url-fetch)
-              (uri (crate-uri "self-cell" version))
+              (uri (crate-uri "self_cell" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1djgfccbfhj2zv7xmqc2nxwn41g1swyrxg1d488pirj3am8rwc2c"))
+                "1gmxk5bvnnimcif7v1jk8ai2azfvh9djki545nd86vsnphjgrzf2"))
               (modules '((guix build utils)))
               (snippet
                '(begin (substitute* "Cargo.toml"
