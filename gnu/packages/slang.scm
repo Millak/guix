@@ -3,6 +3,7 @@
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2018, 2019, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -89,14 +90,14 @@ slsh, which is part of the S-Lang distribution.")
 (define-public most
   (package
     (name "most")
-    (version "5.1.0")
+    (version "5.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "http://www.jedsoft.org/releases/most/most-"
                            version ".tar.gz"))
        (sha256
-        (base32 "008537ns659pw2aag15imwjrxj73j26aqq90h285is6kz8gmv06v"))
+        (base32 "00wrdligdipj9fx3yhn3ndlr1kr21yzj5p2hr22q7yi6z2wawmcl"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
