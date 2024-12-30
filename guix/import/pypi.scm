@@ -283,7 +283,8 @@ satisfy."
         (let ((line (read-line port)))
           (cond
            ((eof-object? line)
-            (list required-deps test-deps))
+            (list (reverse required-deps)
+                  (reverse test-deps)))
            ((or (string-null? line) (comment? line))
             (loop required-deps test-deps inside-test-section? optional?))
            ((section-header? line)
@@ -337,7 +338,8 @@ returned value."
         (let ((line (read-line port)))
           (cond
            ((eof-object? line)
-            (list required-deps test-deps))
+            (list (reverse required-deps)
+                  (reverse test-deps)))
            ((and (requires-dist-header? line) (not (extra? line)))
             (loop (cons (specification->requirement-name
                          (requires-dist-value line))
