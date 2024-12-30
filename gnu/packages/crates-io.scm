@@ -42894,8 +42894,32 @@ algorithms.  It supports CBC block cipher mode, PKCS5 padding and 64, 128,
         ("rust-tempfile" ,rust-tempfile-3)
         ("rust-walkdir" ,rust-walkdir-2))))))
 
+(define-public rust-mailparse-0.15
+  (package
+    (name "rust-mailparse")
+    (version "0.15.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "mailparse" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0zkwbrzgr7pp1wyywjgvlxayr1p3nnkn2yxgi97746j1h1ckv81x"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-charset" ,rust-charset-0.1)
+                       ("rust-data-encoding" ,rust-data-encoding-2)
+                       ("rust-quoted-printable" ,rust-quoted-printable-0.5))
+       #:cargo-development-inputs (("rust-ouroboros" ,rust-ouroboros-0.17))))
+    (home-page "https://github.com/staktrace/mailparse/blob/master/README.md")
+    (synopsis "Simple parser for MIME e-mail messages")
+    (description
+     "This package provides a simple parser for MIME e-mail messages.")
+    (license license:bsd-0)))
+
 (define-public rust-mailparse-0.14
   (package
+    (inherit rust-mailparse-0.15)
     (name "rust-mailparse")
     (version "0.14.1")
     (source (origin
@@ -42905,18 +42929,12 @@ algorithms.  It supports CBC block cipher mode, PKCS5 padding and 64, 128,
               (sha256
                (base32
                 "0mwpkxi41ak8pabknmvj49dpsbs0q6w7w12f0lp49avcjaa6a29d"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-charset" ,rust-charset-0.1)
         ("rust-data-encoding" ,rust-data-encoding-2)
         ("rust-quoted-printable" ,rust-quoted-printable-0.5))
-       #:cargo-development-inputs (("rust-ouroboros" ,rust-ouroboros-0.17))))
-    (home-page "https://github.com/staktrace/mailparse/blob/master/README.md")
-    (synopsis "Simple parser for MIME e-mail messages")
-    (description
-     "This package provides a simple parser for MIME e-mail messages.")
-    (license license:bsd-0)))
+       #:cargo-development-inputs (("rust-ouroboros" ,rust-ouroboros-0.17))))))
 
 (define-public rust-mailparse-0.13
   (package
