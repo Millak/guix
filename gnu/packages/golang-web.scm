@@ -681,6 +681,32 @@ credentials sources.")
 signing.")
     (license license:asl2.0)))
 
+(define-public go-github-com-aws-smithy-go-codegen
+  (package
+    (name "go-github-com-aws-smithy-go-codegen")
+    (version "0.0.0-20241226171254-10fbeed6f845")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/aws/smithy-go")
+             (commit (go-version->git-ref version
+                                          #:subdir "codegen"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16jbv7cyj85048f4kcrib8k2yif165sc099h0aklal5dwlf85xcg"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/aws/smithy-go/codegen"
+      #:unpack-path "github.com/aws/smithy-go"))
+    (home-page "https://github.com/aws/smithy-go")
+    (synopsis "Smithy code generators for Golang")
+    (description
+     "This package provides Gradle templates for Smithy code generators.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-aymerick-douceur
   (package
     (name "go-github-com-aymerick-douceur")
