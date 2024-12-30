@@ -2327,6 +2327,43 @@ support for added entropy.")
      "ECIES on Twisted Edwards Curve25519 using AES-GCM and HKDF-SHA256.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-ecies-ed25519-ng-0.5
+  (package
+    (name "rust-ecies-ed25519-ng")
+    (version "0.5.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Revertron/ecies-ed25519-ng")
+             ;; Version bump without a git tag.
+             (commit "554ca29a1bbd55f0c7e2f75cb3c7e0e3030afc15")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04s0ycvnz1wbccf46a63w6zxiqm9yszw71q6fk1ssdc64qj7k5mh"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-aes-gcm" ,rust-aes-gcm-0.10)
+        ("rust-curve25519-dalek" ,rust-curve25519-dalek-4)
+        ("rust-digest" ,rust-digest-0.10)
+        ("rust-hex" ,rust-hex-0.4)
+        ("rust-hkdf" ,rust-hkdf-0.12)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-ring" ,rust-ring-0.17)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-sha2" ,rust-sha2-0.10)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs
+       (("rust-serde-cbor" ,rust-serde-cbor-0.11)
+        ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/Revertron/ecies-ed25519-ng")
+    (synopsis "Integrated encryption scheme on Twisted Edwards Curve25519")
+    (description
+     "ECIES on Twisted Edwards Curve25519 using AES-GCM and HKDF-SHA256.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-ed25519-2
   (package
     (name "rust-ed25519")
