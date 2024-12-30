@@ -326,7 +326,9 @@ files specified by SPECS.  Return its file name."
                        (base32 ,(? string? hash)))))
             (build-system pyproject-build-system)
             (propagated-inputs (list python-bar python-foo))
-            (native-inputs (list python-pytest))
+            (native-inputs (list python-pytest
+                                 python-setuptools
+                                 python-wheel))
             (home-page "http://example.com")
             (synopsis "summary")
             (description "summary.")
@@ -444,7 +446,9 @@ files specified by SPECS.  Return its file name."
                        (base32 ,(? string? hash)))))
             (build-system pyproject-build-system)
             (propagated-inputs (list python-bar python-baz))
-            (native-inputs (list python-pytest))
+            (native-inputs (list python-pytest
+                                 python-setuptools
+                                 python-wheel))
             (home-page "http://example.com")
             (synopsis "summary")
             (description "summary.")
@@ -473,6 +477,7 @@ files specified by SPECS.  Return its file name."
                        (sha256
                         (base32 ,(? string? hash)))))
             (build-system pyproject-build-system)
+            (native-inputs (list python-setuptools python-wheel))
             (home-page "http://example.com")
             (synopsis "summary")
             (description "summary.")
@@ -502,7 +507,9 @@ files specified by SPECS.  Return its file name."
             (properties (quote (("upstream-name" . "foo-99"))))
             (build-system pyproject-build-system)
             (propagated-inputs (list python-bar python-foo))
-            (native-inputs (list python-pytest))
+            (native-inputs (list python-pytest
+                                 python-setuptools
+                                 python-wheel))
             (home-page "http://example.com")
             (synopsis "summary")
             (description "summary.")
@@ -525,6 +532,14 @@ files specified by SPECS.  Return its file name."
               (upstream-input
                (name "pytest")
                (downstream-name "python-pytest")
+               (type 'native))
+              (upstream-input
+               (name "setuptools")
+               (downstream-name "python-setuptools")
+               (type 'native))
+              (upstream-input
+               (name "wheel")
+               (downstream-name "python-wheel")
                (type 'native))))
   (let ((tarball (pypi-tarball
                   "foo-1.0.0"
