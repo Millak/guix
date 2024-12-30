@@ -92549,6 +92549,35 @@ for @code{Valuable} types.")
 integer encoding implementation in Rust.")
     (license license:expat)))
 
+(define-public rust-varisat-dimacs-0.2
+  (package
+    (name "rust-varisat-dimacs")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "varisat-dimacs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0di68140imf7nfhhipkqllrp5m6f1iqsxxrrm70087xy457fw79x"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-itoa" ,rust-itoa-0.4)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-varisat-formula" ,rust-varisat-formula-0.2))
+       #:cargo-development-inputs
+       (("rust-env-logger" ,rust-env-logger-0.7)
+        ("rust-proptest" ,rust-proptest-0.10)
+        ("rust-rand" ,rust-rand-0.7)
+        ("rust-tempfile" ,rust-tempfile-3)
+        ("rust-varisat-formula" ,rust-varisat-formula-0.2))))
+    (home-page "https://jix.one/project/varisat/")
+    (synopsis "DIMCAS CNF parser and writer for the Varisat SAT solver")
+    (description
+     "This package provides DIMCAS CNF parser and writer for the Varisat SAT solver.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-varisat-formula-0.2
   (package
     (name "rust-varisat-formula")
