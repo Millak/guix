@@ -2530,6 +2530,31 @@ Windows crate.")
        #:cargo-development-inputs
        (("rust-windows-bindgen" ,rust-windows-bindgen-0.57))))))
 
+(define-public rust-windows-service-0.7
+  (package
+    (name "rust-windows-service")
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "windows-service" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "12lwc04rji06p8g8dhc5aps6cw3xbx6admzqxj8l0jkkgz66nkfj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; unresolved import `windows_service::service`
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-widestring" ,rust-widestring-1)
+                       ("rust-windows-sys" ,rust-windows-sys-0.52))))
+    (home-page "https://github.com/mullvad/windows-service-rs")
+    (synopsis
+     "Facilities for management and implementation of Windows services")
+    (description
+     "This package provides a crate that provides facilities for management and
+implementation of Windows services.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-windows-strings-0.1
   (package
     (name "rust-windows-strings")
