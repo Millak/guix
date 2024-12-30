@@ -2165,11 +2165,11 @@ professionally translated
 @end itemize")
     (license license:expat)))
 
-(define-public go-gopkg-in-go-playground-validator-v9
+(define-public go-github-com-go-playground-validator-v10
   (package
-    (name "go-gopkg-in-go-playground-validator-v9")
-    (version "9.31.0")
-    (home-page "https://gopkg.in/go-playground/validator.v9")
+    (name "go-github-com-go-playground-validator-v10")
+    (version "10.22.0")
+    (home-page "https://github.com/go-playground/validator")
     (source
      (origin
        (method git-fetch)
@@ -2178,15 +2178,19 @@ professionally translated
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1f8c77s8kx9rip2jarv27x5s4xkcmanh4ndyhbcwvrhncs5rq061"))))
+        (base32 "0zff0qpqfzwa4xazppiq7jvpncnmx52m23qi4ih754b7rzhbk0iz"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "gopkg.in/go-playground/validator.v9"))
+     '(#:import-path "github.com/go-playground/validator/v10"))
     (native-inputs
-     (list go-gopkg-in-go-playground-assert-v1))
+     (list go-github-com-go-playground-assert-v2))
     (propagated-inputs
-     (list go-github-com-go-playground-universal-translator
-           go-github-com-leodido-go-urn))
+     (list go-github-com-gabriel-vasile-mimetype
+           go-github-com-go-playground-locales
+           go-github-com-go-playground-universal-translator
+           go-github-com-leodido-go-urn
+           go-golang-org-x-crypto
+           go-golang-org-x-text))
     (synopsis "Validator for structs and individual fields based on tags")
     (description
      "This package implements value validations for structs and individual
@@ -2211,32 +2215,6 @@ JSON name while validating and have it available in the resulting FieldError
 web framework
 @end itemize")
     (license license:expat)))
-
-(define-public go-github-com-go-playground-validator-v10
-  (package
-    (inherit go-gopkg-in-go-playground-validator-v9)
-    (name "go-github-com-go-playground-validator-v10")
-    (version "10.22.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/go-playground/validator")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0zff0qpqfzwa4xazppiq7jvpncnmx52m23qi4ih754b7rzhbk0iz"))))
-    (arguments
-     (list
-      #:import-path "github.com/go-playground/validator/v10"))
-    (propagated-inputs
-     (modify-inputs (package-propagated-inputs
-                     go-gopkg-in-go-playground-validator-v9)
-       (append go-github-com-gabriel-vasile-mimetype
-               go-golang-org-x-crypto
-               go-golang-org-x-text)))
-    (native-inputs
-     (list go-github-com-go-playground-assert-v2))))
 
 (define-public go-github-com-nathan-osman-go-sunrise
   (let ((commit "c8f9f1eb869135f07378e7e3c5ec7a005f806c73")
