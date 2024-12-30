@@ -2699,22 +2699,23 @@ coverage-guided, mutation-based fuzzers.")
 (define-public rust-archery-1
   (package
     (name "rust-archery")
-    (version "1.1.0")
+    (version "1.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "archery" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1lp7lq613dd21ay15gzbl8s5r91c96iia000rs358xk217v5aya8"))))
+        (base32 "0sdqlmybcvd0rzv22ac3k3xxm5anr1gpm03sf02iy0jmrlhyvqpa"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-static-assertions" ,rust-static-assertions-1)
                        ("rust-triomphe" ,rust-triomphe-0.1))
        #:cargo-development-inputs
-       (("rust-compiletest-rs" ,rust-compiletest-rs-0.10)
+       (("rust-bincode" ,rust-bincode-1)
         ("rust-criterion" ,rust-criterion-0.5)
-        ("rust-pretty-assertions" ,rust-pretty-assertions-1))))
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1)
+        ("rust-static-assertions" ,rust-static-assertions-1))))
     (home-page "https://github.com/orium/archery")
     (synopsis "Abstract over the atomicity of reference-counting pointers")
     (description "This package provides a way to abstract @code{Rc} and
