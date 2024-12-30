@@ -9986,7 +9986,7 @@ configuration files.  It supports data files in ASCII, MBCS and Unicode.")
 (define-public xfsprogs
   (package
     (name "xfsprogs")
-    (version "6.0.0")
+    (version "6.12.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -9994,7 +9994,7 @@ configuration files.  It supports data files in ASCII, MBCS and Unicode.")
                     "xfsprogs-" version ".tar.gz"))
               (sha256
                (base32
-                "14hc61nfc73nqwhyasc4haj5g7046im1dwz61bx338f86mjj5n5y"))))
+                "1n46n27fxx1137kni3drrhzhp1l8ksxabcsmi8yzxbhpbnl4q293"))))
     (build-system gnu-build-system)
     (outputs (list "out" "python"))
     (arguments
