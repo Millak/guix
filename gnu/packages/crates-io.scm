@@ -53864,6 +53864,27 @@ and would-block I/O operations.")
         ("rust-tokio-core" ,rust-tokio-core-0.1))))
     (license license:bsd-3)))
 
+(define-public rust-partial-ref-derive-0.3
+  (package
+    (name "rust-partial-ref-derive")
+    (version "0.3.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "partial_ref_derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "10bm0pxwjph40z9pqwdzkkkbyz9n1h6lx69f6jjvb65qnln1s3ih"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/jix/partial_ref")
+    (synopsis "Derives for partial_ref")
+    (description "This package provides derives for partial_ref.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-partition-identity-0.3
   (package
     (name "rust-partition-identity")
