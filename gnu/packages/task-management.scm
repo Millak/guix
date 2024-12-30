@@ -39,6 +39,10 @@
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
+  #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-check)
+  #:use-module (gnu packages golang-web)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages hunspell)
@@ -278,20 +282,21 @@ time to a logfile.")
 (define-public dstask
   (package
     (name "dstask")
-    (version "0.26")
+    (version "0.27")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/naggie/dstask")
-             (commit (string-append "v" version))))
+             (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "10q0524gfc76k0v9cy0j60cbgmmwkpnkbvl6w0pn1j5y690514f5"))))
+        (base32 "01vdxm3y5fg4hqhq4k1lk0m7w70kkwlka5jhixv7a9lf1gqldskd"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/naggie/dstask"
        #:install-source? #f
+       #:test-subdirs '("pkg/..." ".")
        #:phases
        (modify-phases %standard-phases
          (replace 'build
@@ -314,6 +319,18 @@ time to a logfile.")
                  (install-file "dstask-import" bindir)
                  (install-file ".dstask-bash-completions.sh" bash-completion)
                  (install-file ".dstask-zsh-completions.sh" zsh-completion))))))))
+    (native-inputs
+     (list go-github-com-burntsushi-toml
+           go-github-com-gofrs-uuid
+           go-github-com-mattn-go-isatty
+           go-github-com-mattn-go-runewidth
+           go-github-com-shurcool-githubv4
+           go-github-com-sirupsen-logrus
+           go-github-com-stretchr-testify
+           go-golang-org-x-oauth2
+           go-golang-org-x-sys
+           go-gopkg-in-yaml-v2
+           go-mvdan-cc-xurls-v2))
     (synopsis "CLI-based TODO manager with git-based sync + markdown notes per task")
     (description "dstask is a personal task tracker that uses git for
 synchronization.  It offers a note command to attach a Markdown based note to
