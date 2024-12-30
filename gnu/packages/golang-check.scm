@@ -994,6 +994,30 @@ Many times certain facilities are not available, or tests must run
 differently.")
     (license license:expat)))
 
+(define-public go-github-com-jmhodges-clock
+  (package
+    (name "go-github-com-jmhodges-clock")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jmhodges/clock")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ys85dlg3zzzwl7p46kf5gckjm1ddgr5dai42v4p3wn9nm6ln252"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/jmhodges/clock"))
+    (home-page "https://github.com/jmhodges/clock")
+    (synopsis "System time abstraction Golang library")
+    (description
+     "Package clock provides an abstraction for system time that enables
+testing of time-sensitive code.")
+    (license license:expat)))
+
 (define-public go-github-com-maruel-panicparse
   (package
     (name "go-github-com-maruel-panicparse")
