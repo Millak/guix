@@ -2612,18 +2612,18 @@ GNOME Desktop.")
   (package/inherit gdl
     (name "gdl-minimal")
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'disable-doc-generation
-           ;; XXX: There is no easy way to disable generating the
-           ;; documentation.
-           (lambda _
-             (substitute* "configure.in"
-               (("GTK_DOC_CHECK.*") "")
-               (("docs/.*") ""))
-             (substitute* "Makefile.am"
-               (("gdl docs po") "gdl po"))
-             #t)))))
+     (substitute-keyword-arguments (package-arguments gdl)
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (add-after 'unpack 'disable-doc-generation
+              ;; XXX: There is no easy way to disable generating the
+              ;; documentation.
+              (lambda _
+                (substitute* "configure.in"
+                  (("GTK_DOC_CHECK.*") "")
+                  (("docs/.*") ""))
+                (substitute* "Makefile.am"
+                  (("gdl docs po") "gdl po"))))))))
     (native-inputs (alist-delete "gtk-doc" (package-native-inputs gdl)))))
 
 (define-public libgnome-keyring
