@@ -543,6 +543,55 @@ display manager which supports different greeters.")
 GTK+, lets you select a desktop session and log in to it.")
     (license license:gpl3+)))
 
+(define-public lightdm-mini-greeter
+  (let ((commit "ead7936993b4e9e067d73fa49dec7edfb46c73a8")
+        (revision "0"))
+    (package
+      (name "lightdm-mini-greeter")
+      ;; Version 0.5.1 release in 2021, so we use a recent commit.
+      (version (git-version "0.5.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/prikhi/lightdm-mini-greeter")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "17iy1jkllmi2xc95csb18wcfvbk44gyva2in2k5f29fy362ppz25"))))
+      (build-system glib-or-gtk-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'customize-default-config-path
+              (lambda _
+                (substitute* "Makefile.am"
+                  ;; Have the default config directory sourced from
+                  ;; /etc/lightdm/lightdm-mini-greeter.conf, which is where the
+                  ;; lightdm service writes it.
+                  (("\\$\\(sysconfdir)/lightdm/lightdm-mini-greeter.conf")
+                   "/etc/lightdm/lightdm-mini-greeter.conf"))))
+            (add-after 'install 'fix-.desktop-file
+              (lambda* (#:key outputs #:allow-other-keys)
+                (substitute* (search-input-file
+                              outputs
+                              "share/xgreeters/lightdm-mini-greeter.desktop")
+                  (("Exec=lightdm-mini-greeter")
+                   (string-append "Exec="
+                                  (search-input-file
+                                   outputs "bin/lightdm-mini-greeter")))))))))
+      (native-inputs
+       (list autoconf automake pkg-config))
+      (inputs
+       (list gtk+ lightdm))
+      (synopsis "Mini Greeter for LightDM")
+      (home-page "https://github.com/prikhi/lightdm-mini-greeter")
+      (description "This package provide a minimal but highly configurable
+single-user GTK3 greeter for LightDM, this greeter is inspired by the SLiM
+Display Manager and LightDM GTK3 Greeter.")
+      (license license:gpl3))))
+
 (define-public slim
   (package
     (name "slim")
