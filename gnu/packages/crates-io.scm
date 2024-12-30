@@ -11691,8 +11691,33 @@ capabilities.")
 fields in a closure.")
     (license license:isc)))
 
+(define-public rust-carapace-spec-clap-1
+  (package
+    (name "rust-carapace-spec-clap")
+    (version "1.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "carapace_spec_clap" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "08w08n7vbi8wjvivllayzpggn6c0vpax2101hc8gp9xd385q39h9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-clap" ,rust-clap-4)
+                       ("rust-clap-complete" ,rust-clap-complete-4)
+                       ("rust-indexmap" ,rust-indexmap-2)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-yaml-ng" ,rust-serde-yaml-ng-0.10))
+       #:cargo-development-inputs (("rust-snapbox" ,rust-snapbox-0.6))))
+    (home-page "https://github.com/carapace-sh/carapace-spec-clap")
+    (synopsis "Spec generation for clap-rs/clap")
+    (description "This package provides spec generation for clap-rs/clap.")
+    (license license:expat)))
+
 (define-public rust-carapace-spec-clap-0.1
   (package
+    (inherit rust-carapace-spec-clap-1)
     (name "rust-carapace-spec-clap")
     (version "0.1.12")
     (source (origin
@@ -11702,7 +11727,6 @@ fields in a closure.")
               (sha256
                (base32
                 "1pb140siiqbljpvpck5hldmfyadi3db3s8xhcqnf9ff2ln3bs9zf"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-clap" ,rust-clap-4)
@@ -11710,11 +11734,7 @@ fields in a closure.")
         ("rust-indexmap" ,rust-indexmap-2)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-yaml" ,rust-serde-yaml-0.9))
-       #:cargo-development-inputs (("rust-snapbox" ,rust-snapbox-0.4))))
-    (home-page "https://github.com/rsteube/carapace-spec-clap")
-    (synopsis "Spec generation for clap-rs/clap")
-    (description "This package provides spec generation for clap-rs/clap.")
-    (license license:expat)))
+       #:cargo-development-inputs (("rust-snapbox" ,rust-snapbox-0.4))))))
 
 (define-public rust-cargo-config2-0.1
   (package
