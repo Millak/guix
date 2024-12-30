@@ -194,7 +194,12 @@
     (arguments
      (list
       #:modules (%emacs-modules build-system)
-      #:configure-flags #~(list "--with-gnutls=no" "--disable-build-details")
+      #:configure-flags #~(list
+                           #$(string-append
+                              "CFLAGS=-g -O2"
+                              " -Wno-error=incompatible-pointer-types")
+                           "--with-gnutls=no"
+                           "--disable-build-details")
       #:make-flags #~(list (string-append "SELECTOR=" #$%selector))
       #:phases
       #~(modify-phases %standard-phases
