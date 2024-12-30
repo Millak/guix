@@ -472,6 +472,11 @@ tests.")
     (build-system go-build-system)
     (arguments
      (list
+      ;; Tests on non-x86_64 architectures are not well supported upstream.
+      ;;
+      ;; Most of them fail with error like: Error:Field validation for
+      ;; 'IsColor' failed on the 'iscolor' tag.
+      #:tests? (target-x86-64?)
       #:import-path "github.com/go-playground/validator/v10"))
     (native-inputs
      (list go-github-com-go-playground-assert-v2))
