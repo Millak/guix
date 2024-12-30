@@ -18,7 +18,7 @@
 ;;; Copyright © 2021 Mike Gerwitz <mtg@gnu.org>
 ;;; Copyright © 2021 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
-;;; Copyright © 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2022, 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2024 Raven Hallsby <karl@hallsby.com>
 ;;;
@@ -13824,7 +13824,7 @@ network protocols, and core version control algorithms.")
 (define-public abcl
   (package
     (name "abcl")
-    (version "1.9.2")
+    (version "1.9.3")
     (source
      (origin
        (method url-fetch)
@@ -13832,7 +13832,7 @@ network protocols, and core version control algorithms.")
                            version "/abcl-src-" version ".tar.gz"))
        (sha256
         (base32
-         "0f0xpi47pfgz36y15krggshk2qdd2zxdkg5xwnamvng2hn7lnbsf"))
+         "1zxjpwv98bq2yd5qg08sbkajj17m7b8xmzqhw296161s7lia215v"))
        (patches
         (search-patches
          "abcl-fix-build-xml.patch"))))
