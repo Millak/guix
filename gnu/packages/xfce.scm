@@ -2324,7 +2324,16 @@ local weather in the panel, using forecast data provided by the
     (build-system gnu-build-system)
     (arguments
      (list
-      #:configure-flags #~(list "--enable-maintainer-mode"))) ;for xdt-csource.1
+      #:configure-flags #~(list "--enable-maintainer-mode") ;for xdt-csource.1
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'fix-XDT_CHECK_PACKAGE_BINARY
+            (lambda _
+              (substitute* "m4macros/xdt-depends.m4"
+                ;; Our pkg-config doesn't report absolute paths for this
+                ;; executable check.
+                (("-a -x \"\\$\\$1\"")
+                 "-a -x `command -v \"$$1\"`")))))))
     (native-inputs (list autoconf
                          automake
                          docbook-xsl
