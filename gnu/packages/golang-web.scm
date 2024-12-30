@@ -736,6 +736,34 @@ signing.")
 the OTEL Go SDK.")
     (license license:asl2.0)))
 
+(define-public go-github-com-aws-smithy-go-tracing-smithyoteltracing
+  (package
+    (name "go-github-com-aws-smithy-go-tracing-smithyoteltracing")
+    (version "1.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/aws/smithy-go")
+             (commit (go-version->git-ref version
+                                          #:subdir "tracing/smithyoteltracing"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16jbv7cyj85048f4kcrib8k2yif165sc099h0aklal5dwlf85xcg"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/aws/smithy-go/tracing/smithyoteltracing"
+      #:unpack-path "github.com/aws/smithy-go"))
+    (propagated-inputs
+     (list go-go-opentelemetry-io-otel))
+    (home-page "https://github.com/aws/smithy-go")
+    (synopsis "AWS Smithy OTEL tracing adapter")
+    (description
+     "Package smithyoteltracing implements a Smithy client tracing adapter for
+the OTEL Go SDK.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-aymerick-douceur
   (package
     (name "go-github-com-aymerick-douceur")
