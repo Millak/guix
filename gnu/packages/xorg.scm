@@ -3236,6 +3236,9 @@ supported, and the RENDER extension is not accelerated by this driver.")
        (sha256
         (base32 "1z9bqfr81w2ahq2vyphgjbl0ffxndrpxb4mqqly76srjcj7d6ap8"))))
     (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list "CFLAGS=-g -O2 -Wno-error=implicit-function-declaration")))
     (inputs (list xorg-server))
     (native-inputs (list pkg-config))
     (home-page "https://nouveau.freedesktop.org")
