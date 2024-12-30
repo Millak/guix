@@ -4775,8 +4775,30 @@ inspired by Catch2.")
     (description "This package provides procedural macros for assert2.")
     (license license:bsd-2)))
 
+(define-public rust-associative-cache-2
+  (package
+    (name "rust-associative-cache")
+    (version "2.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "associative-cache" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1b9bgf19c27sdch6c4x2qyf34i1cl8f328knv1yk1irbg9vcv4xr"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-rand" ,rust-rand-0.8))))
+    (home-page "https://github.com/fitzgen/associative-cache")
+    (synopsis "Associative cache with fixed-size capacity")
+    (description
+     "This package provides a generic N-way associative cache with fixed-size
+capacity and random or least recently used (LRU) replacement.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-associative-cache-1
   (package
+    (inherit rust-associative-cache-2)
     (name "rust-associative-cache")
     (version "1.0.1")
     (source (origin
@@ -4786,17 +4808,10 @@ inspired by Catch2.")
               (sha256
                (base32
                 "05lg0mwpqfqb9zh958x0358x1k5ngmmmbzjnp0imrd8vzhrn40a6"))))
-    (build-system cargo-build-system)
     (arguments
      ;; 2 doctests fail because rand is not declared
      `(#:tests? #false
-       #:cargo-inputs (("rust-rand" ,rust-rand-0.7))))
-    (home-page "https://github.com/fitzgen/associative-cache")
-    (synopsis "Associative cache with fixed-size capacity")
-    (description
-     "This package provides a generic N-way associative cache with fixed-size
-capacity and random or least recently used (LRU) replacement.")
-    (license (list license:expat license:asl2.0))))
+       #:cargo-inputs (("rust-rand" ,rust-rand-0.7))))))
 
 (define-public rust-async-attributes-1
   (package
