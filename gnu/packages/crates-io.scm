@@ -92549,6 +92549,39 @@ for @code{Valuable} types.")
 integer encoding implementation in Rust.")
     (license license:expat)))
 
+(define-public rust-varisat-checker-0.2
+  (package
+    (name "rust-varisat-checker")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "varisat-checker" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0fvndkgd2ypgr9rygnj0glxk0492696qw6xqysc6xv8kb5y9fp0k"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-partial-ref" ,rust-partial-ref-0.3)
+        ("rust-rustc-hash" ,rust-rustc-hash-1)
+        ("rust-smallvec" ,rust-smallvec-1)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-varisat-dimacs" ,rust-varisat-dimacs-0.2)
+        ("rust-varisat-formula" ,rust-varisat-formula-0.2)
+        ("rust-varisat-internal-proof" ,rust-varisat-internal-proof-0.2))
+       #:cargo-development-inputs
+       (("rust-proptest" ,rust-proptest-0.10)
+        ("rust-varisat-formula" ,rust-varisat-formula-0.2))))
+    (home-page "https://jix.one/project/varisat/")
+    (synopsis "Proof checker for proofs generate by the Varisat SAT solver")
+    (description
+     "This package provides a proof checker for proofs generate by the
+Varisat SAT solver.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-varisat-dimacs-0.2
   (package
     (name "rust-varisat-dimacs")
