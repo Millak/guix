@@ -16191,19 +16191,20 @@ configuration files.")
 (define-public rust-configparser-3
   (package
     (name "rust-configparser")
-    (version "3.0.3")
+    (version "3.1.0")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "configparser" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0dwjni8z9v26ysn7yqw3ickvqbrwjd0cv1ag20manlia990nxrg0"))))
+                "16v47b7lknb35ragwhj9gzgwfpxs34vn2b97hhaky30ry1r34zp5"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-async-std" ,rust-async-std-1)
-        ("rust-indexmap" ,rust-indexmap-2))))
+       (("rust-indexmap" ,rust-indexmap-2)
+        ("rust-tokio" ,rust-tokio-1))
+       #:cargo-development-inputs (("rust-tokio" ,rust-tokio-1))))
     (home-page "https://github.com/QEDK/configparser-rs")
     (synopsis "Simple parsing utility for INI and ini-style syntax")
     (description
