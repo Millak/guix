@@ -92549,6 +92549,29 @@ for @code{Valuable} types.")
 integer encoding implementation in Rust.")
     (license license:expat)))
 
+(define-public rust-varisat-formula-0.2
+  (package
+    (name "rust-varisat-formula")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "varisat-formula" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "08256rfjdmvfxjjw162r6l5ipfd46in9vx1sdmnhgndzp51map1r"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proptest" ,rust-proptest-0.10)
+                       ("rust-rand" ,rust-rand-0.7))
+       #:cargo-development-inputs (("rust-proptest" ,rust-proptest-0.10)
+                                   ("rust-rand" ,rust-rand-0.7))))
+    (home-page "https://jix.one/project/varisat/")
+    (synopsis "Basic formula data types used by the Varisat SAT solver")
+    (description
+     "This package provides Basic formula data types used by the Varisat SAT solver.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-varisat-internal-macros-0.2
   (package
     (name "rust-varisat-internal-macros")
