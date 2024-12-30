@@ -44860,8 +44860,43 @@ support for no_std and embedded programs.")
     ;; No copyright headers in the source code.  LICENSE indicates gpl3.
     (license license:gpl3)))
 
+(define-public rust-minijinja-2
+  (package
+    (name "rust-minijinja")
+    (version "2.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "minijinja" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1d99nn7pmqimbp5sd3gcndi958nmp5klav633pjx1p6i2ysy2drc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-aho-corasick" ,rust-aho-corasick-1)
+                       ("rust-indexmap" ,rust-indexmap-2)
+                       ("rust-memo-map" ,rust-memo-map-0.3)
+                       ("rust-percent-encoding" ,rust-percent-encoding-2)
+                       ("rust-self-cell" ,rust-self-cell-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-stacker" ,rust-stacker-0.1)
+                       ("rust-unicase" ,rust-unicase-2)
+                       ("rust-unicode-ident" ,rust-unicode-ident-1)
+                       ("rust-v-htmlescape" ,rust-v-htmlescape-0.15))
+       #:cargo-development-inputs
+       (("rust-insta" ,rust-insta-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-similar-asserts" ,rust-similar-asserts-1))))
+    (home-page "https://github.com/mitsuhiko/minijinja")
+    (synopsis "Template engine for Rust")
+    (description "This package provides a template engine for Rust.")
+    (license license:asl2.0)))
+
 (define-public rust-minijinja-1
   (package
+    (inherit rust-minijinja-2)
     (name "rust-minijinja")
     (version "1.0.10")
     (source
@@ -44871,7 +44906,6 @@ support for no_std and embedded programs.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1jqvjzcj96jxyqp3pmz2hhrfq4ql2q6p719yvpsnrj7jgrbmi1r0"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-aho-corasick" ,rust-aho-corasick-1)
                        ("rust-indexmap" ,rust-indexmap-1)
@@ -44884,14 +44918,11 @@ support for no_std and embedded programs.")
                        ("rust-unicase" ,rust-unicase-2)
                        ("rust-unicode-ident" ,rust-unicode-ident-1)
                        ("rust-v-htmlescape" ,rust-v-htmlescape-0.15))
-       #:cargo-development-inputs (("rust-insta" ,rust-insta-1)
-                                   ("rust-serde" ,rust-serde-1)
-                                   ("rust-serde-json" ,rust-serde-json-1)
-                                   ("rust-similar-asserts" ,rust-similar-asserts-1))))
-    (home-page "https://github.com/mitsuhiko/minijinja")
-    (synopsis "Template engine for Rust")
-    (description "This package provides a template engine for Rust.")
-    (license license:asl2.0)))
+       #:cargo-development-inputs
+       (("rust-insta" ,rust-insta-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-similar-asserts" ,rust-similar-asserts-1))))))
 
 (define-public rust-minijinja-0.34
   (package
