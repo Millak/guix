@@ -91545,6 +91545,23 @@ with changes and updated applied to it.")
      "This crate enables unchecked unwrapping on Option and Result types.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-unscanny-0.1
+  (package
+    (name "rust-unscanny")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "unscanny" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ivbipc1rnq15fhzgna41p1h01ncq4shycii72f3x5d7czq2mpz9"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/typst/unscanny")
+    (synopsis "Painless string scanning")
+    (description "This package provides painless string scanning.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-unsize-1
   (package
     (name "rust-unsize")
