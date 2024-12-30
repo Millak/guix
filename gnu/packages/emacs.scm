@@ -155,7 +155,12 @@
      (list
       #:tests? #f                       ; no check target
       #:modules (%emacs-modules build-system)
-      #:configure-flags #~(list "--with-gnutls=no" "--disable-build-details")
+      #:configure-flags #~(list
+                           #$(string-append
+                              "CFLAGS=-g -O2"
+                              " -Wno-error=incompatible-pointer-types")
+                           "--with-gnutls=no"
+                           "--disable-build-details")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'enable-elogind
