@@ -81956,17 +81956,17 @@ with `miette`.")
     (description "This package contains a Rust compiler target feature database.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-target-lexicon-0.12
+(define-public rust-target-lexicon-0.13
   (package
     (name "rust-target-lexicon")
-    (version "0.12.16")
+    (version "0.13.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "target-lexicon" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1cg3bnx1gdkdr5hac1hzxy64fhw4g7dqkd0n3dxy5lfngpr1mi31"))))
+        (base32 "0xrab0br65gd3ws2hgkma0sbf205scpzfdbi1cg3k7cv3jd964nw"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-serde" ,rust-serde-1))
@@ -81977,6 +81977,22 @@ with `miette`.")
      "This package provides targeting utilities for compilers and related
 tools.")
     (license license:asl2.0)))
+
+(define-public rust-target-lexicon-0.12
+  (package
+    (inherit rust-target-lexicon-0.13)
+    (name "rust-target-lexicon")
+    (version "0.12.16")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "target-lexicon" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1cg3bnx1gdkdr5hac1hzxy64fhw4g7dqkd0n3dxy5lfngpr1mi31"))))
+    (arguments
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-serde-json" ,rust-serde-json-1))))))
 
 (define-public rust-target-lexicon-0.11
   (package
