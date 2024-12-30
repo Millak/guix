@@ -1246,8 +1246,7 @@ package provides a way to identify Git actors.")
         (base32 "02m6n14jpvz61rwf1rg5lbjgz47n7zbcvqiramsqnff1an5c0iwi"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #f
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-bstr" ,rust-bstr-1)
         ("rust-document-features" ,rust-document-features-0.2)
         ("rust-flate2" ,rust-flate2-1)
