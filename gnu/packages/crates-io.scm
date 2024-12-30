@@ -11981,8 +11981,43 @@ optional dependency graph analysis.")
 manifests in @code{Cargo.toml} files.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-cargo-metadata-0.19
+  (package
+    (name "rust-cargo-metadata")
+    (version "0.19.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cargo_metadata" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "096r6ai6b8r6z42lasr16pd0zbgndvs7n6a3mwh636axmmm70sc7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--"
+                            "--skip=error1"
+                            "--skip=error2"
+                            "--skip=advanced_feature_configuration"
+                            "--skip=all_the_fields"
+                            "--skip=basic_workspace_root_package_exists"
+                            "--skip=current_dir")
+       #:cargo-inputs (("rust-camino" ,rust-camino-1)
+                       ("rust-cargo-platform" ,rust-cargo-platform-0.1)
+                       ("rust-derive-builder" ,rust-derive-builder-0.20)
+                       ("rust-semver" ,rust-semver-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-thiserror" ,rust-thiserror-2))))
+    (home-page "https://github.com/oli-obk/cargo_metadata")
+    (synopsis "Structured access to the output of `cargo metadata`")
+    (description
+     "This package provides structured access to the output of @code{cargo
+metadata}.")
+    (license license:expat)))
+
 (define-public rust-cargo-metadata-0.18
   (package
+    (inherit rust-cargo-metadata-0.19)
     (name "rust-cargo-metadata")
     (version "0.18.1")
     (source
@@ -11992,7 +12027,6 @@ manifests in @code{Cargo.toml} files.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0drh0zndl4qgndy6kg6783cydbvhxgv0hcg7d9hhqx0zwi3nb21d"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
        '("--release" "--"
@@ -12006,13 +12040,7 @@ manifests in @code{Cargo.toml} files.")
                        ("rust-semver" ,rust-semver-1)
                        ("rust-serde" ,rust-serde-1)
                        ("rust-serde-json" ,rust-serde-json-1)
-                       ("rust-thiserror" ,rust-thiserror-1))))
-    (home-page "https://github.com/oli-obk/cargo_metadata")
-    (synopsis "Structured access to the output of `cargo metadata`")
-    (description
-     "This package provides structured access to the output of @code{cargo
-metadata}.")
-    (license license:expat)))
+                       ("rust-thiserror" ,rust-thiserror-1))))))
 
 (define-public rust-cargo-metadata-0.17
   (package
