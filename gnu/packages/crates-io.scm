@@ -93038,6 +93038,25 @@ Varisat SAT solver.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-vec-mut-scan-0.3
+  (package
+    (name "rust-vec-mut-scan")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "vec_mut_scan" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1lkz66l8z13lvjll69s23vrca12inpyyh00kwg0djqsyil563vb8"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/jix/vec_mut_scan")
+    (synopsis "Forward scan over a vector with mutation and item removal")
+    (description
+     "This package provides forward scan over a vector with mutation and
+item removal.")
+    (license license:bsd-0)))
+
 (define-public rust-vec1-1
   (package
     (name "rust-vec1")
