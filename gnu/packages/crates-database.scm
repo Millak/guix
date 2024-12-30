@@ -831,8 +831,30 @@ libpq.")
      `(#:cargo-inputs (("rust-fallible-iterator" ,rust-fallible-iterator-0.3)
                        ("rust-sqlite3-parser" ,rust-sqlite3-parser-0.12))))))
 
+(define-public rust-sqlite-0.36
+  (package
+    (name "rust-sqlite")
+    (version "0.36.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sqlite" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "13kimsfaxl81wm82j6qjzhycvyq4ljzi4kgbzr969vibdyqnzzjx"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-sqlite3-sys" ,rust-sqlite3-sys-0.17))
+       #:cargo-development-inputs (("rust-temporary" ,rust-temporary-0.6))))
+    (inputs (list sqlite))
+    (home-page "https://github.com/stainless-steel/sqlite")
+    (synopsis "Interface to SQLite")
+    (description "The package provides an interface to SQLite.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-sqlite-0.30
   (package
+    (inherit rust-sqlite-0.36)
     (name "rust-sqlite")
     (version "0.30.5")
     (source
@@ -842,16 +864,10 @@ libpq.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1lbfa0gjkqlhcmj4jy72kzfgd6a57z8gs1y7g34cbp4msvm4rk3f"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2)
                        ("rust-sqlite3-sys" ,rust-sqlite3-sys-0.15))
-       #:cargo-development-inputs (("rust-temporary" ,rust-temporary-0.6))))
-    (inputs (list sqlite))
-    (home-page "https://github.com/stainless-steel/sqlite")
-    (synopsis "Interface to SQLite")
-    (description "The package provides an interface to SQLite.")
-    (license (list license:asl2.0 license:expat))))
+       #:cargo-development-inputs (("rust-temporary" ,rust-temporary-0.6))))))
 
 (define-public rust-sqlite-0.27
   (package
