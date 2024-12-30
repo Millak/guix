@@ -55162,8 +55162,39 @@ PEM-encoded data.")
        #:cargo-development-inputs
        (("rust-criterion" ,rust-criterion-0.3))))))
 
+(define-public rust-pep440-rs-0.6
+  (package
+    (name "rust-pep440-rs")
+    (version "0.6.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pep440_rs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "11g35bi0gagfchjcdvpaj1i82gxkrc391fcpm2f0cblw2yissvj6"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-pubgrub" ,rust-pubgrub-0.2)
+                       ("rust-pyo3" ,rust-pyo3-0.22)
+                       ("rust-rkyv" ,rust-rkyv-0.7)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-tracing" ,rust-tracing-0.1)
+                       ("rust-unicode-width" ,rust-unicode-width-0.1)
+                       ("rust-unscanny" ,rust-unscanny-0.1))
+       #:cargo-development-inputs (("rust-indoc" ,rust-indoc-2))))
+    (home-page "https://github.com/konstin/pep440-rs")
+    (synopsis
+     "Library for python version numbers and specifiers, implementing PEP 440")
+    (description
+     "This package provides a library for python version numbers and specifiers,
+implementing PEP 440.")
+    (license (list license:asl2.0 license:bsd-2))))
+
 (define-public rust-pep440-rs-0.3
   (package
+    (inherit rust-pep440-rs-0.6)
     (name "rust-pep440-rs")
     (version "0.3.9")
     (source (origin
@@ -55173,7 +55204,6 @@ PEM-encoded data.")
               (sha256
                (base32
                 "0l3nyvfz8qq62dvilwfbzgdqxyz9kbf006s0gpx2qhhi79lia7gy"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-lazy-static" ,rust-lazy-static-1)
@@ -55182,14 +55212,7 @@ PEM-encoded data.")
         ("rust-serde" ,rust-serde-1)
         ("rust-tracing" ,rust-tracing-0.1)
         ("rust-unicode-width" ,rust-unicode-width-0.1))
-       #:cargo-development-inputs (("rust-indoc" ,rust-indoc-2))))
-    (home-page "https://github.com/konstin/pep440-rs")
-    (synopsis
-     "Library for python version numbers and specifiers, implementing PEP 440")
-    (description
-     "This package provides a library for python version numbers and specifiers,
-implementing PEP 440.")
-    (license (list license:asl2.0 license:bsd-2))))
+       #:cargo-development-inputs (("rust-indoc" ,rust-indoc-2))))))
 
 ;; Should be the same rust-pyo3 version as cargo-input rust-pep440-rs.
 (define-public rust-pep508-rs-0.2
