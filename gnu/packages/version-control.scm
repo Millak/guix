@@ -3934,7 +3934,7 @@ will reconstruct the object along its delta-base chain and return it.")
 (define-public git-lfs
   (package
     (name "git-lfs")
-    (version "3.4.0")
+    (version "3.6.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3943,7 +3943,7 @@ will reconstruct the object along its delta-base chain and return it.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ljjs8kyznp2ifkqdcd9q3550sknyx5qxx247icwkd9djjq7x74m"))))
+                "09ry2nq5bpdxk446dyhc0d6d85wy5x2i5ckwwg9r00a3zdp5v4ry"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -3986,24 +3986,25 @@ will reconstruct the object along its delta-base chain and return it.")
                (list ronn-ng ruby-asciidoctor)
                '())))
     (propagated-inputs
-     (list go-github-com-xeipuuv-gojsonschema
-           go-github-com-xeipuuv-gojsonreference
-           go-github-com-xeipuuv-gojsonpointer
+     (list go-github-com-avast-retry-go
+           go-github-com-dpotapov-go-spnego
+           go-github-com-git-lfs-gitobj-v2
+           go-github-com-git-lfs-go-netrc
+           go-github-com-git-lfs-pktline
+           go-github-com-git-lfs-wildmatch-v2
+           go-github-com-jmhodges-clock
+           go-github-com-leonelquinteros-gotext
+           go-github-com-mattn-go-isatty
+           go-github-com-olekukonko-ts
+           go-github-com-pkg-errors
+           go-github-com-rubyist-tracerx
+           go-github-com-spf13-cobra
+           go-github-com-ssgelm-cookiejarparser
+           go-github-com-stretchr-testify
+           go-github-com-xeipuuv-gojsonschema
            go-golang-org-x-net
            go-golang-org-x-sync
-           go-github-com-ssgelm-cookiejarparser
-           go-github-com-rubyist-tracerx
-           go-github-com-olekukonko-ts
-           go-github-com-leonelquinteros-gotext
-           go-github-com-git-lfs-wildmatch-v2
-           go-github-com-git-lfs-pktline
-           go-github-com-git-lfs-go-netrc
-           go-github-com-git-lfs-gitobj-v2
-           go-github-com-dpotapov-go-spnego
-           go-github-com-avast-retry-go
-           go-github-com-mattn-go-isatty
-           go-github-com-pkg-errors
-           go-github-com-spf13-cobra))
+           go-golang-org-x-sys))
     (home-page "https://git-lfs.github.com/")
     (synopsis "Git extension for versioning large files")
     (description
