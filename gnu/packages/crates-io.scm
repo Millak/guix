@@ -69773,14 +69773,14 @@ rustc compiler.")
 (define-public rust-rustix-0.38
   (package
     (name "rust-rustix")
-    (version "0.38.40")
+    (version "0.38.42")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rustix" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1h33ilqk4psn6kqfmd232df3x3lrwp4gjl2nisdmajyw3hzfmr4r"))
+        (base32 "11fvprv3p450ggyqacp7sdpjbbsgm5zvfjwnzy8bfbmbrf7c6ggr"))
        (snippet
         #~(begin (use-modules (guix build utils))
                  (for-each delete-file (find-files "." "\\.a$"))
