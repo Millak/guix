@@ -69830,14 +69830,14 @@ rustc compiler.")
   (package
     (inherit rust-rustix-0.38)
     (name "rust-rustix")
-    (version "0.37.19")
+    (version "0.37.27")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "rustix" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0gb12rp992bh2h5msqcbpdsx6h1gslsb0zpp5hdnyxj2hnfp5y5c"))
+                "1lidfswa8wbg358yrrkhfvsw0hzlvl540g4lwqszw09sg8vcma7y"))
               (snippet
                #~(begin
                    (use-modules (guix build utils))
@@ -69870,14 +69870,12 @@ rustc compiler.")
         ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1)
         ("rust-windows-sys" ,rust-windows-sys-0.48))
        #:cargo-development-inputs
-       (("rust-criterion" ,rust-criterion-0.4)
-        ("rust-ctor" ,rust-ctor-0.2)
+       (("rust-ctor" ,rust-ctor-0.2)
         ("rust-errno" ,rust-errno-0.3)
         ("rust-flate2" ,rust-flate2-1)
         ("rust-io-lifetimes" ,rust-io-lifetimes-1)
         ("rust-libc" ,rust-libc-0.2)
-        ("rust-memoffset" ,rust-memoffset-0.8)
-        ("rust-serial-test" ,rust-serial-test-0.6)
+        ("rust-memoffset" ,rust-memoffset-0.9)
         ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-rustix-0.36
