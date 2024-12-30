@@ -654,6 +654,33 @@ credentials sources.")
      "Package smithy provides the core components for a Smithy SDK.")
     (license license:asl2.0)))
 
+(define-public go-github-com-aws-smithy-go-aws-http-auth
+  (package
+    (name "go-github-com-aws-smithy-go-aws-http-auth")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/aws/smithy-go")
+             (commit (go-version->git-ref version
+                                          #:subdir "aws-http-auth"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1iy9rlcj6qwy58rrddbvqy38lzw9d7y1i2d3mvf3f3z4i6rkwvd4"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/aws/smithy-go/aws-http-auth"
+      #:unpack-path "github.com/aws/smithy-go"))
+    (home-page "https://github.com/aws/smithy-go")
+    (synopsis "Consumable SigV4 and SigV4a request signing")
+    (description
+     "This package implements generically consumable SigV4 and SigV4a request
+signing.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-aymerick-douceur
   (package
     (name "go-github-com-aymerick-douceur")
