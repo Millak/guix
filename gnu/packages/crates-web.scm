@@ -7112,6 +7112,39 @@ server @code{Service} tests.")
 @code{Service}.")
     (license license:expat)))
 
+(define-public rust-trotter-1
+  (package
+    (name "rust-trotter")
+    (version "1.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "trotter" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "14gksihjm4bv2paqg22ym7n63adb69zac1qkp51yxz84572bhmkw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-clap" ,rust-clap-4)
+                       ("rust-mime-guess" ,rust-mime-guess-2)
+                       ("rust-openssl" ,rust-openssl-0.10)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-tokio-openssl" ,rust-tokio-openssl-0.6)
+                       ("rust-url" ,rust-url-2)
+                       ("rust-urlencoding" ,rust-urlencoding-2)
+                       ("rust-wildmatch" ,rust-wildmatch-2))
+       #:cargo-development-inputs (("rust-anyhow" ,rust-anyhow-1)
+                                   ("rust-clap" ,rust-clap-4))))
+    (native-inputs (list pkg-config))
+    (inputs (list openssl))
+    (home-page "https://codeberg.org/catboomer/trotter")
+    (synopsis "Make writing Gemini clients fun and easy")
+    (description
+     "This package provides Trotter, an experimental crate that aims to make
+writing Gemini clients fun and easy.")
+    (license license:gpl3)))
+
 (define-public rust-trust-dns-client-0.22
   (package
     (name "rust-trust-dns-client")
