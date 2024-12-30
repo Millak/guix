@@ -2168,7 +2168,7 @@ professionally translated
 (define-public go-github-com-go-playground-validator-v10
   (package
     (name "go-github-com-go-playground-validator-v10")
-    (version "10.22.0")
+    (version "10.23.0")
     (home-page "https://github.com/go-playground/validator")
     (source
      (origin
@@ -2178,7 +2178,7 @@ professionally translated
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0zff0qpqfzwa4xazppiq7jvpncnmx52m23qi4ih754b7rzhbk0iz"))))
+        (base32 "1frr06zq7fimmfjv9nac2cx9gclydbay0smn2h78znsbrylfhcmz"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/go-playground/validator/v10"))
