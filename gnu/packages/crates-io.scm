@@ -62284,25 +62284,25 @@ extension to python.")
 (define-public rust-python-pkginfo-0.6
   (package
     (name "rust-python-pkginfo")
-    (version "0.6.0")
+    (version "0.6.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "python-pkginfo" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1yjc2a1dyxwpcqc9c8hy8l8h08an3lps176nyqdqk37hck0njx03"))))
+        (base32 "006n1myk8lx98g9w4d250lmnmahs0ns9lqrgkg992pn41y45h7y2"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bzip2" ,rust-bzip2-0.4)
                        ("rust-flate2" ,rust-flate2-1)
-                       ("rust-fs-err" ,rust-fs-err-2)
-                       ("rust-mailparse" ,rust-mailparse-0.14)
-                       ("rust-rfc2047-decoder" ,rust-rfc2047-decoder-0.2)
+                       ("rust-fs-err" ,rust-fs-err-3)
+                       ("rust-mailparse" ,rust-mailparse-0.15)
+                       ("rust-rfc2047-decoder" ,rust-rfc2047-decoder-1)
                        ("rust-serde" ,rust-serde-1)
                        ("rust-tar" ,rust-tar-0.4)
-                       ("rust-thiserror" ,rust-thiserror-1)
-                       ("rust-xz" ,rust-xz-0.1)
+                       ("rust-thiserror" ,rust-thiserror-2)
+                       ("rust-xz2" ,rust-xz2-0.1)
                        ("rust-zip" ,rust-zip-0.6))
        #:cargo-development-inputs (("rust-serde-json" ,rust-serde-json-1))))
     (home-page "https://github.com/PyO3/python-pkginfo-rs")
