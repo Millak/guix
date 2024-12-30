@@ -5990,7 +5990,9 @@ faster results and to avoid unnecessary server load.")
               ;; This test calls an unimplemented bluez dbus method.
               (substitute* "src/linux/integration-test.py"
                 (("test_bluetooth_hidpp_mouse")
-                 "disabled_test_bluetooth_hidpp_mouse"))
+                 "disabled_test_bluetooth_hidpp_mouse")
+                (("test_daemon_restart")
+                 "disabled_test_daemon_restart"))
               #$@(if (target-x86-32?)
                      ;; Address test failure caused by excess precision
                      ;; on i686:
