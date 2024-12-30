@@ -92549,6 +92549,28 @@ for @code{Valuable} types.")
 integer encoding implementation in Rust.")
     (license license:expat)))
 
+(define-public rust-varisat-internal-proof-0.2
+  (package
+    (name "rust-varisat-internal-proof")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "varisat-internal-proof" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "01yj4zalzp6x6wa0yr3xl8v1q51xh1vgjr3dnxvz12h1r5xvnqv1"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-varisat-formula" ,rust-varisat-formula-0.2))
+       #:cargo-development-inputs (("rust-proptest" ,rust-proptest-0.10))))
+    (home-page "https://jix.one/project/varisat/")
+    (synopsis "Internal proof format for the Varisat SAT solver")
+    (description
+     "This package provides Internal proof format for the Varisat SAT solver.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-vcpkg-0.2
   (package
     (name "rust-vcpkg")
