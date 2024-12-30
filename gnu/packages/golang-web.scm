@@ -592,6 +592,34 @@ credentials sources.")
     (propagated-inputs
      (list go-github-com-aws-smithy-go))))
 
+(define-public go-github-com-aws-aws-sdk-go-v2-service-secretsmanager
+  (package
+    (name "go-github-com-aws-aws-sdk-go-v2-service-secretsmanager")
+    (version "1.34.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/aws/aws-sdk-go-v2")
+             (commit (go-version->git-ref version
+                                          #:subdir "service/secretsmanager"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1n3spqncpw6w11pwkqaiq7jyv6dv0229jsbshibg24l2g3accdqi"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/aws/aws-sdk-go-v2/service/secretsmanager"
+      #:unpack-path "github.com/aws/aws-sdk-go-v2"))
+    (propagated-inputs
+     (list go-github-com-aws-smithy-go))
+    (home-page "https://github.com/aws/aws-sdk-go-v2")
+    (synopsis "AWS Secrets Manager service")
+    (description
+     "Package secretsmanager provides the API client, operations, and
+parameter types for AWS Secrets Manager.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-aws-aws-sdk-go-v2-service-sso
   (package
     (inherit go-github-com-aws-aws-sdk-go-v2)
