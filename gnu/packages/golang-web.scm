@@ -7561,7 +7561,9 @@ connection management for @url{https://github.com/xtaci/kcp-go,kcp-go}.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "go.opentelemetry.io/otel"))
+      #:import-path "go.opentelemetry.io/otel"
+      ;; Error: Both arguments must be pointers.
+      #:test-flags #~(list "-skip" "TestTraceProviderDelegatesSameInstance")))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
