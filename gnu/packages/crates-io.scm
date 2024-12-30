@@ -91811,7 +91811,7 @@ mile, ...).")
 (define-public rust-url-2
   (package
     (name "rust-url")
-    (version "2.5.2")
+    (version "2.5.4")
     (source
      (origin
        (method url-fetch)
@@ -91819,12 +91819,12 @@ mile, ...).")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0v2dx50mx7xzl9454cl5qmpjnhkbahmn59gd3apyipbgyyylsy12"))))
+         "0q6sgznyy2n4l5lm16zahkisvc9nip9aa5q1pps7656xra3bdy1j"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-form-urlencoded" ,rust-form-urlencoded-1)
-        ("rust-idna" ,rust-idna-0.5)
+        ("rust-idna" ,rust-idna-1)
         ("rust-percent-encoding" ,rust-percent-encoding-2)
         ("rust-serde" ,rust-serde-1))
        #:cargo-development-inputs
