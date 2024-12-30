@@ -707,6 +707,35 @@ signing.")
      "This package provides Gradle templates for Smithy code generators.")
     (license license:asl2.0)))
 
+(define-public go-github-com-aws-smithy-go-metrics-smithyotelmetrics
+  (package
+    (name "go-github-com-aws-smithy-go-metrics-smithyotelmetrics")
+    (version "1.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/aws/smithy-go")
+             (commit (go-version->git-ref version
+                                          #:subdir "metrics/smithyotelmetrics"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16jbv7cyj85048f4kcrib8k2yif165sc099h0aklal5dwlf85xcg"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/aws/smithy-go/metrics/smithyotelmetrics"
+      #:unpack-path "github.com/aws/smithy-go"))
+    (propagated-inputs
+     (list go-go-opentelemetry-io-otel
+           go-go-opentelemetry-io-otel)) ; for go.opentelemetry.io/otel/metric
+    (home-page "https://github.com/aws/smithy-go")
+    (synopsis "AWS Smithy OTEL metrics adapter")
+    (description
+     "Package smithyotelmetrics implements a Smithy client metrics adapter for
+the OTEL Go SDK.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-aymerick-douceur
   (package
     (name "go-github-com-aymerick-douceur")
