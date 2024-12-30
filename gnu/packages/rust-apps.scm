@@ -1800,14 +1800,14 @@ on the terminal in a visually appealing way.")
 (define-public maturin
   (package
     (name "maturin")
-    (version "1.8.0")
+    (version "1.8.1")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "maturin" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0qqhd14szg5vb49z26vgjpj2wpa8vhnvjxf6yiam8zpcc3bm761x"))
+                "1mxgal826395cq9klg9h2f4qvqhi4s0v4x54bhvsikq2bjcf934w"))
               (patches (search-patches "maturin-no-cross-compile.patch"))))
     (build-system cargo-build-system)
     (arguments
