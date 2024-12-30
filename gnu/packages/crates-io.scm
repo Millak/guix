@@ -11739,33 +11739,36 @@ fields in a closure.")
 (define-public rust-cargo-config2-0.1
   (package
     (name "rust-cargo-config2")
-    (version "0.1.17")
+    (version "0.1.31")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "cargo-config2" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "00klqbgizddfrv7c420s06zx2q9qpd1ir72l40p651ib8rz1z0ch"))))
+                "1ws69v398i48f2a1n4gfrcpxh0j0d08mj9c24llw1wlkrdyp7als"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f          ; Not all files included.
+     `(#:cargo-test-flags
+       '("--"
+         "--skip=custom_target"
+         "--skip=de"
+         "--skip=easy"
+         "--skip=test_cargo_behavior")
        #:cargo-inputs
-       (("rust-home" ,rust-home-0.5)
-        ("rust-serde" ,rust-serde-1)
+       (("rust-serde" ,rust-serde-1)
         ("rust-serde-derive" ,rust-serde-derive-1)
-        ("rust-toml-edit" ,rust-toml-edit-0.21))
+        ("rust-toml-edit" ,rust-toml-edit-0.22)
+        ("rust-windows-sys" ,rust-windows-sys-0.59))
        #:cargo-development-inputs
        (("rust-anyhow" ,rust-anyhow-1)
         ("rust-build-context" ,rust-build-context-0.1)
         ("rust-clap" ,rust-clap-4)
-        ("rust-duct" ,rust-duct-0.13)
-        ("rust-fs-err" ,rust-fs-err-2)
+        ("rust-fs-err" ,rust-fs-err-3)
         ("rust-lexopt" ,rust-lexopt-0.3)
         ("rust-rustversion" ,rust-rustversion-1)
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-shell-escape" ,rust-shell-escape-0.1)
-        ("rust-similar-asserts" ,rust-similar-asserts-1)
         ("rust-static-assertions" ,rust-static-assertions-1)
         ("rust-tempfile" ,rust-tempfile-3)
         ("rust-toml" ,rust-toml-0.8))))
