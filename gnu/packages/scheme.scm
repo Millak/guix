@@ -20,7 +20,7 @@
 ;;; Copyright © 2022 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2022 Robby Zambito <contact@robbyzambito.me>
-;;; Copyright © 2023 Andrew Whatson <whatson@tailcall.au>
+;;; Copyright © 2023, 2024 Andrew Whatson <whatson@tailcall.au>
 ;;; Copyright © 2023, 2024 Juliana Sims <juli@incana.org>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2024 Skylar Hill <stellarskylark@posteo.net>
@@ -62,6 +62,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bdw-gc)
+  #:use-module (gnu packages build-tools)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages emacs)
@@ -82,16 +83,19 @@
   #:use-module (gnu packages lisp-check)
   #:use-module (gnu packages lisp-xyz)
   #:use-module (gnu packages m4)
+  #:use-module (gnu packages man)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages netpbm)
   #:use-module (gnu packages pcre)
+  #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages tex)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages version-control)
   #:use-module (gnu packages xorg)
   #:use-module (srfi srfi-1)
   #:use-module (ice-9 match))
@@ -619,6 +623,68 @@ addition to support for lightweight VM-based threads, each VM itself runs in
 an isolated heap allowing multiple VMs to run simultaneously in different OS
 threads.")
     (license bsd-3)))
+
+(define-public unsyntax
+  (let ((commit "144772eeef4a812dd79515b67010d33ad2e7e890")
+        (revision "0"))
+    (package
+      (name "unsyntax")
+      (version (git-version "0.0.3" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.com/nieper/unsyntax.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1ia58xdrywsm0dg19kmkghnrgw6gj2bsaypyjmbpirrila73cqk0"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:make-flags
+             #~(list "gl_public_submodule_commit=") ; disable submodule checks
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-before 'bootstrap 'prepare-bootstrap
+                   (lambda _
+                     ;; Unsyntax relies on bootstrap to fetch gnulib, we use
+                     ;; the sources from guix's gnulib package instead.
+                     (copy-recursively (getenv "GNULIB_SRCDIR") ".gnulib")
+                     (setenv "GNULIB_SRCDIR" ".gnulib")
+                     (patch-shebang ".gnulib/gnulib-tool")
+                     (patch-shebang ".gnulib/build-aux/bootstrap")
+                     (patch-shebang ".gnulib/build-aux/git-version-gen")
+                     (patch-shebang ".gnulib/build-aux/prefix-gnulib-mk")
+                     ;; The bootstrap_sync option updates the bootstrap script
+                     ;; and runs it with CONFIG_SHELL, make sure it's correct.
+                     (setenv "CONFIG_SHELL" (which "sh"))
+                     ;; Tell git-version-gen the correct version number.
+                     (call-with-output-file ".tarball-version"
+                       (lambda (port)
+                         (display #$version port)))))
+                 (add-before 'configure 'patch-exec-paths
+                   (lambda _
+                     ;; Fix hard-coded references to chibi-scheme, using the
+                     ;; configured interpreter path instead.  This avoids the need
+                     ;; for chibi-scheme as a propagated input.
+                     (substitute* '("src/compile-unsyntax.in"
+                                    "src/expand-unsyntax.in"
+                                    "src/unsyntax-scheme.in")
+                       (("chibi-scheme") "'@CHIBI_SCHEME@'")))))))
+      (native-inputs
+       (list autoconf automake libtool git gnulib help2man perl texinfo))
+      (inputs
+       (list chibi-scheme))
+      (home-page "https://www.unsyntax.org")
+      (synopsis "Expander for R7RS programs")
+      (description
+       "Unsyntax is an implementation of the Scheme programming language,
+specifically of its R7RS standard, and includes a number of extensions.
+Unsyntax evaluates Scheme expressions and compiles and runs Scheme programs by
+first expanding them into a minimal dialect of R7RS (small) without any
+syntactic extensions.  The resulting expression or program is then evaluated
+by an existing Scheme implementation.")
+      (license expat))))
 
 (define-public sicp
   (let ((commit "bda03f79d6e2e8899ac2b5ca6a3732210e290a79")
