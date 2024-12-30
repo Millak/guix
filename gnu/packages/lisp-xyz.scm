@@ -32837,3 +32837,40 @@ compression/decompression using bindings to the libzstd C library.")
 
 (define-public ecl-zstd
   (sbcl-package->ecl-package sbcl-zstd))
+
+(define-public sbcl-cl-transducers
+  (package
+    (name "sbcl-cl-transducers")
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/fosskers/cl-transducers")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0p7fqkmv0rfi5d7mmm9600qpix003bqr7as148pk157s1d44vncg"))))
+    (build-system asdf-build-system/sbcl)
+    (arguments
+     '(#:asd-systems '("transducers" "transducers/jzon" "transducers/fset")))
+    (native-inputs
+     (list sbcl-cl-str
+           sbcl-parachute))
+    (inputs
+     (list sbcl-fset
+           sbcl-jzon
+           sbcl-trivia))
+    (home-page "https://fosskers.github.io/cl-transducers/")
+    (synopsis "Data source processing for Common Lisp via transducers")
+    (description
+     "Transducers are an ergonomic and extremely memory-efficient way to
+process a data source.  Data source refers to simple collections like lists or
+vectors, but also potentially large files or generators of infinite data.")
+    (license license:mpl2.0)))
+
+(define-public cl-transducers
+  (sbcl-package->cl-source-package sbcl-cl-transducers))
+
+(define-public ecl-cl-transducers
+  (sbcl-package->ecl-package sbcl-cl-transducers))
