@@ -4884,37 +4884,8 @@ aware of your profiles and configuration in ~/.aws/config.")
 (define-public go-github-com-androiddnsfix
   (deprecated-package "go-github-com-androiddnsfix" go-github-com-mtibben-androiddnsfix))
 
-(define-public go-gopkg-in-ini
-  (package
-    (name "go-gopkg-in-ini")
-    (version "1.62.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://gopkg.in/ini.v1")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1dm9ydqyflasp5li22kb0w73s6kp2swii8naqfhnz64v171gmm5v"))))
-    (build-system go-build-system)
-    (native-inputs
-     (list go-github-com-smartystreets-goconvey))
-    (arguments
-     '(#:import-path "gopkg.in/ini.v1"
-       #:phases %standard-phases))
-    (synopsis "INI file read and write functionality in Go")
-    (description
-     "This package provides INI file read and write functionality in Go.")
-    (home-page "https://gopkg.in/ini.v1")
-    (license license:asl2.0)))
-
-;;; XXX: Since commit bfb61065f05a6eac0cf63b16db43d0c3e864c658, the
-;;; canonical name of the ini package is `go-github-com-go-ini-ini`,
-;;; not `go-gopkg-in-ini`.
 (define-public go-github-com-go-ini-ini
   (package
-    (inherit go-gopkg-in-ini)
     (name "go-github-com-go-ini-ini")
     (version "1.67.0")
     (source (origin
@@ -4926,9 +4897,15 @@ aware of your profiles and configuration in ~/.aws/config.")
               (sha256
                (base32
                 "1vpzkjmrwp7bqqsijp61293kk2vn6lcck56j8m5y6ks6cf21lpap"))))
+    (build-system go-build-system)
     (arguments
      (list #:import-path "github.com/go-ini/ini"))
-    (propagated-inputs (list go-github-com-stretchr-testify))))
+    (propagated-inputs (list go-github-com-stretchr-testify))
+    (home-page "https://gopkg.in/ini.v1")
+    (synopsis "INI file read and write functionality in Go")
+    (description
+     "This package provides INI file read and write functionality in Go.")
+    (license license:asl2.0)))
 
 (define-public go-github-com-dreamacro-go-shadowsocks2
   (package
