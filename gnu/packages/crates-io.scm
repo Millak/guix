@@ -53864,6 +53864,26 @@ and would-block I/O operations.")
         ("rust-tokio-core" ,rust-tokio-core-0.1))))
     (license license:bsd-3)))
 
+(define-public rust-partial-ref-0.3
+  (package
+    (name "rust-partial-ref")
+    (version "0.3.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "partial_ref" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "034i78nmzp2bdapvpz8fgh14932aj0s70l5s1kj5d5j7n74qnwhg"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; use of undeclared crate or module `partial_ref_tests`
+       #:cargo-inputs (("rust-partial-ref-derive" ,rust-partial-ref-derive-0.3))))
+    (home-page "https://github.com/jix/partial_ref")
+    (synopsis "Type checked partial references")
+    (description "This package provides type checked partial references.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-partial-ref-derive-0.3
   (package
     (name "rust-partial-ref-derive")
