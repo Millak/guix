@@ -1658,7 +1658,7 @@ JSON for post-processing
 (define-public miller
   (package
     (name "miller")
-    (version "6.12.0")
+    (version "6.13.0")
     (source
      (origin
        (method git-fetch)
@@ -1667,7 +1667,7 @@ JSON for post-processing
              (commit (go-version->git-ref version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "195lgayq5z7ndag3w495fs618pkrhz426kg0kp3s5sa68vr1madp"))))
+        (base32 "1w8ibmywsr9jsmmqrcvc0j7fx5vkdbwamizn4vim9xys807kmjsj"))))
     (build-system go-build-system)
     (arguments
      (list
