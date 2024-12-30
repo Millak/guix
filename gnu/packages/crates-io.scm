@@ -62041,8 +62041,34 @@ ecosystem.")
        (("rust-libc" ,rust-libc-0.2)
         ("rust-pyo3-build-config" ,rust-pyo3-build-config-0.16))))))
 
+(define-public rust-pyo3-log-0.11
+  (package
+    (name "rust-pyo3-log")
+    (version "0.11.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pyo3-log" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0hx4526pxbg3s6xbxsbkb3afjvma7drfd6jwawmbqn8ixip4xj1s"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-arc-swap" ,rust-arc-swap-1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-pyo3" ,rust-pyo3-0.21))
+       #:cargo-development-inputs (("rust-pyo3" ,rust-pyo3-0.21)
+                                   ("rust-syn" ,rust-syn-2))))
+    (inputs (list python-minimal))
+    (home-page "https://github.com/vorner/pyo3-log")
+    (synopsis "Logging bridge from pyo3 native extension to python")
+    (description "This package provides a logging bridge from pyo3 native
+extension to python.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-pyo3-log-0.8
   (package
+    (inherit rust-pyo3-log-0.11)
     (name "rust-pyo3-log")
     (version "0.8.4")
     (source (origin
@@ -62052,7 +62078,6 @@ ecosystem.")
               (sha256
                (base32
                 "1hrvdialyynmpnvydnfsnjm0mkmnv83acv237nkxhf35kcs2p760"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-arc-swap" ,rust-arc-swap-1)
@@ -62060,13 +62085,7 @@ ecosystem.")
         ("rust-pyo3" ,rust-pyo3-0.19))
        #:cargo-development-inputs
        (("rust-pyo3" ,rust-pyo3-0.19)
-        ("rust-syn" ,rust-syn-1))))
-    (inputs (list python))
-    (home-page "https://github.com/vorner/pyo3-log")
-    (synopsis "Logging bridge from pyo3 native extension to python")
-    (description "This package provides a logging bridge from pyo3 native
-extension to python.")
-    (license (list license:asl2.0 license:expat))))
+        ("rust-syn" ,rust-syn-1))))))
 
 (define-public rust-pyo3-macros-0.23
   (package
