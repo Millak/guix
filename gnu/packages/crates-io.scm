@@ -84420,8 +84420,38 @@ different for every thread.")
      `(#:cargo-inputs
        (("rust-thread-id" ,rust-thread-id-2))))))
 
+(define-public rust-thread-priority-1
+  (package
+    (name "rust-thread-priority")
+    (version "1.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "thread-priority" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1x9byxzv6n6qplkdfkw40xi6wfwisjklx8qkajn63bix0pbpbq6g"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; TODO: Figure out why many tests fail.
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-rustversion" ,rust-rustversion-1)
+                       ("rust-winapi" ,rust-winapi-0.3))
+       #:cargo-development-inputs (("rust-rstest" ,rust-rstest-0.19))))
+    (home-page "https://github.com/iddm/thread-priority")
+    (synopsis "Library for managing threads priority and schedule policies")
+    (description
+     "This package provides a library for managing threads priority and
+schedule policies.")
+    (license license:expat)))
+
 (define-public rust-thread-priority-0.10
   (package
+    (inherit rust-thread-priority-1)
     (name "rust-thread-priority")
     (version "0.10.0")
     (source
@@ -84431,19 +84461,13 @@ different for every thread.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0w9vrpkdlig1mrdxlz14815bgad3nm5dm22bjqpkb4b89jp1k1cp"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; TODO: Figure out why many tests fail.
        #:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1)
                        ("rust-libc" ,rust-libc-0.2)
                        ("rust-log" ,rust-log-0.4)
                        ("rust-winapi" ,rust-winapi-0.3))
-       #:cargo-development-inputs (("rust-rstest" ,rust-rstest-0.13))))
-    (home-page "https://github.com/vityafx/thread-priority")
-    (synopsis "Library for managing threads priority and schedule policies")
-    (description
-     "Library for managing threads priority and schedule policies.")
-    (license license:expat)))
+       #:cargo-development-inputs (("rust-rstest" ,rust-rstest-0.13))))))
 
 (define-public rust-thread-tree-0.3
   (package
