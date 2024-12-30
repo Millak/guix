@@ -82,6 +82,11 @@
                     (("TRUE") "true")
                     (("FALSE") "false"))
 
+                  ;; Patch for compatibility with ICU 75 and newer, which
+                  ;; adds non-breaking narrow spaces.
+                  (substitute* "test/parallel/test-intl.js"
+                    (("12:00:00 AM") "12:00:00 AM"))
+
                   ;; Fix process.versions.XXXX assumption of always having
                   ;; a version string of major.minor.patch and not major.minor.
                   (substitute* "test/parallel/test-process-versions.js"
