@@ -962,8 +962,30 @@ libpq.")
                        ("rust-uncased" ,rust-uncased-0.9))
        #:cargo-development-inputs (("rust-env-logger" ,rust-env-logger-0.10))))))
 
+(define-public rust-sqlite3-src-0.6
+  (package
+    (name "rust-sqlite3-src")
+    (version "0.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sqlite3-src" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0jkvjhgrfsq5m2ps3hh792mamwv8v6kf2gdj3wldn9vwyxnllk8p"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cc" ,rust-cc-1)
+                       ("rust-pkg-config" ,rust-pkg-config-0.3))))
+    (inputs (list sqlite))
+    (home-page "https://github.com/stainless-steel/sqlite3-src")
+    (synopsis "Provider of SQLite")
+    (description "The package provides SQLite.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-sqlite3-src-0.5
   (package
+    (inherit rust-sqlite3-src-0.6)
     (name "rust-sqlite3-src")
     (version "0.5.1")
     (source
@@ -983,15 +1005,9 @@ libpq.")
                      (format #t "fn main (){~@
                              println!(\"cargo:rustc-link-lib=sqlite3\");~@
                              }~%")))))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-cc" ,rust-cc-1)
-                       ("rust-pkg-config" ,rust-pkg-config-0.3))))
-    (inputs (list sqlite))
-    (home-page "https://github.com/stainless-steel/sqlite3-src")
-    (synopsis "Provider of SQLite")
-    (description "The package provides SQLite.")
-    (license (list license:asl2.0 license:expat))))
+                       ("rust-pkg-config" ,rust-pkg-config-0.3))))))
 
 (define-public rust-sqlite3-src-0.4
   (package
