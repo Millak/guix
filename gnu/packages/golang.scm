@@ -4799,7 +4799,12 @@ dependencies and a simple API.")
                   (copy-file "bash/aws-vault.bash"
                              (string-append bash-completion-dir "/aws-vault"))
                   (copy-file "fish/aws-vault.fish"
-                             (string-append fish-completion-dir "/aws-vault.fish")))))))))
+                             (string-append fish-completion-dir "/aws-vault.fish"))))))
+          ;; aws-vault: error: add: mkdir /homeless-shelter: permission
+          ;; denied.
+          (add-before 'check 'set-home
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
     (native-inputs
      (list go-github-com-99designs-keyring
            go-github-com-alecthomas-kingpin-v2
