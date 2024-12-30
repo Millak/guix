@@ -538,14 +538,14 @@ the same, being completely separated from the Internet.")
     ;; Track the ‘mainline’ branch.  Upstream considers it more reliable than
     ;; ’stable’ and recommends that “in general you deploy the NGINX mainline
     ;; branch at all times” (https://www.nginx.com/blog/nginx-1-6-1-7-released/)
-    (version "1.27.2")
+    (version "1.27.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://nginx.org/download/nginx-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1yi53dd6babjg3xx1jl19d0y0xkdi2yjg9pw790w38mkl31wy7m9"))))
+                "00vrkdx0a6fpy8n0n7m9xws0dfa7dbb9pqnh3jv3c824ixbaj8xs"))))
     (build-system gnu-build-system)
     (inputs (list libxcrypt libxml2 libxslt openssl pcre zlib))
     (arguments
@@ -636,9 +636,9 @@ and as a proxy to reduce the load on back-end HTTP or mail servers.")
 
 (define-public nginx-documentation
   ;; This documentation should be relevant for the current nginx package.
-  (let ((version "1.27.2")
-        (revision 3130)
-        (changeset "cee30b2e0ae2"))
+  (let ((version "1.27.3")
+        (revision 3156)
+        (changeset "5c6ef6def8bc"))
     (package
       (name "nginx-documentation")
       (version (simple-format #f "~A-~A-~A" version revision changeset))
@@ -650,7 +650,7 @@ and as a proxy to reduce the load on back-end HTTP or mail servers.")
                (file-name (string-append name "-" version))
                (sha256
                 (base32
-                 "1d8rkhry7y2mm6gfq8xzqwyivy2zyl1d96wcx4q5r58mhj8pk2c6"))))
+                 "09wdvgvsr7ayjz3ypq8qsm12idb9z626j5ibmknc8phm10gh8cgk"))))
       (build-system gnu-build-system)
       (arguments
        '(#:tests? #f                    ; no test suite
