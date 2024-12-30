@@ -2584,6 +2584,9 @@ GNOME Desktop.")
                (base32
                 "11hp93gqk7m64h84q5hndzlwj4w6hl0cbmzrk2pkdn04ikm2zj4v"))))
     (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list "CFLAGS=-g -O2 -Wno-error=incompatible-pointer-types")))
     (native-inputs
      (list autoconf
            automake
