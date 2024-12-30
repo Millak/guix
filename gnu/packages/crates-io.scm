@@ -92549,6 +92549,30 @@ for @code{Valuable} types.")
 integer encoding implementation in Rust.")
     (license license:expat)))
 
+(define-public rust-varisat-internal-macros-0.2
+  (package
+    (name "rust-varisat-internal-macros")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "varisat-internal-macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "13a0297kq3qhk6wa59sd44zjlhn0qs358ia8g2m6dl236mvwwbk0"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-syn" ,rust-syn-1)
+                       ("rust-synstructure" ,rust-synstructure-0.12))))
+    (home-page "https://jix.one/project/varisat/")
+    (synopsis "Internal macros for the Varisat SAT solver")
+    (description
+     "This package provides Internal macros for the Varisat SAT solver.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-varisat-internal-proof-0.2
   (package
     (name "rust-varisat-internal-proof")
