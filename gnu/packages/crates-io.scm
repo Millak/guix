@@ -62427,8 +62427,7 @@ avoided if possible.")
                 "1pj0qgmvwwsfwyjqyjxzikkwbwc3vj7hm3hdykr47dy5inbnhpj7"))))
     (build-system cargo-build-system)
     (arguments
-     (list #:skip-build? #f
-           #:cargo-inputs
+     (list #:cargo-inputs
            `(("rust-proc-macro2" ,rust-proc-macro2-1)
              ("rust-quote" ,rust-quote-1)
              ("rust-syn" ,rust-syn-1))))
