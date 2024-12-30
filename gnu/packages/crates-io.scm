@@ -92549,6 +92549,47 @@ for @code{Valuable} types.")
 integer encoding implementation in Rust.")
     (license license:expat)))
 
+(define-public rust-varisat-0.2
+  (package
+    (name "rust-varisat")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "varisat" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1bvwh2bk80a5nci3sd3p205200c6pmbgd5f299krd48y3n2hkrpb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-anyhow" ,rust-anyhow-1)
+        ("rust-itoa" ,rust-itoa-0.4)
+        ("rust-leb128" ,rust-leb128-0.2)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-ordered-float" ,rust-ordered-float-2)
+        ("rust-partial-ref" ,rust-partial-ref-0.3)
+        ("rust-rustc-hash" ,rust-rustc-hash-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-varisat-checker" ,rust-varisat-checker-0.2)
+        ("rust-varisat-dimacs" ,rust-varisat-dimacs-0.2)
+        ("rust-varisat-formula" ,rust-varisat-formula-0.2)
+        ("rust-varisat-internal-macros" ,rust-varisat-internal-macros-0.2)
+        ("rust-varisat-internal-proof" ,rust-varisat-internal-proof-0.2)
+        ("rust-vec-mut-scan" ,rust-vec-mut-scan-0.3))
+       #:cargo-development-inputs
+       (("rust-env-logger" ,rust-env-logger-0.7)
+        ("rust-proptest" ,rust-proptest-0.10)
+        ("rust-rand" ,rust-rand-0.7)
+        ("rust-tempfile" ,rust-tempfile-3)
+        ("rust-varisat-formula" ,rust-varisat-formula-0.2))))
+    (home-page "https://jix.one/project/varisat/")
+    (synopsis "CDCL based SAT solver (library)")
+    (description "This package provides a CDCL based SAT solver (library).")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-varisat-checker-0.2
   (package
     (name "rust-varisat-checker")
