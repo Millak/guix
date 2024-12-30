@@ -154,7 +154,7 @@
                    (url "test")))
          (test-dir (channel-instance-checkout instance--simple)))
     (mock ((guix git) update-cached-checkout
-           (lambda* (url #:key ref starting-commit)
+           (lambda* (url #:key ref starting-commit verify-certificate?)
              (match url
                ("test" (values test-dir "caf3cabba9e" #f))
                (_      (values (channel-instance-checkout instance--no-deps)
@@ -173,7 +173,7 @@
                    (url "test")))
          (test-dir (channel-instance-checkout instance--with-dupes)))
     (mock ((guix git) update-cached-checkout
-           (lambda* (url #:key ref starting-commit)
+           (lambda* (url #:key ref starting-commit verify-certificate?)
              (match url
                ("test" (values test-dir "caf3cabba9e" #f))
                (_      (values (channel-instance-checkout instance--no-deps)
