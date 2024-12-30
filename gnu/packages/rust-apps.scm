@@ -4237,7 +4237,7 @@ advanced keybindings, word-level diff highlighting, syntax highlighting for
 (define-public rust-xremap
   (package
     (name "rust-xremap")
-    (version "0.10.2")
+    (version "0.10.3")
     (source
      (origin
        (method url-fetch)
@@ -4245,7 +4245,7 @@ advanced keybindings, word-level diff highlighting, syntax highlighting for
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1chh8lcwx167f0bnd1w99rww54g9k9axf7qnxwcgzmg6m0adyx8d"))))
+         "0whvw9bbgjf5znb3025iqkj2aijasg6fcx9q1jy97kb0s4m996q2"))))
     (build-system cargo-build-system)
     (arguments
      `(#:features '()
