@@ -1934,23 +1934,24 @@ multi-mailbox mail watcher.  Currently, the protocols supported are:
 
 (define-public xfce4-mpc-plugin
   (package
-   (name "xfce4-mpc-plugin")
-   (version "0.5.3")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://archive.xfce.org/src/panel-plugins/"
-                                  "xfce4-mpc-plugin/"
-                                  (version-major+minor version)
-                                  "/xfce4-mpc-plugin-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "0kb6nz3md3cacl7ys6gz4h2qailr050wp28b7qy2v66d396znrq4"))))
+    (name "xfce4-mpc-plugin")
+    (version "0.5.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://gitlab.xfce.org/panel-plugins/"
+                                 name))
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1hxpxvlbz0dmfy8d7kay9c08nx9bs19sqrgpzw2f64jfznv0xaay"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list intltool pkg-config))
+     (list xfce4-dev-tools))
     (inputs
      (list libxfce4ui xfce4-panel))
-    (home-page "https://goodies.xfce.org/projects/panel-plugins/xfce4-mpc-plugin")
+    (home-page "https://docs.xfce.org/panel-plugins/xfce4-mpc-plugin/")
     (synopsis "Music Player Daemon plugin for the Xfce panel")
     (description "This is a simple client plugin for Music Player Daemon.
 
