@@ -30171,6 +30171,31 @@ and loading crate.")
         ("rust-plain" ,rust-plain-0.2)
         ("rust-scroll" ,rust-scroll-0.11))))))
 
+(define-public rust-graphql-client-0.14
+  (package
+    (name "rust-graphql-client")
+    (version "0.14.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "graphql_client" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0jqlq5adcq6pidn5sq51nk5wn4sc3nvxrhjmkn802zsbyg3zs355"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--"
+                            "--skip=GraphQLQuery (line 43)")
+       #:cargo-inputs (("rust-graphql-query-derive" ,rust-graphql-query-derive-0.14)
+                       ("rust-reqwest" ,rust-reqwest-0.11)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/graphql-rust/graphql-client")
+    (synopsis "Typed GraphQL requests and responses")
+    (description
+     "This package provides typed @code{GraphQL} requests and responses.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-graphql-client-codegen-0.14
   (package
     (name "rust-graphql-client-codegen")
