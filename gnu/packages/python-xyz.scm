@@ -36562,7 +36562,10 @@ into a human readable HTML table representation.")
              (when tests?
                ;; Make installed package available for running the tests.
                (add-installed-pythonpath inputs outputs)
-               (invoke "pytest" "-v")))))))
+               ;; We must provide the full path to the Python binary
+               ;; otherwise "test_search_prs_basic" test fails.
+               (invoke (search-input-file inputs "/bin/python")
+                       "-m" "pytest" "-v")))))))
     (native-inputs
      (list python-pytest))
     (propagated-inputs
