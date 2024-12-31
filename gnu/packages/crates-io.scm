@@ -34671,6 +34671,32 @@ data efficiently.")
         ("rust-serde-yaml" ,rust-serde-yaml-0.8)
         ("rust-uuid" ,rust-uuid-0.7))))))
 
+(define-public rust-instability-0.3
+  (package
+    (name "rust-instability")
+    (version "0.3.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "instability" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0xfgw4afzbhr0v87xilscyc5dxmmcznghr6cr585jczpa5j113l9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-darling" ,rust-darling-0.20)
+                       ("rust-indoc" ,rust-indoc-2)
+                       ("rust-pretty-assertions" ,rust-pretty-assertions-1)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/ratatui-org/instability")
+    (synopsis "Rust API stability attributes for the rest of us")
+    (description
+     "This package provides Rust API stability attributes for the rest of us.
+It is a fork of the `stability` crate.")
+    (license license:expat)))
+
 (define-public rust-instant-0.1
   (package
     (name "rust-instant")
