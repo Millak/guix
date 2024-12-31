@@ -717,20 +717,6 @@ deflate, zlib, and gzip data.")
     (arguments
      `(#:cargo-inputs (("rust-cc" ,rust-cc-1))))))
 
-(define-public rust-libdeflate-sys-0.11
-  (package
-    (inherit rust-libdeflate-sys-1)
-    (name "rust-libdeflate-sys")
-    (version "0.11.0")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "libdeflate-sys" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32 "0xs2wdly73ar7r9qyrbwnkwjjz4wd92kv5h78cdxfrsbp2v88ryb"))))
-    (arguments
-     `(#:cargo-inputs (("rust-cc" ,rust-cc-1))))))
-
 (define-public rust-libdeflater-1
   (package
     (name "rust-libdeflater")
