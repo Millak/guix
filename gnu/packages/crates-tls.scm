@@ -1686,33 +1686,6 @@ native certificate store.")
         ("rust-schannel" ,rust-schannel-0.1)
         ("rust-security-framework" ,rust-security-framework-2))))))
 
-(define-public rust-rustls-native-certs-0.4
-  (package
-    (inherit rust-rustls-native-certs-0.5)
-    (name "rust-rustls-native-certs")
-    (version "0.4.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "rustls-native-certs" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1f2rkvdkz92qcmwryyqiw9phkqkf95g4962ljpfq5nkjfsd477b2"))))
-    (arguments
-     `(#:tests? #f      ; Tests want network access
-       #:cargo-inputs
-       (("rust-openssl-probe" ,rust-openssl-probe-0.1)
-        ("rust-rustls" ,rust-rustls-0.18)
-        ("rust-schannel" ,rust-schannel-0.1)
-        ("rust-security-framework"
-         ,rust-security-framework-1))
-       #:cargo-development-inputs
-       (("rust-ring" ,rust-ring-0.16)
-        ("rust-untrusted" ,rust-untrusted-0.7)
-        ("rust-webpki" ,rust-webpki-0.21)
-        ("rust-webpki-roots" ,rust-webpki-roots-0.20))))))
-
 (define-public rust-rustls-pemfile-2
   (package
     (name "rust-rustls-pemfile")
