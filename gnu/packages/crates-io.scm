@@ -15452,8 +15452,57 @@ process group.")
      "Common path finds the common prefix between a set of paths.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-compact-str-0.8
+  (package
+    (name "rust-compact-str")
+    (version "0.8.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "compact_str" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0cmgp61hw4fwaakhilwznfgncw2p4wkbvz6dw3i7ibbckh3c8y9v"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-arbitrary" ,rust-arbitrary-1)
+                       ("rust-borsh" ,rust-borsh-1)
+                       ("rust-bytes" ,rust-bytes-1)
+                       ("rust-castaway" ,rust-castaway-0.2)
+                       ("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-diesel" ,rust-diesel-2)
+                       ("rust-itoa" ,rust-itoa-1)
+                       ("rust-markup" ,rust-markup-0.13)
+                       ("rust-proptest" ,rust-proptest-1)
+                       ("rust-quickcheck" ,rust-quickcheck-1)
+                       ("rust-rkyv" ,rust-rkyv-0.7)
+                       ("rust-rustversion" ,rust-rustversion-1)
+                       ("rust-ryu" ,rust-ryu-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-sqlx" ,rust-sqlx-0.7)
+                       ("rust-static-assertions" ,rust-static-assertions-1))
+       #:cargo-development-inputs
+       (("rust-cfg-if" ,rust-cfg-if-1)
+        ("rust-proptest" ,rust-proptest-1)
+        ("rust-quickcheck" ,rust-quickcheck-1)
+        ("rust-quickcheck-macros" ,rust-quickcheck-macros-1)
+        ("rust-rayon" ,rust-rayon-1)
+        ("rust-rkyv" ,rust-rkyv-0.7)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-test-case" ,rust-test-case-3)
+        ("rust-test-strategy" ,rust-test-strategy-0.3))))
+    (home-page "https://github.com/ParkMyCar/compact_str")
+    (synopsis "String type that stores strings on the stack, when possible")
+    (description
+     "This package provides a memory-efficient string type that transparently
+stores strings on the stack, when possible.")
+    (license license:expat)))
+
 (define-public rust-compact-str-0.7
   (package
+    (inherit rust-compact-str-0.8)
     (name "rust-compact-str")
     (version "0.7.1")
     (source (origin
@@ -15467,7 +15516,6 @@ process group.")
                #~(begin (use-modules (guix build utils))
                         (substitute* "Cargo.toml"
                           (("1\\.0\\.\\*") "1.0.0"))))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-arbitrary" ,rust-arbitrary-1)
@@ -15493,13 +15541,7 @@ process group.")
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-test-case" ,rust-test-case-2)
-        ("rust-test-strategy" ,rust-test-strategy-0.2))))
-    (home-page "https://github.com/ParkMyCar/compact_str")
-    (synopsis "String type that stores strings on the stack, when possible")
-    (description
-     "This package provides a memory-efficient string type that transparently
-stores strings on the stack, when possible.")
-    (license license:expat)))
+        ("rust-test-strategy" ,rust-test-strategy-0.2))))))
 
 ;; This package requires features which are unavailable
 ;; on the stable releases of Rust.
