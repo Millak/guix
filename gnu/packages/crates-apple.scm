@@ -1676,26 +1676,6 @@ framework.")
      "This package provides bindings to the @code{UserNotifications} framework.")
     (license license:expat)))
 
-(define-public rust-readkey-0.1
-  (package
-    (name "rust-readkey")
-    (version "0.1.7")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "readkey" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0iiip8bq4yhal5rv6wlws0xgz798blki7s5ly5cmlwm1ssv03m46"))))
-    (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
-    (home-page "https://github.com/segeljakt/readkey")
-    (synopsis "Library for finding out if a key is currently pressed on macOS")
-    (description
-     "This package provides a very small library for finding out if a key is
-currently pressed on macOS.")
-    (license license:expat)))
-
 (define-public rust-security-framework-3
   (package
     (name "rust-security-framework")
