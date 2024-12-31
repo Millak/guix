@@ -27168,24 +27168,6 @@ enumeration-based bit flags in rust.")
 test multiple times.")
     (license license:expat)))
 
-(define-public rust-flaky-test-0.1
-  (package
-    (inherit rust-flaky-test-0.2)
-    (name "rust-flaky-test")
-    (version "0.1.0")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "flaky_test" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "14yvm0knhcx0xfwlykir2v198x5bpwf333yrdl2mmkv8n5gdx727"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))))
-
 (define-public rust-flaky-test-impl-0.2
   (package
     (name "rust-flaky-test-impl")
