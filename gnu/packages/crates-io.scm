@@ -24564,29 +24564,6 @@ instances for enum.")
 implement enum_primitive.")
     (license license:expat)))
 
-(define-public rust-enum-to-u8-slice-derive-0.1
-  (package
-    (name "rust-enum-to-u8-slice-derive")
-    (version "0.1.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "enum_to_u8_slice_derive" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0hvzi74pnh5a7f4klrk0dz45l0mgcy5l3zajjhjsxzws28js4yc4"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-quote" ,rust-quote-0.3)
-        ("rust-syn" ,rust-syn-0.11))))
-    (home-page "https://github.com/mesalock-linux/enum_to_u8_slice_derive")
-    (synopsis "Convert enum to u8 slice ref")
-    (description
-     "This package provides a simple fork of @code{enum_to_str_derive},
-convert enum to u8 slice ref.")
-    (license license:bsd-3)))
-
 (define-public rust-enumber-0.3
   (package
     (name "rust-enumber")
