@@ -1421,18 +1421,22 @@ the desktop wallpaper.")
 (define-public xfce4-taskmanager
   (package
     (name "xfce4-taskmanager")
-    (version "1.5.7")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://archive.xfce.org/src/apps/"
-                                  "xfce4-taskmanager/" (version-major+minor version) "/"
-                                  "xfce4-taskmanager-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "1fv83xcbnlwabi32z3fsdik1knh7v45ji529dx9kwlv4b8pq6dk7"))))
+    (version "1.5.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://gitlab.xfce.org/apps/" name))
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0dmfbxnnyfv6n55krvjmgx8niv96xkpsf3il0bdmk928hzazhqh3"))))
     (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list "--enable-maintainer-mode"))) ;for process-window_ui.h, etc.
     (native-inputs
-     (list intltool pkg-config))
+     (list xfce4-dev-tools))
     (inputs
      (list libwnck
            libxmu
@@ -1441,7 +1445,7 @@ the desktop wallpaper.")
            ;; FIXME: Remove libxext and libxt when libxmu propagates them.
            libxext
            libxt))
-    (home-page "https://goodies.xfce.org/projects/applications/xfce4-taskmanager")
+    (home-page "https://docs.xfce.org/apps/xfce4-taskmanager/")
     (synopsis "Easy to use task manager")
     (description
      "This is a task manager for the Xfce desktop.  It displays the CPU and
