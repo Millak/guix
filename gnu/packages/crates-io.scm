@@ -17001,19 +17001,6 @@ http://reveng.sourceforge.net/crc-catalogue) expressed as simple Rust structs.")
      "This package provides a CRC64 checksum implementation in Rust.")
     (license license:bsd-3)))
 
-(define-public rust-crc64-1
-  (package
-    (inherit rust-crc64-2)
-    (name "rust-crc64")
-    (version "1.0.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "crc64" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0469vp0q9431pqx1236g60if5q3xyxpv4h14smkd45dfzsa6aqjm"))))))
-
 (define-public rust-critical-section-1
   (package
     (name "rust-critical-section")
