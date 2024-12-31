@@ -32148,26 +32148,6 @@ their key-value pairs in a user controllable order.")
        (("rust-rustc-hash" ,rust-rustc-hash-1)
         ("rust-serde-test" ,rust-serde-test-1))))))
 
-(define-public rust-hashlink-0.7
-  (package
-    (inherit rust-hashlink-0.8)
-    (name "rust-hashlink")
-    (version "0.7.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "hashlink" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1kzs54xq1g41zph39cfdfchiafij99382zw5fk6zq7xwkh9a6jbj"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-hashbrown" ,rust-hashbrown-0.11)
-        ("rust-serde" ,rust-serde-1))
-       #:cargo-development-inputs
-       (("rust-serde-test" ,rust-serde-test-1))))))
-
 (define-public rust-hdrhistogram-7
   (package
     (name "rust-hdrhistogram")
