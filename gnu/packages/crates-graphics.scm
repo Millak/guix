@@ -1015,22 +1015,6 @@ and iOS.")
     (description "This package provides libdav1d bindings in rust.")
     (license license:expat)))
 
-(define-public rust-dav1d-0.6
-  (package
-    (inherit rust-dav1d-0.10)
-    (name "rust-dav1d")
-    (version "0.6.1")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "dav1d" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0qz2lx37pmx798lysgh6k5lk5y20ckr7pp8c1p6v2z0p721i913j"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-dav1d-sys" ,rust-dav1d-sys-0.3))))))
-
 (define-public rust-dav1d-sys-0.8
   (package
     (name "rust-dav1d-sys")
