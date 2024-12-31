@@ -4673,9 +4673,10 @@ control functionality, or just for playing around with the sound effects.")
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags
-       ;; The upstream asks to identify the distribution to diagnose SoX
-       ;; bug reports.
-       '("--with-distro=Guix System Distribution")))
+       '("CFLAGS=-g -O2 -Wno-error=implicit-function-declaration"
+         ;; Upstream asks to identify the distribution to diagnose SoX
+         ;; bug reports.
+         "--with-distro=Guix System Distribution")))
     (native-inputs
      (list pkg-config))
     (inputs
