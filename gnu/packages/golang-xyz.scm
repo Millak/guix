@@ -1841,6 +1841,39 @@ using JIT and SIMD approaches.")
 library.")
     (license license:asl2.0)))
 
+(define-public go-github-com-c-bata-go-prompt
+  (package
+    (name "go-github-com-c-bata-go-prompt")
+    (version "0.2.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/c-bata/go-prompt")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16hfb5xvgixn1anbsvazs8ihcrzyww0n8fddx10yiygqhsp07avz"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/c-bata/go-prompt"))
+    (propagated-inputs
+     (list go-github-com-mattn-go-colorable
+           go-github-com-mattn-go-runewidth
+           go-github-com-mattn-go-tty
+           go-github-com-pkg-term
+           go-golang-org-x-sys))
+    (home-page "https://github.com/c-bata/go-prompt")
+    (synopsis "Interactive CLI prompts toolit")
+    (description
+     "This package provides a library for building powerful interactive
+prompts inspired by
+@url{https://github.com/jonathanslenders/python-prompt-toolkit,
+python-prompt-toolkit}, making it easier to build cross-platform command line
+tools using Go.")
+    (license license:expat)))
+
 (define-public go-github-com-caarlos0-env
   (package
     (name "go-github-com-caarlos0-env")
