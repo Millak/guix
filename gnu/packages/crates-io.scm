@@ -59748,28 +59748,6 @@ in codeblocks, while assuring quality with a powerful test suite.")
        (("rust-indoc" ,rust-indoc-1)
         ("rust-pretty-assertions" ,rust-pretty-assertions-0.7))))))
 
-(define-public rust-pulldown-cmark-to-cmark-7
-  (package
-    (inherit rust-pulldown-cmark-to-cmark-10)
-    (name "rust-pulldown-cmark-to-cmark")
-    (version "7.1.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "pulldown-cmark-to-cmark" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "03f6bnqjzchmzs4qaf63pirgj95b0x3l2rlp1wj1z27mp734phcb"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-pulldown-cmark" ,rust-pulldown-cmark-0.8))
-       #:cargo-development-inputs
-       (("rust-indoc" ,rust-indoc-1)
-        ("rust-pretty-assertions" ,rust-pretty-assertions-0.7))))))
-
 (define-public rust-pulse-0.5
   (package
     (name "rust-pulse")
