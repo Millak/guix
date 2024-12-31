@@ -1,0 +1,12 @@
+Upstream status: Not presented upstcream.
+
+--- source/api/mfx_dispatch/linux/mfxparser.cpp.orig	2024-12-31 21:52:28.147107173 +0100
++++ source/api/mfx_dispatch/linux/mfxparser.cpp	2024-12-31 21:52:47.471325750 +0100
+@@ -23,6 +23,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+ 
++#include <cstdint>
+ #include <list>
+ 
+ #include "mfxloader.h"
