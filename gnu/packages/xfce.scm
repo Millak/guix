@@ -967,15 +967,17 @@ menu.")
     (version "0.5.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://archive.xfce.org/src/bindings/"
-                           name "/" (version-major+minor version)
-                           "/" name "-" version ".tar.bz2"))
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://gitlab.xfce.org/bindings/"
+                                 name))
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "08lz9pvx006a2fypg2q38p61jbhy0yswz8cizlxpiwfcqsvhpnln"))))
+        (base32 "1x39pbdx4186f7bkrc9ab5q7qs783mivm2j1msyf9m1nh09y617f"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list pkg-config which))
+     (list xfce4-dev-tools))
     (inputs
      (list exo
            thunar
