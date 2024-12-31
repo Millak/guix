@@ -25274,24 +25274,6 @@ descriptor to it.")
         ("rust-windows-sys" ,rust-windows-sys-0.48))
        #:cargo-development-inputs (("rust-tempfile" ,rust-tempfile-3))))))
 
-(define-public rust-fd-lock-2
-  (package
-    (inherit rust-fd-lock-3)
-    (name "rust-fd-lock")
-    (version "2.0.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "fd-lock" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "01kzrikg3a60lxmr0k8bbm4nggh6693f1pf530ip136qzwpg0400"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-libc" ,rust-libc-0.2)
-        ("rust-winapi" ,rust-winapi-0.3))))))
-
 (define-public rust-fdlimit-0.1
   (package
     (name "rust-fdlimit")
