@@ -4114,6 +4114,35 @@ router.")
 @acronym{Simple Service Discovery Protocol, SSDP}} library for Golang.")
     (license license:expat)))
 
+(define-public go-github-com-labbsr0x-goh
+  (package
+    (name "go-github-com-labbsr0x-goh")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/labbsr0x/goh")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06yrd6ih6r0rkxyn88b66gfarjxsqmi3wzi8cgsxskq7mbah0iyp"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/labbsr0x/goh"))
+    (propagated-inputs
+     (list go-github-com-go-cmd-cmd
+           go-github-com-go-errors-errors
+           go-github-com-sirupsen-logrus))
+    (home-page "https://github.com/labbsr0x/goh")
+    (synopsis "Utility library for writing web hooks")
+    (description
+     "This package provides an utility library for writing extremely simple
+webhooks in Golang.")
+    (license license:expat)))
+
 (define-public go-github-com-levigross-grequests
   (package
     (name "go-github-com-levigross-grequests")
