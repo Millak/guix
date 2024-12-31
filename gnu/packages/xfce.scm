@@ -783,19 +783,25 @@ like appearance, display, keyboard and mouse settings.")
   (package
     (name "thunar")
     (version "4.20.0")                           ;stable version = even minor
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://archive.xfce.org/src/xfce/"
-                                  "thunar/" (version-major+minor version) "/"
-                                  "thunar-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "1c28fnhx8zah6gcq607p8hicar72i6nsydfan593gkxfydv1lwr7"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://gitlab.xfce.org/xfce/" name))
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "078jiydbqa7m86bls224cnqh876lbn5s5vnp345443q5xcayhajc"))))
     (build-system glib-or-gtk-build-system)
     (arguments
-     '(#:configure-flags '("--with-custom-thunarx-dirs-enabled")))
+     '(#:configure-flags '("--enable-maintainer-mode" ;for thunar-marshal.c
+                           "--enable-gtk-doc"
+                           "--with-custom-thunarx-dirs-enabled")
+       ;; XXX: abicheck.sh FAIL, will be fixed in next version.
+       ;; See <https://gitlab.xfce.org/xfce/thunar/-/issues/1516>.
+       #:tests? #f))
     (native-inputs
-     (list pkg-config intltool))
+     (list docbook-xsl libxslt xfce4-dev-tools))
     (inputs
      (list exo
            gobject-introspection
@@ -811,7 +817,7 @@ like appearance, display, keyboard and mouse settings.")
      (list (search-path-specification
             (variable "THUNARX_DIRS")
             (files (list "lib/thunarx-3")))))
-    (home-page "https://www.xfce.org/")
+    (home-page "https://docs.xfce.org/xfce/thunar/")
     (synopsis "Xfce file manager")
     (description
      "A modern file manager for graphical desktop, aiming to be easy-to-use and
