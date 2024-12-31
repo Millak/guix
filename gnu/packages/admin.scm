@@ -70,6 +70,7 @@
 ;;; Copyright © 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2024 nathan <nathan_mail@nborghese.com>
 ;;; Copyright © 2024 Nikita Domnitskii <nikita@domnitskii.me>
+;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1714,7 +1715,7 @@ maintenance releases.")
 (define-public radvd
   (package
     (name "radvd")
-    (version "2.19")
+    (version "2.20")
     (source
      (origin
        (method git-fetch)
@@ -1723,7 +1724,7 @@ maintenance releases.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1df827m3vkjq2bcs5y9wg2cygvpdwl8ppl446qqhyym584gz54nl"))))
+        (base32 "090b8953cq7pvxf8i5wsippsi3zc8jxy559k6jpfjjmbbvl8zlmk"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf
@@ -1732,6 +1733,7 @@ maintenance releases.")
            check
            flex
            pkg-config))
+    (inputs (list libbsd))
     (arguments
      `(#:configure-flags '("--with-check")))
     (home-page "https://radvd.litech.org/")
