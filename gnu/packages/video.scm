@@ -542,6 +542,10 @@ as a joint effort between the BBC and Fluendo.")
        (patches
         (search-patches "libquicktime-ffmpeg.patch"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "CFLAGS=-g -O2 -Wno-error=implicit-function-declaration")))
     (native-inputs
      (list gettext-minimal doxygen pkg-config))
     (inputs
