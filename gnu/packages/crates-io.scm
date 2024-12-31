@@ -78109,24 +78109,6 @@ automated acceptance tests for systems and software.")
 another project's @code{build.rs} module.")
     (license license:expat-0)))
 
-(define-public rust-subplot-build-0.7
-  (package
-    (inherit rust-subplot-build-0.11)
-    (name "rust-subplot-build")
-    (version "0.7.1")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "subplot-build" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1p38kq7fmg6gpwqmkymn68f2qiaw7k35s7i4k0ifs6g5c0d70xfw"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-subplot" ,rust-subplot-0.7)
-        ("rust-tempfile" ,rust-tempfile-3)
-        ("rust-tracing" ,rust-tracing-0.1))))))
-
 (define-public rust-subplotlib-0.11
   (package
     (name "rust-subplotlib")
