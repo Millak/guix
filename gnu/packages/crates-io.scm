@@ -68505,8 +68505,33 @@ statistical guarantees.")
 format (struct) containing years, days, hours, minutes and seconds.")
     (license license:expat)))
 
+(define-public rust-secrecy-0.10
+  (package
+    (name "rust-secrecy")
+    (version "0.10.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "secrecy" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0nmfsf9qm8921v2jliz08bj8zrryqar4gj3d6irqfc3kaj2az4g8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1)
+                       ("rust-zeroize" ,rust-zeroize-1))))
+    (home-page "https://github.com/iqlusioninc/crates/")
+    (synopsis "Wrapper types and traits for secret management")
+    (description
+     "This package provides wrapper types and traits for secret management which
+help ensure they aren't accidentally copied, logged, or otherwise exposed (as
+much as possible), and also ensure secrets are securely wiped from memory when
+dropped.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-secrecy-0.8
   (package
+    (inherit rust-secrecy-0.10)
     (name "rust-secrecy")
     (version "0.8.0")
     (source
@@ -68516,20 +68541,10 @@ format (struct) containing years, days, hours, minutes and seconds.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "07p9h2bpkkg61f1fzzdqqbf74kwv1gg095r1cdmjzzbcl17cblcv"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bytes" ,rust-bytes-1)
                        ("rust-serde" ,rust-serde-1)
-                       ("rust-zeroize" ,rust-zeroize-1))))
-    (home-page "https://github.com/iqlusioninc/crates/")
-    (synopsis
-     "Wrapper types and traits for secret management")
-    (description
-     "This package provides wrapper types and traits for secret management which
-help ensure they aren't accidentally copied, logged, or otherwise exposed (as
-much as possible), and also ensure secrets are securely wiped from memory when
-dropped.")
-    (license (list license:asl2.0 license:expat))))
+                       ("rust-zeroize" ,rust-zeroize-1))))))
 
 (define-public rust-secret-service-3
   (package
