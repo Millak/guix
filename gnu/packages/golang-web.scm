@@ -3291,6 +3291,30 @@ web applications.")
 incoming requests with their respective handler.")
     (license license:bsd-3)))
 
+(define-public go-github-com-gorilla-schema
+  (package
+    (name "go-github-com-gorilla-schema")
+    (version "1.4.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gorilla/schema")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16gk174mybvz0gg2w1wmpc96jhhi94i1vvclyzr3qkv7s6gadifn"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/gorilla/schema"))
+    (home-page "https://github.com/gorilla/schema")
+    (synopsis "Fills a struct with form values")
+    (description
+     "This package implements a functionality to fills a struct with form
+values.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-gorilla-securecookie
   (package
     (name "go-github-com-gorilla-securecookie")
