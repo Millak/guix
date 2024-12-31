@@ -2107,32 +2107,6 @@ to interact with Git credentials helpers.")
                        ("rust-serde" ,rust-serde-1)
                        ("rust-thiserror" ,rust-thiserror-1))))))
 
-(define-public rust-gix-credentials-0.15
-  (package
-    (inherit rust-gix-credentials-0.20)
-    (name "rust-gix-credentials")
-    (version "0.15.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "gix-credentials" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0r8dr9d1xzfq74sg3j2bhd6zsyk3y5322155izpzaa6dibm9zy66"))))
-    (arguments
-     `(#:tests? #f      ; use of undeclared crate or module `gix_testtools`
-       #:cargo-inputs
-       (("rust-bstr" ,rust-bstr-1)
-        ("rust-document-features" ,rust-document-features-0.2)
-        ("rust-gix-command" ,rust-gix-command-0.2)
-        ("rust-gix-config-value" ,rust-gix-config-value-0.12)
-        ("rust-gix-path" ,rust-gix-path-0.8)
-        ("rust-gix-prompt" ,rust-gix-prompt-0.5)
-        ("rust-gix-sec" ,rust-gix-sec-0.8)
-        ("rust-gix-url" ,rust-gix-url-0.19)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-thiserror" ,rust-thiserror-1))))))
-
 (define-public rust-gix-date-0.9
   (package
     (name "rust-gix-date")
