@@ -5795,30 +5795,6 @@ handles finding names and parsing specifications.")
                        ("rust-serde" ,rust-serde-1)
                        ("rust-thiserror" ,rust-thiserror-1))))))
 
-(define-public rust-gix-revision-0.15
-  (package
-    (inherit rust-gix-revision-0.22)
-    (name "rust-gix-revision")
-    (version "0.15.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "gix-revision" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1mrcjg8180n3kgbsngfaavzlfsqbmr905gjc0fdwx1x4sxngai2h"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-bstr" ,rust-bstr-1)
-        ("rust-document-features" ,rust-document-features-0.2)
-        ("rust-gix-date" ,rust-gix-date-0.5)
-        ("rust-gix-hash" ,rust-gix-hash-0.11)
-        ("rust-gix-hashtable" ,rust-gix-hashtable-0.2)
-        ("rust-gix-object" ,rust-gix-object-0.30)
-        ("rust-gix-revwalk" ,rust-gix-revwalk-0.1)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-thiserror" ,rust-thiserror-1))))))
-
 (define-public rust-gix-revwalk-0.15
   (package
     (name "rust-gix-revwalk")
