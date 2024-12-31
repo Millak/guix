@@ -83075,29 +83075,6 @@ introspection APIs.")
     (description "This package provides a Rust FFI bindings to jemalloc.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-tikv-jemalloc-sys-0.4
-  (package
-    (inherit rust-tikv-jemalloc-sys-0.6)
-    (name "rust-tikv-jemalloc-sys")
-    (version "0.4.1+5.2.1-patched")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "tikv-jemalloc-sys" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1lw6gy9gzk7g7h71nm8a5ybrilhqgr583mn80nslr78p0ldk69la"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin (delete-file-recursively "jemalloc")))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-cc" ,rust-cc-1)
-        ("rust-fs-extra" ,rust-fs-extra-1)
-        ("rust-libc" ,rust-libc-0.2))))))
-
 (define-public rust-tikv-jemallocator-0.6
   (package
     (name "rust-tikv-jemallocator")
