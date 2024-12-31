@@ -656,21 +656,24 @@ per window.")
   (package
     (name "xfce4-appfinder")
     (version "4.20.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://archive.xfce.org/src/xfce/"
-                                  name "/"
-                                  (version-major+minor version)
-                                  "/" name "-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "013kkspy9gma5yzzwvwqm9452i6z67zc4f2lnifjhgn8gpvq5jl2"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://gitlab.xfce.org/xfce/" name))
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1irqbabdgj5ybns55g92548jcr0i1k4q0c7s8jn17r7g8ygd12qy"))))
     (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list "--enable-maintainer-mode"))) ;for appfinder-preferences-ui.h
     (native-inputs
-     (list pkg-config intltool))
+     (list xfce4-dev-tools))
     (inputs
      (list garcon gtk+ libxfce4ui))
-    (home-page "https://www.xfce.org/")
+    (home-page "https://docs.xfce.org/xfce/xfce4-appfinder/")
     (synopsis "Xfce application finder")
     (description
      "Application finder for Xfce, it will show the applications installed on
