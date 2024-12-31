@@ -10031,6 +10031,41 @@ Pion}.")
      "This package provides a Go library to create and print diffs.")
     (license license:bsd-3)))
 
+(define-public go-github-com-pkg-term
+  (package
+    (name "go-github-com-pkg-term")
+    (version "1.2.0-beta.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pkg/term")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1fflh4lglbvdz8949h8spbw3vwdldgnl6zgps4ylzzr40hhyvgf5"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/pkg/term"
+      #:test-flags
+      #~(list "-skip"
+              (string-join
+               ;; Tests fail with error: inappropriate ioctl for device.
+               (list "TestTiocmbic"
+                     "TestTiocmbis"
+                     "TestTiocmget"
+                     "TestTiocmset")
+               "|"))))
+    (propagated-inputs (list go-golang-org-x-sys))
+    (home-page "https://github.com/pkg/term")
+    (synopsis "Manages POSIX terminals from Golang")
+    (description
+     "Package term manages POSIX terminals.  As POSIX terminals are connected
+to, or emulate, a UART, this package also provides control over the various
+UART and serial line parameters.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-pkg-xattr
   (package
     (name "go-github-com-pkg-xattr")
