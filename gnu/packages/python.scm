@@ -183,7 +183,14 @@
      (list
       #:test-target "test"
       #:configure-flags
-      #~(list "--enable-shared"          ;allow embedding
+      #~(list ;; -fno-semantic-interposition reinstates some optimizations by gcc
+              ;; leading to around 15% speedup. This is the default starting from
+              ;; python 3.10.
+              ;; XXX FIXME: How to add "-Wno-error=implicit-function-declaration"
+              ;; *only* for *this* python-2 package?  It's not needed for any
+              ;; package inheriting from us.
+              "CFLAGS=-Wno-error=incompatible-pointer-types -fno-semantic-interposition"
+              "--enable-shared"          ;allow embedding
               "--with-system-expat"      ;for XML support
               "--with-system-ffi"        ;build ctypes
               "--with-ensurepip=install" ;install pip and setuptools
@@ -207,10 +214,6 @@
                         "ac_cv_file__dev_ptmx=no"
                         "ac_cv_file__dev_ptc=no")
                      #~())
-              ;; -fno-semantic-interposition reinstates some optimizations by gcc
-              ;; leading to around 15% speedup. This is the default starting from
-              ;; python 3.10.
-              "CFLAGS=-fno-semantic-interposition"
               (string-append "LDFLAGS=-Wl,-rpath="
                              (assoc-ref %outputs "out") "/lib"
                              " -fno-semantic-interposition")
