@@ -91033,21 +91033,6 @@ of help files.")
 for formatting strings into a grid layout.")
     (license license:expat)))
 
-(define-public rust-uutils-term-grid-0.3
-  (package
-    (inherit rust-uutils-term-grid-0.6)
-    (name "rust-uutils-term-grid")
-    (version "0.3.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "uutils_term_grid" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1ixvj893jrcvv76m7cgr99fc25la6xl2101qva6ni646aqm4b2dk"))))
-    (arguments
-     `(#:cargo-inputs (("rust-unicode-width" ,rust-unicode-width-0.1))))))
-
 (define-public rust-uzers-0.12
   (package
     (name "rust-uzers")
