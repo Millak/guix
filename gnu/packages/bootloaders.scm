@@ -625,9 +625,7 @@ The SUBDIR argument defaults to \"efi/Guix\", as it is also the case for
                                  "syslinux-strip-gnu-property.patch"))))
       (build-system gnu-build-system)
       (native-inputs
-       `(("nasm" ,nasm)
-         ("perl" ,perl)
-         ("python-2" ,python-2)))
+       (list nasm perl python))
       (inputs
        `(("libuuid" ,util-linux "lib")
          ("mtools" ,mtools)))
@@ -641,6 +639,7 @@ The SUBDIR argument defaults to \"efi/Guix\", as it is also the case for
                (string-append "DATADIR=" %output "/share")
                (string-append "MANDIR=" %output "/share/man")
                "PERL=perl"
+               "PYTHON=python3"
                "bios")
          #:strip-flags '("--strip-debug" "--enable-deterministic-archives")
          #:phases
