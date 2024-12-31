@@ -5418,39 +5418,6 @@ well as the Elliptic-Curve-Point-to-Octet-String encoding.")
        #:cargo-development-inputs (("rust-hex-literal" ,rust-hex-literal-0.3)
                                    ("rust-tempfile" ,rust-tempfile-3))))))
 
-(define-public rust-secp256k1-0.21
-  (package
-    (name "rust-secp256k1")
-    (version "0.21.3")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "secp256k1" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-          (base32 "0q0jfmnshx6xkmhb4c89s752n7ql6ik8vqj33vsh0pswfgqychlw"))))
-    (build-system cargo-build-system)
-    (arguments
-      `(#:cargo-inputs
-        (("rust-bitcoin-hashes" ,rust-bitcoin-hashes-0.10)
-         ("rust-rand" ,rust-rand-0.6)
-         ("rust-secp256k1-sys" ,rust-secp256k1-sys-0.4)
-         ("rust-serde" ,rust-serde-1))
-        #:cargo-development-inputs
-        (("rust-bitcoin-hashes" ,rust-bitcoin-hashes-0.10)
-         ("rust-rand" ,rust-rand-0.6)
-         ("rust-rand-core" ,rust-rand-core-0.4)
-         ("rust-serde-test" ,rust-serde-test-1)
-         ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))
-    (home-page "https://github.com/rust-bitcoin/rust-secp256k1/")
-    (synopsis
-      "Rust wrapper library for Pieter Wuille's @code{libsecp256k1}")
-    (description
-      "This package is a Rust wrapper library for Pieter Wuille's
-@code{libsecp256k1}.  It implements ECDSA and BIP 340 signatures for the
-SECG elliptic curve group secp256k1 and related utilities.")
-    (license license:cc0)))
-
 (define-public rust-secp256k1-sys-0.4
   (package
     (name "rust-secp256k1-sys")
