@@ -22,6 +22,7 @@
 ;;; Copyright © 2024 Navid Afkhami <navid.afkhami@mdc-berlin.de>
 ;;; Copyright © 2024 David Elsing <david.elsing@posteo.net>
 ;;; Copyright © 2024 Eric Bavier <bavier@posteo.net>
+;;; Copyright © 2024 Markku Korkeala <markku.korkeala@iki.fi>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -120,6 +121,37 @@
      "This package provides a simple assertion library for unit testing in
 Python with a fluent API.")
     (license license:bsd-3)))
+
+(define-public python-robotframework-jsonlibrary
+  (package
+    (name "python-robotframework-jsonlibrary")
+    (version "0.5")
+    (source
+     (origin
+       (method git-fetch)   ; no tests data in PyPi package
+       (uri (git-reference
+             (url (string-append "https://github.com/robotframework-thailand/"
+                                 "robotframework-jsonlibrary"))
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zkhcmwlp9gy9a0262ylykr9pljq9mpkaa69340hhfkzygzi30dc"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-jsonpath-ng
+           python-jsonschema
+           python-robotframework))
+    (home-page "https://github.com/robotframework-thailand/robotframework-jsonlibrary")
+    (synopsis "Robot Framework test library for manipulating JSON Object")
+    (description
+     "@code{robotframework-jsonlibrary} is a Robot Framework test library for
+manipulating JSON Object.  You can manipulate your JSON object using JSONPath")
+    ;; This is free and unencumbered software released into the public domain.
+    (license license:unlicense)))
 
 (define-public python-tappy
   (package
