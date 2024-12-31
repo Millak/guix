@@ -63134,19 +63134,6 @@ Arc and Rc APIs.")
 reference counting.")
     (license license:expat)))
 
-(define-public rust-rctree-0.5
-  (package
-    (inherit rust-rctree-0.6)
-    (name "rust-rctree")
-    (version "0.5.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "rctree" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0kvzahkwriawhjjb08ai7rfi77px7rpx5h83hjcx6dccyxzf4hiv"))))))
-
 (define-public rust-rdrand-0.4
   (package
     (name "rust-rdrand")
