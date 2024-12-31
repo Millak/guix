@@ -1953,28 +1953,6 @@ Gitoxide project.  Gitoxide is a pure Rust implementation of Git.")
 Gitoxide a Rust implementation of Git.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-gix-config-value-0.12
-  (package
-    (inherit rust-gix-config-value-0.14)
-    (name "rust-gix-config-value")
-    (version "0.12.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "gix-config-value" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "15rqyj523ckas16sn0jbqpgzln4h1fcpdsnwj4lw0hbl8d0lz1vf"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-bitflags" ,rust-bitflags-2)
-        ("rust-bstr" ,rust-bstr-1)
-        ("rust-document-features" ,rust-document-features-0.2)
-        ("rust-gix-path" ,rust-gix-path-0.8)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-thiserror" ,rust-thiserror-1))))))
-
 (define-public rust-gix-credentials-0.24
   (package
     (name "rust-gix-credentials")
