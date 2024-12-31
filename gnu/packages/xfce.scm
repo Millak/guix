@@ -1716,24 +1716,24 @@ core or CPU.")
 
 (define-public xfce4-eyes-plugin
   (package
-   (name "xfce4-eyes-plugin")
-   (version "4.6.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://archive.xfce.org/src/panel-plugins/"
-                                  "xfce4-eyes-plugin/"
-                                  (version-major+minor version)
-                                  "/xfce4-eyes-plugin-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "092kmv2i0flg3zg622q0id70mz1kvlz27y12i5y3nfdsi1fz03xd"))))
+    (name "xfce4-eyes-plugin")
+    (version "4.6.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://gitlab.xfce.org/panel-plugins/"
+                                 name))
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1wwfxhaxp6r8g4jvj5ax7a3djh4q896ilxdfdcx6n67qzs5ksq8h"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list intltool pkg-config))
+     (list xfce4-dev-tools))
     (inputs
      (list libxfce4ui xfce4-panel))
-    (home-page
-     "https://goodies.xfce.org/projects/panel-plugins/xfce4-eyes-plugin")
+    (home-page "https://docs.xfce.org/panel-plugins/xfce4-eyes-plugin/")
     (synopsis "Display a pair of eyes for the Xfce panel")
     (description "Eyes is a toy Xfce panel plugin that adds eyes which
 watch your every step.")
