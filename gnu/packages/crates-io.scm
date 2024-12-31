@@ -11879,34 +11879,6 @@ chain, the first matching branch is the item that gets emitted.")
 macros.")
     (license (list license:asl2.0 license:expat))))
 
-(define-public rust-chalk-ir-0.75
-  (package
-    (name "rust-chalk-ir")
-    (version "0.75.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "chalk-ir" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "12iyziaw14qb0wz3pqx70qwqa9r0qsi5d4y6j0g32yabs2hyay9b"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-bitflags" ,rust-bitflags-1)
-        ("rust-chalk-derive" ,rust-chalk-derive-0.75)
-        ("rust-lazy-static" ,rust-lazy-static-1))))
-    (home-page "https://github.com/rust-lang/chalk")
-    (synopsis
-     "Chalk's internal representation of types, goals, and clauses")
-    (description
-     "This package provides Chalk's internal representation of types, goals, and
-clauses.")
-    (license (list license:asl2.0 license:expat))))
-
 (define-public rust-chan-0.1
   (package
     (name "rust-chan")
