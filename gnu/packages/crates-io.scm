@@ -88997,36 +88997,37 @@ at least 1 element.")
 engines, with SIMD support and focus on convenience.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-vergen-7
+(define-public rust-vergen-8
   (package
     (name "rust-vergen")
-    (version "7.5.1")
+    (version "8.3.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "vergen" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0jap8dksn4i8pf2d10w64pz79rz13wyg073j6nbwwvk3sqf8h6zj"))))
+        (base32 "0ri5n4k1g4z6gnllkjx9zny3vaa2bjma84zlrjh6w9k7b7mdk419"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f
        #:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-cargo-metadata" ,rust-cargo-metadata-0.18)
                        ("rust-cfg-if" ,rust-cfg-if-1)
-                       ("rust-enum-iterator" ,rust-enum-iterator-1)
-                       ("rust-getset" ,rust-getset-0.1)
-                       ("rust-git2" ,rust-git2-0.16)
+                       ("rust-git2" ,rust-git2-0.19)
+                       ("rust-gix" ,rust-gix-0.63)
+                       ("rust-regex" ,rust-regex-1)
                        ("rust-rustc-version" ,rust-rustc-version-0.4)
                        ("rust-rustversion" ,rust-rustversion-1)
-                       ("rust-sysinfo" ,rust-sysinfo-0.27)
-                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-sysinfo" ,rust-sysinfo-0.30)
                        ("rust-time" ,rust-time-0.3))
-       #:cargo-development-inputs (("rust-lazy-static" ,rust-lazy-static-1)
+       #:cargo-development-inputs (("rust-gix" ,rust-gix-0.63)
+                                   ("rust-lazy-static" ,rust-lazy-static-1)
                                    ("rust-regex" ,rust-regex-1)
-                                   ("rust-serial-test" ,rust-serial-test-1)
-                                   ("rust-tempfile" ,rust-tempfile-3))))
+                                   ("rust-serial-test" ,rust-serial-test-3)
+                                   ("rust-temp-env" ,rust-temp-env-0.3))))
     (native-inputs (list pkg-config))
-    (inputs (list libgit2 zlib))
+    (inputs (list libgit2-1.8 zlib))
     (home-page "https://github.com/rustyhorde/vergen")
     (synopsis
      "Generate @code{cargo:rustc-env} instructions via @code{build.rs} for use
@@ -89037,7 +89038,7 @@ in your code via the @code{env!} macro")
 
 (define-public rust-vergen-3
   (package
-    (inherit rust-vergen-7)
+    (inherit rust-vergen-8)
     (name "rust-vergen")
     (version "3.2.0")
     (source
