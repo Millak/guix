@@ -1140,15 +1140,17 @@ local and remote file systems and manage bookmarks of such.")
 (define-public parole
   (package
     (name "parole")
-    (version "4.18.1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://archive.xfce.org/src/apps/"
-                                  name "/" (version-major+minor version) "/"
-                                  name "-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "0rjsqm582c8i3lyi1n2ghp638cr0chw358i05g7njbw1hjj68wqc"))))
+    (version "4.18.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://gitlab.xfce.org/apps/"
+                                 name))
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1yzqry3pbgn413nflw7a8cm3xdq96w5pj41b04p5drr7qs44d1qb"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -1165,11 +1167,10 @@ local and remote file systems and manage bookmarks of such.")
                   #:sh (search-input-file inputs "bin/bash")
                   `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path)))))))))
     (native-inputs
-     (list pkg-config intltool gobject-introspection))
+     (list gobject-introspection xfce4-dev-tools))
     (inputs
      (list bash-minimal                           ;for 'wrap-program'
            dbus-glib
-           (list glib "bin")
            gstreamer
            gst-plugins-base
            gst-plugins-good
@@ -1177,7 +1178,7 @@ local and remote file systems and manage bookmarks of such.")
            libxfce4ui
            libxfce4util
            taglib))
-    (home-page "https://www.xfce.org/")
+    (home-page "https://docs.xfce.org/apps/parole/")
     (synopsis "Media player based on the GStreamer framework")
     (description "Parole is a modern simple media player based on the
 GStreamer framework and written to fit well in the Xfce desktop.  Parole
