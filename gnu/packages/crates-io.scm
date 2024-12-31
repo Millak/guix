@@ -59351,34 +59351,9 @@ compliant email address validation.")
         ("rust-regex" ,rust-regex-1)
         ("rust-tendril" ,rust-tendril-0.4))))))
 
-(define-public rust-pulldown-cmark-0.2
-  (package
-    (name "rust-pulldown-cmark")
-    (version "0.2.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "pulldown-cmark" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "05gfnqa0wzix5m17jrmgj0yyr9sflqm0knn79ndppsnhcan2zxgf"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-getopts" ,rust-getopts-0.2)
-        ("rust-bitflags" ,rust-bitflags-1))))
-    (home-page "https://github.com/raphlinus/pulldown-cmark")
-    (synopsis "Pull parser for CommonMark")
-    (description
-     "This package provides a pull parser for CommonMark.")
-    (license license:expat)))
-
 (define-public rust-pulldown-cmark-0.1
   (package
-    (inherit rust-pulldown-cmark-0.2)
+    (inherit rust-pulldown-cmark-0.11)
     (name "rust-pulldown-cmark")
     (version "0.1.2")
     (source
