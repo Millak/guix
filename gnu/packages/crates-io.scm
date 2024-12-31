@@ -41034,24 +41034,6 @@ in plain text.  It is smart about where a link ends, such as with trailing
 punctuation.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-linkify-0.4
-  (package
-    (inherit rust-linkify-0.7)
-    (name "rust-linkify")
-    (version "0.4.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "linkify" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "15i0q81vrhm4asskacy2z83fyj09ivcff0km82gwbli4vlkib583"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-memchr" ,rust-memchr-2))
-       #:cargo-development-inputs
-       (("rust-version-sync" ,rust-version-sync-0.8))))))
-
 (define-public rust-linux-keyutils-0.2
   (package
     (name "rust-linux-keyutils")
