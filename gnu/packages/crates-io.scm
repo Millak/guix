@@ -40229,32 +40229,6 @@ networks that do not have a local name server.  Network services can be
 advertised and discovered using this mechanism.")
     (license license:expat)))
 
-(define-public rust-libmdns-0.6
-  (package
-    (inherit rust-libmdns-0.7)
-    (name "rust-libmdns")
-    (version "0.6.3")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "libmdns" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32 "0n1ymkv5246c5yj2m70ql07z38hrz6b2l16lg3wpb98vz7mbqd59"))))
-    (arguments
-     (list #:cargo-inputs
-           `(("rust-byteorder" ,rust-byteorder-1)
-             ("rust-futures-util" ,rust-futures-util-0.3)
-             ("rust-hostname" ,rust-hostname-0.3)
-             ("rust-if-addrs" ,rust-if-addrs-0.6)
-             ("rust-log" ,rust-log-0.4)
-             ("rust-multimap" ,rust-multimap-0.8)
-             ("rust-rand" ,rust-rand-0.8)
-             ("rust-socket2" ,rust-socket2-0.4)
-             ("rust-thiserror" ,rust-thiserror-1)
-             ("rust-tokio" ,rust-tokio-1))
-           #:cargo-development-inputs
-           `(("rust-env-logger" ,rust-env-logger-0.8))))))
-
 (define-public rust-libmimalloc-sys-0.1
   (package
     (name "rust-libmimalloc-sys")
