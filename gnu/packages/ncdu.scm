@@ -62,14 +62,14 @@ ncurses installed.")
   (package
     (inherit ncdu-1)
     (name "ncdu")
-    (version "2.6")
+    (version "2.7")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://dev.yorhel.nl/download/ncdu-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "01g5mpvsm78lkd0yin82gyancrl23npy69qcp3d60vmm72yiwirz"))))
+                "001hp47g45rlmbirg85cqflfg049xhdf5d0xjp7m565vl8acq65j"))))
     (build-system zig-build-system)
     (arguments
      (list #:install-source? #f
