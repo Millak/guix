@@ -142,24 +142,6 @@
                        ("rust-quote" ,rust-quote-1)
                        ("rust-syn" ,rust-syn-2))))))
 
-(define-public rust-asn1-derive-0.15
-  (package
-    (inherit rust-asn1-derive-0.20)
-    (name "rust-asn1-derive")
-    (version "0.15.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "asn1_derive" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1771kfjycjs4g2acqvxpjy3igfcgg8hychczl1lsqq64za4gj6l6"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-2))))))
-
 (define-public rust-asn1-rs-0.6
   (package
     (name "rust-asn1-rs")
