@@ -1039,23 +1039,6 @@ and iOS.")
     (description "This package provides FFI bindings to dav1d.")
     (license license:expat)))
 
-(define-public rust-dav1d-sys-0.7
-  (package
-    (inherit rust-dav1d-sys-0.8)
-    (name "rust-dav1d-sys")
-    (version "0.7.3")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "dav1d-sys" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32 "13z5qvf35lkda67l6l1bkdp1gmqg75cqfblldxh4n8rbmn4zsj9s"))))
-    (arguments
-     `(#:skip-build? #t     ; Expects 1.0.0 <= dav1d < 1.3.0
-       #:cargo-inputs
-       (("rust-libc" ,rust-libc-0.2)
-        ("rust-system-deps" ,rust-system-deps-6))))))
-
 (define-public rust-dcv-color-primitives-0.6
   (package
     (name "rust-dcv-color-primitives")
