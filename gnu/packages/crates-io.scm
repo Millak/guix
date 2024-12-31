@@ -12360,22 +12360,6 @@ parsing with Serde.")
      `(#:cargo-inputs (("rust-serde" ,rust-serde-1)
                        ("rust-toml" ,rust-toml-0.8))))))
 
-(define-public rust-cargo-toml-0.16
-  (package
-    (inherit rust-cargo-toml-0.19)
-    (name "rust-cargo-toml")
-    (version "0.16.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "cargo_toml" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1lxgiwha2kqbk60iq5cvczbnd5xrqa4cj7bqk6k8wf64qsdn5yg3"))))
-    (arguments
-     `(#:cargo-inputs (("rust-serde" ,rust-serde-1)
-                       ("rust-toml" ,rust-toml-0.8))))))
-
 (define-public rust-cargo-util-0.2
   (package
     (name "rust-cargo-util")
