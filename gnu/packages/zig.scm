@@ -1712,4 +1712,37 @@ toolchain.  Among other features it provides
        (modify-inputs (package-native-inputs base)
          (replace "zig" `(,base "out")))))))
 
+(define zig-0.13.0-1951
+  (let ((commit "8573836892ba1b7cd34d377b46258930161256c3")
+        (revision "1951")
+        (base zig-0.13.0-1528))
+    (package
+      (inherit base)
+      (name "zig")
+      (version (git-version "0.13.0" revision commit))
+      (source (zig-source
+               version commit
+               "094yxy3db6sjvcni4jl1d6nf46hlarhw6hnxhcw7vwq4qaj9w9xq"))
+      ;; zig2
+      (arguments
+       (substitute-keyword-arguments (package-arguments zig-0.10.0-851)
+         ((#:phases phases '%standard-phases)
+          #~(modify-phases #$phases
+              ;; See also upstream commit
+              ;; f1f804e532e603a3f58d559d32a1c8120691d891.
+              (add-after 'unpack 'fix-compilation
+                (lambda _
+                  (substitute* "src/zig_llvm.cpp"
+                    ((".*LastEnvironmentType.*") ""))))))))
+      (inputs
+       (modify-inputs (package-inputs base)
+         (replace "clang" clang-19)
+         (replace "lld" lld-19)))
+      (native-inputs
+       (modify-inputs (package-native-inputs base)
+         (replace "llvm" llvm-19)
+         (replace "zig" `(,base "zig1"))))
+      (properties `((max-silent-time . 9600)
+                    ,@(clang-compiler-cpu-architectures "19"))))))
+
 (define-public zig zig-0.13)
