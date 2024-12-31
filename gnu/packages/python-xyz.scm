@@ -22499,8 +22499,13 @@ classes can also be supported by manually registering converters.")
      '(#:phases
        (modify-phases %standard-phases
          (replace 'check
-           (lambda _ (invoke "pifpaf" "run" "memcached" "--port" "11211" "--"
-                             "pytest"))))))
+           (lambda _
+             ;; Make it compatible with python-flexmock 0.12.
+             (substitute* (find-files "tests" "\\.py$")
+              (("from flexmock import flexmock, flexmock_teardown")
+               "from flexmock import flexmock; from flexmock._api import flexmock_teardown"))
+             (invoke "pifpaf" "run" "memcached" "--port" "11211" "--"
+                     "pytest"))))))
     (native-inputs
      (list memcached python-fakeredis python-flexmock python-pifpaf
            python-pytest))
