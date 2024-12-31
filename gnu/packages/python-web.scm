@@ -1430,7 +1430,7 @@ Interchange Format (SARIF)} file format.")
 (define-public python-falcon
   (package
     (name "python-falcon")
-    (version "3.1.0")
+    (version "4.0.2")
     (source
      (origin
        ;; Use git, as there are some test files missing from the PyPI release,
@@ -1440,37 +1440,29 @@ Interchange Format (SARIF)} file format.")
              (url "https://github.com/falconry/falcon")
              (commit version)))
        (file-name (git-file-name name version))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           (delete-file-recursively "falcon/vendor")
-           (substitute* "setup.py"
-             ((".*falcon\\.vendor\\.mimeparse.*") ""))
-           (substitute* '("falcon/media/handlers.py"
-                          "falcon/request.py"
-                          "tests/test_deps.py")
-             (("from falcon\\.vendor ") "")
-             (("mimeparse.mimeparse") "mimeparse"))))
        (sha256
         (base32
-         "17k31d8avl63xsr6fzvmkxcsm7gnz5dqpgsz65psm1lpc38c79k3"))))
+         "1zhyvfbz4c1bxd4vbsgk19dzih6kkzgin10lmsr32x3b4qgnwqxs"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      '(list "--ignore=tests/test_utils.py"
-             "--ignore-glob=examples/*"
-             "--ignore-glob=bench/*" "tests")
+      '(list "-k" "not slow"
+             "--ignore-glob=examples/*" "--ignore-glob=bench/*" "tests")
       #:phases
       '(modify-phases %standard-phases
-         (add-before 'check 'set-HOME
-           (lambda _ (setenv "HOME" "/tmp"))))))
+         (add-before 'check 'pre-check
+           (lambda _
+             (setenv "FALCON_ASGI_WRAP_NON_COROUTINES" "Y")
+             (setenv "FALCON_TESTING_SESSION" "Y")
+             (setenv "PYTHONASYNCIODEBUG" "1")
+             (setenv "HOME" "/tmp"))))))
     (propagated-inputs
      (list python-mimeparse))
     (native-inputs
      (list python-aiofiles
            python-cbor2
-           python-cython                ;for faster binaries
+           python-cython-3                ;for faster binaries
            python-fakeredis
            python-httpx
            python-mujson
