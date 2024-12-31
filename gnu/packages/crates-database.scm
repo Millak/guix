@@ -1241,6 +1241,32 @@ it easier to read.")
                        ("rust-quote" ,rust-quote-1)
                        ("rust-syn" ,rust-syn-1))))))
 
+(define-public rust-sqlx-macros-0.7
+  (package
+    (name "rust-sqlx-macros")
+    (version "0.7.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sqlx-macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "09rih250868nfkax022y5dyk24a7qfw6scjy3sgalbzb8lihx92f"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-sqlx-core" ,rust-sqlx-core-0.7)
+                       ("rust-sqlx-macros-core" ,rust-sqlx-macros-core-0.7)
+                       ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/launchbadge/sqlx")
+    (synopsis
+     "Macros for SQLx, the rust SQL toolkit. Not intended to be used directly")
+    (description
+     "This package provides Macros for SQLx, the rust SQL toolkit.  Not
+intended to be used directly.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-sqlx-macros-core-0.7
   (package
     (name "rust-sqlx-macros-core")
