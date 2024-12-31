@@ -10446,29 +10446,6 @@ library for wrapping text.")
      "This package provides Wrapper for comparing and hashing pointers by address.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-byte-pool-0.2
-  (package
-    (name "rust-byte-pool")
-    (version "0.2.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "byte-pool" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0n3iibkqk5lyhwmxz0imwz1gsk4xbvs7q8m6xwjmc2zmi48v5wf2"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-crossbeam-queue" ,rust-crossbeam-queue-0.3)
-        ("rust-stable-deref-trait" ,rust-stable-deref-trait-1))))
-    (home-page "https://crates.io/crates/byte-pool")
-    (synopsis "Pool of byte slices, for efficient memory usage")
-    (description
-     "This package provides a pool of byte slices, for efficient
-memory usage.")
-    (license (list license:asl2.0 license:expat))))
-
 (define-public rust-byte-slice-cast-1
   (package
     (name "rust-byte-slice-cast")
