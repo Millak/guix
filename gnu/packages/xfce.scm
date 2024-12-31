@@ -1741,24 +1741,24 @@ watch your every step.")
 
 (define-public xfce4-datetime-plugin
   (package
-   (name "xfce4-datetime-plugin")
-   (version "0.8.3")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://archive.xfce.org/src/panel-plugins/"
-                                  "xfce4-datetime-plugin/"
-                                  (version-major+minor version)
-                                  "/xfce4-datetime-plugin-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "1c00rj3h25g0g3ss5n07hp2ziis3rnjd5jr6firnhs2qzdwynbkb"))))
+    (name "xfce4-datetime-plugin")
+    (version "0.8.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://gitlab.xfce.org/panel-plugins/"
+                                 name))
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qkaz932qrkbajicd8h8ik405804xvaz1bqf36sh73nmvrj7k4vn"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list intltool pkg-config))
+     (list xfce4-dev-tools))
     (inputs
      (list libxfce4ui xfce4-panel))
-    (home-page
-     "https://goodies.xfce.org/projects/panel-plugins/xfce4-datetime-plugin")
+    (home-page "https://docs.xfce.org/panel-plugins/xfce4-datetime-plugin/")
     (synopsis "Display date and time inside the Xfce panel")
     (description "This plugin shows the date and time in the panel,
 and a calendar appears when you left-click on it.")
