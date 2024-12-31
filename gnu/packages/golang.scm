@@ -1370,7 +1370,7 @@ the first isn't available.
 (define-public go-github-com-pkg-xattr
   (package
     (name "go-github-com-pkg-xattr")
-    (version "0.4.9")
+    (version "0.4.10")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1379,7 +1379,7 @@ the first isn't available.
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0qg4zh0d8m4adaiicsd0cpw0w6g8sk01f4jz7jyxgirh1wfcsqyz"))))
+                "0rxvfiwgd0z9alj4n8jympmyi68zh1swf3siim8r2h01nm4i0vqh"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/pkg/xattr"))
