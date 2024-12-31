@@ -540,26 +540,6 @@ libcurl, which is intended to be used with the @code{git2} crate.")
         ("rust-log" ,rust-log-0.4)
         ("rust-url" ,rust-url-2))))))
 
-(define-public rust-git2-curl-0.17
-  (package
-    (inherit rust-git2-curl-0.18)
-    (name "rust-git2-curl")
-    (version "0.17.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "git2-curl" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0cydakv91acxkxfj0kazp9sc4mmr8l51649mi06wk9qv6kkg8xvm"))))
-    (arguments
-     `(#:skip-build? #t                 ;need rust-civet and others
-       #:cargo-inputs
-       (("rust-curl" ,rust-curl-0.4)
-        ("rust-git2" ,rust-git2-0.16)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-url" ,rust-url-2))))))
-
 (define-public rust-git2-hooks-0.3
   (package
     (name "rust-git2-hooks")
