@@ -71090,35 +71090,6 @@ exactly where a binary came from and how it was built.")
        (sha256
         (base32 "11w6677ymsb69fy716adf51zjbzwgkkyf5arz41563gcnf7k5cpi"))))))
 
-(define-public rust-shadow-rs-0.26
-  (package
-    (inherit rust-shadow-rs-0.36)
-    (name "rust-shadow-rs")
-    (version "0.26.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "shadow-rs" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "15xrlf66f10773k9kwpvz8909akfjspyy0yy9ss665wrfs15qp1y"))))
-    (arguments
-     `(#:cargo-test-flags
-       '("--release" "--"
-         "--skip=date_time::tests::test_local_now_human_format"
-         "--skip=git::tests::test_command_last_tag"
-         "--skip=git::tests::test_current_branch"
-         "--skip=git::tests::test_git")
-       #:cargo-inputs (("rust-const-format" ,rust-const-format-0.2)
-                       ("rust-document-features" ,rust-document-features-0.2)
-                       ("rust-git2" ,rust-git2-0.18)
-                       ("rust-is-debug" ,rust-is-debug-1)
-                       ("rust-time" ,rust-time-0.3)
-                       ("rust-tzdb" ,rust-tzdb-0.6))
-       #:cargo-development-inputs (("rust-winnow" ,rust-winnow-0.5))))
-    (native-inputs (list pkg-config))
-    (inputs (list libgit2-1.7 zlib))))
-
 (define-public rust-shannon-0.2
   (package
     (name "rust-shannon")
