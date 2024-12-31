@@ -2144,24 +2144,24 @@ freedesktop.org specification.")
 
 (define-public xfce4-systemload-plugin
   (package
-   (name "xfce4-systemload-plugin")
-   (version "1.3.2")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://archive.xfce.org/src/panel-plugins/"
-                                  "xfce4-systemload-plugin/"
-                                  (version-major+minor version)
-                                  "/xfce4-systemload-plugin-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "0wmh09w5fnm9srbr6r4gpdima738szqcp3qbzb8kl18f0b1kyc5v"))))
+    (name "xfce4-systemload-plugin")
+    (version "1.3.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://gitlab.xfce.org/panel-plugins/"
+                                 name))
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ds1z5zwsrk6m4sxa5fnaqk19vhiy1z7xjn91q1z03cys6j3a025"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list intltool pkg-config))
+     (list xfce4-dev-tools))
     (inputs
      (list libgtop libxfce4ui xfce4-panel))
-    (home-page
-     "https://goodies.xfce.org/projects/panel-plugins/xfce4-systemload-plugin")
+    (home-page "https://docs.xfce.org/panel-plugins/xfce4-systemload-plugin/")
     (synopsis "System load display plugin for the Xfce panel")
     (description "A system load plugin for the Xfce4 desktop
 environment.  It displays the current CPU load, the memory in use, the
