@@ -5027,31 +5027,6 @@ library.")
        #:cargo-development-inputs
        (("rust-gir-format-check" ,rust-gir-format-check-0.1))))))
 
-(define-public rust-pangocairo-0.17
-  (package
-    (inherit rust-pangocairo-0.18)
-    (name "rust-pangocairo")
-    (version "0.17.10")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "pangocairo" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1kr2b31034b8zif4r3lf4rniqphk2bxi2q7n8iwq2wrf3k5jkgw6"))))
-    (arguments
-     `(;; FIXME: error[E0277]: `Errors` doesn't implement `std::fmt::Display`
-       #:tests? #f
-       #:cargo-inputs
-       (("rust-bitflags" ,rust-bitflags-1)
-        ("rust-cairo-rs" ,rust-cairo-rs-0.17)
-        ("rust-glib" ,rust-glib-0.17)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-pango" ,rust-pango-0.17)
-        ("rust-pangocairo-sys" ,rust-pangocairo-sys-0.17))
-       #:cargo-development-inputs
-       (("rust-gir-format-check" ,rust-gir-format-check-0.1))))))
-
 (define-public rust-pangocairo-sys-0.19
   (package
     (name "rust-pangocairo-sys")
