@@ -86,23 +86,6 @@
      `(#:cargo-inputs (("rust-asn1-derive" ,rust-asn1-derive-0.16))
        #:cargo-development-inputs (("rust-libc" ,rust-libc-0.2))))))
 
-(define-public rust-asn1-0.15
-  (package
-    (inherit rust-asn1-0.20)
-    (name "rust-asn1")
-    (version "0.15.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "asn1" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1nzg1gjiyfvpvrf3i7i8j21165snf5livqg6x2sjf9m2i77cngmf"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-asn1-derive" ,rust-asn1-derive-0.15))
-       #:cargo-development-inputs (("rust-libc" ,rust-libc-0.2))))))
-
 (define-public rust-asn1-derive-0.20
   (package
     (name "rust-asn1-derive")
