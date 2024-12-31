@@ -2197,24 +2197,24 @@ time.")
 
 (define-public xfce4-timer-plugin
   (package
-   (name "xfce4-timer-plugin")
-   (version "1.7.2")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://archive.xfce.org/src/panel-plugins/"
-                                  "xfce4-timer-plugin/"
-                                  (version-major+minor version)
-                                  "/xfce4-timer-plugin-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "0zcbqpsyzzmbyv8cgd5wriqaigfpdcia6h1md0bfh1cmsg1biczy"))))
+    (name "xfce4-timer-plugin")
+    (version "1.7.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://gitlab.xfce.org/panel-plugins/"
+                                 name))
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1110s55h4lsspdmyl58cbzfy57gfh8871b1213xjgk3i3q7nmqgc"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list intltool pkg-config))
+     (list xfce4-dev-tools))
     (inputs
      (list libxfce4ui xfce4-panel))
-    (home-page
-     "https://goodies.xfce.org/projects/panel-plugins/xfce4-timer-plugin")
+    (home-page "https://docs.xfce.org/panel-plugins/xfce4-timer-plugin/")
     (synopsis "Simple countdown and alarm plugin for the Xfce panel")
     (description "This is a simple plugin that lets the user run an
 alarm at a specified time or at the end of a specified countdown
