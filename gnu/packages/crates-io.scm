@@ -10806,34 +10806,6 @@ others, add a tag, ensure/check a tag exists and get the state of a tag.")
 spreadsheet file.")
     (license license:expat)))
 
-(define-public rust-calamine-0.24
-  (package
-    (inherit rust-calamine-0.26)
-    (name "rust-calamine")
-    (version "0.24.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "calamine" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1nilccwz0vqzzxjxcr06pi25k80j2wz0f89mwg1v3igx4r932fla"))))
-    (arguments
-     `(#:tests? #f      ; Doc tests segfault.
-       #:cargo-inputs (("rust-byteorder" ,rust-byteorder-1)
-                       ("rust-chrono" ,rust-chrono-0.4)
-                       ("rust-codepage" ,rust-codepage-0.1)
-                       ("rust-encoding-rs" ,rust-encoding-rs-0.8)
-                       ("rust-log" ,rust-log-0.4)
-                       ("rust-once-cell" ,rust-once-cell-1)
-                       ("rust-quick-xml" ,rust-quick-xml-0.31)
-                       ("rust-serde" ,rust-serde-1)
-                       ("rust-zip" ,rust-zip-0.6))
-       #:cargo-development-inputs (("rust-env-logger" ,rust-env-logger-0.10)
-                                   ("rust-glob" ,rust-glob-0.3)
-                                   ("rust-serde-derive" ,rust-serde-derive-1)
-                                   ("rust-sha256" ,rust-sha256-1))))))
-
 (define-public rust-calibright-0.1
   (package
     (name "rust-calibright")
