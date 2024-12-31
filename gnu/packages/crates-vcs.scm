@@ -4205,29 +4205,6 @@ Git's negotiation algorithms.")
                        ("rust-smallvec" ,rust-smallvec-1)
                        ("rust-thiserror" ,rust-thiserror-1))))))
 
-(define-public rust-gix-negotiate-0.2
-  (package
-    (inherit rust-gix-negotiate-0.8)
-    (name "rust-gix-negotiate")
-    (version "0.2.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "gix-negotiate" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "137hyq036adi5kapw98vd9b0087lxljfkjaz81glmr0jx7qkwp4l"))))
-    (arguments
-     `(#:tests? #f      ; use of undeclared crate or module `gix_testtools`
-       #:cargo-inputs
-       (("rust-bitflags" ,rust-bitflags-2)
-        ("rust-gix-commitgraph" ,rust-gix-commitgraph-0.16)
-        ("rust-gix-hash" ,rust-gix-hash-0.11)
-        ("rust-gix-object" ,rust-gix-object-0.30)
-        ("rust-gix-revision" ,rust-gix-revision-0.15)
-        ("rust-smallvec" ,rust-smallvec-1)
-        ("rust-thiserror" ,rust-thiserror-1))))))
-
 (define-public rust-gix-object-0.44
   (package
     (name "rust-gix-object")
