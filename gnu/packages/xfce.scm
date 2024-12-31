@@ -2108,15 +2108,15 @@ favorite search engine or bug tracker right from the Xfce panel.")
            `(,glib "bin")))
     (inputs
      (list libxfce4ui libdbusmenu xfce4-panel))
-    (home-page
-     "https://goodies.xfce.org/projects/panel-plugins/xfce4-statusnotifier-plugin")
+    (home-page "https://docs.xfce.org/panel-plugins/xfce4-statusnotifier-plugin/")
     (synopsis "Xfce panel plugin for status notifier items")
-(description "This plugin provides a panel area for status
+    (description "This plugin provides a panel area for status
 notifier items (application indicators).  Applications may use these
 items to display their status and interact with the user.  This
 technology is a modern alternative to systray and follows the
 freedesktop.org specification.")
-    (license gpl2+)))
+    (license gpl2+)
+    (properties `((superseded . ,xfce4-panel)))))
 
 (define-public xfce4-stopwatch-plugin
   (package
