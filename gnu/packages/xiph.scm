@@ -531,6 +531,12 @@ things in between.")
                (base32
                 "0469yzc1csm25f5dbyb7ly7i1mzjz13pw8c8bmswkpfzxzqd9jrr"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags #~(list
+                           #$(string-append
+                              "CFLAGS=-g -O2"
+                              " -Wno-error=implicit-function-declaration"))))
     (native-inputs
      (list pkg-config))
     (propagated-inputs
