@@ -544,9 +544,12 @@ as a joint effort between the BBC and Fluendo.")
         (search-patches "libquicktime-ffmpeg.patch"))))
     (build-system gnu-build-system)
     (arguments
-     ;; Avoid legacy dependencies such as GTK+ 2 and FFmpeg 4.
-     (list #:configure-flags #~(list "--without-ffmpeg"
-                                     "--without-gtk")))
+     (list #:configure-flags
+           #~(list
+              "CFLAGS=-g -O2 -Wno-error=implicit-function-declaration"
+              ;; Avoid legacy dependencies such as GTK+ 2 and FFmpeg 4.
+              "--without-ffmpeg"
+              "--without-gtk")))
     (native-inputs
      (list gettext-minimal doxygen pkg-config))
     (inputs
