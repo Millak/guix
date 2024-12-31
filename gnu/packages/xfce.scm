@@ -1685,24 +1685,24 @@ A plugin for the Xfce panel is also available.")
 
 (define-public xfce4-cpugraph-plugin
   (package
-   (name "xfce4-cpugraph-plugin")
-   (version "1.2.10")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://archive.xfce.org/src/panel-plugins/"
-                                  "xfce4-cpugraph-plugin/"
-                                  (version-major+minor version)
-                                  "/xfce4-cpugraph-plugin-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "05frfn3y009xndks9rsw90jgk0v5zfarn5jqaqci45v9ab82sy9p"))))
+    (name "xfce4-cpugraph-plugin")
+    (version "1.2.11")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://gitlab.xfce.org/panel-plugins/"
+                                 name))
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1z3vbpn6ylx32fnncswi0ghp01bpxqvs0idmr8fc3rl546pgmqa3"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list intltool pkg-config))
+     (list xfce4-dev-tools))
     (inputs
      (list libxfce4ui xfce4-panel))
-    (home-page
-     "https://goodies.xfce.org/projects/panel-plugins/xfce4-cpugraph-plugin")
+    (home-page "https://docs.xfce.org/panel-plugins/xfce4-cpugraph-plugin/")
     (synopsis "Display CPU load as a graph in the Xfce panel")
     (description "This panel plugin offers multiple display
 modes (LED, gradient, fire, etc…) to show the current CPU load of the
