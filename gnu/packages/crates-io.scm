@@ -2671,31 +2671,6 @@ coverage-guided, mutation-based fuzzers.")
     (description "This package provides an atomically swappable Arc.")
     (license (list license:asl2.0 license:expat))))
 
-(define-public rust-arc-swap-0.4
-  (package
-    (inherit rust-arc-swap-1)
-    (name "rust-arc-swap")
-    (version "0.4.8")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "arc-swap" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1a3vg89xc7r2166mc25ciw3rbqfxjylfbjwlq4wrfy433wc5mgns"))))
-    (arguments
-     `(;; These tests require network access.
-       #:cargo-test-flags '("--release" "--" "--skip=test_html_root_url")
-       #:cargo-development-inputs
-       (("rust-crossbeam-utils" ,rust-crossbeam-utils-0.7)
-        ("rust-itertools" ,rust-itertools-0.9)
-        ("rust-num-cpus" ,rust-num-cpus-1)
-        ("rust-once-cell" ,rust-once-cell-1)
-        ("rust-proptest" ,rust-proptest-0.9)
-        ("rust-version-sync" ,rust-version-sync-0.9))))))
-
 (define-public rust-archery-1
   (package
     (name "rust-archery")
