@@ -23126,29 +23126,6 @@ accessor functions on enums.")
 increasing their method call speed up to 10x.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-enum-iterator-1
-  (package
-    (name "rust-enum-iterator")
-    (version "1.5.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "enum-iterator" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "153fsc92sz80ghpmbk430vpb9cjaggan592a6njs07dyk7rl5llz"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-enum-iterator-derive" ,rust-enum-iterator-derive-1))))
-    (home-page "https://github.com/stephaneyfx/enum-iterator")
-    (synopsis
-     "Iterate over all values of a type (e.g. all variants of an
-enumeration)")
-    (description
-     "This package provides tools to iterate over all values of a
-type (e.g. all variants of an enumeration)")
-    (license license:bsd-0)))
-
 (define-public rust-enum-iterator-derive-1
   (package
     (name "rust-enum-iterator-derive")
