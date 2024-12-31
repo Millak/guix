@@ -50045,25 +50045,6 @@ the default program configured on the system.")
        #:cargo-development-inputs
        (("rust-version-sync" ,rust-version-sync-0.9))))))
 
-(define-public rust-opener-0.5
-  (package
-    (inherit rust-opener-0.6)
-    (name "rust-opener")
-    (version "0.5.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "opener" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "01ghahdn64lw4whj0p70vmzivrdlmca2629gplalq99pirkiag19"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-bstr" ,rust-bstr-1)
-        ("rust-winapi" ,rust-winapi-0.3))
-       #:cargo-development-inputs
-       (("rust-version-sync" ,rust-version-sync-0.9))))))
-
 (define-public rust-openssl-0.10
   (package
     (name "rust-openssl")
