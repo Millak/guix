@@ -12,6 +12,7 @@
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2024 Remco van 't Veer <remco@remworks.net>
+;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -238,13 +239,15 @@ and very fast.")
         (base32 "02xwakwkqjsznc03pjlb6hcv1li1gw3r8xvyswqsm4msix5xq18a"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; The package is in a sub-dir of this repo.
-         (add-after 'unpack 'chdir
-           (lambda _
-             (chdir "libvisual")
-             #t)))))
+     (list
+      #:configure-flags
+      #~(list "CFLAGS=-g -O2 -Wno-error=implicit-function-declaration")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; The package is in a sub-dir of this repo.
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "libvisual"))))))
     (native-inputs
      (list gettext-minimal intltool libtool pkg-config))
     (inputs
