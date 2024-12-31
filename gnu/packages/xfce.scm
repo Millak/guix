@@ -1766,24 +1766,24 @@ and a calendar appears when you left-click on it.")
 
 (define-public xfce4-calculator-plugin
   (package
-   (name "xfce4-calculator-plugin")
-   (version "0.7.2")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://archive.xfce.org/src/panel-plugins/"
-                                  "xfce4-calculator-plugin/"
-                                  (version-major+minor version)
-                                  "/xfce4-calculator-plugin-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "12q2jh67w0m9vq94gf324xg9k3mji943rwgrddlc340sljz25xni"))))
+    (name "xfce4-calculator-plugin")
+    (version "0.7.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://gitlab.xfce.org/panel-plugins/"
+                                 name))
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1jdsd3qswzv5kvh1ybpmfz79nqwlfh34r9bhhvw5j71339mcpzf9"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list intltool pkg-config))
+     (list xfce4-dev-tools))
     (inputs
      (list libxfce4ui xfce4-panel))
-    (home-page
-     "https://goodies.xfce.org/projects/panel-plugins/xfce4-calculator-plugin")
+    (home-page "https://docs.xfce.org/panel-plugins/xfce4-calculator-plugin/")
     (synopsis "Calculator for the Xfce panel")
     (description "This plugin is a calculator for the Xfce4 panel.  It
 supports common mathematical operators (+, -, *, /, ^) with usual
