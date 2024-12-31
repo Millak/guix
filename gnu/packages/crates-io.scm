@@ -11867,24 +11867,6 @@ fields in a closure.")
 GNOME libsecret.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-cargo-credential-libsecret-0.3
-  (package
-    (inherit rust-cargo-credential-libsecret-0.4)
-    (name "rust-cargo-credential-libsecret")
-    (version "0.3.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "cargo-credential-libsecret" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1r1fahmdf1ihp7mfql443mwsa1byiyksfcm5pdh90rjynir97fzv"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-anyhow" ,rust-anyhow-1)
-        ("rust-cargo-credential" ,rust-cargo-credential-0.3)
-        ("rust-libloading" ,rust-libloading-0.8))))))
-
 (define-public rust-cargo-husky-1
   (package
     (name "rust-cargo-husky")
