@@ -1513,17 +1513,21 @@ sending standard messages over D-Bus using the
   (package
     (name "xfburn")
     (version "0.7.2")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://archive.xfce.org/src/apps/xfburn/"
-                                  (version-major+minor version) "/"
-                                  "xfburn-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "09crg8vd6vs671lbbhy1ch9hf3d3xvfynh6vj5zlhpikyzch3fy2"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://gitlab.xfce.org/apps/" name))
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "18i25n81qzgb77w5vc6n4hwnw893204az8c1bg5k9229sz28r7vq"))))
     (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list "--enable-maintainer-mode"))) ;for xfburn.1
     (native-inputs
-     (list intltool pkg-config))
+     (list docbook-xsl libxslt xfce4-dev-tools))
     (inputs
      (list exo
            gstreamer
@@ -1535,7 +1539,7 @@ sending standard messages over D-Bus using the
            libburn
            libisofs
            libxfce4ui))
-    (home-page "https://goodies.xfce.org/projects/applications/xfburn")
+    (home-page "https://docs.xfce.org/apps/xfburn/")
     (synopsis "GTK+ based CD, DVD and Blu-ray burning application")
     (description
      "Xfburn is a simple CD, DVD, and Blu-ray burning tool based on
