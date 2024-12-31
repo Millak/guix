@@ -5228,27 +5228,6 @@ hashing function.")
         ("rust-crossbeam-utils" ,rust-crossbeam-utils-0.8)
         ("rust-serde" ,rust-serde-1))))))
 
-(define-public rust-rust-argon2-0.7
-  (package
-    (inherit rust-rust-argon2-0.8)
-    (name "rust-rust-argon2")
-    (version "0.7.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "rust-argon2" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "05xh5wfxgzq3b6jys8r34f3hmqqfs8ylvf934n9z87wfv95szj1b"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-constant-time-eq" ,rust-constant-time-eq-0.1)
-        ("rust-base64" ,rust-base64-0.11)
-        ("rust-blake2b-simd" ,rust-blake2b-simd-0.5)
-        ("rust-crossbeam-utils" ,rust-crossbeam-utils-0.7))))))
-
 (define-public rust-salsa20-0.10
   (package
     (name "rust-salsa20")
