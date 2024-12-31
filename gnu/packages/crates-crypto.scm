@@ -5585,30 +5585,6 @@ for data that potentially contains secrets (e.g. cryptographic keys).")
        (("rust-digest" ,rust-digest-0.9)
         ("rust-hex-literal" ,rust-hex-literal-0.2))))))
 
-(define-public rust-sha-1-0.8
-  (package
-    (inherit rust-sha-1-0.9)
-    (name "rust-sha-1")
-    (version "0.8.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "sha-1" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1pv387q0r7llk2cqzyq0nivzvkgqgzsiygqzlv7b68z9xl5lvngp"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-block-buffer" ,rust-block-buffer-0.7)
-        ("rust-digest" ,rust-digest-0.8)
-        ("rust-fake-simd" ,rust-fake-simd-0.1)
-        ("rust-opaque-debug" ,rust-opaque-debug-0.2)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-sha1-asm" ,rust-sha1-asm-0.4))
-       #:cargo-development-inputs
-       (("rust-digest" ,rust-digest-0.8)
-        ("rust-hex-literal" ,rust-hex-literal-0.1))))))
-
 (define-public rust-sha1-0.10
   (package
     (name "rust-sha1")
