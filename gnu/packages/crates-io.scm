@@ -30076,6 +30076,39 @@ AsyncSeek, AsyncBufRead)]} for enums.")
 library.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-futures-intrusive-0.5
+  (package
+    (name "rust-futures-intrusive")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "futures-intrusive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0vwm08d1pli6bdaj0i7xhk3476qlx4pll6i0w03gzdnh7lh0r4qx"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-futures-core" ,rust-futures-core-0.3)
+                       ("rust-lock-api" ,rust-lock-api-0.4)
+                       ("rust-parking-lot" ,rust-parking-lot-0.12))
+       #:cargo-development-inputs (("rust-async-std" ,rust-async-std-1)
+                                   ("rust-criterion" ,rust-criterion-0.3)
+                                   ("rust-crossbeam" ,rust-crossbeam-0.7)
+                                   ("rust-futures" ,rust-futures-0.3)
+                                   ("rust-futures-test" ,rust-futures-test-0.3)
+                                   ("rust-lazy-static" ,rust-lazy-static-1)
+                                   ("rust-pin-utils" ,rust-pin-utils-0.1)
+                                   ("rust-rand" ,rust-rand-0.7)
+                                   ("rust-signal-hook" ,rust-signal-hook-0.1)
+                                   ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/Matthias247/futures-intrusive")
+    (synopsis "Futures based on intrusive data structures")
+    (description
+     "This package provides Futures based on intrusive data structures - for
+std and no-std environments.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-futures-intrusive-0.3
   (package
     (name "rust-futures-intrusive")
