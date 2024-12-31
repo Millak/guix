@@ -2728,29 +2728,6 @@ Hash-based Message Authentication Code}.")
         ("rust-md-5" ,rust-md-5-0.9)
         ("rust-sha2" ,rust-sha2-0.9))))))
 
-(define-public rust-hmac-0.8
-  (package
-    (inherit rust-hmac-0.11)
-    (name "rust-hmac")
-    (version "0.8.1")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "hmac" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "0h48wc7iysh4xd6ci4prh8bb7nszijrh9w3blaaq8a6cilk8hs0j"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-crypto-mac" ,rust-crypto-mac-0.8)
-        ("rust-digest" ,rust-digest-0.9))
-       #:cargo-development-inputs
-       (("rust-crypto-mac" ,rust-crypto-mac-0.8)
-        ("rust-md-5" ,rust-md-5-0.9)
-        ("rust-sha2" ,rust-sha2-0.9))))))
-
 (define-public rust-hmac-sha1-0.1
   (package
     (name "rust-hmac-sha1")
