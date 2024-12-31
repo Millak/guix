@@ -28607,22 +28607,6 @@ implementation that is more efficient for smaller hash keys.")
 the controlling terminal (daemon) using the fork and setsid syscalls.")
     (license license:bsd-3)))
 
-(define-public rust-fork-0.1
-  (package
-    (inherit rust-fork-0.2)
-    (name "rust-fork")
-    (version "0.1.23")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "fork" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1vd8fv09zzxpn67iizndsl24msvrzd995r06v7lmg2lr4cs4vrv0"))))
-    (arguments
-     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2))))))
-
 (define-public rust-form-urlencoded-1
   (package
     (name "rust-form-urlencoded")
