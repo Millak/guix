@@ -41294,30 +41294,6 @@ Server Protocol.")
         ("rust-serde-repr" ,rust-serde-repr-0.1)
         ("rust-url" ,rust-url-2))))))
 
-(define-public rust-lsp-types-0.83
-  (package
-    (inherit rust-lsp-types-0.89)
-    (name "rust-lsp-types")
-    (version "0.83.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "lsp-types" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0vdbdb74w1aim0q0nqnjvddrqz9cwirwbkjykwgjg5sbhcwrzry4"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-base64" ,rust-base64-0.12)
-        ("rust-bitflags" ,rust-bitflags-1)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-serde-repr" ,rust-serde-repr-0.1)
-        ("rust-url" ,rust-url-2))))))
-
 (define-public rust-m-lexer-0.0.4
   (package
     (name "rust-m-lexer")
