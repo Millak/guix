@@ -830,18 +830,19 @@ fast.")
     (version "4.20.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://archive.xfce.org/src/xfce/thunar-volman/"
-                           (version-major+minor version) "/"
-                           "thunar-volman-" version ".tar.bz2"))
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://gitlab.xfce.org/xfce/" name))
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1nmi3q9jfc4p3dznw96m4ryk8h136qp5bvfipy7mnlcvjm9dinmh"))))
+        (base32 "14cs5hscjrgxvmkxr1d5ank76rxwq7ifvm3g844p9jvhykz6r1aw"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list pkg-config intltool))
+     (list xfce4-dev-tools))
     (inputs
      (list exo libgudev libnotify libxfce4ui))
-    (home-page "https://www.xfce.org/")
+    (home-page "https://docs.xfce.org/xfce/thunar-volman/")
     (synopsis "Removable media manager for Thunar")
     (description
      "Thunar-volman is an extension for the Thunar File Manager, which enables
