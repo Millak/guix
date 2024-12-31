@@ -3753,26 +3753,6 @@ package provides git style lock files.")
                        ("rust-thiserror" ,rust-thiserror-1))
        #:cargo-development-inputs (("rust-tempfile" ,rust-tempfile-3))))))
 
-(define-public rust-gix-lock-6
-  (package
-    (inherit rust-gix-lock-10)
-    (name "rust-gix-lock")
-    (version "6.0.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "gix-lock" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1lpqi927lacn2vz22q2mhacc4plkrlz5whm779ax65kky3kdbi9y"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-gix-tempfile" ,rust-gix-tempfile-6)
-        ("rust-gix-utils" ,rust-gix-utils-0.1)
-        ("rust-thiserror" ,rust-thiserror-1))
-       #:cargo-development-inputs
-       (("rust-tempfile" ,rust-tempfile-3))))))
-
 (define-public rust-gix-macros-0.1
   (package
     (name "rust-gix-macros")
