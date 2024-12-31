@@ -1591,23 +1591,21 @@ of data to either CD/DVD/BD.")
   (package
    (name "xfce4-screenshooter")
    (version "1.11.1")
-   (source (origin
-            (method url-fetch)
-            (uri (string-append "https://archive.xfce.org/src/apps/"
-                                "xfce4-screenshooter/"
-                                (version-major+minor version)
-                                "/xfce4-screenshooter-"
-                                version ".tar.bz2"))
-            (sha256
-             (base32
-              "0kfk6x6g1y49wqs8vvhv257dwkjac9ac5g8l6bbzc9lvmhvllk6r"))))
+   (source
+    (origin
+      (method git-fetch)
+      (uri (git-reference
+            (url (string-append "https://gitlab.xfce.org/apps/" name))
+            (commit (string-append name "-" version))))
+      (file-name (git-file-name name version))
+      (sha256
+       (base32 "1wxgc84f5kgs896mjpn2sq7ikh3gpfyilpqfarmlzpmpmmhgvppw"))))
    (build-system gnu-build-system)
    (native-inputs
-    (list pkg-config intltool
-          `(,glib "bin")))        ; glib-genmarshal
+    (list xfce4-dev-tools))
    (inputs
-    (list exo libsoup-minimal-2 libxfce4ui xfce4-panel))
-   (home-page "https://goodies.xfce.org/projects/applications/xfce4-screenshooter")
+    (list exo libsoup-minimal-2 libxfce4ui wlr-protocols xfce4-panel))
+   (home-page "https://docs.xfce.org/apps/xfce4-screenshooter/")
    (synopsis "Xfce's application to take screenshots")
    (description
     "This application allows you to capture the entire screen, the active
