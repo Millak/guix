@@ -5812,27 +5812,6 @@ a pure Rust implementation of Git.")
                        ("rust-smallvec" ,rust-smallvec-1)
                        ("rust-thiserror" ,rust-thiserror-1))))))
 
-(define-public rust-gix-refspec-0.11
-  (package
-    (inherit rust-gix-refspec-0.18)
-    (name "rust-gix-refspec")
-    (version "0.11.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "gix-refspec" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1x0cayswa8m0yiybi8g3jimpc6jggfvrw6y53snxhvf8mciddgvj"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-bstr" ,rust-bstr-1)
-        ("rust-gix-hash" ,rust-gix-hash-0.11)
-        ("rust-gix-revision" ,rust-gix-revision-0.15)
-        ("rust-gix-validate" ,rust-gix-validate-0.7)
-        ("rust-smallvec" ,rust-smallvec-1)
-        ("rust-thiserror" ,rust-thiserror-1))))))
-
 (define-public rust-gix-revision-0.29
   (package
     (name "rust-gix-revision")
