@@ -1976,24 +1976,24 @@ right-click menu
 
 (define-public xfce4-mount-plugin
   (package
-   (name "xfce4-mount-plugin")
-   (version "1.1.6")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://archive.xfce.org/src/panel-plugins/"
-                                  "xfce4-mount-plugin/"
-                                  (version-major+minor version)
-                                  "/xfce4-mount-plugin-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "0ca8j2smq20zydj0gbb20fkcisgzcswpnpz5h8laxb3ghr03frlg"))))
+    (name "xfce4-mount-plugin")
+    (version "1.1.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://gitlab.xfce.org/panel-plugins/"
+                                 name))
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1s3882dv4a9wmfcjjgn2yk6naswsgfy5cr2ql0wmdgzzg4s3pwl7"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list intltool pkg-config))
+     (list xfce4-dev-tools))
     (inputs
      (list libxfce4ui xfce4-panel))
-    (home-page
-     "https://goodies.xfce.org/projects/panel-plugins/xfce4-mount-plugin")
+    (home-page "https://docs.xfce.org/panel-plugins/xfce4-mount-plugin/")
     (synopsis "Mount/unmount plugin for the Xfce panel")
     (description "The plugin will display a list of items representing
 your various devices.  If you click on an unmounted devices it will
