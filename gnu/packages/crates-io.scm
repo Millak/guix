@@ -8150,21 +8150,6 @@ behave like a set of bitflags.")
         (base32
          "0v8hh6wdkpk9my8z8442g4hqrqf05h0qj53dsay6mv18lqvqklda"))))))
 
-(define-public rust-bitflags-0.2
-  (package
-    (inherit rust-bitflags-1)
-    (name "rust-bitflags")
-    (version "0.2.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "bitflags" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "09yk0lk3vjsrvfcnzljmgvz9inpjs0idykvni7kij38l5vn807x4"))))
-    (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))))
-
 (define-public rust-bitmaps-3
   (package
     (name "rust-bitmaps")
