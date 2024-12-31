@@ -39,6 +39,7 @@
 ;;; Copyright © 2023, 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 Ivan Vilata-i-Balaguer <ivan@selidor.net>
 ;;; Copyright © 2024 James Smith <jsubuntuxp@disroot.org>
+;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -201,7 +202,9 @@ framebuffer graphics, audio output and input event.")
         (base32 "0bs3yzb7hy3mgydrj8ycg7pllrd2b6j0gxj596inyr7ihssr3i0y"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
+     `(#:configure-flags
+       '("CFLAGS=-g -O2 -Wno-error=incompatible-pointer-types")
+       #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'remove-buildtime
            ;; Remove embedded build time for reproducible builds
@@ -218,8 +221,7 @@ framebuffer graphics, audio output and input event.")
          (add-after 'unpack 'disable-configure-during-bootstrap
            (lambda _
              (substitute* "autogen.sh"
-               (("^.*\\$srcdir/configure.*") ""))
-             #t)))))
+               (("^.*\\$srcdir/configure.*") "")))))))
     (native-inputs
      `(("autoconf" ,autoconf)
        ("automake" ,automake)
