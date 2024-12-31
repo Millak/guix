@@ -833,6 +833,30 @@ libpq.")
      `(#:cargo-inputs (("rust-fallible-iterator" ,rust-fallible-iterator-0.3)
                        ("rust-sqlite3-parser" ,rust-sqlite3-parser-0.12))))))
 
+(define-public rust-sqlformat-0.2
+  (package
+    (name "rust-sqlformat")
+    (version "0.2.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sqlformat" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "14470h40gn0f6jw9xxzbpwh5qy1fgvkhkfz8xjyzgi0cvf9kmfkv"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-nom" ,rust-nom-7)
+                       ("rust-unicode-categories" ,rust-unicode-categories-0.1))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.4)
+                                   ("rust-indoc" ,rust-indoc-2))))
+    (home-page "https://github.com/shssoichiro/sqlformat-rs")
+    (synopsis "Formats whitespace in a SQL string to make it easier to read")
+    (description
+     "This package provides formating of whitespace in a SQL string to make
+it easier to read.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-sqlite-0.36
   (package
     (name "rust-sqlite")
