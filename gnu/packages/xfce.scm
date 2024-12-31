@@ -1497,7 +1497,7 @@ several different time zones.")
     (native-inputs
      (list xfce4-dev-tools))
     (inputs
-     (list libxfce4ui libnotify sqlite xfce4-panel))
+     (list gtk-layer-shell libcanberra libxfce4ui libnotify sqlite xfce4-panel))
     (home-page "https://docs.xfce.org/apps/xfce4-notifyd/")
     (synopsis "Show notification bubbles on Xfce")
     (description
