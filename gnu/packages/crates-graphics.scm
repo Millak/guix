@@ -223,24 +223,28 @@ text or blue underlined text, on ANSI terminals.")
          "1xif1bh938qpfc3d0f9xgidibpm65xix11w9gszwqnia00q7rb13"))))
     (arguments `())))
 
-(define-public rust-ansi-to-tui-2
+(define-public rust-ansi-to-tui-7
   (package
     (name "rust-ansi-to-tui")
-    (version "2.0.2")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "ansi-to-tui" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0l43nyj2difngwjbiy6vd5p8bw96w06swgw5hx6vi9zvqzs8wyqm"))))
+        (base32 "0b4iynqcqaav8i55w8lk7ypm6xr845vh32lcw8vxffff3qgmwmb7"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-nom" ,rust-nom-7)
+                       ("rust-ratatui" ,rust-ratatui-0.29)
                        ("rust-simdutf8" ,rust-simdutf8-0.1)
-                       ("rust-thiserror" ,rust-thiserror-1)
-                       ("rust-tui" ,rust-tui-0.16))
-       #:cargo-development-inputs (("rust-anyhow" ,rust-anyhow-1))))
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs
+      (("rust-anyhow" ,rust-anyhow-1)
+       ("rust-criterion" ,rust-criterion-0.5)
+       ("rust-pretty-assertions" ,rust-pretty-assertions-1))))
     (home-page "https://github.com/uttarayan21/ansi-to-tui")
     (synopsis
      "Library to convert ansi color coded text into @code{ratatui::text::Text}")
