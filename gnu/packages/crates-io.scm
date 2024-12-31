@@ -41937,39 +41937,6 @@ image together with its neighboring pixels.")
        #:cargo-development-inputs (("rust-env-logger" ,rust-env-logger-0.9)
                                    ("rust-tempfile" ,rust-tempfile-3))))))
 
-(define-public rust-lopdf-0.26
-  (package
-    (inherit rust-lopdf-0.29)
-    (name "rust-lopdf")
-    (version "0.26.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "lopdf" version))
-        (file-name
-          (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32 "1wqnmibs8qzi6pr3ig4h3sg6bfkkgyv4ngdng81x069725r056ml"))))
-    (arguments
-     `(#:cargo-test-flags
-       (list "--release" "--"
-             ;; Not all files included
-             "--skip=parser_aux::load_and_save")
-       #:cargo-inputs
-       (("rust-chrono" ,rust-chrono-0.4)
-        ("rust-dtoa" ,rust-dtoa-0.4)
-        ("rust-encoding" ,rust-encoding-0.2)
-        ("rust-flate2" ,rust-flate2-1)
-        ("rust-image" ,rust-image-0.23)
-        ("rust-itoa" ,rust-itoa-0.4)
-        ("rust-linked-hash-map" ,rust-linked-hash-map-0.5)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-lzw" ,rust-lzw-0.10)
-        ("rust-nom" ,rust-nom-6)
-        ("rust-pom" ,rust-pom-3)
-        ("rust-rayon" ,rust-rayon-1)
-        ("rust-time" ,rust-time-0.2))))))
-
 (define-public rust-lru-0.12
   (package
     (name "rust-lru")
