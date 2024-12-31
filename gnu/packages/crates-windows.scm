@@ -901,23 +901,6 @@ server functionality.")
     (description "This library integrates Unix Domain Sockets on Windows.")
     (license license:expat)))
 
-(define-public rust-uds-windows-0.1
-  (package
-    (inherit rust-uds-windows-1)
-    (name "rust-uds-windows")
-    (version "0.1.6")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "uds_windows" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1v7g9hl06s13xc4d2bn6khqn2cz6ha2f2d71j8l6mvlhypsjpch9"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-tempdir" ,rust-tempdir-0.3)
-        ("rust-winapi" ,rust-winapi-0.3))))))
-
 (define-public rust-user32-sys-0.2
   (package
     (name "rust-user32-sys")
