@@ -2932,31 +2932,6 @@ be used to implement arbitrary protocols.")
        (("rust-digest" ,rust-digest-0.9)
         ("rust-hex-literal" ,rust-hex-literal-0.2))))))
 
-(define-public rust-md-5-0.8
-  (package
-    (inherit rust-md-5-0.9)
-    (name "rust-md-5")
-    (version "0.8.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "md-5" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1j5rfxy2p76xf5f1lgaw85xla0b1bbv2lknvdhv1j0ibmzfg72m1"))))
-    (arguments
-     `(#:tests? #f      ; cannot find macro `proc_macro_call` in this scope
-       #:cargo-inputs
-       (("rust-block-buffer" ,rust-block-buffer-0.7)
-        ("rust-digest" ,rust-digest-0.8)
-        ("rust-md5-asm" ,rust-md5-asm-0.4)
-        ("rust-opaque-debug" ,rust-opaque-debug-0.2))
-       #:cargo-development-inputs
-       (("rust-digest" ,rust-digest-0.8)
-        ("rust-hex-literal" ,rust-hex-literal-0.1))))))
-
 (define-public rust-md5-0.7
   (package
     (name "rust-md5")
