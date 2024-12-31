@@ -1049,35 +1049,24 @@ window manager.")
   (package
     (name "xfdesktop")
     (version "4.20.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://archive.xfce.org/src/xfce/"
-                                  "xfdesktop/" (version-major+minor version) "/"
-                                  "xfdesktop-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "0cjnsrf7788vyq1mfcx4qypdhd9b2gqigj6yk6ffpwy7h2x42w12"))
-              (modules '((guix build utils)))
-              (snippet
-               #~(begin
-                   (copy-file #$(file-append %artwork-repository "/logo/Guix.svg")
-                              "backgrounds/guix-logo.svg")
-                   #t))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://gitlab.xfce.org/xfce/" name))
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0z3ps7n1ilsgx83phk46aqzfp96zxisxl7xngls054ak9nb3fj7k"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            (copy-file #$(file-append %artwork-repository "/logo/Guix.svg")
+                       "backgrounds/guix-logo.svg")
+            #t))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
-                  (add-before 'configure 'patch-configure
-                    (lambda _
-                      (substitute* "configure"
-                        ;; XDG_CHECK_PACKAGE_BINARY requires an absolute path.
-                        (("\\$PKG_CONFIG --variable=gdbus_codegen gio-2.0")
-                         "type -p gdbus-codegen")
-                        (("\\$PKG_CONFIG --variable=glib_compile_resources gio-2.0")
-                         "type -p glib-compile-resources")
-                        (("\\$PKG_CONFIG --variable=glib_genmarshal glib-2.0")
-                         "type -p glib-genmarshal")
-                        (("\\$PKG_CONFIG --variable=glib_mkenums glib-2.0")
-                         "type -p glib-mkenums"))))
                   (add-before 'configure 'prepare-background-image
                     (lambda _
                       ;; Stick a Guix logo in the background image.  XXX: It
@@ -1099,7 +1088,7 @@ window manager.")
 
        #:disallowed-references (,inkscape/stable ,imagemagick)))
     (native-inputs
-     (list (list glib "bin") pkg-config intltool
+     (list xfce4-dev-tools
            ;; For our own ‘prepare-background-image’ phase.
            inkscape/stable imagemagick))
     (inputs
@@ -1112,7 +1101,7 @@ window manager.")
            libxfce4windowing
            libyaml
            thunar))
-    (home-page "https://www.xfce.org/")
+    (home-page "https://docs.xfce.org/xfce/xfdesktop/")
     (synopsis "Xfce desktop manager")
     (description
      "Desktop manager for Xfce, it sets the background color or image with
