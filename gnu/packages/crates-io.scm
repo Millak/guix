@@ -14048,25 +14048,6 @@ wrapping.")
         ("rust-strum-macros" ,rust-strum-macros-0.21)
         ("rust-unicode-width" ,rust-unicode-width-0.1))))))
 
-(define-public rust-comfy-table-1
-  (package
-    (inherit rust-comfy-table-4)
-    (name "rust-comfy-table")
-    (version "1.6.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "comfy-table" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1y6lc8h2lyyrrrdc36fz7brwyjz5l9w4nld4qx9mlacfibm8i92j"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-crossterm" ,rust-crossterm-0.19)
-        ("rust-strum" ,rust-strum-0.20)
-        ("rust-strum-macros" ,rust-strum-macros-0.20))))))
-
 (define-public rust-command-group-2
   (package
     (name "rust-command-group")
