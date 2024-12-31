@@ -1241,6 +1241,51 @@ it easier to read.")
                        ("rust-quote" ,rust-quote-1)
                        ("rust-syn" ,rust-syn-1))))))
 
+(define-public rust-sqlx-0.7
+  (package
+    (name "rust-sqlx")
+    (version "0.7.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sqlx" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ahadprvyhjraq0c5712x3kdkp1gkwfm9nikrmcml2h03bzwr8n9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Not all files included.
+       #:cargo-inputs (("rust-sqlx-core" ,rust-sqlx-core-0.7)
+                       ("rust-sqlx-macros" ,rust-sqlx-macros-0.7)
+                       ("rust-sqlx-mysql" ,rust-sqlx-mysql-0.7)
+                       ("rust-sqlx-postgres" ,rust-sqlx-postgres-0.7)
+                       ("rust-sqlx-sqlite" ,rust-sqlx-sqlite-0.7))
+       #:cargo-development-inputs (("rust-anyhow" ,rust-anyhow-1)
+                                   ("rust-async-std" ,rust-async-std-1)
+                                   ("rust-criterion" ,rust-criterion-0.5)
+                                   ("rust-dotenvy" ,rust-dotenvy-0.15)
+                                   ("rust-env-logger" ,rust-env-logger-0.11)
+                                   ("rust-futures" ,rust-futures-0.3)
+                                   ("rust-hex" ,rust-hex-0.4)
+                                   ("rust-libsqlite3-sys" ,rust-libsqlite3-sys-0.27)
+                                   ("rust-paste" ,rust-paste-1)
+                                   ("rust-rand" ,rust-rand-0.8)
+                                   ("rust-rand-xoshiro" ,rust-rand-xoshiro-0.6)
+                                   ("rust-serde" ,rust-serde-1)
+                                   ("rust-serde-json" ,rust-serde-json-1)
+                                   ("rust-tempfile" ,rust-tempfile-3)
+                                   ("rust-time" ,rust-time-0.3)
+                                   ("rust-tokio" ,rust-tokio-1)
+                                   ("rust-trybuild" ,rust-trybuild-1)
+                                   ("rust-url" ,rust-url-2))))
+    (home-page "https://github.com/launchbadge/sqlx")
+    (synopsis "Rust SQL Toolkit")
+    (description
+     "This package provides the Rust SQL Toolkit.  An async, pure Rust SQL
+crate featuring compile-time checked queries without a DSL.  Supports
+@code{PostgreSQL}, @code{MySQL}, and SQLite.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-sqlx-core-0.7
   (package
     (name "rust-sqlx-core")
