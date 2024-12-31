@@ -1792,24 +1792,24 @@ precedence rules, and the following functions and common constants.")
 
 (define-public xfce4-cpufreq-plugin
   (package
-   (name "xfce4-cpufreq-plugin")
-   (version "1.2.8")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://archive.xfce.org/src/panel-plugins/"
-                                  "xfce4-cpufreq-plugin/"
-                                  (version-major+minor version)
-                                  "/xfce4-cpufreq-plugin-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "1sbkjphrlyyqsmdggq2624qr45wkkrmvczpv04h5fpkjykcmir07"))))
+    (name "xfce4-cpufreq-plugin")
+    (version "1.2.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://gitlab.xfce.org/panel-plugins/"
+                                 name))
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0m90li6lq7d4fvv3pvqvyhd13pijcmz5ipfnr1z7a0jhjkskabjq"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list intltool pkg-config))
+     (list xfce4-dev-tools))
     (inputs
      (list libxfce4ui xfce4-panel))
-    (home-page
-     "https://goodies.xfce.org/projects/panel-plugins/xfce4-cpufreq-plugin")
+    (home-page "https://docs.xfce.org/panel-plugins/xfce4-cpufreq-plugin/")
     (synopsis "Xfce panel plugin for displaying CPU frequency")
     (description "This panel plugin shows information about the CPU
 governor and frequencies supported and used by your system.")
