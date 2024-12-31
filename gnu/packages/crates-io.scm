@@ -50707,19 +50707,6 @@ insertion order across all keys and values.")
 external events in Rust.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-ordered-stream-0.1
-  (package
-    (inherit rust-ordered-stream-0.2)
-    (name "rust-ordered-stream")
-    (version "0.1.4")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "ordered-stream" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "140c0h0ap30mcfhdk2xy1q9iqyb450wh11dglshh2y6vmjyj82in"))))))
-
 (define-public rust-ordermap-0.3
   (package
     (name "rust-ordermap")
