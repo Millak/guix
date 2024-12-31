@@ -10904,24 +10904,6 @@ encoding.")
        #:cargo-development-inputs
        (("rust-quickcheck" ,rust-quickcheck-0.9))))))
 
-(define-public rust-capnp-0.13
-  (package
-    (inherit rust-capnp-0.14)
-    (name "rust-capnp")
-    (version "0.13.7")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "capnp" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1xkfv6mm38y4d6ykxmvs1pdfywnn3n5bklsqcsz9xh72i9ffd3s5"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-quickcheck" ,rust-quickcheck-0.9))
-       #:cargo-development-inputs
-       (("rust-quickcheck" ,rust-quickcheck-0.9))))))
-
 (define-public rust-capnp-futures-0.19
   (package
     (name "rust-capnp-futures")
