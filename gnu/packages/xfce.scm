@@ -1358,29 +1358,25 @@ system resources, while still being visually appealing and user friendly.")
   (package
     (name "xfce4-power-manager")
     (version "4.20.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://archive.xfce.org/src/xfce/"
-                                  "xfce4-power-manager/" (version-major+minor version) "/"
-                                  "xfce4-power-manager-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "0agdsq2d4kr9aw7nqj1x5cgpxqcjffajipwjvlxq6likyv7924wp"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://gitlab.xfce.org/xfce/" name))
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "089qv5704y5dk2jddl3rij4d591q5i2dqlv8gb6vr250pyp1v9d8"))))
     (build-system gnu-build-system)
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-before 'configure 'patch-configure
-                 (lambda _
-                   (substitute* "configure"
-                     ;; XDG_CHECK_PACKAGE_BINARY requires an absolute path.
-                     (("\\$PKG_CONFIG --variable=gdbus_codegen gio-2.0")
-                      "type -p gdbus-codegen")))))))
+     (list #:configure-flags
+           #~(list "--enable-maintainer-mode"))) ;for xfpm-dbus-marshal.h, etc.
     (native-inputs
-     (list (list glib "bin") pkg-config intltool))
+     (list xfce4-dev-tools))
     (inputs
-     (list libxrandr gtk+ upower libnotify libxfce4ui polkit xfce4-panel))
-    (home-page "https://www.xfce.org/")
+     (list libxrandr gtk+ upower libnotify libxfce4ui polkit
+           wlr-protocols xfce4-panel))
+    (home-page "https://docs.xfce.org/xfce/xfce4-power-manager/")
     (synopsis "Xfce Power Manager")
     (description
      "This is a power manager for the Xfce desktop.  It manages the power
