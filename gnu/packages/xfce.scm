@@ -1222,20 +1222,22 @@ on your desktop.")
   (package
     (name "xfce4-dict")
     (version "0.8.8")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://archive.xfce.org/src/apps/" name "/"
-                                  (version-major+minor version) "/"
-                                  name "-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "05p9xbjzhqg2a13c9vsva854kpqjvzj4xjaj98bjrn3ns9wv030d"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://gitlab.xfce.org/apps/"
+                                 name))
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1y9ggn3c0ngn621ljmb2ahavr27sksld48z2qs470zcjwiw48nlx"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list intltool pkg-config))
+     (list xfce4-dev-tools))
     (inputs
      (list libxfce4ui xfce4-panel))
-    (home-page "https://www.xfce.org/")
+    (home-page "https://docs.xfce.org/apps/xfce4-dict/")
     (synopsis "Dictionary of Xfce desktop")
     (description
      "Xfce4-dict allows you to search different kinds of dictionary services
