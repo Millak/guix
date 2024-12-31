@@ -1661,21 +1661,22 @@ A plugin for the Xfce panel is also available.")
 (define-public xfce4-volumed-pulse
   (package
     (name "xfce4-volumed-pulse")
-    (version "0.2.4")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://archive.xfce.org/src/apps/"
-                                  name "/" (version-major+minor version) "/"
-                                  name "-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "0ql3hlciffjs981jp21hg6phrk25crh64yc01fm0l75k4vvf66d0"))))
+    (version "0.2.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://gitlab.xfce.org/apps/" name))
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0vr20rm81kd0av85zvfghzbczs4ahkxi1n4qn4hikqnb67iwrcq3"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
-     (list intltool pkg-config))
+     (list xfce4-dev-tools))
     (inputs
      (list xfconf libnotify pulseaudio keybinder-3.0 gtk+))
-    (home-page "https://goodies.xfce.org/projects/applications/xfce4-volumed")
+    (home-page "https://gitlab.xfce.org/apps/xfce4-volumed-pulse")
     (synopsis "XFCE volume keys daemon")
     (description
      "This is a volume keys control daemon for Xfce Desktop environment. It controls
