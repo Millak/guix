@@ -6430,6 +6430,30 @@ Diffie-Hellman key exchange, with curve operations provided by
 rand_core.")
     (license license:bsd-3)))
 
+(define-public rust-xsalsa20poly1305-0.9
+  (package
+    (name "rust-xsalsa20poly1305")
+    (version "0.9.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "xsalsa20poly1305" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ixnzy6srqk9gkxyh2rrwhpvnc0v3z3gfxgfg36q2zsnaz9xm9h2"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-aead" ,rust-aead-0.5)
+                       ("rust-poly1305" ,rust-poly1305-0.8)
+                       ("rust-salsa20" ,rust-salsa20-0.10)
+                       ("rust-subtle" ,rust-subtle-2)
+                       ("rust-zeroize" ,rust-zeroize-1))))
+    (home-page "https://github.com/RustCrypto/AEADs")
+    (synopsis "DEPRECATED: please use the `crypto_secretbox` crate")
+    (description
+     "DEPRECATED: please use the `crypto_secretbox` crate.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-z85-3
   (package
     (name "rust-z85")
