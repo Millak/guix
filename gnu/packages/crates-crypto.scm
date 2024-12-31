@@ -2818,29 +2818,6 @@ Hash-based Message Authentication Code}.")
         ("rust-md-5" ,rust-md-5-0.9)
         ("rust-sha2" ,rust-sha2-0.9))))))
 
-(define-public rust-hmac-0.7
-  (package
-    (inherit rust-hmac-0.8)
-    (name "rust-hmac")
-    (version "0.7.1")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "hmac" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "15cnwpssp2n1kdm9x7abir67f2hp3q6rdfj1mcck3hm4rmj5xjsx"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-crypto-mac" ,rust-crypto-mac-0.7)
-        ("rust-digest" ,rust-digest-0.8))
-       #:cargo-development-inputs
-       (("rust-crypto-mac" ,rust-crypto-mac-0.7)
-        ("rust-md-5" ,rust-md-5-0.8)
-        ("rust-sha2" ,rust-sha2-0.8))))))
-
 (define-public rust-hmac-sha1-0.1
   (package
     (name "rust-hmac-sha1")
