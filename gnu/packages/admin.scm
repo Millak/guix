@@ -5651,7 +5651,7 @@ it won't take longer to install 15 machines than it would to install just 2.")
 (define-public greetd
   (package
     (name "greetd")
-    (version "0.9.0")
+    (version "0.10.3")
     (home-page "https://git.sr.ht/~kennylevinsen/greetd")
     (source (origin
               (method git-fetch)
@@ -5660,25 +5660,28 @@ it won't take longer to install 15 machines than it would to install just 2.")
                     (commit version)))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "1b79lb0vikh5vwpdlyga6zwzm11gpsd7ghp8zb0q2m6mlqlj5by3"))))
+               (base32 "1j3c7skby9scsq6p1f6nacbiy9b26y1sswchdsp8p3vv7fgdh2wf"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-nix" ,rust-nix-0.26)
+       (("rust-async-trait" ,rust-async-trait-0.1)
+        ("rust-enquote" ,rust-enquote-1)
+        ("rust-getopts" ,rust-getopts-0.2)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-nix" ,rust-nix-0.27)
         ("rust-pam-sys" ,rust-pam-sys-0.5)
         ("rust-rpassword" ,rust-rpassword-5)
-        ("rust-users" ,rust-users-0.11)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-tokio" ,rust-tokio-1)
-        ("rust-getopts" ,rust-getopts-0.2)
         ("rust-thiserror" ,rust-thiserror-1)
-        ("rust-async-trait" ,rust-async-trait-0.1)
-        ("rust-enquote" ,rust-enquote-1))
+        ("rust-tokio" ,rust-tokio-1))
+       #:install-source? #f
        #:phases
        (modify-phases %standard-phases
-         (delete 'package)
+         (add-after 'unpack 'patch-/bin/sh
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "greetd/src/session/worker.rs"
+               (("/bin/sh") (search-input-file inputs "/bin/sh")))))
          (add-after 'build 'build-man-pages
            (lambda* (#:key inputs #:allow-other-keys)
              (define (scdoc-cmd doc lvl)
