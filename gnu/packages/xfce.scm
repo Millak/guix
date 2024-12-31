@@ -902,19 +902,21 @@ Samba from Thunar (the Xfce file manager) without requiring root access.")
 (define-public thunar-media-tags-plugin
   (package
     (name "thunar-media-tags-plugin")
-    (version "0.4.0")
+    (version "0.5.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://archive.xfce.org/src/thunar-plugins/"
-                           name "/" (version-major+minor version)
-                           "/" name "-" version ".tar.bz2"))
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://gitlab.xfce.org/thunar-plugins/"
+                                 name))
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "02n99ymqs8msa798r63sy409pwrycg8p4pxx3yf497k924g134lm"))))
+        (base32 "091i975aazkhkxyh0h0msyqkkr1z2dfy068syaawcisyaw1h2mpg"))))
     (build-system gnu-build-system)
-    (native-inputs (list pkg-config intltool))
+    (native-inputs (list xfce4-dev-tools))
     (inputs (list exo gtk+ thunar taglib))
-    (home-page "https://www.xfce.org/")
+    (home-page "https://docs.xfce.org/xfce/thunar/media-tags")
     (synopsis "Media tags plugin for Thunar file manager")
     (description
      "Media tags plugin allows tags editing from Thunar file manager and
