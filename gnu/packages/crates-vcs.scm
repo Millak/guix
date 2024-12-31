@@ -4042,27 +4042,6 @@ Gitoxide, a pure Rust implementation of Git.")
                        ("rust-serde" ,rust-serde-1)
                        ("rust-thiserror" ,rust-thiserror-1))))))
 
-(define-public rust-gix-mailmap-0.13
-  (package
-    (inherit rust-gix-mailmap-0.19)
-    (name "rust-gix-mailmap")
-    (version "0.13.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "gix-mailmap" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0spslf6r4l51z640fxqpw2nq4j7imzz0jhxwy44y086948cp0ls6"))))
-    (arguments
-     `(#:tests? #f      ; use of undeclared crate or module `gix_testtools`
-       #:cargo-inputs
-       (("rust-bstr" ,rust-bstr-1)
-        ("rust-document-features" ,rust-document-features-0.2)
-        ("rust-gix-actor" ,rust-gix-actor-0.21)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-thiserror" ,rust-thiserror-1))))))
-
 (define-public rust-gix-negotiate-0.15
   (package
     (name "rust-gix-negotiate")
