@@ -49852,33 +49852,6 @@ the system.")
 the default program configured on the system.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-opener-0.6
-  (package
-    (inherit rust-opener-0.7)
-    (name "rust-opener")
-    (version "0.6.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "opener" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1217aqxl8srr7v0bcc174yf5apaxjmzg0j62x8kb772g2yvdqqkc"))
-       (snippet
-        #~(begin (use-modules (guix build utils))
-                 ;; Don't demand vendored dbus.
-                 (substitute* "Cargo.toml"
-                   ((".*vendored.*") ""))))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-bstr" ,rust-bstr-1)
-        ("rust-dbus" ,rust-dbus-0.9)
-        ("rust-normpath" ,rust-normpath-1)
-        ("rust-url" ,rust-url-2)
-        ("rust-winapi" ,rust-winapi-0.3))
-       #:cargo-development-inputs
-       (("rust-version-sync" ,rust-version-sync-0.9))))))
-
 (define-public rust-openssl-0.10
   (package
     (name "rust-openssl")
