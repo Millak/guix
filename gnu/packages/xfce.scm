@@ -583,27 +583,27 @@ keys for controlling the audio volume.")
     (version "2.8.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://archive.xfce.org/src/panel-plugins/"
-                           "xfce4-whiskermenu-plugin/" (version-major+minor version) "/"
-                           "xfce4-whiskermenu-plugin-" version ".tar.bz2"))
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://gitlab.xfce.org/panel-plugins/"
+                                 name))
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1l4wzirqk754cliwyhl28f460xkqzqi9a9s7jirx164gcn3w4xp7"))))
+        (base32 "025nnf1h361a4nl8l28rk7w37d3jajr8dm359lnfq8xz3f6yy4n5"))))
     (build-system cmake-build-system)
     (native-inputs
-     (list pkg-config intltool))
+     (list gettext-minimal pkg-config))
     (inputs
      (list accountsservice
            xfce4-panel
            garcon
-           gettext-minimal
            exo
-           gtk
            gtk-layer-shell
            libxfce4ui))
     (arguments
      (list #:tests? #f))                ; no tests
-    (home-page "https://goodies.xfce.org/projects/panel-plugins/xfce4-whiskermenu-plugin")
+    (home-page "https://docs.xfce.org/panel-plugins/xfce4-whiskermenu-plugin/")
     (synopsis "Application menu panel plugin for Xfce")
     (description
      "This package provides an alternative to the default application menu
