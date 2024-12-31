@@ -38383,27 +38383,6 @@ interface in Webassembly and Javascript too.")
 JSON-RPC 2.0 specification.")
     (license license:expat)))
 
-(define-public rust-jsonrpc-core-14
-  (package
-    (inherit rust-jsonrpc-core-18)
-    (name "rust-jsonrpc-core")
-    (version "14.2.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "jsonrpc-core" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0qkvgkr05sg0j25jqgw7zcw4r1agzg8gnfnrmw1rgyqz283p6x50"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-futures" ,rust-futures-0.1)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-derive" ,rust-serde-derive-1)
-        ("rust-serde-json" ,rust-serde-json-1))))))
-
 (define-public rust-juliex-0.3
   (package
     (name "rust-juliex")
