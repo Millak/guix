@@ -18252,28 +18252,6 @@ crate (implementation detail).")
      "This package provides an implementation detail of the @code{cxx} crate.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-cxxbridge-macro-0.5
-  (package
-    (inherit rust-cxxbridge-macro-1)
-    (name "rust-cxxbridge-macro")
-    (version "0.5.10")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "cxxbridge-macro" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "05mhvchmcb8dpgcqkl5vyxycywp2x42vw1qh2hyxxyi576nmmxsr"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))
-       #:cargo-development-inputs
-       (("rust-cxx" ,rust-cxx-0.5))))))
-
 (define-public rust-daemonize-0.5
   (package
     (name "rust-daemonize")
