@@ -66638,39 +66638,6 @@ sub-processes using a fork-like interface.")
         ("rust-rustyline-derive" ,rust-rustyline-derive-0.6)
         ("rust-tempfile" ,rust-tempfile-3))))))
 
-(define-public rust-rustyline-8
-  (package
-    (inherit rust-rustyline-9)
-    (name "rust-rustyline")
-    (version "8.2.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "rustyline" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0x0qwcbnq6zyayxv1xqqn0zbwlz878jra0sgiv4pd3vklzvymm7v"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-bitflags" ,rust-bitflags-1)
-        ("rust-cfg-if" ,rust-cfg-if-1)
-        ("rust-clipboard-win" ,rust-clipboard-win-4)
-        ("rust-dirs-next" ,rust-dirs-next-2)
-        ("rust-fd-lock" ,rust-fd-lock-2)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-memchr" ,rust-memchr-2)
-        ("rust-nix" ,rust-nix-0.20)
-        ("rust-radix-trie" ,rust-radix-trie-0.2)
-        ("rust-scopeguard" ,rust-scopeguard-1)
-        ("rust-smallvec" ,rust-smallvec-1)
-        ("rust-unicode-segmentation" ,rust-unicode-segmentation-1)
-        ("rust-unicode-width" ,rust-unicode-width-0.1)
-        ("rust-utf8parse" ,rust-utf8parse-0.2)
-        ("rust-winapi" ,rust-winapi-0.3)
-        ("rust-skim" ,rust-skim-0.9))))))
-
 (define-public rust-rustyline-6
   (package
     (inherit rust-rustyline-9)
