@@ -13461,34 +13461,6 @@ implement this for new programming languages! The
 diagnostics easy and relatively painless for everyone!")
     (license license:asl2.0)))
 
-(define-public rust-codespan-reporting-0.9
-  (package
-    (inherit rust-codespan-reporting-0.11)
-    (name "rust-codespan-reporting")
-    (version "0.9.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "codespan-reporting" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "07g86hv1lp5bbr6w6hsa3mgdmavs36igc7k5pi1fvc86ad2n41vf"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-serde" ,rust-serde-1)
-        ("rust-termcolor" ,rust-termcolor-1)
-        ("rust-unicode-width" ,rust-unicode-width-0.1))
-       #:cargo-development-inputs
-       (("rust-anyhow" ,rust-anyhow-1)
-        ("rust-insta" ,rust-insta-0.16)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-peg" ,rust-peg-0.6)
-        ("rust-rustyline" ,rust-rustyline-6)
-        ("rust-structopt" ,rust-structopt-0.3)
-        ("rust-unindent" ,rust-unindent-0.1))))))
-
 (define-public rust-codspeed-2
   (package
     (name "rust-codspeed")
