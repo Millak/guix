@@ -61043,32 +61043,6 @@ extension to python.")
      "Parse Python package metadata from sdist and bdists and etc.")
     (license license:expat)))
 
-(define-public rust-python-pkginfo-0.5
-  (package
-    (inherit rust-python-pkginfo-0.6)
-    (name "rust-python-pkginfo")
-    (version "0.5.6")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "python-pkginfo" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "03hvc5h10vicfjql9dw46w0xcwq2gjm9sfbfmr13rglz1z68hfg2"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-bzip2" ,rust-bzip2-0.4)
-        ("rust-flate2" ,rust-flate2-1)
-        ("rust-fs-err" ,rust-fs-err-2)
-        ("rust-mailparse" ,rust-mailparse-0.14)
-        ("rust-rfc2047-decoder" ,rust-rfc2047-decoder-0.2)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-tar" ,rust-tar-0.4)
-        ("rust-thiserror" ,rust-thiserror-1)
-        ("rust-xz" ,rust-xz-0.1)
-        ("rust-zip" ,rust-zip-0.6))
-       #:cargo-development-inputs (("rust-serde-json" ,rust-serde-json-1))))))
-
 (define-public rust-qrcode-generator-4
   (package
     (name "rust-qrcode-generator")
