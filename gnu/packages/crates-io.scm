@@ -15530,31 +15530,6 @@ this to write Rust programs which can be customized by end users easily.")
         ("rust-winapi" ,rust-winapi-0.3)
         ("rust-winapi-util" ,rust-winapi-util-0.1))))))
 
-(define-public rust-console-0.9
-  (package
-    (inherit rust-console-0.11)
-    (name "rust-console")
-    (version "0.9.2")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "console" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1h765951c9mywff534f0191slazykmif4290g2yarcwhd2cg7q25"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-unicode-width" ,rust-unicode-width-0.1)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-termios" ,rust-termios-0.3)
-        ("rust-encode-unicode" ,rust-encode-unicode-0.3)
-        ("rust-winapi" ,rust-winapi-0.3)
-        ("rust-clicolors-control" ,rust-clicolors-control-1)
-        ("rust-regex" ,rust-regex-1)
-        ("rust-lazy-static" ,rust-lazy-static-1))))))
-
 (define-public rust-console-0.7
   (package
     (name "rust-console")
