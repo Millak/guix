@@ -4854,29 +4854,6 @@ terminals prompt.")
        #:cargo-development-inputs (("rust-expectrl" ,rust-expectrl-0.7)
                                    ("rust-serial-test" ,rust-serial-test-2))))))
 
-(define-public rust-gix-prompt-0.5
-  (package
-    (inherit rust-gix-prompt-0.7)
-    (name "rust-gix-prompt")
-    (version "0.5.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "gix-prompt" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1sm5b24jpcv4whzxymk6fpb1ph1hhq6842115fpcqqx0yk5dw8ic"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-gix-command" ,rust-gix-command-0.2)
-        ("rust-gix-config-value" ,rust-gix-config-value-0.12)
-        ("rust-parking-lot" ,rust-parking-lot-0.12)
-        ("rust-rustix" ,rust-rustix-0.38)
-        ("rust-thiserror" ,rust-thiserror-1))
-       #:cargo-development-inputs
-       (("rust-expectrl" ,rust-expectrl-0.7)
-        ("rust-serial-test" ,rust-serial-test-2))))))
-
 (define-public rust-gix-protocol-0.45
   (package
     (name "rust-gix-protocol")
