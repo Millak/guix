@@ -8908,22 +8908,6 @@ streams in big-endian and little-endian formats.")
        (sha256
         (base32 "0kq7hgc66pkbg9kwp8qazaz5x0dagaihml6b8ixsa17xb5k5fig4"))))))
 
-(define-public rust-bitstream-io-0.8
-  (package
-    (inherit rust-bitstream-io-1)
-    (name "rust-bitstream-io")
-    (version "0.8.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "bitstream-io" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "00a6wy54s1dmadm5xz8k2cbsd7ixvm48mlc45bk0fdy0pbra6jk1"))))
-    (arguments `(#:skip-build? #t))))
-
 (define-public rust-bitvec-1
   (package
     (name "rust-bitvec")
