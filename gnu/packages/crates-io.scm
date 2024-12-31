@@ -93384,26 +93384,6 @@ for Wasm in browsers.")
 available on a platform.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-webbrowser-0.5
-  (package
-    (inherit rust-webbrowser-0.8)
-    (name "rust-webbrowser")
-    (version "0.5.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "webbrowser" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "12hmi768mnpssfh9w61ys75v706jj3pcy4fliqq21dnnj1j1bbgc"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-web-sys" ,rust-web-sys-0.3)
-        ("rust-widestring" ,rust-widestring-0.4)
-        ("rust-winapi" ,rust-winapi-0.3))))))
-
 (define-public rust-wee-alloc-0.4
   (package
     (name "rust-wee-alloc")
