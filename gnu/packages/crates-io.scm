@@ -75303,24 +75303,6 @@ package provides derive macros.")
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))))))
 
-(define-public rust-snafu-derive-0.6
-  (package
-    (inherit rust-snafu-derive-0.7)
-    (name "rust-snafu-derive")
-    (version "0.6.10")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "snafu-derive" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0nri7ma06g5kimpcdcm8359a55nmps5f3kcngy0j6bin7jhfy20m"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))))
-
 (define-public rust-snap-1
   (package
     (name "rust-snap")
