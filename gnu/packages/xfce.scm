@@ -1112,19 +1112,24 @@ devices and folders.")
 (define-public gigolo
   (package
     (name "gigolo")
-    (version "0.5.3")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://archive.xfce.org/src/apps/"
-                                  name "/" (version-major+minor version)
-                                  "/" name "-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "1l1g9ljvyzir1jpjf0248nnwwf3sakwljlik6cj5wrj4azv88nfj"))))
+    (version "0.5.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://gitlab.xfce.org/apps/"
+                                 name))
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1688j4c7d1vzglx9a8a32gy17yfqwrha7p0r272hrhz009jza6w1"))))
     (build-system gnu-build-system)
-    (native-inputs (list pkg-config intltool))
+    (arguments
+     (list #:configure-flags
+           #~(list "--enable-maintainer-mode"))) ;for gigolo_ui.h
+    (native-inputs (list xfce4-dev-tools))
     (inputs (list gtk+))
-    (home-page "https://www.xfce.org/")
+    (home-page "https://docs.xfce.org/apps/gigolo/")
     (synopsis "Manage connections to remote file systems")
     (description
      "Gigolo is a graphical user interface to easily manage connections to
