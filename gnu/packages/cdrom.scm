@@ -18,6 +18,7 @@
 ;;; Copyright © 2024 Julian Flake <flake@uni-koblenz.de>
 ;;; Copyright © 2025 Yovan Naumovski <yovan@gorski.stream>
 ;;; Copyright © 2025 André Batista <nandre@riseup.net>
+;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -91,7 +92,13 @@
               (base32
                "0fr21a7vprdyy1bq6s99m0x420c9jm5fipsd63pqv8qyfkhhxkim"))))
     (build-system gnu-build-system)
-    (arguments '(#:tests? #f))      ; tests rely on access to external servers
+    (arguments
+     (list
+      #:tests? #f                    ;tests rely on access to external servers
+      #:configure-flags #~(list
+                           #$(string-append
+                              "CFLAGS=-g -O2"
+                              " -Wno-error=incompatible-pointer-types"))))
     (home-page "https://libcddb.sourceforge.net/")
     (synopsis "C library to access data on a CDDB server")
     (description
