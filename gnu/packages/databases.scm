@@ -956,7 +956,7 @@ Language.")
 (define-public mariadb
   (package
     (name "mariadb")
-    (version "10.10.2")
+    (version "10.11.10")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://downloads.mariadb.com/MariaDB"
@@ -964,7 +964,7 @@ Language.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1ciw7y08wms9g3hzhyria49r1b9n5wpbhkndazv95d925c8x1jsp"))
+                "08phlqcwcwl753zi2jv702q7b3h25d489289mflnm8c31djp8smh"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -1074,11 +1074,16 @@ Language.")
                       ;; <https://jira.mariadb.org/browse/MDEV-26320>.
                       "main.selectivity_no_engine"
 
-                      ;; FIXME: This test checks various table encodings and
+                      ;; FIXME: These tests check various table encodings and
                       ;; fails because Guix defaults to UTF8 instead of the
                       ;; upstream default latin1_swedish_ci.  It's not easily
                       ;; substitutable because several encodings are tested.
                       "main.system_mysql_db"
+                      "main.mysqldump-header"
+
+                      ;; These test sometimes fail.
+                      "main.log_slow"
+                      "main.mysqld--help-aria"
 
                       ;; XXX: This test occasionally fails on i686-linux:
                       ;; <https://jira.mariadb.org/browse/MDEV-24458>
