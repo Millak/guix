@@ -1670,37 +1670,6 @@ grammars and BER/DER encodings, for example.")
      "This package provides Rustls bindings for non-Rust languages.")
     (license (list license:asl2.0 license:isc license:expat))))
 
-(define-public rust-rustls-ffi-0.8
-  (package
-    (inherit rust-rustls-ffi-0.14)
-    (name "rust-rustls-ffi")
-    (version "0.8.2")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "rustls-ffi" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32 "06kqrvm1d5ps9pml26zdd2hm8hh20j6svwvqibpnx7m5rh3jg9cx"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-libc" ,rust-libc-0.2)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-num-enum" ,rust-num-enum-0.5)
-        ("rust-rustls" ,rust-rustls-0.20)
-        ("rust-rustls-pemfile" ,rust-rustls-pemfile-0.2)
-        ("rust-sct" ,rust-sct-0.7)
-        ("rust-webpki" ,rust-webpki-0.22))
-        #:cargo-development-inputs
-        (("rust-cbindgen" ,rust-cbindgen-0.26))
-        #:phases
-        (modify-phases %standard-phases
-          (add-after 'unpack 'adjust-cbindgen-requirement
-            ;; The Cargo.toml in the git repository doesn't specify
-            ;; a version requirement for cbindgen.
-            (lambda _
-              (substitute* "Cargo.toml"
-                (("0\\.19\\.0") "*")))))))))
-
 (define-public rust-rustls-native-certs-0.8
   (package
     (name "rust-rustls-native-certs")
