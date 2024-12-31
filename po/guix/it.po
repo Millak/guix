@@ -11,21 +11,22 @@
 # mm mmmm <rimarko@libero.it>, 2023.
 # Marco Rimoldi <marco.rimoldi@pm.me>, 2024.
 # Alessandro Bugliazzini <yattatux@posteo.net>, 2024.
+# Salvatore Cocuzza <info@salvatorecocuzza.it>, 2024.
 #: guix/diagnostics.scm:159
 msgid ""
 msgstr ""
 "Project-Id-Version: GNU guix\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2024-01-29 03:18+0000\n"
-"PO-Revision-Date: 2024-10-09 07:32+0000\n"
-"Last-Translator: Marco Rimoldi <marco.rimoldi@pm.me>\n"
+"PO-Revision-Date: 2024-12-27 17:34+0000\n"
+"Last-Translator: Florian Pelz <pelzflorian@pelzflorian.de>\n"
 "Language-Team: Italian <https://translate.fedoraproject.org/projects/guix/guix/it/>\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.7.2\n"
+"X-Generator: Weblate 5.9.1\n"
 
 #: gnu.scm:81
 #, scheme-format
@@ -5592,6 +5593,8 @@ msgid ""
 "Usage: guix substitute OPTION [ARGUMENT]...\n"
 "Internal tool to substitute a pre-built binary to a local build.\n"
 msgstr ""
+"Uso: guix substitute OPZIONE [ARGOMENTO]...\n"
+"Strumento interno per sostituire un binario precostruito con una build locale.\n"
 
 #: guix/scripts/substitute.scm:243
 msgid ""
@@ -5599,6 +5602,9 @@ msgid ""
 "      --query            report on the availability of substitutes for the\n"
 "                         store file names passed on the standard input"
 msgstr ""
+"\n"
+"      --query            rappòrta sulla disponibilità di sostituti per i nomi\n"
+"                         dei file dello store passati sullo standard input"
 
 #: guix/scripts/substitute.scm:246
 msgid ""
@@ -5607,6 +5613,10 @@ msgid ""
 "                         download STORE-FILE and store it as a Nar in file\n"
 "                         DESTINATION"
 msgstr ""
+"\n"
+"      --substitute FILE-DELLO-STORE DESTINAZIONE\n"
+"                         scarica FILE-DELLO-STORE e memorizzalo come Nar in file\n"
+"                         DESTINAZIONE"
 
 #: guix/scripts/substitute.scm:326
 #, scheme-format
@@ -5641,7 +5651,7 @@ msgstr "Scarico ~a...~%"
 #: guix/scripts/substitute.scm:507
 #, scheme-format
 msgid "no valid nar URLs for ~a at ~a~%"
-msgstr ""
+msgstr "nessun URL nar valido per ~a a ~a~%"
 
 #: guix/scripts/substitute.scm:618
 #, scheme-format
@@ -5661,11 +5671,11 @@ msgstr "nessun sostituto valido per '~a'~%"
 #: guix/scripts/substitute.scm:679
 #, scheme-format
 msgid "retrying download of '~a' with other substitute URLs...~%"
-msgstr ""
+msgstr "nuovo tentativo di download di \"~a\" con altri URL sostitutivi...~%"
 
 #: guix/scripts/substitute.scm:714
 msgid "ACL for archive imports seems to be uninitialized, substitutes may be unavailable\n"
-msgstr ""
+msgstr "L'ACL per le importazioni di archivi sembra non essere inizializzato, i sostituti potrebbero non essere disponibili\n"
 
 #: guix/scripts/substitute.scm:802
 #, scheme-format
@@ -5703,7 +5713,7 @@ msgstr "dati di firma corrotti: ~a"
 
 #: guix/scripts/authenticate.scm:151
 msgid "sign or verify signatures on normalized archives (nars)"
-msgstr ""
+msgstr "firmare o verificare firme su archivi normalizzati (nars)"
 
 #: guix/scripts/authenticate.scm:184
 msgid ""
@@ -5711,6 +5721,9 @@ msgid ""
 "Sign data or verify signatures.  This tool is meant to be used internally by\n"
 "'guix-daemon'.\n"
 msgstr ""
+"Uso: guix authenticate OPZIONE...\n"
+"Firma i dati o verifica le firme.  Questo strumento è pensato per essere\n"
+"utilizzato internamente da 'guix-daemon'.\n"
 
 #: guix/scripts/authenticate.scm:218
 #, scheme-format
@@ -5735,7 +5748,7 @@ msgstr "inizializzo il file system radice corrente~%"
 #: guix/scripts/system.scm:229
 #, scheme-format
 msgid "not running as 'root', so the ownership of '~a' may be incorrect!~%"
-msgstr ""
+msgstr "non in esecuzione come 'root', quindi la proprietà di '~a' potrebbe essere errata!~%"
 
 #: guix/scripts/system.scm:259
 #, scheme-format
@@ -5782,6 +5795,8 @@ msgid ""
 "To allow changes to all the system services to take\n"
 "effect, you will need to reboot."
 msgstr ""
+"Per consentire modifiche a tutti i servizi di sistema da adottare\n"
+"effetto, sarà necessario riavviare."
 
 #: guix/scripts/system.scm:379
 #, scheme-format
@@ -5882,6 +5897,8 @@ msgid ""
 "If '~a' is a file system\n"
 "label, write @code{(file-system-label ~s)} in your @code{device} field."
 msgstr ""
+"Se '~a' è un file system\n"
+"label, scrivi @code{(file-system-label ~s)} nel campo @code{device}."
 
 #: guix/scripts/system.scm:639
 #, scheme-format
@@ -5955,6 +5972,9 @@ msgid ""
 "Build the operating system declared in FILE according to ACTION.\n"
 "Some ACTIONS support additional ARGS.\n"
 msgstr ""
+"Uso: guix system [OPZIONE ...] AZIONE [ARG ...] [FILE]\n"
+"Costruisci il sistema operativo dichiarato in FILE secondo AZIONE.\n"
+"Alcune AZIONI supportano ARGS aggiuntivi.\n"
 
 #: guix/scripts/system.scm:961
 msgid "   search           search for existing service types\n"
@@ -6014,17 +6034,19 @@ msgstr "   init             inizializza un file system radice per eseguire GNU\n
 
 #: guix/scripts/system.scm:989
 msgid "   extension-graph  emit the service extension graph in Dot format\n"
-msgstr ""
+msgstr "   extension-graph  emette il grafo dell'estensione del servizio in formato Dot\n"
 
 #: guix/scripts/system.scm:991
 msgid "   shepherd-graph   emit the graph of shepherd services in Dot format\n"
-msgstr ""
+msgstr "   shepherd-graph   emette il grafo dei servizi Shepherd in formato Dot\n"
 
 #: guix/scripts/system.scm:995
 msgid ""
 "\n"
 "  -d, --derivation       return the derivation of the given system"
 msgstr ""
+"\n"
+"  -d, --derivation       restituisce la derivazione del sistema specificato"
 
 #: guix/scripts/system.scm:997
 msgid ""
@@ -6032,6 +6054,9 @@ msgid ""
 "  -e, --expression=EXPR  consider the operating-system EXPR evaluates to\n"
 "                         instead of reading FILE, when applicable"
 msgstr ""
+"\n"
+"  -e, --expression=EXPR   considera il sistema operativo a cui ESPR fa riferimento\n"
+"                         invece di leggere FILE, quando applicabile"
 
 #: guix/scripts/system.scm:1000 guix/scripts/home.scm:126
 msgid ""
@@ -6039,6 +6064,9 @@ msgid ""
 "      --allow-downgrades for 'reconfigure', allow downgrades to earlier\n"
 "                         channel revisions"
 msgstr ""
+"\n"
+"      --allow-downgrades per 'reconfigure', consente i downgrade\n"
+"                         a versioni precedenti revisioni del canale"
 
 #: guix/scripts/system.scm:1003
 msgid ""
@@ -6047,6 +6075,11 @@ msgid ""
 "                         apply STRATEGY (one of nothing-special, backtrace,\n"
 "                         or debug) when an error occurs while reading FILE"
 msgstr ""
+"\n"
+"      --on-error=STRATEGIA\n"
+"                         applicare STRATEGIA (uno di nothing-special, backtrace,\n"
+"                         o debug) quando si verifica un errore durante la\n"
+"                         lettura di FILE"
 
 #: guix/scripts/system.scm:1007
 msgid ""
@@ -8639,7 +8672,7 @@ msgstr "informazioni per il debug"
 
 #: guix/ui.scm:1567
 msgid "documentation"
-msgstr "documentazione"
+msgstr "documentation"
 
 #: guix/ui.scm:1568
 msgid "shared libraries"

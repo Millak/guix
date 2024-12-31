@@ -11,15 +11,15 @@ msgstr ""
 "Project-Id-Version: GNU guix\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2024-01-29 03:18+0000\n"
-"PO-Revision-Date: 2024-09-04 11:59+0000\n"
-"Last-Translator: Florian Pelz <pelzflorian@pelzflorian.de>\n"
+"PO-Revision-Date: 2024-12-19 13:56+0000\n"
+"Last-Translator: Ricky Tigg <ricky.tigg@gmail.com>\n"
 "Language-Team: Finnish <https://translate.fedoraproject.org/projects/guix/guix/fi/>\n"
 "Language: fi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.7.1\n"
+"X-Generator: Weblate 5.9.1\n"
 
 #: gnu.scm:81
 #, scheme-format
@@ -545,16 +545,14 @@ msgid "ignoring network route for '~a'~%"
 msgstr "jätetään huomioimatta verkkoreitti kohteelle '~a'~%"
 
 #: gnu/services/base.scm:2952
-#, fuzzy, scheme-format
-#| msgid "service of type '~a' not found"
+#, scheme-format
 msgid "Interface with name '~a' not found~%"
-msgstr "palvelua tyyppiä '~a' ei löydy"
+msgstr "Liitäntää nimellä '~a' ei löytynyt~%"
 
 #: gnu/services/base.scm:2959
-#, fuzzy, scheme-format
-#| msgid "service of type '~a' not found"
+#, scheme-format
 msgid "Interface with mac-address '~a' not found~%"
-msgstr "palvelua tyyppiä '~a' ei löydy"
+msgstr "Liitäntää mac-osoitteella \"~a\" ei löytynyt~%"
 
 #: gnu/services/base.scm:3105
 msgid ""
@@ -884,9 +882,9 @@ msgid "Set the environment variables."
 msgstr ""
 
 #: gnu/home/services.scm:329
-#, scheme-format
+#, fuzzy, scheme-format
 msgid "duplicate '~a' entry for files/"
-msgstr ""
+msgstr "kaksoiskappale \"~a\" tiedostoille/"
 
 #: gnu/home/services.scm:356
 #, scheme-format
@@ -1098,10 +1096,9 @@ msgid ""
 msgstr ""
 
 #: gnu/home/services/ssh.scm:111
-#, fuzzy, scheme-format
-#| msgid "~a: invalid locale name"
+#, scheme-format
 msgid "~s: invalid address family value"
-msgstr "~a: virheellinen kielialuenimi"
+msgstr "~s: virheellinen osoitteen perhearvo"
 
 #: gnu/home/services/ssh.scm:292
 msgid "define either 'name' or 'match-criteria', not both"
@@ -2055,7 +2052,7 @@ msgstr "Näytä"
 #: gnu/installer/newt/partition.scm:712 gnu/installer/newt/user.scm:68
 #: gnu/installer/newt/user.scm:215
 msgid "OK"
-msgstr "OK"
+msgstr "Hyvä on"
 
 #: gnu/installer/newt/page.scm:257
 msgid "Please enter a non empty input."
@@ -2169,7 +2166,7 @@ msgstr ""
 
 #: gnu/installer/newt/partition.scm:189 gnu/installer/newt/wifi.scm:92
 msgid "Password required"
-msgstr ""
+msgstr "Salasana vaaditaan"
 
 #: gnu/installer/newt/partition.scm:194
 #, scheme-format
@@ -2403,7 +2400,7 @@ msgstr "Nimi"
 
 #: gnu/installer/newt/user.scm:49
 msgid "Real name"
-msgstr ""
+msgstr "Oikea nimi"
 
 #: gnu/installer/newt/user.scm:51
 msgid "Home directory"
@@ -7058,7 +7055,7 @@ msgstr ""
 #: guix/scripts/container/exec.scm:90
 #, scheme-format
 msgid "no command specified~%"
-msgstr ""
+msgstr "ei komentoa määritetty~%"
 
 #: guix/scripts/container/exec.scm:93
 #, scheme-format
@@ -7819,7 +7816,7 @@ msgstr ""
 
 #: guix/ui.scm:1567
 msgid "documentation"
-msgstr "dokumentaatio"
+msgstr "documentation"
 
 #: guix/ui.scm:1568
 msgid "shared libraries"

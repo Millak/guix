@@ -13,13 +13,14 @@
 # Frank McCay <frank.mccay@outlook.com.br>, 2024.
 # Felipe Silva <fedora@felipeqq2.rocks>, 2024.
 # Krascovict Petrov <krascovict@yandex.ru>, 2024.
+# "Geraldo S. Simião Kutz" <geraldo.simiao.kutz@gmail.com>, 2024.
 #: guix/diagnostics.scm:159
 msgid ""
 msgstr ""
 "Project-Id-Version: guix 1.2.0-pre1\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2024-01-29 03:18+0000\n"
-"PO-Revision-Date: 2024-11-28 09:22+0000\n"
+"PO-Revision-Date: 2024-12-06 16:43+0000\n"
 "Last-Translator: Florian Pelz <pelzflorian@pelzflorian.de>\n"
 "Language-Team: Portuguese (Brazil) <https://translate.fedoraproject.org/projects/guix/guix/pt_BR/>\n"
 "Language: pt_BR\n"
@@ -27,7 +28,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.8.2\n"
+"X-Generator: Weblate 5.8.4\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 
 #: gnu.scm:81
@@ -9832,6 +9833,9 @@ msgid ""
 "\n"
 "      --check            check if the shell clobbers environment variables"
 msgstr ""
+"\n"
+"      --check            verifica se o shell não sobrescreve variáveis de\n"
+"                         ambiente"
 
 #: guix/scripts/environment.scm:98
 msgid ""
