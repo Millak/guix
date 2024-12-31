@@ -30172,6 +30172,34 @@ and loading crate.")
         ("rust-scroll" ,rust-scroll-0.11))))))
 
 (define-public rust-graphql-parser-0.3
+(define-public rust-graphql-client-codegen-0.14
+  (package
+    (name "rust-graphql-client-codegen")
+    (version "0.14.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "graphql_client_codegen" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "02pv88c2b1jk00a9v1w0wlak0hvzj1fb9wxwqr9crh7h5h6fs9sy"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-graphql-introspection-query" ,rust-graphql-introspection-query-0.2)
+        ("rust-graphql-parser" ,rust-graphql-parser-0.4)
+        ("rust-heck" ,rust-heck-0.4)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/graphql-rust/graphql-client")
+    (synopsis "Utility crate for graphql_client")
+    (description "This package provides a utility crate for graphql_client.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-graphql-introspection-query-0.2
   (package
     (name "rust-graphql-introspection-query")
