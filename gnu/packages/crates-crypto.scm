@@ -6443,24 +6443,6 @@ One-Time Password library.")
        (("rust-generic-array" ,rust-generic-array-0.14)
         ("rust-subtle" ,rust-subtle-2))))))
 
-(define-public rust-universal-hash-0.3
-  (package
-    (inherit rust-universal-hash-0.4)
-    (name "rust-universal-hash")
-    (version "0.3.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "universal-hash" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "00aa241pab99z66f0s464vdrxnk3igs8z1qm6j01chcv5w7r036z"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-generic-array" ,rust-generic-array-0.12)
-        ("rust-subtle" ,rust-subtle-2))))))
-
 (define-public rust-x25519-dalek-2
   (package
     (name "rust-x25519-dalek")
