@@ -74061,29 +74061,6 @@ and spirv-std-macros.")
         ("rust-bincode" ,rust-bincode-1)
         ("rust-tobj" ,rust-tobj-2))))))
 
-(define-public rust-spsc-buffer-0.1
-  (package
-    (name "rust-spsc-buffer")
-    (version "0.1.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "spsc-buffer" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0fsv5zpxkax2n46flxhyajq1yblgh8f33la39gp86hksqcwkyv5y"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-development-inputs
-       (("rust-criterion" ,rust-criterion-0.2))))
-    (home-page "https://github.com/davidhewitt/spsc-buffer")
-    (synopsis "Single-producer single-consumer lock-free buffer")
-    (description
-     "This package provides a single-producer single-consumer lock-free buffer.")
-    (license license:expat)))
-
 (define-public rust-sptr-0.3
   (package
     (name "rust-sptr")
