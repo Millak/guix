@@ -6717,29 +6717,6 @@ provides a crate for parsing and serialization of gix-url's.")
        #:cargo-development-inputs
        (("rust-libtest-mimic" ,rust-libtest-mimic-0.6))))))
 
-(define-public rust-gix-url-0.19
-  (package
-    (inherit rust-gix-url-0.24)
-    (name "rust-gix-url")
-    (version "0.19.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "gix-url" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0qy8shn5s8r9fjchcqrz0xwg89lsjykd463naji4f864bbr3srpi"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-bstr" ,rust-bstr-1)
-        ("rust-document-features" ,rust-document-features-0.2)
-        ("rust-gix-features" ,rust-gix-features-0.30)
-        ("rust-gix-path" ,rust-gix-path-0.8)
-        ("rust-home" ,rust-home-0.5)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-thiserror" ,rust-thiserror-1)
-        ("rust-url" ,rust-url-2))))))
-
 (define-public rust-gix-utils-0.1
   (package
     (name "rust-gix-utils")
