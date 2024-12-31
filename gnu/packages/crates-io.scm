@@ -76885,23 +76885,6 @@ languages and compilers.")
        #:cargo-development-inputs
        (("rust-similar-asserts" ,rust-similar-asserts-1))))))
 
-(define-public rust-symlink-0.1
-  (package
-    (name "rust-symlink")
-    (version "0.1.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "symlink" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "02h1i0b81mxb4vns4xrvrfibpcvs7jqqav8p3yilwik8cv73r5x7"))))
-    (build-system cargo-build-system)
-    (home-page "https://gitlab.com/chris-morgan/symlink")
-    (synopsis "Create symlinks in a cross-platform manner")
-    (description "Create symlinks in a cross-platform manner.")
-    (license (list license:expat license:asl2.0))))
-
 ;; WARNING: This package is a dependency of mesa.
 (define-public rust-syn-2
   (package
