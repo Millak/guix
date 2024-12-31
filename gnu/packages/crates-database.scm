@@ -881,24 +881,6 @@ it easier to read.")
         ("rust-sqlite3-sys" ,rust-sqlite3-sys-0.14))
        #:cargo-development-inputs (("rust-temporary" ,rust-temporary-0.6))))))
 
-(define-public rust-sqlite-0.26
-  (package
-    (inherit rust-sqlite-0.30)
-    (name "rust-sqlite")
-    (version "0.26.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "sqlite" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0snvg09bs0n8skcxkx52lcymdn0l130a2m8fpvxpdhkyq0sabc9z"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-libc" ,rust-libc-0.2)
-        ("rust-sqlite3-sys" ,rust-sqlite3-sys-0.13))))))
-
 (define-public rust-sqlite3-parser-0.13
   (package
     (name "rust-sqlite3-parser")
