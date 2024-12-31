@@ -11211,26 +11211,6 @@ messages.")
         ("rust-futures" ,rust-futures-0.3)
         ("rust-quickcheck" ,rust-quickcheck-0.9))))))
 
-(define-public rust-capnp-futures-0.13
-  (package
-    (inherit rust-capnp-futures-0.14)
-    (name "rust-capnp-futures")
-    (version "0.13.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "capnp-futures" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "18q93ncbfcnjq7zhvy9idnifypmi2qcp775q7454y3r4lvvdcyyw"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-capnp" ,rust-capnp-0.13)
-        ("rust-futures" ,rust-futures-0.3))
-       #:cargo-development-inputs
-       (("rust-capnp" ,rust-capnp-0.13)
-        ("rust-quickcheck" ,rust-quickcheck-0.9))))))
-
 (define-public rust-capnp-rpc-0.19
   (package
     (name "rust-capnp-rpc")
