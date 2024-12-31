@@ -112,6 +112,7 @@ and binary format defined in The Java Virtual Machine Specification.")
      `(#:configure-flags
        (list (string-append "JAVAC="
                             (search-input-file %build-inputs "/bin/jikes"))
+             "CFLAGS=-g -O2 -Wno-error=implicit-function-declaration"
              "--disable-Werror"
              "--disable-gmp"
              "--disable-gtk-peer"
