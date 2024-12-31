@@ -1850,6 +1850,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/lvm2-no-systemd.patch    		\
   %D%/packages/patches/maturin-no-cross-compile.patch		\
   %D%/packages/patches/mecab-variable-param.patch		\
+  %D%/packages/patches/mediasdk-gcc-14.patch			\
   %D%/packages/patches/memtest86+-build-reproducibly.patch	\
   %D%/packages/patches/mercurial-hg-extension-path.patch	\
   %D%/packages/patches/mhash-keygen-test-segfault.patch		\

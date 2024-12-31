@@ -436,7 +436,7 @@ the Core 2 Duo.")
 (define-public mediasdk
   (package
     (name "mediasdk")
-    (version "22.4.4")
+    (version "23.2.2")
     (source
      (origin
        (method git-fetch)
@@ -444,9 +444,10 @@ the Core 2 Duo.")
         (git-reference
          (url "https://github.com/Intel-Media-SDK/MediaSDK")
          (commit (string-append "intel-" name "-" version))))
+       (patches (search-patches "mediasdk-gcc-14.patch"))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "18mrqringyv1drswm4m8ppw7sks6x4jzp6s0ag0h9hrpd15kn5rx"))))
+        (base32 "12if7ylhz1r8mpj2q2n7nw8nnsglm90jg8lqpl3zhajjyrmkfyn2"))))
     (build-system cmake-build-system)
     (arguments
      (list
