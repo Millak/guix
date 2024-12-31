@@ -83770,23 +83770,6 @@ Fireball''.")
                        ("rust-lazy-static" ,rust-lazy-static-1)
                        ("rust-regex" ,rust-regex-1))))))
 
-(define-public rust-titlecase-1
-  (package
-    (inherit rust-titlecase-2)
-    (name "rust-titlecase")
-    (version "1.1.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "titlecase" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "05qizspxihjhmzsd9y6kfxzrss4jl4y042wni4m2yk62rw8f8rgm"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs (("rust-lazy-static" ,rust-lazy-static-1)
-                       ("rust-regex" ,rust-regex-1))))))
-
 (define-public rust-to-method-1
   (package
     (name "rust-to-method")
