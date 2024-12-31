@@ -40852,31 +40852,6 @@ C parser and toolkit developed for the GNOME project.")
     (description "Convert string slice indices into line/column numbers")
     (license license:expat)))
 
-(define-public rust-line-wrap-0.1
-  (package
-    (name "rust-line-wrap")
-    (version "0.1.1")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "line-wrap" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1ffa2whkyh9mwvdlpk6v8pjkg8p8mlzyjfymq5adll9a18sl80zk"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-safemem" ,rust-safemem-0.3))
-       #:cargo-development-inputs
-       (("rust-rand" ,rust-rand-0.5))))
-    (home-page "https://bitbucket.org/marshallpierce/line-wrap-rs/src")
-    (synopsis "Efficiently insert line separators")
-    (description
-     "Efficiently insert line separators.")
-    (license license:asl2.0)))
-
 (define-public rust-linear-map-1
   (package
     (name "rust-linear-map")
