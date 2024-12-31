@@ -2371,27 +2371,6 @@ package is a part of Gitoxide, a pure Rust implementation of Git.")
                        ("rust-serde" ,rust-serde-1)
                        ("rust-thiserror" ,rust-thiserror-1))))))
 
-(define-public rust-gix-diff-0.30
-  (package
-    (inherit rust-gix-diff-0.36)
-    (name "rust-gix-diff")
-    (version "0.30.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "gix-diff" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0cqf3b2dypnd4hl1lwzj4sy8lfb6pdkbzczms95nla6chc0asach"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-getrandom" ,rust-getrandom-0.2)
-        ("rust-gix-hash" ,rust-gix-hash-0.11)
-        ("rust-gix-object" ,rust-gix-object-0.30)
-        ("rust-imara-diff" ,rust-imara-diff-0.1)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-thiserror" ,rust-thiserror-1))))))
-
 (define-public rust-gix-dir-0.8
   (package
     (name "rust-gix-dir")
