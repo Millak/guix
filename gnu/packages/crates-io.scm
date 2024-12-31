@@ -2029,22 +2029,6 @@ text to a terminal.")
     (arguments
      `(#:cargo-development-inputs (("rust-lexopt" ,rust-lexopt-0.3))))))
 
-(define-public rust-anstyle-0.2
-  (package
-    (inherit rust-anstyle-1)
-    (name "rust-anstyle")
-    (version "0.2.8")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "anstyle" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "10kdjcyks9hcvmhk44afagnrxi4pczg6jnldjdadzbi4kyi2wqah"))))
-    (arguments
-     `(#:cargo-development-inputs
-       (("rust-lexopt" ,rust-lexopt-0.3))))))
-
 (define-public rust-anstyle-lossy-1
   (package
     (name "rust-anstyle-lossy")
