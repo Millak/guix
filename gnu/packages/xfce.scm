@@ -2170,24 +2170,24 @@ swap space and the system uptime in the Xfce4 panel.")
 
 (define-public xfce4-time-out-plugin
   (package
-   (name "xfce4-time-out-plugin")
-   (version "1.1.3")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://archive.xfce.org/src/panel-plugins/"
-                                  "xfce4-time-out-plugin/"
-                                  (version-major+minor version)
-                                  "/xfce4-time-out-plugin-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "1s4f4akj45bjhqhnfb8wim2snw52wrdym1yqpcccfpp9c5is672s"))))
+    (name "xfce4-time-out-plugin")
+    (version "1.1.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://gitlab.xfce.org/panel-plugins/"
+                                 name))
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1fk3h968yp9hq707na2kj1fvqa0dg1pqzy3g987if1sjw1w2d1qm"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list intltool pkg-config))
+     (list xfce4-dev-tools))
     (inputs
      (list gtk+ libxfce4ui xfce4-panel))
-    (home-page
-     "https://goodies.xfce.org/projects/panel-plugins/xfce4-time-out-plugin")
+    (home-page "https://docs.xfce.org/panel-plugins/xfce4-time-out-plugin/")
     (synopsis "Xfce panel plugin that encourages periodical breaks")
     (description "This plugin encourages to take periodical
 breaks from the computer every X minutes.  During breaks it locks your
