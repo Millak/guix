@@ -774,6 +774,7 @@ touchscreen devices and the ability to apply filters to their input events.")
      `(#:test-target "test"
        #:make-flags
        (list
+        "CC=gcc -g -O2 -Wno-error=implicit-function-declaration"
         (string-append "A52DIR=" (assoc-ref %build-inputs "liba52"))
         (string-append "DST=" (assoc-ref %outputs "out") "/bin"))
      #:phases
