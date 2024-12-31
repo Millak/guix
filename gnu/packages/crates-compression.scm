@@ -1763,32 +1763,6 @@ Read/Write streams as well as low-level in-memory encoding and decoding.")
     (native-inputs (list pkg-config))
     (inputs (list (list zstd "lib")))))
 
-(define-public rust-zip-0.5
-  (package
-    (inherit rust-zip-0.6)
-    (name "rust-zip")
-    (version "0.5.13")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "zip" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0588z88sj37nj1clis1rf4fh794av0hwaiaihfrin9b19n24iawk"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-byteorder" ,rust-byteorder-1)
-        ("rust-bzip2" ,rust-bzip2-0.4)
-        ("rust-crc32fast" ,rust-crc32fast-1)
-        ("rust-flate2" ,rust-flate2-1)
-        ("rust-thiserror" ,rust-thiserror-1)
-        ("rust-time" ,rust-time-0.1))))
-    (native-inputs '())
-    (inputs '())))
-
 (define-public rust-zlib-rs-0.4
   (package
     (name "rust-zlib-rs")
