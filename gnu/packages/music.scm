@@ -59,6 +59,7 @@
 ;;; Copyright © 2024 Parnikkapore <poomklao@yahoo.com>
 ;;; Copyright © 2024 hapster <o.rojon@posteo.net>
 ;;; Copyright © 2024 Nikita Domnitskii <nikita@domnitskii.me>
+;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -168,6 +169,7 @@
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages netpbm)
   #:use-module (gnu packages networking)
+  #:use-module (gnu packages pantheon)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages perl)
@@ -2866,6 +2868,58 @@ library called brighton that represents all the emulations.  There are
 currently more than twenty different emulations; each does sound different
 although the author maintains that the quality and accuracy of each emulation
 is subjective.")
+    (license license:gpl3+)))
+
+(define-public tuner
+  (package
+    (name "tuner")
+    (version "1.5.6")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/louis77/tuner")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256 (base32 "0zz91n56vdwhjwqscl21016i4l4lx3m6ja0fnrapmf16bdl0rrai"))))
+    (build-system meson-build-system)
+    (native-inputs
+     (list desktop-file-utils ; update-desktop-database
+           gettext-minimal
+           `(,glib "bin") ; glib-compile-schemas
+           ; for org.gnome.system.proxy schema
+           gsettings-desktop-schemas
+           `(,gtk "bin") ; gtk-update-icon-cache
+           pkg-config
+           vala))
+    (inputs
+      (list bash-minimal
+            glib
+            granite-6
+            gtk+
+            libgee
+            gstreamer
+            gst-plugins-base   ; for gstreamer 'playbin'
+            gst-plugins-good   ; for gstreamer 'scaletempo'
+            gst-plugins-bad
+            libsoup
+            json-glib-minimal))
+    (arguments
+      (list
+        #:glib-or-gtk? #t
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'install 'wrap-tuner
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let ((out             (assoc-ref outputs "out"))
+                     (gst-plugin-path (getenv "GST_PLUGIN_SYSTEM_PATH")))
+                 (wrap-program (string-append out "/bin/com.github.louis77.tuner")
+                   `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path)))))))))
+    (home-page "https://github.com/louis77/tuner")
+    (synopsis "Application to discover and play internet radio stations")
+    (description "Tuner is a minimalist radio station player to discover and
+listen to your favourite internet radio stations.  The application consists of a radio
+station catalogue sourced from radio-browser.info, and has presets of selections of
+stations based on random, top, trending, genre.")
     (license license:gpl3+)))
 
 (define-public tuxguitar
