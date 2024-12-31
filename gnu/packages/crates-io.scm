@@ -12585,14 +12585,14 @@ box''.")
 (define-public rust-castaway-0.2
   (package
     (name "rust-castaway")
-    (version "0.2.2")
+    (version "0.2.3")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "castaway" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1k1z4v61vq7la56js1azkr0k9b415vif2kaxiqk3d1gw6mbfs5wa"))))
+                "1mf0wypwnkpa1hi0058vp8g7bjh2qraip2qv7dmak7mg1azfkfha"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
