@@ -881,16 +881,18 @@ archive files using the file context menus in the Thunar file manager.")
     (version "0.3.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://archive.xfce.org/src/thunar-plugins/"
-                           name "/" (version-major+minor version)
-                           "/" name "-" version ".tar.bz2"))
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://gitlab.xfce.org/thunar-plugins/"
+                                 name))
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "01rzmjj673sjhzkdh24d8bha57dbahycb44hlr4zld0mr7kda28h"))))
+        (base32 "0agq4f16mlrri84n81wgrhipvg55gh527jw42wiv6ac9vnqlcnw8"))))
     (build-system gnu-build-system)
-    (native-inputs (list pkg-config intltool))
+    (native-inputs (list xfce4-dev-tools))
     (inputs (list thunar gtk+))
-    (home-page "https://www.xfce.org/")
+    (home-page "https://docs.xfce.org/xfce/thunar/thunar-shares-plugin")
     (synopsis "Folder share plugin for Thunar file manager")
     (description
      "The Thunar Shares Plugin allows you to quickly share a folder using
