@@ -83937,6 +83937,34 @@ Rust.")
 programs to collect structured, event-based diagnostic information.")
     (license license:expat)))
 
+(define-public rust-tracing-appender-0.2
+  (package
+    (name "rust-tracing-appender")
+    (version "0.2.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tracing-appender" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1kq69qyjvb4dxch5c9zgii6cqhy9nkk81z0r4pj3y2nc537fhrim"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
+                       ("rust-parking-lot" ,rust-parking-lot-0.12)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-time" ,rust-time-0.3)
+                       ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.3)
+                                   ("rust-tempfile" ,rust-tempfile-3)
+                                   ("rust-tracing" ,rust-tracing-0.1))))
+    (home-page "https://tokio.rs")
+    (synopsis "Utilities for file appenders and making non-blocking writers")
+    (description
+     "This package provides utilities for file appenders and making non-blocking
+writers.")
+    (license license:expat)))
+
 (define-public rust-tracing-attributes-0.1
   (package
     (name "rust-tracing-attributes")
