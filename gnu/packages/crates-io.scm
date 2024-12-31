@@ -74677,37 +74677,6 @@ crate.")
      "This library provides frequently used slog loggers and convenient functions.")
     (license license:expat)))
 
-(define-public rust-sloggers-1
-  (package
-    (inherit rust-sloggers-2)
-    (name "rust-sloggers")
-    (version "1.0.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "sloggers" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0sbdflswmivykx5sx1f2hip905lvcgi733d0ry879wx6g983f7gh"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-chrono" ,rust-chrono-0.4)
-        ("rust-libflate" ,rust-libflate-1)
-        ("rust-regex" ,rust-regex-1)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-slog" ,rust-slog-2)
-        ("rust-slog-async" ,rust-slog-async-2)
-        ("rust-slog-kvfilter" ,rust-slog-kvfilter-0.7)
-        ("rust-slog-scope" ,rust-slog-scope-4)
-        ("rust-slog-stdlog" ,rust-slog-stdlog-4)
-        ("rust-slog-term" ,rust-slog-term-2)
-        ("rust-trackable" ,rust-trackable-1))
-       #:cargo-development-inputs
-       (("rust-clap" ,rust-clap-2)
-        ("rust-serdeconv" ,rust-serdeconv-0.4)
-        ("rust-tempfile" ,rust-tempfile-3))))))
-
 (define-public rust-slotmap-1
   (package
     (name "rust-slotmap")
