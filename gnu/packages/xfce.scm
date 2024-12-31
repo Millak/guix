@@ -1188,27 +1188,26 @@ features playback of local media files, DVD/CD and live streams.")
 (define-public xfce4-terminal
   (package
     (name "xfce4-terminal")
-    (version "1.1.3")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://archive.xfce.org/src/apps/" name "/"
-                                  (version-major+minor version) "/"
-                                  name "-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "0i9xgd0rgw0j59hlp9kyxndw2b35nhxjls09c20rzdj1sj4dak91"))))
+    (version "1.1.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://gitlab.xfce.org/apps/"
+                                 name))
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16rcp2f6wh8vdzppkv2xgqlqffg85azi3vdvl90xn2r4ixyrzfas"))))
     (build-system gnu-build-system)
     (arguments
-     (list
-      #:configure-flags
-      #~(list (string-append "CFLAGS=-I"
-                             #$(this-package-input "libxfce4ui")
-                             "/include/xfce4"))))
+     (list #:configure-flags
+           #~(list "--enable-maintainer-mode"))) ;for xfce4-terminal.1
     (native-inputs
-     (list pkg-config intltool))
+     (list docbook-xsl libxslt xfce4-dev-tools))
     (inputs
      (list libxfce4ui vte))
-    (home-page "https://www.xfce.org/")
+    (home-page "https://docs.xfce.org/apps/xfce4-terminal/")
     (synopsis "Xfce terminal emulator")
     (description
      "A lightweight and easy to use terminal emulator for Xfce.  Features
