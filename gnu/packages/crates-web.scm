@@ -4590,36 +4590,6 @@ dependencies.")
         ("rust-webpki" ,rust-webpki-0.21)
         ("rust-webpki-roots" ,rust-webpki-roots-0.21))))))
 
-(define-public rust-hyper-rustls-0.21
-  (package
-    (inherit rust-hyper-rustls-0.22)
-    (name "rust-hyper-rustls")
-    (version "0.21.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "hyper-rustls" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1dmbj15fx6qyg26hji2jm7q9y383090jy3z9zjn5xs4f7v43qx1p"))))
-    (arguments
-     `(#:tests? #f              ; Not all files included.
-       #:cargo-inputs
-       (("rust-bytes" ,rust-bytes-0.5)
-        ("rust-ct-logs" ,rust-ct-logs-0.7)
-        ("rust-futures-util" ,rust-futures-util-0.3)
-        ("rust-hyper" ,rust-hyper-0.13)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-rustls" ,rust-rustls-0.18)
-        ("rust-rustls-native-certs" ,rust-rustls-native-certs-0.4)
-        ("rust-tokio" ,rust-tokio-0.2)
-        ("rust-tokio-rustls" ,rust-tokio-rustls-0.14)
-        ("rust-webpki" ,rust-webpki-0.21)
-        ("rust-webpki-roots" ,rust-webpki-roots-0.20))
-       #:cargo-development-inputs
-       (("rust-tokio" ,rust-tokio-0.2))))))
-
 (define-public rust-hyper-sync-rustls-0.3
   (package
     (name "rust-hyper-sync-rustls")
