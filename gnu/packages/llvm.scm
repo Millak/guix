@@ -164,6 +164,11 @@ as \"x86_64-linux\"."
             ;; source/build/lib/fuzzer/libcxx_fuzzer_x86_64/include/c++/v1/__type_traits/is_convertible.h:28:77: error: there are no arguments to ‘__is_convertible’ that depend on a template parameter, so a declaration of ‘__is_convertible’ must be available [-fpermissive]
             (modify-inputs (package-native-inputs llvm)
               (prepend gcc-13)))
+           ((version>=? version "17")
+            ;; clang-17.0.6 doesn't build with gcc-14
+            ;; source/build/lib/fuzzer/libcxx_fuzzer_x86_64/include/c++/v1/__filesystem/path.h:623:30: error: use of built-in trait '__remove_pointer(typename std::__Fuzzer::decay<_Tp>::type)’ in function signature; use library traits instead
+            (modify-inputs (package-native-inputs llvm)
+              (prepend gcc-13)))
            (else (package-native-inputs llvm))))
     (inputs
      (append
