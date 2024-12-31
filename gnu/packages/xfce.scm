@@ -1552,17 +1552,19 @@ of data to either CD/DVD/BD.")
   (package
     (name "mousepad")
     (version "0.6.3")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://archive.xfce.org/src/apps/mousepad/"
-                                  (version-major+minor version) "/mousepad-"
-                                  version ".tar.bz2"))
-              (sha256
-               (base32
-                "1f99p6f0pw17xs87cph0n07a5yz4zhnsrhl2kjmi907ihp0n5w9g"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://gitlab.xfce.org/apps/" name))
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1pchp4jdy7xfgb0bk4pv06bphs6lmf1lr3ykyq2f351s5wqp2nrg"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags '(;; Use the GSettings keyfile backend rather than
+     '(#:configure-flags '("--enable-maintainer-mode" ;for mousepad-marshal.c
+                           ;; Use the GSettings keyfile backend rather than
                            ;; DConf.
                            "--enable-keyfile-settings")
        #:phases
@@ -1576,12 +1578,10 @@ of data to either CD/DVD/BD.")
                 `("XDG_DATA_DIRS" ":" prefix (,(string-append gtksourceview
                                                               "/share"))))))))))
     (native-inputs
-     (list intltool
-           `(,glib "bin") ; for glib-compile-schemas.
-           pkg-config))
+     (list xfce4-dev-tools))
     (inputs
      (list bash-minimal gspell gtksourceview-4 libxfce4ui xfconf))
-    (home-page "https://git.xfce.org/apps/mousepad/")
+    (home-page "https://docs.xfce.org/apps/mousepad/")
     (synopsis "Simple text editor for Xfce")
     (description
      "Mousepad is a graphical text editor for Xfce based on Leafpad.")
