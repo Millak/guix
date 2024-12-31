@@ -18176,21 +18176,6 @@ crate into higher level tools.")
 crate (implementation detail).")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-cxxbridge-flags-0.5
-  (package
-    (inherit rust-cxxbridge-flags-1)
-    (name "rust-cxxbridge-flags")
-    (version "0.5.10")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "cxxbridge-flags" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "0jfwsm85s5kalgqbqlg1kq79zcb5zwk375h0qw7ycz5i6v3c8j0k"))))))
-
 (define-public rust-cxxbridge-macro-1
   (package
     (name "rust-cxxbridge-macro")
