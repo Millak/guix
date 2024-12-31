@@ -15835,20 +15835,6 @@ dependencies that allows you to parse INI and ini-style syntax.  You can use
 this to write Rust programs which can be customized by end users easily.")
     (license (list license:expat license:lgpl3+))))
 
-(define-public rust-configparser-2
-  (package
-    (inherit rust-configparser-3)
-    (name "rust-configparser")
-    (version "2.1.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "configparser" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "13zcjw2jlcc73fd1lcjmb2vzh3ckankin490m24xa96i2vj1w87p"))))
-    (arguments `())))
-
 (define-public rust-console-0.15
   (package
     (name "rust-console")
