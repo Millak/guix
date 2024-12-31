@@ -82298,28 +82298,6 @@ unstable language features.")
                        ("rust-libc" ,rust-libc-0.2)
                        ("rust-term" ,rust-term-0.6))))))
 
-(define-public rust-tester-0.5
-  (package
-    (inherit rust-tester-0.9)
-    (name "rust-tester")
-    (version "0.5.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "tester" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1az6brh39ai1jcc6yy7xglwq8m65samkb31zr7lr18swrd2103fd"))))
-    (arguments
-     `(#:cargo-test-flags
-       '("--release" "--"
-         "--skip=tests::parse_ignored_flag"
-         "--skip=tests::parse_include_ignored_flag")
-       #:cargo-inputs
-       (("rust-getopts" ,rust-getopts-0.2)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-term" ,rust-term-0.6))))))
-
 (define-public rust-testing-logger-0.1
   (package
     (name "rust-testing-logger")
