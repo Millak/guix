@@ -1484,34 +1484,21 @@ several different time zones.")
   (package
     (name "xfce4-notifyd")
     (version "0.9.6")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://archive.xfce.org/src/apps/"
-                                  name "/" (version-major+minor version) "/"
-                                  name "-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "0w967np9ik74lg63sn7g7448f10pjspd7h62ncqmr0vxr9f2clwy"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://gitlab.xfce.org/apps/" name))
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0li1vxh460ak329sxpz8zbyggv4m38mzdanpjxdjxf9gypsp65ag"))))
     (build-system glib-or-gtk-build-system)
-    (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-before 'configure 'patch-configure
-                 (lambda _
-                   (substitute* "configure"
-                     (("\\$PKG_CONFIG --variable=gdbus_codegen gio-2.0")
-                      "which gdbus-codegen")
-                     (("\\$PKG_CONFIG --variable=glib_compile_resources gio-2.0")
-                      "which glib-compile-resources")
-                     (("\\$PKG_CONFIG --variable=glib_genmarshal glib-2.0")
-                      "which glib-genmarshal")
-                     (("\\$PKG_CONFIG --variable=glib_mkenums glib-2.0")
-                      "which glib-mkenums")))))))
     (native-inputs
-     (list intltool pkg-config (list glib "bin") which))
+     (list xfce4-dev-tools))
     (inputs
      (list libxfce4ui libnotify sqlite xfce4-panel))
-    (home-page "https://goodies.xfce.org/projects/applications/xfce4-notifyd")
+    (home-page "https://docs.xfce.org/apps/xfce4-notifyd/")
     (synopsis "Show notification bubbles on Xfce")
     (description
      "The Xfce Notify Daemon (xfce4-notifyd for short) is a smallish program
