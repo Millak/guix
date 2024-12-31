@@ -5506,19 +5506,6 @@ for data that potentially contains secrets (e.g. cryptographic keys).")
      "Assembly implementation of SHA-1 compression function.")
     (license license:expat)))
 
-(define-public rust-sha1-asm-0.4
-  (package
-    (inherit rust-sha1-asm-0.5)
-    (name "rust-sha1-asm")
-    (version "0.4.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "sha1-asm" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1z5vdimd7l0vmr2p7kjibi0rghf5frb1ld0gzdkxrxfmkllf5nmr"))))))
-
 (define-public rust-sha1-smol-1
   (package
     (name "rust-sha1-smol")
