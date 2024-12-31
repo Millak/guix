@@ -65702,32 +65702,6 @@ reading and writing BAM files.")
         (base32 "1hifnbgaz01zja5995chy6vjacbif2m76nlxsisw7y1pxx4c2liy"))))
     (arguments `(#:skip-build? #t))))
 
-(define-public rust-rustbox-0.11
-  (package
-    (name "rust-rustbox")
-    (version "0.11.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "rustbox" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1cahyxncijdwvy9kw87ahizpfbdq76hf333y4nrhbxzssajhdzcf"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-bitflags" ,rust-bitflags-0.2)
-        ("rust-gag" ,rust-gag-0.1)
-        ("rust-num-traits" ,rust-num-traits-0.1)
-        ("rust-termbox-sys" ,rust-termbox-sys-0.2))))
-    (home-page "https://github.com/gchp/rustbox")
-    (synopsis "Rust implementation of the @code{termbox} library")
-    (description
-     "This package provides a Rust implementation of the @code{termbox}
-library.")
-    (license license:expat)))
-
 (define-public rust-rustc-demangle-0.1
   (package
     (name "rust-rustc-demangle")
