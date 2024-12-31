@@ -44003,30 +44003,6 @@ non-interactive protocols can be implemented as if they were interactive.")
 quality, high performance hash algorithm.")
     (license license:expat)))
 
-(define-public rust-meval-0.2
-  (package
-    (name "rust-meval")
-    (version "0.2.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "meval" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1ncj0fv9q3b4his7g947fmgkskpfly6dsniw0g6mg38wcnjrd57p"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-fnv" ,rust-fnv-1)
-        ("rust-nom" ,rust-nom-1)
-        ("rust-serde" ,rust-serde-1))))
-    (home-page "https://github.com/rekka/meval-rs")
-    (synopsis "Simple math expression parser and evaluator")
-    (description
-     "This package provides a simple math expression parser and evaluator.")
-    (license (list license:unlicense license:expat))))
-
 (define-public rust-miette-7
   (package
     (name "rust-miette")
