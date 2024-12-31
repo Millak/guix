@@ -616,18 +616,20 @@ applications, and includes a search bar to search for applications.")
 (define-public xfce4-xkb-plugin
   (package
     (name "xfce4-xkb-plugin")
-    (version "0.8.3")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://archive.xfce.org/src/panel-plugins/"
-                                  name "/" (version-major+minor version) "/"
-                                  name "-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "11s9s0634g9rf5hcj6nga6hsv71wcq9c7ym6nsis077gfmwfkgzh"))))
+    (version "0.8.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://gitlab.xfce.org/panel-plugins/"
+                                 name))
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1iai2myz1zj5vvbl3lz8r50bhv103avfjdc233gqa933wwxgwvd0"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list intltool pkg-config))
+     (list xfce4-dev-tools))
     (inputs
      (list garcon
            (librsvg-for-system)
@@ -636,7 +638,7 @@ applications, and includes a search bar to search for applications.")
            libxfce4ui
            libxklavier
            xfce4-panel))
-    (home-page "https://git.xfce.org/panel-plugins/xfce4-xkb-plugin/")
+    (home-page "https://docs.xfce.org/panel-plugins/xfce4-xkb-plugin/")
     (synopsis "XKB layout switching panel plug-in for Xfce")
     (description
      "Xfce XKB plugin makes it possible to set up and use multiple
