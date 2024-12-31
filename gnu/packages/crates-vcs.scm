@@ -187,28 +187,6 @@
      "This package provides an inner procedural macro for git-testament.")
     (license license:bsd-3)))
 
-(define-public rust-git-testament-derive-0.1
-  (package
-    (inherit rust-git-testament-derive-0.2)
-    (name "rust-git-testament-derive")
-    (version "0.1.14")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "git-testament-derive" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1rlais0i47mgsmp3r5jcqry2agjfyg5s9paj6mgvfykchssjsy2a"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-log" ,rust-log-0.4)
-        ("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1)
-        ("rust-time" ,rust-time-0.3))
-       #:cargo-development-inputs
-       (("rust-git-testament" ,rust-git-testament-0.2))))))
-
 (define-public rust-git-version-0.3
   (package
     (name "rust-git-version")
