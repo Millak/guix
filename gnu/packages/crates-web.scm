@@ -3501,23 +3501,6 @@ similar to the nom parser combinators library.")
      `(#:skip-build? #t
        #:cargo-inputs (("rust-http" ,rust-http-0.2))))))
 
-(define-public rust-headers-core-0.1
-  (package
-    (inherit rust-headers-core-0.2)
-    (name "rust-headers-core")
-    (version "0.1.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "headers-core" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0ds20kg0igncs2r0jrcf26mq72k3j6ilanr0qwh7r7xak8kk2wcn"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-bytes" ,rust-bytes-0.4)
-        ("rust-http" ,rust-http-0.1))))))
-
 (define-public rust-hickory-client-0.24
   (package
     (name "rust-hickory-client")
