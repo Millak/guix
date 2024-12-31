@@ -6701,25 +6701,6 @@ package is used to traverse Git commit graphs and trees.")
                        ("rust-smallvec" ,rust-smallvec-1)
                        ("rust-thiserror" ,rust-thiserror-1))))))
 
-(define-public rust-gix-traverse-0.26
-  (package
-    (inherit rust-gix-traverse-0.33)
-    (name "rust-gix-traverse")
-    (version "0.26.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "gix-traverse" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1n9kgzw5jal2jsqb56bpaj1xp35zp2hz6nf5klrjdgxl9jc2x15h"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-gix-hash" ,rust-gix-hash-0.11)
-        ("rust-gix-hashtable" ,rust-gix-hashtable-0.2)
-        ("rust-gix-object" ,rust-gix-object-0.30)
-        ("rust-thiserror" ,rust-thiserror-1))))))
-
 (define-public rust-gix-url-0.27
   (package
     (name "rust-gix-url")
