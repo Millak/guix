@@ -14,6 +14,7 @@
 ;;; Copyright © 2023 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2024 Andy Tai <lichengtai@gmail.com>
+;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -5912,6 +5913,9 @@ libary with bug fixtures.")
        (sha256
         (base32 "1kyd1r6zcs0jmh5gq74adrnb1h7dfr1mzjq4k4vbngfiga8gfd28"))))
     (build-system pyproject-build-system)
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-dateutil))
     (home-page "https://github.com/SatAgro/suntime")
