@@ -72,6 +72,7 @@
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages textutils)
+  #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages web)
   #:use-module (gnu packages wm)
@@ -1899,24 +1900,24 @@ button and a personalized tooltip.")
 
 (define-public xfce4-mailwatch-plugin
   (package
-   (name "xfce4-mailwatch-plugin")
-   (version "1.3.1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://archive.xfce.org/src/panel-plugins/"
-                                  "xfce4-mailwatch-plugin/"
-                                  (version-major+minor version)
-                                  "/xfce4-mailwatch-plugin-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "0sh402c7v3sa9nqz8dd2gfn7ml01xbhir680ci46i9jczvln8j85"))))
+    (name "xfce4-mailwatch-plugin")
+    (version "1.3.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://gitlab.xfce.org/panel-plugins/"
+                                 name))
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0dad2nl8y5v2y4xcp1lp51s0n1yb7v706igs5w2xrfsp7gp19d98"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list intltool pkg-config))
+     (list xfce4-dev-tools))
     (inputs
-     (list gtk+-2 libxfce4ui exo xfce4-panel))
-    (home-page
-     "https://goodies.xfce.org/projects/panel-plugins/xfce4-mailwatch-plugin")
+     (list exo gnutls libxfce4ui xfce4-panel))
+    (home-page "https://docs.xfce.org/panel-plugins/xfce4-mailwatch-plugin/")
     (synopsis "Mail watch plugin for the Xfce panel")
     (description "The Xfce4 Mailwatch Plugin is a multi-protocol,
 multi-mailbox mail watcher.  Currently, the protocols supported are:
@@ -1929,7 +1930,7 @@ multi-mailbox mail watcher.  Currently, the protocols supported are:
 @item MH-Maildir mail spool (local)
 @item Google Mail (GMail) mailbox (remote) (requires gnutls)
 @end itemize")
-    (license gpl2)))
+    (license gpl2+)))
 
 (define-public xfce4-mpc-plugin
   (package
