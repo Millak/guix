@@ -5717,7 +5717,8 @@ to newbies and professionals alike.")
     (arguments
      '(#:configure-flags '("LIBS=-lm")))
     (native-inputs
-     (list pkg-config doxygen))
+     ;; Avoid gcc-14's: error: SSE register return with SSE disabled
+     (list gcc-13 pkg-config doxygen))
     (home-page "https://gmerlin.sourceforge.net")
     (synopsis "Low level library for multimedia API building")
     (description
