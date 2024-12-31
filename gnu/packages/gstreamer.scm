@@ -12,6 +12,7 @@
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2024 Remco van 't Veer <remco@remworks.net>
+;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -238,7 +239,9 @@ and very fast.")
         (base32 "12xf0qzn9w090kakrj59makjbjg9vhga5mgchmx6c1ypw10fjfbc"))))
     (build-system gnu-build-system)
     (arguments
-     (list #:phases
+     (list #:configure-flags
+           #~(list "CFLAGS=-g -O2 -Wno-error=implicit-function-declaration")
+           #:phases
            #~(modify-phases %standard-phases
                ;; The package is in a sub-dir of this repo.
                (add-after 'unpack 'chdir
