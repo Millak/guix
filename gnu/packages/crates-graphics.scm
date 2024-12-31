@@ -6792,24 +6792,6 @@ platform-specific getters provided by winit, or another library.")
 for @code{libxkbcommon}.")
     (license license:expat)))
 
-(define-public rust-xkbcommon-0.5
-  (package
-    (inherit rust-xkbcommon-0.7)
-    (name "rust-xkbcommon")
-    (version "0.5.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "xkbcommon" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "123b96fbp693z43z2f2gbadb9dzf523n2d21j3izcaz9k6sjbnsj"))))
-    (arguments
-     `(#:cargo-inputs (("rust-as-raw-xcb-connection" ,rust-as-raw-xcb-connection-1)
-                       ("rust-libc" ,rust-libc-0.2)
-                       ("rust-memmap2" ,rust-memmap2-0.7))
-       #:cargo-development-inputs (("rust-evdev" ,rust-evdev-0.11))))))
-
 (define-public rust-xkbcommon-dl-0.4
   (package
     (name "rust-xkbcommon-dl")
