@@ -926,22 +926,24 @@ tags-based file renaming from inside Thunar Bulk Renamer.")
 (define-public thunar-vcs-plugin
   (package
     (name "thunar-vcs-plugin")
-    (version "0.2.0")
+    (version "0.3.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://archive.xfce.org/src/thunar-plugins/"
-                           name "/" (version-major+minor version)
-                           "/" name "-" version ".tar.bz2"))
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://gitlab.xfce.org/thunar-plugins/"
+                                 name))
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1f2d1dwfyi6xv3qkd8l8xh0vhz8wh0601cyigjzn426lqga1d29n"))))
+        (base32 "0n07d8v7spn2ys1nz9yb5szj9jkd1y7frzq203v5ys9gifa7mnvv"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
            #~(list (string-append "CPPFLAGS=-I"
                                   #$(this-package-input "apr-util")
                                   "/include/apr-1"))))
-    (native-inputs (list pkg-config intltool utf8proc))
+    (native-inputs (list xfce4-dev-tools utf8proc))
     (inputs
      (list exo
            gtk+
@@ -951,7 +953,7 @@ tags-based file renaming from inside Thunar Bulk Renamer.")
            apr-util
            subversion
            git))
-    (home-page "https://www.xfce.org/")
+    (home-page "https://docs.xfce.org/xfce/thunar/thunar-vcs-plugin")
     (synopsis "VCS plugin for Thunar file manager")
     (description
      "Thunar VCS Plugin (formerly known as Thunar SVN Plugin) gives SVN and
