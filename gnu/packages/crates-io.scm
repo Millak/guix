@@ -9983,23 +9983,6 @@ automatically collect information about the system and the environment that
 users can send along with a bug report.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-bugreport-0.4
-  (package
-    (inherit rust-bugreport-0.5)
-    (name "rust-bugreport")
-    (version "0.4.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "bugreport" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0k20nbl226kni905sy3rvizl7k4h28971143qdlzwfznnjrb8500"))))
-    (arguments
-     `(#:cargo-inputs (("rust-git-version" ,rust-git-version-0.3)
-                       ("rust-shell-escape" ,rust-shell-escape-0.1)
-                       ("rust-sys-info" ,rust-sys-info-0.9))))))
-
 (define-public rust-build-const-0.2
   (package
     (name "rust-build-const")
