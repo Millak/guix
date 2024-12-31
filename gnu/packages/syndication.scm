@@ -7,6 +7,7 @@
 ;;; Copyright © 2022 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2024 Luis Guilherme Coelho <lgcoelho@disroot.org>
+;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -519,7 +520,16 @@ a simple interface that makes it easy to organize and browse feeds.")
     (build-system pyproject-build-system)
     (arguments
      (list #:test-flags
-           '(list "-k" "not test_content_humanize_timestamp")
+           ;; Some tests require "/etc/ssl/certs/ca-certificates.crt" which is not
+           ;; available during the tests; also likely those tests require networking.
+           #~(list "-k" (string-append "not test_content"
+                                       " and not test_inbox"
+                                       " and not test_mime_parsers"
+                                       " and not test_oauth"
+                                       " and not test_page"
+                                       " and not test_submission"
+                                       " and not test_subreddit"
+                                       " and not test_subscription"))
            #:phases
            #~(modify-phases %standard-phases
                (delete 'sanity-check))))  ; Reads environment variables.
