@@ -4076,26 +4076,6 @@ standard library.")
      "This library provides utilities to handle ASCII characters.")
     (license license:mpl2.0)))
 
-(define-public rust-askama-escape-0.10
-  (package
-    (name "rust-askama-escape")
-    (version "0.10.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "askama_escape" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0hg3rz0cma5f6385z7qmqw3jbir76jndwd5s7dqfk92v9gil75v1"))))
-    (build-system cargo-build-system)
-    (arguments (list #:skip-build? #t))
-    (home-page "https://github.com/djc/askama")
-    (synopsis "HTML escaping extracted from Askama")
-    (description
-     "This package provides an optimized HTML escaping library,
-extracted from Askama.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-askama-parser-0.2
   (package
     (name "rust-askama-parser")
