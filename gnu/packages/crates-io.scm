@@ -43761,33 +43761,6 @@ possible over the OS abstractions.")
                                    ("rust-sysctl" ,rust-sysctl-0.1)
                                    ("rust-tempfile" ,rust-tempfile-3))))))
 
-(define-public rust-mio-anonymous-pipes-0.2
-  (package
-    (name "rust-mio-anonymous-pipes")
-    (version "0.2.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "mio-anonymous-pipes" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0sqsr9ifvacarlmf02l0hh5ianns5kdhzdb1llx5l075bw117ibb"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-mio" ,rust-mio-0.6)
-        ("rust-miow" ,rust-miow-0.3)
-        ("rust-spsc-buffer" ,rust-spsc-buffer-0.1)
-        ("rust-winapi" ,rust-winapi-0.3))))
-    (home-page "https://github.com/davidhewitt/mio-anonymous-pipes")
-    (synopsis "Asynchronous wrapper for Windows synchronous pipes")
-    (description
-     "This package provides asynchronous wrapper for Windows synchronous pipes.")
-    (license license:expat)))
-
 (define-public rust-mio-extras-2
   (package
     (name "rust-mio-extras")
