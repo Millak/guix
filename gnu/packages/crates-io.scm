@@ -63535,20 +63535,6 @@ reference counting.")
        (sha256
         (base32 "0kvzahkwriawhjjb08ai7rfi77px7rpx5h83hjcx6dccyxzf4hiv"))))))
 
-(define-public rust-rctree-0.4
-  (package
-    (inherit rust-rctree-0.5)
-    (name "rust-rctree")
-    (version "0.4.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "rctree" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1s92472lniqn2c0b5ln8ssl014x0raiyzkk0hagrvsd6far2iq4s"))))))
-
 (define-public rust-rdrand-0.4
   (package
     (name "rust-rdrand")
