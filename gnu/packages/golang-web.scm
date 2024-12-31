@@ -6000,6 +6000,28 @@ Protocol,SCTP} as specified in
            go-golang-org-x-crypto
            go-golang-org-x-net))))
 
+(define-public go-github-com-pion-stun-v3
+  (package
+    (inherit go-github-com-pion-stun-v2)
+    (name "go-github-com-pion-stun-v3")
+    (version "3.0.0")
+    (source
+     (origin
+       (inherit (package-source go-github-com-pion-stun))
+       (uri (git-reference
+             (url "https://github.com/pion/stun")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0yavl76y0fida9f1jfdmzdg7rm5jhp6kvdgn3smsf93jad1vbr2x"))))
+    (arguments
+     (list
+      #:import-path "github.com/pion/stun/v3"))
+    (propagated-inputs
+     (list go-github-com-pion-dtls-v3
+           go-github-com-pion-logging
+           go-github-com-pion-transport-v3))))
+
 (define-public go-github-com-pion-transport
   (package
     (name "go-github-com-pion-transport")
