@@ -2028,24 +2028,24 @@ interfaces of your choice in the panel.")
 
 (define-public xfce4-places-plugin
   (package
-   (name "xfce4-places-plugin")
-   (version "1.8.3")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://archive.xfce.org/src/panel-plugins/"
-                                  "xfce4-places-plugin/"
-                                  (version-major+minor version)
-                                  "/xfce4-places-plugin-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "0hy7c350x1p1grj517l1x0r8b4asbcv7sl3b5qnb0apj0dnhw7gi"))))
+    (name "xfce4-places-plugin")
+    (version "1.8.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://gitlab.xfce.org/panel-plugins/"
+                                 name))
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09yqnya7hr4vr6pn4ddzs7vx8582yyf1wrrwd1fmd81f7mdns1w7"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list intltool desktop-file-utils pkg-config))
+     (list desktop-file-utils xfce4-dev-tools))
     (inputs
-     (list gtk+-2 exo libxfce4ui xfce4-panel))
-    (home-page
-     "https://goodies.xfce.org/projects/panel-plugins/xfce4-places-plugin")
+     (list exo libxfce4ui xfce4-panel))
+    (home-page "https://docs.xfce.org/panel-plugins/xfce4-places-plugin/")
     (synopsis "Gnome-like Places menu for the Xfce panel")
     (description "This plugin provides a menu with quick access to folders,
 documents, and removable media.  The places plugin brings much of the
