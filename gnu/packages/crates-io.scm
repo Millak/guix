@@ -31171,35 +31171,6 @@ debugging format.")
         ("rust-test-assembler" ,rust-test-assembler-0.1)
         ("rust-typed-arena" ,rust-typed-arena-2))))))
 
-(define-public rust-gimli-0.26
-  (package
-    (inherit rust-gimli-0.27)
-    (name "rust-gimli")
-    (version "0.26.2")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "gimli" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0pafbk64rznibgnvfidhm1pqxd14a5s9m50yvsgnbv38b8n0w0r2"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
-        ("rust-fallible-iterator" ,rust-fallible-iterator-0.2)
-        ("rust-indexmap" ,rust-indexmap-1)
-        ("rust-rustc-std-workspace-alloc" ,rust-rustc-std-workspace-alloc-1)
-        ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1)
-        ("rust-stable-deref-trait" ,rust-stable-deref-trait-1))
-       #:cargo-development-inputs
-       (("rust-byteorder" ,rust-byteorder-0.5)
-        ("rust-crossbeam" ,rust-crossbeam-0.8)
-        ("rust-getopts" ,rust-getopts-0.2)
-        ("rust-memmap2" ,rust-memmap2-0.5)
-        ("rust-object" ,rust-object-0.29)
-        ("rust-test-assembler" ,rust-test-assembler-0.1)
-        ("rust-typed-arena" ,rust-typed-arena-2))))))
-
 (define-public rust-gjson-0.8
   (package
     (name "rust-gjson")
