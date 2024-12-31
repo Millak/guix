@@ -29630,23 +29630,6 @@ permitted in ordinary Rust.")
 debugging format.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-gjson-0.8
-  (package
-    (name "rust-gjson")
-    (version "0.8.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "gjson" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1dlp19c42f3qlzckxqwvc6svhfc3hdpg7x95cl5d6k9rfv0kql23"))))
-    (build-system cargo-build-system)
-    (home-page "https://github.com/tidwall/gjson.rs")
-    (synopsis "JSON parser for Rust")
-    (description "Gjson is a JSON parser for Rust.")
-    (license license:expat)))
-
 (define-public rust-glam-0.24
   (package
     (name "rust-glam")
