@@ -1217,6 +1217,67 @@ libpq.")
                        ("rust-quote" ,rust-quote-1)
                        ("rust-syn" ,rust-syn-1))))))
 
+(define-public rust-sqlx-mysql-0.7
+  (package
+    (name "rust-sqlx-mysql")
+    (version "0.7.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sqlx-mysql" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "066lxhb80xgb8r5m2yy3a7ydjvp0b6wsk9s7whwfa83d46817lqy"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--"
+                            "--skip=options::MySqlConnectOptions (line 35)")
+       #:cargo-inputs (("rust-atoi" ,rust-atoi-2)
+                       ("rust-base64" ,rust-base64-0.21)
+                       ("rust-bigdecimal" ,rust-bigdecimal-0.3)
+                       ("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-byteorder" ,rust-byteorder-1)
+                       ("rust-bytes" ,rust-bytes-1)
+                       ("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-crc" ,rust-crc-3)
+                       ("rust-digest" ,rust-digest-0.10)
+                       ("rust-dotenvy" ,rust-dotenvy-0.15)
+                       ("rust-either" ,rust-either-1)
+                       ("rust-futures-channel" ,rust-futures-channel-0.3)
+                       ("rust-futures-core" ,rust-futures-core-0.3)
+                       ("rust-futures-io" ,rust-futures-io-0.3)
+                       ("rust-futures-util" ,rust-futures-util-0.3)
+                       ("rust-generic-array" ,rust-generic-array-0.14)
+                       ("rust-hex" ,rust-hex-0.4)
+                       ("rust-hkdf" ,rust-hkdf-0.12)
+                       ("rust-hmac" ,rust-hmac-0.12)
+                       ("rust-itoa" ,rust-itoa-1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-md-5" ,rust-md-5-0.10)
+                       ("rust-memchr" ,rust-memchr-2)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-percent-encoding" ,rust-percent-encoding-2)
+                       ("rust-rand" ,rust-rand-0.8)
+                       ("rust-rsa" ,rust-rsa-0.9)
+                       ("rust-rust-decimal" ,rust-rust-decimal-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-sha1" ,rust-sha1-0.10)
+                       ("rust-sha2" ,rust-sha2-0.10)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-sqlx-core" ,rust-sqlx-core-0.7)
+                       ("rust-stringprep" ,rust-stringprep-0.1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-time" ,rust-time-0.3)
+                       ("rust-tracing" ,rust-tracing-0.1)
+                       ("rust-uuid" ,rust-uuid-1)
+                       ("rust-whoami" ,rust-whoami-1))))
+    (home-page "https://github.com/launchbadge/sqlx")
+    (synopsis "MySQL driver implementation for SQLx")
+    (description
+     "This package provides @code{MySQL} driver implementation for SQLx.  Not
+for direct use; see the `sqlx` crate for details.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-sqlx-postgres-0.7
   (package
     (name "rust-sqlx-postgres")
