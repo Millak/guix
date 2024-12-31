@@ -1817,24 +1817,24 @@ governor and frequencies supported and used by your system.")
 
 (define-public xfce4-diskperf-plugin
   (package
-   (name "xfce4-diskperf-plugin")
-   (version "2.7.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://archive.xfce.org/src/panel-plugins/"
-                                  "xfce4-diskperf-plugin/"
-                                  (version-major+minor version)
-                                  "/xfce4-diskperf-plugin-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "1jgcdwiaqs06l729vbj3kgv67iwimjp8gfy7ydzlvbx6859sc2ar"))))
+    (name "xfce4-diskperf-plugin")
+    (version "2.7.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://gitlab.xfce.org/panel-plugins/"
+                                 name))
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0fav30y6r08yyrrm0yzi9jrn6af6hw8qk7wk7pd172ajqgcyp4ai"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list intltool pkg-config))
+     (list xfce4-dev-tools))
     (inputs
      (list libxfce4ui xfce4-panel))
-    (home-page
-     "https://goodies.xfce.org/projects/panel-plugins/xfce4-diskperf-plugin")
+    (home-page "https://docs.xfce.org/panel-plugins/xfce4-diskperf-plugin/")
     (synopsis "Display disk performance in the Xfce panel")
     (description "This Xfce panel plugin displays instant disk/partition
 performance (bytes transferred per second).")
