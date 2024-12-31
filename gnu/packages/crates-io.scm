@@ -34363,27 +34363,6 @@ for uint and fixed hash.")
     (description "Concise, declarative trait implementation macros.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-impl-rlp-0.3
-  (package
-    (name "rust-impl-rlp")
-    (version "0.3.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "impl-rlp" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "021869d5s47ili9kmhm9y80qpsbf0wwdap14qzfpb84pjbw210pj"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-rlp" ,rust-rlp-0.5))))
-    (home-page "https://github.com/paritytech/parity-common")
-    (synopsis "RLP serialization support for uint and fixed hash")
-    (description "This package provides RLP serialization support for uint
-and fixed hash.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-impl-serde-0.3
   (package
     (name "rust-impl-serde")
