@@ -4458,6 +4458,35 @@ styled and positioned absolutely or relatively.  They respond to keyboard,
 mouse, and terminal resizing events.")
     (license license:expat)))
 
+(define-public go-github-com-go-cmd-cmd
+  (package
+    (name "go-github-com-go-cmd-cmd")
+    (version "1.4.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/go-cmd/cmd")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1n465pnvphvs4jp3mn1krbxb0wcjclfcrif1c5zcir8idj18vsax"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/go-cmd/cmd"))
+    (native-inputs
+     (list go-github-com-go-test-deep))
+    (home-page "https://github.com/go-cmd/cmd")
+    (synopsis "Non-blocking external commands in Go with streaming output")
+    (description
+     "Package cmd runs external commands with concurrent access to output and
+status.  It wraps the Go standard library @code{os/exec.Command} to correctly
+handle reading output (STDOUT and STDERR) while a command is running and
+killing a command.  All operations are safe to call from multiple
+goroutines.")
+    (license license:expat)))
+
 (define-public go-github-com-go-errors-errors
   (package
     (name "go-github-com-go-errors-errors")
