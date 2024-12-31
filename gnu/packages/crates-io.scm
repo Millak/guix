@@ -19112,23 +19112,22 @@ sizes.  Big-endian order is used.  WARNING: Block must be aligned!")
      "This package provides a Rust API for interacting with dconf.")
     (license license:expat)))
 
-(define-public rust-deadpool-0.9
+(define-public rust-deadpool-0.10
   (package
     (name "rust-deadpool")
-    (version "0.9.5")
+    (version "0.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "deadpool" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0vl5qg5pfx0c9c41g299clfdgz9la6z8361aycb21cia1zwy07s2"))))
+        (base32 "145lq79dlc4jn7jvlcf4lb105bs3z3jy6g7d15zv7iy1g04i117v"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-async-trait" ,rust-async-trait-0.1)
                        ("rust-deadpool-runtime" ,rust-deadpool-runtime-0.1)
                        ("rust-num-cpus" ,rust-num-cpus-1)
-                       ("rust-retain-mut" ,rust-retain-mut-0.1)
                        ("rust-serde" ,rust-serde-1)
                        ("rust-tokio" ,rust-tokio-1))
        #:cargo-development-inputs (("rust-async-std" ,rust-async-std-1)
@@ -19142,6 +19141,31 @@ sizes.  Big-endian order is used.  WARNING: Block must be aligned!")
      "Deadpool is a dead simple async pool for connections and objects
 of any type.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-deadpool-0.9
+  (package
+    (inherit rust-deadpool-0.10)
+    (name "rust-deadpool")
+    (version "0.9.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "deadpool" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0vl5qg5pfx0c9c41g299clfdgz9la6z8361aycb21cia1zwy07s2"))))
+    (arguments
+     `(#:cargo-inputs (("rust-async-trait" ,rust-async-trait-0.1)
+                       ("rust-deadpool-runtime" ,rust-deadpool-runtime-0.1)
+                       ("rust-num-cpus" ,rust-num-cpus-1)
+                       ("rust-retain-mut" ,rust-retain-mut-0.1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-tokio" ,rust-tokio-1))
+       #:cargo-development-inputs (("rust-async-std" ,rust-async-std-1)
+                                   ("rust-config" ,rust-config-0.13)
+                                   ("rust-criterion" ,rust-criterion-0.3)
+                                   ("rust-itertools" ,rust-itertools-0.10)
+                                   ("rust-tokio" ,rust-tokio-1))))))
 
 (define-public rust-deadpool-0.7
   (package
