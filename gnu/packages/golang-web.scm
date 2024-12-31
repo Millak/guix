@@ -2281,6 +2281,31 @@ Features:
 decompose request handling into many smaller layers.")
     (license license:expat)))
 
+(define-public go-github-com-go-http-utils-headers
+  (package
+    (name "go-github-com-go-http-utils-headers")
+    (version "0.0.0-20181008091004-fed159eddc2a")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/go-http-utils/headers")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19h2sffi04hr56qxkag2baa17v91x4vp1a1zkm9rqr846xqwspvm"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/go-http-utils/headers"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/go-http-utils/headers")
+    (synopsis "HTTP header constants for Golang")
+    (description
+     "This package provides HTTP header constants.")
+    (license license:expat)))
+
 (define-public go-github-com-go-jose-go-jose-v3
   (package
     (name "go-github-com-go-jose-go-jose-v3")
