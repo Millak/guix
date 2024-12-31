@@ -22034,25 +22034,6 @@ floating-point primitives to an @code{io::Write}.")
 Rust.")
     (license license:asl2.0)))
 
-(define-public rust-dtparse-1
-  (package
-    (inherit rust-dtparse-2)
-    (name "rust-dtparse")
-    (version "1.5.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "dtparse" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "00g423c3nw7ffhnvxlryg5hl721aib4b4dq3alpfib8lq3ims8v8"))))
-    (arguments
-     `(#:cargo-inputs (("rust-chrono" ,rust-chrono-0.4)
-                       ("rust-lazy-static" ,rust-lazy-static-1)
-                       ("rust-num-traits" ,rust-num-traits-0.2)
-                       ("rust-rust-decimal" ,rust-rust-decimal-1))
-       #:cargo-development-inputs (("rust-base64" ,rust-base64-0.21))))))
-
 (define-public rust-duct-0.13
   (package
     (name "rust-duct")
