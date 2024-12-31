@@ -56,7 +56,7 @@
 ;;; Copyright © 2018 Luther Thompson <lutheroto@gmail.com>
 ;;; Copyright © 2018 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2019, 2024 Tanguy Le Carrour <tanguy@bioneland.org>
-;;; Copyright © 2020, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2023, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020, 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
@@ -180,247 +180,250 @@
                "idle"))                 ;programming environment; weighs 5MB
     (build-system gnu-build-system)
     (arguments
-     `(#:test-target "test"
-       #:configure-flags
-       (list "--enable-shared"          ;allow embedding
-             "--with-system-expat"      ;for XML support
-             "--with-system-ffi"        ;build ctypes
-             "--with-ensurepip=install" ;install pip and setuptools
-             "--with-computed-gotos"    ;main interpreter loop optimization
-             "--enable-unicode=ucs4"
+     (list
+      #:test-target "test"
+      #:configure-flags
+      #~(list "--enable-shared"          ;allow embedding
+              "--with-system-expat"      ;for XML support
+              "--with-system-ffi"        ;build ctypes
+              "--with-ensurepip=install" ;install pip and setuptools
+              "--with-computed-gotos"    ;main interpreter loop optimization
+              "--enable-unicode=ucs4"
 
-             ;; FIXME: These flags makes Python significantly faster, but
-             ;; leads to non-reproducible binaries.
-             ;; "--with-lto"               ;increase size by 20MB, but 15% speedup
-             ;; "--enable-optimizations"
+              ;; FIXME: These flags makes Python significantly faster, but
+              ;; leads to non-reproducible binaries.
+              ;; "--with-lto"               ;increase size by 20MB, but 15% speedup
+              ;; "--enable-optimizations"
 
-             ;; Prevent the installed _sysconfigdata.py from retaining a reference
-             ;; to coreutils.
-             "INSTALL=install -c"
-             "MKDIR_P=mkdir -p"
+              ;; Prevent the installed _sysconfigdata.py from retaining a reference
+              ;; to coreutils.
+              "INSTALL=install -c"
+              "MKDIR_P=mkdir -p"
 
-             ;; Disable runtime check failing if cross-compiling, see:
-             ;; https://lists.yoctoproject.org/pipermail/poky/2013-June/008997.html
-             ,@(if (%current-target-system)
-                   '("ac_cv_buggy_getaddrinfo=no"
-                     "ac_cv_file__dev_ptmx=no"
-                     "ac_cv_file__dev_ptc=no")
-                   '())
-             ;; -fno-semantic-interposition reinstates some optimizations by gcc
-             ;; leading to around 15% speedup. This is the default starting from
-             ;; python 3.10.
-             "CFLAGS=-fno-semantic-interposition"
-             (string-append "LDFLAGS=-Wl,-rpath="
-                            (assoc-ref %outputs "out") "/lib"
-                            " -fno-semantic-interposition")
-             ;; Add a reference to libxcrypt in LIBS so that the sysconfigdata
-             ;; file records it and propagates it to programs linking against
-             ;; Python.
-             (let ((libxcrypt
-                    (false-if-exception
-                     (dirname
-                      (search-input-file %build-inputs
-                                         "lib/libcrypt.so.1")))))
-               (string-append
-                "LIBS="
-                (if libxcrypt
-                    (string-append "-L" libxcrypt)
-                    ""))))
-       ;; With no -j argument tests use all available cpus, so provide one.
-       #:make-flags
-       (list (string-append
-              (format #f "TESTOPTS=-j~d" (parallel-job-count))
-              ;; Exclude the following tests as they fail
-              ;; non-deterministically with "error: [Errno 104] Connection
-              ;; reset by peer."  Python 3 seems unaffected.  A potential fix,
-              ;; yet to be backported to Python 2, is available at:
-              ;; https://github.com/python/cpython/commit/529525fb5a8fd9b96ab4021311a598c77588b918.
-              " --exclude test_urllib2_localnet test_httplib"))
+              ;; Disable runtime check failing if cross-compiling, see:
+              ;; https://lists.yoctoproject.org/pipermail/poky/2013-June/008997.html
+              #$@(if (%current-target-system)
+                     #~("ac_cv_buggy_getaddrinfo=no"
+                        "ac_cv_file__dev_ptmx=no"
+                        "ac_cv_file__dev_ptc=no")
+                     #~())
+              ;; -fno-semantic-interposition reinstates some optimizations by gcc
+              ;; leading to around 15% speedup. This is the default starting from
+              ;; python 3.10.
+              "CFLAGS=-fno-semantic-interposition"
+              (string-append "LDFLAGS=-Wl,-rpath="
+                             (assoc-ref %outputs "out") "/lib"
+                             " -fno-semantic-interposition")
+              ;; Add a reference to libxcrypt in LIBS so that the sysconfigdata
+              ;; file records it and propagates it to programs linking against
+              ;; Python.
+              (let ((libxcrypt
+                     (false-if-exception
+                      (dirname
+                       (search-input-file %build-inputs
+                                          "lib/libcrypt.so.1")))))
+                (string-append
+                 "LIBS="
+                 (if libxcrypt
+                     (string-append "-L" libxcrypt)
+                     ""))))
+      ;; With no -j argument tests use all available cpus, so provide one.
+      #:make-flags
+      #~(list (string-append
+               (format #f "TESTOPTS=-j~d" (parallel-job-count))
+               ;; Exclude the following tests as they fail
+               ;; non-deterministically with "error: [Errno 104] Connection
+               ;; reset by peer."  Python 3 seems unaffected.  A potential fix,
+               ;; yet to be backported to Python 2, is available at:
+               ;; https://github.com/python/cpython/commit/529525fb5a8fd9b96ab4021311a598c77588b918.
+               " --exclude test_urllib2_localnet test_httplib"))
 
-       #:modules ((ice-9 ftw) (ice-9 match)
-                  (guix build utils) (guix build gnu-build-system))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before
-             'configure 'patch-lib-shells
-           (lambda _
-             ;; This variable is used in setup.py to enable cross compilation
-             ;; specific switches. As it is not set properly by configure
-             ;; script, set it manually.
-             ,@(if (%current-target-system)
-                   '((setenv "_PYTHON_HOST_PLATFORM" ""))
-                   '())
-             ;; Filter for existing files, since some may not exist in all
-             ;; versions of python that are built with this recipe.
-             (substitute* (filter file-exists?
-                                  '("Lib/subprocess.py"
-                                    "Lib/popen2.py"
-                                    "Lib/distutils/tests/test_spawn.py"
-                                    "Lib/test/support/__init__.py"
-                                    "Lib/test/test_subprocess.py"))
-               (("/bin/sh") (which "sh")))))
-         ,@(if (system-hurd?)
-               `((add-before 'build 'patch-regen-for-hurd
-                   (lambda* (#:key inputs #:allow-other-keys)
-                     (let ((libc (assoc-ref inputs "libc")))
-                       (substitute* "Lib/plat-generic/regen"
-                         (("/usr/include/") (string-append libc "/include/")))))))
-               '())
-         (add-before 'configure 'do-not-record-configure-flags
-           (lambda* (#:key configure-flags #:allow-other-keys)
-             ;; Remove configure flags from the installed '_sysconfigdata.py'
-             ;; and 'Makefile' so we don't end up keeping references to the
-             ;; build tools.
-             ;;
-             ;; Preserve at least '--with-system-ffi' since otherwise the
-             ;; thing tries to build libffi, fails, and we end up with a
-             ;; Python that lacks ctypes.
-             (substitute* "configure"
-               (("^CONFIG_ARGS=.*$")
-                (format #f "CONFIG_ARGS='~a'\n"
-                        (if (member "--with-system-ffi" configure-flags)
-                            "--with-system-ffi"
-                            ""))))))
-         (add-before 'check 'pre-check
-           (lambda _
-             ;; 'Lib/test/test_site.py' needs a valid $HOME
-             (setenv "HOME" (getcwd))))
-         (add-after 'unpack 'set-source-file-times-to-1980
-           ;; XXX One of the tests uses a ZIP library to pack up some of the
-           ;; source tree, and fails with "ZIP does not support timestamps
-           ;; before 1980".  Work around this by setting the file times in the
-           ;; source tree to sometime in early 1980.
-           (lambda _
-             (let ((circa-1980 (* 10 366 24 60 60)))
-               (ftw "." (lambda (file stat flag)
-                          (utime file circa-1980 circa-1980)
-                          #t)))))
-         (add-after 'install 'remove-tests
-           ;; Remove 25 MiB of unneeded unit tests.  Keep test_support.*
-           ;; because these files are used by some libraries out there.
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (match (scandir (string-append out "/lib")
-                               (lambda (name)
-                                 (string-prefix? "python" name)))
-                 ((pythonX.Y)
-                  (let ((testdir (string-append out "/lib/" pythonX.Y
-                                                "/test")))
-                    (with-directory-excursion testdir
-                      (for-each delete-file-recursively
-                                (scandir testdir
-                                         (match-lambda
-                                           ((or "." "..") #f)
-                                           ("support" #f)
-                                           (file
-                                            (not
-                                             (string-prefix? "test_support."
-                                                             file))))))
-                      (call-with-output-file "__init__.py" (const #t))))
-                  (let ((libdir (string-append out "/lib/" pythonX.Y)))
-                    (for-each
-                     (lambda (directory)
-                       (let ((dir (string-append libdir "/" directory)))
-                         (when (file-exists? dir)
-                           (delete-file-recursively dir))))
-                     '("email/test" "ctypes/test" "unittest/test" "tkinter/test"
-                       "sqlite3/test" "bsddb/test" "lib-tk/test" "json/tests"
-                       "distutils/tests"))))))))
-         (add-after 'install 'add-libxcrypt-reference-pkgconfig
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (define out (assoc-ref outputs "out"))
-             (define libxcrypt
-               (false-if-exception
-                (dirname (search-input-file inputs "lib/libcrypt.so.1"))))
-             (when libxcrypt
-               (substitute*
-                   (find-files (string-append out "/lib/pkgconfig")
-                               ".*\\.pc")
-                 (("-lcrypt")
-                  (string-append "-L" libxcrypt " -lcrypt"))))))
-         (add-after 'remove-tests 'move-tk-inter
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; When Tkinter support is built move it to a separate output so
-             ;; that the main output doesn't contain a reference to Tcl/Tk.
-             (let ((out (assoc-ref outputs "out"))
-                   (tk  (assoc-ref outputs "tk")))
-               (when tk
-                 (match (find-files out "tkinter.*\\.so")
-                   ((tkinter.so)
-                    ;; The .so is in OUT/lib/pythonX.Y/lib-dynload, but we
-                    ;; want it under TK/lib/pythonX.Y/site-packages.
-                    (let* ((len    (string-length out))
-                           (target (string-append
-                                    tk "/"
-                                    (string-drop
-                                     (dirname (dirname tkinter.so))
-                                     len)
-                                    "/site-packages")))
-                      (install-file tkinter.so target)
-                      (delete-file tkinter.so))))))))
-         (add-after 'move-tk-inter 'move-idle
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; when idle is built, move it to a separate output to save some
-             ;; space (5MB)
-             (let ((out (assoc-ref outputs "out"))
-                   (idle (assoc-ref outputs "idle")))
-               (when idle
-                 (for-each
-                  (lambda (file)
-                    (let ((target (string-append idle "/bin/" (basename file))))
-                      (install-file file (dirname target))
-                      (delete-file file)))
-                  (find-files (string-append out "/bin") "^idle"))
-                 (match (find-files out "^idlelib$" #:directories? #t)
-                   ((idlelib)
-                    (let* ((len (string-length out))
-                           (target (string-append idle "/"
-                                                  (string-drop idlelib len)
-                                                  "/site-packages")))
-                      (mkdir-p (dirname target))
-                      (rename-file idlelib target))))))))
-         (add-after 'move-idle 'rebuild-bytecode
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               ;; Disable hash randomization to ensure the generated .pycs
-               ;; are reproducible.
-               (setenv "PYTHONHASHSEED" "0")
-               (for-each
-                (lambda (output)
-                  (for-each (lambda (opt)
-                              (format #t "Compiling with optimization level: ~a\n"
-                                      (if (null? opt) "none" (car opt)))
-                              (apply invoke
-                                     `(,,(if (%current-target-system)
-                                             "python2"
-                                             '(string-append out "/bin/python"))
-                                       ,@opt
-                                       "-m" "compileall"
-                                       "-f" ; force rebuild
-                                       ;; Don't build lib2to3, because it contains
-                                       ;; Python 3 code.
-                                       "-x" "lib2to3/.*"
-                                       ,output)))
-                            ;; Python 2 has a single file extension (.pyo) for the
-                            ;; chosen level of optimization, so it doesn't make
-                            ;; sense to byte compile with more than one level.
-                            (list '() '("-OO"))))
-                (map cdr outputs)))))
-         (add-after 'install 'install-sitecustomize.py
-           ,(customize-site version)))))
+      #:modules '((ice-9 ftw)
+                  (ice-9 match)
+                  (guix build utils)
+                  (guix build gnu-build-system))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before
+              'configure 'patch-lib-shells
+            (lambda _
+              ;; This variable is used in setup.py to enable cross compilation
+              ;; specific switches. As it is not set properly by configure
+              ;; script, set it manually.
+              #$@(if (%current-target-system)
+                     #~((setenv "_PYTHON_HOST_PLATFORM" ""))
+                     #~())
+              ;; Filter for existing files, since some may not exist in all
+              ;; versions of python that are built with this recipe.
+              (substitute* (filter file-exists?
+                                   '("Lib/subprocess.py"
+                                     "Lib/popen2.py"
+                                     "Lib/distutils/tests/test_spawn.py"
+                                     "Lib/test/support/__init__.py"
+                                     "Lib/test/test_subprocess.py"))
+                (("/bin/sh") (which "sh")))))
+          #$@(if (system-hurd?)
+                 #~((add-before 'build 'patch-regen-for-hurd
+                      (lambda* (#:key inputs #:allow-other-keys)
+                        (let ((libc (assoc-ref inputs "libc")))
+                          (substitute* "Lib/plat-generic/regen"
+                            (("/usr/include/") (string-append libc "/include/")))))))
+                 #~())
+          (add-before 'configure 'do-not-record-configure-flags
+            (lambda* (#:key configure-flags #:allow-other-keys)
+              ;; Remove configure flags from the installed '_sysconfigdata.py'
+              ;; and 'Makefile' so we don't end up keeping references to the
+              ;; build tools.
+              ;;
+              ;; Preserve at least '--with-system-ffi' since otherwise the
+              ;; thing tries to build libffi, fails, and we end up with a
+              ;; Python that lacks ctypes.
+              (substitute* "configure"
+                (("^CONFIG_ARGS=.*$")
+                 (format #f "CONFIG_ARGS='~a'\n"
+                         (if (member "--with-system-ffi" configure-flags)
+                             "--with-system-ffi"
+                             ""))))))
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; 'Lib/test/test_site.py' needs a valid $HOME
+              (setenv "HOME" (getcwd))))
+          (add-after 'unpack 'set-source-file-times-to-1980
+            ;; XXX One of the tests uses a ZIP library to pack up some of the
+            ;; source tree, and fails with "ZIP does not support timestamps
+            ;; before 1980".  Work around this by setting the file times in the
+            ;; source tree to sometime in early 1980.
+            (lambda _
+              (let ((circa-1980 (* 10 366 24 60 60)))
+                (ftw "." (lambda (file stat flag)
+                           (utime file circa-1980 circa-1980)
+                           #t)))))
+          (add-after 'install 'remove-tests
+            ;; Remove 25 MiB of unneeded unit tests.  Keep test_support.*
+            ;; because these files are used by some libraries out there.
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((out (assoc-ref outputs "out")))
+                (match (scandir (string-append out "/lib")
+                                (lambda (name)
+                                  (string-prefix? "python" name)))
+                  ((pythonX.Y)
+                   (let ((testdir (string-append out "/lib/" pythonX.Y
+                                                 "/test")))
+                     (with-directory-excursion testdir
+                       (for-each delete-file-recursively
+                                 (scandir testdir
+                                          (match-lambda
+                                            ((or "." "..") #f)
+                                            ("support" #f)
+                                            (file
+                                             (not
+                                              (string-prefix? "test_support."
+                                                              file))))))
+                       (call-with-output-file "__init__.py" (const #t))))
+                   (let ((libdir (string-append out "/lib/" pythonX.Y)))
+                     (for-each
+                      (lambda (directory)
+                        (let ((dir (string-append libdir "/" directory)))
+                          (when (file-exists? dir)
+                            (delete-file-recursively dir))))
+                      '("email/test" "ctypes/test" "unittest/test" "tkinter/test"
+                        "sqlite3/test" "bsddb/test" "lib-tk/test" "json/tests"
+                        "distutils/tests"))))))))
+          (add-after 'install 'add-libxcrypt-reference-pkgconfig
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (define out (assoc-ref outputs "out"))
+              (define libxcrypt
+                (false-if-exception
+                 (dirname (search-input-file inputs "lib/libcrypt.so.1"))))
+              (when libxcrypt
+                (substitute*
+                    (find-files (string-append out "/lib/pkgconfig")
+                                ".*\\.pc")
+                  (("-lcrypt")
+                   (string-append "-L" libxcrypt " -lcrypt"))))))
+          (add-after 'remove-tests 'move-tk-inter
+            (lambda* (#:key outputs #:allow-other-keys)
+              ;; When Tkinter support is built move it to a separate output so
+              ;; that the main output doesn't contain a reference to Tcl/Tk.
+              (let ((out (assoc-ref outputs "out"))
+                    (tk  (assoc-ref outputs "tk")))
+                (when tk
+                  (match (find-files out "tkinter.*\\.so")
+                    ((tkinter.so)
+                     ;; The .so is in OUT/lib/pythonX.Y/lib-dynload, but we
+                     ;; want it under TK/lib/pythonX.Y/site-packages.
+                     (let* ((len    (string-length out))
+                            (target (string-append
+                                     tk "/"
+                                     (string-drop
+                                      (dirname (dirname tkinter.so))
+                                      len)
+                                     "/site-packages")))
+                       (install-file tkinter.so target)
+                       (delete-file tkinter.so))))))))
+          (add-after 'move-tk-inter 'move-idle
+            (lambda* (#:key outputs #:allow-other-keys)
+              ;; when idle is built, move it to a separate output to save some
+              ;; space (5MB)
+              (let ((out (assoc-ref outputs "out"))
+                    (idle (assoc-ref outputs "idle")))
+                (when idle
+                  (for-each
+                   (lambda (file)
+                     (let ((target (string-append idle "/bin/" (basename file))))
+                       (install-file file (dirname target))
+                       (delete-file file)))
+                   (find-files (string-append out "/bin") "^idle"))
+                  (match (find-files out "^idlelib$" #:directories? #t)
+                    ((idlelib)
+                     (let* ((len (string-length out))
+                            (target (string-append idle "/"
+                                                   (string-drop idlelib len)
+                                                   "/site-packages")))
+                       (mkdir-p (dirname target))
+                       (rename-file idlelib target))))))))
+          (add-after 'move-idle 'rebuild-bytecode
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((out (assoc-ref outputs "out")))
+                ;; Disable hash randomization to ensure the generated .pycs
+                ;; are reproducible.
+                (setenv "PYTHONHASHSEED" "0")
+                (for-each
+                 (lambda (output)
+                   (for-each (lambda (opt)
+                               (format #t "Compiling with optimization level: ~a\n"
+                                       (if (null? opt) "none" (car opt)))
+                               (apply invoke
+                                      `(,#$(if (%current-target-system)
+                                               "python2"
+                                               #~(string-append out "/bin/python"))
+                                        ,@opt
+                                        "-m" "compileall"
+                                        "-f" ; force rebuild
+                                        ;; Don't build lib2to3, because it contains
+                                        ;; Python 3 code.
+                                        "-x" "lib2to3/.*"
+                                        ,output)))
+                             ;; Python 2 has a single file extension (.pyo) for the
+                             ;; chosen level of optimization, so it doesn't make
+                             ;; sense to byte compile with more than one level.
+                             (list '() '("-OO"))))
+                 (map cdr outputs)))))
+          (add-after 'install 'install-sitecustomize.py
+            #$(customize-site version)))))
     (inputs
      (list bzip2
            expat
            gdbm
-           libffi ; for ctypes
-           libxcrypt ; crypto module slated for removal in 3.13, re-enable
-                     ; python tests of libxcrypt when that happens
-           sqlite ; for sqlite extension
+           libffi        ; for ctypes
+           libxcrypt     ; crypto module slated for removal in 3.13, re-enable
+                                        ; python tests of libxcrypt when that happens
+           sqlite                       ; for sqlite extension
            openssl-1.1
            readline
            zlib
            tcl
-           tk))                     ; for tkinter
+           tk))                         ; for tkinter
     (native-inputs
      `(("pkg-config" ,pkg-config)
        ("sitecustomize.py" ,(local-file (search-auxiliary-file
@@ -481,95 +484,97 @@ data types.")
     (arguments
      (substitute-keyword-arguments (package-arguments python-2)
        ((#:configure-flags flags)
-        `(append ,flags '("--without-static-libpython")))
+        #~(append #$flags
+                  ;; XXX Use quote to avoid world rebuild at this time
+                  '("--without-static-libpython")))
        ((#:make-flags _)
-        `(list (string-append
-                (format #f "TESTOPTS=-j~d" (parallel-job-count))
-                ;; test_mmap fails on low-memory systems
-                " --exclude test_mmap test_socket"
-                ,@(if (system-hurd?)
-                      '(" test_posix"      ;multiple errors
-                        " test_time"
-                        " test_pty"
-                        " test_shutil"
-                        " test_tempfile"   ;chflags: invalid argument:
-                                           ;  tbv14c9t/dir0/dir0/dir0/test0.txt
-                        " test_asyncio"    ;runs over 10min
-                        " test_os"         ;stty: 'standard input':
-                                           ;  Inappropriate ioctl for device
-                        " test_openpty"    ;No such file or directory
-                        " test_selectors"  ;assertEqual(NUM_FDS // 2, len(fds))
-                                           ;  32752 != 4
-                        " test_compileall" ;multiple errors
-                        " test_poll"       ;list index out of range
-                        " test_subprocess" ;runs over 10min
-                        " test_asyncore"   ;multiple errors
-                        " test_threadsignals"
-                        " test_eintr"      ;Process return code is -14
-                        " test_io"         ;multiple errors
-                        " test_logging"
-                        " test_signal"
-                        " test_threading"  ;runs over 10min
-                        " test_flags"      ;ERROR
-                        " test_bidirectional_pty"
-                        " test_create_unix_connection"
-                        " test_unix_sock_client_ops"
-                        " test_open_unix_connection"
-                        " test_open_unix_connection_error"
-                        " test_read_pty_output"
-                        " test_write_pty"
-                        " test_concurrent_futures" ;freeze
-                        " test_venv"       ;freeze
-                        " test_multiprocessing_forkserver" ;runs over 10min
-                        " test_multiprocessing_spawn" ;runs over 10min
-                        " test_builtin"
-                        " test_capi"
-                        " test_dbm_ndbm"
-                        " test_exceptions"
-                        " test_faulthandler"
-                        " test_getopt"
-                        " test_importlib"
-                        " test_json"
-                        " test_multiprocessing_fork"
-                        " test_multiprocessing_main_handling"
-                        " test_pdb "
-                        " test_regrtest"
-                        " test_sqlite")
-                      '()))))
+        #~(list (string-append
+                 (format #f "TESTOPTS=-j~d" (parallel-job-count))
+                 ;; test_mmap fails on low-memory systems
+                 " --exclude test_mmap test_socket"
+                 #$@(if (system-hurd?)
+                        #~(" test_posix" ;multiple errors
+                           " test_time"
+                           " test_pty"
+                           " test_shutil"
+                           " test_tempfile" ;chflags: invalid argument:
+                                        ;  tbv14c9t/dir0/dir0/dir0/test0.txt
+                           " test_asyncio" ;runs over 10min
+                           " test_os"      ;stty: 'standard input':
+                                        ;  Inappropriate ioctl for device
+                           " test_openpty" ;No such file or directory
+                           " test_selectors" ;assertEqual(NUM_FDS // 2, len(fds))
+                                        ;  32752 != 4
+                           " test_compileall" ;multiple errors
+                           " test_poll"       ;list index out of range
+                           " test_subprocess" ;runs over 10min
+                           " test_asyncore"   ;multiple errors
+                           " test_threadsignals"
+                           " test_eintr" ;Process return code is -14
+                           " test_io"    ;multiple errors
+                           " test_logging"
+                           " test_signal"
+                           " test_threading" ;runs over 10min
+                           " test_flags"     ;ERROR
+                           " test_bidirectional_pty"
+                           " test_create_unix_connection"
+                           " test_unix_sock_client_ops"
+                           " test_open_unix_connection"
+                           " test_open_unix_connection_error"
+                           " test_read_pty_output"
+                           " test_write_pty"
+                           " test_concurrent_futures"        ;freeze
+                           " test_venv"                      ;freeze
+                           " test_multiprocessing_forkserver" ;runs over 10min
+                           " test_multiprocessing_spawn"      ;runs over 10min
+                           " test_builtin"
+                           " test_capi"
+                           " test_dbm_ndbm"
+                           " test_exceptions"
+                           " test_faulthandler"
+                           " test_getopt"
+                           " test_importlib"
+                           " test_json"
+                           " test_multiprocessing_fork"
+                           " test_multiprocessing_main_handling"
+                           " test_pdb "
+                           " test_regrtest"
+                           " test_sqlite")
+                        #~()))))
        ((#:phases phases)
-        `(modify-phases ,phases
-           ,@(if (system-hurd?)
-                 `((delete 'patch-regen-for-hurd)  ;regen was removed after 3.5.9
-                   (add-after 'unpack 'disable-multi-processing
-                     (lambda _
-                       (substitute* "Makefile.pre.in"
-                         (("-j0") "-j1")))))
-                 '())
-           (add-after 'unpack 'remove-vendored-wheel-content
-             (lambda _
-               ;; Delete .exe from embedded .whl (zip) files
-               (for-each
-                (lambda (whl)
-                  (let ((dir "whl-content")
-                        (circa-1980 (* 10 366 24 60 60)))
-                    (mkdir-p dir)
-                    (with-directory-excursion dir
-                      (let ((whl (string-append "../" whl)))
-                        (invoke "unzip" whl)
-                        (for-each delete-file
-                                  (find-files "." "\\.exe$"))
-                        (delete-file whl)
+        #~(modify-phases #$phases
+            #$@(if (system-hurd?)
+                   #~((delete 'patch-regen-for-hurd) ;regen was removed after 3.5.9
+                      (add-after 'unpack 'disable-multi-processing
+                        (lambda _
+                          (substitute* "Makefile.pre.in"
+                            (("-j0") "-j1")))))
+                   #~())
+            (add-after 'unpack 'remove-vendored-wheel-content
+              (lambda _
+                ;; Delete .exe from embedded .whl (zip) files
+                (for-each
+                 (lambda (whl)
+                   (let ((dir "whl-content")
+                         (circa-1980 (* 10 366 24 60 60)))
+                     (mkdir-p dir)
+                     (with-directory-excursion dir
+                       (let ((whl (string-append "../" whl)))
+                         (invoke "unzip" whl)
+                         (for-each delete-file
+                                   (find-files "." "\\.exe$"))
+                         (delete-file whl)
 
-                        ;; Search for cacert.pem, delete it, and rewrite the
-                        ;; file which directs python to look for it.
-                        (let ((cacert (find-files "." "cacert\\.pem")))
-                          (unless (null? cacert)
-                            (let ((certifi (dirname (car cacert))))
-                              (delete-file (string-append certifi "/cacert.pem"))
-                              (delete-file (string-append certifi "/core.py"))
-                              (with-output-to-file (string-append certifi "/core.py")
-                                (lambda _
-                                  (display "\"\"\"
+                         ;; Search for cacert.pem, delete it, and rewrite the
+                         ;; file which directs python to look for it.
+                         (let ((cacert (find-files "." "cacert\\.pem")))
+                           (unless (null? cacert)
+                             (let ((certifi (dirname (car cacert))))
+                               (delete-file (string-append certifi "/cacert.pem"))
+                               (delete-file (string-append certifi "/core.py"))
+                               (with-output-to-file (string-append certifi "/core.py")
+                                 (lambda _
+                                   (display "\"\"\"
 certifi.py
 ~~~~~~~~~~
 This file is a Guix-specific version of core.py.
@@ -593,54 +598,54 @@ def contents() -> str:
     with open(where(), \"r\", encoding=\"ascii\") as data:
         return data.read()"))))))
 
-                        ;; Reset timestamps to prevent them from ending
-                        ;; up in the Zip archive.
-                        (ftw "." (lambda (file stat flag)
-                                   (utime file circa-1980 circa-1980)
-                                   #t))
-                        (apply invoke "zip" "-X" whl
-                               (find-files "." #:directories? #t))))
-                    (delete-file-recursively dir)))
-                (find-files "Lib/ensurepip" "\\.whl$"))))
-           (add-before 'check 'set-TZDIR
-             (lambda* (#:key inputs native-inputs #:allow-other-keys)
-               ;; test_email requires the Olson time zone database.
-               (setenv "TZDIR"
-                       (string-append (assoc-ref
-                                       (or native-inputs inputs) "tzdata")
-                                      "/share/zoneinfo"))))
-           (replace 'rebuild-bytecode
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let ((out (assoc-ref outputs "out")))
-                 ;; Disable hash randomization to ensure the generated .pycs
-                 ;; are reproducible.
-                 (setenv "PYTHONHASHSEED" "0")
+                         ;; Reset timestamps to prevent them from ending
+                         ;; up in the Zip archive.
+                         (ftw "." (lambda (file stat flag)
+                                    (utime file circa-1980 circa-1980)
+                                    #t))
+                         (apply invoke "zip" "-X" whl
+                                (find-files "." #:directories? #t))))
+                     (delete-file-recursively dir)))
+                 (find-files "Lib/ensurepip" "\\.whl$"))))
+            (add-before 'check 'set-TZDIR
+              (lambda* (#:key inputs native-inputs #:allow-other-keys)
+                ;; test_email requires the Olson time zone database.
+                (setenv "TZDIR"
+                        (string-append (assoc-ref
+                                        (or native-inputs inputs) "tzdata")
+                                       "/share/zoneinfo"))))
+            (replace 'rebuild-bytecode
+              (lambda* (#:key outputs #:allow-other-keys)
+                (let ((out (assoc-ref outputs "out")))
+                  ;; Disable hash randomization to ensure the generated .pycs
+                  ;; are reproducible.
+                  (setenv "PYTHONHASHSEED" "0")
 
-                 (for-each (lambda (output)
-                             ;; XXX: Delete existing pycs generated by the build
-                             ;; system beforehand because the -f argument does
-                             ;; not necessarily overwrite all files, leading to
-                             ;; indeterministic results.
-                             (for-each (lambda (pyc)
-                                         (delete-file pyc))
-                                       (find-files output "\\.pyc$"))
+                  (for-each (lambda (output)
+                              ;; XXX: Delete existing pycs generated by the build
+                              ;; system beforehand because the -f argument does
+                              ;; not necessarily overwrite all files, leading to
+                              ;; indeterministic results.
+                              (for-each (lambda (pyc)
+                                          (delete-file pyc))
+                                        (find-files output "\\.pyc$"))
 
-                             (apply invoke
-                                    `(,,(if (%current-target-system)
-                                            "python3"
-                                            '(string-append out
-                                                            "/bin/python3"))
-                                      "-m" "compileall"
-                                      "-o" "0" "-o" "1" "-o" "2"
-                                      "-f" ; force rebuild
-                                      "--invalidation-mode=unchecked-hash"
-                                      ;; Don't build lib2to3, because it's
-                                      ;; Python 2 code.
-                                      "-x" "lib2to3/.*"
-                                      ,output)))
-                           (map cdr outputs)))))
-           (replace 'install-sitecustomize.py
-             ,(customize-site version))))))
+                              (apply invoke
+                                     `(,#$(if (%current-target-system)
+                                              "python3"
+                                              #~(string-append out
+                                                               "/bin/python3"))
+                                       "-m" "compileall"
+                                       "-o" "0" "-o" "1" "-o" "2"
+                                       "-f" ; force rebuild
+                                       "--invalidation-mode=unchecked-hash"
+                                       ;; Don't build lib2to3, because it's
+                                       ;; Python 2 code.
+                                       "-x" "lib2to3/.*"
+                                       ,output)))
+                            (map cdr outputs)))))
+            (replace 'install-sitecustomize.py
+              #$(customize-site version))))))
     (inputs
      (modify-inputs (package-inputs python-2.7)
        (replace "openssl" openssl)))
@@ -685,337 +690,342 @@ def contents() -> str:
                    ;; Delete windows binaries
                    (for-each delete-file
                              (find-files "Lib/distutils/command" "\\.exe$"))))))
-    (outputs '("out" "tk" ;tkinter; adds 50 MiB to the closure
-               "idle")) ;programming environment; weighs 5MB
+    (outputs '("out" "tk"               ;tkinter; adds 50 MiB to the closure
+               "idle"))                 ;programming environment; weighs 5MB
     (build-system gnu-build-system)
     (arguments
-     `(#:test-target "test"
-       #:configure-flags (list "--enable-shared" ;allow embedding
-                               "--with-system-expat" ;for XML support
-                               "--with-system-ffi" ;build ctypes
-                               "--with-ensurepip=install" ;install pip and setuptools
-                               "--with-computed-gotos" ;main interpreter loop optimization
-                               "--enable-unicode=ucs4"
-                               "--without-static-libpython"
-                               "--enable-loadable-sqlite-extensions"
+     (list
+      #:test-target "test"
+      #:configure-flags
+      #~(list "--enable-shared"          ;allow embedding
+              "--with-system-expat"      ;for XML support
+              "--with-system-ffi"        ;build ctypes
+              "--with-ensurepip=install" ;install pip and setuptools
+              "--with-computed-gotos"    ;main interpreter loop optimization
+              "--enable-unicode=ucs4"
+              "--without-static-libpython"
+              "--enable-loadable-sqlite-extensions"
 
-                               ;; FIXME: These flags makes Python significantly faster,
-                               ;; but leads to non-reproducible binaries.
-                               ;; "--with-lto"   ;increase size by 20MB, but 15% speedup
-                               ;; "--enable-optimizations"
+              ;; FIXME: These flags makes Python significantly faster,
+              ;; but leads to non-reproducible binaries.
+              ;; "--with-lto"   ;increase size by 20MB, but 15% speedup
+              ;; "--enable-optimizations"
 
-                               ;; Prevent the installed _sysconfigdata.py from retaining
-                               ;; a reference to coreutils.
-                               "INSTALL=install -c"
-                               "MKDIR_P=mkdir -p"
+              ;; Prevent the installed _sysconfigdata.py from retaining
+              ;; a reference to coreutils.
+              "INSTALL=install -c"
+              "MKDIR_P=mkdir -p"
 
-                               ;; Disable runtime check failing if cross-compiling, see:
-                               ;; https://lists.yoctoproject.org/pipermail/poky/2013-June/008997.html
-                               ,@(if (%current-target-system)
-                                     '("ac_cv_buggy_getaddrinfo=no"
-                                       "ac_cv_file__dev_ptmx=no"
-                                       "ac_cv_file__dev_ptc=no")
-                                     '())
-                               ;; -fno-semantic-interposition reinstates some
-                               ;; optimizations by gcc leading to around 15% speedup.
-                               ;; This is the default starting from python 3.10.
-                               "CFLAGS=-fno-semantic-interposition"
-                               (string-append "LDFLAGS=-Wl,-rpath="
-                                              (assoc-ref %outputs "out")
-                                              "/lib"
-                                              " -fno-semantic-interposition"))
-       ;; With no -j argument tests use all available cpus, so provide one.
-       #:make-flags (list (string-append (format #f "TESTOPTS=-j~d"
-                                                 (parallel-job-count))
-                           ;; those tests fail on low-memory systems
-                           " --exclude"
-                           " test_mmap"
-                           " test_socket"
-                           " test_threading"
-                           " test_asyncio"
-                           " test_shutdown"
-                           ,@(if (system-hurd?)
-                                 '(" test_posix" ;multiple errors
-                                   " test_time"
-                                   " test_pty"
-                                   " test_shutil"
-                                   " test_tempfile" ;chflags: invalid argument:
-                                   ;; tbv14c9t/dir0/dir0/dir0/test0.txt
-                                   " test_os" ;stty: 'standard input':
-                                   ;; Inappropriate ioctl for device
-                                   " test_openpty" ;No such file or directory
-                                   " test_selectors" ;assertEqual(NUM_FDS // 2, len(fds))
-                                   ;; 32752 != 4
-                                   " test_compileall" ;multiple errors
-                                   " test_poll" ;list index out of range
-                                   " test_subprocess" ;runs over 10min
-                                   " test_asyncore" ;multiple errors
-                                   " test_threadsignals"
-                                   " test_eintr" ;Process return code is -14
-                                   " test_io" ;multiple errors
-                                   " test_logging"
-                                   " test_signal"
-                                   " test_flags" ;ERROR
-                                   " test_bidirectional_pty"
-                                   " test_create_unix_connection"
-                                   " test_unix_sock_client_ops"
-                                   " test_open_unix_connection"
-                                   " test_open_unix_connection_error"
-                                   " test_read_pty_output"
-                                   " test_write_pty"
-                                   " test_concurrent_futures" ;freeze
-                                   " test_venv" ;freeze
-                                   " test_multiprocessing_forkserver" ;runs over 10min
-                                   " test_multiprocessing_spawn" ;runs over 10min
-                                   " test_builtin"
-                                   " test_capi"
-                                   " test_dbm_ndbm"
-                                   " test_exceptions"
-                                   " test_faulthandler"
-                                   " test_getopt"
-                                   " test_importlib"
-                                   " test_json"
-                                   " test_multiprocessing_fork"
-                                   " test_multiprocessing_main_handling"
-                                   " test_pdb "
-                                   " test_regrtest"
-                                   " test_sqlite")
-                                 '())))
+              ;; Disable runtime check failing if cross-compiling, see:
+              ;; https://lists.yoctoproject.org/pipermail/poky/2013-June/008997.html
+              #$@(if (%current-target-system)
+                     #~("ac_cv_buggy_getaddrinfo=no"
+                        "ac_cv_file__dev_ptmx=no"
+                        "ac_cv_file__dev_ptc=no")
+                     #~())
+              ;; -fno-semantic-interposition reinstates some
+              ;; optimizations by gcc leading to around 15% speedup.
+              ;; This is the default starting from python 3.10.
+              "CFLAGS=-fno-semantic-interposition"
+              (string-append "LDFLAGS=-Wl,-rpath="
+                             (assoc-ref %outputs "out")
+                             "/lib"
+                             " -fno-semantic-interposition"))
+      ;; With no -j argument tests use all available cpus, so provide one.
+      #:make-flags
+      #~(list (string-append (format #f "TESTOPTS=-j~d"
+                                     (parallel-job-count))
+                             ;; those tests fail on low-memory systems
+                             " --exclude"
+                             " test_mmap"
+                             " test_socket"
+                             " test_threading"
+                             " test_asyncio"
+                             " test_shutdown"
+                             #$@(if (system-hurd?)
+                                    #~(" test_posix" ;multiple errors
+                                       " test_time"
+                                       " test_pty"
+                                       " test_shutil"
+                                       " test_tempfile" ;chflags: invalid argument:
+                                       ;; tbv14c9t/dir0/dir0/dir0/test0.txt
+                                       " test_os" ;stty: 'standard input':
+                                       ;; Inappropriate ioctl for device
+                                       " test_openpty" ;No such file or directory
+                                       " test_selectors" ;assertEqual(NUM_FDS // 2, len(fds))
+                                       ;; 32752 != 4
+                                       " test_compileall" ;multiple errors
+                                       " test_poll" ;list index out of range
+                                       " test_subprocess" ;runs over 10min
+                                       " test_asyncore"   ;multiple errors
+                                       " test_threadsignals"
+                                       " test_eintr" ;Process return code is -14
+                                       " test_io"    ;multiple errors
+                                       " test_logging"
+                                       " test_signal"
+                                       " test_flags" ;ERROR
+                                       " test_bidirectional_pty"
+                                       " test_create_unix_connection"
+                                       " test_unix_sock_client_ops"
+                                       " test_open_unix_connection"
+                                       " test_open_unix_connection_error"
+                                       " test_read_pty_output"
+                                       " test_write_pty"
+                                       " test_concurrent_futures" ;freeze
+                                       " test_venv"               ;freeze
+                                       " test_multiprocessing_forkserver" ;runs over 10min
+                                       " test_multiprocessing_spawn" ;runs over 10min
+                                       " test_builtin"
+                                       " test_capi"
+                                       " test_dbm_ndbm"
+                                       " test_exceptions"
+                                       " test_faulthandler"
+                                       " test_getopt"
+                                       " test_importlib"
+                                       " test_json"
+                                       " test_multiprocessing_fork"
+                                       " test_multiprocessing_main_handling"
+                                       " test_pdb "
+                                       " test_regrtest"
+                                       " test_sqlite")
+                                    #~())))
 
-       #:modules ((ice-9 ftw)
+      #:modules '((ice-9 ftw)
                   (ice-9 match)
                   (guix build utils)
                   (guix build gnu-build-system))
 
-       #:phases (modify-phases %standard-phases
-                  ,@(if (system-hurd?)
-                        `((add-after 'unpack
-                                     'disable-multi-processing
-                                     (lambda _
-                                       (substitute* "Makefile.pre.in"
-                                         (("-j0")
-                                          "-j1")))))
-                        '())
-                  (add-before 'configure 'patch-lib-shells
-                    (lambda _
-                      ;; This variable is used in setup.py to enable cross compilation
-                      ;; specific switches. As it is not set properly by configure
-                      ;; script, set it manually.
-                      ,@(if (%current-target-system)
-                            '((setenv "_PYTHON_HOST_PLATFORM" ""))
-                            '())
-                      ;; Filter for existing files, since some may not exist in all
-                      ;; versions of python that are built with this recipe.
-                      (substitute* (filter file-exists?
-                                           '("Lib/subprocess.py"
-                                             "Lib/popen2.py"
-                                             "Lib/distutils/tests/test_spawn.py"
-                                             "Lib/test/support/__init__.py"
-                                             "Lib/test/test_subprocess.py"))
-                        (("/bin/sh")
-                         (which "sh")))))
-                  (add-before 'configure 'do-not-record-configure-flags
-                    (lambda* (#:key configure-flags #:allow-other-keys)
-                      ;; Remove configure flags from the installed '_sysconfigdata.py'
-                      ;; and 'Makefile' so we don't end up keeping references to the
-                      ;; build tools.
-                      ;;
-                      ;; Preserve at least '--with-system-ffi' since otherwise the
-                      ;; thing tries to build libffi, fails, and we end up with a
-                      ;; Python that lacks ctypes.
-                      (substitute* "configure"
-                        (("^CONFIG_ARGS=.*$")
-                         (format #f "CONFIG_ARGS='~a'\n"
-                                 (if (member "--with-system-ffi"
-                                             configure-flags)
-                                     "--with-system-ffi" ""))))))
-                  (add-before 'check 'pre-check
-                    (lambda _
-                      ;; 'Lib/test/test_site.py' needs a valid $HOME
-                      (setenv "HOME"
-                              (getcwd))))
-                  (add-after 'unpack 'set-source-file-times-to-1980
-                    ;; XXX One of the tests uses a ZIP library to pack up some of the
-                    ;; source tree, and fails with "ZIP does not support timestamps
-                    ;; before 1980".  Work around this by setting the file times in the
-                    ;; source tree to sometime in early 1980.
-                    (lambda _
-                      (let ((circa-1980 (* 10 366 24 60 60)))
-                        (ftw "."
-                             (lambda (file stat flag)
-                               (utime file circa-1980 circa-1980) #t)))))
-                  (add-after 'unpack 'remove-windows-binaries
-                    (lambda _
-                      ;; Delete .exe from embedded .whl (zip) files
-                      (for-each (lambda (whl)
-                                  (let ((dir "whl-content")
-                                        (circa-1980 (* 10 366 24 60 60)))
-                                    (mkdir-p dir)
-                                    (with-directory-excursion dir
-                                      (let ((whl (string-append "../" whl)))
-                                        (invoke "unzip" whl)
-                                        (for-each delete-file
-                                                  (find-files "." "\\.exe$"))
-                                        (delete-file whl)
-                                        ;; Reset timestamps to prevent them from ending
-                                        ;; up in the Zip archive.
-                                        (ftw "."
-                                             (lambda (file stat flag)
-                                               (utime file circa-1980
-                                                      circa-1980) #t))
-                                        (apply invoke "zip" "-X" whl
-                                               (find-files "."
-                                                           #:directories? #t))))
-                                    (delete-file-recursively dir)))
-                                (find-files "Lib/ensurepip" "\\.whl$"))))
-                  (add-after 'install 'remove-tests
-                    ;; Remove 25 MiB of unneeded unit tests.  Keep test_support.*
-                    ;; because these files are used by some libraries out there.
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (let ((out (assoc-ref outputs "out")))
-                        (match (scandir (string-append out "/lib")
-                                        (lambda (name)
-                                          (string-prefix? "python" name)))
-                          ((pythonX.Y)
-                           (let ((testdir (string-append out "/lib/" pythonX.Y
-                                                         "/test")))
-                             (with-directory-excursion testdir
-                               (for-each delete-file-recursively
-                                         (scandir testdir
-                                                  (match-lambda
-                                                    ((or "." "..")
-                                                     #f)
-                                                    ("support" #f)
-                                                    (file (not (string-prefix?
-                                                                "test_support."
-                                                                file))))))
-                               (call-with-output-file "__init__.py"
-                                 (const #t))))
-                           (let ((libdir (string-append out "/lib/" pythonX.Y)))
-                             (for-each (lambda (directory)
-                                         (let ((dir (string-append libdir "/"
-                                                                   directory)))
-                                           (when (file-exists? dir)
-                                             (delete-file-recursively dir))))
-                                       '("email/test" "ctypes/test"
-                                         "unittest/test"
-                                         "tkinter/test"
-                                         "sqlite3/test"
-                                         "bsddb/test"
-                                         "lib-tk/test"
-                                         "json/tests"
-                                         "distutils/tests"))))))))
-                  (add-after 'remove-tests 'move-tk-inter
-                    (lambda* (#:key outputs inputs #:allow-other-keys)
-                      ;; When Tkinter support is built move it to a separate output so
-                      ;; that the main output doesn't contain a reference to Tcl/Tk.
-                      (let ((out (assoc-ref outputs "out"))
-                            (tk (assoc-ref outputs "tk")))
-                        (when tk
-                          (match (find-files out "tkinter.*\\.so")
-                            ((tkinter.so)
-                             ;; The .so is in OUT/lib/pythonX.Y/lib-dynload, but we
-                             ;; want it under TK/lib/pythonX.Y/site-packages.
-                             (let* ((len (string-length out))
-                                    (target (string-append tk "/"
-                                                           (string-drop (dirname
-                                                                         (dirname
-                                                                          tkinter.so))
-                                                                        len)
-                                                           "/site-packages")))
-                               (install-file tkinter.so target)
-                               (delete-file tkinter.so))))
-                          ;; Remove explicit store path references.
-                          (let ((tcl (assoc-ref inputs "tcl"))
-                                (tk (assoc-ref inputs "tk")))
-                            (substitute* (find-files (string-append out "/lib")
-                                          "^(_sysconfigdata_.*\\.py|Makefile)$")
-                              (((string-append "-L" tk "/lib"))
-                               "")
-                              (((string-append "-L" tcl "/lib"))
-                               "")))))))
-                  (add-after 'move-tk-inter 'move-idle
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      ;; when idle is built, move it to a separate output to save some
-                      ;; space (5MB)
-                      (let ((out (assoc-ref outputs "out"))
-                            (idle (assoc-ref outputs "idle")))
-                        (when idle
-                          (for-each (lambda (file)
-                                      (let ((target (string-append idle
-                                                                   "/bin/"
-                                                                   (basename
-                                                                    file))))
-                                        (install-file file
-                                                      (dirname target))
-                                        (delete-file file)))
-                                    (find-files (string-append out "/bin")
-                                                "^idle"))
-                          (match (find-files out "^idlelib$"
-                                             #:directories? #t)
-                            ((idlelib)
-                             (let* ((len (string-length out))
-                                    (target (string-append idle "/"
-                                                           (string-drop
-                                                            idlelib len)
-                                                           "/site-packages")))
-                               (mkdir-p (dirname target))
-                               (rename-file idlelib target))))))))
-                  (add-after 'move-idle 'rebuild-bytecode
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (let ((out (assoc-ref outputs "out")))
-                        ;; Disable hash randomization to ensure the generated .pycs
-                        ;; are reproducible.
-                        (setenv "PYTHONHASHSEED" "0")
+      #:phases
+      #~(modify-phases %standard-phases
+          #$@(if (system-hurd?)
+                 #~((add-after 'unpack
+                        'disable-multi-processing
+                      (lambda _
+                        (substitute* "Makefile.pre.in"
+                          (("-j0")
+                           "-j1")))))
+                 #~())
+          (add-before 'configure 'patch-lib-shells
+            (lambda _
+              ;; This variable is used in setup.py to enable cross compilation
+              ;; specific switches. As it is not set properly by configure
+              ;; script, set it manually.
+              #$@(if (%current-target-system)
+                     #~((setenv "_PYTHON_HOST_PLATFORM" ""))
+                     #~())
+              ;; Filter for existing files, since some may not exist in all
+              ;; versions of python that are built with this recipe.
+              (substitute* (filter file-exists?
+                                   '("Lib/subprocess.py"
+                                     "Lib/popen2.py"
+                                     "Lib/distutils/tests/test_spawn.py"
+                                     "Lib/test/support/__init__.py"
+                                     "Lib/test/test_subprocess.py"))
+                (("/bin/sh")
+                 (which "sh")))))
+          (add-before 'configure 'do-not-record-configure-flags
+            (lambda* (#:key configure-flags #:allow-other-keys)
+              ;; Remove configure flags from the installed '_sysconfigdata.py'
+              ;; and 'Makefile' so we don't end up keeping references to the
+              ;; build tools.
+              ;;
+              ;; Preserve at least '--with-system-ffi' since otherwise the
+              ;; thing tries to build libffi, fails, and we end up with a
+              ;; Python that lacks ctypes.
+              (substitute* "configure"
+                (("^CONFIG_ARGS=.*$")
+                 (format #f "CONFIG_ARGS='~a'\n"
+                         (if (member "--with-system-ffi"
+                                     configure-flags)
+                             "--with-system-ffi" ""))))))
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; 'Lib/test/test_site.py' needs a valid $HOME
+              (setenv "HOME"
+                      (getcwd))))
+          (add-after 'unpack 'set-source-file-times-to-1980
+            ;; XXX One of the tests uses a ZIP library to pack up some of the
+            ;; source tree, and fails with "ZIP does not support timestamps
+            ;; before 1980".  Work around this by setting the file times in the
+            ;; source tree to sometime in early 1980.
+            (lambda _
+              (let ((circa-1980 (* 10 366 24 60 60)))
+                (ftw "."
+                     (lambda (file stat flag)
+                       (utime file circa-1980 circa-1980) #t)))))
+          (add-after 'unpack 'remove-windows-binaries
+            (lambda _
+              ;; Delete .exe from embedded .whl (zip) files
+              (for-each (lambda (whl)
+                          (let ((dir "whl-content")
+                                (circa-1980 (* 10 366 24 60 60)))
+                            (mkdir-p dir)
+                            (with-directory-excursion dir
+                              (let ((whl (string-append "../" whl)))
+                                (invoke "unzip" whl)
+                                (for-each delete-file
+                                          (find-files "." "\\.exe$"))
+                                (delete-file whl)
+                                ;; Reset timestamps to prevent them from ending
+                                ;; up in the Zip archive.
+                                (ftw "."
+                                     (lambda (file stat flag)
+                                       (utime file circa-1980
+                                              circa-1980) #t))
+                                (apply invoke "zip" "-X" whl
+                                       (find-files "."
+                                                   #:directories? #t))))
+                            (delete-file-recursively dir)))
+                        (find-files "Lib/ensurepip" "\\.whl$"))))
+          (add-after 'install 'remove-tests
+            ;; Remove 25 MiB of unneeded unit tests.  Keep test_support.*
+            ;; because these files are used by some libraries out there.
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((out (assoc-ref outputs "out")))
+                (match (scandir (string-append out "/lib")
+                                (lambda (name)
+                                  (string-prefix? "python" name)))
+                  ((pythonX.Y)
+                   (let ((testdir (string-append out "/lib/" pythonX.Y
+                                                 "/test")))
+                     (with-directory-excursion testdir
+                       (for-each delete-file-recursively
+                                 (scandir testdir
+                                          (match-lambda
+                                            ((or "." "..")
+                                             #f)
+                                            ("support" #f)
+                                            (file (not (string-prefix?
+                                                        "test_support."
+                                                        file))))))
+                       (call-with-output-file "__init__.py"
+                         (const #t))))
+                   (let ((libdir (string-append out "/lib/" pythonX.Y)))
+                     (for-each (lambda (directory)
+                                 (let ((dir (string-append libdir "/"
+                                                           directory)))
+                                   (when (file-exists? dir)
+                                     (delete-file-recursively dir))))
+                               '("email/test" "ctypes/test"
+                                 "unittest/test"
+                                 "tkinter/test"
+                                 "sqlite3/test"
+                                 "bsddb/test"
+                                 "lib-tk/test"
+                                 "json/tests"
+                                 "distutils/tests"))))))))
+          (add-after 'remove-tests 'move-tk-inter
+            (lambda* (#:key outputs inputs #:allow-other-keys)
+              ;; When Tkinter support is built move it to a separate output so
+              ;; that the main output doesn't contain a reference to Tcl/Tk.
+              (let ((out (assoc-ref outputs "out"))
+                    (tk (assoc-ref outputs "tk")))
+                (when tk
+                  (match (find-files out "tkinter.*\\.so")
+                    ((tkinter.so)
+                     ;; The .so is in OUT/lib/pythonX.Y/lib-dynload, but we
+                     ;; want it under TK/lib/pythonX.Y/site-packages.
+                     (let* ((len (string-length out))
+                            (target (string-append tk "/"
+                                                   (string-drop (dirname
+                                                                 (dirname
+                                                                  tkinter.so))
+                                                                len)
+                                                   "/site-packages")))
+                       (install-file tkinter.so target)
+                       (delete-file tkinter.so))))
+                  ;; Remove explicit store path references.
+                  (let ((tcl (assoc-ref inputs "tcl"))
+                        (tk (assoc-ref inputs "tk")))
+                    (substitute* (find-files (string-append out "/lib")
+                                             "^(_sysconfigdata_.*\\.py|Makefile)$")
+                      (((string-append "-L" tk "/lib"))
+                       "")
+                      (((string-append "-L" tcl "/lib"))
+                       "")))))))
+          (add-after 'move-tk-inter 'move-idle
+            (lambda* (#:key outputs #:allow-other-keys)
+              ;; when idle is built, move it to a separate output to save some
+              ;; space (5MB)
+              (let ((out (assoc-ref outputs "out"))
+                    (idle (assoc-ref outputs "idle")))
+                (when idle
+                  (for-each (lambda (file)
+                              (let ((target (string-append idle
+                                                           "/bin/"
+                                                           (basename
+                                                            file))))
+                                (install-file file
+                                              (dirname target))
+                                (delete-file file)))
+                            (find-files (string-append out "/bin")
+                                        "^idle"))
+                  (match (find-files out "^idlelib$"
+                                     #:directories? #t)
+                    ((idlelib)
+                     (let* ((len (string-length out))
+                            (target (string-append idle "/"
+                                                   (string-drop
+                                                    idlelib len)
+                                                   "/site-packages")))
+                       (mkdir-p (dirname target))
+                       (rename-file idlelib target))))))))
+          (add-after 'move-idle 'rebuild-bytecode
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((out (assoc-ref outputs "out")))
+                ;; Disable hash randomization to ensure the generated .pycs
+                ;; are reproducible.
+                (setenv "PYTHONHASHSEED" "0")
 
-                        (for-each (lambda (output)
-                                    ;; XXX: Delete existing pycs generated by the build
-                                    ;; system beforehand because the -f argument does
-                                    ;; not necessarily overwrite all files, leading to
-                                    ;; indeterministic results.
-                                    (for-each (lambda (pyc)
-                                                (delete-file pyc))
-                                              (find-files output "\\.pyc$"))
+                (for-each (lambda (output)
+                            ;; XXX: Delete existing pycs generated by the build
+                            ;; system beforehand because the -f argument does
+                            ;; not necessarily overwrite all files, leading to
+                            ;; indeterministic results.
+                            (for-each (lambda (pyc)
+                                        (delete-file pyc))
+                                      (find-files output "\\.pyc$"))
 
-                                    (apply invoke
-                                           `(,,(if (%current-target-system)
-                                                   "python3"
-                                                   '(string-append out
-                                                     "/bin/python3")) "-m"
-                                             "compileall"
-                                             "-o"
-                                             "0"
-                                             "-o"
-                                             "1"
-                                             "-o"
-                                             "2"
-                                             "-f" ;force rebuild
-                                             "--invalidation-mode=unchecked-hash"
-                                             ;; Don't build lib2to3, because it's
-                                             ;; Python 2 code.
-                                             "-x"
-                                             "lib2to3/.*"
-                                             ,output)))
-                                  (map cdr outputs)))))
-                  (add-before 'check 'set-TZDIR
-                    (lambda* (#:key inputs native-inputs #:allow-other-keys)
-                      ;; test_email requires the Olson time zone database.
-                      (setenv "TZDIR"
-                              (string-append (assoc-ref (or native-inputs
-                                                            inputs) "tzdata")
-                                             "/share/zoneinfo"))))
-                  (add-after 'install 'install-sitecustomize.py
-                    ,(customize-site version)))))
+                            (apply invoke
+                                   `(,#$(if (%current-target-system)
+                                            "python3"
+                                            #~(string-append
+                                               out
+                                               "/bin/python3")) "-m"
+                                               "compileall"
+                                               "-o"
+                                               "0"
+                                               "-o"
+                                               "1"
+                                               "-o"
+                                               "2"
+                                               "-f" ;force rebuild
+                                               "--invalidation-mode=unchecked-hash"
+                                               ;; Don't build lib2to3, because it's
+                                               ;; Python 2 code.
+                                               "-x"
+                                               "lib2to3/.*"
+                                               ,output)))
+                          (map cdr outputs)))))
+          (add-before 'check 'set-TZDIR
+            (lambda* (#:key inputs native-inputs #:allow-other-keys)
+              ;; test_email requires the Olson time zone database.
+              (setenv "TZDIR"
+                      (string-append (assoc-ref (or native-inputs
+                                                    inputs) "tzdata")
+                                     "/share/zoneinfo"))))
+          (add-after 'install 'install-sitecustomize.py
+            #$(customize-site version)))))
     (inputs (list bzip2
                   expat
                   gdbm
-                  libffi ;for ctypes
-                  sqlite ;for sqlite extension
+                  libffi                ;for ctypes
+                  sqlite                ;for sqlite extension
                   openssl
                   readline
                   zlib
                   tcl
-                  tk)) ;for tkinter
+                  tk))                  ;for tkinter
     (native-inputs `(("tzdata" ,tzdata-for-tests)
                      ("unzip" ,unzip)
                      ("zip" ,(@ (gnu packages compression) zip))
@@ -1088,8 +1098,8 @@ data types.")
     (build-system gnu-build-system)
     (arguments
      (substitute-keyword-arguments (package-arguments python)
-       ((#:configure-flags flags '())
-        `(cons "--with-pydebug" ,flags))))
+       ((#:configure-flags flags #~'())
+        #~(cons "--with-pydebug" #$flags))))
     (synopsis
      "Python with the debug hooks enabled")
     (description
