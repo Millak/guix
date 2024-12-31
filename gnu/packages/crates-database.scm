@@ -40,6 +40,8 @@
   #:use-module (gnu packages crates-crypto)
   #:use-module (gnu packages crates-graphics)
   #:use-module (gnu packages crates-io)
+  #:use-module (gnu packages crates-tls)
+  #:use-module (gnu packages crates-web)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages sqlite))
 
@@ -1214,6 +1216,70 @@ libpq.")
      `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
                        ("rust-quote" ,rust-quote-1)
                        ("rust-syn" ,rust-syn-1))))))
+
+(define-public rust-sqlx-postgres-0.7
+  (package
+    (name "rust-sqlx-postgres")
+    (version "0.7.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sqlx-postgres" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0zjp30wj4n2f25dnb32vsg6jfpa3gw6dmfd0i5pr4kw91fw4x0kw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--"
+                            "--skip=advisory_lock::PgAdvisoryLock::new"
+                            "--skip=listener::PgListener::recv"
+                            "--skip=listener::PgListener::try_recv"
+                            "--skip=options::PgConnectOptions")
+       #:cargo-inputs (("rust-atoi" ,rust-atoi-2)
+                       ("rust-base64" ,rust-base64-0.21)
+                       ("rust-bigdecimal" ,rust-bigdecimal-0.3)
+                       ("rust-bit-vec" ,rust-bit-vec-0.6)
+                       ("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-byteorder" ,rust-byteorder-1)
+                       ("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-crc" ,rust-crc-3)
+                       ("rust-dotenvy" ,rust-dotenvy-0.15)
+                       ("rust-etcetera" ,rust-etcetera-0.8)
+                       ("rust-futures-channel" ,rust-futures-channel-0.3)
+                       ("rust-futures-core" ,rust-futures-core-0.3)
+                       ("rust-futures-io" ,rust-futures-io-0.3)
+                       ("rust-futures-util" ,rust-futures-util-0.3)
+                       ("rust-hex" ,rust-hex-0.4)
+                       ("rust-hkdf" ,rust-hkdf-0.12)
+                       ("rust-hmac" ,rust-hmac-0.12)
+                       ("rust-home" ,rust-home-0.5)
+                       ("rust-ipnetwork" ,rust-ipnetwork-0.20)
+                       ("rust-itoa" ,rust-itoa-1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-mac-address" ,rust-mac-address-1)
+                       ("rust-md-5" ,rust-md-5-0.10)
+                       ("rust-memchr" ,rust-memchr-2)
+                       ("rust-num-bigint" ,rust-num-bigint-0.4)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-rand" ,rust-rand-0.8)
+                       ("rust-rust-decimal" ,rust-rust-decimal-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-sha2" ,rust-sha2-0.10)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-sqlx-core" ,rust-sqlx-core-0.7)
+                       ("rust-stringprep" ,rust-stringprep-0.1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-time" ,rust-time-0.3)
+                       ("rust-tracing" ,rust-tracing-0.1)
+                       ("rust-uuid" ,rust-uuid-1)
+                       ("rust-whoami" ,rust-whoami-1))))
+    (home-page "https://github.com/launchbadge/sqlx")
+    (synopsis "PostgreSQL driver implementation for SQLx")
+    (description
+     "This package provides @code{PostgreSQL} driver implementation for SQLx.
+Not for direct use; see the `sqlx` crate for details.")
+    (license (list license:expat license:asl2.0))))
 
 (define-public rust-sqlx-sqlite-0.7
   (package
