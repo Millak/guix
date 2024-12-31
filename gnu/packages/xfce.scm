@@ -1456,23 +1456,21 @@ memory usage graphically, and it can display processes as a tree.")
   (package
     (name "orage")
     (version "4.18.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://archive.xfce.org/src/apps/"
-                                  name "/" (version-major+minor version) "/"
-                                  name "-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "1v5385hps6jgcw1ky9vl7w7iryp0rzxz6s4lx72rz8yg4sdv84v3"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://gitlab.xfce.org/apps/" name))
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1sidyq4358cp701rkfj4p0ikshf612jm5f9j4gma6h6v2dxp7gxw"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list
-      `(,glib "bin")                    ; for dbus-binding-tool
-      intltool
-      pkg-config))
+     (list xfce4-dev-tools))
     (inputs
      (list dbus-glib gtk+-2 libical libnotify libxfce4ui popt xfce4-panel))
-    (home-page "https://www.xfce.org/projects/")
+    (home-page "https://docs.xfce.org/apps/orage/")
     (synopsis "Simple calendar application with reminders")
     (description
      "This is a simple calendar application for the Xfce desktop.  Orage has
