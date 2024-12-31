@@ -79145,8 +79145,34 @@ color of the terminal.")
     (description "This package provides a minimal terminfo library.")
     (license license:expat)))
 
+(define-public rust-termion-4
+  (package
+    (name "rust-termion")
+    (version "4.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "termion" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "19r3r56cfhl2qvlphw1vrwga37la16rdi15q1d7wz8ji1rb9iaky"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f ; tests require a terminal
+       #:cargo-inputs (("rust-libc" ,rust-libc-0.2)
+                       ("rust-libredox" ,rust-libredox-0.1)
+                       ("rust-numtoa" ,rust-numtoa-0.2)
+                       ("rust-redox-termios" ,rust-redox-termios-0.1)
+                       ("rust-serde" ,rust-serde-1))))
+    (home-page "https://gitlab.redox-os.org/redox-os/termion")
+    (synopsis "Library for manipulating terminals")
+    (description
+     "This package provides a bindless library for manipulating terminals.")
+    (license license:expat)))
+
 (define-public rust-termion-3
   (package
+    (inherit rust-termion-4)
     (name "rust-termion")
     (version "3.0.0")
     (source
@@ -79156,19 +79182,13 @@ color of the terminal.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "19f7q542ih13j13jp5lr750z5yav7v035pmz46zznkahb9ki6y21"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f ; tests require a terminal
        #:cargo-inputs (("rust-libc" ,rust-libc-0.2)
                        ("rust-libredox" ,rust-libredox-0.0.2)
                        ("rust-numtoa" ,rust-numtoa-0.1)
                        ("rust-redox-termios" ,rust-redox-termios-0.1)
-                       ("rust-serde" ,rust-serde-1))))
-    (home-page "https://gitlab.redox-os.org/redox-os/termion")
-    (synopsis "Library for manipulating terminals")
-    (description
-     "This package provides a bindless library for manipulating terminals.")
-    (license license:expat)))
+                       ("rust-serde" ,rust-serde-1))))))
 
 (define-public rust-termion-2
   (package
