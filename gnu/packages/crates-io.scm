@@ -30171,7 +30171,6 @@ and loading crate.")
         ("rust-plain" ,rust-plain-0.2)
         ("rust-scroll" ,rust-scroll-0.11))))))
 
-(define-public rust-graphql-parser-0.3
 (define-public rust-graphql-client-codegen-0.14
   (package
     (name "rust-graphql-client-codegen")
@@ -30220,7 +30219,33 @@ and loading crate.")
      "This package provides @code{GraphQL} introspection query and response types.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-graphql-parser-0.4
   (package
+    (name "rust-graphql-parser")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "graphql-parser" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "02gl4na7df21qlnwhyww4yz342bm2w4r3gi7vw0hhz1xi06qr0bs"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-combine" ,rust-combine-4)
+                       ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs
+       (("rust-pretty-assertions" ,rust-pretty-assertions-0.5))))
+    (home-page "https://github.com/graphql-rust/graphql-parser")
+    (synopsis "Parser, AST and serializer for graphql query language")
+    (description
+     "This package provides a parser, AST and serializer for graphql query
+language and scheme definition language (sometimes called IDL).")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-graphql-parser-0.3
+  (package
+    (inherit rust-graphql-parser-0.4)
     (name "rust-graphql-parser")
     (version "0.3.0")
     (source
@@ -30236,14 +30261,29 @@ and loading crate.")
        (("rust-combine" ,rust-combine-3)
         ("rust-thiserror" ,rust-thiserror-1))
        #:cargo-development-inputs
-       (("rust-pretty-assertions" ,rust-pretty-assertions-0.5))))
-    (home-page "https://github.com/graphql-rust/graphql-parser")
-    (synopsis
-     "Parser, AST and serializer for graphql query language")
-    (description
-     "This package provides a parser, AST and serializer for graphql query
-language and scheme definition language (sometimes called IDL).")
-    (license (list license:expat license:asl2.0))))
+       (("rust-pretty-assertions" ,rust-pretty-assertions-0.5))))))
+
+(define-public rust-graphql-query-derive-0.14
+  (package
+    (name "rust-graphql-query-derive")
+    (version "0.14.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "graphql_query_derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "15qsxdp2yqixzd6fjvn03810jd7zd7msi9zs7nkwz67q72lbzzl3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-graphql-client-codegen" ,rust-graphql-client-codegen-0.14)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/graphql-rust/graphql-client")
+    (synopsis "Utility crate for graphql_client")
+    (description "This package provides a utility crate for graphql_client.")
+    (license (list license:asl2.0 license:expat))))
 
 (define-public rust-greetd-ipc-0.10
   (package
