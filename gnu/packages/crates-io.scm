@@ -85218,35 +85218,6 @@ and run them to verify the results, taking inspiration from @code{trybuild} and
 or dashboards.")
     (license license:expat)))
 
-(define-public rust-tui-0.16
-  (package
-    (inherit rust-tui-0.19)
-    (name "rust-tui")
-    (version "0.16.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "tui" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "08qcdjmi8sn2xyh38ilr17i9bn89ic2aaqx3rybyv7h44x7cxj1r"))))
-    (arguments
-     `(#:cargo-test-flags `("--"
-                            "--skip=buffer::tests::index_of_panics_on_out_of_bounds"
-                            "--skip=buffer::tests::pos_of_panics_on_out_of_bounds")
-       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-1)
-                       ("rust-cassowary" ,rust-cassowary-0.3)
-                       ("rust-crossterm" ,rust-crossterm-0.20)
-                       ("rust-easycurses" ,rust-easycurses-0.12)
-                       ("rust-pancurses" ,rust-pancurses-0.16)
-                       ("rust-rustbox" ,rust-rustbox-0.11)
-                       ("rust-serde" ,rust-serde-1)
-                       ("rust-termion" ,rust-termion-1)
-                       ("rust-unicode-segmentation" ,rust-unicode-segmentation-1)
-                       ("rust-unicode-width" ,rust-unicode-width-0.1))
-       #:cargo-development-inputs (("rust-argh" ,rust-argh-0.1)
-                                   ("rust-rand" ,rust-rand-0.8))))))
-
 (define-public rust-tui-react-0.23
   (package
     (name "rust-tui-react")
