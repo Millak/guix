@@ -6,6 +6,7 @@
 ;;; Copyright © 2019 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2020 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -86,6 +87,7 @@
                     (url "https://github.com/nu-book/zxing-cpp")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
+              (patches (search-patches "zxing-cpp-1.2.0-gcc-14.patch"))
               (sha256
                (base32
                 "1gjj9c7h634rrmmgzbc7cxjqsxdq0paj6113k02ncjm1s9abk7ik"))))
