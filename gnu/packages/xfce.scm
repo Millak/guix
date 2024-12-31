@@ -2003,24 +2003,24 @@ mounted or when unmounting fails.")
 
 (define-public xfce4-netload-plugin
   (package
-   (name "xfce4-netload-plugin")
-   (version "1.4.1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://archive.xfce.org/src/panel-plugins/"
-                                  "xfce4-netload-plugin/"
-                                  (version-major+minor version)
-                                  "/xfce4-netload-plugin-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "0kmlrh29gn6yby8l1lgxp4211pjn3mrd2z0jzd5mh61fslx3mb4z"))))
+    (name "xfce4-netload-plugin")
+    (version "1.4.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://gitlab.xfce.org/panel-plugins/"
+                                 name))
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ck3mdwhj7pzrb1xhynyp4550x27bvlja9z50as30mi070vn92l3"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list intltool pkg-config))
+     (list xfce4-dev-tools))
     (inputs
      (list libxfce4ui xfce4-panel))
-    (home-page
-     "https://goodies.xfce.org/projects/panel-plugins/xfce4-netload-plugin")
+    (home-page "https://docs.xfce.org/panel-plugins/xfce4-netload-plugin/")
     (synopsis "Netload plugin for the Xfce Panel")
     (description "This plugin displays the current load of the network
 interfaces of your choice in the panel.")
