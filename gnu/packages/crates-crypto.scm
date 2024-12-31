@@ -2000,27 +2000,6 @@ ciphers implementations.")
         ("rust-cipher" ,rust-cipher-0.3)
         ("rust-opaque-debug" ,rust-opaque-debug-0.3))))))
 
-(define-public rust-des-0.6
-  (package
-    (inherit rust-des-0.7)
-    (name "rust-des")
-    (version "0.6.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "des" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1bigk1x1kxvnfjn1alr8cc383z1flmj8q7g2pjl2zal8i1s7qkmj"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-byteorder" ,rust-byteorder-1)
-        ("rust-cipher" ,rust-cipher-0.2)
-        ("rust-opaque-debug" ,rust-opaque-debug-0.3))
-       #:cargo-development-inputs
-       (("rust-cipher" ,rust-cipher-0.2))))))
-
 (define-public rust-digest-0.10
   (package
     (name "rust-digest")
