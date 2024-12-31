@@ -733,32 +733,26 @@ allows you to shut down the computer from Xfce.")
   (package
     (name "xfce4-settings")
     (version "4.20.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://archive.xfce.org/src/xfce/"
-                                  name "/" (version-major+minor version) "/"
-                                  name "-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "1ag5pimprxc12zgdbs27vngin97fc6l9ig7xzc0naacs8aiqsm13"))
-              (patches (search-patches "xfce4-settings-defaults.patch"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://gitlab.xfce.org/xfce/" name))
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1xv8fcrrk54r6naxhwj9ff8f1q9g08fh0ailazvbmi1jww12xwyi"))
+       (patches (search-patches "xfce4-settings-defaults.patch"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
-           #~(list "--enable-pluggable-dialogs"
+           #~(list "--enable-maintainer-mode" ;for appearance-dialog_ui.h
+                   "--enable-pluggable-dialogs"
                    "--enable-sound-settings"
                    "--enable-upower-glib"
-                   "--enable-xrandr")
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-before 'configure 'patch-configure
-                 (lambda _
-                   (substitute* "configure"
-                     ;; XDG_CHECK_PACKAGE_BINARY requires an absolute path.
-                     (("\\$PKG_CONFIG --variable=gdbus_codegen gio-2.0")
-                      "type -p gdbus-codegen")))))))
+                   "--enable-xrandr")))
     (native-inputs
-     (list (list glib "bin") pkg-config intltool))
+     (list xfce4-dev-tools))
     (inputs
      (list colord
            exo
@@ -772,12 +766,13 @@ allows you to shut down the computer from Xfce.")
            libxfce4ui
            upower
            python ;; for xfce4-compose-mail
+           wlr-protocols
            xf86-input-libinput))
     (propagated-inputs
      ;; Some operations, such as changing icon themes, require these schemas
      ;; to be in the search path.
      (list gsettings-desktop-schemas))
-    (home-page "https://www.xfce.org/")
+    (home-page "https://docs.xfce.org/xfce/xfce4-settings/")
     (synopsis "Xfce settings manager")
     (description
      "Settings manager for Xfce, it can control various aspects of the desktop
