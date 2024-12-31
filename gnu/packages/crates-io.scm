@@ -36688,6 +36688,37 @@ interface in Webassembly and Javascript too.")
 JSON-RPC 2.0 specification.")
     (license license:expat)))
 
+(define-public rust-jsonwebtoken-9
+  (package
+    (name "rust-jsonwebtoken")
+    (version "9.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "jsonwebtoken" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0gqr13c9fjd4zb2lqzhgi4xwq0rfnk8a47jzjis1w1957lci1bmr"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-base64" ,rust-base64-0.21)
+                       ("rust-js-sys" ,rust-js-sys-0.3)
+                       ("rust-pem" ,rust-pem-3)
+                       ("rust-ring" ,rust-ring-0.17)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-simple-asn1" ,rust-simple-asn1-0.6))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.4)
+        ("rust-time" ,rust-time-0.3)
+        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))
+    (home-page "https://github.com/Keats/jsonwebtoken")
+    (synopsis "Create and decode JWTs in a strongly typed way")
+    (description
+     "This package provides a method to create and decode @acronym{JWTs, json
+web tokens} in a strongly typed way.")
+    (license license:expat)))
+
 (define-public rust-juliex-0.3
   (package
     (name "rust-juliex")
