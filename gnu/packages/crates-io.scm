@@ -33064,8 +33064,31 @@ Normalization Forms.")
 floating-point numbers.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-if-addrs-0.10
+  (package
+    (name "rust-if-addrs")
+    (version "0.10.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "if-addrs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "02lgvpz14a7qx3s704i18xf3dp6ywniwij8mzy0kfr0sslch1fya"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2)
+                       ("rust-windows-sys" ,rust-windows-sys-0.48))))
+    (native-inputs (list iproute))
+    (home-page "https://github.com/messense/if-addrs")
+    (synopsis "Return interface IP addresses on POSIX and Windows systems")
+    (description "Returns the IP addresses for all network interfaces,
+on both POSIX and Microsoft Windows hosts.")
+    (license (list license:expat license:bsd-3))))
+
 (define-public rust-if-addrs-0.7
   (package
+    (inherit rust-if-addrs-0.10)
     (name "rust-if-addrs")
     (version "0.7.0")
     (source
@@ -33075,17 +33098,10 @@ floating-point numbers.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1a81w57p0hx6ql2ds2ayps38n0ndfaqcs618qzdyjln7zw0zmh6b"))))
-    (build-system cargo-build-system)
     (arguments
      (list #:cargo-inputs
            `(("rust-libc" ,rust-libc-0.2)
-             ("rust-winapi" ,rust-winapi-0.3))))
-    (native-inputs (list iproute))
-    (home-page "https://github.com/messense/if-addrs")
-    (synopsis "Return interface IP addresses on POSIX and Windows systems")
-    (description "Returns the IP addresses for all network interfaces,
-on both POSIX and Microsoft Windows hosts.")
-    (license (list license:expat license:bsd-3))))
+             ("rust-winapi" ,rust-winapi-0.3))))))
 
 (define-public rust-if-addrs-0.6
   (package
