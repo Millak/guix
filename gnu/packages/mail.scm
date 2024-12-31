@@ -59,6 +59,7 @@
 ;;; Copyright © 2024 Jean Simard <woshilapin@tuziwo.info>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -827,7 +828,7 @@ It adds a large amount of new and improved features to mutt.")
 (define-public gmime
   (package
     (name "gmime")
-    (version "3.2.14")
+    (version "3.2.15")
     (source
      (origin
        (method git-fetch)
@@ -836,7 +837,7 @@ It adds a large amount of new and improved features to mutt.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0kvhyd1rn6wi9wrqi2a4f26yp0l6shsg9sd45hckzf04p9687hb7"))))
+        (base32 "0493dngbasd2nngzsp4b8v4cnl4vb88hc1qga5y9w7l6c89hxn1w"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
@@ -860,7 +861,7 @@ It adds a large amount of new and improved features to mutt.")
                                                          base))))))))))))
     (native-inputs
      (list autoconf-2.71
-           automake
+           automake-1.16.5
            pkg-config
            gnupg                        ; for tests only
            gobject-introspection
