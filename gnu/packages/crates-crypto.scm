@@ -4060,24 +4060,6 @@ for constructing a Message Authentication Code (MAC).")
        #:cargo-development-inputs
        (("rust-hex-literal" ,rust-hex-literal-0.2))))))
 
-(define-public rust-polyval-0.3
-  (package
-    (inherit rust-polyval-0.4)
-    (name "rust-polyval")
-    (version "0.3.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "polyval" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256 (base32 "04m2wf4pk6gglvl12fj7ylc2iqhxmzqj46rds6zy73cpk0a39hvy"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-cfg-if" ,rust-cfg-if-0.1)
-        ("rust-universal-hash" ,rust-universal-hash-0.3)
-        ("rust-zeroize" ,rust-zeroize-1))))))
-
 (define-public rust-ppv-lite86-0.2
   (package
     (name "rust-ppv-lite86")
