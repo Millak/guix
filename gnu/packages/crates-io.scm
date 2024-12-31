@@ -12189,22 +12189,6 @@ metadata}.")
     (description "Reusable common Cargo command line options.")
     (license license:expat)))
 
-(define-public rust-cargo-options-0.6
-  (package
-    (inherit rust-cargo-options-0.7)
-    (name "rust-cargo-options")
-    (version "0.6.0")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "cargo-options" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0m99dz9vpsplf4s955dvfnfrcvdkm7cifwymriyam11bdfm8v3lv"))))
-    (arguments
-     `(#:cargo-inputs (("rust-clap" ,rust-clap-4))
-       #:cargo-development-inputs (("rust-trycmd" ,rust-trycmd-0.14))))))
-
 (define-public rust-cargo-platform-0.1
   (package
     (name "rust-cargo-platform")
