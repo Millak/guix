@@ -1842,24 +1842,24 @@ performance (bytes transferred per second).")
 
 (define-public xfce4-fsguard-plugin
   (package
-   (name "xfce4-fsguard-plugin")
-   (version "1.1.3")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://archive.xfce.org/src/panel-plugins/"
-                                  "xfce4-fsguard-plugin/"
-                                  (version-major+minor version)
-                                  "/xfce4-fsguard-plugin-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "0n62dsc25ynv8kk5va50py88fi0lgggvl0gi1r6dd4i2fns8pvw4"))))
+    (name "xfce4-fsguard-plugin")
+    (version "1.1.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://gitlab.xfce.org/panel-plugins/"
+                                 name))
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0df9gs9wjmnb2889a0ssfjvjviswcjkcq6f8211fyzzqaj2gn9n0"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list intltool pkg-config))
+     (list xfce4-dev-tools))
     (inputs
      (list libxfce4ui xfce4-panel))
-    (home-page
-     "https://goodies.xfce.org/projects/panel-plugins/xfce4-fsguard-plugin")
+    (home-page "https://docs.xfce.org/panel-plugins/xfce4-fsguard-plugin/")
     (synopsis "Xfce panel plugin to monitor free disk space")
     (description "The panel plugin checks free space on a chosen mount
 point frequently and displays a message when a limit is reached.  There
