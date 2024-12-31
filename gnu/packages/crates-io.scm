@@ -18087,28 +18087,6 @@ crate into a Cargo build.")
 crate into higher level tools.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-cxx-gen-0.6
-  (package
-    (inherit rust-cxx-gen-0.7)
-    (name "rust-cxx-gen")
-    (version "0.6.7")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "cxx-gen" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "0avkca16wjy0paplq1ycaf04bj62agfj0awyhyzxyfpdn9rm45j2"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-cc" ,rust-cc-1)
-        ("rust-codespan-reporting" ,rust-codespan-reporting-0.9)
-        ("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))))
-
 (define-public rust-cxx-test-suite-0.0.0
   (package
     (name "rust-cxx-test-suite")
