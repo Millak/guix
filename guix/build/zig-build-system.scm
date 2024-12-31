@@ -152,6 +152,7 @@
                    "--prefix-lib-dir"     "lib"
                    "--prefix-exe-dir"     "bin"
                    "--prefix-include-dir" "include"
+                   "--verbose"
                    ,(string-append "-Dtarget=" (zig-target zig-build-target))
                    ,@(if parallel-build?
                          ((assoc-ref arguments "parallel-jobs")
@@ -176,7 +177,7 @@
     (let ((old-destdir (getenv "DESTDIR")))
       (setenv "DESTDIR" "test-out") ;; Avoid colisions with the build output
       (let* ((arguments (zig-arguments))
-             (call `("zig" "build" "test"
+             (call `("zig" "build" "test" "--verbose"
                      ,@(if parallel-tests?
                            ((assoc-ref arguments "parallel-jobs")
                             (parallel-job-count))
