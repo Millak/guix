@@ -19541,23 +19541,6 @@ hexadecimal, base32, and base64.")
      "Processing of data: URL according to WHATWG's Fetch Standard.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-data-url-0.2
-  (package
-    (inherit rust-data-url-0.3)
-    (name "rust-data-url")
-    (version "0.2.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "data-url" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "19828d6jby17ghi7vr0zia9sy3hlvvjbngrcsllmfh2zfg1kjx4d"))))
-    (arguments
-     `(#:cargo-development-inputs (("rust-serde" ,rust-serde-1)
-                                   ("rust-serde-json" ,rust-serde-json-1)
-                                   ("rust-tester" ,rust-tester-0.9))))))
-
 (define-public rust-databake-0.1
   (package
     (name "rust-databake")
