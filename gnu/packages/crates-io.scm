@@ -32349,17 +32349,17 @@ and loading crate.")
 language and scheme definition language (sometimes called IDL).")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-greetd-ipc-0.9
+(define-public rust-greetd-ipc-0.10
   (package
     (name "rust-greetd-ipc")
-    (version "0.9.0")
+    (version "0.10.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "greetd_ipc" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1xl2cix3jv4sgigl5ijayab7rchr6v02za2qd87fv1z8dl1r14w3"))))
+        (base32 "0y1095qwmiwpm94z3vgbklbnlp088pi6vd1isp8l584izidjw3bh"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
