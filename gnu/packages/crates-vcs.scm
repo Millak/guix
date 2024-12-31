@@ -3048,22 +3048,6 @@ file system utilities for Gitoxide.")
      `(#:cargo-inputs (("rust-gix-features" ,rust-gix-features-0.35))
        #:cargo-development-inputs (("rust-tempfile" ,rust-tempfile-3))))))
 
-(define-public rust-gix-fs-0.2
-  (package
-    (inherit rust-gix-fs-0.7)
-    (name "rust-gix-fs")
-    (version "0.2.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "gix-fs" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1ddah0c5ljpfpy2ab1gmgblli2lz4bpbgghm9vwqgnwa02bqknih"))))
-    (arguments
-     `(#:cargo-inputs (("rust-gix-features" ,rust-gix-features-0.30))
-       #:cargo-development-inputs (("rust-tempfile" ,rust-tempfile-3))))))
-
 (define-public rust-gix-fsck-0.4
   (package
     (name "rust-gix-fsck")
