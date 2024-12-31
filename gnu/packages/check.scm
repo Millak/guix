@@ -52,6 +52,7 @@
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Navid Afkhami <navid.afkhami@mdc-berlin.de>
 ;;; Copyright © 2024 gemmaro <gemmaro.dev@gmail.com>
+;;; Copyright © 2024 Ashvith Shetty <ashvithshetty10@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3805,6 +3806,39 @@ encoders that reject @emph{invalid} tests pass the tests, and decoders that
 accept @emph{valid} tests and output precisely what is expected pass the
 tests.  The output format is JSON.")
     (license license:expat)))
+
+(define-public trompeloeil
+  (package
+    (name "trompeloeil")
+    (version "49")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/rollbear/trompeloeil")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0m4bfzcj033qfk3sihbikrhk9krsdbsqk79nsambnsnqqcgc2903"))))
+    (build-system cmake-build-system)
+    (arguments
+     (append
+      (if (%current-target-system)
+          (list)
+          (list #:configure-flags #~(list "-DTROMPELOEIL_BUILD_TESTS=yes")))
+      (list
+       #:test-target "test/self_test"
+       #:phases #~(modify-phases %standard-phases
+                    (replace 'check
+                      (lambda* (#:key tests? test-target #:allow-other-keys)
+                        (when tests?
+                          (invoke test-target))))))))
+    (native-inputs (list catch2-3))
+    (home-page "https://github.com/rollbear/trompeloeil")
+    (synopsis "Header only C++14 mocking framework")
+    (description
+     "Trompeloeil is a thread-safe header-only mocking framework for C++11/14.")
+    (license license:boost1.0)))
 
 (define-public unittest-cpp
   (package
