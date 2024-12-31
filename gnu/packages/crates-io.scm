@@ -55807,29 +55807,6 @@ applications.")
 @code{DataFrame} library.")
     (license license:expat)))
 
-(define-public rust-polars-lazy-0.17
-  (package
-    (inherit rust-polars-lazy-0.37)
-    (name "rust-polars-lazy")
-    (version "0.17.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "polars-lazy" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0qabh08q4978s33d2mn2m8c90spg21frr4lhpyxx2ngsw93scgns"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-ahash" ,rust-ahash-0.7)
-        ("rust-itertools" ,rust-itertools-0.10)
-        ("rust-polars-arrow" ,rust-polars-arrow-0.17)
-        ("rust-polars-core" ,rust-polars-core-0.17)
-        ("rust-polars-io" ,rust-polars-io-0.17)
-        ("rust-rayon" ,rust-rayon-1)
-        ("rust-regex" ,rust-regex-1))))))
-
 (define-public rust-polars-ops-0.37
   (package
     (name "rust-polars-ops")
