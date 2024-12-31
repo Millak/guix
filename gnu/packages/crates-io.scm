@@ -55442,25 +55442,6 @@ applications.")
      "This crate provides Arrow interfaces for Polars DataFrame library.")
     (license (list license:asl2.0 license:expat))))
 
-(define-public rust-polars-arrow-0.17
-  (package
-    (inherit rust-polars-arrow-0.37)
-    (name "rust-polars-arrow")
-    (version "0.17.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "polars-arrow" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "16aakfkiaqk71c3n3274r9ra44v0jrc8wwp5nqdr0srd5y6lii0w"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-arrow2" ,rust-arrow2-0.7)
-        ("rust-num" ,rust-num-0.4)
-        ("rust-thiserror" ,rust-thiserror-1))))))
-
 (define-public rust-polars-arrow-format-0.1
   (package
     (name "rust-polars-arrow-format")
