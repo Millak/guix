@@ -86154,35 +86154,6 @@ serializing Rust structures.")
        (("rust-serde-derive" ,rust-serde-derive-1)
         ("rust-serde-json" ,rust-serde-json-1))))))
 
-(define-public rust-toml-0.2
-  (package
-    (name "rust-toml")
-    (version "0.2.1")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "toml" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1d1cz43bxrx4fd6j2p6myckf81f72bp47akg36y3flxjkhj60svk"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-rustc-serialize" ,rust-rustc-serialize-0.3)
-        ("rust-serde" ,rust-serde-0.8))))
-    (home-page "https://github.com/alexcrichton/toml-rs")
-    (synopsis "Rust encoder and decoder of TOML-formatted files and streams")
-    (description
-     "This package provides a native Rust encoder and decoder of TOML-formatted
-files and streams.  Provides implementations of the standard
-Serialize/Deserialize traits for TOML data to facilitate deserializing and
-serializing Rust structures.")
-    (license (list license:asl2.0
-                   license:expat))))
-
 (define-public rust-toml-datetime-0.6
   (package
     (name "rust-toml-datetime")
