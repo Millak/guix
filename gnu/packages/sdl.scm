@@ -261,7 +261,13 @@ behind the scenes.")
                               version ".tar.gz"))
               (sha256
                (base32
-                "1g1jahknv5r4yhh1xq5sf0md20ybdw1zh1i15lry26sq39bmn8fq"))))))
+                "1g1jahknv5r4yhh1xq5sf0md20ybdw1zh1i15lry26sq39bmn8fq"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments sdl2)
+       ((#:configure-flags flags)
+        #~(cons*
+           "CFLAGS=-g -O2 -Wno-error=incompatible-pointer-types"
+           #$flags))))))
 
 (define-public libmikmod
   (package
