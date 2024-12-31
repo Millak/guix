@@ -6728,44 +6728,6 @@ provides an implementation of the Git transport layer.")
         ("rust-blocking" ,rust-blocking-1)
         ("rust-maybe-async" ,rust-maybe-async-0.2))))))
 
-(define-public rust-gix-transport-0.32
-  (package
-    (inherit rust-gix-transport-0.37)
-    (name "rust-gix-transport")
-    (version "0.32.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "gix-transport" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "05fzh609x4d6djizmrv5m98axinp2m5hcpk003bqw1x9v7z9z8v4"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-async-std" ,rust-async-std-1)
-        ("rust-async-trait" ,rust-async-trait-0.1)
-        ("rust-base64" ,rust-base64-0.21)
-        ("rust-bstr" ,rust-bstr-1)
-        ("rust-curl" ,rust-curl-0.4)
-        ("rust-document-features" ,rust-document-features-0.2)
-        ("rust-futures-io" ,rust-futures-io-0.3)
-        ("rust-futures-lite" ,rust-futures-lite-1)
-        ("rust-gix-command" ,rust-gix-command-0.2)
-        ("rust-gix-credentials" ,rust-gix-credentials-0.15)
-        ("rust-gix-features" ,rust-gix-features-0.30)
-        ("rust-gix-packetline" ,rust-gix-packetline-0.16)
-        ("rust-gix-quote" ,rust-gix-quote-0.4)
-        ("rust-gix-sec" ,rust-gix-sec-0.8)
-        ("rust-gix-url" ,rust-gix-url-0.19)
-        ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
-        ("rust-reqwest" ,rust-reqwest-0.11)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-thiserror" ,rust-thiserror-1))
-       #:cargo-development-inputs
-       (("rust-async-std" ,rust-async-std-1)
-        ("rust-blocking" ,rust-blocking-1)
-        ("rust-maybe-async" ,rust-maybe-async-0.2))))))
-
 (define-public rust-gix-traverse-0.41
   (package
     (name "rust-gix-traverse")
