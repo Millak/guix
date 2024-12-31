@@ -1253,22 +1253,21 @@ plugin for the Xfce panel.")
   (package
     (name "xfdashboard")
     (version "1.0.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://archive.xfce.org/src/apps/"
-                                  name
-                                  "/"
-                                  (version-major+minor version)
-                                  "/"
-                                  name
-                                  "-"
-                                  version
-                                  ".tar.bz2"))
-              (sha256
-               (base32
-                "19a8xz6zv039j2m595v4wld3x4inidc7idfkk0pp42ffwm1l6a55"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://gitlab.xfce.org/apps/"
+                                 name))
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1blydl57xzqndcj1dkfxbmsaad27s7mqwwj3mmidz2dx9cikabl8"))))
     (build-system gnu-build-system)
-    (native-inputs (list intltool pkg-config `(,glib "bin")))
+    (arguments
+     (list #:configure-flags
+           #~(list "--enable-maintainer-mode"))) ;for enums.c, etc.
+    (native-inputs (list xfce4-dev-tools))
     (inputs (list clutter
                   garcon
                   gtk+
@@ -1279,7 +1278,7 @@ plugin for the Xfce panel.")
                   libxfce4ui
                   libxinerama
                   xfconf))
-    (home-page "https://www.xfce.org/")
+    (home-page "https://docs.xfce.org/apps/xfdashboard/")
     (synopsis "Gnome shell like dashboard for Xfce")
     (description
      "Xfdashboard provides a GNOME shell dashboard and MacOS Mission Control
