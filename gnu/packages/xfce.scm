@@ -2255,24 +2255,24 @@ for the Xfce panel.  It supports several features, such as:
 
 (define-public xfce4-wavelan-plugin
   (package
-   (name "xfce4-wavelan-plugin")
-   (version "0.6.3")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://archive.xfce.org/src/panel-plugins/"
-                                  "xfce4-wavelan-plugin/"
-                                  (version-major+minor version)
-                                  "/xfce4-wavelan-plugin-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "0azpv0s3r4ag3gp0bsfvq0jgzycx6ivdsw5p0ga7425pdksw5h31"))))
+    (name "xfce4-wavelan-plugin")
+    (version "0.6.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://gitlab.xfce.org/panel-plugins/"
+                                 name))
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0hw1xglcq9niacmnb6masnx8b7vs0z38pbnbviy388mvj5bx54dm"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list intltool pkg-config))
+     (list xfce4-dev-tools))
     (inputs
      (list libxfce4ui xfce4-panel))
-    (home-page
-     "https://goodies.xfce.org/projects/panel-plugins/xfce4-wavelan-plugin")
+    (home-page "https://docs.xfce.org/panel-plugins/xfce4-wavelan-plugin/")
     (synopsis "Show stats from WLAN interface in Xfce panel")
     (description "This plugin is used to display stats from a wireless
 lan interface (signal state, signal quality, network name (SSID)).")
