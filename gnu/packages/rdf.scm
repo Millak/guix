@@ -10,6 +10,7 @@
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 Brendan Tildesley <mail@brendan.scot>
+;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -68,16 +69,14 @@
 (define-public raptor2
   (package
     (name "raptor2")
-    (version "2.0.15")
+    (version "2.0.16")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://download.librdf.org/source/" name
                                  "-" version ".tar.gz"))
-             (patches
-              (search-patches "raptor2-heap-overflow.patch"))
              (sha256
               (base32
-               "1vc02im4mpc28zxzgli68k6j0dakh0k3s389bm436yvqajxg19xd"))))
+               "1026whyxpajwijlr4k5c0iliwn09mwxrg7gkvd5kb0n9ga6vg788"))))
     (build-system gnu-build-system)
     (inputs
      (list curl libxml2 libxslt zlib))
