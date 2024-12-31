@@ -6416,25 +6416,6 @@ on high performance, interoperability, and flexibility.")
      "This package provides a codegen module of `tonic` @code{gRPC} implementation.")
     (license license:expat)))
 
-(define-public rust-tonic-build-0.10
-  (package
-    (inherit rust-tonic-build-0.12)
-    (name "rust-tonic-build")
-    (version "0.10.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "tonic-build" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "129qd12ka65h5f1dzi5mrlz6wndi0pfx1320lawq51f18k01y0lx"))))
-    (arguments
-     `(#:cargo-inputs (("rust-prettyplease" ,rust-prettyplease-0.2)
-                       ("rust-proc-macro2" ,rust-proc-macro2-1)
-                       ("rust-prost-build" ,rust-prost-build-0.12)
-                       ("rust-quote" ,rust-quote-1)
-                       ("rust-syn" ,rust-syn-2))))))
-
 (define-public rust-tower-0.5
   (package
     (name "rust-tower")
