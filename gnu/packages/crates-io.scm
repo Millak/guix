@@ -39540,24 +39540,24 @@ can also be used outside of a proc-macro context.")
 futures-aware, FIFO queue.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-local-ip-address-0.4
+(define-public rust-local-ip-address-0.5
   (package
     (name "rust-local-ip-address")
-    (version "0.4.9")
+    (version "0.5.7")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "local-ip-address" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1xc88i6v43rx5f5im0zadd8nl3k7wvf2lv351q20d05h5w4pzawy"))))
+        (base32 "0pfiy5pj70y0ycdf3scmxpgmj7jyi99054rk4rfzpb75kkmd8bk1"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f  ; Integration test with local IP address.
        #:cargo-inputs (("rust-libc" ,rust-libc-0.2)
-                       ("rust-neli" ,rust-neli-0.5)
+                       ("rust-neli" ,rust-neli-0.6)
                        ("rust-thiserror" ,rust-thiserror-1)
-                       ("rust-windows-sys" ,rust-windows-sys-0.42))))
+                       ("rust-windows-sys" ,rust-windows-sys-0.48))))
     (home-page "https://github.com/EstebanBorai/local-ip-address")
     (synopsis
      "Retrieve system's local IP address and network interfaces/adapters")
