@@ -17128,32 +17128,6 @@ to the @code{is_x86_feature_detected!} macro.")
     (description "This package has been replaced by the `cpufeatures` crate.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-cpuprofiler-0.0
-  (package
-    (name "rust-cpuprofiler")
-    (version "0.0.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "cpuprofiler" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0az588yyl9r13w4k7xfdh5ckfaq52fwpjry2q2hblazxpjflgy23"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-error-chain" ,rust-error-chain-0.12)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-pkg-config" ,rust-pkg-config-0.3))))
-    (inputs
-     (list gperftools))
-    (home-page "https://github.com/AtheMathmo/cpuprofiler")
-    (synopsis "Bindings to Google's cpu profiler")
-    (description "This package provides bindings to Google's cpu profiler.")
-    (license license:bsd-2)))
-
 (define-public rust-crabgrind-0.1
   (package
     (name "rust-crabgrind")
