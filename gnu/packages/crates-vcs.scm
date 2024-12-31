@@ -3222,28 +3222,6 @@ matching.")
                        ("rust-gix-path" ,rust-gix-path-0.10)
                        ("rust-serde" ,rust-serde-1))))))
 
-(define-public rust-gix-glob-0.8
-  (package
-    (inherit rust-gix-glob-0.13)
-    (name "rust-gix-glob")
-    (version "0.8.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "gix-glob" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "13jm1anf9xkp0hpzv9va72b9003kmwflx0ni0fbhf7xbh0gdw2nd"))))
-    (arguments
-     `(#:tests? #f  ; no method named `trim_start` found for reference `&BStr`
-       #:cargo-inputs
-       (("rust-bitflags" ,rust-bitflags-2)
-        ("rust-bstr" ,rust-bstr-1)
-        ("rust-document-features" ,rust-document-features-0.2)
-        ("rust-gix-features" ,rust-gix-features-0.30)
-        ("rust-gix-path" ,rust-gix-path-0.8)
-        ("rust-serde" ,rust-serde-1))))))
-
 (define-public rust-gix-hash-0.14
   (package
     (name "rust-gix-hash")
