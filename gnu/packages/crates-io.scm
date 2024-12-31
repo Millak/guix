@@ -16659,27 +16659,6 @@ the standard library.")
 contents of the OS-level clipboard.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-copypasta-0.8
-  (package
-    (inherit rust-copypasta-0.10)
-    (name "rust-copypasta")
-    (version "0.8.2")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "copypasta" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0wmidz38581b1xzpzf466pdaw3xam7nlsn0klndfr973brkwhgqk"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-clipboard-win" ,rust-clipboard-win-3)
-        ("rust-objc" ,rust-objc-0.2)
-        ("rust-objc-foundation" ,rust-objc-foundation-0.1)
-        ("rust-objc-id" ,rust-objc-id-0.1)
-        ("rust-smithay-clipboard" ,rust-smithay-clipboard-0.6)
-        ("rust-x11-clipboard" ,rust-x11-clipboard-0.7))))))
-
 (define-public rust-cordic-0.1
   (package
     (name "rust-cordic")
