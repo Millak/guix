@@ -36700,24 +36700,15 @@ simple mock/record and a complete capture/replay framework.")
        (uri (pypi-uri "ijson" version))
        (sha256
         (base32 "1sp463ywj4jv5cp6hsv2qwiima30d09xsabxb2dyq5b17jp0640x"))))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; the tests run by the default setup.py require yajl 1.x,
-         ;; but we have 2.x.  yajl 1.x support is going to be removed
-         ;; anyway, so use pytest to avoid running the yajl1-related
-         ;; tests. See: https://github.com/ICRAR/ijson/issues/55
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-vv")))))))
     (inputs
      ;; yajl is optional, but compiling with it makes faster
      ;; backends available to ijson:
      (list yajl))
     (native-inputs
-     (list python-pytest))
-    (build-system python-build-system)
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (build-system pyproject-build-system)
     (home-page "https://github.com/ICRAR/ijson")
     (synopsis "Iterative JSON parser with Python iterator interfaces")
     (description
