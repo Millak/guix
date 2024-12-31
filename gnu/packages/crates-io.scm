@@ -65805,27 +65805,6 @@ procedural macro to implement fixtures and table based tests.")
                        ("rust-rustc-version" ,rust-rustc-version-0.4)
                        ("rust-syn" ,rust-syn-1))))))
 
-(define-public rust-rstest-0.10
-  (package
-    (inherit rust-rstest-0.15)
-    (name "rust-rstest")
-    (version "0.10.0")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "rstest" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1bwhy92fsqc05y8x9iyyq9sykinh0gxnl25zpdca3xhl5hhb06q4"))))
-    (arguments
-     (list #:skip-build? #t
-           #:cargo-inputs
-           `(("rust-cfg-if" ,rust-cfg-if-1)
-             ("rust-proc-macro2" ,rust-proc-macro2-1)
-             ("rust-quote" ,rust-quote-1)
-             ("rust-rustc-version" ,rust-rustc-version-0.3)
-             ("rust-syn" ,rust-syn-1))))))
-
 (define-public rust-rstest-macros-0.23
   (package
     (name "rust-rstest-macros")
