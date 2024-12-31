@@ -7397,53 +7397,6 @@ use for syntax highlighting in other crates.")
     (native-inputs (list pkg-config))
     (inputs (list libgit2 openssl zlib))))
 
-(define-public rust-bat-0.18
-  (package
-    (inherit rust-bat-0.22)
-    (name "rust-bat")
-    (version "0.18.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "bat" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0qlk032dd6zxda1v7clah33nafxygaw3x7f73ajwlvk956nrn1js"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-ansi-colours" ,rust-ansi-colours-1)
-        ("rust-ansi-term" ,rust-ansi-term-0.12)
-        ("rust-atty" ,rust-atty-0.2)
-        ("rust-bugreport" ,rust-bugreport-0.4)
-        ("rust-clap" ,rust-clap-2)
-        ("rust-clircle" ,rust-clircle-0.3)
-        ("rust-console" ,rust-console-0.14)
-        ("rust-content-inspector" ,rust-content-inspector-0.2)
-        ("rust-dirs-next" ,rust-dirs-next-2)
-        ("rust-encoding" ,rust-encoding-0.2)
-        ("rust-error-chain" ,rust-error-chain-0.12)
-        ("rust-git2" ,rust-git2-0.13)
-        ("rust-globset" ,rust-globset-0.4)
-        ("rust-grep-cli" ,rust-grep-cli-0.1)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-path-abs" ,rust-path-abs-0.5)
-        ("rust-semver" ,rust-semver-0.11)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-yaml" ,rust-serde-yaml-0.8)
-        ("rust-shell-words" ,rust-shell-words-1)
-        ("rust-syntect" ,rust-syntect-4)
-        ("rust-unicode-width" ,rust-unicode-width-0.1)
-        ("rust-wild" ,rust-wild-2))
-       #:cargo-development-inputs
-       (("rust-assert-cmd" ,rust-assert-cmd-1)
-        ("rust-nix" ,rust-nix-0.21)
-        ("rust-predicates" ,rust-predicates-1)
-        ("rust-serial-test" ,rust-serial-test-0.5)
-        ("rust-tempfile" ,rust-tempfile-3)
-        ("rust-wait-timeout" ,rust-wait-timeout-0.2))))
-    (inputs
-     (list libgit2 zlib))))
-
 (define-public rust-battery-0.7
   (package
     (name "rust-battery")
