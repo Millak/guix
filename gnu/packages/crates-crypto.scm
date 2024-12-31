@@ -1489,6 +1489,40 @@ using const generics.")
         ("rust-subtle" ,rust-subtle-2)
         ("rust-zeroize" ,rust-zeroize-1))))))
 
+(define-public rust-crypto-box-0.8
+  (package
+    (name "rust-crypto-box")
+    (version "0.8.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "crypto_box" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1g4fhdsx1g1d0algpkfwsmclbcbj6k27anj4mj5d0zrhwlnw69px"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-aead" ,rust-aead-0.5)
+                       ("rust-blake2" ,rust-blake2-0.10)
+                       ("rust-chacha20" ,rust-chacha20-0.9)
+                       ("rust-chacha20poly1305" ,rust-chacha20poly1305-0.10)
+                       ("rust-salsa20" ,rust-salsa20-0.10)
+                       ("rust-serdect" ,rust-serdect-0.1)
+                       ("rust-x25519-dalek" ,rust-x25519-dalek-1)
+                       ("rust-xsalsa20poly1305" ,rust-xsalsa20poly1305-0.9)
+                       ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs (("rust-bincode" ,rust-bincode-1)
+                                   ("rust-rand" ,rust-rand-0.8)
+                                   ("rust-rmp-serde" ,rust-rmp-serde-1))))
+    (home-page "https://github.com/RustCrypto/nacl-compat")
+    (synopsis "Pure Rust implementation of crypto_box")
+    (description
+     "This package provides a pure Rust implementation of @code{NaCl's}
+crypto_box public-key authenticated encryption primitive, which combines the
+X25519 Elliptic Curve Diffie-Hellman function and the XSalsa20Poly1305
+authenticated encryption cipher.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-crypto-common-0.1
   (package
     (name "rust-crypto-common")
