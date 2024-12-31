@@ -4216,29 +4216,6 @@ assertions on the result of your program's run.")
        #:cargo-development-inputs
        (("rust-escargot" ,rust-escargot-0.5))))))
 
-(define-public rust-assert-cmd-0.9
-  (package
-    (inherit rust-assert-cmd-1)
-    (name "rust-assert-cmd")
-    (version "0.9.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "assert_cmd" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "02gq7j9qzjkbyq4hk18cih3kylk3dyxwa2gc5k7lah9kdwkhrdn5"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-escargot" ,rust-escargot-0.3)
-        ("rust-predicates" ,rust-predicates-0.9)
-        ("rust-predicates-core" ,rust-predicates-core-0.9)
-        ("rust-predicates-tree" ,rust-predicates-tree-0.9))
-       #:cargo-development-inputs
-       (("rust-docmatic" ,rust-docmatic-0.1))))))
-
 (define-public rust-assert-float-eq-1
   (package
     (name "rust-assert-float-eq")
