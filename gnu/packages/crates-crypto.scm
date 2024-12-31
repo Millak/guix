@@ -410,28 +410,6 @@ acceleration.")
          ,rust-criterion-cycles-per-byte-0.1)
         ("rust-hex-literal" ,rust-hex-literal-0.2))))))
 
-(define-public rust-aes-gcm-0.5
-  (package
-    (inherit rust-aes-gcm-0.6)
-    (name "rust-aes-gcm")
-    (version "0.5.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "aes-gcm" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0f66b5bmyj38r1hj55wzamlzw3y1aql34lgwr2vxn93073d6njl3"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-aead" ,rust-aead-0.2)
-        ("rust-aes" ,rust-aes-0.3)
-        ("rust-block-cipher-trait" ,rust-block-cipher-trait-0.6)
-        ("rust-ghash" ,rust-ghash-0.2)
-        ("rust-subtle" ,rust-subtle-2)
-        ("rust-zeroize" ,rust-zeroize-1))))))
-
 (define-public rust-aes-soft-0.6
   (package
     (name "rust-aes-soft")
