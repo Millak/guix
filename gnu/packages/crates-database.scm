@@ -746,38 +746,6 @@ libpq.")
         ("rust-unicase" ,rust-unicase-2)
         ("rust-uuid" ,rust-uuid-1))))))
 
-(define-public rust-rusqlite-0.26
-  (package
-    (inherit rust-rusqlite-0.29)
-    (name "rust-rusqlite")
-    (version "0.26.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "rusqlite" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "19sh4nnw1i7a6wacqllz20qpqpdj96jsg3dzaq61cwmd3ywv10la"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-bitflags" ,rust-bitflags-1)
-        ("rust-byteorder" ,rust-byteorder-1)
-        ("rust-chrono" ,rust-chrono-0.4)
-        ("rust-csv" ,rust-csv-1)
-        ("rust-fallible-iterator" ,rust-fallible-iterator-0.2)
-        ("rust-fallible-streaming-iterator"
-         ,rust-fallible-streaming-iterator-0.1)
-        ("rust-hashlink" ,rust-hashlink-0.7)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-libsqlite3-sys" ,rust-libsqlite3-sys-0.23)
-        ("rust-memchr" ,rust-memchr-2)
-        ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-smallvec" ,rust-smallvec-1)
-        ("rust-time" ,rust-time-0.3)
-        ("rust-url" ,rust-url-2)
-        ("rust-uuid" ,rust-uuid-0.8))))))
-
 (define-public rust-rusqlite-macros-0.3
   (package
     (name "rust-rusqlite-macros")
