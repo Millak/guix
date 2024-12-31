@@ -383,33 +383,6 @@ acceleration.")
        #:cargo-development-inputs
        (("rust-hex-literal" ,rust-hex-literal-0.2))))))
 
-(define-public rust-aes-gcm-0.6
-  (package
-    (inherit rust-aes-gcm-0.8)
-    (name "rust-aes-gcm")
-    (version "0.6.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "aes-gcm" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1lga8my3zlc0b1nhcpc1hrbykfm014fqs6d64bwrjqii05w01xc6"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-aead" ,rust-aead-0.3)
-        ("rust-aes" ,rust-aes-0.4)
-        ("rust-block-cipher" ,rust-block-cipher-0.7)
-        ("rust-ghash" ,rust-ghash-0.3)
-        ("rust-subtle" ,rust-subtle-2)
-        ("rust-zeroize" ,rust-zeroize-1))
-       #:cargo-development-inputs
-       (("rust-criterion" ,rust-criterion-0.3)
-        ("rust-criterion-cycles-per-byte"
-         ,rust-criterion-cycles-per-byte-0.1)
-        ("rust-hex-literal" ,rust-hex-literal-0.2))))))
-
 (define-public rust-aes-soft-0.6
   (package
     (name "rust-aes-soft")
