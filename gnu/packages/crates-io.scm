@@ -30432,29 +30432,6 @@ permitted in ordinary Rust.")
 debugging format.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-gimli-0.28
-  (package
-    (inherit rust-gimli-0.31)
-    (name "rust-gimli")
-    (version "0.28.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "gimli" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0lv23wc8rxvmjia3mcxc6hj9vkqnv1bqq0h8nzjcgf71mrxx6wa2"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
-        ("rust-fallible-iterator" ,rust-fallible-iterator-0.3)
-        ("rust-indexmap" ,rust-indexmap-2)
-        ("rust-rustc-std-workspace-alloc" ,rust-rustc-std-workspace-alloc-1)
-        ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1)
-        ("rust-stable-deref-trait" ,rust-stable-deref-trait-1))
-       #:cargo-development-inputs
-       (("rust-test-assembler" ,rust-test-assembler-0.1))))))
-
 (define-public rust-gjson-0.8
   (package
     (name "rust-gjson")
