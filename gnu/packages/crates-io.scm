@@ -18026,34 +18026,6 @@ attributes.")
     (description "This package provides a safe interop between Rust and C++.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-cxx-0.5
-  (package
-    (inherit rust-cxx-1)
-    (name "rust-cxx")
-    (version "0.5.10")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "cxx" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1alj19zf8jm5j8c8hynqb36f0vyjqs8yhwmxpcapfmb5lav4ipgb"))))
-    (arguments
-     `(#:tests? #f  ; Cannot compile cxx-test-suite.
-       #:cargo-inputs
-       (("rust-cc" ,rust-cc-1)
-        ("rust-cxxbridge-flags" ,rust-cxxbridge-flags-0.5)
-        ("rust-cxxbridge-macro" ,rust-cxxbridge-macro-0.5)
-        ("rust-link-cplusplus" ,rust-link-cplusplus-1))
-       #:cargo-development-inputs
-       (("rust-cxx-build" ,rust-cxx-build-0.5)
-        ("rust-cxx-gen" ,rust-cxx-gen-0.6)
-        ("rust-cxx-test-suite" ,rust-cxx-test-suite-0.0.0)
-        ("rust-rustversion" ,rust-rustversion-1)
-        ("rust-trybuild" ,rust-trybuild-1))))))
-
 (define-public rust-cxx-build-1
   (package
     (name "rust-cxx-build")
