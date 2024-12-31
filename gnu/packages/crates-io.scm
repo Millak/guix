@@ -11581,26 +11581,6 @@ remote procedure call protocol")
         ("rust-capnp-futures" ,rust-capnp-futures-0.14)
         ("rust-futures" ,rust-futures-0.3))))))
 
-(define-public rust-capnp-rpc-0.13
-  (package
-    (inherit rust-capnp-rpc-0.14)
-    (name "rust-capnp-rpc")
-    (version "0.13.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "capnp-rpc" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "17p0y0yk68pzsnpmaklhiqrrlrrv0ld8nhbg4qflmgibshi8b69p"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-capnp" ,rust-capnp-0.13)
-        ("rust-capnp-futures" ,rust-capnp-futures-0.13)
-        ("rust-futures" ,rust-futures-0.3))
-       #:cargo-development-inputs
-       (("rust-capnpc" ,rust-capnpc-0.13))))))
-
 (define-public rust-capnpc-0.19
   (package
     (name "rust-capnpc")
