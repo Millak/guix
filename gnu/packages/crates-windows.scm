@@ -2154,24 +2154,6 @@ Windows crate.")
      `(#:cargo-inputs (("rust-syn" ,rust-syn-1)
                        ("rust-windows-tokens" ,rust-windows-tokens-0.39))))))
 
-(define-public rust-windows-implement-0.32
-  (package
-    (inherit rust-windows-implement-0.46)
-    (name "rust-windows-implement")
-    (version "0.32.0")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "windows-implement" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0f3lnjs9rlihin9cjf9y7np1x15c0v09v0cwlw1n7c30145xmciz"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-syn" ,rust-syn-1)
-        ("rust-windows-tokens" ,rust-windows-tokens-0.32))))))
-
 (define-public rust-windows-interface-0.58
   (package
     (name "rust-windows-interface")
