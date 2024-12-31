@@ -11955,22 +11955,6 @@ supported by Cargo.")
 parsing with Serde.")
     (license (list license:asl2.0 license:expat))))
 
-(define-public rust-cargo-toml-0.19
-  (package
-    (inherit rust-cargo-toml-0.20)
-    (name "rust-cargo-toml")
-    (version "0.19.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "cargo_toml" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1gljfkdjx07fisn5xkklv56ki3p49ppf8fkry7c1psx28bgmd0x9"))))
-    (arguments
-     `(#:cargo-inputs (("rust-serde" ,rust-serde-1)
-                       ("rust-toml" ,rust-toml-0.8))))))
-
 (define-public rust-cargo-util-0.2
   (package
     (name "rust-cargo-util")
