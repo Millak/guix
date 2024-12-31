@@ -4076,25 +4076,6 @@ standard library.")
      "This library provides utilities to handle ASCII characters.")
     (license license:mpl2.0)))
 
-(define-public rust-askama-parser-0.2
-  (package
-    (name "rust-askama-parser")
-    (version "0.2.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "askama_parser" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1h00vcnqq9qqlayx1ass4an458rk4lm3q88867cc7lb4dcf1dcdc"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-nom" ,rust-nom-7))))
-    (home-page "https://github.com/djc/askama")
-    (synopsis "Parser for Askama templates")
-    (description "Parser for Askama templates.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-assert-0.7
   (package
     (name "rust-assert")
