@@ -51140,46 +51140,6 @@ owo.")
     (description "Portable Packed SIMD vectors.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-packed-struct-0.3
-  (package
-    (name "rust-packed-struct")
-    (version "0.3.1")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "packed_struct" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32 "1pvc0b8zpwlwx7kmvnvzh06nfdfrlqxf3p1xr0k1b3xm33xhzcd2"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-test-flags       ; Skip the doctests.
-       '("--release" "--lib" "--bins" "--tests")
-       #:cargo-inputs
-       (("rust-serde" ,rust-serde-1)
-        ("rust-serde-derive" ,rust-serde-derive-1))))
-    (home-page "http://www.hashmismatch.net/libraries/packed-struct/")
-    (synopsis "Binary-level structure packing and unpacking generator")
-    (description "This package provides bit-level packing an unpacking
-of structs.  Tkhe library provides a meta-programming approach, using
-attributes to define fields and how they should be packed.  The resulting
-trait implementations provide safe packing, unpacking and runtime debugging
-formatters with per-field documentation generated for each structure.
-
-@itemize
-@item Plain Rust structures, decorated with attributes
-@item MSB or LSB integers of user-defined bit widths
-@item Primitive enum code generation helper
-@item MSB0 or LSB0 bit positioning
-@item Documents the field's packing table
-@item Runtime packing visualization
-@item Nested packed types
-@item Arrays of packed structures as fields
-@item Reserved fields, their bits are always 0 or 1
-@end itemize")
-    ;; User can choose either license.
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-pad-0.1
   (package
     (name "rust-pad")
