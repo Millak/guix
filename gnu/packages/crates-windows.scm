@@ -2764,19 +2764,6 @@ if they were just another Rust module.")
 windows crate.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-windows-tokens-0.32
-  (package
-    (inherit rust-windows-tokens-0.39)
-    (name "rust-windows-tokens")
-    (version "0.32.0")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "windows-tokens" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1rrqbxjkyk6h6p6jjzbcxr0mhqbz0yfndd2s2dsgmbl75f4yy7gn"))))))
-
 (define-public rust-windows-version-0.1
   (package
     (name "rust-windows-version")
