@@ -73100,24 +73100,6 @@ exactly where a binary came from and how it was built.")
     (native-inputs (list pkg-config))
     (inputs (list libgit2-1.7 zlib))))
 
-(define-public rust-shadow-rs-0.8
-  (package
-    (inherit rust-shadow-rs-0.26)
-    (name "rust-shadow-rs")
-    (version "0.8.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "shadow-rs" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0iy4f6yzag52qr93hjhm2l8crxhjblr91nffbdd8zzw0xchfjdc9"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs (("rust-chrono" ,rust-chrono-0.4)
-                       ("rust-git2" ,rust-git2-0.13)
-                       ("rust-is-debug" ,rust-is-debug-1))))))
-
 (define-public rust-shannon-0.2
   (package
     (name "rust-shannon")
