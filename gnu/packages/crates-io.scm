@@ -92893,30 +92893,6 @@ attribute that is not in the shared backend crate.")
                                    ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3)
                                    ("rust-web-sys" ,rust-web-sys-0.3))))))
 
-(define-public rust-wasm-streams-0.2
-  (package
-    (inherit rust-wasm-streams-0.3)
-    (name "rust-wasm-streams")
-    (version "0.2.3")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "wasm-streams" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32 "0y60yy64p07h684h49159hhws50q6zdnffyirjnjqcq87hvf7fkb"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-futures-util" ,rust-futures-util-0.3)
-        ("rust-js-sys" ,rust-js-sys-0.3)
-        ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
-        ("rust-wasm-bindgen-futures" ,rust-wasm-bindgen-futures-0.4)
-        ("rust-web-sys" ,rust-web-sys-0.3))
-       #:cargo-development-inputs
-       (("rust-pin-project" ,rust-pin-project-1)
-        ("rust-tokio" ,rust-tokio-1)
-        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3)
-        ("rust-web-sys" ,rust-web-sys-0.3))))))
-
 (define-public rust-wasm-sync-0.1
   (package
     (name "rust-wasm-sync")
