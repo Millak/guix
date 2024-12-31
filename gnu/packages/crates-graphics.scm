@@ -1122,28 +1122,6 @@ and iOS.")
      "This package provides a library to perform image color model conversion.")
     (license license:expat-0)))
 
-(define-public rust-dcv-color-primitives-0.4
-  (package
-    (inherit rust-dcv-color-primitives-0.6)
-    (name "rust-dcv-color-primitives")
-    (version "0.4.1")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "dcv-color-primitives" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32 "01c0ag8dwzz00hyq9qam9d5j6yzdh8xpidcn37vgkzlmhgfz8mql"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-paste" ,rust-paste-1)
-        ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2))
-       #:cargo-development-inputs
-       (("rust-criterion" ,rust-criterion-0.3)
-        ("rust-getrandom" ,rust-getrandom-0.2)
-        ("rust-itertools" ,rust-itertools-0.10)
-        ("rust-rand" ,rust-rand-0.8)
-        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))))
-
 (define-public rust-deltae-0.3
   (package
     (name "rust-deltae")
