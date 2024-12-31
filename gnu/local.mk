@@ -2444,7 +2444,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/zig-0.13-build-respect-PKG_CONFIG-env-var.patch	\
   %D%/packages/patches/zig-0.13-fix-runpath.patch		\
   %D%/packages/patches/zsh-egrep-failing-test.patch		\
-  %D%/packages/patches/zuo-bin-sh.patch
+  %D%/packages/patches/zuo-bin-sh.patch			\
+  %D%/packages/patches/zxing-cpp-1.2.0-gcc-14.patch
 
 MISC_DISTRO_FILES =				\
   %D%/packages/ld-wrapper.in
