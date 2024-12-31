@@ -6917,19 +6917,6 @@ for @code{libxkbcommon}.")
      "This package provides a YUV4MPEG2 (@file{.y4m}) encoder and decoder.")
     (license license:expat)))
 
-(define-public rust-y4m-0.7
-  (package
-    (inherit rust-y4m-0.8)
-    (name "rust-y4m")
-    (version "0.7.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "y4m" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1bhdgb7hgx7j92nm6ij5n8wisp50j8ff66ks14jzwdw2mwhrjam7"))))))
-
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
