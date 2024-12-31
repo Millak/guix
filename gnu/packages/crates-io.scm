@@ -18782,22 +18782,6 @@ reimplemented in Rust")
 use with sct crate.")
     (license (list license:asl2.0 license:isc license:expat))))
 
-(define-public rust-ct-logs-0.7
-  (package
-    (inherit rust-ct-logs-0.8)
-    (name "rust-ct-logs")
-    (version "0.7.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "ct-logs" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0bk7pbmkjm18cgccm4a76vyn3wkaf2z4bh0jy9fk3dl4188i73lc"))))
-    (arguments
-     `(#:cargo-inputs (("rust-sct" ,rust-sct-0.6))))))
-
 (define-public rust-ctor-0.2
   (package
     (name "rust-ctor")
