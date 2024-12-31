@@ -43542,36 +43542,6 @@ support for no_std and embedded programs.")
     (description "This package provides a template engine for Rust.")
     (license license:asl2.0)))
 
-(define-public rust-minijinja-1
-  (package
-    (inherit rust-minijinja-2)
-    (name "rust-minijinja")
-    (version "1.0.10")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "minijinja" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1jqvjzcj96jxyqp3pmz2hhrfq4ql2q6p719yvpsnrj7jgrbmi1r0"))))
-    (arguments
-     `(#:cargo-inputs (("rust-aho-corasick" ,rust-aho-corasick-1)
-                       ("rust-indexmap" ,rust-indexmap-1)
-                       ("rust-memo-map" ,rust-memo-map-0.3)
-                       ("rust-percent-encoding" ,rust-percent-encoding-2)
-                       ("rust-self-cell" ,rust-self-cell-1)
-                       ("rust-serde" ,rust-serde-1)
-                       ("rust-serde-json" ,rust-serde-json-1)
-                       ("rust-stacker" ,rust-stacker-0.1)
-                       ("rust-unicase" ,rust-unicase-2)
-                       ("rust-unicode-ident" ,rust-unicode-ident-1)
-                       ("rust-v-htmlescape" ,rust-v-htmlescape-0.15))
-       #:cargo-development-inputs
-       (("rust-insta" ,rust-insta-1)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-similar-asserts" ,rust-similar-asserts-1))))))
-
 (define-public rust-minimad-0.13
   (package
     (name "rust-minimad")
