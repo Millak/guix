@@ -2280,24 +2280,27 @@ lan interface (signal state, signal quality, network name (SSID)).")
 
 (define-public xfce4-weather-plugin
   (package
-   (name "xfce4-weather-plugin")
-   (version "0.11.3")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://archive.xfce.org/src/panel-plugins/"
-                                  "xfce4-weather-plugin/"
-                                  (version-major+minor version)
-                                  "/xfce4-weather-plugin-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "0mywq00xs0rvdp3kd7kmcv2brpzixz65ijzk2ahg7lh677k1yb80"))))
+    (name "xfce4-weather-plugin")
+    (version "0.11.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://gitlab.xfce.org/panel-plugins/"
+                                 name))
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1cxv5p1472vgy2nks9145m8yajsxrc1a83pmqpmnmvpyyandbdml"))))
     (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list "--enable-maintainer-mode"))) ;for weather-config_ui.h
     (native-inputs
-     (list intltool pkg-config))
+     (list xfce4-dev-tools))
     (inputs
      (list gtk+ json-c libsoup-minimal-2 libxfce4ui libxml2 xfce4-panel))
-    (home-page
-     "https://goodies.xfce.org/projects/panel-plugins/xfce4-weather-plugin")
+    (home-page "https://docs.xfce.org/panel-plugins/xfce4-weather-plugin/")
     (synopsis "Show information about local weather in the Xfce panel")
     (description "This Xfce panel plugin shows information about your
 local weather in the panel, using forecast data provided by the
