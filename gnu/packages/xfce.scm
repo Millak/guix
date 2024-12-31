@@ -1617,22 +1617,22 @@ A plugin for the Xfce panel is also available.")
 (define-public xfce4-screensaver
   (package
     (name "xfce4-screensaver")
-    (version "4.18.3")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://archive.xfce.org/src/apps/"
-                                  "xfce4-screensaver/"
-                                  (version-major+minor version)
-                                  "/xfce4-screensaver-"
-                                  version ".tar.bz2"))
-              (sha256
-               (base32
-                "0f9sw703pcgz47689qgc550h2hpqlzvsfgggd7z9s6516rhk2wfi"))))
+    (version "4.18.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://gitlab.xfce.org/apps/" name))
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09wbr3p325w9mcmragxi3rkvlrdapmrmlpgj5wshh9dv52pn8k5y"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
+     `(#:configure-flags '("--enable-maintainer-mode")
+       #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'fix-dbus-1-path
+         (add-before 'configure 'fix-dbus-1-path
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
                     (dbus-dir (string-append out "/share/dbus-1/services")))
@@ -1641,10 +1641,7 @@ A plugin for the Xfce panel is also available.")
                   (string-append "DBUS_SESSION_SERVICE_DIR="
                                  dbus-dir)))))))))
     (native-inputs
-     (list pkg-config
-           intltool
-           glib ; glib-compile-schemas
-           `(,glib "bin")))                 ; glib-compile-schemas
+     (list xfce4-dev-tools))
     (inputs
      (list dbus-glib
            linux-pam
