@@ -5483,38 +5483,6 @@ Part of Gitoxide, a project to create a pure Rust Git implementation.")
                        ("rust-thiserror" ,rust-thiserror-1)
                        ("rust-winnow" ,rust-winnow-0.5))))))
 
-(define-public rust-gix-ref-0.30
-  (package
-    (inherit rust-gix-ref-0.37)
-    (name "rust-gix-ref")
-    (version "0.30.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "gix-ref" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "073y77045km55bb53ack6hzjd70mkj3rk6d8xxg8mkplas99kpgb"))))
-    (arguments
-     `(#:tests? #f      ; use of undeclared crate or module `gix_testtools`
-       #:cargo-inputs
-       (("rust-document-features" ,rust-document-features-0.2)
-        ("rust-gix-actor" ,rust-gix-actor-0.21)
-        ("rust-gix-features" ,rust-gix-features-0.30)
-        ("rust-gix-fs" ,rust-gix-fs-0.2)
-        ("rust-gix-hash" ,rust-gix-hash-0.11)
-        ("rust-gix-lock" ,rust-gix-lock-6)
-        ("rust-gix-object" ,rust-gix-object-0.30)
-        ("rust-gix-path" ,rust-gix-path-0.8)
-        ("rust-gix-tempfile" ,rust-gix-tempfile-6)
-        ("rust-gix-validate" ,rust-gix-validate-0.7)
-        ("rust-memmap2" ,rust-memmap2-0.5)
-        ("rust-nom" ,rust-nom-7)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-thiserror" ,rust-thiserror-1))
-       #:cargo-development-inputs
-       (("rust-tempfile" ,rust-tempfile-3))))))
-
 (define-public rust-gix-refspec-0.25
   (package
     (name "rust-gix-refspec")
