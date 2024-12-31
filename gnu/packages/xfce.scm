@@ -684,41 +684,35 @@ your system in categories, so you can quickly find and launch them.")
   (package
     (name "xfce4-session")
     (version "4.20.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://archive.xfce.org/src/xfce/"
-                                  "xfce4-session/" (version-major+minor version) "/"
-                                  "xfce4-session-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "11agss7x749i4wnw82czv0b053mhqn34hwi8rihj6sgfwqzj6aaj"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  (substitute* "libxfsm/xfsm-shutdown-common.h"
-                    (("/sbin/shutdown -h now")  "halt")
-                    (("/sbin/shutdown -r now")  "restart")
-                    (("/usr/sbin/pm-suspend")   "pm-suspend")
-                    (("/usr/sbin/pm-hibernate") "pm-hibernate"))
-                  #t))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://gitlab.xfce.org/xfce/" name))
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zzmszwm22nnwybagnvan62qbqcgcr7fnp288qcr9bkkag5y8zcs"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           (substitute* "libxfsm/xfsm-shutdown-common.h"
+             (("/sbin/shutdown -h now")  "halt")
+             (("/sbin/shutdown -r now")  "restart")
+             (("/usr/sbin/pm-suspend")   "pm-suspend")
+             (("/usr/sbin/pm-hibernate") "pm-hibernate"))
+           #t))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags
-       (list (string-append "--with-xsession-prefix=" %output)
+       (list "--enable-maintainer-mode" ;for xfce4-session-settings_ui.h
+        (string-append "--with-xsession-prefix=" %output)
              (string-append "--with-wayland-session-prefix=" %output))
        ;; Disable icon cache update.
        #:make-flags
-       '("gtk_update_icon_cache=true")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'patch-configure
-           (lambda _
-             (substitute* "configure"
-               ;; XDG_CHECK_PACKAGE_BINARY requires an absolute path.
-               (("\\$PKG_CONFIG --variable=gdbus_codegen gio-2.0")
-                "type -p gdbus-codegen")))))))
+       '("gtk_update_icon_cache=true")))
     (native-inputs
-     (list (list glib "bin") pkg-config intltool))
+     (list xfce4-dev-tools))
     (inputs
      (list iceauth
            gtk-layer-shell
@@ -728,7 +722,7 @@ your system in categories, so you can quickly find and launch them.")
            libwnck
            libxfce4ui
            libxfce4windowing))
-    (home-page "https://www.xfce.org/")
+    (home-page "https://docs.xfce.org/xfce/xfce4-session/")
     (synopsis "Xfce session manager")
     (description
      "Session manager for Xfce, it will restore your session on startup and
