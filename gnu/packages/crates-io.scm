@@ -80447,26 +80447,6 @@ Rust @code{struct}s and @code{enum}s.")
                        ("rust-quote" ,rust-quote-1)
                        ("rust-syn" ,rust-syn-1))))))
 
-(define-public rust-tabled-derive-0.6
-  (package
-    (inherit rust-tabled-derive-0.7)
-    (name "rust-tabled-derive")
-    (version "0.6.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "tabled_derive" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1r1z7qj37h1x4nyqbxq9jvbd713qvgpjlf1w18pz1x2lifh8ixlr"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-heck" ,rust-heck-0.4)
-                       ("rust-proc-macro-error" ,rust-proc-macro-error-1)
-                       ("rust-proc-macro2" ,rust-proc-macro2-1)
-                       ("rust-quote" ,rust-quote-1)
-                       ("rust-syn" ,rust-syn-1))))))
-
 (define-public rust-tabwriter-1
   (package
     (name "rust-tabwriter")
