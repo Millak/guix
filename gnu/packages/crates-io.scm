@@ -12142,32 +12142,6 @@ metadata}.")
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1))))))
 
-(define-public rust-cargo-metadata-0.13
-  (package
-    (inherit rust-cargo-metadata-0.14)
-    (name "rust-cargo-metadata")
-    (version "0.13.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "cargo_metadata" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "11cnz97byqswmhpbbig9hss5kf8bmxq9nd5xjg3l2rsnnv040i32"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-camino" ,rust-camino-1)
-        ("rust-cargo-platform" ,rust-cargo-platform-0.1)
-        ("rust-derive-builder" ,rust-derive-builder-0.9)
-        ("rust-semver" ,rust-semver-0.11)
-        ("rust-semver-parser" ,rust-semver-parser-0.10)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-json" ,rust-serde-json-1))))))
-
 (define-public rust-cargo-options-0.7
   (package
     (name "rust-cargo-options")
