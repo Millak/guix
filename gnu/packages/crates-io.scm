@@ -59812,21 +59812,6 @@ in codeblocks, while assuring quality with a powerful test suite.")
 @code{LC_COLLATE} and @code{LC_CTYPE} are not yet supported.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-pure-rust-locales-0.7
-  (package
-    (inherit rust-pure-rust-locales-0.8)
-    (name "rust-pure-rust-locales")
-    (version "0.7.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "pure-rust-locales" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0cl46srhxzj0jlvfp73l8l9qw54qwa04zywaxdf73hidwqlsh0pd"))))
-    (arguments
-     (list #:tests? #f))))  ; Not all files included.
-
 (define-public rust-pwd-1
   (package
     (name "rust-pwd")
