@@ -3476,27 +3476,6 @@ keys.  Part of Gitoxide a Rust implementation of Git.")
                        ("rust-serde" ,rust-serde-1)
                        ("rust-unicode-bom" ,rust-unicode-bom-2))))))
 
-(define-public rust-gix-ignore-0.3
-  (package
-    (inherit rust-gix-ignore-0.8)
-    (name "rust-gix-ignore")
-    (version "0.3.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "gix-ignore" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "09anfy62zfsclkkvvrsp0bi99pny66hqn07pvc4fik0c3887yvzw"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-bstr" ,rust-bstr-1)
-        ("rust-document-features" ,rust-document-features-0.2)
-        ("rust-gix-glob" ,rust-gix-glob-0.8)
-        ("rust-gix-path" ,rust-gix-path-0.8)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-unicode-bom" ,rust-unicode-bom-2))))))
-
 (define-public rust-gix-index-0.35
   (package
     (name "rust-gix-index")
