@@ -73188,26 +73188,6 @@ shared secret key.")
 multiple threads.")
     (license license:expat)))
 
-(define-public rust-shared-child-0.3
-  (package
-    (inherit rust-shared-child-1)
-    (name "rust-shared-child")
-    (version "0.3.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "shared_child" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0np6g5fmixncky9c0j5xhqxrp1rkxqnmx5vj7spq652vavazgsbb"))))
-    (arguments
-     `(#:cargo-test-flags '("--"
-                            "--skip=tests::test_into_inner_after_wait"
-                            "--skip=src/lib.rs - (line 35)")
-       #:cargo-inputs (("rust-libc" ,rust-libc-0.2)
-                       ("rust-winapi" ,rust-winapi-0.3))))))
-
 (define-public rust-shared-library-0.1
   (package
     (name "rust-shared-library")
