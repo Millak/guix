@@ -39965,24 +39965,6 @@ macros on libc without stdlib.")
      "This package provides a wrapper around LLVM's @code{libFuzzer} runtime.")
     (license (list license:expat license:asl2.0 license:ncsa))))
 
-(define-public rust-libfuzzer-sys-0.3
-  (package
-    (inherit rust-libfuzzer-sys-0.4)
-    (name "rust-libfuzzer-sys")
-    (version "0.3.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "libfuzzer-sys" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1vv42rpvmfr83hlblyrjf8ifilsmc3d5gcznblmghx5jnsj89wgw"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-arbitrary" ,rust-arbitrary-0.4)
-        ("rust-cc" ,rust-cc-1))))))
-
 (define-public rust-libloading-0.8
   (package
     (name "rust-libloading")
