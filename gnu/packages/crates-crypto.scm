@@ -5348,25 +5348,6 @@ in pure Rust.")
        (("rust-cipher" ,rust-cipher-0.3)
         ("rust-zeroize" ,rust-zeroize-1))))))
 
-(define-public rust-salsa20-0.7
-  (package
-    (inherit rust-salsa20-0.10)
-    (name "rust-salsa20")
-    (version "0.7.2")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "salsa20" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32 "05cs0n4q63czqmi8rcpjhi3vx1412gaaapnf5w19d5a0zh7jk7rr"))))
-    (arguments
-      `(#:cargo-inputs
-        (("rust-cipher" ,rust-cipher-0.2)
-         ("rust-zeroize" ,rust-zeroize-1))
-        #:cargo-development-inputs
-        (("rust-cipher" ,rust-cipher-0.2))))))
-
 (define-public rust-scrypt-0.11
   (package
     (name "rust-scrypt")
