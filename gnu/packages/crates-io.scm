@@ -50878,23 +50878,6 @@ under its new name.")
                        ("rust-winapi" ,rust-winapi-0.3))))
     (native-inputs (list))))
 
-(define-public rust-os-pipe-0.8
-  (package
-    (inherit rust-os-pipe-0.9)
-    (name "rust-os-pipe")
-    (version "0.8.2")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "os_pipe" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "049ax8shxik7mm68r2nf7xnrcq3z3p7hz54sbrcxwywxqsjdzs41"))))
-    (arguments
-     (list #:cargo-inputs
-           `(("rust-nix" ,rust-nix-0.15)
-             ("rust-winapi" ,rust-winapi-0.3))))))
-
 (define-public rust-os-release-0.1
   (package
     (name "rust-os-release")
