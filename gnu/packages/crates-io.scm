@@ -9548,49 +9548,6 @@ comes with a strict specification.")
 program to verify sandboxing measures are adequate.")
     (license license:lgpl3)))
 
-(define-public rust-boxxy-0.12
-  (package
-    (inherit rust-boxxy-0.13)
-    (name "rust-boxxy")
-    (version "0.12.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "boxxy" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1q0wpz955y3iwd35bqk3pbx2vx904fhyj75j7d6mrb7ib5fs5kxg"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-anyhow" ,rust-anyhow-1)
-        ("rust-base64" ,rust-base64-0.13)
-        ("rust-bufstream" ,rust-bufstream-0.1)
-        ("rust-caps" ,rust-caps-0.5)
-        ("rust-cfg-if" ,rust-cfg-if-1)
-        ("rust-clap" ,rust-clap-2)
-        ("rust-errno" ,rust-errno-0.2)
-        ("rust-futures-util" ,rust-futures-util-0.3)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-libflate" ,rust-libflate-1)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-nix" ,rust-nix-0.22)
-        ("rust-pledge" ,rust-pledge-0.4)
-        ("rust-regex" ,rust-regex-1)
-        ("rust-reqwest" ,rust-reqwest-0.11)
-        ("rust-rustls" ,rust-rustls-0.16)
-        ("rust-rustyline" ,rust-rustyline-9)
-        ("rust-sha2" ,rust-sha2-0.9)
-        ("rust-structopt" ,rust-structopt-0.3)
-        ("rust-tar" ,rust-tar-0.4)
-        ("rust-tokio" ,rust-tokio-1)
-        ("rust-webpki" ,rust-webpki-0.21))
-       #:cargo-development-inputs
-       (("rust-ctrlc" ,rust-ctrlc-3)
-        ("rust-elf" ,rust-elf-0.0.10)
-        ("rust-env-logger" ,rust-env-logger-0.9)
-        ("rust-rustls" ,rust-rustls-0.16)
-        ("rust-sha2" ,rust-sha2-0.9))))))
-
 (define-public rust-bracoxide-0.1
   (package
     (name "rust-bracoxide")
