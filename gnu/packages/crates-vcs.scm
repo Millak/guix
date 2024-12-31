@@ -7490,40 +7490,6 @@ types and utilities.  Part of Gitoxide a pure Rust implementation of Git.")
                        ("rust-gix-path" ,rust-gix-path-0.10)
                        ("rust-serde" ,rust-serde-1))))))
 
-(define-public rust-gix-worktree-0.18
-  (package
-    (inherit rust-gix-worktree-0.26)
-    (name "rust-gix-worktree")
-    (version "0.18.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "gix-worktree" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1xjhxw6lmjhnmcnhajaks34dnsqgg7w7lf576hkl0m485sbav26k"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-bstr" ,rust-bstr-1)
-        ("rust-document-features" ,rust-document-features-0.2)
-        ("rust-filetime" ,rust-filetime-0.2)
-        ("rust-gix-attributes" ,rust-gix-attributes-0.13)
-        ("rust-gix-features" ,rust-gix-features-0.30)
-        ("rust-gix-fs" ,rust-gix-fs-0.2)
-        ("rust-gix-glob" ,rust-gix-glob-0.8)
-        ("rust-gix-hash" ,rust-gix-hash-0.11)
-        ("rust-gix-ignore" ,rust-gix-ignore-0.3)
-        ("rust-gix-index" ,rust-gix-index-0.17)
-        ("rust-gix-object" ,rust-gix-object-0.30)
-        ("rust-gix-path" ,rust-gix-path-0.8)
-        ("rust-io-close" ,rust-io-close-0.3)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-thiserror" ,rust-thiserror-1))
-       #:cargo-development-inputs
-       (("rust-symlink" ,rust-symlink-0.1)
-        ("rust-tempfile" ,rust-tempfile-3)
-        ("rust-walkdir" ,rust-walkdir-2))))))
-
 (define-public rust-gix-worktree-state-0.13
   (package
     (name "rust-gix-worktree-state")
