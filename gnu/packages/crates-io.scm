@@ -24144,25 +24144,6 @@ decoding.")
     (description "Cargo API written in Paris.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-escargot-0.3
-  (package
-    (inherit rust-escargot-0.5)
-    (name "rust-escargot")
-    (version "0.3.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "escargot" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "19fmn7bz1h6nlqy0mp825xwjwnrjn4xjdpwc06jl51j3fiz1znqr"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-serde" ,rust-serde-1)
-        ("rust-serde-json" ,rust-serde-json-1))))))
-
 (define-public rust-etcetera-0.8
   (package
     (name "rust-etcetera")
