@@ -5077,28 +5077,6 @@ library.")
        #:cargo-development-inputs (("rust-shell-words" ,rust-shell-words-1)
                                    ("rust-tempfile" ,rust-tempfile-3))))))
 
-(define-public rust-pangocairo-sys-0.17
-  (package
-    (inherit rust-pangocairo-sys-0.18)
-    (name "rust-pangocairo-sys")
-    (version "0.17.10")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "pangocairo-sys" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0ymr4aqrdpysz0rh383s4h6hj8nbkyj7n4723f45zzzqkf6x7pwl"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-cairo-sys-rs" ,rust-cairo-sys-rs-0.17)
-        ("rust-glib-sys" ,rust-glib-sys-0.17)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-pango-sys" ,rust-pango-sys-0.17)
-        ("rust-system-deps" ,rust-system-deps-6))
-       #:cargo-development-inputs (("rust-shell-words" ,rust-shell-words-1)
-                                   ("rust-tempfile" ,rust-tempfile-3))))))
-
 (define-public rust-search-provider-0.8
   (package
     (name "rust-search-provider")
