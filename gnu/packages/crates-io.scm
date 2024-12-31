@@ -94757,24 +94757,6 @@ parser.")
 file into an in-memory tree structure.")
     (license license:expat)))
 
-(define-public rust-xmltree-0.8
-  (package
-    (inherit rust-xmltree-0.10)
-    (name "rust-xmltree")
-    (version "0.8.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "xmltree" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0w0y0jz7lhxg05ca6ngfj0lj8sbrjh4vaqv13q7qaqkhs7lsx3pz"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-indexmap" ,rust-indexmap-1)
-        ("rust-xml-rs" ,rust-xml-rs-0.7))))))
-
 (define-public rust-xmlwriter-0.1
   (package
     (name "rust-xmlwriter")
