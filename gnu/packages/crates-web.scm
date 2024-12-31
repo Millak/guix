@@ -3443,29 +3443,6 @@ similar to the nom parser combinators library.")
         ("rust-mime" ,rust-mime-0.3)
         ("rust-sha1" ,rust-sha1-0.10))))))
 
-(define-public rust-headers-0.2
-  (package
-    (inherit rust-headers-0.3)
-    (name "rust-headers")
-    (version "0.2.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "headers" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0hmnrra00cjqpsn05klnr9cysrv2bm19akxl5lncwcrgfbcafb48"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-base64" ,rust-base64-0.10)
-        ("rust-bitflags" ,rust-bitflags-1)
-        ("rust-bytes" ,rust-bytes-0.4)
-        ("rust-headers-core" ,rust-headers-core-0.1)
-        ("rust-http" ,rust-http-0.1)
-        ("rust-mime" ,rust-mime-0.3)
-        ("rust-sha-1" ,rust-sha-1-0.8)
-        ("rust-time" ,rust-time-0.1))))))
-
 (define-public rust-headers-core-0.3
   (package
     (name "rust-headers-core")
