@@ -995,17 +995,21 @@ menu.")
   (package
     (name "xfwm4")
     (version "4.20.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://archive.xfce.org/src/xfce/"
-                                  "xfwm4/" (version-major+minor version) "/"
-                                  "xfwm4-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "01ng1lcr0a45w1jm3vwsfwk5kfy8jfz3c1ng3n6hvalpjgj672x5"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://gitlab.xfce.org/xfce/" name))
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "153zfjw6z9nvlw05xjjws9f95097qci5qbxpzf33z8zl06n50ip5"))))
     (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list "--enable-maintainer-mode"))) ;for xfwm4-dialog_ui.h, etc.
     (native-inputs
-     (list pkg-config intltool))
+     (list xfce4-dev-tools))
     (inputs
      (list libdrm
            libwnck
@@ -1014,7 +1018,7 @@ menu.")
            libxfce4ui
            libxpresent
            libxrandr))
-    (home-page "https://www.xfce.org/")
+    (home-page "https://docs.xfce.org/xfce/xfwm4/")
     (synopsis "Xfce window manager")
     (description
      "Window manager for Xfce, it handles the placement of windows
