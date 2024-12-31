@@ -10,6 +10,7 @@
 ;;; Copyright © 2022 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2022 Pavel Shlyak <p.shlyak@pantherx.org>
 ;;; Copyright © 2022 Matthew James Kraai <kraai@ftbfs.org>
+;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -467,7 +468,9 @@ on arbitrary tasks.  All the time data is saved in files residing in the
            python-pytest
            python-pytest-cov
            python-pytest-runner
-           python-pytz))
+           python-pytz
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-atomicwrites
            python-click
