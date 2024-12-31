@@ -2065,24 +2065,24 @@ opens up a menu with the following:
 
 (define-public xfce4-smartbookmark-plugin
   (package
-   (name "xfce4-smartbookmark-plugin")
-   (version "0.5.2")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://archive.xfce.org/src/panel-plugins/"
-                                  "xfce4-smartbookmark-plugin/"
-                                  (version-major+minor version)
-                                  "/xfce4-smartbookmark-plugin-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "1lyd64qc9w6qnpqjb5xk0mjq4l7riv6z7l9aws28clalb8prw9ra"))))
+    (name "xfce4-smartbookmark-plugin")
+    (version "0.5.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://gitlab.xfce.org/panel-plugins/"
+                                 name))
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0rm2yii0xas9n3aqsq6lb378czcylm8xcb2ng7lnl2r5l8qyb9m4"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list intltool pkg-config))
+     (list xfce4-dev-tools))
     (inputs
      (list libxfce4ui xfce4-panel))
-    (home-page
-     "https://goodies.xfce.org/projects/panel-plugins/xfce4-smartbookmark-plugin")
+    (home-page "https://docs.xfce.org/panel-plugins/xfce4-smartbookmark-plugin/")
     (synopsis "Perform custom searches in your browser from the Xfce panel")
     (description "This plugin allows you to send search requests
 directly to your browser, such that you can search through your
