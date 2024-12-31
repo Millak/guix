@@ -82070,23 +82070,6 @@ generating parametrized test cases easily.")
 for TLS).")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-test-cert-gen-0.7
-  (package
-    (inherit rust-test-cert-gen-0.9)
-    (name "rust-test-cert-gen")
-    (version "0.7.0")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "test-cert-gen" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "06gl7zqvrsl4fqm6d3i21q459gcv9nf258kb5ynd8dip5spd021j"))))
-    (arguments
-     `(#:tests? #f              ; Not all files included.
-       #:cargo-inputs (("rust-pem" ,rust-pem-0.8)
-                       ("rust-tempdir" ,rust-tempdir-0.3))))))
-
 (define-public rust-test-generator-0.3
   (package
     (name "rust-test-generator")
