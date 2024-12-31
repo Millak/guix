@@ -121,7 +121,7 @@
 ;;; Copyright © 2022 Peter Polidoro <peter@polidoro.io>
 ;;; Copyright © 2022, 2023 Wamm K. D. <jaft.r@outlook.com>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
-;;; Copyright © 2022-2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2022-2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2022 Jean-Pierre De Jesus DIAZ <me@jeandudey.tech>
 ;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
@@ -36553,7 +36553,7 @@ into a human readable HTML table representation.")
        (uri (pypi-uri "face" version))
        (sha256
         (base32 "0gpd9f0rmbv3rd2szi2na37l29fabkwazikjrxc6wca1lddwlnbx"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      '(#:phases
        (modify-phases %standard-phases
@@ -36562,12 +36562,11 @@ into a human readable HTML table representation.")
              (when tests?
                ;; Make installed package available for running the tests.
                (add-installed-pythonpath inputs outputs)
-               ;; We must provide the full path to the Python binary
-               ;; otherwise "test_search_prs_basic" test fails.
-               (invoke (search-input-file inputs "/bin/python")
-                       "-m" "pytest" "-v")))))))
+               (invoke "pytest" "-v")))))))
     (native-inputs
-     (list python-pytest))
+     (list python-pytest
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-boltons))
     (home-page "https://github.com/mahmoud/face")
