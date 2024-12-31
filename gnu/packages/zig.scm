@@ -1639,4 +1639,26 @@ toolchain.  Among other features it provides
     (properties `((max-silent-time . 9600)
                   ,@(clang-compiler-cpu-architectures "18")))))
 
+
+;;;
+;;; Bootstrap path for Zig 0.14.
+;;;
+
+(define zig-0.13.0-286
+  (let ((commit "d72a8db2db1a5c77af2deb713248dc53f9adcb73")
+        (revision "286")
+        (base zig-0.13))
+    (package
+      (inherit base)
+      (name "zig")
+      (version (git-version "0.13.0" revision commit))
+      (source (zig-source
+               version commit
+               "1rnpv4lwc2jxz5yymrb4hlfy4iii48bn94rjpr3vll8yyydinpnb"))
+      ;; zig2
+      (arguments (package-arguments zig-0.10.0-851))
+      (native-inputs
+       (modify-inputs (package-native-inputs base)
+         (replace "zig" `(,base "zig1")))))))
+
 (define-public zig zig-0.13)
