@@ -10031,6 +10031,37 @@ Pion}.")
      "This package provides a Go library to create and print diffs.")
     (license license:bsd-3)))
 
+(define-public go-github-com-pkg-xattr
+  (package
+    (name "go-github-com-pkg-xattr")
+    (version "0.4.10")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pkg/xattr")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0rxvfiwgd0z9alj4n8jympmyi68zh1swf3siim8r2h01nm4i0vqh"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/pkg/xattr"))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
+    (home-page "https://github.com/pkg/xattr")
+    (synopsis "Support for extended file system attributes")
+    (description
+     "Package xattr provides support for extended attributes on Linux, Darwin
+and FreeBSD.  Extended attributes are name:value pairs permanently associated
+with files or directories.  They are similar to the environment strings
+associated with a process.  An attribute may be defined or undefined.  If
+defined, its value may be empty or non-empty.  You can find more details here:
+@@url{https://en.wikipedia.org/wiki/Extended_file_attributes,
+https://en.wikipedia.org/wiki/Extended_file_attributes}.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-polydawn-refmt
   (package
     (name "go-github-com-polydawn-refmt")
