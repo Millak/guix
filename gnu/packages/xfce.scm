@@ -855,19 +855,21 @@ and import the new pictures from your camera.")
 (define-public thunar-archive-plugin
   (package
     (name "thunar-archive-plugin")
-    (version "0.5.2")
+    (version "0.5.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://archive.xfce.org/src/thunar-plugins/"
-                           name "/" (version-major+minor version)
-                           "/" name "-" version ".tar.bz2"))
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://gitlab.xfce.org/thunar-plugins/"
+                                 name))
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1qxdsnwjy8z358yd0avi1h2r6y1izfv26dzlp5fsh3pwpivzhyb3"))))
+        (base32 "1aqvfgn2www5m9764ldafcv5wsknhsdy2hibikzxhpbzd51c8j7l"))))
     (build-system gnu-build-system)
-    (native-inputs (list pkg-config intltool))
+    (native-inputs (list xfce4-dev-tools))
     (inputs (list exo thunar gtk+))
-    (home-page "https://www.xfce.org/")
+    (home-page "https://docs.xfce.org/xfce/thunar/archive")
     (synopsis "Archive plugin for Thunar file manager")
     (description "The Thunar Archive Plugin allows you to create and extract
 archive files using the file context menus in the Thunar file manager.")
