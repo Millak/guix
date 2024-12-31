@@ -2223,24 +2223,24 @@ period.")
 
 (define-public xfce4-verve-plugin
   (package
-   (name "xfce4-verve-plugin")
-   (version "2.0.3")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://archive.xfce.org/src/panel-plugins/"
-                                  "xfce4-verve-plugin/"
-                                  (version-major+minor version)
-                                  "/xfce4-verve-plugin-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "17p0kxnzx4ks3rs281x5pvwksl1gh2mg7h7mkccjmkzr3cgi5gz1"))))
+    (name "xfce4-verve-plugin")
+    (version "2.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://gitlab.xfce.org/panel-plugins/"
+                                 name))
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "023d1vv0qa9ig8k15m7bl0b9hgqg7c7lf1w7d8av2y2g7xi8ljwg"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list intltool pkg-config))
+     (list xfce4-dev-tools))
     (inputs
      (list libxfce4ui pcre2 xfce4-panel))
-    (home-page
-     "https://goodies.xfce.org/projects/panel-plugins/xfce4-verve-plugin")
+    (home-page "https://docs.xfce.org/panel-plugins/xfce4-verve-plugin/")
     (synopsis "Command line for the Xfce panel")
     (description "The Verve plugin provides a comfortable command line
 for the Xfce panel.  It supports several features, such as:
