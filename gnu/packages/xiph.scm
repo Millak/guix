@@ -14,6 +14,7 @@
 ;;; Copyright © 2021 Matthew James Kraai <kraai@ftbfs.org>
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -522,6 +523,12 @@ things in between.")
                (base32
                 "0469yzc1csm25f5dbyb7ly7i1mzjz13pw8c8bmswkpfzxzqd9jrr"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags #~(list
+                           #$(string-append
+                              "CFLAGS=-g -O2"
+                              " -Wno-error=implicit-function-declaration"))))
     (native-inputs
      (list pkg-config))
     (propagated-inputs
