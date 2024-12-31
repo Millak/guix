@@ -1215,3 +1215,44 @@ libpq.")
                        ("rust-quote" ,rust-quote-1)
                        ("rust-syn" ,rust-syn-1))))))
 
+(define-public rust-sqlx-sqlite-0.7
+  (package
+    (name "rust-sqlx-sqlite")
+    (version "0.7.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sqlx-sqlite" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ap0bb2hazbrdgd7mhnckdg9xcchx0k094di9gnhpnhlhh5fyi5j"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; cannot index into a value of type `IntMap<ColumnType>`
+       #:cargo-inputs (("rust-atoi" ,rust-atoi-2)
+                       ("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-flume" ,rust-flume-0.11)
+                       ("rust-futures-channel" ,rust-futures-channel-0.3)
+                       ("rust-futures-core" ,rust-futures-core-0.3)
+                       ("rust-futures-executor" ,rust-futures-executor-0.3)
+                       ("rust-futures-intrusive" ,rust-futures-intrusive-0.5)
+                       ("rust-futures-util" ,rust-futures-util-0.3)
+                       ("rust-libsqlite3-sys" ,rust-libsqlite3-sys-0.27)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-percent-encoding" ,rust-percent-encoding-2)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-sqlx-core" ,rust-sqlx-core-0.7)
+                       ("rust-time" ,rust-time-0.3)
+                       ("rust-tracing" ,rust-tracing-0.1)
+                       ("rust-url" ,rust-url-2)
+                       ("rust-urlencoding" ,rust-urlencoding-2)
+                       ("rust-uuid" ,rust-uuid-1))
+       #:cargo-development-inputs (("rust-sqlx" ,rust-sqlx-0.7))))
+    (home-page "https://github.com/launchbadge/sqlx")
+    (synopsis "SQLite driver implementation for SQLx")
+    (description
+     "This package provides SQLite driver implementation for SQLx.  Not for
+direct use; see the `sqlx` crate for details.")
+    (license (list license:expat license:asl2.0))))
+
