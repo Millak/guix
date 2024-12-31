@@ -315,7 +315,9 @@ user has installed.")
     (arguments
      `(#:configure-flags
        (list
-        "CFLAGS=-O2 -g -fcommon"
+        ,(string-append "CFLAGS=-O2 -g -fcommon"
+                        " -Wno-error=implicit-function-declaration"
+                        " -Wno-error=int-conversion")
         ;; XXX: Broken API.
         ;; Undeclared variables 'sys_nerr' and 'sys_errlist'.
         ;; "--enable-libv4l2"
