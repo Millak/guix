@@ -32375,26 +32375,6 @@ language and scheme definition language (sometimes called IDL).")
 @command{greetd} JSON-based IPC protocol from Rust.")
     (license license:gpl3)))
 
-(define-public rust-greetd-ipc-0.8
-  (package
-    (inherit rust-greetd-ipc-0.9)
-    (name "rust-greetd-ipc")
-    (version "0.8.0")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "greetd_ipc" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1dscriv3adjyaxfaax3cmqrzx6q2vwwchbh86dhll783wjc4ivw0"))))
-    (arguments
-     (list #:cargo-inputs
-           `(("rust-async-trait" ,rust-async-trait-0.1)
-             ("rust-serde" ,rust-serde-1)
-             ("rust-serde-json" ,rust-serde-json-1)
-             ("rust-thiserror" ,rust-thiserror-1)
-             ("rust-tokio" ,rust-tokio-1))))))
-
 (define-public rust-grep-0.3
   (package
     (name "rust-grep")
