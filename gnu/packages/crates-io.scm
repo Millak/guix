@@ -418,20 +418,6 @@ threads.  This makes it robust in face of panics (it won't make your program
 deadlock, like the standard Barrier).")
     (license (list license:asl2.0 license:expat))))
 
-(define-public rust-adaptive-barrier-0.1
-  (package
-    (inherit rust-adaptive-barrier-1)
-    (name "rust-adaptive-barrier")
-    (version "0.1.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "adaptive-barrier" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "003ygsiqsd85v0p846q1ym23dbp4iagn89p7k6yrvbg9di1mbjqc"))))
-    (arguments `(#:skip-build? #t))))
-
 (define-public rust-adblock-0.7
   (package
     (name "rust-adblock")
