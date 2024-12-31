@@ -30172,6 +30172,26 @@ and loading crate.")
         ("rust-scroll" ,rust-scroll-0.11))))))
 
 (define-public rust-graphql-parser-0.3
+(define-public rust-graphql-introspection-query-0.2
+  (package
+    (name "rust-graphql-introspection-query")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "graphql-introspection-query" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0vgd5y0zaw9n5hwd21xbcsswy6asg17ljd1411nbsh2irwr4fakz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/graphql-rust/graphql-client")
+    (synopsis "GraphQL introspection query and response types")
+    (description
+     "This package provides @code{GraphQL} introspection query and response types.")
+    (license (list license:asl2.0 license:expat))))
+
   (package
     (name "rust-graphql-parser")
     (version "0.3.0")
