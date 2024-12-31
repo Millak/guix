@@ -63439,28 +63439,6 @@ functionality")
         ("rust-redox-syscall" ,rust-redox-syscall-0.1)
         ("rust-rust-argon2" ,rust-rust-argon2-0.8))))))
 
-(define-public rust-reduce-0.1
-  (package
-    (name "rust-reduce")
-    (version "0.1.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "reduce" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1mrmicr43hx3s9556zbzg0lys4nmsw0vwznd52imxhcanr3xrlhn"))))
-    (build-system cargo-build-system)
-    (arguments `(#:tests? #f))      ; Tests don't compile.
-    (home-page "https://github.com/dtolnay/reduce")
-    (synopsis "Fold an iterator without an initial value")
-    (description
-     "This package provides a way to fold an iterator without a separate
-initial value.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-ref-cast-1
   (package
     (name "rust-ref-cast")
