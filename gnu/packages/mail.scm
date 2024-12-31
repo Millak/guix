@@ -62,6 +62,7 @@
 ;;; Copyright © 2025 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2025 Jelle Licht <jlicht@fsfe.org>
+;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -915,7 +916,7 @@ It adds a large amount of new and improved features to Mutt.")
                                                          base))))))))))))
     (native-inputs
      (list autoconf-2.71
-           automake
+           automake-1.16.5
            pkg-config
            gnupg                        ; for tests only
            gobject-introspection
