@@ -74936,25 +74936,6 @@ stack.")
 control on the fields.")
     (license license:expat)))
 
-(define-public rust-smart-default-0.6
-  (package
-    (inherit rust-smart-default-0.7)
-    (name "rust-smart-default")
-    (version "0.6.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "smart-default" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1xnvxz9wilj4d5b8kg4wbs0yk48wm41fnwkmn3p6wi9rafhmjdhk"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))))
-
 (define-public rust-smartstring-1
   (package
     (name "rust-smartstring")
