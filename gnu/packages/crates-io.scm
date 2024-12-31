@@ -63953,6 +63953,29 @@ console applications.")
 structures with structural sharing.")
     (license license:mpl2.0)))
 
+(define-public rust-rpm-pkg-count-0.2
+  (package
+    (name "rust-rpm-pkg-count")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rpm-pkg-count" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1jzh63l7k30l37s5gd2m2hvh8slzjaxw54s4xpcjnaqb8xfsq0sa"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:features '("runtime")
+       #:cargo-test-flags '("--features" "runtime")
+       #:cargo-inputs (("rust-libloading" ,rust-libloading-0.8)
+                       ("rust-pkg-config" ,rust-pkg-config-0.3))))
+    (home-page "https://github.com/RubixDev/rpm-pkg-count")
+    (synopsis "Count installed RPM packages using librpm")
+    (description
+     "This package counts installed RPM packages using librpm.")
+    (license license:gpl3)))
+
 (define-public rust-rspec-1
   (package
     (name "rust-rspec")
