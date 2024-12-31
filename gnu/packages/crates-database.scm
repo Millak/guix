@@ -1241,6 +1241,45 @@ it easier to read.")
                        ("rust-quote" ,rust-quote-1)
                        ("rust-syn" ,rust-syn-1))))))
 
+(define-public rust-sqlx-macros-core-0.7
+  (package
+    (name "rust-sqlx-macros-core")
+    (version "0.7.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sqlx-macros-core" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1j7k0fw7n6pgabqnj6cbp8s3rmd3yvqr4chjj878cvd1m99yycsq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-async-std" ,rust-async-std-1)
+                       ("rust-dotenvy" ,rust-dotenvy-0.15)
+                       ("rust-either" ,rust-either-1)
+                       ("rust-heck" ,rust-heck-0.4)
+                       ("rust-hex" ,rust-hex-0.4)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-sha2" ,rust-sha2-0.10)
+                       ("rust-sqlx-core" ,rust-sqlx-core-0.7)
+                       ("rust-sqlx-mysql" ,rust-sqlx-mysql-0.7)
+                       ("rust-sqlx-postgres" ,rust-sqlx-postgres-0.7)
+                       ("rust-sqlx-sqlite" ,rust-sqlx-sqlite-0.7)
+                       ("rust-syn" ,rust-syn-1)
+                       ("rust-tempfile" ,rust-tempfile-3)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-url" ,rust-url-2))))
+    (home-page "https://github.com/launchbadge/sqlx")
+    (synopsis "Macro support core for SQLx, the Rust SQL toolkit")
+    (description
+     "This package provides Macro support core for SQLx, the Rust SQL toolkit.
+Not intended to be used directly.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-sqlx-mysql-0.7
   (package
     (name "rust-sqlx-mysql")
