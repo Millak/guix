@@ -641,20 +641,6 @@ checksum, used in the zlib compression format.")
            license:asl2.0
            (license:non-copyleft "https://spdx.org/licenses/0BSD.html")))))
 
-(define-public rust-adler-0.2
-  (package
-    (inherit rust-adler-1)
-    (name "rust-adler")
-    (version "0.2.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "adler" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0zpdsrfq5bd34941gmrlamnzjfbsx0x586afb7b0jqhr8g1lwapf"))))
-    (build-system cargo-build-system)))
-
 (define-public rust-adler2-2
   (package
     (name "rust-adler2")
