@@ -627,37 +627,6 @@ syntax (e.g.  EasyList, EasyPrivacy) filter parsing and matching.")
 Rust, using gimli.")
     (license (list license:asl2.0 license:expat))))
 
-(define-public rust-addr2line-0.21
-  (package
-    (inherit rust-addr2line-0.24)
-    (name "rust-addr2line")
-    (version "0.21.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "addr2line" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1jx0k3iwyqr8klqbzk6kjvr496yd94aspis10vwsj5wy7gib4c4a"))))
-    (arguments
-     `(#:tests? #f      ; use of undeclared crate or module `auxiliary`
-       #:cargo-inputs
-       (("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
-        ("rust-cpp-demangle" ,rust-cpp-demangle-0.4)
-        ("rust-fallible-iterator" ,rust-fallible-iterator-0.3)
-        ("rust-gimli" ,rust-gimli-0.28)
-        ("rust-memmap2" ,rust-memmap2-0.5)
-        ("rust-object" ,rust-object-0.32)
-        ("rust-rustc-demangle" ,rust-rustc-demangle-0.1)
-        ("rust-rustc-std-workspace-alloc" ,rust-rustc-std-workspace-alloc-1)
-        ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1)
-        ("rust-smallvec" ,rust-smallvec-1))
-       #:cargo-development-inputs (("rust-backtrace" ,rust-backtrace-0.3)
-                                   ("rust-clap" ,rust-clap-4)
-                                   ("rust-findshlibs" ,rust-findshlibs-0.10)
-                                   ("rust-libtest-mimic" ,rust-libtest-mimic-0.6)
-                                   ("rust-typed-arena" ,rust-typed-arena-2))))))
-
 (define-public rust-adler-1
   (package
     (name "rust-adler")
