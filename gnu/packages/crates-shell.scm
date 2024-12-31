@@ -103,27 +103,6 @@ underline).")
         ("rust-regex" ,rust-regex-1)
         ("rust-serde-json" ,rust-serde-json-1))))))
 
-(define-public rust-nu-ansi-term-0.44
-  (package
-    (inherit rust-nu-ansi-term-0.49)
-    (name "rust-nu-ansi-term")
-    (version "0.44.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "nu-ansi-term" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1lmc9rdqnw586gv4a0c2gbg3x4a04fy65xk3fczby8lq84rz41i3"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-doc-comment" ,rust-doc-comment-0.3)
-        ("rust-overload" ,rust-overload-0.1)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-winapi" ,rust-winapi-0.3))))))
-
 (define-public rust-nu-cli-0.101
   (package
     (name "rust-nu-cli")
