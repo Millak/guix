@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -37,30 +38,18 @@
 (define-public patool
   (package
     (name "patool")
-    (version "2.1.1")
+    (version "3.1.0")
     (source
      (origin
        (method git-fetch)               ;no test data in PyPI archive
        (uri (git-reference
              (url "https://github.com/wummel/patool")
-             (commit (string-append "upstream/" version))))
+             (commit version)))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "09il0gq1xxlism30hx1aa06alz1xhrnhhwcjzx1znical0bp3q1r"))))
+         "1w20kiiq9ngy90lcgnjfjiwbp6zvf3vlhm34700ff8x85x9fknkr"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      '(list "-k" (string-append
-                   ;; Disable failing tests.
-                   "not test_mime_file_compress"
-                   " and not test_mime_file_gzip"
-                   " and not test_mime_file_lzip"
-                   " and not test_bsdtar_gz_file"
-                   " and not test_py_tarfile_gz_file"
-                   " and not test_tar_gz_file"
-                   " and not test_tar_lzip_file"))))
     (native-inputs
      (list bzip2
            cabextract
