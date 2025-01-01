@@ -691,46 +691,68 @@ for adding, removing and dropping callbacks.")
 (define-public python-aiohttp
   (package
     (name "python-aiohttp")
-    (version "3.8.4")
+    (version "3.11.11")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "aiohttp" version))
        (sha256
-        (base32 "0p5bj6g7ca19gvwk8fz00k579ma9w9kd27ssh2zl3r61ca8ilbmz"))
+        (base32 "0gihj076nm3863sqfnbh786621w1ad7lj7fq88d85wzbwvqwfjdv"))
        (snippet
         #~(begin
             (use-modules ((guix build utils)))
             ;; TODO: Unbundle the llhttp sources.
             ;; (delete-file-recursively "vendor")
-            (delete-file "aiohttp/_helpers.c")
             (delete-file "aiohttp/_http_parser.c")
-            (delete-file "aiohttp/_http_writer.c")
-            (delete-file "aiohttp/_websocket.c")))))
-    (build-system python-build-system)
+            (delete-file "aiohttp/_http_writer.c")))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
+     (list
+      #:test-flags
+      '(list
+        ;; This tests requires the 'proxy.py' module, not yet packaged.
+        "--ignore=tests/test_proxy_functional.py"
+        ;; These tests need brotli.
+        "--ignore=tests/test_web_sendfile_functional.py"
+        "--ignore=tests/test_web_functional.py"
+        ;; These tests need pytest_codspeed
+        "--ignore-glob=tests/test_benchmarks*"
+        ;; These tests need python_on_whales
+        "--ignore=tests/autobahn/test_autobahn.py"
+        "-k"
+        ;; These tests fail for unknown reasons (see:
+        ;; https://github.com/aio-libs/aiohttp/issues/7130)
+        (string-append
+         "not test_no_warnings "
+         "and not test_default_loop "
+         "and not test_ctor_global_loop "
+         "and not test_set_loop_default_loop "
+
+         ;; Disable brotli tests, because we’re not providing that optional
+         ;; library.
+         "and not test_feed_eof_no_err_brotli "
+
+         ;; Disable the following tests as they require
+         ;; networking.
+         "and not TestDeflateBuffer "
+         "and not test_client_session_timeout_zero "
+         "and not test_empty_body "
+         "and not test_mark_formdata_as_processed[pyloop] "
+         "and not test_receive_runtime_err[pyloop] "
+
+         ;; assert 'gzip, deflate' == 'gzip, deflate, br'
+         "and not test_headers[pyloop] "
+         ;; ~/.. does not resolve
+         "and not test_add_static_path_resolution"))
+      #:phases
+      '(modify-phases %standard-phases
          (add-after 'unpack 'fix-tests
            (lambda _
-             ;; Disable brotli tests, because we’re not providing that
-             ;; optional library.
-             (substitute* "tests/test_http_parser.py"
-               (("    async def test_feed_eof_no_err_brotli")
-                "    @pytest.mark.xfail\n    async def test_feed_eof_no_err_brotli"))
              ;; Make sure the timestamp of this file is > 1990, because a few
              ;; tests like test_static_file_if_modified_since_past_date depend
              ;; on it.
              (let ((late-90s (* 60 60 24 365 30)))
-               (utime "tests/data.unknown_mime_type" late-90s late-90s))
-
-             ;; Disable test that attempts to access httpbin.org.
-             (substitute* "tests/test_formdata.py"
-               (("async def test_mark_formdata_as_processed.*" all)
-                (string-append "@pytest.mark.xfail\n" all)))
-
-             ;; Don't test the aiohttp pytest plugin to avoid a dependency loop.
-             (delete-file "tests/test_pytest_plugin.py")))
+               (utime "tests/data.unknown_mime_type" late-90s late-90s))))
          (add-before 'build 'cythonize
            (lambda _
              ;; Adapted from the Makefile.
@@ -739,66 +761,27 @@ for adding, removing and dropping callbacks.")
                 (lambda (file)
                   (invoke "cython" "-3"
                           file "-I" "."))
-                (find-files "." "_.*\\.pyx$")))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (let ((skipped-tests
-                     (string-append
-                       ;; This test probably requires to be run with the
-                       ;; library loaded from the the build directory.
-                       "not test_c_parser_loaded and "
-                       ;; TODO: These tests fail with recent versions of Pytest
-                       ;; and the fix is difficult to backport:
-                       ;; https://github.com/aio-libs/aiohttp/pull/6872
-                       ;; Re-enable after 3.9.
-                       "not test_session_close_awaitable and "
-                       "not test_async_with_session and "
-                       "not test_close_run_until_complete_not_deprecated and "
-                       ;; Disable the following tests as they require
-                       ;; networking.
-                       "not TestDeflateBuffer and "
-                       "not test_client_session_timeout_zero and "
-                       "not test_empty_body and "
-                       "not test_mark_formdata_as_processed[pyloop] and "
-                       "not test_receive_runtime_err[pyloop] "
-                       ;; These tests fail for unknown reasons (see:
-                       ;; https://github.com/aio-libs/aiohttp/issues/7130)
-                       "and not test_no_warnings "
-                       "and not test_default_loop "
-                       "and not test_ctor_global_loop "
-                       "and not test_set_loop_default_loop ")))
-               (when tests?
-                 ;; This tests requires the 'proxy.py' module, not yet
-                 ;; packaged.
-                 (delete-file "tests/test_proxy_functional.py")
-                 ;; Sometimes tests fail when run in parallel.
-                 (invoke "pytest" "-vv"
-                         "-o" "addopts=''" "--ignore=aiohttp"
-                         ;; These tests cause errors (see:
-                         ;; https://github.com/aio-libs/aiohttp/issues/7130).
-                         "--ignore" "tests/test_web_sendfile_functional.py"
-                         "--ignore" "tests/test_web_urldispatcher.py"
-                         "-k" skipped-tests))))))))
+                (find-files "." "_.*\\.pyx$"))))))))
     (propagated-inputs
-     (list python-aiodns
+     (list python-aiohappyeyeballs
            python-aiosignal
-           python-attrs
-           python-asynctest
            python-async-timeout
-           python-charset-normalizer
+           python-attrs
            python-frozenlist
-           python-idna-ssl
            python-multidict
+           python-propcache
            python-yarl))
     (native-inputs
      (list gunicorn-bootstrap
-           python-async-generator
-           python-cython
+           python-cython-3
            python-freezegun
            python-pytest
+           python-pytest-cov
            python-pytest-mock
            python-pytest-xdist
-           python-re-assert))
+           python-re-assert
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/aio-libs/aiohttp/")
     (synopsis "Async HTTP client/server framework (asyncio)")
     (description "@code{aiohttp} is an asynchronous HTTP client/server
