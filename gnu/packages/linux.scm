@@ -42,7 +42,7 @@
 ;;; Copyright © 2020 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2020 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
-;;; Copyright © 2020, 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2023, 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2020 John Soo <jsoo1@asu.edu>
 ;;; Copyright © 2020, 2022 Michael Rohleder <mike@rohleder.de>
@@ -8345,9 +8345,10 @@ under OpenGL graphics workloads.")
                            (string-append "libdir="
                                           #$output "/lib")
                            (string-append "CC="
-                                          #$(cc-for-target)) "HOSTCC=gcc"
-                                          (string-append "LDFLAGS=-Wl,-rpath="
-                                                         #$output "/lib"))
+                                          #$(cc-for-target))
+                           "HOSTCC=gcc"
+                           (string-append "LDFLAGS=-Wl,-rpath="
+                                          #$output "/lib"))
       #:phases #~(modify-phases %standard-phases
                    (add-after 'unpack 'build-deterministically
                      (lambda _
