@@ -291,17 +291,17 @@ applications and libraries.  It is used by AqBanking.")
       (license license:lgpl2.1+))))
 
 (define-public aqbanking
-  (let ((attachid "499")) ;; file attachid changes for each version
+  (let ((attachid "531")) ;; file attachid changes for each version
     (package
       (name "aqbanking")
-      (version "6.5.4")
+      (version "6.6.0")
       (source
        (origin
          (method url-fetch)
          (uri (string-append "https://www.aquamaniac.de/rdm/attachments/"
                              "download/" attachid "/aqbanking-" version ".tar.gz"))
          (sha256
-          (base32 "16dc63gav0b4rmwj0clqilfpz4hlidx59x1qcr38wwghfspcw5hd"))))
+          (base32 "1yqbwh91gwwqgiv8cf15rc9mxcdlikhbr5qknaqp5bavp63l8qrp"))))
       (build-system gnu-build-system)
       (arguments
        `(;; Parallel building fails because aqhbci is required before it's
