@@ -5215,6 +5215,42 @@ execution.")
      "The chardet package ports character set detection from ICU to Go.")
     (license license:expat)))
 
+(define-public go-github-com-golangplus-bytes
+  (package
+    (name "go-github-com-golangplus-bytes")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/golangplus/bytes")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0r8f9m7hm6idnbapfb01nw5h09a20b09r7sky2gkniympn98ra75"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/golangplus/bytes"))
+    (native-inputs
+     (list go-github-com-golangplus-testing-bootstrap))
+    (home-page "https://github.com/golangplus/bytes")
+    (synopsis "Extention to Golang standard @code{bytes} library.")
+    (description
+     "Package bytesp is a plus to the standard @code{bytes} package.")
+    (license license:bsd-3)))
+
+(define-public go-github-com-golangplus-bytes-bootstrap
+  (hidden-package
+   (package
+     (inherit go-github-com-golangplus-bytes)
+     (arguments
+      (list #:skip-build? #t
+            #:tests? #f
+            #:import-path "github.com/golangplus/bytes"))
+     (native-inputs '())
+     (propagated-inputs '()))))
+
 (define-public go-github-com-gologme-log
   (package
     (name "go-github-com-gologme-log")

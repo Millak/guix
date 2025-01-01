@@ -631,11 +631,24 @@ package, but can be used in other contexts too.")
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/golangplus/testing"))
+    (native-inputs
+     (list go-github-com-golangplus-bytes-bootstrap))
     (propagated-inputs
      (list go-github-com-golangplus-fmt))
     (synopsis "Additions to Go's standard testing package")
     (description "This package provides additions to Go's stdlib testing.")
     (license license:bsd-3)))
+
+(define-public go-github-com-golangplus-testing-bootstrap
+  (hidden-package
+   (package
+     (inherit go-github-com-golangplus-testing)
+     (arguments
+      (list #:skip-build? #t
+            #:tests? #f
+            #:import-path "github.com/golangplus/testing"))
+     (native-inputs '())
+     (propagated-inputs '()))))
 
 (define-public go-github-com-google-gofuzz
   (package
