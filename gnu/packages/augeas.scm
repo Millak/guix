@@ -3,7 +3,7 @@
 ;;; Copyright © 2017, 2018 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2024, 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -32,6 +32,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages check)
   #:use-module (gnu packages libffi)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages xml))
@@ -86,7 +87,10 @@ of its public API to the myriad syntaxes of individual configuration files.")
         (base32 "1l17gl23f5naram1jaab7gjr9bhjdj97fd9sydvs7cmpns91rbrf"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest pkg-config))
+     (list pkg-config
+           python-pytest
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-cffi))
     (inputs
