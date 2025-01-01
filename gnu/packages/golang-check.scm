@@ -1018,6 +1018,34 @@ differently.")
 testing of time-sensitive code.")
     (license license:expat)))
 
+(define-public go-github-com-ldez-tagliatelle
+  (package
+    (name "go-github-com-ldez-tagliatelle")
+    (version "0.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ldez/tagliatelle")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0s891pqzwivmhw7xfw0m8n8fcg90xiykcg808rr869iflbkdik9n"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ldez/tagliatelle"))
+    (propagated-inputs
+     (list go-github-com-ettle-strcase
+           go-github-com-hashicorp-go-immutable-radix-v2
+           go-golang-org-x-tools))
+    (home-page "https://github.com/ldez/tagliatelle")
+    (synopsis "Struct tags handling linter for Golang")
+    (description
+     "This package implement a functionality for validating tags according to
+rules you define and fixing them according to the defined rules.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-maruel-panicparse
   (package
     (name "go-github-com-maruel-panicparse")
