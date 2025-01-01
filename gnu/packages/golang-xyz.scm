@@ -7668,16 +7668,8 @@ allocation.  @code{fastime} is returning the approximate time.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/kylelemons/godebug"
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; XXX: Replace when go-build-system supports nested path.
-          (delete 'build)
-          (replace 'check
-            (lambda* (#:key import-path tests? #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion (string-append "src/" import-path)
-                  (invoke "go" "test" "-v" "./..."))))))))
+      #:skip-build? #t
+      #:import-path "github.com/kylelemons/godebug"))
     (home-page "https://github.com/kylelemons/godebug")
     (synopsis "Pretty printer for Go values")
     (description
