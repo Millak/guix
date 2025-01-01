@@ -799,17 +799,19 @@ Callback Hell.
 (define-public python-aiohttp-socks
   (package
     (name "python-aiohttp-socks")
-    (version "0.7.1")
+    (version "0.10.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "aiohttp_socks" version))
        (sha256
         (base32
-         "06il43dv6qm858af841vq9qadw6h7qsfs06nnwagmwqyi72cl592"))))
-    (build-system python-build-system)
+         "0s70jpcr9wc8ld2v1w309cz7r8mm2bipf6zbkdqqaa0z0pwf3wj9"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #false)) ;none included
     (propagated-inputs
-     (list python-aiohttp python-attrs python-socks))
+     (list python-aiohttp python-socks))
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/romis2012/aiohttp-socks")
     (synopsis "SOCKS proxy connector for aiohttp")
     (description "This package provides a SOCKS proxy connector for
