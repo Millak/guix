@@ -5912,7 +5912,8 @@ libraries.")
 
 (define netsurf-buildsystem-arguments
   `(#:make-flags `("COMPONENT_TYPE=lib-shared"
-                   "CC=gcc" "BUILD_CC=gcc"
+                   "CC=gcc -Wno-error=calloc-transposed-args"
+                   "BUILD_CC=gcc -Wno-error=calloc-transposed-args"
                    ,(string-append "PREFIX=" %output)
                    ,(string-append "NSSHARED="
                                    (assoc-ref %build-inputs
