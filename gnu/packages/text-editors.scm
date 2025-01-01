@@ -1480,24 +1480,24 @@ card.  It offers:
     (inputs
      (list ncurses))
     (arguments
-     `(#:tests? #f
-       #:parallel-build? #f             ; or enums.h may not yet be generated
-       #:make-flags
-       (list "STRIP=true"               ; don't
-             (string-append "CC=" ,(cc-for-target))
-             (string-append "PREFIX=" (assoc-ref %outputs "out"))
-             (string-append "LDFLAGS=-L" (assoc-ref %build-inputs "ncurses")
-                            "/lib"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'patch-early-shebang
-           (lambda _
-             (substitute* "version.pl"
-               (("/usr/bin/env .*perl") (which "perl")))))
-         (replace 'configure
-           (lambda _
-             (substitute* "src/makefile"
-              (("-lcurses") "-lncurses")))))))
+     (list #:tests? #f
+           #:parallel-build? #f         ; or enums.h may not yet be generated
+           #:make-flags
+           #~(list "STRIP=true"         ; don't
+                   (string-append "CC=" #$(cc-for-target))
+                   (string-append "PREFIX=" #$output)
+                   (string-append "LDFLAGS=-L" #$(this-package-input "ncurses")
+                                  "/lib"))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'configure 'patch-early-shebang
+                 (lambda _
+                   (substitute* "version.pl"
+                     (("/usr/bin/env .*perl") (which "perl")))))
+               (replace 'configure
+                 (lambda _
+                   (substitute* "src/makefile"
+                     (("-lcurses") "-lncurses")))))))
     (home-page "https://ne.di.unimi.it/")
     (synopsis "Text editor with menu bar")
     (description "This package provides a modeless text editor with menu bar.
