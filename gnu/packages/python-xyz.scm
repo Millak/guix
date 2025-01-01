@@ -18710,7 +18710,14 @@ popular online obfuscators.")
         (base32
          "0pwf3pminkzyzgx5kcplvvbvwrrzd3baa7lmh96f647k30rlpp6r"))))
     (build-system python-build-system)
-    (arguments '(#:tests? #f)) ; there are none.
+    (arguments
+     (list
+      #:tests? #f                       ;there are none.
+      #:phases
+      ;; Because python-jsonschema has an old python-webcolor.  Remove this
+      ;; when python-team branch is merged.
+      '(modify-phases %standard-phases
+         (delete 'sanity-check))))
     (propagated-inputs
      (list python-ipykernel
            python-ipywidgets
