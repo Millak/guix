@@ -2905,6 +2905,34 @@ submodules:
      "The pty package provides functions for working with Unix pseudoterminals.")
     (license license:expat)))
 
+(define-public go-github-com-creasty-defaults
+  (package
+    (name "go-github-com-creasty-defaults")
+    (version "1.8.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/creasty/defaults")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1avbm47ghqc6hiafv0c61mzrw9rajgszjyqh4yww916fqzaw8li3"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/creasty/defaults"))
+    (home-page "https://github.com/creasty/defaults")
+    (synopsis "Initialize structs with default values")
+    (description
+     "This package implements functionlity to initialize structs with default
+values.  It supports almost all kind of types: @code{int/8/16/32/64},
+@code{uint/8/16/32/64}, @code{float32/64}, @code{uintptr}, @code{bool},
+@code{string}, @code{map}, @code{slice}, @code{struct},
+@code{f,map[K1]map[K2]Struct}, @code{}[]map[K1]Struct[]},
+@code{time.Duration}, @code{*SampleStruct}, and @code{*int}")
+    (license license:expat)))
+
 (define-public go-github-com-cskr-pubsub
   (package
     (name "go-github-com-cskr-pubsub")
