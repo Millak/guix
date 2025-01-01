@@ -9896,6 +9896,44 @@ To address this and enable easy cycling over arbitrary @code{kwargs}, the
 convert between colorspaces like sRGB, XYZ, CIEL*a*b*, CIECAM02, CAM02-UCS, etc.")
     (license license:expat)))
 
+(define-public python-propcache
+  (package
+    (name "python-propcache")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "propcache" version))
+       (sha256
+        (base32 "0r4sq2j6s63wziw8fhnrx0lxlg8ch3z2i6a92ivm7jqridrcwxrz"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags '(list "--ignore=tests/test_benchmarks.py")
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'patch-build-system
+           (lambda _
+             ;; XXX: I don't know how to tell it to build the extensions in
+             ;; place.
+             (substitute* "packaging/pep517_backend/_backend.py"
+               (("build_inplace=False") "build_inplace=True")))))))
+    (native-inputs
+     (list python-covdefaults
+           python-cython-3
+           python-expandvars
+           python-pytest
+           python-pytest-cov
+           python-pytest-xdist
+           python-setuptools
+           python-tomli
+           python-wheel))
+    (home-page "https://github.com/aio-libs/propcache")
+    (synopsis "Accelerated property cache")
+    (description "The module provides a fast implementation of cached
+properties for Python 3.9+.")
+    (license license:asl2.0)))
+
 (define-public python-proto-matcher
   (package
     (name "python-proto-matcher")
