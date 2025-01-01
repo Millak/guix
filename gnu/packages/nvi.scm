@@ -2,6 +2,7 @@
 ;;; Copyright © 2014 Marek Benc <merkur32@gmail.com>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
+;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -74,9 +75,13 @@
           #$@(if (%current-target-system)
                  '("vi_cv_sprintf_count=yes")
                  '()))
-      #:make-flags #~(list "CFLAGS=-g -O2 -Wno-incompatible-pointer-types\
- -Wno-implicit-function-declaration")
-
+      #:make-flags
+      (list
+       ;; nvi's configure chokes on passing CFLAGS and ignores
+       ;; CFLAGS set in the environment
+       (string-append "CFLAGS=-g -O2"
+                      " -Wno-error=implicit-function-declaration"
+                      " -Wno-error=incompatible-pointer-types"))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'configure 'fix-configure
