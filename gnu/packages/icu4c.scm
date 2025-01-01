@@ -11,6 +11,7 @@
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -54,16 +55,12 @@
 (define-public icu4c
   (package
     (name "icu4c")
-    (version "73.1")
+    (version "76.1")
     (source (origin
               (method url-fetch)
               (uri (icu4c-uri version))
               (sha256
-               (base32 "0iccpdvc0kvpww5a31k9gjkqigyz016i7v80r9zamd34w4fl6mx4"))
-              (patches
-               (search-patches
-                "icu4c-icu-22132-fix-vtimezone.patch"
-                "icu4c-fix-TestHebrewCalendarInTemporalLeapYear.patch"))))
+               (base32 "0gjg1zrnqk4vmidqgqx4xbz05898px212gnff8242is7zrmv9b6z"))))
     (build-system gnu-build-system)
     (native-inputs
      (append (list python-minimal)
