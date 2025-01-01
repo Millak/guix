@@ -16,6 +16,7 @@
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
 ;;; Copyright © 2024 hapster <o.rojon@posteo.net>
+;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -552,7 +553,10 @@ connections from and to iOS devices by connecting to a socket provided by a
                 "1xmhfnypg6j7shl73wfkrrn4mj9dh8qzaj3258q9zkb5cc669wjk"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags '("PYTHON_VERSION=3")))
+     (list
+      #:configure-flags
+       #~(list "CFLAGS=-g -O2 -Wno-error=int-conversion"
+               "PYTHON_VERSION=3")))
     (propagated-inputs
      (list openssl libplist libusbmuxd))
     (inputs
