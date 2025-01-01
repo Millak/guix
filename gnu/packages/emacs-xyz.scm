@@ -150,7 +150,7 @@
 ;;; Copyright © 2024 Liam Hupfer <liam@hpfr.net>
 ;;; Copyright © 2024 aurtzy <aurtzy@gmail.com>
 ;;; Copyright © 2024 Olivier Rojon <o.rojon@posteo.net>
-
+;;; Copyright © 2024 Divya Ranjan Pattanaik <divya@subvertising.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -39824,6 +39824,28 @@ tied to evil states.  It is essentially a generalization of the idea
 of a leader key as used in Vim or the @code{emacs-evil-leader} package,
 and allows for an arbitrary number of leader keys.")
       (license license:gpl3+))))
+
+(define-public emacs-binder
+  (package
+    (name "emacs-binder")
+    (version "0.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/divyaranjan/binder")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        "1fdgl31zc15cysv1yys95j0106i2fwfxb3qcwwh7f3mcz2snr2md")))
+    (build-system emacs-build-system)
+    (home-page "https://codeberg.org/divyaranjan/binder")
+    (synopsis
+     "Binder is a global minor mode to facilitate working on multiple files")
+    (description
+     "Primarily, Binder provides a global minor mode Binder Mode.
+This allows working with files in the current @code{binder-project-directory}.")
+    (license license:gpl3+)))
 
 (define-public emacs-spaceleader
   (let ((commit "5d88d120494623d6777d464ec40ff4bb7d6b1d57")
