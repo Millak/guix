@@ -1452,6 +1452,8 @@ with strong support for multi-part, multi-channel use cases.")
     (version (package-version ilmbase))
     (source (origin
               (inherit (package-source ilmbase))
+              (patches (append (origin-patches (package-source ilmbase))
+                               (search-patches "openexr-2-gcc-14.patch")))
               (file-name (git-file-name "openexr" version))))
     (build-system cmake-build-system)
     (arguments

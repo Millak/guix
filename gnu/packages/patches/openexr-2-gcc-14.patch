@@ -1,0 +1,33 @@
+Upstream-status: Not presented upstream.
+
+--- openexr-2.5.7-checkout/OpenEXR/IlmImf/ImfHuf.cpp	1970-01-01 01:00:01.000000000 +0100
++++ openexr-2.5.7-checkout/OpenEXR/IlmImf/ImfHuf.cpp	2025-01-01 14:56:18.414434903 +0100
+@@ -53,6 +53,7 @@
+ #include <cstring>
+ #include <cassert>
+ #include <algorithm>
++#include <cstdint>
+ 
+ 
+ using namespace std;
+--- openexr-2.5.7-checkout/OpenEXR/IlmImf/ImfDwaCompressor.cpp	1970-01-01 01:00:01.000000000 +0100
++++ openexr-2.5.7-checkout/OpenEXR/IlmImf/ImfDwaCompressor.cpp	2025-01-01 15:03:40.654686929 +0100
+@@ -159,6 +159,7 @@
+ #include <limits>
+ 
+ #include <cstddef>
++#include <cstdint>
+ 
+ 
+ // Windows specific addition to prevent the indirect import of the redefined min/max macros
+--- openexr-2.5.7-checkout/OpenEXR/IlmImf/ImfMisc.cpp	1970-01-01 01:00:01.000000000 +0100
++++ openexr-2.5.7-checkout/OpenEXR/IlmImf/ImfMisc.cpp	2025-01-01 15:09:40.591441901 +0100
+@@ -54,6 +54,8 @@
+ #include <ImfTileDescription.h>
+ #include "ImfNamespace.h"
+ 
++#include <cstdint>
++
+ OPENEXR_IMF_INTERNAL_NAMESPACE_SOURCE_ENTER
+ 
+ using IMATH_NAMESPACE::Box2i;
