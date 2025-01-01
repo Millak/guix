@@ -22,7 +22,7 @@
 ;;; Copyright © 2021 Matthew James Kraai <kraai@ftbfs.org>
 ;;; Copyright © 2021 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
-;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2024, 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1183,7 +1183,7 @@ compatibility is also supported.")
 (define-public wolfssl
   (package
     (name "wolfssl")
-    (version "5.7.4")
+    (version "5.7.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1192,7 +1192,7 @@ compatibility is also supported.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0k7bdr5r9x8sb9qxvgmvhj1rb7rb1r0rap4bp82g8qbh9pa5dnzx"))))
+                "1q1sqwx6njsjbwmwr87ky0yrg2cin7ssa12gl14i8x1v35rpcxdb"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags
