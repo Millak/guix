@@ -7686,6 +7686,32 @@ structure.  It can also produce a much more verbose, one-item-per-line
 representation suitable for computing diffs.")
     (license license:asl2.0)))
 
+(define-public go-github-com-leodido-go-urn
+  (package
+    (name "go-github-com-leodido-go-urn")
+    (version "1.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/leodido/go-urn")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0bn9dj6y299jdh8szfim32yxj9zip38cqgv965dj23cixgr7baxb"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/leodido/go-urn"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/leodido/go-urn")
+    (synopsis "Parser for uniform resource names as seen on RFC 2141")
+    (description
+     "This package implements a parser for uniform resource names (URN) as
+specified by @uref{https://tools.ietf.org/html/rfc2141, IETF RFC 2141}.")
+    (license license:expat)))
+
 (define-public go-github-com-lestrrat-go-envload
   (package
     (name "go-github-com-lestrrat-go-envload")
