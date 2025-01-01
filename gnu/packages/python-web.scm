@@ -2540,7 +2540,13 @@ OpenAI API.")
           (add-after 'unpack 'remove-coverage-pytest-options
             (lambda _
               (substitute* "pyproject.toml"
-                (("^--cov.*") "")))))))
+                (("^--cov.*") ""))))
+          ;; See https://github.com/python-openapi/openapi-schema-validator/issues/204
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("jsonschema-specifications.*")
+                 "jsonschema-specifications = \">=2023.5.2\"\n")))))))
     (native-inputs (list python-poetry-core python-pytest))
     (propagated-inputs
      (list python-isodate
