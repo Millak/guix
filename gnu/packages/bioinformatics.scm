@@ -18789,34 +18789,35 @@ implementation differs in these ways:
                             " and not test_pca_n_pcs"
                             " and not test_pca_chunked"
                             " and not test_pca_sparse"
-                            " and not test_pca_reproducible"))
+                            " and not test_pca_reproducible"
+
+                            ;; File is missing
+                            " and not test_pbmc3k")
+             ;; TODO: I can't get the plotting tests to work, even with Xvfb.
+             "--ignore=scanpy/tests/test_embedding_plots.py"
+             "--ignore=scanpy/tests/test_preprocessing.py"
+             "--ignore=scanpy/tests/test_read_10x.py"
+
+             ;; These two fail with "ValueError: I/O operation on closed file."
+             "--ignore=scanpy/tests/test_neighbors_key_added.py"
+
+             ;; These tests require Internet access.
+             "--ignore-glob=scanpy/tests/notebooks.*"
+             "--ignore=scanpy/tests/test_clustering.py"
+             "--ignore=scanpy/tests/test_datasets.py"
+             "--ignore=scanpy/tests/test_normalization.py"
+             "--ignore=scanpy/tests/test_score_genes.py"
+             "--ignore=scanpy/tests/test_highly_variable_genes.py"
+             ;; The following tests requires 'scanorama', which isn't packaged
+             ;; yet.
+             "--ignore=scanpy/tests/external/test_scanorama_integrate.py")
        #:phases
        #~(modify-phases %standard-phases
            (add-after 'unpack 'pretend-version
              (lambda _
                (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
-           (add-after 'unpack 'delete-bad-tests
+           (add-after 'unpack 'discover-anndata
              (lambda _
-               ;; These tests require Internet access.
-               (delete-file-recursively "scanpy/tests/notebooks")
-               (delete-file "scanpy/tests/test_clustering.py")
-               (delete-file "scanpy/tests/test_datasets.py")
-               (delete-file "scanpy/tests/test_normalization.py")
-               (delete-file "scanpy/tests/test_score_genes.py")
-               (delete-file "scanpy/tests/test_highly_variable_genes.py")
-
-               ;; TODO: I can't get the plotting tests to work, even with Xvfb.
-               (delete-file "scanpy/tests/test_embedding_plots.py")
-               (delete-file "scanpy/tests/test_preprocessing.py")
-               (delete-file "scanpy/tests/test_read_10x.py")
-
-               ;; These two fail with "ValueError: I/O operation on closed file."
-               (delete-file "scanpy/tests/test_neighbors_key_added.py")
-
-               ;; The following tests requires 'scanorama', which isn't
-               ;; packaged yet.
-               (delete-file "scanpy/tests/external/test_scanorama_integrate.py")
-
                (setenv "PYTHONPATH"
                        (string-append (getcwd) ":"
                                       #$(this-package-native-input "python-anndata:source") ":"
