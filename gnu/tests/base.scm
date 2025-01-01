@@ -576,6 +576,9 @@ functionality tests, using the given KERNEL.")
   (test-basic-os))
 
 ;; Ensure the LTS kernels are up to snuff, too.
+(define %test-linux-libre-6.12
+  (test-basic-os linux-libre-6.12))
+
 (define %test-linux-libre-6.6
   (test-basic-os linux-libre-6.6))
 
