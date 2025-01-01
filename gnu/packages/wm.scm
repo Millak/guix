@@ -77,6 +77,7 @@
 ;;; Copyright © 2024 Wamm K. D. <jaft.r@outlook.com>
 ;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2024 Josep Bigorra <jjbigorra@gmail.com>
+;;; Copyright © 2024 Jakob Kirsch <jakob.kirsch@web.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -169,6 +170,7 @@
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages readline)
+  #:use-module (gnu packages regex)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages suckless)
@@ -324,7 +326,7 @@ or musca).
 (define-public hyprland
   (package
     (name "hyprland")
-    (version "0.45.2")
+    (version "0.46.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/hyprwm/Hyprland"
@@ -341,7 +343,7 @@ or musca).
                               "subprojects"))))
               (sha256
                (base32
-                "1jqnly8h72v20fsz1075ib7gl7272g5svqw7qpqhx6243w1320np"))))
+                "1hdhk7skf94nm4kk3zs2vqyi0qlc32hb7gfhlyzawj5wq05bawnh"))))
     (build-system cmake-build-system)
     (arguments
      (list #:cmake cmake-3.30
@@ -374,6 +376,7 @@ or musca).
            binutils
            cairo
            hyprcursor
+           hyprgraphics
            hyprland-protocols
            hyprlang
            hyprutils
@@ -383,6 +386,7 @@ or musca).
            mesa
            pango
            pciutils
+           re2-next
            udis86
            wayland
            wayland-protocols
