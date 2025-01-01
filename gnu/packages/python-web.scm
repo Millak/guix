@@ -8538,6 +8538,32 @@ Features:
 @end itemize")
     (license license:expat)))
 
+(define-public python-tiny-proxy
+  (package
+    (name "python-tiny-proxy")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "tiny_proxy" version))
+       (sha256
+        (base32 "05nq62fn3p7s1a6dkdvnrzmk39d9ddrzb3pqbbli025qs3m9j1bq"))))
+    (build-system pyproject-build-system)
+    ;; There are only a handful of tests and they require the as yet
+    ;; unpackaged httpx_socks.
+    (arguments (list #:tests? #false))
+    (propagated-inputs (list python-anyio))
+    (native-inputs
+     (list python-httpx
+           python-pytest
+           python-setuptools
+           python-wheel))
+    (home-page "https://github.com/romis2012/tiny-proxy")
+    (synopsis "Simple proxy server (SOCKS4(a), SOCKS5(h), HTTP tunnel)")
+    (description "This package provides a simple proxy server (SOCKS4(a),
+SOCKS5(h), HTTP tunnel).")
+    (license license:asl2.0)))
+
 (define-public python-azure-nspkg
   (package
     (name "python-azure-nspkg")
