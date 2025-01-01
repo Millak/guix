@@ -16948,6 +16948,15 @@ tasks, sockets, files, locks, and queues.")
               (substitute* "setup.py"
                 (("cpu_flags = .*")
                  "cpu_flags = ['sse2']\n"))))
+          (add-after 'unpack 'fix-reference-to-blosc2
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "tables/__init__.py"
+                (("( +)os.path.join\\(current_dir, blosc2_lib_hardcoded\\),"
+                  m indent)
+                 (string-append indent
+                                "\""
+                                (search-input-file inputs "/lib/libblosc2.so")
+                                "\",\n" m)))))
           (add-before 'build 'set-LD_LIBRARY_PATH
             (lambda _
               ;; The setup.py build system makes use of ctypes.CDLL, which
