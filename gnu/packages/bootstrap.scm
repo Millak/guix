@@ -780,8 +780,9 @@ $out/bin/guile --version~%"
               ;; Patch linker scripts so they refer to the right file-names.
               (substitute* ,(cond ((target-hurd64?)
                                    ''("lib/libc.so" "lib/libm.so"))
-                                  ((or (target-x86?)
-                                       (target-arm?))
+                                  ((and (not (target-hurd?))
+                                        (or (target-x86?)
+                                            (target-arm?)))
                                    ''("lib/libc.so" "lib/libpthread.so"))
                                   (else
                                    ''("lib/libc.so")))
