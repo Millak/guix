@@ -4,7 +4,7 @@
 ;;; Copyright © 2019–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2025 Antoine Côté <antoine.cote@posteo.net>
-;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -25,6 +25,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix gexp)
   #:use-module (guix utils)
@@ -123,8 +124,13 @@ files).  This assumes LIBRARY uses Libtool."
     (arguments
      (substitute-keyword-arguments (package-arguments library)
        ((#:configure-flags flags #~'())
-        #~(append '("--disable-shared" "--enable-static")
-                  #$flags))))))
+        (let* ((build-system (package-build-system library))
+               (static-flags (cond ((eq? build-system cmake-build-system)
+                                    '("-DBUILD_SHARED_LIBS=OFF"))
+                                   (else
+                                    '("--disable-shared" "--enable-static")))))
+          #~(append '#$static-flags
+                    #$flags)))))))
 
 (define-public cryptsetup-static
   ;; Stripped-down statically-linked 'cryptsetup' command for use in initrds.
@@ -181,7 +187,7 @@ files).  This assumes LIBRARY uses Libtool."
               (propagated-inputs
                `(("libgpg-error-host" ,(static-library libgpg-error)))))))
        `(("argon2" ,(static-library argon2))
-         ("json-c" ,(static-library json-c-0.13))
+         ("json-c" ,(static-library json-c))
          ("libgcrypt" ,libgcrypt-static)
          ("lvm2" ,lvm2-static)
          ("util-linux" ,util-linux "static")
