@@ -1305,7 +1305,28 @@ with the Linux kernel.")
                         (member (basename patch)
                                 '("glibc-2.35-CVE-2023-4911.patch"
                                   "glibc-hurd-clock_gettime_monotonic.patch")))
-                             (origin-patches (package-source glibc-2.35)))))))))
+                             (origin-patches (package-source glibc-2.35)))))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments glibc)
+       ((#:configure-flags flags #~'())
+        #~(cons* #$(string-append
+                    "CFLAGS=-g -O2"
+                    " -Wno-error=builtin-declaration-mismatch"
+                    " -Wno-error=format-overflow"
+                    " -Wno-error=stringop-overflow"
+                    " -Wno-error=use-after-free")
+                 "--enable-crypt"
+                 ;; We do not want to use the C++ compiler, because its
+                 ;; libstdc++ is linked against a newer glibc, and so relies
+                 ;; on those newer symbols.  Pretend it doesn't link (the test
+                 ;; doesn't actually check that the compiler works with new
+                 ;; libstdc++ and older glibc).
+                 "libc_cv_cxx_link_ok=no"
+                 #$flags))
+       ((#:phases phases)
+        `(modify-phases ,phases
+           ;; This phase fails trying to create /etc/ld.so.cache
+           (delete 'install-utf8-c-locale)))))))
 
 (define-public glibc-2.32
   (package
