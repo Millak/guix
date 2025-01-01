@@ -6108,37 +6108,38 @@ name resolutions asynchronously.")
 (define-public python-yarl
   (package
     (name "python-yarl")
-    (version "1.6.3")
+    (version "1.18.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "yarl" version))
        (sha256
         (base32
-         "045z4ssg8g5h0qhz8hnx74hswgkndaldqq1xi5l1n5s0j996d44a"))
-       (modules '((guix build utils)))
-       (snippet
-         #~(begin
-             (delete-file "yarl/_quoting_c.c")))))
-    (build-system python-build-system)
+         "1qfj6kvdxr8bzka4lp0bh0xfgr5mzx7zzvj2jb4vcxxzbk20265c"))))
+    (build-system pyproject-build-system)
     (arguments
-      (list #:tests? #f     ; test suite can't find yarl._quoting_c
-            #:phases
-            #~(modify-phases %standard-phases
-                (add-after 'unpack 'cythonize-code
-                  (lambda _
-                    (invoke "cython" "yarl/_quoting_c.pyx")))
-                (replace 'check
-                  (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-                    (when tests?
-                      (substitute* "setup.cfg"
-                        (("--cov=yarl") ""))
-                      (add-installed-pythonpath inputs outputs)
-                      (invoke "python" "-m" "pytest")))))))
+     (list
+      #:test-flags '(list "--ignore-glob=tests/test_*_benchmarks.py")
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'patch-build-system
+           (lambda _
+             ;; XXX: I don't know how to tell it to build the extensions in
+             ;; place.
+             (substitute* "packaging/pep517_backend/_backend.py"
+               (("build_inplace=False") "build_inplace=True")))))))
     (native-inputs
-     (list python-cython python-pytest python-pytest-runner))
+     (list python-covdefaults
+           python-cython-3
+           python-expandvars
+           python-pytest
+           python-pytest-cov
+           python-pytest-xdist
+           python-setuptools
+           python-tomli
+           python-wheel))
     (propagated-inputs
-     (list python-idna python-multidict))
+     (list python-packaging python-idna python-multidict python-propcache))
     (home-page "https://github.com/aio-libs/yarl/")
     (synopsis "Yet another URL library")
     (description "@code{yarl} module provides handy @code{URL} class
