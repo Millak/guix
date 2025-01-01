@@ -35,7 +35,7 @@
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2023 Sergiu Ivanov <sivanov@colimite.fr>
 ;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
-;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2023, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2024 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2025 Florian Pelz <pelzflorian@pelzflorian.de>
 ;;; Copyright © 2025 Remco van 't Veer <remco@remworks.net>
@@ -525,6 +525,10 @@ g_test_add_func \\(\"/layout/gravity-metrics2\", test_gravity_metrics2\\);")
               (base32
                "0ip0ziys6mrqqmz4n71ays0kf5cs1xflj1gfpvs4fgy2nsrr482m"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "CFLAGS=-g -O2 -Wno-error=incompatible-pointer-types")))
     (inputs
      (list glib pango-1.42))
     (native-inputs
