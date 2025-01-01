@@ -1130,6 +1130,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/classpath-miscompilation.patch		\
   %D%/packages/patches/clitest-grep-compat.patch		\
   %D%/packages/patches/clog-fix-shared-build.patch		\
+  %D%/packages/patches/clucene-gcc-14.patch			\
   %D%/packages/patches/clucene-pkgconfig.patch			\
   %D%/packages/patches/cmake-curl-certificates-3.24.patch	\
   %D%/packages/patches/coda-use-system-libs.patch		\
