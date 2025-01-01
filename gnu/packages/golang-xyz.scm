@@ -4090,6 +4090,36 @@ and @code{io.ReadCloser}) with overwrites
                     "  This package is a fork of dlclark/regexp2 providing a
 more similar API to regexp."))))
 
+(define-public go-github-com-ettle-strcase
+  (package
+    (name "go-github-com-ettle-strcase")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ettle/strcase")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1gg3zxbbp3vfskzg2dl1s1agjn34dw14282fj28g9nrwqbbq854x"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ettle/strcase"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-benchmark
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "benchmark")))))))
+    (home-page "https://github.com/ettle/strcase")
+    (synopsis "String naming convention style library")
+    (description
+     "Package strcase is a package for converting strings into various word
+cases (e.g. snake_case, camelCase, kebab-case, etc).")
+    (license license:expat)))
+
 (define-public go-github-com-expr-lang-expr
   (package
     (name "go-github-com-expr-lang-expr")
