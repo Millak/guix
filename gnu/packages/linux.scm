@@ -42,7 +42,7 @@
 ;;; Copyright © 2020 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2020 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
-;;; Copyright © 2020, 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2023, 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2020 John Soo <jsoo1@asu.edu>
 ;;; Copyright © 2020, 2022 Michael Rohleder <mike@rohleder.de>
@@ -8197,50 +8197,47 @@ under OpenGL graphics workloads.")
     (license license:gpl3)))
 
 (define-public efivar
-  ;; XXX: 15622b7e5761f3dde3f0e42081380b2b41639a48 fixes compilation on i686.
-  ;; ca48d3964d26f5e3b38d73655f19b1836b16bd2d fixes cross-compilation.
-  (let ((commit "ca48d3964d26f5e3b38d73655f19b1836b16bd2d")
-        (revision "0"))
-    (package
-      (name "efivar")
-      (version (git-version "38" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/rhboot/efivar")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0zsab3hcv1v53cxwkvsk09ifnwhs48a6xa3kxlwvs87yxswspvi8"))))
-      (build-system gnu-build-system)
-      (arguments
-       (list
-        ;; Tests require a UEFI system and is not detected in the chroot.
-        #:tests? #f
-        #:make-flags #~(list (string-append "prefix="
-                                            #$output)
-                             (string-append "libdir="
-                                            #$output "/lib")
-                             (string-append "CC="
-                                            #$(cc-for-target)) "HOSTCC=gcc"
-                             (string-append "LDFLAGS=-Wl,-rpath="
-                                            #$output "/lib"))
-        #:phases #~(modify-phases %standard-phases
-                     (add-after 'unpack 'build-deterministically
-                       (lambda _
-                         (substitute* "src/include/defaults.mk"
-                           ;; Don't use -march=native.
-                           (("-march=native")
-                            ""))))
-                     (delete 'configure))))
-      (native-inputs (list mandoc pkg-config))
-      (inputs (list popt))
-      (home-page "https://github.com/rhboot/efivar")
-      (synopsis "Tool and library to manipulate EFI variables")
-      (description "This package provides a library and a command line
+  (package
+    (name "efivar")
+    (version "39")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/rhboot/efivar")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1zd9dghg1z2rrsazv3d9rj7nik6kdqz42jiak65pipz7mpjn9zdk"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      ;; Tests require a UEFI system and is not detected in the chroot.
+      #:tests? #f
+      #:make-flags #~(list (string-append "prefix="
+                                          #$output)
+                           (string-append "libdir="
+                                          #$output "/lib")
+                           (string-append "CC="
+                                          #$(cc-for-target))
+                           "HOSTCC=gcc"
+                           (string-append "LDFLAGS=-Wl,-rpath="
+                                          #$output "/lib"))
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'build-deterministically
+                     (lambda _
+                       (substitute* "src/include/defaults.mk"
+                         ;; Don't use -march=native.
+                         (("-march=native")
+                          ""))))
+                   (delete 'configure))))
+    (native-inputs (list mandoc pkg-config))
+    (inputs (list popt))
+    (home-page "https://github.com/rhboot/efivar")
+    (synopsis "Tool and library to manipulate EFI variables")
+    (description "This package provides a library and a command line
 interface to the variable facility of UEFI boot firmware.")
-      (license license:lgpl2.1+))))
+    (license license:lgpl2.1+)))
 
 (define-public efibootmgr
   (package
