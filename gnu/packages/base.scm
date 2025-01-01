@@ -6,7 +6,7 @@
 ;;; Copyright © 2014 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2014, 2015 Manolis Fragkiskos Ragkousis <manolis837@gmail.com>
 ;;; Copyright © 2016, 2017, 2019-2023 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2016, 2020, 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2016, 2020, 2023, 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2016, 2018 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2017 Rene Saavedra <rennes@openmailbox.org>
 ;;; Copyright © 2017, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
@@ -1269,7 +1269,8 @@ with the Linux kernel.")
     (arguments
      (substitute-keyword-arguments (package-arguments glibc)
        ((#:configure-flags flags #~'())
-        #~(cons* "--enable-crypt"
+        #~(cons* "CFLAGS=-g -O2 -Wno-error=builtin-declaration-mismatch"
+                 "--enable-crypt"
                  ;; We do not want to use the C++ compiler, because its
                  ;; libstdc++ is linked against a newer glibc, and so relies
                  ;; on those newer symbols.  Pretend it doesn't link (the test
