@@ -7731,6 +7731,8 @@ wraps things up in a developer-friendly way.")
     (build-system gnu-build-system)
     (arguments
      (list
+      #:configure-flags
+      #~(list "CFLAGS=-g -O2 -Wno-error=incompatible-pointer-types")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-introspection-install-dir
