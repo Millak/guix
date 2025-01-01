@@ -161,69 +161,57 @@ homeserver and generally help bootstrap the ecosystem.")
 (define-public python-matrix-nio
   (package
     (name "python-matrix-nio")
-    (version "0.20.2")
+    (version "0.25.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "matrix_nio" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/poljar/matrix-nio.git")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "110wg1grhqqgwvlgr98r2k8wxcggpj7lbdwmgkgmi2l7qj1vw3dm"))))
+        (base32
+         "07prfdnkr13d0pvzhnicwnpn562fwq9zx05d6wza230s7vj0mmk4"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      '(list "tests" "-k"
-             (string-append
-              "not test_upload_binary_file_object "
-              "and not test_connect_wrapper"))
+      ;; This test requires an Internet connection
+      '(list "tests" "-k" "not test_connect_wrapper")
       #:phases
       '(modify-phases %standard-phases
-         (add-after 'unpack 'relax-requirements
+         (add-after 'unpack 'fix-tests
            (lambda _
-             (substitute* "pyproject.toml"
-               ;; Remove upper bounds of cachetool pin.
-               (("cachetools (.*version = )\"\\^4" _ match)
-                (string-append "cachetools " match
-                               "\">=4")))))
-         (add-before 'check 'install-tests
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (copy-recursively (string-append
-                                (assoc-ref inputs "tests") "/tests")
-                               "tests"))))))
+             (substitute* "tests/helpers.py"
+               (("from nio.crypto import OlmAccount, OlmDevice")
+                "from nio.crypto.device import OlmDevice
+from nio.crypto.sessions import OlmAccount")))))))
     (native-inputs
-     `(("python-pytest" ,python-pytest)
-       ("python-poetry-core" ,python-poetry-core)
-       ("python-hypothesis" ,python-hypothesis)
-       ("python-faker" ,python-faker)
-       ("python-pytest-aiohttp" ,python-pytest-aiohttp)
-       ("python-pytest-asyncio" ,python-pytest-asyncio)
-       ("python-aioresponses" ,python-aioresponses)
-       ("python-pytest-benchmark" ,python-pytest-benchmark)
-       ("tests"
-        ;; The release on pypi comes without tests.  We can't build from this
-        ;; checkout, though, because installation requires an invocation of
-        ;; poetry.
-        ,(origin
-           (method git-fetch)
-           (uri (git-reference
-                 (url "https://github.com/poljar/matrix-nio.git")
-                 (commit version)))
-           (file-name (git-file-name name version))
-           (sha256
-            (base32
-             "1rd90sk5yygxzvcs4qhzr80bch7d3xszyfjf99pn10xsj10mi752"))))))
+     (list python-aioresponses
+           python-faker
+           python-hpack
+           python-hyperframe
+           python-hypothesis
+           python-mypy
+           python-mypy-extensions
+           python-poetry-core
+           python-pytest
+           python-pytest-aiohttp
+           python-pytest-asyncio
+           python-pytest-benchmark
+           python-pytest-cov
+           python-pytest-flake8
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-aiofiles
            python-aiohttp
            python-aiohttp-socks
            python-atomicwrites
            python-cachetools
-           python-dataclasses
-           python-future
            python-h11
            python-h2
            python-jsonschema
-           python-logbook
            python-olm
            python-peewee
            python-pycryptodome
