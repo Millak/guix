@@ -3940,7 +3940,10 @@ functionality was designed to be as reusable and portable as possible.")
       ;; The "timeout-server" test hangs when run in parallel.
       #:parallel-tests? #f
       #:configure-flags
-      #~'(;; We don't need static libraries, plus they don't build reproducibly
+      #~'(#$(string-append "CFLAGS=-g -O2"
+                           " -Wno-error=implicit-int"
+                           " -Wno-error=incompatible-pointer-types")
+          ;; We don't need static libraries, plus they don't build reproducibly
           ;; (non-deterministic ordering of .o files in the archive.)
           "--disable-static"
 
