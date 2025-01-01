@@ -2616,7 +2616,7 @@ compliance with the specification.")
 (define-public python-openapi-core
   (package
     (name "python-openapi-core")
-    (version "0.19.1")
+    (version "0.19.4")
     (source
      (origin
        (method git-fetch)
@@ -2626,7 +2626,7 @@ compliance with the specification.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1fdz01wssgqh9dzc7qddl0fms2zivhalghzk63ynblss2r91yc8s"))))
+         "092sj2933jmvq5r76khr0vphih490vls1ga3s43gz8i47aqaxx96"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2635,16 +2635,12 @@ compliance with the specification.")
              ;; Ignore Pytest configuration in setup.cfg that adds
              ;; unwanted flake8 and coverage options.
              "-c" "/dev/null"
-             "-k" (string-append
-                   ;; Type mismatches
-                   "not TestFlaskOpenAPIRequest"
-                   " and not TestFlaskOpenAPIResponse"))))
+             "-k" "not test_chars_valid")))
     (native-inputs (list python-django
                          python-falcon
                          python-flask
                          python-mock
                          python-poetry-core
-                         python-pypa-build
                          python-pytest
                          python-responses))
     (propagated-inputs
