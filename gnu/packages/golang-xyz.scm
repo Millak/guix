@@ -9385,6 +9385,30 @@ varints.")
 very fast, and tries to be entropy pool friendly.")
     (license license:asl2.0)))
 
+(define-public go-github-com-ncruces-go-strftime
+  (package
+    (name "go-github-com-ncruces-go-strftime")
+    (version "0.1.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ncruces/go-strftime")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0rmr44m8mj5w9j1sy4c24b3n55lx2gwz1z3lb2g3p4qw87wv0j2g"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ncruces/go-strftime"))
+    (home-page "https://github.com/ncruces/go-strftime")
+    (synopsis "Implementation of strftime/strptime for Golang")
+    (description
+     "Package strftime provides strftime/strptime compatible time formatting
+and parsing.")
+    (license license:expat)))
+
 (define-public go-github-com-neurosnap-sentences
   (package
     (name "go-github-com-neurosnap-sentences")
