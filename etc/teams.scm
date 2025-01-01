@@ -725,10 +725,6 @@ GLib/GIO, GTK, GStreamer and Webkit."
                        "vagrant@reproducible-builds.org")
   reproduciblebuilds)
 
-(define-member (person "Zhu Zihao"
-                       "all_but_last@163.com")
-  localization xfce)
-
 (define-member (person "Maxim Cournoyer"
                        "maxim.cournoyer@gmail.com")
   documentation gnome qt telephony)
