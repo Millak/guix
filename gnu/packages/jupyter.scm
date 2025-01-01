@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019, 2022 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2021-2024 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2021-2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Hugo Lecomte <hugo.lecomte@inria.fr>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -64,6 +64,13 @@
        (sha256
         (base32 "1qrhzazq10dz64y9mawr3ns595fsdhrj1wvbb42xhmcl66r1xq8a"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      ;; Because python-jsonschema has an old python-webcolor.  Remove this
+      ;; when python-team branch is merged.
+      '(modify-phases %standard-phases
+         (delete 'sanity-check))))
     (propagated-inputs (list python-argon2-cffi
                              python-ipykernel
                              python-ipython-genutils
