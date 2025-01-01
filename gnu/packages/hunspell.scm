@@ -434,6 +434,13 @@ spell-checking library.")
                          #:license (list license:lgpl3+))))
 
 
+(define-public hunspell-dict-pt-pt
+  (let ((synopsis identity))
+    (hunspell-dictionary "pt_PT" "Portuguese (Portugal)"
+                         #:synopsis (synopsis "Hunspell dictionary for Portuguese (Portugal)")
+                         #:home-page "https://cgit.freedesktop.org/libreoffice/dictionaries/tree/pt_PT"
+                         #:license (list license:gpl2+))))
+
 ;;;
 ;;; Hunspell packages made from the Aspell word lists.
 ;;;
