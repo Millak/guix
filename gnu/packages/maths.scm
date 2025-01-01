@@ -22,7 +22,7 @@
 ;;; Copyright © 2017, 2019, 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Dave Love <me@fx@gnu.org>
-;;; Copyright © 2018, 2019, 2020, 2021, 2022, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2018, 2019, 2020, 2021, 2022, 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
 ;;; Copyright © 2018 Nadya Voronova <voronovank@gmail.com>
 ;;; Copyright © 2018 Adam Massmann <massmannak@gmail.com>
@@ -7355,6 +7355,11 @@ specifications.")
        #:phases
        (modify-phases %standard-phases
          (delete 'configure)            ; no configure script
+         (add-after 'unpack 'apply-gcc-14-patch
+           (lambda _
+             (substitute* '("lpsolve55/ccc"
+                            "lp_solve/ccc")
+               (("^c=gcc") "c=\"gcc -Wno-error=implicit-int\""))))
          (replace 'build
            (lambda _
              (with-directory-excursion "lpsolve55"
