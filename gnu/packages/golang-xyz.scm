@@ -10159,6 +10159,30 @@ defined, its value may be empty or non-empty.  You can find more details here:
 https://en.wikipedia.org/wiki/Extended_file_attributes}.")
     (license license:bsd-2)))
 
+(define-public go-github-com-pmezard-go-difflib
+  (package
+    (name "go-github-com-pmezard-go-difflib")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pmezard/go-difflib")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0c1cn55m4rypmscgf0rrb88pn58j3ysvc2d0432dp3c6fqg6cnzw"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/pmezard/go-difflib/difflib"
+      #:unpack-path "github.com/pmezard/go-difflib/"))
+    (home-page "https://github.com/pmezard/go-difflib")
+    (synopsis "Go diff implementation")
+    (description
+     "This package provides unified and context-aware diffs in Go.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-polydawn-refmt
   (package
     (name "go-github-com-polydawn-refmt")
