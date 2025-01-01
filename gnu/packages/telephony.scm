@@ -24,6 +24,7 @@
 ;;; Copyright © 2021 Demis Balbach <db@minikn.xyz>
 ;;; Copyright © 2022 Thomas Albers Raviola <thomas@thomaslabs.org>
 ;;; Copyright © 2023 Ivan Gankevich <igankevich@capybaramail.xyz>
+;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1168,7 +1169,7 @@ very useful to emulate thousands of user agents calling your SIP system.")
 (define-public sofia-sip
   (package
     (name "sofia-sip")
-    (version "1.13.16")
+    (version "1.13.17")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1177,10 +1178,13 @@ very useful to emulate thousands of user agents calling your SIP system.")
               (file-name (git-file-name "sofia-sip" version))
               (sha256
                (base32
-                "1hi9np49wcq91d1w93qi6by40qnr348hpzc2wkw3l955zh1n30lr"))))
+                "19m1ncvn641s5r9vfnivsz8g5960vcfmhhx0s119jfs49kcql2gd"))))
     (build-system gnu-build-system)
     (arguments
      (list
+      #:configure-flags
+      #~(list
+         "CFLAGS=-g -O2 -Wno-error=incompatible-pointer-types")
       ;; run_addrinfo requires /etc/services for the 'echo' service.
       #:make-flags #~'("XFAIL_TESTS = run_addrinfo"
                        ;; libsofia-sip-ua/nta/Makefile.am sets
