@@ -7,7 +7,7 @@
 ;;; Copyright © 2014, 2015 Federico Beffa <beffa@fbengineering.ch>
 ;;; Copyright © 2015 Omar Radwan <toxemicsquire4@gmail.com>
 ;;; Copyright © 2015 Pierre-Antoine Rault <par@rigelk.eu>
-;;; Copyright © 2015-2024 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015-2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2016, 2020 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2015 Eric Dvorsak <eric@dvorsak.fr>
 ;;; Copyright © 2015, 2016 David Thompson <davet@gnu.org>
@@ -18487,6 +18487,9 @@ convert an @code{.ipynb} notebook file into various static formats including:
                (("'HOME': .*," all)
                 (string-append "# " all "\n")))
              (setenv "HOME" (getcwd))))
+         ;; Because python-jsonschema has an old python-webcolor.  Remove this
+         ;; when python-team branch is merged.
+         (delete 'sanity-check)
          (add-before 'check 'pre-check
            (lambda _
              ;; Interferes with test expectations.
