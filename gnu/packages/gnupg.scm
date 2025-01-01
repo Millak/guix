@@ -939,7 +939,7 @@ software.")))
      `(#:configure-flags '("--enable-fallback-curses")))
     (inputs
      (modify-inputs (package-inputs pinentry-tty)
-       (prepend qtbase-5)))
+       (prepend qtbase qtwayland)))
   (description
    "Pinentry provides a console and a Qt GUI that allows users to enter a
 passphrase when @code{gpg} is run and needs it.")))
