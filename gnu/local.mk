@@ -69,6 +69,7 @@
 # Copyright © 2024 Fabio Natali <me@fabionatali.com>
 # Copyright © 2024 Noé Lopez <noelopez@free.fr>
 # Copyright © 2024 Runciter <runciter@whispers-vpn.org>
+# Copyright © 2024 Ashvith Shetty <ashvithshetty10@gmail.com>
 #
 # This file is part of GNU Guix.
 #
@@ -1128,6 +1129,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/converseen-hide-non-free-pointers.patch	\
   %D%/packages/patches/cool-retro-term-wctype.patch		\
   %D%/packages/patches/coq-autosubst-1.8-remove-deprecated-files.patch		\
+  %D%/packages/patches/corectrl-polkit-install-dir.patch	\
   %D%/packages/patches/corefx-mono-5.4.0-patches.patch		\
   %D%/packages/patches/corefx-mono-pre-5.8.0-patches.patch	\
   %D%/packages/patches/coreutils-gnulib-tests.patch		\
