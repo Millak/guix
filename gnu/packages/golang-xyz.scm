@@ -12017,7 +12017,14 @@ distributable command line applications in an expressive way.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "03237hi2jqvms9cif4varyap3j1dhzcf1mr809dm7ncvzk7gxg83"))))
+        (base32 "03237hi2jqvms9cif4varyap3j1dhzcf1mr809dm7ncvzk7gxg83"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/urfave/cli/v2/cmd/urfave-cli-genflags
+            (delete-file-recursively "cmd")))))
     (arguments
      (list #:import-path "github.com/urfave/cli/v2"))
     (propagated-inputs
