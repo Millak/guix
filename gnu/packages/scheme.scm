@@ -26,6 +26,7 @@
 ;;; Copyright © 2024 Skylar Hill <stellarskylark@posteo.net>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2024 Adam Faiz <adam.faiz@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1266,6 +1267,9 @@ a Common Lisp environment.")
         (base32 "1dff14bzqkq6scyyhnwhc3ky96j6lr84mnghk4da0x6vifw7p0p1"))))
     (arguments
      (list
+      ;; Do not build with '-march=native'.
+      #:configure-flags #~(list "--enable-march=")
+
       #:phases #~(modify-phases %standard-phases
                    (delete 'bootstrap)
                    (add-after 'set-paths 'set-cc
