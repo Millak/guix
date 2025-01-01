@@ -4750,6 +4750,45 @@ implemented features include
 @end itemize")
     (license license:expat)))
 
+(define-public go-github-com-go-playground-universal-translator
+  (package
+    (name "go-github-com-go-playground-universal-translator")
+    (version "0.18.1")
+    (home-page "https://github.com/go-playground/universal-translator")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url home-page)
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1lgz9wrkcfx6q3x6i9fprr8rfwnk0c6x61jgzacgikbmzsl7dw6v"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/go-playground/universal-translator"))
+    (propagated-inputs
+     (list go-github-com-go-playground-locales))
+    (synopsis "Translator using Unicode CLDR data and pluralization rules")
+    (description
+     "This package offers an Internalization Translator for Go using
+@uref{http://cldr.unicode.org/, Unicode CLDR Project} data and pluralization
+rules.  Its currently implemented features include
+
+@itemize
+@item Rules generated from the CLDR data, v30.0.3
+@item Contains Cardinal, Ordinal and Range Plural Rules
+@item Contains Month, Weekday and Timezone translations built in
+@item Contains Date & Time formatting functions
+@item Contains Number, Currency, Accounting and Percent formatting functions
+@item Supports the \"Gregorian\" calendar only
+@item Support loading translations from files
+@item Exporting translations to file(s), mainly for getting them
+professionally translated
+@end itemize")
+    (license license:expat)))
+
 (define-public go-github-com-go-sql-driver-mysql
   (package
     (name "go-github-com-go-sql-driver-mysql")
