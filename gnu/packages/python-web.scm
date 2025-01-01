@@ -639,6 +639,29 @@ implements @code{collections.abc.MutableSequence}.  It can be made immutable
 by calling @code{FrozenList.freeze}.")
     (license license:asl2.0)))
 
+(define-public python-aiohappyeyeballs
+  (package
+    (name "python-aiohappyeyeballs")
+    (version "2.4.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "aiohappyeyeballs" version))
+       (sha256
+        (base32 "0ibpfm552pflim399qq34cnd79xhz5qr5khqzhx1hqwwi23pvpaz"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-poetry-core
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-cov))
+    (home-page "https://github.com/aio-libs/aiohappyeyeballs")
+    (synopsis "Happy Eyeballs for asyncio")
+    (description "This library exists to allow connecting with Happy
+Eyeballs (RFC 8305) when you already have a list of @code{addrinfo} and not a
+DNS name.")
+    (license license:psfl)))
+
 (define-public python-aiosignal
   (package
     (name "python-aiosignal")
