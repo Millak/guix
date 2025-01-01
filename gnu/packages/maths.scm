@@ -3023,7 +3023,7 @@ can solve two kinds of problems:
 (define-public octave-cli
   (package
     (name "octave-cli")
-    (version "9.2.0")
+    (version "9.3.0")
     (source
      (origin
        (method url-fetch)
@@ -3031,7 +3031,7 @@ can solve two kinds of problems:
                            version ".tar.xz"))
        (sha256
         (base32
-         "01sqfqrglzkjp20sg45fjd43hbjj069a1gn0r8sv01ciazxplh91"))))
+         "1ws5h5q9vzm8lwkxnvc39iikyvvxpb6q4jwcy9v3pqdp7m8nh93i"))))
     (build-system gnu-build-system)
     (inputs
      (list alsa-lib
