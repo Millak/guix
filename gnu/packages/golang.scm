@@ -2219,7 +2219,7 @@ per-goroutine.")
 (define-public go-github-com-saracen-walker
   (package
     (name "go-github-com-saracen-walker")
-    (version "0.1.1")
+    (version "0.1.4")
     (source
      (origin
        (method git-fetch)
@@ -2228,7 +2228,7 @@ per-goroutine.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1rq1lrp99lx7k1ysbfznn4c1iagnxdhb4lnnklsadnnzi3gvygqz"))))
+        (base32 "17i2zrbcp0zgwfgap555pk358wpqfa8qj8pmgwhjkzwd77nyl77g"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/saracen/walker"))
