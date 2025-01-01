@@ -944,6 +944,15 @@ software.")))
    "Pinentry provides a console and a Qt GUI that allows users to enter a
 passphrase when @code{gpg} is run and needs it.")))
 
+(define-public pinentry-qt5
+  (package
+    (inherit pinentry-qt)
+    (name "pinentry-qt5")
+    (inputs
+     (modify-inputs (package-inputs pinentry-qt)
+       (replace "qtbase" qtbase-5)
+       (replace "qtwayland" qtwayland-5)))))
+
 (define-public pinentry-efl
   (package
     (inherit pinentry-tty)
