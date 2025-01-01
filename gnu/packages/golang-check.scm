@@ -1771,6 +1771,33 @@ and restore them afterwards.")
 @url{http://www.freebsd.org/cgi/man.cgi?query=fail,failpoints} for Golang.")
     (license license:asl2.0)))
 
+(define-public go-go-simpler-org-sloglint
+  (package
+    (name "go-go-simpler-org-sloglint")
+    (version "0.7.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/go-simpler/sloglint")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0y5hw79hib5g4fwwr1qdr0k6424vhj0hfs0rj2kxlqfwr3sn99qk"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "go-simpler.org/sloglint"))
+    (propagated-inputs
+     (list go-github-com-ettle-strcase
+           go-golang-org-x-tools))
+    (home-page "https://pkg.go.dev/go-simpler.org/sloglint")
+    (synopsis "Ensure consistent code style when using @code{log/slog}")
+    (description
+     "Package sloglint implements the sloglint analyzer.  The @code{log/slog}
+API allows two different types of arguments: key-value pairs and attributes.")
+    (license license:mpl2.0)))
+
 (define-public go-golang-org-sql-mock
   (package
     (name "go-golang-org-sql-mock")
