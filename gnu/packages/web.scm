@@ -1410,7 +1410,13 @@ It aims to conform to RFC 7159.")
                  (set-file-time "config.h.in"
                                 (stat "aclocal.m4"))
                  #t))))
-    (build-system gnu-build-system)))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list #$(string-append "CFLAGS=-g -O2"
+                               " -Wno-error=calloc-transposed-args"
+                               " -Wno-error=implicit-function-declaration"))))))
 
 (define-public json-c-0.12
   (package
