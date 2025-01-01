@@ -577,6 +577,7 @@ editor (with wide ints)" )
         (search-patches "emacs-next-exec-path.patch"
                         "emacs-fix-scheme-indent-function.patch"
                         "emacs-next-native-comp-driver-options.patch"
+                        "emacs-next-native-comp-fix-filenames.patch"
                         "emacs-pgtk-super-key-fix.patch")))))))
 
 (define* (emacs->emacs-next emacs #:optional name

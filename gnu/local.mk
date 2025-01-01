@@ -1219,6 +1219,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/emacs-native-comp-pin-packages.patch   \
   %D%/packages/patches/emacs-next-exec-path.patch   \
   %D%/packages/patches/emacs-next-native-comp-driver-options.patch   \
+  %D%/packages/patches/emacs-next-native-comp-fix-filenames.patch   \
   %D%/packages/patches/emacs-pasp-mode-quote-file-names.patch  \
   %D%/packages/patches/emacs-pgtk-super-key-fix.patch	\
   %D%/packages/patches/emacs-polymode-fix-lexical-variable-error.patch  \
