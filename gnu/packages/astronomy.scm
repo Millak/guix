@@ -2020,6 +2020,57 @@ processing of CCD images built on a framework to provide error propagation and
 bad pixel tracking throughout the reduction process.")
     (license license:bsd-3)))
 
+(define-public python-cdflib
+  (package
+    (name "python-cdflib")
+    (version "1.3.2")
+    (source
+     (origin
+       (method git-fetch)               ; no tests in PyPI release
+       (uri (git-reference
+             (url "https://github.com/MAVENSDC/cdflib")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0g723s5xg7vd37vlbjpgpiljd3vxwccslwzcf619zvdnc2xbcw2c"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'build 'set-env-version
+                 (lambda _
+                   (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
+                           #$version)))
+               (add-before 'check 'set-home-env
+                 (lambda _
+                   (setenv "HOME" (getcwd)))))))
+    (native-inputs
+     (list python-astropy
+           python-hypothesis
+           python-pytest
+           python-pytest-cov
+           python-pytest-remotedata
+           python-setuptools
+           python-setuptools-scm
+           python-xarray
+           python-wheel))
+    (propagated-inputs
+     (list python-numpy))
+    (home-page "https://github.com/MAVENSDC/cdflib")
+    (synopsis "Python library to deal with NASA's CDF astronmical data format")
+    (description "This package provides a Python @acronym{CDF, Computable
+Document Format} reader toolkit.
+It provides the following functionality:
+@itemize
+@item Ability to read variables and attributes from CDF files
+@item Writes CDF version 3 files
+@item Can convert between CDF time types (EPOCH/EPOCH16/TT2000) to other common
+time formats
+@item Can convert CDF files into XArray Dataset objects and vice versa,
+attempting to maintain ISTP compliance
+@end itemize")
+    (license license:expat)))
+
 (define-public python-coolest
   (package
     (name "python-coolest")
@@ -2088,6 +2139,53 @@ lens models possibly obtained from different modeling codes.")
      "This package provides a CLI and Python module to quickly calculate
 cosmological parameters e.g. redshift or luminosity-distance.")
     (license license:expat)))
+
+(define-public python-crds
+  (package
+    (name "python-crds")
+    (version "12.0.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "crds" version))
+       (sha256
+        (base32 "09kdpaywj88n31jard4wbqmb9132qf6fk0ar2z6ca9vswavivfk8"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; XXX: Tests require Internet access to https://hst-crds.stsci.edu and
+      ;; additional test data. See:
+      ;; https://github.com/spacetelescope/crds/blob/master/setup_test_cache
+      #:tests? #f))
+    (propagated-inputs
+     (list python-asdf
+           python-astropy
+           python-boto3
+           python-filelock
+           python-numpy
+           python-parsley
+           python-pysynphot
+           python-roman-datamodels
+           python-stsynphot
+           python-requests))
+    (native-inputs
+     (list python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (home-page "https://hst-crds.stsci.edu")
+    (synopsis "Calibration Reference Data System for HST and JWST")
+    (description
+     "CRDS is a package used for working with astronomical reference files for
+the HST and JWST telescopes.  CRDS is useful for performing various operations
+on reference files or reference file assignment rules.  CRDS is used to
+assign, check, and compare reference files and rules, and also to predict
+those datasets which should potentially be reprocessed due to changes in
+reference files or assignment rules.  CRDS has versioned rules which define
+the assignment of references for each type and instrument configuration.  CRDS
+has web sites corresponding to each project @url{http://hst-crds.stsci.edu} or
+@url{https://jwst-crds.stsci.edu/} which record information about reference
+files and provide related services.")
+    (license license:bsd-3)))
 
 (define-public python-czml3
   (package
@@ -2165,6 +2263,52 @@ biggest change from DrizzlePac is that this code passes an array that maps the
 input to output image into the C code, while the DrizzlePac code computes the
 mapping by using a Python callback.  Switching to using an array allowed the
 code to be greatly simplified.")
+    (license license:bsd-3)))
+
+(define-public python-drms
+  (package
+    (name "python-drms")
+    (version "0.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "drms" version))
+       (sha256
+        (base32 "19lqy510d7iyxfz445h2rn4d0rvmd4d3lnjmvbkvv270ckpfw09f"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-astropy python-pytest-astropy python-setuptools-scm))
+    (propagated-inputs
+     (list python-numpy python-pandas))
+    (home-page "https://sunpy.org")
+    (synopsis "Access astronomical HMI, AIA and MDI data with Python")
+    (description
+     "DRMS module provides an easy-to-use interface for accessing HMI, AIA and
+MDI data with Python.  It uses the publicly accessible
+JSOC (@url{http://jsoc.stanford.edu/}) DRMS server by default, but can also be
+used with local NetDRMS sites.")
+    (license license:bsd-2)))
+
+(define-public python-dust-extinction
+  (package
+    (name "python-dust-extinction")
+    (version "1.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "dust_extinction" version))
+       (sha256
+        (base32 "0f0g6gh4kj83xfv0cdp30dahs80pnhsj7c6ryz3f59qf6d5zqard"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-astropy python-scipy))
+    (native-inputs
+     (list python-pytest-astropy))
+    (home-page "http://dust-extinction.readthedocs.io/")
+    (synopsis "Interstellar Dust Extinction Models")
+    (description
+     "This package provides astronomical interstellar dust extinction curves
+implemented using the astropy.modeling framework.")
     (license license:bsd-3)))
 
 (define-public python-ephem
@@ -3170,115 +3314,6 @@ instruments.")
      "This package provides an image processing toolbox for Solar Physics.")
     (license license:bsd-2)))
 
-(define-public sextractor
-  (package
-    (name "sextractor")
-    (version "2.28.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/astromatic/sextractor")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "15v7brjiraj2rdyxiidcgb58b3dqzdd363j31cjrfqhd1wc8ii5j"))))
-    (build-system gnu-build-system)
-    ;; NOTE: (Sharlatan-20210124T103117+0000): Building with `atlas' is failing
-    ;; due to missing shared library which required on configure phase. Switch
-    ;; build to use `openblas' instead. It requires FFTW with single precision
-    ;; `fftwf'.
-    (arguments
-     (list
-      #:configure-flags
-      #~(list
-         "--enable-openblas"
-         (string-append "--with-cfitsio-incdir="
-                        #$(this-package-input "cfitsio") "/include")
-         (string-append "--with-cfitsio-libdir="
-                        #$(this-package-input "cfitsio") "/lib")
-         (string-append "--with-fftw-incdir="
-                        #$(this-package-input "fftwf") "/include")
-         (string-append "--with-fftw-libdir="
-                        #$(this-package-input "fftwf") "/lib")
-         (string-append "--with-openblas-incdir="
-                        #$(this-package-input "openblas") "/include")
-         (string-append "--with-openblas-libdir="
-                        #$(this-package-input "openblas") "/lib"))))
-    (native-inputs
-     (list autoconf automake libtool))
-    (inputs
-     (list cfitsio fftwf openblas))
-    (home-page "https://www.astromatic.net/software/sextractor")
-    (synopsis "Extract catalogs of sources from astronomical images")
-    (description
-     "SExtractor is a program that builds a catalogue of objects from an
-astronomical image.  Although it is particularly oriented towards reduction of
-large scale galaxy-survey data, it can perform reasonably well on moderately
-crowded star fields.")
-    (license license:gpl3+)))
-
-(define-public stackistry
-  (package
-    (name "stackistry")
-    (version "0.3.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/GreatAttractor/stackistry")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0rz29v33n0x0k40hv3v79ym5ylch1v0pbph4i21809gz2al5p7dq"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      #:tests? #f ; No test target
-      #:make-flags
-      #~(list
-         (string-append
-          "SKRY_INCLUDE_PATH=" #$(this-package-input "libskry") "/include")
-         (string-append
-          "SKRY_LIB_PATH=-L" #$(this-package-input "libskry") "/lib")
-         (string-append
-          "LIBAV_INCLUDE_PATH=" #$(this-package-input "ffmpeg") "/include"))
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; no configure and tests are provided
-          (delete 'configure)
-          (add-after 'unpack 'fix-paths
-            (lambda _
-              (substitute* "src/main.cpp"
-                (("\"\\.\\.\", \"lang\"")
-                 "\"../share/stackistry\", \"lang\""))
-              (substitute* "src/utils.cpp"
-                (("\"\\.\\.\", \"icons\"")
-                 "\"../share/stackistry\", \"icons\""))))
-          (replace 'install
-            ;; The Makefile lacks an ‘install’ target.
-            (lambda _
-              (let* ((out #$output)
-                     (bin (string-append out "/bin"))
-                     (icons (string-append out "/share/stackistry/icons"))
-                     (lang (string-append out "/share/stackistry/lang")))
-                (copy-recursively "bin" bin)
-                (copy-recursively "icons" icons)
-                (copy-recursively "lang" lang)))))))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list gtkmm-3 libskry ffmpeg-4))
-    (home-page "https://github.com/GreatAttractor/stackistry")
-    (synopsis "Astronomical lucky imaging/image stacking tool")
-    (description
-     "Stackistry implements the lucky imaging principle of astronomical
-imaging: creating a high-quality still image out of a series of many (possibly
-thousands) low quality ones (blurred, deformed, noisy).  The resulting image
-stack typically requires post-processing, including sharpening (e.g. via
-deconvolution).  Such post-processing is not performed by Stackistry.")
-    (license license:gpl3+)))
-
 ;; XXX: Upgrading to the latest version requires Python3.11+ and fresh
 ;; versions of numpy, PyYAML, packaging, Pandas and matplotlib, see
 ;; <https://github.com/astropy/astropy/blob/v7.0.0/CHANGES.rst
@@ -3661,57 +3696,6 @@ be as fast as possible so some of the readability has been sacrificed,
 specifically in the C code.")
     (license license:bsd-3)))
 
-(define-public python-cdflib
-  (package
-    (name "python-cdflib")
-    (version "1.3.2")
-    (source
-     (origin
-       (method git-fetch)               ; no tests in PyPI release
-       (uri (git-reference
-             (url "https://github.com/MAVENSDC/cdflib")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0g723s5xg7vd37vlbjpgpiljd3vxwccslwzcf619zvdnc2xbcw2c"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-before 'build 'set-env-version
-                 (lambda _
-                   (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
-                           #$version)))
-               (add-before 'check 'set-home-env
-                 (lambda _
-                   (setenv "HOME" (getcwd)))))))
-    (native-inputs
-     (list python-astropy
-           python-hypothesis
-           python-pytest
-           python-pytest-cov
-           python-pytest-remotedata
-           python-setuptools
-           python-setuptools-scm
-           python-xarray
-           python-wheel))
-    (propagated-inputs
-     (list python-numpy))
-    (home-page "https://github.com/MAVENSDC/cdflib")
-    (synopsis "Python library to deal with NASA's CDF astronmical data format")
-    (description "This package provides a Python @acronym{CDF, Computable
-Document Format} reader toolkit.
-It provides the following functionality:
-@itemize
-@item Ability to read variables and attributes from CDF files
-@item Writes CDF version 3 files
-@item Can convert between CDF time types (EPOCH/EPOCH16/TT2000) to other common
-time formats
-@item Can convert CDF files into XArray Dataset objects and vice versa,
-attempting to maintain ISTP compliance
-@end itemize")
-    (license license:expat)))
-
 (define-public python-ci-watson
   (package
     (name "python-ci-watson")
@@ -3787,99 +3771,6 @@ with Matplotlib.  It includes perceptually uniform sequential colormaps such
 as @code{abre}, @code{dusk}, @code{kepl}, and @code{octarine}, as well as
 monochromatic sequential colormaps like @code{blue}, @code{green}, and
 @code{red}, and others (@code{algae}, @code{pastel}, and @code{xray}).")
-    (license license:bsd-3)))
-
-(define-public python-crds
-  (package
-    (name "python-crds")
-    (version "12.0.8")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "crds" version))
-       (sha256
-        (base32 "09kdpaywj88n31jard4wbqmb9132qf6fk0ar2z6ca9vswavivfk8"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; XXX: Tests require Internet access to https://hst-crds.stsci.edu and
-      ;; additional test data. See:
-      ;; https://github.com/spacetelescope/crds/blob/master/setup_test_cache
-      #:tests? #f))
-    (propagated-inputs
-     (list python-asdf
-           python-astropy
-           python-boto3
-           python-filelock
-           python-numpy
-           python-parsley
-           python-pysynphot
-           python-roman-datamodels
-           python-stsynphot
-           python-requests))
-    (native-inputs
-     (list python-setuptools
-           python-setuptools-scm
-           python-wheel))
-    (home-page "https://hst-crds.stsci.edu")
-    (synopsis "Calibration Reference Data System for HST and JWST")
-    (description
-     "CRDS is a package used for working with astronomical reference files for
-the HST and JWST telescopes.  CRDS is useful for performing various operations
-on reference files or reference file assignment rules.  CRDS is used to
-assign, check, and compare reference files and rules, and also to predict
-those datasets which should potentially be reprocessed due to changes in
-reference files or assignment rules.  CRDS has versioned rules which define
-the assignment of references for each type and instrument configuration.  CRDS
-has web sites corresponding to each project @url{http://hst-crds.stsci.edu} or
-@url{https://jwst-crds.stsci.edu/} which record information about reference
-files and provide related services.")
-    (license license:bsd-3)))
-
-(define-public python-drms
-  (package
-    (name "python-drms")
-    (version "0.8.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "drms" version))
-       (sha256
-        (base32 "19lqy510d7iyxfz445h2rn4d0rvmd4d3lnjmvbkvv270ckpfw09f"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-astropy python-pytest-astropy python-setuptools-scm))
-    (propagated-inputs
-     (list python-numpy python-pandas))
-    (home-page "https://sunpy.org")
-    (synopsis "Access astronomical HMI, AIA and MDI data with Python")
-    (description
-     "DRMS module provides an easy-to-use interface for accessing HMI, AIA and
-MDI data with Python.  It uses the publicly accessible
-JSOC (@url{http://jsoc.stanford.edu/}) DRMS server by default, but can also be
-used with local NetDRMS sites.")
-    (license license:bsd-2)))
-
-(define-public python-dust-extinction
-  (package
-    (name "python-dust-extinction")
-    (version "1.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "dust_extinction" version))
-       (sha256
-        (base32 "0f0g6gh4kj83xfv0cdp30dahs80pnhsj7c6ryz3f59qf6d5zqard"))))
-    (build-system pyproject-build-system)
-    (propagated-inputs
-     (list python-astropy python-scipy))
-    (native-inputs
-     (list python-pytest-astropy))
-    (home-page "http://dust-extinction.readthedocs.io/")
-    (synopsis "Interstellar Dust Extinction Models")
-    (description
-     "This package provides astronomical interstellar dust extinction curves
-implemented using the astropy.modeling framework.")
     (license license:bsd-3)))
 
 (define-public python-hvpy
@@ -6882,6 +6773,54 @@ convenient access to metadata from a regular web browser
 @end itemize")
     (license license:gpl3+)))
 
+(define-public sextractor
+  (package
+    (name "sextractor")
+    (version "2.28.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/astromatic/sextractor")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "15v7brjiraj2rdyxiidcgb58b3dqzdd363j31cjrfqhd1wc8ii5j"))))
+    (build-system gnu-build-system)
+    ;; NOTE: (Sharlatan-20210124T103117+0000): Building with `atlas' is failing
+    ;; due to missing shared library which required on configure phase. Switch
+    ;; build to use `openblas' instead. It requires FFTW with single precision
+    ;; `fftwf'.
+    (arguments
+     (list
+      #:configure-flags
+      #~(list
+         "--enable-openblas"
+         (string-append "--with-cfitsio-incdir="
+                        #$(this-package-input "cfitsio") "/include")
+         (string-append "--with-cfitsio-libdir="
+                        #$(this-package-input "cfitsio") "/lib")
+         (string-append "--with-fftw-incdir="
+                        #$(this-package-input "fftwf") "/include")
+         (string-append "--with-fftw-libdir="
+                        #$(this-package-input "fftwf") "/lib")
+         (string-append "--with-openblas-incdir="
+                        #$(this-package-input "openblas") "/include")
+         (string-append "--with-openblas-libdir="
+                        #$(this-package-input "openblas") "/lib"))))
+    (native-inputs
+     (list autoconf automake libtool))
+    (inputs
+     (list cfitsio fftwf openblas))
+    (home-page "https://www.astromatic.net/software/sextractor")
+    (synopsis "Extract catalogs of sources from astronomical images")
+    (description
+     "SExtractor is a program that builds a catalogue of objects from an
+astronomical image.  Although it is particularly oriented towards reduction of
+large scale galaxy-survey data, it can perform reasonably well on moderately
+crowded star fields.")
+    (license license:gpl3+)))
+
 (define-public sgp4
   ;; Version tag v1.0 is dated to <2021-01-11>, use the lates commit instead.
   (let ((commit "6a448b4850e5fbf8c1ca03bb5f6013a9fdc1fd91")
@@ -7082,6 +7021,67 @@ simulations in one, two and three dimensions, developed mainly for
 astrophysics.  It uses a command-line menu but data can be manipulated
 interactively in the plotting window.")
     (license license:gpl2+)))
+
+(define-public stackistry
+  (package
+    (name "stackistry")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/GreatAttractor/stackistry")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0rz29v33n0x0k40hv3v79ym5ylch1v0pbph4i21809gz2al5p7dq"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f ; No test target
+      #:make-flags
+      #~(list
+         (string-append
+          "SKRY_INCLUDE_PATH=" #$(this-package-input "libskry") "/include")
+         (string-append
+          "SKRY_LIB_PATH=-L" #$(this-package-input "libskry") "/lib")
+         (string-append
+          "LIBAV_INCLUDE_PATH=" #$(this-package-input "ffmpeg") "/include"))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; no configure and tests are provided
+          (delete 'configure)
+          (add-after 'unpack 'fix-paths
+            (lambda _
+              (substitute* "src/main.cpp"
+                (("\"\\.\\.\", \"lang\"")
+                 "\"../share/stackistry\", \"lang\""))
+              (substitute* "src/utils.cpp"
+                (("\"\\.\\.\", \"icons\"")
+                 "\"../share/stackistry\", \"icons\""))))
+          (replace 'install
+            ;; The Makefile lacks an ‘install’ target.
+            (lambda _
+              (let* ((out #$output)
+                     (bin (string-append out "/bin"))
+                     (icons (string-append out "/share/stackistry/icons"))
+                     (lang (string-append out "/share/stackistry/lang")))
+                (copy-recursively "bin" bin)
+                (copy-recursively "icons" icons)
+                (copy-recursively "lang" lang)))))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list gtkmm-3 libskry ffmpeg-4))
+    (home-page "https://github.com/GreatAttractor/stackistry")
+    (synopsis "Astronomical lucky imaging/image stacking tool")
+    (description
+     "Stackistry implements the lucky imaging principle of astronomical
+imaging: creating a high-quality still image out of a series of many (possibly
+thousands) low quality ones (blurred, deformed, noisy).  The resulting image
+stack typically requires post-processing, including sharpening (e.g. via
+deconvolution).  Such post-processing is not performed by Stackistry.")
+    (license license:gpl3+)))
 
 (define-public stellarium
   (package
