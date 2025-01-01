@@ -426,6 +426,14 @@ spell-checking library.")
                          #:home-page "https://www.libreitalia.org/"
                          #:license license:gpl3)))
 
+(define-public hunspell-dict-pt-br
+  (let ((synopsis identity))
+    (hunspell-dictionary "pt_BR" "Portuguese (Brazil)"
+                         #:synopsis (synopsis "Hunspell dictionary for Portuguese (Brazil)")
+                         #:home-page "https://cgit.freedesktop.org/libreoffice/dictionaries/tree/pt_BR"
+                         #:license (list license:lgpl3+))))
+
+
 ;;;
 ;;; Hunspell packages made from the Aspell word lists.
 ;;;
