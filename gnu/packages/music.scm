@@ -38,7 +38,7 @@
 ;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2021 Bonface Munyoki Kilyungi <me@bonfacemunyoki.com>
 ;;; Copyright © 2021 Frank Pursel <frank.pursel@gmail.com>
-;;; Copyright © 2021 Rovanion Luckey <rovanion.luckey@gmail.com>
+;;; Copyright © 2021, 2024, 2025 Rovanion Luckey <rovanion.luckey@gmail.com>
 ;;; Copyright © 2021 Justin Veilleux <terramorpha@cock.li>
 ;;; Copyright © 2021, 2022, 2023 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Simon Streit <simon@netpanic.org>
@@ -5475,7 +5475,7 @@ includes LV2 plugins and a JACK standalone client.")
 (define-public musescore
   (package
     (name "musescore")
-    (version "4.3.2")
+    (version "4.4.4")
     (source
      (origin
        (method git-fetch)
@@ -5484,21 +5484,31 @@ includes LV2 plugins and a JACK standalone client.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1hx0l6d7avyfbh88hwn01h9q51mgd9zix91q2kgg1ax73pqxhfs2"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           ;; Delete precompiled binaries.
-           (delete-file-recursively "src/diagnostics/crashpad_handler")
-           (substitute* "src/diagnostics/CMakeLists.txt"
-             (("install") "#install"))))))
+        (base32 "0cjp1sp50pwmrgvpxjxg849s0vsvk2vcb66ym617nvlj761h0ngz"))
+       (modules '((guix build utils)))))
     (build-system qt-build-system)
     (arguments
-     `(#:configure-flags
-       `("-DDOWNLOAD_SOUNDFONT=OFF"
-         "-DBUILD_DIAGNOSTICS=OFF"
-         "-DMUSESCORE_BUILD_CONFIG=release"
-         "-DUSE_SYSTEM_FREETYPE=ON")
+     `(;; In order for qt-build-system to build against qt-base 6 and not 5.
+       #:qtbase ,qtbase
+       #:configure-flags
+       `("-DMUSE_APP_BUILD_MODE=release"
+         ;; Disable the build and usage of the `/bin/crashpad_handler` utility -
+         ;; it does automatic crash reporting and is distributed as a
+         ;; pre-compiled binary in the source-tree of MuseScore:
+         ;;  https://github.com/musescore/MuseScore/issues/15571
+         ;; Renamed from MUE_BUILD_CRASHPAD_CLIENT, MUE_BUILD_DIAGNOSTICS_MODULE
+         ;; https://github.com/musescore/MuseScore/commit/6f269e8b072cca36cb76eb016cb60c1c1c2b9906
+         "-DMUSE_MODULE_DIAGNOSTICS_CRASHPAD_CLIENT=OFF"
+         ;;; These five lines asks that Guix' versions of system libraries are used.
+         "-DMUE_COMPILE_USE_SYSTEM_FREETYPE=ON"
+         "-DMUE_COMPILE_USE_SYSTEM_HARFBUZZ=ON"
+         "-DMUE_COMPILE_USE_SYSTEM_TINYXML=ON"
+         "-DMUE_COMPILE_USE_SYSTEM_OPUSENC=ON" ; Ipmlies -DMUE_COMPILE_USE_SYSTEM_OPUS=ON
+         "-DMUE_COMPILE_USE_SYSTEM_FLAC=ON"
+         ;; Disable download of soundfont during build.
+         "-DDOWNLOAD_SOUNDFONT=OFF"
+         ;; Don't bundle Qt QML files, relevant really only for Darwin.
+         "-DMUE_COMPILE_INSTALL_QTQML_FILES=OFF")
        ;; There are tests, but no simple target to run.  The command used to
        ;; run them is:
        ;;
@@ -5509,31 +5519,32 @@ includes LV2 plugins and a JACK standalone client.")
        ;; So we simply skip them.
        #:tests? #f))
     (native-inputs
-     (list git-minimal pkg-config qttools-5))
+     (list git-minimal pkg-config qttools))
     (inputs
      (list alsa-lib
+           flac
            freetype
            `(,gtk+ "bin")               ;for gtk-update-icon-cache
+           harfbuzz
            jack-1
            lame
            libogg
+           libopusenc
            libsndfile
            libvorbis
            portaudio
            portmidi
            pulseaudio
            python
-           qtbase-5
-           qtdeclarative-5
-           qtgraphicaleffects
-           qtnetworkauth-5
-           qtquickcontrols-5
-           qtquickcontrols2-5
-           qtscript
-           qtsvg-5
-           qtwayland-5
-           qtx11extras
-           qtxmlpatterns))
+           qt5compat
+           qtbase
+           qtdeclarative
+           qtnetworkauth
+           qtscxml
+           qtshadertools
+           qtsvg
+           qtwayland
+           tinyxml2))
     (propagated-inputs
      (list `(,alsa-plugins "pulseaudio"))) ;for libasound_module_conf_pulse.so
     (synopsis "Music composition and notation software")
