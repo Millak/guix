@@ -2249,6 +2249,29 @@ used to skip the test
 advanced Go linter.")
     (license license:expat)))
 
+(define-public go-modernc-org-ccorpus2
+  (package
+    (name "go-modernc-org-ccorpus2")
+    (version "1.5.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/cznic/ccorpus2")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1mwgi0jdj5a595wlllr5rn3gvl7cqz7fnjx28hn3ia9cs1nxkk0a"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "modernc.org/ccorpus2"))
+    (home-page "https://gitlab.com/cznic/ccorpus2")
+    (synopsis "Continuation of ccorpus using @code{embed.FS}")
+    (description
+     "This packge provides a test corpus of C code.")
+    (license license:bsd-3)))
+
 (define-public go-pgregory-net-rapid
   (package
     (name "go-pgregory-net-rapid")
