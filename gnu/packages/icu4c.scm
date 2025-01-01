@@ -11,6 +11,7 @@
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -46,7 +47,7 @@
 (define-public icu4c
   (package
     (name "icu4c")
-    (version "71.1")
+    (version "76.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -56,7 +57,7 @@
                     (string-map (lambda (x) (if (char=? x #\.) #\_ x)) version)
                     "-src.tgz"))
               (sha256
-               (base32 "1gqywaqj9jmdwrng9lm6inyqmi5j2cz36db9dcqg3yk13zjyd9v7"))))
+               (base32 "0gjg1zrnqk4vmidqgqx4xbz05898px212gnff8242is7zrmv9b6z"))))
     (build-system gnu-build-system)
     (native-inputs
      (append (list python-minimal)
