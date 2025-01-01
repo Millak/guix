@@ -15,7 +15,7 @@
 ;;; Copyright © 2016, 2017, 2018 Rene Saavedra <pacoon@protonmail.com>
 ;;; Copyright © 2016 Jochem Raat <jchmrt@riseup.net>
 ;;; Copyright © 2016, 2017, 2019 Kei Kebreau <kkebreau@posteo.net>
-;;; Copyright © 2016, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2016, 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2016 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016, 2018 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
@@ -9872,6 +9872,13 @@ easy, safe, and automatic.")
           (add-before 'configure 'set-shell
             (lambda _
               (setenv "SHELL" (which "bash"))))
+          (add-before 'configure 'relax-gcc-14-strictness
+            (lambda _
+              (setenv "CFLAGS"
+                      (string-append
+                       "-g -O2"
+                       " -Wno-error=implicit-function-declaration"
+                       " -Wno-error=incompatible-pointer-types"))))
           (add-before 'configure 'fix-paths
             (lambda* (#:key inputs #:allow-other-keys)
               (let* ((manpage "/etc/asciidoc/docbook-xsl/manpage.xsl")
