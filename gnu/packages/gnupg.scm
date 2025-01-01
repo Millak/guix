@@ -867,14 +867,14 @@ including tools for signing keys, keyring analysis, and party preparation.
 (define-public pinentry-tty
   (package
     (name "pinentry-tty")
-    (version "1.2.1")
+    (version "1.3.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnupg/pinentry/pinentry-"
                                   version ".tar.bz2"))
               (sha256
                (base32
-                "0rs019acfj7sr4pvc847nk42v5mba9ixqmd98nwqy8w5b9g1hyj5"))))
+                "014crqmr05lsfv13sj6jkcn6w1rvwpxc5hwn32mhg413qwkywwmw"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags '("--enable-pinentry-tty")))
