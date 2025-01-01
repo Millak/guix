@@ -1877,21 +1877,19 @@ functionality to display information about the most commonly used services.")
         (base32 "1l1c4m8m1h8rl00y9yi6qjma5m3lhai9hqv5578q69yg2dcwraxw"))))
     (build-system meson-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'hardcode-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "xwayland/server.c"
-               (("Xwayland") (string-append (assoc-ref inputs
-                                                       "xorg-server-xwayland")
-                                            "/bin/Xwayland")))
-             #t))
-         (add-before 'configure 'fix-meson-file
-           (lambda* (#:key native-inputs inputs #:allow-other-keys)
-             (substitute* "backend/drm/meson.build"
-               (("/usr/share/hwdata/pnp.ids")
-                (string-append (assoc-ref (or native-inputs inputs) "hwdata")
-                               "/share/hwdata/pnp.ids"))))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'configure 'hardcode-paths
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "xwayland/server.c"
+                     (("Xwayland")
+                      (search-input-file inputs "bin/Xwayland")))))
+               (add-before 'configure 'fix-meson-file
+                 (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                   (substitute* "backend/drm/meson.build"
+                     (("/usr/share/hwdata/pnp.ids")
+                      (search-input-file
+                       (or native-inputs inputs) "share/hwdata/pnp.ids"))))))))
     (propagated-inputs
      (list ;; As required by wlroots.pc.
            eudev
