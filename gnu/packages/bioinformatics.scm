@@ -19351,6 +19351,17 @@ includes operations like compartment, insulation or peak calling.")
             (base32
              "14gq7r9b64ff56l5f8h8zc2i2y3xri646jl0anb74japqxrwvlna"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; TODO: this must be fixed in python-tables
+         (add-before 'check 'find-blosc2
+           (lambda* (#:key inputs #:allow-other-keys)
+             (setenv "LD_LIBRARY_PATH"
+                     (dirname (search-input-file
+                               inputs "/lib/libblosc2.so"))))))))
+    (inputs (list c-blosc2))
     (propagated-inputs
      (list python-cooler
            python-intervaltree
