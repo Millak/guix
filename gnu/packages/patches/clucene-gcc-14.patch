@@ -1,0 +1,13 @@
+Upstream-status: Not presented upstream.
+
+--- clucene-core-2.3.3.4.orig/src/core/CLucene/document/DateTools.cpp	1970-01-01 01:00:01.000000000 +0100
++++ clucene-core-2.3.3.4/src/core/CLucene/document/DateTools.cpp	2025-01-01 17:41:36.055237798 +0100
+@@ -9,6 +9,8 @@
+ #include "DateTools.h"
+ #include "CLucene/util/Misc.h"
+ 
++#include <ctime>
++
+ CL_NS_USE(util)
+ CL_NS_DEF(document)
+ 

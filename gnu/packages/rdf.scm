@@ -10,7 +10,7 @@
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 Brendan Tildesley <mail@brendan.scot>
-;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -108,7 +108,8 @@ HTML and JSON.")
               (base32
                "1arffdwivig88kkx685pldr784njm0249k0rb1f1plwavlrw9zfx"))
              (patches (search-patches "clucene-pkgconfig.patch"
-                                      "clucene-contribs-lib.patch"))))
+                                      "clucene-contribs-lib.patch"
+                                      "clucene-gcc-14.patch"))))
     (build-system cmake-build-system)
     (inputs
      (list boost ; could also use bundled copy
