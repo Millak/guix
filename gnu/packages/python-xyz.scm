@@ -440,6 +440,17 @@ loop.")
        (sha256
         (base32 "1bays82mjyg0clmms0rdaf1jrdyr0pw5njq8v9kgcan8drcpbvf1"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; TODO: Remove this on python-team branch.
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "pyproject.toml"
+               (("scikit-build-core..0.10")
+                "scikit-build-core")
+               (("^minimum-version =.*") "")))))))
     (propagated-inputs (list python-numpy))
     (native-inputs
      (list cmake pybind11 python-pytest python-scikit-build-core))
