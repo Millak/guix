@@ -40,7 +40,7 @@
 ;;; Copyright © 2019, 2020 Florian Pelz <pelzflorian@pelzflorian.de>
 ;;; Copyright © 2020 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2020 Pierre Neidhardt <mail@ambrevar.xyz>
-;;; Copyright © 2020, 2021, 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2021, 2023, 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2018, 2019, 2020 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2020, 2021 Paul Garlick <pgarlick@tourbillion-technology.com>
 ;;; Copyright © 2020, 2022 Michael Rohleder <mike@rohleder.de>
@@ -1369,7 +1369,7 @@ data.")
 (define-public json-c
   (package
     (name "json-c")
-    (version "0.15")
+    (version "0.18")
     (source (origin
              (method url-fetch)
              (uri (string-append
@@ -1377,7 +1377,7 @@ data.")
                    version ".tar.gz"))
              (sha256
               (base32
-               "1im484iz08j3gmzpw07v16brwq46pxxj65i996kkp2vivcfhmn5q"))))
+               "090pn7gyicvpqq01451zhkjw1fw3h4l6v2f6mxlvhrli8x3b0sl7"))))
     (build-system cmake-build-system)
     (home-page "https://github.com/json-c/json-c/wiki")
     (synopsis "JSON implementation in C")
