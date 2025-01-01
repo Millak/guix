@@ -38,7 +38,7 @@
 ;;; Copyright © 2023 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2023, 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 Ivan Vilata-i-Balaguer <ivan@selidor.net>
-;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1343,7 +1343,7 @@ graphics.")
 (define-public openexr
   (package
     (name "openexr")
-    (version "3.2.4")
+    (version "3.3.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1353,7 +1353,7 @@ graphics.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "00s1a05kggk71vfbnsvykyjc2j7y6yyzgl63sy4yiddshz2k2mcr"))))
+                "1vhjnhsgjaabg2rmqbkqpf3ikrbfm5qivl562yalllysll4gbimk"))))
     (build-system cmake-build-system)
     (arguments
      (list #:configure-flags
