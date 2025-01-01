@@ -5,6 +5,7 @@
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2022 Morgan Smith <Morgan.J.Smith@outlook.com>
+;;; Copyright © 2025 Ricardo Wurmus <rekado@elephly.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -169,8 +170,14 @@ homeserver and generally help bootstrap the ecosystem.")
         (base32 "110wg1grhqqgwvlgr98r2k8wxcggpj7lbdwmgkgmi2l7qj1vw3dm"))))
     (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
+     (list
+      #:test-flags
+      '(list "tests" "-k"
+             (string-append
+              "not test_upload_binary_file_object "
+              "and not test_connect_wrapper"))
+      #:phases
+      '(modify-phases %standard-phases
          (add-after 'unpack 'relax-requirements
            (lambda _
              (substitute* "pyproject.toml"
@@ -182,17 +189,7 @@ homeserver and generally help bootstrap the ecosystem.")
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (copy-recursively (string-append
                                 (assoc-ref inputs "tests") "/tests")
-                               "tests")
-             #t))
-         (replace 'check
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               ;; FIXME: two tests fail, for unknown reasons
-               (invoke "python" "-m" "pytest" "-vv" "tests" "-k"
-                       (string-append
-                        "not test_upload_binary_file_object "
-                        "and not test_connect_wrapper"))))))))
+                               "tests"))))))
     (native-inputs
      `(("python-pytest" ,python-pytest)
        ("python-poetry-core" ,python-poetry-core)
