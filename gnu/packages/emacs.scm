@@ -578,6 +578,7 @@ editor (with wide ints)" )
                         "emacs-fix-scheme-indent-function.patch"
                         "emacs-next-native-comp-driver-options.patch"
                         "emacs-next-native-comp-fix-filenames.patch"
+                        "emacs-native-comp-pin-packages.patch"
                         "emacs-pgtk-super-key-fix.patch")))))))
 
 (define* (emacs->emacs-next emacs #:optional name
