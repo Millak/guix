@@ -5,6 +5,7 @@
 ;;; Copyright © 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2021 Matthew James Kraai <kraai@ftbfs.org>
+;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -55,7 +56,9 @@
                "0hf788zadmwx0xp1dhrgqcfvhwnarh6h9b51va4dr2y9yfppvsvp"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
+     `(#:configure-flags
+       '("CFLAGS=-g -O2 -Wno-error=incompatible-pointer-types")
+       #:phases
        (modify-phases %standard-phases
          (add-before 'configure 'patch-/bin/sh
            (lambda* (#:key inputs #:allow-other-keys)
