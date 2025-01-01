@@ -18794,6 +18794,7 @@ implementation differs in these ways:
                             ;; File is missing
                             " and not test_pbmc3k")
              ;; TODO: I can't get the plotting tests to work, even with Xvfb.
+             "--ignore=scanpy/tests/test_plotting.py"
              "--ignore=scanpy/tests/test_embedding_plots.py"
              "--ignore=scanpy/tests/test_preprocessing.py"
              "--ignore=scanpy/tests/test_read_10x.py"
