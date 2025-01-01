@@ -65,6 +65,7 @@
 ;;; Copyright © 2024 Igor Goryachev <igor@goryachev.org>
 ;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2024 Spencer Peters <spencerpeters@protonmail.com>
+;;; Copyright © 2024 Jakob Kirsch <jakob.kirsch@web.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -237,7 +238,7 @@ command line, without displaying a keyboard at all.")
 (define-public aquamarine
   (package
     (name "aquamarine")
-    (version "0.4.3")
+    (version "0.5.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -246,7 +247,7 @@ command line, without displaying a keyboard at all.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0x1zz1ywchs0awkjkvdgskgqnp6pz5lqwmgr8g0zc0i7inhyg1p3"))))
+                "0m4yjpdkp8czfn897376d0pjba3l5iwfj1b9rv44p37r7j8za6qv"))))
     (build-system cmake-build-system)
     (arguments
      (list #:cmake cmake-3.30
