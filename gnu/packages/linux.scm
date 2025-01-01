@@ -8222,7 +8222,9 @@ under OpenGL graphics workloads.")
                                           #$(cc-for-target))
                            "HOSTCC=gcc"
                            (string-append "LDFLAGS=-Wl,-rpath="
-                                          #$output "/lib"))
+                                          #$output "/lib")
+                           ;; Strictly only needed for i686-linux/32bit
+                           "CFLAGS=-g -O2 -Wno-error=format")
       #:phases #~(modify-phases %standard-phases
                    (add-after 'unpack 'build-deterministically
                      (lambda _
