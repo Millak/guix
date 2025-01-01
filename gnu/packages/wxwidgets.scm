@@ -68,7 +68,7 @@
 (define-public wxwidgets
   (package
     (name "wxwidgets")
-    (version "3.2.5")
+    (version "3.2.6")
     (source
      (origin
        (method url-fetch)
@@ -76,7 +76,7 @@
                            "releases/download/v" version
                            "/wxWidgets-" version ".tar.bz2"))
        (sha256
-        (base32 "0lbb3hnprkral29cdik9y2xhjfkf4b4qy905lyv1krg2scx6mn0a"))
+        (base32 "1rywp6n08kgf87cc1fgr7i1s443hwqgljabx3lnhkdn5vmvmp7lk"))
        (modules '((guix build utils)
                   (ice-9 ftw)
                   (srfi srfi-26)))
