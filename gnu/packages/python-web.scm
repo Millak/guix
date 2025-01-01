@@ -8451,27 +8451,28 @@ fast.  It allows the usage of the @code{async/await} syntax added in Python
 (define-public python-socks
   (package
     (name "python-socks")
-    (version "2.0.3")
+    (version "2.6.1")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "python-socks" version))
+       (uri (pypi-uri "python_socks" version))
        (sha256
         (base32
-         "12msk06c0glljcrx1byd78xgv05lxw81vknqwhn8ccs7an7cmag3"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f                      ; tests not included
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "tests/" "-s")))))))
+         "17pcyd1gg2a7k2i4lvnqi9095brhf7pbpkqfcjmhpzkgmfd94hwp"))))
+    (build-system pyproject-build-system)
     (propagated-inputs
-     (list python-async-timeout python-curio python-trio))
+     (list python-trio))
     (native-inputs
-     (list python-pytest))
+     (list python-anyio
+           python-async-timeout
+           python-flask
+           python-pytest
+           python-pytest-asyncio
+           python-setuptools
+           python-tiny-proxy
+           python-trustme
+           python-wheel
+           python-yarl))
     (home-page "https://github.com/romis2012/python-socks")
     (synopsis
      "Core proxy (SOCKS4, SOCKS5, HTTP tunneling) functionality for Python")
