@@ -5587,7 +5587,7 @@ files and then re-initialize after a failed upgrade to postgres 16.
 @lisp
 (service postgresql-service-type
          (postgresql-configuration
-          (postgresql (@ (gnu packages databases) postgresql-15))))
+          (postgresql (@@ (gnu packages databases) postgresql-15))))
 @end lisp
 
 Note: If you for some reason didn't read the text here but somewhat
