@@ -1735,7 +1735,9 @@ maintenance releases.")
            pkg-config))
     (inputs (list libbsd))
     (arguments
-     `(#:configure-flags '("--with-check")))
+     (if (%current-target-system)
+         (list)
+         (list #:configure-flags #~(list "--with-check"))))
     (home-page "https://radvd.litech.org/")
     (synopsis "IPv6 Router Advertisement Daemon")
     (description
