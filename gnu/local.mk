@@ -1970,6 +1970,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/openboardview-use-system-mpc.patch	\
   %D%/packages/patches/openbox-add-fix-for-glib2-exposed-segfault.patch \
   %D%/packages/patches/openbox-python3.patch			\
+  %D%/packages/patches/openexr-2-gcc-14.patch			\
   %D%/packages/patches/openjdk-currency-time-bomb.patch		\
   %D%/packages/patches/openjdk-currency-time-bomb2.patch	\
   %D%/packages/patches/openjdk-9-pointer-comparison.patch       \
