@@ -257,17 +257,17 @@ to be read using the GNOME Yelp program.")
       (license (list license:fdl1.1+ license:gpl3+)))))
 
 (define-public gwenhywfar
-  (let ((attachid "501")) ;; file attachid changes for each version
+  (let ((attachid "529")) ;; file attachid changes for each version
     (package
       (name "gwenhywfar")
-      (version "5.10.2")
+      (version "5.12.0")
       (source
        (origin
          (method url-fetch)
          (uri (string-append "https://www.aquamaniac.de/rdm/attachments/"
                              "download/" attachid "/gwenhywfar-" version ".tar.gz"))
          (sha256
-          (base32 "1qd950kilf9bcb51b1daykipanml6bg1h3pj10950r98ah1xm9v0"))))
+          (base32 "09nnjn1i8nzlkk62wai2lbnvqap8w6y98fh520b1y883fx2g3m8a"))))
       (build-system gnu-build-system)
       (arguments
        `(#:configure-flags
