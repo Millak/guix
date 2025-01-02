@@ -4,6 +4,7 @@
 ;;; Copyright © 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -45,7 +46,8 @@
               (sha256
                (base32
                 "039v4jmnkkxs7haxrfmk9j57vfbrwlhjynlm5byfaqddv4cbsy0p"))
-              (patches (search-patches "tbb-other-arches.patch"))))
+              (patches (search-patches "tbb-other-arches.patch"
+                                       "tbb-gcc-14.patch"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
