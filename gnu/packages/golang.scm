@@ -4544,7 +4544,7 @@ parser.")
 (define-public go-github-com-containerd-console
   (package
     (name "go-github-com-containerd-console")
-    (version "1.0.3")
+    (version "1.0.4")
     (source
      (origin
        (method git-fetch)
@@ -4554,12 +4554,12 @@ parser.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0pgx0y8x23jwc2f9jfk5hd5aslqk599nj6c7dj5846xvnkz2x7p2"))))
+         "1p10k6lwfxgij5a9i47dark8apffc6wn254dwj43ks8jr134854v"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/containerd/console"))
     (propagated-inputs
-     `(("golang.org/x/sys" ,go-golang-org-x-sys)))
+     (list go-golang-org-x-sys))
     (home-page "https://github.com/containerd/console")
     (synopsis "Console package for Go")
     (description
