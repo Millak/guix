@@ -10814,6 +10814,30 @@ routines querying a database but without sending too much queries in order to
 not overload the given database.")
     (license license:expat)))
 
+(define-public go-github-com-rivo-uniseg
+  (package
+    (name "go-github-com-rivo-uniseg")
+    (version "0.4.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/rivo/uniseg")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0nlcqyvq4vhq3hqhk84h6fp0jbqkjj88kcpcl853yr7sh4sisdxc"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/rivo/uniseg"))
+    (home-page "https://github.com/rivo/uniseg")
+    (synopsis "Unicode Text Segmentation for Go")
+    (description
+     "This package implements Unicode Text Segmentation according to
+@url{https://unicode.org/reports/tr29/, Unicode Standard Annex #29}.")
+    (license license:expat)))
+
 (define-public go-github-com-rogpeppe-fastuuid
   (package
     (name "go-github-com-rogpeppe-fastuuid")
