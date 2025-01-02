@@ -3024,31 +3024,6 @@ Reference algorithm has been slightly hacked as to support the streaming mode
 required by Go's standard Hash interface.")
     (license license:bsd-3)))
 
-(define-public go-github-com-libp2p-go-libp2p-protocol
-  (let ((commit "b29f3d97e3a2fb8b29c5d04290e6cb5c5018004b")
-        (revision "0"))
-    (package
-      (name "go-github-com-libp2p-go-libp2p-protocol")
-      (version (git-version "1.0.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/libp2p/go-libp2p-protocol")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "1xgjfnx9zcqglg9li29wdqywsp8hz22wx6phns9zscni2jsfidld"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path
-         "github.com/libp2p/go-libp2p-protocol"))
-      (home-page "https://github.com/libp2p/go-libp2p-protocol")
-      (synopsis "Type for protocol strings in Golang")
-      (description "Just a type for protocol strings.  Nothing more.")
-      (license license:expat))))
-
 (define-public go-github-com-sabhiram-go-gitignore
   (let ((commit "525f6e181f062064d83887ed2530e3b1ba0bc95a")
         (revision "1"))
