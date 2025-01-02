@@ -166,7 +166,7 @@ library included in the stdlib, and supports GIF, TIFF and PDF.")
 (define-public go-github-com-klauspost-compress
   (package
     (name "go-github-com-klauspost-compress")
-    (version "1.13.1")
+    (version "1.17.11")
     (source
      (origin
        (method git-fetch)
@@ -175,20 +175,11 @@ library included in the stdlib, and supports GIF, TIFF and PDF.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ydnf9rizlhm8rilh14674qqx272sbwbkjx06xn9pqvy6mmn2r3r"))))
+        (base32 "1i8r1xiba62nng651p4razxg1kw1910sl4grm7axm2g4q8s3i298"))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "github.com/klauspost/compress"
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'reset-gzip-timestamps 'fix-permissions
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; Provide write permissions on gzip files so that
-             ;; reset-gzip-timestamps has sufficient permissions.
-             (for-each make-file-writable
-                       (find-files (assoc-ref outputs "out") ".gz$")))))))
-    (propagated-inputs
-     (list go-github-com-golang-snappy))
+     (list
+      #:import-path "github.com/klauspost/compress"))
     (home-page "https://github.com/klauspost/compress")
     (synopsis "Go compression library")
     (description "@code{compress} provides various compression algorithms.")
