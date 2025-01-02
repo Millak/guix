@@ -2630,22 +2630,18 @@ people base their games, ports to new platforms, and other projects.")
       (license license:gpl2))))
 
 (define-public inform
-  ;; The latest release does not yet have a build system.
-  ;; This commit is the earliest to have one.
-  (let ((commit "20cbfff96015938809d0e3da6cd0d83b76d27f14")
-        (revision "0"))
     (package
       (name "inform")
-      (version (git-version "6.41" revision commit))
+      (version "6.42")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://jxself.org/git/inform.git")
-               (commit commit)))
+               (commit (string-append "v" version))))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "19z8pgrj1s2irany5s6xxwsm3bdnri1as46fdi16zdp4aah523jy"))))
+          (base32 "1gb7b8y4qq9n3r4giqr4shzn3xli6aiaax7k4lzlgic7w1x3zjfl"))))
       (build-system gnu-build-system)
       (native-inputs (list autoconf automake))
       (synopsis "The Inform 6 compiler")
@@ -2654,7 +2650,7 @@ people base their games, ports to new platforms, and other projects.")
 This version of the compiler has been modified slightly to work better when the
 Inform standard library is in a non-standard location.")
       (home-page "https://jxself.org/git/inform.git")
-      (license license:gpl3+))))
+      (license license:gpl3+)))
 
 (define-public informlib
   (package
