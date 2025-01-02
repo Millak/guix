@@ -2216,30 +2216,6 @@ per-goroutine.")
     (home-page "https://github.com/jtolds/gls")
     (license license:expat)))
 
-(define-public go-github-com-saracen-walker
-  (package
-    (name "go-github-com-saracen-walker")
-    (version "0.1.4")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/saracen/walker")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "17i2zrbcp0zgwfgap555pk358wpqfa8qj8pmgwhjkzwd77nyl77g"))))
-    (build-system go-build-system)
-    (arguments
-     `(#:import-path "github.com/saracen/walker"))
-    (inputs
-     (list go-golang-org-x-sync))
-    (home-page "https://github.com/saracen/walker")
-    (synopsis "Faster, parallel version of Go's filepath.Walk")
-    (license license:expat)
-    (description "The @code{walker} function is a faster, parallel version, of
-@code{filepath.Walk}")))
-
 (define-public gopls
   (package
     (name "gopls")
