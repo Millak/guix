@@ -3001,7 +3001,7 @@ required by Go's standard Hash interface.")
 (define-public go-github-com-twmb-murmur3
   (package
     (name "go-github-com-twmb-murmur3")
-    (version "1.1.3")
+    (version "1.1.8")
     (source
      (origin
        (method git-fetch)
@@ -3011,7 +3011,7 @@ required by Go's standard Hash interface.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "00riapwkyf23l5wyis47mbr8rwr4yrjw491jfc30wpzs111c1gyy"))))
+         "064bbgbgc45i3m9b3rqyw09g0nlrjs7dq1k716i5f06zjjpr56wg"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/twmb/murmur3"))
