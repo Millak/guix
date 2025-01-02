@@ -4,6 +4,7 @@
 ;;; Copyright © 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -21,8 +22,9 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages libunwind)
-  #:use-module (guix packages)
+  #:use-module (guix gexp)
   #:use-module (guix download)
+  #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (guix build-system gnu)
@@ -41,13 +43,16 @@
                "0xj9g6a9q7v7zz6lymf3f6011synibgawi4wi384bywid5kfqsja"))))
     (build-system gnu-build-system)
     (arguments
-     `(;; Two tests are failing with newer toolchains:
-       ;; https://github.com/libunwind/libunwind/issues/363
-       #:make-flags
-       '("XFAIL_TESTS=run-coredump-unwind run-coredump-unwind-mdi")
-       ;; A different collection of tests fails for each architecture.
-       #:tests? ,(and (not (%current-target-system))
-                      (target-x86-64?))))
+     (list
+      #:configure-flags
+      #~(list "CFLAGS=-g -O2 -Wno-error=implicit-function-declaration")
+      ;; Two tests are failing with newer toolchains:
+      ;; https://github.com/libunwind/libunwind/issues/363
+      #:make-flags
+      #~(list "XFAIL_TESTS=run-coredump-unwind run-coredump-unwind-mdi")
+      ;; A different collection of tests fails for each architecture.
+      #:tests? (and (not (%current-target-system))
+                    (target-x86-64?))))
     (home-page "https://www.nongnu.org/libunwind")
     (synopsis "Determining the call chain of a program")
     (description
