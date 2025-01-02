@@ -3321,6 +3321,30 @@ approximate nearest neighbor search with Python bindings.")
 Unicode-to-LaTeX conversion.")
     (license license:expat)))
 
+(define-public python-lsp-black
+  (package
+    (name "python-lsp-black")
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/python-lsp/python-lsp-black")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1gwf3vwb01a3l8b75jbn8kyfmn0lva8vpgjnr75vazhm3lsf78fp"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-black python-lsp-server python-tomli))
+    (native-inputs
+     (list python-pytest python-setuptools python-wheel))
+    (home-page "https://github.com/python-lsp/python-lsp-black")
+    (synopsis "Black plugin for the Python LSP Server")
+    (description "This package provides a plugin with support for the
+@code{python-black} formatter for the Python LSP Server.")
+    (license license:expat)))
+
 (define-public python-pylsp-mypy
   (package
     (name "python-pylsp-mypy")
