@@ -11,6 +11,7 @@
 ;;; Copyright © 2020 Lars-Dominik Braun <lars@6xq.net>
 ;;; Copyright © 2020–2023 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2021 Noah Evans <noah@nevans.me>
+;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -333,14 +334,14 @@ sort playlists, and a local file system browser.")
 (define-public mpdscribble
   (package
     (name "mpdscribble")
-    (version "0.24")
+    (version "0.25")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://www.musicpd.org/download/mpdscribble/"
                                   version "/mpdscribble-" version ".tar.xz"))
               (sha256
                (base32
-                "1rx8n8pvx3a6n6z51pgy00p4rs93iqy95d3ha9q7xf5k92kwpd7n"))))
+                "1kimbcmvwyfs3v9fi58jmd13icgxb6ipfyppigbc85zmbfa9vy10"))))
     (build-system meson-build-system)
     (inputs (list boost curl libgcrypt libmpdclient))
     (native-inputs (list pkg-config))
