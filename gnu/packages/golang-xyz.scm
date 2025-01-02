@@ -7355,6 +7355,30 @@ just matching lines.  This package proviedes a CLI tool and @code{colors}
 library.")
     (license license:bsd-2)))
 
+(define-public go-github-com-joho-godotenv
+  (package
+    (name "go-github-com-joho-godotenv")
+    (version "1.5.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/joho/godotenv")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "03vijs05k31jdf24pzj3vlk6b5jxf894v1kvzals4wzclyq2h3ch"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/joho/godotenv"))
+    (home-page "https://github.com/joho/godotenv")
+    (synopsis "Golang libary to load environment variables from @code{.env}")
+    (description
+     "This package provides a Go port of the Ruby's dotenv library
+https://github.com/bkeepers/dotenv.")
+    (license license:expat)))
+
 (define-public go-github-com-jonboulle-clockwork
   (package
     (name "go-github-com-jonboulle-clockwork")
