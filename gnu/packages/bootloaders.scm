@@ -475,6 +475,15 @@ menu to select one of the installed operating systems.")
             (cross-binutils "arm-linux-gnueabihf")))
          (package-native-inputs grub-efi)))))
 
+(define-public grub-emu
+  (package/inherit grub
+    (name "grub-emu")
+    (synopsis "GRand Unified Boot loader (Emu version)")
+    (arguments
+     (substitute-keyword-arguments (package-arguments grub)
+       ((#:configure-flags flags #~'())
+        #~(cons* "--with-platform=emu" #$flags))))))
+
 ;; Because grub searches hardcoded paths it's easiest to just build grub
 ;; again to make it find both grub-pc and grub-efi.  There is a command
 ;; line argument which allows you to specify ONE platform - but
