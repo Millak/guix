@@ -14243,7 +14243,7 @@ solve linear problems.")
 (define-public python-py-partiql-parser
   (package
     (name "python-py-partiql-parser")
-    (version "0.5.6")
+    (version "0.6.1")
     (source
      (origin
        (method git-fetch)   ; no tests data in PyPi package
@@ -14252,7 +14252,7 @@ solve linear problems.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xa1plsi2nkd3fwvkjw9c8b3bzvr6ml83x5gd22sf1cvimqn0jmq"))))
+        (base32 "008vj0f09gzk6pijwvxs6m860rmszm85is7wgjwifc8y38sqd86s"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-hatchling
