@@ -5767,6 +5767,10 @@ file.")
                         (not (target-little-endian?))))
       #:phases
       #~(modify-phases %standard-phases
+          (add-before 'configure 'relax-gcc-14-strictness
+            (lambda _
+              (setenv "CFLAGS"
+                      "-g -O2 -Wno-error=incompatible-pointer-types")))
           (add-after 'unpack 'disable-problematic-tests
             (lambda _
               ;; Skip the colord-test-private, which requires a *system* D-Bus
