@@ -13,7 +13,7 @@
 ;;; Copyright © 2022, 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
-;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2025 Vinicius Monego <monego@posteo.net>
 ;;;
@@ -283,7 +283,7 @@ documents in the ms and man formats, LaTeX, gemini, and terminal output.")
 (define-public discount
   (package
     (name "discount")
-    (version "2.2.7")
+    (version "2.2.7d")
     (source (origin
              (method url-fetch)
              (uri (string-append
@@ -291,7 +291,7 @@ documents in the ms and man formats, LaTeX, gemini, and terminal output.")
                    "discount/discount-" version ".tar.bz2"))
              (sha256
               (base32
-               "024mxv0gpvilyfczarcgy5m7h4lv6qvhjfpf5i73qkxhszjjn9mi"))))
+               "0lkvnysnnaw431dam3b8b1f0ln1iscas5wcgw0bxx35fjqg098hj"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
@@ -311,7 +311,10 @@ documents in the ms and man formats, LaTeX, gemini, and terminal output.")
          (replace 'configure
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
-               (setenv "CC" ,(cc-for-target))
+               (setenv "CC" (string-append
+                             ,(cc-for-target)
+                             " -g -O2"
+                             " -Wno-error=incompatible-pointer-types"))
                ;; The ‘validate-runpath’ phase fails otherwise.
                (setenv "LDFLAGS" (string-append "-Wl,-rpath=" out "/lib"))
                (invoke "./configure.sh"
