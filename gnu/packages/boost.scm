@@ -14,7 +14,7 @@
 ;;; Copyright © 2019, 2020 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Jonathan Brielmaier <jonathan.brielmaier@web.de>
-;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2021, 2022 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 Franck Pérignon <franck.perignon@univ-grenoble-alpes.fr>
 ;;; Copyright © 2021 Aleksandr Vityazev <avityazev@posteo.org>
@@ -344,6 +344,16 @@ across a broad spectrum of applications.")
              "--with-toolset=gcc")))
        ((#:phases phases)
         #~(modify-phases #$phases
+            (add-after 'unpack 'apply-gcc-14-patch
+              (lambda _
+                (substitute* "tools/build/src/engine/build.sh"
+                  (("=gcc")
+                   "=\"gcc -Wno-error=implicit-function-declaration\""))
+                (substitute* "tools/build/src/engine/build.jam"
+                  ((": -pedantic -fno-strict-aliasing" all)
+                   (string-append
+                    all
+                    " -Wno-error=implicit-function-declaration")))))
             (replace 'patch-shells
               (lambda _
                 (substitute* (append
