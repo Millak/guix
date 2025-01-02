@@ -120,6 +120,22 @@ C/C++ part.")
     (license x11)
     (home-page "http://site.icu-project.org/")))
 
+(define-public icu4c-71
+  (package
+    (inherit icu4c)
+    (name "icu4c")
+    (version "71.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/unicode-org/icu/releases/download/release-"
+                    (string-map (lambda (x) (if (char=? x #\.) #\- x)) version)
+                    "/icu4c-"
+                    (string-map (lambda (x) (if (char=? x #\.) #\_ x)) version)
+                    "-src.tgz"))
+              (sha256
+               (base32 "1gqywaqj9jmdwrng9lm6inyqmi5j2cz36db9dcqg3yk13zjyd9v7"))))))
+
 (define-public icu4c-73
   (package
     (inherit icu4c)
