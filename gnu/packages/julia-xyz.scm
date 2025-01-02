@@ -2943,6 +2943,28 @@ operations in Julia.")
 library for parsing HTML.")
     (license license:expat)))
 
+(define-public julia-hostcpufeatures
+  (package
+    (name "julia-hostcpufeatures")
+    (version "0.1.17")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/JuliaSIMD/HostCPUFeatures.jl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1p0phms2zbmlv8bn20lnwn1jh0xjvz7vq266zf296adha534q9pq"))))
+    (build-system julia-build-system)
+    (propagated-inputs (list julia-bittwiddlingconveniencefunctions
+                             julia-ifelse julia-static))
+    (home-page "https://github.com/JuliaSIMD/HostCPUFeatures.jl")
+    (synopsis "Provides information about the CPU's features")
+    (description "This package provides information about the features of
+the host CPU in Julia.")
+    (license license:expat)))
+
 (define-public julia-http
   (package
     (name "julia-http")
