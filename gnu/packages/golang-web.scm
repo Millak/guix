@@ -5363,6 +5363,35 @@ multistream-select protocol.  The protocol is defined at
 2616} HTTP/1.1 standard.")
     (license license:bsd-3)))
 
+(define-public go-github-com-nrdcg-goinwx
+  (package
+    (name "go-github-com-nrdcg-goinwx")
+    (version "0.10.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/nrdcg/goinwx")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ld3spdi7q8cf4hf0wnbl7gyw2k8n4wp03fqncjx2gw2nsjng684"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/nrdcg/goinwx"))
+    (propagated-inputs
+     (list
+      go-github-com-fatih-structs
+      go-github-com-kolo-xmlrpc
+      go-github-com-mitchellh-mapstructure))
+    (home-page "https://github.com/nrdcg/goinwx")
+    (synopsis "INWX Go API client")
+    (description
+     "This go library implements some parts of the official
+@url{https://www.inwx.com/en/help/apidoc, INWX XML-RPC API}.")
+    (license license:expat)))
+
 (define-public go-github-com-nwidger-jsoncolor
   (package
     (name "go-github-com-nwidger-jsoncolor")
