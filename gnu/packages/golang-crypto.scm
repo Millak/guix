@@ -1785,6 +1785,31 @@ adding the ability to obtain the list of host key algorithms for a known
 host.")
     (license license:asl2.0)))
 
+(define-public go-github-com-twmb-murmur3
+  (package
+    (name "go-github-com-twmb-murmur3")
+    (version "1.1.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/twmb/murmur3")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "064bbgbgc45i3m9b3rqyw09g0nlrjs7dq1k716i5f06zjjpr56wg"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/twmb/murmur3"))
+    (home-page "https://github.com/twmb/murmur3")
+    (synopsis "Native MurmurHash3 Go implementation")
+    (description
+     "Native Go implementation of Austin Appleby's third MurmurHash
+revision (aka MurmurHash3). Reference algorithm has been slightly hacked as to
+support the streaming mode required by Go's standard Hash interface.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-xanzy-ssh-agent
   (package
     (name "go-github-com-xanzy-ssh-agent")

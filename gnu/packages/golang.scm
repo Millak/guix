@@ -2998,32 +2998,6 @@ Reference algorithm has been slightly hacked as to support the streaming mode
 required by Go's standard Hash interface.")
     (license license:bsd-3)))
 
-(define-public go-github-com-twmb-murmur3
-  (package
-    (name "go-github-com-twmb-murmur3")
-    (version "1.1.8")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/twmb/murmur3")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "064bbgbgc45i3m9b3rqyw09g0nlrjs7dq1k716i5f06zjjpr56wg"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:import-path "github.com/twmb/murmur3"))
-    (home-page "https://github.com/twmb/murmur3")
-    (synopsis "Native MurmurHash3 Go implementation")
-    (description "Native Go implementation of Austin Appleby's third
-MurmurHash revision (aka MurmurHash3).
-
-Reference algorithm has been slightly hacked as to support the streaming mode
-required by Go's standard Hash interface.")
-    (license license:bsd-3)))
-
 (define-public go-github-com-sabhiram-go-gitignore
   (let ((commit "525f6e181f062064d83887ed2530e3b1ba0bc95a")
         (revision "1"))
