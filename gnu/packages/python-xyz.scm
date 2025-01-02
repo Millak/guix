@@ -2156,7 +2156,6 @@ bindings to the C++ random forest implementation, ranger, using Cython.")
         (base32 "1rnjyykjp41mqz6h1vx18jblq97gi5m5x7dgasyaihnd7fhswhq6"))))
     (build-system pyproject-build-system)
     (arguments (list #:tests? #false)) ;there are none
-    (propagated-inputs (list python-dataclasses))
     (native-inputs (list python-poetry-core))
     (home-page "https://github.com/NiklasRosenstein/python-nr.date")
     (synopsis "Fast, regex-based date parsing library in plain Python")
