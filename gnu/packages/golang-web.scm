@@ -4135,6 +4135,32 @@ jsoniter and variable type declarations (if any).  jsoniter interfaces gives
 router.")
     (license license:bsd-3)))
 
+(define-public go-github-com-kolo-xmlrpc
+  (package
+    (name "go-github-com-kolo-xmlrpc")
+    (version "0.0.0-20220921171641-a4b6fa1dd06b")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kolo/xmlrpc")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0nhcnqycdc52k4ymdd4g2chcimsnvr86m0yx13ws91qxs5pgs9d2"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/kolo/xmlrpc"))
+    (propagated-inputs
+     (list go-golang-org-x-text))
+    (home-page "https://github.com/kolo/xmlrpc")
+    (synopsis "Implementation of XMLRPC protocol in Golang")
+    (description
+     "This package provides an implementation of client side part of XMLRPC
+protocol in Go language.")
+    (license license:expat)))
+
 (define-public go-github-com-koron-go-ssdp
   (package
     (name "go-github-com-koron-go-ssdp")
