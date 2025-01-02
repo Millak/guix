@@ -26,7 +26,7 @@
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2020 R Veera Kumar <vkor@vkten.in>
 ;;; Copyright © 2020, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
-;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2020, 2021, 2022, 2023, 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
@@ -587,8 +587,16 @@ lossless JPEG manipulations such as rotation, scaling or cropping:
              ;; flag if there was no file decoding error.
              ;; The makefile is a "Non-ISO extended-ASCII text, with CRLF line
              ;; terminators" according to the file(1) utility.
-             (string-append "CFLAGS=-I. -Icommon/include -Iimage/sys -fPIC "
-                            "-D__ANSI__ -DDISABLE_PERF_MEASUREMENT -w -O "))
+             (string-append "CFLAGS=-I."
+                            " -Icommon/include"
+                            " -Iimage/sys"
+                            " -D__ANSI__"
+                            " -DDISABLE_PERF_MEASUREMENT"
+                            " -fPIC"
+                            " -w"
+                            " -O"
+                            " -Wno-error=implicit-function-declaration"
+                            " -Wno-error=incompatible-pointer-types"))
        #:tests? #f ; no check target
        #:phases
        (modify-phases %standard-phases
