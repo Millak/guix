@@ -494,9 +494,9 @@ with a flexible variety of user interfaces.")
              (method url-fetch)
               (uri (string-append "http://dev-www.libreoffice.org/src/"
                                   name "-" version ".tar.gz"))
-             (sha256
-              (base32
-               "19qpqzy66bq76wcyadmi3zahk5v1ll2kig1nvg96zx9padkcdic9"))))
+              (sha256
+               (base32
+                "19qpqzy66bq76wcyadmi3zahk5v1ll2kig1nvg96zx9padkcdic9"))))
     ;; Explicitly link with libdl. This is expected to be done by packages
     ;; relying on cppunit for their tests. However, not all of them do.
     ;; If we added the linker flag to such packages, we would pollute all

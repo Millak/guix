@@ -29,6 +29,7 @@
 ;;; Copyright © 2023 Benjamin Slade <slade@lambda-y.net>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 Aaron Covrig <aaron.covrig.us@ieee.org>
+;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -762,6 +763,7 @@ interaction.")
                     (url "https://github.com/podofo/podofo")
                     (commit version)))
               (file-name (git-file-name name version))
+              (patches (search-patches "podofo-gcc-14.patch"))
               (sha256
                (base32
                 "1fyv0zbl6zs93wy0qb3mjkfm99pgz5275nkzss115ww2w04h0ssl"))))

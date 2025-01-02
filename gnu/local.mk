@@ -2004,6 +2004,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/plasp-fix-normalization.patch \
   %D%/packages/patches/plasp-include-iostream.patch \
   %D%/packages/patches/pocketfft-cpp-prefer-preprocessor-if.patch			\
+  %D%/packages/patches/podofo-gcc-14.patch			\
   %D%/packages/patches/pokerth-boost.patch			\
   %D%/packages/patches/ppsspp-disable-upgrade-and-gold.patch		\
   %D%/packages/patches/procps-strtod-test.patch                 \
