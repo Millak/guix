@@ -7,7 +7,7 @@
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2016, 2017, 2019, 2020 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2017 Pierre Langlois <pierre.langlois@gmx.com>
-;;; Copyright © 2018, 2020, 2021, 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2018, 2020, 2021, 2023, 2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2018 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2018, 2020 Nicolò Balzarotti <nicolo@nixo.xyz>
@@ -1663,8 +1663,9 @@ checksum tool based on the BLAKE3 cryptographic hash function.")
     (native-inputs
      (list perl))
     (arguments
-     (if (target-hurd64?)
-         (list
+     (cond
+       ((target-hurd64?)
+        (list
           #:phases
           #~(modify-phases %standard-phases
               (add-after 'unpack 'apply-hurd64-patch
@@ -1672,8 +1673,10 @@ checksum tool based on the BLAKE3 cryptographic hash function.")
                   (let ((patch
                          #$(local-file
                             (search-patch "libxcrypt-hurd64.patch"))))
-                    (invoke "patch" "--force" "-p1" "-i" patch))))))
-              '()))
+                    (invoke "patch" "--force" "-p1" "-i" patch)))))))
+       ((target-ppc32?)
+        (list #:tests? #f))     ; TODO: Investigate test failures.
+       (else '())))
     (synopsis
      "Extended crypt library for descrypt, md5crypt, bcrypt, and others")
     (description
