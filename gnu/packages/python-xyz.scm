@@ -314,13 +314,13 @@
 (define-public python-apprise
   (package
     (name "python-apprise")
-    (version "1.7.4")
+    (version "1.9.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "apprise" version))
        (sha256
-        (base32 "0wvs1k71fipn617y9wsdcvwcgg2pd0nvriarlwl4438la4086ppg"))))
+        (base32 "12a6wh6ri2gr043ivghs0ivyfin80rfcqddv279gyvfq84nd1v3r"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -331,21 +331,18 @@
                                   " and not test_plugin_mqtt_tls_no_verify_success"))))
     (propagated-inputs (list python-certifi
                              python-click
-                             python-dataclasses
                              python-markdown
                              python-pyyaml
                              python-requests
                              python-requests-oauthlib))
-    (native-inputs (list python-babel
-                         python-coverage
-                         python-cryptography
-                         python-paho-mqtt
-                         python-pytest
-                         python-pytest-cov
-                         python-pytest-mock
-                         python-pytest-xdist
-                         python-setuptools
-                         python-wheel))
+    (native-inputs
+     (list python-babel
+           python-pytest
+           python-pytest-cov
+           python-pytest-mock
+           python-pytest-xdist
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/caronc/apprise")
     (synopsis
      "Push notification Python library that works with many platforms")
