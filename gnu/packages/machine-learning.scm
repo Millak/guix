@@ -118,6 +118,7 @@
   #:use-module (gnu packages rdf)
   #:use-module (gnu packages regex)
   #:use-module (gnu packages rpc)
+  #:use-module (gnu packages sdl)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages statistics)
@@ -677,39 +678,70 @@ independently to be able to run a LLaMA model.")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                     (url "https://github.com/ggerganov/whisper.cpp")
-                     (commit (string-append "v" version))))
+                    (url "https://github.com/ggerganov/whisper.cpp")
+                    (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0rrkgrx8akw91b77kl36i03i39a79r0p69glhhidm28qfw02icjx"))))
+                "0rrkgrx8akw91b77kl36i03i39a79r0p69glhhidm28qfw02icjx"))
+              (patches (search-patches "whisper-cpp-enable-tests.patch"))))
     (build-system cmake-build-system)
     (arguments
-      (list
-        #:tests? #false ; uhh. They have it commented out in CMakeLists.txt
-        #:configure-flags
-        #~(list "-DBUILD_SHARED_LIBS=ON"
-                "-DGGML_BLAS=ON"
-                "-DGGML_BLAS_VENDOR=OpenBLAS"
-                (string-append "-DBLAS_INCLUDE_DIRS="
-                               #$(this-package-input "openblas")
-                               "/include")
-                (string-append "-DBLAS_LIBRARIES="
-                               #$(this-package-input "openblas")
-                               "/lib/libopenblas.so")
+     (list
+      #:tests? #false ; uhh. They have it commented out in CMakeLists.txt
+      #:configure-flags
+      #~(list "-DWHISPER_STANDALONE=TRUE"
+              "-DWHISPER_SDL2=TRUE"
+              "-DWHISPER_BUILD_TESTS=TRUE"
+                                        ; "-DWHISPER_FFMPEG=TRUE"  ; TODO
+              "-DBUILD_SHARED_LIBS=ON"
+              "-DGGML_BLAS=ON"
+              "-DGGML_BLAS_VENDOR=OpenBLAS"
+              (string-append "-DBLAS_INCLUDE_DIRS="
+                             #$(this-package-input "openblas")
+                             "/include")
+              (string-append "-DBLAS_LIBRARIES="
+                             #$(this-package-input "openblas")
+                             "/lib/libopenblas.so")
 
-                "-DGGML_NATIVE=OFF" ;no '-march=native'
-                "-DGGML_FMA=OFF"    ;and no '-mfma', etc.
-                "-DGGML_AVX2=OFF"
-                "-DGGML_AVX512=OFF"
-                "-DGGML_AVX512_VBMI=OFF"
-                "-DGGML_AVX512_VNNI=OFF")))
+              "-DGGML_NATIVE=OFF" ;no '-march=native'
+              "-DGGML_FMA=OFF"    ;and no '-mfma', etc.
+              "-DGGML_AVX2=OFF"
+              "-DGGML_AVX512=OFF"
+              "-DGGML_AVX512_VBMI=OFF"
+              "-DGGML_AVX512_VNNI=OFF")
+      #:phases
+      #~(modify-phases %standard-phases
+          #$@(if (not (target-64bit?))
+                 '((add-after 'unpack 'skip-failing-tests
+                     (lambda _
+                       ;; 32-bit system
+                       ;; large model does not fit in RAM in 32-bit system,
+                       ;; disable large model test
+                       (substitute* "tests/CMakeLists.txt"
+                         (("LABELS \"large\"")
+                          "DISABLED true")))))
+                 '()))))
     (native-inputs
      (list pkg-config))
     (inputs
-     (list openblas))
-    (synopsis "Speech recognition")
-    (description "This package provides speech recognition.")
+     (list openblas sdl2))
+    (synopsis "OpenAI's Whisper model in C/C++")
+    (description
+     "This package is a high-performance inference of OpenAI's
+Whisper automatic speech recognition (ASR) model, implemented in plain C/C++
+without dependencies, with
+@itemize
+@item AVX intrinsics support for x86 architectures
+@item VSX intrinsics support for POWER architectures
+@item Mixed F16 / F32 precision
+@item 4-bit and 5-bit integer quantization support
+@item Zero memory allocations at runtime
+@item Support for CPU-only inference
+@item Efficient GPU support for NVIDIA
+@item OpenVINO Support
+@item C-style API
+@end itemize")
     (properties '((tunable? . #true))) ;use AVX512, FMA, etc. when available
     (home-page "https://github.com/ggerganov/whisper.cpp")
     (license license:expat)))
