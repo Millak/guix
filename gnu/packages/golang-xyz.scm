@@ -4484,6 +4484,33 @@ Differentiation between text and binary files}.
 @end itemize")
     (license license:expat)))
 
+(define-public go-github-com-gdamore-encoding
+  (package
+    (name "go-github-com-gdamore-encoding")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gdamore/encoding")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0506b4pnn3yk80sjrsh38z29qj41spxjl80fjw7vg3mz5kfkdxhi"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/gdamore/encoding"))
+    (inputs
+     (list go-golang-org-x-text))
+    (home-page "https://github.com/gdamore/encoding")
+    (synopsis "Provide encodings missing from Go")
+    (description
+     "This package provides useful encodings not included in the standard
+@code{Text} package, including some for dealing with I/O streams from
+non-UTF-friendly sources.")
+    (license license:expat)))
+
 (define-public go-github-com-gdamore-tcell
   (package
     (name "go-github-com-gdamore-tcell")
