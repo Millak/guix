@@ -2,6 +2,7 @@
 ;;; Copyright © 2013 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015, 2016, 2017, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019–2022 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -41,27 +42,30 @@
                "1dgd2izbp6mqk7l0bgw9fkpvl4mjz672p8baz3ac9k5pfrfaqg8s"))))
     (build-system gnu-build-system)
     (arguments
-     (append (if (and (%current-target-system)
-                      (target-riscv64?))
-                 (list #:phases
-                       #~(modify-phases %standard-phases
-                           (add-after 'unpack 'update-config-scripts
-                             (lambda* (#:key inputs native-inputs #:allow-other-keys)
-                               ;; Replace outdated config.guess and config.sub.
-                               (for-each (lambda (file)
-                                           (install-file
-                                            (search-input-file
-                                             (or native-inputs inputs)
-                                             (string-append "/bin/" file)) "config"))
-                                         '("config.guess" "config.sub"))))))
-                 '())
-             (list #:configure-flags #~'("--disable-static"
-                                         #$@(if (%current-target-system)
-                                                ;; We cannot check for these devices
-                                                ;; when cross compiling.
-                                                `("ac_cv_file__dev_random=yes"
-                                                  "ac_cv_file__dev_urandom=yes")
-                                                '())))))
+     (append
+      (if (and (%current-target-system)
+               (target-riscv64?))
+          (list #:phases
+                #~(modify-phases %standard-phases
+                    (add-after 'unpack 'update-config-scripts
+                      (lambda* (#:key inputs native-inputs #:allow-other-keys)
+                        ;; Replace outdated config.guess and config.sub.
+                        (for-each (lambda (file)
+                                    (install-file
+                                     (search-input-file
+                                      (or native-inputs inputs)
+                                      (string-append "/bin/" file)) "config"))
+                                  '("config.guess" "config.sub"))))))
+          '())
+             (list #:configure-flags
+                   #~'("CFLAGS=-g -O2 -Wno-error=implicit-function-declaration"
+                       "--disable-static"
+                       #$@(if (%current-target-system)
+                              ;; We cannot check for these devices
+                              ;; when cross compiling.
+                              `("ac_cv_file__dev_random=yes"
+                                "ac_cv_file__dev_urandom=yes")
+                              '())))))
     (native-inputs
      (if (and (%current-target-system)
               (target-riscv64?))
