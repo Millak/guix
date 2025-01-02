@@ -2330,6 +2330,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/tao-fix-parser-types.patch		\
   %D%/packages/patches/tar-remove-wholesparse-check.patch	\
   %D%/packages/patches/tar-skip-unreliable-tests.patch		\
+  %D%/packages/patches/tbb-gcc-14.patch				\
   %D%/packages/patches/tbb-other-arches.patch			\
   %D%/packages/patches/tclxml-3.2-install.patch			\
   %D%/packages/patches/tcsh-fix-autotest.patch			\

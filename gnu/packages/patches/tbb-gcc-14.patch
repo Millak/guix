@@ -1,0 +1,13 @@
+Upstream-status: Not presented upstream.
+
+--- tbb-2021.6.0-checkout/test/common/utils_assert.h	1970-01-01 01:00:01.000000000 +0100
++++ tbb-2021.6.0-checkout/test/common/utils_assert.h	2025-01-02 16:35:04.800740811 +0100
+@@ -20,6 +20,8 @@
+ #include "config.h"
+ #include "utils_report.h"
+ 
++#include <cstdlib>
++
+ #define REPORT_FATAL_ERROR REPORT
+ 
+ namespace utils {
