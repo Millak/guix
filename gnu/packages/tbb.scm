@@ -164,7 +164,10 @@ tasks, synchronization primitives, atomic operations, and more.")
      `(#:test-target "test"
        #:make-flags (list (string-append "LDFLAGS=-Wl,-rpath="
                                          (assoc-ref %outputs "out") "/lib")
-                          "CFLAGS=-fuse-ld=gold")
+                          "CFLAGS=-fuse-ld=gold"
+                          ,(string-append "CXXFLAGS="
+                                          " -Wno-error=changes-meaning"
+                                          " -Wno-error=template-id-cdtor"))
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'fail-on-test-errors
