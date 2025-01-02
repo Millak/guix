@@ -12,7 +12,7 @@
 ;;; Copyright © 2023-2024 Iliya Tikhonenko <tikhonenko@mpe.mpg.de>
 ;;; Copyright © 2023 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2023 Simon Tournier <zimon.toutoune@gmail.com>
-;;; Copyright © 2024 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2024-2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2024 Andy Tai <lichengtai@gmail.com>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
@@ -1792,7 +1792,7 @@ specification.")
            python-pytest
            python-setuptools-scm))
     (propagated-inputs
-     (list python-dataclasses python-pytest python-pytz))
+     (list python-pytest python-pytz))
     (home-page "https://github.com/sffjunkie/astral")
     (synopsis "Calculations for the position of the sun and moon")
     (description "Astral is a Python module that calculates times for various
