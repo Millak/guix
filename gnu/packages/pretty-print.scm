@@ -12,6 +12,7 @@
 ;;; Copyright © 2022, 2023 Maxim Cournoyer  <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2024 chris <chris@bumblehead.com>
+;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -173,7 +174,7 @@ different programming languages.")
 (define-public fmt-11
   (package
     (name "fmt")
-    (version "11.0.2")
+    (version "11.1.1")
     (source
      (origin
        (method git-fetch)
@@ -182,7 +183,7 @@ different programming languages.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1v9k57zj34axagkxwkmg73gs9h15i6c8nv9hsgwjwmi82pinv8r0"))))
+        (base32 "1sj1lp87g7xk2pak2sb7ijy0a62gslrgy2637r5dzpqs3wc4mlcw"))))
     (build-system cmake-build-system)
     (arguments '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON")))
     (home-page "https://fmt.dev")
