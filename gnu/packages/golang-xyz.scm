@@ -5548,6 +5548,30 @@ which satisfies the cron expression.")
 provides a buffered io.Writer that is flushed at a timed interval.")
     (license license:expat)))
 
+(define-public go-github-com-goverter-patherr
+  (package
+    (name "go-github-com-goverter-patherr")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/goverter/patherr")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zjcyva959ir23rgk2rvc7ivlyan9dh2rqw7hl03h6xq935zznjq"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/goverter/patherr"))
+    (home-page "https://github.com/goverter/patherr")
+    (synopsis "Implementation for Goverter's wrapErrorsUsing")
+    (description
+     "This package provides an implementation for the goverter feature
+@code{wrapErrorsUsing}.")
+    (license license:expat)))
+
 (define-public go-github-com-guptarohit-asciigraph
   (package
     (name "go-github-com-guptarohit-asciigraph")
