@@ -31631,7 +31631,6 @@ standard error channel (stderr) in your program.")
                  " and not test_unretrieved_future_exception_server_crash"))))))))
     (propagated-inputs
      (list python-contextvars
-           python-dataclasses
            python-idna
            python-sniffio
            python-typing-extensions))
