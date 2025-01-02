@@ -2566,6 +2566,33 @@ locale can be selected.")
 the Go language features.")
     (license license:asl2.0)))
 
+(define-public go-github-com-containerd-btrfs-v2
+  (package
+    (name "go-github-com-containerd-btrfs-v2")
+    (version "2.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/containerd/btrfs")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05xwni5gvg5nka1n6lbx7mah0iykz2jw7ca010r33djcn4i8r5bs"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/containerd/btrfs/v2"))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
+    (home-page "https://github.com/containerd/btrfs")
+    (synopsis "Btrfs bindings for Go")
+    (description
+     "Package btrfs provides bindings for working with btrfs partitions from
+Go.  The Linux kernel headers are only required on compilation time, not on
+run time.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-containerd-cgroups
   (package
     (name "go-github-com-containerd-cgroups")
