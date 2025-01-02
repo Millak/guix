@@ -8789,14 +8789,14 @@ and integrated feature-set for programming Python effectively.")
 (define-public python-black
   (package
     (name "python-black")
-    (version "22.3.0")
+    (version "24.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "black" version))
        (sha256
         (base32
-         "0yfahlqc7dsdp1js0cbv706apldnfnlbal9b53cww8n0hs40n0im"))))
+         "0xa8vkgbvmkdh4vsk967xh81i6g47fcqf5vngdkvrqxgjx6acvl4"))))
     (build-system pyproject-build-system)
     (arguments
      `(#:phases
@@ -8809,21 +8809,18 @@ and integrated feature-set for programming Python effectively.")
                  "#!" (search-input-file inputs "/bin/python3")))))))))
     (propagated-inputs
      (list python-click
-           python-attrs
-           python-appdirs
-           python-pathspec
            python-mypy-extensions
+           python-packaging
+           python-pathspec
            python-platformdirs
-           python-regex
            python-tomli
-           python-typed-ast
            python-typing-extensions))
     (native-inputs
      (list python-pytest
            python-pytest-aiohttp
-           python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-hatch-fancy-pypi-readme
+           python-hatch-vcs
+           python-hatchling))
     (home-page "https://github.com/psf/black")
     (synopsis "The uncompromising code formatter")
     (description "Black is the uncompromising Python code formatter.")
