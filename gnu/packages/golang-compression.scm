@@ -29,6 +29,8 @@
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (gnu packages)
+  #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-xyz))
 
 ;;; Commentary:
@@ -383,6 +385,48 @@ LZ4 data blocks.  The implementation is based on the reference C
      (list go-code-cloudfoundry-org-bytefmt
            go-github-com-pierrec-cmdflag
            go-github-com-schollz-progressbar-v3))))
+
+(define-public go-github-com-saracen-fastzip
+  (package
+    (name "go-github-com-saracen-fastzip")
+    (version "0.1.11")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/saracen/fastzip")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1h63lhbwkga920n6lrh1ccfps2k4c3dn2pqap0i6mvjk6dba95s0"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/saracen/fastzip"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-klauspost-compress
+           go-github-com-saracen-zipextra
+           go-golang-org-x-sync
+           go-golang-org-x-sys))
+    (home-page "https://github.com/saracen/fastzip")
+    (synopsis "Zip archiver and extractor with a focus on speed")
+    (description
+     "Fastzip is an opinionated Zip archiver and extractor with a focus on
+speed.
+Features:
+@itemize
+@item archiving and extraction of files and directories can only occur within
+a specified directory
+@item permissions, ownership (uid, gid on linux/unix) and modification times
+are preserved
+@item buffers used for copying files are recycled to reduce allocations
+@item files are archived and extracted concurrently
+@item by default, @code{github.com/klauspost/compress/flate} library is used
+for compression and decompression
+@end itemize")
+    (license license:expat)))
 
 (define-public go-github-com-saracen-zipextra
   (package
