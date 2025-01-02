@@ -14,7 +14,7 @@
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2016, 2017, 2018 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
-;;; Copyright © 2016, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2016, 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2016 Andy Patterson <ajpatter@uwaterloo.ca>
 ;;; Copyright © 2016 Danny Milosavljevic <dannym+a@scratchpost.org>
 ;;; Copyright © 2016-2022 Marius Bakke <marius@gnu.org>
@@ -306,9 +306,9 @@ ElasticSearch server")
 (define-public firebird
   (package
     (name "firebird")
-    (version "3.0.10")
+    (version "3.0.12")
     (source
-     (let ((revision "33601-0"))
+     (let ((revision "33787-0"))
        (origin
          (method url-fetch)
          (uri (string-append "https://github.com/FirebirdSQL/"
@@ -316,7 +316,7 @@ ElasticSearch server")
                              version "/"
                              "Firebird-" version "." revision ".tar.bz2"))
          (sha256
-          (base32 "0h033xj1kxwgvdv4ncm6kk0mqybvvn203gf88xcv3avys9hbnf4i"))
+          (base32 "07w109k237slwyhgyxma9r5my0dkvksc7ykpw0a4h7gpv06vzcl5"))
          (patches (search-patches "firebird-riscv64-support-pt1.patch"
                                   "firebird-riscv64-support-pt2.patch"))
          (modules '((guix build utils)))
@@ -448,7 +448,7 @@ ElasticSearch server")
     (inputs
      (list boost
            editline
-           icu4c
+           icu4c-71
            libtommath
            ncurses
            zlib))
