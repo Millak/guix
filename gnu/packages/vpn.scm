@@ -24,6 +24,7 @@
 ;;; Copyright © 2022 Jean-Pierre De Jesus DIAZ <me@jeandudey.tech>
 ;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2024 Allan Adair <allan@adair.no>
+;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -669,7 +670,9 @@ Only \"Universal TUN/TAP device driver support\" is needed in the kernel.")
            (delete 'configure)          ; no configure script
            (replace 'build
              (lambda _
-               (invoke "gcc" "-o" "netunshare" "netunshare.c")))
+               (invoke "gcc" "-g" "-O2"
+                       "-Wno-error=implicit-function-declaration"
+                       "-o" "netunshare" "netunshare.c")))
            (replace 'install
              ;; There is no Makefile; manually install the relevant files.
              (lambda* (#:key outputs #:allow-other-keys)
