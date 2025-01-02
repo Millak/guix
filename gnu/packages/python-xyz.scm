@@ -3321,6 +3321,25 @@ approximate nearest neighbor search with Python bindings.")
 Unicode-to-LaTeX conversion.")
     (license license:expat)))
 
+(define-public python-pylsp-mypy
+  (package
+    (name "python-pylsp-mypy")
+    (version "0.6.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pylsp_mypy" version))
+       (sha256
+        (base32 "1amvqzb5lhhw2011003mwm88chb8sz5aax1jrqc3jg0jpak992fj"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (propagated-inputs (list python-mypy python-lsp-server))
+    (home-page "https://github.com/python-lsp/pylsp-mypy")
+    (synopsis "Mypy linter for the Python LSP Server")
+    (description
+     "Mypy linter integration for use with @code{python-lsp-server}.")
+    (license license:expat)))
+
 (define-public python-pyls-black
   (package
     (name "python-pyls-black")
