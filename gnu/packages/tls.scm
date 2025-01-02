@@ -14,7 +14,7 @@
 ;;; Copyright © 2017 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
-;;; Copyright © 2020, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2023, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020, 2021, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Solene Rapenne <solene@perso.pw>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
@@ -971,7 +971,7 @@ number generator")
 (define-public mbedtls-lts
   (package
     (name "mbedtls")
-    (version "2.28.7")
+    (version "2.28.9")
     (source
      (origin
        (method git-fetch)
@@ -980,11 +980,12 @@ number generator")
              (commit (string-append "mbedtls-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "070i5pxciw04swfqk1rmdprhsafn4cias3dlmkm467pqpjnhb394"))))
+        (base32 "0ldqhvmj9wl0yp3hz675zbnq69lw533s0ahy9bbdxxnj5gjb86gw"))))
     (build-system cmake-build-system)
     (arguments
      (list #:configure-flags
-           #~(list "-DUSE_SHARED_MBEDTLS_LIBRARY=ON"
+           #~(list "-DCMAKE_C_FLAGS=-Wno-error=calloc-transposed-args"
+                   "-DUSE_SHARED_MBEDTLS_LIBRARY=ON"
                    "-DUSE_STATIC_MBEDTLS_LIBRARY=OFF")
            #:phases
            #~(modify-phases %standard-phases
