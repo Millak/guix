@@ -769,7 +769,7 @@ VERSION."
                     #:repo repo
                     #:version version
                     #:repo->guix-package texlive->guix-package
-                    #:guix-name guix-name))
+                    #:guix-name downstream-package-name))
 
 ;;;
 ;;; Updates.
