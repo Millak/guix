@@ -393,6 +393,37 @@ LZ4 data blocks.  The implementation is based on the reference C
            go-github-com-pierrec-cmdflag
            go-github-com-schollz-progressbar-v3))))
 
+(define-public go-github-com-saracen-zipextra
+  (package
+    (name "go-github-com-saracen-zipextra")
+    (version "0.0.0-20220303013732-0187cb0159ea")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/saracen/zipextra")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0j24jdi5495nfq08xm6yjr9s32z13x6y961ry1ihhhgi6s8zdddj"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/saracen/zipextra"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file "zipextra_example_test.go")))))))
+    (home-page "https://github.com/saracen/zipextra")
+    (synopsis "Encoding and decoding ZIP archive format's \"Extra Fields\"")
+    (description
+     "This package provides a library for encoding and decoding ZIP archive
+format's \"Extra Fields\".  The intention is to eventually support and provide
+a low-level API for the majority of PKWARE's and Info-ZIP's extra fields.")
+    (license license:expat)))
+
 (define-public go-github-com-ulikunitz-xz
   (package
     (name "go-github-com-ulikunitz-xz")
