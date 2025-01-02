@@ -3280,7 +3280,7 @@ various color spaces.")
 (define-public go-github-com-gdamore-encoding
   (package
     (name "go-github-com-gdamore-encoding")
-    (version "1.0.0")
+    (version "1.0.1")
     (source
      (origin
        (method git-fetch)
@@ -3290,7 +3290,7 @@ various color spaces.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1vmm5zll92i2fm4ajqx0gyx0p9j36496x5nabi3y0x7h0inv0pk9"))))
+         "0506b4pnn3yk80sjrsh38z29qj41spxjl80fjw7vg3mz5kfkdxhi"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/gdamore/encoding"))
