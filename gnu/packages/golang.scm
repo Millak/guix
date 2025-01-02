@@ -3385,7 +3385,7 @@ Go library.")
 (define-public go-github-com-rivo-tview
   (package
     (name "go-github-com-rivo-tview")
-    (version "0.0.0-20220703182358-a13d901d3386")
+    (version "0.0.0-20241227133733-17b7edb88c57")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3394,16 +3394,14 @@ Go library.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0gf1m3ndbc3kgxpv0ryq9a1ahijg6m896sc9k7dvwfjd8vy0q0yd"))))
+                "1w59vyvs8k5mzl7k39zpwcwwdgam2pbz0rnrfnnjgvkld1rh81dc"))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "github.com/rivo/tview"))
-    (propagated-inputs (list go-golang-org-x-term
-                             go-golang-org-x-sys
-                             go-github-com-rivo-uniseg
-                             go-github-com-mattn-go-runewidth
-                             go-github-com-lucasb-eyer-go-colorful
-                             go-github-com-gdamore-tcell-v2))
+    (propagated-inputs
+     (list go-github-com-gdamore-tcell-v2
+           go-github-com-lucasb-eyer-go-colorful
+           go-github-com-rivo-uniseg))
     (home-page "https://github.com/rivo/tview")
     (synopsis "Rich Interactive Widgets for Terminal UIs")
     (description
