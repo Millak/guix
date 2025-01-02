@@ -1,0 +1,13 @@
+Upstream-status: Not presented upstream.
+
+--- podofo-0.9.8/test/unit/StringTest.h.orig	2025-01-02 17:35:43.328872274 +0100
++++ podofo-0.9.8/test/unit/StringTest.h	2025-01-02 17:36:17.384862445 +0100
+@@ -22,6 +22,8 @@
+ #define _STRING_TEST_H_
+ 
+ #include <cppunit/extensions/HelperMacros.h>
++#include <podofo/base/PdfString.h>
++namespace PoDoFo {std::ostream& operator<<(std::ostream& o, const PdfString& s);}
+ 
+ #ifndef __clang__
+ 
