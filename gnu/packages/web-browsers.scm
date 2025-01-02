@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2014, 2019 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2015, 2016, 2019, 2021-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015, 2016, 2019, 2021-2023, 2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2017, 2024 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -750,8 +750,12 @@ is fully configurable and extensible in Common Lisp.")
            (delete-file-recursively "lib/sealcurses")))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #false                  ;no tests
-       #:configure-flags (list "-DTFDN_ENABLE_SSE41=OFF")))
+     (list
+       #:tests? #false                  ;no tests
+       #:configure-flags
+       #~(list "-DTFDN_ENABLE_SSE41=OFF"
+               (string-append "-DUNISTRING_DIR="
+                              #$(this-package-input "libunistring")))))
     (native-inputs
      (list pkg-config zip))
     (inputs
