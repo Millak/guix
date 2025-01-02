@@ -31,7 +31,7 @@
 ;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
-;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2024, 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -606,7 +606,7 @@ as existing hashing techniques, with provably negligible risk of collisions.")
 (define-public oniguruma
   (package
     (name "oniguruma")
-    (version "6.9.5-rev1")
+    (version "6.9.10")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/kkos/"
@@ -618,7 +618,7 @@ as existing hashing techniques, with provably negligible risk of collisions.")
                                   "/onig-" version ".tar.gz"))
               (sha256
                (base32
-                "17m92k1n6bvza6m35fpd5g36zwpwm3hfz3478iwj5bvj2sfq8g6k"))))
+                "01gwd7bkhwl2rdqbfq109vlzznic2pygz3dnhrzykr2rw9dgqp1a"))))
     (build-system gnu-build-system)
     (arguments '(#:configure-flags '("--disable-static")))
     (home-page "https://github.com/kkos/oniguruma")
