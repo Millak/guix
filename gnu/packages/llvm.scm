@@ -27,7 +27,7 @@
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2023-2025 Zheng Junjie <z572@z572.online>
-;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -157,7 +157,9 @@ as \"x86_64-linux\"."
          (llvm-monorepo (package-version llvm))))
     (build-system cmake-build-system)
     (native-inputs
-     (cond ((version>=? version "18")
+     (cond ((version>=? version "19")
+            (package-native-inputs llvm))
+           ((version>=? version "18")
             ;; clang-18.1.8 doesn't build with gcc-14
             ;; source/build/lib/fuzzer/libcxx_fuzzer_x86_64/include/c++/v1/__filesystem/path.h:534:52: error: use of built-in trait ‘__remove_pointer(typename std::__Fuzzer::decay<_Tp>::type)’ in function signature; use library traits instead
             ;; clang-18.1.8 doesn't build with gcc-12
