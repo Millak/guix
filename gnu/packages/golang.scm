@@ -3382,34 +3382,6 @@ over strings.")
 Go library.")
     (license license:expat)))
 
-(define-public go-github-com-rivo-tview
-  (package
-    (name "go-github-com-rivo-tview")
-    (version "0.0.0-20241227133733-17b7edb88c57")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/rivo/tview")
-                    (commit (go-version->git-ref version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1w59vyvs8k5mzl7k39zpwcwwdgam2pbz0rnrfnnjgvkld1rh81dc"))))
-    (build-system go-build-system)
-    (arguments
-     (list #:import-path "github.com/rivo/tview"))
-    (propagated-inputs
-     (list go-github-com-gdamore-tcell-v2
-           go-github-com-lucasb-eyer-go-colorful
-           go-github-com-rivo-uniseg))
-    (home-page "https://github.com/rivo/tview")
-    (synopsis "Rich Interactive Widgets for Terminal UIs")
-    (description
-     "The tview package implements rich widgets for terminal based user
-interfaces.  The widgets provided with this package are useful for data
-exploration and data entry.")
-    (license license:expat)))
-
 (define-public go-github-com-xo-terminfo
   (package
     (name "go-github-com-xo-terminfo")
