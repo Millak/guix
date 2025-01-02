@@ -3364,51 +3364,6 @@ Unicode-to-LaTeX conversion.")
      "Mypy linter integration for use with @code{python-lsp-server}.")
     (license license:expat)))
 
-(define-public python-pyls-black
-  (package
-    (name "python-pyls-black")
-    (version "0.4.7")
-    (source
-     (origin
-       ;; There are no tests in the PyPI tarball.
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/rupert/pyls-black/")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0bkhfnlik89j3yamr20br4wm8975f20v33wabi2nyxvj10whr5dj"))
-       (patches (search-patches "python-pyls-black-41.patch"))
-       ;; Patch to work with python-lsp-server.  Taken from
-       ;; <https://github.com/rupert/pyls-black/pull/37>.
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           (substitute* "setup.cfg"
-             (("python-language-server")
-              "python-lsp-server"))
-           (substitute* '("pyls_black/plugin.py" "tests/test_plugin.py")
-             (("pyls_format_document")
-              "pylsp_format_document")
-             (("pyls_format_range")
-              "pylsp_format_range")
-             (("from pyls([ \\.])" _ char)
-              (string-append "from pylsp" char)))))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      '(list "-k" "not test_load_config_target_version")))
-    (propagated-inputs
-     (list python-black python-lsp-server python-toml python-tomli))
-    (native-inputs
-     (list python-flake8 python-isort python-mypy python-pytest
-           python-pytest-runner python-setuptools python-wheel))
-    (home-page "https://github.com/rupert/pyls-black")
-    (synopsis "Black plugin for the Python Language Server")
-    (description "Black plugin for the Python Language Server.")
-    (license license:expat)))
-
 (define-public python-sh
   (package
     (name "python-sh")
