@@ -4915,7 +4915,6 @@ Python.")
                                  " and not test_pydantic_types"))))
     (propagated-inputs
      (list python-contextvars
-           python-dataclasses
            python-docstring-parser
            python-pyyaml
            python-typeshed-client))
