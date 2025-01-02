@@ -68,6 +68,7 @@
 ;;; Copyright © 2025 Sughosha <sughosha@disroot.org>
 ;;; Copyright © 2025 B. Wilson <elaexuotee@wilsonb.com>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
