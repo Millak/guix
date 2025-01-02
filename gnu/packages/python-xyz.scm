@@ -20272,7 +20272,7 @@ browser from Python.")
     (arguments
      (list
       #:test-flags
-      #~(list "--numprocesses" (number->string (parallel-job-count))
+      #~(list "--numprocesses" (number->string (min (parallel-job-count) 8))
               ;; It strugles to find 'botocore'.
               "--ignore" "tests/functional/leak/test_resource_leaks.py"
               ;; Tests require networking.
