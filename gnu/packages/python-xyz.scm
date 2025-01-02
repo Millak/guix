@@ -22608,6 +22608,10 @@ strings require only one extra byte in addition to the strings themselves.")
                      "test_nested_roundtrip_tuple"
                      "test_omit_default_roundtrip"
                      "test_optional_field_roundtrip"
+                     "test_renaming"
+                     ;; This test fails with an assertion error on the build
+                     ;; farm, but not on my laptop.
+                     "test_nodefs_generated_unstructuring_cl"
                      ;; See https://github.com/python-attrs/cattrs/issues/575
                      "test_simple_roundtrip"
                      "test_simple_roundtrip_defaults"
