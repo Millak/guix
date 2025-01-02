@@ -10898,3 +10898,25 @@ groups.  Documentation is available on
     (home-page "http://www-math.univ-poitiers.fr/~maavl/LiE/")
     ;; <http://www-math.univ-poitiers.fr/~maavl/LiE/> says LGPL.
     (license license:lgpl3+)))
+
+(define-public exprtk
+  (package
+    (name "exprtk")
+    (version "0.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ArashPartow/exprtk")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0pszh11w29nc256qhil51g3635n06ncf0ihg7g4h86jrhqsk7183"))))
+    (build-system copy-build-system)
+    (arguments
+     '(#:install-plan '(("exprtk.hpp" "include/"))))
+    (synopsis "C++ Mathematical Expression Parsing And Evaluation Library")
+    (description "ExprTk is a C++ headers only library for mathematical
+expression parsing and evaluation.")
+    (home-page "https://www.partow.net/programming/exprtk/index.html")
+    (license license:expat)))
