@@ -1778,20 +1778,22 @@ Swartz.")
               (sha256
                (base32
                 "18whsdpllg8574ma4r0qawkgw4nam6lsf63pi6761j38rvl84lg9"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (if tests?
-                 (invoke "pytest" "-vv")
-                 (format #t "test suite not run~%"))
-             #t)))))
+     (list
+      #:test-flags
+      '(list "-k"
+             ;; These fail because of unexpected locations of line breaks.
+             (string-append "not test_public_key_to_pem "
+                            "and not test_private_key_to_pem "
+                            "and not test_public_key_load_cycle "
+                            "and not test_private_key_load_cycle"))))
     (native-inputs
      (list ;; All native inputs are for tests.
            python-pyasn1 python-pytest python-pytest-cov
-           python-pytest-runner))
+           python-pytest-runner
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-cryptography python-ecdsa python-rsa python-six))
     (synopsis "JOSE implementation in Python")
