@@ -6402,7 +6402,7 @@ file or files to several hosts.")
 (define-public doctl
   (package
     (name "doctl")
-    (version "1.94.0")
+    (version "1.120.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6411,7 +6411,12 @@ file or files to several hosts.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0a221n0x7qrq0dbhhf1saya2g7jyy1798k3rhy9nzyvqzc4vnd0x"))))
+                "12fgymgiv6894ghar7ljg69hb7mi18pa2a74sp7fyymqvyhiv6z9"))
+              (snippet
+               ;; TODO: Unbundle more.
+               #~(begin (use-modules (guix build utils))
+                        (for-each delete-file-recursively
+                                  (list "vendor/golang.org"))))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "github.com/digitalocean/doctl/cmd/doctl"
@@ -6441,6 +6446,17 @@ file or files to several hosts.")
                                        "/etc/fish/completions/doctl.fish")
                    (install-completion "zsh"
                                        "/etc/zsh/site-functions/_doctl"))))))
+    (native-inputs
+     (list go-golang-org-x-crypto
+           go-golang-org-x-mod
+           go-golang-org-x-net
+           go-golang-org-x-oauth2
+           go-golang-org-x-sync
+           go-golang-org-x-sys
+           go-golang-org-x-term
+           go-golang-org-x-text
+           go-golang-org-x-time
+           go-golang-org-x-tools))
     (home-page "https://github.com/digitalocean/doctl")
     (synopsis "Command line client for DigitalOcean")
     (description
