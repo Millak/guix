@@ -8799,8 +8799,13 @@ and integrated feature-set for programming Python effectively.")
          "0xa8vkgbvmkdh4vsk967xh81i6g47fcqf5vngdkvrqxgjx6acvl4"))))
     (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
+     (list
+      #:test-flags
+      ;; On the build farm we run out of resources if we let the build system
+      ;; autodetect the number of parallel processes.
+      '(list "--numprocesses" (number->string (min (parallel-job-count) 8)))
+      #:phases
+      '(modify-phases %standard-phases
          (add-after 'patch-source-shebangs 'use-absolute-file-names
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* (find-files "tests" "\\.py$")
@@ -8818,6 +8823,7 @@ and integrated feature-set for programming Python effectively.")
     (native-inputs
      (list python-pytest
            python-pytest-aiohttp
+           python-pytest-xdist
            python-hatch-fancy-pypi-readme
            python-hatch-vcs
            python-hatchling))
