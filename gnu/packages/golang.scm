@@ -4746,36 +4746,6 @@ aware of your profiles and configuration in ~/.aws/config.")
      "This package provides INI file read and write functionality in Go.")
     (license license:asl2.0)))
 
-(define-public go-github-com-dreamacro-go-shadowsocks2
-  (package
-    (name "go-github-com-dreamacro-go-shadowsocks2")
-    (version "0.1.7")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/Dreamacro/go-shadowsocks2")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0sjr3r77fav6q0ii6dnp4px9gaz7cq861a0yxppvb6a58420bx3h"))))
-    (build-system go-build-system)
-    (arguments '(#:import-path "github.com/Dreamacro/go-shadowsocks2"))
-    (propagated-inputs (list go-golang-org-x-crypto))
-    (home-page "https://github.com/Dreamacro/go-shadowsocks2")
-    (synopsis "Shadowsocks implementation in Go")
-    (description
-     "This package is @code{shadowsocks} implementation in Go
-
-Features:
-@itemize
-@item SOCKS5 proxy
-@item Support for Netfilter TCP redirect (IPv6 should work but not tested)
-@item UDP tunneling (e.g. relay DNS packets)
-@item TCP tunneling (e.g. benchmark with iperf3)
-@end itemize")
-    (license license:asl2.0)))
-
 (define-public go-github-com-google-go-jsonnet
   (package
     (name "go-github-com-google-go-jsonnet")
