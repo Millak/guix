@@ -1183,6 +1183,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/dhclient-script-resolvconf-support.patch \
   %D%/packages/patches/directfb-davinci-glibc-228-compat.patch	\
   %D%/packages/patches/dkimproxy-add-ipv6-support.patch		\
+  %D%/packages/patches/doc++-gcc-14.patch			\
   %D%/packages/patches/docbook-utils-documentation-edits.patch	\
   %D%/packages/patches/docbook-utils-escape-characters.patch	\
   %D%/packages/patches/docbook-utils-remove-jade-sp.patch	\

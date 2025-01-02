@@ -12,7 +12,7 @@
 ;;; Copyright © 2020, 2021 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2021, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.counoyer@gmail.com>
-;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2023, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2024 Felix Gruber <felgru@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -276,7 +276,8 @@ an alternative representation if Unicode output is not available.")
                (base32
                 "0i37zlxl8g352s4hzpdx0657k5x3czh3xcsfr27irc708gb277pn"))
               (patches (search-patches "doc++-include-directives.patch"
-                                       "doc++-segfault-fix.patch"))))
+                                       "doc++-segfault-fix.patch"
+                                       "doc++-gcc-14.patch"))))
     (build-system gnu-build-system)
     (native-inputs
      (list flex gettext-minimal))
