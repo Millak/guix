@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -21,8 +22,10 @@
   #:use-module (guix git-download)
   #:use-module (gnu packages)
   #:use-module (gnu packages algebra)
+  #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages fontutils)
+  #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages groff)
   #:use-module (gnu packages gtk)
@@ -39,7 +42,7 @@
 (define-public rrdtool
   (package
     (name "rrdtool")
-    (version "1.8.0")
+    (version "1.9.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -48,7 +51,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "04dhygsp34dykrnbbcqni5f7hih0hzqbnj6d2sl439lqbx9k3q3b"))))
+                "1h9zv9yxvcf86g4zp4g3k45vk1np8zaqisk9ixgxkc58b6xx5xh8"))))
     (build-system gnu-build-system)
     (inputs
      (list cairo
@@ -58,7 +61,11 @@
            pango
            python))
     (native-inputs
-     (list groff
+     (list autoconf
+           automake
+           gettext-minimal
+           groff
+           libtool
            pkg-config
            ;; For tests.
            bc
