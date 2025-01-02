@@ -3590,16 +3590,16 @@ Grosser Reiseplaner, Routeplaner Europa 2007, Map + Route.")
 (define-public laszip
   (package
     (name "laszip")
-    (version "3.4.3")
+    (version "3.4.4")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/LASzip/LASzip")
-             (commit "3.4.3")))
+             (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "09lcsgxwv0jq50fhsgfhx0npbf1zcwn3hbnq6q78fshqksbxmz7m"))))
+        (base32 "1a0ass8wz1cd42mvdmmgp4lpaf0qpfn9blsilfskba3kmx9hpymz"))))
     (build-system cmake-build-system)
     (arguments
      (list
