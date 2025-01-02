@@ -10,7 +10,7 @@
 ;;; Copyright © 2021, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2023 Brian Cully <bjc@spork.org>
-;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -132,7 +132,15 @@
                (file-name (git-file-name name version))
                (sha256
                 (base32
-                 "1yd3cnngr5z3nymnml8fynspxgdzap7y7glp601nbkdj67wyg0k8")))))))
+                 "1yd3cnngr5z3nymnml8fynspxgdzap7y7glp601nbkdj67wyg0k8"))))
+     (arguments
+      (substitute-keyword-arguments (package-arguments openldap)
+        ((#:configure-flags flags)
+         #~(append
+            (list #$(string-append "CFLAGS=-g -O2"
+                                   " -Wno-error=implicit-int"
+                                   " -Wno-error=int-conversion"))
+            #$flags)))))))
 
 (define-public nss-pam-ldapd
   (package
