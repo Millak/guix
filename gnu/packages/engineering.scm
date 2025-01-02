@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015-2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015-2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Federico Beffa <beffa@fbengineering.ch>
 ;;; Copyright © 2016, 2018, 2020-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 David Thompson <davet@gnu.org>
@@ -2661,32 +2661,35 @@ specification can be downloaded at @url{http://3mf.io/specification/}.")
 (define-public python-pyvisa
   (package
     (name "python-pyvisa")
-    (version "1.13.0")
+    (version "1.14.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "PyVISA" version))
               (sha256
                (base32
-                "1iprr3h6d4w6v8ksgqpkgg545sai7i8hi5a5an394p26b25h1yl9"))
+                "0ybsxpc4339434ha5anix511ckdyp12cym3ld1vsspacxm0h00vi"))
               (modules '((guix build utils)))
-              (snippet '(begin
-                          ;; Delete bundled python-prettytable.
-                          (delete-file-recursively "pyvisa/thirdparty")))))
+              ;; Delete bundled python-prettytable.
+              (snippet '(delete-file-recursively "pyvisa/thirdparty"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (add-after 'unpack 'use-system-prettytable
-                          (lambda _
-                            (substitute* "pyvisa/shell.py"
-                              (("from .thirdparty import prettytable")
-                               "import prettytable")))))))
+     (list
+      #:test-flags
+      '(list "--pyargs" "pyvisa")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-system-prettytable
+            (lambda _
+              (substitute* "pyvisa/shell.py"
+                (("from .thirdparty import prettytable")
+                 "import prettytable")))))))
     (native-inputs
      (list python-pytest
            python-setuptools
+           python-setuptools-scm
            python-wheel))
     (propagated-inputs
-     (list python-dataclasses
-           python-prettytable
+     (list python-prettytable
            python-typing-extensions))
     (home-page "https://pyvisa.readthedocs.io/en/latest/")
     (synopsis "Python binding for the VISA library")
