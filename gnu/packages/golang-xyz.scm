@@ -2673,6 +2673,32 @@ cgroup uses the OCI runtime-spec found
            go-golang-org-x-sys
            go-google-golang-org-protobuf))))
 
+(define-public go-github-com-containerd-console
+  (package
+    (name "go-github-com-containerd-console")
+    (version "1.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/containerd/console")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1p10k6lwfxgij5a9i47dark8apffc6wn254dwj43ks8jr134854v"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/containerd/console"))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
+    (home-page "https://github.com/containerd/console")
+    (synopsis "Console package for Go")
+    (description
+     "This is Golang package for dealing with consoles.  It has few
+dependencies and a simple API.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-containerd-fifo
   (package
     (name "go-github-com-containerd-fifo")
