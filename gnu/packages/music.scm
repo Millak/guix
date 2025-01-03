@@ -3266,6 +3266,13 @@ using a system-independent interface.")
           (base32 "1jvp9na8d1hw46w9ybhkimbavfb3ysw7hp30cbk6dj40k5y5vgvz"))
          (file-name (git-file-name name version))))
       (build-system python-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'build 'relax-gcc-14-strictness
+              (lambda _
+                (setenv "CFLAGS" "-Wno-error=incompatible-pointer-types"))))))
       (inputs (list portmidi-2 alsa-lib))
       (native-inputs (list python-cython))
       (home-page "https://github.com/PortMidi")
