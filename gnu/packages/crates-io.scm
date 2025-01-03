@@ -32127,6 +32127,32 @@ usable by code.")
 machines are still at bay.")
     (license license:expat)))
 
+(define-public rust-human-panic-1
+  (package
+    (name "rust-human-panic")
+    (version "1.2.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "human-panic" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0w7kbj2y3rrnax2bj4s3aashsm5lrg55wh58a44v7fr0k741dw64"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anstream" ,rust-anstream-0.6)
+                       ("rust-anstyle" ,rust-anstyle-1)
+                       ("rust-backtrace" ,rust-backtrace-0.3)
+                       ("rust-os-info" ,rust-os-info-3)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-derive" ,rust-serde-derive-1)
+                       ("rust-toml" ,rust-toml-0.8)
+                       ("rust-uuid" ,rust-uuid-1))))
+    (home-page "https://github.com/rust-cli/human-panic")
+    (synopsis "Panic messages for humans")
+    (description "This package provides panic messages for humans.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-human-sort-0.2
   (package
     (name "rust-human-sort")
