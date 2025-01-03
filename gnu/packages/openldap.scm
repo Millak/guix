@@ -253,7 +253,9 @@ servers from Python programs.")
                            ,@%default-gnu-imported-modules)
       #:disallowed-references (list httpd)
       #:configure-flags
-      #~(list "--enable-cmocka"
+      #~(list (string-append "CFLAGS=-g -O2"
+                             " -Wno-error=incompatible-pointer-types")
+              "--enable-cmocka"
               (string-append "--with-db="
                              #$(this-package-input "bdb"))
               (string-append "--with-netsnmp="
