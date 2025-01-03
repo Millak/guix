@@ -76,6 +76,7 @@
 ;;; Copyright © 2025 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2025 Sergio Pastor Pérez <sergio.pastorperez@gmail.com>
 ;;; Copyright © 2025 Jake Forster <jakecameron.forster@gmail.com>
+;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -7922,13 +7923,16 @@ event loop.  It is implemented in Cython and uses libuv under the hood.")
 (define-public gunicorn
   (package
     (name "gunicorn")
-    (version "21.2.0")
+    (version "22.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "gunicorn" version))
        (sha256
-        (base32 "0cqhr2g880snpi45qvvch288m4fdyd5vqrcz3gk9hkv33pzqpv48"))))
+        (base32
+         "0qzc3ghayc137hlwrqqwkkhaf8f5h9ja21qwy4rznxpz75i462sa"))))
+    ;; CVE-2024-1135 is fixed in version 22.0.0.
+    (properties `((lint-hidden-cve . ("CVE-2024-1135"))))
     (outputs '("out" "doc"))
     (build-system pyproject-build-system)
     (arguments
@@ -8001,21 +8005,6 @@ Unicorn project.  The Gunicorn server is broadly compatible with
 various web frameworks, simply implemented, light on server resources,
 and fairly speedy.")
     (license license:expat)))
-
-(define-public gunicorn-next
-  (package
-    (inherit gunicorn)
-    (name "gunicorn")
-    (version "22.0.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "gunicorn" version))
-       (sha256
-        (base32
-         "0qzc3ghayc137hlwrqqwkkhaf8f5h9ja21qwy4rznxpz75i462sa"))))
-    ;; CVE-2024-1135 is fixed in version 22.0.0.
-    (properties `((lint-hidden-cve . ("CVE-2024-1135"))))))
 
 ;; break cyclic dependency for python-aiohttp, which depends on gunicorn for
 ;; its tests
