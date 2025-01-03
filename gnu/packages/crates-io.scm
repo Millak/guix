@@ -18875,6 +18875,31 @@ hexadecimal, base32, and base64.")
     (description "This package provides Custom derive for the databake crate.")
     (license license:unicode)))
 
+(define-public rust-dateparser-0.1
+  (package
+    (name "rust-dateparser")
+    (version "0.1.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "dateparser" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1i00pd2spxsz1d89n0ssf79q1w8ijx0p0rybx5d9z8lpzqhjmqf9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-regex" ,rust-regex-1))
+       #:cargo-development-inputs (("rust-chrono-tz" ,rust-chrono-tz-0.6)
+                                   ("rust-criterion" ,rust-criterion-0.3))))
+    (home-page "https://github.com/waltzofpearls/dateparser")
+    (synopsis "Parse dates in string formats that are commonly used")
+    (description
+     "This package parses dates in string formats that are commonly used.")
+    (license license:expat)))
+
 (define-public rust-datetime-0.5
   (package
     (name "rust-datetime")
