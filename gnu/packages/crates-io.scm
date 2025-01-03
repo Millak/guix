@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019 Ivan Petkov <ivanppetkov@gmail.com>
-;;; Copyright © 2019-2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019-2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2019, 2024 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2019–2021 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -63045,6 +63045,26 @@ Writing a fast decoder that is also safe can be quite challenging, so
 this crate is here to save you the hassle of maintaining and testing
 your own implementation.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-rlimit-0.9
+  (package
+    (name "rust-rlimit")
+    (version "0.9.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rlimit" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "13mb3ligflqb4h7m76pkyc8z5pswpc38fcl6qm1lvp2jls3rv8pq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2))
+       #:cargo-development-inputs (("rust-once-cell" ,rust-once-cell-1))))
+    (home-page "https://github.com/Nugine/rlimit/")
+    (synopsis "Resource limits")
+    (description "This package provides controls for resource limits.")
+    (license license:expat)))
 
 (define-public rust-rlp-0.5
   (package
