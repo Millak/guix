@@ -10988,22 +10988,42 @@ Python list with elements of type @code{PIL.Image} (from the
 (define-public python-pillow
   (package
     (name "python-pillow")
-    (version "9.2.0")
+    (version "11.1.0")
     (source (origin
               (method url-fetch)
-              (uri (pypi-uri "Pillow" version))
+              (uri (pypi-uri "pillow" version))
               (sha256
                (base32
-                "011wgm1mssjchpva9wsi2a07im9czyjvik137xlp5f0g7vykdrkm"))
-              (modules '((guix build utils)))
-              (snippet '(begin
-                          (delete-file-recursively "src/thirdparty")))
-              (patches
-               (search-patches "python-pillow-CVE-2022-45199.patch"
-                               ;; Included in 10.1.0.
-                               "python-pillow-use-zlib-1.3.patch"))))
+                "081abgpz7g013cgzz7pjhmf8m7q626ngza4hnfs76vdk104ag39n"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'patch-ldconfig
+           (lambda _
+             (substitute* "setup.py"
+               (("\\['/sbin/ldconfig', '-p'\\]") "['true']"))))
+         (replace 'check
+           (lambda* (#:key outputs inputs tests? #:allow-other-keys)
+             (when tests?
+               (setenv "HOME"
+                       (getcwd))
+               (add-installed-pythonpath inputs outputs)
+               (invoke "python" "selftest.py" "--installed")
+               (invoke "python" "-m" "pytest" "-vv")))))))
+    (native-inputs (list python-check-manifest
+                         python-coverage
+                         python-defusedxml
+                         python-markdown2
+                         python-olefile
+                         python-packaging
+                         python-pytest
+                         python-pytest-cov
+                         python-pytest-timeout
+                         python-setuptools
+                         python-trove-classifiers
+                         python-wheel))
     (inputs (list freetype
                   lcms
                   libjpeg-turbo
@@ -11011,21 +11031,6 @@ Python list with elements of type @code{PIL.Image} (from the
                   libwebp
                   openjpeg
                   zlib))
-    (propagated-inputs (list python-olefile))
-    (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'patch-ldconfig
-                    (lambda _
-                      (substitute* "setup.py"
-                        (("\\['/sbin/ldconfig', '-p'\\]") "['true']"))))
-                  (replace 'check
-                    (lambda* (#:key outputs inputs tests? #:allow-other-keys)
-                      (when tests?
-                        (setenv "HOME"
-                                (getcwd))
-                        (add-installed-pythonpath inputs outputs)
-                        (invoke "python" "selftest.py" "--installed")
-                        (invoke "python" "-m" "pytest" "-vv")))))))
     (home-page "https://python-pillow.org")
     (synopsis "Fork of the Python Imaging Library")
     (description
