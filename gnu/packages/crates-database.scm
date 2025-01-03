@@ -275,6 +275,38 @@ Diesel.")
     (description "Internal diesel crate.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-liblmdb-sys-0.2
+  (package
+    (name "rust-liblmdb-sys")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "liblmdb-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0j9f9l6fbaaqfbvfmb9rd2b9acqjyh7pn1ma3bv0pxl0lnikivgy"))
+       (snippet
+        #~(begin
+            (use-modules (guix build utils))
+            (delete-file-recursively "mdb")
+            ;; Inspired by Debian's patch for bzip2-sys.
+            (delete-file "build.rs")
+            (with-output-to-file "build.rs"
+              (lambda _
+                (format #t "fn main() {~@
+                        println!(\"cargo:rustc-link-lib=lmdb\");~@
+                        }~%")))))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-gcc" ,rust-gcc-0.3)
+                       ("rust-libc" ,rust-libc-0.2))))
+    (inputs (list lmdb))
+    (home-page "https://github.com/vhbit/lmdb-rs")
+    (synopsis "LMDB native lib")
+    (description "This package provides LMDB native lib.")
+    (license license:expat)))
+
 (define-public rust-libsqlite3-sys-0.30
   (package
     (name "rust-libsqlite3-sys")
