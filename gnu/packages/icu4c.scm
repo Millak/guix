@@ -52,7 +52,7 @@
    (string-map (lambda (x) (if (char=? x #\.) #\_ x)) version)
    "-src.tgz"))
 
-(define-public icu4c
+(define-public icu4c-76
   (package
     (name "icu4c")
     (version "76.1")
@@ -125,7 +125,7 @@ C/C++ part.")
 
 (define-public icu4c-71
   (package
-    (inherit icu4c)
+    (inherit icu4c-76)
     (name "icu4c")
     (version "71.1")
     (source (origin
@@ -133,6 +133,8 @@ C/C++ part.")
               (uri (icu4c-uri version))
               (sha256
                (base32 "1gqywaqj9jmdwrng9lm6inyqmi5j2cz36db9dcqg3yk13zjyd9v7"))))))
+
+(define-public icu4c icu4c-71)
 
 (define-public icu4c-73
   (package
