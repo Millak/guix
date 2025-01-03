@@ -160,12 +160,16 @@
                                     (map (lambda (l)
                                            (assoc l (package-inputs this-package)))
                                          '("perl-finance-quote")))))))))
-               '("gnucash"
-                 "gnc-fq-update"))))
+               '("gnucash"))))
           (add-after 'install 'glib-or-gtk-compile-schemas
             (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-compile-schemas))
           (add-after 'install 'glib-or-gtk-wrap
-            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))))
+            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap))
+          (add-before 'glib-or-gtk-wrap 'delete-gnc-fq-update
+            (lambda _
+              ;; We are not updating Finance::Quote from CPAN.  There is no
+              ;; reason to install this binary.
+              (delete-file (string-append #$output "/bin/gnc-fq-update")))))))
     (native-inputs
      (list gmp
            `(,glib "bin")               ;glib-compile-schemas, etc.
