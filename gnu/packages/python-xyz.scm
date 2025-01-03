@@ -11511,13 +11511,13 @@ arguments.  It handles arbitrarily large (directed-acyclic) signal graphs.")
 (define-public python-imageio-ffmpeg
   (package
    (name "python-imageio-ffmpeg")
-   (version "0.4.8")
+   (version "0.5.1")
    (source (origin
             (method url-fetch)
             (uri (pypi-uri "imageio-ffmpeg" version))
             (sha256
              (base32
-              "1a8as5c42s8yl79gc2nhj6vvkwr81p5ibxp5m1zhn1zy22nhbapx"))))
+              "0k284r1xsdp5h1s4k6nfsfzbkphf8g6r2llwjafhq2sn3yrskmqf"))))
    (arguments
     (list #:phases
           #~(modify-phases %standard-phases
@@ -11528,7 +11528,8 @@ arguments.  It handles arbitrarily large (directed-acyclic) signal graphs.")
                      (string-append "(" all " or \""
                                     (search-input-file inputs "bin/ffmpeg")
                                     "\")"))))))))
-   (inputs (list ffmpeg-4))
+   (inputs (list ffmpeg))
+   (native-inputs (list python-setuptools python-wheel))
    (build-system python-build-system)
    (home-page "https://github.com/imageio/imageio-ffmpeg")
    (synopsis "FFMPEG wrapper for Python")
