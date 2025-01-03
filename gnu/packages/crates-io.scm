@@ -62116,6 +62116,28 @@ uses finite automata and guarantees linear time matching on all inputs.")
         ("rust-serde-derive" ,rust-serde-derive-1)
         ("rust-toml" ,rust-toml-0.5)))))) ; 0.4
 
+(define-public rust-regex-cache-0.2
+  (package
+    (name "rust-regex-cache")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "regex-cache" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "14w7h1rl68fzzvavig18hf184macxcypqsrv6m7vkf23jzb64yrg"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-lru-cache" ,rust-lru-cache-0.1)
+                       ("rust-oncemutex" ,rust-oncemutex-0.1)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-regex-syntax" ,rust-regex-syntax-0.6))))
+    (home-page "https://github.com/1aim/rust-regex-cache")
+    (synopsis "Lazy and cached regular expressions")
+    (description "This package provides lazy and cached regular expressions.")
+    (license license:expat)))
+
 (define-public rust-regex-cursor-0.1
   (package
     (name "rust-regex-cursor")
