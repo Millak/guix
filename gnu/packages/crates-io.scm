@@ -80563,6 +80563,25 @@ helpers to implement @code{ProxyCommand} in Thrussh.")
      "This package provides straightforward bindings to libsodium.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-thrussh-libsodium-0.2
+  (package
+    (inherit rust-thrussh-libsodium-0.3)
+    (name "rust-thrussh-libsodium")
+    (version "0.2.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "thrussh-libsodium" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "07lscwsfrh02hqnjw62wyknwmydiqwq4jz1gg1g25xygnh79qksz"))))
+    (arguments
+     `(#:cargo-inputs (("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-libsodium-sys" ,rust-libsodium-sys-0.2)
+                       ("rust-pkg-config" ,rust-pkg-config-0.3)
+                       ("rust-vcpkg" ,rust-vcpkg-0.2))))))
+
 (define-public rust-tikv-jemalloc-sys-0.6
   (package
     (name "rust-tikv-jemalloc-sys")
