@@ -11071,7 +11071,6 @@ a general image processing tool.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "0qnvpwzlx4rfz17qmsipr5iwzmh8xgmzvc79spnrmqibk3s18vyi"))))
-    (build-system pyproject-build-system)
     (arguments
      (list
       ;; This test fails because it cannot find the zlib version string
