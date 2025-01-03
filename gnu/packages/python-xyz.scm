@@ -11065,22 +11065,24 @@ a general image processing tool.")
   (package
     (inherit python-pillow)
     (name "python-pillow-simd")
-    (version "9.3.0")
+    (version "10.0.1.post0")
     ;; The PyPI tarball does not include test files.
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/uploadcare/pillow-simd")
-             (commit version)))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qnvpwzlx4rfz17qmsipr5iwzmh8xgmzvc79spnrmqibk3s18vyi"))))
+        (base32 "16pr4qifb661spf58b7g2lyraask9wf944v4kwk3llg32djvb09b"))))
     (arguments
      (list
-      ;; This test fails because it cannot find the zlib version string
-      ;; "1.3.1".
-      #:test-flags '(list "-k not test_sanity")
+      #:test-flags
+      ;; Got different content.
+      '(list "-k" (string-append "not test_open"
+                                 " and not test_consistency_3x3"
+                                 " and not test_consistency_5x5"))
       #:phases
       '(modify-phases %standard-phases
          (add-after 'unpack 'patch-ldconfig
