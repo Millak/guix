@@ -88030,6 +88030,27 @@ a part of rav1e.")
     (description "This package provides simd optimized HTML escaping code.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-validator-types-0.15
+  (package
+    (name "rust-validator-types")
+    (version "0.15.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "validator_types" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ad3ilkwdx1vcwi7vbapkz8kqp9gdrfb34qlzjmlfs19jd1g7pfj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/Keats/validator")
+    (synopsis "Basic type for validator and validator_derive")
+    (description
+     "This package provides a basic type for validator and validator_derive.")
+    (license license:expat)))
+
 (define-public rust-valuable-0.1
   (package
     (name "rust-valuable")
