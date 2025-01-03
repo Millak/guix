@@ -23118,6 +23118,27 @@ activity in channels in the status bar so it stays out of your way unless you
 want to use it.")
       (license license:gpl3+))))
 
+(define-public emacs-track-changes
+  (package
+    (name "emacs-track-changes")
+    (version "1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://elpa.gnu.org/packages/track-changes-"
+                           version ".tar"))
+       (sha256
+        (base32 "0al6a1xjs6p2pn6z976pnmfqz2x5xcz99b5gkdzz90ywbn7018m4"))))
+    (build-system emacs-build-system)
+    (home-page "https://elpa.gnu.org/packages/track-changes.html")
+    (synopsis "Abstraction library which handles accumulating file changes")
+    (description
+     "This library is a layer of abstraction above
+@code{before-change-functions} and @code{after-change-functions} which takes
+care of accumulating changes until a time when its client finds it convenient
+to react to them.")
+    (license license:gpl3+)))
+
 (define-public emacs-tracking
   (package
     (inherit emacs-circe)
