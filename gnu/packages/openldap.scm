@@ -244,15 +244,19 @@ servers from Python programs.")
                            ,@%default-gnu-imported-modules)
       #:disallowed-references (list httpd)
       #:configure-flags
-      #~(list "--enable-cmocka"
-              (string-append "--with-db="
-                             #$(this-package-input "bdb"))
-              (string-append "--with-netsnmp="
-                             #$(this-package-input "net-snmp"))
-              (string-append "--with-selinux="
-                             #$(this-package-input "libselinux"))
-              "--localstatedir=/var"
-              "--with-instconfigdir=/etc/dirsrv")
+      #~(list
+         ;; Relax gcc-14's strictness.
+         (string-append "CFLAGS=-g -O2"
+                        " -Wno-error=incompatible-pointer-types")
+         "--enable-cmocka"
+         (string-append "--with-db="
+                        #$(this-package-input "bdb"))
+         (string-append "--with-netsnmp="
+                        #$(this-package-input "net-snmp"))
+         (string-append "--with-selinux="
+                        #$(this-package-input "libselinux"))
+         "--localstatedir=/var"
+         "--with-instconfigdir=/etc/dirsrv")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-references
