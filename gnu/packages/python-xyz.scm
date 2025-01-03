@@ -8429,13 +8429,13 @@ errors when data is invalid.")
   (package
     (inherit python-pydantic)
     (name "python-pydantic")
-    (version "2.7.0")
+    (version "2.10.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pydantic" version))
        (sha256
-        (base32 "10xk9d5rgvqsp05r2qpli7ls2489x18kay944qp4d8ic4r1dvv5m"))))
+        (base32 "01jg4ll2py05izm7s9hlv5xbxcsp26bvb2585gzf8vfs4fbjxwc2"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -8444,17 +8444,8 @@ errors when data is invalid.")
               ;; These tests include hashes that keep changing depending on
               ;; package versions.
               "--ignore=tests/benchmarks/test_north_star.py"
-              "-k"
-              (string-join
-               (list
-                ;; Not implemented
-                "not test_serialize_unsubstituted_typevars_bound_default_supported"
-                ;; Needs email-validator
-                "test_fastapi_startup_perf"
-                ;; Cannot generate a JsonSchema for
-                ;; core_schema.CallableSchema [skipped-choice].
-                "test_callable_fallback_with_non_serializable_default")
-               " and not "))
+              ;; Unimportant difference in one test's error message.
+              "--ignore=tests/test_networks.py")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'pre-check
@@ -8468,7 +8459,6 @@ errors when data is invalid.")
                  "ignore::DeprecationWarning")))))))
     (native-inputs
      (list tzdata-for-tests
-           python-cloudpickle
            python-dirty-equals
            python-hatch-fancy-pypi-readme
            python-hatchling
@@ -8479,6 +8469,7 @@ errors when data is invalid.")
     (propagated-inputs
      (list python-annotated-types
            python-pydantic-core
+           python-rich
            python-typing-extensions))))
 
 (define-public python-pydantic-core
