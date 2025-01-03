@@ -608,21 +608,6 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.4)))
 
-(define-public linux-libre-4.19-version "4.19.325")
-(define-public linux-libre-4.19-gnu-revision "gnu1")
-(define deblob-scripts-4.19
-  (linux-libre-deblob-scripts
-   linux-libre-4.19-version
-   linux-libre-4.19-gnu-revision
-   (base32 "0pjal2cc2f99cvw8r4icb4l24j41k48jkj6bqk7pcahzcgx33ycb")
-   (base32 "048isws4h3lya8dwpwyhqglsjg9sckxk0gfsxdbqg336n5vi0gb1")))
-(define-public linux-libre-4.19-pristine-source
-  (let ((version linux-libre-4.19-version)
-        (hash (base32 "1qcd1rrv96p9iz9a9qpx3b9rm2jyps6sgj7l7m21m8ydwmyysyv0")))
-    (make-linux-libre-source version
-                             (%upstream-linux-source version hash)
-                             deblob-scripts-4.19)))
-
 (define %boot-logo-patch
   ;; Linux-Libre boot logo featuring Freedo and a gnu.
   (origin
@@ -687,11 +672,6 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
                              ;; can be dropped for linux-libre 5.7
                              (search-patch
                               "linux-libre-support-for-Pinebook-Pro.patch"))))
-
-(define-public linux-libre-4.19-source
-  (source-with-patches linux-libre-4.19-pristine-source
-                       (list %boot-logo-patch
-                             %linux-libre-arm-export-__sync_icache_dcache-patch)))
 
 
 ;;;
@@ -806,11 +786,6 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
   (make-linux-libre-headers* linux-libre-5.4-version
                              linux-libre-5.4-gnu-revision
                              linux-libre-5.4-source))
-
-(define-public linux-libre-headers-4.19
-  (make-linux-libre-headers* linux-libre-4.19-version
-                             linux-libre-4.19-gnu-revision
-                             linux-libre-4.19-source))
 
 ;; The following package is used in the early bootstrap, and thus must be kept
 ;; stable and with minimal build requirements.
@@ -1197,14 +1172,6 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                        "aarch64-linux" "powerpc64le-linux" "riscv64-linux")
                      #:configuration-file kernel-config))
 
-(define-public linux-libre-4.19
-  (make-linux-libre* linux-libre-4.19-version
-                     linux-libre-4.19-gnu-revision
-                     linux-libre-4.19-source
-                     '("x86_64-linux" "i686-linux" "armhf-linux"
-                       "aarch64-linux" "powerpc64le-linux")
-                     #:configuration-file kernel-config))
-
 ;; Linux-Libre-LTS points to the *newest* released long-term support version of
 ;; Linux-Libre.
 ;; Reference: <https://www.kernel.org/category/releases.html>
@@ -1259,26 +1226,10 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                         ("CONFIG_RTC_DRV_RK808" . #t))
                       (default-extra-linux-options linux-libre-5.4-version))))
 
-(define-public linux-libre-arm-generic-4.19
-  (make-linux-libre* linux-libre-4.19-version
-                     linux-libre-4.19-gnu-revision
-                     linux-libre-4.19-source
-                     '("armhf-linux")
-                     #:defconfig "multi_v7_defconfig"
-                     #:extra-version "arm-generic"))
-
 (define-public linux-libre-arm-omap2plus
   (make-linux-libre* linux-libre-version
                      linux-libre-gnu-revision
                      linux-libre-source
-                     '("armhf-linux")
-                     #:defconfig "omap2plus_defconfig"
-                     #:extra-version "arm-omap2plus"))
-
-(define-public linux-libre-arm-omap2plus-4.19
-  (make-linux-libre* linux-libre-4.19-version
-                     linux-libre-4.19-gnu-revision
-                     linux-libre-4.19-source
                      '("armhf-linux")
                      #:defconfig "omap2plus_defconfig"
                      #:extra-version "arm-omap2plus"))

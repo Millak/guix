@@ -466,10 +466,6 @@ AUX_FILES =						\
   gnu/packages/aux-files/linux-libre/5.4-arm64.conf	\
   gnu/packages/aux-files/linux-libre/5.4-i686.conf	\
   gnu/packages/aux-files/linux-libre/5.4-x86_64.conf	\
-  gnu/packages/aux-files/linux-libre/4.19-arm.conf	\
-  gnu/packages/aux-files/linux-libre/4.19-arm64.conf	\
-  gnu/packages/aux-files/linux-libre/4.19-i686.conf	\
-  gnu/packages/aux-files/linux-libre/4.19-x86_64.conf	\
   gnu/packages/aux-files/pack-audit.c			\
   gnu/packages/aux-files/python/sanity-check.py		\
   gnu/packages/aux-files/python/sitecustomize.py	\
