@@ -29762,8 +29762,8 @@ incompatible versions of it.")
    (license license:gpl3+)))
 
 (define-public emacs-org-board
-  (let ((commit "1393bd46d11a81328ed4fb8471831415a3efe224")
-        (revision "1"))
+  (let ((commit "500fe02bc114e5b535a2eb2ab73954d79428168f")
+        (revision "2"))
     (package
       (name "emacs-org-board")
       (version (git-version "1138" revision commit))
@@ -29775,7 +29775,7 @@ incompatible versions of it.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1kryrg988c3sbxyp1sdgc6xdv2iz6kiflpzn2rw4z3l4grzab53b"))))
+                  "1mcghw9mmlyqsgxk97hd57495sfx8dp6ig7qgs5xn2b2k0ygv4vf"))))
       (build-system emacs-build-system)
       (arguments
        (list
