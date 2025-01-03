@@ -34653,27 +34653,6 @@ asyncio applications.")
 @code{typing} module that are supported by the Pyre typechecker.")
     (license license:expat)))
 
-(define-public python-dataclasses
-  (package
-    (name "python-dataclasses")
-    (version "0.8")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "dataclasses" version))
-        (sha256
-          (base32
-            "15sc12nrc7gxwb30vfa6frzdnpmbap9ibi1fr1yrbkra6izhcyc4"))))
-    (build-system python-build-system)
-    (home-page
-      "https://github.com/ericvsmith/dataclasses")
-    (synopsis
-      "Backport of the @code{dataclasses} module for Python 3.6")
-    (description
-      "This is an implementation of PEP 557, Data Classes.  It is a
-backport of the @code{dataclasses} module for Python 3.6.")
-    (license license:asl2.0)))
-
 (define-public python-pywatchman
   (package
     (name "python-pywatchman")
