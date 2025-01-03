@@ -9045,6 +9045,26 @@ almost the same speed for encoding: about 3% slower when encoding 32 bytes.
 @code{rust-bs58} is not limited to 128 bytes and supports a configurable alphabet.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-bs58-0.4
+  (package
+    (inherit rust-bs58-0.5)
+    (name "rust-bs58")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "bs58" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1lr3vwzhhyica4y7rbkf26vr1h7vpjb1m6rml8zcqgw81c2y07vp"))))
+    (arguments
+     `(#:cargo-inputs (("rust-sha2" ,rust-sha2-0.9))
+       #:cargo-development-inputs
+       (("rust-assert-matches" ,rust-assert-matches-1)
+        ("rust-base58" ,rust-base58-0.1)
+        ("rust-criterion" ,rust-criterion-0.3)
+        ("rust-rust-base58" ,rust-rust-base58-0.0.4))))))
+
 (define-public rust-bs58-0.2
   (package
     (inherit rust-bs58-0.5)
