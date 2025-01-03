@@ -20258,14 +20258,14 @@ browser from Python.")
   ;; are compatible.
   (package
     (name "python-botocore")
-    (version "1.35.90")
+    (version "1.35.91")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "botocore" version))
        (sha256
         (base32
-         "0j5fy83z3g02k6awns60f6jvr9wjxm0axpvd590x06iwis7ga1zh"))))
+         "0822q7w802vwngsxkfwjrbs4zc21avs1hsai5i6zy7vhaicrq2vv"))))
     (build-system pyproject-build-system)
     (arguments
      (list
