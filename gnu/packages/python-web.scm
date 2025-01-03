@@ -1804,6 +1804,35 @@ JSON Web Algorithms (JWA) - collectively can be used to encrypt and/or sign
 content using a variety of algorithms.")
     (license license:expat)))
 
+(define-public python-joserfc
+  (package
+    (name "python-joserfc")
+    (version "1.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "joserfc" version))
+       (sha256
+        (base32 "11m600bmj70bp96wxhwvyj4d57w0zahzq3vic7s4a4k85pl7nl64"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; No module named 'Crypto'
+      '(list "--ignore=tests/jwe/test_chacha20.py"
+             ;; Deprecation warnings are not raised.
+             "-k" (string-append "not test_guess_bytes_key"
+                                 " and not test_guess_callable_key"
+                                 " and not test_guess_str_key"))))
+    (propagated-inputs (list python-cryptography))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (home-page "https://github.com/authlib/joserfc")
+    (synopsis "Python library for JOSE RFCs")
+    (description
+     "This package provides a Python library for JOSE RFCs, including JWS,
+JWE, JWK, JWA, and JWT.")
+    (license license:bsd-3)))
+
 (define-public python-jwcrypto
   (package
     (name "python-jwcrypto")
