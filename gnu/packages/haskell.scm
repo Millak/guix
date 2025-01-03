@@ -1003,7 +1003,10 @@ interactive environment for the functional language Haskell.")
      ;; <https://gitlab.haskell.org/ghc/ghc/-/issues/20051>.
      (list gmp ncurses libffi-sans-static-trampolines))
     (native-inputs
-     `(("perl" ,perl)
+     `(("gcc" ,gcc-13)                     ; does not compile with gcc-14 and adding
+                                           ; -Wno-error=incompatible-pointer-types
+                                           ; at the appropriate stages is difficult
+       ("perl" ,perl)
        ("python" ,python-2)                ; for tests
        ("ghostscript" ,ghostscript)        ; for tests
        ;; GHC is built with GHC.
