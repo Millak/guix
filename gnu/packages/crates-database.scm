@@ -429,6 +429,34 @@ Diesel.")
         ("rust-pkg-config" ,rust-pkg-config-0.3)
         ("rust-vcpkg" ,rust-vcpkg-0.2))))))
 
+(define-public rust-lmdb-rs-0.7
+  (package
+    (name "rust-lmdb-rs")
+    (version "0.7.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "lmdb-rs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1rv7c7iwgbwx92igm2r3aza8phr0lvvwqd9gwjf655gp6fsfgvsa"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (substitute* "Cargo.toml"
+                   ;; Don't assume liblmdb-sys is in a subdirectory.
+                   (("path = .*") ""))))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-0.7)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-liblmdb-sys" ,rust-liblmdb-sys-0.2)
+                       ("rust-log" ,rust-log-0.3))))
+    (inputs (list lmdb))
+    (home-page "https://github.com/vhbit/lmdb-rs")
+    (synopsis "LMDB bindings")
+    (description "This package provides LMDB bindings.")
+    (license license:expat)))
+
 (define-public rust-mysqlclient-sys-0.2
   (package
     (name "rust-mysqlclient-sys")
