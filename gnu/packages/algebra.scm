@@ -1164,22 +1164,24 @@ features, and more.")
   (package
     (name "xtensor")
     (version "0.24.6")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/xtensor-stack/xtensor")
-                    (commit version)))
-              (sha256
-               (base32
-                "0gf5m5p61981pv7yh5425lcv8dci948ri37hn1zlli7xg54x0g3i"))
-              (file-name (git-file-name name version))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/xtensor-stack/xtensor")
+             (commit version)))
+       (sha256
+        (base32 "0gf5m5p61981pv7yh5425lcv8dci948ri37hn1zlli7xg54x0g3i"))
+       (file-name (git-file-name name version))))
     (build-system cmake-build-system)
-    (native-inputs
-     (list doctest googletest xtl))
     (arguments
-     `(#:configure-flags
-       '("-DBUILD_TESTS=ON")
-       #:test-target "xtest"))
+     (list
+      #:configure-flags #~(list "-DBUILD_TESTS=ON")
+      #:test-target "xtest"))
+    (native-inputs
+     (list doctest
+           googletest
+           xtl))
     (home-page "https://xtensor.readthedocs.io/en/latest/")
     (synopsis "C++ tensors with broadcasting and lazy computing")
     (description "xtensor is a C++ library meant for numerical analysis with
