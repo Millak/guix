@@ -278,15 +278,19 @@ interfaces (GUIs) in the Tcl language.")
                "0pha40m97fzafjnq8vwkbi5sml6xv8jki6qi60rxrzmxlrqp5aij"))))
     (build-system perl-build-system)
     (native-inputs (list pkg-config))
-    (inputs `(("libx11" ,libx11)
-              ("libpng" ,libpng)
-              ("libjpeg" ,libjpeg-turbo)))
+    (inputs (list libx11 libpng libjpeg-turbo))
     (arguments
-     `(#:make-maker-flags `(,(string-append
-                              "X11=" (assoc-ref %build-inputs "libx11")))
-
-       ;; Fails to build in parallel: <http://bugs.gnu.org/18262>.
-       #:parallel-build? #f))
+     (list
+      #:make-maker-flags
+      #~(list (string-append "X11=" #$libx11)
+              ;; Using CFLAGS partly works but also creates a broken Makefile
+              #$(string-append "CC=gcc"
+                               " -Wno-error=implicit-function-declaration"
+                               " -Wno-error=implicit-int"
+                               " -Wno-error=incompatible-pointer-types"
+                               " -Wno-error=int-to-pointer-cast"))
+      ;; Fails to build in parallel: <http://bugs.gnu.org/18262>.
+      #:parallel-build? #f))
     (synopsis "Graphical user interface toolkit for Perl")
     (description
      "Tk is a Graphical User Interface ToolKit.")
