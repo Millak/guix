@@ -4619,7 +4619,7 @@ opt.override_default_trust_store_from_path(None, os.getenv('SSL_CERT_FILE')) if 
   (package
     ;; Note: updating awscli typically requires updating botocore as well.
     (name "awscli")
-    (version "1.36.0")
+    (version "1.36.32")
     (source
      (origin
        (method git-fetch)               ; no tests in PyPI release
@@ -4628,7 +4628,7 @@ opt.override_default_trust_store_from_path(None, os.getenv('SSL_CERT_FILE')) if 
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1iwivc5kj2h5619rvbncrh4649lalxj7bxndzvrjw398vv7cixp5"))))
+        (base32 "1b4bfv7mgrxw7nfbv9ag97qcsqch2p7raip6111rqg5vdhvsck19"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -4640,12 +4640,11 @@ opt.override_default_trust_store_from_path(None, os.getenv('SSL_CERT_FILE')) if 
               ;;
               ;; AssertionError: 'argument operation: Invalid choice, valid
               ;; choices are:' not found in '
-              "-k" (string-append "not test_subscribe_to_shard_removed"
-                                  ;; Tests fail during mocking.
-                                  " and not test_expected_runtime_dependencies"
-                                  " and not test_expected_unbounded_runtime_dependencies"
-                                  " and not test_no_groff_or_mandoc_exists"
-                                  " and not test_start_conversation_removed"))
+              "-k"
+              (string-append "not test_subscribe_to_shard_removed"
+                             " and not test_start_conversation_removed"
+                             ;; Tests fail during mocking.
+                             " and not test_no_groff_or_mandoc_exists"))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-reference-to-groff
