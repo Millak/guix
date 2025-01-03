@@ -635,6 +635,30 @@ portable \"best effort\" constant-time operation and embedded-friendly
      "This package provides bcrypt-pbkdf password-based key derivation function.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-bcrypt-pbkdf-0.6
+  (package
+    (inherit rust-bcrypt-pbkdf-0.10)
+    (name "rust-bcrypt-pbkdf")
+    (version "0.6.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "bcrypt-pbkdf" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ms9c5z90n5szx5nbxrqaihny5fs3sl6a1pm3szr5g86jlxw0f3w"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (substitute* "Cargo.toml"
+                   (("\"= ?([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                    (string-append "\"^" version)))))))
+    (arguments
+     `(#:cargo-inputs (("rust-blowfish" ,rust-blowfish-0.8)
+                       ("rust-crypto-mac" ,rust-crypto-mac-0.11)
+                       ("rust-pbkdf2" ,rust-pbkdf2-0.8)
+                       ("rust-sha2" ,rust-sha2-0.9)
+                       ("rust-zeroize" ,rust-zeroize-1))))))
+
 (define-public rust-blake2-0.10
   (package
     (name "rust-blake2")
