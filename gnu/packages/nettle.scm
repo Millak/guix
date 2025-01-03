@@ -82,15 +82,16 @@ themselves.")
 (define-public nettle
   ;; This version is not API-compatible with version 2.  In particular, lsh
   ;; cannot use it yet.  So keep it separate.
-  (package (inherit nettle-2)
-    (version "3.9.1")
+  (package
+    (inherit nettle-2)
+    (version "3.10.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/nettle/nettle-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1qvc1iamnvbiss0bx9c98djgn3y60zs59c5wdyyip9qc3fcgzznc"))))
+                "0cli5lkr7h9vxrz3j9kylnsdbw2ag6x8bpgivj06xsndq1zxvz5h"))))
     (arguments
      (substitute-keyword-arguments (package-arguments nettle-2)
        ((#:configure-flags flags)
