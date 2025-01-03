@@ -24707,6 +24707,24 @@ like Don libes expect.")
 types which contain their own keys.")
     (license license:expat)))
 
+(define-public rust-extreme-666
+  (package
+    (name "rust-extreme")
+    (version "666.666.666666")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "extreme" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1yrig1ky9a6xpcl5nqnkk9wyis7k7wjzb8bbr4n810apfhq5nq0n"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/spacejam/extreme")
+    (synopsis "Extremely boring async function runner")
+    (description
+     "This package provides an extremely boring async function runner.")
+    (license license:gpl3)))
+
 (define-public rust-eyeball-0.8
   (package
     (name "rust-eyeball")
