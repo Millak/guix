@@ -21761,6 +21761,43 @@ Rust.")
     (description "A library for running child processes.")
     (license license:expat)))
 
+(define-public rust-duplicate-1
+  (package
+    (name "rust-duplicate")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "duplicate" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1jrh28a3g9xw0w9v21y92d4k08lgr1ffg8mjhw2h67h6r5mfcy6y"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--"
+         "--skip=errors::basic_expansion_errors"
+         "--skip=errors::highlight_expansion_errors"
+         "--skip=errors::hint_expansion_errors"
+         "--skip=module_disambiguation::test_expansions"
+         "--skip=no_features::test_edition_2021"
+         "--skip=no_features::test_expansions")
+       #:cargo-inputs (("rust-heck" ,rust-heck-0.4)
+                       ("rust-proc-macro-error" ,rust-proc-macro-error-1))
+       #:cargo-development-inputs
+       (("rust-doc-comment" ,rust-doc-comment-0.3)
+        ("rust-duplicate-macrotest" ,rust-duplicate-macrotest-1)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-rustversion" ,rust-rustversion-1)
+        ("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/Emoun/duplicate")
+    (synopsis
+     "Provides macros for duplication of code with variable substitution")
+    (description
+     "This package provides macros for duplication of code with variable
+substitution.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-duplicate-macrotest-1
   (package
     (name "rust-duplicate-macrotest")
