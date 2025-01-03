@@ -3146,26 +3146,6 @@ compression function.")
 cryptographic library.")
   (license (list license:lgpl3 license:gpl2 license:gpl3))))
 
-(define-public rust-nettle-5
-  (package
-    (inherit rust-nettle-7)
-    (name "rust-nettle")
-    (version "5.0.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "nettle" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0zfplqdf3mag8r7lc124hl24vri8yg711jmm8gl1mpwnlhass2n4"))
-       (patches (search-patches "rust-nettle-disable-vendor.patch"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-failure" ,rust-failure-0.1)
-        ("rust-getrandom" ,rust-getrandom-0.1)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-nettle-sys" ,rust-nettle-sys-2))))))
-
 (define-public rust-nettle-sys-2
   (package
     (name "rust-nettle-sys")
