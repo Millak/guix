@@ -60,6 +60,7 @@
 ;;; Copyright © 2024 hapster <o.rojon@posteo.net>
 ;;; Copyright © 2024 Nikita Domnitskii <nikita@domnitskii.me>
 ;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3173,7 +3174,8 @@ main purpose is to liberate raw audio rendering from audio and MIDI drivers.")
      `(#:tests? #f                      ; tests cannot be linked
        #:build-type "Release"           ; needed to have PMALSA set
        #:configure-flags
-       (list "-DPORTMIDI_ENABLE_JAVA=Off"
+       (list "-DCMAKE_C_FLAGS=-Wno-error=implicit-function-declaration"
+             "-DPORTMIDI_ENABLE_JAVA=Off"
              "-DPORTMIDI_ENABLE_TEST=Off") ; tests fail linking
        #:phases
        (modify-phases %standard-phases
