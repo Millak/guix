@@ -151,8 +151,10 @@
                                 'inputs
                                 (map (lambda (l)
                                        (assoc l (package-inputs this-package)))
-                                     '("perl-finance-quote"))))))))
-               '("gnucash"))))
+                                     '("perl-json-parse"
+                                       "perl-finance-quote"))))))))
+               '("gnucash"
+                 "gnucash-cli"))))
           (add-after 'install 'glib-or-gtk-compile-schemas
             (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-compile-schemas))
           (add-after 'install 'glib-or-gtk-wrap
@@ -161,7 +163,18 @@
             (lambda _
               ;; We are not updating Finance::Quote from CPAN.  There is no
               ;; reason to install this binary.
-              (delete-file (string-append #$output "/bin/gnc-fq-update")))))))
+              (delete-file (string-append #$output "/bin/gnc-fq-update"))))
+          (add-after 'glib-or-gtk-wrap 'unwrap-some
+            (lambda _
+              (for-each
+               (lambda (prog)
+                 (delete-file (string-append #$output "/bin/" prog))
+                 (rename-file (string-append #$output "/bin/." prog "-real")
+                              (string-append #$output "/bin/" prog)))
+               ;; Sadly glib-or-gtk-wrap does not allow excluding individual
+               ;; files.  Being wrapped breaks the finance-quote-wrapper (it
+               ;; is expected to be a perl script, not a shell one).
+               '("finance-quote-wrapper")))))))
     (native-inputs
      (list gmp
            `(,glib "bin")               ;glib-compile-schemas, etc.
