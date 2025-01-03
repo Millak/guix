@@ -892,6 +892,24 @@ and block modes.")
     (description "Blowfish block cipher")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-blowfish-0.8
+  (package
+    (inherit rust-blowfish-0.9)
+    (name "rust-blowfish")
+    (version "0.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "blowfish" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ax736islxcbghc2lqq4vy7zn6qdigrls71lwg11m3743pyg6gzy"))))
+    (arguments
+     `(#:cargo-inputs (("rust-byteorder" ,rust-byteorder-1)
+                       ("rust-cipher" ,rust-cipher-0.3)
+                       ("rust-opaque-debug" ,rust-opaque-debug-0.3))
+       #:cargo-development-inputs (("rust-cipher" ,rust-cipher-0.3))))))
+
 (define-public rust-botan-0.10
   (package
     (name "rust-botan")
