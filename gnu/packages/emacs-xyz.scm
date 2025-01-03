@@ -290,6 +290,7 @@
   #:use-module (gnu packages statistics)
   #:use-module (gnu packages libcanberra)
   #:use-module (gnu packages texinfo)
+  #:use-module (gnu packages text-editors)
   #:use-module (gnu packages virtualization)
   #:use-module (gnu packages web-browsers)
   #:use-module (gnu packages wget)
@@ -27758,6 +27759,48 @@ macros, faces and variables.  To enable call @code{highlight-defined-mode}.")
     (description "@code{parinfer-mode} is a proof-of-concept editor
 mode for Lisp programming languages.  It will infer some changes to
 keep Parens and Indentation inline with one another.")
+    (license license:gpl3+)))
+
+(define-public emacs-parinfer-rust-mode
+  (package
+    (name "emacs-parinfer-rust-mode")
+    (version "0.9.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/justinbarclay/parinfer-rust-mode")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1p00m757maw6dxig0x45gry1l7vm9dm6wg1anfm2rwl6hw1f5q25"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'configure
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((parinfer-lib
+                     (dirname
+                      (search-input-file inputs "lib/libparinfer_rust.so"))))
+                ;; Specify the absolute file names of the parinfer shared
+                ;; library.
+                ;; (make-file-writable "parinfer-rust-mode.el")
+                (emacs-substitute-variables "parinfer-rust-mode.el"
+                  ("parinfer-rust--lib-name" "libparinfer_rust.so")
+                  ("parinfer-rust-library-dir" parinfer-lib))
+                (emacs-substitute-sexps "parinfer-rust-mode.el"
+                  ("defcustom parinfer-rust-library-directory" parinfer-lib)
+                  ("defconst parinfer-rust--lib-name"
+                   "libparinfer_rust.so"))))))))
+    (inputs (list parinfer-rust-emacs))
+    (propagated-inputs (list emacs-track-changes))
+    (home-page "https://github.com/justinbarclay/parinfer-rust-mode")
+    (synopsis "Lisp structure editing mode leveraging Parinfer Rust")
+    (description
+     "Parinfer Rust mode aims to be a simple implementation of Parinfer that
+leverages the Parinfer Rust Emacs library to do most of the heavy lifting.")
     (license license:gpl3+)))
 
 (define-public emacs-helm-eww
