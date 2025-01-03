@@ -13762,6 +13762,28 @@ colors.")
 based on color-backtrace.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-color-spantrace-0.1
+  (package
+    (inherit rust-color-spantrace-0.2)
+    (name "rust-color-spantrace")
+    (version "0.1.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "color-spantrace" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1lb2li71zvpxp80nck98gcqbqm3dnmp43pnlvm52z9x8livy9vmn"))))
+    (arguments
+     `(#:cargo-inputs (("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-owo-colors" ,rust-owo-colors-1)
+                       ("rust-tracing-core" ,rust-tracing-core-0.1)
+                       ("rust-tracing-error" ,rust-tracing-error-0.1))
+       #:cargo-development-inputs
+       (("rust-ansi-parser" ,rust-ansi-parser-0.6)
+        ("rust-tracing" ,rust-tracing-0.1)
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.2))))))
+
 (define-public rust-colorchoice-1
   (package
     (name "rust-colorchoice")
