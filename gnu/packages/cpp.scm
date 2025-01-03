@@ -43,7 +43,7 @@
 ;;; Copyright © 2024 Peepo Froggings <peepofroggings@tutanota.de>
 ;;; Copyright © 2024 Jakob Kirsch <jakob.kirsch@web.de>
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
-;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3266,7 +3266,7 @@ std::variant (formerly boost::variant) for C++11/14.")
                 ((".*3rdparty/googletest.*\n") "")
                 ((".*config_compiler_and_linker.*\n") "")
                 (("gtest_main") "gtest gtest_main")))))))
-    (native-inputs (list googletest gcc-12)) ; XXX: build fails with GCC 11
+    (native-inputs (list googletest))
     (home-page "https://github.com/mpark/variant")
     (synopsis "Implementation of std::variant for C++11/14/17")
     (description
