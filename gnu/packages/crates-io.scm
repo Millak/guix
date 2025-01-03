@@ -67433,33 +67433,44 @@ paths point to the same file.")
                                    ("rust-once-cell" ,rust-once-cell-1)
                                    ("rust-sample-test" ,rust-sample-test-0.1))))))
 
-(define-public rust-sanakirja-0.10
+(define-public rust-sanakirja-1
   (package
     (name "rust-sanakirja")
-    (version "0.10.3")
+    (version "1.4.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "sanakirja" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "1fhn5lb6jn0pimnk0nbf5h4xvp28xdkdh33d57gq1ixy8b2y091y"))))
+        (base32 "04bdmhs3y35w3ip265mm4yiyf2493vcizl04kwh248af0q6zgal1"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f  ; tests::test_del_medium_fork fails
-       #:cargo-inputs
-       (("rust-fs2" ,rust-fs2-0.4)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-memmap" ,rust-memmap-0.7)
-        ("rust-rand" ,rust-rand-0.6)
-        ("rust-uuid" ,rust-uuid-0.7))
-       #:cargo-development-inputs
-       (("rust-env-logger" ,rust-env-logger-0.6)
-        ("rust-hex" ,rust-hex-0.3)
-        ("rust-tempdir" ,rust-tempdir-0.3))))
-    (home-page "https://nest.pijul.com/pijul_org/sanakirja")
+     `(#:cargo-test-flags
+       '("--"
+         ;; Some of the tests seem to get stuck in a loop
+         "--skip=tests::put_growth"
+         "--skip=tests::random_scenario_sized_fork"
+         ;; expected `u64`, found `NonZero<u64>`
+         "--skip=src/lib.rs - (line 18)")
+       #:cargo-inputs (("rust-crc32fast" ,rust-crc32fast-1)
+                       ("rust-fs2" ,rust-fs2-0.4)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-memmap2" ,rust-memmap2-0.9)
+                       ("rust-parking-lot" ,rust-parking-lot-0.11)
+                       ("rust-sanakirja-core" ,rust-sanakirja-core-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs (("rust-env-logger" ,rust-env-logger-0.8)
+                                   ("rust-libc" ,rust-libc-0.2)
+                                   ("rust-lmdb-rs" ,rust-lmdb-rs-0.7)
+                                   ("rust-rand" ,rust-rand-0.8)
+                                   ("rust-sled" ,rust-sled-0.34)
+                                   ("rust-tempfile" ,rust-tempfile-3)
+                                   ("rust-uuid" ,rust-uuid-0.8))))
+    (inputs (list lmdb))
+    (home-page "https://nest.pijul.com/pijul/sanakirja")
     (synopsis "Key-value dictionary, using copy-on-write and B-trees")
     (description
      "This package provides a key-value dictionary, using copy-on-write and B
