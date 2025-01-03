@@ -3555,14 +3555,14 @@ which can be used to parse directory listings.")
 (define-public perl-finance-quote
   (package
    (name "perl-finance-quote")
-   (version "1.59")
+   (version "1.64")
    (source
     (origin
       (method url-fetch)
       (uri (string-append "https://cpan.metacpan.org/authors/id/B/BP/BPSCHUCK/"
                           "Finance-Quote-" version ".tar.gz"))
       (sha256
-       (base32 "0a19y5bj2pvdlfi747ihgz5khjlfkhjakv712r0gz0n6miwjiscs"))))
+       (base32 "06swiq3c8cdv73nq53wshdvcxzwf2cbiay12dvjjr4as86a7r005"))))
    (build-system perl-build-system)
    (native-inputs
      (list perl-test-harness
