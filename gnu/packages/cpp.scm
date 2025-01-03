@@ -611,25 +611,26 @@ enabled in different parts of your code.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/QuantStack/xsimd")
+             (url "https://github.com/xtensor-stack/xsimd")
              (commit version)))
        (sha256
         (base32 "1fcy0djwpwvls6yqxqa82s4l4gvwkqkr8i8bibbb3dm0lqvhnw52"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags (list "-DBUILD_TESTS=ON")
-       #:test-target "xtest"))
+     (list
+      #:configure-flags #~(list "-DBUILD_TESTS=ON")
+      #:test-target "xtest"))
     (native-inputs
      (list googletest))
     (home-page "https://github.com/xtensor-stack/xsimd")
     (synopsis "C++ wrappers for SIMD intrinsics and math implementations")
     (description
-     "xsimd provides a unified means for using @acronym{SIMD, single instruction
-multiple data} features for library authors.  Namely, it enables manipulation of
-batches of numbers with the same arithmetic operators as for single values.
-It also provides accelerated implementation of common mathematical functions
-operating on batches.")
+     "xsimd provides a unified means for using @acronym{SIMD, single
+instruction multiple data} features for library authors.  Namely, it enables
+manipulation of batches of numbers with the same arithmetic operators as for
+single values.  It also provides accelerated implementation of common
+mathematical functions operating on batches.")
     (license license:bsd-3)))
 
 (define-public google-highway
