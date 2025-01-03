@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
-;;; Copyright © 2020, 2021, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2020, 2021, 2023-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2021 Léo Le Bouter <lle-bout@zaclys.net>
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
@@ -37,6 +37,7 @@
   #:use-module (guix utils)
   #:use-module (guix gexp)
   #:use-module (gnu packages crates-check)
+  #:use-module (gnu packages crates-compression)
   #:use-module (gnu packages crates-crypto)
   #:use-module (gnu packages crates-graphics)
   #:use-module (gnu packages crates-io)
@@ -800,6 +801,48 @@ libpq.")
     (arguments
      `(#:cargo-inputs (("rust-fallible-iterator" ,rust-fallible-iterator-0.3)
                        ("rust-sqlite3-parser" ,rust-sqlite3-parser-0.12))))))
+
+(define-public rust-sled-0.34
+  (package
+    (name "rust-sled")
+    (version "0.34.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sled" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0dcr2s7cylj5mb33ci3kpx7fz797jwvysnl5airrir9cgirv95kz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; cannot borrow `sub` as mutable, as it is not declared as mutable
+       #:cargo-test-flags '("--features" "testing")
+       #:cargo-inputs (("rust-backtrace" ,rust-backtrace-0.3)
+                       ("rust-color-backtrace" ,rust-color-backtrace-0.5)
+                       ("rust-crc32fast" ,rust-crc32fast-1)
+                       ("rust-crossbeam-epoch" ,rust-crossbeam-epoch-0.9)
+                       ("rust-crossbeam-utils" ,rust-crossbeam-utils-0.8)
+                       ("rust-fs2" ,rust-fs2-0.4)
+                       ("rust-fxhash" ,rust-fxhash-0.2)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-parking-lot" ,rust-parking-lot-0.11)
+                       ("rust-rio" ,rust-rio-0.9)
+                       ("rust-zstd" ,rust-zstd-0.9))
+       #:cargo-development-inputs (("rust-byteorder" ,rust-byteorder-1)
+                                   ("rust-env-logger" ,rust-env-logger-0.8)
+                                   ("rust-log" ,rust-log-0.4)
+                                   ("rust-quickcheck" ,rust-quickcheck-0.9)
+                                   ("rust-rand" ,rust-rand-0.7)
+                                   ("rust-rand-chacha" ,rust-rand-chacha-0.2)
+                                   ("rust-rand-distr" ,rust-rand-distr-0.3)
+                                   ("rust-zerocopy" ,rust-zerocopy-0.3))))
+    (home-page "https://github.com/spacejam/sled")
+    (synopsis "Pure-rust transactional embedded database")
+    (description
+     "This package provides a lightweight high-performance pure-rust
+transactional embedded database.")
+    (license (list license:expat license:asl2.0))))
 
 (define-public rust-sqlformat-0.2
   (package
