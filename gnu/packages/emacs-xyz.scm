@@ -7430,6 +7430,28 @@ whose goal is to provide colorful yet legible options for users who want
 something with a bit more flair than the Modus themes.")
     (license license:gpl3+)))
 
+(define-public emacs-eslint-flymake
+  (let ((commit "c78246330ee3ac1e0e07a709473d98a113d268e5")
+        (revision "1"))
+    (package
+      (name "emacs-eslint-flymake")
+      (version "0.2.0")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/emacs-pe/eslint-flymake")
+               (commit commit)))
+         (sha256
+          (base32 "19h95k57hrsysmvqzillzfn6wcinvcidv14fvbaqxgigwfwj0jnw"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-flymake))
+      (home-page "https://github.com/emacs-pe/eslint-flymake")
+      (synopsis "ESLint backend for Flymake")
+      (description
+       "This package lets Flymake run ESLint on the current buffer.")
+      (license license:gpl3+))))
+
 (define-public emacs-espuds
   (package
     (name "emacs-espuds")
