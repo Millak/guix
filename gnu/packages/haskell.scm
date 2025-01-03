@@ -24,6 +24,7 @@
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -842,7 +843,10 @@ interactive environment for the functional language Haskell.")
             (base32
              "0fk4xjw1x5lk2ifvgqij06lrbf1vxq9qfix86h9r16c0bilm3hah"))))))
     (native-inputs
-     `(("perl" ,perl)
+     `(("gcc" ,gcc-13)                     ; does not compile with gcc-14 and adding
+                                           ; -Wno-error=incompatible-pointer-types
+                                           ; at the appropriate stages is difficult
+       ("perl" ,perl)
        ("python" ,python-2)                ; for tests (fails with python-3)
        ("ghostscript" ,ghostscript)        ; for tests
        ("patchelf" ,patchelf)
