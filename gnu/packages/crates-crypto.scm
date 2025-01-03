@@ -1720,6 +1720,30 @@ variant of X@code{ChaCha20Poly1305}.")
 algorithms.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-cryptovec-0.6
+  (package
+    (name "rust-cryptovec")
+    (version "0.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cryptovec" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1pqb2g1n3sx0d2cjiy06amcr2wlf9izwb4jj68nk5cmvlq9zmiyc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--"
+                            "--skip=CryptoVec::from_slice (line 406)")
+       #:cargo-inputs (("rust-libc" ,rust-libc-0.2)
+                       ("rust-winapi" ,rust-winapi-0.3))))
+    (home-page "https://pijul.org/cryptovec")
+    (synopsis "Vector which zeroes its memory on clears and reallocations")
+    (description
+     "This package provides a vector which zeroes its memory on clears and
+reallocations.")
+    (license license:asl2.0)))
+
 (define-public rust-csrf-0.4
   (package
     (name "rust-csrf")
