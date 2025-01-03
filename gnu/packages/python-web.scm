@@ -4706,15 +4706,6 @@ Services (AWS) API.")
             (lambda _
               (substitute* "pyproject.toml"
                 (("\"error::") "\"ignore::"))))
-          (add-after 'unpack 'remove-pep517
-            (lambda _
-              (rename-file "backends/pep517.py" "backends/dummypep517.py")
-              (substitute* "pyproject.toml"
-                (("pep517") "dummypep517"))
-              (setenv "PYTHONPATH"
-                      (string-append (getcwd) ":"
-                                     (getcwd) "/backends:"
-                                     (getenv "GUIX_PYTHONPATH")))))
           (add-after 'unpack 'fix-reference-to-groff
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "awscli/help.py"
