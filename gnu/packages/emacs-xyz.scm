@@ -149,6 +149,7 @@
 ;;; Copyright © 2024 emma thompson <bigbookofbug@proton.me>
 ;;; Copyright © 2024 Liam Hupfer <liam@hpfr.net>
 ;;; Copyright © 2024 aurtzy <aurtzy@gmail.com>
+;;; Copyright © 2024 Olivier Rojon <o.rojon@posteo.net>
 
 ;;;
 ;;; This file is part of GNU Guix.
@@ -39853,6 +39854,27 @@ and allows for an arbitrary number of leader keys.")
 without requiring all of Spacemacs.  The @code{<Leader>} key, inspired by Vim,
 provides an easy way to bind keys under a configurable prefix key.")
       (license license:gpl3+))))
+
+(define-public emacs-spacious-padding
+  (package
+    (name "emacs-spacious-padding")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://elpa.gnu.org/packages/spacious-padding-"
+                           version ".tar"))
+       (sha256
+        (base32 "0x5bsyd6b1d3bzrsrpf9nvw7xj5ch114m2dilq64bg8y2db3452z"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/protesilaos/spacious-padding")
+    (synopsis "Increase the padding or spacing of frames and windows")
+    (description
+     "The Spacious Padding mode increases the space or padding around several
+elements of the Emacs interface, such as window dividers, the internal frame
+border, the padding of the mode line, and more.  The idea is to produce a more
+comfortable presentation.")
+    (license license:gpl3+)))
 
 (define-public emacs-spamfilter-el
   (package
