@@ -20,7 +20,7 @@
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 muradm <mail@muradm.net>
 ;;; Copyright © 2021, 2022 Petr Hodina <phodina@protonmail.com>
-;;; Copyright © 2021-2024 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2021-2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Jacob Hrbek <kreyren@rixotstudio.cz>
 ;;; Copyright © 2021, 2022 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
@@ -13490,14 +13490,14 @@ diagnostics easy and relatively painless for everyone!")
 (define-public rust-codspeed-2
   (package
     (name "rust-codspeed")
-    (version "2.4.0")
+    (version "2.7.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "codspeed" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0ikj07wl9g7az7mnlarmsyjh6a77vm4l2lmwbsbx2h85m9bb11ab"))))
+        (base32 "15yf7gnb4s1fdvprdpn41yfydxpnv2clyd7lar0ia76zz6fhw2j5"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-colored" ,rust-colored-2)
