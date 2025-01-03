@@ -10795,6 +10795,26 @@ fields in a closure.")
         ("rust-serde-yaml" ,rust-serde-yaml-0.9))
        #:cargo-development-inputs (("rust-snapbox" ,rust-snapbox-0.4))))))
 
+(define-public rust-card-validate-2
+  (package
+    (name "rust-card-validate")
+    (version "2.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "card-validate" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "14gbz65z79n1xjxmh5fr8g6djshnq2g49i60q1r878z2jq2sfpv5"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-regex" ,rust-regex-1))))
+    (home-page "https://github.com/valeriansaliou/rs-card-validate")
+    (synopsis "Detect and validate credit card numbers")
+    (description "This package detects and validates credit card numbers.")
+    (license license:expat)))
+
 (define-public rust-cargo-config2-0.1
   (package
     (name "rust-cargo-config2")
