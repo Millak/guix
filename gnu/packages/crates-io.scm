@@ -57467,6 +57467,33 @@ pointers:
     (description "This package provides macros for the ptr_meta API.")
     (license license:expat)))
 
+(define-public rust-ptree-0.4
+  (package
+    (name "rust-ptree")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ptree" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0w72k0svlj8ihbf7m7ivay7rpv38xz9ad5a06isyqsiiddwq1pm0"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t     ; Cut the dependency graph.
+       #:cargo-inputs (("rust-ansi-term" ,rust-ansi-term-0.12)
+                       ("rust-atty" ,rust-atty-0.2)
+                       ("rust-config" ,rust-config-0.11)
+                       ("rust-directories" ,rust-directories-4)
+                       ("rust-petgraph" ,rust-petgraph-0.6)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-value" ,rust-serde-value-0.7)
+                       ("rust-tint" ,rust-tint-1))))
+    (home-page "https://gitlab.com/Noughmad/ptree")
+    (synopsis "Pretty-print tree-like structures")
+    (description "This package provides pretty-print tree-like structures.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-ptyprocess-0.4
   (package
     (name "rust-ptyprocess")
