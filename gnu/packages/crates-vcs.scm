@@ -7423,6 +7423,33 @@ file.
      "This package provides configuration for the pijul version control system.")
     (license license:gpl2)))
 
+(define-public rust-pijul-interaction-0.0.1
+  (package
+    (name "rust-pijul-interaction")
+    (version "0.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pijul-interaction" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0vv1z0flsgvf09y18sv2jbk9sn0rllka15wdskpv9ziydp9xr1h7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-dialoguer" ,rust-dialoguer-0.10)
+                       ("rust-duplicate" ,rust-duplicate-1)
+                       ("rust-indicatif" ,rust-indicatif-0.17)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-pijul-config" ,rust-pijul-config-0.0.1)
+                       ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://nest.pijul.com/pijul/pijul")
+    (synopsis "Human friendly input/output for contexts such as terminals or GUIs")
+    (description
+     "This package provides human friendly input/output (progress bars,
+passwords etc) for contexts such as terminals or GUIs.")
+    (license license:gpl2)))
+
 (define-public rust-pijul-macros-0.5
   (package
     (name "rust-pijul-macros")
