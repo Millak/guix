@@ -22052,6 +22052,28 @@ from the main thread.")
     (description "Electronic Codebook (ECB) block cipher mode of operation")
     (license license:expat)))
 
+(define-public rust-edit-0.1
+  (package
+    (name "rust-edit")
+    (version "0.1.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "edit" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "02dan6bg9pcj42ny48g8fq9f76w30c826n4gihy1d1s7fq78cr7k"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-shell-words" ,rust-shell-words-1)
+                       ("rust-tempfile" ,rust-tempfile-3)
+                       ("rust-which" ,rust-which-4))))
+    (home-page "https://github.com/milkey-mouse/edit")
+    (synopsis "Open a file in the default text editor")
+    (description
+     "This package provides functions to open a file in the default text editor.")
+    (license license:cc0)))
+
 (define-public rust-edit-distance-2
   (package
     (name "rust-edit-distance")
