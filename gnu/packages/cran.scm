@@ -29676,10 +29676,22 @@ package provides a minimal R interface by relying on the Rcpp package.")
     (arguments
      (list
       #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'use-system-tbb
-           (lambda* (#:key inputs #:allow-other-keys)
-             (setenv "TBB_ROOT" (assoc-ref inputs "tbb")))))))
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-system-tbb
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "TBB_ROOT" (assoc-ref inputs "tbb"))))
+          (add-before 'install 'relax-gcc-14-strictness
+            (lambda _
+              ;; XXX FIXME: $HOME/.R/Makevars seems to be the only way to
+              ;; set custom CFLAGS for R?
+              (setenv "HOME" (getcwd))
+              (mkdir-p ".R")
+              (with-directory-excursion ".R"
+                (with-output-to-file "Makevars"
+                  (lambda _
+                    (display (string-append
+                              "CXXFLAGS=-g -O2"
+                              " -Wno-error=changes-meaning\n"))))))))))
     (inputs (list tbb-2020))
     (native-inputs (list r-rcpp r-runit))
     (home-page "https://rcppcore.github.io/RcppParallel/")
