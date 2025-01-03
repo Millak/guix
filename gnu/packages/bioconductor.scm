@@ -14,6 +14,7 @@
 ;;; Copyright © 2021 Nicolas Vallet <nls.vallet@gmail.com>
 ;;; Copyright © 2023 Navid Afkhami <Navid.Afkhami@mdc-berlin.de>
 ;;; Copyright © 2024 Spencer King <spencer.king@geneoscopy.com>
+;;; Copyright © 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -23245,6 +23246,23 @@ printing and plotting @code{aCGH} objects.")
                 "1s1s00b6mrv710x14vnscs99iinqq5pml684vpgbshlvszzyw71h"))))
     (properties `((upstream-name . "ACME")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'relax-gcc-14-strictness
+            (lambda _
+              ;; XXX FIXME: $HOME/.R/Makevars seems to be the only way to
+              ;; set custom CFLAGS for R?
+              (setenv "HOME" (getcwd))
+              (mkdir-p ".R")
+              (with-directory-excursion ".R"
+                (with-output-to-file "Makevars"
+                  (lambda _
+                    (display
+                     (string-append
+                      "CFLAGS=-g -O2"
+                      " -Wno-error=incompatible-pointer-types\n"))))))))))
     (propagated-inputs (list r-biobase r-biocgenerics))
     (home-page "https://bioconductor.org/packages/aCGH/")
     (synopsis "Calculating microarray enrichment")
