@@ -83736,6 +83736,22 @@ Chrome-style traces.")
     (description "Utilities for enriching errors with `tracing`.")
     (license license:expat)))
 
+(define-public rust-tracing-error-0.1
+  (package
+    (inherit rust-tracing-error-0.2)
+    (name "rust-tracing-error")
+    (version "0.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tracing-error" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "092y3357af6058mdw7nmr7sysqdka8b4cyaqz940fl2a7nwc1mxl"))))
+    (arguments
+     `(#:cargo-inputs (("rust-tracing" ,rust-tracing-0.1)
+                       ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.2))))))
+
 (define-public rust-tracing-forest-0.1
   (package
     (name "rust-tracing-forest")
