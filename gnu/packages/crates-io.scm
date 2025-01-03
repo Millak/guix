@@ -80517,6 +80517,26 @@ system.")
 helpers to implement @code{ProxyCommand} in Thrussh.")
     (license license:asl2.0)))
 
+(define-public rust-thrussh-config-0.5
+  (package
+    (inherit rust-thrussh-config-0.6)
+    (name "rust-thrussh-config")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "thrussh-config" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ygm5vdy180gslgmbd0v722ap451pw8cwaba0g0dzx5gg3cl9h37"))))
+    (arguments
+     `(#:cargo-inputs (("rust-dirs-next" ,rust-dirs-next-2)
+                       ("rust-futures" ,rust-futures-0.3)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-whoami" ,rust-whoami-1))))))
+
 (define-public rust-tikv-jemalloc-sys-0.6
   (package
     (name "rust-tikv-jemalloc-sys")
