@@ -4,6 +4,7 @@
 ;;; Copyright © 2020 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2021-2024 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
+;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -289,6 +290,7 @@ One of the early layers implements macros.")
                (list (string-append "--enable-racket=" racket))))
          (else
           '()))
+      "CFLAGS=-g -O2 -Wno-error=implicit-function-declaration"
       "--disable-strip"
       ;; Using --enable-origtree lets us distinguish the VM from subsequent
       ;; layers and produces a build with the shape expected by tools such as
