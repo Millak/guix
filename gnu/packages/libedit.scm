@@ -4,7 +4,7 @@
 ;;; Copyright © 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Gábor Boskovits <boskovits@gmail.com>
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
-;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -43,10 +43,9 @@
        (base32 "0wch48nml28jj6ild889745dsg2agm7mpvrmbl1gi98nw6vjrf6v"))))
     (build-system gnu-build-system)
     (arguments
-     (if (and (%current-target-system) (target-x86-32?))
-         (list #:configure-flags
-               #~(list "CFLAGS=-g -O2 -Wno-error=incompatible-pointer-types"))
-         '()))
+     (list
+      #:configure-flags
+      #~(list "CFLAGS=-g -O2 -Wno-error=incompatible-pointer-types")))
     (inputs
      (list ncurses))
     (home-page "https://thrysoee.dk/editline/")
