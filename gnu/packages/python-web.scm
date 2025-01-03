@@ -10001,6 +10001,30 @@ This package, as opposed to @code{python-fastapi-pagination-minimal}, depends on
 all available optional dependencies supported by mainline
 @code{fastapi-pagination}."))))
 
+(define-public python-fastapi-cli
+  (package
+    (name "python-fastapi-cli")
+    (version "0.0.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "fastapi_cli" version))
+       (sha256
+        (base32 "0pk0ldmymc25ys4v6mslzd5vsjh9r69hfylh2ljl29pmarcvdcq2"))))
+    (build-system pyproject-build-system)
+    ;; Tests require fastapi, which depends on this package.
+    (arguments (list #:tests? #false))
+    (propagated-inputs (list python-rich-toolkit python-typer python-uvicorn))
+    (native-inputs
+     (list python-inline-snapshot python-pdm-backend python-pytest))
+    (home-page "https://pypi.org/project/fastapi-cli/")
+    (synopsis
+     "Run and manage FastAPI apps from the command line with FastAPI CLI")
+    (description
+     "FastAPI CLI is a command line program fastapi that you can use to serve
+your FastAPI app, manage your FastAPI project, and more.")
+    (license license:expat)))
+
 (define-public python-pyactiveresource
   (package
     (name "python-pyactiveresource")
