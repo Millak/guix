@@ -5184,7 +5184,7 @@ according to Bitorrent BEP003.")
 (define-public guile-ts
   (package
     (name "guile-ts")
-    (version "0.2.0")
+    (version "0.3.0")
     (source (origin (method git-fetch)
                     (uri (git-reference
                           (url
@@ -5193,7 +5193,7 @@ according to Bitorrent BEP003.")
                     (file-name (git-file-name name version))
                     (sha256
                      (base32
-                      "1iqbr9rcpmq2f1zxxvl36ajwm81rkp38rrp42ixr4q59154r5513"))))
+                      "1p98mq7ik3kw7h7ki60253qxdw5qs13f1xldjp37c3s7zvhn0nac"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags #~(list "GUILE_AUTO_COMPILE=0")
