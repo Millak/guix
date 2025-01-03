@@ -80589,6 +80589,51 @@ helpers to implement @code{ProxyCommand} in Thrussh.")
 calling an SSH agent.")
     (license license:asl2.0)))
 
+(define-public rust-thrussh-keys-0.21
+  (package
+    (inherit rust-thrussh-keys-0.22)
+    (name "rust-thrussh-keys")
+    (version "0.21.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "thrussh-keys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1azmv32m5jpxsflj4dq62i84mv2cavc354r8yy98vc9j54dcab57"))))
+    (arguments
+     `(#:cargo-test-flags '("--"
+                            "--skip=test::test_client_agent_ed25519"
+                            "--skip=src/lib.rs - (line 13)"
+                            "--skip=src/lib.rs - load_public_key (line 146)")
+       #:cargo-inputs (("rust-aes" ,rust-aes-0.7)
+                       ("rust-bcrypt-pbkdf" ,rust-bcrypt-pbkdf-0.6)
+                       ("rust-bit-vec" ,rust-bit-vec-0.6)
+                       ("rust-block-modes" ,rust-block-modes-0.8)
+                       ("rust-byteorder" ,rust-byteorder-1)
+                       ("rust-cryptovec" ,rust-cryptovec-0.6)
+                       ("rust-data-encoding" ,rust-data-encoding-2)
+                       ("rust-dirs" ,rust-dirs-3)
+                       ("rust-futures" ,rust-futures-0.3)
+                       ("rust-hmac" ,rust-hmac-0.11)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-md5" ,rust-md5-0.7)
+                       ("rust-num-bigint" ,rust-num-bigint-0.4)
+                       ("rust-num-integer" ,rust-num-integer-0.1)
+                       ("rust-openssl" ,rust-openssl-0.10)
+                       ("rust-pbkdf2" ,rust-pbkdf2-0.8)
+                       ("rust-rand" ,rust-rand-0.8)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-derive" ,rust-serde-derive-1)
+                       ("rust-sha2" ,rust-sha2-0.9)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-thrussh-libsodium" ,rust-thrussh-libsodium-0.2)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-tokio-stream" ,rust-tokio-stream-0.1)
+                       ("rust-yasna" ,rust-yasna-0.4))
+       #:cargo-development-inputs (("rust-env-logger" ,rust-env-logger-0.8)
+                                   ("rust-tempdir" ,rust-tempdir-0.3))))))
+
 (define-public rust-thrussh-libsodium-0.3
   (package
     (name "rust-thrussh-libsodium")
