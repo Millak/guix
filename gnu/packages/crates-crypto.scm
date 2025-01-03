@@ -2470,6 +2470,36 @@ generations, signing, and verification in pure Rust.")
          ("rust-sha2" ,rust-sha2-0.9)
          ("rust-zeroize" ,rust-zeroize-1))))))
 
+(define-public rust-ed25519-zebra-2
+  (package
+    (name "rust-ed25519-zebra")
+    (version "2.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ed25519-zebra" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0284mnhc2514b9hzyhgcf8vfggwdqwyx8vsawckv9m3dmxv8n4ha"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-curve25519-dalek" ,rust-curve25519-dalek-3)
+                       ("rust-hex" ,rust-hex-0.4)
+                       ("rust-rand-core" ,rust-rand-core-0.5)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-sha2" ,rust-sha2-0.9)
+                       ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs (("rust-bincode" ,rust-bincode-1)
+                                   ("rust-color-eyre" ,rust-color-eyre-0.5)
+                                   ("rust-criterion" ,rust-criterion-0.3)
+                                   ("rust-ed25519-zebra" ,rust-ed25519-zebra-1)
+                                   ("rust-once-cell" ,rust-once-cell-1)
+                                   ("rust-rand" ,rust-rand-0.7))))
+    (home-page "https://github.com/ZcashFoundation/ed25519-zebra")
+    (synopsis "Zcash-flavored Ed25519 for use in Zebra")
+    (description
+     "This package provides Zcash-flavored Ed25519 for use in Zebra.")
+    (license (list license:expat license:asl2.0))))
 
 (define-public rust-elliptic-curve-0.13
   (package
