@@ -1,0 +1,12 @@
+Upstream-status: Not presented upstream.
+
+--- cura-engine-4.13.2-checkout/src/utils/math.h	1970-01-01 01:00:01.000000000 +0100
++++ cura-engine-4.13.2-checkout/src/utils/math.h	2025-01-03 10:42:38.726345314 +0100
+@@ -5,6 +5,7 @@
+ #define UTILS_MATH_H
+ 
+ #include <cmath>
++#include <cstdint>
+ 
+ 
+ //c++11 no longer defines M_PI, so add our own constant.
