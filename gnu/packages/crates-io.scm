@@ -80491,6 +80491,32 @@ system.")
         ("rust-ordered-float" ,rust-ordered-float-1)
         ("rust-threadpool" ,rust-threadpool-1))))))
 
+(define-public rust-thrussh-config-0.6
+  (package
+    (name "rust-thrussh-config")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "thrussh-config" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "08k6r947q5xx73y29s24snwlzym5x7v2drdl5y794957i6mlm5zs"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-dirs-next" ,rust-dirs-next-2)
+                       ("rust-futures" ,rust-futures-0.3)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-whoami" ,rust-whoami-1))))
+    (home-page "https://nest.pijul.com/pijul/thrussh")
+    (synopsis "Utilities to parse .ssh/config files")
+    (description
+     "This package provides utilities to parse .ssh/config files, including
+helpers to implement @code{ProxyCommand} in Thrussh.")
+    (license license:asl2.0)))
+
 (define-public rust-tikv-jemalloc-sys-0.6
   (package
     (name "rust-tikv-jemalloc-sys")
