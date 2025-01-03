@@ -74480,6 +74480,30 @@ maximal amount of configuration possible intended.")
      "An RSpec inspired minimal testing framework for Rust.")
     (license license:expat)))
 
+(define-public rust-speedate-0.15
+  (package
+    (name "rust-speedate")
+    (version "0.15.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "speedate" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0dzryiwvdbdcz74x0hidb5g1c2aal4n9cxsdlqwxxrq79vgplpls"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-strum" ,rust-strum-0.26)
+                       ("rust-strum-macros" ,rust-strum-macros-0.26))
+       #:cargo-development-inputs (("rust-chrono" ,rust-chrono-0.4)
+                                   ("rust-iso8601" ,rust-iso8601-0.6)
+                                   ("rust-paste" ,rust-paste-1))))
+    (home-page "https://github.com/pydantic/speedate/")
+    (synopsis "Fast and simple datetime, date, time and duration parsing")
+    (description "This package provides fast and simple datetime, date, time and
+duration parsing.")
+    (license license:expat)))
+
 (define-public rust-speedate-0.14
   (package
     (name "rust-speedate")
