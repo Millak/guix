@@ -88030,6 +88030,33 @@ a part of rav1e.")
     (description "This package provides simd optimized HTML escaping code.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-validator-derive-0.15
+  (package
+    (name "rust-validator-derive")
+    (version "0.15.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "validator_derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "08vr07anpvgc9i18hyxi4y9si22kl8fqbkn4lrjdssrbrzldazpa"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-if-chain" ,rust-if-chain-1)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-proc-macro-error" ,rust-proc-macro-error-1)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-syn" ,rust-syn-1)
+                       ("rust-validator-types" ,rust-validator-types-0.15))))
+    (home-page "https://github.com/Keats/validator")
+    (synopsis "Macros 1.1 implementation of #[derive(Validate)]")
+    (description
+     "This package provides a macros 1.1 implementation of #[derive(Validate)].")
+    (license license:expat)))
+
 (define-public rust-validator-types-0.15
   (package
     (name "rust-validator-types")
