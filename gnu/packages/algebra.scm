@@ -16,6 +16,7 @@
 ;;; Copyright © 2021 Lars-Dominik Braun <ldb@leibniz-psychology.org>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 Mehmet Tekman <mtekman89@gmail.com>
+;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1163,7 +1164,7 @@ features, and more.")
 (define-public xtensor
   (package
     (name "xtensor")
-    (version "0.24.6")
+    (version "0.25.0")
     (source
      (origin
        (method git-fetch)
@@ -1171,7 +1172,7 @@ features, and more.")
              (url "https://github.com/xtensor-stack/xtensor")
              (commit version)))
        (sha256
-        (base32 "0gf5m5p61981pv7yh5425lcv8dci948ri37hn1zlli7xg54x0g3i"))
+        (base32 "0ziqybfm0fh6kr8qwxqacr04m9gm0njbn520izm6rsh9hysxsmw5"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
@@ -1181,6 +1182,7 @@ features, and more.")
     (native-inputs
      (list doctest
            googletest
+           nlohmann-json
            xtl))
     (home-page "https://xtensor.readthedocs.io/en/latest/")
     (synopsis "C++ tensors with broadcasting and lazy computing")
