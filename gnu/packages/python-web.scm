@@ -4915,25 +4915,19 @@ Django middleware.")
 (define-public python-flask-wtf
   (package
     (name "python-flask-wtf")
-    (version "1.0.1")
+    (version "1.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Flask-WTF" version))
        (sha256
         (base32
-         "1jd614662r6ifh4svs8zfwm4k8bal5z3n6pq607bas8gxrpmrzil"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "pytest" "-vv"))))))
+         "0sv6hjva1fdizb7sr46230pplx8qz8rnb4bxrfy71xbc8cgfxlkr"))))
+    (build-system pyproject-build-system)
     (propagated-inputs
-     (list python-flask python-itsdangerous python-wtforms))
+     (list python-flask python-flask python-itsdangerous python-wtforms))
     (native-inputs
-     (list python-pytest))
+     (list python-hatchling python-pytest))
     (home-page "https://github.com/lepture/flask-wtf")
     (synopsis "Simple integration of Flask and WTForms")
     (description "Flask-WTF integrates Flask and WTForms, including CSRF, file
