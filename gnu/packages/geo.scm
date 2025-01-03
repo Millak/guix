@@ -3,7 +3,7 @@
 ;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2017, 2018 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2018, 2023, 2024 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2018, 2023-2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018, 2019 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
 ;;; Copyright © 2018, 2019, 2020, 2021 Julien Lepiller <julien@lepiller.eu>
@@ -858,6 +858,53 @@ projections.")
                    (license:non-copyleft "http://www.epsg.org/TermsOfUse")
                    ;; cmake/*
                    license:boost1.0))))
+
+(define-public python-pyogrio
+  (package
+    (name "python-pyogrio")
+    (version "0.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pyogrio" version))
+       (sha256
+        (base32 "0g5j3a2n5hdnmi45261y84rqk1bikcvrdblgh9wfhk9jd2siq1gc"))))
+    (properties
+     `((updater-extra-inputs . ("gdal"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; These tests need Internet access.
+      '(list "-k" (string-append "not test_url"
+                                 " and not test_url_with_zip"
+                                 " and not test_uri_s3"))
+      #:phases
+      '(modify-phases %standard-phases
+         (add-before 'check 'build-extensions
+           (lambda _
+             (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (propagated-inputs (list python-certifi python-numpy python-packaging))
+    (inputs (list gdal))
+    (native-inputs (list python-cython-3
+                         python-pytest
+                         python-pytest-cov
+                         python-setuptools
+                         python-tomli
+                         python-versioneer
+                         python-wheel))
+    (home-page "https://pypi.org/project/pyogrio/")
+    (synopsis "Vectorized spatial vector file format I/O using GDAL/OGR")
+    (description "Pyogrio provides a GeoPandas-oriented API to OGR vector data
+sources, such as ESRI Shapefile, GeoPackage, and GeoJSON.  Vector data sources
+have geometries, such as points, lines, or polygons, and associated records
+with potentially many columns worth of data.  Pyogrio uses a vectorized
+approach for reading and writing GeoDataFrames to and from OGR vector data
+sources in order to give you faster interoperability.  It uses pre-compiled
+bindings for GDAL/OGR so that the performance is primarily limited by the
+underlying I/O speed of data source drivers in GDAL/OGR rather than multiple
+steps of converting to and from Python data types within Python.")
+    (license license:expat)))
 
 (define-public python-pyproj
   (package
