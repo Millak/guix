@@ -7395,6 +7395,34 @@ file.
 @end itemize")
     (license license:gpl2+)))
 
+(define-public rust-pijul-config-0.0.1
+  (package
+    (name "rust-pijul-config")
+    (version "0.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pijul-config" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "19xdcqyw2lh4r8rs5dfjzqf27ajfld2gimw07bhvnjixz0gplylq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-dialoguer" ,rust-dialoguer-0.10)
+                       ("rust-dirs-next" ,rust-dirs-next-2)
+                       ("rust-edit" ,rust-edit-0.1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-derive" ,rust-serde-derive-1)
+                       ("rust-toml" ,rust-toml-0.5)
+                       ("rust-whoami" ,rust-whoami-1))))
+    (home-page "https://nest.pijul.com/pijul/pijul")
+    (synopsis "Configuration for the pijul version control system")
+    (description
+     "This package provides configuration for the pijul version control system.")
+    (license license:gpl2)))
+
 (define-public rust-pijul-macros-0.5
   (package
     (name "rust-pijul-macros")
