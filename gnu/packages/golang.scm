@@ -841,6 +841,24 @@ in the style of communicating sequential processes (@dfn{CSP}).")
         #~(modify-phases #$phases
             (delete 'skip-TestGoPathShlibGccgo-tests)
             (delete 'patch-source)
+            ;; Time bomb in TLS tests: "Most of the test certificates
+            ;; (e.g. testRSACertificate, testRSACertificateIssuer,
+            ;; testRSA2048CertificateIssuer) have a not after of Jan 1
+            ;; 00:00:00 2025 GMT."
+            ;; https://github.com/golang/go/issues/71077
+            ;; https://github.com/golang/go/issues/71103
+            ;; https://github.com/golang/go/issues/71104
+            (add-after 'unpack 'skip-crypto-tls-tests
+              (lambda _
+                (substitute* (list "src/crypto/tls/handshake_client_test.go"
+                                   "src/crypto/tls/handshake_server_test.go")
+                  (("TestVerifyConnection.*" all)
+                   (string-append all "\n        t.Skip(\"golang.org/issue/71077\")\n"))
+                  (("TestResumptionKeepsOCSPAndSCT.*" all)
+                   (string-append all "\n        t.Skip(\"golang.org/issue/71077\")\n"))
+                  (("TestCrossVersionResume.*" all)
+                   (string-append all "\n        t.Skip(\"golang.org/issue/71077\")\n")))))
+
             (add-after 'unpack 'patch-os-tests
               (lambda _
                 (substitute* "src/os/os_test.go"
