@@ -123,6 +123,67 @@
 Python with a fluent API.")
     (license license:bsd-3)))
 
+(define-public python-inline-snapshot
+  (package
+    (name "python-inline-snapshot")
+    (version "0.18.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "inline_snapshot" version))
+       (sha256
+        (base32 "09pqgz4phal2pjkv03wg3gvj7jr89rrb93rfw4hd2x9v8px4mqqv"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Missing "freezer" fixture
+      '(list "--ignore=tests/test_external.py"
+             "--ignore=tests/test_pytest_plugin.py"
+             "-k"
+             (string-append
+              "not test_trailing_comma"
+              ;; Cannot use inline-snapshop when xdist is available.
+              " and not test_xdist"
+              " and not test_xdist_disabled"
+              " and not test_xdist_and_disable"
+              " and not test_typing"))))
+    (propagated-inputs (list python-asttokens
+                             python-black
+                             python-click
+                             python-executing
+                             python-mkdocs
+                             python-rich
+                             python-tomli
+                             python-typing-extensions))
+    (native-inputs
+     (list python-dirty-equals
+           python-freezegun
+           python-hatchling
+           python-pydantic
+           python-pytest
+           python-pytest-mock
+           python-pytest-subtests))
+    (home-page "https://pypi.org/project/inline-snapshot/")
+    (synopsis "Golden master/snapshot/approval testing library")
+    (description
+     "This package can be used for different things:
+
+@enumerate
+@item golden master/approval/snapshot testing.  The idea is that you have a
+  function with a currently unknown result and you want to write a tests, which
+  ensures that the result does not change during refactoring.
+@item Compare things which are complex like lists with lot of numbers or
+  complex data structures.
+@item Things which might change during the development like error messages.
+@end enumerate
+
+@code{inline-snapshot} automates the process of recording, storing and
+updating the value you want to compare with.  The value is converted with
+@code{repr()} and stored in the source file as argument of the
+@code{snapshot()} function.")
+    (license license:expat)))
+
 (define-public python-robotframework-jsonlibrary
   (package
     (name "python-robotframework-jsonlibrary")
