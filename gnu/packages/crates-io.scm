@@ -86139,6 +86139,31 @@ grapheme clusters), words, and sentences.")
     (description "UNIC Unicode Character Database General Category.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-unic-ucd-common-0.9
+  (package
+    (name "rust-unic-ucd-common")
+    (version "0.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "unic-ucd-common" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1bglvzn6rs01v0d29898vg2y3v3cgj3h1gsrbjp1mypa1f8qpdz9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-unic-char-property" ,rust-unic-char-property-0.9)
+                       ("rust-unic-char-range" ,rust-unic-char-range-0.9)
+                       ("rust-unic-ucd-version" ,rust-unic-ucd-version-0.9))
+       #:cargo-development-inputs
+       ;; This was dropped by the importer for some reason.
+       (("rust-unic-ucd-category" ,rust-unic-ucd-category-0.9))))
+    (home-page "https://github.com/open-i18n/rust-unic/")
+    (synopsis "UNIC Unicode Character Database Common Properties")
+    (description
+     "This package provides UNIC Unicode Character Database Common Properties.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-unic-ucd-hangul-0.9
   (package
     (name "rust-unic-ucd-hangul")
