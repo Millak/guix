@@ -11002,8 +11002,8 @@ Python list with elements of type @code{PIL.Image} (from the
                (search-patches "python-pillow-CVE-2022-45199.patch"
                                ;; Included in 10.1.0.
                                "python-pillow-use-zlib-1.3.patch"))))
-    (build-system python-build-system)
-    (native-inputs (list python-pytest))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (inputs (list freetype
                   lcms
                   libjpeg-turbo
