@@ -25602,7 +25602,9 @@ package attempts to address the shortcomings of @code{isodate}.")
                     (list
                      "not test_gitignore"
                      ;; See <https://github.com/PyCQA/isort/issues/2234>.
-                     "test_isort_should_warn_on_empty_custom_config_issue_1433")
+                     "test_isort_should_warn_on_empty_custom_config_issue_1433"
+                     ;; Fails because of an unexpected linebreak.
+                     "test_black_pyi_file")
                     " and not ")
               "--ignore=tests/unit/test_deprecated_finders.py")
       #:phases
