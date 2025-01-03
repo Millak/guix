@@ -21761,6 +21761,33 @@ Rust.")
     (description "A library for running child processes.")
     (license license:expat)))
 
+(define-public rust-duplicate-macrotest-1
+  (package
+    (name "rust-duplicate-macrotest")
+    (version "1.0.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "duplicate_macrotest" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "15p4d596vknjx5vba86pa08aci7grl7nsxqp92gqxfj5mh5nwz9a"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-diff" ,rust-diff-0.1)
+                       ("rust-glob" ,rust-glob-0.3)
+                       ("rust-rand" ,rust-rand-0.8)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-toml" ,rust-toml-0.8))))
+    (home-page "https://github.com/emoun/duplicate_macrotest")
+    (synopsis
+     "Fork of the macrotest crate specifically to test the duplicate crate")
+    (description
+     "This package provides a fork of the macrotest crate specifically to test
+the duplicate crate.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-dwrote-0.11
   (package
     (name "rust-dwrote")
