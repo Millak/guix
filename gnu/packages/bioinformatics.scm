@@ -19820,7 +19820,7 @@ bound.")
 (define-public python-pypairix
   (package
     (name "python-pypairix")
-    (version "0.3.7")
+    (version "0.3.8")
     ;; The tarball on pypi does not include the makefile to build the
     ;; programs.
     (source
@@ -19832,19 +19832,23 @@ bound.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1snr3lrmsld8sy77ng6ba6wcmd33xjccf1l2f3m6pi29xis9nd6p"))))
+         "1jlxj3xa67q1i58pmbi6imhvl6f5w9m5qxv0xd45ba86mp8mnmvz"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'build-programs
-           (lambda _ (invoke "make")))
-         (add-after 'install 'install-programs
-           (lambda* (#:key outputs #:allow-other-keys)
-             (copy-recursively "bin" (string-append
-                                      (assoc-ref outputs "out")
-                                      "/bin"))
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'relax-gcc-14-strictness
+            (lambda _
+              (setenv "CFLAGS"
+                      (string-append "-g -O2"
+                                     " -Wno-error=incompatible-pointer-types"
+                                     " -Wno-error=int-conversion"))))
+          (add-before 'build 'build-programs
+            (lambda _ (invoke "make")))
+          (add-after 'install 'install-programs
+            (lambda _
+              (copy-recursively "bin" (string-append #$output "/bin")))))))
     (inputs
      (list zlib))
     (home-page "https://github.com/4dn-dcic/pairix")
