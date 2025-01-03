@@ -20757,7 +20757,9 @@ applications.")
            python-pyro4
            python-pytest
            python-pytest-sugar
-           python-tzdata))
+           python-setuptools
+           python-tzdata
+           python-wheel))
     (propagated-inputs
      (list python-amqp python-typing-extensions python-vine))
     (home-page "https://kombu.readthedocs.io")
