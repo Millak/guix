@@ -42,6 +42,7 @@
 ;;; Copyright © 2024 dan <i@dan.games>
 ;;; Copyright © 2024 Peepo Froggings <peepofroggings@tutanota.de>
 ;;; Copyright © 2024 Jakob Kirsch <jakob.kirsch@web.de>
+;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 
 ;;; This file is part of GNU Guix.
 ;;;
@@ -606,7 +607,7 @@ enabled in different parts of your code.")
 (define-public xsimd
   (package
     (name "xsimd")
-    (version "9.0.1")
+    (version "11.0.0")
     (source
      (origin
        (method git-fetch)
@@ -614,7 +615,7 @@ enabled in different parts of your code.")
              (url "https://github.com/xtensor-stack/xsimd")
              (commit version)))
        (sha256
-        (base32 "1fcy0djwpwvls6yqxqa82s4l4gvwkqkr8i8bibbb3dm0lqvhnw52"))
+        (base32 "148wylv88vp31rz7l357ch7k0l50apfk4x31qdqk9y4d2hj6ld3f"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
@@ -622,7 +623,8 @@ enabled in different parts of your code.")
       #:configure-flags #~(list "-DBUILD_TESTS=ON")
       #:test-target "xtest"))
     (native-inputs
-     (list googletest))
+     (list doctest
+           googletest))
     (home-page "https://github.com/xtensor-stack/xsimd")
     (synopsis "C++ wrappers for SIMD intrinsics and math implementations")
     (description
