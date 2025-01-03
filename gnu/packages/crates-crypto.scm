@@ -2,7 +2,7 @@
 ;;; Copyright © 2019, 2020 John Soo <jsoo1@asu.edu>
 ;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
-;;; Copyright © 2020, 2022-2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2020, 2022-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Valentin Ignatev <valentignatev@gmail.com>
 ;;; Copyright © 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
@@ -2784,6 +2784,36 @@ be used to implement arbitrary protocols.")
     (home-page "https://github.com/RustCrypto/block-ciphers")
     (synopsis "Kuznyechik (GOST R 34.12-2015) block cipher")
     (description "Kuznyechik (GOST R 34.12-2015) block cipher")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-libsodium-sys-0.2
+  (package
+    (name "rust-libsodium-sys")
+    (version "0.2.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libsodium-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1zcjka23grayr8kjrgbada6vwagp0kkni9m45v0gpbanrn3r6xvb"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (for-each delete-file-recursively
+                           (list "libsodium"
+                                 "mingw"
+                                 "msvc"))))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cc" ,rust-cc-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-pkg-config" ,rust-pkg-config-0.3)
+                       ("rust-walkdir" ,rust-walkdir-2))))
+    (native-inputs (list pkg-config))
+    (inputs (list libsodium))
+    (home-page "https://github.com/sodiumoxide/sodiumoxide.git")
+    (synopsis "FFI binding to libsodium")
+    (description "This package provides FFI bindings to libsodium.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-mas-jose-0.7
