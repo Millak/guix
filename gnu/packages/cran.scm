@@ -7034,6 +7034,36 @@ extensive prebuilt widgets make it possible to build beautiful,
 responsive, and powerful applications with minimal effort.")
     (license license:artistic2.0)))
 
+(define-public r-shinyauthr
+  (package
+    (name "r-shinyauthr")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "shinyauthr" version))
+       (sha256
+        (base32 "0apaqjkxpr96kx9indl0pifk5y75gdx5npfcvxfg5k2crpx9vmxk"))))
+    (properties `((upstream-name . "shinyauthr")))
+    (build-system r-build-system)
+    ;; One of the tests requires r-shinytest, which has a big JavaScript
+    ;; problem.
+    (arguments (list #:tests? #false))
+    (native-inputs (list r-testthat))
+    (propagated-inputs (list r-dplyr
+                             r-glue
+                             r-rlang
+                             r-shiny
+                             r-shinyjs
+                             r-sodium))
+    (home-page "https://github.com/paulc91/shinyauthr")
+    (synopsis "Shiny authentication modules")
+    (description
+     "With this package you can add in-app user authentication to Shiny,
+allowing you to secure publicly hosted apps and build dynamic user interfaces
+from user information.")
+    (license license:expat)))
+
 (define-public r-shinydisconnect
   (package
     (name "r-shinydisconnect")
