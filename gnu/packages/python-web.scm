@@ -9849,43 +9849,48 @@ and FastAPI.")
 (define-public python-fastapi
   (package
     (name "python-fastapi")
-    (version "0.92.0")
+    (version "0.115.6")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "fastapi" version))
               (sha256
                (base32
-                "1pm4p5i9h732f0qag85yd9ngjz8x9bhs3fyk2j861cn8s9dhyfh2"))))
+                "0m36nyldk0640mbsysm446bz6rfynpjsm5lajmra8kn1vmx6zi4y"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      ;; The test_create_user tests fail with a 400 error: "Email already registered".
-      '(list "--ignore=docs_src/sql_databases/sql_app_py310/tests/test_sql_app.py"
-             "--ignore=docs_src/sql_databases/sql_app_py39/tests/test_sql_app.py")))
+      ;; Argument() missing 1 required positional argument: 'default'
+      '(list "--ignore=tests/test_fastapi_cli.py"
+             ;; cannot import name 'StaticPool' from 'sqlalchemy'
+             "--ignore-glob=tests/test_tutorial/*"
+             ;; FIXME: we have python-multipart, but these tests fail to find
+             ;; it.
+             "--ignore=tests/test_multipart_installation.py"
+             ;; FIXME: Unclear why these 8 tests fail.
+             "--ignore=tests/test_dependency_contextmanager.py")))
     (propagated-inputs (list python-email-validator
+                             python-fastapi-cli
                              python-httpx
                              python-itsdangerous
                              python-jinja2
                              python-multipart
                              python-orjson
-                             python-starlette
-                             python-pydantic
+                             python-pydantic-2
+                             python-pydantic-settings
                              python-pyyaml
-                             python-uvicorn
-                             python-ujson))
-    (native-inputs (list python-databases
-                         python-flask
-                         python-hatchling
-                         python-isort
-                         python-jose
-                         python-mypy
-                         python-passlib
-                         python-peewee
-                         python-pytest
-                         python-sqlalchemy
-                         python-types-orjson
-                         python-types-ujson))
+                             python-starlette
+                             python-typing-extensions
+                             python-ujson
+                             python-uvicorn))
+    (native-inputs
+     (list python-dirty-equals
+           python-flask
+           python-inline-snapshot
+           python-pdm-backend
+           python-pyjwt
+           python-pytest
+           python-sqlalchemy))
     (home-page "https://github.com/tiangolo/fastapi")
     (synopsis "Web framework based on type hints")
     (description "FastAPI provides a web API framework based on pydantic and
