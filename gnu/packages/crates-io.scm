@@ -51371,6 +51371,21 @@ path (e.g. @code{foo/bar}, @code{foo\\bar} or @code{C:\\foo\\bar}) from/to a
 slash path (e.g. @code{foo/bar}, @code{C:/foo/bar}).")
     (license license:expat)))
 
+(define-public rust-path-slash-0.1
+  (package
+    (inherit rust-path-slash-0.2)
+    (name "rust-path-slash")
+    (version "0.1.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "path-slash" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "15mni0f28mblwd97192c4zyyi6054yljmiqrdb6bx97ga69hk2j9"))))
+    (arguments
+     `(#:cargo-development-inputs (("rust-lazy-static" ,rust-lazy-static-1))))))
+
 (define-public rust-pathdiff-0.2
   (package
     (name "rust-pathdiff")
