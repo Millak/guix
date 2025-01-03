@@ -13665,6 +13665,45 @@ sets of intervals.")
 and well formatted error reports for all kinds of errors.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-color-eyre-0.5
+  (package
+    (inherit rust-color-eyre-0.6)
+    (name "rust-color-eyre")
+    (version "0.5.11")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "color-eyre" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1dspj58bk57f9hiqlvbz25rik92i4a95iwa2dl4pg8g8grlqa60z"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 ;; https://github.com/eyre-rs/eyre/pull/175
+                 ;; gimli-symbolize was deprecated in backtrace in ~2022
+                 ;; and was folded into backtrace's std feature set.
+                 (substitute* "Cargo.toml"
+                   ((".*gimli-symbolize.*") ""))))))
+    (arguments
+     `(#:cargo-test-flags '("--"
+                            "--skip=test_error_backwards_compatibility"
+                            "--skip=test_panic_backwards_compatibility")
+       #:cargo-inputs (("rust-backtrace" ,rust-backtrace-0.3)
+                       ("rust-color-spantrace" ,rust-color-spantrace-0.1)
+                       ("rust-eyre" ,rust-eyre-0.6)
+                       ("rust-indenter" ,rust-indenter-0.3)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-owo-colors" ,rust-owo-colors-1)
+                       ("rust-tracing-error" ,rust-tracing-error-0.1)
+                       ("rust-url" ,rust-url-2))
+       #:cargo-development-inputs
+       (("rust-ansi-parser" ,rust-ansi-parser-0.6)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-0.6)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-tracing" ,rust-tracing-0.1)
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.2)
+        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))))
+
 (define-public rust-color-print-0.3
   (package
     (name "rust-color-print")
