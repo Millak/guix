@@ -34,8 +34,9 @@
   #:use-module (guix build-system go)
   #:use-module (guix build-system perl)
   #:use-module (gnu packages)
-  #:use-module (gnu packages image)
   #:use-module (gnu packages fontutils)
+  #:use-module (gnu packages gcc)
+  #:use-module (gnu packages image)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages tls)
@@ -278,15 +279,12 @@ interfaces (GUIs) in the Tcl language.")
                "0pha40m97fzafjnq8vwkbi5sml6xv8jki6qi60rxrzmxlrqp5aij"))))
     (build-system perl-build-system)
     (native-inputs (list pkg-config))
-    (inputs `(("libx11" ,libx11)
-              ("libpng" ,libpng)
-              ("libjpeg" ,libjpeg-turbo)))
+    (inputs (list gcc-12 libx11 libpng libjpeg-turbo))
     (arguments
-     `(#:make-maker-flags `(,(string-append
-                              "X11=" (assoc-ref %build-inputs "libx11")))
-
-       ;; Fails to build in parallel: <http://bugs.gnu.org/18262>.
-       #:parallel-build? #f))
+     (list
+      #:make-maker-flags #~(list (string-append "X11=" #$libx11))
+      ;; Fails to build in parallel: <http://bugs.gnu.org/18262>.
+      #:parallel-build? #f))
     (synopsis "Graphical user interface toolkit for Perl")
     (description
      "Tk is a Graphical User Interface ToolKit.")
