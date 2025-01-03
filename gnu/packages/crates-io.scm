@@ -80491,6 +80491,47 @@ system.")
         ("rust-ordered-float" ,rust-ordered-float-1)
         ("rust-threadpool" ,rust-threadpool-1))))))
 
+(define-public rust-thrussh-0.34
+  (package
+    (name "rust-thrussh")
+    (version "0.34.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "thrussh" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0k128v3dn6wv0ywmk8bjp2xx11niafp9q49xps5fwjy8dy0s4y3v"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--"
+                            "--skip=test_compress::compress_local_test"
+                            "--skip=src/lib.rs - (line 152)")
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-1)
+                       ("rust-byteorder" ,rust-byteorder-1)
+                       ("rust-cryptovec" ,rust-cryptovec-0.6)
+                       ("rust-digest" ,rust-digest-0.9)
+                       ("rust-flate2" ,rust-flate2-1)
+                       ("rust-futures" ,rust-futures-0.3)
+                       ("rust-generic-array" ,rust-generic-array-0.14)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-openssl" ,rust-openssl-0.10)
+                       ("rust-rand" ,rust-rand-0.8)
+                       ("rust-sha2" ,rust-sha2-0.9)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-thrussh-keys" ,rust-thrussh-keys-0.22)
+                       ("rust-thrussh-libsodium" ,rust-thrussh-libsodium-0.3)
+                       ("rust-tokio" ,rust-tokio-1))
+       #:cargo-development-inputs (("rust-anyhow" ,rust-anyhow-1)
+                                   ("rust-env-logger" ,rust-env-logger-0.7)
+                                   ("rust-tokio" ,rust-tokio-1))))
+    (native-inputs (list pkg-config))
+    (inputs (list libsodium))
+    (home-page "https://pijul.org/thrussh")
+    (synopsis "SSH library in Rust")
+    (description "This package provides a client and server SSH library.")
+    (license license:asl2.0)))
+
 (define-public rust-thrussh-config-0.6
   (package
     (name "rust-thrussh-config")
