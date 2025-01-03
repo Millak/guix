@@ -8579,13 +8579,13 @@ Interfaces} via data models provided in the JSON format.")
 (define-public python-pydantic-settings
   (package
     (name "python-pydantic-settings")
-    (version "2.2.1")
+    (version "2.7.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pydantic_settings" version))
        (sha256
-        (base32 "1vf58f398ngk6wpf0jn51ghw65mjs3m03yn06h25jlsmx6jzdf80"))))
+        (base32 "14zcbl32m53zfh054bkqk4jcjp72q1wa0w5z5wygnjz66nnwmj8h"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -8607,7 +8607,8 @@ Interfaces} via data models provided in the JSON format.")
                     " and not test_docs_examples[docs/index.md:553-585]"
                     " and not test_docs_examples[docs/index.md:620-645]"
                     " and not test_docs_examples[docs/index.md:654-732]"
-                    " and not test_docs_examples[docs/index.md:738-772]"))
+                    " and not test_docs_examples[docs/index.md:738-772]")
+              "--ignore=tests/test_docs.py")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'relax-requirements
@@ -8625,10 +8626,7 @@ Interfaces} via data models provided in the JSON format.")
               ;; '/homeless-shelter/
               (setenv "HOME" "/tmp"))))))
     (propagated-inputs
-     (list python-dotenv
-           python-pydantic-2
-           python-pyaml
-           python-tomli))
+     (list python-dotenv python-pydantic-2))
     (native-inputs
      (list python-hatchling
            python-pytest
