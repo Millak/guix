@@ -88030,6 +88030,38 @@ a part of rav1e.")
     (description "This package provides simd optimized HTML escaping code.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-validator-0.15
+  (package
+    (name "rust-validator")
+    (version "0.15.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "validator" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1mgfpwry40fcsfabx7vziy0a7j9kxn6b49mvbv1hy770j09hlyzh"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-card-validate" ,rust-card-validate-2)
+                       ("rust-idna" ,rust-idna-0.2)
+                       ("rust-indexmap" ,rust-indexmap-1)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-phonenumber" ,rust-phonenumber-0.3)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-derive" ,rust-serde-derive-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-unic-ucd-common" ,rust-unic-ucd-common-0.9)
+                       ("rust-url" ,rust-url-2)
+                       ("rust-validator-derive" ,rust-validator-derive-0.15))))
+    (home-page "https://github.com/Keats/validator")
+    (synopsis "Common validation functions and trait")
+    (description
+     "This package provides common validation functions (email, url, length,
+...) and trait.")
+    (license license:expat)))
+
 (define-public rust-validator-derive-0.15
   (package
     (name "rust-validator-derive")
