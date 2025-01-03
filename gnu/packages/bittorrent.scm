@@ -20,6 +20,7 @@
 ;;; Copyright © 2023 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2024 Noisytoot <ron@noisytoot.org>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -318,6 +319,10 @@ Transmission BitTorrent daemon.")
                               #$output "/etc/bash_completion.d/"))
        #:phases
        #~(modify-phases %standard-phases
+           (add-after 'unpack 'patch-configure
+             (lambda _
+               (substitute* "configure.ac"
+                 (("0[.]18") "0.19.6"))))
            (add-after 'unpack 'delete-socket-tests
              (lambda _
                (substitute* "test/LpdMessageDispatcherTest.cc"
