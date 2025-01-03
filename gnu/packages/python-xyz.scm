@@ -19840,17 +19840,21 @@ text.")
 (define-public python-moto
   (package
     (name "python-moto")
-    (version "4.2.4")
+    (version "5.0.25")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "moto" version))
               (sha256
-               (base32 "12dkx35jm8qzyf5205wzkmd82yjxrbfdymdk2qlb3s47k6rcb8zf"))))
+               (base32 "1cp61k745dxyzck543lamh8mnwwxazsgzqascg4nanpcihaqpsny"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
       '(list "-m" "not network and not requires_docker"
+             ;; This needs pycognito.
+             "--ignore-glob=tests/test_cognitoidp/*"
+             ;; This needs Internet access.
+             "--ignore=tests/test_core/test_request_passthrough.py"
              "-k"
              (string-append
               ;; XXX: This test is timing sensitive and may
@@ -19863,9 +19867,6 @@ text.")
               ;; Unknown failure: invalid length for parameter IpAdresses.
               " and not test_route53resolver_bad_create_endpoint_subnets"
               " and not test_route53resolver_invalid_create_endpoint_args"
-
-              ;; FIXME: Unknown failure.  Likely requires Docker.
-              " and not test_cancel_pending_job"
 
               ;; These tests require Docker.
               " and not test_terminate_job"
@@ -19902,31 +19903,28 @@ text.")
      (list python-flask
            python-flask-cors
            python-freezegun
-           python-graphql-core
            python-pytest
-           python-sure))
+           python-setuptools
+           python-wheel))
     (inputs
      (list bash-minimal))
     (propagated-inputs
-     (list python-aws-xray-sdk
+     (list java-antlr4-runtime-python
+           python-aws-xray-sdk
            python-boto3
            python-botocore
            python-cfn-lint
            python-cryptography
            python-dateutil
-           python-docker
-           python-importlib-metadata
+           python-graphql-core
            python-jinja2
-           python-jose
-           python-jsondiff
-           python-markupsafe
+           python-joserfc
+           python-jsonpath-ng
+           python-multipart
            python-openapi-spec-validator
            python-py-partiql-parser
-           python-pytz
-           python-pyyaml
            python-requests
            python-responses
-           python-sshpubkeys
            python-werkzeug
            python-xmltodict))
     (home-page "https://github.com/spulec/moto")
