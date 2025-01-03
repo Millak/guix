@@ -1060,7 +1060,7 @@ for C++17.")
 (define-public xtl
   (package
     (name "xtl")
-    (version "0.7.5")
+    (version "0.7.7")
     (source
      (origin
        (method git-fetch)
@@ -1068,7 +1068,7 @@ for C++17.")
              (url "https://github.com/xtensor-stack/xtl")
              (commit version)))
        (sha256
-        (base32 "1llfy6pkzqx2va74h9xafjylyvw6839a843mqc05n6x6wll5bkam"))
+        (base32 "1b42mjxchinsf2ylbvhyypfysg5sfphxqby53vlg82wvr23rijkz"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
