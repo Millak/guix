@@ -80537,6 +80537,32 @@ helpers to implement @code{ProxyCommand} in Thrussh.")
                        ("rust-tokio" ,rust-tokio-1)
                        ("rust-whoami" ,rust-whoami-1))))))
 
+(define-public rust-thrussh-libsodium-0.3
+  (package
+    (name "rust-thrussh-libsodium")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "thrussh-libsodium" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "18vf8zpvyhbcdkn3cl6rdc2s57676jj6j4m2ykszc3fyi2xh1vaq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-libsodium-sys" ,rust-libsodium-sys-0.2)
+                       ("rust-pkg-config" ,rust-pkg-config-0.3)
+                       ("rust-vcpkg" ,rust-vcpkg-0.2))))
+    (native-inputs (list pkg-config))
+    (inputs (list libsodium))
+    (home-page "https://nest.pijul.com/pijul/thrussh")
+    (synopsis "Straightforward bindings to libsodium")
+    (description
+     "This package provides straightforward bindings to libsodium.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-tikv-jemalloc-sys-0.6
   (package
     (name "rust-tikv-jemalloc-sys")
