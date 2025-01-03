@@ -6,6 +6,7 @@
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2025 Herman Rimm <herman@rimm.ee>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -26,7 +27,6 @@
   #:use-module ((guix build gnu-build-system) #:prefix gnu:)
   #:use-module (guix build json)
   #:use-module ((guix build utils) #:hide (delete))
-  #:use-module (guix build cargo-utils)
   #:use-module (ice-9 popen)
   #:use-module (ice-9 rdelim)
   #:use-module (ice-9 ftw)
@@ -223,13 +223,19 @@ directory = '" vendor-dir "'") port)
   (when (file-exists? "Cargo.lock")
     (delete-file "Cargo.lock")))
 
-;; After the 'patch-generated-file-shebangs phase any vendored crates who have
-;; their shebangs patched will have a mismatch on their checksum.
+;; See: https://github.com/rust-lang/cargo/issues/11063.
 (define* (patch-cargo-checksums #:key
                                 (vendor-dir "guix-vendor")
                                 #:allow-other-keys)
-  "Patch the checksums of the vendored crates after patching their shebangs."
-  (generate-all-checksums vendor-dir))
+  "Add a stub checksum to each crate in VENDOR-DIR."
+  (with-directory-excursion vendor-dir
+    (call-with-output-file ".cargo-checksum.json"
+      (cut display "{\"files\":{}}" <>))
+    (for-each (lambda (dir)
+                (copy-file ".cargo-checksum.json"
+                           (string-append dir "/.cargo-checksum.json")))
+              (drop (scandir ".") 3))
+    (delete-file ".cargo-checksum.json")))
 
 (define* (build #:key
                 parallel-build?
