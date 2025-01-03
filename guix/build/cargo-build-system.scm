@@ -2,7 +2,7 @@
 ;;; Copyright © 2016 David Craven <david@craven.ch>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2019 Ivan Petkov <ivanppetkov@gmail.com>
-;;; Copyright © 2019-2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -207,6 +207,7 @@ directory = '" vendor-dir "'") port)
 
   (setenv "LIBGIT2_SYS_USE_PKG_CONFIG" "1")
   (setenv "LIBSSH2_SYS_USE_PKG_CONFIG" "1")
+  (setenv "SODIUM_USE_PKG_CONFIG" "1")
   (setenv "ZSTD_SYS_USE_PKG_CONFIG" "1")
   (when (assoc-ref inputs "openssl")
     (setenv "OPENSSL_DIR" (assoc-ref inputs "openssl")))
