@@ -2381,6 +2381,71 @@ sharing of scientific data.")
     (home-page (package-home-page netcdf))
     (license (package-license netcdf))))
 
+(define-public netcdf-cxx4
+  (package
+    (name "netcdf-cxx4")
+    (version "4.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Unidata/netcdf-cxx4")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05kydd5z9iil5iv4fp7l11cicda5n5lsg5sdmsmc55xpspnsg7hr"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:phases (modify-phases %standard-phases
+                  (add-before 'configure 'patch-configure
+                    (lambda _
+                      (substitute* "libnetcdf-cxx.settings.in"
+                        ;; Don't record the build-time host, time and gcc path to make the
+                        ;; settings file reproducible.
+                        (("@CONFIG_DATE@")
+                         "Not set (Guix build)")
+                        (("@host_cpu@-@host_vendor@-@host_os@")
+                         "Linux")
+                        (("@CC_VERSION@")
+                         "gcc"))
+                      ;; The filter tests fail with 'Caught unexpected exception'.
+                      (substitute* "cxx4/CMakeLists.txt"
+                        (("add_bin_test\\(cxx4 test_filter\\)")
+                         ""))
+                      (substitute* "examples/CMakeLists.txt"
+                        (("add_sh_test\\(examples tst_filter\\)")
+                         ""))))
+                  (add-after 'install 'clear-reference-to-compiler
+                    (lambda* (#:key inputs outputs #:allow-other-keys)
+                      ;; Do not retain a reference to GCC and other build only inputs.
+                      (let ((out (assoc-ref outputs "out")))
+                        (substitute* (string-append out "/bin/ncxx4-config")
+                          (("cc=([[:graph:]]+)/bin/gcc")
+                           "cc=\"gcc")
+                          (("cxx=([[:graph:]]+)/bin/c\\+\\+")
+                           "cxx=\"c++"))))))
+       #:configure-flags (list (string-append "-DHDF5_C_LIBRARY_hdf5="
+                                              (search-input-file
+                                               %build-inputs
+                                               "/lib/libhdf5.so")))))
+    (inputs (list netcdf hdf5))
+    (home-page "https://github.com/Unidata/netcdf-cxx4")
+    (synopsis "NetCDF C++ interface")
+    (description
+     "This package provides a C++ interface to the NetCDF library for
+scientific data storage.")
+    (license license:bsd-3)))
+
+(define-public netcdf-cxx4-parallel-openmpi
+  (package
+    (inherit netcdf-cxx4)
+    (name "netcdf-cxx4-parallel-openmpi")
+    (synopsis "NetCDF C++ interface (with MPI support)")
+    (inputs (modify-inputs (package-inputs netcdf-cxx4)
+              (prepend openmpi)
+              (replace "hdf5" hdf5-parallel-openmpi)
+              (replace "netcdf" netcdf-parallel-openmpi)))))
+
 (define-public n2p2
   (package
     (name "n2p2")
