@@ -7494,3 +7494,29 @@ passwords etc) for contexts such as terminals or GUIs.")
     (synopsis "Macros used to write libpijul")
     (description "This package provides macros used to write libpijul.")
     (license license:gpl2)))
+
+(define-public rust-pijul-repository-0.0.1
+  (package
+    (name "rust-pijul-repository")
+    (version "0.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pijul-repository" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "06vl6id0amw1pxfhj6m34mvr171czikph8g21xg34k7c263maiq4"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-libpijul" ,rust-libpijul-1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-pijul-config" ,rust-pijul-config-0.0.1)
+                       ("rust-rlimit" ,rust-rlimit-0.9)
+                       ("rust-toml" ,rust-toml-0.7))))
+    (home-page "https://nest.pijul.com/pijul/pijul")
+    (synopsis "Functionality for interacting with a pijul repository")
+    (description
+     "This package provides functionality for interacting with a pijul repository.")
+    (license license:gpl2)))
+
