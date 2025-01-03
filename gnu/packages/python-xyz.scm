@@ -12340,7 +12340,7 @@ older Python versions.")
                 "12v196q3rai33cfzrmb9pqfqv7ailngssjdrzdf8gzym9hdygmjc"))))
     (build-system pyproject-build-system)
     (propagated-inputs
-     (list python-dataclasses python-smart-open python-typer))
+     (list python-smart-open python-typer))
     (native-inputs (list python-mock python-pytest python-setuptools
                          python-wheel))
     (home-page "https://github.com/justindujardin/pathy")
