@@ -8766,39 +8766,40 @@ of the CRC32C hashing algorithm.")
 (define-public python-google-auth
   (package
     (name "python-google-auth")
-    (version "2.34.0")
+    (version "2.37.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "google_auth" version))
        (sha256
-        (base32 "1k04kkg5n3pi4awjxxsa50ail68wwf2gklmb686v46aw8fb77f4f"))))
-    (build-system python-build-system)
+        (base32 "002xvp1139lrw2c2s2yllg5499ghfxzg9lv35i4q770zpwx64m00"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest")))))))
+     (list
+      #:test-flags
+      ;; This one test uses crypto.sign with an outdated calling convention.
+      '(list "--ignore=tests/transport/test__mtls_helper.py")))
     (propagated-inputs
      (list python-cachetools
-           python-cryptography
            python-pyasn1-modules
-           python-rsa
-           python-six))
+           python-pyjwt
+           python-rsa))
     (native-inputs
      (list nss-certs-for-test
+           python-aioresponses
+           python-cryptography
            python-flask
            python-freezegun
            python-mock
-           python-oauth2client
            python-pyopenssl
            python-pytest
+           python-pytest-asyncio
            python-pytest-localserver
            python-pyu2f
            python-requests
-           python-responses))
+           python-responses
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/googleapis/google-auth-library-python")
     (synopsis "Google Authentication Library")
     (description "This library simplifies using Google's various
