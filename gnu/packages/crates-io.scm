@@ -36370,6 +36370,41 @@ heavily inspired by the Temporal project.")
      "Provides the Time Zone Database for use in your binary on specific platforms.")
     (license (list license:unlicense license:expat))))
 
+(define-public rust-jiter-0.7
+  (package
+    (name "rust-jiter")
+    (version "0.7.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "jiter" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "09fx71x93sh15028pd0f78flv9j4fkvg6lgi22y5gbv83c99mxh7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-ahash" ,rust-ahash-0.8)
+        ("rust-bitvec" ,rust-bitvec-1)
+        ("rust-lexical-parse-float" ,rust-lexical-parse-float-0.8)
+        ("rust-num-bigint" ,rust-num-bigint-0.4)
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-pyo3" ,rust-pyo3-0.22)
+        ("rust-pyo3-build-config" ,rust-pyo3-build-config-0.22)
+        ("rust-smallvec" ,rust-smallvec-1))
+       #:cargo-development-inputs
+       (("rust-bencher" ,rust-bencher-0.1)
+        ("rust-codspeed-bencher-compat" ,rust-codspeed-bencher-compat-2)
+        ("rust-paste" ,rust-paste-1)
+        ("rust-pyo3" ,rust-pyo3-0.22)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1))))
+    (inputs (list python-wrapper))
+    (home-page "https://github.com/pydantic/jiter/")
+    (synopsis "Fast Iterable JSON parser")
+    (description "This package provides an iterable JSON parser.")
+    (license license:expat)))
+
 (define-public rust-jiter-0.5
   (package
     (name "rust-jiter")
