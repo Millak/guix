@@ -9356,24 +9356,6 @@ system calls.  Second, exposing the internal buffer allows the user to work
 with data in place, which avoids another copy.")
     (license license:gpl3)))
 
-(define-public rust-buffered-reader-0.9
-  (package
-    (inherit rust-buffered-reader-1)
-    (name "rust-buffered-reader")
-    (version "0.9.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "buffered-reader" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "05rklfiia1k4c4ifpim08l22i0q0l3j9xdg2yh3njrp6w58z6z13"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-bzip2" ,rust-bzip2-0.3)
-        ("rust-flate2" ,rust-flate2-1)
-        ("rust-libc" ,rust-libc-0.2))))))
-
 (define-public rust-buffering-0.4
   (package
     (name "rust-buffering")
