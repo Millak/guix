@@ -6,7 +6,7 @@
 ;;; Copyright © 2015, 2016 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2014, 2015, 2016 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014, 2016, 2019, 2021 Eric Bavier <bavier@posteo.net>
-;;; Copyright © 2015-2024 Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2025 Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2015, 2018, 2020, 2021, 2022 Kyle Meyer <kyle@kyleam.com>
 ;;; Copyright © 2015, 2017, 2018, 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2017 Leo Famulari <leo@famulari.name>
@@ -106,6 +106,7 @@
   #:use-module (gnu packages crates-compression)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages crates-vcs)
+  #:use-module (gnu packages crates-web)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages databases)
@@ -3368,6 +3369,127 @@ a built-in wiki, built-in file browsing, built-in tickets system, etc.")
         . "https://fossil-scm.org/home/uv/latest-release.md")))
     (license (list license:public-domain        ;src/miniz.c, src/shell.c
                    license:bsd-2))))
+
+(define-public pijul
+  (package
+    (name "pijul")
+    (version "1.0.0-beta.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pijul" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1lk261rrk4xy60d4akfn8mrrqxls28kf9mzrjcrxdzbdysml66n5"))
+        (snippet
+         #~(begin (use-modules (guix build utils))
+                  (substitute* "Cargo.toml"
+                    (("\"= ?([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                     (string-append "\"^" version)))))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+       #:install-source? #f
+       #:cargo-inputs
+       (list rust-anyhow-1
+             rust-async-trait-0.1
+             rust-atty-0.2
+             rust-byteorder-1
+             rust-bytes-1
+             rust-canonical-path-2
+             rust-chrono-0.4
+             rust-clap-4
+             rust-clap-complete-4
+             rust-ctrlc-3
+             rust-data-encoding-2
+             rust-dateparser-0.1
+             rust-dirs-next-2
+             rust-edit-0.1
+             rust-env-logger-0.8
+             rust-futures-0.3
+             rust-futures-util-0.3
+             rust-git2-0.13
+             rust-human-panic-1
+             rust-hyper-0.14
+             rust-ignore-0.4
+             rust-keyring-2
+             rust-lazy-static-1
+             rust-libpijul-1
+             rust-log-0.4
+             rust-open-3
+             rust-pager-0.16
+             rust-path-slash-0.1
+             rust-pijul-config-0.0.1
+             rust-pijul-identity-0.0.1
+             rust-pijul-interaction-0.0.1
+             rust-pijul-remote-1
+             rust-pijul-repository-0.0.1
+             rust-ptree-0.4
+             rust-rand-0.8
+             rust-regex-1
+             rust-reqwest-0.11
+             rust-sanakirja-1
+             rust-serde-1
+             rust-serde-derive-1
+             rust-serde-json-1
+             rust-tempfile-3
+             rust-termcolor-1
+             rust-thiserror-1
+             rust-thrussh-0.33
+             rust-thrussh-config-0.5
+             rust-thrussh-keys-0.21
+             rust-tokio-1
+             rust-toml-0.5
+             rust-url-2
+             rust-validator-0.15
+             rust-whoami-1)
+       #:cargo-development-inputs
+       (list rust-exitcode-1
+             rust-expectrl-0.7)
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'install 'install-extras
+             (lambda* (#:key native-inputs outputs #:allow-other-keys)
+               (let* ((out (assoc-ref outputs "out"))
+                      (share (string-append out "/share"))
+                      (bash-completions-dir
+                       (string-append out "/etc/bash_completion.d/"))
+                      (zsh-completions-dir
+                       (string-append share "/zsh/site-functions"))
+                      (fish-completions-dir
+                       (string-append share "/fish/vendor_completions.d"))
+                      (elvish-completions-dir
+                       (string-append share "/elvish/lib"))
+                      (pijul (if #$(%current-target-system)
+                             (search-input-file native-inputs "/bin/pijul")
+                             (string-append out "/bin/pijul"))))
+                 (mkdir-p bash-completions-dir)
+                 (with-output-to-file
+                   (string-append bash-completions-dir "/pijul")
+                   (lambda _ (invoke pijul "completion" "bash")))
+                 (mkdir-p zsh-completions-dir)
+                 (with-output-to-file
+                   (string-append zsh-completions-dir "/_pijul")
+                   (lambda _ (invoke pijul "completion" "zsh")))
+                 (mkdir-p fish-completions-dir)
+                 (with-output-to-file
+                   (string-append fish-completions-dir "/pijul.fish")
+                   (lambda _ (invoke pijul "completion" "fish")))
+                 (mkdir-p elvish-completions-dir)
+                 (with-output-to-file
+                   (string-append elvish-completions-dir "/pijul")
+                   (lambda _ (invoke pijul "completion" "elvish")))))))))
+    (native-inputs
+     (append (if (%current-target-system)
+                 (list this-package)
+                 '())
+             (list pkg-config)))
+    (inputs (list libsodium openssl))
+    (home-page "https://nest.pijul.com/pijul/pijul")
+    (synopsis "Distributed version control system")
+    (description "This package provides pijul, a sound and fast distributed
+version control system based on a mathematical theory of asynchronous work.")
+    (license license:gpl2+)))
 
 (define-public stagit
   (package
