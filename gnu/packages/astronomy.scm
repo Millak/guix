@@ -7032,6 +7032,67 @@ when run on more powerful computers and provides conversion to FITS from a
 large number of image formats.")
     (license license:gpl3+)))
 
+(define-public ska-sdp-func
+  (package
+    (name "ska-sdp-func")
+    (version "1.2.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/ska-telescope/sdp/ska-sdp-func")
+             (commit version)))
+       (sha256
+        (base32 "0blk4sfy2kl544d7iahcd9awvlg3xvwcm5qmis6h4xiw7xgj7psf"))
+       (file-name (git-file-name name version))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-DBUILD_INFO=ON"
+              "-DFIND_CUDA=OFF")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-failing-tests
+            (lambda _
+              ;; Two tests fail with SegFAilt: "Cannot allocate GPU memory:
+              ;; The processing function library was compiled without CUDA
+              ;; support".
+              (substitute* "tests/CMakeLists.txt"
+                (("clean") "# clean")))))))
+    (home-page "https://developer.skao.int/projects/ska-sdp-func/en/latest/")
+    (synopsis "SDP Processing Function Library")
+    (description
+     "This package provides a Square Kilometre Array (SKA) Science Data
+Processor (SDP) function libary for radio astronomy.")
+    (license license:bsd-3)))
+
+(define-public python-ska-sdp-func
+  (package/inherit ska-sdp-func
+    (name "python-ska-sdp-func")
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list
+         ;; Ignore tests requiring CUDA.
+         "--ignore=tests/visibility/test_tiled_functions.py"
+         "--ignore=tests/visibility/test_opt_weighting.py"
+         ;; We don't want benchmark tests.
+         "--ignore=tests/fourier_transforms/test_swiftly_bench.py"
+         ;; Skip tests failing with errors:
+         ;; UnboundLocalError: local variable 'psf' referenced before assignment
+         ;; AttributeError: 'NoneType' object has no attribute 'asnumpy'
+         "-k" "not test_hogbom_clean and not test_ms_clean_cornwell")))
+    (native-inputs
+     (list cmake
+           python-pytest
+           python-scipy
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-numpy))))
+
 (define-public skymaker
   (package
     (name "skymaker")
