@@ -52959,6 +52959,46 @@ function data structures.")
      "Support code shared by PHF libraries.")
     (license license:expat)))
 
+(define-public rust-phonenumber-0.3
+  (package
+    (name "rust-phonenumber")
+    (version "0.3.6+8.13.36")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "phonenumber" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ak9iwx0f5gx2hxycp87wwq4scinlh7fgcf8gplwb33vnlvn4x8i"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bincode" ,rust-bincode-1)
+                       ("rust-either" ,rust-either-1)
+                       ("rust-fnv" ,rust-fnv-1)
+                       ("rust-itertools" ,rust-itertools-0.10)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-nom" ,rust-nom-7)
+                       ("rust-quick-xml" ,rust-quick-xml-0.28)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-regex-cache" ,rust-regex-cache-0.2)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-derive" ,rust-serde-derive-1)
+                       ("rust-strum" ,rust-strum-0.24)
+                       ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs (("rust-anyhow" ,rust-anyhow-1)
+                                   ("rust-criterion" ,rust-criterion-0.4)
+                                   ("rust-doc-comment" ,rust-doc-comment-0.3)
+                                   ("rust-proptest" ,rust-proptest-1)
+                                   ("rust-rstest" ,rust-rstest-0.13)
+                                   ("rust-rstest-reuse" ,rust-rstest-reuse-0.6))))
+    (home-page "https://github.com/whisperfish/rust-phonenumber")
+    (synopsis
+     "Library for parsing, formatting and validating international phone numbers")
+    (description
+     "This package provides a library for parsing, formatting and validating
+international phone numbers.")
+    (license license:asl2.0)))
+
 (define-public rust-pico-args-0.5
   (package
     (name "rust-pico-args")
