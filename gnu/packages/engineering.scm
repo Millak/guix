@@ -42,6 +42,7 @@
 ;;; Copyright © 2024 Juliana Sims <juli@incana.org>
 ;;; Copyright © 2024 Nguyễn Gia Phong <mcsinyx@disroot.org>
 ;;; Copyright © 2025 Frederick Muriuki Muriithi <fredmanglis@gmail.com>
+;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4580,13 +4581,14 @@ facilitate the communication between Cura and its backend and similar code.")
 (define-public cura-engine
   (package
     (name "cura-engine")
-    (version "4.13.1")
+    (version "4.13.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
                (url "https://github.com/Ultimaker/CuraEngine")
                (commit version)))
+       (patches (search-patches "cura-engine-gcc-14.patch"))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0xp2r0m5wwfsh9wdb3biqzvfqfz5jsmyw4bww93aksw0rgli07bp"))))
