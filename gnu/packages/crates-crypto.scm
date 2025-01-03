@@ -2501,6 +2501,29 @@ generations, signing, and verification in pure Rust.")
      "This package provides Zcash-flavored Ed25519 for use in Zebra.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-ed25519-zebra-1
+  (package
+    (inherit rust-ed25519-zebra-2)
+    (name "rust-ed25519-zebra")
+    (version "1.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ed25519-zebra" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1zyi37p8p1qqbbkd27w52zvx5cj9b56rvc17jiw9d71j3gziynn8"))))
+    (arguments
+     `(#:cargo-inputs (("rust-curve25519-dalek" ,rust-curve25519-dalek-3)
+                       ("rust-hex" ,rust-hex-0.4)
+                       ("rust-rand-core" ,rust-rand-core-0.5)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-sha2" ,rust-sha2-0.9)
+                       ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs (("rust-bincode" ,rust-bincode-1)
+                                   ("rust-criterion" ,rust-criterion-0.3)
+                                   ("rust-rand" ,rust-rand-0.7))))))
+
 (define-public rust-elliptic-curve-0.13
   (package
     (name "rust-elliptic-curve")
