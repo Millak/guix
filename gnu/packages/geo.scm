@@ -1037,14 +1037,14 @@ pyproj, Rtree, and Shapely.")
 (define-public python-geopandas
   (package
     (name "python-geopandas")
-    (version "0.14.2")
+    (version "1.0.1")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "geopandas" version))
         (sha256
           (base32
-            "1nycf79nzris058lz1fyg0byj874wxq33an3y74zvybnhdxxawbf"))))
+            "1aq8rb1a97n9h0yinrcr6nhfj7gvh8h6wr2ng9dj1225afjp1gxq"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -1058,10 +1058,19 @@ pyproj, Rtree, and Shapely.")
          ;; Disable tests that require internet access.
          "-m" "not web")))
     (propagated-inputs
-      (list python-fiona python-packaging python-pandas python-pyproj
+      (list python-numpy
+            python-packaging
+            python-pandas
+            python-pyogrio
+            python-pyproj
             python-shapely))
     (native-inputs
-      (list python-pytest python-setuptools python-wheel))
+      (list python-codecov
+            python-pytest
+            python-pytest-cov
+            python-pytest-xdist
+            python-setuptools
+            python-wheel))
     (home-page "https://geopandas.org")
     (synopsis "Geographic pandas extensions")
     (description "The goal of GeoPandas is to make working with
