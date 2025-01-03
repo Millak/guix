@@ -1061,30 +1061,25 @@ for C++17.")
   (package
     (name "xtl")
     (version "0.7.5")
-    (source (origin
-              (method git-fetch)
-              (uri
-               (git-reference
-                (url "https://github.com/QuantStack/xtl")
-                (commit version)))
-              (sha256
-               (base32
-                "1llfy6pkzqx2va74h9xafjylyvw6839a843mqc05n6x6wll5bkam"))
-              (file-name (git-file-name name version))))
-    (native-inputs
-     (list doctest googletest nlohmann-json))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/xtensor-stack/xtl")
+             (commit version)))
+       (sha256
+        (base32 "1llfy6pkzqx2va74h9xafjylyvw6839a843mqc05n6x6wll5bkam"))
+       (file-name (git-file-name name version))))
+    (build-system cmake-build-system)
     (arguments
      (list
-      #:configure-flags
-      #~(list "-DBUILD_TESTS=ON")
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda _
-              (with-directory-excursion "test"
-                (invoke "./test_xtl")))))))
-    (home-page "https://github.com/QuantStack/xtl")
-    (build-system cmake-build-system)
+      #:configure-flags #~(list "-DBUILD_TESTS=ON")
+      #:test-target "xtest"))
+    (native-inputs
+     (list doctest
+           googletest
+           nlohmann-json))
+    (home-page "https://github.com/xtensor-stack/xtl")
     (synopsis "C++ template library providing some basic tools")
     (description "xtl is a C++ header-only template library providing basic
 tools (containers, algorithms) used by other QuantStack packages.")
