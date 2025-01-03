@@ -20753,20 +20753,6 @@ common subsequence.  The diff algorithms include Myer's diff and Patience
 diff.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-diffs-0.3
-  (package
-    (inherit rust-diffs-0.5)
-    (name "rust-diffs")
-    (version "0.3.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "diffs" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "036sqycmir4bbl4016jprsyjq4hicc31r68dyqadmc8ac9pk55d1"))))
-    (arguments `())))
-
 (define-public rust-dircpy-0.3
   (package
     (name "rust-dircpy")
