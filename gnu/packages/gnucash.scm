@@ -102,6 +102,11 @@
               (substitute* "CMakeLists.txt"
                 (("set\\(SHELL /bin/bash\\)")
                  (string-append "set(SHELL " (which "bash") ")")))))
+          (add-after 'unpack 'set-perl-path
+            (lambda _
+              (substitute* "libgnucash/app-utils/gnc-quotes.cpp"
+                (("c_cmd\\{bp::search_path\\(\"perl\"\\)\\}")
+                 (format #f "c_cmd{~s}" #$(file-append perl "/bin/perl"))))))
           ;; The qof test requires the en_US, en_GB, and fr_FR locales.
           (add-before 'check 'install-locales
             (lambda _
