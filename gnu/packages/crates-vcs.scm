@@ -7533,6 +7533,54 @@ passwords etc) for contexts such as terminals or GUIs.")
     (description "This package provides macros used to write libpijul.")
     (license license:gpl2)))
 
+(define-public rust-pijul-remote-1
+  (package
+    (name "rust-pijul-remote")
+    (version "1.0.0-beta.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pijul-remote" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1pxk6bv3q9ppqivj6rdy2lgv444zxxkqs8jgb1zq3412j6gpsa6d"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-async-trait" ,rust-async-trait-0.1)
+                       ("rust-byteorder" ,rust-byteorder-1)
+                       ("rust-bytes" ,rust-bytes-1)
+                       ("rust-dirs-next" ,rust-dirs-next-2)
+                       ("rust-futures" ,rust-futures-0.3)
+                       ("rust-futures-util" ,rust-futures-util-0.3)
+                       ("rust-keyring" ,rust-keyring-2)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-libpijul" ,rust-libpijul-1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-pijul-config" ,rust-pijul-config-0.0.1)
+                       ("rust-pijul-identity" ,rust-pijul-identity-0.0.1)
+                       ("rust-pijul-interaction" ,rust-pijul-interaction-0.0.1)
+                       ("rust-pijul-repository" ,rust-pijul-repository-0.0.1)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-reqwest" ,rust-reqwest-0.11)
+                       ("rust-sanakirja" ,rust-sanakirja-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-derive" ,rust-serde-derive-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-thrussh" ,rust-thrussh-0.34)
+                       ("rust-thrussh-config" ,rust-thrussh-config-0.6)
+                       ("rust-thrussh-keys" ,rust-thrussh-keys-0.22)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-url" ,rust-url-2))))
+    (native-inputs (list pkg-config))
+    (inputs (list libsodium openssl))
+    (home-page "https://nest.pijul.com/pijul/pijul")
+    (synopsis "Functionality to communicate with a pijul repository remotely")
+    (description
+     "This package provides functionality to communicate with a pijul
+repository remotely.")
+    (license license:gpl2)))
+
 (define-public rust-pijul-repository-0.0.1
   (package
     (name "rust-pijul-repository")
