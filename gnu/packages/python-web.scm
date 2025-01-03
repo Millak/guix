@@ -4700,6 +4700,13 @@ Services (AWS) API.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags
+      ;; The resource leak tests use ps to check for memory consumption.
+      '(list "--ignore=functional/botocore/leak/test_resource_leaks.py"
+             ;; These tests complain about unavailable TLS certs.
+             "--ignore=functional/ec2instanceconnect/test_opentunnel.py"
+             ;; These seem to require Internet access.
+             "--ignore=unit/botocore/test_awsrequest.py")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'ignore-deprecations
@@ -4715,16 +4722,25 @@ Services (AWS) API.")
                                 (search-input-file inputs "bin/groff")
                                 "'")))))
           (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
               (when tests?
-                (substitute* "scripts/ci/run-tests"
-                  (("--numprocesses=auto --dist=loadfile --maxprocesses=4") ""))
-                ;; For an unknown reason pytest receives SIGTERM and no tests
-                ;; are run..
-                #;
+                (let ((skip-args
+                       (string-append
+                        "-k" "\""
+                        ;; No idea why this fails.
+                        "not test_no_groff_or_mandoc_exists"
+                        ;; Needs $HOME
+                        " and not test_attach_history_handler"
+                        ;; Complains about TLS certs.
+                        " and not test_command_returns_shutdown_exception"
+                        "\"")))
+                  (substitute* "scripts/ci/run-tests"
+                    (("--numprocesses=auto" m)
+                     (string-join (cons* m skip-args test-flags) " "))))
                 (invoke "python" "scripts/ci/run-tests")))))))
     (inputs
      (list groff
+           nss-certs-for-test
            python-awscrt-for-awscli
            python-colorama
            python-botocore
@@ -4732,6 +4748,7 @@ Services (AWS) API.")
            python-dateutil
            python-docutils
            python-jmespath
+           python-jsonschema
            python-prompt-toolkit
            python-ruamel.yaml-0.16
            python-ruamel.yaml.clib
@@ -4740,6 +4757,7 @@ Services (AWS) API.")
      (list python-distro
            python-flit
            python-pytest
+           python-pytest-xdist
            python-wheel))))
 
 ;; This is not an official release of awscli version 2, so it should not be
