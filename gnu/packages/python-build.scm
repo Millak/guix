@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2024 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2024, 2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2020, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2020, 2023 Marius Bakke <marius@gnu.org>
@@ -863,13 +863,13 @@ abstractions for handling wheels and installing packages from wheels.")
 (define-public python-pdm-backend
   (package
     (name "python-pdm-backend")
-    (version "2.0.6")
+    (version "2.4.3")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "pdm_backend" version))
               (sha256
                (base32
-                "06bq846yy33alxbljgcf4lx9g2mx4b2sv04i59rrn9rxapcg2651"))))
+                "0a0741c1g5vxhrizyxh40mjxdmbsc4xid5vy4aji23f1g9x09nfv"))))
     (build-system pyproject-build-system)
     (arguments
      (list
