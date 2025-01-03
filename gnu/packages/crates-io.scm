@@ -49835,6 +49835,21 @@ owo.")
     (arguments
      `(#:cargo-inputs (("rust-supports-color" ,rust-supports-color-1))))))
 
+(define-public rust-owo-colors-1
+  (package
+    (inherit rust-owo-colors-4)
+    (name "rust-owo-colors")
+    (version "1.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "owo-colors" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0mbs3z0c6p48wh96paa230xf6c6h8nhyyk1d118pybqwx7mv91i3"))))
+    (arguments
+     `(#:cargo-inputs (("rust-atty" ,rust-atty-0.2))))))
+
 (define-public rust-packed-simd-0.3
   (package
     (name "rust-packed-simd")
