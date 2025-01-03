@@ -7446,6 +7446,44 @@ file.
      "This package provides configuration for the pijul version control system.")
     (license license:gpl2)))
 
+(define-public rust-pijul-identity-0.0.1
+  (package
+    (name "rust-pijul-identity")
+    (version "0.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pijul-identity" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1hpsw5k3s47nf8hxmi7pb6552ld3xz688hqldz57n9v7d7k660m1"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-dateparser" ,rust-dateparser-0.1)
+                       ("rust-dirs-next" ,rust-dirs-next-2)
+                       ("rust-keyring" ,rust-keyring-2)
+                       ("rust-libpijul" ,rust-libpijul-1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-pijul-config" ,rust-pijul-config-0.0.1)
+                       ("rust-pijul-interaction" ,rust-pijul-interaction-0.0.1)
+                       ("rust-pijul-repository" ,rust-pijul-repository-0.0.1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-thrussh-keys" ,rust-thrussh-keys-0.21)
+                       ("rust-toml" ,rust-toml-0.7)
+                       ("rust-validator" ,rust-validator-0.15)
+                       ("rust-whoami" ,rust-whoami-1))))
+    (native-inputs (list pkg-config))
+    (inputs (list libsodium openssl))
+    (home-page "https://nest.pijul.com/pijul/pijul")
+    (synopsis "Functionality to interact with Pijul identities")
+    (description
+     "This package provides functionality to interact with Pijul identities.")
+    (license license:gpl2)))
+
 (define-public rust-pijul-interaction-0.0.1
   (package
     (name "rust-pijul-interaction")
