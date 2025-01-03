@@ -48316,6 +48316,28 @@ be assigned to at most once and provide direct access to the stored
 contents.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-oncemutex-0.1
+  (package
+    (name "rust-oncemutex")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "oncemutex" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1qmzibgx46k3xfh0mbljp46cfy9vx62frrx5x1ph18zlcvj1vla4"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:tests? #f)) ; `#![feature]` may not be used on the stable release channel
+    (home-page "https://github.com/reem/rust-once-mutex.git")
+    (synopsis
+     "Mutex providing one-time synchronized access, then safe unsynchronized access")
+    (description
+     "This package provides a mutex providing one-time synchronized access, then
+safe unsynchronized access.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-onig-6
   (package
     (name "rust-onig")
