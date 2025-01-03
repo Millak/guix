@@ -146,20 +146,12 @@
                      ,(map (lambda (o)
                              (string-append o "/lib/perl5/site_perl/"
                                             #$(package-version perl)))
-                           (if (string=? prog "gnc-fq-helper")
-                               (list
-                                #$@(transitive-input-references
-                                    'inputs
-                                    (map (lambda (l)
-                                           (assoc l (package-inputs this-package)))
-                                         '("perl-finance-quote"
-                                           "perl-date-manip"))))
-                               (list
-                                #$@(transitive-input-references
-                                    'inputs
-                                    (map (lambda (l)
-                                           (assoc l (package-inputs this-package)))
-                                         '("perl-finance-quote")))))))))
+                           (list
+                            #$@(transitive-input-references
+                                'inputs
+                                (map (lambda (l)
+                                       (assoc l (package-inputs this-package)))
+                                     '("perl-finance-quote"))))))))
                '("gnucash"))))
           (add-after 'install 'glib-or-gtk-compile-schemas
             (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-compile-schemas))
@@ -192,7 +184,6 @@
            libofx
            libxml2
            libxslt
-           perl-date-manip
            perl-finance-quote
            perl-json
            perl-json-parse
