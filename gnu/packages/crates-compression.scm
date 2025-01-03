@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019 John Soo <jsoo1@asu.edu>
-;;; Copyright © 2019, 2020, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019, 2020, 2023-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Valentin Ignatev <valentignatev@gmail.com>
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
@@ -1925,6 +1925,35 @@ library.")
         ("rust-zstd-sys" ,rust-zstd-sys-1))))
     (native-inputs '())
     (inputs '())))
+
+;; TODO: Submit patches to use system zstd-seekable.
+(define-public rust-zstd-seekable-0.1
+  (package
+    (name "rust-zstd-seekable")
+    (version "0.1.23")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "zstd-seekable" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1hn3lry2p1fzjlx6shwq1k5bcpx4lqckmvl16gqx326vbiy12jjp"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; TODO: zstd-seekable fails to link during 'check phase.
+       #:cargo-inputs (("rust-bincode" ,rust-bincode-1)
+                       ("rust-cc" ,rust-cc-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-pkg-config" ,rust-pkg-config-0.3)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-derive" ,rust-serde-derive-1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-threadpool" ,rust-threadpool-1))))
+    (home-page "https://nest.pijul.com/pmeunier/zstd-seekable")
+    (synopsis "Bindings to the seekable version of ZStandard")
+    (description
+     "This package provides bindings to the seekable version of ZStandard.")
+    (license license:bsd-3)))
 
 (define-public rust-zstd-sys-2
   (package
