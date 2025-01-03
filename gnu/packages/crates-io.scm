@@ -63241,6 +63241,27 @@ First In First Out} ring buffer with direct access to inner data.")
     (description "This package provides a parser for Rinja templates.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-rio-0.9
+  (package
+    (name "rust-rio")
+    (version "0.9.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rio" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0nv8wrnkd41flb32lmxb412l6m1790j12c3lg305764hcmbc564y"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2))
+       #:cargo-development-inputs (("rust-extreme" ,rust-extreme-666))))
+    (home-page "https://github.com/spacejam/rio")
+    (synopsis "Bindings for io_uring")
+    (description
+     "This package provides bindings for io_uring.")
+    (license license:gpl3)))
+
 (define-public rust-rkyv-0.7
   (package
     (name "rust-rkyv")
