@@ -67473,6 +67473,30 @@ motivation for writing this library.
 @end itemize")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-sanakirja-core-1
+  (package
+    (name "rust-sanakirja-core")
+    (version "1.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sanakirja-core" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1xcb4d9gaxp61na4dyz9iiq3n1shhiivqs0iv5xnxb1ymqsdnxl3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-crc32fast" ,rust-crc32fast-1)
+                       ("rust-ed25519-zebra" ,rust-ed25519-zebra-2)
+                       ("rust-sha2" ,rust-sha2-0.10)
+                       ("rust-uuid" ,rust-uuid-1))))
+    (home-page "https://nest.pijul.com/pijul/sanakirja")
+    (synopsis "Copy-on-write datastructures with a stable format")
+    (description
+     "This package provides copy-on-write datastructures, storable on disk
+(or elsewhere) with a stable format.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-sc-0.2
   (package
     (name "rust-sc")
