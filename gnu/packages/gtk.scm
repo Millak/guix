@@ -731,10 +731,15 @@ highlighting and other features typical of a source code editor.")
                (base32
                 "1zbpj283b5ycz767hqz5kdq02wzsga65pp4fykvhg8xj6x50f6v9"))))
     (build-system gnu-build-system)
-    (arguments (substitute-keyword-arguments (package-arguments gtksourceview)
-                 ((#:phases phases)
-                  `(modify-phases ,phases
-                     (delete 'disable-gtk-update-icon-cache)))))))
+    (arguments
+     (append
+      (list
+       #:configure-flags
+       #~(list "CFLAGS=-g -O2 -Wno-error=incompatible-pointer-types"))
+      (substitute-keyword-arguments (package-arguments gtksourceview)
+        ((#:phases phases)
+         `(modify-phases ,phases
+            (delete 'disable-gtk-update-icon-cache))))))))
 
 (define-public gdk-pixbuf
   (package
