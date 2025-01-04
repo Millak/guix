@@ -169,6 +169,7 @@
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages regex)
   #:use-module (gnu packages serialization)
@@ -363,7 +364,12 @@ or musca).
                      (("/usr") #$output)
                      (("\\<(addr2line|cat|lspci|nm)\\>" cmd)
                       (search-input-file
-                       inputs (string-append "bin/" cmd)))))))))
+                       inputs (string-append "bin/" cmd))))
+                   (substitute* '("src/Compositor.cpp"
+                                  "src/managers/VersionKeeperManager.cpp")
+                     (("!executableExistsInPath.*\".") "false")
+                     (("hyprland-update-screen" cmd)
+                      (search-input-file inputs (in-vicinity "bin" cmd)))))))))
     (native-inputs
      (list gcc-14
            hyprwayland-scanner
@@ -378,6 +384,7 @@ or musca).
            hyprcursor
            hyprgraphics
            hyprland-protocols
+           hyprland-qtutils
            hyprlang
            hyprutils
            libinput-minimal
