@@ -4003,14 +4003,14 @@ Portable Game Notation.")
 (define-public gtypist
   (package
     (name "gtypist")
-    (version "2.9.5")
+    (version "2.10")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/gtypist/gtypist-"
-                                  version ".tar.xz"))
+                                  version ".tar.gz"))
               (sha256
                (base32
-                "0xzrkkmj0b1dw3yr0m9hml2y634cc4h61im6zwcq57s7285z8fn1"))
+                "0b2ncxk6vw9d8qi6l08w1ghf06ra78wqyvaz0dnlrj22azcrrrzi"))
               (modules '((guix build utils)))
               (snippet
                ;; We do not provide `ncurses.h' within an `ncursesw'
