@@ -2445,6 +2445,11 @@ The gnome-about program helps find which version of GNOME is installed.")
             (lambda _
               (substitute* "meson-postinstall.sh"
                 (("update-desktop-database") (which "true")))))
+          (add-before 'configure 'relax-gcc-14-strictness
+            (lambda _
+              (setenv "CFLAGS"
+                      (string-append "-g -O2"
+                                     " -Wno-error=incompatible-pointer-types"))))
           (add-after 'install 'patch-thumbnailer
             (lambda* (#:key outputs #:allow-other-keys)
               (substitute*
