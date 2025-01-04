@@ -5142,18 +5142,20 @@ Neural Networks for a wide range of applications related to structured data.")
 (define-public python-lightning-cloud
   (package
     (name "python-lightning-cloud")
-    (version "0.5.34")
+    (version "0.5.70")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "lightning_cloud" version))
               (sha256
                (base32
-                "0mqrhq3s23mn8n4i0q791pshn3dgplp0h9ny0pmmp798q0798dzs"))))
+                "11xx7w7ypyf6bzwz7pbdakap68a1lnsv3icis8wm8magkfglash2"))))
     (arguments (list #:tests? #f))      ; no tests in PyPI archive.
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-click
-                             python-fastapi-for-pytorch-lightning
+    (propagated-inputs (list python-boto3
+                             python-click
+                             python-fastapi
                              python-multipart
+                             python-protobuf
                              python-pyjwt
                              python-requests
                              python-rich
