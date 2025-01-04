@@ -33,6 +33,7 @@
 ;;; Copyright © 2023 Simon South <simon@simonsouth.net>
 ;;; Copyright © 2024 Foundation Devices, Inc. <hello@foundation.xyz>
 ;;; Copyright © 2024 Josep Bigorra <jjbigorra@gmail.com>
+;;; Copyright © 2025 John Kehayias <john.kehayias@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -5396,6 +5397,42 @@ configurable also via HTTP.")
 also compatible with SGI and TGS Open Inventor, and the API is based on the API
 of the InventorXt GUI component toolkit.")
   (license license:bsd-3)))
+
+(define-public hyprland-qtutils
+  (package
+    (name "hyprland-qtutils")
+    (version "0.1.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/hyprwm/hyprland-qtutils")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "02ymf8xypnxhknb3d0bxbp96hargwrg9syb9xs3va3rmx909r7b6"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:tests? #f ;There are no tests.
+           #:qtbase qtbase))
+    (native-inputs (list gcc-14 pkg-config))
+    (inputs
+     (list bash-minimal
+           hyprutils
+           kirigami
+           libxkbcommon
+           qqc2-desktop-style
+           qtbase
+           qtdeclarative
+           qtwayland
+           wayland))
+    (home-page "https://github.com/hyprwm/hyprland-qtutils")
+    (synopsis "Hyprland QT/QML utility apps")
+    (description
+     "This package provides some QT/QML utilities that might be used by
+various hypr* apps.")
+    (license license:bsd-3)))
+
 
 (define-public libdbusmenu-qt
   (package
