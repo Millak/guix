@@ -9806,7 +9806,7 @@ Interface) framework/toolkit for building async web services in Python.")
     (propagated-inputs
      (list python-redis
            python-itsdangerous
-           python-starlette-for-fastapi-0.88))
+           python-starlette))
     (native-inputs
      (list python-black
            python-flake8
