@@ -5295,11 +5295,11 @@ feedback.")
     (license license:expat)))
 
 (define-public python-pytorch-lightning
-  (let ((commit "2064887b12dd934a5f9a2bf45897f29e3bfc74d1")
+  (let ((commit "9177ec09caadcf88859e1f1e3e10a18e8832069a")
         (revision "0"))
     (package
       (name "python-pytorch-lightning")
-      (version (git-version "2.3.3" revision commit))
+      (version (git-version "2.5.0.post0" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -5308,62 +5308,24 @@ feedback.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1pfmwgzh21i21i4ixank488615q7j8nkvlxd82kmmam97gsd6krg"))))
+                  "0n1dqqaxga0s02l04vy9jfphx7g20m4as17jaxl5bgwzrjfh6k2f"))))
       (build-system pyproject-build-system)
       (arguments
        (list
         #:test-flags
-        '(list "-m" "not cloud and not tpu" "tests/tests_pytorch"
-               ;; we don't have onnxruntime
-               "--ignore=tests/tests_pytorch/models/test_onnx.py"
-
-               ;; We don't have tensorboard, so we skip all those tests that
-               ;; require it for logging.
-               "--ignore=tests/tests_pytorch/checkpointing/test_model_checkpoint.py"
-               "--ignore=tests/tests_pytorch/loggers/test_all.py"
-               "--ignore=tests/tests_pytorch/loggers/test_logger.py"
-               "--ignore=tests/tests_pytorch/loggers/test_tensorboard.py"
-               "--ignore=tests/tests_pytorch/loggers/test_wandb.py"
-               "--ignore=tests/tests_pytorch/models/test_cpu.py"
-               "--ignore=tests/tests_pytorch/models/test_hparams.py"
-               "--ignore=tests/tests_pytorch/models/test_restore.py"
-               "--ignore=tests/tests_pytorch/profilers/test_profiler.py"
-               "--ignore=tests/tests_pytorch/test_cli.py"
-               "--ignore=tests/tests_pytorch/trainer/flags/test_fast_dev_run.py"
-               "--ignore=tests/tests_pytorch/trainer/logging_/test_eval_loop_logging.py"
-               "--ignore=tests/tests_pytorch/trainer/logging_/test_train_loop_logging.py"
-               "--ignore=tests/tests_pytorch/trainer/properties/test_loggers.py"
-               "--ignore=tests/tests_pytorch/trainer/properties/test_log_dir.py"
-               "--ignore=tests/tests_pytorch/trainer/test_trainer.py"
-
-               ;; This needs internet access
-               "--ignore=tests/tests_pytorch/helpers/test_models.py"
-               "--ignore=tests/tests_pytorch/helpers/test_datasets.py"
-               "--ignore=tests/tests_pytorch/helpers/datasets.py"
-
-               ;; We have no legacy checkpoints
-               "--ignore=tests/tests_pytorch/checkpointing/test_legacy_checkpoints.py"
-
-               ;; TypeError: _FlakyPlugin._make_test_flaky() got an unexpected
-               ;; keyword argument 'reruns'
-               "--ignore=tests/tests_pytorch/models/test_amp.py"
-               "--ignore=tests/tests_pytorch/utilities/test_all_gather_grad.py"
-
-               ;; Requires CUDA
-               "--ignore=tests/tests_pytorch/plugins/precision/test_bitsandbytes.py"
-
+        ;; The tests train a model.  They are much too expensive for our
+        ;; purposes, so we only run the core tests.
+        '(list "-m" "not cloud and not tpu"
+               "tests/tests_pytorch/core"
                "-k"
                (string-append
-                ;; We don't have tensorboard
-                "not test_property_logger"
-                " and not test_cli_logger_shorthand"
-                ;; Wrong module appears in sys.modules
-                " and not test_patch_legacy_imports_unified"
-                ;; Missing log message
-                " and not test_should_stop_early_stopping_conditions_met"
-                " and not test_fit_loop_done_log_messages"
-                ;; Something wrong with Flaky
-                " and not test_servable_module_validator_with_trainer"))
+                ;; Some multiprocessing complaint.
+                "not test_result_reduce_ddp"
+                ;; FutureWarning is raised.
+                " and not test_result_collection_restoration"
+                ;; These need tensorboard
+                " and not test_property_logger"
+                " and not test_property_loggers"))
         #:phases
         '(modify-phases %standard-phases
            (add-after 'unpack 'patch-version-detection
@@ -5394,7 +5356,7 @@ feedback.")
              python-croniter
              python-dateutils
              python-deepdiff
-             python-fastapi-for-pytorch-lightning
+             python-fastapi
              python-fsspec
              python-inquirer
              python-jsonargparse
@@ -5404,7 +5366,6 @@ feedback.")
              python-packaging
              python-pytorch
              python-pyyaml
-             python-starsessions-for-pytorch-lightning
              python-torchmetrics
              python-torchvision
              python-tqdm
