@@ -1970,7 +1970,16 @@ audio/video codec library.")
                   "--enable-libaom"
                   "--enable-librav1e"
                   "--enable-libsrt"
-                  "--enable-libsvtav1")))))
+                  "--enable-libsvtav1")))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (add-after 'configure 'relax-gcc-14-strictness
+              (lambda _
+              (substitute* "ffbuild/config.mak"
+                (("CFLAGS *=" all)
+                 (string-append all
+                                " -Wno-error=incompatible-pointer-types"
+                                " -Wno-error=int-conversion")))))))))
     (inputs (modify-inputs (package-inputs ffmpeg-4)
               (delete "dav1d" "libaom" "rav1e" "srt")))))
 
