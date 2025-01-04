@@ -130,6 +130,10 @@ caching facility provided by the library.")
               (base32
                "0avi6apv5ydjy6b9c3z9a46rvp5i57qyr09vr7x4nndxkmcfjl45"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "CFLAGS=-g -O2 -Wno-error=implicit-function-declaration")))
     (inputs
      (list ncurses libcddb))
     (native-inputs
