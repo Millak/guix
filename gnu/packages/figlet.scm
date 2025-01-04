@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 Steve Sprang <scs@stevesprang.com>
+;;; Copyright © 2025 Evgeny Pisemsky <mail@pisemsky.site>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -20,7 +21,9 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
-  #:use-module (guix build-system gnu))
+  #:use-module (guix build-system gnu)
+  #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages video))
 
 (define-public figlet
   (package
@@ -44,3 +47,26 @@
     (description "FIGlet is a program for making large ASCII art letterforms
 out of ordinary screen characters.")
     (license license:bsd-3)))
+
+(define-public toilet
+  (package
+    (name "toilet")
+    (version "0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "http://caca.zoy.org/raw-attachment/wiki/toilet/toilet-" version
+             ".tar.gz"))
+       (sha256
+        (base32 "1pl118qb7g0frpgl9ps43w4sd0psjirpmq54yg1kqcclqcqbbm49"))))
+    (build-system gnu-build-system)
+    (native-inputs (list pkg-config))
+    (inputs (list libcaca))
+    (home-page "http://caca.zoy.org/wiki/toilet")
+    (synopsis "Display large colourful characters")
+    (description
+     "The TOIlet project attempts to create a free replacement for the
+FIGlet utility.  It uses the powerful libcaca library to achieve
+various text-based effects.")
+    (license license:wtfpl2)))
