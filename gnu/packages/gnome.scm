@@ -6425,7 +6425,10 @@ throughout GNOME for API documentation).")
            wayland))
     (arguments
      `(#:disallowed-references (,xorg-server-for-tests)
-       #:configure-flags (list "--enable-cogl-gst=no" ;broken and unmaintained
+       #:configure-flags (list ,(string-append
+                                 "CFLAGS=-g -O2"
+                                 " -Wno-error=implicit-function-declaration")
+                               "--enable-cogl-gst=no" ;broken and unmaintained
                                "--enable-wayland-egl-platform"
                                "--enable-wayland-egl-server"
 
