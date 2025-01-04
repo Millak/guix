@@ -14,7 +14,7 @@
 ;;; Copyright © 2019, 2020, 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Nicolò Balzarotti <nicolo@nixo.xyz>
 ;;; Copyright © 2020 Florian Pelz <pelzflorian@pelzflorian.de>
-;;; Copyright © 2020, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2023, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 Arthur Margerit <ruhtra.mar@gmail.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
@@ -1150,7 +1150,7 @@ libraries.  Examples include gtk+, webkit, libsoup and many more.")
     (version "0.24.2")
     (source
      (origin
-      (method url-fetch)
+       (method url-fetch)
        (uri
         (string-append
          "https://telepathy.freedesktop.org/releases/telepathy-glib/"
@@ -1161,33 +1161,36 @@ libraries.  Examples include gtk+, webkit, libsoup and many more.")
          "1w3kja8j3gz2apal79bi3hq44xk5g78aphrqbw983l6df7bp98xh"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags '("--enable-vala-bindings")
+     (list
+      #:configure-flags
+      #~(list
+         "CFLAGS=-g -O2 -Wno-error=incompatible-pointer-types"
+         "--enable-vala-bindings")
 
-       ;; '../tools/glib-*.py' generate files but the target dependencies are
-       ;; (presumably) not fully specified in the makefile, leading to
-       ;; parallel build errors like:
-       ;;
-       ;;   EOFError: EOF read where object expected
-       ;;   make[2]: *** [Makefile:1906: _gen/register-dbus-glib-marshallers-body.h] Error 1
-       #:parallel-build? #f
-       ;; When spawned in parallel, the dbus daemons may fail to shut down
-       ;; cleanly.  This issue appears to have been closed upstream due to low
-       ;; information, but still continues to haunt folks.  See also
-       ;; <https://gitlab.freedesktop.org/telepathy/telepathy-glib/-/issues/134>.
-       #:parallel-tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'disable-failing-tests
-           (lambda _
-             ;; None of the tests below are able to find the org.gtk.vfs.Daemon
-             ;; service file provided by gvfs.
-             (substitute* "tests/dbus/Makefile.in"
-               (("test-contacts\\$\\(EXEEXT\\)") "")
-               (("test-file-transfer-channel\\$\\(EXEEXT\\)") "")
-               (("test-stream-tube\\$\\(EXEEXT\\)") ""))
-             #t)))))
+      ;; '../tools/glib-*.py' generate files but the target dependencies are
+      ;; (presumably) not fully specified in the makefile, leading to
+      ;; parallel build errors like:
+      ;;
+      ;;   EOFError: EOF read where object expected
+      ;;   make[2]: *** [Makefile:1906: _gen/register-dbus-glib-marshallers-body.h] Error 1
+      #:parallel-build? #f
+      ;; When spawned in parallel, the dbus daemons may fail to shut down
+      ;; cleanly.  This issue appears to have been closed upstream due to low
+      ;; information, but still continues to haunt folks.  See also
+      ;; <https://gitlab.freedesktop.org/telepathy/telepathy-glib/-/issues/134>.
+      #:parallel-tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-failing-tests
+            (lambda _
+              ;; None of the tests below are able to find the org.gtk.vfs.Daemon
+              ;; service file provided by gvfs.
+              (substitute* "tests/dbus/Makefile.in"
+                (("test-contacts\\$\\(EXEEXT\\)") "")
+                (("test-file-transfer-channel\\$\\(EXEEXT\\)") "")
+                (("test-stream-tube\\$\\(EXEEXT\\)") "")))))))
     (native-inputs
-     `(("glib" ,glib "bin") ; uses glib-mkenums
+     `(("glib" ,glib "bin")             ; uses glib-mkenums
        ("gobject-introspection" ,gobject-introspection)
        ("pkg-config" ,pkg-config)
        ("python" ,python-2)
