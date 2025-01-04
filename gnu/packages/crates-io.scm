@@ -51055,31 +51055,6 @@ and would-block I/O operations.")
         ("rust-quickcheck" ,rust-quickcheck-0.6)
         ("rust-tokio-core" ,rust-tokio-core-0.1))))))
 
-(define-public rust-partial-io-0.2
-  (package
-    (inherit rust-partial-io-0.3)
-    (name "rust-partial-io")
-    (version "0.2.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "partial-io" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "03iynvayh11a4mckhwflm5y1qmnkw5m3b20gzi1crpasndy3h8xx"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-futures" ,rust-futures-0.1)
-        ("rust-quickcheck" ,rust-quickcheck-0.4)
-        ("rust-tokio-io" ,rust-tokio-io-0.1))
-       #:cargo-development-inputs
-       (("rust-lazy-static" ,rust-lazy-static-0.2)
-        ("rust-quickcheck" ,rust-quickcheck-0.4)
-        ("rust-tokio-core" ,rust-tokio-core-0.1))))
-    (license license:bsd-3)))
-
 (define-public rust-partial-ref-0.3
   (package
     (name "rust-partial-ref")
