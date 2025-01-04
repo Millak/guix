@@ -1379,7 +1379,7 @@ graphics.")
 (define-public openexr
   (package
     (name "openexr")
-    (version "3.3.2")
+    (version "3.2.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1389,7 +1389,7 @@ graphics.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1vhjnhsgjaabg2rmqbkqpf3ikrbfm5qivl562yalllysll4gbimk"))))
+                "00s1a05kggk71vfbnsvykyjc2j7y6yyzgl63sy4yiddshz2k2mcr"))))
     (build-system cmake-build-system)
     (arguments
      (list #:configure-flags
