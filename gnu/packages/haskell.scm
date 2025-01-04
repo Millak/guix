@@ -1099,7 +1099,10 @@ interactive environment for the functional language Haskell.")
        (sha256
         (base32 "1ch4j2asg7pr52ai1hwzykxyj553wndg7wq93i47ql4fllspf48i"))))
     (native-inputs
-     `(("perl" ,perl)
+     `(("gcc" ,gcc-13)                     ; does not compile with gcc-14 and adding
+                                           ; -Wno-error=incompatible-pointer-types
+                                           ; at the appropriate stages is difficult
+       ("perl" ,perl)
        ("python" ,python)               ; for tests
        ("ghostscript" ,ghostscript)     ; for tests
        ;; GHC 8.4.4 is built with GHC >= 8.0.
