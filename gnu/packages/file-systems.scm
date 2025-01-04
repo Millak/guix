@@ -17,7 +17,9 @@
 ;;; Copyright © 2025 Julian Flake <flake@uni-koblenz.de>
 ;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2020-2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
-;;
+;;;
+;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;;
 ;;; This file is part of GNU Guix.
 ;;;
 ;;; GNU Guix is free software; you can redistribute it and/or modify it
@@ -126,7 +128,7 @@
 (define-public autofs
   (package
     (name "autofs")
-    (version "5.1.8")
+    (version "5.1.9")
     (source
      (origin
        (method url-fetch)
@@ -134,7 +136,7 @@
                            "v" (version-major version) "/"
                            "autofs-" version ".tar.xz"))
        (sha256
-        (base32 "1zf0fgf6kr9amxq5amlgsp1v13sizwl3wvx2xl7b4r2nhmci0gdk"))))
+        (base32 "0jy2nf9j8pf8888rxm9cr7vva8vx1vjq35six9i98jvr0dmazrl7"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -149,6 +151,7 @@
              (string-append "sssldir="
                             (assoc-ref %build-inputs "sssd")
                             "/lib/sssd/modules"))
+       #:make-flags '("CC=gcc -Wno-error=incompatible-pointer-types")
        #:tests? #f                      ; no test suite
        #:phases
        (modify-phases %standard-phases
