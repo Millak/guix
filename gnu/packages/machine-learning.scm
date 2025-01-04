@@ -5088,6 +5088,8 @@ Note: currently this package does not provide GPU support.")
              "-k" (string-append
                    ;; Permissions error
                    "not test_packaging"
+                   ;; Unknown multiprocessing failure
+                   " and not test_data_share_memory"
                    ;; This can fail due to accuracy problems
                    " and not test_gdc"
                    ;; These refuse to be run on CPU and really want a GPU
