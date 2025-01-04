@@ -14,6 +14,7 @@
 ;;; Copyright © 2021 Matthew James Kraai <kraai@ftbfs.org>
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -336,6 +337,11 @@ Kate stream.")
              (base32
               "1c7h4ivgfdyygz2hyh6nfibxlkz8kdk868a576qkkjgj5gn78xyv"))))
    (build-system gnu-build-system)
+   (arguments
+    (list
+     #:configure-flags
+     ;; Relax gcc-14's strictness.
+     #~(list "CFLAGS=-g -O2 -Wno-error=implicit-function-declaration")))
    (inputs (list ao
                  curl
                  flac
