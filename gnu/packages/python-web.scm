@@ -9772,8 +9772,7 @@ Interface) framework/toolkit for building async web services in Python.")
       ;; XXX: unclear why these tests fail with a decoding error.
       '(list "-k" "not test_gzip_ignored_for_responses_with_encoding_set")))))
 
-;; A newer version exists, but python-pytorch-lightning requires <2.0.
-(define-public python-starsessions-for-pytorch-lightning
+(define-public python-starsessions
   (package
     (name "python-starsessions")
     (version "1.3.0")
