@@ -10,7 +10,7 @@
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019 Pierre-Moana Levesque <pierre.moana.levesque@gmail.com>
-;;; Copyright © 2020, 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2023, 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;;
@@ -143,6 +143,18 @@ know anything about Autoconf or M4.")
                                   (find-files "bin"
                                               (lambda (file stat)
                                                 (executable-file? file)))))))))))))
+
+(define-public autoconf-2.72
+  (package (inherit autoconf-2.71)
+    (version "2.72")
+    (source
+     (origin
+      (method url-fetch)
+      (uri (string-append "mirror://gnu/autoconf/autoconf-"
+                          version ".tar.xz"))
+      (sha256
+       (base32
+        "0niz4852fgyavfh3gr4h4kzalk01nk70v6vfsja6r3ap349mr25s"))))))
 
 (define-public autoconf autoconf-2.69)
 
