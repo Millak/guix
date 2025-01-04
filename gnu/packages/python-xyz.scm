@@ -17598,13 +17598,13 @@ domains support.")
   (hidden-package
    (package
      (name "python-path-bootstrap")
-     (version "16.4.0")
+     (version "17.1.0")
      (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "path" version))
         (sha256
-         (base32 "0lig13gxnfv98v790db1smvsbd3mnj7y8rwyiwhfi6xiqibygwms"))))
+         (base32 "1scqbwgcbisx8mb28hw789a7np953851wg6z0bbzdm519znha7nl"))))
      (build-system pyproject-build-system)
      (arguments
       (list #:tests? #f))
