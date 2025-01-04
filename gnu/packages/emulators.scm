@@ -1463,6 +1463,58 @@ System (NES/Famicom) emulator Nestopia, with enhancements from members of the
 emulation community.  It provides highly accurate emulation.")
     (license license:gpl2+)))
 
+(define (make-libretro-beetle-psx name hw)
+  (let ((commit "80d3eba272cf6efab6b76e4dc44ea2834c6f910d")
+	(revision "0"))
+   (package
+    (name name)
+    ;; Use Mednafen core version as base. Defined in libretro_options.h:10
+    (version (git-version "0.9.44.1" revision commit))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/libretro/beetle-psx-libretro")
+             (commit commit)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14kkrlqhv9pqmbqlv8vvcp0ps938dmg8pk47d7zzc8piq51hkawk"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:make-flags #~(list (string-append "HAVE_HW=" #$(if hw "1" "0"))
+                                (string-append "CC=" #$(cc-for-target))
+                                (string-append "GIT_VERSION=" #$commit)
+                                (string-append "prefix=" #$output))
+           #:tests? #f                  ;no tests
+           #:phases #~(modify-phases %standard-phases
+                        (delete 'configure)
+			(replace 'install ;there is no install target
+			  (lambda* (#:key outputs #:allow-other-keys)
+			    (let* ((libretro (string-append
+					      (assoc-ref outputs "out")
+					      "/lib/libretro")))
+			      (install-file (string-append "mednafen_psx_"
+                                                           #$(if hw "hw_" "")
+                                                           "libretro.so")
+					    libretro)))))))
+    (inputs (list mesa))
+    (home-page "https://github.com/libretro/beetle-psx-libretro")
+    (synopsis "Standalone port of Mednafen PSX to libretro")
+    (description
+     "Beetle PSX is a port/fork of Mednafen's PSX module to the libretro
+API.  Additional features include PBP/CHD file format support,
+high-resolution software rendering, OpenGL and Vulkan renderers, and
+PGXP perspective correct texturing.  For those seeking improved visuals
+and performance, Beetle PSX HW provides a hardware-accelerated alternative
+with its OpenGL and Vulkan renderer.")
+    (license license:gpl2+))))
+
+(define-public libretro-beetle-psx
+  (make-libretro-beetle-psx "libretro-beetle-psx" #f))
+
+(define-public libretro-beetle-psx-hw
+  (make-libretro-beetle-psx "libretro-beetle-psx-hw" #t))
+
 (define-public libretro-lowresnx
   (package
     (name "libretro-lowresnx")
