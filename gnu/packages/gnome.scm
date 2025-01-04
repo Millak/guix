@@ -36,7 +36,7 @@
 ;;; Copyright © 2019 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2019, 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2019 Florian Pelz <pelzflorian@pelzflorian.de>
-;;; Copyright © 2019 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2019, 2024, 2025 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2019 Jelle Licht <jlicht@fsfe.org>
 ;;; Copyright © 2019 Jonathan Frederickson <jonathan@terracrypt.net>
 ;;; Copyright © 2019-2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -79,7 +79,6 @@
 ;;; Copyright © 2023 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2024 Dariqq <dariqq@posteo.net>
 ;;; Copyright © 2024 James Smith <jsubuntuxp@disroot.org>
-;;; Copyright © 2024 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -10493,80 +10492,151 @@ specified duration and save it as a GIF encoded animated image file.")
       (home-page "https://git.gnome.org/browse/byzanz")
       (license license:gpl2+))))
 
-(define-public authenticator
+(define-public gnome-authenticator
   (package
-    (name "authenticator")
-    (version "3.32.2")
+    (name "gnome-authenticator")
+    (version "4.4.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://gitlab.gnome.org/World/Authenticator")
+             (url "https://gitlab.gnome.org/World/Authenticator.git/")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1c4r9rnrz5gazrfg0z2rcwax4nscs7z391bcjcl74k6ln3blwzpr"))))
-    (build-system meson-build-system)
+        (base32 "0zavax35n048spx097ymiq31s8b879qwbg8xmcxcx73r6m823mic"))))
+    (build-system cargo-build-system)
     (arguments
      (list
-      #:glib-or-gtk? #t
+      #:install-source? #f
+      #:vendor-dir "vendor"
+      #:cargo-inputs
+      (list rust-aes-gcm-0.10
+            rust-anyhow-1
+            rust-async-std-1
+            rust-aperture-0.3
+            rust-ashpd-0.6
+            rust-data-encoding-2
+            rust-diesel-2
+            rust-diesel-migrations-2
+            rust-futures-channel-0.3
+            rust-futures-executor-0.3
+            rust-futures-util-0.3
+            rust-gettext-rs-0.7
+            rust-gtk4-0.7
+            rust-hex-0.4
+            rust-image-0.24
+            rust-libadwaita-0.5
+            rust-oo7-0.2
+            rust-percent-encoding-2
+            rust-prost-0.12
+            rust-qrencode-0.14
+            rust-quick-xml-0.30
+            rust-rand-0.8
+            rust-reqwest-0.11
+            rust-ring-0.17
+            rust-rust-argon2-2
+            rust-scrypt-0.11
+            rust-search-provider-0.6
+            rust-serde-1
+            rust-serde-json-1
+            rust-svg-metadata-0.4
+            rust-tokio-1
+            rust-tracing-0.1
+            rust-tracing-subscriber-0.3
+            rust-url-2
+            rust-uuid-1
+            rust-zbar-rust-0.0.23   ; any 0.0.*
+            rust-zeroize-1)
+      #:imported-modules `(,@%meson-build-system-modules
+                           ,@%glib-or-gtk-build-system-modules
+                           ,@%cargo-build-system-modules)
+      #:modules `((guix build cargo-build-system)
+                  ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
+                  ((guix build meson-build-system) #:prefix meson:)
+                  (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-meson.build
+          (add-after 'unpack 'generate-gdk-pixbuf-loaders-cache-file
+            (assoc-ref glib-or-gtk:%standard-phases
+                       'generate-gdk-pixbuf-loaders-cache-file))
+          (add-after 'unpack 'prepare-for-build
             (lambda _
-              (substitute* "data/meson.build"
-                (("^  'desktop',.*") "")
-                (("^  'appdata',.*") ""))))
-          (add-after 'glib-or-gtk-wrap 'python-and-gi-wrap
-            (lambda* (#:key inputs outputs #:allow-other-keys)
-              (let ((prog (search-input-file outputs "bin/authenticator"))
-                    (pylib (string-append #$output "/lib/python"
-                                          #$(version-major+minor
-                                             (package-version
-                                              (this-package-input "python")))
-                                          "/site-packages")))
-                (wrap-program prog
-                  `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH") ,pylib))
-                  `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH"))))))))))
-    (native-inputs
-     (list desktop-file-utils
-           gettext-minimal
-           `(,glib "bin")
-           gobject-introspection
-           `(,gtk+ "bin")
-           pkg-config))
-    (inputs
-     (list bash-minimal
-           gsettings-desktop-schemas
-           gtk+
-           libhandy-0.0
-           libsecret
-           python
-           python-beautifulsoup4
-           python-pillow
-           python-pyfavicon
-           python-pygobject
-           python-pyotp
-           python-pyzbar
-           yoyo-migrations
-           zbar))
-    (home-page "https://gitlab.gnome.org/World/Authenticator/")
-    (synopsis "Two-factor authentication application built for GNOME")
-    (description
-     "Authenticator is a two-factor authentication (2FA) application built for
-the GNOME desktop environment.
+              (substitute* "meson.build"
+                (("gtk_update_icon_cache: true")
+                 "gtk_update_icon_cache: false")
+                (("update_desktop_database: true")
+                 "update_desktop_database: false"))
+              ;; Help the tests find the Cargo.toml in the sources.
+              (substitute* "src/meson.build"
+                (("'test'") "'test', cargo_options"))
+              (delete-file "Cargo.lock")))
+          ;; Add meson-configure phase here and not before 'configure because
+          ;; the meson 'configure phase changes to a different directory and
+          ;; we need it created before unpacking the crates.
+          (add-before 'unpack-rust-crates 'meson-configure
+            (lambda args
+              (apply (assoc-ref meson:%standard-phases 'configure)
+                     #:build-type "debugoptimized"
+                     #:configure-flags '()
+                     args)))
+          (replace 'build
+            (assoc-ref meson:%standard-phases 'build))
+          (replace 'check
+            (lambda args
+              (apply (assoc-ref meson:%standard-phases 'check)
+                     #:test-options '()
+                     args)))
+          (replace 'install
+            (assoc-ref meson:%standard-phases 'install))
+          (add-after 'install 'glib-or-gtk-compile-schemas
+            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-compile-schemas))
+          (add-after 'install 'glib-or-gtk-wrap
+            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap))
+          (add-after 'glib-or-gtk-wrap 'wrap-extra-paths
+            (lambda _
+              (let ((gst-plugins-path (getenv "GST_PLUGIN_SYSTEM_PATH")))
+                (wrap-program (string-append #$output "/bin/authenticator")
+                 `("GST_PLUGIN_SYSTEM_PATH" ":" suffix (,gst-plugins-path))))))
+          (add-after 'strip 'shrink-runpath
+            (assoc-ref meson:%standard-phases 'shrink-runpath)))))
+    (native-inputs (list gettext-minimal
+                         `(,glib "bin") ; for glib-compile-schemas
+                         meson
+                         ninja
+                         pkg-config))
+    (inputs (list bash-minimal
+                  glib
+                  gstreamer
+                  gst-plugins-base
+                  gst-plugins-bad
+                  gtk
+                  libadwaita
+                  openssl
+                  pipewire      ; Needed but not listed
+                  sqlite
+                  zbar))
+    (home-page "https://apps.gnome.org/Authenticator")
+    (synopsis "Generate two-factor codes")
+    (description "Simple application for generating Two-Factor Authentication
+Codes:
 
-Features:
+It features:
 
 @itemize
-@item QR code scanner
+@item Time-based/Counter-based/Steam methods support
+@item SHA-1/SHA-256/SHA-512 algorithms support
+@item QR code scanner using a camera or from a screenshot
+@item Lock the application with a password
 @item Beautiful UI
-@item Huge database of more than 560 supported services
-@item Keep your PIN tokens secure by locking the application with a password
-@item Automatically fetch an image for services using their favicon
-@item The possibility to add new services
+@item GNOME Shell search provider
+@item Backup/Restore from/into known applications like FreeOTP+,
+Aegis (encrypted / plain-text), andOTP, Google Authenticator
 @end itemize")
     (license license:gpl3+)))
+
+(define-public authenticator
+  (deprecated-package "authenticator" gnome-authenticator))
 
 (define-public gsound
   (package
@@ -13565,148 +13635,6 @@ libraries.  Applications do not need to be recompiled--or even restarted.")
 writing GNOME-based software.  It features fuzzy search, auto-completion,
 a mini code map, documentation browsing, Git integration, an integrated
 profiler via Sysprof, debugging support, and more.")
-    (license license:gpl3+)))
-
-(define-public gnome-authenticator
-  (package
-    (name "gnome-authenticator")
-    (version "4.4.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://gitlab.gnome.org/World/Authenticator.git/")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0zavax35n048spx097ymiq31s8b879qwbg8xmcxcx73r6m823mic"))))
-    (build-system cargo-build-system)
-    (arguments
-     (list
-      #:install-source? #f
-      #:vendor-dir "vendor"
-      #:cargo-inputs
-      (list rust-aes-gcm-0.10
-            rust-anyhow-1
-            rust-async-std-1
-            rust-aperture-0.3
-            rust-ashpd-0.6
-            rust-data-encoding-2
-            rust-diesel-2
-            rust-diesel-migrations-2
-            rust-futures-channel-0.3
-            rust-futures-executor-0.3
-            rust-futures-util-0.3
-            rust-gettext-rs-0.7
-            rust-gtk4-0.7
-            rust-hex-0.4
-            rust-image-0.24
-            rust-libadwaita-0.5
-            rust-oo7-0.2
-            rust-percent-encoding-2
-            rust-prost-0.12
-            rust-qrencode-0.14
-            rust-quick-xml-0.30
-            rust-rand-0.8
-            rust-reqwest-0.11
-            rust-ring-0.17
-            rust-rust-argon2-2
-            rust-scrypt-0.11
-            rust-search-provider-0.6
-            rust-serde-1
-            rust-serde-json-1
-            rust-svg-metadata-0.4
-            rust-tokio-1
-            rust-tracing-0.1
-            rust-tracing-subscriber-0.3
-            rust-url-2
-            rust-uuid-1
-            rust-zbar-rust-0.0.23   ; any 0.0.*
-            rust-zeroize-1)
-      #:imported-modules `(,@%meson-build-system-modules
-                           ,@%glib-or-gtk-build-system-modules
-                           ,@%cargo-build-system-modules)
-      #:modules `((guix build cargo-build-system)
-                  ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
-                  ((guix build meson-build-system) #:prefix meson:)
-                  (guix build utils))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'generate-gdk-pixbuf-loaders-cache-file
-            (assoc-ref glib-or-gtk:%standard-phases
-                       'generate-gdk-pixbuf-loaders-cache-file))
-          (add-after 'unpack 'prepare-for-build
-            (lambda _
-              (substitute* "meson.build"
-                (("gtk_update_icon_cache: true")
-                 "gtk_update_icon_cache: false")
-                (("update_desktop_database: true")
-                 "update_desktop_database: false"))
-              ;; Help the tests find the Cargo.toml in the sources.
-              (substitute* "src/meson.build"
-                (("'test'") "'test', cargo_options"))
-              (delete-file "Cargo.lock")))
-          ;; Add meson-configure phase here and not before 'configure because
-          ;; the meson 'configure phase changes to a different directory and
-          ;; we need it created before unpacking the crates.
-          (add-before 'unpack-rust-crates 'meson-configure
-            (lambda args
-              (apply (assoc-ref meson:%standard-phases 'configure)
-                     #:build-type "debugoptimized"
-                     #:configure-flags '()
-                     args)))
-          (replace 'build
-            (assoc-ref meson:%standard-phases 'build))
-          (replace 'check
-            (lambda args
-              (apply (assoc-ref meson:%standard-phases 'check)
-                     #:test-options '()
-                     args)))
-          (replace 'install
-            (assoc-ref meson:%standard-phases 'install))
-          (add-after 'install 'glib-or-gtk-compile-schemas
-            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-compile-schemas))
-          (add-after 'install 'glib-or-gtk-wrap
-            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap))
-          (add-after 'glib-or-gtk-wrap 'wrap-extra-paths
-            (lambda _
-              (let ((gst-plugins-path (getenv "GST_PLUGIN_SYSTEM_PATH")))
-                (wrap-program (string-append #$output "/bin/authenticator")
-                 `("GST_PLUGIN_SYSTEM_PATH" ":" suffix (,gst-plugins-path))))))
-          (add-after 'strip 'shrink-runpath
-            (assoc-ref meson:%standard-phases 'shrink-runpath)))))
-    (native-inputs (list gettext-minimal
-                         `(,glib "bin") ; for glib-compile-schemas
-                         meson
-                         ninja
-                         pkg-config))
-    (inputs (list glib
-                  gstreamer
-                  gst-plugins-base
-                  gst-plugins-bad
-                  gtk
-                  libadwaita
-                  openssl
-                  pipewire      ; Needed but not listed
-                  sqlite
-                  zbar))
-    (home-page "https://apps.gnome.org/Authenticator")
-    (synopsis "Generate two-factor codes")
-    (description "Simple application for generating Two-Factor Authentication
-Codes:
-
-It features:
-
-@itemize
-@item Time-based/Counter-based/Steam methods support
-@item SHA-1/SHA-256/SHA-512 algorithms support
-@item QR code scanner using a camera or from a screenshot
-@item Lock the application with a password
-@item Beautiful UI
-@item GNOME Shell search provider
-@item Backup/Restore from/into known applications like FreeOTP+,
-Aegis (encrypted / plain-text), andOTP, Google Authenticator
-@end itemize")
     (license license:gpl3+)))
 
 (define-public komikku
