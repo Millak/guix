@@ -1044,7 +1044,7 @@ tools.")
 (define-public tenacity
   (package
     (name "tenacity")
-    (version "1.3.3")
+    (version "1.3.4")
     (source
      (origin
        (method git-fetch)
@@ -1055,7 +1055,7 @@ tools.")
              (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0jqdza1alk524fkrssgkr7gabs44sk9a99914gwfkscvyqly4kai"))))
+        (base32 "1wphm494517zmnhgrmzlzld2j4bfl2c73qr61nrss90410xxs2fs"))))
     (build-system cmake-build-system)
     (arguments
      (list
