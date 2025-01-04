@@ -6410,44 +6410,46 @@ handling many of the web standards in use today.")
     (license license:gpl2+)))
 
 (define-public surfraw
-  (package
-    (name "surfraw")
-    (version "2.3.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://gitlab.com/surfraw/Surfraw/uploads/"
-                           "2de827b2786ef2fe43b6f07913ca7b7f/"
-                           "surfraw-" version ".tar.gz"))
-       (sha256
-        (base32 "099nbif0x5cbcf18snc58nx1a3q7z0v9br9p2jiq9pcc7ic2015d"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'patch-perl
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((perl (assoc-ref inputs "perl")))
-               (substitute* "surfraw.IN"
-                 (("perl -e")
-                  (string-append perl "/bin/perl -e")))
-               #t)))
-         (add-after 'install 'compress-elvi.1sr
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; The manpages of the elvis are symlinks to elvi.1sr.gz
-             ;; but elvi.1sr does not get compressed by our manpage phase.
-             (let* ((out (assoc-ref %outputs "out"))
-                    (man (string-append out "/share/man/man1")))
-               (with-directory-excursion man
-                 (invoke "gzip" "elvi.1sr"))))))))
-    (inputs
-     (list perl perl-www-opensearch perl-html-parser perl-libwww))
-    (synopsis "Unix command line interface to the www")
-    (description "Surfraw (Shell Users' Revolutionary Front Rage Against the Web)
+  (let ((commit "ebb8131c7c623ef90d3345cd9d64203693861013")
+        (revision "0"))
+    (package
+      (name "surfraw")
+      (version (git-version "2.3.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.com/surfraw/Surfraw/")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1y3qybbyv8fnfpaw76xkh1b53pd7dvx1zr9pj71df649g4kbbibs"))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:phases (modify-phases %standard-phases
+                    (add-before 'configure 'patch-perl
+                      (lambda* (#:key inputs #:allow-other-keys)
+                        (let ((perl (assoc-ref inputs "perl")))
+                          (substitute* "surfraw.IN"
+                            (("perl -e")
+                             (string-append perl "/bin/perl -e"))) #t)))
+                    (add-after 'install 'compress-elvi.1sr
+                      (lambda* (#:key outputs #:allow-other-keys)
+                        ;; The manpages of the elvis are symlinks to elvi.1sr.gz
+                        ;; but elvi.1sr does not get compressed by our manpage phase.
+                        (let* ((out (assoc-ref %outputs "out"))
+                               (man (string-append out "/share/man/man1")))
+                          (with-directory-excursion man
+                            (invoke "gzip" "elvi.1sr"))))))))
+      (native-inputs (list autoconf automake))
+      (inputs (list perl perl-www-opensearch perl-html-parser perl-libwww))
+      (synopsis "Unix command line interface to the www")
+      (description
+       "Surfraw (Shell Users' Revolutionary Front Rage Against the Web)
 provides a unix command line interface to a variety of popular www search engines
 and similar services.")
-    (home-page "https://surfraw.alioth.debian.org/")
-    (license license:public-domain)))
+      (home-page "http://surfraw.org/")
+      (license license:public-domain))))
 
 (define-public darkhttpd
   (package
