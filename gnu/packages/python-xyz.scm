@@ -9567,7 +9567,8 @@ writing C extensions for Python as easy as Python itself.")
               (when tests?
                 (apply invoke "python" "runtests.py" test-flags)))))))
     (native-inputs
-     (list libxcrypt
+     (list gcc-13                       ;does not compile with gcc-14
+           libxcrypt
            python-setuptools
            python-wheel))
     (properties '())))
