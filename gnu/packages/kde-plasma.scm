@@ -2440,7 +2440,7 @@ PulseAudio.")
                   libplasma
                   oath-toolkit
                   plasma5support
-                  qgpgme-qt6-1.23
+                  qgpgme-qt6
                   qtdeclarative))
     (arguments (list #:qtbase qtbase
                      #:configure-flags #~(list "-DQT_MAJOR_VERSION=6")))

@@ -526,7 +526,7 @@ information.")
            akonadi-mime
            akonadi-search
            boost
-           gpgme-1.23
+           gpgme
            grantleetheme
            kcalendarcore
            kcmutils
@@ -551,7 +551,7 @@ information.")
            libkleo
            breeze-icons ; default icon set, required for tests
            prison
-           qgpgme-qt6-1.23))
+           qgpgme-qt6))
     (arguments (list #:qtbase qtbase))
     (home-page "https://kontact.kde.org/components/kaddressbook/")
     (synopsis "Address Book application to manage your contacts")
@@ -879,7 +879,7 @@ package.")
            akonadi-contacts
            boost
            breeze-icons ;; default icon set
-           gpgme-1.23
+           gpgme
            grantleetheme
            karchive
            kcodecs
@@ -1104,7 +1104,7 @@ protocol for querying and modifying directory services running over TCP/IP.")
            kdoctools))
     (inputs
      (list boost
-           gpgme-1.23
+           gpgme
            kcmutils
            kcodecs
            kconfig
@@ -1127,7 +1127,7 @@ protocol for querying and modifying directory services running over TCP/IP.")
            libkleo
            mimetreeparser
            breeze-icons ;; default icon set
-           qgpgme-qt6-1.23))
+           qgpgme-qt6))
     (arguments
      (list #:qtbase qtbase
            #:phases
@@ -1164,7 +1164,7 @@ and retrieving certificates from LDAP servers.")
            akonadi-mime
            akonadi-search
            boost
-           gpgme-1.23
+           gpgme
            grantleetheme
            kaddressbook
            kbookmarks
@@ -1214,7 +1214,7 @@ and retrieving certificates from LDAP servers.")
            libkleo
            libksieve
            breeze-icons ; default icon set, required for tests
-           qgpgme-qt6-1.23
+           qgpgme-qt6
            qtdeclarative
            qtkeychain-qt6
            qtwebchannel
@@ -1514,7 +1514,7 @@ using a Qt/KMime C++ API.")
            akonadi-notes
            akonadi-search
            boost
-           gpgme-1.23
+           gpgme
            grantleetheme
            karchive
            kcalendarcore
@@ -1547,7 +1547,7 @@ using a Qt/KMime C++ API.")
            kxmlgui
            libgravatar
            qca-qt6
-           qgpgme-qt6-1.23
+           qgpgme-qt6
            qtdeclarative
            qtwebchannel
            qtwebengine
@@ -2157,7 +2157,7 @@ various Google services.")
      (list extra-cmake-modules kdoctools qttools))
     (inputs
      (list boost
-           gpgme-1.23
+           gpgme
            kcodecs
            kcompletion
            kconfig
@@ -2169,9 +2169,9 @@ various Google services.")
            kwidgetsaddons
            kwindowsystem
            kpimtextedit
-           qgpgme-qt6-1.23))
+           qgpgme-qt6))
     (propagated-inputs
-     (list gpgme-1.23 qgpgme-qt6-1.23))
+     (list gpgme qgpgme-qt6))
     (arguments
      (list
       #:qtbase qtbase

@@ -224,7 +224,7 @@ This package contains GUI widgets for baloo.")
            bash-minimal
            boost
            breeze-icons
-           gpgme-1.23
+           gpgme
            grantleetheme
            kcmutils
            kcontacts
@@ -246,7 +246,7 @@ This package contains GUI widgets for baloo.")
            kuserfeedback
            libkdepim
            libkleo
-           qgpgme-qt6-1.23
+           qgpgme-qt6
            qtdeclarative
            qtwebchannel
            qtwebengine

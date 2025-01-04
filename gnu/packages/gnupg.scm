@@ -468,19 +468,6 @@ instead.  This way bug fixes or improvements can be done at a central place
 and every application benefits from this.")
     (license license:lgpl2.1+)))
 
-(define-public gpgme-1.23
-  (hidden-package
-   (package
-     (inherit gpgme)
-     (name "gpgme")
-     (version "1.23.2")
-     (source
-      (origin
-        (method url-fetch)
-        (uri (string-append "mirror://gnupg/gpgme/gpgme-" version ".tar.bz2"))
-        (sha256
-         (base32 "092jrqdmdggjhl0swpvci8cscdcx0hbbr897an0vdk1wyfqyi6cl")))))))
-
 (define-public qgpgme
   (package
     (inherit gpgme)
@@ -510,9 +497,9 @@ QGpgME was originally developed as part of libkleo and incorporated into
 gpgpme starting with version 1.7.")
     (license license:gpl2+))) ;; Note: this differs from gpgme
 
-(define-public qgpgme-qt6-1.23
+(define-public qgpgme-qt6
   (package
-    (inherit gpgme-1.23)
+    (inherit gpgme)
     (name "qgpgme-qt6")
     (arguments
      `(#:phases
@@ -525,12 +512,12 @@ gpgpme starting with version 1.7.")
                (symlink (string-append gpgme "/lib/libgpgme.la")
                         "src/libgpgme.la"))
              (chdir "lang/qt"))))))
-    (propagated-inputs (list gpgme-1.23))    ;required by QGpgmeConfig.cmake
+    (propagated-inputs (list gpgme))    ;required by QGpgmeConfig.cmake
     (native-inputs
-     (modify-inputs (package-native-inputs gpgme-1.23)
+     (modify-inputs (package-native-inputs gpgme)
        (prepend pkg-config)))
     (inputs
-     (modify-inputs (package-inputs gpgme-1.23)
+     (modify-inputs (package-inputs gpgme)
        (prepend qtbase)))
     (synopsis "Qt API bindings for gpgme")
     (description "QGpgme provides a very high level Qt API around GpgMEpp.")
