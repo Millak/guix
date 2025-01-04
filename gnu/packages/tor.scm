@@ -13,6 +13,7 @@
 ;;; Copyright © 2021-2023 Danial Behzadi <dani.behzi@ubuntu.com>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Jim Newsome <jnewsome@torproject.org>
+;;; Copyright © 2025 Danial Behzadi <dani.behzi@ubuntu.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -438,21 +439,20 @@ Potential client and exit connections are scrubbed of sensitive information.")
 (define-public tractor
   (package
     (name "tractor")
-    (version "4.1.1")
+    (version "5.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "traxtor" version))
        (sha256
         (base32
-         "1542g6alycwlmvndxcijzn4d5lgycmxxb78gqd8qwgm9kw0fnr3q"))))
+         "0is50z3v0mw9am31zizblq5ai30vz83qp6qsdingbn7f7cqzldmh"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-setuptools python-wheel
            (list glib "bin")))       ; for glib-compile-schemas.
     (inputs
      (list python-fire
-           python-psutil
            python-pygobject
            python-requests
            python-stem
@@ -465,19 +465,16 @@ Potential client and exit connections are scrubbed of sensitive information.")
           (add-after 'install 'install-man-page
             (lambda _
               (let ((man1 (string-append #$output "/share/man/man1")))
-                (install-file "tractor/man/tractor.1" man1))))
+                (install-file "data/tractor.1" man1))))
           (add-after 'install 'install-bash-completion
             (lambda _
-              (mkdir "bash-completion")
-              (rename-file "tractor/tractor-completion"
-                           "bash-completion/tractor")
               (let ((bash-completion
                       (string-append #$output "/share/bash-completion/completions")))
-                (install-file "bash-completion/tractor" bash-completion))))
+                (install-file "data/completion/bash/tractor" bash-completion))))
           (add-after 'install 'install-gschema
             (lambda _
               (let ((schemas (string-append #$output "/share/glib-2.0/schemas")))
-                (install-file "tractor/tractor.gschema.xml" schemas)))))))
+                (install-file "src/tractor/tractor.gschema.xml" schemas)))))))
     (home-page "https://framagit.org/tractor")
     (synopsis "Setup an onion routing proxy")
     (description
