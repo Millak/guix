@@ -13,6 +13,7 @@
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Joeke de Graaf <joeke@posteo.net>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -62,6 +63,7 @@
   #:use-module (gnu packages video)               ;ffmpeg
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix utils)
   #:use-module (guix build-system copy)
@@ -474,7 +476,14 @@ command-line tool as well as a C library, libmpg123.")
               (search-patches "mpg321-CVE-2019-14247.patch"
                               "mpg321-gcc-10.patch"))))
     (build-system gnu-build-system)
-    (arguments '(#:configure-flags '("--disable-alsa")))
+    (arguments
+     (list #:configure-flags
+           #~(list
+              #$(string-append "CFLAGS=-g -O2"
+                               " -Wno-error=implicit-function-declaration"
+                               " -Wno-error=implicit-int"
+                               " -Wno-error=int-conversion")
+              "--disable-alsa")))
     (inputs
      `(("zlib" ,zlib)
        ("libmad" ,libmad)
