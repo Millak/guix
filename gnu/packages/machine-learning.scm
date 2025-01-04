@@ -1282,7 +1282,7 @@ natural language processing framework.")
                              python-typing-extensions
                              python-wasabi))
     (native-inputs
-     (list python-cython python-pytest python-mock))
+     (list python-cython python-pytest python-mock python-wheel))
     (home-page "https://spacy.io")
     (synopsis "Natural Language Processing (NLP) in Python")
     (description
