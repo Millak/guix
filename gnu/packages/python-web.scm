@@ -9870,7 +9870,13 @@ and FastAPI.")
              ;; it.
              "--ignore=tests/test_multipart_installation.py"
              ;; FIXME: Unclear why these 8 tests fail.
-             "--ignore=tests/test_dependency_contextmanager.py")))
+             "--ignore=tests/test_dependency_contextmanager.py")
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "pyproject.toml"
+               (("<0.42.0") "<=0.42.0")))))))
     (propagated-inputs (list python-email-validator
                              python-fastapi-cli
                              python-httpx
