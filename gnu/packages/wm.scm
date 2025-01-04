@@ -49,7 +49,7 @@
 ;;; Copyright © 2021, 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2021, 2023 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Disseminate Dissent <disseminatedissent@protonmail.com>
-;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2022, 2025 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Gabriel Wicki <gabriel@erlikon.ch>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 Daniel Meißner <daniel.meissner-i4k@ruhr-uni-bochum.de>
@@ -323,6 +323,36 @@ or musca).
 @end itemize")
     (home-page "https://herbstluftwm.org")
     (license license:bsd-2)))
+
+(define-public hypridle
+  (package
+    (name "hypridle")
+    (version "0.1.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/hyprwm/hypridle")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1622iz8bl8mi7gj2sc2jq6z7622l7l2izj1l9ajwj2mxpwpkdhbs"))))
+    (build-system cmake-build-system)
+    (arguments (list #:tests? #f)) ;No tests.
+    (native-inputs (list gcc-13 pkg-config))
+    (inputs
+     (list hyprlang
+           hyprutils
+           sdbus-c++
+           wayland
+           wayland-protocols))
+    (home-page "https://github.com/hyprwm/hypridle")
+    (synopsis "Hyprland's idle daemon")
+    (description
+     "Hyprland's idle daemon, based on the @code{ext-idle-notify-v1} Wayland
+protocol.  Hypridle has support for D-Bus's loginctl
+commands (lock/unlock/before-sleep) and inhibit.")
+    (license license:bsd-3)))
 
 (define-public hyprland
   (package
