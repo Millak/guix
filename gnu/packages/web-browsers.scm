@@ -24,6 +24,7 @@
 ;;; Copyright © 2023 Herman Rimm <herman@rimm.ee>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2025 Sergey Trofimov <sarg@sarg.org.ru>
+;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -137,6 +138,9 @@
        ((guix build cmake-build-system)
         ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
         (guix build utils))
+       #:configure-flags
+       ;; Relax gcc-14's strictness.
+       '("-DCMAKE_C_FLAGS=-Wno-error=int-conversion")
        #:phases
        (modify-phases %standard-phases
          (add-after 'install 'glib-or-gtk-compile-schemas
