@@ -3685,7 +3685,14 @@ library.")
                   (add-after 'unpack 'fix-hdf5-paths
                     (lambda* (#:key inputs #:allow-other-keys)
                       (setenv "HDF5_DIR"
-                              (assoc-ref inputs "hdf5")))))))
+                              (assoc-ref inputs "hdf5"))))
+                  (add-before 'build 'relax-gcc-14-strictness
+                    (lambda _
+                      (setenv
+                       "CFLAGS"
+                       (string-append
+                        "-g -O2"
+                        `" -Wno-error=incompatible-pointer-types")))))))
     (propagated-inputs (list python-six python-numpy))
     (inputs (list hdf5-1.10))
     (native-inputs (list pkg-config python-cython python-ipython
