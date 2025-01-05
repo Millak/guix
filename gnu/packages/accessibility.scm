@@ -6,6 +6,7 @@
 ;;; Copyright © 2020, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2022 Hunter Jozwiak <hunter.t.joz@gmail.com>
 ;;; Copyright © 2023 Ivan Gankevich <igankevich@capybaramail.xyz>
+;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -78,7 +79,8 @@
     (arguments
      `(#:tests? #f                      ; Tests require drivers
        #:configure-flags
-       (list "--disable-static"
+       (list "CFLAGS=-g -O2 -Wno-error=incompatible-pointer-types"
+             "--disable-static"
              "--enable-fake")
        #:phases
        (modify-phases %standard-phases
