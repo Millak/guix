@@ -3980,7 +3980,14 @@ library.")
               (when tests?
                 (setenv "H5PY_TEST_CHECK_FILTERS" "1")
                 (with-directory-excursion (site-packages inputs outputs)
-                  (invoke "pytest" "-vv"))))))))
+                  (invoke "pytest" "-vv")))))
+          (add-before 'build 'relax-gcc-14-strictness
+            (lambda _
+              (setenv
+               "CFLAGS"
+               (string-append
+                "-g -O2"
+                `" -Wno-error=incompatible-pointer-types")))))))
     (propagated-inputs (list python-six python-numpy))
     (inputs (list hdf5))
     (native-inputs
