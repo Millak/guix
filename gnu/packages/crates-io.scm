@@ -74208,8 +74208,30 @@ and spirv-std-macros.")
     (description "This package provides a runtime for a stack-alocated map.")
     (license license:expat)))
 
+(define-public rust-stability-0.2
+  (package
+    (name "rust-stability")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "stability" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1b7w6qknq0w5y7s358j62pzi9kbh6g73lal3jx9aydpikl0ff16r"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/sagebind/stability")
+    (synopsis "Rust API stability attributes")
+    (description
+     "This package provides Rust API stability attributes for the rest of us.")
+    (license license:expat)))
+
 (define-public rust-stability-0.1
   (package
+    (inherit rust-stability-0.2)
     (name "rust-stability")
     (version "0.1.1")
     (source
@@ -74219,14 +74241,9 @@ and spirv-std-macros.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1kn3vcicmpg8bnyalp15i2j0dbv6c0wc62022bcs58jdi5vv3lgb"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-quote" ,rust-quote-1)
-                       ("rust-syn" ,rust-syn-1))))
-    (home-page "https://github.com/sagebind/stability")
-    (synopsis "Rust API stability attributes")
-    (description "Rust API stability attributes for the rest of us.")
-    (license license:expat)))
+                       ("rust-syn" ,rust-syn-1))))))
 
 (define-public rust-stable-deref-trait-1
   (package
