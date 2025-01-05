@@ -9,7 +9,7 @@
 ;;; Copyright © 2016, 2017, 2021 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2016, 2017 Adonay "adfeno" Felipe Nogueira <https://libreplanet.org/wiki/User:Adfeno> <adfeno@openmailbox.org>
 ;;; Copyright © 2016, 2021 Amirouche <amirouche@hypermove.net>
-;;; Copyright © 2016, 2019, 2021, 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2016, 2019, 2021, 2023, 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2017 Andy Wingo <wingo@igalia.com>
 ;;; Copyright © 2017 David Thompson <davet@gnu.org>
 ;;; Copyright © 2017, 2018, 2019, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
@@ -4072,7 +4072,8 @@ list of components.  This module takes care of that for you.")
                 "019mbhgyga57k2074kg97mh3qsa8ny9l0kjgqids8cg3c6vbjdby"))))
     (build-system glib-or-gtk-build-system)
     (arguments
-     `(#:configure-flags '("--with-gnu-filesystem-hierarchy")
+     `(#:configure-flags '("CFLAGS=-Wno-error=incompatible-pointer-types"
+                           "--with-gnu-filesystem-hierarchy")
        #:modules ((guix build glib-or-gtk-build-system)
                   (guix build utils)
                   (ice-9 popen)
