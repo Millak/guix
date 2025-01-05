@@ -3853,7 +3853,7 @@ REPL for the terminal.")
      (synopsis "Circularly readable streams for Common Lisp")
      (description
       "Circular-Streams allows you to read streams circularly by wrapping real
-streams. Once you reach end-of-file of a stream, it's file position will be
+streams.  Once you reach end-of-file of a stream, its file position will be
 reset to 0 and you're able to read it again.")
      (license license:llgpl))))
 
@@ -5972,7 +5972,7 @@ joysticks, and other such HID devices.")
        "This is a system for two dimensional computational geometry for Common Lisp.
 
 Note: the system assumes exact rational arithmetic, so no floating point
-coordinates are allowed. This is not checked when creating geometric
+coordinates are allowed.  This is not checked when creating geometric
 objects.")
       ;; The .asd says BSD-style but the LICENSE.txt is expat.
       (license license:expat))))
@@ -6311,8 +6311,8 @@ and running graph algorithms.")
       (description
        "These common lisp sources contain two variants of the Nelder-Mead
 algorithm.  The original algorithm and a provably convergent, reliable variant
-by A. Bürmen et al, called the
-@acronym{GRNMA, Grid Restrained Nelder Mead Algorithm}.")
+by A. Bürmen et al, called the @acronym{GRNMA, Grid Restrained Nelder Mead
+Algorithm}.")
       (home-page "https://github.com/quil-lang/cl-grnm")
       (license license:expat))))
 
@@ -22388,7 +22388,7 @@ testing and installation.
 
 @itemize
 @item Simple way to fetch Git submodules and “do the right thing” for
-setup. This may effectively supersede Quicklisp. A benefit of using Git
+setup.  This may effectively supersede Quicklisp.  A benefit of using Git
 submodules over the default Quicklisp distribution is improved
 reproducibility.
 @item Test helpers, like distinction between offline and online tests, or
@@ -26857,7 +26857,7 @@ C Library.")
       (synopsis "Utility kit for CL-SDL2")
       (description
        "This is a utility kit for @code{cl-sdl2} that provides something similar to
-GLUT. However, it's also geared at being useful for \"real\" applications or
+GLUT.  However, it's also geared at being useful for \"real\" applications or
 games.")
       (license license:expat))))
 
@@ -27840,12 +27840,12 @@ processes that doesn't run under Emacs.  Lisp processes created by
     (synopsis "SLIme-based TEst runner for FiveAM and Parachute Tests")
     (description
      "Slite interactively runs your Common Lisp tests (currently only FiveAM
-and Parachute are supported). It allows you to see the summary of test
+and Parachute are supported).  It allows you to see the summary of test
 failures, jump to test definitions, rerun tests with debugger all from inside
 Emacs.
 
 In order to work, this also requires the slite Common Lisp system to be
-present. See the code@{*cl-slite packages}.")))
+present.  See the code@{*cl-slite packages}.")))
 
 (define-public sbcl-slot-extra-options
   (let ((commit "29517d980325cd63744f1acf4cfe5c8ccec2b318"))
