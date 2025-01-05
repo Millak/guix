@@ -10533,21 +10533,21 @@ brightness between monitors.")
 (define-public rust-camino-1
   (package
     (name "rust-camino")
-    (version "1.1.6")
+    (version "1.1.9")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "camino" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "171vzfyrm2jmajd70q1m774297y028kadgm7cfw4kxc8lfsr57n5"))))
+        (base32 "1lqszl12l1146jf8g01rvjmapif82mhzih870ln3x0dmcr4yr5lb"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-proptest" ,rust-proptest-1)
                        ("rust-serde" ,rust-serde-1))
        #:cargo-development-inputs (("rust-bincode" ,rust-bincode-1)
                                    ("rust-serde-bytes" ,rust-serde-bytes-0.11))))
-    (home-page "https://github.com/withoutboats/camino")
+    (home-page "https://github.com/camino-rs/camino")
     (synopsis "UTF-8 paths")
     (description "This package provides a UTF-8 paths.")
     (license (list license:expat license:asl2.0))))
