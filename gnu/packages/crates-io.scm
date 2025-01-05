@@ -33845,29 +33845,29 @@ of reference counted pointers.")
 (define-public rust-indicatif-0.17
   (package
     (name "rust-indicatif")
-    (version "0.17.8")
+    (version "0.17.9")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "indicatif" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "18xyqxw9i5x4sbpzckhfz3nm984iq9r7nbi2lk76nz888n7mlfkn"))))
+        (base32 "10dj53x2a2bfhnfi78nhi4kb4zgc3rq6jm2wgg3d6d6rbsw7bxnb"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
-       '("--release" "--"
+       '("--"
          "--skip=style::tests::wide_element_style")
        #:cargo-inputs (("rust-console" ,rust-console-0.15)
                        ("rust-futures-core" ,rust-futures-core-0.3)
-                       ("rust-instant" ,rust-instant-0.1)
                        ("rust-number-prefix" ,rust-number-prefix-0.4)
                        ("rust-portable-atomic" ,rust-portable-atomic-1)
                        ("rust-rayon" ,rust-rayon-1)
                        ("rust-tokio" ,rust-tokio-1)
                        ("rust-unicode-segmentation" ,rust-unicode-segmentation-1)
-                       ("rust-unicode-width" ,rust-unicode-width-0.1)
-                       ("rust-vt100" ,rust-vt100-0.15))
+                       ("rust-unicode-width" ,rust-unicode-width-0.2)
+                       ("rust-vt100" ,rust-vt100-0.15)
+                       ("rust-web-time" ,rust-web-time-1))
        #:cargo-development-inputs
        (("rust-clap" ,rust-clap-4)
         ("rust-futures" ,rust-futures-0.3)
