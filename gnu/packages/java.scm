@@ -744,7 +744,11 @@ IcedTea build harness.")
                 (srfi srfi-26)))
              ((#:configure-flags flags)
               `(let ((jdk (assoc-ref %build-inputs "jdk")))
-                 `("CFLAGS=-fcommon"
+                 `(,(string-append "CFLAGS=-fcommon"
+                                   " -Wno-error=implicit-function-declaration"
+                                   " -Wno-error=implicit-int"
+                                   " -Wno-error=incompatible-pointer-types"
+                                   " -Wno-error=int-conversion")
                    "CXXFLAGS=-fcommon"
                    "--enable-bootstrap"
                    "--enable-nss"
