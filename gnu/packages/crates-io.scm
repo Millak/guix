@@ -21604,6 +21604,31 @@ dedicated files into Rustdoc documentation with support for hiding lines.")
 your type's documentation at runtime.")
     (license license:expat)))
 
+(define-public rust-documented-macros-0.6
+  (package
+    (name "rust-documented-macros")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "documented-macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0qwclr8ymp5n5fyb6sri9dl36va3ana50clkgwmf7110lva5jdlp"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; use of undeclared crate or module `documented`
+       #:cargo-inputs (("rust-convert-case" ,rust-convert-case-0.6)
+                       ("rust-optfield" ,rust-optfield-0.3)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/cyqsimon/documented")
+    (synopsis "Derive and attribute macros for `documented`")
+    (description
+     "This package provides derive and attribute macros for `documented`.")
+    (license license:expat)))
+
 (define-public rust-dogged-0.2
   (package
     (name "rust-dogged")
