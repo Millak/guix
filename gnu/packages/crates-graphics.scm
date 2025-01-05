@@ -5848,14 +5848,13 @@ from xml files.")
     (home-page "https://github.com/rust-windowing/winit")
     (synopsis "Window creation library")
     (description
-     "Winit is a window creation and management library. It can create
-windows and lets you handle events (for example: the window being
-resized, a key being pressed, a mouse movement, etc.) produced by
-window.
+     "Winit is a window creation and management library.  It can create
+windows and lets you handle events (for example: the window being resized, a
+key being pressed, a mouse movement, etc.) produced by window.
 
 Winit is designed to be a low-level brick in a hierarchy of libraries.
-Consequently, in order to show something on the window you need to use
-the platform-specific getters provided by winit, or another library.")
+Consequently, in order to show something on the window you need to use the
+platform-specific getters provided by winit, or another library.")
     (license license:asl2.0)))
 
 (define-public rust-winit-0.29

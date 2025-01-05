@@ -3038,7 +3038,7 @@ integers.")
         ("rust-proc-macro-hack" ,rust-proc-macro-hack-0.5))))
     (home-page "https://github.com/JoshMcguigan/arr_macro")
     (synopsis "Initialize arrays with ease")
-    (description "Array macro helps initialize arrays. It is useful when
+    (description "Array macro helps initialize arrays.  It is useful when
 initializing large arrays (greater than 32 elements), or arrays of types which
 do not implement the copy or default traits.")
     (license (list license:expat license:asl2.0))))
@@ -12967,7 +12967,7 @@ chain, the first matching branch is the item that gets emitted.")
        #:cargo-inputs (("rust-rand" ,rust-rand-0.3))))
     (home-page "https://github.com/BurntSushi/chan")
     (synopsis "DEPRECATED. Use crossbeam-channel instead")
-    (description "DEPRECATED. Use crossbeam-channel instead.")
+    (description "DEPRECATED.  Use crossbeam-channel instead.")
     (license (list license:unlicense license:expat))))
 
 (define-public rust-chalk-derive-0.75
@@ -45451,8 +45451,8 @@ library.")
     (home-page "https://github.com/Alexhuszagh/minimal-lexical")
     (synopsis "Float parsing conversion routines")
     (description "This is a minimal version of rust-lexical, meant to allow
-efficient round-trip float parsing. Minimal-lexical implements a correct, fast
-float parser.")
+efficient round-trip float parsing.  Minimal-lexical implements a correct,
+fast float parser.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-minimp3-0.5
