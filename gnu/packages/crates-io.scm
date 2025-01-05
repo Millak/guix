@@ -47,6 +47,7 @@
 ;;; Copyright © 2024 Jordan Moore <lockbox@struct.foo>
 ;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2024 Murilo <murilo@disroot.org>
+;;; Copyright © 2025 Divya Ranjan Pattanaik <divya@subvertising.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -14558,6 +14559,28 @@ Markdown parser and formatter written in Rust.")
      "This package allows concatenating multiple identifiers and using them
 everywhere.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-concat-string-1
+  (package
+    (name "rust-concat-string")
+    (version "1.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "concat-string" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "02c6hfxsvs1ff2j58f3qzr526w1yg8d2nf6yyjv81ixgbz5vwfbl"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:tests? #f))    ; Tests don't run with current versions of rust.
+    (home-page "https://github.com/FaultyRAM/concat-string")
+    (synopsis
+     "Provides macros for concatenating string slices into owned strings")
+    (description
+     "This package provides macros for concatenating string slices into
+owned strings.")
+    (license (list license:asl2.0 license:expat))))
 
 (define-public rust-concolor-0.0.11
   (package
