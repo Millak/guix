@@ -2259,7 +2259,8 @@ similar to MATLAB, GNU Octave or SciPy.")
            zlib))
     (arguments
      (list #:configure-flags
-           #~'("--enable-doxygen" "--enable-dot"
+           #~'("CFLAGS=-g -O2 -Wno-error=incompatible-pointer-types"
+               "--enable-doxygen" "--enable-dot"
                "--enable-hdf4" "--disable-dap-remote-tests")
 
            #:phases
