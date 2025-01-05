@@ -89702,6 +89702,40 @@ engines, with SIMD support and focus on convenience.")
        #:cargo-development-inputs (("rust-lazy-static" ,rust-lazy-static-1)
                                    ("rust-regex" ,rust-regex-1))))))
 
+(define-public rust-vergen-git2-1
+  (package
+    (name "rust-vergen-git2")
+    (version "1.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "vergen-git2" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1mri3bffr6578cigqrpcn8b0bfcgkvbskdxswg8ym7vlv1ly0qsy"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; use of undeclared crate or module `test_util`
+       #:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-derive-builder" ,rust-derive-builder-0.20)
+                       ("rust-git2" ,rust-git2-0.19)
+                       ("rust-rustversion" ,rust-rustversion-1)
+                       ("rust-time" ,rust-time-0.3)
+                       ("rust-vergen" ,rust-vergen-9)
+                       ("rust-vergen-lib" ,rust-vergen-lib-0.1))
+       #:cargo-development-inputs (("rust-lazy-static" ,rust-lazy-static-1)
+                                   ("rust-regex" ,rust-regex-1)
+                                   ("rust-serial-test" ,rust-serial-test-3)
+                                   ("rust-temp-env" ,rust-temp-env-0.3))))
+    (native-inputs (list pkg-config))
+    (inputs (list libgit2-1.8))
+    (home-page "https://github.com/rustyhorde/vergen")
+    (synopsis "Generate @code{cargo:rustc-env} instructions via @code{build.rs}")
+    (description
+     "This package provides @code{cargo:rustc-env} instructions via
+@code{build.rs} for use in your code via the @code{env!} macro.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-vergen-lib-0.1
   (package
     (name "rust-vergen-lib")
