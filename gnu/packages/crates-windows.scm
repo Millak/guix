@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2019-2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020, 2021 John Soo <jsoo1@asu.edu>
 ;;; Copyright © 2020 Valentin Ignatev <valentignatev@gmail.com>
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
@@ -752,17 +752,17 @@ Windows's named pipes.")
 for MinGW-w64 and MSVC (cross-)compile targets.")
     (license license:expat)))
 
-(define-public rust-remove-dir-all-0.8
+(define-public rust-remove-dir-all-1
   (package
     (name "rust-remove-dir-all")
-    (version "0.8.4")
+    (version "1.0.0")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "remove_dir_all" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0jpbki3idrzinspdypcczjqx6nazwmfixk7n4w8la11ixghgk556"))))
+                "026xl6wlkjxksm1n3dcccygssami56aa937h6vgnmxxcfnsc1340"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -791,7 +791,7 @@ for MinGW-w64 and MSVC (cross-)compile targets.")
 
 (define-public rust-remove-dir-all-0.5
   (package
-    (inherit rust-remove-dir-all-0.8)
+    (inherit rust-remove-dir-all-1)
     (name "rust-remove-dir-all")
     (version "0.5.3")
     (source
