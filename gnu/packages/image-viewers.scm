@@ -117,6 +117,55 @@
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages))
 
+(define-public swayimg
+  (package
+    (name "swayimg")
+    (version "3.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/artemsen/swayimg")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "15nqb1igikkvrzx3dhyj9msynfpvrnqvql6plqm8fhg10fbimfhd"))))
+    (build-system meson-build-system)
+    (arguments
+     `(#:configure-flags '(,(string-append "-Dversion=" version))))
+    (native-inputs (list pkg-config))
+    (inputs (list bash-completion
+                  fontconfig
+                  freetype
+                  giflib
+                  ijg-libjpeg
+                  imath
+                  json-c
+                  libavif
+                  libexif
+                  libheif
+                  libjxl
+                  libpng
+                  librsvg
+                  libtiff
+                  libwebp
+                  libxkbcommon
+                  openexr
+                  wayland
+                  wayland-protocols))
+    (home-page "https://github.com/artemsen/swayimg")
+    (synopsis "Customizable and lightweight image viewer for Wayland")
+    (description
+     "Swayimg is a fully customizable and lightweight image viewer for Wayland
+based display servers.  It supports the most popular image formats (JPEG, JPEG
+XL, PNG, GIF, SVG, WebP, HEIF/AVIF, AV1F/AVIFS, TIFF, EXR, BMP, PNM, TGA, QOI,
+DICOM, Farbfeld).  It has fully customizable keyboard bindings, colors, and
+many other parameters.  It also supports loading images from files and pipes,
+and provides gallery and viewer modes with slideshow and animation support.
+It also includes a Sway integration mode: the application creates an overlay
+above the currently active window, which gives the illusion that you are
+opening the image directly in a terminal window.")
+    (license license:expat)))
+
 (define-public ytfzf
   (package
     (name "ytfzf")
