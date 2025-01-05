@@ -2741,11 +2741,11 @@ across test runs.")
     (propagated-inputs
      (list python-pytest))
     (synopsis "Set-up and tear-down fixtures for unit tests")
-    (description "This plugin allows you to set up and tear down fixtures within
-unit test functions that use @code{py.test}. This is useful for using
-@command{hypothesis} inside py.test, as @command{hypothesis} will call the test
-function multiple times, without setting up or tearing down fixture state as is
-normally the case.")
+    (description "This plugin allows you to set up and tear down fixtures
+within unit test functions that use @code{py.test}.  This is useful for using
+@command{hypothesis} inside py.test, as @command{hypothesis} will call the
+test function multiple times, without setting up or tearing down fixture state
+as is normally the case.")
     (home-page "https://github.com/untitaker/pytest-subtesthack/")
     (license license:unlicense)))
 

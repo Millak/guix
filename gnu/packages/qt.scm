@@ -4248,8 +4248,9 @@ contain over 620 classes.")
         (base32 "1m39znwza9yypyd93i5mxd9pbf6zn9qdajczpm953awwdlywyx1g"))))
     (synopsis "Sip module support for PyQt6")
     (description
-     "SIP is used to write self contained extension modules, i.e. without a library
-to be wrapped. This SIP extension module provides support for the PyQt6 package.")))
+     "SIP is used to write self contained extension modules, i.e. without a
+library to be wrapped.  This SIP extension module provides support for the
+PyQt6 package.")))
 
 (define-public python-pyqtwebengine
   (package

@@ -14772,7 +14772,7 @@ falling into the Python interpreter.")
     (native-inputs (list python-setuptools python-wheel python-toml))
     (home-page "https://github.com/Maarten-vd-Sande/qnorm")
     (synopsis "Quantile normalization")
-    (description "This tool implements quantile normalization. It properly
+    (description "This tool implements quantile normalization.  It properly
 resolves rank ties, which is important when ties happen frequently, such as
 when working with discrete numbers (integers) in count tables.  This
 implementation should be relatively fast, and can use multiple cores to sort
@@ -19940,7 +19940,7 @@ manipulation library.")
     (synopsis "Calculations with uncertainties")
     (description
      "The uncertainties package transparently handles calculations with
-numbers with uncertainties. It can also yield the derivatives of any
+numbers with uncertainties.  It can also yield the derivatives of any
 expression.")
     (license license:bsd-3)))
 
@@ -37701,7 +37701,7 @@ a port of the chalk package for javascript.")
     (synopsis "Expands a regular expression to its possible matches")
     (description
      "The goal of sre_yield is to efficiently generate all values that can
-match a given regular expression, or count possible matches efficiently. It
+match a given regular expression, or count possible matches efficiently.  It
 uses the parsed regular expression, so you get a much more accurate result
 than trying to just split strings.")
     (license license:asl2.0)))

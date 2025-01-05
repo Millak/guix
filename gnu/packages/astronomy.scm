@@ -6368,7 +6368,7 @@ orbit around the Earth.")
     (description
      "@code{tweakwcs} is a package that provides core algorithms for computing
 and applying corrections to @code{WCS} objects such as to minimize mismatch
-between image and reference catalogs. Currently only aligning images with
+between image and reference catalogs.  Currently only aligning images with
 @code{FITS WCS} and @code{JWST gWCS} are supported.")
     (license license:bsd-3)))
 
