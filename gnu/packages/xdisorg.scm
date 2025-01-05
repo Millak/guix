@@ -3531,7 +3531,7 @@ desktop notifications.")
 (define-public wofi
   (package
     (name "wofi")
-    (version "1.3")
+    (version "1.4.1")
     (source (origin
               (method hg-fetch)
               (uri (hg-reference
@@ -3540,7 +3540,7 @@ desktop notifications.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1k6b46n0vwdqrr6rfps0n8hghcgivnc42gc7z61phhjgf08j64qv"))))
+                "1z2pmmwq2h3lfsvdazjiz9s3978rcqan7dqdk5iwk4sz2m96irv9"))))
     (build-system meson-build-system)
     (arguments
      (list #:glib-or-gtk? #t))
