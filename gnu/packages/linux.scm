@@ -1616,9 +1616,10 @@ and the notification, WiFi, and Bluetooth LED.")
      "This package provides the @code{tuxedo_keyboard}, @code{tuxedo_io},
 @code{clevo_wmi} @acronym{WMI, Windows Management Engine} and the
 @code{clevo_acpi} @acronym{ACPI, Advanced Configuration and Power Interface}
-kernel modules to control the keyboard on most Tuxedo computers. Only white
-backlight only models are currently not supported. The @code{tuxedo_io} module
-is also needed for the @code{tuxedo-control-center} (short tcc) package.")
+kernel modules to control the keyboard on most Tuxedo computers.  Only white
+backlight only models are currently not supported.  The @code{tuxedo_io}
+module is also needed for the @code{tuxedo-control-center} (short tcc)
+package.")
     (license license:gpl3+)))
 
 (define-public evdi
@@ -1682,7 +1683,7 @@ display settings applets in graphical environments")
     (description
      "Libevdi is a library that gives applications easy access to
 @acronym{EVDI, Extensible Virtual Display Interface} devices provided by the
-@code{evdi} driver package.  ")
+@code{evdi} driver package.")
     (license license:lgpl2.1)))
 
 (define-public ec
@@ -2502,7 +2503,7 @@ Headers can have its data format described from debugging info and offsets from
 it can be used to further format a number of records.
 
 Finally, the @command{btfdiff} command can be used to compare the output of
-pahole from BTF and DWARF, to make sure they produce the same results. ")
+pahole from BTF and DWARF, to make sure they produce the same results.")
     (license license:gpl2+)))
 
 (define-public fbset
@@ -6642,7 +6643,7 @@ disks and SD cards.  This package provides the userland utilities.")
     (home-page (package-home-page f2fs-tools/static))
     (synopsis "Statically-linked fsck.f2fs command from f2fs-tools")
     (description "This package provides statically-linked fsck.f2fs command taken
-from the f2fs-tools package. It is meant to be used in initrds.")
+from the f2fs-tools package.  It is meant to be used in initrds.")
     (license (package-license f2fs-tools/static))))
 
 (define-public freefall
@@ -7105,9 +7106,9 @@ The following service daemons are also provided:
      (list autoconf automake libtool))
     (inputs (list pciutils rdma-core))
     (synopsis "Open Fabrics Enterprise Distribution (OFED) Performance Tests")
-    (description "This is a collection of tests written over uverbs intended for
-use as a performance micro-benchmark. The tests may be used for hardware or
-software tuning as well as for functional testing.
+    (description "This is a collection of tests written over uverbs intended
+for use as a performance micro-benchmark.  The tests may be used for hardware
+or software tuning as well as for functional testing.
 
 The collection contains a set of bandwidth and latency benchmark such as:
 @enumerate
