@@ -5489,7 +5489,7 @@ bluetooth profile.")
 (define-public libopenshot-audio
   (package
     (name "libopenshot-audio")
-    (version "0.3.3")
+    (version "0.4.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5498,7 +5498,7 @@ bluetooth profile.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1h7hb3nxladpm5mmh9njilz8wjipisd61mgkgcd39k9jr9adw8gn"))))
+                "0m6a0g6y464ypcza1wfaik77x26lfdmkb5k735f7v8463r7qhd0m"))))
     (build-system cmake-build-system)
     (inputs
      (list alsa-lib
