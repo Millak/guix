@@ -219,6 +219,39 @@ spell-checking library.")
     (home-page "https://www.j3e.de/ispell/igerman98/")
     (license (list license:gpl2 license:gpl3))))
 
+(define-public hunspell-dict-de-ch
+  (package
+    (name "hunspell-dict-de-ch")
+    (version "20161207")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://www.j3e.de/ispell/igerman98/dict/"
+                           "igerman98-" version ".tar.bz2"))
+       (sha256
+        (base32 "1a3055hp2bc4q4nlg3gmg0147p3a1zlfnc65xiv2v9pyql1nya8p"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:make-flags '("hunspell/de_CH.dic")
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'configure)
+         (replace 'install              ;no install target
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (share (string-append out "/share/hunspell/")))
+               (install-file "hunspell/de_CH.aff" share)
+               (install-file "hunspell/de_CH.dic" share)
+               #t))))
+       #:tests? #f))        ; no tests
+    (native-inputs
+     (list hunspell ispell perl))
+    (synopsis "Hunspell dictionary for Swiss German (de_CH)")
+    (description "This package provides a dictionary for the Hunspell
+spell-checking library.")
+    (home-page "https://www.j3e.de/ispell/igerman98/")
+    (license (list license:gpl2 license:gpl3))))
+
 (define-public hunspell-dict-hu
   (let ((revision "2")
         (major+minor "1.7"))
