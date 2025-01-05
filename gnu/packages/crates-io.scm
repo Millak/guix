@@ -89614,8 +89614,43 @@ at least 1 element.")
 engines, with SIMD support and focus on convenience.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-vergen-9
+  (package
+    (name "rust-vergen")
+    (version "9.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "vergen" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0f86dz7mm0blfw17lggkkwm548mdjgq8f7llqxaz8pghz345zwii"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; unresolved import `test_util`
+       #:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-cargo-metadata" ,rust-cargo-metadata-0.19)
+                       ("rust-derive-builder" ,rust-derive-builder-0.20)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-rustc-version" ,rust-rustc-version-0.4)
+                       ("rust-rustversion" ,rust-rustversion-1)
+                       ("rust-sysinfo" ,rust-sysinfo-0.32)
+                       ("rust-time" ,rust-time-0.3)
+                       ("rust-vergen-lib" ,rust-vergen-lib-0.1))
+       #:cargo-development-inputs (("rust-lazy-static" ,rust-lazy-static-1)
+                                   ("rust-regex" ,rust-regex-1)
+                                   ("rust-serial-test" ,rust-serial-test-3)
+                                   ("rust-temp-env" ,rust-temp-env-0.3))))
+    (home-page "https://github.com/rustyhorde/vergen")
+    (synopsis
+     "Generate @code{cargo:rustc-env} instructions via @code{build.rs}")
+    (description
+     "This package provides version generation for use in your Rust code.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-vergen-8
   (package
+    (inherit rust-vergen-9)
     (name "rust-vergen")
     (version "8.3.2")
     (source
@@ -89625,7 +89660,6 @@ engines, with SIMD support and focus on convenience.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0ri5n4k1g4z6gnllkjx9zny3vaa2bjma84zlrjh6w9k7b7mdk419"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f
        #:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
@@ -89644,14 +89678,7 @@ engines, with SIMD support and focus on convenience.")
                                    ("rust-serial-test" ,rust-serial-test-3)
                                    ("rust-temp-env" ,rust-temp-env-0.3))))
     (native-inputs (list pkg-config))
-    (inputs (list libgit2-1.8 zlib))
-    (home-page "https://github.com/rustyhorde/vergen")
-    (synopsis
-     "Generate @code{cargo:rustc-env} instructions via @code{build.rs} for use
-in your code via the @code{env!} macro")
-    (description
-     "This package provides version generation for use in your Rust code.")
-    (license (list license:expat license:asl2.0))))
+    (inputs (list libgit2-1.8 zlib))))
 
 (define-public rust-vergen-3
   (package
