@@ -58,7 +58,10 @@
                                   '("config.guess" "config.sub"))))))
           '())
              (list #:configure-flags
-                   #~'("CFLAGS=-g -O2 -Wno-error=implicit-function-declaration"
+                   #~'(#$(string-append
+                          "CFLAGS=-g -O2"
+                          " -Wno-error=implicit-function-declaration"
+                          " -Wno-error=incompatible-pointer-types")
                        "--disable-static"
                        #$@(if (%current-target-system)
                               ;; We cannot check for these devices
