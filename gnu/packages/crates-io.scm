@@ -76180,22 +76180,23 @@ another project's @code{build.rs} module.")
 based test suites.  Relies on @code{subplotlib-derive} for associated macros.")
     (license license:expat-0)))
 
-(define-public rust-subplotlib-derive-0.11
+(define-public rust-subplotlib-derive-0.12
   (package
     (name "rust-subplotlib-derive")
-    (version "0.11.0")
+    (version "0.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "subplotlib-derive" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1asg2jr85005afyj07vjc33i00z8akm15agic5rml1yzkz5lzbzy"))))
+        (base32 "1yrfjxh8z7dbsh01p4lrq73nci1qql2z9lphlnr2xmydip09nz7k"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-culpa" ,rust-culpa-1)
                        ("rust-proc-macro2" ,rust-proc-macro2-1)
                        ("rust-quote" ,rust-quote-1)
+                       ("rust-subplot" ,rust-subplot-0.12)
                        ("rust-syn" ,rust-syn-2))))
     (home-page "https://subplot.tech/")
     (synopsis "Macros for constructing subplotlib based test suites")
