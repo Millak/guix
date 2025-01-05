@@ -2032,6 +2032,7 @@ the boot loader configuration.")
        (patches
         (search-patches "flatpak-fix-fonts-icons.patch"
                         "flatpak-fix-path.patch"
+                        "flatpak-fix-icon-validation.patch"
                         "flatpak-unset-gdk-pixbuf-for-sandbox.patch"))))
 
     ;; Wrap 'flatpak' so that GIO_EXTRA_MODULES is set, thereby allowing GIO to
@@ -2078,6 +2079,12 @@ cp -r /tmp/locale/*/en_US.*")))
                   (("if \\(g_find_program_in_path \\(\"p11-kit\"\\)\\)")
                    (string-append "if (g_find_program_in_path (\""
                                   p11-path "\"))"))))))
+          (add-after 'unpack 'fix-icon-validation
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (store (dirname out)))
+                (substitute* "icon-validator/validate-icon.c"
+                  (("@storeDir@") store)))))
           ;; Many tests fail for unknown reasons, so we just run a few basic
           ;; tests.
           (replace 'check
