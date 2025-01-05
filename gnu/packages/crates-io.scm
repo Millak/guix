@@ -89675,6 +89675,31 @@ in your code via the @code{env!} macro")
        #:cargo-development-inputs (("rust-lazy-static" ,rust-lazy-static-1)
                                    ("rust-regex" ,rust-regex-1))))))
 
+(define-public rust-vergen-lib-0.1
+  (package
+    (name "rust-vergen-lib")
+    (version "0.1.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "vergen-lib" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ix19k2kvn4hzhhl6nld9h7fh1qh5z7j51z5rn2zq28wfpk6giy0"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; unresolved import `test_util`
+       #:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-derive-builder" ,rust-derive-builder-0.20)
+                       ("rust-rustversion" ,rust-rustversion-1))
+       #:cargo-development-inputs (("rust-serial-test" ,rust-serial-test-3)
+                                   ("rust-temp-env" ,rust-temp-env-0.3))))
+    (home-page "https://github.com/rustyhorde/vergen")
+    (synopsis "Common code used to support the vergen libraries")
+    (description
+     "This package provides common code used to support the vergen libraries.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-version-check-0.9
   (package
     (name "rust-version-check")
