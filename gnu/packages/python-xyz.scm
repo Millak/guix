@@ -16705,19 +16705,16 @@ list format (also known as ASCII plist), written in Cython.")
 (define-public python-wrapt
   (package
     (name "python-wrapt")
-    (version "1.11.2")
+    (version "1.17.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "wrapt" version))
        (sha256
         (base32
-         "1q81762dgsgrd12f8qc39zk8s5wll3m5xc32jdmlf6cls4gh4njn"))))
-    (build-system python-build-system)
-    (arguments
-     ;; Tests are not included in the tarball, they are only available in the
-     ;; git repository.
-     `(#:tests? #f))
+         "00886b7ry1vdbvpc2wi880y563xf6y4mxwwfm1q12wvw66i7l60n"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/GrahamDumpleton/wrapt")
     (synopsis "Module for decorators, wrappers and monkey patching")
     (description
