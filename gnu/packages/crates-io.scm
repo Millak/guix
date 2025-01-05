@@ -11714,14 +11714,14 @@ winded @code{#[cfg()]} checks.")
 (define-public rust-cfg-expr-0.17
   (package
     (name "rust-cfg-expr")
-    (version "0.17.0")
+    (version "0.17.2")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "cfg-expr" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "174y5f7035cx99d83hn1m97xd5xr83nd5fpkcxr3w8nkqihh12fh"))))
+                "12a7zr6ff4i6mfwcv711dll0w5pr3dw1lvkaf4c4a66i1gjacjwd"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
