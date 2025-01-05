@@ -53541,14 +53541,14 @@ crate.")
 (define-public rust-pin-project-lite-0.2
   (package
     (name "rust-pin-project-lite")
-    (version "0.2.13")
+    (version "0.2.15")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "pin-project-lite" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0n0bwr5qxlf0mhn2xkl36sy55118s9qmvx2yl5f3ixkb007lbywa"))
+        (base32 "1zz4xif3iknfrpmvqmh0pcc9mx4cxm28jywqydir3pimcla1wnli"))
        (modules '((guix build utils)))
        (snippet
         '(begin (substitute* "Cargo.toml"
@@ -53556,16 +53556,10 @@ crate.")
                    (string-append "\"^" version)))))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-development-inputs
-       (("rust-macrotest" ,rust-macrotest-1)
-        ("rust-once-cell" ,rust-once-cell-1)
-        ("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-quote" ,rust-quote-1)
-        ("rust-rustversion" ,rust-rustversion-1)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-static-assertions" ,rust-static-assertions-1)
-        ("rust-toml" ,rust-toml-0.5)
-        ("rust-trybuild" ,rust-trybuild-1))))
+     `(#:tests? #f  ; use of undeclared crate or module `trybuild`
+       #:cargo-development-inputs
+       (("rust-rustversion" ,rust-rustversion-1)
+        ("rust-static-assertions" ,rust-static-assertions-1))))
     (home-page "https://github.com/taiki-e/pin-project-lite")
     (synopsis "Lightweight version of pin-project")
     (description "This package provides a lightweight version of pin-project
