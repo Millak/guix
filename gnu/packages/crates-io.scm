@@ -84714,14 +84714,14 @@ with @code{serde}.")
 (define-public rust-tracing-subscriber-0.3
   (package
     (name "rust-tracing-subscriber")
-    (version "0.3.18")
+    (version "0.3.19")
     (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "tracing-subscriber" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32 "12vs1bwk4kig1l2qqjbbn2nm5amwiqmkcmnznylzmnfvjy6083xd"))))
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tracing-subscriber" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0220rignck8072i89jjsh140vmh14ydwpdwnifyaf3xcnpn9s678"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f     ; use of undeclared crate or module `tracing_mock`
@@ -84741,7 +84741,7 @@ with @code{serde}.")
         ("rust-tracing" ,rust-tracing-0.1)
         ("rust-tracing-core" ,rust-tracing-core-0.1)
         ("rust-tracing-log" ,rust-tracing-log-0.2)
-        ("rust-tracing-serde" ,rust-tracing-serde-0.1)
+        ("rust-tracing-serde" ,rust-tracing-serde-0.2)
         ("rust-valuable" ,rust-valuable-0.1)
         ("rust-valuable-serde" ,rust-valuable-serde-0.1))
        #:cargo-development-inputs
@@ -84752,7 +84752,7 @@ with @code{serde}.")
         ("rust-tokio" ,rust-tokio-1)
         ("rust-tracing" ,rust-tracing-0.1)
         ("rust-tracing-futures" ,rust-tracing-futures-0.2)
-        ("rust-tracing-log" ,rust-tracing-log-0.1))))
+        ("rust-tracing-log" ,rust-tracing-log-0.2))))
     (home-page "https://tokio.rs")
     (synopsis "Implement and compose tracing subscribers")
     (description
