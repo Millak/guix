@@ -48082,6 +48082,26 @@ giga, kibi.")
 Management Library.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-nvml-wrapper-sys-0.8
+  (package
+    (name "rust-nvml-wrapper-sys")
+    (version "0.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "nvml-wrapper-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1dgw2dpldxik2gn3m3aqgl2qj1da5sz6wav5g571ly18dwalb3b9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-libloading" ,rust-libloading-0.8))))
+    (home-page "https://github.com/Cldfire/nvml-wrapper")
+    (synopsis "Generated bindings to the NVIDIA Management Library")
+    (description
+     "This package provides generated bindings to the NVIDIA Management Library.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-oauth2-types-0.7
   (package
     (name "rust-oauth2-types")
