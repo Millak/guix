@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019, 2020, 2021 Hartmut Goebel <h.goebel@crazy-compilers.com>
-;;; Copyright © 2021, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2021, 2023-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -883,14 +883,14 @@ This Guix package is built to use the nettle cryptographic library.")
 (define-public sequoia-sq
   (package
     (name "sequoia-sq")
-    (version "1.0.0")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "sequoia-sq" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0gkj0d1xz14wivnnhylq7c6a6wpk9qp8414nmnsvp1agc8ywzhfh"))))
+        (base32 "00zs8a1b5b6gscgjmrcbayf7r3gyk5j57lsrcawh78735hniljmc"))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
@@ -934,8 +934,8 @@ This Guix package is built to use the nettle cryptographic library.")
         ("rust-sequoia-policy-config" ,rust-sequoia-policy-config-0.7)
         ("rust-sequoia-wot" ,rust-sequoia-wot-0.13)
         ("rust-serde" ,rust-serde-1)
-        ("rust-subplot-build" ,rust-subplot-build-0.11)
-        ("rust-subplotlib" ,rust-subplotlib-0.11)
+        ("rust-subplot-build" ,rust-subplot-build-0.12)
+        ("rust-subplotlib" ,rust-subplotlib-0.12)
         ("rust-tempfile" ,rust-tempfile-3)
         ("rust-termcolor" ,rust-termcolor-1)
         ("rust-terminal-size" ,rust-terminal-size-0.2)
