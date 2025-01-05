@@ -50054,17 +50054,18 @@ normally prevent moving a type that has been borrowed from.")
 (define-public rust-owo-colors-4
   (package
     (name "rust-owo-colors")
-    (version "4.0.0")
+    (version "4.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "owo-colors" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0grsk47cllj0s4nc4qxvy4gdhj2lyiglbqx4lmw2m7grdmq59zya"))))
+        (base32 "0mms4sbisxm1w8v08qz85m90sv861xg4ahil85587kb9cmzpcdzv"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-supports-color" ,rust-supports-color-2))))
+     `(#:cargo-inputs (("rust-supports-color" ,rust-supports-color-3)
+                       ("rust-supports-color" ,rust-supports-color-2))))
     (home-page "https://github.com/jam1garner/owo-colors")
     (synopsis "Zero-allocation terminal colors that'll make people go owo")
     (description
