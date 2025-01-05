@@ -4182,7 +4182,7 @@ defects faster.")
 (define-public go-github-com-go-git-go-git-v5
   (package
     (name "go-github-com-go-git-go-git-v5")
-    (version "5.12.0")
+    (version "5.13.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4191,7 +4191,7 @@ defects faster.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1zp7d4ncgrvr420hs6nf5p66s9015y61fb4krkz4y0sl802fzj7a"))))
+                "1mgzwwmq1awai9n8vkjp8xpq26hvivl53g57f1k2cgg6bkj13r2a"))))
     (build-system go-build-system)
     (arguments
      (list
