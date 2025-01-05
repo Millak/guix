@@ -11987,6 +11987,10 @@ photo-booth-like software, such as Cheese.")
                    (substitute* "meson.build"
                      (("gtk_update_icon_cache: true")
                       "gtk_update_icon_cache: false"))))
+               (add-before 'configure 'relax-gcc-14-strictness
+                 (lambda _
+                   (setenv "CFLAGS"
+                           "-g -O2 -Wno-error=incompatible-pointer-types")))
                (add-after 'install 'wrap-cheese
                  (lambda* (#:key inputs outputs #:allow-other-keys)
                    (wrap-program (search-input-file outputs "bin/cheese")
