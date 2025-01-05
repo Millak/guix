@@ -20209,6 +20209,25 @@ writing derives macros for enums.")
     (description "Deriving with custom trait bounds.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-descape-2
+  (package
+    (name "rust-descape")
+    (version "2.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "descape" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0c56nbjgnba9s4lmfq2b89mrifkzwfc48hh7n5iwk06z12wi64bw"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/balt-dev/descape")
+    (synopsis "Adds a single extension trait for &str to unescape any backslashes")
+    (description
+     "This package adds a single extension trait for &str to unescape any
+backslashes.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-deser-hjson-1
   (package
     (name "rust-deser-hjson")
