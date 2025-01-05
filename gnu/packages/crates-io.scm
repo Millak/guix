@@ -87251,6 +87251,33 @@ Unicode and Internationalization Crates (UNIC) project.")
 membership for characters in Rust.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-unicode-ellipsis-0.2
+  (package
+    (name "rust-unicode-ellipsis")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "unicode-ellipsis" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1zsdzmy6x1p8s35rgfmc7nx1qcs6j4bcfbfyiimrdngyqfwbajlj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--"
+         "--skip=tests::test_truncate_hindi"
+         "--skip=tests::test_truncate_hindi_leading")
+       #:cargo-inputs (("rust-unicode-segmentation" ,rust-unicode-segmentation-1)
+                       ("rust-unicode-width" ,rust-unicode-width-0.1))))
+    (home-page "https://github.com/ClementTsang/unicode-ellipsis")
+    (synopsis
+     "Truncate Unicode strings to a certain width, adding an ellipsis if too long")
+    (description
+     "This package provides a crate to truncate Unicode strings to a certain width,
+automatically adding an ellipsis if the string is too long.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-unicode-general-category-0.6
   (package
     (name "rust-unicode-general-category")
