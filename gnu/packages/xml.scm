@@ -636,10 +636,9 @@ corresponding to an @code{XML::Parser} event.")
     (license license:perl-license)
     (synopsis "Perl modules for working with XML")
     (description
-     "libxml-perl is a collection of smaller Perl modules, scripts, and
-documents for working with XML in Perl.  libxml-perl software works in
-combination with @code{XML::Parser}, PerlSAX, @code{XML::DOM},
-@code{XML::Grove}, and others.")
+     "A collection of smaller Perl modules, scripts, and documents for working
+with XML in Perl.  libxml-perl software works in combination with
+@code{XML::Parser}, PerlSAX, @code{XML::DOM}, @code{XML::Grove}, and others.")
     (home-page "https://metacpan.org/release/libxml-perl")))
 
 (define-public perl-xml-libxml

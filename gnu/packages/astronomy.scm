@@ -1532,7 +1532,7 @@ model-fitting photometry or morphological analyses.")
     (synopsis "Python client to NASA's Astrophysics Data System")
     (description
      "This package provdies a Python Module to Interact with NASA's
-@acronym{Astrophysics Data System,ADS} that Doesn't Suck™.")
+@acronym{Astrophysics Data System,ADS}.")
     (license license:expat)))
 
 (define-public python-aplpy

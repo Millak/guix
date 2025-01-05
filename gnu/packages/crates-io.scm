@@ -37173,8 +37173,8 @@ Rust.")
     (build-system cargo-build-system)
     (arguments `(#:skip-build? #t))
     (home-page "https://github.com/baoyachi/rust_is_debug")
-    (description "get build model is debug")
     (synopsis "Get build model is debug")
+    (description "Get build model is debug.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-is-docker-0.2

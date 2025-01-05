@@ -16325,8 +16325,9 @@ benchmarks](https://hackage.haskell.org/package/random-bytestring-0.1.3.2/src/be
     (build-system haskell-build-system)
     (properties '((upstream-name . "ordered-containers")))
     (home-page "https://hackage.haskell.org/package/ordered-containers")
-    (description "")
     (synopsis "Haskell types")
+    (description "Set- and Map-like types that remember the order elements
+were inserted")
     (license license:bsd-3)))
 
 (define-public ghc-cabal-syntax

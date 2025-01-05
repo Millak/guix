@@ -1264,7 +1264,7 @@ OpenDocument presentations (*.odp).")
     (home-page "https://bibutils.sourceforge.io/")
     (synopsis "Convert between various bibliography formats")
     (description "This package provides converters for various bibliography
-formats (e.g. Bibtex, RIS, ...) using a common XML intermediate.")
+formats (e.g. Bibtex, RIS, etc.) using a common XML intermediate.")
     (license license:gpl2)))
 
 (define-public goawk
