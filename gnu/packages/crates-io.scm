@@ -49246,6 +49246,30 @@ framework.")
     (description "This package provides an OPML parser for Rust.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-optfield-0.3
+  (package
+    (name "rust-optfield")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "optfield" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "079a5n7lhqsj444fkgk580vra5v2nhym7czwnky9iip9rljz0ngs"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))
+       #:cargo-development-inputs (("rust-paste" ,rust-paste-1)
+                                   ("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/roignpar/optfield")
+    (synopsis "Macro that generates structs with optional fields")
+    (description
+     "This package provides a macro that generates structs with optional fields.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-optick-1
   (package
     (name "rust-optick")
