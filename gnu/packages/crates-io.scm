@@ -12869,14 +12869,14 @@ with Clap to generate Fig completion scripts.")
 (define-public rust-clap-complete-nushell-4
   (package
     (name "rust-clap-complete-nushell")
-    (version "4.5.4")
+    (version "4.5.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "clap_complete_nushell" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0xvnl61gnc3j76b9y50y35zvg7fls30i7lyb43fmsvncj3kh4n9i"))))
+        (base32 "12miqxh9g7q37w11bgv55b32s0hdf6avf0lhagzc5psp6icv3a66"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-clap" ,rust-clap-4)
