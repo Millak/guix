@@ -45120,6 +45120,27 @@ Integration with mio and tokio is optional.")
 release (fork of debug_unreachable)")
     (license license:expat)))
 
+(define-public rust-new-string-template-1
+  (package
+    (name "rust-new-string-template")
+    (version "1.5.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "new_string_template" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1svmx6a6qqz70mhrgz77bi9ifpnlpwpslqzvdbw557jc6d9ih3y5"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-regex" ,rust-regex-1))))
+    (home-page "https://github.com/hasezoey/new_string_template")
+    (synopsis "Customizable String-Templating Library for Rust")
+    (description
+     "This package provides a customizable string-templating library for Rust.")
+    (license license:expat)))
+
 ;; Keep this package for future packaging of NewsFlash.
 (define-public rust-news-flash-1
   (package
