@@ -11500,7 +11500,9 @@ basically a text box in which notes can be written.")
                     (guix build glib-or-gtk-build-system)
                     (guix build utils))
          #:configure-flags
-         (list "--with-unicode-data=../unicode-data")
+         (list
+          "CFLAGS=-g -O2 -Wno-error=incompatible-pointer-types"
+          "--with-unicode-data=../unicode-data")
          #:phases
          (modify-phases %standard-phases
            (add-after 'unpack 'prepare-unicode-data
