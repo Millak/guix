@@ -76124,20 +76124,20 @@ easier in Rust.")
 automated acceptance tests for systems and software.")
     (license license:expat-0)))
 
-(define-public rust-subplot-build-0.11
+(define-public rust-subplot-build-0.12
   (package
     (name "rust-subplot-build")
-    (version "0.11.0")
+    (version "0.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "subplot-build" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1w0ihzj8z13c7lkfbiihd5njmy824zb0cw2w41hklpg7l1f862mi"))))
+        (base32 "1grmmy2gmpygxcx09dsrh9mm9pqpf5qvy44k6q062lj26jlk32q0"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-subplot" ,rust-subplot-0.11)
+     `(#:cargo-inputs (("rust-subplot" ,rust-subplot-0.12)
                        ("rust-tempfile" ,rust-tempfile-3)
                        ("rust-tracing" ,rust-tracing-0.1))))
     (home-page "https://subplot.tech/")
