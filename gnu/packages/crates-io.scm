@@ -51556,14 +51556,14 @@ slash path (e.g. @code{foo/bar}, @code{C:/foo/bar}).")
 (define-public rust-pathdiff-0.2
   (package
     (name "rust-pathdiff")
-    (version "0.2.1")
+    (version "0.2.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "pathdiff" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1pa4dcmb7lwir4himg1mnl97a05b2z0svczg62l8940pbim12dc8"))))
+        (base32 "1lrqp4ip05df8dzldq6gb2c1sq2gs54gly8lcnv3rhav1qhwx56z"))))
     (build-system cargo-build-system)
     (arguments
      (list #:skip-build? #t
