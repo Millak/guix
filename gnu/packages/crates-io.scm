@@ -70662,6 +70662,32 @@ Rust's serde.")
 TOML/JSON/MessagePack strings and serializable values.")
     (license license:expat)))
 
+(define-public rust-serial-0.4
+  (package
+    (name "rust-serial")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "serial" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "11iyvc1z123hn7zl6bk5xpf6xdlsb33qh6xa7g0pghqgayb7l8x1"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (substitute* "Cargo.toml"
+                   ((", path = \".*\"") ""))))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-serial-core" ,rust-serial-core-0.4)
+                       ("rust-serial-unix" ,rust-serial-unix-0.4)
+                       ("rust-serial-windows" ,rust-serial-windows-0.4))))
+    (home-page "https://github.com/dcuddeback/serial-rs")
+    (synopsis "Rust library for accessing serial ports")
+    (description
+     "This package provides Rust library for accessing serial ports.")
+    (license license:expat)))
+
 (define-public rust-serial-test-3
   (package
     (name "rust-serial-test")
