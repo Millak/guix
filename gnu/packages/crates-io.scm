@@ -52673,21 +52673,22 @@ algorithm.")
 (define-public rust-petgraph-0.6
   (package
     (name "rust-petgraph")
-    (version "0.6.0")
+    (version "0.6.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "petgraph" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0kw27zzhsa82d4qpkrz91vznyxi3wm0qg0i84grfaqqbkpxa44sa"))))
+        (base32 "1ns7mbxidnn2pqahbbjccxkrqkrll2i5rbxx43ns6rh6fn3cridl"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-fixedbitset" ,rust-fixedbitset-0.4)
-        ("rust-indexmap" ,rust-indexmap-1)
+        ("rust-indexmap" ,rust-indexmap-2)
         ("rust-quickcheck" ,rust-quickcheck-0.8)
+        ("rust-rayon" ,rust-rayon-1)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-derive" ,rust-serde-derive-1))))
     (home-page "https://github.com/petgraph/petgraph")
