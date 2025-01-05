@@ -91898,6 +91898,29 @@ for terminal and other window-less applications.")
      "This package provides Linux kernel wireless(802.11) netlink Library.")
     (license license:expat)))
 
+(define-public rust-wrapcenum-derive-0.4
+  (package
+    (name "rust-wrapcenum-derive")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wrapcenum-derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0vi67wxkpw40cch5jx010wvwf0rjc5f13yxfzd60acimadcz4vx7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-darling" ,rust-darling-0.20)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/Cldfire/wrapcenum-derive")
+    (synopsis "Derive macro for nvml-wrapper, not for general use")
+    (description
+     "This package provides a derive macro for nvml-wrapper, not for general use.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-write16-1
   (package
     (name "rust-write16")
