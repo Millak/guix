@@ -864,7 +864,7 @@ http, and https via third-party applications.")
 (define-public tinmop
   (package
     (name "tinmop")
-    (version "0.9.9.14142135623")
+    (version "0.9.9.1414213562373")
     (source
      (origin
        (method git-fetch)
@@ -873,20 +873,23 @@ http, and https via third-party applications.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "02kp527gyh60fm2ss92wy3k3m9fih82wvzndri98sj2zc0wgcnki"))))
+        (base32 "1grcngb6rnyzkdkf52m62m1kmd8nxm9m85bpg2py5mp3ghf5y5gp"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf
            automake
+           bash-completion
            gnu-gettext
            libjpeg-turbo
            imagemagick
            mandoc
            nano
            openssl
+           pkg-config
            sbcl
            tk
            unzip
+           which
            xdg-utils))
     (inputs
      (list ncurses
@@ -913,7 +916,6 @@ http, and https via third-party applications.")
            sbcl-log4cl
            sbcl-marshal
            sbcl-nodgui
-           sbcl-osicat
            sbcl-parse-number
            sbcl-percent-encoding
            sbcl-purgatory
@@ -924,6 +926,7 @@ http, and https via third-party applications.")
            sbcl-unix-opts
            sbcl-usocket
            sbcl-yason
+           sdl2-ttf
            sqlite))
     (arguments
      `(#:tests? #f
@@ -943,15 +946,16 @@ http, and https via third-party applications.")
                (("AC_PATH_PROGS.+GIT")
                 "dnl")
                (("AC_PATH_PROG.+GPG")
-                "dnl"))
-             #t))
-         (add-after 'configure 'fix-asdf
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "Makefile.in"
-               (("LISP_COMPILER) ")
-                (string-concatenate
-                 '("LISP_COMPILER) --eval \"(require 'asdf)\" "
-                   "--eval \"(push \\\"$$(pwd)/\\\" asdf:*central-registry*)\"  "))))
+                "dnl")
+               (("AC_PATH_PROG.+SDL2")
+                "dnl ")
+               (("AC_CHECK_HEADER.+ttf")
+                "dnl "))
+             (substitute* "Makefile.am"
+               (("dist_completion_DATA")
+                "#")
+               (("completiondir")
+                "#"))
              #t)))))
     (synopsis
      "Gemini, gopher, kami and mastodon/pleroma client with a terminal interface")
