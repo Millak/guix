@@ -84508,7 +84508,7 @@ Chrome-style traces.")
 (define-public rust-tracing-core-0.1
   (package
     (name "rust-tracing-core")
-    (version "0.1.32")
+    (version "0.1.33")
     (source
      (origin
        (method url-fetch)
@@ -84516,7 +84516,7 @@ Chrome-style traces.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0m5aglin3cdwxpvbg6kz0r9r0k31j48n0kcfwsp6l49z26k3svf0"))))
+         "170gc7cxyjx824r9kr17zc9gvzx89ypqfdzq259pr56gg5bwjwp6"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
