@@ -79454,13 +79454,13 @@ color of the terminal.")
     (name "rust-termios")
     (version "0.3.3")
     (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "termios" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "0sxcs0g00538jqh5xbdqakkzijadr8nj7zmip0c7jz3k83vmn721"))))
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "termios" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0sxcs0g00538jqh5xbdqakkzijadr8nj7zmip0c7jz3k83vmn721"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -79473,6 +79473,21 @@ to the terminal I/O interface implemented by Unix operating systems.  The safe
 bindings are a small wrapper around the raw C functions, which converts integer
 return values to @code{std::io::Result} to indicate success or failure.")
     (license license:expat)))
+
+(define-public rust-termios-0.2
+  (package
+    (inherit rust-termios-0.3)
+    (name "rust-termios")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "termios" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0fk8nl0rmk43jrh6hjz6c6d83ri7l6fikag6lh0ffz3di9cwznfm"))))
+    (arguments
+     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2))))))
 
 (define-public rust-termtree-0.5
   (package
