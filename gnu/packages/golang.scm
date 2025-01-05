@@ -3888,7 +3888,7 @@ temporal directories.")
 (define-public go-github-com-xdg-go-stringprep
   (package
     (name "go-github-com-xdg-go-stringprep")
-    (version "1.0.2")
+    (version "1.0.4")
     (source
       (origin
         (method git-fetch)
@@ -3897,7 +3897,7 @@ temporal directories.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1df0l5n3c520y9filzz83j42wa5c056jcygmfwhjyf1pq8f6jkv9"))))
+         (base32 "0xvaf2xiy34ra4xz75d6kylr29jv00dnyk14mh8kmq5692n8lqvb"))))
     (build-system go-build-system)
     (arguments '(#:import-path "github.com/xdg-go/stringprep"))
     (propagated-inputs
