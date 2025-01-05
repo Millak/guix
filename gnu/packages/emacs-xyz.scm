@@ -454,7 +454,7 @@ compatible.")
     (synopsis "Extensions to the Bookmark library in Emacs")
     (description
      "Bookmarks are a powerful Emacs feature.  This package makes them even
-more versatile. You can bookmark many more kinds of data.  You can add tags.
+more versatile.  You can bookmark many more kinds of data.  You can add tags.
 There are many more ways to organize and display your bookmarks.  I recommend
 reading the extensive documentation about BookmarkPlus on the Emacs Wiki.")
     (license license:gpl3+)))
@@ -4682,7 +4682,7 @@ web browsers, but follows the flow and keybindings of Isearch.")
       (synopsis "Major mode for working with Dhall configuration language")
       (description
        "Dhall-mode provides an Emacs Major mode for working with the Dhall
-configuration language. It features:
+configuration language.  It features:
 
 @itemize
 @item Syntax highlighting
@@ -4787,10 +4787,10 @@ rather than the contents of files.")
      (list emacs-elfeed emacs-skewer-mode))
     (home-page "https://github.com/skeeto/emacs-aio")
     (synopsis "Async/Await for Emacs Lisp")
-    (description "@code{aio} is to Emacs Lisp as @code{asyncio} is to
-Python. This package builds upon Emacs generators to provide functions that
-pause while they wait on asynchronous events.  They do not block any thread
-while paused.")
+    (description "@code{aio} is to Emacs Lisp as @code{asyncio} is to Python.
+This package builds upon Emacs generators to provide functions that pause
+while they wait on asynchronous events.  They do not block any thread while
+paused.")
     (license license:unlicense)))
 
 (define-public emacs-async
@@ -6687,11 +6687,11 @@ a command.")
       (home-page "https://github.com/mickeynp/ligature.el")
       (synopsis "Typographic ligatures in Emacs")
       (description
-       "This package maps ordinary graphemes (characters) to fancy
-ligatures, if both your version of Emacs and the font supports it.  With this
-package you can control where Emacs must display ligatures. That is useful if
-you only want a subset of the ligatures in certain major modes, for instance,
-or if you want to ensure that some modes have no ligatures at all.")
+       "This package maps ordinary graphemes (characters) to fancy ligatures,
+if both your version of Emacs and the font supports it.  With this package you
+can control where Emacs must display ligatures.  That is useful if you only
+want a subset of the ligatures in certain major modes, for instance, or if you
+want to ensure that some modes have no ligatures at all.")
       (license license:gpl3+))))
 
 (define-public emacs-olivetti
@@ -7348,7 +7348,7 @@ This package also includes relevant snippets for yasnippet.")
     (synopsis "GDScript support and syntax highlighting in Emacs")
     (description
      "This package adds support for the GDScript programming language from the
-Godot game engine in Emacs. It features all the essentials, e.g., syntax
+Godot game engine in Emacs.  It features all the essentials, e.g., syntax
 highlighting, code folding, indentation, automatic pairing, auto-completion,
 and code formatting.")
     (license license:gpl3+)))
@@ -15845,11 +15845,11 @@ provide the historic behavior of @code{flet}, as well as
       (home-page "https://github.com/oantolin/epithet")
       (synopsis "Rename Emacs buffers with descriptive names")
       (description
-       "This package provides a function---@code{epithet-rename-buffer}---to rename
-the current buffer with a descriptive name. The name suggestion is governed by
-the @code{epithet-suggesters} hook variable: each hook should return either a
-name suggestion or @code{nil}, they are called in turn and the first non-nil
-suggestion is taken.")
+       "This package provides a function---@code{epithet-rename-buffer}---to
+rename the current buffer with a descriptive name.  The name suggestion is
+governed by the @code{epithet-suggesters} hook variable: each hook should
+return either a name suggestion or @code{nil}, they are called in turn and the
+first non-nil suggestion is taken.")
       (license license:gpl3+))))
 
 (define-public emacs-eterm-256color
@@ -18501,7 +18501,7 @@ using Org mode and transients.")
      "Flx provides fuzzy matching for emacs a la sublime text.
 The sorting algorithm is a balance between word beginnings (abbreviation)
 and contiguous matches (substring).  The longer the substring match,
-the higher it scores. This maps well to how we think about matching.
+the higher it scores.  This maps well to how we think about matching.
 Flx has support for ido (interactively do things) through flx-ido.")
     (license license:gpl3+)))
 
@@ -25472,11 +25472,10 @@ citations.")
     (propagated-inputs (list emacs-citar emacs-org-roam))
     (home-page "https://github.com/emacs-citar/citar-org-roam")
     (synopsis "Emacs package to provide tighter Citar and Org-Roam integration")
-    (description "\
-Out-of-box, Citar provides default support for file-per-note bibliographic
-notes that are compatible with Org-Roam v2.  This package integrates directly
-with the Org-Roam database, and provides the following additional features to
-Citar note support:
+    (description "Out-of-box, Citar provides default support for file-per-note
+bibliographic notes that are compatible with Org-Roam v2.  This package
+integrates directly with the Org-Roam database, and provides the following
+additional features to Citar note support:
 @itemize
 @item multiple references per note
 @item multiple reference notes per file
@@ -39195,8 +39194,8 @@ day calendar.  It is integrated with the Emacs calendar and diary.")
     (synopsis "View and edit system trash can in Emacs")
     (description "Open, view, browse, restore or permanently delete trashed
 files or directories in trash can with Dired-like look and feel.  The trash
-can has to be compliant with freedesktop.org. In Emacs, you can trash files by
-deleting them with @code{(setq delete-by-moving-to-trash t)}.  This package
+can has to be compliant with freedesktop.org.  In Emacs, you can trash files
+by deleting them with @code{(setq delete-by-moving-to-trash t)}.  This package
 provides a simple but convenient user interface to manage those trashed
 files.")
     (license license:gpl3+)))
@@ -40512,9 +40511,9 @@ files, providing syntax highlighting and indentation rules.")
     (home-page "https://github.com/abo-abo/swiper")
     (synopsis "Additional key bindings for Ivy")
     (description
-     "This package provides the `hydra-ivy/body' command, which is a
-quasi-prefix map, with many useful bindings.  These bindings are
-shorter than usual, using mostly unprefixed keys.")
+     "This package provides the @command{hydra-ivy/body} command, which is a
+quasi-prefix map, with many useful bindings.  These bindings are shorter than
+usual, using mostly unprefixed keys.")
     (license license:gpl3+)))
 
 (define-public emacs-cwl-mode
@@ -40990,7 +40989,7 @@ project.el and xref.el.")
     (synopsis "Ctags IDE on Emacs")
     (description
      "Citre is an advanced Ctags (or actually, readtags) frontend for
-Emacs. It offers Completion At Point, Xref and Imenu integration.  It also
+Emacs.  It offers Completion At Point, Xref and Imenu integration.  It also
 provides a Completing Read UI for jumping to definition and a powerful code
 reading tool that lets you go down the rabbit hole without leaving current
 buffer.")
@@ -41917,8 +41916,8 @@ The main features of Wanderlust:
       (home-page "https://github.com/sachac/waveform-el/")
       (synopsis "Display a waveform and use it to navigate")
       (description
-       "This package displays a waveform of a sound file. You can then play or
-navigate through it.")
+       "This package displays a waveform of a sound file.  You can then play
+or navigate through it.")
       (license license:gpl3+))))
 
 (define-public emacs-project-x
