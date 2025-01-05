@@ -12999,7 +12999,11 @@ integrate seamlessly with the GNOME desktop.")
                             (substitute* "src/installed-media.vala"
                               (("qemu-img")
                                (search-input-file inputs
-                                                  "/bin/qemu-img"))))))))
+                                                  "/bin/qemu-img")))))
+                        (add-before 'configure 'relax-gcc-14-strictness
+                          (lambda _
+                            (setenv "CFLAGS"
+                                    "-g -O2 -Wno-error=int-conversion"))))))
     (native-inputs
      (list desktop-file-utils           ;for update-desktop-database
            gettext-minimal
