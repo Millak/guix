@@ -679,7 +679,7 @@ parser definition into a C output.")
 (define-public llhttp-bootstrap
   (package
     (name "llhttp")
-    (version "8.1.2")
+    (version "9.2.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -688,7 +688,8 @@ parser definition into a C output.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1808y8mpdcmsi8rxndilngg4nn2fbqfgb29f47kk9mmdpqg5s17r"))
+                "0mzg19aqb1am498gms0z75cwd5kmfg9p78b1hhxw67019nsjcbac"))
+              (patches (search-patches "llhttp-ponyfill-object-fromentries.patch"))
               (modules '((guix build utils)))
               (snippet
                '(begin

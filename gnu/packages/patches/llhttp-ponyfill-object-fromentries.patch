@@ -1,0 +1,46 @@
+diff --git a/src/llhttp/constants.ts b/src/llhttp/constants.ts
+index 226342e..1a4c93a 100644
+--- a/src/llhttp/constants.ts
++++ b/src/llhttp/constants.ts
+@@ -1,4 +1,4 @@
+-import { enumToMap } from './utils';
++import { enumToMap, fromEntries } from './utils';
+ 
+ export type IntDict = Record<string, number>;
+ 
+@@ -328,7 +328,7 @@ export const METHODS_RTSP = [
+ 
+ export const METHOD_MAP = enumToMap(METHODS);
+ 
+-export const H_METHOD_MAP = Object.fromEntries(
++export const H_METHOD_MAP = fromEntries(
+   Object.entries(METHODS).filter(([ k ]) => k.startsWith('H'))
+ );
+ 
+diff --git a/src/llhttp/utils.ts b/src/llhttp/utils.ts
+index 2251125..5ac4aeb 100644
+--- a/src/llhttp/utils.ts
++++ b/src/llhttp/utils.ts
+@@ -1,5 +1,13 @@
+ import { IntDict } from './constants';
+ 
++/*! fromentries. MIT License. Copyright (c) 2018-2020 Feross Aboukhadijeh */
++export function fromEntries (iterable) {
++  return [...iterable].reduce((obj, [key, val]) => {
++    obj[key] = val
++    return obj
++  }, {})
++}
++
+ export function enumToMap(
+   obj: IntDict,
+   filter: ReadonlyArray<number> = [],
+@@ -8,7 +16,7 @@ export function enumToMap(
+   const emptyFilter = (filter?.length ?? 0) === 0;
+   const emptyExceptions = (exceptions?.length ?? 0) === 0;
+ 
+-  return Object.fromEntries(Object.entries(obj).filter(([ , value ]) => {
++  return fromEntries(Object.entries(obj).filter(([ , value ]) => {
+     return (
+       typeof value === 'number' &&
+       (emptyFilter || filter.includes(value)) &&
