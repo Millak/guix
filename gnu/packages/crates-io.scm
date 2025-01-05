@@ -87558,22 +87558,20 @@ breaking algorithm in Rust.")
 (define-public rust-unicode-normalization-0.1
   (package
     (name "rust-unicode-normalization")
-    (version "0.1.22")
+    (version "0.1.24")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "unicode-normalization" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "08d95g7b1irc578b2iyhzv4xhsa4pfvwsqxcl9lbcpabzkq16msw"))))
+        (base32 "0mnrk809z3ix1wspcqy97ld5wxdb31f3xz6nsvg5qcv289ycjcsh"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-tinyvec" ,rust-tinyvec-1))))
     (home-page "https://github.com/unicode-rs/unicode-normalization")
-    (synopsis
-     "This crate provides functions for normalization of Unicode strings")
+    (synopsis "Functions for normalization of Unicode strings")
     (description
      "This crate provides functions for normalization of Unicode strings,
 including Canonical and Compatible Decomposition and Recomposition, as
