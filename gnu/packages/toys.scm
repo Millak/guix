@@ -8,6 +8,7 @@
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023 Sarthak Shah <shahsarthakw@gmail.com>
 ;;; Copyright © 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2025 Andrew Wong <wongandj@icloud.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -29,6 +30,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages man)
@@ -38,11 +40,14 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system meson)
+  #:use-module (guix build-system pyproject)
+  #:use-module (guix build-system python)
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
@@ -236,6 +241,39 @@ an actual mouse or a bone---around the screen while you work.
 
 It was written for the X Window system and does not work well on Wayland.")
     (license license:public-domain))) ; see https://directory.fsf.org/wiki/Oneko
+
+(define-public python-terminaltexteffects
+  (package
+    (name "python-terminaltexteffects")
+    (version "0.11.0")
+    (source
+     (origin
+       (method git-fetch)               ;no tests in PyPI archive
+       (uri (git-reference
+             (url "https://github.com/ChrisBuilds/terminaltexteffects")
+             ;; XXX: The project has a tendency to change tag style
+             ;; e.g. v0.2.1, 0.9.0, release-0.11.0.
+             (commit (string-append "release-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0lakq27bxf8wn99gch37p2mqnbbax54y22qrb1h4x04da006kjz2"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-poetry-core
+           python-pytest))
+    (home-page "https://github.com/ChrisBuilds/terminaltexteffects")
+    (synopsis "Terminal visual effects engine and demo toy")
+    (description
+     "TerminalTextEffects (TTE) is a terminal visual effects engine.  It can
+be installed as a system application to produce effects in your terminal, or
+as a Python library to enable effects within your Python scripts/applications.
+It also includes a growing library of built-in effects which showcase the
+engine's features, including complex character movement via Paths, Waypoints,
+and motion easing, with support for quadratic/cubic bezier curves, complex
+animations via Scenes with symbol/color changes, layers, easing, and Path
+synced progression, and variable stop/step color gradient generation.  Runs
+inline, preserving terminal state and workflow.")
+    (license license:expat)))
 
 (define-public sl
   (package
