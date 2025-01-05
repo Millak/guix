@@ -4349,6 +4349,111 @@ advanced keybindings, word-level diff highlighting, syntax highlighting for
 @command{grep} and a stylized box presentation.")
     (license license:expat)))
 
+(define-public wallust
+  (package
+    (name "wallust")
+    (version "3.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wallust" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1frx8py92vn04hc8cq18bs0z5dadx2q271fa3wgsry9bh5qvs6jp"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:features (list "buildgen")
+       #:install-source? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'install 'install-extras
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (share (string-append out "/share"))
+                    (install-man
+                      (lambda (filename)
+                        (install-file filename
+                                      (string-append
+                                        share "/man/man"
+                                        (string-take-right filename 1))))))
+               (mkdir-p (string-append out "/etc/bash_completion.d"))
+               (mkdir-p (string-append share "/elvish/lib"))
+               (copy-file "completions/wallust.bash"
+                          (string-append out "/etc/bash_completion.d/wallust"))
+               (copy-file "completions/wallust.elv"
+                          (string-append share "/elvish/lib/wallust"))
+               (install-file "completions/wallust.fish"
+                             (string-append share "/fish/vendor_completions.d/"))
+               (install-file "completions/_wallust"
+                             (string-append share "/zsh/site-functions/"))
+               (with-directory-excursion "man"
+                 (for-each install-man (find-files ".")))))))
+       #:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-clap" ,rust-clap-4)
+                       ("rust-dirs" ,rust-dirs-5)
+                       ("rust-documented" ,rust-documented-0.6)
+                       ("rust-dunce" ,rust-dunce-1)
+                       ("rust-fast-image-resize" ,rust-fast-image-resize-5)
+                       ("rust-fastrand" ,rust-fastrand-2)
+                       ("rust-glob" ,rust-glob-0.3)
+                       ("rust-image" ,rust-image-0.25)
+                       ("rust-itertools" ,rust-itertools-0.13)
+                       ("rust-kmeans-colors" ,rust-kmeans-colors-0.6)
+                       ("rust-minijinja" ,rust-minijinja-2)
+                       ("rust-new-string-template" ,rust-new-string-template-1)
+                       ("rust-num-traits" ,rust-num-traits-0.2)
+                       ("rust-owo-colors" ,rust-owo-colors-4)
+                       ("rust-palette" ,rust-palette-0.7)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-shellexpand" ,rust-shellexpand-3)
+                       ("rust-spinners" ,rust-spinners-4)
+                       ("rust-strum" ,rust-strum-0.26)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-toml" ,rust-toml-0.8)
+                       ("rust-toml-edit" ,rust-toml-edit-0.22)
+                       ("rust-vergen-git2" ,rust-vergen-git2-1)
+                       ("wallust-themes" ,wallust-themes))
+       #:cargo-development-inputs (("rust-clap-complete" ,rust-clap-complete-4)
+                                   ("rust-clap-mangen" ,rust-clap-mangen-0.2)
+                                   ("rust-criterion" ,rust-criterion-0.5)
+                                   ("rust-dirs" ,rust-dirs-5)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
+    (native-inputs (list pkg-config))
+    (inputs (list libgit2-1.8 zlib))
+    (home-page "https://explosion-mental.codeberg.page/wallust")
+    (synopsis "Generate themes from images with advanced templating")
+    (description
+     "Wallust is a rust-based successor to \"pywal\" which generates color
+themes from images with advanced templating and generation options.
+Templates are made using either a subset of Jinja2 or pywal syntax.
+Color generation may be constrained to obey ANSI color standards, meet
+minimum contrast levels, and more.")
+    (license license:expat)))
+
+(define-public wallust-themes
+  (package
+    (name "wallust-themes")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wallust_themes" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1kgkggdb78sxz81si3glhvqpxbxhz858p9wzqxd51drzlvwgi1m1"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://codeberg.org/explosion-mental/wallust-themes")
+    (synopsis "Built in colorschemes for Wallust")
+    (description "This package provides built-in colorschemes for Wallust.")
+    ;; Only used as an input for wallust.
+    (properties `((hidden? . #t)))
+    (license license:expat)))
+
 (define-public rust-xremap
   (package
     (name "rust-xremap")
