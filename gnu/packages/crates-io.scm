@@ -21580,6 +21580,30 @@ dedicated files into Rustdoc documentation with support for hiding lines.")
 @code{Cargo.toml}.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-documented-0.6
+  (package
+    (name "rust-documented")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "documented" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1zc7akchjkwnsl0hnzygwad58sfnvrvkcl7w117679cnbg9zxbgy"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-documented-macros" ,rust-documented-macros-0.6)
+                       ("rust-phf" ,rust-phf-0.11)
+                       ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/cyqsimon/documented")
+    (synopsis
+     "Derive and attribute macros for accessing your type's documentation at runtime")
+    (description
+     "This package provides macros to derive and attribute macros for accessing
+your type's documentation at runtime.")
+    (license license:expat)))
+
 (define-public rust-dogged-0.2
   (package
     (name "rust-dogged")
