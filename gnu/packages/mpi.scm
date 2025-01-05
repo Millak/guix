@@ -9,6 +9,7 @@
 ;;; Copyright © 2018 Paul Garlick <pgarlick@tourbillion-technology.com>
 ;;; Copyright © 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2024 Romain Garbage <romain.garbage@inria.fr>
+;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -239,7 +240,11 @@ bind processes, and much more.")
     (outputs '("out" "debug"))
     (arguments
      (list
-      #:configure-flags #~`("--enable-mpi-ext=affinity" ;cr doesn't work
+      #:configure-flags #~`(#$(string-append
+                               "CFLAGS=-g -O2"
+                               " -Wno-error=implicit-function-declaration"
+                               " -Wno-error=incompatible-pointer-types")
+                            "--enable-mpi-ext=affinity" ;cr doesn't work
                             "--with-sge"
                             "--disable-static"
 
