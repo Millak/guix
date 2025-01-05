@@ -1720,8 +1720,8 @@ A plugin for the Xfce panel is also available.")
     (home-page "https://gitlab.xfce.org/apps/xfce4-volumed-pulse")
     (synopsis "XFCE volume keys daemon")
     (description
-     "This is a volume keys control daemon for Xfce Desktop environment. It controls
- the volume using multimedia keys. It also provides volume change notifications.")
+     "This is a volume keys control daemon for Xfce Desktop environment.  It controls
+ the volume using multimedia keys.  It also provides volume change notifications.")
     (license gpl3+)
     (properties `((release-tag-prefix . ,(string-append name "-"))))))
 

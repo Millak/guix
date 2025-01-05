@@ -2794,8 +2794,8 @@ chunks.")
     (home-page "https://www.blosc.org/")
     (synopsis "Blocking, shuffling and lossless compression library")
     (description
-     "Blosc is a high performance compressor optimized for binary data. It has
-been designed to transmit data to the processor cache faster than the
+     "Blosc is a high performance compressor optimized for binary data.  It
+has been designed to transmit data to the processor cache faster than the
 traditional, non-compressed, direct memory fetch approach via a
 @code{memcpy()} system call.  Blosc is meant not only to reduce the size of
 large datasets on-disk or in-memory, but also to accelerate memory-bound

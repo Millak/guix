@@ -131,7 +131,7 @@ web browsers, instant messaging clients, remote login, and other
 applications based on the TCP protocol.
 
 This package is the full featured @code{tor} which is needed for running
-relays, bridges or directory authorities. If you just want to access the Tor
+relays, bridges or directory authorities.  If you just want to access the Tor
 network or to setup an onion service you may install @code{tor-client}
 instead.")
     (license license:bsd-3)))

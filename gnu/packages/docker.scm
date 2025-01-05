@@ -796,7 +796,7 @@ Tini is integrated with Docker.")
     (home-page "https://github.com/docker/distribution")
     (synopsis "Docker registry server and associated tools")
     (description "The Docker registry server enable you to host your own
-docker registry. With it, there is also two other utilities:
+docker registry.  With it, there is also two other utilities:
 @itemize
 @item The digest utility is a tool that generates checksums compatibles with
 various docker manifest files.

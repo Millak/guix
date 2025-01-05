@@ -5848,12 +5848,12 @@ default and preferred audio driver but also supports native drivers like ALSA.")
     (home-page "https://nosignal.fi/ecasound/index.php")
     (synopsis "Multitrack audio processing")
     (description "Ecasound is a software package designed for multitrack audio
-processing. It can be used for simple tasks like audio playback, recording and
+processing.  It can be used for simple tasks like audio playback, recording and
 format conversions, as well as for multitrack effect processing, mixing,
-recording and signal recycling. Ecasound supports a wide range of audio inputs,
-outputs and effect algorithms. Effects and audio objects can be combined in
+recording and signal recycling.  Ecasound supports a wide range of audio inputs,
+outputs and effect algorithms.  Effects and audio objects can be combined in
 various ways, and their parameters can be controlled by operator objects like
-oscillators and MIDI-CCs. A versatile console mode user-interface is included
+oscillators and MIDI-CCs.  A versatile console mode user-interface is included
 in the package.")
     ;; As an exception to the above, the C, C++ and python implementations
     ;; of the Ecasound Control Interface (ECI) are licensed under the LGPL

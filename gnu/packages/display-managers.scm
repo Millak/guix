@@ -190,7 +190,7 @@ to create smooth, animated user interfaces.")
       (synopsis "Abstract Dark theme for SDDM")
       (description
        "This package provides a minimalistic dark theme for SDDM, black
-background with abstract shapes. Inspired by solarized-sddm-theme.")
+background with abstract shapes.  Inspired by solarized-sddm-theme.")
       (license license:gpl3+))))
 
 (define-public dexy-color-sddm-theme

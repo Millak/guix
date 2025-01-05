@@ -2420,10 +2420,10 @@ program for X11.  It was designed to be fast, tiny and scriptable in any languag
     (home-page "https://github.com/vixus0/xftwidth")
     (synopsis "Calculator for determining pixel widths of displayed text using Xft fonts")
     (description "xftwidth is a small C program for calculating the pixel
-widths of displayed text using Xft fonts. It is especially useful in scripts
+widths of displayed text using Xft fonts.  It is especially useful in scripts
 for displaying text in graphical panels, menus, popups, and notification
-windows generated using dzen. These scripts are often used in conjunction with
-minimalistic tiling window managers such as herbstluftwm and bspwm.")
+windows generated using dzen.  These scripts are often used in conjunction
+with minimalistic tiling window managers such as herbstluftwm and bspwm.")
     (license license:expat)))
 
 (define-public xcb-util-xrm
@@ -3148,7 +3148,7 @@ support such as Xfce.")
     (synopsis "Wallpaper setting utility for X")
     (description
      "The xwallpaper utility allows you to set image files as your X
-wallpaper. JPEG, PNG, and XPM file formats are supported.
+wallpaper.  JPEG, PNG, and XPM file formats are supported.
 
 The wallpaper is also advertised to programs which support semi-transparent
 backgrounds.")

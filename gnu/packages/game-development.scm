@@ -286,7 +286,7 @@ offers a wide range of functions, including par-score calculations.")
    (home-page "https://github.com/Doom-Utils/deutex")
    (synopsis "WAD file composer for Doom and related games")
    (description
-    "DeuTex is a wad composer for Doom, Heretic, Hexen and Strife. It can be
+    "DeuTex is a wad composer for Doom, Heretic, Hexen and Strife.  It can be
 used to extract the lumps of a wad and save them as individual files.
 Conversely, it can also build a wad from separate files.  When extracting a
 lump to a file, it does not just copy the raw data, it converts it to an
@@ -351,7 +351,7 @@ DeuTex has functions such as merging wads, etc.")
       (synopsis "GRF development tools")
       (description
        "The @dfn{Graphics Resource File} (GRF) development tools are a set of
-tools for developing (New)GRFs. It includes a number of smaller programs, each
+tools for developing (New)GRFs.  It includes a number of smaller programs, each
 with a specific task:
 @enumerate
 @item @code{grfcodec} decodes and encodes GRF files for OpenTTD.

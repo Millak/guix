@@ -2636,7 +2636,7 @@ Rendering Manager devices.")
     (home-page "https://www.freedesktop.org/wiki/Software/xdg-user-dirs/")
     (synopsis "Tool to help manage \"well known\" user directories")
     (description "xdg-user-dirs is a tool to help manage \"well known\" user
-directories, such as the desktop folder or the music folder. It also handles
+directories, such as the desktop folder or the music folder.  It also handles
 localization (i.e. translation) of the file names.  Designed to be
 automatically run when a user logs in, xdg-user-dirs can also be run
 manually by a user.")

@@ -5948,18 +5948,18 @@ linear algebra routines needed for structured matrices (or operators).")
       (inputs (list kaldi openfst openblas))
       (home-page "https://alphacephei.com/vosk")
       (synopsis "Speech recognition toolkit based on @code{kaldi}")
-      (description "\
-This package provides a speech recognition toolkit based on @code{kaldi}.  It
-supports more than 20 languages and dialects - English, Indian English,
-German, French, Spanish, Portuguese, Chinese, Russian, Turkish, Vietnamese,
-Italian, Dutch, Catalan, Arabic, Greek, Farsi, Filipino, Ukrainian, Kazakh,
-Swedish, Japanese, Esperanto, Hindi, Czech, Polish. The program works offline,
-even on lightweight devices.  Portable per-language models are about 50Mb each,
-and there are much bigger and precise models available.
+      (description "This package provides a speech recognition toolkit based
+on @code{kaldi}.  It supports more than 20 languages and dialects - English,
+Indian English, German, French, Spanish, Portuguese, Chinese, Russian,
+Turkish, Vietnamese, Italian, Dutch, Catalan, Arabic, Greek, Farsi, Filipino,
+Ukrainian, Kazakh, Swedish, Japanese, Esperanto, Hindi, Czech, Polish.  The
+program works offline, even on lightweight devices.  Portable per-language
+models are about 50Mb each, and there are much bigger and precise models
+available.
 
-Vosk API provides a streaming API allowing to use it `on-the-fly' and bindings
-for different programming languages.  It allows quick reconfiguration of
-vocabulary for better accuracy, and supports speaker identification beside
+Vosk API provides a streaming API allowing to use it @emph{on-the-fly} and
+bindings for different programming languages.  It allows quick reconfiguration
+of vocabulary for better accuracy, and supports speaker identification beside
 simple speech recognition.")
       (license license:asl2.0))))
 

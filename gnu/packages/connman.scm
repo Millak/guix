@@ -107,7 +107,7 @@
     (synopsis "Connection management daemon")
     (description "Connman provides a daemon for managing Internet connections.
 The Connection Manager is designed to be slim and to use as few resources as
-possible. It is fully modular system that can be extended through plug-ins.
+possible.  It is fully modular system that can be extended through plug-ins.
 The plug-in approach allows for easy adaption and modification for various use
 cases.  Connman implements DNS resolving and caching, DHCP clients for both
 IPv4 and IPv6, link-local IPv4 address handling and tethering (IP connection

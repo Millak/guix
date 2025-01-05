@@ -118,8 +118,8 @@ JSONMarshal/JSONUnmarshal to store/reload the Bloom filter.")
     (synopsis "Set of interfaces for CID addressable blocks of data")
     (description
      "Package @code{blocks} contains the lowest level of @acronym{IPLD,
-InterPlanetary Linked Data} data structures. A block is raw data accompanied
-by a @acronym{Content Identifiers,CID}. The CID contains the multihash
+InterPlanetary Linked Data} data structures.  A block is raw data accompanied
+by a @acronym{Content Identifiers,CID}.  The CID contains the multihash
 corresponding to the block.")
     (license license:expat)))
 

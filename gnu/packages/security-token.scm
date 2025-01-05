@@ -413,9 +413,9 @@ authentication, encryption and digital signatures.  OpenSC implements the PKCS
     (home-page "https://github.com/OpenSC/pkcs11-helper")
     (synopsis "Library that simplifies the interaction with PKCS#11 providers")
     (description
-     "Pkcs11-helper is a library that simplifies the interaction with
-PKCS#11 providers for end-user applications. PKCS#11 is published standard.
-PKCS#11 is the de-facto standard to access cryptographic devices")
+     "Pkcs11-helper is a library that simplifies the interaction with PKCS#11
+providers for end-user applications.  PKCS#11 is published standard.  PKCS#11
+is the de-facto standard to access cryptographic devices")
     (license (list license:gpl2 license:bsd-3))))
 
 

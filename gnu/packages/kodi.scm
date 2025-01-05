@@ -268,9 +268,10 @@ generator library for C++.")
     (synopsis "Fuzzy comparison of strings")
     (description
      "The fstrcmp project provides a library that is used to make fuzzy
-comparisons of strings and byte arrays, including multi-byte character strings.
-This can be useful in error messages, enabling the suggestion of likely valid
-alternatives. In compilers, this can reduce the cascade of secondary errors.")
+comparisons of strings and byte arrays, including multi-byte character
+strings.  This can be useful in error messages, enabling the suggestion of
+likely valid alternatives.  In compilers, this can reduce the cascade of
+secondary errors.")
     (license license:gpl3+)))
 
 (define-public kodi

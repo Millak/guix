@@ -2026,7 +2026,7 @@ map display.  Downloads map data from a number of websites, including
      "XyGrib is a Grib file reader and visualizes meteorological data providing
 an off-line capability to analyse weather forecasts or hindcasts.  It is
 intended to be used as a capable weather work station for anyone with a serious
-interest in examining weather. This would include members of the sailing
+interest in examining weather.  This would include members of the sailing
 community, private and sport aviators, farmers, weather buffs and many more.
 XyGrib is the continuation of the zyGrib software package with a new team of
 volunteers.")

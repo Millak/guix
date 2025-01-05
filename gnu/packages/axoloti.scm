@@ -758,9 +758,9 @@ powerful microcontroller board: Axoloti Core.")
     (home-page "https://ksoloti.github.io/")
     (synopsis "Audio development environment for the Ksoloti board")
     (description
-     "Ksoloti is an environment for generating and processing digital
-audio. It can be a programmable virtual modular synthesizer, polysynth, drone
-box, sequencer, chord generator, multi effect, sample player, looper, granular
+     "Ksoloti is an environment for generating and processing digital audio.
+It can be a programmable virtual modular synthesizer, polysynth, drone box,
+sequencer, chord generator, multi effect, sample player, looper, granular
 sampler, MIDI generator/processor, CV or trigger generator, anything in
 between, and more.
 
@@ -918,9 +918,9 @@ This package provides the runtime.")
      (list ant zip                      ;for repacking the jar
            unzip))
     (description
-     "Ksoloti is an environment for generating and processing digital
-audio. It can be a programmable virtual modular synthesizer, polysynth, drone
-box, sequencer, chord generator, multi effect, sample player, looper, granular
+     "Ksoloti is an environment for generating and processing digital audio.
+It can be a programmable virtual modular synthesizer, polysynth, drone box,
+sequencer, chord generator, multi effect, sample player, looper, granular
 sampler, MIDI generator/processor, CV or trigger generator, anything in
 between, and more.
 

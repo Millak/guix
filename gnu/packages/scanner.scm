@@ -98,8 +98,8 @@ suitable IPP-over-USB daemon like ipp-usb to be installed and configured.
 Any eSCL or WSD-capable scanner should just work.  sane-airscan automatically
 discovers and configures devices, including which protocol to use.  It was
 successfully tested with many devices from Brother, Canon, Dell, Kyocera,
-Lexmark, Epson, HP, OKI, Panasonic, Pantum, Ricoh, Samsung, and Xerox, with both
-WSD and eSCL.")
+Lexmark, Epson, HP, OKI, Panasonic, Pantum, Ricoh, Samsung, and Xerox, with
+both WSD and eSCL.")
     (license (list license:gpl2+        ; the combined work
                    license:expat))))    ; http_parser.[ch]
 

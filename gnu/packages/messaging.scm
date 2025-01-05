@@ -217,7 +217,7 @@
    (home-page "https://biboumi.louiz.org")
    (synopsis "XMPP gateway that connects to IRC")
    (description "Biboumi is a Free, Libre and Open Source XMPP gateway that connects to IRC
-servers and translates between the two protocols. Its goal is to let XMPP
+servers and translates between the two protocols.  Its goal is to let XMPP
 users take part in IRC discussions, using their favourite XMPP client.")
    (license license:zlib)))
 

@@ -1048,7 +1048,7 @@ Readline library.")
     (home-page "https://cscope.sourceforge.net")
     (synopsis "Tool for browsing source code")
     (description
-     "Cscope is a text screen based source browsing tool. Although it is
+     "Cscope is a text screen based source browsing tool.  Although it is
 primarily designed to search C code (including lex and yacc files), it can
 also be used for C++ code.
 

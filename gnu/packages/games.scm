@@ -7215,7 +7215,7 @@ with the mouse isn’t always trivial.")
      (list pkg-config))
     (home-page "http://level7.org.uk/chroma/")
     (synopsis "Abstract puzzle game")
-    (description "Chroma is an abstract puzzle game. A variety of colourful
+    (description "Chroma is an abstract puzzle game.  A variety of colourful
 shapes are arranged in a series of increasingly complex patterns, forming
 fiendish traps that must be disarmed and mysterious puzzles that must be
 manipulated in order to give up their subtle secrets.  Initially so

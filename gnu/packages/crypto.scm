@@ -1680,11 +1680,10 @@ checksum tool based on the BLAKE3 cryptographic hash function.")
     (synopsis
      "Extended crypt library for descrypt, md5crypt, bcrypt, and others")
     (description
-     "libxcrypt is a modern library for one-way hashing of
-passwords. It supports a wide variety of both modern and historical
-hashing methods: yescrypt, gost-yescrypt, scrypt, bcrypt, sha512crypt,
-sha256crypt, md5crypt, SunMD5, sha1crypt, NT, bsdicrypt, bigcrypt, and
-descrypt.")
+     "libxcrypt is a modern library for one-way hashing of passwords.  It
+supports a wide variety of both modern and historical hashing methods:
+yescrypt, gost-yescrypt, scrypt, bcrypt, sha512crypt, sha256crypt, md5crypt,
+SunMD5, sha1crypt, NT, bsdicrypt, bigcrypt, and descrypt.")
     (home-page "https://github.com/besser82/libxcrypt")
     (license license:lgpl2.1)))
 

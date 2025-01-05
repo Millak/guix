@@ -356,11 +356,11 @@ services.")
                          guile-quickcheck)) ;for tests
     (synopsis "Guile implementation of GNUnet client libraries")
     (description
-     "This package provides Guile modules for connecting to various
-GNUnet services. It also has infrastructure for writing new GNUnet services and
-connecting to them and can be used from multi-threaded environments.  It is not
-to be confused with @code{guile-gnunet} -- @code{guile-gnunet} supports a different
-set of services.
+     "This package provides Guile modules for connecting to various GNUnet
+services.  It also has infrastructure for writing new GNUnet services and
+connecting to them and can be used from multi-threaded environments.  It is
+not to be confused with @code{guile-gnunet} -- @code{guile-gnunet} supports a
+different set of services.
 
 The following services are supported:
 

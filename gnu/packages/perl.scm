@@ -5385,7 +5385,7 @@ matching a regular expression.")
     (build-system perl-build-system)
     (home-page "https://metacpan.org/release/File-ReadBackwards")
     (synopsis "Read a file backwards by lines")
-    (description "This module reads a file backwards line by line. It is
+    (description "This module reads a file backwards line by line.  It is
 simple to use, memory efficient and fast.  It supports both an object and a
 tied handle interface.
 

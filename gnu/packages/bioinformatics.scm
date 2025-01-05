@@ -6471,7 +6471,7 @@ copies of a pattern of nucleotides.  Tandem Repeats Finder is a program to
 locate and display tandem repeats in DNA sequences.  In order to use the
 program, the user submits a sequence in FASTA format.  The output consists of
 two files: a repeat table file and an alignment file.  Submitted sequences may
-be of arbitrary length. Repeats with pattern size in the range from 1 to 2000
+be of arbitrary length.  Repeats with pattern size in the range from 1 to 2000
 bases are detected.")
     (license license:agpl3+)))
 
@@ -20059,7 +20059,7 @@ datasets.")
 memory (each interval is represented by about 3 words + whatever the
 cargo is) and has semantics that are appropriate for genomic intervals
 (namely, intervals can overlap and queries will return all matches
-together). It also designed to be used in two phases: a construction
+together).  It also designed to be used in two phases: a construction
 phase + query phase).")
       (license license:expat))))
 

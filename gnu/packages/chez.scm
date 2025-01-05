@@ -679,15 +679,15 @@ long as using an existing Chez Scheme, but @code{cs-bootstrap} supports Racket
     (home-page "https://cisco.github.io/ChezScheme/")
     (synopsis "Bootstrapped Chez Scheme boot files")
     (description
-     "Chez Scheme is a self-hosting compiler: building it requires
-``boot files'' containing the Scheme-implemented portions compiled for the
-current platform.  (Chez can then cross-compile bootfiles for all other
-supported platforms.)
+     "Chez Scheme is a self-hosting compiler: building it requires ``boot
+files'' containing the Scheme-implemented portions compiled for the current
+platform.  (Chez can then cross-compile bootfiles for all other supported
+platforms.)
 
 This package provides boot files for the released version of Chez Scheme
-bootstrapped by @code{chez-scheme-for-racket}. Chez Scheme 9.5.4 or any later
-version can be used for bootstrapping. Guix ultimately uses the Racket package
-@code{cs-bootstrap} to bootstrap its initial version of Chez Scheme.")
+bootstrapped by @code{chez-scheme-for-racket}.  Chez Scheme 9.5.4 or any later
+version can be used for bootstrapping.  Guix ultimately uses the Racket
+package @code{cs-bootstrap} to bootstrap its initial version of Chez Scheme.")
     (license asl2.0)))
 
 ;;

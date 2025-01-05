@@ -306,9 +306,9 @@ available to ROCm and show their properties.")
     (home-page "https://github.com/RadeonOpenCompute/rocm_bandwidth_test")
     (synopsis "Bandwidth test for ROCm")
     (description "RocBandwidthTest is designed to capture the performance
-characteristics of buffer copying and kernel read/write operations. The help
+characteristics of buffer copying and kernel read/write operations.  The help
 screen of the benchmark shows various options one can use in initiating
-cop/read/writer operations.  In addition one can also query the topology of the
-system in terms of memory pools and their agents.")
+cop/read/writer operations.  In addition one can also query the topology of
+the system in terms of memory pools and their agents.")
     (license license:ncsa)))
 

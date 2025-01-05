@@ -4494,7 +4494,7 @@ with a number of bugfixes and changes to improve IT playback.")
     (synopsis "Live looping sampler")
     (description
      "SooperLooper is a live looping sampler capable of immediate loop
-recording, overdubbing, multiplying, reversing and more. It allows for
+recording, overdubbing, multiplying, reversing and more.  It allows for
 multiple simultaneous multi-channel loops limited only by your computer's
 available memory.")
     (license license:gpl2+)))
@@ -7947,11 +7947,10 @@ Renoise, VCV Rack, or SuperCollider.")
     (home-page "https://thentrythis.org/projects/samplebrain/")
     (synopsis "Sample mashing synthesizer designed by Aphex Twin")
     (description
-     "Samplebrain chops samples up into a 'brain' of
-interconnected small sections called blocks which are connected into a network
-by similarity.  It processes a target sample, chopping it up into blocks in
-the same way, and tries to match each block with one in its brain to play in
-realtime.")
+     "Samplebrain chops samples up into a 'brain' of interconnected small
+sections called blocks which are connected into a network by similarity.  It
+processes a target sample, chopping it up into blocks in the same way, and
+tries to match each block with one in its brain to play in realtime.")
     (license license:gpl2+)))
 
 (define-public le-biniou-data

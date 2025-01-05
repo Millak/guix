@@ -703,7 +703,8 @@ runs Word\".")
     (synopsis "MS-Word to TeX or plain text converter")
     (description "@command{catdoc} extracts text from MS-Word files, trying to
 preserve as many special printable characters as possible.  It supports
-everything up to Word-97. Also supported are MS Write documents and RTF files.
+everything up to Word-97.  Also supported are MS Write documents and RTF
+files.
 
 @command{catdoc} does not preserve complex word formatting, but it can
 translate some non-ASCII characters into TeX escape codes.  It's goal is to
