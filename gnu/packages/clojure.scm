@@ -753,6 +753,32 @@ Uses StAX internally
 lazy - should allow parsing and emitting of large XML documents")
     (license license:epl1.0)))
 
+(define-public clojure-data-zip
+  (package
+    (name "clojure-data-zip")
+    (version "1.1.1")
+    (home-page "https://github.com/clojure/data.zip")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url home-page)
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0l13xs0jlv2cyh3rqdp1f5r0jsff9p1h7dh49112xxrkcvzck876"))))
+    (build-system clojure-build-system)
+    (arguments
+     '(#:source-dirs '("src/main/clojure")
+       #:test-dirs '("src/test/clojure")
+       #:doc-dirs '()))
+    (synopsis
+     "Clojure library for filtering trees, and XML trees in particular")
+    (description
+     "@code{data.zip} is a Clojure library for filtering trees using the zipper
+abstraction.")
+    (license license:epl1.0)))
+
 (define-public clojure-instaparse
   (let ((version "1.4.12"))
     (package
