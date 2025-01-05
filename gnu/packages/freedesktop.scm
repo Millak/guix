@@ -2293,15 +2293,17 @@ between protocols to provide a unified interface for applications.")
                 "1bjx85k7jyfi5pvl765fzc7q2iz9va51anrc2djv7caksqsdbjlg"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:parallel-tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'pre-check
-          (lambda _
-            (setenv "HOME" (getenv "TMPDIR"))
-            #t)))))
+     (list
+      #:parallel-tests? #f
+      #:configure-flags
+      #~(list "CFLAGS=-g -O2 -Wno-error=incompatible-pointer-types")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" (getenv "TMPDIR")))))))
     (native-inputs
-     `(("glib:bin" ,glib "bin") ; for glib-genmarshal, etc.
+     `(("glib:bin" ,glib "bin")         ;for glib-genmarshal, etc.
        ("gobject-introspection" ,gobject-introspection)
        ("intltool" ,intltool)
        ("pkg-config" ,pkg-config)
