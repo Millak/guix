@@ -71107,6 +71107,32 @@ TOML/JSON/MessagePack strings and serializable values.")
        (("rust-quote" ,rust-quote-0.6)
         ("rust-syn" ,rust-syn-0.15))))))
 
+(define-public rust-serial-unix-0.4
+  (package
+    (name "rust-serial-unix")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "serial-unix" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1dyaaca8g4q5qzc2l01yirzs6igmhc9agg4w8m5f4rnqr6jbqgzh"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (substitute* "Cargo.toml"
+                   ((", path = \".*\"") ""))))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-ioctl-rs" ,rust-ioctl-rs-0.1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-serial-core" ,rust-serial-core-0.4)
+                       ("rust-termios" ,rust-termios-0.2))))
+    (home-page "https://github.com/dcuddeback/serial-rs")
+    (synopsis "Serial port implementation for Unix")
+    (description "This package provides Serial port implementation for Unix.")
+    (license license:expat)))
+
 (define-public rust-serial-windows-0.4
   (package
     (name "rust-serial-windows")
