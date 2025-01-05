@@ -71107,6 +71107,28 @@ TOML/JSON/MessagePack strings and serializable values.")
        (("rust-quote" ,rust-quote-0.6)
         ("rust-syn" ,rust-syn-0.15))))))
 
+(define-public rust-serial-windows-0.4
+  (package
+    (name "rust-serial-windows")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "serial-windows" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ql1vjy57g2jf218bhmgr98i41faq0v5vzdx3g9payi6fsvx7ihm"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t     ; could not find `windows` in `os`
+       #:cargo-inputs (("rust-libc" ,rust-libc-0.2)
+                       ("rust-serial-core" ,rust-serial-core-0.4))))
+    (home-page "https://github.com/dcuddeback/serial-rs")
+    (synopsis "Serial port implementation for Windows")
+    (description
+     "This package provides Serial port implementation for Windows.")
+    (license license:expat)))
+
 (define-public rust-servo-arc-0.3
   (package
     (name "rust-servo-arc")
