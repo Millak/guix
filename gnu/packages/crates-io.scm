@@ -55118,6 +55118,41 @@ overloading without macros in Rust.")
     (arguments
      `(#:cargo-inputs (("rust-portable-atomic" ,rust-portable-atomic-1))))))
 
+(define-public rust-portable-pty-0.8
+  (package
+    (name "rust-portable-pty")
+    (version "0.8.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "portable-pty" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1gmh9ij90qwxx8gzvs6dj2vlc1ackv8zhd4mzfly3nq3586fhvl0"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-bitflags" ,rust-bitflags-1)
+                       ("rust-downcast-rs" ,rust-downcast-rs-1)
+                       ("rust-filedescriptor" ,rust-filedescriptor-0.8)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-nix" ,rust-nix-0.25)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-derive" ,rust-serde-derive-1)
+                       ("rust-serial" ,rust-serial-0.4)
+                       ("rust-shared-library" ,rust-shared-library-0.1)
+                       ("rust-shell-words" ,rust-shell-words-1)
+                       ("rust-winapi" ,rust-winapi-0.3)
+                       ("rust-winreg" ,rust-winreg-0.10))
+       #:cargo-development-inputs (("rust-futures" ,rust-futures-0.3)
+                                   ("rust-smol" ,rust-smol-1))))
+    (home-page "https://github.com/wez/wezterm")
+    (synopsis "Cross platform pty interface")
+    (description "This package provides a cross platform pty interface.")
+    (license license:expat)))
+
 (define-public rust-postcard-1
   (package
     (name "rust-postcard")
