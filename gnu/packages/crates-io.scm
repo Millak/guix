@@ -63689,17 +63689,17 @@ MessagePack format.")
    (description "This create provides a value variant for @code{rust-rmp}.")
    (license license:expat)))
 
-(define-public rust-roadmap-0.6
+(define-public rust-roadmap-0.7
   (package
     (name "rust-roadmap")
-    (version "0.6.1")
+    (version "0.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "roadmap" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1qm35hdx3cjzvhn18p2gj93nrjb1d5ln86614ikcbx7hhmhfqkx8"))))
+        (base32 "0xwzxsh3qk5mg7yfsjxjm6x68adp5c8szv7dznzf9irla5f7fjgc"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
@@ -63708,7 +63708,7 @@ MessagePack format.")
                        ("rust-serde" ,rust-serde-1)
                        ("rust-tempfile" ,rust-tempfile-3)
                        ("rust-textwrap" ,rust-textwrap-0.16)
-                       ("rust-thiserror" ,rust-thiserror-1))))
+                       ("rust-thiserror" ,rust-thiserror-2))))
     (home-page "https://gitlab.com/larswirzenius/roadmap")
     (synopsis "Model a project roadmap as a directed acyclic graph")
     (description "Model a project roadmap as a directed acyclic graph.")
