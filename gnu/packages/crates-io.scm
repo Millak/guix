@@ -48052,6 +48052,36 @@ giga, kibi.")
           "1vs9rhggqbql1p26x8nkha1j06wawwgb2jp5fs88b5gi7prvvy5q"))))
     (arguments '(#:tests? #f))))
 
+(define-public rust-nvml-wrapper-0.10
+  (package
+    (name "rust-nvml-wrapper")
+    (version "0.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "nvml-wrapper" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1i9q80f8x5zy646wvz1wkaydryvnfnwsi8jy72hh92fll45gz6qc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Tests expect libnvidia-ml.so from the NVIDIA driver
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-libloading" ,rust-libloading-0.8)
+                       ("rust-nvml-wrapper-sys" ,rust-nvml-wrapper-sys-0.8)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-derive" ,rust-serde-derive-1)
+                       ("rust-static-assertions" ,rust-static-assertions-1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-wrapcenum-derive" ,rust-wrapcenum-derive-0.4))
+       #:cargo-development-inputs (("rust-pretty-bytes" ,rust-pretty-bytes-0.2))))
+    (home-page "https://github.com/Cldfire/nvml-wrapper")
+    (synopsis "Rust wrapper for the NVIDIA Management Library")
+    (description
+     "This package provides a safe and ergonomic Rust wrapper for the NVIDIA
+Management Library.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-oauth2-types-0.7
   (package
     (name "rust-oauth2-types")
