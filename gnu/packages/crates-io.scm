@@ -77851,20 +77851,21 @@ processors, disks, components and networks.")
   (package
     (inherit rust-sysinfo-0.31)
     (name "rust-sysinfo")
-    (version "0.30.7")
+    (version "0.30.13")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "sysinfo" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "064d267hiqnj2jd9rmkki3fra9yjza6gr6i02qm8a2iqxy45hf0c"))))
+        (base32 "1csbkx1hdlacgzw5ynjyfvgc1xg58w3h1rgh5gm2pysmxvd4snqa"))))
     (arguments
      `(#:cargo-test-flags
-       (list "--release" "--"
+       (list "--"
              ;; These files aren't available in the build environment.
              "--skip=test::check_system_info"
              "--skip=test::check_uid_gid"
+             "--skip=test_components"
              "--skip=test_networks"
              "--skip=test_wait_non_child"
              "--skip=test_process_disk_usage")
