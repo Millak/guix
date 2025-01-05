@@ -7370,10 +7370,9 @@ Features:
     (description
      "This package provides a Go library that first converts YAML to JSON
 using @code{go-yaml} and then uses @code{json.Marshal} and
-@code{json.Unmarshal} to convert to or from the struct. This means that
-it effectively reuses the JSON struct tags as well as the custom JSON
-methods @code{MarshalJSON} and @code{UnmarshalJSON} unlike
-@code{go-yaml}.
+@code{json.Unmarshal} to convert to or from the struct.  This means that it
+effectively reuses the JSON struct tags as well as the custom JSON methods
+@code{MarshalJSON} and @code{UnmarshalJSON} unlike @code{go-yaml}.
 
 kubernetes-sigs/yaml is a permanent fork of
 @url{https://github.com/ghodss/yaml,ghodss/yaml}.")

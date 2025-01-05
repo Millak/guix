@@ -1131,7 +1131,7 @@ execution when a test fails.")
            go-golang-org-x-tools))
     (home-page "https://github.com/smartystreets/goconvey")
     (synopsis "Go testing tool with both a web and terminal user interface")
-    (description "GoConvey is a testing tool for Go. It integrates with go
+    (description "GoConvey is a testing tool for Go.  It integrates with go
 test, can show test coverage and has a web user interface that will refresh
 automatically.")
     (license license:expat)))

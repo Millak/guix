@@ -1858,7 +1858,7 @@ levels that works by wrapping the standard @code{log} library.")
     (synopsis "Cgroups for Golang")
     (description
      "This package implements a functinoality for creating, managing,
-inspecting, and destroying cgroups. The resources format for settings on the
+inspecting, and destroying cgroups.  The resources format for settings on the
 cgroup uses the OCI runtime-spec found
 @url{https://github.com/opencontainers/runtime-spec,here}.")
     (license license:asl2.0)))
@@ -8894,7 +8894,7 @@ tool."))))
       #:unpack-path "github.com/BurntSushi/toml"))
     (description
      (string-append (package-description go-github-com-burntsushi-toml)
-                    " This package provides an command line interface (CLI)
+                    "  This package provides an command line interface (CLI)
 tool."))))
 
 (define-public go-ulid
@@ -8910,7 +8910,7 @@ tool."))))
      (list go-github-com-pborman-getopt))
     (description
      (string-append (package-description go-github-com-oklog-ulid)
-                    " This package provides an command line interface (CLI)
+                    "  This package provides an command line interface (CLI)
 tool."))))
 
 ;;;

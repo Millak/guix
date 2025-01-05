@@ -3077,7 +3077,7 @@ transforms one JSON document into another through a JMESPath expression.")
     (synopsis "Low-level access to the Linux rtnetlink API")
     (description
      "This package allows the kernel's routing tables to be read and
-altered. Network routes, IP addresses, Link parameters, Neighbor
+altered.  Network routes, IP addresses, Link parameters, Neighbor
 setups,Queueing disciplines, Traffic classes and Packet classifiers may all be
 controlled.  It is based on netlink messages.")
     (license license:expat)))
