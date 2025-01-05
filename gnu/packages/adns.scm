@@ -148,6 +148,21 @@ The primary examples of such applications are servers which communicate with
 multiple clients and programs with graphical user interfaces.")
     (license (x11-style "https://c-ares.haxx.se/license.html"))))
 
+(define-public c-ares-for-node-lts
+  (hidden-package
+   (package
+     (inherit c-ares)
+     (version "1.34.4")
+     (source (origin
+               (method url-fetch)
+               (uri (string-append
+                     "https://github.com/c-ares/c-ares/releases/download/v"
+                     version "/c-ares-" version
+                     ".tar.gz"))
+               (sha256
+                (base32
+                 "0br2msk3bpl5myhjp9vr5j2scpspvbg2fpnz69dcrr4ycpnxnf7s")))))))
+
 ;; gRPC requires a c-ares built with CMake in order to get the .cmake modules.
 ;; We can not build c-ares itself with CMake because that would introduce a
 ;; circular dependency through nghttp2.
