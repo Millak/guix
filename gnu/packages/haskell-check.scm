@@ -355,7 +355,7 @@ been added since previous test run.")
     (description
      "With the function @code{Test.Tasty.ExpectedFailure.expectFail} in the
 provided module @code{Test.Tasty.ExpectedFailure}, you can mark that you
-expect test cases to fail, and not to pass. This can be used for test-driven
+expect test cases to fail, and not to pass.  This can be used for test-driven
 development.")
     (license license:expat)))
 
@@ -1069,21 +1069,19 @@ constraints more cleanly.")
     (home-page "https://github.com/andrewthad/quickcheck-classes#readme")
     (synopsis "QuickCheck common typeclasses from `base`")
     (description
-      "This library is a minimal variant of `quickcheck-classes`
-that only provides laws for typeclasses from `base`. The main
-purpose of splitting this out is so that `primitive` can depend
-on `quickcheck-classes-base` in its test suite, avoiding the
-circular dependency that arises if `quickcheck-classes` is used
-instead. . This library provides QuickCheck properties to ensure
-that typeclass instances adhere to the set of laws that they are
-supposed to. There are other libraries that do similar things,
-such as `genvalidity-hspec` and `checkers`. This library differs
-from other solutions by not introducing any new typeclasses that
-the user needs to learn. . /Note:/ on GHC < 8.5, this library
-uses the higher-kinded typeclasses ('Data.Functor.Classes.Show1',
-'Data.Functor.Classes.Eq1', 'Data.Functor.Classes.Ord1', etc.),
-but on GHC >= 8.5, it uses `-XQuantifiedConstraints` to express
-these constraints more cleanly.")
+      "This library is a minimal variant of `quickcheck-classes` that only
+provides laws for typeclasses from `base`.  The main purpose of splitting this
+out is so that `primitive` can depend on `quickcheck-classes-base` in its test
+suite, avoiding the circular dependency that arises if `quickcheck-classes` is
+used instead.  This library provides QuickCheck properties to ensure that
+typeclass instances adhere to the set of laws that they are supposed to.
+There are other libraries that do similar things, such as `genvalidity-hspec`
+and `checkers`.  This library differs from other solutions by not introducing
+any new typeclasses that the user needs to learn.  @emph{Note:} on GHC < 8.5,
+this library uses the higher-kinded typeclasses
+(@code{Data.Functor.Classes.Show1}, @code{Data.Functor.Classes.Eq1},
+@code{Data.Functor.Classes.Ord1}, etc.), but on GHC >= 8.5, it uses
+`-XQuantifiedConstraints` to express these constraints more cleanly.")
     (license license:bsd-3)))
 
 (define-public ghc-doctest-lib
@@ -1101,7 +1099,7 @@ these constraints more cleanly.")
     (home-page "https://hub.darcs.net/thielema/doctest-lib/")
     (synopsis "Parts of doctest exposed as library")
     (description
-      "Parts of doctest exposed as library. For use with the doctest-extract utility.")
+      "Parts of doctest exposed as library.  For use with the doctest-extract utility.")
     (license license:expat)))
 
 (define-public ghc-doctest-exitcode-stdio

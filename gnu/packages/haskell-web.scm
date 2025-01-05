@@ -1508,7 +1508,7 @@ supported Unicode version is 7.0.0")
     (description
      "This package provides Unicode encoding and decoding functions for
 encodings used in the Haskell XML Toolbox.  ISO Latin 1-16, utf8, utf16, ASCII
-are supported. Decoding is done with lazy functions, errors may be detected or
+are supported.  Decoding is done with lazy functions, errors may be detected or
 ignored.")
     (license license:expat)))
 
