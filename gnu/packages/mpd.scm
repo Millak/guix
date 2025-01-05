@@ -504,15 +504,16 @@ MPRIS 2 support.")
 (define-public cantata
   (package
     (name "cantata")
-    (version "2.5.0")
+    (version "3.3.0")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/CDrummond/"
-                                  "cantata/releases/download/v" version "/"
-                                  "cantata-" version ".tar.bz2"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/nullobsi/cantata")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "090ph8kb2vicjaajn64kmfppb90ix0pnxj525shglyjn7ymh0zpb"))))
+                "09nskgw9c6jhr647yv9irzjb2zibv1w8bwbpfgz0viibqn81f7bp"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f)) ; No test suite
@@ -522,23 +523,24 @@ MPRIS 2 support.")
      (list avahi
            eudev
            ffmpeg
+           libcddb
            libcdio-paranoia
            libmusicbrainz
            libebur128
            libmtp
            mpg123
-           qtbase-5
-           qtmultimedia-5
-           qtsvg-5
+           qtbase
+           qtmultimedia
+           qtsvg
            taglib
            zlib))
     (synopsis "Graphical MPD Client")
     (description "Cantata is a graphical client for the Music Player Daemon
-(MPD), using the Qt5 toolkit.  Its user interface is highly customizable,
-supporting multiple collections, ratings, and dynamic playlists.  A local cache
-of the music library will be created to provide a hierarchy of albums and
-artists along with albumart.")
-    (home-page "https://github.com/cdrummond/cantata")
+(MPD).  Its user interface is highly customizable, supporting multiple
+collections, ratings, and dynamic playlists.  A local cache of the music
+library will be created to provide a hierarchy of albums and artists along
+with albumart.")
+    (home-page "https://github.com/nullobsi/cantata")
     (license license:gpl3+)))
 
 (define-public mcg
