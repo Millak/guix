@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2022-2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2022-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -20,6 +20,7 @@
 
 (define-module (gnu packages ncdu)
   #:use-module (gnu packages)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages pkg-config)
@@ -38,16 +39,23 @@
   ;; yet, so we'll keep both for just a little longer.
   (package
     (name "ncdu")
-    (version "1.20")
+    (version "1.21")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://dev.yorhel.nl/download/ncdu-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0wlmpq8gzcl1fim8jba3g0q0bbn4jcrbkns2n95kfwmy3a2bpqjz"))))
+                "19h1jvgiw7dvpxlhg6sqzc1c8gjkaj7z9girc255gkkbnjlx7558"))))
     (build-system gnu-build-system)
-    (inputs (list ncurses))
+    (arguments
+     (list #:configure-flags
+           ;; Configure default shell for spawning shell when $SHELL is not set
+           #~(list (string-append "--with-shell="
+                                  #$(this-package-input "bash-minimal")
+                                  "/bin/sh"))))
+    (native-inputs (list pkg-config))
+    (inputs (list bash-minimal ncurses))
     (synopsis "Ncurses-based disk usage analyzer")
     (description
      "Ncdu is a disk usage analyzer with an ncurses interface, aimed to be
