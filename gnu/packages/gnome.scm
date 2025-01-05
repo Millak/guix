@@ -811,7 +811,13 @@ patterns.")
             (lambda _
               (copy-recursively
                #$(this-package-native-input "libgd-checkout")
-               "subprojects/libgd"))))))
+               "subprojects/libgd")))
+          (add-before 'configure 'relax-gcc-14-strictness
+            (lambda _
+              (setenv "CFLAGS"
+                      (string-append
+                       "-g -O2"
+                       " -Wno-error=incompatible-pointer-types")))))))
     (inputs (list glib
                   gnome-autoar
                   gnome-online-accounts
