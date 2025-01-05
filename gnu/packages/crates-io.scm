@@ -76147,35 +76147,31 @@ automated acceptance tests for systems and software.")
 another project's @code{build.rs} module.")
     (license license:expat-0)))
 
-(define-public rust-subplotlib-0.11
+(define-public rust-subplotlib-0.12
   (package
     (name "rust-subplotlib")
-    (version "0.11.0")
+    (version "0.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "subplotlib" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "12a748llbc9ywqcybn8n9bplk1dpkxvxb7x1s0ylxqdfcmj93ns1"))))
+        (base32 "08k4j32mxymhl2fj91vmj8f6c7lwmxxnym4b09vjzxjf3n68kpvd"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f      ; Not all files included.
-       #:cargo-inputs (("rust-base64" ,rust-base64-0.22)
+     `(#:cargo-inputs (("rust-base64" ,rust-base64-0.22)
                        ("rust-culpa" ,rust-culpa-1)
                        ("rust-filetime" ,rust-filetime-0.2)
                        ("rust-fs2" ,rust-fs2-0.4)
-                       ("rust-glob" ,rust-glob-0.3)
                        ("rust-lazy-static" ,rust-lazy-static-1)
                        ("rust-regex" ,rust-regex-1)
-                       ("rust-remove-dir-all" ,rust-remove-dir-all-0.8)
+                       ("rust-remove-dir-all" ,rust-remove-dir-all-1)
                        ("rust-shell-words" ,rust-shell-words-1)
-                       ("rust-state" ,rust-state-0.5)
-                       ("rust-subplot-build" ,rust-subplot-build-0.11)
-                       ("rust-subplotlib-derive" ,rust-subplotlib-derive-0.11)
+                       ("rust-state" ,rust-state-0.6)
+                       ("rust-subplotlib-derive" ,rust-subplotlib-derive-0.12)
                        ("rust-tempfile" ,rust-tempfile-3)
-                       ("rust-time" ,rust-time-0.3)
-                       ("rust-unescape" ,rust-unescape-0.1))
+                       ("rust-time" ,rust-time-0.3))
        #:cargo-development-inputs (("rust-serde-json" ,rust-serde-json-1))))
     (home-page "https://subplot.tech/")
     (synopsis "Utility functions and types for @code{subplot codegen}")
