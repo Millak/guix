@@ -2769,6 +2769,33 @@ It's features include:
     (description "This package provides Rust bindings for EGL.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-kmeans-colors-0.6
+  (package
+    (name "rust-kmeans-colors")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "kmeans_colors" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "153qfhvvm7iisqjy6sy7mfw8x9h8y9y25z7ygvfkbp0i53xmz8g9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-image" ,rust-image-0.24)
+                       ("rust-num-traits" ,rust-num-traits-0.2)
+                       ("rust-palette" ,rust-palette-0.7)
+                       ("rust-rand" ,rust-rand-0.8)
+                       ("rust-rand-chacha" ,rust-rand-chacha-0.3)
+                       ("rust-structopt" ,rust-structopt-0.3))))
+    (home-page "https://github.com/okaneco/kmeans-colors")
+    (synopsis "Simple k-means clustering to find dominant colors in images")
+    (description
+     "This package provides simple k-means clustering to find dominant colors
+in images.  Backed by a generic k-means implementation offered as a standalone
+library.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-libdav1d-sys-0.6
   (package
     (name "rust-libdav1d-sys")
