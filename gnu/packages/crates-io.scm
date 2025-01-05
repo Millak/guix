@@ -74308,6 +74308,42 @@ deeply recursive algorithms that may accidentally blow the stack.")
      "This package provides Cross-platform information about the notebook batteries.")
     (license license:isc)))
 
+(define-public rust-starship-battery-0.9
+  (package
+    (inherit rust-starship-battery-0.10)
+    (name "rust-starship-battery")
+    (version "0.9.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "starship-battery" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0gzldhpfhqh12wgrahfdl2vma3qmrv434c4xcj7qndclcxs1ayfs"))))
+    (arguments
+     `(#:cargo-test-flags
+       '("--"
+         ;; Missing test files
+         "--skip=src/types/manager.rs - types::manager::Manager (line 15)"
+         "--skip=src/units.rs - units (line 9)"
+         "--skip=src/units.rs - units (line 23)"
+         "--skip=src/units.rs - units (line 39)"
+         "--skip=src/units.rs - units (line 53)")
+       #:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-core-foundation" ,rust-core-foundation-0.9)
+                       ("rust-lazycell" ,rust-lazycell-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-mach2" ,rust-mach2-0.4)
+                       ("rust-nix" ,rust-nix-0.29)
+                       ("rust-num-traits" ,rust-num-traits-0.2)
+                       ("rust-plist" ,rust-plist-1)
+                       ("rust-schemars" ,rust-schemars-0.8)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-uom" ,rust-uom-0.36)
+                       ("rust-winapi" ,rust-winapi-0.3))
+       #:cargo-development-inputs (("rust-approx" ,rust-approx-0.5)
+                                   ("rust-tempfile" ,rust-tempfile-3))))))
+
 (define-public rust-state-0.6
   (package
     (name "rust-state")
