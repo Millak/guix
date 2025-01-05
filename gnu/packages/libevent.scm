@@ -164,22 +164,14 @@ resolution, asynchronous file system operations, and threading primitives.")
   (package
     (inherit libuv)
     (name "libuv")
-    (version "1.46.0")
+    (version "1.49.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://dist.libuv.org/dist/v" version
                                   "/libuv-v" version ".tar.gz"))
               (sha256
                (base32
-                "1knxvp6bl3y0c87cch1id0z7m7rb6igx55ci93qnbp4zifaq67qi"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           ;; Disable io_uring by default due to CVE-2024-22017. Can be removed once
-           ;; https://github.com/libuv/libuv/issues/4468 is released and compatible
-           ;; with Node.js
-           (substitute* "src/unix/linux.c"
-             (("val == NULL \\|\\|") "val != NULL &&"))))))
+                "0rk73b373zb495jd0qsl2gpnc8fc60jbhn3aayqnglfgyhagg14d"))))
     (properties '((hidden? . #t)))))
 
 (define-public libuv-for-r-httpuv
