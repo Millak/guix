@@ -44,7 +44,7 @@
 ;;; Copyright © 2024 Suhail Singh <suhail@bayesians.ca>
 ;;; Copyright © 2024 Aaron Covrig <aaron.covrig.us@ieee.org>
 ;;; Copyright © 2024 Nguyễn Gia Phong <mcsinyx@disroot.org>
-;;; Copyright © 2024 Jordan Moore <lockbox@struct.foo>
+;;; Copyright © 2024, 2025 Jordan Moore <lockbox@struct.foo>
 ;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2024 Murilo <murilo@disroot.org>
 ;;; Copyright © 2025 Divya Ranjan Pattanaik <divya@subvertising.org>
@@ -84392,14 +84392,14 @@ Rust.")
 (define-public rust-tracing-0.1
   (package
     (name "rust-tracing")
-    (version "0.1.40")
+    (version "0.1.41")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tracing" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1vv48dac9zgj9650pg2b4d0j3w6f3x9gbggf43scq5hrlysklln3"))))
+        (base32 "1l5xrzyjfyayrwhvhldfnwdyligi1mpqm8mzbi2m1d6y6p2hlkkq"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; unresolved import `tracing_mock`
