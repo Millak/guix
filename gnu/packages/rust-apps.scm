@@ -1611,7 +1611,7 @@ bar.  It is also compatible with sway.")
                        '()))
     (inputs (list bash-minimal coreutils-minimal))
     (home-page "https://github.com/casey/just")
-    (synopsis "Just a command runner")
+    (synopsis "Command runner")
     (description "This package provides @code{just}, a command runner.
 @code{just} is a handy way to save and run project-specific commands.")
     (license license:cc0)))

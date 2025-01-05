@@ -15662,7 +15662,7 @@ and RSS, with a user interface inspired by notmuch.")
         emacs-link-hint))
       (home-page "https://github.com/jeetelongname/elfeed-goodies")
       (synopsis
-       "Various bits and pieces to enhance the Elfeed user experience.")
+       "Various bits and pieces to enhance the Elfeed user experience")
       (description
        "This package enhances the vanilla Elfeed user experience with:
 @itemize @bullet

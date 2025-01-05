@@ -16591,7 +16591,7 @@ Lua tables, but are augmented with convenience functions.")
     (native-inputs (list ghc-hspec ghc-hspec-expectations))
     (home-page "https://github.com/CRogers/should-not-typecheck")
     (synopsis
-     "A HUnit/hspec assertion library to verify that an expression does not typecheck")
+     "HUnit/hspec assertion library to verify that an expression does not typecheck")
     (description
      "For examples and an introduction to the library please take a look at the
 <https://github.com/CRogers/should-not-typecheck#should-not-typecheck- README>
