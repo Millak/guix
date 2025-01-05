@@ -8556,31 +8556,30 @@ Evolution (hence the name), but is now used by other packages as well.")
                 "0mfychh1q3dx0b96pjz9a9y112bm9yqyim40yykzxx1hppsdjhww"))))
     (build-system glib-or-gtk-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-before
-          'build 'pre-build
-          (lambda* (#:key outputs #:allow-other-keys)
-            (let ((out (assoc-ref outputs "out")))
-              ;; Use absolute shared library path in Caribou-1.0.typelib.
-              (substitute* "libcaribou/Makefile"
-                (("--shared-library=libcaribou.so")
-                 (string-append "--shared-library="
-                                out "/lib/libcaribou.so")))
-              #t)))
+     (list
+      #:configure-flags
+      #~(list "CFLAGS=-g -O2 -Wno-error=incompatible-pointer-types")
+      #:phases
+       #~(modify-phases %standard-phases
+           (add-before
+               'build 'pre-build
+             (lambda _
+               ;; Use absolute shared library path in Caribou-1.0.typelib.
+               (substitute* "libcaribou/Makefile"
+                 (("--shared-library=libcaribou.so")
+                  (string-append "--shared-library="
+                                 #$output "/lib/libcaribou.so")))))
          (add-after 'install 'wrap-programs
           (lambda* (#:key outputs #:allow-other-keys)
-            (let* ((out (assoc-ref outputs "out"))
-                   (python-path (getenv "GUIX_PYTHONPATH"))
-                   (gi-typelib-path (getenv "GI_TYPELIB_PATH")))
+            (let ((python-path (getenv "GUIX_PYTHONPATH"))
+                  (gi-typelib-path (getenv "GI_TYPELIB_PATH")))
               (for-each
                (lambda (prog)
                  (wrap-program prog
                    `("GUIX_PYTHONPATH"      ":" prefix (,python-path))
                    `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))))
-               (list (string-append out "/bin/caribou-preferences")
-                     (string-append out "/libexec/antler-keyboard"))))
-            #t)))))
+               (list (string-append #$output "/bin/caribou-preferences")
+                     (string-append #$output "/libexec/antler-keyboard")))))))))
     (native-inputs
      `(("glib:bin" ,glib "bin") ; for glib-compile-schemas, etc.
        ("gobject-introspection" ,gobject-introspection)
