@@ -1130,3 +1130,23 @@ syntax tree.")
      "This package provides a readline-like crate for CLI text input.")
     (license license:expat)))
 
+(define-public rust-spinners-4
+  (package
+    (name "rust-spinners")
+    (version "4.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "spinners" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "10jgzdy6x79ipnfhavn46zbg4hlx98mcfr7p4f4j774b6mzr9vx0"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-maplit" ,rust-maplit-1)
+                       ("rust-strum" ,rust-strum-0.24))))
+    (home-page "https://github.com/fgribreau/spinners")
+    (synopsis "60+ Elegant terminal spinners for Rust")
+    (description "This package provides 60+ Elegant terminal spinners for Rust.")
+    (license license:expat)))
