@@ -55621,6 +55621,26 @@ replacements, adding colorful diffs.")
        (("rust-ansi-term" ,rust-ansi-term-0.9)
         ("rust-difference" ,rust-difference-1))))))
 
+(define-public rust-pretty-bytes-0.2
+  (package
+    (name "rust-pretty-bytes")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pretty-bytes" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "05jkd1f824b93jh0jwfskba9hd70crvjz2nl1hf2xgqx5kfnx780"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-atty" ,rust-atty-0.2)
+                       ("rust-getopts" ,rust-getopts-0.2))))
+    (home-page "https://github.com/banyan/rust-pretty-bytes")
+    (synopsis "Convert bytes to a human readable string")
+    (description "This package converts bytes to a human readable string.")
+    (license license:expat)))
+
 (define-public rust-pretty-env-logger-0.5
   (package
     (name "rust-pretty-env-logger")
