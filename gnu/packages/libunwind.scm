@@ -45,7 +45,10 @@
     (arguments
      (list
       #:configure-flags
-      #~(list "CFLAGS=-g -O2 -Wno-error=implicit-function-declaration")
+      #~(list #$(string-append
+                 "CFLAGS=-g -O2"
+                 " -Wno-error=implicit-function-declaration"
+                 " -Wno-error=incompatible-pointer-types"))
       ;; Two tests are failing with newer toolchains:
       ;; https://github.com/libunwind/libunwind/issues/363
       #:make-flags
