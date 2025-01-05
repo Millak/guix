@@ -46,6 +46,7 @@
 ;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2024, 2025 Igor Goryachev <igor@goryachev.org>
 ;;; Copyright © 2024 Nguyễn Gia Phong <mcsinyx@disroot.org>
+;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1028,7 +1029,8 @@ authentication.")
        (list
         (string-append "CFLAGS=-I"
                        (assoc-ref %build-inputs "gst-plugins-base")
-                       "/include/gstreamer-1.0")
+                       "/include/gstreamer-1.0"
+                       " -Wno-error=incompatible-pointer-types")
         "--disable-gtkspell"
         "--disable-gevolution"
         "--enable-cap"
