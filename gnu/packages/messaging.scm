@@ -45,6 +45,7 @@
 ;;; Copyright © 2024, 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2024, 2025 Igor Goryachev <igor@goryachev.org>
 ;;; Copyright © 2024 Nguyễn Gia Phong <mcsinyx@disroot.org>
+;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1024,6 +1025,10 @@ authentication.")
     (arguments
      `(#:configure-flags
        (list
+        (string-append "CFLAGS=-I"
+                       (assoc-ref %build-inputs "gst-plugins-base")
+                       "/include/gstreamer-1.0"
+                       " -Wno-error=incompatible-pointer-types")
         ;; XXX: Disable voice and video calls until Farstream is back to life:
         ;; <https://issues.guix.gnu.org/75739>.
         "--disable-vv"
