@@ -1607,7 +1607,7 @@ metadata about each known libretro core.  The snapshot is taken from the
 (define-public retroarch-joypad-autoconfig
   (package
     (name "retroarch-joypad-autoconfig")
-    (version "1.19.0")
+    (version "1.20.0")
     (source
      (origin
        (method git-fetch)
@@ -1617,7 +1617,7 @@ metadata about each known libretro core.  The snapshot is taken from the
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1gg4nc2wjqz72z40diqbanfkfalvb9hhb8scwn51v2w704rm634b"))))
+         "0nlz3j3575dlv9s15250qrhi90xcs6mg5i40g4lhq1hbwd075lsd"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f                  ;no meaningful test suite
