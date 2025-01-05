@@ -27826,8 +27826,8 @@ variance components, using the likelihood-ratio statistics G.")
     (synopsis "Inference of trait associations with SNP haplotypes")
     (description
      "Hapassoc performs likelihood inference of trait associations with
-haplotypes and other covariates in @dfn{generalized linear models} (GLMs). The
-functions are developed primarily for data collected in cohort or
+haplotypes and other covariates in @dfn{generalized linear models} (GLMs).
+The functions are developed primarily for data collected in cohort or
 cross-sectional studies.  They can accommodate uncertain haplotype phase and
 handle missing genotypes at some SNPs.")
     (license license:gpl2)))
@@ -37884,17 +37884,18 @@ inference diagnostics.
      "Bayesian Regression Models using 'Stan'")
     (description
      "Fit Bayesian generalized (non-)linear multivariate multilevel models
-using 'Stan' for full Bayesian inference. A wide range of distributions and
-link functions are supported, allowing users to fit -- among others -- linear,
-robust linear, count data, survival, response times, ordinal, zero-inflated,
-hurdle, and even self-defined mixture models all in a multilevel context.
-Further modeling options include non-linear and smooth terms, auto-correlation
-structures, censored data, meta-analytic standard errors, and quite a few
-more. In addition, all parameters of the response distribution can be
-predicted in order to perform distributional regression. Prior specifications
-are flexible and explicitly encourage users to apply prior distributions that
-actually reflect their beliefs. Model fit can easily be assessed and compared
-with posterior predictive checks and leave-one-out cross-validation.")
+using @emph{Stan} for full Bayesian inference.  A wide range of distributions
+and link functions are supported, allowing users to fit -- among others --
+linear, robust linear, count data, survival, response times, ordinal,
+zero-inflated, hurdle, and even self-defined mixture models all in a
+multilevel context.  Further modeling options include non-linear and smooth
+terms, auto-correlation structures, censored data, meta-analytic standard
+errors, and quite a few more. In addition, all parameters of the response
+distribution can be predicted in order to perform distributional
+regression. Prior specifications are flexible and explicitly encourage users
+to apply prior distributions that actually reflect their beliefs. Model fit
+can easily be assessed and compared with posterior predictive checks and
+leave-one-out cross-validation.")
     (license license:gpl2)))
 
 (define-public r-mstate
@@ -41462,10 +41463,9 @@ kernel estimators.")
       "https://cran.r-project.org/web/packages/lpme/")
     (synopsis "Nonparametric Estimation of Measurement Error Models")
     (description
-      "Provide nonparametric methods for mean regression model,
-modal regression and conditional density estimation in the
-presence/absence of measurement error. Bandwidth selection is
-also provided for each method.")
+      "Provide nonparametric methods for mean regression model, modal
+regression and conditional density estimation in the presence/absence of
+measurement error.  Bandwidth selection is also provided for each method.")
     (license license:gpl2+)))
 
 (define-public r-aws-signature
