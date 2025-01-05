@@ -76297,21 +76297,22 @@ inspired by Python's subprocess module, with Rust-specific extensions.")
 (define-public rust-supports-color-3
   (package
     (name "rust-supports-color")
-    (version "3.0.0")
+    (version "3.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "supports-color" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0kw5miaai8sarcikzdvsf2ys6rkakngyf2g4yifmgz0xc8ab6acq"))))
+        (base32 "1mk7r2j6l7zmqk3pg7av0l6viq413lmk1vz4bjnf9lnq5liwfky6"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-is-ci" ,rust-is-ci-1))))
     (home-page "https://github.com/zkat/supports-color")
     (synopsis "Detects whether a terminal supports color")
     (description
-     "Detects whether a terminal supports color, and gives details about that support.")
+     "Detects whether a terminal supports color, and gives details about that
+support.")
     (license license:asl2.0)))
 
 (define-public rust-supports-color-2
