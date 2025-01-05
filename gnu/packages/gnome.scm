@@ -11249,7 +11249,13 @@ functionality and behavior.")
            (lambda _
              (substitute* "meson.build"
                (("gtk_update_icon_cache: true")
-                "gtk_update_icon_cache: false")))))))
+                "gtk_update_icon_cache: false"))))
+          (add-before 'configure 'relax-gcc-14-strictness
+            (lambda _
+              (setenv "CFLAGS"
+                      (string-append "-g -O2"
+                                     " -Wno-error=implicit-function-declaration"
+                                     " -Wno-error=incompatible-pointer-types")))))))
     (inputs
      (list bdb
            dbus-glib
