@@ -6,6 +6,7 @@
 ;;; Copyright © 2019 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2019 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -147,16 +148,21 @@ to remotely control a user's Windows desktop.")
     (arguments
      (list #:build-type "RELEASE"
            #:configure-flags
-           #~(list "-DWITH_JPEG=ON"
-                   #$@(if (target-x86-64?)
-                          #~("-DWITH_SSE2=ON")
-                          #~())
-                   "-DWITH_PULSE=ON"
-                   "-DWITH_CUPS=ON"
-                   "-DBUILD_TESTING=ON"
-                   "-DWITH_SERVER=ON" ;build servers
-                   "-DWITH_SHADOW=ON" ;build shadow server
-                   "-DWITH_PROXY=ON")))
+           #~(list
+              ;; Relax gcc-14's strictness.
+              (string-append "-DCMAKE_C_FLAGS="
+                             " -Wno-error=incompatible-pointer-types"
+                             " -Wno-error=int-conversion")
+              "-DWITH_JPEG=ON"
+              #$@(if (target-x86-64?)
+                     #~("-DWITH_SSE2=ON")
+                     #~())
+              "-DWITH_PULSE=ON"
+              "-DWITH_CUPS=ON"
+              "-DBUILD_TESTING=ON"
+              "-DWITH_SERVER=ON" ;build servers
+              "-DWITH_SHADOW=ON" ;build shadow server
+              "-DWITH_PROXY=ON")))
     (home-page "https://www.freerdp.com")
     (synopsis "Remote Desktop Protocol implementation")
     (description "FreeRDP implements Microsoft's Remote Desktop Protocol.
