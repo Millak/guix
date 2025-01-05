@@ -4745,16 +4745,16 @@ operations.")
   (package
     (inherit go-github-com-go-git-go-git-fixtures-v4)
     (name "go-github-com-go-git-go-git-fixtures-v5")
-    (version "5.0.0-20241125094932-6b905c043834")
+    (version "5.0.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/go-git/go-git-fixtures")
-             (commit (go-version->git-ref version))))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1wgw5bzzk5gynqa0j49hxklcfliv2ql7jvpsjh4fn0053rwgs730"))))
+        (base32 "0mdwqdmqbqmrh21n25nqrv48zkamgw89parcbyp7k2skqk1jkjpf"))))
     (arguments
      (list
       #:import-path "github.com/go-git/go-git-fixtures/v5"))))
