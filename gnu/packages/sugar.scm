@@ -755,6 +755,11 @@ things to enhance your use of the Journal.")
         #:test-target "check"
         #:phases
         #~(modify-phases %standard-phases
+            (add-after 'unpack 'use-newer-webkit
+              (lambda _
+                (substitute* "helpactivity.py"
+                  (("'WebKit2', '4.0'")
+                   "'WebKit2', '4.1'"))))
             (add-after 'unpack 'patch-launcher
               (lambda* (#:key inputs #:allow-other-keys)
                 (substitute* "activity/activity.info"
@@ -770,6 +775,8 @@ things to enhance your use of the Journal.")
       (native-inputs
        (list sugar-toolkit-gtk3
              python-sphinx))
+      (propagated-inputs
+       (list webkitgtk-for-gtk3))
       (home-page "https://github.com/sugarlabs/help-activity")
       (synopsis "Sugar activity for accessing documentation and manuals")
       (description "This is an activity for the Sugar environment which aims
