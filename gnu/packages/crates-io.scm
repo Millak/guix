@@ -84450,7 +84450,7 @@ writers.")
 (define-public rust-tracing-attributes-0.1
   (package
     (name "rust-tracing-attributes")
-    (version "0.1.27")
+    (version "0.1.28")
     (source
      (origin
        (method url-fetch)
@@ -84458,7 +84458,7 @@ writers.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1rvb5dn9z6d0xdj14r403z0af0bbaqhg02hq4jc97g5wds6lqw1l"))))
+         "0v92l9cxs42rdm4m5hsa8z7ln1xsiw1zc2iil8c6k7lzq0jf2nir"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; unresolved import `tracing_mock`
