@@ -47,7 +47,7 @@
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 Dhruvin Gandhi <contact@dhruvin.dev>
 ;;; Copyright © 2015, 2022 David Thompson <davet@gnu.org>
-;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2023, 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 Kjartan Oli Agustsson <kjartanoli@disroot.org>
 ;;; Copyright © 2023 Steve George <steve@futurile.net>
@@ -88,6 +88,7 @@
   #:use-module (guix build-system cargo)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
+  #:use-module (guix build-system emacs)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
   #:use-module (guix build-system perl)
@@ -1918,6 +1919,18 @@ Features include:
 @item Export and send a series of patches by email using @command{stg email}
 @end itemize")
     (license license:gpl2)))
+
+(define-public emacs-stgit
+  (package
+    (inherit stgit-2)
+    (name "emacs-stgit")
+    (build-system emacs-build-system)
+    (arguments
+     (list #:include '(list "contrib/stgit.el")))
+    (synopsis "Emacs major mode for StGit interaction")
+    (description "This package a interactive tool to interact with git
+branches using StGit.")
+    (license license:gpl3+)))
 
 (define-public stgit
   (package
