@@ -87531,19 +87531,15 @@ Standard Annex #31.")
 (define-public rust-unicode-linebreak-0.1
   (package
     (name "rust-unicode-linebreak")
-    (version "0.1.4")
+    (version "0.1.5")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "unicode-linebreak" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32 "0drixqb16bzmabd5d8ldvar5760rxy6nxzszhlsqnasl3bisvyn5"))))
+         (base32 "07spj2hh3daajg335m4wdav6nfkl0f6c0q72lc37blr97hych29v"))))
     (build-system cargo-build-system)
-    (arguments
-     (list #:cargo-inputs
-           `(("rust-hashbrown" ,rust-hashbrown-0.12)
-             ("rust-regex" ,rust-regex-1))))
     (home-page "https://github.com/axelf4/unicode-linebreak")
     (synopsis "Implementation of the Unicode line breaking algorithm")
     (description
