@@ -84593,22 +84593,22 @@ concurrent tasks.")
 (define-public rust-tracing-futures-0.2
   (package
     (name "rust-tracing-futures")
-    (version "0.2.4")
+    (version "0.2.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tracing-futures" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "0k4vd3jyqz9cx8rbwbp0p93qfp1w6rfk7sc6c1jh1ai18zqvcyxb"))))
+        (base32 "1wimg0iwa2ldq7xv98lvivvf3q9ykfminig8r1bs0ig22np9bl4p"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; Not all files included.
        #:cargo-inputs
-       (("rust-futures" ,rust-futures-0.3)
+       (("rust-futures" ,rust-futures-0.1)
+        ("rust-futures" ,rust-futures-0.3)
         ("rust-futures-task" ,rust-futures-task-0.3)
-        ("rust-pin-project" ,rust-pin-project-0.4)
+        ("rust-pin-project" ,rust-pin-project-1)
         ("rust-tokio" ,rust-tokio-0.1)
         ("rust-tokio-executor" ,rust-tokio-executor-0.1)
         ("rust-tracing" ,rust-tracing-0.1))
