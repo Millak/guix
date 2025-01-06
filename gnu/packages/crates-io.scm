@@ -87700,14 +87700,14 @@ in terms of displayed width.")
 (define-public rust-unicode-xid-0.2
   (package
     (name "rust-unicode-xid")
-    (version "0.2.4")
+    (version "0.2.6")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "unicode-xid" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32 "131dfzf7d8fsr1ivch34x42c2d1ik5ig3g78brxncnn0r1sdyqpr"))))
+         (base32 "0lzqaky89fq0bcrh6jj6bhlz37scfd8c7dsj5dq7y32if56c1hgb"))))
     (build-system cargo-build-system)
     (arguments
      (list #:cargo-development-inputs
