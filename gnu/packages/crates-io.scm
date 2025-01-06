@@ -78839,14 +78839,14 @@ directories.")
 (define-public rust-tera-1
   (package
     (name "rust-tera")
-    (version "1.18.1")
+    (version "1.20.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tera" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1h3hgixby1vsfgk83ww09aq25p74jhqf48b7ql1jmwh22dsnb9lm"))
+        (base32 "1vnj9imw2h9szkd1izsrhwrc9jvazvdsp84x65wg2rg88ldqb7db"))
        (modules '((guix build utils)))
        (snippet
         '(begin (substitute* "Cargo.toml"
@@ -78855,16 +78855,18 @@ directories.")
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
-       (list "--release" "--"
+       (list "--"
              ;; Not all files included.
              "--skip=tera::tests::full_reload_with_glob"
              "--skip=tera::tests::full_reload_with_glob_after_extending"
+             "--skip=tera::tests::test_can_only_parse_templates"
              "--skip=tera::tests::can_load_from_glob_with_patterns"
-             "--skip=tera::tests::can_load_from_glob")
+             "--skip=tera::tests::can_load_from_glob"
+             "--skip=tera::Tera::add_template_file")
        #:cargo-inputs
        (("rust-chrono" ,rust-chrono-0.4)
-        ("rust-chrono-tz" ,rust-chrono-tz-0.6)
-        ("rust-globwalk" ,rust-globwalk-0.8)
+        ("rust-chrono-tz" ,rust-chrono-tz-0.9)
+        ("rust-globwalk" ,rust-globwalk-0.9)
         ("rust-humansize" ,rust-humansize-2)
         ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-percent-encoding" ,rust-percent-encoding-2)
@@ -78880,7 +78882,7 @@ directories.")
        (("rust-pretty-assertions" ,rust-pretty-assertions-1)
         ("rust-serde-derive" ,rust-serde-derive-1)
         ("rust-tempfile" ,rust-tempfile-3))))
-    (home-page "https://tera.netlify.com/")
+    (home-page "https://keats.github.io/tera/")
     (synopsis "Template engine based on Jinja2/Django templates")
     (description
      "Tera is a template engine inspired by Jinja2 and the Django
