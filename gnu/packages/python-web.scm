@@ -2490,57 +2490,72 @@ is Python’s.")
     (license license:bsd-3)))
 
 (define-public python-omnipath
-  (package
-    (name "python-omnipath")
-    (version "1.0.8")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "omnipath" version))
-              (sha256
-               (base32
-                "0krr4wzfwa6fs550cs0lcqwjj90p1inyncj9kvzi4x4m26xbj89q"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      ;; These require internet access
-      '(list "-k" "not test_download_homologene and not test_complex_genes")
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'relax
-           (lambda _
-             (substitute* "requirements.txt"
-               (("wrapt>=1.12.0")
-                "wrapt>=1.11.0"))))
-         (add-after 'unpack 'set-home
-           (lambda _ (setenv "HOME" "/tmp"))))))
-    (propagated-inputs
-     (list python-attrs
-           python-docrep
-           python-inflect
-           python-networkx
-           python-packaging
-           python-pandas
-           python-requests
-           python-tqdm
-           python-typing-extensions
-           python-urllib3
-           python-wrapt))
-    (native-inputs
-     (list python-bump2version
-           python-pytest
-           python-pytest-mock
-           python-pytest-socket
-           python-requests-mock
-           python-setuptools-scm
-           python-tox
-           python-setuptools
-           python-wheel))
-    (home-page "https://omnipathdb.org/")
-    (synopsis "Python client for the OmniPath web service")
-    (description "This package provides a Python client for the OmniPath web
+  ;; The latest release is incompatible with Numpy 2 and pretty old.  A new
+  ;; release is expected soon.
+  (let ((commit "3d1613493aa1554618fb2d7297f82e034b7694ce")
+        (revision "0"))
+    (package
+      (name "python-omnipath")
+      (version (git-version "1.0.8" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/saezlab/omnipath/")
+                      (commit commit)))
+                (file-name (git-file-name name commit))
+                (sha256
+                 (base32
+                  "03lqbgqihglh9mmp7lwmar26fcnsb1qaidrzbmp0z2wvsrgi4fg7"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:test-flags
+        '(list "-k"
+               (string-append
+                ;; These require internet access
+                "not test_download_homologene"
+                " and not test_complex_genes"
+                ;; Arrays are not equal: Mismatched elements: 4759 / 255465 (1.86%)
+                " and not test_import_intercell_network"))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'build 'pretend-version
+              ;; The version string is usually derived via setuptools-scm, but
+              ;; without the git metadata available, the version string is set
+              ;; to '0.0.0'.
+              (lambda _
+                (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
+                        #$(version-major+minor (package-version this-package)))))
+            (add-after 'unpack 'set-home
+              (lambda _ (setenv "HOME" "/tmp"))))))
+      (propagated-inputs
+       (list python-attrs
+             python-docrep
+             python-inflect
+             python-networkx
+             python-packaging
+             python-pandas
+             python-requests
+             python-tqdm
+             python-typing-extensions
+             python-urllib3
+             python-wrapt))
+      (native-inputs
+       (list nss-certs-for-test
+             python-bump2version
+             python-pytest
+             python-pytest-mock
+             python-pytest-socket
+             python-requests-mock
+             python-setuptools
+             python-setuptools-scm
+             python-tox
+             python-wheel))
+      (home-page "https://omnipathdb.org/")
+      (synopsis "Python client for the OmniPath web service")
+      (description "This package provides a Python client for the OmniPath web
 service.")
-    (license license:expat)))
+      (license license:expat))))
 
 (define-public python-openai
   (package
