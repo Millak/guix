@@ -3717,6 +3717,30 @@ GNU extensions to the POSIX recommendations for command-line options}.  This
 is an activly maintained fork of @url{https://github.com/ogier/pflag}.")
     (license license:bsd-3)))
 
+(define-public go-github-com-docker-go-units
+  (package
+    (name "go-github-com-docker-go-units")
+    (version "0.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/docker/go-units")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0q92l7pyfg9rn4ljr1warnv1ri6z7svah7m3rqmvmyaw6bzdbbw8"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/docker/go-units"))
+    (home-page "https://github.com/docker/go-units")
+    (synopsis "Parse and print size and time units in human-readable format")
+    (description
+     "@code{go-units} is a library to transform human friendly measurements
+into machine friendly values.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-docopt-docopt-go
   (let ((commit "ee0de3bc6815ee19d4a46c7eb90f829db0e014b1")
         (revision "0"))

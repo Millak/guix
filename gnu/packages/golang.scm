@@ -2591,28 +2591,6 @@ Go language.  In particular it provides tools to deal with network address
 translation (NAT), proxies, sockets, and transport layer security (TLS).")
     (license license:asl2.0)))
 
-(define-public go-github-com-docker-go-units
-  (package
-    (name "go-github-com-docker-go-units")
-    (version "0.5.0")
-    (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/docker/go-units")
-               (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32 "0q92l7pyfg9rn4ljr1warnv1ri6z7svah7m3rqmvmyaw6bzdbbw8"))))
-    (build-system go-build-system)
-    (arguments '(#:import-path "github.com/docker/go-units"))
-    (home-page "https://github.com/docker/go-units")
-    (synopsis "Parse and print size and time units in human-readable format")
-    (description
-     "@code{go-units} is a library to transform human friendly measurements into
-machine friendly values.")
-    (license license:asl2.0)))
-
 (define-public go-github-com-aarzilli-golua
   (let ((commit "03fc4642d792b1f2bc5e7343b403cf490f8c501d")
         (revision "0"))
