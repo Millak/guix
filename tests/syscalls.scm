@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014-2021, 2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2021, 2024-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
 ;;; Copyright © 2020 Simon South <simon@simonsouth.net>
 ;;; Copyright © 2020 Mathieu Othacehe <m.othacehe@gmail.com>
@@ -682,15 +682,15 @@
 (when (or (zero? (getuid))
           (not (string-contains %host-type "linux")))
   (test-skip 1))
-(test-equal "kexec-load-file"
-  EPERM
+(test-assert "kexec-load-file"
   (catch 'system-error
     (lambda ()
       (let ((fd1 (open-fdes "/dev/null" O_RDONLY))
             (fd2 (open-fdes "/dev/null" O_RDONLY)))
         (kexec-load-file fd1 fd2 "gnu.repl=yes")))
     (lambda args
-      (system-error-errno args))))
+      (member (system-error-errno args)
+              (list EPERM ENOSYS)))))
 
 (test-end)
 

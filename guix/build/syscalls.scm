@@ -794,8 +794,8 @@ terminating nul character."
                                          '*               ;cmdline
                                          unsigned-long))) ;flags
          (syscall-id (match (utsname:machine (uname))
-                       ("i686"    320)
                        ("x86_64"  320)
+                       ;; unsupported on i686
                        ("armv7l"  401)
                        ("aarch64" 294)
                        ("ppc64le" 382)
