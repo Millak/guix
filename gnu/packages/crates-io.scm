@@ -87400,14 +87400,14 @@ Unicode and Internationalization Crates (UNIC) project.")
 (define-public rust-unicode-bom-2
   (package
     (name "rust-unicode-bom")
-    (version "2.0.2")
+    (version "2.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "unicode-bom" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0lh5ckmw59v908mddgfgv19vv6yb0sm08z8adppd3m7hr5q0rscq"))))
+        (base32 "05s2sqyjanqrbds3fxam35f92npp5ci2wz9zg7v690r0448mvv3y"))))
     (build-system cargo-build-system)
     (home-page "https://gitlab.com/philbooth/unicode-bom")
     (synopsis "Unicode byte-order mark detection for files and byte arrays")
