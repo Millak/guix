@@ -76319,17 +76319,16 @@ support.")
   (package
     (inherit rust-supports-color-3)
     (name "rust-supports-color")
-    (version "2.0.0")
+    (version "2.1.0")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "supports-color" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0m5kayz225f23k5jyjin82sfkrqhfdq3j72ianafkazz9cbyfl29"))))
+                "12csf7chawxinaapm9rh718nha9hggk6ra86fdaw9hxdagg8qffn"))))
     (arguments
-     `(#:tests? #f  ; panicked at 'assertion failed: `(left == right)`
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-is-terminal" ,rust-is-terminal-0.4)
         ("rust-is-ci" ,rust-is-ci-1))))))
 
