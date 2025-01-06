@@ -2480,7 +2480,7 @@ SysVinit, and more.")
 (define-public go-github-com-dgryski-go-metro
   (package
     (name "go-github-com-dgryski-go-metro")
-    (version "0.0.0-20211217172704-adc40b04c140")
+    (version "0.0.0-20250106013310-edb8663e5e33")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2489,7 +2489,7 @@ SysVinit, and more.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "16y5vc5qf7aipi8basqza8l939hlmp7wqsv4y6gsqac3sp9ziqyj"))))
+                "0had4wbhhghr3rbm5v4dcj73nlq49k1mpklqn9gkmzkkxfs8hf6z"))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "github.com/dgryski/go-metro"))
