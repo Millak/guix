@@ -3732,7 +3732,7 @@ size of the terminal.")
 (define-public go-github-com-jba-templatecheck
   (package
     (name "go-github-com-jba-templatecheck")
-    (version "0.6.0")
+    (version "0.7.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3741,10 +3741,12 @@ size of the terminal.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "12iwkidz4p6wdl65jfddqxls80mv879k2rpb42dj7y4dja5advlc"))))
+                "03nlpfgjiiqqhf0df6vgvxi7kn58ykh0jhnrffpa32wv2w67ndxz"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/jba/templatecheck"))
+     (list
+      #:go go-1.22
+      #:import-path "github.com/jba/templatecheck"))
     (propagated-inputs (list go-github-com-google-safehtml))
     (home-page "https://github.com/jba/templatecheck")
     (synopsis "Checks Go templates for problems")
