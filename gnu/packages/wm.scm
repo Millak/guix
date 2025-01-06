@@ -3554,7 +3554,7 @@ capabilities.  It is heavily inspired by the Calm Window manager(cwm).")
 (define-public jwm
   (package
     (name "jwm")
-    (version "2.4.3")
+    (version "2.4.6")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3562,7 +3562,7 @@ capabilities.  It is heavily inspired by the Calm Window manager(cwm).")
                     "v" version "/jwm-" version ".tar.xz"))
               (sha256
                (base32
-                "1av7r9sp26r5l74zvwdmyyyzav29mw5bafihp7y33vsjqkh4wfzf"))))
+                "0bc0vnaz3pk8msrslpj5ii4iv4fc4iayv0rbl8zlnn8phg11x1xm"))))
     (build-system gnu-build-system)
     (arguments
      (list
