@@ -87573,14 +87573,14 @@ described in Unicode Standard Annex #15.")
 (define-public rust-unicode-reverse-1
   (package
     (name "rust-unicode-reverse")
-    (version "1.0.8")
+    (version "1.0.9")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "unicode-reverse" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0b4n480vd897pm4klmmz07w8p45kb5ds0037kakd1lmhxfn5vshb"))))
+        (base32 "0xhcybbgy0l8s8n7sfd6hxi854f8znlxqkspzfnr8c62xf44hvsb"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-unicode-segmentation" ,rust-unicode-segmentation-1))
