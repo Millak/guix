@@ -53570,14 +53570,14 @@ written with declarative macros.")
   (package
     (inherit rust-pin-project-lite-0.2)
     (name "rust-pin-project-lite")
-    (version "0.1.11")
+    (version "0.1.12")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "pin-project-lite" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0srgdb3vkx7ppcww1qr7a67c7n84y01lq35j9g44z4h1z8x145y9"))))
+        (base32 "0xx7f3wzc8ydvd1v2mmrxfypjchp52bphrirf08phbq8ba8n8yr5"))))
     (arguments
      `(#:cargo-development-inputs
        (("rust-rustversion" ,rust-rustversion-1)
