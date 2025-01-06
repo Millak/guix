@@ -135,6 +135,11 @@ Return a version of TAG that follows these rules."
                        `((entrypoint . ,(list->vector entry-point)))
                        '())))
     (container_config . #nil)
+    ;; Some container engines such as <https://github.com/cea-hpc/pcocc> require
+    ;; these fields.
+    (history . ,(list->vector `(((created . ,time)
+                                 (created_by . "guix pack -f docker")
+                                 (comment . "guix pack")))))
     (os . "linux")
     (rootfs . ((type . "layers")
                (diff_ids . ,(list->vector layers-diff-ids))))))
