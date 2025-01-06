@@ -29593,7 +29593,7 @@ N-dimensional arrays for Python.")
 (define-public python-anndata
   (package
     (name "python-anndata")
-    (version "0.10.7")
+    (version "0.11.1")
     (source
      (origin
        ;; The tarball from PyPi doesn't include tests.
@@ -29604,24 +29604,18 @@ N-dimensional arrays for Python.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1i08rm1xnsnq12rjv4virgdx61bra1gsfagjdq0kcpz8npxqa0as"))))
+         "0skmjjvxk5gdsx6fkplszff92jsb4l45j23c6mhq1vdi3wqhqhcw"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      '(list "-k" (string-append "not concatenation.rst"
-                                 ;; fixture 'mocker' not found
-                                 " and not test_consecutive_bool"))
+      ;; This one test seemingly freezes
+      '(list "-k" "not test_read_lazy_h5_cluster")
       #:phases
       #~(modify-phases %standard-phases
           ;; Doctests require scanpy from (gnu packages bioinformatics)
           (add-after 'unpack 'disable-doctests
             (lambda _
-              (substitute* "conftest.py"
-                (("import pytest")
-                 (string-append "import pytest\nimport _pytest\n"))
-                (("pytest.DoctestItem")
-                 "_pytest.doctest.DoctestItem"))
               (substitute* "pyproject.toml"
                 (("--doctest-modules") ""))))
           (add-before 'build 'set-version
@@ -29657,6 +29651,7 @@ N-dimensional arrays for Python.")
            python-loompy
            python-matplotlib
            python-pytest
+           python-pytest-mock
            python-pytest-doctestplus
            python-pytest-xdist
            python-toml
