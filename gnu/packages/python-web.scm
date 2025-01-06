@@ -2136,26 +2136,33 @@ between a web browser and web server.")
     (license license:expat)))
 
 (define-public python-flask-assets
-  (package
-    (name "python-flask-assets")
-    (version "2.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "Flask-Assets" version))
-       (sha256
-        (base32 "1hmqldxc7zciksmcl35jx0wbyrrxc7vk2a57mmmd8i07whsymz8x"))))
-    (build-system python-build-system)
-    (arguments
-     ;; Tests require python-flask-script which is incompatible with Flask2.
-     `(#:tests? #f))
-    (propagated-inputs
-     (list python-flask python-webassets))
-    (home-page "https://github.com/miracle2k/flask-assets")
-    (synopsis "Asset management for Flask")
-    (description "This package integrates @code{webassets} with Flask, adding
+  ;; The latest release still depends on the abandoned flask-script, whereas
+  ;; at this later commit (already 2 years old at the time of this writing)
+  ;; the dependency has been lifted.
+  (let ((commit "62efd23fe95ee6a86fc1cfaa98fc1e2152093557")
+        (revision "1"))
+    (package
+      (name "python-flask-assets")
+      (version (git-version "2.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/miracle2k/flask-assets/")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "11q8vm2ipj4xrvawy9vl1l4k8kb4r72ghy1n8xrzci52v6lx8960"))))
+      (build-system pyproject-build-system)
+      (propagated-inputs
+       (list python-flask python-webassets))
+      (native-inputs
+       (list nss-certs-for-test python-pytest python-setuptools python-wheel))
+      (home-page "https://github.com/miracle2k/flask-assets")
+      (synopsis "Asset management for Flask")
+      (description "This package integrates @code{webassets} with Flask, adding
 support for merging, minifying and compiling CSS and Javascript files.")
-    (license license:bsd-2)))
+      (license license:bsd-2))))
 
 (define-public python-flask-babel
   (package
