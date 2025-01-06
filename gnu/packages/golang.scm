@@ -2375,7 +2375,7 @@ containers.")
 (define-public go-github-com-magiconair-properties
   (package
     (name "go-github-com-magiconair-properties")
-    (version "1.8.7")
+    (version "1.8.9")
     (source
      (origin
        (method git-fetch)
@@ -2385,7 +2385,7 @@ containers.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0xy5nq7mwhrdcwjlgh4arjn6w5mjla0kni3cvl3z5vxcrnfrn3ax"))))
+         "05nkgdzl393505arq6hf1wxjxs2iaqkc88v5cy1s068abpl65xy0"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/magiconair/properties"))
