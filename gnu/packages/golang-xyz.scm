@@ -11056,6 +11056,30 @@ exploration and data entry.")
 @url{https://unicode.org/reports/tr29/, Unicode Standard Annex #29}.")
     (license license:expat)))
 
+(define-public go-github-com-robfig-cron-v3
+  (package
+    (name "go-github-com-robfig-cron-v3")
+    (version "3.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/robfig/cron")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1agzbw2dfk2d1mpmddr85s5vh6ygm8kqrvfg87i9d2wqnlsnliqm"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/robfig/cron/v3"))
+    (home-page "https://godoc.org/github.com/robfig/cron")
+    (synopsis "Cron library for Go")
+    (description
+     "This package provides a cron library for Go.  It implements a cron spec
+parser and job runner.")
+    (license license:expat)))
+
 (define-public go-github-com-rogpeppe-fastuuid
   (package
     (name "go-github-com-rogpeppe-fastuuid")
