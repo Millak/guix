@@ -17365,18 +17365,20 @@ classes to wrap functions in a similar way, including a function decorator.")
 (define-public python-legacy-api-wrap
   (package
     (name "python-legacy-api-wrap")
-    (version "1.2")
+    (version "1.4.1")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "legacy-api-wrap" version))
+       (uri (pypi-uri "legacy_api_wrap" version))
        (sha256
         (base32
-         "06qhp0g543dy98vpa41hwdalvdbsjfc3ldk474yr9sd75mhl8jh3"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-get-version python-pytest python-pytest-black
-           python-pytest-cov python-setuptools))
+         "1d5jyd8d2wxm6y0s39wwqw87gdm4zqlbyz78cf3yqbrim1xdch4w"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-coverage
+           python-hatch-vcs
+           python-hatchling
+           python-pytest))
     (home-page "https://github.com/flying-sheep/legacy-api-wrap")
     (synopsis "Legacy API wrapper")
     (description "This module defines a decorator to wrap legacy APIs.  The
