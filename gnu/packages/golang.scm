@@ -3403,9 +3403,9 @@ designed to clean up raw terminal output by stripping escape sequences,
 optionally preserving color.")
     (license license:expat)))
 
-(define-public go-github-com-robfig-cron
+(define-public go-github-com-robfig-cron-v3
   (package
-    (name "go-github-com-robfig-cron")
+    (name "go-github-com-robfig-cron-v3")
     (version "3.0.1")
     (source
      (origin
@@ -3419,7 +3419,7 @@ optionally preserving color.")
          "1agzbw2dfk2d1mpmddr85s5vh6ygm8kqrvfg87i9d2wqnlsnliqm"))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "github.com/robfig/cron"))
+     `(#:import-path "github.com/robfig/cron/v3"))
     (home-page "https://godoc.org/github.com/robfig/cron")
     (synopsis "Cron library for Go")
     (description "This package provides a cron library for Go.  It implements

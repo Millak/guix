@@ -1376,7 +1376,7 @@ but it works for any C/C++ project.")
            go-github-com-mattn-go-colorable
            go-github-com-mattn-go-runewidth
            go-github-com-mattn-go-shellwords
-           go-github-com-robfig-cron
+           go-github-com-robfig-cron-v3
            go-github-com-yuin-goldmark
            go-golang-org-x-sync
            go-golang-org-x-sys
