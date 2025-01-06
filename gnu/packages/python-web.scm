@@ -5412,17 +5412,21 @@ Betamax that may possibly end up in the main package.")
 (define-public python-flask-htpasswd
   (package
     (name "python-flask-htpasswd")
-    (version "0.3.1")
+    (version "0.5.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "flask-htpasswd" version))
         (sha256
           (base32
-            "14q1y1y9i9bhabdnwd25jqzc4ljli23smxfyyh8abxz1vq93pxra"))))
-    (build-system python-build-system)
+            "19arq4rn5nll0bbnsff1j10blm0ydp8nvs09c56s29kmlgj3r42x"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #false)) ;none included
     (propagated-inputs
-     (list python-flask python-itsdangerous python-passlib python-tox))
+     (list python-flask python-passlib python-pyjwt python-tox))
+    (native-inputs (list python-pytest
+                         python-setuptools
+                         python-wheel))
     (home-page "https://github.com/carsongee/flask-htpasswd")
     (synopsis "Basic authentication via htpasswd files in Flask applications")
     (description "This package provides Basic authentication via
