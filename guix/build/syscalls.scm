@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
@@ -783,7 +783,7 @@ terminating nul character."
 (define KEXEC_FILE_UNLOAD	#x00000001)
 (define KEXEC_FILE_ON_CRASH	#x00000002)
 (define KEXEC_FILE_NO_INITRAMFS	#x00000004)
-(define KEXEC_FILE_DEBUG	#x00000008)
+(define KEXEC_FILE_DEBUG	#x00000008)       ;missing from Linux 6.6
 
 (define kexec-load-file
   (let* ((proc (syscall->procedure int "syscall"

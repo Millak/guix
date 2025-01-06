@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014-2022, 2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2022, 2024-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2016, 2017, 2018 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
@@ -198,8 +198,7 @@ via 'kexec'."
              (kexec-load-file kernel initrd
                               (string-join
                                (list #$@(operating-system-kernel-arguments
-                                         os root-device)))
-                              KEXEC_FILE_DEBUG)))))))
+                                         os root-device))))))))))
 
 (define* (upgrade-shepherd-services eval os)
   "Using EVAL, a monadic procedure taking a single G-Expression as an argument,
