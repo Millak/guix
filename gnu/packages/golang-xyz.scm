@@ -7071,6 +7071,35 @@ oglematchers.Matcher} for time values
 @end itemize")
     (license license:asl2.0)))
 
+(define-public go-github-com-jba-templatecheck
+  (package
+    (name "go-github-com-jba-templatecheck")
+    (version "0.7.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jba/templatecheck")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "03nlpfgjiiqqhf0df6vgvxi7kn58ykh0jhnrffpa32wv2w67ndxz"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.22
+      #:import-path "github.com/jba/templatecheck"))
+    (propagated-inputs
+     (list go-github-com-google-safehtml))
+    (home-page "https://github.com/jba/templatecheck")
+    (synopsis "Checks Go templates for problems")
+    (description
+     "Package templatecheck checks Go templates for problems.  It can detect
+many errors that are normally caught only during execution.  Use templatecheck
+in tests to find template errors early, and along template execution paths
+that might only rarely be reached.")
+    (license license:expat)))
+
 (define-public go-github-com-jbenet-go-context
   (package
     (name "go-github-com-jbenet-go-context")
