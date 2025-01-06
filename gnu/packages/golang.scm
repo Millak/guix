@@ -3758,16 +3758,16 @@ that might only rarely be reached.")
 (define-public go-github-com-kevinburke-ssh-config
   (package
     (name "go-github-com-kevinburke-ssh-config")
-    (version "1.0")
+    (version "1.2.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/kevinburke/ssh_config")
-                    (commit version)))
+                    (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "05jvz5r58a057zxvic9dyr9v2wilha8l6366npwkqgxmnmk9sh5f"))))
+                "0jvv3i0g8ll210xlbxy8ywj09gab0im676rmnywh3wlpdhxdkbjd"))))
     (arguments
      `(#:import-path "github.com/kevinburke/ssh_config"))
     (build-system go-build-system)
