@@ -1187,19 +1187,19 @@ compatibility is also supported.")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                     (url "https://github.com/wolfSSL/wolfssl")
-                     (commit (string-append "v" version "-stable"))))
+                    (url "https://github.com/wolfSSL/wolfssl")
+                    (commit (string-append "v" version "-stable"))))
               (file-name (git-file-name name version))
               (sha256
                (base32
                 "1q1sqwx6njsjbwmwr87ky0yrg2cin7ssa12gl14i8x1v35rpcxdb"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags
-       '("--enable-distro"
-         "--enable-pkcs11"
-         "--disable-examples"
-         "--enable-jobserver=no")))
+     (list #:configure-flags
+           #~(list "--enable-distro"
+                   "--enable-pkcs11"
+                   "--disable-examples"
+                   "--enable-jobserver=no")))
     (native-inputs
      (list autoconf automake libtool))
     (synopsis "SSL/TLS implementation")
