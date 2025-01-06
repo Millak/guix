@@ -53439,26 +53439,22 @@ international phone numbers.")
 (define-public rust-pin-project-1
   (package
     (name "rust-pin-project")
-    (version "1.1.5")
+    (version "1.1.7")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "pin-project" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1cxl146x0q7lawp0m1826wsgj8mmmfs6ja8q7m6f7ff5j6vl7gxn"))))
+        (base32 "15cvflrzsgp1zbl5gv37al2r62nl8lc37xkfwf70ql3fji7gcmxy"))))
     (build-system cargo-build-system)
     (arguments
-     ;; XXX: Tests fail with "error[E0433]: failed to resolve: use of
-     ;; undeclared crate or module `macrotest`".
-     `(#:tests? #false
+     `(#:tests? #false  ; use of undeclared crate or module `trybuild`
        #:cargo-inputs
        (("rust-pin-project-internal" ,rust-pin-project-internal-1))
        #:cargo-development-inputs
-       (("rust-macrotest" ,rust-macrotest-1)
-        ("rust-rustversion" ,rust-rustversion-1)
-        ("rust-static-assertions" ,rust-static-assertions-1)
-        ("rust-trybuild" ,rust-trybuild-1))))
+       (("rust-rustversion" ,rust-rustversion-1)
+        ("rust-static-assertions" ,rust-static-assertions-1))))
     (home-page "https://github.com/taiki-e/pin-project")
     (synopsis "Crate for safe and ergonomic pin-projection")
     (description
