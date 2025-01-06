@@ -8708,6 +8708,36 @@ semantic versions.  Specifically it provides the ability to:
 functions.")
     (license license:expat)))
 
+(define-public go-github-com-masterminds-squirrel
+  (package
+    (name "go-github-com-masterminds-squirrel")
+    (version "1.5.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Masterminds/squirrel")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ws7p3gchw6n81sfdhpk1pbh7gsj1fm7fbjah702d7q1gbn00vja"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/Masterminds/squirrel"))
+    (native-inputs
+     (list go-github-com-go-sql-driver-mysql
+           go-github-com-lib-pq
+           go-github-com-mattn-go-sqlite3
+           go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-lann-builder))
+    (home-page "https://github.com/Masterminds/squirrel")
+    (synopsis "Fluent SQL generation for golang")
+    (description
+     "Package squirrel provides a fluent SQL generator.")
+    (license license:expat)))
+
 (define-public go-github-com-matryer-try
   (package
     (name "go-github-com-matryer-try")
