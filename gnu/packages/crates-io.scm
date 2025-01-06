@@ -48539,20 +48539,46 @@ local files.")
     (description "This package provides ODBC FFI bindings.")
     (license license:expat)))
 
+(define-public rust-odds-0.4
+  (package
+    (name "rust-odds")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "odds" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "17jd5fjcrlya7dbnnj0v8s83l3jhlajyljmkcy49pxsvxj9zdsdz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-rawpointer" ,rust-rawpointer-0.2)
+                       ("rust-rawslice" ,rust-rawslice-0.1)
+                       ("rust-unchecked-index" ,rust-unchecked-index-0.2))
+       #:cargo-development-inputs (("rust-itertools" ,rust-itertools-0.8)
+                                   ("rust-lazy-static" ,rust-lazy-static-1)
+                                   ("rust-memchr" ,rust-memchr-2)
+                                   ("rust-quickcheck" ,rust-quickcheck-0.9))))
+    (home-page "https://github.com/bluss/odds")
+    (synopsis "Extra functionality for slices, strings and other things")
+    (description
+     "Odds and ends collection miscellania.  Extra functionality for
+slices (@code{.find()}, @code{RevSlice}), strings and other things.
+Things in odds may move to more appropriate crates if we find them.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-odds-0.3
   (package
+    (inherit rust-odds-0.4)
     (name "rust-odds")
     (version "0.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "odds" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "0rdnxa0na4897yb0svb3figz35g4imxjv61yfm2j21gbh5q8v8d9"))))
-    (build-system cargo-build-system)
+        (base32 "0rdnxa0na4897yb0svb3figz35g4imxjv61yfm2j21gbh5q8v8d9"))))
     (arguments
      `(#:cargo-inputs
        (("rust-rawpointer" ,rust-rawpointer-0.1)
@@ -48562,14 +48588,7 @@ local files.")
        (("rust-itertools" ,rust-itertools-0.7)
         ("rust-lazy-static" ,rust-lazy-static-0.2)
         ("rust-memchr" ,rust-memchr-2)
-        ("rust-quickcheck" ,rust-quickcheck-0.4))))
-    (home-page "https://github.com/bluss/odds")
-    (synopsis "Extra functionality for slices, strings and other things")
-    (description
-     "Odds and ends collection miscellania.  Extra functionality for
-slices (@code{.find()}, @code{RevSlice}), strings and other things.
-Things in odds may move to more appropriate crates if we find them.")
-    (license (list license:asl2.0 license:expat))))
+        ("rust-quickcheck" ,rust-quickcheck-0.4))))))
 
 (define-public rust-odds-0.2
   (package
