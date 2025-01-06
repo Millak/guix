@@ -8604,6 +8604,28 @@ Printf/Sprintf etc.")
 generation.")
     (license license:asl2.0)))
 
+(define-public go-github-com-magiconair-properties
+  (package
+    (name "go-github-com-magiconair-properties")
+    (version "1.8.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/magiconair/properties")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05nkgdzl393505arq6hf1wxjxs2iaqkc88v5cy1s068abpl65xy0"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/magiconair/properties"))
+    (home-page "https://github.com/magiconair/properties")
+    (synopsis "Java properties scanner for Go")
+    (description "Java properties scanner for Go")
+    (license license:bsd-2)))
+
 (define-public go-github-com-makenowjust-heredoc
   (package
     (name "go-github-com-makenowjust-heredoc")
