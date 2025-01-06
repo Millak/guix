@@ -84520,23 +84520,24 @@ Chrome-style traces.")
 (define-public rust-tracing-error-0.2
   (package
     (name "rust-tracing-error")
-    (version "0.2.0")
+    (version "0.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tracing-error" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0vi0rns7r8iny2milg0kikz1mhgcl9wz5clpy1vi4jrq1wffr1nn"))))
+        (base32 "1nzk6qcvhmxxy3lw1nj71anmfmvxlnk78l5lym1389vs1l1825cb"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-test-flags '("--release" "--"
+     `(#:cargo-test-flags '("--"
                             "--skip=backtrace::SpanTrace::capture")
        #:cargo-inputs (("rust-tracing" ,rust-tracing-0.1)
                        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))
     (home-page "https://tokio.rs")
     (synopsis "Utilities for enriching errors with `tracing`")
-    (description "Utilities for enriching errors with `tracing`.")
+    (description "This package provides utilities for enriching errors with
+@code{tracing}.")
     (license license:expat)))
 
 (define-public rust-tracing-error-0.1
