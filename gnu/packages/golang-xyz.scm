@@ -8103,6 +8103,33 @@ structure.  It can also produce a much more verbose, one-item-per-line
 representation suitable for computing diffs.")
     (license license:asl2.0)))
 
+(define-public go-github-com-lann-builder
+  (package
+    (name "go-github-com-lann-builder")
+    (version "0.0.0-20180802200727-47ae307949d0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/lann/builder")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1kg9jy1rciznj627hafpq2mi7hr5d3ssgqcpwrm3bnlk9sqnydil"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/lann/builder"))
+    (propagated-inputs
+     (list go-github-com-lann-ps))
+    (home-page "https://github.com/lann/builder")
+    (synopsis "Fluent immutable builders for Golang")
+    (description
+     "Package builder provides a method for writing fluent immutable DSL
+builders.  It uses immutable persistent data structures so that each step in
+the method chain can be reused.")
+    (license license:expat)))
+
 (define-public go-github-com-lann-ps
   (package
     (name "go-github-com-lann-ps")
