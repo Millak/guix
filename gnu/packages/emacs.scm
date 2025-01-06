@@ -574,7 +574,8 @@ editor (with wide ints)" )
        (sha256
         (base32 "0nj3a7wsl5piqf6a8wnmfyjbpxp2dwl0r48flv9q624jx4nxfr2p"))
        (patches
-        (search-patches "emacs-next-exec-path.patch"
+        (search-patches "emacs-disable-jit-compilation.patch"
+                        "emacs-next-exec-path.patch"
                         "emacs-fix-scheme-indent-function.patch"
                         "emacs-next-native-comp-driver-options.patch"
                         "emacs-next-native-comp-fix-filenames.patch"
