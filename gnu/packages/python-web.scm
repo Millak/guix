@@ -5378,37 +5378,6 @@ Betamax that may possibly end up in the main package.")
      "This package contains a Flask module for creating REST APIs.")
     (license license:bsd-3)))
 
-(define-public python-flask-basicauth
-  (package
-    (name "python-flask-basicauth")
-    (version "0.2.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "Flask-BasicAuth" version))
-       (sha256
-        (base32
-         "1zq1spkjr4sjdnalpp8wl242kdqyk6fhbnhr8hi4r4f0km4bspnz"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'fix-imports
-                    (lambda _
-                      (substitute* '("docs/index.rst"
-                                     "docs/conf.py"
-                                     "flask_basicauth.py"
-                                     "test_basicauth.py")
-                        (("flask\\.ext\\.basicauth")
-                         "flask_basicauth"))
-                      #t)))))
-    (propagated-inputs
-     (list python-flask))
-    (home-page "https://github.com/jpvanhal/flask-basicauth")
-    (synopsis "HTTP basic access authentication for Flask")
-    (description
-     "This package provides HTTP basic access authentication for Flask.")
-    (license license:bsd-3)))
-
 (define-public python-flask-htpasswd
   (package
     (name "python-flask-htpasswd")
