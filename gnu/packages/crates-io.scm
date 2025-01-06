@@ -72100,7 +72100,7 @@ extensions.")
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-bstr" ,rust-bstr-0.2)
+       (("rust-bstr" ,rust-bstr-1)
         ("rust-serde" ,rust-serde-1)
         ("rust-unicode-segmentation" ,rust-unicode-segmentation-1))
        #:cargo-development-inputs
