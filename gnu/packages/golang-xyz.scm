@@ -3507,6 +3507,31 @@ supports concurrent serializable transactions.")
 on throughput and hit ratio performance.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public go-github-com-dgryski-go-linebreak
+  (package
+    (name "go-github-com-dgryski-go-linebreak")
+    (version "0.0.0-20180812204043-d8f37254e7d3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dgryski/go-linebreak")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0jv8ldb9vh5mgh66g61fh418x16s8jszrykhkbc901y1llf2mi22"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/dgryski/go-linebreak"))
+    (home-page "https://github.com/dgryski/go-linebreak")
+    (synopsis "Wraps text at a given width")
+    (description
+     "Package linebreak wraps text at a given width, it's a translation of
+@url{http://xxyxyz.org/line-breaking/, linear}, an implementation of
+@url{https://en.wikipedia.org/wiki/SMAWK_algorithm, SMAWK algorithm}.")
+    (license license:expat)))
+
 ;; The project provides no go.mod files and contains a veracity of commands
 ;; and libraries which might need missing dependencies, update them on demand.
 (define-public go-github-com-dgryski-trifles
