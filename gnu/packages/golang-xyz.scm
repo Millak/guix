@@ -12876,6 +12876,33 @@ edges and self-loops are not permitted.
 @end itemize")
     (license license:asl2.0)))
 
+(define-public go-github-com-xdg-go-stringprep
+  (package
+    (name "go-github-com-xdg-go-stringprep")
+    (version "1.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/xdg-go/stringprep")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xvaf2xiy34ra4xz75d6kylr29jv00dnyk14mh8kmq5692n8lqvb"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/xdg-go/stringprep"))
+    (propagated-inputs
+     (list go-golang-org-x-text))
+    (home-page "https://github.com/xdg-go/stringprep")
+    (synopsis "Go implementation of RFC-3454 stringprep and RFC-4013 SASLprep")
+    (description
+     "Package stringprep provides data tables and algorithms for RFC-3454,
+including errata.  It also provides a profile for SASLprep as defined in
+RFC-4013.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-xhit-go-str2duration-v2
   (package
     (name "go-github-com-xhit-go-str2duration-v2")
