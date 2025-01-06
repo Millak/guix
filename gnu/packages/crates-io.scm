@@ -52702,14 +52702,20 @@ algorithm.")
         (base32 "1ns7mbxidnn2pqahbbjccxkrqkrll2i5rbxx43ns6rh6fn3cridl"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-fixedbitset" ,rust-fixedbitset-0.4)
         ("rust-indexmap" ,rust-indexmap-2)
         ("rust-quickcheck" ,rust-quickcheck-0.8)
         ("rust-rayon" ,rust-rayon-1)
         ("rust-serde" ,rust-serde-1)
-        ("rust-serde-derive" ,rust-serde-derive-1))))
+        ("rust-serde-derive" ,rust-serde-derive-1))
+       #:cargo-development-inputs (("rust-ahash" ,rust-ahash-0.7)
+                                   ("rust-bincode" ,rust-bincode-1)
+                                   ("rust-defmac" ,rust-defmac-0.2)
+                                   ("rust-fxhash" ,rust-fxhash-0.2)
+                                   ("rust-itertools" ,rust-itertools-0.12)
+                                   ("rust-odds" ,rust-odds-0.4)
+                                   ("rust-rand" ,rust-rand-0.5))))
     (home-page "https://github.com/petgraph/petgraph")
     (synopsis "Graph data structure library")
     (description
