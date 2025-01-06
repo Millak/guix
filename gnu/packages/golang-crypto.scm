@@ -765,6 +765,31 @@ functions from @url{https://github.com/google/farmhash,Google's FarmHash}.")
 MetroHash}, a high quality, high performance hash algorithm.")
     (license license:expat)))
 
+(define-public go-github-com-dgryski-go-mph
+  (package
+    (name "go-github-com-dgryski-go-mph")
+    (version "0.0.0-20211217222804-81a8625fb7ed")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dgryski/go-mph")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "10q8l4jdzqf54bnnxka2jk6qzayri3ijv51knn1n0iimfric8w9g"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/dgryski/go-mph"))
+    (propagated-inputs
+     (list go-github-com-dgryski-go-metro))
+    (home-page "https://github.com/dgryski/go-mph")
+    (synopsis "Go minimal perfect hash function")
+    (description
+     "This package implements a hash/displace minimal perfect hash function.")
+    (license license:expat)))
+
 (define-public go-github-com-dvsekhvalnov-jose2go
   (package
     (name "go-github-com-dvsekhvalnov-jose2go")
