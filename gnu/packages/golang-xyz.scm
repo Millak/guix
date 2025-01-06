@@ -8103,6 +8103,33 @@ structure.  It can also produce a much more verbose, one-item-per-line
 representation suitable for computing diffs.")
     (license license:asl2.0)))
 
+(define-public go-github-com-lann-ps
+  (package
+    (name "go-github-com-lann-ps")
+    (version "0.0.0-20150810152359-62de8c46ede0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/lann/ps")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "10yhcyymypvdiiipchsp80jbglk8c4r7lq7h54v9f4mxmvz6xgf7"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/lann/ps"))
+    (home-page "https://github.com/lann/ps")
+    (synopsis "Persistent data structures for Golang")
+    (description
+     "This package implements a fully persistent data structures - a data
+structure that always preserves the previous version of itself when it is
+modified.  Such data structures are effectively immutable, as their operations
+do not update the structure in-place, but instead always yield a new
+structure.  It's a stable fork of https://github.com/mndrix/ps.")
+    (license license:expat)))
+
 (define-public go-github-com-leodido-go-urn
   (package
     (name "go-github-com-leodido-go-urn")
