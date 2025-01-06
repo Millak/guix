@@ -1,0 +1,17 @@
+Fixes crash.
+Patch from <https://github.com/inferno-os/inferno-os/pull/13>.
+
+diff --git a/emu/Linux/os.c b/emu/Linux/os.c
+index 08b039d6..0d8a0cf3 100644
+--- a/emu/Linux/os.c
++++ b/emu/Linux/os.c
+@@ -18,6 +18,9 @@
+ 
+ #include	<raise.h>
+ 
++/* For dynamic linking init/fini code that needs malloc */
++void (*coherence)(void) = nofence;
++
+ /* glibc 2.3.3-NTPL messes up getpid() by trying to cache the result, so we'll do it ourselves */
+ #include	<sys/syscall.h>
+ #define	getpid()	syscall(SYS_getpid)
