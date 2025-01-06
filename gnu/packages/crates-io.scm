@@ -84792,14 +84792,14 @@ application authors using tracing to instrument their applications.")
   (package
     (inherit rust-tracing-subscriber-0.3)
     (name "rust-tracing-subscriber")
-    (version "0.2.15")
+    (version "0.2.25")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tracing-subscriber" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "009lxq14kmakv16sh6r7fy0264xbvs81kg6yr57lwnaciw68zym1"))))
+        (base32 "0wcc3sqckjsxaahd9jnc4cwa13m623lhk8fg8way9hn3k6m2w38f"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #false                  ;missing test files
