@@ -4288,6 +4288,31 @@ expressions.  This includes a template-matching system and code-walking tools
 that let you do deep transformations of code.")
     (license license:expat)))
 
+(define-public julia-manualmemory
+  (package
+    (name "julia-manualmemory")
+    (version "0.1.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/JuliaSIMD/ManualMemory.jl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ajd92q65cffyb9x6mb1x1aprr2afn8p52bfkbmf303dy5ac63lj"))))
+    (build-system julia-build-system)
+    ;; Tests have a dependency cycle with VectorizationBase
+    ;; VectorizationBase -> LayoutPointers -> ManualMemory -> VectorizationBase
+    (arguments
+     (list
+      #:tests? #f))
+    (home-page "https://github.com/JuliaSIMD/ManualMemory.jl")
+    (synopsis "Manual memory management utilities in Julia")
+    (description "This package provides manually managed memory buffers backed
+by @code{NTuples} in Julia.")
+    (license license:expat)))
+
 (define-public julia-mappedarrays
   (package
     (name "julia-mappedarrays")
