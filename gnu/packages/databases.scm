@@ -3384,7 +3384,7 @@ can autogenerate peewee models using @code{pwiz}, a model generator.")
         (base32 "0dmzpsnlqjjz0vm0r9xjk69xfsm235bpnk3jccr8ww4s8y7qc0nq"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list poetry))
+     (list poetry python-setuptools))
     (home-page "https://github.com/tortoise/pypika-tortoise")
     (synopsis "Pypika fork for tortoise-orm")
     (description "Pypika-tortoise is a fork of pypika which has been
