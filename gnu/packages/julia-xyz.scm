@@ -1488,6 +1488,28 @@ as SLAM (simultaneous localization and mapping).")
 CPU features with low run-time cost.")
     (license license:expat)))
 
+(define-public julia-cpusummary
+  (package
+    (name "julia-cpusummary")
+    (version "0.2.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/JuliaSIMD/CPUSummary.jl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06kmmnhhcdgm538ax6lblklrih91p2ligg328kljq144j8s6cixm"))))
+    (build-system julia-build-system)
+    (propagated-inputs (list julia-cpuid julia-ifelse julia-precompiletools
+                             julia-static))
+    (home-page "https://github.com/JuliaSIMD/CPUSummary.jl")
+    (synopsis "Provides a summary of CPU features")
+    (description
+     "This package provides a summary of available CPU features in Julia.")
+    (license license:expat)))
+
 (define-public julia-crayons
   (package
     (name "julia-crayons")
