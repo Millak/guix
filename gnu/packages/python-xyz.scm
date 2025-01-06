@@ -30443,7 +30443,12 @@ a mypy plugin that smooths over some limitations in the basic type hints.
        (sha256
         (base32 "1yk2ak991kbl30xg8ldpggack1lwkizd7s5cpr28ir34z8iyjnpi"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-pytest python-pytest-trio python-trustme))
+    (native-inputs
+     (list python-pytest
+           python-pytest-trio
+           python-setuptools
+           python-trustme
+           python-wheel))
     (propagated-inputs (list python-async-generator python-trio python-wsproto))
     (home-page "https://github.com/HyperionGray/trio-websocket")
     (synopsis "WebSocket library for Trio")
