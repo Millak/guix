@@ -7745,6 +7745,31 @@ word-splitting rules.")
       (home-page "https://github.com/kballard/go-shellquote")
       (license license:expat))))
 
+(define-public go-github-com-kevinburke-ssh-config
+  (package
+    (name "go-github-com-kevinburke-ssh-config")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kevinburke/ssh_config")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0jvv3i0g8ll210xlbxy8ywj09gab0im676rmnywh3wlpdhxdkbjd"))))
+    (arguments
+     (list
+      #:import-path "github.com/kevinburke/ssh_config"))
+    (build-system go-build-system)
+    (home-page "https://github.com/kevinburke/ssh_config/")
+    (synopsis "Parser for @file{ssh_config} files")
+    (description
+     "This is a Go parser for @file{ssh_config} files.  Importantly, this
+parser attempts to preserve comments in a given file, so you can manipulate a
+@file{ssh_config} file from a program.")
+    (license license:expat)))
+
 (define-public go-github-com-keybase-dbus
   (package
     (name "go-github-com-keybase-dbus")
