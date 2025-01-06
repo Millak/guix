@@ -8560,6 +8560,31 @@ implementing features like:
 @end itemize")
       (license license:expat))))
 
+(define-public go-github-com-masterminds-goutils
+  (package
+    (name "go-github-com-masterminds-goutils")
+    (version "1.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Masterminds/goutils")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09m4mbcdlv9ng3xcrmjlxi0niavby52y9nl2jhjnbx1xxpjw0jrh"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/Masterminds/goutils"))
+    (home-page "https://github.com/Masterminds/goutils/")
+    (synopsis "Utility functions to manipulate strings")
+    (description
+     "GoUtils provides utility functions to manipulate strings in various
+ways.  It is a Go implementation of some string manipulation libraries of Java
+Apache Commons.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-masterminds-semver-v3
   (package
     (name "go-github-com-masterminds-semver-v3")
