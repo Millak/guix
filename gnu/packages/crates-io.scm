@@ -87374,23 +87374,21 @@ Unicode and Internationalization Crates (UNIC) project.")
 (define-public rust-unicode-bidi-0.3
   (package
     (name "rust-unicode-bidi")
-    (version "0.3.13")
+    (version "0.3.18")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "unicode-bidi" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "0q0l7rdkiq54pan7a4ama39dgynaf1mnjj1nddrq1w1zayjqp24j"))))
+        (base32 "1xcxwbsqa24b8vfchhzyyzgj0l6bn51ib5v8j6krha0m77dva72w"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f      ; Not all files included.
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-flame" ,rust-flame-0.2)
         ("rust-flamer" ,rust-flamer-0.4)
-        ("rust-serde" ,rust-serde-1))
+        ("rust-serde" ,rust-serde-1)
+        ("rust-smallvec" ,rust-smallvec-1))
        #:cargo-development-inputs
        (("rust-serde-test" ,rust-serde-test-1))))
     (home-page "https://github.com/servo/unicode-bidi")
