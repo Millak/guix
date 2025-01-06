@@ -3403,31 +3403,6 @@ designed to clean up raw terminal output by stripping escape sequences,
 optionally preserving color.")
     (license license:expat)))
 
-(define-public go-github-com-macronut-go-tproxy
-  (package
-    (name "go-github-com-macronut-go-tproxy")
-    (version "0.0.0-20190726054950-ef7efd7f24ed")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/FutureProtocolLab/go-tproxy")
-                    (commit (go-version->git-ref version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0jibsg0xhsn0h1jq4g9qd4nr58w43y8majlwfri9ffk2cbfrwqdr"))
-              (modules '((guix build utils)))
-              (snippet '(delete-file-recursively "example"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:import-path "github.com/macronut/go-tproxy"))
-    (home-page "https://github.com/FutureProtocolLab/go-tproxy")
-    (synopsis "Linux Transparent Proxy library")
-    (description
-     "Golang TProxy provides an easy to use wrapper for the Linux Transparent
-Proxy functionality.")
-    (license license:expat)))
-
 (define-public go-golang-org-rainycape-unidecode
   (let ((commit "cb7f23ec59bec0d61b19c56cd88cee3d0cc1870c")
         (revision "1"))
