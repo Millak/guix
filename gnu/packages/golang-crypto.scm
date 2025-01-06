@@ -790,6 +790,30 @@ MetroHash}, a high quality, high performance hash algorithm.")
      "This package implements a hash/displace minimal perfect hash function.")
     (license license:expat)))
 
+(define-public go-github-com-dgryski-go-rendezvous
+  (package
+    (name "go-github-com-dgryski-go-rendezvous")
+    (version "0.0.0-20200823014737-9f7001d12a5f")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dgryski/go-rendezvous")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0hhdbsm5k19kh1fyxs4aibza9jylils4p3555lr8xalhj2iz3zlz"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/dgryski/go-rendezvous"))
+    (home-page "https://github.com/dgryski/go-rendezvous")
+    (synopsis "Hashing functions for Golang")
+    ;; Project provides no README.
+    (description
+     "This package provides a hashing function.")
+    (license license:expat)))
+
 (define-public go-github-com-dvsekhvalnov-jose2go
   (package
     (name "go-github-com-dvsekhvalnov-jose2go")
