@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020 Valentin Ignatev <valentignatev@gmail.com>
 ;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
-;;; Copyright © 2020, 2021, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2020, 2021, 2023-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 John Soo <jsoo1@asu.edu>
 ;;; Copyright © 2020 Gabriel Arazas <foo.dogsquared@gmail.com>
 ;;; Copyright © 2020 Raghav Gururajan <raghavgururajan@disroot.org>
@@ -51,7 +51,9 @@
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gl)
+  #:use-module (gnu packages glib)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages image-processing)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
@@ -2798,6 +2800,27 @@ It's features include:
      "This package builds and links to the dav1d AV1 decoder.")
     (license license:bsd-2)))
 
+(define-public rust-libvips-1
+  (package
+    (name "rust-libvips")
+    (version "1.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libvips" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0apwyz8dm9ysxmsry2savf3q0nd12k01pm33c1g5ph2s6s9hp29k"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-num-derive" ,rust-num-derive-0.4)
+                       ("rust-num-traits" ,rust-num-traits-0.2))))
+    (inputs (list glib vips))
+    (home-page "https://github.com/olxgroup-oss/libvips-rust-bindings")
+    (synopsis "Safe bindings for libvips")
+    (description "This package provides safe bindings for libvips.")
+    (license license:expat)))
+
 (define-public rust-libwebp-sys-0.9
   (package
     (name "rust-libwebp-sys")
@@ -3753,8 +3776,32 @@ in AVIF format (powers the @code{cavif} tool).")
     (description "Interop library between Metal and raw-window-handle.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-resize-0.8
+  (package
+    (name "rust-resize")
+    (version "0.8.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "resize" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1w0fsb9ab1q4yyr5fyhcahjsp5wk97vh550lg52kyy3ynk8078c7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-hashbrown" ,rust-hashbrown-0.15)
+                       ("rust-libm" ,rust-libm-0.2)
+                       ("rust-rayon" ,rust-rayon-1)
+                       ("rust-rgb" ,rust-rgb-0.8))
+       #:cargo-development-inputs (("rust-png" ,rust-png-0.17))))
+    (home-page "https://github.com/PistonDevelopers/resize")
+    (synopsis "Image resampling library in pure Rust")
+    (description "This package provides an image resampling library in pure Rust.")
+    (license license:expat)))
+
 (define-public rust-resize-0.7
   (package
+    (inherit rust-resize-0.8)
     (name "rust-resize")
     (version "0.7.4")
     (source
@@ -3764,17 +3811,12 @@ in AVIF format (powers the @code{cavif} tool).")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0hdd5r2m1700y6r88v5hq3q28xixrsbfhbzqz26409jyy3zvvrw7"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-fallible-collections" ,rust-fallible-collections-0.4)
         ("rust-rgb" ,rust-rgb-0.8))
        #:cargo-development-inputs
-       (("rust-png" ,rust-png-0.17))))
-    (home-page "https://github.com/PistonDevelopers/resize")
-    (synopsis "Image resampling library in pure Rust")
-    (description "This package provides an image resampling library in pure Rust.")
-    (license license:expat)))
+       (("rust-png" ,rust-png-0.17))))))
 
 (define-public rust-resize-0.4
   (package
