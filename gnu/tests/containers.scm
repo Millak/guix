@@ -158,7 +158,7 @@
                           (loop (+ 1 attempts))))))))
 
           (test-equal "/sys/fs/cgroup/cgroup.subtree_control content is sound"
-            (list "cpu" "cpuset" "memory" "pids")
+            (list "cpu" "cpuset" "io" "memory" "pids")
             (marionette-eval
              `(begin
                 (use-modules (srfi srfi-1)

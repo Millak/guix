@@ -174,7 +174,7 @@ available for each configured user."))
                 #~(system*
                    (string-append #+bash-minimal "/bin/bash") "-c"
                    (string-append "echo Setting cgroups v2 limits && "
-                                  "echo +cpu +cpuset +memory +pids"
+                                  "echo +cpu +cpuset +io +memory +pids"
                                   " >> /sys/fs/cgroup/cgroup.subtree_control"))))
 
 (define (rootless-podman-cgroups-limits-service config)
