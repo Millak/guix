@@ -1026,7 +1026,7 @@ that is then compared to a @code{csrftoken} hidden form field or a
 (define-public python-asgi-lifespan
   (package
     (name "python-asgi-lifespan")
-    (version "1.0.1")
+    (version "2.1.0")
     (source (origin
               (method git-fetch)        ;for tests
               (uri (git-reference
@@ -1035,7 +1035,7 @@ that is then compared to a @code{csrftoken} hidden form field or a
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "10a5ci9ddr8wnjf3wai7xifbbplirhyrgvw4p28q0ha63cvhb2j2"))))
+                "0iqa3h61gsq1qd6j9v68k989596m9n9k1dx8zv6135rmhzzrs296"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -1043,15 +1043,28 @@ that is then compared to a @code{csrftoken} hidden form field or a
       '(list "-c" "/dev/null"           ;ignore coverage-related options
              "-k"
              (string-append
-              ;; XXX: Some tests fail because of a 'lifespan.shutdown.failed'
-              ;; extra event, perhaps because our version of trio is older.
-              "not (test_lifespan_manager[asyncio-None-ValueError-None]"
-              " or test_lifespan_manager[asyncio-ValueError-None-None]"
-              " or test_lifespan_manager[asyncio-ValueError-ValueError-None]"
-              " or test_lifespan_manager[trio-None-ValueError-None]"
-              " or test_lifespan_manager[trio-ValueError-None-None]"
-              " or test_lifespan_manager[trio-ValueError-ValueError-None])"))))
-    (native-inputs (list python-pytest
+              ;; XXX: Some tests fail because of "Exceptions from Trio nursery"
+              "not (test_lifespan_manager[trio-None-None-StartupFailed]"
+              " or test_lifespan_manager[trio-None-BodyFailed-None]"
+              " or test_lifespan_manager[trio-None-BodyFailed-StartupFailed]"
+              " or test_lifespan_manager[trio-ShutdownFailed-None-None]"
+              " or test_lifespan_manager[trio-ShutdownFailed-None-StartupFailed]"
+              " or test_lifespan_manager[trio-ShutdownFailed-BodyFailed-StartupFailed]"
+              " or test_lifespan_timeout[trio-slow_shutdown]"
+              " or test_lifespan_not_supported[trio-http_only]"
+              " or test_lifespan_not_supported[trio-http_no_assert]"
+              " or test_lifespan_not_supported[trio-http_no_assert_before_receive_request]"
+              ")"))
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'compatibility
+           (lambda _
+             ;; httpx version 0.28.0 removed the "app" shortcut.
+             (substitute* "tests/test_manager.py"
+               (("app=manager.app")
+                "transport=httpx.ASGITransport(manager.app)")))))))
+    (native-inputs (list python-httpx
+                         python-pytest
                          python-pytest-asyncio
                          python-pytest-trio
                          python-starlette
