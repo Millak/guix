@@ -53495,17 +53495,17 @@ international phone numbers.")
 (define-public rust-pin-project-internal-1
   (package
     (name "rust-pin-project-internal")
-    (version "1.1.5")
+    (version "1.1.7")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "pin-project-internal" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0r9r4ivwiyqf45sv6b30l1dx282lxaax2f6gl84jwa3q590s8f1g"))))
+        (base32 "133mxf5vmvnvw4idw2y2lb5bxsza2xlyfl6psjy7mz3l12nmy3rw"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #false
+     `(#:tests? #false  ; use of undeclared crate or module `pin_project`
        #:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
