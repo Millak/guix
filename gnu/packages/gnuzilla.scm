@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2013-2022 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2014-2024 Mark H Weaver <mhw@netris.org>
+;;; Copyright © 2014-2025 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2016-2019, 2021, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
@@ -533,9 +533,9 @@ variable defined below.  It requires guile-json to be installed."
 ;; XXXX: Workaround 'snippet' limitations.
 (define computed-origin-method (@@ (guix packages) computed-origin-method))
 
-(define %icecat-base-version "115.18.0")
-(define %icecat-version (string-append %icecat-base-version "-guix2"))
-(define %icecat-build-id "20241127000000") ;must be of the form YYYYMMDDhhmmss
+(define %icecat-base-version "115.19.0")
+(define %icecat-version (string-append %icecat-base-version "-guix1"))
+(define %icecat-build-id "20250107000000") ;must be of the form YYYYMMDDhhmmss
 
 ;; 'icecat-source' is a "computed" origin that generates an IceCat tarball
 ;; from the corresponding upstream Firefox ESR tarball, using the 'makeicecat'
@@ -555,12 +555,12 @@ variable defined below.  It requires guile-json to be installed."
                   "firefox-" upstream-firefox-version ".source.tar.xz"))
             (sha256
              (base32
-              "0k1lbkaf0qq6r96lxafg4jmkc3rbckj9akkgrkzipaiwfi7ify9a"))))
+              "1mmyd14x1v4g5i68avsi7kzc68qpjx4zh49k9m4sq222x2ca6r3y"))))
 
          ;; The upstream-icecat-base-version may be older than the
          ;; %icecat-base-version.
-         (upstream-icecat-base-version "115.18.0")
-         (gnuzilla-commit "dc99e15355412bc9b11b34d3fe5729bed1c251de")
+         (upstream-icecat-base-version "115.19.0")
+         (gnuzilla-commit "fc97942e2c3a23b9e24e1946c37a37c2fe4ff341")
          (gnuzilla-source
           (origin
             (method git-fetch)
@@ -572,7 +572,7 @@ variable defined below.  It requires guile-json to be installed."
                                       (string-take gnuzilla-commit 8)))
             (sha256
              (base32
-              "0syzjvgc93mwxnqh5k2cr080r6932j7q7y6ar865f9z2d3lj2vg0"))))
+              "1lfpic7vscqk1vwqqs6d68dk74h10f7xpxxg8bg2lmfbs523piz1"))))
 
          ;; 'search-patch' returns either a valid file name or #f, so wrap it
          ;; in 'assume-valid-file-name' to avoid 'local-file' warnings.
