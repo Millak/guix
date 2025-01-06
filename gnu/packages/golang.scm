@@ -2558,39 +2558,6 @@ store, and deliver content.  It contains Docker Registry 2.0 and libraries
 to interact with distribution components.")
       (license license:asl2.0))))
 
-(define-public go-github-com-docker-go-connections
-  (package
-    (name "go-github-com-docker-go-connections")
-    (version "0.5.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/docker/go-connections")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0svfa9g4xvbn87l5kiww1jkijmci9g5821wjp81xz1rfp13cqrk8"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/docker/go-connections"
-      #:test-flags
-      #~(list "-skip"
-              (string-join
-               ;;  Unable to verify certificate 1: x509: certificate signed by
-               ;;  unknown authority.
-               (list "TestConfigClientExclusiveRootPools"
-                     "TestConfigServerExclusiveRootPools")
-               "|"))))
-    (home-page "https://github.com/docker/go-connections")
-    (synopsis "Networking library for Go")
-    (description
-     "This package provides a library to work with network connections in the
-Go language.  In particular it provides tools to deal with network address
-translation (NAT), proxies, sockets, and transport layer security (TLS).")
-    (license license:asl2.0)))
-
 (define-public go-github-com-aarzilli-golua
   (let ((commit "03fc4642d792b1f2bc5e7343b403cf490f8c501d")
         (revision "0"))
