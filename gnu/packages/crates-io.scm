@@ -84683,8 +84683,34 @@ with tracing (optional, enabled by the env-logger feature).
        #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.3)
                                    ("rust-tracing" ,rust-tracing-0.1))))))
 
+(define-public rust-tracing-serde-0.2
+  (package
+    (name "rust-tracing-serde")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tracing-serde" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1wbgzi364vzfswfkvy48a3p0z5xmv98sx342r57sil70ggmiljvh"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1)
+                       ("rust-tracing-core" ,rust-tracing-core-0.1)
+                       ("rust-valuable" ,rust-valuable-0.1)
+                       ("rust-valuable-serde" ,rust-valuable-serde-0.1))
+       #:cargo-development-inputs (("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://tokio.rs")
+    (synopsis "Compatibility layer for serializing trace data with @code{serde}")
+    (description
+     "This package provides a compatibility layer for serializing trace data
+with @code{serde}.")
+    (license license:expat)))
+
 (define-public rust-tracing-serde-0.1
   (package
+    (inherit rust-tracing-serde-0.2)
     (name "rust-tracing-serde")
     (version "0.1.3")
     (source
@@ -84694,7 +84720,6 @@ with tracing (optional, enabled by the env-logger feature).
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1qfr0va69djvxqvjrx4vqq7p6myy414lx4w1f6amcn0hfwqj2sxw"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-serde" ,rust-serde-1)
@@ -84702,14 +84727,7 @@ with tracing (optional, enabled by the env-logger feature).
         ("rust-valuable" ,rust-valuable-0.1)
         ("rust-valuable-serde" ,rust-valuable-serde-0.1))
        #:cargo-development-inputs
-       (("rust-serde-json" ,rust-serde-json-1))))
-    (home-page "https://tokio.rs")
-    (synopsis "Compatibility layer for serializing trace data with
-@code{serde}")
-    (description
-     "This package provides a compatibility layer for serializing trace data
-with @code{serde}.")
-    (license license:expat)))
+       (("rust-serde-json" ,rust-serde-json-1))))))
 
 (define-public rust-tracing-subscriber-0.3
   (package
