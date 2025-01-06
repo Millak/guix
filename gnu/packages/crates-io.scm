@@ -84666,20 +84666,20 @@ with tracing (optional, enabled by the env-logger feature).
   (package
     (inherit rust-tracing-log-0.2)
     (name "rust-tracing-log")
-    (version "0.1.3")
+    (version "0.1.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tracing-log" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "08prnkxq8yas6jvvjnvyx5v3hwblas5527wxxgbiw2yis8rsvpbq"))))
+        (base32 "1wmxawaz94sk52i4vs2wg5d5clyks972rqskrvc93rxl14ki2lgp"))))
     (arguments
      `(#:cargo-inputs (("rust-ahash" ,rust-ahash-0.7)
-                       ("rust-env-logger" ,rust-env-logger-0.7)
-                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-env-logger" ,rust-env-logger-0.8)
                        ("rust-log" ,rust-log-0.4)
                        ("rust-lru" ,rust-lru-0.7)
+                       ("rust-once-cell" ,rust-once-cell-1)
                        ("rust-tracing-core" ,rust-tracing-core-0.1))
        #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.3)
                                    ("rust-tracing" ,rust-tracing-0.1))))))
