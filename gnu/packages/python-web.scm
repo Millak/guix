@@ -5545,7 +5545,7 @@ on the command line.")
 (define-public python-flask-login
   (package
     (name "python-flask-login")
-    (version "0.6.0")
+    (version "0.6.3")
     (source
      (origin
        (method git-fetch)
@@ -5554,7 +5554,7 @@ on the command line.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "12yw01ccgjn9c88cbkrd6k1ykjxd8fxip2b1isvxjirphnlqhn9g"))))
+        (base32 "0wk3dni5qssmbn8ii3hsh89qa3kwr97i92k27bzgsgxvvsfwwzja"))))
     (build-system pyproject-build-system)
     (propagated-inputs
      (list python-flask))
@@ -5564,7 +5564,9 @@ on the command line.")
            python-mock
            python-pytest
            python-semantic-version
-           python-werkzeug))
+           python-setuptools
+           python-werkzeug
+           python-wheel))
     (home-page "https://github.com/maxcountryman/flask-login")
     (synopsis "User session management for Flask")
     (description
