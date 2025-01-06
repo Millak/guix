@@ -87482,17 +87482,15 @@ Category property for char.")
 (define-public rust-unicode-id-0.3
   (package
     (name "rust-unicode-id")
-    (version "0.3.4")
+    (version "0.3.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "unicode-id" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0gq8mvi7cf4a13r9djb6xcf16jm58kic30kv36856s99cgwdxdmi"))))
+        (base32 "0qdmwsyi72c17v64h1is28f0gc2d3bvhjz264i998c270ibkq40h"))))
     (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.3))))
     (home-page "https://github.com/Boshen/unicode-id")
     (synopsis
      "Determine whether characters have the ID_Start or ID_Continue properties")
