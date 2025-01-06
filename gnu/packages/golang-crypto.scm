@@ -741,6 +741,30 @@ It is implemented as a mechanical translation of the non-SSE4/non-AESNI hash
 functions from @url{https://github.com/google/farmhash,Google's FarmHash}.")
     (license license:expat)))
 
+(define-public go-github-com-dgryski-go-metro
+  (package
+    (name "go-github-com-dgryski-go-metro")
+    (version "0.0.0-20250106013310-edb8663e5e33")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dgryski/go-metro")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0had4wbhhghr3rbm5v4dcj73nlq49k1mpklqn9gkmzkkxfs8hf6z"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/dgryski/go-metro"))
+    (home-page "https://github.com/dgryski/go-metro")
+    (synopsis "Go translation of MetroHash")
+    (description
+     "This package provides a Go translation of the
+@url{https://github.com/jandrewrogers/MetroHash, reference C++ code for
+MetroHash}, a high quality, high performance hash algorithm.")
+    (license license:expat)))
+
 (define-public go-github-com-dvsekhvalnov-jose2go
   (package
     (name "go-github-com-dvsekhvalnov-jose2go")
