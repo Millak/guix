@@ -9917,7 +9917,7 @@ pattern.")
 (define-public python-fastapi-pagination-minimal
   (package
     (name "python-fastapi-pagination-minimal")
-    (version "0.12.0")
+    (version "0.12.34")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -9926,19 +9926,15 @@ pattern.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0qkcphjk1qy680v1hkmqbs4p7srvx020wy39b97anrn9dyyi5ah6"))))
+                "004w9h4ana0p766n7f0z0n06v1472yjci1hvbys9gncpclcc49gj"))))
     (build-system pyproject-build-system)
-    (arguments
-     ;; Tests depend on python-cassandra,
-     ;; which is not yet packaged in Guix.
-     `(#:tests? #f))
-    (native-inputs
-     (list poetry))
+    ;; We run the tests in python-fastapi-pagination only.
+    (arguments (list #:tests? #false))
     ;; These are the only required dependencies,
     ;; please add all optional dependencies to the
     ;; full python-fastapi-pagination below.
-    (propagated-inputs (list python-fastapi
-                             python-pydantic))
+    (propagated-inputs (list python-fastapi python-pydantic-2))
+    (native-inputs (list python-poetry-core))
     (home-page "https://github.com/uriyyo/fastapi-pagination")
     (synopsis "FastAPI pagination library")
     (description "@code{fastapi-pagination} is a Python library designed to
@@ -9951,6 +9947,19 @@ return paginated responses to your clients.")
   (package
     (inherit python-fastapi-pagination-minimal)
     (name "python-fastapi-pagination")
+    (arguments
+     (list
+      #:test-flags
+      '(list "--unit-tests" "--ignore=tests/ext")
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'patch-tests
+           (lambda _
+             ;; We don't have a package for python-cassandra or motor, but we
+             ;; also don't need them as we only run the unit tests anyway.
+             (substitute* "tests/conftest.py"
+               (("from cassandra.cluster.*") "")
+               (("from motor.*") "")))))))
     (propagated-inputs
      (modify-inputs (package-propagated-inputs
                      python-fastapi-pagination-minimal)
@@ -9958,7 +9967,7 @@ return paginated responses to your clients.")
                 python-databases
                 python-django
                 python-fastapi
-                python-pydantic
+                python-pydantic-2
                 python-sqlalchemy
                 (package
                   (inherit python-tortoise-orm)
@@ -9967,10 +9976,21 @@ return paginated responses to your clients.")
                                                   python-tortoise-orm)
                      ((#:phases phases '%standard-phases)
                       `(modify-phases ,phases
-                        (delete 'sanity-check)))))
+                         (delete 'sanity-check)))))
                   (propagated-inputs
                    (modify-inputs (package-propagated-inputs python-tortoise-orm)
                      (replace "python-aiosqlite" python-aiosqlite)))))))
+    (native-inputs
+     (list python-aiosqlite
+           python-asgi-lifespan
+           python-asyncpg
+           python-faker
+           python-httpx
+           python-poetry-core
+           python-pytest
+           python-pytest-asyncio
+           python-sqlalchemy
+           python-typing-extensions))
     (description
      (string-append (package-description python-fastapi-pagination-minimal)
                     "
