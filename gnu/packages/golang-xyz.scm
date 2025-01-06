@@ -10530,6 +10530,40 @@ included in this package.")
      "This package implments recursive copy functinoality for directory.")
     (license license:expat)))
 
+(define-public go-github-com-outcaste-io-ristretto
+  (package
+    (name "go-github-com-outcaste-io-ristretto")
+    (version "0.2.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/outcaste-io/ristretto")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "07ndjrblmj9b3ghn10h040zvzf2i3mlzvfziklcqdkhxbr1hf1rq"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/outcaste-io/ristretto"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-cespare-xxhash-v2
+           go-github-com-dgryski-go-farm
+           go-github-com-dustin-go-humanize
+           go-github-com-pkg-errors
+           go-go-uber-org-atomic
+           go-golang-org-x-sys))
+    (home-page "https://github.com/outcaste-io/ristretto")
+    (synopsis "Memory-bound Go cache")
+    (description
+     "Ristretto is a fast, fixed size, in-memory cache with a dual focus on
+throughput and hit ratio performance.  It's a fork of
+@code{dgraph-io/ristretto} project.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-pbnjay-memory
   (let ((commit "7b4eea64cf580186c0eceb10dc94ba3a098af46c")
         (revision "2"))
