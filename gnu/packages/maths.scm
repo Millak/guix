@@ -10633,7 +10633,7 @@ architecture.")
          "1i632v3f64q3v1i0p0x850mjhgad49fl24dl6r20r4wa1mhalmp0"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-chardet python-click python-pyyaml))
-    (native-inputs (list python-pytest))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://mathics.org/")
     (synopsis
      "Character tables and tokenizer for Mathics and the Wolfram language")
