@@ -51566,9 +51566,8 @@ slash path (e.g. @code{foo/bar}, @code{C:/foo/bar}).")
         (base32 "1lrqp4ip05df8dzldq6gb2c1sq2gs54gly8lcnv3rhav1qhwx56z"))))
     (build-system cargo-build-system)
     (arguments
-     (list #:skip-build? #t
-           #:cargo-inputs
-           `(("rust-camino" ,rust-camino-1))))
+     (list #:cargo-inputs `(("rust-camino" ,rust-camino-1))
+           #:cargo-development-inputs `(("rust-cfg-if" ,rust-cfg-if-1))))
     (home-page "https://github.com/Manishearth/pathdiff")
     (synopsis "Library for diffing paths to obtain relative paths")
     (description
