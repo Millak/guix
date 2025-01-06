@@ -2594,7 +2594,7 @@ translation (NAT), proxies, sockets, and transport layer security (TLS).")
 (define-public go-github-com-docker-go-units
   (package
     (name "go-github-com-docker-go-units")
-    (version "0.4.0")
+    (version "0.5.0")
     (source
       (origin
         (method git-fetch)
@@ -2603,7 +2603,7 @@ translation (NAT), proxies, sockets, and transport layer security (TLS).")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0k8gja8ql4pqg5rzmqvka42vjfs6rzablak87whcnqba6qxpimvz"))))
+         (base32 "0q92l7pyfg9rn4ljr1warnv1ri6z7svah7m3rqmvmyaw6bzdbbw8"))))
     (build-system go-build-system)
     (arguments '(#:import-path "github.com/docker/go-units"))
     (home-page "https://github.com/docker/go-units")
