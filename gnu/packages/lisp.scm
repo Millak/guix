@@ -938,70 +938,71 @@ assembler, PEG) is less than 1MB.")
     (build-system copy-build-system)
     (arguments
      (list
-      #:phases #~(modify-phases %standard-phases
-                   (add-after 'unpack 'fix-paths
-                     (lambda* (#:key inputs #:allow-other-keys)
-                       (substitute* "configs/linux_config.janet"
-                         (("/usr/local")
-                          #$output)
-                         (("\"cc\"")
-                          (string-append "\""
-                                         (search-input-file inputs "/bin/gcc")
-                                         "\""))
-                         (("\"c\\+\\+\"")
-                          (string-append "\""
-                                         (search-input-file inputs "/bin/g++")
-                                         "\""))
-                         (("\"git\"")
-                          (string-append "\""
-                                         (search-input-file inputs "/bin/git")
-                                         "\""))
-                         (("\"curl\"")
-                          (string-append "\""
-                                         (search-input-file inputs "/bin/curl")
-                                         "\"")))
-                       (substitute* "jpm/shutil.janet"
-                         (("cp")
-                          (string-append (search-input-file inputs "/bin/cp"))))
-                       (setenv "PREFIX"
-                               #$output)))
-                   (replace 'install
-                     (lambda* (#:key inputs #:allow-other-keys)
-                       (for-each (lambda (dir)
-                                   (mkdir-p (string-append #$output "/" dir)))
-                                 '("lib/janet/jpm" "share/man/man1"))
-                       (invoke "janet" "bootstrap.janet"
-                               "configs/linux_config.janet")
-                       (let ((gcc-toolchain (assoc-ref inputs "gcc-toolchain"))
-                             (core-min (assoc-ref inputs "coreutils-minimal")))
-                         (wrap-program (string-append #$output "/bin/jpm")
-                           `("JANET_HEADERPATH" ":" prefix
-                             (,(string-append #$janet "/include/janet")))
-                           `("JANET_LIBPATH" ":" prefix
-                             (,(string-append #$janet "/lib")))
-                           `("C_INCLUDE_PATH" ":" prefix
-                             (,(string-append gcc-toolchain "/include")))
-                           `("CPLUS_INCLUDE_PATH" ":" prefix
-                             (,(string-append gcc-toolchain "/include/c++")
-                              ,(string-append gcc-toolchain "/include")))
-                           `("LIBRARY_PATH" ":" prefix
-                             (,(string-append gcc-toolchain "/lib")
-                              ,(string-append gcc-toolchain "/lib64")))
-                           `("PATH" ":" prefix
-                             (,(string-append gcc-toolchain "/bin")
-                              ,(string-append core-min "/bin"))))))))))
-    (inputs (list bash-minimal
-                  coreutils-minimal
-                  curl
-                  gcc
-                  git-minimal/pinned
-                  ;; Lazily resolve the gcc-toolchain to avoid a circular
-                  ;; dependency.
-                  (module-ref (resolve-interface '(gnu packages commencement))
-                              'gcc-toolchain)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "configs/linux_config.janet"
+                (("/usr/local")
+                 #$output)
+                (("\"cc\"")
+                 (string-append "\""
+                                (search-input-file inputs "/bin/gcc")
+                                "\""))
+                (("\"c\\+\\+\"")
+                 (string-append "\""
+                                (search-input-file inputs "/bin/g++")
+                                "\""))
+                (("\"git\"")
+                 (string-append "\""
+                                (search-input-file inputs "/bin/git")
+                                "\""))
+                (("\"curl\"")
+                 (string-append "\""
+                                (search-input-file inputs "/bin/curl")
+                                "\"")))
+              (substitute* "jpm/shutil.janet"
+                (("cp")
+                 (string-append (search-input-file inputs "/bin/cp"))))
+              (setenv "PREFIX"
+                      #$output)))
+          (replace 'install
+            (lambda* (#:key inputs #:allow-other-keys)
+              (for-each (lambda (dir)
+                          (mkdir-p (string-append #$output "/" dir)))
+                        '("lib/janet/jpm" "share/man/man1"))
+              (invoke "janet" "bootstrap.janet"
+                      "configs/linux_config.janet")
+              (let ((gcc-toolchain (assoc-ref inputs "gcc-toolchain"))
+                    (core-min (assoc-ref inputs "coreutils-minimal")))
+                (wrap-program (string-append #$output "/bin/jpm")
+                  `("JANET_HEADERPATH" ":" prefix
+                    (,(string-append #$janet "/include/janet")))
+                  `("JANET_LIBPATH" ":" prefix
+                    (,(string-append #$janet "/lib")))
+                  `("C_INCLUDE_PATH" ":" prefix
+                    (,(string-append gcc-toolchain "/include")))
+                  `("CPLUS_INCLUDE_PATH" ":" prefix
+                    (,(string-append gcc-toolchain "/include/c++")
+                     ,(string-append gcc-toolchain "/include")))
+                  `("LIBRARY_PATH" ":" prefix
+                    (,(string-append gcc-toolchain "/lib")
+                     ,(string-append gcc-toolchain "/lib64")))
+                  `("PATH" ":" prefix
+                    (,(string-append gcc-toolchain "/bin")
+                     ,(string-append core-min "/bin"))))))))))
+    (inputs
+     (list bash-minimal
+           coreutils-minimal
+           curl
+           gcc
+           git-minimal/pinned
+           ;; Lazily resolve the gcc-toolchain to avoid a circular
+           ;; dependency.
+           (module-ref (resolve-interface '(gnu packages commencement))
+                       'gcc-toolchain)))
     (propagated-inputs (list janet))
-    (native-search-paths
-     (list $SSL_CERT_DIR $SSL_CERT_FILE))
+    (native-search-paths (list $SSL_CERT_DIR $SSL_CERT_FILE))
     (home-page "https://janet-lang.org/")
     (synopsis "Janet Project Manager for the Janet programming language")
     (description
