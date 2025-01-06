@@ -715,6 +715,31 @@ signature scheme specific to Decred) signatures.  See the README.md files in
 the relevant sub packages for more details about those aspects.")
     (license license:isc)))
 
+(define-public go-github-com-dgryski-dgoogauth
+  (package
+    (name "go-github-com-dgryski-dgoogauth")
+    (version "0.0.0-20190221195224-5a805980a5f3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dgryski/dgoogauth")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ma09ghwwizxaby37jmd9xjp6560p8lp29qqi8g4xw1d35h9nhny"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/dgryski/dgoogauth"))
+    (home-page "https://github.com/dgryski/dgoogauth")
+    (synopsis "Google Authenticator for Golang")
+    (description
+     "This is a Go implementation of the Google Authenticator library as
+specified in @url{https://www.rfc-editor.org/rfc/rfc4226, RFC 4226} and
+@url{https://www.rfc-editor.org/rfc/rfc6238, RFC 6238}.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-dgryski-go-farm
   (package
     (name "go-github-com-dgryski-go-farm")
