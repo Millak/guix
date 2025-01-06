@@ -1349,7 +1349,7 @@ but it works for any C/C++ project.")
 (define-public actionlint
   (package
     (name "actionlint")
-    (version "1.7.2")
+    (version "1.7.6")
     (source
      (origin
        (method git-fetch)
@@ -1358,7 +1358,7 @@ but it works for any C/C++ project.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1rgsxv4clgfyl4gr8bjk81p4b87c6hr34flxzw6011h0vjc54n7x"))))
+        (base32 "1waq9v48pbys8b8qmmvl0wi77jzri033fh8194gcwfzipvxb6y9l"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -1370,13 +1370,16 @@ but it works for any C/C++ project.")
       #:unpack-path "github.com/rhysd/actionlint"))
     ;; XXX: Install Man page, wrap with shellcheck and pyflakes.
     (native-inputs
-     (list go-github-com-fatih-color
+     (list go-github-com-bmatcuk-doublestar-v4
+           go-github-com-fatih-color
+           go-github-com-google-go-cmp
            go-github-com-mattn-go-colorable
            go-github-com-mattn-go-runewidth
+           go-github-com-mattn-go-shellwords
            go-github-com-robfig-cron
+           go-github-com-yuin-goldmark
            go-golang-org-x-sync
-           go-golang-org-x-sync
-           go-github-com-google-go-cmp
+           go-golang-org-x-sys
            go-gopkg-in-yaml-v3))
     (home-page "https://rhysd.github.io/actionlint/")
     (synopsis "Static checker for GitHub Actions workflow files")
