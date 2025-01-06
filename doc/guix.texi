@@ -22,7 +22,7 @@
 @set SUBSTITUTE-URLS https://@value{SUBSTITUTE-SERVER-1} https://@value{SUBSTITUTE-SERVER-2}
 
 @copying
-Copyright @copyright{} 2012-2024 Ludovic Courtès@*
+Copyright @copyright{} 2012--2025 Ludovic Courtès@*
 Copyright @copyright{} 2013, 2014, 2016, 2024 Andreas Enge@*
 Copyright @copyright{} 2013 Nikita Karetnikov@*
 Copyright @copyright{} 2014, 2015, 2016 Alex Kost@*
@@ -49807,9 +49807,9 @@ will not have the desired effect.  @xref{Package Transformation Options,
 @cindex @LaTeX{} packages
 Guix provides packages for the @TeX{}, @LaTeX{}, ConTeXt, LuaTeX, and
 related typesetting systems, taken from the
-@uref{https://www.tug.org/texlive/, @TeX{} Live distribution}.  However,
-because @TeX{} Live is so huge and because finding one's way in this
-maze is tricky, so this section provides some guidance on how to deploy
+@uref{https://www.tug.org/texlive/, @TeX{} Live distribution}.
+Because @TeX{} Live is so huge and because finding one's way in this
+maze is tricky, this section provides some guidance on how to deploy
 the relevant packages to compile @TeX{} and @LaTeX{} documents.
 
 @TeX{} Live currently comes in two mutually exclusive flavors in Guix:
@@ -49822,10 +49822,10 @@ single @TeX{} Live package} (roughly 4,200), but it is huge---more than
 
 @item
 A ``modular'' @TeX{} Live distribution, in which you only install the
-packages, always prefixed with @samp{texlive-}, you need.
+packages you need, whose name is always prefixed with @samp{texlive-}.
 @end itemize
 
-So to insist, these two flavors cannot be combined@footnote{No rule
+To insist, these two flavors cannot be combined@footnote{No rule
 without exception! As the monolithic @TeX{} Live does not contain the
 @command{biber} executable, it is okay to combine it with
 @code{texlive-biber}, which does.}.  If in the modular setting your
