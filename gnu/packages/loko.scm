@@ -30,7 +30,7 @@
 (define-public loko-scheme
   (package
     (name "loko-scheme")
-    (version "0.12.0")
+    (version "0.12.1")
     (source
      (origin
        (method git-fetch)
@@ -38,7 +38,7 @@
              (url "https://gitlab.com/weinholt/loko")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "12xp82z91qkp9q8lfp46s4sda8qgs472jic3js1kbykn4jzy7399"))
+        (base32 "127cbrnpmanzd2daxd6vwdq09sqfvbm9ialpjaxd46n5j97fl5g9"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
@@ -71,6 +71,9 @@
                        #$(this-package-native-input "guile-machine-code"))))
               (substitute* ".akku/env"
                 (("/bin/sh") (which "sh")))
+              (substitute* "scheme-wrapper"
+                (("which ")
+                 "command -v "))
               #t)))))
     (native-inputs
      (list akku
