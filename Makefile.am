@@ -446,11 +446,6 @@ AUX_FILES =						\
   gnu/packages/aux-files/linux-libre/6.12-i686.conf	\
   gnu/packages/aux-files/linux-libre/6.12-x86_64.conf	\
   gnu/packages/aux-files/linux-libre/6.12-riscv.conf	\
-  gnu/packages/aux-files/linux-libre/6.11-arm.conf	\
-  gnu/packages/aux-files/linux-libre/6.11-arm64.conf	\
-  gnu/packages/aux-files/linux-libre/6.11-i686.conf	\
-  gnu/packages/aux-files/linux-libre/6.11-x86_64.conf	\
-  gnu/packages/aux-files/linux-libre/6.11-riscv.conf	\
   gnu/packages/aux-files/linux-libre/6.6-arm.conf	\
   gnu/packages/aux-files/linux-libre/6.6-arm64.conf	\
   gnu/packages/aux-files/linux-libre/6.6-i686.conf	\
