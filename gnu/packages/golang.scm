@@ -3602,7 +3602,7 @@ deleting secrets from the system keyring.")
 (define-public go-github-com-zclconf-go-cty
   (package
     (name "go-github-com-zclconf-go-cty")
-    (version "1.10.0")
+    (version "1.16.0")
     (source
      (origin
        (method git-fetch)
@@ -3611,17 +3611,18 @@ deleting secrets from the system keyring.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0f9a6vy45gcx5pg5bnfs63manaqw80h7xzvmj3b80af38304zr71"))))
+        (base32 "0rvvs9rplvh9gv90lsvwgw203ysz47qksw1xz3whhdvhn7ns8s8f"))))
     (build-system go-build-system)
     (arguments
-     '(#:unpack-path "github.com/zclconf/go-cty"
-       #:import-path "github.com/zclconf/go-cty/cty"))
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/zclconf/go-cty"))
     (native-inputs
      (list go-github-com-google-go-cmp))
     (propagated-inputs
-     (list go-golang-org-x-text
-           go-github-com-vmihailenco-msgpack-v4
-           go-github-com-apparentlymart-go-textseg-v13))
+     (list go-github-com-apparentlymart-go-textseg-v15
+           go-github-com-vmihailenco-msgpack-v5
+           go-golang-org-x-text))
     (home-page "https://github.com/zclconf/go-cty")
     (synopsis "Type system for dynamic values in Go applications")
     (description
