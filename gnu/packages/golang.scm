@@ -3026,40 +3026,6 @@ over strings.")
      "The terminfo package implements terminfo database reading for Go.")
     (license license:expat)))
 
-(define-public go-github-com-burntsushi-locker
-  (let ((commit "a6e239ea1c69bff1cfdb20c4b73dadf52f784b6a")
-        (revision "0"))
-    (package
-      (name "go-github-com-burntsushi-locker")
-      (version (git-version "0.0.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/BurntSushi/locker")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "1xak4aync4klswq5217qvw191asgla51jr42y94vp109lirm5dzg"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path "github.com/BurntSushi/locker"))
-      (home-page "https://github.com/BurntSushi/locker")
-      (synopsis "Manage named ReadWrite mutexes in Go")
-      (description "Golang package for conveniently using named read/write
-locks.  These appear to be especially useful for synchronizing access to
-session based information in web applications.
-
-The common use case is to use the package level functions, which use a package
-level set of locks (safe to use from multiple goroutines
-simultaneously).  However, you may also create a new separate set of locks
-test.
-
-All locks are implemented with read-write mutexes.  To use them like a regular
-mutex, simply ignore the RLock/RUnlock functions.")
-      (license license:unlicense))))
-
 (define-public go-github-com-cheekybits-genny
   (package
     (name "go-github-com-cheekybits-genny")
