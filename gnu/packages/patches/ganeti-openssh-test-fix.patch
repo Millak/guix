@@ -1,0 +1,46 @@
+From 8a06656acf8f6e3dfa907bea77bd57a469a8d3fb Mon Sep 17 00:00:00 2001
+From: codefritzel <pascal-pf@hotmail.de>
+Date: Thu, 11 Jul 2024 23:10:41 +0200
+Subject: replace dsa with rsa in TestUpdateSshRoot
+
+DSA to be deactivated in OpenSSH from 2025. Since version 7.0 dsa is
+marked as deprecated.
+
+The TestUpdateSshRoot uses DSA, which will fail in the future with newer
+OpenSSH versions.
+
+fixes #1752
+
+Signed-off-by: codefritzel <pascal-pf@hotmail.de>
+
+diff --git a/test/py/ganeti.tools.prepare_node_join_unittest.py b/test/py/ganeti.tools.prepare_node_join_unittest.py
+index fe7efdf8c..fe029b8f2 100755
+--- a/test/py/ganeti.tools.prepare_node_join_unittest.py
++++ b/test/py/ganeti.tools.prepare_node_join_unittest.py
+@@ -229,20 +229,20 @@ class TestUpdateSshRoot(unittest.TestCase):
+   def testUpdate(self):
+     data = {
+       constants.SSHS_SSH_ROOT_KEY: [
+-        (constants.SSHK_DSA, "privatedsa", "ssh-dss pubdsa"),
++        (constants.SSHK_RSA, "privatersa", "ssh-rsa pubrsa"),
+         ],
+-      constants.SSHS_SSH_KEY_TYPE: "dsa",
+-      constants.SSHS_SSH_KEY_BITS: 1024,
++      constants.SSHS_SSH_KEY_TYPE: "rsa",
++      constants.SSHS_SSH_KEY_BITS: 2048,
+       }
+ 
+     prepare_node_join.UpdateSshRoot(data, False,
+                                     _homedir_fn=self._GetHomeDir)
+     self.assertEqual(os.listdir(self.tmpdir), [".ssh"])
+     self.assertEqual(sorted(os.listdir(self.sshdir)),
+-                     sorted(["authorized_keys", "id_dsa", "id_dsa.pub"]))
+-    self.assertTrue(utils.ReadFile(utils.PathJoin(self.sshdir, "id_dsa"))
++                     sorted(["authorized_keys", "id_rsa", "id_rsa.pub"]))
++    self.assertTrue(utils.ReadFile(utils.PathJoin(self.sshdir, "id_rsa"))
+                     is not None)
+-    pub_key = utils.ReadFile(utils.PathJoin(self.sshdir, "id_dsa.pub"))
++    pub_key = utils.ReadFile(utils.PathJoin(self.sshdir, "id_rsa.pub"))
+     self.assertTrue(pub_key is not None)
+     self.assertEqual(utils.ReadFile(utils.PathJoin(self.sshdir,
+                                                     "authorized_keys")),

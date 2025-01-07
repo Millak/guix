@@ -1345,12 +1345,14 @@ dist_patch_DATA =						\
   %D%/packages/patches/ganeti-disable-version-symlinks.patch	\
   %D%/packages/patches/ganeti-haskell-pythondir.patch		\
   %D%/packages/patches/ganeti-lens-compat.patch			\
+  %D%/packages/patches/ganeti-openssh-test-fix.patch		\
   %D%/packages/patches/ganeti-pyyaml-compat.patch		\
   %D%/packages/patches/ganeti-procps-compat.patch		\
   %D%/packages/patches/ganeti-reorder-arbitrary-definitions.patch	\
   %D%/packages/patches/ganeti-relax-dependencies.patch		\
   %D%/packages/patches/ganeti-shepherd-master-failover.patch	\
   %D%/packages/patches/ganeti-shepherd-support.patch		\
+  %D%/packages/patches/ganeti-sphinx-import.patch		\
   %D%/packages/patches/ganeti-template-haskell-2.17.patch	\
   %D%/packages/patches/ganeti-template-haskell-2.18.patch	\
   %D%/packages/patches/gawk-shell.patch				\

@@ -1,0 +1,12 @@
+diff --git a/lib/build/sphinx_ext.py b/lib/build/sphinx_ext.py
+index ca8b8216e..017f52343 100644
+--- a/lib/build/sphinx_ext.py
++++ b/lib/build/sphinx_ext.py
+@@ -45,7 +45,6 @@ import docutils.parsers.rst
+ from docutils.parsers.rst import Directive
+ 
+ import sphinx.errors
+-import sphinx.util.compat
+ import sphinx.roles
+ import sphinx.addnodes
+ 
