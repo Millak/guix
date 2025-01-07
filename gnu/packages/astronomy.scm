@@ -1720,10 +1720,15 @@ Astropy objects.")
        (sha256
         (base32 "0xddz4hnsypyvqxhi43alaqh2vl1ripcl4p63qn6dk2v90lra8c0"))))
     (build-system pyproject-build-system)
-    (propagated-inputs
-     (list python-asdf python-fsspec python-zarr))
     (native-inputs
-     (list python-pytest python-setuptools-scm))
+     (list python-pytest
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (list python-asdf-3
+           python-fsspec
+           python-zarr))
     (home-page "https://github.com/asdf-format/asdf-zarr")
     (synopsis "Asdf extension to support Zarr arrays")
     (description
