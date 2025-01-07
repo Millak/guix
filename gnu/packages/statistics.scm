@@ -2281,16 +2281,18 @@ dataset under a GP prior, even as this dataset gets Big.")
 (define-public python-getdist
   (package
     (name "python-getdist")
-    (version "1.5.3")
+    (version "1.5.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "getdist" version))
        (sha256
-        (base32 "0hqq6zdm9byalypgb47ifxv67q1xgfgiq5aw0md2jndla4b546bq"))))
+        (base32 "01s1p53pqpxbi8sy2030jpjn7gsy67zb7y6p0gf57lgxvp4zx74q"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest))
+     (list python-pytest
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-matplotlib
            python-numpy
