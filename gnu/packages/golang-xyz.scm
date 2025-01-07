@@ -1141,11 +1141,38 @@ cluster segmentation algorithm.")
 
 (define-public go-github-com-apparentlymart-go-textseg-autoversion
   (package
-    (inherit go-github-com-apparentlymart-go-textseg-v13)
     (name "go-github-com-apparentlymart-go-textseg-autoversion")
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/apparentlymart/go-textseg")
+             (commit (go-version->git-ref version #:subdir "autoversion"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1j7vm09cd36wm4z986qz5am3rk242v52amcapwbdbkbgzx2kqfkm"))))
+    (build-system go-build-system)
     (arguments
-     '(#:unpack-path "github.com/apparentlymart/go-textseg/autoversion"
-       #:import-path "github.com/apparentlymart/go-textseg/autoversion/textseg"))))
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/apparentlymart/go-textseg/autoversion"
+      #:unpack-path "github.com/apparentlymart/go-textseg"))
+    (propagated-inputs
+     (list go-github-com-apparentlymart-go-textseg-v9
+           go-github-com-apparentlymart-go-textseg-v10
+           go-github-com-apparentlymart-go-textseg-v11
+           go-github-com-apparentlymart-go-textseg-v12
+           go-github-com-apparentlymart-go-textseg-v13
+           go-github-com-apparentlymart-go-textseg-v15))
+    (home-page "https://github.com/apparentlymart/go-textseg")
+    (synopsis "Wrap go-textesg based on the Unicode Golang version")
+    (description
+     "This package is a wrapper around each of the the
+Unicode-version-specific textseg implementations that selects an
+implementation automatically based on the Unicode version of the Go standard
+library that it's being built against.")
+    (license (list license:expat license:unicode license:asl2.0))))
 
 (define-public go-github-com-arbovm-levenshtein
   (package
