@@ -13187,6 +13187,29 @@ weighted moving averages}.")
 programming language.")
     (license license:bsd-2)))
 
+(define-public go-github-com-vmihailenco-msgpack-v5
+  (package
+    (inherit go-github-com-vmihailenco-msgpack-v4)
+    (name "go-github-com-vmihailenco-msgpack-v5")
+    (version "5.4.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/vmihailenco/msgpack")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0vkyyywvip0vwjmnmnmkl9hz345k54nigj2mq8fbbjx96xpgghvz"))))
+    (arguments
+     (list
+      #:import-path "github.com/vmihailenco/msgpack/v5"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-vmihailenco-tagparser
+           go-google-golang-org-appengine))))
+
 (define-public go-github-com-warpfork-go-fsx
   (package
     (name "go-github-com-warpfork-go-fsx")
