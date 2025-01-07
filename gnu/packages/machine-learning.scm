@@ -688,7 +688,6 @@ independently to be able to run a LLaMA model.")
     (build-system cmake-build-system)
     (arguments
      (list
-      #:tests? #false ; uhh. They have it commented out in CMakeLists.txt
       #:configure-flags
       #~(list "-DWHISPER_STANDALONE=TRUE"
               "-DWHISPER_SDL2=TRUE"
