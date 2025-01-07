@@ -13159,6 +13159,34 @@ encoded values to create the picture in a code with no inherent errors.")
 weighted moving averages}.")
     (license license:expat)))
 
+(define-public go-github-com-vmihailenco-msgpack-v4
+  (package
+    (name "go-github-com-vmihailenco-msgpack-v4")
+    (version "4.3.12")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/vmihailenco/msgpack")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0aiavk7b5fn050bbc0naldk2bsl60f8wil5i6a1cfp3lxxnvmvng"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/vmihailenco/msgpack/v4"))
+    (native-inputs
+     (list go-gopkg-in-check-v1))
+    (propagated-inputs
+     (list go-github-com-vmihailenco-tagparser))
+    (home-page "https://github.com/vmihailenco/msgpack")
+    (synopsis "MessagePack encoding for Golang")
+    (description
+     "This package provides implementation of MessagePack encoding for Go
+programming language.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-warpfork-go-fsx
   (package
     (name "go-github-com-warpfork-go-fsx")
