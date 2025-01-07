@@ -2702,21 +2702,19 @@ and lookup requests.  Browse requests are not supported yet.")
       (license license:unlicense))))
 
 (define-public go-github-com-btcsuite-btclog
-  (let ((commit "84c8d2346e9fc8c7b947e243b9c24e6df9fd206a")
-        (revision "0"))
     (package
       (name "go-github-com-btcsuite-btclog")
-      (version (git-version "0.0.3" revision commit))
+      (version "1.0.0")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/btcsuite/btclog")
-               (commit commit)))
+               (commit (string-append "v" version))))
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "02dl46wcnfpg9sqvg0ipipkpnd7lrf4fnvb9zy56jqa7mfcwc7wk"))))
+           "1aqpgb3bw1g5am2az4f1g1a54xii0axvxp0zymhyl8jdk6hhyyd8"))))
       (build-system go-build-system)
       (arguments
        '(#:import-path "github.com/btcsuite/btclog"))
@@ -2725,7 +2723,7 @@ and lookup requests.  Browse requests are not supported yet.")
       (description "Package @command{btclog} defines a logger interface and
 provides a default implementation of a subsystem-aware leveled logger
 implementing the same interface.")
-      (license license:isc))))
+      (license license:isc)))
 
 (define-public go-github-com-mr-tron-base58
   (let ((commit "d724c80ecac7b49e4e562d58b2b4f4ee4ed8c312")
