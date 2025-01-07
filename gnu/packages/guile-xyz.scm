@@ -38,7 +38,7 @@
 ;;; Copyright © 2021 Leo Le Bouter <lle-bout@zaclys.net>
 ;;; Copyright © 2021 Zelphir Kaltstahl <zelphirkaltstahl@posteo.de>
 ;;; Copyright © 2021 Oleg Pykhalov <go.wigust@gmail.com>
-;;; Copyright © 2021, 2022, 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2021, 2022, 2024, 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
@@ -48,7 +48,7 @@
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2024 Ilya Chernyshov <ichernyshovvv@gmail.com>
-;;; Copyright © 2024, 2025 Artyom Bologov <mail@aartaka.me>
+;;; Copyright © 2024 Artyom Bologov <mail@aartaka.me>
 ;;; Copyright © 2024 Felix Lechner <felix.lechner@lease-up.com>
 ;;; Copyright © 2024 Alec Barreto <mrh57@posteo.net>
 ;;;
