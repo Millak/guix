@@ -14060,6 +14060,40 @@ that handle none of the event types.")
 Go.")
     (license license:expat)))
 
+(define-public go-google-golang-org-appengine
+  (package
+    (name "go-google-golang-org-appengine")
+    (version "1.6.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/golang/appengine")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "17pbiximrd340wdx3pm1jkpsgvss80pax7hif906xglh7mj9zqx2"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - google.golang.org/appengine/v2
+            (delete-file-recursively "v2")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "google.golang.org/appengine"))
+    (propagated-inputs
+     (list go-github-com-golang-protobuf
+           go-golang-org-x-text
+           go-google-golang-org-protobuf))
+    (home-page "https://google.golang.org/appengine")
+    (synopsis "Go App Engine packages")
+    (description
+     "Package appengine provides basic functionality for Google App Engine.")
+    (license license:asl2.0)))
+
 (define-public go-gopkg-in-alecthomas-kingpin-v2
   (package
     (inherit go-github-com-alecthomas-kingpin)
