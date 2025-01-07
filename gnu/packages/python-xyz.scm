@@ -159,6 +159,7 @@
 ;;; Copyright © 2024 Aaron Covrig <aaron.covrig.us@ieee.org>
 ;;; Copyright © 2024 Evgeny Pisemsky <mail@pisemsky.site>
 ;;; Copyright © 2024 Markku Korkeala <markku.korkeala@iki.fi>
+;;; Copyright © 2025 Jordan Moore <lockbox@struct.foo>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -16636,7 +16637,7 @@ similar to the Python standard library's @code{json} module.")
 (define-public python-resolvelib
   (package
     (name "python-resolvelib")
-    (version "0.7.1")
+    (version "1.0.1")
     (source
      (origin
        ;; Tests are missing from the PyPI release.
@@ -16647,7 +16648,7 @@ similar to the Python standard library's @code{json} module.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1fqz75riagizihvf4j7wc3zjw6kmg1dd8sf49aszyml105kb33n8"))))
+         "0cvgimmfickarm4ks5gb5iply6sf6r4fr3v6zyqyqg45fsgqy753"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
