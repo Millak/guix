@@ -3063,7 +3063,7 @@ over strings.")
 (define-public go-git-sr-ht-rockorager-tcell-term
   (package
     (name "go-git-sr-ht-rockorager-tcell-term")
-    (version "0.9.0")
+    (version "0.10.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3072,19 +3072,16 @@ over strings.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "177ladvpiiw7sb0hsjjv9p2yv5wpqpw6nqardkm8mqqlj0swa9xx"))))
+                "1z64yzr2l5j5r5rqi89jk4madn3ak8hw95lva5ra7gnlyhh2vs05"))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "git.sr.ht/~rockorager/tcell-term"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
     (propagated-inputs
-     (list go-golang-org-x-sys
-           go-golang-org-x-term
-           go-gopkg-in-check-v1
-           go-github-com-mattn-go-runewidth
-           go-github-com-davecgh-go-spew
-           go-github-com-stretchr-testify
+     (list go-github-com-creack-pty
            go-github-com-gdamore-tcell-v2
-           go-github-com-creack-pty))
+           go-github-com-mattn-go-runewidth))
     (home-page "https://git.sr.ht/~rockorager/tcell-term")
     (synopsis "Terminal widget for @code{tcell}")
     (description
