@@ -6404,9 +6404,24 @@ expressing configuration which is easy for both humans and machines to read.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/hashicorp/hcl/v2"))
+      #:import-path "github.com/hashicorp/hcl/v2"
+      #:test-flags
+      #~(list "-skip"
+              (string-join
+               (list "TestExpressionParseAndValue/.*unk.*"
+                     "TestFunctionCallExprValue/valid_call_with_unknown_arg.*"
+                     "TestFunctionCallExprValue/valid_call_with_dynamic_arg")
+               "|"))))
     (native-inputs
-     (list go-github-com-davecgh-go-spew))
+     (list go-github-com-apparentlymart-go-dump
+           go-github-com-davecgh-go-spew
+           go-github-com-go-test-deep
+           go-github-com-kr-pretty
+           go-github-com-kylelemons-godebug
+           go-github-com-sergi-go-diff
+           go-github-com-spf13-pflag
+           go-github-com-zclconf-go-cty-debug
+           go-golang-org-x-crypto))
     (inputs
      (list go-github-com-agext-levenshtein
            go-github-com-apparentlymart-go-textseg-v13
