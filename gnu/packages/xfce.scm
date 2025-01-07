@@ -374,7 +374,6 @@ GLib and GIO.  It was started as a complete rewrite of the former Xfce menu
 library called libxfce4menu, which, in contrast to garcon, was lacking menu
 merging features essential for loading menus modified with menu editors.")
     (license lgpl2.0+)
-    ;; FIXME: the 'generic-git' updater treat "rc" as pre-releases.
     (properties `((release-tag-prefix . ,(string-append name "-"))))))
 
 (define-public tumbler
@@ -915,7 +914,6 @@ and import the new pictures from your camera.")
     (description "The Thunar Archive Plugin allows you to create and extract
 archive files using the file context menus in the Thunar file manager.")
     (license gpl2+)
-    ;; FIXME: the 'generic-git' updater treat "rc" as pre-releases.
     (properties `((release-tag-prefix . ,(string-append name "-"))))))
 
 (define-public thunar-shares-plugin
@@ -2438,5 +2436,4 @@ local weather in the panel, using forecast data provided by the
 developers and people that want to build Xfce from Git In addition it contains
 the Xfce developer's handbook.")
     (license gpl2+)
-    ;; FIXME: the 'generic-git' updater treat "dev" as pre-releases.
     (properties `((release-tag-prefix . ,(string-append name "-"))))))

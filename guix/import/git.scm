@@ -138,9 +138,16 @@ version corresponding to the tag, and the cdr is the name of the tag."
   (define (entry<? a b)
     (eq? (version-compare (car a) (car b)) '<))
 
+  (define (pre-release? tag)
+    (any (cut regexp-exec <> tag)
+         %pre-release-rx))
+
   (stable-sort (filter-map (lambda (tag)
                              (let ((version (get-version tag)))
-                               (and version (cons version tag))))
+                               (and version
+                                    (or pre-releases?
+                                        (not (pre-release? version)))
+                                    (cons version tag))))
                            tags)
                entry<?))
 
@@ -149,16 +156,10 @@ version corresponding to the tag, and the cdr is the name of the tag."
   "Return the latest version and corresponding tag available from the Git
 repository at URL. Optionally include a VERSION string to fetch a specific
 version."
-  (define (pre-release? tag)
-    (any (cut regexp-exec <> tag)
-         %pre-release-rx))
-
   (let* ((tags (map (cut string-drop <> (string-length "refs/tags/"))
                     (remote-refs url #:tags? #t)))
          (versions->tags
-          (version-mapping (if pre-releases?
-                               tags
-                               (filter (negate pre-release?) tags))
+          (version-mapping tags
                            #:prefix prefix
                            #:suffix suffix
                            #:delim delim

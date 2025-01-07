@@ -224,4 +224,13 @@
     (let ((package (make-package directory "1.0.0")))
       (latest-git-tag-version package))))
 
+(test-equal "latest-git-tag-version: prefix contains pre-release words"
+  "1.0.1"
+  (with-temporary-git-repository directory
+      '((add "a.txt" "A")
+        (commit "First commit")
+        (tag "libdevx-1.0.1" "Release 1.0.1"))
+    (let ((package (make-package directory "1.0.0")))
+      (latest-git-tag-version package))))
+
 (test-end "git")
