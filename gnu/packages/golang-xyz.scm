@@ -989,8 +989,102 @@ commands.")
      "This package implements optimal parameters for data-types.")
     (license license:expat)))
 
+(define-public go-github-com-apparentlymart-go-textseg-v9
+  (package
+    (name "go-github-com-apparentlymart-go-textseg-v9")
+    (version "9.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/apparentlymart/go-textseg")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1pmnl674ksbizkdilqz1j44djws9dj23pc6bpbjma8jfjq6b2zax"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/apparentlymart/go-textseg/v9"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-submodule
+            (lambda* (#:key import-path #:allow-other-keys #:rest args)
+              (when (false-if-exception
+                     (stat (string-append "src/" import-path "/autoversion")))
+                (delete-file-recursively
+                 (string-append "src/" import-path "/autoversion"))))))))
+    (home-page "https://github.com/apparentlymart/go-textseg")
+    (synopsis "Go implementation of Unicode Text Segmentation")
+    (description
+     "This package provides an implementation of the Unicode Text Segmentation
+specification for Go.  Specifically, it currently includes only the grapheme
+cluster segmentation algorithm.")
+    ;; Project is released under Expat terms.  Some parts use Unicode and
+    ;; ASL2.0 licenses.
+    (license (list license:expat license:unicode license:asl2.0))))
+
+(define-public go-github-com-apparentlymart-go-textseg-v10
+  (package
+    (inherit go-github-com-apparentlymart-go-textseg-v9)
+    (name "go-github-com-apparentlymart-go-textseg-v10")
+    (version "10.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/apparentlymart/go-textseg")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1jj3w8m2vz574s9lq0468f56kq348wm7xhvrac5yrqw1axg6hjxd"))))
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-apparentlymart-go-textseg-v9)
+       ((#:import-path _) "github.com/apparentlymart/go-textseg/v10")))))
+
+(define-public go-github-com-apparentlymart-go-textseg-v11
+  (package
+    (inherit go-github-com-apparentlymart-go-textseg-v10)
+    (name "go-github-com-apparentlymart-go-textseg-v11")
+    (version "11.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/apparentlymart/go-textseg")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1gyhj8vqpmxcd7zjq3myj6872fqf1si09dwbv03msp7hf4g976cx"))))
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-apparentlymart-go-textseg-v10)
+       ((#:import-path _) "github.com/apparentlymart/go-textseg/v11")))))
+
+(define-public go-github-com-apparentlymart-go-textseg-v12
+  (package
+    (inherit go-github-com-apparentlymart-go-textseg-v11)
+    (name "go-github-com-apparentlymart-go-textseg-v12")
+    (version "12.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/apparentlymart/go-textseg")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1i8p4kkgx8yhxwzqmnpx8f87s0h27n7jrdhv78ydh6618512x5v9"))))
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-apparentlymart-go-textseg-v11)
+       ((#:import-path _) "github.com/apparentlymart/go-textseg/v12")))))
+
 (define-public go-github-com-apparentlymart-go-textseg-v13
   (package
+    (inherit go-github-com-apparentlymart-go-textseg-v12)
     (name "go-github-com-apparentlymart-go-textseg-v13")
     (version "13.0.0")
     (source
@@ -1002,21 +1096,48 @@ commands.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "0gdgi0d52rq1xsdn9icc8lghn0f2q927cifmrlfxflf7bf21vism"))))
-    (build-system go-build-system)
     (arguments
-     '(#:unpack-path "github.com/apparentlymart/go-textseg/v13"
-       #:import-path "github.com/apparentlymart/go-textseg/v13/textseg"))
-    (native-inputs
-     (list ruby))
-    (home-page "https://github.com/apparentlymart/go-textseg")
-    (synopsis "Go implementation of Unicode Text Segmentation")
-    (description
-     "This package provides an implementation of the Unicode Text Segmentation
-specification for Go.  Specifically, it currently includes only the grapheme
-cluster segmentation algorithm.")
-    ;; Project is released under Expat terms.  Some parts use Unicode and
-    ;; ASL2.0 licenses.
-    (license (list license:expat license:unicode license:asl2.0))))
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-apparentlymart-go-textseg-v12)
+       ((#:import-path _) "github.com/apparentlymart/go-textseg/v13")))))
+
+(define-public go-github-com-apparentlymart-go-textseg-v15
+  (package
+    (inherit go-github-com-apparentlymart-go-textseg-v13)
+    (name "go-github-com-apparentlymart-go-textseg-v15")
+    (version "15.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/apparentlymart/go-textseg")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1bb7mxkxjhsp8kfwm26n0ds1mpwxxdpy4gndvyz26bqfm6v8vsa4"))))
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-apparentlymart-go-textseg-v13)
+       ((#:import-path _) "github.com/apparentlymart/go-textseg/v15")))))
+
+(define-public go-github-com-apparentlymart-go-textseg-v16
+  (package
+    (inherit go-github-com-apparentlymart-go-textseg-v15)
+    (name "go-github-com-apparentlymart-go-textseg-v16")
+    (version "16.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/apparentlymart/go-textseg")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1j7vm09cd36wm4z986qz5am3rk242v52amcapwbdbkbgzx2kqfkm"))))
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-apparentlymart-go-textseg-v15)
+       ((#:import-path _) "github.com/apparentlymart/go-textseg/v16")))))
 
 (define-public go-github-com-apparentlymart-go-textseg-autoversion
   (package
