@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2017, 2018, 2019, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2017-2019, 2021, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 Oleg Pykhalov <go.wigust@gmail.com>
@@ -171,8 +171,15 @@ Return a version of TAG that follows these rules."
                     (1- items-length)))))
     (list head tail)))
 
+(define (tar . arguments)
+  "Invoke 'tar' with the given ARGUMENTS together with options to build
+tarballs in a reproducible fashion."
+  (apply invoke "tar" "--mtime=@1"
+         "--owner=0" "--group=0" "--numeric-owner"
+         "--sort=name" "--mode=go+u,go-w" arguments))
+
 (define (create-empty-tar file)
-  (invoke "tar" "-cf" file "--files-from" "/dev/null"))
+  (tar "-cf" file "--files-from" "/dev/null"))
 
 (define* (build-docker-image image paths prefix
                              #:key
@@ -256,7 +263,7 @@ added to image as a layer."
            (file-name (string-append file-hash "/layer.tar")))
       (mkdir file-hash)
       (rename-file "layer.tar" file-name)
-      (invoke "tar" "-rf" "image.tar" file-name)
+      (tar "-rf" "image.tar" file-name)
       (delete-file file-name)
       file-hash))
   (define layers-hashes
@@ -269,20 +276,20 @@ added to image as a layer."
        (let* ((head-layers
                (map
                 (lambda (file)
-                  (invoke "tar" "cf" "layer.tar" file)
+                  (tar "cf" "layer.tar" file)
                   (seal-layer))
                 head))
               (tail-layer
                (begin
                  (create-empty-tar "layer.tar")
                  (for-each (lambda (file)
-                             (invoke "tar" "-rf" "layer.tar" file))
+                             (tar "-rf" "layer.tar" file))
                            tail)
                  (let* ((file-hash (layer-diff-id "layer.tar"))
                         (file-name (string-append file-hash "/layer.tar")))
                    (mkdir file-hash)
                    (rename-file "layer.tar" file-name)
-                   (invoke "tar" "-rf" "image.tar" file-name)
+                   (tar "-rf" "image.tar" file-name)
                    (delete-file file-name)
                    file-hash)))
               (customization-layer
@@ -291,7 +298,7 @@ added to image as a layer."
                       (file-name (string-append file-hash "/layer.tar")))
                  (mkdir file-hash)
                  (rename-file file-id file-name)
-                 (invoke "tar" "-rf" "image.tar" file-name)
+                 (tar "-rf" "image.tar" file-name)
                  file-hash))
               (all-layers
                (append head-layers (list tail-layer customization-layer))))
@@ -301,7 +308,7 @@ added to image as a layer."
                                   (map (cut string-append <> "/layer.tar")
                                        all-layers)
                                   repository))))
-         (invoke "tar" "-rf" "image.tar" "manifest.json")
+         (tar "-rf" "image.tar" "manifest.json")
          all-layers))))
   (let* ((directory "/tmp/docker-image") ;temporary working directory
          (id (docker-id prefix))
@@ -390,7 +397,7 @@ added to image as a layer."
                    #:entry-point entry-point))))
       (if max-layers
           (begin
-            (invoke "tar" "-rf" "image.tar" "config.json")
+            (tar "-rf" "image.tar" "config.json")
             (if compressor
                 (begin
                   (apply invoke `(,@compressor "image.tar"))
