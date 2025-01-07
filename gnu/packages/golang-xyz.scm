@@ -13694,6 +13694,39 @@ provides Go APIs that allow you to easily embed a scripting language to your
 Go host programs.")
     (license license:expat)))
 
+(define-public go-github-com-zclconf-go-cty
+  (package
+    (name "go-github-com-zclconf-go-cty")
+    (version "1.16.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/zclconf/go-cty")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0rvvs9rplvh9gv90lsvwgw203ysz47qksw1xz3whhdvhn7ns8s8f"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/zclconf/go-cty"))
+    (native-inputs
+     (list go-github-com-google-go-cmp))
+    (propagated-inputs
+     (list go-github-com-apparentlymart-go-textseg-v15
+           go-github-com-vmihailenco-msgpack-v5
+           go-golang-org-x-text))
+    (home-page "https://github.com/zclconf/go-cty")
+    (synopsis "Type system for dynamic values in Go applications")
+    (description
+     "@code{cty} (pronounced \"see-tie\") is a dynamic type system for
+applications written in Go that need to represent user-supplied values without
+losing type information.  The primary intended use is for implementing
+configuration languages, but other uses may be possible too.")
+    (license license:expat)))
+
 (define-public go-go-abhg-dev-komplete
   (package
     (name "go-go-abhg-dev-komplete")
