@@ -3026,32 +3026,6 @@ over strings.")
      "The terminfo package implements terminfo database reading for Go.")
     (license license:expat)))
 
-(define-public go-github-com-cheekybits-genny
-  (package
-    (name "go-github-com-cheekybits-genny")
-    (version "1.0.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/cheekybits/genny")
-                     (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1pcir5ic86713aqa51581rfb67rgc3m0c72ddjfcp3yakv9vyq87"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:import-path "github.com/cheekybits/genny"))
-    (propagated-inputs
-     (list go-golang-org-x-tools))
-    (native-inputs
-     (list go-github-com-stretchr-testify))
-    (synopsis "Generics for Go")
-    (description "This package provides @code{genny}, a Go language
-implementation of generics.")
-    (home-page "https://github.com/cheekybits/genny/")
-    (license license:expat)))
-
 (define-public go-github-com-lunixbochs-vtclean
   (package
     (name "go-github-com-lunixbochs-vtclean")
