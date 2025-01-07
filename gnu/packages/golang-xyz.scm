@@ -1952,6 +1952,31 @@ don't require a full database server such as Postgres or MySQL.")
 indicator to any terminal application.")
     (license license:asl2.0)))
 
+(define-public go-github-com-btcsuite-btclog
+  (package
+    (name "go-github-com-btcsuite-btclog")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/btcsuite/btclog")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1aqpgb3bw1g5am2az4f1g1a54xii0axvxp0zymhyl8jdk6hhyyd8"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/btcsuite/btclog"))
+    (home-page "https://github.com/btcsuite/btclog")
+    (synopsis "Subsystem aware logger for Go")
+    (description
+     "Package @command{btclog} defines a logger interface and provides a
+default implementation of a subsystem-aware leveled logger implementing the
+same interface.")
+    (license license:isc)))
+
 (define-public go-github-com-buildkite-shellwords
   (package
     (name "go-github-com-buildkite-shellwords")
