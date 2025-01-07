@@ -1977,6 +1977,25 @@ default implementation of a subsystem-aware leveled logger implementing the
 same interface.")
     (license license:isc)))
 
+(define-public go-github-com-btcsuite-btclog-v2
+  (package
+    (inherit go-github-com-btcsuite-btclog)
+    (name "go-github-com-btcsuite-btclog-v2")
+    (version "2.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/btcsuite/btclog")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0v9zh39d35647g6m9b74l5z1ifbnk4chbglnbmj5ndzj9alzsc38"))))
+    (arguments
+     (list
+      #:import-path "github.com/btcsuite/btclog/v2"
+      #:unpack-path "github.com/btcsuite/btclog"))))
+
 (define-public go-github-com-buildkite-shellwords
   (package
     (name "go-github-com-buildkite-shellwords")
