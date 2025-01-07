@@ -13162,7 +13162,7 @@ weighted moving averages}.")
 (define-public go-github-com-vmihailenco-msgpack-v4
   (package
     (name "go-github-com-vmihailenco-msgpack-v4")
-    (version "4.3.12")
+    (version "4.3.13")
     (source
      (origin
        (method git-fetch)
@@ -13171,7 +13171,7 @@ weighted moving averages}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0aiavk7b5fn050bbc0naldk2bsl60f8wil5i6a1cfp3lxxnvmvng"))))
+        (base32 "08jdq8wh6i1f2avl46l5ndfrvhfl4l276hz4y1xq6agwbwrvycdy"))))
     (build-system go-build-system)
     (arguments
      (list
