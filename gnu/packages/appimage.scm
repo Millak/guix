@@ -49,11 +49,13 @@
        (list
         #:make-flags
         #~(list "-Csrc/runtime" "runtime-fuse3"
+                (string-append "CC=" #$(cc-for-target))
                 (string-append
                  "CFLAGS=" "-I" #$(this-package-input "fuse") "/include/fuse/"
                  " -DGIT_COMMIT='\"" "guix-" #$version "\"'"
                  " -D_FILE_OFFSET_BITS=64"
-                 " -static"))
+                 " -static"
+                 " -Wno-int-conversion"))
         #:modules
         `((guix build gnu-build-system)
           (guix build utils)
