@@ -2,7 +2,7 @@
 ;;; Copyright © 2016, 2017, 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2017 Dave Love <fx@gnu.org>
 ;;; Copyright © 2018–2022 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2018, 2019 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2018, 2019, 2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2019 Gábor Boskovits <boskovits@gmail.com>
 ;;; Copyright © 2019, 2021 Ludovic Courtès <ludo@gnu.org>
@@ -34,17 +34,20 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix gexp)
+  #:use-module (guix utils)
   #:use-module (guix git-download)
   #:use-module (guix search-paths)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system meson)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages c)
+  #:use-module (gnu packages certs)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages databases)
@@ -399,86 +402,155 @@ setup against another one.")
 (define-public python-locust
   (package
     (name "python-locust")
-    (version "2.15.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "locust" version))
-       (sha256
-        (base32
-         "05cznfqda0yq2j351jjdssayvj5qc11xkbkwdvv81hcmz4xpyc56"))))
-    (build-system python-build-system)
+    (version "2.32.5")
+    ;; The archive on Pypi has no tests.
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/locustio/locust")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0nmhk2k0mbza9slqgms42s6hsfwwmyr275l90an02qaypx066l1n"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'increase-resource-limits
-           (lambda _
-             ;; XXX: Copied from ungoogled-chromium.
-             ;; Try increasing the soft resource limit of max open files to 2048,
-             ;; or equal to the hard limit, whichever is lower.
-             (call-with-values (lambda () (getrlimit 'nofile))
-               (lambda (soft hard)
-                 (when (and soft (< soft 2048))
-                   (if hard
-                       (setrlimit 'nofile (min hard 2048) hard)
-                       (setrlimit 'nofile 2048 #f))
-                   (format #t
-                           "increased maximum number of open files from ~d to ~d~%"
-                           soft (if hard (min hard 2048) 2048)))))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "python" "-m" "pytest" "locust"
-                       "-k" (string-join
-                             '( ;; These tests return "non-zero exit status 1".
-                               "not test_default_headless_spawn_options"
-                               "not test_default_headless_spawn_options_with_shape"
-                               "not test_headless_spawn_options_wo_run_time"
-                               ;; These tests fail with a HTTP return code of
-                               ;; 500 instead of 200, for unknown reasons.
-                               "not test_autostart_mutliple_locustfiles_with_shape"
-                               "not test_autostart_w_load_shape"
-                               "not test_autostart_wo_run_time"
-                               "not test_percentile_parameter"
-                               ;; These tests depend on networking.
-                               "not test_html_report_option"
-                               "not test_json_schema"
-                               "not test_web_options"
-                               ;; These tests fail because of the warning
-                               ;; "System open file limit '1024' is below
-                               ;; minimum setting '10000'".
-                               "not test_autostart_w_run_time"
-                               "not test_skip_logging"
-                               ;; On some (slow?) machines, the following tests
-                               ;; fail, with the processes returning exit code
-                               ;; -15 instead of the expected 42 and 0,
-                               ;; respectively (see:
-                               ;; https://github.com/locustio/locust/issues/1708).
-                               "not test_custom_exit_code"
-                               "not test_webserver"
-                               ;; This test fails with "AssertionError:
-                               ;; 'stopped' != 'stopping'".
-                               "not test_distributed_shape") " and "))))))))
+     (list
+      #:test-flags
+      '(list "--pyargs" "locust/test"
+             "-k" (string-join
+                   '( ;; These tests return "non-zero exit status 1".
+                     "not test_default_headless_spawn_options"
+                     "not test_default_headless_spawn_options_with_shape"
+                     "not test_headless_spawn_options_wo_run_time"
+                     ;; Fails because of timezone discrepancy, even when TZDIR
+                     ;; is set.
+                     "not test_format_utc_timestamp"
+                     ;; These tests fail with a HTTP return code of
+                     ;; 500 instead of 200, for unknown reasons.
+                     "not test_autostart_mutliple_locustfiles_with_shape"
+                     "not test_autostart_w_load_shape"
+                     "not test_autostart_wo_run_time"
+                     "not test_percentile_parameter"
+                     "not test_percentiles_to_statistics"
+                     "not test_autostart_multiple_locustfiles_with_shape"
+                     "not test_graceful_exit_when_keyboard_interrupt"
+                     "not test_host_value_from_multiple_user_classes"
+                     "not test_host_value_from_multiple_user_classes_different_hosts"
+                     "not test_host_value_from_user_class"
+                     "not test_html_stats_report"
+                     "not test_index"
+                     "not test_index_with_spawn_options"
+                     "not test_report_download"
+                     "not test_report_exceptions"
+                     "not test_report_host"
+                     "not test_report_host2"
+                     "not test_report_page"
+                     "not test_report_page_empty_stats"
+                     "not test_index_with_web_login_enabled_no_user"
+                     "not test_index_with_web_login_enabled_valid_user"
+                     "not test_index_with_https"
+                     "not test_ssl_request_insecure"
+                     ;; Fails because of unavailable IPv6
+                     "not test_constructor"
+                     ;; Process fails to terminate, which breaks following tests
+                     "not test_processes_ctrl_c"
+                     ;; These tests depend on networking.
+                     "not test_html_report_option"
+                     "not test_json_schema"
+                     "not test_locustfile_from_url"
+                     "not test_web_options"
+                     ;; These tests fail because of the warning
+                     ;; "System open file limit '1024' is below
+                     ;; minimum setting '10000'".
+                     "not test_autostart_w_run_time"
+                     "not test_skip_logging"
+                     ;; On some (slow?) machines, the following tests
+                     ;; fail, with the processes returning exit code
+                     ;; -15 instead of the expected 42 and 0,
+                     ;; respectively (see:
+                     ;; https://github.com/locustio/locust/issues/1708).
+                     "not test_custom_exit_code"
+                     "not test_webserver"
+                     ;; These are time critical and can fail on busy machines.
+                     "not test_distribute_users"
+                     "not test_ramp_down_from_100_000_to_0_users_with_50_user_classes_and_1000_workers_and_5000_spawn_rate"
+                     "not test_ramp_up_from_0_to_100_000_users_with_50_user_classes_and_1000_workers_and_5000_spawn_rate"
+                     ;; This test fails with "AssertionError:
+                     ;; 'stopped' != 'stopping'".
+                     "not test_distributed_shape") " and "))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; The build system attempts to detect the version by spawning git.
+          (add-after 'unpack 'fix-version
+            (lambda _
+              (let ((tuple (list
+                            #$@(match (string-split (version-major+minor+point version) #\.)
+                                 ((ma mi po) (list ma mi po))))))
+                (with-output-to-file "locust/_version.py"
+                  (lambda _
+                    (display (string-append "\
+VERSION_TUPLE = object
+TYPE_CHECKING = False
+if TYPE_CHECKING:
+    from typing import Tuple, Union
+
+    VERSION_TUPLE = Tuple[Union[int, str], ...]
+else:
+    VERSION_TUPLE = object
+
+version: str
+__version__: str
+__version_tuple__: VERSION_TUPLE
+version_tuple: VERSION_TUPLE
+
+
+__version__ = \"" #$version "\"
+version = __version__
+__version_tuple__ = (" (car tuple) ", " (cadr tuple) ", " (caddr tuple) ")
+version_tuple = __version_tuple__
+
+")))))
+              (substitute* "pyproject.toml"
+                (("setuptools = \">=70.0.0\"") "setuptools = \">=67.0.0\"")
+                (("^version =.*") (string-append "version = \"" #$version "\"\n"))
+                (("enable = true") "enable = false"))))
+          (add-before 'check 'increase-resource-limits
+            (lambda _
+              ;; XXX: Copied from ungoogled-chromium.
+              ;; Try increasing the soft resource limit of max open files to 2048,
+              ;; or equal to the hard limit, whichever is lower.
+              (call-with-values (lambda () (getrlimit 'nofile))
+                (lambda (soft hard)
+                  (when (and soft (< soft 2048))
+                    (if hard
+                        (setrlimit 'nofile (min hard 2048) hard)
+                        (setrlimit 'nofile 2048 #f))
+                    (format #t
+                            "increased maximum number of open files from ~d to ~d~%"
+                            soft (if hard (min hard 2048) 2048))))))))))
     (propagated-inputs
      (list python-configargparse
            python-flask
-           python-flask-basicauth
            python-flask-cors
+           python-flask-login
            python-gevent
            python-geventhttpclient
            python-msgpack
            python-psutil
            python-pyzmq
            python-requests
-           python-roundrobin
+           python-setuptools
+           python-tomli
            python-typing-extensions
            python-werkzeug))
     (native-inputs
-     (list python-mock
+     (list nss-certs-for-test
+           python-poetry-core
+           python-poetry-dynamic-versioning
            python-pyquery
            python-pytest
-           python-retry
-           python-setuptools-scm))
+           python-retry))
     (home-page "https://locust.io/")
     (synopsis "Distributed load testing framework")
     (description "Locust is a performance testing tool that aims to be easy to
