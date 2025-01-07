@@ -1864,6 +1864,9 @@ Markdown.  All extensions are found under the module namespace of pymdownx.")
              "-k" (string-append
                    ;; This test tries to write to $HOME/.cache/pint.
                    "not test_auto"
+                   ;; Our pytest can't match RuntimeWarning for some reason.
+                   ;; Note: python-pint@0.24.4 would work around this, too.
+                   " and not test_nonnumeric_magnitudes"
                    ;; Fails with "Group USCSLengthInternational already
                    ;; present in registry"
                    " and not test_load_definitions_stage_2"))))
