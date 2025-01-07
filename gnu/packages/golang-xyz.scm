@@ -989,6 +989,43 @@ commands.")
      "This package implements optimal parameters for data-types.")
     (license license:expat)))
 
+(define-public go-github-com-apparentlymart-go-textseg-v13
+  (package
+    (name "go-github-com-apparentlymart-go-textseg-v13")
+    (version "13.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/apparentlymart/go-textseg")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0gdgi0d52rq1xsdn9icc8lghn0f2q927cifmrlfxflf7bf21vism"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:unpack-path "github.com/apparentlymart/go-textseg/v13"
+       #:import-path "github.com/apparentlymart/go-textseg/v13/textseg"))
+    (native-inputs
+     (list ruby))
+    (home-page "https://github.com/apparentlymart/go-textseg")
+    (synopsis "Go implementation of Unicode Text Segmentation")
+    (description
+     "This package provides an implementation of the Unicode Text Segmentation
+specification for Go.  Specifically, it currently includes only the grapheme
+cluster segmentation algorithm.")
+    ;; Project is released under Expat terms.  Some parts use Unicode and
+    ;; ASL2.0 licenses.
+    (license (list license:expat license:unicode license:asl2.0))))
+
+(define-public go-github-com-apparentlymart-go-textseg-autoversion
+  (package
+    (inherit go-github-com-apparentlymart-go-textseg-v13)
+    (name "go-github-com-apparentlymart-go-textseg-autoversion")
+    (arguments
+     '(#:unpack-path "github.com/apparentlymart/go-textseg/autoversion"
+       #:import-path "github.com/apparentlymart/go-textseg/autoversion/textseg"))))
+
 (define-public go-github-com-arbovm-levenshtein
   (package
     (name "go-github-com-arbovm-levenshtein")
