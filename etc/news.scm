@@ -35,6 +35,14 @@
 (channel-news
  (version 0)
 
+ (entry (commit "1dcd0ded86e341cbfd0567cefde1e71684c0cdba")
+        (title
+         (en "Linux-libre 6.12 now available"))
+        (body
+         (en "The 6.12 linux-libre series is now available in GNU Guix.  This
+kernel will receive upstream long-term support, so the @code{linux-libre-lts}
+package has been updated to 6.12.")))
+
  (entry (commit "7b40b9d2d2ddafd6945f18f19f5e621086d57169")
         (title
          (en "Linux-libre 4.19 removed due to end of upstream support")
