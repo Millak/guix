@@ -989,6 +989,31 @@ commands.")
      "This package implements optimal parameters for data-types.")
     (license license:expat)))
 
+(define-public go-github-com-apparentlymart-go-dump
+  (package
+    (name "go-github-com-apparentlymart-go-dump")
+    (version "0.0.0-20190214190832-042adf3cf4a0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/apparentlymart/go-dump")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1yqc50v82za54j2yy3ln7jzx983scb5gbh195wb6vmvqj18q696q"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/apparentlymart/go-dump"))
+    (home-page "https://github.com/apparentlymart/go-dump")
+    (synopsis "Utility for formatting Go values in a pretty-printed way")
+    (description
+     "This package implements a functionality for generating pretty-printed
+dumps of Go values.")
+    (license license:mpl2.0)))
+
 (define-public go-github-com-apparentlymart-go-textseg-v9
   (package
     (name "go-github-com-apparentlymart-go-textseg-v9")
