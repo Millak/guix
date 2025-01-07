@@ -48,7 +48,7 @@
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2024 Ilya Chernyshov <ichernyshovvv@gmail.com>
-;;; Copyright © 2024 Artyom Bologov <mail@aartaka.me>
+;;; Copyright © 2024, 2025 Artyom Bologov <mail@aartaka.me>
 ;;; Copyright © 2024 Felix Lechner <felix.lechner@lease-up.com>
 ;;; Copyright © 2024 Alec Barreto <mrh57@posteo.net>
 ;;;
@@ -6198,7 +6198,7 @@ with a FSM is being built (for example, from a Makefile.)")
 (define-public guile-ini
   (package
     (name "guile-ini")
-    (version "0.5.4")
+    (version "0.5.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6207,7 +6207,7 @@ with a FSM is being built (for example, from a Makefile.)")
               (file-name (string-append name "-" version))
               (sha256
                (base32
-                "10glfdhyv8h58cmf0xl1g7jk05pd5hzdncc2c709b8pyncrdiakh"))))
+                "191kz6xlci16b93m0s6vzvk5jbc89rx61aljnqmd81ha33nhk0yg"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags '("GUILE_AUTO_COMPILE=0") ;to prevent guild warnings
