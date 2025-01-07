@@ -13727,6 +13727,34 @@ losing type information.  The primary intended use is for implementing
 configuration languages, but other uses may be possible too.")
     (license license:expat)))
 
+(define-public go-github-com-zclconf-go-cty-debug
+  (package
+    (name "go-github-com-zclconf-go-cty-debug")
+    (version "0.0.0-20240509010212-0d6042c53940")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/zclconf/go-cty-debug")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0izkqnciir10zamr1ca32bmyir1d5hfyxh84dj2q39bw1sj3fs7j"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/zclconf/go-cty-debug"))
+    (propagated-inputs
+     (list go-github-com-google-go-cmp
+           go-github-com-zclconf-go-cty))
+    (home-page "https://github.com/zclconf/go-cty-debug")
+    (synopsis "Debugging and inspection utilities for cty")
+    (description
+     "This package implements a functionality for debugging and inspection
+utilities for cty Golang module.")
+    (license license:expat)))
+
 (define-public go-go-abhg-dev-komplete
   (package
     (name "go-go-abhg-dev-komplete")
