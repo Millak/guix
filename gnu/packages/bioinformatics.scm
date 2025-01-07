@@ -4930,7 +4930,7 @@ with MOFA+ in Python.")
 (define-public python-mudata
   (package
     (name "python-mudata")
-    (version "0.2.3")
+    (version "0.3.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4939,12 +4939,23 @@ with MOFA+ in Python.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "02h0k1q57589r0hdv8nwg1vk7g2ljvn5g66c47fy5gdilbm3gjws"))))
+                "1m1qsqgk8snllavfj99qgm2j7cccviwg7k0k1kfbvqn0bkzc87sa"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'pretend-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (propagated-inputs
      (list python-anndata python-h5py python-pandas))
     (native-inputs
-     (list python-flit-core python-numpy python-pytest python-zarr))
+     (list python-hatch-vcs
+           python-hatchling
+           python-numpy
+           python-pytest
+           python-zarr))
     (home-page "https://github.com/scverse/mudata")
     (synopsis "Python package for multi-omics data analysis")
     (description
