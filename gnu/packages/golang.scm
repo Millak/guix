@@ -2365,36 +2365,6 @@ finding resources located relative to the executable file.")
       (home-page "https://github.com/kardianos/osext")
       (license license:bsd-3))))
 
-(define-public go-github-com-ayufan-golang-kardianos-service
-  (let ((commit "0c8eb6d8fff2e2fb884a7bfd23e183fb63c0eff3")
-        (revision "0"))
-    (package
-      (name "go-github-com-ayufan-golang-kardianos-service")
-      (version (git-version "0.0.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url
-                "https://github.com/ayufan/golang-kardianos-service")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "0x0cn7l5gda2khsfypix7adxd5yqighzn04mxjw6hc4ayrh7his5"))))
-      (build-system go-build-system)
-      (native-inputs
-       (list go-github-com-kardianos-osext))
-      (arguments
-       '(#:tests? #f                ;FIXME tests fail: Service is not running.
-         #:import-path "github.com/ayufan/golang-kardianos-service"))
-      (home-page "https://github.com/ayufan/golang-kardianos-service")
-      (synopsis "Go interface to a variety of service supervisors")
-      (description "This package provides @code{service}, a Go module that can
-run programs as a service using a variety of supervisors, including systemd,
-SysVinit, and more.")
-      (license license:zlib))))
-
 (define-public go-github-com-docker-distribution
   (let ((commit "325b0804fef3a66309d962357aac3c2ce3f4d329")
         (revision "0"))
