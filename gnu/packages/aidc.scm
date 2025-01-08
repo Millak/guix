@@ -231,6 +231,20 @@ Python as well as GUI widgets for GTK and Qt.")
     (home-page "https://github.com/mchehab/zbar")
     (license license:lgpl2.1+)))
 
+(define-public zbar-minimal
+  (package/inherit zbar
+    (name "zbar-minimal")
+    (build-system gnu-build-system)
+    (arguments
+     (substitute-keyword-arguments (package-arguments zbar)
+       ((#:configure-flags flags)
+        #~(cons* "--with-gtk=no" (delete "--with-gtk=auto" #$flags)))
+       ((#:disallowed-references _ '())
+        (list qtbase gtk+))))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs zbar)
+       (delete "gtk+")))))
+
 (define-public qrcodegen-cpp
   (package
     (name "qrcodegen-cpp")
