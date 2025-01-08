@@ -1245,7 +1245,7 @@ networks where it would otherwise be blocked or heavily throttled.")
 (define-public go-github-com-kataras-pio
   (package
     (name "go-github-com-kataras-pio")
-    (version "0.0.10")
+    (version "0.0.13")
     (source
      (origin
        (method git-fetch)
@@ -1255,7 +1255,7 @@ networks where it would otherwise be blocked or heavily throttled.")
          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "11d2jy9xz4airicgmjcy4nb80kwv22jp140wzn2l5412jdr4jmkp"))))
+        (base32 "1z0fkhs6amnkvb02519pfxy2x2r5sfmvdzxfi31ipa17m98pk3bq"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/kataras/pio"))
