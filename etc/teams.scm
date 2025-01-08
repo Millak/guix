@@ -793,6 +793,10 @@ GLib/GIO, GTK, GStreamer and Webkit."
                        "janneke@gnu.org")
   bootstrap core-packages home hurd installer)
 
+(define-member (person "Ian Eure"
+                       "ian@retrospec.tv")
+  mozilla emacs)
+
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
