@@ -22618,6 +22618,7 @@ strings require only one extra byte in addition to the strings themselves.")
                      "test_structure_simple_from_dict_default"
                      "test_310_optional_field_roundtrip"
                      "test_310_union_field_roundtrip"
+                     "test_individual_overrides"
                      "test_nested_roundtrip"
                      "test_nested_roundtrip_tuple"
                      "test_omit_default_roundtrip"
