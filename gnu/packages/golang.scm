@@ -2229,32 +2229,6 @@ developed by the Go team.  It provides IDE features to any LSP-compatible
 editor.")
     (license license:bsd-3)))
 
-(define-public go-github-com-tevino-abool
-  (let ((commit
-          "3c25f2fe7cd0ef3eabefce1d90efd69a65d35b12")
-        (revision "0"))
-    (package
-      (name "go-github-com-tevino-abool")
-      (version (git-version "0.0.0" revision commit))
-      (source
-        (origin
-          (method git-fetch)
-          (uri (git-reference
-                 (url "https://github.com/tevino/abool")
-                 (commit commit)))
-          (file-name (git-file-name name version))
-          (sha256
-            (base32
-              "1wxqrclxk93q0aj15z596dx2y57x9nkhi64nbrr5cxnhxn8vwixm"))))
-      (build-system go-build-system)
-      (arguments
-        '(#:import-path "github.com/tevino/abool"))
-      (home-page "https://github.com/tevino/abool")
-      (synopsis "Atomic boolean library for Go code")
-      (description "This package is atomic boolean library for Go code,
-optimized for performance yet simple to use.")
-      (license license:expat))))
-
 (define-public gron
   (package
     (name "gron")
