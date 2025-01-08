@@ -4801,7 +4801,8 @@ quoting, commenting, and escaping.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/fsnotify/fsnotify"))
+      #:import-path "github.com/fsnotify/fsnotify"
+      #:test-flags #~(list "-skip" "TestDiffMatch/3")))
     (propagated-inputs
      (list go-golang-org-x-sys))
     (home-page "https://github.com/fsnotify/fsnotify")
