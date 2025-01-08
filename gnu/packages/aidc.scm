@@ -194,22 +194,22 @@ C/C++ programs to use its capabilities without restrictions or overhead.")
                                               (assoc-ref %outputs "out")
                                               "/etc"))))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("gettext" ,gettext-minimal)
-       ("glib" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)
-       ("python-wrapper" ,python-wrapper)))
+     (list autoconf
+           automake
+           gettext-minimal
+           `(,glib "bin")
+           gobject-introspection
+           libtool
+           patchelf
+           pkg-config
+           python-wrapper))
     (inputs
-     `(("dbus" ,dbus)
-       ("imagemagick" ,imagemagick)
-       ("libjpeg" ,libjpeg-turbo)
-       ("perl" ,perl)
-       ("python" ,python)
-       ("qtx11extras" ,qtx11extras)
-       ("v4l-utils" ,v4l-utils)))
+     (list dbus
+           imagemagick
+           libjpeg-turbo
+           perl
+           python
+           v4l-utils))
     (propagated-inputs
      ;; These are in 'requires' field of .pc files.
      (list glib gtk+ qtbase-5))
