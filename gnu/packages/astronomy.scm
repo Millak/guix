@@ -2648,8 +2648,7 @@ across many files.")
        (method git-fetch) ; no fresh release PyPI
        (uri (git-reference
              (url "https://github.com/glue-viz/glue-qt")
-             ;(commit (string-append "v" version))))
-             (commit "8a1d6ab34a7016747690c3ce596a5204c36e0b93")))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1zh25y8c98lzsnha4pxm17s6bkkab97rzw9zaik8asrxhc0kgypd"))))
