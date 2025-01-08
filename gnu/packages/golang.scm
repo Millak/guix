@@ -1218,29 +1218,6 @@ form that bypasses network filtering, allowing the application to work on
 networks where it would otherwise be blocked or heavily throttled.")
     (license license:expat)))
 
-(define-public go-github-com-kortschak-utter
-  (package
-    (name "go-github-com-kortschak-utter")
-    (version "1.7.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/kortschak/utter")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1pycm9kkfwpxz10v6f3w0478qy66bzaginr94rnmnnz7kp40fa00"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:import-path "github.com/kortschak/utter"))
-    (home-page "https://github.com/kortschak/utter")
-    (synopsis "Deep pretty printer")
-    (description
-     "This package implements a deep pretty printer for Go data structures to
-aid data snapshotting.")
-    (license license:isc)))
-
 (define-public go-github-com-leonelquinteros-gotext
   (package
     (name "go-github-com-leonelquinteros-gotext")

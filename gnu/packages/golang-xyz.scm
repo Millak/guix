@@ -8496,6 +8496,30 @@ very eas to use.")
      "This packae provides a wrapper around @code{libedit} for Golang.")
      (license license:asl2.0)))
 
+(define-public go-github-com-kortschak-utter
+  (package
+    (name "go-github-com-kortschak-utter")
+    (version "1.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kortschak/utter")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1pycm9kkfwpxz10v6f3w0478qy66bzaginr94rnmnnz7kp40fa00"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/kortschak/utter"))
+    (home-page "https://github.com/kortschak/utter")
+    (synopsis "Deep pretty printer")
+    (description
+     "This package implements a deep pretty printer for Go data structures to
+aid data snapshotting.")
+    (license license:isc)))
+
 (define-public go-github-com-kpango-glg
   (package
     (name "go-github-com-kpango-glg")
