@@ -1036,3 +1036,41 @@ support libraries.")
 C++11.  It provides a simple validation API that allows loading JSON Schemas,
 and validate documents loaded by one of several supported parser libraries.")
     (license license:bsd-2)))
+
+(define-public libvarlink
+  (package
+    (name "libvarlink")
+    (version "24")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/varlink/libvarlink")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "098jw9h48p2py6lwxyjrlzvv9zqvqgfsxc4pddfsviab65n9n5gw"))))
+    (build-system meson-build-system)
+    (native-inputs
+     (list python-minimal
+           glibc-utf8-locales)) ;needed for unit tests
+    (arguments
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'patch-/bin/sh
+                     (lambda _
+                       (substitute* "lib/meson.build"
+                         (("/bin/sh")
+                          (which "sh")))))
+                   (add-after 'unpack 'patch-/usr/bin/env
+                     (lambda _
+                       (substitute* "varlink-wrapper.py"
+                         (("/usr/bin/env")
+                          (which "env"))))))))
+    (home-page "https://varlink.org/")
+    (synopsis "Varlink C IPC library and command line tool")
+    (description
+     "This package provides the C implementation of the varlink
+interface description protocol and its associated command line tool")
+    (license license:asl2.0)))
+
