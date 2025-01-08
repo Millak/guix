@@ -79,9 +79,12 @@ scheme-mode
 
 (:phases\ "#:phases (modify-phases %standard-phases"
           n> p ")")
+(:phases~\ "#:phases"
+           n> "#~(modify-phases %standard-phases"
+           n> p ")")
 
-(add-before\ "(add-before '" p " '" p
+(add-before\ "(add-before '" (p "next") " '" (p "previous")
              n > p ")")
-(add-after\ "(add-after '" p " '" p
+(add-after\ "(add-after '" (p "previous") " '" (p "next")
             n > p ")")
-(replace\ "(replace '" p " " p")")
+(replace\ "(replace '" (p "old") " " p ")")
