@@ -4060,6 +4060,20 @@ be used for realtime video capture via Linux-specific APIs.")
     ;; libv4l2 is LGPL2.1+, while utilities are GPL2 only.
     (license (list license:lgpl2.1+ license:gpl2))))
 
+(define-public v4l-utils-minimal
+  (package/inherit v4l-utils
+    (name "v4l-utils-minimal")
+    (arguments
+     (substitute-keyword-arguments (package-arguments v4l-utils)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (delete 'split)))
+       ((#:disallowed-references _ '())
+        (list qtbase qtbase-5))))
+    (outputs '("out"))
+    (inputs (modify-inputs (package-inputs v4l-utils)
+              (delete "qtbase")))))
+
 (define-public obs
   (package
     (name "obs")
