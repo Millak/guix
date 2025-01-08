@@ -3,6 +3,7 @@
 ;;; Copyright © 2020 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 Remco van 't Veer <remco@remworks.net>
+;;; Copyright © 2024 Sören Tempel <soeren@soeren-tempel.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -52,7 +53,21 @@
             knot-resolver-configuration
 
             dnsmasq-service-type
-            dnsmasq-configuration))
+            dnsmasq-configuration
+
+            unbound-service-type
+            unbound-zone
+            unbound-server
+            unbound-configuration
+            unbound-configuration?
+            unbound-configuration-server
+            unbound-configuration-remote-control
+            unbound-configuration-forward-zone
+            unbound-configuration-stub-zone
+            unbound-configuration-auth-zone
+            unbound-configuration-view
+            unbound-configuration-python
+            unbound-configuration-dynlib))
 
 ;;;
 ;;; Knot DNS.
@@ -902,3 +917,178 @@ cache.size = 100 * MB
                              dnsmasq-activation)))
    (default-value (dnsmasq-configuration))
    (description "Run the dnsmasq DNS server.")))
+
+
+;;;
+;;; Unbound.
+;;;
+
+(define (unbound-serialize-field field-name value)
+  (let ((field (object->string field-name))
+        (value (cond
+                 ((boolean? value) (if value "yes" "no"))
+                 ((string? value) value)
+                 (else (object->string value)))))
+    (if (string=? field "extra-content")
+      #~(string-append #$value "\n")
+      #~(format #f "	~a: ~s~%" #$field #$value))))
+
+(define (unbound-serialize-alist field-name value)
+  #~(string-append #$@(generic-serialize-alist list
+                                               unbound-serialize-field
+                                               value)))
+
+(define (unbound-serialize-section section-name value fields)
+  #~(format #f "~a:~%~a"
+            #$(object->string section-name)
+            #$(serialize-configuration value fields)))
+
+(define unbound-serialize-string unbound-serialize-field)
+(define unbound-serialize-boolean unbound-serialize-field)
+
+(define-maybe string (prefix unbound-))
+(define-maybe list-of-strings (prefix unbound-))
+(define-maybe boolean (prefix unbound-))
+
+(define (unbound-serialize-list-of-strings field-name value)
+  #~(string-append #$@(map (cut unbound-serialize-string field-name <>) value)))
+
+(define-configuration unbound-zone
+  (name
+    string
+    "Zone name.")
+
+  (forward-addr
+    maybe-list-of-strings
+    "IP address of server to forward to.")
+
+  (forward-tls-upstream
+    maybe-boolean
+    "Whether the queries to this forwarder use TLS for transport.")
+
+  (extra-options
+   (alist '())
+   "An association list of options to append.")
+
+  (prefix unbound-))
+
+(define (unbound-serialize-unbound-zone field-name value)
+  (unbound-serialize-section field-name value unbound-zone-fields))
+
+(define (unbound-serialize-list-of-unbound-zone field-name value)
+  #~(string-append #$@(map (cut unbound-serialize-unbound-zone field-name <>)
+                           value)))
+
+(define list-of-unbound-zone? (list-of unbound-zone?))
+
+(define-configuration unbound-remote
+  (control-enable
+    maybe-boolean
+    "Enable remote control.")
+
+  (control-interface
+    maybe-string
+    "IP address or local socket path to listen on for remote control.")
+
+  (extra-options
+   (alist '())
+   "An association list of options to append.")
+
+  (prefix unbound-))
+
+(define (unbound-serialize-unbound-remote field-name value)
+  (unbound-serialize-section field-name value unbound-remote-fields))
+
+(define-configuration unbound-server
+  (interface
+    maybe-list-of-strings
+    "Interfaces listened on for queries from clients.")
+
+  (hide-version
+    maybe-boolean
+    "Refuse the version.server and version.bind queries.")
+
+  (hide-identity
+    maybe-boolean
+    "Refuse the id.server and hostname.bind queries.")
+
+  (tls-cert-bundle
+    maybe-string
+    "Certificate bundle file, used for DNS over TLS.")
+
+  (extra-options
+   (alist '())
+   "An association list of options to append.")
+
+  (prefix unbound-))
+
+(define (unbound-serialize-unbound-server field-name value)
+  (unbound-serialize-section field-name value unbound-server-fields))
+
+(define-configuration unbound-configuration
+  (server
+    (unbound-server
+      (unbound-server
+        (interface '("127.0.0.1" "::1"))
+
+        (hide-version #t)
+        (hide-identity #t)
+
+        (tls-cert-bundle "/etc/ssl/certs/ca-certificates.crt")))
+    "General options for the Unbound server.")
+
+  (remote-control
+    (unbound-remote
+      (unbound-remote
+        (control-enable #t)
+        (control-interface "/run/unbound.sock")))
+    "Remote control options for the daemon.")
+
+  (forward-zone
+    (list-of-unbound-zone '())
+    "A zone for which queries should be forwarded to another resolver.")
+
+  (extra-content
+    maybe-string
+    "Raw content to add to the configuration file.")
+
+  (prefix unbound-))
+
+(define (unbound-config-file config)
+  (mixed-text-file "unbound.conf"
+    (serialize-configuration
+      config
+      unbound-configuration-fields)))
+
+(define (unbound-shepherd-service config)
+  (let ((config-file (unbound-config-file config)))
+    (list (shepherd-service
+            (documentation "Unbound daemon.")
+            (provision '(unbound dns))
+            (requirement '(networking))
+            (actions (list (shepherd-configuration-action config-file)))
+            (start #~(make-forkexec-constructor
+                       (list (string-append #$unbound "/sbin/unbound")
+                             "-d" "-p" "-c" #$config-file)))
+            (stop #~(make-kill-destructor))))))
+
+(define unbound-account-service
+  (list (user-group (name "unbound") (system? #t))
+        (user-account
+         (name "unbound")
+         (group "unbound")
+         (system? #t)
+         (comment "Unbound daemon user")
+         (home-directory "/var/empty")
+         (shell "/run/current-system/profile/sbin/nologin"))))
+
+(define unbound-service-type
+  (service-type (name 'unbound)
+                (description "Run the unbound DNS resolver.")
+                (extensions
+                  (list (service-extension account-service-type
+                                           (const unbound-account-service))
+                        (service-extension shepherd-root-service-type
+                                           unbound-shepherd-service)))
+                (compose concatenate)
+                (default-value (unbound-configuration))))

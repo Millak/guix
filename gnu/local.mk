@@ -838,6 +838,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/tests/cups.scm				\
   %D%/tests/databases.scm			\
   %D%/tests/desktop.scm				\
+  %D%/tests/dns.scm				\
   %D%/tests/dict.scm				\
   %D%/tests/docker.scm				\
   %D%/tests/emacs.scm				\

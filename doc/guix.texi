@@ -135,6 +135,7 @@ Copyright @copyright{} 2024 Nigko Yerden@*
 Copyright @copyright{} 2024 Troy Figiel@*
 Copyright @copyright{} 2024 Sharlatan Hellseher@*
 Copyright @copyright{} 2024 45mg@*
+Copyright @copyright{} 2025 Sören Tempel@*
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -34296,6 +34297,102 @@ network or obtained a DHCP lease from dnsmasq.
 @item @code{extra-options} (default: @code{'()})
 This option provides an ``escape hatch'' for the user to provide arbitrary
 command-line arguments to @command{dnsmasq} as a list of strings.
+
+@end table
+@end deftp
+
+@subsubheading Unbound Service
+
+@defvar unbound-service-type
+This is the type of the service to run @uref{https://www.unbound.net,
+Unbound}, a validating, recursive, and caching DNS resolver.  Its value
+must be a @code{unbound-configuration} object as in this example:
+
+@lisp
+(service unbound-service-type
+         (unbound-configuration
+          (forward-zone
+           (list
+            (unbound-zone
+             (name ".")
+             (forward-addr '("149.112.112.112#dns.quad9.net"
+                             "2620:fe::9#dns.quad9.net"))
+             (forward-tls-upstream #t))))))
+@end lisp
+@end defvar
+
+@deftp {Data Type} unbound-configuration
+Available @code{unbound-configuration} fields are:
+
+@table @asis
+@item @code{server} (type: unbound-server)
+General options for the Unbound server.
+
+@item @code{remote-control} (type: unbound-remote)
+Remote control options for the daemon.
+
+@item @code{forward-zone} (default: @code{()}) (type: list-of-unbound-zone)
+A zone for which queries should be forwarded to another resolver.
+
+@item @code{extra-content} (type: maybe-string)
+Raw content to add to the configuration file.
+
+@end table
+@end deftp
+
+@deftp {Data Type} unbound-server
+Available @code{unbound-server} fields are:
+
+@table @asis
+@item @code{interface} (type: maybe-list-of-strings)
+Interfaces listened on for queries from clients.
+
+@item @code{hide-version} (type: maybe-boolean)
+Refuse the version.server and version.bind queries.
+
+@item @code{hide-identity} (type: maybe-boolean)
+Refuse the id.server and hostname.bind queries.
+
+@item @code{tls-cert-bundle} (type: maybe-string)
+Certificate bundle file, used for DNS over TLS.
+
+@item @code{extra-options} (default: @code{()}) (type: alist)
+An association list of options to append.
+
+@end table
+@end deftp
+
+@deftp {Data Type} unbound-remote
+Available @code{unbound-remote} fields are:
+
+@table @asis
+@item @code{control-enable} (type: maybe-boolean)
+Enable remote control.
+
+@item @code{control-interface} (type: maybe-string)
+IP address or local socket path to listen on for remote control.
+
+@item @code{extra-options} (default: @code{()}) (type: alist)
+An association list of options to append.
+
+@end table
+@end deftp
+
+@deftp {Data Type} unbound-zone
+Available @code{unbound-zone} fields are:
+
+@table @asis
+@item @code{name} (type: string)
+Zone name.
+
+@item @code{forward-addr} (type: maybe-list-of-strings)
+IP address of server to forward to.
+
+@item @code{forward-tls-upstream} (type: maybe-boolean)
+Whether the queries to this forwarder use TLS for transport.
+
+@item @code{extra-options} (default: @code{()}) (type: alist)
+An association list of options to append.
 
 @end table
 @end deftp
