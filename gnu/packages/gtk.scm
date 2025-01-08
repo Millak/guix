@@ -292,7 +292,7 @@ output.  Experimental backends include OpenGL, BeOS, OS/2, and DirectFB.")
               (sha256
                (base32
                 "0izq2lpqxrf1l755nxrxkkiarywkx5j43asznankxplbxgm0358h"))))
-    (build-system gnu-build-system)
+    (build-system meson-build-system)
     (outputs '("out"
                "bin"))                  ;160K, only hb-view depend on cairo
     (inputs
@@ -310,9 +310,7 @@ output.  Experimental backends include OpenGL, BeOS, OS/2, and DirectFB.")
                    which)))
     (arguments
      (list #:configure-flags
-           #~(list "--with-graphite2"
-                   "--with-gobject"
-                   (string-append "--bindir=" #$output:bin "/bin"))))
+           #~(list "-Dgraphite2=enabled")))
     (synopsis "OpenType text shaping engine")
     (description
      "HarfBuzz is an OpenType text shaping engine.")
