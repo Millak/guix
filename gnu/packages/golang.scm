@@ -3976,36 +3976,6 @@ aware of your profiles and configuration in ~/.aws/config.")
      "This package provides INI file read and write functionality in Go.")
     (license license:asl2.0)))
 
-(define-public go-jsonnet
-  (package
-    (name "go-jsonnet")
-    (version "0.20.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/google/go-jsonnet")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1qfr6yvhj33rhx1icxh99bbpngh5kwq1x7r39315y53bw216vbrz"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:intall-source? #f
-       #:import-path "github.com/google/go-jsonnet/cmd/jsonnet"
-       #:unpack-path "github.com/google/go-jsonnet"))
-    (native-inputs (list go-sigs-k8s-io-yaml go-gopkg-in-yaml-v2
-                             go-github-com-sergi-go-diff
-                             go-github-com-fatih-color))
-    (home-page "https://github.com/google/go-jsonnet")
-    (synopsis "Go implementation of Jsonnet")
-    (description
-     "This package provides an implementation of the @url{http://jsonnet.org/,
-Jsonnet} data templating language in Go.  It is a feature-complete,
-production-ready implementation, compatible with the original Jsonnet C++
-implementation.")
-    (license license:asl2.0)))
-
 ;; XXX: This repository has been archived by the owner on Dec 29, 2022. It is
 ;; now read-only.  It's only used by kiln, consider to remove it when it does
 ;; no longer require it.
