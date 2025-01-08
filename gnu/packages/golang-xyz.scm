@@ -4104,6 +4104,49 @@ GNU extensions to the POSIX recommendations for command-line options}.  This
 is an activly maintained fork of @url{https://github.com/ogier/pflag}.")
     (license license:bsd-3)))
 
+(define-public go-github-com-docker-distribution
+  (package
+    (name "go-github-com-docker-distribution")
+    (version "2.8.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/docker/distribution")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0dbaxmkhg53anhkzngyzlxm2bd4dwv0sv75zip1rkm0874wjbxzb"))
+       (snippet
+        ;; TODO: Unbundle more.
+        #~(begin (use-modules (guix build utils))
+                 (for-each delete-file-recursively
+                           (list "vendor/golang.org"))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/docker/distribution"
+      #:test-flags #~(list "-test.short")
+      #:test-subdirs
+      #~(list "configuration"
+              "context"
+              "health"
+              "manifest/..."
+              "notifications/..."
+              "uuid")))
+    (native-inputs
+     (list go-github-com-sirupsen-logrus
+           go-golang-org-x-crypto
+           go-golang-org-x-sys))
+    (home-page "https://github.com/docker/distribution")
+    (synopsis
+     "This package is a Docker toolset to pack, ship, store, and deliver content")
+    (description
+     "Docker Distribution is a Docker toolset to pack, ship,
+store, and deliver content.  It contains Docker Registry 2.0 and libraries to
+interact with distribution components.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-docker-go-units
   (package
     (name "go-github-com-docker-go-units")
