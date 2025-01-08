@@ -5634,7 +5634,7 @@ processing tasks.")
      (list python-matplotlib python-numpy python-pandas python-scipy))
     (native-inputs
      (list python-setuptools python-setuptools-scm
-           python-pytest python-pytest-cov tzdata))
+           python-pytest python-pytest-cov python-wheel tzdata))
     (home-page "https://github.com/has2k1/mizani")
     (synopsis "Create data visualizations in Python")
     (description
