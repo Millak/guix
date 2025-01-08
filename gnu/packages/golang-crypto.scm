@@ -1437,6 +1437,31 @@ implementations are described in \"Fast SHA-256 Implementations on Intel
 Architecture Processors\" by J. Guilford et al.")
     (license license:asl2.0)))
 
+(define-public go-github-com-mr-tron-base58
+  (package
+    (name "go-github-com-mr-tron-base58")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mr-tron/base58")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ngxfpaa26p53lciz9vf2gn21l77kz8pcm2asxbv0l87g6xwqp7h"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/mr-tron/base58"))
+    (home-page "https://github.com/mr-tron/base58")
+    (synopsis "Fast implementation of base58 encoding on Golang")
+    (description
+     "Fast implementation of base58 encoding on Golang.  A trivial
+@command{big.Int} encoding benchmark results in 6 times faster encoding and 8
+times faster decoding.")
+    (license license:expat)))
+
 (define-public go-github-com-multiformats-go-multihash
   (package
     (name "go-github-com-multiformats-go-multihash")
