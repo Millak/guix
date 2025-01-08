@@ -2912,7 +2912,7 @@ temporal directories.")
 (define-public go-github-com-twpayne-go-shell
   (package
     (name "go-github-com-twpayne-go-shell")
-    (version "0.3.0")
+    (version "0.5.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2921,10 +2921,12 @@ temporal directories.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1hv0ggy3935iddjnmpp9vl0kqjknxpnbmm9w7xr3gds7fpbxz6yp"))))
+                "0rnwdlhiakcigmz55fhn0wib6vi064cqxfq512mi880j9yqx4114"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/twpayne/go-shell"))
+    (native-inputs
+     (list go-github-com-alecthomas-assert-v2))
     (home-page "https://github.com/twpayne/go-shell/")
     (synopsis "Shell across multiple platforms")
     (description
