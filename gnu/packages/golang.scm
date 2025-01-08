@@ -2856,31 +2856,6 @@ GIT_TRACE mechanism.")
 anchor names.")
     (license license:expat)))
 
-(define-public go-github-com-whyrusleeping-stump
-  (let ((commit "206f8f13aae1697a6fc1f4a55799faf955971fc5")
-        (revision "0"))
-    (package
-      (name "go-github-com-whyrusleeping-stump")
-      (version (git-version "0.0.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/whyrusleeping/stump")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "1s40qdppjnk8gijk7x6kbviiqz62nz3h6gic2q9cwcmq8r5isw7n"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path "github.com/whyrusleeping/stump"))
-      (home-page "https://github.com/whyrusleeping/stump")
-      (synopsis "Very basic logging package for Go")
-      (description "A simple log library, for when you don't really care to
-have super fancy logs.")
-      (license license:expat))))
-
 (define-public go-github-com-lucasb-eyer-go-colorful
   (package
     (name "go-github-com-lucasb-eyer-go-colorful")
