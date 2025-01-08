@@ -8496,6 +8496,35 @@ very eas to use.")
      "This packae provides a wrapper around @code{libedit} for Golang.")
      (license license:asl2.0)))
 
+(define-public go-github-com-knz-lipgloss-convert
+  (package
+    (name "go-github-com-knz-lipgloss-convert")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/knz/lipgloss-convert")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1x9p89jfafkvsz3rrk856bniwcxlj8b1bhi0ixyngh620mx4h0cq"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/knz/lipgloss-convert"
+      #:test-flags #~(list "-skip" "TestExport/full")))
+    (propagated-inputs
+     (list go-github-com-charmbracelet-lipgloss
+           go-github-com-kr-pretty
+           go-github-com-pmezard-go-difflib))
+    (home-page "https://github.com/knz/lipgloss-convert")
+    (synopsis "String conversion functions for lipgloss Styles")
+    (description
+     "String conversion functions for
+@url{https://github.com/charmbracelet/lipgloss, lipgloss} Styles.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-kortschak-utter
   (package
     (name "go-github-com-kortschak-utter")
