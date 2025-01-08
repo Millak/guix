@@ -3994,7 +3994,7 @@ aware of your profiles and configuration in ~/.aws/config.")
      '(#:intall-source? #f
        #:import-path "github.com/google/go-jsonnet/cmd/jsonnet"
        #:unpack-path "github.com/google/go-jsonnet"))
-    (propagated-inputs (list go-sigs-k8s-io-yaml go-gopkg-in-yaml-v2
+    (native-inputs (list go-sigs-k8s-io-yaml go-gopkg-in-yaml-v2
                              go-github-com-sergi-go-diff
                              go-github-com-fatih-color))
     (home-page "https://github.com/google/go-jsonnet")
