@@ -2145,7 +2145,7 @@ termination.")
 (define-public go-github-com-jtolds-gls
   (package
     (name "go-github-com-jtolds-gls")
-    (version "4.20")
+    (version "4.20.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
