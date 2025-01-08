@@ -3202,25 +3202,25 @@ Porter2 stemmer}.  It is written completely using finite state machines to do
 suffix comparison, rather than the string-based or tree-based approaches.")
       (license license:asl2.0))))
 
-(define-public go-github-com-imdario-mergo
+(define-public go-dario-cat-mergo
   (package
-    (name "go-github-com-imdario-mergo")
-    (version "0.3.10")
+    (name "go-dario-cat-mergo")
+    (version "1.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/imdario/mergo")
+                    (url "https://github.com/darccio/mergo")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "09h765p8yby9r8s0a3hv5kl8n2i382mda76wmvk48w1cc1w9s92p"))))
+                "037k2bd97vnbyhn2sczxk0j6ijmv06n1282f76i3ky73s3qmqnlf"))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "github.com/imdario/mergo"))
+     `(#:import-path "dario.cat/mergo"))
     (native-inputs
-     (list go-gopkg-in-yaml-v2))
-    (home-page "https://github.com/imdario/mergo/")
+     (list go-gopkg-in-yaml-v3))
+    (home-page "https://github.com/darccio/mergo")
     (synopsis "Helper to merge structs and maps in Golang")
     (description "Helper to merge structs and maps in Golang.  Useful for
 configuration default values, avoiding messy if-statements.
@@ -3230,27 +3230,6 @@ zero-value fields.  Mergo won't merge unexported (private) fields.  It will do
 recursively any exported one.  It also won't merge structs inside
 maps (because they are not addressable using Go reflection).")
     (license license:bsd-3)))
-
-(define-public go-dario-cat-mergo
-  (package
-    (inherit go-github-com-imdario-mergo)
-    (name "go-dario-cat-mergo")
-    (version "1.0.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/imdario/mergo")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "037k2bd97vnbyhn2sczxk0j6ijmv06n1282f76i3ky73s3qmqnlf"))))
-    (build-system go-build-system)
-    (arguments
-     `(#:unpack-path "dario.cat/mergo"
-       #:import-path "dario.cat/mergo"))
-    (native-inputs
-     (list go-gopkg-in-yaml-v3))))
 
 (define-public go-github-com-olekukonko-ts
   (let ((commit "78ecb04241c0121483589a30b0814836a746187d")
