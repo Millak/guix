@@ -250,6 +250,37 @@ use the C library from the project called FUSE.")
 a human-readable byte format.")
     (license license:asl2.0)))
 
+(define-public go-dario-cat-mergo
+  (package
+    (name "go-dario-cat-mergo")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/darccio/mergo")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0v12vc9bmqq89k4y60a8ykmv85hpa7nh73sn9b7ars143pxvmhf1"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "dario.cat/mergo"))
+    (native-inputs
+     (list go-gopkg-in-yaml-v3))
+    (home-page "https://github.com/darccio/mergo")
+    (synopsis "Helper to merge structs and maps in Golang")
+    (description
+     "Helper to merge structs and maps in Golang.  Useful for configuration
+default values, avoiding messy if-statements.
+
+Mergo merges same-type structs and maps by setting default values in
+zero-value fields.  Mergo won't merge unexported (private) fields.  It will do
+recursively any exported one.  It also won't merge structs inside
+maps (because they are not addressable using Go reflection).")
+    (license license:bsd-3)))
+
 (define-public go-git-sr-ht-emersion-go-scfg
   (package
     (name "go-git-sr-ht-emersion-go-scfg")
