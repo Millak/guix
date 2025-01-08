@@ -3163,12 +3163,18 @@ That is, @code{gofumpt} is happy with a subset of the formats that
                 "0qrwszcmb5slbzkq3acw57b896z22zwkv6cf6ldxwlc6p179g009"))))
     (build-system go-build-system)
     (arguments
-     `(;; FIXME: <...>-go-1.21.5/lib/go/src/runtime/cgo/cgo.go:33:8: could not
-       ;; import C (no metadata for C)
-       ;; <...>-go-1.21.5/lib/go/src/net/cgo_linux.go:12:8: could not import C
-       ;; (no metadata for C)
-       #:tests? #f
-       #:import-path "mvdan.cc/unparam"))
+     (list
+      #:import-path "mvdan.cc/unparam"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'remove-failing-test-scripts
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (for-each delete-file
+                          (list "testdata/script/usedas.txtar"
+                                "testdata/script/stubs.txtar"
+                                "testdata/script/impl.txtar"
+                                "testdata/script/paramuses.txtar"))))))))
     (inputs (list go-github-com-pkg-diff go-golang-org-x-tools
                   go-github-com-rogpeppe-go-internal))
     (home-page "https://mvdan.cc/unparam/")
