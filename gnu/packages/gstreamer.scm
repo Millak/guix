@@ -951,7 +951,7 @@ model to base your own plug-in on, here it is.")
             tinyalsa
             transcode
             usrsctp
-            v4l-utils
+            v4l-utils-minimal
             vo-aacenc
             vo-amrwbenc
             vulkan-headers
@@ -961,7 +961,7 @@ model to base your own plug-in on, here it is.")
             webrtc-audio-processing
             wildmidi
             wpebackend-fdo
-            zbar
+            zbar-minimal
             zxing-cpp-1.2)))
     (home-page "https://gstreamer.freedesktop.org/")
     (synopsis "Plugins for the GStreamer multimedia library")
