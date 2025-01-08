@@ -24481,7 +24481,7 @@ exclude =
     (inputs
      (list python-wrapper))
     (native-inputs
-     (list python-pytest))
+     (list python-pytest python-wheel))
     (propagated-inputs
      (list python-numpy
            python-scipy
