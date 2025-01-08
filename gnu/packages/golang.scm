@@ -3205,7 +3205,7 @@ suffix comparison, rather than the string-based or tree-based approaches.")
 (define-public go-dario-cat-mergo
   (package
     (name "go-dario-cat-mergo")
-    (version "1.0.0")
+    (version "1.0.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3214,7 +3214,7 @@ suffix comparison, rather than the string-based or tree-based approaches.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "037k2bd97vnbyhn2sczxk0j6ijmv06n1282f76i3ky73s3qmqnlf"))))
+                "0v12vc9bmqq89k4y60a8ykmv85hpa7nh73sn9b7ars143pxvmhf1"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "dario.cat/mergo"))
