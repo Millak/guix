@@ -8244,6 +8244,31 @@ them.")
      "Go long flag: a light-weight long and short command line option parser.")
     (license license:bsd-3)))
 
+(define-public go-github-com-kataras-golog
+  (package
+    (name "go-github-com-kataras-golog")
+    (version "0.1.12")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kataras/golog")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1szibhgxmkd52gz6i77p3fwlxqyidj7l5vf59pjl5bjy8ggv0kpv"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/kataras/golog"))
+    (propagated-inputs
+     (list go-github-com-kataras-pio))
+    (home-page "https://github.com/kataras/golog")
+    (synopsis "Logging foundation for Go applications")
+    (description
+     "GoLog is a level-based logger written in Go.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-kataras-pio
   (package
     (name "go-github-com-kataras-pio")
