@@ -1221,7 +1221,7 @@ networks where it would otherwise be blocked or heavily throttled.")
 (define-public go-github-com-leonelquinteros-gotext
   (package
     (name "go-github-com-leonelquinteros-gotext")
-    (version "1.5.0")
+    (version "1.7.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1230,7 +1230,7 @@ networks where it would otherwise be blocked or heavily throttled.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "15zjc7s1p29izagc84andzhnxw17763rax31jqvf9r5fzvlm0ccn"))))
+                "0ccls9xzbbrbrplbikz18lcky5p5rmifif6w69l5rl34dv11948m"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/leonelquinteros/gotext"))
