@@ -3976,9 +3976,9 @@ aware of your profiles and configuration in ~/.aws/config.")
      "This package provides INI file read and write functionality in Go.")
     (license license:asl2.0)))
 
-(define-public go-github-com-google-go-jsonnet
+(define-public go-jsonnet
   (package
-    (name "go-github-com-google-go-jsonnet")
+    (name "go-jsonnet")
     (version "0.20.0")
     (source (origin
               (method git-fetch)
