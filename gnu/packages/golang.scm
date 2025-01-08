@@ -2909,30 +2909,6 @@ size of the terminal.")
 temporal directories.")
       (license license:expat))))
 
-(define-public go-github-com-twpayne-go-shell
-  (package
-    (name "go-github-com-twpayne-go-shell")
-    (version "0.5.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/twpayne/go-shell")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0rnwdlhiakcigmz55fhn0wib6vi064cqxfq512mi880j9yqx4114"))))
-    (build-system go-build-system)
-    (arguments
-     `(#:import-path "github.com/twpayne/go-shell"))
-    (native-inputs
-     (list go-github-com-alecthomas-assert-v2))
-    (home-page "https://github.com/twpayne/go-shell/")
-    (synopsis "Shell across multiple platforms")
-    (description
-     "Package @code{shell} returns a user's shell across multiple platforms.")
-    (license license:expat)))
-
 (define-public go-github-com-twpayne-go-vfsafero
   (package
     (name "go-github-com-twpayne-go-vfsafero")
