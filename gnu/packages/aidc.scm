@@ -179,7 +179,7 @@ C/C++ programs to use its capabilities without restrictions or overhead.")
 (define-public zbar
   (package
     (name "zbar")
-    (version "0.23.90")
+    (version "0.23.92")
     (source
      (origin
        (method git-fetch)
@@ -189,7 +189,7 @@ C/C++ programs to use its capabilities without restrictions or overhead.")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0rf3i7lx0fqzxsngird6l4d4dnl612nr32rm8sib699qqx67px8n"))))
+        (base32 "0k3g0ql2m4dnflppp9r3k804d927g7zslczblzcrbvhp02g6n5an"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      (list
