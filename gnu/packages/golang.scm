@@ -2309,29 +2309,39 @@ finding resources located relative to the executable file.")
       (license license:bsd-3))))
 
 (define-public go-github-com-docker-distribution
-  (let ((commit "325b0804fef3a66309d962357aac3c2ce3f4d329")
-        (revision "0"))
     (package
       (name "go-github-com-docker-distribution")
-      (version (git-version "0.0.0" revision commit))
+      (version "2.8.3")
       (source
-       ;; FIXME: This bundles many things, see
-       ;; <https://debbugs.gnu.org/cgi/bugreport.cgi?bug=31881#41>.
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/docker/distribution")
-               (commit commit)))
+               (commit (string-append "v" version))))
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "1yg2zrikn3vkvkx5mn51p6bfjk840qdkn7ahhhvvcsc8mpigrjc6"))))
+           "0dbaxmkhg53anhkzngyzlxm2bd4dwv0sv75zip1rkm0874wjbxzb"))
+         (snippet
+          ;; TODO: Unbundle more.
+          #~(begin (use-modules (guix build utils))
+                   (for-each delete-file-recursively
+                             (list "vendor/golang.org"))))))
       (build-system go-build-system)
       (native-inputs
        (list go-golang-org-x-sys go-github-com-sirupsen-logrus
              go-golang-org-x-crypto))
       (arguments
-       '(#:import-path "github.com/docker/distribution"))
+       (list
+        #:import-path "github.com/docker/distribution"
+        #:test-flags #~(list "-test.short")
+        #:test-subdirs
+        #~(list "configuration"
+                "context"
+                "health"
+                "manifest/..."
+                "notifications/..."
+                "uuid")))
       (home-page
        "https://github.com/docker/distribution")
       (synopsis "This package is a Docker toolset to pack, ship, store, and
@@ -2339,7 +2349,7 @@ deliver content")
       (description "Docker Distribution is a Docker toolset to pack, ship,
 store, and deliver content.  It contains Docker Registry 2.0 and libraries
 to interact with distribution components.")
-      (license license:asl2.0))))
+      (license license:asl2.0)))
 
 (define-public go-github-com-aarzilli-golua
   (let ((commit "03fc4642d792b1f2bc5e7343b403cf490f8c501d")
