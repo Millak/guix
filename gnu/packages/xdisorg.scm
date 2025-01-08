@@ -116,6 +116,7 @@
   #:use-module (gnu packages datastructures)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
+  #:use-module (gnu packages file)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
@@ -3794,6 +3795,44 @@ This package is the fork of hsetroot by Hyriand.")
     (description
      "This package provides Hyprland cursor format, library and utilities.")
     (license license:bsd-3)))
+
+(define-public hyprpaper
+  (package
+   (name "hyprpaper")
+   (version "0.7.4")
+   (source (origin
+            (method git-fetch)
+            (uri (git-reference
+                  (url "https://github.com/hyprwm/hyprpaper")
+                  (commit (string-append "v" version))))
+            (file-name (git-file-name name version))
+            (sha256
+             (base32
+              "151r6s04yy3digl3g6gs49xx41yv4xldmbnqr87gp5nz705hjsd6"))))
+   (build-system cmake-build-system)
+   (arguments
+    `(#:tests? #f ;; no test
+      #:cmake ,cmake-3.30))
+   (native-inputs (list gcc-14 pkg-config))
+   (inputs
+    (list cairo
+          file
+          hyprgraphics
+          hyprlang
+          hyprutils
+          hyprwayland-scanner
+          libglvnd
+          mesa
+          pango
+          wayland
+          wayland-protocols))
+   (home-page "https://hyprland.org/")
+   (synopsis "Wallpaper utility for Hyprland")
+   (description
+    "Hyprpaper is a blazing fast wallpaper utility for Hyprland with the ability to
+dynamically change wallpapers through sockets.  It will work on all wlroots-based
+compositors, though.")
+   (license license:bsd-3)))
 
 (define-public hyprpicker
   (package
