@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014-2024 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2014-2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2016, 2017, 2018 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2015, 2016, 2018, 2019, 2020 Pjotr Prins <pjotr.guix@thebird.nl>
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
@@ -18814,7 +18814,7 @@ implementation differs in these ways:
 (define-public python-scanpy
   (package
     (name "python-scanpy")
-    (version "1.9.6")
+    (version "1.10.4")
     (source
      (origin
        (method git-fetch)
@@ -18824,12 +18824,33 @@ implementation differs in these ways:
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "12rz0a9151fkry6ws1a8p5wnc4n5qbjl6xlynj7kxy223iz8isds"))))
+         "139d6fsdbhg1hqqq5yyl8hr3cqz2mj70i0i8r1mq6z6a8qmq1p4z"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      '(list "-k"
+      '(list "-m" "not gpu"
+             ;; These tests require Internet access.
+             "--ignore-glob=tests/notebooks/*"
+             "--ignore=tests/test_clustering.py"
+             "--ignore=tests/test_datasets.py"
+             "--ignore=tests/test_normalization.py"
+             "--ignore=tests/test_score_genes.py"
+             "--ignore=tests/test_highly_variable_genes.py"
+             "--ignore=tests/test_aggregated.py"
+             "--ignore=get/_aggregated.py"
+             ;; TODO: I can't get the plotting tests to work, even with Xvfb.
+             ;; Some of them also require Internet access because they want to
+             ;; download a dataset.
+             "--ignore=tests/test_plotting.py"
+             "--ignore=tests/test_embedding_plots.py"
+             "--ignore=tests/test_preprocessing.py"
+             "--ignore=tests/test_read_10x.py"
+             "--ignore=plotting/_tools/scatterplots.py"
+             ;; The following tests requires 'scanorama', which isn't
+             ;; packaged yet.
+             "--ignore=tests/external/test_scanorama_integrate.py"
+             "-k"
              ;; Plot tests that fail.
              (string-append "not test_clustermap"
                             " and not test_dotplot_matrixplot_stacked_violin"
@@ -18840,48 +18861,26 @@ implementation differs in these ways:
                             " and not test_violin"
                             " and not test_scatter_no_basis_per_obs"
 
-                            ;; Type mismatch
-                            " and not test_obs_df"
-                            " and not test_var_df"
-
-                            ;; Minor accuracy problem
-                            " and not test_consistency[morans_i-allclose]"
+                            ;; These are doctests that fail because of missing
+                            ;; datasets.
+                            " and not scanpy.get._aggregated.aggregate"
+                            " and not scanpy.plotting._tools.scatterplots.spatial"
 
                             ;; These try to connect to the network
                             " and not test_scrublet_plots"
                             " and not test_plot_rank_genes_groups_gene_symbols"
                             " and not test_pca_n_pcs"
                             " and not test_pca_chunked"
+                            " and not test_pca_layer"
                             " and not test_pca_sparse"
                             " and not test_pca_reproducible"
-
-                            ;; File is missing
-                            " and not test_pbmc3k")
-             ;; TODO: I can't get the plotting tests to work, even with Xvfb.
-             "--ignore=scanpy/tests/test_plotting.py"
-             "--ignore=scanpy/tests/test_embedding_plots.py"
-             "--ignore=scanpy/tests/test_preprocessing.py"
-             "--ignore=scanpy/tests/test_read_10x.py"
-
-             ;; These two fail with "ValueError: I/O operation on closed file."
-             "--ignore=scanpy/tests/test_neighbors_key_added.py"
-
-             ;; These tests require Internet access.
-             "--ignore-glob=scanpy/tests/notebooks.*"
-             "--ignore=scanpy/tests/test_clustering.py"
-             "--ignore=scanpy/tests/test_datasets.py"
-             "--ignore=scanpy/tests/test_normalization.py"
-             "--ignore=scanpy/tests/test_score_genes.py"
-             "--ignore=scanpy/tests/test_highly_variable_genes.py"
-             ;; The following tests requires 'scanorama', which isn't packaged
-             ;; yet.
-             "--ignore=scanpy/tests/external/test_scanorama_integrate.py")
+                            " and not test_clip"))
        #:phases
        #~(modify-phases %standard-phases
            (add-after 'unpack 'pretend-version
              (lambda _
                (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
-           (add-after 'unpack 'discover-anndata
+           (add-after 'unpack 'add-anndata-source
              (lambda _
                (setenv "PYTHONPATH"
                        (string-append (getcwd) ":"
@@ -18924,6 +18923,7 @@ implementation differs in these ways:
        ("python-hatch-vcs" ,python-hatch-vcs)
        ("python-leidenalg" ,python-leidenalg)
        ("python-pytest" ,python-pytest)
+       ("python-pytest-mock" ,python-pytest-mock)
        ("python-pytest-nunit" ,python-pytest-nunit)
        ("python-setuptools-scm" ,python-setuptools-scm)))
     (home-page "https://github.com/theislab/scanpy")
