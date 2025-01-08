@@ -3154,32 +3154,6 @@ system.")
 deleting secrets from the system keyring.")
     (license license:expat)))
 
-(define-public go-github-com-kardianos-minwinsvc
-  (package
-    (name "go-github-com-kardianos-minwinsvc")
-    (version "1.0.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/kardianos/minwinsvc")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "02k2vibmm65bzkdjpmllphvq88wwyz3m02lbz8bffcpxjad2453v"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:import-path "github.com/kardianos/minwinsvc"))
-    (home-page "https://github.com/kardianos/minwinsvc/")
-    ;; some packages (Yggdrasil) need it to compile
-    ;; it's a tiny package and it's easier to bundle it than to patch it out
-    (synopsis "Minimal windows only service stub for Go")
-    (description "Go programs designed to run from most *nix style operating
-systems can import this package to enable running programs as services without
-modifying them.")
-    (license license:zlib)))
-
 (define-public go-github-com-akosmarton-papipes
   (let ((commit "3c63b4919c769c9c2b2d07e69a98abb0eb47fe64")
         (revision "0"))
