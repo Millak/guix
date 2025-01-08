@@ -2142,38 +2142,6 @@ termination.")
                       "t.Fatalf(`Killf(\"BO%%s")))))))
     (home-page "https://gopkg.in/tomb.v1")))
 
-(define-public go-github-com-jtolds-gls
-  (package
-    (name "go-github-com-jtolds-gls")
-    (version "4.20.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/jtolds/gls")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1k7xd2q2ysv2xsh373qs801v6f359240kx0vrl0ydh7731lngvk6"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-       #:import-path "github.com/jtolds/gls"
-       #:phases
-       #~(modify-phases %standard-phases
-           (replace 'check
-             (lambda* (#:key inputs #:allow-other-keys #:rest args)
-               (unless
-                 ;; The tests fail when run with gccgo.
-                 (false-if-exception (search-input-file inputs "/bin/gccgo"))
-                 (apply (assoc-ref %standard-phases 'check) args)))))))
-    (synopsis "@code{gls} provides Goroutine local storage")
-    (description
-     "The @code{gls} package provides a way to store a retrieve values
-per-goroutine.")
-    (home-page "https://github.com/jtolds/gls")
-    (license license:expat)))
-
 (define-public gopls
   (package
     (name "gopls")
