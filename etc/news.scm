@@ -35,6 +35,66 @@
 (channel-news
  (version 0)
 
+ (entry (commit "0aa45f18543552f2396414ab130dab40f8969d27")
+        (title
+         (en "New @code{%base-home-services} variable for Guix Home")
+         (de "Neue Variable @code{%base-home-services} für Guix Home")
+         (fr "Nouvelle variable @code{%base-home-services} pour Guix Home"))
+        (body
+         (en "If you are using Guix Home, we recommend you update your
+configuration to include @code{%base-home-services}, a list of non-essential
+services deemed generally useful (this is comparable to @code{%base-services}
+in Guix System).  That is, your Home configuration should now look like this:
+
+@lisp
+(home-environment
+  ;; fields omitted @dots{}
+  (services (append (list @dots{}) %base-home-services)))
+@end lisp
+
+The dots above should be replaced by your own list of services, as it
+currently appears in your @code{home-environment} declaration.
+
+Currently, @code{%base-home-services} contains only one service: the new log
+rotation service provided by version 1.0 of the Shepherd.")
+         (de "Wenn Sie Guix Home benutzen, empfehlen wir, dass Sie Ihre
+Konfiguration anpassen und @code{%base-home-services} eintragen, eine Liste von
+nicht essenziellen Diensten, die aber in den meisten Fällen nützlich sind
+(vergleichbar mit @code{%base-services} in Guix System).  Das heißt, Ihre
+Persönliche Konfiguration sollte nun diese Form haben:
+
+@lisp
+(home-environment
+  ;; hier stehen andere Felder@dots{}
+  (services (append (list @dots{}) %base-home-services)))
+@end lisp
+
+Statt der drei Auslassungspunkte schreiben Sie Ihre Dienste auf, die bisher in
+der @code{home-environment}-Deklaration Ihrer Persönlichen Umgebung aufgetaucht
+sind.
+
+Derzeit enthält @code{%base-home-services} nur einen Dienst: den neuen Dienst
+zur Protokollrotation, den Version 1.0 von Shepherd bringt.")
+         (fr "Il est recommandé aux utilisateurices de Guix Home de mettre à
+jour leur configuration pour include @code{%base-home-services}, une liste de
+services non-essentiels mais considérés généralement utiles (c'est comparable
+à @code{%base-services} pour Guix System).  Concrètement, la configuration
+Home devrait maintenant ressembler à ça :
+
+@lisp
+(home-environment
+  ;; champs omis @dots{}
+  (services (append (list @dots{}) %base-home-services)))
+@end lisp
+
+Les points de suspension ci-dessus doivent être remplacés par sa propre liste
+de services, celle qui est déjà visible dans sa déclaration
+@code{home-environment}.
+
+Pour le moment @code{%base-home-services} ne contient qu'un seul service : le
+nouveau service de rotation des journaux fourni par la version 1.0 de
+Shepherd.")))
+
  (entry (commit "a9f21036e43ffe4eeda2ae51b86e563c14509225")
         (title
          (en "Rottlog service replaced by new log rotation service")
