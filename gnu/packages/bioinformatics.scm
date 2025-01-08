@@ -2460,7 +2460,7 @@ parsing of Variant Call Format (VCF) files.")
                              python-skranger
                              python-tqdm
                              python-typing-extensions))
-    (native-inputs (list python-pytest))
+    (native-inputs (list python-pytest python-wheel))
     (home-page "https://github.com/saezlab/decoupler-py")
     (synopsis
      "Framework for modeling, analyzing and interpreting single-cell RNA-seq data")
