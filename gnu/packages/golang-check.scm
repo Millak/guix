@@ -2463,6 +2463,44 @@ advanced Go linter.")
      "This packge provides a test corpus of C code.")
     (license license:bsd-3)))
 
+(define-public go-mvdan-cc-unparam
+  (package
+    (name "go-mvdan-cc-unparam")
+    (version "0.0.0-20240528143540-8a5130ca722f")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mvdan/unparam")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0qrwszcmb5slbzkq3acw57b896z22zwkv6cf6ldxwlc6p179g009"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "mvdan.cc/unparam"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'remove-failing-test-scripts
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (for-each delete-file
+                          (list "testdata/script/usedas.txtar"
+                                "testdata/script/stubs.txtar"
+                                "testdata/script/impl.txtar"
+                                "testdata/script/paramuses.txtar"))))))))
+    (propagated-inputs
+     (list go-github-com-pkg-diff
+           go-github-com-rogpeppe-go-internal
+           go-golang-org-x-tools))
+    (home-page "https://mvdan.cc/unparam/")
+    (synopsis "Find unused parameters in Go")
+    (description
+     "Reports unused function parameters and results in Go code.")
+    (license license:bsd-3)))
+
 (define-public go-pgregory-net-rapid
   (package
     (name "go-pgregory-net-rapid")
@@ -2635,6 +2673,15 @@ prints an ASCII fraphic representing the memory layout.")))
      (string-append (package-description go-github-com-bitfield-gotestdox)
                     "  This package provides an command line interface (CLI)
 tool."))))
+
+(define-public unparam
+  (package
+    (inherit go-mvdan-cc-unparam)
+    (name "unparam")
+    (arguments
+     (list #:tests? #f
+           #:install-source? #f
+           #:import-path "mvdan.cc/unparam"))))
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
