@@ -3319,7 +3319,7 @@ or capture raw audio.")
 (define-public go-git-sr-ht-adnano-go-gemini
   (package
     (name "go-git-sr-ht-adnano-go-gemini")
-    (version "0.2.3")
+    (version "0.2.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3328,12 +3328,12 @@ or capture raw audio.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0mv4x4cfwyhh77wfb3r221bhr84x4nmjpgysnvvjgmbnnafsgfns"))))
+                "0xxcljhk9abjjdcl1dnxaq7qwvl13rq51bwps5nxlkib7fxgbyyl"))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "git.sr.ht/~adnano/go-gemini"))
     (propagated-inputs
-     (list go-golang-org-x-net go-golang-org-x-text))
+     (list go-golang-org-x-net))
     (home-page "https://git.sr.ht/~adnano/go-gemini")
     (synopsis "Gemini protocol in Go")
     (description
