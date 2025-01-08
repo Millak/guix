@@ -2229,37 +2229,6 @@ developed by the Go team.  It provides IDE features to any LSP-compatible
 editor.")
     (license license:bsd-3)))
 
-(define-public gron
-  (package
-    (name "gron")
-    (version "0.7.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/tomnomnom/gron")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1sj34b6yv0qigy3aq7qmwf8bqxp1a8qh9p10lzkpw58s1c0iyh36"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:install-source? #f
-      #:import-path "github.com/tomnomnom/gron"))
-    (native-inputs
-     (list go-github-com-fatih-color
-           go-github-com-mattn-go-colorable
-           go-github-com-nwidger-jsoncolor
-           go-github-com-pkg-errors))
-    (home-page "https://github.com/tomnomnom/gron")
-    (synopsis "Transform JSON to make it easier to grep")
-    (description
-     "This package transforms JSON into discrete assignments to make it easier
-to use line-based tools such as grep to search for what you want and see the
-absolute \"path\" to it.")
-    (license license:expat)))
-
 (define-public go-github-com-google-cadvisor
   (let ((commit "2ed7198f77395ee9a172878a0a7ab92ab59a2cfd")
         (revision "0"))
