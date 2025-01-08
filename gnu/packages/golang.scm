@@ -2623,31 +2623,28 @@ and lookup requests.  Browse requests are not supported yet.")
       (license license:unlicense))))
 
 (define-public go-github-com-mr-tron-base58
-  (let ((commit "d724c80ecac7b49e4e562d58b2b4f4ee4ed8c312")
-        (revision "0"))
     (package
       (name "go-github-com-mr-tron-base58")
-      (version (git-version "1.1.0" revision commit))
+      (version "1.2.0")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/mr-tron/base58")
-               (commit commit)))
+               (commit (string-append "v" version))))
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "12qhgnn9wf3c1ang16r4i778whk4wsrj7d90h2xgmz4fi1469rqa"))))
+           "0ngxfpaa26p53lciz9vf2gn21l77kz8pcm2asxbv0l87g6xwqp7h"))))
       (build-system go-build-system)
       (arguments
-       `(#:unpack-path "github.com/mr-tron/base58"
-         #:import-path "github.com/mr-tron/base58/base58"))
+       `(#:import-path "github.com/mr-tron/base58"))
       (home-page "https://github.com/mr-tron/base58")
       (synopsis "Fast implementation of base58 encoding on Golang")
       (description "Fast implementation of base58 encoding on Golang.  A
 trivial @command{big.Int} encoding benchmark results in 6 times faster
 encoding and 8 times faster decoding.")
-      (license license:expat))))
+      (license license:expat)))
 
 (define-public go-github-com-spaolacci-murmur3
   (package
