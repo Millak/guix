@@ -5258,7 +5258,8 @@ provide an easy-to-use Python interface for building OAuth1 and OAuth2 clients."
         (uri (pypi-uri "CacheControl" version))
         (sha256
          (base32
-          "07jsfhlbcwgqg6ayz8nznzaqg5rmxqblbzxz1qvg5wc44pcjjy4g"))))))
+          "07jsfhlbcwgqg6ayz8nznzaqg5rmxqblbzxz1qvg5wc44pcjjy4g"))))
+    (native-inputs (list python-setuptools python-wheel))))
 
 (define-public python-betamax
   (package
