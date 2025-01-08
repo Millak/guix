@@ -740,7 +740,7 @@ for the GStreamer multimedia library.")
            speex
            taglib
            twolame
-           v4l-utils
+           v4l-utils-minimal
            wavpack
            zlib))
     (propagated-inputs
