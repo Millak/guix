@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2023, 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2023, 2024, 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2023 Adam Faiz <adam.faiz@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -42,7 +42,7 @@
 (define-public book-sparc
   (package
     (name "book-sparc")
-    (version "2.3.0")
+    (version "3.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -50,7 +50,7 @@
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "1kvspfp3z4z5laghrjr7my6nr8877myjiafbra2jrg3f42c5a4fl"))
+                "0fc8w51d6dsnn1fi0c2fq2vabx375gv0py2kfalhjpa1l193a1dw"))
               (file-name (git-file-name name version))
               (modules '((guix build utils)))))
     (build-system gnu-build-system)
@@ -119,13 +119,19 @@
                          (lambda _
                            (let ((doc-dir (string-append #$output
                                                          "/share/doc/sparc/")))
-                             (install-file "sparc.pdf" doc-dir)))))))
+                             (mkdir-p doc-dir)
+                             (copy-file "sparc.ru.pdf"
+                                        (string-append doc-dir
+                                                       "sparc.ru.pdf"))
+                             (copy-file "sparc.en.pdf"
+                                        (string-append doc-dir
+                                                       "sparc.en.pdf"))))))))
     (home-page "https://github.com/artyom-poptsov/SPARC")
     (synopsis "Book on combining art and technology")
     (description
      "Science, Programming, Art and Radioelectronics Club (SPARC) is a book that
-explains how to combine the topics mentioned in the title to build projects.  The
+explains how to combine the topics mentined in the title to build projects.  The
 book can be used to teach programming classes in colleges and to organize
 workshops in hackerspaces or other community-driven spaces.  Currently the book
-is available only in Russian.")
+is available in Russian and English.")
     (license license:cc-by-sa4.0)))
