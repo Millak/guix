@@ -717,16 +717,11 @@ applications by providing high-level classes for commonly required tasks.")
      `(#:configure-flags
        (list "--disable-static")))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)))
+     (list autoconf automake libtool pkg-config python-wrapper))
     (inputs
-     `(;; XXX: Build fails with libvideogfx.
-       ;; ("libvideogfx" ,libvideogfx)
-       ("qt" ,qtbase-5)
-       ("sdl" ,sdl)))
+     ;; XXX: Build a complete version using libswscale or libvideogfx
+     ;; and qtbase-5.
+     (list sdl))
     (synopsis "H.265 video codec implementation")
     (description "Libde265 is an implementation of the h.265 video codec.  It is
 written from scratch and has a plain C API to enable a simple integration into
