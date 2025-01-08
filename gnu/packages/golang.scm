@@ -3157,7 +3157,7 @@ deleting secrets from the system keyring.")
 (define-public go-github-com-kardianos-minwinsvc
   (package
     (name "go-github-com-kardianos-minwinsvc")
-    (version "1.0.0")
+    (version "1.0.2")
     (source
      (origin
        (method git-fetch)
@@ -3167,7 +3167,7 @@ deleting secrets from the system keyring.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0z941cxymkjcsj3p5l3g4wm2da3smz7iyqk2wbs5y8lmxd4kfzd8"))))
+         "02k2vibmm65bzkdjpmllphvq88wwyz3m02lbz8bffcpxjad2453v"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/kardianos/minwinsvc"))
