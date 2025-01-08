@@ -192,7 +192,7 @@
     ;; projects.
     ;; TODO: Add guile-dbi and guile-dbd optional dependencies.
     (propagated-inputs
-     (list guile-json-3 guile-curl guile-readline guile-redis))
+     (list guile-json-4 guile-curl guile-readline guile-redis))
     (native-inputs
      (list bash-minimal                           ;for the `source' builtin
            pkg-config
