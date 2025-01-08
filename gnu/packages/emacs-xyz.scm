@@ -19431,11 +19431,11 @@ the Emacs Tempo library.  You may also write your templates in Lisp.")
     (license license:gpl3+)))
 
 (define-public emacs-tempel-collection
-  (let ((commit "4a1d717eb30a78680c8f4df2d71e395c846c5371")
-        (revision "1"))
+  (let ((commit "b2fd7929bd767db9d31b2782168f91dcdc75af5b")
+        (revision "2"))
     (package
       (name "emacs-tempel-collection")
-      (version (git-version "0.1" revision commit))
+      (version (git-version "0.2" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -19444,7 +19444,7 @@ the Emacs Tempo library.  You may also write your templates in Lisp.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0ifmzn5d9mpsjwvg2ir0sy3r4czxa7d6j97l8rrp8ai7jqvydadm"))))
+                  "0m52k8fx88ry9ay6xs5xaq6j56rx2lykb1jgxmia26xyf4h5ykd9"))))
       (build-system emacs-build-system)
       (arguments
        (list
