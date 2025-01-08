@@ -160,7 +160,7 @@ and for middleware components.")
            libxv
            mesa
            sdl
-           v4l-utils))
+           v4l-utils-minimal))
     (synopsis "1394-Based Digital Camera Control Library")
     (description "LibDC1394 is a library that provides functionality to control
 any camera that conforms to the 1394-Based Digital Camera Specification written
