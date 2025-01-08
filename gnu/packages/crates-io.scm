@@ -48,6 +48,7 @@
 ;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2024 Murilo <murilo@disroot.org>
 ;;; Copyright © 2025 Divya Ranjan Pattanaik <divya@subvertising.org>
+;;; Copyright © 2025 Karl Hallsby <karl@hallsby.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -87380,6 +87381,26 @@ arithmetic.")
        (sha256
         (base32 "0ipyyv82lpy5xpqzmq3ra0d61vsd3bfh6b06c9w8zln41vvznblq"))))
     (arguments `(#:skip-build? #t))))
+
+(define-public rust-uname-0.1
+  (package
+    (name "rust-uname")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "uname" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1j1xd1rryml4j1hf07kahva9d5ym8m9jz9z20hfdpr1jrbq8jbxp"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2))))
+    (home-page "https://github.com/icorderi/rust-uname")
+    (synopsis "Name and information about current kernel")
+    (description
+     "This package provides name and information about current kernel.")
+    (license (list license:expat license:asl2.0))))
 
 (define-public rust-unarray-0.1
   (package
