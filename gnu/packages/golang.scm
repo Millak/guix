@@ -3979,7 +3979,7 @@ aware of your profiles and configuration in ~/.aws/config.")
 (define-public go-github-com-google-go-jsonnet
   (package
     (name "go-github-com-google-go-jsonnet")
-    (version "0.18.0")
+    (version "0.20.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3988,10 +3988,11 @@ aware of your profiles and configuration in ~/.aws/config.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1dghqygag123zkgh2vrnq82cdag5z0p03v3489pwhs06r5g27wm3"))))
+                "1qfr6yvhj33rhx1icxh99bbpngh5kwq1x7r39315y53bw216vbrz"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/google/go-jsonnet/cmd/jsonnet"
+     '(#:intall-source? #f
+       #:import-path "github.com/google/go-jsonnet/cmd/jsonnet"
        #:unpack-path "github.com/google/go-jsonnet"))
     (propagated-inputs (list go-sigs-k8s-io-yaml go-gopkg-in-yaml-v2
                              go-github-com-sergi-go-diff
