@@ -1218,42 +1218,6 @@ form that bypasses network filtering, allowing the application to work on
 networks where it would otherwise be blocked or heavily throttled.")
     (license license:expat)))
 
-(define-public go-github-com-leonelquinteros-gotext
-  (package
-    (name "go-github-com-leonelquinteros-gotext")
-    (version "1.7.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/leonelquinteros/gotext")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0ccls9xzbbrbrplbikz18lcky5p5rmifif6w69l5rl34dv11948m"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:import-path "github.com/leonelquinteros/gotext"))
-    (propagated-inputs (list go-golang-org-x-tools go-golang-org-x-text))
-    (home-page "https://github.com/leonelquinteros/gotext")
-    (synopsis "GNU gettext utilities in Go")
-    (description "This package implements GNU gettext utilities in Go.  It features:
-@itemize
-@item Implements GNU gettext support in native Go.
-@item Complete support for PO files including:
-@item Support for MO files.
-@item Thread-safe: This package is safe for concurrent use across multiple
-goroutines.
-@item It works with UTF-8 encoding as it's the default for Go language.
-@item Unit tests available.
-@item Language codes are automatically simplified from the form en_UK to en if
-the first isn't available.
-@item Ready to use inside Go templates.
-@item Objects are serializable to []byte to store them in cache.
-@item Support for Go Modules.
-@end itemize")
-    (license license:expat)))
-
 (define-public go-github-com-schachmat-ingo
   (package
     (name "go-github-com-schachmat-ingo")
