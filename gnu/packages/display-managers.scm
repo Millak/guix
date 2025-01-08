@@ -65,7 +65,8 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xfce)
-  #:use-module (gnu packages xorg))
+  #:use-module (gnu packages xorg)
+  #:export (customize-lightdm-tiny-greeter))
 
 (define-public sddm
   (package
@@ -591,6 +592,112 @@ GTK+, lets you select a desktop session and log in to it.")
 single-user GTK3 greeter for LightDM, this greeter is inspired by the SLiM
 Display Manager and LightDM GTK3 Greeter.")
       (license license:gpl3))))
+
+(define-public lightdm-tiny-greeter
+  (let ((commit "6717c5853315ebd8164b1ddf85b9483f92cbcae8")
+        (revision "0"))
+    (package
+      (name "lightdm-tiny-greeter")
+      ;; Version 1.2 release in 2021, so we use a recent commit.
+      (version (git-version "1.2" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/tobiohlala/lightdm-tiny-greeter")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1n970d6525fd918i1j09akxiacqbpxni8apkfi542bq5zg5crjbs"))))
+      (build-system glib-or-gtk-build-system)
+      (arguments
+       (list
+        #:tests? #f ; No test target.
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure)
+            (add-after 'unpack 'patch-hardcoded-paths
+              (lambda _
+                (substitute* "Makefile"
+                  (("PREFIX = /usr")
+                   (string-append "PREFIX = " #$output))
+                  (("/usr/share/xgreeters")
+                   (string-append #$output "/share/xgreeters"))
+                  (("cp lightdm-tiny-greeter")
+                   "mkdir -p $(PREFIX)/bin; cp lightdm-tiny-greeter"))))
+            (add-after 'glib-or-gtk-wrap 'custom-wrap
+              (lambda _
+                (wrap-script (string-append #$output "/bin/lightdm-tiny-greeter")
+                  ;; Wrap GDK_PIXBUF_MODULE_FILE, so that the SVG loader is
+                  ;; available at all times even outside of profiles, such as
+                  ;; when used in the lightdm-service-type.  Otherwise, it
+                  ;; wouldn't be able to display its own icons.
+                  `("GDK_PIXBUF_MODULE_FILE" =
+                    (,(string-append
+                       #$output
+                       "/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache")))
+                  `("XDG_DATA_DIRS" ":" prefix
+                    (,(string-append "/run/current-system/profile/share:"
+                                     (getenv "XDG_DATA_DIRS"))))
+                  '("XCURSOR_PATH" ":" prefix
+                    ("/run/current-system/profile/share/icons")))))
+            (add-after 'install 'fix-.desktop-file
+              (lambda _
+                (substitute* (string-append
+                              #$output "/share/xgreeters/lightdm-tiny-greeter.desktop")
+                  (("Exec=lightdm-tiny-greeter")
+                   (string-append "Exec="
+                                  (string-append
+                                   #$output "/bin/lightdm-tiny-greeter")))))))))
+      (native-inputs
+       (list pkg-config))
+      (inputs
+       (list gtk+ lightdm))
+      (synopsis "Tiny Greeter for LightDM")
+      (home-page "https://github.com/tobiohlala/lightdm-tiny-greeter")
+      (description "This package provides a tiny yet customizable GTK3 LightDM
+Greeter with focus on code and minimalism.")
+      (license license:bsd-3))))
+
+(define* (customize-lightdm-tiny-greeter #:key name session
+                                         user_text pass_text
+                                         fontname fontsize)
+  "Make a customized lightdm-tiny-greeter package which name is NAME.
+
+This function will change SESSION, USER_TEXT, PASS_TEXT, FONTNAME and FONTSIZE
+in config.h of lightdm-tiny-greeter."
+  (package
+    (inherit lightdm-tiny-greeter)
+    (name (or name (string-append
+                    (package-name lightdm-tiny-greeter)
+                    "-" (or session "default"))))
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments lightdm-tiny-greeter)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (add-after 'unpack 'patch-config-h
+              (lambda _
+                (when #$user_text
+                  (substitute* "config.h"
+                    (("\\*user_text = .*;")
+                     (string-append "*user_text = \"" #$user_text "\";"))))
+                (when #$pass_text
+                  (substitute* "config.h"
+                    (("\\*pass_text = .*;")
+                     (string-append "*pass_text = \"" #$pass_text "\";"))))
+                (when #$session
+                  (substitute* "config.h"
+                    (("\\*session = .*;")
+                     (string-append "*session = \"" #$session "\";"))))
+                (when #$fontname
+                  (substitute* "config.h"
+                    (("font: .*px .*;")
+                     (string-append "font: 16px \\\"" #$fontname "\\\";"))))
+                (when #$fontsize
+                  (substitute* "config.h"
+                    (("font: .*px")
+                     (string-append "font: " #$fontsize "px"))))))))))))
 
 (define-public slim
   (package
