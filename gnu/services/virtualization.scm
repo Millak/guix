@@ -113,7 +113,9 @@
             qemu-guest-agent-service-type
 
             xe-guest-utilities-configuration
-            xe-guest-utilities-service-type))
+            xe-guest-utilities-service-type
+            xen-guest-agent-configuration
+            xen-guest-agent-service-type))
 
 (define (uglify-field-name field-name)
   (let ((str (symbol->string field-name)))
@@ -1081,6 +1083,36 @@ specified, the QEMU default path is used."))
           (service-extension udev-service-type
                              xe-guest-utilities-udev-rules-service)))
    (default-value (xe-guest-utilities-configuration))
+   (description "Run the Xen guest management utilities.")))
+
+(define-configuration/no-serialization xen-guest-agent-configuration
+  (package
+    (package xen-guest-agent)
+    "Xen guest agent package."))
+
+(define (generate-xen-guest-agent-documentation)
+  "Generate documentation for xen-guest-agent-configuration fields"
+  (generate-documentation
+   `((xen-guest-agent-configuration ,xen-guest-agent-configuration-fields))
+   'xen-guest-agent-configuration))
+
+(define (xen-guest-agent-shepherd-service config)
+  (list
+   (shepherd-service
+    (provision '(xen-guest-agent))
+    (requirement '(networking user-processes udev))
+    (documentation "Run the Xen guest management agent.")
+    (start #~(make-forkexec-constructor
+              (list #$(file-append xen-guest-agent "/bin/xen-guest-agent"))))
+    (stop #~(make-kill-destructor)))))
+
+(define xen-guest-agent-service-type
+  (service-type
+   (name 'xen-guest-agent)
+   (extensions
+    (list (service-extension shepherd-root-service-type
+                             xen-guest-agent-shepherd-service)))
+   (default-value (xen-guest-agent-configuration))
    (description "Run the Xen guest management utilities.")))
 
 

@@ -38175,6 +38175,30 @@ Name of the @code{xe-guest-utilities} log file.
 @end table
 @end deftp
 
+@code{xe-guest-utilities} is the standard guest utilities used for Xen
+guests.  More recently the Xen Project has been working to develop
+@code{xen-guest-agent}, a modern drop-in replacement for
+@code{xe-guest-utilities}.  While they nearly have feature-parity,
+@code{xen-guest-agent} currently lacks some of the features of its
+predecessor, namely disk metrics and ``PV drivers version''.
+
+@defvar xen-guest-agent-service-type
+Service type for the Xen guest agent service.
+@end defvar
+
+@deftp {Data Type} xen-guest-agent-configuration
+Configuration for the @code{xen-guest-agent} service.
+
+@table @asis
+@item @code{package} (default: @code{xen-guest-agent})
+The Xen guest agent package to use.
+@end table
+@end deftp
+
+@quotation Warning
+@code{xe-guest-utilities} and @code{xen-guest-agent} are mutually exclusive.
+@end quotation
+
 
 @anchor{build-vm}
 @subsubheading Virtual Build Machines
