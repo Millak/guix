@@ -2224,6 +2224,7 @@ to explore and analyze bulk RNA-seq data.")
            python-tqdm
            python-umap-learn
            python-xlrd))
+    (native-inputs (list python-wheel))
     (home-page "https://github.com/earmingol/cell2cell")
     (synopsis "Python library for cell communication analysis")
     (description
