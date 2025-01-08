@@ -1242,30 +1242,6 @@ networks where it would otherwise be blocked or heavily throttled.")
     (description "GoLog is a level-based logger written in Go.")
     (license license:bsd-3)))
 
-(define-public go-github-com-kataras-pio
-  (package
-    (name "go-github-com-kataras-pio")
-    (version "0.0.13")
-    (source
-     (origin
-       (method git-fetch)
-       (uri
-        (git-reference
-         (url "https://github.com/kataras/pio")
-         (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1z0fkhs6amnkvb02519pfxy2x2r5sfmvdzxfi31ipa17m98pk3bq"))))
-    (build-system go-build-system)
-    (arguments
-     `(#:import-path "github.com/kataras/pio"))
-    (home-page "https://github.com/kataras/pio")
-    (synopsis "Pill for Input/Output")
-    (description "PIO is a low-level package that provides a way to centralize
-different output targets.  Supports colors and text decoration to all popular
-terminals.")
-    (license license:bsd-3)))
-
 (define-public go-github-com-kortschak-utter
   (package
     (name "go-github-com-kortschak-utter")
