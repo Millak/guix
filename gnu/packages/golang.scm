@@ -1221,7 +1221,7 @@ networks where it would otherwise be blocked or heavily throttled.")
 (define-public go-github-com-kortschak-utter
   (package
     (name "go-github-com-kortschak-utter")
-    (version "1.5.0")
+    (version "1.7.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1230,7 +1230,7 @@ networks where it would otherwise be blocked or heavily throttled.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "13lg8gzvgjnljf1lz8qsfz3qcmbvrsxp3ip7mp2kscfz07r69dyw"))))
+                "1pycm9kkfwpxz10v6f3w0478qy66bzaginr94rnmnnz7kp40fa00"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/kortschak/utter"))
