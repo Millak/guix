@@ -2856,31 +2856,6 @@ GIT_TRACE mechanism.")
 anchor names.")
     (license license:expat)))
 
-(define-public go-github-com-whyrusleeping-progmeter
-  (let ((commit "f3e57218a75b913eff88d49a52c1debf9684ea04")
-        (revision "0"))
-    (package
-      (name "go-github-com-whyrusleeping-progmeter")
-      (version (git-version "0.0.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/whyrusleeping/progmeter")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "0xs8rz6yhpvj9512c5v3b8dwr2kivywnyyfxzdfbr6fy1xc8zskb"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path
-         "github.com/whyrusleeping/progmeter"))
-      (home-page "https://github.com/whyrusleeping/progmeter")
-      (synopsis "Progress meter for Go")
-      (description "Progress meter for Go.")
-      (license license:expat))))
-
 (define-public go-github-com-whyrusleeping-stump
   (let ((commit "206f8f13aae1697a6fc1f4a55799faf955971fc5")
         (revision "0"))
