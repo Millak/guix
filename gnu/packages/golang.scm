@@ -3148,9 +3148,9 @@ That is, @code{gofumpt} is happy with a subset of the formats that
     (native-inputs '())
     (inputs '())))
 
-(define-public unparam
+(define-public go-mvdan-cc-unparam
   (package
-    (name "unparam")
+    (name "go-mvdan-cc-unparam")
     (version "0.0.0-20240528143540-8a5130ca722f")
     (source (origin
               (method git-fetch)
@@ -3164,6 +3164,7 @@ That is, @code{gofumpt} is happy with a subset of the formats that
     (build-system go-build-system)
     (arguments
      (list
+      #:skip-build? #t
       #:import-path "mvdan.cc/unparam"
       #:phases
       #~(modify-phases %standard-phases
@@ -3175,26 +3176,21 @@ That is, @code{gofumpt} is happy with a subset of the formats that
                                 "testdata/script/stubs.txtar"
                                 "testdata/script/impl.txtar"
                                 "testdata/script/paramuses.txtar"))))))))
-    (inputs (list go-github-com-pkg-diff go-golang-org-x-tools
+    (propagated-inputs (list go-github-com-pkg-diff go-golang-org-x-tools
                   go-github-com-rogpeppe-go-internal))
     (home-page "https://mvdan.cc/unparam/")
     (synopsis "Find unused parameters in Go")
     (description "Reports unused function parameters and results in Go code.")
     (license license:bsd-3)))
 
-(define-public go-mvdan-cc-unparam
+(define-public unparam
   (package
-    (inherit unparam)
-    (name "go-mvdan-cc-unparam")
+    (inherit go-mvdan-cc-unparam)
+    (name "unparam")
     (arguments
-     `(#:import-path "github.com/mvdan/unparam"
-       #:tests? #f
-       #:install-source? #t
-       #:phases (modify-phases %standard-phases
-                  (delete 'build))))
-    (propagated-inputs (package-inputs unparam))
-    (native-inputs '())
-    (inputs '())))
+     (list #:tests? #f
+           #:install-source? #f
+           #:import-path "mvdan.cc/unparam"))))
 
 (define-public go-github-com-valyala-bytebufferpool
   (package
