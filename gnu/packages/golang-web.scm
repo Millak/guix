@@ -115,6 +115,33 @@
 API service accounts for Go.")
     (license license:asl2.0)))
 
+(define-public go-git-sr-ht-adnano-go-gemini
+  (package
+    (name "go-git-sr-ht-adnano-go-gemini")
+    (version "0.2.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~adnano/go-gemini")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xxcljhk9abjjdcl1dnxaq7qwvl13rq51bwps5nxlkib7fxgbyyl"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "git.sr.ht/~adnano/go-gemini"))
+    (propagated-inputs
+     (list go-golang-org-x-net))
+    (home-page "https://git.sr.ht/~adnano/go-gemini")
+    (synopsis "Gemini protocol in Go")
+    (description
+     "The @code{gemini} package implements the Gemini protocol in Go.  It
+provides an API similar to that of NET/HTTP to facilitate the development of
+Gemini clients and servers.")
+    (license license:expat)))
+
 (define-public go-git-sr-ht-emersion-gqlclient
   (package
     (name "go-git-sr-ht-emersion-gqlclient")
