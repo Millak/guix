@@ -2209,6 +2209,10 @@ scripted in a Python-like language.")
                              "platform/linuxbsd/fontconfig-so_wrap.c"
                              "platform/linuxbsd/libudev-so_wrap.c"
                              "platform/linuxbsd/speechd-so_wrap.c"
+                             "platform/linuxbsd/wayland/dynwrappers/libdecor-so_wrap.c"
+                             "platform/linuxbsd/wayland/dynwrappers/wayland-client-core-so_wrap.c"
+                             "platform/linuxbsd/wayland/dynwrappers/wayland-cursor-so_wrap.c"
+                             "platform/linuxbsd/wayland/dynwrappers/wayland-egl-core-so_wrap.c"
                              "platform/linuxbsd/x11/display_server_x11.cpp"
                              "platform/linuxbsd/x11/dynwrappers/xcursor-so_wrap.c"
                              "platform/linuxbsd/x11/dynwrappers/xext-so_wrap.c"
@@ -2226,6 +2230,10 @@ scripted in a Python-like language.")
                             "libfontconfig.so.1"
                             "libudev.so.1"
                             "libspeechd.so.2"
+                            "libdecor-0.so.0"
+                            "libwayland-client.so.0"
+                            "libwayland-cursor.so.0"
+                            "libwayland-egl.so.1"
                             "libXrandr.so.2"
                             "libXcursor.so.1"
                             "libXext.so.6"
@@ -2263,6 +2271,20 @@ scripted in a Python-like language.")
                 (("./thirdparty/linuxbsd_headers/xkbcommon/xkbcommon-keysyms.h")
                  (string-append
                   (search-input-file inputs "include/xkbcommon/xkbcommon-keysyms.h"))))))
+          (add-after 'unbundle-xkbcommon 'unbundle-wayland
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "platform/linuxbsd/wayland/SCsub"
+                ;; This first file does not exist in a "protocol" directory of
+                ;; our wayland package, so this can't be grouped with the
+                ;; other substitutions.
+                (("#thirdparty/wayland/protocol/wayland.xml")
+                 (search-input-file inputs "share/wayland/wayland.xml"))
+                (("#thirdparty/wayland-protocols")
+                 (string-append
+                  #$(this-package-input "wayland-protocols") "/share/wayland-protocols"))
+                (("#thirdparty/wayland")
+                 (string-append
+                    #$(this-package-input "wayland") "/share/wayland")))))
           (replace 'install
             (lambda* (#:key inputs #:allow-other-keys)
               (let ((zenity (search-input-file inputs "bin/zenity")))
@@ -2311,6 +2333,7 @@ scripted in a Python-like language.")
            libpng
            harfbuzz
            icu4c
+           libdecor
            libtheora
            libvorbis
            libvpx
@@ -2329,6 +2352,8 @@ scripted in a Python-like language.")
            pulseaudio
            speech-dispatcher
            vulkan-loader
+           wayland
+           wayland-protocols
            wslay
            zenity
            zlib
