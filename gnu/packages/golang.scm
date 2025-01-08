@@ -1221,7 +1221,7 @@ networks where it would otherwise be blocked or heavily throttled.")
 (define-public go-github-com-kataras-golog
   (package
     (name "go-github-com-kataras-golog")
-    (version "0.1.7")
+    (version "0.1.12")
     (source
      (origin
        (method git-fetch)
@@ -1231,7 +1231,7 @@ networks where it would otherwise be blocked or heavily throttled.")
          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ll24g50j48wqikzf67cyaq0m0f57v1ap24nbz3cmv3yzqi6wdl9"))))
+        (base32 "1szibhgxmkd52gz6i77p3fwlxqyidj7l5vf59pjl5bjy8ggv0kpv"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/kataras/golog"))
