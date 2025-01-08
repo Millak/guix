@@ -4260,6 +4260,29 @@ protocol in Go language.")
 @acronym{Simple Service Discovery Protocol, SSDP}} library for Golang.")
     (license license:expat)))
 
+(define-public go-github-com-kortschak-wol
+  (package
+    (name "go-github-com-kortschak-wol")
+    (version "0.0.0-20200729010619-da482cc4850a")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kortschak/wol")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16qyy1c1q5cxcnwdzl69v49pjmyxha4i88fsg0g83gwdyapzsyln"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/kortschak/wol"))
+    (home-page "https://github.com/kortschak/wol")
+    (synopsis "Wake On LAN client")
+    (description
+     "Package wol provides a Wake On LAN function.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-labbsr0x-goh
   (package
     (name "go-github-com-labbsr0x-goh")
