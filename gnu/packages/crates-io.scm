@@ -138,6 +138,7 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages virtualization)
   #:use-module (gnu packages webkit)
   #:use-module (srfi srfi-1))
 
@@ -92930,6 +92931,28 @@ to XDG Base Directory specification.")
     (synopsis "User home directory per XDG Specification")
     (description "The user's home directory as per the XDG Specification.")
     (license license:expat)))
+
+(define-public rust-xenstore-sys-0.2
+  (package
+    (name "rust-xenstore-sys")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "xenstore-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1xrjy0d3cg9qrznfsfjrgha8si1dvdyfx3g7c76hbb7lnim5vmj7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.71)
+                       ("rust-pkg-config" ,rust-pkg-config-0.3))))
+    (native-inputs (list pkg-config))
+    (inputs (list clang xen))
+    (home-page "https://github.com/Wenzel/xenstore-sys")
+    (synopsis "Rust FFI bindings for libxenstore")
+    (description "This package provides Rust FFI bindings for libxenstore.")
+    (license license:gpl3)))
 
 (define-public rust-xi-unicode-0.3
   (package
