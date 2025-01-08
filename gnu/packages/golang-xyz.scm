@@ -2845,6 +2845,30 @@ levels that works by wrapping the standard @code{log} library.")
 dependencies and is intended to be used in long running processes.")
     (license license:expat)))
 
+(define-public go-github-com-cli-safeexec
+  (package
+    (name "go-github-com-cli-safeexec")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cli/safeexec")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0j6hspjx9kyxn98nbisawx6wvbi1d6rpzr6p2rzhllm673wibwr3"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/cli/safeexec"))
+    (home-page "https://github.com/cli/safeexec")
+    (synopsis "Safe implementation of Go's exec.Command")
+    (description
+     "This package provides a Go module that provides a stabler alternative to
+@code{exec.LookPath()}.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-client9-misspell
   (package
     (name "go-github-com-client9-misspell")

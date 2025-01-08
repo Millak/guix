@@ -2479,28 +2479,6 @@ Looks for an identical word on a list of words, if none is found, look for a
 similar word.")
       (license license:expat))))
 
-(define-public go-github-com-cli-safeexec
-  (package
-    (name "go-github-com-cli-safeexec")
-    (version "1.0.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/cli/safeexec")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0j6hspjx9kyxn98nbisawx6wvbi1d6rpzr6p2rzhllm673wibwr3"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:import-path "github.com/cli/safeexec"))
-    (home-page "https://github.com/cli/safeexec")
-    (synopsis "Safe implementation of Go's exec.Command")
-    (description "This package provides a Go module that provides a stabler
-alternative to @@code{exec.LookPath()}.")
-    (license license:bsd-2)))
-
 (define-public go-github-com-stevedonovan-luar
   (let ((commit "22d247e5366095f491cd83edf779ee99a78f5ead")
         (revision "0"))
