@@ -3571,30 +3571,6 @@ That is, @code{gofumpt} is happy with a subset of the formats that
     (native-inputs '())
     (inputs '())))
 
-(define-public go-gopkg-in-djherbis-times-v1
-  (package
-    (name "go-gopkg-in-djherbis-times-v1")
-    (version "1.5.0")
-    (home-page "https://gopkg.in/djherbis/times.v1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url home-page)
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1xvl3rgjif5yf62p16yk05kxrsmzhz1kkqisvw4k02svzq10qbfy"))
-       (modules '((guix build utils)))
-       (snippet '(delete-file-recursively "example"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:import-path "gopkg.in/djherbis/times.v1"))
-    (synopsis "Go library for getting file times")
-    (description
-     "Provides a platform-independent way to get atime, mtime, ctime and btime for files.")
-    (license license:expat)))
-
 (define-public go-github-com-valyala-bytebufferpool
   (package
     (name "go-github-com-valyala-bytebufferpool")
