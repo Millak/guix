@@ -3197,6 +3197,32 @@ loggers through a context, and attaching context to the logger.")
 specifying container platforms.")
     (license license:asl2.0)))
 
+(define-public go-github-com-containerd-plugin
+  (package
+    (name "go-github-com-containerd-plugin")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/containerd/plugin")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1gzm8h4yaparji0llqqfxl68gv56hwlybz4rgwnr54fhr029mpzp"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/containerd/plugin"))
+    (propagated-inputs
+     (list go-github-com-opencontainers-image-spec))
+    (home-page "https://github.com/containerd/plugin")
+    (synopsis "Registering and managing typed plugins with dependencies")
+    (description
+     "This package provides a common plugin interface across containerd
+repositories.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-coocood-freecache
   (package
     (name "go-github-com-coocood-freecache")
