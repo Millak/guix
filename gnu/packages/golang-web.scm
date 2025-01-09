@@ -7167,6 +7167,32 @@ provided @code{http.FileSystem}.")
      "Package jsonrpc2 provides a Go implementation of JSON-RPC 2.0.")
     (license license:expat)))
 
+(define-public go-github-com-ssgelm-cookiejarparser
+  (package
+    (name "go-github-com-ssgelm-cookiejarparser")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ssgelm/cookiejarparser")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0fnm53br0cg3iwzniil0lh9w4xd6xpzfypwfpdiammfqavlqgcw4"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:embed-files #~(list "children" "nodes" "text")
+      #:import-path "github.com/ssgelm/cookiejarparser"))
+    (propagated-inputs (list go-golang-org-x-net))
+    (home-page "https://github.com/ssgelm/cookiejarparser")
+    (synopsis "Parse a curl cookiejar with Go")
+    (description
+     "This package is a Go library that parses a curl (netscape) cookiejar
+file into a Go http.CookieJar.")
+    (license license:expat)))
+
 (define-public go-github-com-tdewolff-minify-v2
   (package
     (name "go-github-com-tdewolff-minify-v2")
