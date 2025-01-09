@@ -23,7 +23,7 @@
 ;;; Copyright © 2021 Hong Li <hli@mdc-berlin.de>
 ;;; Copyright © 2021, 2022, 2023 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
-;;; Copyright © 2022, 2023, 2024 Navid Afkhami <navid.afkhami@mdc-berlin.de>
+;;; Copyright © 2022-2025 Navid Afkhami <navid.afkhami@mdc-berlin.de>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;; Copyright © 2024 Alexis Simon <alexis.simon@runbox.com>
 ;;; Copyright © 2024 Spencer King <spencer.king@geneoscopy.com>
@@ -2882,6 +2882,33 @@ scipy framework, and projection algorithm based on it.  The original metacell
 algorithm was implemented in R.  The Python package contains various
 algorithmic improvements and is scalable for larger data sets (millions of
 cells).")
+    (license license:expat)))
+
+(define-public python-ngesh
+  (package
+    (name "python-ngesh")
+    (version "1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tresoldi/ngesh")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "07sj4x95b5hvx57pw24f80sk4ag4hkg1z6wzym3pzi8n5gn85n1z"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-ete3 python-numpy python-six))
+    (native-inputs (list python-black python-flake8 python-pytest python-twine
+                         python-wheel))
+    (home-page "https://github.com/tresoldi/ngesh")
+    (synopsis "Library for phylogenetic tree simulation")
+    (description
+     "Ngesh is a Python library and CLI tool for simulating phylogenetic trees
+and data.  It is intended for benchmarking phylogenetic methods, especially in
+historical linguistics andstemmatology.  The generation of stochastic
+phylogenetic trees also goes by the name simulationmethods for phylogenetic
+trees, synthetic data generation, or just phylogenetic tree simulation.")
     (license license:expat)))
 
 (define-public python-parabam
