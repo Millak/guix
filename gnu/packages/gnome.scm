@@ -365,7 +365,7 @@ features to enable users to create their discs easily and quickly.")
 (define-public libcloudproviders-minimal
   (package
     (name "libcloudproviders-minimal")
-    (version "0.3.1")
+    (version "0.3.6")
     (source
      (origin
        (method url-fetch)
@@ -374,7 +374,7 @@ features to enable users to create their discs easily and quickly.")
                        (version-major+minor version)
                        "/libcloudproviders-" version ".tar.xz"))
        (sha256
-        (base32 "0aars24myf6n8b8hm1n12hsgcm54097kpbpm4ba31zp1l4y22qs7"))))
+        (base32 "1dvlbsh5pfrnj745dlb1w0m4s1gy063y8h54qp2z9pjg785i2x9v"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t             ; To wrap binaries and/or compile schemas
