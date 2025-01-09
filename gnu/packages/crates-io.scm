@@ -36467,6 +36467,7 @@ heavily inspired by the Temporal project.")
         ("rust-pyo3" ,rust-pyo3-0.21)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1))))
+    (native-inputs (list python-minimal-wrapper))   ; For the tests.
     (home-page "https://github.com/pydantic/jiter/")
     (synopsis "Fast iterable JSON parser")
     (description "This package provides an iterable JSON parser.")
