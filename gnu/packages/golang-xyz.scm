@@ -11831,20 +11831,18 @@ policy.")
     (license (list license:asl2.0 license:expat))))
 
 (define-public go-github-com-rcrowley-go-metrics
-  (let ((commit "cac0b30c2563378d434b5af411844adff8e32960")
-        (revision "2"))
     (package
       (name "go-github-com-rcrowley-go-metrics")
-      (version (git-version "0.0.0" revision commit))
+      (version "0.0.0-20201227073835-cf1acfcdf475")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/rcrowley/go-metrics")
-               (commit commit)))
+               (commit (go-version->git-ref version))))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1hfxffnpaw49pr3wrkbzq3pnv3nyzsvk5dxndv0yz70xlrbg8a04"))))
+          (base32 "0s7zab04slz07c7l4h2cqz62qnqah69r6p157vvbd7725a7wzkr0"))))
       (build-system go-build-system)
       (arguments
        ;; Arbitrary precision tests are known to be broken on aarch64, ppc64le
@@ -11858,7 +11856,7 @@ policy.")
       (description "This package provides a Go implementation of Coda Hale's
 Metrics library.")
       (home-page "https://github.com/rcrowley/go-metrics")
-      (license license:bsd-2))))
+      (license license:bsd-2)))
 
 (define-public go-github-com-remeh-sizedwaitgroup
   (package
