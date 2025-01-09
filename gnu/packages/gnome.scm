@@ -8943,7 +8943,7 @@ to virtual private networks (VPNs) via Fortinet SSLVPN.")
 (define-public mobile-broadband-provider-info
   (package
     (name "mobile-broadband-provider-info")
-    (version "20220725")
+    (version "20240407")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -8952,11 +8952,9 @@ to virtual private networks (VPNs) via Fortinet SSLVPN.")
                     "mobile-broadband-provider-info-" version ".tar.xz"))
               (sha256
                (base32
-                "1k9acdnl4mr6aqh11xbklv2gyww82jddaqmw4aqdzwl7q80swia8"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:tests? #f))                    ; no tests
-    (native-inputs (list libxslt))
+                "0jl13k02m63izk35kylv3v8q1c7xa19c4bpzqglzigzl2prfzgw9"))))
+    (build-system meson-build-system)
+    (native-inputs (list libxml2 libxslt))
     (home-page "https://wiki.gnome.org/Projects/NetworkManager")
     (synopsis "Database of broadband connection configuration")
     (description "Database of broadband connection configuration.")
