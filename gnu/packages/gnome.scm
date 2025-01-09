@@ -7164,7 +7164,7 @@ MS Graph APIs.")
 (define-public gvfs
   (package
     (name "gvfs")
-    (version "1.50.7")
+    (version "1.56.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/gvfs/"
@@ -7172,7 +7172,7 @@ MS Graph APIs.")
                                   "gvfs-" version ".tar.xz"))
               (sha256
                (base32
-                "0cgjlxrs4qr08igqjpkhfxpzydj8m9y9n92z091knkj5170x5bbj"))))
+                "045a17jqh5f3aks5c3wc9ipfxg8f37gb2dz26j3qyr3rqv71qww6"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -7212,7 +7212,7 @@ MS Graph APIs.")
            dbus
            elogind
            fuse
-           gcr-3
+           gcr
            glib
            gnome-online-accounts
            gsettings-desktop-schemas
@@ -7229,6 +7229,7 @@ MS Graph APIs.")
            libnfs
            libsecret
            lsof
+           msgraph
            samba
            libsoup
            libxml2
