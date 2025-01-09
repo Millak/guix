@@ -13239,9 +13239,9 @@ supported by the time package
      "Package @code{shell} returns a user's shell across multiple platforms.")
     (license license:expat)))
 
-(define-public go-github-com-twpayne-go-vfs
+(define-public go-github-com-twpayne-go-vfs-v5
   (package
-    (name "go-github-com-twpayne-go-vfs")
+    (name "go-github-com-twpayne-go-vfs-v5")
     (version "5.0.4")
     (source
      (origin
@@ -13255,7 +13255,7 @@ supported by the time package
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/twpayne/go-vfs"
+      #:import-path "github.com/twpayne/go-vfs/v5"
       #:phases
       #~(modify-phases %standard-phases
           ;; XXX: Replace when go-build-system supports nested path.
@@ -13275,7 +13275,7 @@ supported by the time package
 
 ;; XXX: For chezmoi 1.8.10, remove it when updated.
 (define-public go-github-com-twpayne-go-vfs-1.0.1
-  (hidden-package (package (inherit go-github-com-twpayne-go-vfs)
+  (hidden-package (package (inherit go-github-com-twpayne-go-vfs-v5)
    (name "go-github-com-twpayne-go-vfs")
    (version "1.0.1")
    (source
@@ -13286,7 +13286,10 @@ supported by the time package
             (commit (string-append "v" version))))
       (file-name (git-file-name name version))
       (sha256
-       (base32 "1if2wfdwl3h8v8kgrgywkwcjafcz7hynq8ikr52s11qf2n0w3gny")))))))
+       (base32 "1if2wfdwl3h8v8kgrgywkwcjafcz7hynq8ikr52s11qf2n0w3gny"))))
+    (arguments
+     (list
+      #:import-path "github.com/twpayne/go-vfs")))))
 
 (define-public go-github-com-urfave-cli
   (package
