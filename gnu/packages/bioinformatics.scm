@@ -2890,7 +2890,8 @@ and gene expression visualization.")
                          python-sphinx
                          python-sphinx-rtd-theme
                          python-tox
-                         python-twine))
+                         python-twine
+                         python-wheel))
     (home-page "https://github.com/tanaylab/metacells.git")
     (synopsis "Single-cell RNA Sequencing Analysis")
     (description "The metacells package implements the improved metacell
