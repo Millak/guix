@@ -1951,6 +1951,30 @@ project is to provide a simple, fast, and reliable database for projects that
 don't require a full database server such as Postgres or MySQL.")
     (license license:expat)))
 
+(define-public go-github-com-bradfitz-gomemcache
+  (package
+    (name "go-github-com-bradfitz-gomemcache")
+    (version "0.0.0-20230905024940-24af94b03874")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/bradfitz/gomemcache")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xhf5zphhilv1jiwsdf5f4b4g2jj8q3yhn2r83f52mpi9s8jp5db"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/bradfitz/gomemcache"))
+    (home-page "https://github.com/bradfitz/gomemcache")
+    (synopsis "Memcache client library in Go")
+    (description
+     "This is a memcache client library for the Go programming language.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-briandowns-spinner
   (package
     (name "go-github-com-briandowns-spinner")
