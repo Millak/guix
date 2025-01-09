@@ -5244,7 +5244,8 @@ as OpenStreetMap, OpenCycleMap, OpenAerialMap and Maps.")
     (description
      "LibSoup is an HTTP client/server library for GNOME.  It uses GObjects
 and the GLib main loop, to integrate well with GNOME applications.")
-    (license license:lgpl2.0+)))
+    (license license:lgpl2.0+)
+    (properties '((upstream-name . "libsoup")))))
 
 ;;; An older variant kept to build the 'rest' package.
 (define-public libsoup-minimal-2
