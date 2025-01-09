@@ -2835,13 +2835,13 @@ and gene expression visualization.")
 (define-public python-metacells
   (package
     (name "python-metacells")
-    (version "0.9.4")
+    (version "0.9.5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "metacells" version))
        (sha256
-        (base32 "02f63nxz6b60vl6s4n9vapaysnq1w5f3x7c179rh2rr7j2k5cf1y"))))
+        (base32 "0rb1r8l1ypfmvd3lwlx7ksfbjvgpnybn1s84a8n9gcpz9yx2rhbs"))))
     #;
     (properties '((tunable? . #t)))
     (build-system pyproject-build-system)
@@ -2868,11 +2868,11 @@ and gene expression visualization.")
     (propagated-inputs (list python-anndata
                              python-cvxpy
                              python-fastcluster
+                             python-igraph
                              python-importlib-metadata
                              python-numpy
                              python-pandas
                              python-psutil
-                             python-igraph
                              python-pyyaml
                              python-scanpy
                              python-scipy
@@ -2884,9 +2884,11 @@ and gene expression visualization.")
                          python-isort
                          python-mypy
                          python-mypy-extensions
+                         python-pandas-stubs
                          python-pylint
                          python-pytest
                          python-pytest-cov
+                         python-setuptools
                          python-sphinx
                          python-sphinx-rtd-theme
                          python-tox
