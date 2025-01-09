@@ -7141,6 +7141,26 @@ side panel;
 part of udev-extras, then udev, then systemd.  It's now a project on its own.")
     (license license:lgpl2.1+)))
 
+(define-public msgraph
+  (package
+    (name "msgraph")
+    (version "0.2.3")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/msgraph/"
+                                  (version-major+minor version) "/"
+                                  "msgraph-" version ".tar.xz"))
+              (sha256
+               (base32 "1c6xkxx2c1jqhy56pfbsmnk418n1rm2fgqyrgi3hf2kzrc0fhhpd"))))
+    (build-system meson-build-system)
+    (native-inputs (list gi-docgen gobject-introspection pkg-config uhttpmock))
+    (inputs (list gnome-online-accounts json-glib libsoup rest))
+    (home-page "https://gnome.pages.gitlab.gnome.org/msgraph/")
+    (synopsis "GLib library for accessing MS Graph APIs")
+    (description "This package provides a GLib-based library for accessing
+MS Graph APIs.")
+    (license license:lgpl3+)))
+
 (define-public gvfs
   (package
     (name "gvfs")
