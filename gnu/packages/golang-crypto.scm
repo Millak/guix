@@ -1958,6 +1958,52 @@ revision (aka MurmurHash3). Reference algorithm has been slightly hacked as to
 support the streaming mode required by Go's standard Hash interface.")
     (license license:bsd-3)))
 
+(define-public go-github-com-twpayne-go-pinentry
+  (package
+    (name "go-github-com-twpayne-go-pinentry")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/twpayne/go-pinentry")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ixvvfd7ywsgj0jk1plb4h2g5bpmw86qc89m02c184jh5ndawhip"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/twpayne/go-pinentry"))
+    (native-inputs
+     (list go-github-com-alecthomas-assert-v2
+           go-github-com-golang-mock))
+    (propagated-inputs
+     (list go-github-com-rs-zerolog))
+    (home-page "https://github.com/twpayne/go-pinentry")
+    (synopsis "Golang client to GnuPG's pinentry")
+    (description
+     "Package pinentry provides a client to @code{GnuPG's} pinentry.")
+    (license license:expat)))
+
+(define-public go-github-com-twpayne-go-pinentry-v4
+  (package
+    (inherit go-github-com-twpayne-go-pinentry)
+    (name "go-github-com-twpayne-go-pinentry-v4")
+    (version "4.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/twpayne/go-pinentry")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1z9h2lg5xd3g6dd9avcfx0nnwdybr2yibmsw7akl6pz0cls3sf63"))))
+    (arguments
+     (list
+      #:import-path "github.com/twpayne/go-pinentry/v4"))))
+
 (define-public go-github-com-xanzy-ssh-agent
   (package
     (name "go-github-com-xanzy-ssh-agent")
