@@ -3031,7 +3031,7 @@ Unix desktop environment under X11 as well as Wayland.")
 (define-public webp-pixbuf-loader
   (package
     (name "webp-pixbuf-loader")
-    (version "0.2.4")
+    (version "0.2.7")
     (source
      (origin
        (method git-fetch)
@@ -3040,7 +3040,7 @@ Unix desktop environment under X11 as well as Wayland.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0dsdkw0i8fg3051653zmz68s068a2w23d708av64afzvav1xvhv0"))))
+        (base32 "0cp51qv8mjjhs3x40d1p31c5f2ilajs4m15da5z5l240bmwk1490"))))
     (build-system meson-build-system)
     (arguments
      (list
