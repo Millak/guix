@@ -2538,27 +2538,6 @@ glamorous default themes.")
 ECMA-48} specs.")
     (license license:expat)))
 
-;; XXX: This is for making the package compatible with
-;; go-github-com-charmbracelet-x-input, see
-;; <https://github.com/charmbracelet/x/issues/296> and
-;; <https://github.com/charmbracelet/x/pull/295>.
-;; Remove when a new tag is placed.
-(define go-github-com-charmbracelet-x-ansi-0.4.5
-  (package
-    (inherit go-github-com-charmbracelet-x-ansi)
-    (name "go-github-com-charmbracelet-x-ansi")
-    (version "0.4.5")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/charmbracelet/x")
-             (commit (go-version->git-ref version
-                                          #:subdir "ansi"))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "10ivngjp9ifm8b50pkxrwdzan6hn4s3l9fxi6wiqiwy6m2v41a0a"))))))
-
 (define-public go-github-com-charmbracelet-x-exp-golden
   (package
     (name "go-github-com-charmbracelet-x-exp-golden")
