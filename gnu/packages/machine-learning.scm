@@ -1932,7 +1932,10 @@ data analysis.")
                                    ;; The error message format has changed,
                                    ;; but the behavior itself is still the
                                    ;; same.
-                                   " and not test_parameter_validation"))
+                                   " and not test_parameter_validation"
+                                   ;; exceptions must be derived from Warning,
+                                   ;; not <class 'NoneType'>
+                                   " and not test_seuclidean"))
         #:phases
         #~(modify-phases %standard-phases
             (add-after 'build 'build-ext
