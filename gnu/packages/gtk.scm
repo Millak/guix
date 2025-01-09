@@ -2504,7 +2504,7 @@ Parcellite and adds bugfixes and features.")
 (define-public graphene
   (package
     (name "graphene")
-    (version "1.10.6")
+    (version "1.10.8")
     (source
      (origin
        (method git-fetch)
@@ -2514,7 +2514,7 @@ Parcellite and adds bugfixes and features.")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0g2jjy6xizzjxlp0dr81h1f5l16dzcnhznhj6jvhpdjqcvgp98xr"))))
+        (base32 "18a0icpr003y0bh1kghgh2nqrm8a8s5lak8lbnc9wdfkc760vlw8"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t     ; To wrap binaries and/or compile schemas
