@@ -5755,23 +5755,24 @@ fast and flexible way of exploring HTML from the terminal.")
 (define-public uhttpmock
   (package
     (name "uhttpmock")
-    (version "0.5.3")
+    (version "0.11.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://tecnocode.co.uk/downloads/uhttpmock/"
                            "uhttpmock-" version ".tar.xz"))
        (sha256
-        (base32 "0bqizz69hxk8rn4z57asz1d45vizl1rj6i5k3rzxn2x3qcik514h"))))
-    (build-system glib-or-gtk-build-system)
+        (base32 "1gw4g3m99j00rjd3flbxigv3qgbkafnkhf77c76hv7yy58dc1vgy"))))
+    (build-system meson-build-system)
     (native-inputs
      (list gobject-introspection
            ;; For check phase.
            glib-networking gsettings-desktop-schemas pkg-config))
-    (inputs
-     `(("libsoup" ,libsoup-minimal-2)))
+    (inputs (list libsoup))
     (arguments
-     `(#:phases
+     `(#:glib-or-gtk? #t
+       #:configure-flags '("-Dgtk_doc=false")
+       #:phases
        (modify-phases %standard-phases
          (add-before 'check 'set-home-for-tests
            (lambda _
@@ -5783,6 +5784,26 @@ fast and flexible way of exploring HTML from the terminal.")
 HTTPS.  It provides a library, libuhttpmock, which implements recording and
 playback of HTTP request/response traces.")
     (license license:lgpl2.1+)))
+
+(define-public uhttpmock-with-libsoup2
+  (package
+    (inherit uhttpmock)
+    (version "0.5.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://tecnocode.co.uk/downloads/uhttpmock/"
+                           "uhttpmock-" version ".tar.xz"))
+       (sha256
+        (base32 "0bqizz69hxk8rn4z57asz1d45vizl1rj6i5k3rzxn2x3qcik514h"))))
+    (build-system glib-or-gtk-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'set-home-for-tests
+                 (lambda _
+                   (setenv "HOME" "/tmp"))))))
+    (inputs (list libsoup-minimal-2))))
 
 (define-public woof
   (package
