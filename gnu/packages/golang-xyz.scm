@@ -12827,25 +12827,28 @@ all types of configuration needs and formats.")
     (license license:expat)))
 
 (define-public go-github-com-stathat-go
-    (package
-      (name "go-github-com-stathat-go")
-      (version "1.0.0")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/stathat/go")
-               (commit (string-append "v" version))))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1zzlsl24dyr202qkr2pay22m6d0gb7ssms77wgdx0r0clgm7dihw"))))
-      (build-system go-build-system)
-      (arguments
-       `(#:import-path "github.com/stathat/go"))
-      (synopsis "Post statistics to StatHat")
-      (description "This is a Go package for posting to a StatHat account.")
-      (home-page "https://github.com/stathat/go")
-      (license license:expat)))
+  (package
+    (name "go-github-com-stathat-go")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/stathat/go")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zzlsl24dyr202qkr2pay22m6d0gb7ssms77wgdx0r0clgm7dihw"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/stathat/go"))
+    (home-page "https://github.com/stathat/go")
+    (synopsis "Post statistics to StatHat")
+    (description
+     "This is a Go package for posting to a @url{https://www.stathat.com/,
+StatHat} account.")
+    (license license:expat)))
 
 (define-public go-github-com-stoewer-go-strcase
   (package
