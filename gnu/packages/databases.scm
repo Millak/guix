@@ -716,7 +716,7 @@ replacement for the @code{python-memcached} library.")
 (define-public go-github-com-bradfitz-gomemcache
   (package
     (name "go-github-com-bradfitz-gomemcache")
-    (version "0.0.0-20190913173617-a41fca850d0b")
+    (version "0.0.0-20230905024940-24af94b03874")
     (source
       (origin
         (method git-fetch)
@@ -725,18 +725,12 @@ replacement for the @code{python-memcached} library.")
                (commit (go-version->git-ref version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "18qpds6xr73jy80pj7l3pc1l1ndcy3va2dl8fzk17bgwg49sxwfz"))
-        (modules '((guix build utils)))
-        (snippet
-         '(begin
-            ;; Fixes the 'untyped-int -> string of one rune' issue.
-            ;; https://github.com/golang/go/issues/32479
-            (substitute* "memcache/memcache_test.go"
-              (("string\\(0x7f") "string(rune(0x7f)"))))))
+         (base32 "0xhf5zphhilv1jiwsdf5f4b4g2jj8q3yhn2r83f52mpi9s8jp5db"))))
     (build-system go-build-system)
     (arguments
-     '(#:unpack-path "github.com/bradfitz/gomemcache"
-       #:import-path "github.com/bradfitz/gomemcache/memcache"))
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/bradfitz/gomemcache"))
     (home-page "https://github.com/bradfitz/gomemcache")
     (synopsis "Memcache client library in Go")
     (description
