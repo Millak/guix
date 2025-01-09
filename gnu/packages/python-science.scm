@@ -195,7 +195,7 @@ maintainability.")
                              python-osqp
                              python-scipy
                              python-scs))
-    (native-inputs (list python-pytest python-setuptools))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/cvxpy/cvxpy")
     (synopsis "DSL for modeling convex optimization problems")
     (description
