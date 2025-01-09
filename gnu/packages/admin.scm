@@ -3133,7 +3133,7 @@ modules and plugins that extend Ansible.")
 (define-public debops
   (package
     (name "debops")
-    (version "3.2.2")
+    (version "3.2.4")
     (source
      (origin
        (method git-fetch)
@@ -3142,10 +3142,11 @@ modules and plugins that extend Ansible.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "03d94bzljnw65f1ra7bxsl8q2l6g8gxcy8kqhm69ib08j50qa0h6"))
+        (base32 "0y7bmrnynbw0hz88shfv301a9fsank2cx86fvb7jx6g6kkbsa9pz"))
        (patches
         (search-patches "debops-setup-py-avoid-git.patch"))))
     (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-wheel))
     (inputs
      (list ansible
            encfs
