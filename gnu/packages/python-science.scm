@@ -423,13 +423,13 @@ routines such as routines for numerical integration and optimization.")
 (define-public python-scikit-allel
   (package
     (name "python-scikit-allel")
-    (version "1.3.5")
+    (version "1.3.13")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "scikit-allel" version))
+       (uri (pypi-uri "scikit_allel" version))
        (sha256
-        (base32 "1vg88ng6gd175gzk39iz1drxig5l91dyx398w2kbw3w8036zv8gj"))))
+        (base32 "0d9yadzhsjjqkh6rz273f53iwczk0c7pv9dajzcrmfnk036b8f4s"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -451,21 +451,18 @@ routines such as routines for numerical integration and optimization.")
            (lambda _
              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
     (propagated-inputs
-     (list python-dask
-           python-numpy
-           python-click))
+     (list python-dask python-numpy))
     (native-inputs
-     (list python-cython
-           python-setuptools
-           python-wheel
-           ;; The following are all needed for the tests
-           htslib
+     (list htslib
+           python-cython
            python-h5py
            python-hmmlearn
            python-numexpr
+           python-numpy
            python-pytest
-           python-scipy
+           python-setuptools
            python-setuptools-scm
+           python-wheel
            python-zarr))
     (home-page "https://github.com/cggh/scikit-allel")
     (synopsis "Explore and analyze genetic variation data")
