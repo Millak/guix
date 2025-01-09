@@ -3000,66 +3000,6 @@ one-to-one, while still providing an idiomatic interface.")
      "Package rdb implements parsing and encoding of the Redis RDB file format.")
     (license license:expat)))
 
-(define-public go-github-com-gomodule-redigo
-  (package
-    (name "go-github-com-gomodule-redigo")
-    (version "1.9.2")
-    (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/gomodule/redigo")
-               (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32 "03z02zmkl8cj73c6xrvlpj144d9ysikc25ay64dhpbzwkn16h5yv"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:skip-build? #t
-      #:import-path "github.com/gomodule/redigo"
-      #:test-flags
-      #~(list "-skip"
-              (string-join
-               ;; Run just unit tests which do not require Redis reducing
-               ;; closure size.
-               (list "TestDoCommands"
-                     "TestPipelineCommands"
-                     "TestBlankCommand"
-                     "TestRecvBeforeSend"
-                     "TestError"
-                     "TestDialContext_CanceledContext"
-                     "TestDialClientName"
-                     "TestExecError"
-                     "Test.*Pool.*"
-                     "TestPushed"
-                     "TestPubSubReceiveContext"
-                     "TestSlowLog"
-                     "TestLatency"
-                     "TestLatencyHistories"
-                     "TestScript"
-                     "Example.*"
-                     "TestConnMux"
-                     "TestConnMuxClose")
-               "|"))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'remove-examples
-            (lambda* (#:key import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (for-each delete-file
-                          (list "redis/zpop_example_test.go"
-                                "redis/scan_test.go"
-                                "redis/pubsub_example_test.go"
-                                "redis/reply_test.go"))))))))
-    (native-inputs
-     (list go-github-com-stretchr-testify))
-    (home-page "https://github.com/gomodule/redigo")
-    (synopsis "Go client for Redis")
-    (description
-     "Redigo is a Go client for the Redis database.")
-    (license license:asl2.0)))
-
 (define-public kyotocabinet
   (package
     (name "kyotocabinet")
