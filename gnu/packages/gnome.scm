@@ -13570,7 +13570,7 @@ host to avoid parser overhead and memory-allocator fragmentation.")
 (define-public feedbackd
   (package
     (name "feedbackd")
-    (version "0.2.1")
+    (version "0.6.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -13579,16 +13579,22 @@ host to avoid parser overhead and memory-allocator fragmentation.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1acwpb8cgzyvzriphrb42k3d7njwcn88j66i5wz75yx2sbfaf93q"))
-              (patches
-               (search-patches "feedbackd-use-system-gmobile.patch"))
+                "0gfh965rddmg9glyh0gzkzxi27c7kfdakwrkycc7hg7s68p03xgh"))
               (snippet
                #~(begin
                    (use-modules (guix build utils))
                    (delete-file-recursively "subprojects")))))
     (build-system meson-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-meson
+                 (lambda _
+                   (substitute* "meson.build"
+                     (("udev.get_variable\\('udevdir'\\)")
+                      "prefix / 'lib' / 'udev'")))))))
     (native-inputs
-     (list `(,glib "bin") gobject-introspection pkg-config vala))
+     (list `(,glib "bin") gobject-introspection pkg-config umockdev vala))
     (inputs
      (list dbus gmobile gsound json-glib libgudev))
     (propagated-inputs
