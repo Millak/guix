@@ -13309,8 +13309,9 @@ supported by the time package
      (list
       #:import-path "github.com/twpayne/go-xdg/v3"))
     (native-inputs
-     (list go-github-com-stretchr-testify
-           go-github-com-twpayne-go-vfs-1.0.1))
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-twpayne-go-vfs-1.0.1))
     (home-page "https://github.com/twpayne/go-xdg/")
     (synopsis "Functions related to freedesktop.org")
     (description
