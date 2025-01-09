@@ -15766,7 +15766,7 @@ correctly.")))
     (build-system go-build-system)
     (arguments
      (list
-      #:intall-source? #f
+      #:install-source? #f
       #:import-path "github.com/google/go-jsonnet/cmd/jsonnet"
       #:unpack-path "github.com/google/go-jsonnet"))
     (native-inputs
