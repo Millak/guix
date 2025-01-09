@@ -3167,6 +3167,36 @@ way.")
 loggers through a context, and attaching context to the logger.")
     (license license:asl2.0)))
 
+(define-public go-github-com-containerd-platforms
+  (package
+    (name "go-github-com-containerd-platforms")
+    (version "0.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/containerd/platforms")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "03clc3b2fvlym5d2rvgima0p0br1m34p8gs7rn6y5rp7v7z601sx"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/containerd/platforms"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-containerd-log
+           go-github-com-opencontainers-image-spec
+           go-golang-org-x-sys))
+    (home-page "https://github.com/containerd/platforms")
+    (synopsis "Handling container platform type")
+    (description
+     "Package platforms provides a toolkit for normalizing, matching and
+specifying container platforms.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-coocood-freecache
   (package
     (name "go-github-com-coocood-freecache")
