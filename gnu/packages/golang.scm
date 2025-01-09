@@ -2624,7 +2624,7 @@ over strings.")
 (define-public go-github-com-xo-terminfo
   (package
     (name "go-github-com-xo-terminfo")
-    (version "0.0.0-20210125001918-ca9a967f8778")
+    (version "0.0.0-20220910002029-abceb7e1c41e")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2633,10 +2633,12 @@ over strings.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "05gdcvcbwcrcwxznhvs1q1xh4irz2d10v2mz179pydjh30kjc0j5"))))
+                "0n3b37z76rz3l74mhrvviz66xa8dqwpvc2gb6cyzql5smbcs9y3a"))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "github.com/xo/terminfo"))
+    (native-inputs
+     (list go-golang-org-x-exp))
     (home-page "https://github.com/xo/terminfo")
     (synopsis "Read the terminfo database in Go")
     (description
