@@ -2336,7 +2336,11 @@ obfuscated via the Elligator 2 mapping
                              "TestUTLSHandshakeClientParrotGolang"
                              ;; Fails with error: expected "key size too small
                              ;; for PSS signature".
-                             "TestKeyTooSmallForRSAPSS")
+                             "TestKeyTooSmallForRSAPSS"
+                             ;; Time bomb tests, certs are not valid after
+                             ;; certain date.
+                             "TestResumption/TLSv12"
+                             "TestResumption/TLSv13")
                        "|"))))
     (propagated-inputs
      (list go-github-com-dsnet-compress
