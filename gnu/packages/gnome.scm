@@ -4975,7 +4975,7 @@ indicators etc).")
 (define-public glib-networking
   (package
     (name "glib-networking")
-    (version "2.76.1")
+    (version "2.78.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/glib-networking/"
@@ -4983,7 +4983,7 @@ indicators etc).")
                                   "glib-networking-" version ".tar.xz"))
               (sha256
                (base32
-                "0ax4h0abi9yxrpmm1p491qjxc8d2k1kaa9hhzgyixrfxjjcqlsaw"))))
+                "17zhkf2pjwrghdgk5nhfvzqakb2xwk2jj19316xjr0s9n3djv3z4"))))
     (build-system meson-build-system)
     (native-inputs
      (list `(,glib "bin") ; for gio-querymodules
