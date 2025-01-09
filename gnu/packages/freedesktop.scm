@@ -2446,14 +2446,14 @@ iChat interoperability, and multi-user chats and Tubes using the
 (define-public colord-gtk
   (package
     (name "colord-gtk")
-    (version "0.3.0")
+    (version "0.3.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.freedesktop.org/software/colord"
                                   "/releases/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1l61ydb0zv2ffilwpapgz5mm3bznr28zl16xqbxnz6kdsrb6cimr"))))
+                "0b8j7an572ww8n3n0j9kwrl27qd3156g4zix9rzs2c2nny4vhxn1"))))
     (outputs '("out" "doc"))
     (build-system meson-build-system)
     (arguments
