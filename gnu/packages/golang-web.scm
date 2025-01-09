@@ -971,6 +971,34 @@ capable of querying the current time from a remote NTP server as specified in
      "This package provides SCSS compiler support for Go applications.")
     (license license:expat)))
 
+(define-public go-github-com-bradenhilton-mozillainstallhash
+  (package
+    (name "go-github-com-bradenhilton-mozillainstallhash")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/bradenhilton/mozillainstallhash")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0j54ssnvk2vy77g23zrhi9acwblnamj63i7wmmdnb89fjg0xc9km"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/bradenhilton/mozillainstallhash"))
+    (propagated-inputs
+     (list go-github-com-bradenhilton-cityhash
+           go-golang-org-x-text))
+    (home-page "https://github.com/bradenhilton/mozillainstallhash")
+    (synopsis "Generates the hash used in installs of Mozilla software")
+    (description
+     "This package provides a functionality to get the hash used to
+differentiate between installs of Mozilla software in @code{installs.ini} and
+@code{profiles.ini}.")
+    (license license:expat)))
+
 (define-public go-github-com-caddyserver-certmagic
   (package
     (name "go-github-com-caddyserver-certmagic")
