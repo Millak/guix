@@ -2569,7 +2569,7 @@ Format) file format decoder and encoder.")
 (define-public libjxl
   (package
     (name "libjxl")
-    (version "0.8.2")
+    (version "0.11.1")
     (source
      (origin
        (method git-fetch)
@@ -2579,7 +2579,7 @@ Format) file format decoder and encoder.")
              (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1alhnnxkwy5bdwahfsdh87xk9rg1s2fm3r9y2w11ka8p3n1ccwr3"))
+        (base32 "1wfxzrhj8a19z6x47ib1qbmgyg56jsxjs955xcvqhdkrx8l2271r"))
        (modules '((guix build utils)))
        (snippet
         ;; Delete the bundles that will not be used.
@@ -2587,8 +2587,8 @@ Format) file format decoder and encoder.")
            (for-each (lambda (directory)
                        (delete-file-recursively
                         (string-append "third_party/" directory)))
-                     '("brotli" "googletest" "highway" "lcms" "libpng"
-                       "zlib"))))))
+                     '("brotli" "googletest" "highway" "lcms" "libjpeg-turbo"
+                       "libpng" "zlib"))))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
