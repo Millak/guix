@@ -915,7 +915,7 @@ cloud integration is offered through GNOME Online Accounts.")
 (define-public gnome-music
   (package
     (name "gnome-music")
-    (version "46.0")
+    (version "46.1")
     (source
      (origin
        (method url-fetch)
@@ -925,7 +925,7 @@ cloud integration is offered through GNOME Online Accounts.")
                        name "-" version ".tar.xz"))
        (sha256
         (base32
-         "0pzcqmmzcp71ls9bl85nqwi2wf4lqg3izdwa5ypzd4k8077dal54"))))
+         "1zdzafirfhaldbp8m8pmqw0ysfxc7ndbakqc7d1xrr4v51n2vghi"))))
     (build-system meson-build-system)
     (arguments
      (list
