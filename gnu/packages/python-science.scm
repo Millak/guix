@@ -799,6 +799,7 @@ the following purposes in mind:
              python-cython-3
              python-packaging
              python-pytest
+             python-setuptools
              python-setuptools-scm
              python-tomli
              python-tox))
