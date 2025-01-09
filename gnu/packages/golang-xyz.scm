@@ -5066,6 +5066,32 @@ also favors portability, and includes support for all POSIX systems.")
       (modify-inputs (package-inputs go-github-com-gdamore-tcell)
         (prepend go-golang-org-x-term go-golang-org-x-sys))))))
 
+(define-public go-github-com-git-lfs-go-netrc
+  (package
+    (name "go-github-com-git-lfs-go-netrc")
+    (version "0.0.0-20230601124202-e96144b9a966")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/git-lfs/go-netrc")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1rb8xk0gp7yvw10zs122p48qhj3xc9csaykbflr7wdfx5xqpbr2f"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/git-lfs/go-netrc"))
+    (home-page "https://github.com/git-lfs/go-netrc")
+    (synopsis "Netrc file parser for Go")
+    (description
+     "This package is for reading and writing netrc files.  This package can
+parse netrc files, make changes to them, and then serialize them back to netrc
+format, while preserving any whitespace that was present in the source file.")
+    (license license:expat)))
+
 (define-public go-github-com-gizak-termui-v3
   (package
     (name "go-github-com-gizak-termui-v3")
