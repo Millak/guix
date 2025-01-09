@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015-2024 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015-2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015 Alex Kost <alezost@gmail.com>
@@ -163,6 +163,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system trivial)
   #:use-module (guix build-system waf)
   #:use-module (guix download)
@@ -6404,7 +6405,7 @@ and much more.")
 (define-public python-resampy
   (package
     (name "python-resampy")
-    (version "0.2.2")
+    (version "0.4.3")
     (source
      (origin
        (method git-fetch)
@@ -6415,20 +6416,12 @@ and much more.")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qmkxl5sbgh0j73n667vyi7ywzh09iaync91yp1j5rrcmwsn0qfs"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "pytest" "tests")))))))
+        (base32 "0dlm9ksm7yzgg582sic0vqwfcwdya1g4gnydxldfhaq4y0wakr9c"))))
+    (build-system pyproject-build-system)
     (propagated-inputs
      (list python-numba python-numpy python-scipy python-six))
     (native-inputs
-     (list python-pytest python-pytest-cov))
+     (list python-pytest python-pytest-cov python-setuptools python-wheel))
     (home-page "https://github.com/bmcfee/resampy")
     (synopsis "Efficient signal resampling")
     (description
