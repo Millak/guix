@@ -1576,7 +1576,7 @@ extraction, and lookup for applications on the desktop.")
 (define-public gnome-initial-setup
   (package
     (name "gnome-initial-setup")
-    (version "46.4")
+    (version "46.7")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/gnome-initial-setup/"
@@ -1584,7 +1584,7 @@ extraction, and lookup for applications on the desktop.")
                                   "/gnome-initial-setup-" version ".tar.xz"))
               (sha256
                (base32
-                "1mqvvsl161pi4sv2x6b90rfs4a2166da9rkgkcpd67pwfhgyjxmr"))))
+                "00cwlzgg50y1ckgddpwx55vvsxc6mxfmwrakf440awiiz1lk5ild"))))
     (build-system meson-build-system)
     (arguments
      (list
