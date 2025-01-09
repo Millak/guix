@@ -39,7 +39,7 @@
 (define-public hwdata
   (package
     (name "hwdata")
-    (version "0.374")                   ;updated monthly
+    (version "0.391")                   ;updated monthly
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -48,7 +48,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1fcmg06lfzqrpq4z4gp12qpk7rd3s0phz4qyhq39ks43r1vxiy26"))))
+                "1shz7fayni7jxyz3i6d304mjh5cld88pj0rv85r804y23w5x8p8q"))))
     (build-system gnu-build-system)
     (arguments
      ;; Tests require pciutils, python, podman. Disable to avoid recursive dep.
