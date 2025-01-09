@@ -2511,7 +2511,7 @@ glamorous default themes.")
 (define-public go-github-com-charmbracelet-x-ansi
   (package
     (name "go-github-com-charmbracelet-x-ansi")
-    (version "0.5.2")
+    (version "0.6.0")
     (source
      (origin
        (method git-fetch)
@@ -2521,7 +2521,7 @@ glamorous default themes.")
                                           #:subdir "ansi"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "016s67690dr3w3an6m24q6f4vrmwpk0qd4akvvh1dzpfyf4khxd4"))))
+        (base32 "0y76a1zqj2ccyqibh4xk47hyw8grwrf5j3qm2j0pzd2yn592dny5"))))
     (build-system go-build-system)
     (arguments
      (list
