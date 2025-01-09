@@ -67,7 +67,7 @@
 ;;; Copyright © 2023 Evgeny Pisemsky <mail@pisemsky.site>
 ;;; Copyright © 2024 Tomas Volf <~@wolfsden.cz>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
-;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2024, 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -5604,7 +5604,7 @@ JSON, XML, properties, CSV and TSV.")
 (define-public go-github-com-itchyny-gojq
   (package
     (name "go-github-com-itchyny-gojq")
-    (version "0.12.16")
+    (version "0.12.17")
     (source
      (origin
        (method git-fetch)
@@ -5613,7 +5613,7 @@ JSON, XML, properties, CSV and TSV.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0favs281iaq98cmqwf47amk12xpksznpwgfid24z8migkp8628wl"))))
+        (base32 "0raipf3k392bihjk6kddzl3xsnap8wlvhplngmzx2vkp2f11x6fc"))))
     (build-system go-build-system)
     (arguments
      (list
