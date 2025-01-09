@@ -3531,35 +3531,35 @@ protocol.")
     (license license:bsd-2)))
 
 (define-public go-github-com-gregjones-httpcache
-    (package
-      (name "go-github-com-gregjones-httpcache")
-      (version "0.0.0-20190611155906-901d90724c79")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/gregjones/httpcache")
-               (commit (go-version->git-ref version))))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "05r0xq51vfb55di11m7iv19341d73f7in33vq1ihcqs1nffdwiq0"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path "github.com/gregjones/httpcache"))
-      (propagated-inputs
-       (list go-github-com-peterbourgon-diskv
-             go-github-com-syndtr-goleveldb
-             go-github-com-bradfitz-gomemcache
-             go-github-com-gomodule-redigo))
-      (home-page "https://github.com/gregjones/httpcache")
-      (synopsis "Transport for @code{http.Client} that will cache responses")
-      (description
-       "Package @code{httpcache} provides a @code{http.RoundTripper}
-implementation that works as a mostly @url{https://tools.ietf.org/html/rfc7234, RFC 7234}
-compliant cache for HTTP responses.  It is only suitable for use as a
-\"private\" cache (i.e. for a web-browser or an API-client and not for a
-shared proxy).")
-      (license license:expat)))
+  (package
+    (name "go-github-com-gregjones-httpcache")
+    (version "0.0.0-20190611155906-901d90724c79")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gregjones/httpcache")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05r0xq51vfb55di11m7iv19341d73f7in33vq1ihcqs1nffdwiq0"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/gregjones/httpcache"))
+    (propagated-inputs
+     (list go-github-com-peterbourgon-diskv
+           go-github-com-syndtr-goleveldb
+           go-github-com-bradfitz-gomemcache
+           go-github-com-gomodule-redigo))
+    (home-page "https://github.com/gregjones/httpcache")
+    (synopsis "Transport for @code{http.Client} that will cache responses")
+    (description
+     "Package @code{httpcache} provides a @code{http.RoundTripper}
+implementation that works as a mostly
+@url{https://tools.ietf.org/html/rfc7234, RFC 7234} compliant cache for HTTP
+responses.  It is only suitable for use as a \"private\" cache (i.e. for a
+web-browser or an API-client and not for a shared proxy).")
+    (license license:expat)))
 
 (define-public go-github-com-hashicorp-go-cleanhttp
   (package
