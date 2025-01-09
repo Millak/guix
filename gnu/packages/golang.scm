@@ -2598,29 +2598,6 @@ various color spaces.")
 encoding in Go.")
     (license license:bsd-3)))
 
-(define-public go-github-com-cespare-mph
-  (package
-    (name "go-github-com-cespare-mph")
-    (version "0.1.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/cespare/mph")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0mvd6bkvf3i3555kqkkr3k9jd4c25scjq4xad35sxpny8f72nbg1"))))
-    (build-system go-build-system)
-    (arguments
-     (list #:import-path "github.com/cespare/mph"))
-    (home-page "https://github.com/cespare/mph")
-    (synopsis "Minimal perfect hashing in Go")
-    (description
-     "@code{mph} is a Go package that implements a minimal perfect hash table
-over strings.")
-    (license license:expat)))
-
 (define-public go-github-com-lunixbochs-vtclean
   (package
     (name "go-github-com-lunixbochs-vtclean")
