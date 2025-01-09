@@ -2069,26 +2069,26 @@ memory-efficient.")
     (license license:bsd-2)))
 
 (define-public squashfuse-for-appimage
-    (package
-      (inherit squashfuse)
-      (arguments
-       (cons*
-        #:configure-flags
-        #~'("CFLAGS=-ffunction-sections -fdata-sections -Os -no-pie"
-            "LDFLAGS=-static")
-        (substitute-keyword-arguments (package-arguments squashfuse)
-          ((#:phases phases)
-           #~(modify-phases #$phases
-               (add-after 'install 'install-private-headers
-                 (lambda _
-                   (install-file "fuseprivate.h"
-                                 (string-append #$output
-                                                "/include/squashfuse/")))))))))
-      (inputs (list fuse-for-appimage
-                    `(,zstd "lib")
-                    `(,zstd "static")
-                    `(,zlib "out")
-                    `(,zlib "static")))))
+  (package
+    (inherit squashfuse)
+    (arguments
+     (cons*
+      #:configure-flags
+      #~'("CFLAGS=-ffunction-sections -fdata-sections -Os -no-pie"
+          "LDFLAGS=-static")
+      (substitute-keyword-arguments (package-arguments squashfuse)
+        ((#:phases phases)
+         #~(modify-phases #$phases
+             (add-after 'install 'install-private-headers
+               (lambda _
+                 (install-file "fuseprivate.h"
+                               (string-append #$output
+                                              "/include/squashfuse/")))))))))
+    (inputs (list fuse-for-appimage
+                  `(,zstd "lib")
+                  `(,zstd "static")
+                  `(,zlib "out")
+                  `(,zlib "static")))))
 
 (define-public tmsu
   (package
