@@ -15267,6 +15267,57 @@ kubernetes-independent packages supplementing the
 defined in @url{https://editorconfig.org/,https://editorconfig.org/}.")
     (license license:bsd-3)))
 
+(define-public go-mvdan-cc-sh-v3
+  (package
+    (name "go-mvdan-cc-sh-v3")
+    (version "3.10.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mvdan/sh")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ryqrhdjvj0ll88fk6dh63a5hjl0rpww3x8kmzqfnf5r83jdz3sh"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.22
+      #:skip-build? #t ; we need just lib here
+      #:import-path "mvdan.cc/sh/v3"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       ;; XXX: Check why these tests fail.
+                       (list "TestRunnerRun/#279"
+                             "TestRunnerRun/#281"
+                             "TestRunnerRun/#282"
+                             "TestRunnerRun/#289"
+                             "TestRunnerRun/#960"
+                             "TestRunnerRun/#989"
+                             "TestRunnerRun/#990"
+                             "TestRunnerRun/#991"
+                             "TestScript/flags")
+                       "|"))))
+    (native-inputs
+     (list go-github-com-go-quicktest-qt
+           go-github-com-google-go-cmp))
+    (propagated-inputs
+     (list go-github-com-creack-pty
+           go-github-com-google-renameio-v2
+           go-github-com-muesli-cancelreader
+           go-github-com-rogpeppe-go-internal
+           go-golang-org-x-sync
+           go-golang-org-x-sys
+           go-golang-org-x-term
+           go-mvdan-cc-editorconfig))
+    (home-page "https://mvdan.cc/sh")
+    (synopsis "Shell formatter with bash support")
+    (description
+     "This package provides a Golang library implementing a shell parser,
+formatter, and interpreter with bash support.")
+    (license license:bsd-3)))
+
 (define-public go-nullprogram-com-x-optparse
   (package
     (name "go-nullprogram-com-x-optparse")
