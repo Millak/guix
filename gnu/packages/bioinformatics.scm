@@ -18906,6 +18906,16 @@ implementation differs in these ways:
                             " and not test_clip"))
        #:phases
        #~(modify-phases %standard-phases
+           ;; XXX This should not be necessary, but I noticed while building
+           ;; python-metacells that the anndata version check fails, resulting
+           ;; in the wrong module name to be loaded from anndata.  I cannot
+           ;; reproduce this in an interactive Python session.  We patch this
+           ;; here to ensure that the appropriate module name is used.
+           (add-after 'unpack 'patch-version-check
+             (lambda _
+               (substitute* "src/scanpy/_utils/__init__.py"
+                 (("Version\\(anndata_version\\) >= Version\\(\"0.10.0\"\\):")
+                  "True:"))))
            (add-after 'unpack 'pretend-version
              (lambda _
                (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
