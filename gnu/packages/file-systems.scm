@@ -2071,6 +2071,7 @@ memory-efficient.")
 (define-public squashfuse-for-appimage
   (package
     (inherit squashfuse)
+    (name "squashfuse-for-appimage")
     (arguments
      (cons*
       #:configure-flags
