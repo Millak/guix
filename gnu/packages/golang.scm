@@ -3027,29 +3027,6 @@ That is, @code{gofumpt} is happy with a subset of the formats that
     (native-inputs '())
     (inputs '())))
 
-(define-public go-github-com-valyala-bytebufferpool
-  (package
-    (name "go-github-com-valyala-bytebufferpool")
-    (version "1.0.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/valyala/bytebufferpool")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "01lqzjddq6kz9v41nkky7wbgk7f1cw036sa7ldz10d82g5klzl93"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:import-path "github.com/valyala/bytebufferpool"))
-    (home-page "https://github.com/valyala/bytebufferpool")
-    (synopsis "Anti-memory-waste byte buffer pool for Golang")
-    (description
-     "@code{bytebufferpool} implements a pool of byte buffers with
-anti-fragmentation protection.")
-    (license license:expat)))
-
 (define-public go-github-com-vmihailenco-tagparser
   (package
     (name "go-github-com-vmihailenco-tagparser")
