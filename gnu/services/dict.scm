@@ -2,6 +2,7 @@
 ;;; Copyright © 2016 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2016, 2017, 2018, 2020, 2022, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Huang Ying <huang.ying.caritas@gmail.com>
+;;; Copyright © 2024 Runciter <runciter@whispers-vpn.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -40,7 +41,9 @@
             dicod-configuration
             dicod-handler
             dicod-database
-            %dicod-database:gcide))
+            %dicod-database:gcide
+            dicod-freedict-database
+            %dicod-databases:freedict))
 
 
 ;;;
@@ -93,6 +96,101 @@
    (handler "gcide")
    (options (list #~(string-append "dbdir=" #$gcide "/share/gcide")
                   #~(string-append "idxdir=" #$%dicod-gcide-index)))))
+
+(define (dicod-freedict-database dictionary-name)
+  "Returns a record of type @code{dicod-database} for purpose of configuring a
+database for the FreeDict multilingual dictionary named by the string
+@var{dictionary-name} into a service of type @code{dicod-service-type}."
+  (dicod-database (name (string-append "freedict-"
+                                       dictionary-name))
+                  (handler "dictorg")
+                  (options (list #~(string-append "database="
+                                                  #$freedict-dictionaries
+                                                  "/share/dictd/"
+                                                  #$dictionary-name)))))
+
+(define %dicod-databases:freedict
+  (map dicod-freedict-database (list "afr-deu"
+                                     "afr-eng"
+                                     "ara-eng"
+                                     "bre-fra"
+                                     "ces-eng"
+                                     "ckb-kmr"
+                                     "cym-eng"
+                                     "dan-eng"
+                                     "deu-ita"
+                                     "deu-kur"
+                                     "deu-nld"
+                                     "deu-por"
+                                     "deu-tur"
+                                     "eng-afr"
+                                     "eng-ara"
+                                     "eng-ces"
+                                     "eng-cym"
+                                     "eng-dan"
+                                     "eng-ell"
+                                     "eng-fra"
+                                     "eng-gle"
+                                     "eng-hin"
+                                     "eng-hrv"
+                                     "eng-hun"
+                                     "eng-ita"
+                                     "eng-lat"
+                                     "eng-lit"
+                                     "eng-nld"
+                                     "eng-pol"
+                                     "eng-por"
+                                     "eng-rom"
+                                     "eng-rus"
+                                     "eng-spa"
+                                     "eng-srp"
+                                     "eng-swh"
+                                     "eng-tur"
+                                     "fra-bre"
+                                     "fra-eng"
+                                     "fra-nld"
+                                     "gla-deu"
+                                     "gle-eng"
+                                     "gle-pol"
+                                     "hrv-eng"
+                                     "hun-eng"
+                                     "isl-eng"
+                                     "ita-deu"
+                                     "ita-eng"
+                                     "jpn-deu"
+                                     "jpn-eng"
+                                     "jpn-fra"
+                                     "jpn-rus"
+                                     "kha-deu"
+                                     "kha-eng"
+                                     "kur-deu"
+                                     "kur-eng"
+                                     "kur-tur"
+                                     "lat-deu"
+                                     "lat-eng"
+                                     "lit-eng"
+                                     "mkd-bul"
+                                     "nld-deu"
+                                     "nld-eng"
+                                     "nld-fra"
+                                     "nno-nob"
+                                     "oci-cat"
+                                     "pol-gle"
+                                     "por-deu"
+                                     "por-eng"
+                                     "san-deu"
+                                     "slk-eng"
+                                     "slv-eng"
+                                     "spa-ast"
+                                     "spa-eng"
+                                     "spa-por"
+                                     "srp-eng"
+                                     "swe-eng"
+                                     "swh-eng"
+                                     "swh-pol"
+                                     "tur-deu"
+                                     "tur-eng"
+                                     "wol-fra")))
 
 (define %dicod-accounts
   (list (user-group

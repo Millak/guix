@@ -41514,7 +41514,25 @@ A @code{<dicod-database>} object serving the GNU Collaborative International
 Dictionary of English using the @code{gcide} package.
 @end defvar
 
-The following is an example @code{dicod-service-type} configuration.
+@deffn {Procedure} dicod-freedict-database dictionary-name
+Returns a record of type @code{dicod-database} for purpose of
+configuring a database for the FreeDict multilingual dictionary named by
+@var{dictionary-name}, a string such as @code{"kur-eng"} for the
+Kurdish-to-English dictionary, into a service of type
+@code{dicod-service-type}.
+@end deffn
+
+@defvar %dicod-databases:freedict
+A relatively large list of records of type @code{dicod-database}, made
+available for users who wish to configure all the FreeDict multilingual
+dictionaries provided by the @code{freedict-dictionaries} package into a
+service of type @code{dicod-service-type}.
+@end defvar
+
+The following is an example @code{dicod-service-type} configuration,
+extending a @command{dicod} daemon serving databases for the wordnet and
+gcide dictionaries, as well as a selection of FreeDict multilingual
+dictionaries.
 
 @lisp
 (service dicod-service-type
@@ -41525,12 +41543,15 @@ The following is an example @code{dicod-service-type} configuration.
                       (module "wordnet")
                       (options
                        (list #~(string-append "wnhome=" #$wordnet))))))
-          (databases (list
+          (databases (cons*
                       (dicod-database
                        (name "wordnet")
                        (complex? #t)
                        (handler "wordnet"))
-                      %dicod-database:gcide))))
+                      %dicod-database:gcide
+                      (map
+                       dicod-freedict-database
+                       '("fra-eng" "eng-fra" "eng-spa" "spa-eng"))))))
 @end lisp
 
 @cindex Docker
