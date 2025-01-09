@@ -34,102 +34,96 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages crates-apple)
+  #:use-module (gnu packages crates-check)
+  #:use-module (gnu packages crates-compression)
   #:use-module (gnu packages crates-crypto)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages crates-web)
   #:use-module (gnu packages crates-windows)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages golang)
-  #:use-module (gnu packages jemalloc)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages rust-apps)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages valgrind))
 
-(define-public rust-asn1-0.15
+(define-public rust-asn1-0.20
   (package
     (name "rust-asn1")
-    (version "0.15.5")
+    (version "0.20.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "asn1" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1nzg1gjiyfvpvrf3i7i8j21165snf5livqg6x2sjf9m2i77cngmf"))))
+        (base32 "0ckg83ingvagwjvmxadjjmkgna5kvlvrfx9arlfvzqhxxas892rd"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-asn1-derive" ,rust-asn1-derive-0.15))
-       #:cargo-development-inputs
-       (("rust-libc" ,rust-libc-0.2))))
+     `(#:cargo-inputs (("rust-asn1-derive" ,rust-asn1-derive-0.20)
+                       ("rust-itoa" ,rust-itoa-1))
+       #:cargo-development-inputs (("rust-libc" ,rust-libc-0.2))))
     (home-page "https://github.com/alex/rust-asn1")
-    (synopsis "ASN.1 (DER) parser and writer")
+    (synopsis "ASN.1 (DER) parser and writer for Rust")
     (description
      "This is a Rust library for parsing and generating ASN.1 data (DER only).")
     (license license:bsd-3)))
 
-(define-public rust-asn1-0.13
+(define-public rust-asn1-0.16
   (package
-    (inherit rust-asn1-0.15)
+    (inherit rust-asn1-0.20)
     (name "rust-asn1")
-    (version "0.13.0")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "asn1" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1idxxw14h3dvrj72k4g0hx1aqigd986a00cg0yxfw2gfc9gbmzra"))))
+    (version "0.16.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "asn1" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ggb140ilik21y4vha7f1p9m795k1aq4mp9adc4n46r8b2hfsb2k"))))
     (arguments
-     `(#:cargo-inputs
-       (("rust-asn1-derive" ,rust-asn1-derive-0.13)
-        ("rust-chrono" ,rust-chrono-0.4))
-       #:cargo-development-inputs
-       (("rust-libc" ,rust-libc-0.2))))))
+     `(#:cargo-inputs (("rust-asn1-derive" ,rust-asn1-derive-0.16))
+       #:cargo-development-inputs (("rust-libc" ,rust-libc-0.2))))))
 
-(define-public rust-asn1-derive-0.15
+(define-public rust-asn1-derive-0.20
   (package
     (name "rust-asn1-derive")
-    (version "0.15.5")
+    (version "0.20.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "asn1_derive" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1771kfjycjs4g2acqvxpjy3igfcgg8hychczl1lsqq64za4gj6l6"))))
+        (base32 "1b88xsqmxpxjq4p2mrn1icj7c3k2s041v7wqp8yhnqiq06fq0052"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-2))))
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))
     (home-page "https://github.com/alex/rust-asn1")
     (synopsis "#[derive] support for asn1")
     (description
      "This package provides #[derive] support for @code{asn1}.")
     (license license:bsd-3)))
 
-(define-public rust-asn1-derive-0.13
+(define-public rust-asn1-derive-0.16
   (package
-    (inherit rust-asn1-derive-0.15)
+    (inherit rust-asn1-derive-0.20)
     (name "rust-asn1-derive")
-    (version "0.13.0")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "asn1_derive" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1bvqriazb23gysygpzng1dhzjgnlv274q2yj5gpmlpl7jp0pkaxz"))))
+    (version "0.16.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "asn1_derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "11y93778dzdfjcl03w07ddg9gq9f18bk2pznn0icq5yc71nhgrjn"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))))
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))))
 
 (define-public rust-asn1-rs-0.6
   (package
@@ -396,17 +390,18 @@
 (define-public rust-aws-lc-fips-sys-0.12
   (package
     (name "rust-aws-lc-fips-sys")
-    (version "0.12.1")
+    (version "0.12.15")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "aws-lc-fips-sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0fv2z5gcm9wm45hbsjhm657p6diqiq1vw5a2rzrzfg8j4vxdzz07"))))
+        (base32 "1yrvbilhzdisjk3mf3qf9xlbqwkh07ycsa2c7ppm2y1a4678l7nz"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.69)
+                       ("rust-cc" ,rust-cc-1)
                        ("rust-cmake" ,rust-cmake-0.1)
                        ("rust-dunce" ,rust-dunce-1)
                        ("rust-fs-extra" ,rust-fs-extra-1)
@@ -430,14 +425,14 @@ version of AWS-LC.")
 (define-public rust-aws-lc-rs-1
   (package
     (name "rust-aws-lc-rs")
-    (version "1.11.0")
+    (version "1.11.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "aws-lc-rs" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0ifz8z5y4qg94ri9vybyv2pq0hr7ds3da1r6rmd08dk2nr02hz7y"))
+        (base32 "18z5wvb8ay1183vw3cbp8wpqil3pl2p8bxfcxrkx4sdn2v6bhyzl"))
        (modules '((guix build utils)))
        (snippet
         '(begin (substitute* "Cargo.toml"
@@ -448,7 +443,6 @@ version of AWS-LC.")
      `(#:tests? #f          ; Not all files included.
        #:cargo-inputs (("rust-aws-lc-fips-sys" ,rust-aws-lc-fips-sys-0.12)
                        ("rust-aws-lc-sys" ,rust-aws-lc-sys-0.23)
-                       ("rust-mirai-annotations" ,rust-mirai-annotations-1)
                        ("rust-paste" ,rust-paste-1)
                        ("rust-untrusted" ,rust-untrusted-0.7)
                        ("rust-zeroize" ,rust-zeroize-1))
@@ -473,14 +467,14 @@ popular Rust library named ring.")
 (define-public rust-aws-lc-sys-0.23
   (package
     (name "rust-aws-lc-sys")
-    (version "0.23.0")
+    (version "0.23.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "aws-lc-sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "15igggl0xvzx212di0z4l1hxcvjhlk5ns67iw5yis7p8knd62fmd"))))
+        (base32 "1xrzqryr7gj0njcx6s5x495rbirlqmhws10bmambn9rjh7ris452"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.69)
@@ -499,38 +493,17 @@ Cryptography team for AWS and their customers.  It is based on code from the
 Google @code{BoringSSL} project and the @code{OpenSSL} project.")
     (license (list license:isc license:openssl license:asl2.0))))
 
-;; TODO: Unbundle aws-lc.
-(define-public rust-aws-lc-sys-0.13
-  (package
-    (inherit rust-aws-lc-sys-0.23)
-    (name "rust-aws-lc-sys")
-    (version "0.13.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "aws-lc-sys" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "05a7z5hg00zpk4gvqggzv7j6bvljplx2c1kw44ifmxjnf5469rdn"))))
-    (arguments
-     `(#:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.69)
-                       ("rust-cmake" ,rust-cmake-0.1)
-                       ("rust-dunce" ,rust-dunce-1)
-                       ("rust-fs-extra" ,rust-fs-extra-1)
-                       ("rust-libc" ,rust-libc-0.2)
-                       ("rust-paste" ,rust-paste-1))))))
-
 (define-public rust-der-0.7
   (package
     (name "rust-der")
-    (version "0.7.8")
+    (version "0.7.9")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "der" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "070bwiyr80800h31c5zd96ckkgagfjgnrrdmz3dzg2lccsd3dypz"))))
+                "1h4vzjfa1lczxdf8avfj9qlwh1qianqlxdy1g5rn762qnvkzhnzm"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -623,19 +596,18 @@ targets")
 (define-public rust-der-derive-0.7
   (package
     (name "rust-der-derive")
-    (version "0.7.2")
+    (version "0.7.3")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "der_derive" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0jg0y3k46bpygwc5cqha07axz5sdnsx5116g3nxf0rwrabj7rs2z"))))
+                "065d2wy7zd0dank99hh58l5x7lv50hxnr7j6f3sphlb7i4ihjd40"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-proc-macro-error" ,rust-proc-macro-error-1)
-        ("rust-proc-macro2" ,rust-proc-macro2-1)
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-2))))
     (home-page "https://github.com/RustCrypto/formats/tree/master/der/derive")
@@ -841,20 +813,19 @@ targets")
 (define-public rust-native-tls-0.2
   (package
     (name "rust-native-tls")
-    (version "0.2.11")
+    (version "0.2.12")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "native-tls" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0bmrlg0fmzxaycjpkgkchi93av07v2yf9k33gc12ca9gqdrn28h7"))))
+        (base32 "0rkl65z70n7sy4d5w0qa99klg1hr43wx6kcprk4d2n9xr2r4wqd8"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f                      ; tests require network access
        #:cargo-inputs
-       (("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-libc" ,rust-libc-0.2)
+       (("rust-libc" ,rust-libc-0.2)
         ("rust-log" ,rust-log-0.4)
         ("rust-openssl" ,rust-openssl-0.10)
         ("rust-openssl-probe" ,rust-openssl-probe-0.1)
@@ -865,7 +836,7 @@ targets")
         ("rust-tempfile" ,rust-tempfile-3))
        #:cargo-development-inputs
        (("rust-tempfile" ,rust-tempfile-3)
-        ("rust-test-cert-gen" ,rust-test-cert-gen-0.7))))
+        ("rust-test-cert-gen" ,rust-test-cert-gen-0.9))))
     (native-inputs
      (list pkg-config))
     (inputs
@@ -896,10 +867,10 @@ implementation.")
                                    ("rust-serde-derive" ,rust-serde-derive-1))))
     (home-page "https://labs.unnecessary.engineering/oid")
     (synopsis
-     "Library for building, parsing, and formating Object Identifiers (OIDs)")
+     "Library for building, parsing, and formatting Object Identifiers (OIDs)")
     (description
      "This package provides a Rust-native library for building, parsing, and
-formating Object Identifiers (OIDs).")
+formatting Object Identifiers (OIDs).")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-oid-registry-0.7
@@ -1073,14 +1044,14 @@ grammars and BER/DER encodings, for example.")
 (define-public rust-rcgen-0.13
   (package
     (name "rust-rcgen")
-    (version "0.13.1")
+    (version "0.13.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rcgen" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0yb7lg0pd1j66jr0kacs5z8q66fb9izkvsp11ma8hry4f8c7w1sl"))
+        (base32 "18l0rz228pvnc44bjmvq8cchhh5d2rrkk98y9lqvan9243jnkrkm"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -1284,14 +1255,14 @@ grammars and BER/DER encodings, for example.")
 (define-public rust-rustls-0.23
   (package
     (name "rust-rustls")
-    (version "0.23.17")
+    (version "0.23.19")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rustls" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "07lg2b56s3gp3acd8a6yaqbpji8vv3xmv3ay8vaacjy525ap86kz"))))
+        (base32 "1lgqjf1vh09kghyj34a4svn1max18pmhka6bwbxb61mv61240jwk"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; Not all files included.
@@ -1311,7 +1282,6 @@ grammars and BER/DER encodings, for example.")
        #:cargo-development-inputs
        (("rust-base64" ,rust-base64-0.22)
         ("rust-bencher" ,rust-bencher-0.1)
-        ("rust-clap" ,rust-clap-4)
         ("rust-env-logger" ,rust-env-logger-0.10)
         ("rust-hex" ,rust-hex-0.4)
         ("rust-log" ,rust-log-0.4)
@@ -1319,20 +1289,8 @@ grammars and BER/DER encodings, for example.")
         ("rust-rcgen" ,rust-rcgen-0.13)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-tikv-jemallocator" ,rust-tikv-jemallocator-0.6)
         ("rust-time" ,rust-time-0.3)
-        ("rust-webpki-roots" ,rust-webpki-roots-0.26))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'configure 'override-jemalloc
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((jemalloc (assoc-ref inputs "jemalloc")))
-               ;; This flag is needed when not using the bundled jemalloc.
-               ;; https://github.com/tikv/jemallocator/issues/19
-               (setenv "CARGO_FEATURE_UNPREFIXED_MALLOC_ON_SUPPORTED_PLATFORMS" "1")
-               (setenv "JEMALLOC_OVERRIDE"
-                       (string-append jemalloc "/lib/libjemalloc_pic.a"))))))))
-    (inputs (list jemalloc))
+        ("rust-webpki-roots" ,rust-webpki-roots-0.26))))
     (home-page "https://github.com/rustls/rustls")
     (synopsis "Modern TLS library written in Rust")
     (description
@@ -1343,14 +1301,14 @@ grammars and BER/DER encodings, for example.")
   (package
     (inherit rust-rustls-0.23)
     (name "rust-rustls")
-    (version "0.22.2")
+    (version "0.22.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rustls" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0hcxyhq6ynvws9v5b2h81s1nwmijmya7a3vyyyhsy1wqpmb9jz78"))))
+        (base32 "0cl4q6w0x1cl5ldjsgbbiiqhkz6qg5vxl5dkn9wwsyxc44vzfkmz"))))
     (arguments
      `(#:tests? #f          ; Not all files included.
        #:cargo-inputs (("rust-aws-lc-rs" ,rust-aws-lc-rs-1)
@@ -1372,14 +1330,14 @@ grammars and BER/DER encodings, for example.")
   (package
     (inherit rust-rustls-0.22)
     (name "rust-rustls")
-    (version "0.21.10")
+    (version "0.21.12")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "rustls" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1fmpzk3axnhkd99saqkvraifdfms4pkyi56lkihf8n877j0sdmgr"))))
+                "0gjdg2a9r81sdwkyw3n5yfbkrr6p9gyk3xr2kcsr3cs83x6s2miz"))))
     (arguments
      `(#:tests? #f          ; Not all files included.
        #:cargo-inputs
@@ -1589,14 +1547,14 @@ grammars and BER/DER encodings, for example.")
 (define-public rust-rustls-ffi-0.14
   (package
     (name "rust-rustls-ffi")
-    (version "0.14.0")
+    (version "0.14.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rustls-ffi" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1cdpnx205m3bc7sn6gvaizlsb8ayipf1l061das37mf7n4sw157s"))))
+        (base32 "1hky8z8xf9l813b1f54b0ir2knzv3kflh41i7q7xwlkyafza65n9"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
@@ -1618,68 +1576,67 @@ grammars and BER/DER encodings, for example.")
      "This package provides Rustls bindings for non-Rust languages.")
     (license (list license:asl2.0 license:isc license:expat))))
 
-(define-public rust-rustls-ffi-0.8
-  (package
-    (inherit rust-rustls-ffi-0.14)
-    (name "rust-rustls-ffi")
-    (version "0.8.2")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "rustls-ffi" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32 "06kqrvm1d5ps9pml26zdd2hm8hh20j6svwvqibpnx7m5rh3jg9cx"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-libc" ,rust-libc-0.2)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-num-enum" ,rust-num-enum-0.5)
-        ("rust-rustls" ,rust-rustls-0.20)
-        ("rust-rustls-pemfile" ,rust-rustls-pemfile-0.2)
-        ("rust-sct" ,rust-sct-0.7)
-        ("rust-webpki" ,rust-webpki-0.22))
-        #:cargo-development-inputs
-        (("rust-cbindgen" ,rust-cbindgen-0.26))
-        #:phases
-        (modify-phases %standard-phases
-          (add-after 'unpack 'adjust-cbindgen-requirement
-            ;; The Cargo.toml in the git repository doesn't specify
-            ;; a version requirement for cbindgen.
-            (lambda _
-              (substitute* "Cargo.toml"
-                (("0\\.19\\.0") "*")))))))))
-
-(define-public rust-rustls-native-certs-0.7
+(define-public rust-rustls-native-certs-0.8
   (package
     (name "rust-rustls-native-certs")
-    (version "0.7.0")
+    (version "0.8.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rustls-native-certs" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "14ip15dcr6fmjzi12lla9cpln7mmkdid4a7wsp344v4kz9gbh7wg"))))
+        (base32 "1ls7laa3748mkn23fmi3g4mlwk131lx6chq2lyc8v2mmabfz5kvz"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f      ; Tests want network access.
+     `(#:cargo-test-flags '("--release" "--"
+                            "--skip=test_contains_most_roots_known_by_mozilla")
+       #:cargo-inputs (("rust-openssl-probe" ,rust-openssl-probe-0.1)
+                       ("rust-rustls-pki-types" ,rust-rustls-pki-types-1)
+                       ("rust-schannel" ,rust-schannel-0.1)
+                       ("rust-security-framework" ,rust-security-framework-3))
+       #:cargo-development-inputs (("rust-ring" ,rust-ring-0.17)
+                                   ("rust-rustls" ,rust-rustls-0.23)
+                                   ("rust-rustls-webpki" ,rust-rustls-webpki-0.102)
+                                   ("rust-serial-test" ,rust-serial-test-3)
+                                   ("rust-tempfile" ,rust-tempfile-3)
+                                   ("rust-untrusted" ,rust-untrusted-0.9)
+                                   ("rust-webpki-roots" ,rust-webpki-roots-0.26)
+                                   ("rust-x509-parser" ,rust-x509-parser-0.16))))
+    (home-page "https://github.com/rustls/rustls-native-certs")
+    (synopsis "Use the platform native certificate store with rustls")
+    (description "@code{rustls-native-certs} allows rustls to use the platform
+native certificate store.")
+    (license (list license:asl2.0 license:isc license:expat))))
+
+(define-public rust-rustls-native-certs-0.7
+  (package
+    (inherit rust-rustls-native-certs-0.8)
+    (name "rust-rustls-native-certs")
+    (version "0.7.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rustls-native-certs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1r9ib5gwkfci2wbqnbh44nigvrfgxs4n1x89js82w97dxsab7gz5"))))
+    (arguments
+     `(#:cargo-test-flags '("--release" "--"
+                            "--skip=test_contains_most_roots_known_by_mozilla")
        #:cargo-inputs (("rust-openssl-probe" ,rust-openssl-probe-0.1)
                        ("rust-rustls-pemfile" ,rust-rustls-pemfile-2)
                        ("rust-rustls-pki-types" ,rust-rustls-pki-types-1)
                        ("rust-schannel" ,rust-schannel-0.1)
                        ("rust-security-framework" ,rust-security-framework-2))
-       #:cargo-development-inputs (("rust-ring" ,rust-ring-0.16)
-                                   ("rust-rustls" ,rust-rustls-0.22)
+       #:cargo-development-inputs (("rust-ring" ,rust-ring-0.17)
+                                   ("rust-rustls" ,rust-rustls-0.23)
                                    ("rust-rustls-webpki" ,rust-rustls-webpki-0.102)
-                                   ("rust-serial-test" ,rust-serial-test-2)
-                                   ("rust-untrusted" ,rust-untrusted-0.7)
+                                   ("rust-serial-test" ,rust-serial-test-3)
+                                   ("rust-tempfile" ,rust-tempfile-3)
+                                   ("rust-untrusted" ,rust-untrusted-0.9)
                                    ("rust-webpki-roots" ,rust-webpki-roots-0.26)
-                                   ("rust-x509-parser" ,rust-x509-parser-0.15))))
-    (home-page "https://github.com/ctz/rustls-native-certs")
-    (synopsis "Use the platform native certificate store with rustls")
-    (description "@code{rustls-native-certs} allows rustls to use the platform
-native certificate store.")
-    (license (list license:asl2.0 license:isc license:expat))))
+                                   ("rust-x509-parser" ,rust-x509-parser-0.16))))))
 
 (define-public rust-rustls-native-certs-0.6
   (package
@@ -1729,48 +1686,20 @@ native certificate store.")
         ("rust-schannel" ,rust-schannel-0.1)
         ("rust-security-framework" ,rust-security-framework-2))))))
 
-(define-public rust-rustls-native-certs-0.4
-  (package
-    (inherit rust-rustls-native-certs-0.5)
-    (name "rust-rustls-native-certs")
-    (version "0.4.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "rustls-native-certs" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1f2rkvdkz92qcmwryyqiw9phkqkf95g4962ljpfq5nkjfsd477b2"))))
-    (arguments
-     `(#:tests? #f      ; Tests want network access
-       #:cargo-inputs
-       (("rust-openssl-probe" ,rust-openssl-probe-0.1)
-        ("rust-rustls" ,rust-rustls-0.18)
-        ("rust-schannel" ,rust-schannel-0.1)
-        ("rust-security-framework"
-         ,rust-security-framework-1))
-       #:cargo-development-inputs
-       (("rust-ring" ,rust-ring-0.16)
-        ("rust-untrusted" ,rust-untrusted-0.7)
-        ("rust-webpki" ,rust-webpki-0.21)
-        ("rust-webpki-roots" ,rust-webpki-roots-0.20))))))
-
 (define-public rust-rustls-pemfile-2
   (package
     (name "rust-rustls-pemfile")
-    (version "2.0.0")
+    (version "2.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rustls-pemfile" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1x34xidvzn4br2vl8f8xwmhgbjv4lmlb0ggv5whlnk4yl87rir1m"))))
+        (base32 "0l3f3mrfkgdjrava7ibwzgwc4h3dljw3pdkbsi9rkwz3zvji9qyw"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-base64" ,rust-base64-0.21)
-                       ("rust-rustls-pki-types" ,rust-rustls-pki-types-1))
+     `(#:cargo-inputs (("rust-rustls-pki-types" ,rust-rustls-pki-types-1))
        #:cargo-development-inputs (("rust-bencher" ,rust-bencher-0.1))))
     (home-page "https://github.com/rustls/pemfile")
     (synopsis "Basic parser for PEM formatted keys and certificates")
@@ -1817,14 +1746,14 @@ PEM-encodings commonly used to store keys and certificates at rest.")
 (define-public rust-rustls-pki-types-1
   (package
     (name "rust-rustls-pki-types")
-    (version "1.10.0")
+    (version "1.10.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rustls-pki-types" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0jv78c32pgf1i0bn7rzf4xdr9qh5wsvigp6akc1yhzls7hdj1w8n"))
+        (base32 "0dqb3d0cbld1yrp084wyzgw6yk3qzzic8l5pbs1b6bcjzzk4ggyj"))
        (snippet
         #~(begin (use-modules (guix build utils))
                  (substitute* "Cargo.toml"
@@ -1832,8 +1761,7 @@ PEM-encodings commonly used to store keys and certificates at rest.")
                     (string-append "\"^" version)))))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-web-time" ,rust-web-time-1))
+     `(#:cargo-inputs (("rust-web-time" ,rust-web-time-1))
        #:cargo-development-inputs (("rust-crabgrind" ,rust-crabgrind-0.1))))
     (native-inputs (list valgrind))
     (home-page "https://github.com/rustls/pki-types")
@@ -1842,8 +1770,106 @@ PEM-encodings commonly used to store keys and certificates at rest.")
      "This crate provides shared types for the rustls PKI ecosystem.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-rustls-platform-verifier-0.5
+  (package
+    (name "rust-rustls-platform-verifier")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rustls-platform-verifier" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1nlrxbw2i5q7dxz2gnif14hz5ph67b5d8viqr4r06yd18icc84p0"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-test-flags
+           '(list "--"
+                  "--skip=tests::verification_mock::test_verification_without_mock_root"
+                  "--skip=tests::verification_real_world::tests::_1password_com_valid"
+                  "--skip=tests::verification_real_world::tests::letsencrypt"
+                  "--skip=tests::verification_real_world::tests::my_1password_com_valid"
+                  "--skip=tests::verification_real_world::tests::my_1password_com_valid_no_stapled"
+                  "--skip=tests::verification_real_world::tests::unrelated_chain_not_valid_for_my_1password_com"
+                  "--skip=tests::verification_real_world::tests::unrelated_chain_valid_for_unrelated_domain"
+                  "--skip=tests::verification_real_world::tests::unrelated_domain_invalid")
+           #:cargo-inputs
+           (list rust-android-logger-0.13
+                 rust-base64-0.22
+                 rust-core-foundation-0.10
+                 rust-core-foundation-sys-0.8
+                 rust-jni-0.21
+                 rust-log-0.4
+                 rust-once-cell-1
+                 rust-paste-1
+                 rust-rustls-0.23
+                 rust-rustls-native-certs-0.8
+                 rust-rustls-platform-verifier-android-0.1
+                 rust-rustls-webpki-0.102
+                 rust-security-framework-3
+                 rust-security-framework-sys-2
+                 rust-webpki-root-certs-0.26
+                 rust-windows-sys-0.52)
+           #:cargo-development-inputs
+           (list rust-paste-1
+                 rust-rustls-0.23
+                 rust-webpki-root-certs-0.26)))
+    (home-page "https://github.com/rustls/rustls-platform-verifier")
+    (synopsis
+     "Verify TLS certificates in rustls with the operating system verifier")
+    (description
+     "This package provides rustls-platform-verifier a way to support verifying
+TLS certificates in rustls with the operating system verifier.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-rustls-platform-verifier-0.4
+  (package
+    (inherit rust-rustls-platform-verifier-0.5)
+    (name "rust-rustls-platform-verifier")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rustls-platform-verifier" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0dnij2d9029i06x4bhyzj5izwv3370233czaqkk1fmgc1wjdrix4"))))
+    (arguments
+     (list #:cargo-test-flags
+           '(list "--"
+                  "--skip=tests::verification_mock::test_verification_without_mock_root"
+                  "--skip=tests::verification_real_world::tests::_1password_com_valid"
+                  "--skip=tests::verification_real_world::tests::letsencrypt"
+                  "--skip=tests::verification_real_world::tests::my_1password_com_valid"
+                  "--skip=tests::verification_real_world::tests::my_1password_com_valid_no_stapled"
+                  "--skip=tests::verification_real_world::tests::unrelated_chain_not_valid_for_my_1password_com"
+                  "--skip=tests::verification_real_world::tests::unrelated_chain_valid_for_unrelated_domain"
+                  "--skip=tests::verification_real_world::tests::unrelated_domain_invalid")
+           #:cargo-inputs
+           (list rust-android-logger-0.13
+                 rust-base64-0.22
+                 rust-core-foundation-0.9
+                 rust-core-foundation-sys-0.8
+                 rust-jni-0.19
+                 rust-log-0.4
+                 rust-once-cell-1
+                 rust-paste-1
+                 rust-rustls-0.23
+                 rust-rustls-native-certs-0.7
+                 rust-rustls-platform-verifier-android-0.1
+                 rust-rustls-webpki-0.102
+                 rust-security-framework-2
+                 rust-security-framework-sys-2
+                 rust-webpki-root-certs-0.26
+                 rust-windows-sys-0.52)
+           #:cargo-development-inputs
+           (list rust-paste-1
+                 rust-rustls-0.23
+                 rust-webpki-root-certs-0.26)))))
+
 (define-public rust-rustls-platform-verifier-0.3
   (package
+    (inherit rust-rustls-platform-verifier-0.5)
     (name "rust-rustls-platform-verifier")
     (version "0.3.4")
     (source
@@ -1853,7 +1879,6 @@ PEM-encodings commonly used to store keys and certificates at rest.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "145lhjn9w5khp0fn4lagaa8qqyjyhfqn2dg6llva6qyzvy5qgfxg"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
        '("--release" "--"
@@ -1882,14 +1907,7 @@ PEM-encodings commonly used to store keys and certificates at rest.")
         ("rust-webpki-roots" ,rust-webpki-roots-0.26)
         ("rust-winapi" ,rust-winapi-0.3))
        #:cargo-development-inputs (("rust-rustls" ,rust-rustls-0.23)
-                                   ("rust-webpki-roots" ,rust-webpki-roots-0.26))))
-    (home-page "https://github.com/rustls/rustls-platform-verifier")
-    (synopsis
-     "Verify TLS certificates in rustls with the operating system verifier")
-    (description
-     "This package provides rustls-platform-verifier a way to support verifying
-TLS certificates in rustls with the operating system verifier.")
-    (license (list license:expat license:asl2.0))))
+                                   ("rust-webpki-roots" ,rust-webpki-roots-0.26))))))
 
 (define-public rust-rustls-platform-verifier-android-0.1
   (package
@@ -1985,8 +2003,39 @@ rustls-platform-verifier crate.  You shouldn't depend on this directly.")
        #:cargo-development-inputs (("rust-base64" ,rust-base64-0.13)
                                    ("rust-rcgen" ,rust-rcgen-0.11))))))
 
+(define-public rust-tls-parser-0.12
+  (package
+    (name "rust-tls-parser")
+    (version "0.12.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tls-parser" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0hf7k9fn1ziy6lmskkz6gcch4lfzv9mhzrr4yaqq8988qr4n5hr2"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f ;; requires assets not included in crates.io tarball
+       #:cargo-inputs (("rust-cookie-factory" ,rust-cookie-factory-0.3)
+                       ("rust-nom" ,rust-nom-7)
+                       ("rust-nom-derive" ,rust-nom-derive-0.10)
+                       ("rust-num-enum" ,rust-num-enum-0.7)
+                       ("rust-phf" ,rust-phf-0.11)
+                       ("rust-phf-codegen" ,rust-phf-codegen-0.11)
+                       ("rust-rusticata-macros" ,rust-rusticata-macros-4))
+       #:cargo-development-inputs
+       (("rust-clap" ,rust-clap-4)
+        ("rust-hex-literal" ,rust-hex-literal-0.4)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1))))
+    (home-page "https://github.com/rusticata/tls-parser")
+    (synopsis "Parser for the TLS protocol")
+    (description "This package provides a Rust parser for the TLS protocol.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-tls-parser-0.11
   (package
+    (inherit rust-tls-parser-0.12)
     (name "rust-tls-parser")
     (version "0.11.0")
     (source
@@ -2003,7 +2052,6 @@ rustls-platform-verifier crate.  You shouldn't depend on this directly.")
                  ;; Accept newer versions of rust-clap.
                  (substitute* "Cargo.toml"
                    (("~2\\.33") "^2.33"))))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f ;; requires assets not included in crates.io tarball
        #:cargo-inputs
@@ -2017,11 +2065,7 @@ rustls-platform-verifier crate.  You shouldn't depend on this directly.")
        #:cargo-development-inputs
        (("rust-clap" ,rust-clap-2)
         ("rust-hex-literal" ,rust-hex-literal-0.3)
-        ("rust-pretty-assertions" ,rust-pretty-assertions-0.7))))
-    (home-page "https://github.com/rusticata/tls-parser")
-    (synopsis "Parser for the TLS protocol")
-    (description "This package provides a Rust parser for the TLS protocol.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-pretty-assertions" ,rust-pretty-assertions-0.7))))))
 
 (define-public rust-x509-cert-0.2
   (package
@@ -2192,29 +2236,3 @@ Public Key Infrastructure Certificate format as described in RFC 5280.")
         ("rust-rusticata-macros" ,rust-rusticata-macros-4)
         ("rust-thiserror" ,rust-thiserror-1))))))
 
-(define-public rust-x509-signature-0.5
-  (package
-    (name "rust-x509-signature")
-    (version "0.5.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "x509-signature" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "063mjzgddfam4xb88wr0li3k0q6nzyq3mvkiykajr69dj0mbrclz"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:tests? #f  ; `const_err` has been removed: converted into hard error
-       #:cargo-test-flags '("--release" "--"
-                            "--skip=tests::parses_openssl_generated_cert")
-       #:cargo-inputs (("rust-ring" ,rust-ring-0.16)
-                       ("rust-rustls" ,rust-rustls-0.18)
-                       ("rust-untrusted" ,rust-untrusted-0.7)
-                       ("rust-webpki" ,rust-webpki-0.21))
-       #:cargo-development-inputs (("rust-chrono" ,rust-chrono-0.4))))
-    (home-page "https://github.com/paritytech/x509-signature")
-    (synopsis "Low-level X.509 parsing and signature verification library")
-    (description "This package provides a low-level X.509 parsing and signature
-verification library.")
-    (license (list license:expat license:asl2.0))))

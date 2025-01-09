@@ -2,7 +2,7 @@
 ;;; Copyright © 2019, 2020 John Soo <jsoo1@asu.edu>
 ;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
-;;; Copyright © 2020, 2022-2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2020, 2022-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Valentin Ignatev <valentignatev@gmail.com>
 ;;; Copyright © 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
@@ -35,6 +35,7 @@
 
 (define-module (gnu packages crates-crypto)
   #:use-module (guix build-system cargo)
+  #:use-module (guix build-system trivial)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
@@ -46,6 +47,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crates-apple)
+  #:use-module (gnu packages crates-check)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages crates-tls)
   #:use-module (gnu packages crates-windows)
@@ -66,18 +68,19 @@
 (define-public rust-aead-0.5
   (package
     (name "rust-aead")
-    (version "0.5.1")
+    (version "0.5.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "aead" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1j6pmc8pk4ha64bj9l6xzbhd85s2y1dblna2zsq83h0zy6w2w6aw"))))
+        (base32 "1c32aviraqag7926xcb9sybdm36v5vh9gnxpn4pxdwjc50zl28ni"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-blobby" ,rust-blobby-0.3)
+       (("rust-arrayvec" ,rust-arrayvec-0.7)
+        ("rust-blobby" ,rust-blobby-0.3)
         ("rust-bytes" ,rust-bytes-1)
         ("rust-crypto-common" ,rust-crypto-common-0.1)
         ("rust-generic-array" ,rust-generic-array-0.14)
@@ -134,24 +137,6 @@ algorithms")
     (description "This package provides traits for Authenticated Encryption
 with Associated Data (AEAD) algorithms.")
     (license (list license:expat license:asl2.0))))
-
-(define-public rust-aead-0.2
-  (package
-    (inherit rust-aead-0.3)
-    (name "rust-aead")
-    (version "0.2.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "aead" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1r3ijikx9h117q0xgkc56yb0501kifjr3gsfp5bvnrz7asdipw2c"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-generic-array" ,rust-generic-array-0.12)
-        ("rust-heapless" ,rust-heapless-0.5))))))
 
 (define-public rust-aes-0.8
   (package
@@ -243,24 +228,30 @@ ciphers implementations.")
        #:cargo-development-inputs
        (("rust-block-cipher" ,rust-block-cipher-0.7))))))
 
-(define-public rust-aes-0.3
+(define-public rust-aes-0.3.2-yanked
   (package
     (inherit rust-aes-0.4)
     (name "rust-aes")
-    (version "0.3.2")
+    (version "0.3.2") ; This version was yanked!
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "aes" version))
-       (file-name (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version "-yanked.tar.gz"))
        (sha256
         (base32 "1j90iwpax0y1dqq14i8y9xgpcnnlgnljwkxg3mhzrralwf7ivssl"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-aes-soft" ,rust-aes-soft-0.3)
         ("rust-aesni" ,rust-aesni-0.6)
-        ("rust-block-cipher-trait" ,rust-block-cipher-trait-0.6))))))
+        ("rust-block-cipher-trait" ,rust-block-cipher-trait-0.6))
+       #:cargo-development-inputs
+       (("rust-block-cipher-trait" ,rust-block-cipher-trait-0.6))))
+    (properties '((crate-version-yanked? . #t)))))
+
+(define-public rust-aes-0.3
+  ;; There are no non-yanked versions of this semver.
+  (deprecated-package "rust-aes" rust-aes-0.3.2-yanked))
 
 (define-public rust-aes-ctr-0.6
   (package
@@ -291,14 +282,14 @@ Standard}.  Use the AES crate if possible, as the aes-ctr has been into it.")
 (define-public rust-aes-gcm-0.10
   (package
     (name "rust-aes-gcm")
-    (version "0.10.1")
+    (version "0.10.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "aes-gcm" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0z2429v2d2wyf809h2wc4vwwibwypz3y4p7sn4kzkjb91ip3dqc2"))))
+        (base32 "1lgaqgg1gh9crg435509lqdhajg1m2vgma6f7fdj1qa2yyh10443"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -374,55 +365,6 @@ acceleration.")
        #:cargo-development-inputs
        (("rust-hex-literal" ,rust-hex-literal-0.2))))))
 
-(define-public rust-aes-gcm-0.6
-  (package
-    (inherit rust-aes-gcm-0.8)
-    (name "rust-aes-gcm")
-    (version "0.6.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "aes-gcm" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1lga8my3zlc0b1nhcpc1hrbykfm014fqs6d64bwrjqii05w01xc6"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-aead" ,rust-aead-0.3)
-        ("rust-aes" ,rust-aes-0.4)
-        ("rust-block-cipher" ,rust-block-cipher-0.7)
-        ("rust-ghash" ,rust-ghash-0.3)
-        ("rust-subtle" ,rust-subtle-2)
-        ("rust-zeroize" ,rust-zeroize-1))
-       #:cargo-development-inputs
-       (("rust-criterion" ,rust-criterion-0.3)
-        ("rust-criterion-cycles-per-byte"
-         ,rust-criterion-cycles-per-byte-0.1)
-        ("rust-hex-literal" ,rust-hex-literal-0.2))))))
-
-(define-public rust-aes-gcm-0.5
-  (package
-    (inherit rust-aes-gcm-0.6)
-    (name "rust-aes-gcm")
-    (version "0.5.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "aes-gcm" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0f66b5bmyj38r1hj55wzamlzw3y1aql34lgwr2vxn93073d6njl3"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-aead" ,rust-aead-0.2)
-        ("rust-aes" ,rust-aes-0.3)
-        ("rust-block-cipher-trait" ,rust-block-cipher-trait-0.6)
-        ("rust-ghash" ,rust-ghash-0.2)
-        ("rust-subtle" ,rust-subtle-2)
-        ("rust-zeroize" ,rust-zeroize-1))))))
-
 (define-public rust-aes-soft-0.6
   (package
     (name "rust-aes-soft")
@@ -451,16 +393,16 @@ AES (Rijndael) block ciphers.
 This package is deprecated and was replaced by the @code{aes} crate.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-aes-soft-0.4
+(define-public rust-aes-soft-0.4.0-yanked
   (package
     (inherit rust-aes-soft-0.6)
     (name "rust-aes-soft")
-    (version "0.4.0")
+    (version "0.4.0") ; This version was yanked!
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "aes-soft" version))
-       (file-name (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version "-yanked.tar.gz"))
        (sha256
         (base32
          "19szsg0qqxq42k7bj5p3svb147n8wxy9a20n4g7mcl2fwrz689a9"))))
@@ -470,26 +412,37 @@ This package is deprecated and was replaced by the @code{aes} crate.")
         ("rust-byteorder" ,rust-byteorder-1)
         ("rust-opaque-debug" ,rust-opaque-debug-0.2))
        #:cargo-development-inputs
-       (("rust-block-cipher" ,rust-block-cipher-0.7))))))
+       (("rust-block-cipher" ,rust-block-cipher-0.7))))
+    (properties '((crate-version-yanked? . #t)))))
 
-(define-public rust-aes-soft-0.3
+(define-public rust-aes-soft-0.4
+  ;; There are no non-yanked versions of this semver.
+  (deprecated-package "rust-aes-soft" rust-aes-soft-0.4.0-yanked))
+
+(define-public rust-aes-soft-0.3.3-yanked
   (package
     (inherit rust-aes-soft-0.4)
     (name "rust-aes-soft")
-    (version "0.3.3")
+    (version "0.3.3") ; This version was yanked!
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "aes-soft" version))
-       (file-name (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version "-yanked.tar.gz"))
        (sha256
         (base32 "039si7yjp0wcd750sgq52c60sh2ikaxwd7rq7g0ba7ws7ypfgmyg"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-block-cipher-trait" ,rust-block-cipher-trait-0.6)
         ("rust-byteorder" ,rust-byteorder-1)
-        ("rust-opaque-debug" ,rust-opaque-debug-0.2))))))
+        ("rust-opaque-debug" ,rust-opaque-debug-0.2))
+       #:cargo-development-inputs
+       (("rust-block-cipher-trait" ,rust-block-cipher-trait-0.6))))
+    (properties '((crate-version-yanked? . #t)))))
+
+(define-public rust-aes-soft-0.3
+  ;; There are no non-yanked versions of this semver.
+  (deprecated-package "rust-aes-soft" rust-aes-soft-0.3.3-yanked))
 
 (define-public rust-aesni-0.10
   (package
@@ -516,16 +469,16 @@ block ciphers using AES-NI.
 This package is deprecated and was replaced by the @code{aes} crate.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-aesni-0.7
+(define-public rust-aesni-0.7.0-yanked
   (package
     (inherit rust-aesni-0.10)
     (name "rust-aesni")
-    (version "0.7.0")
+    (version "0.7.0") ; This version was yanked!
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "aesni" version))
-       (file-name (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version "-yanked.tar.gz"))
        (sha256
         (base32
          "0r6j0mjkyqnwvgib01cvrwfw8rlx1biw75234niv723n1fdx6l6h"))))
@@ -537,18 +490,23 @@ This package is deprecated and was replaced by the @code{aes} crate.")
         ("rust-stream-cipher" ,rust-stream-cipher-0.4))
        #:cargo-development-inputs
        (("rust-block-cipher" ,rust-block-cipher-0.7)
-        ("rust-stream-cipher" ,rust-stream-cipher-0.4))))))
+        ("rust-stream-cipher" ,rust-stream-cipher-0.4))))
+    (properties '((crate-version-yanked? . #t)))))
 
-(define-public rust-aesni-0.6
+(define-public rust-aesni-0.7
+  ;; There are no non-yanked versions of this semver.
+  (deprecated-package "rust-aesni" rust-aesni-0.7.0-yanked))
+
+(define-public rust-aesni-0.6.0-yanked
   (package
     (inherit rust-aesni-0.7)
     (name "rust-aesni")
-    (version "0.6.0")
+    (version "0.6.0") ; This version is yanked!
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "aesni" version))
-       (file-name (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version "-yanked.tar.gz"))
        (sha256
         (base32 "007imgcfl82nilfpamj5dik83pkcmkzvbkxp384p7r3iz6sscw1g"))))
     (arguments
@@ -556,19 +514,24 @@ This package is deprecated and was replaced by the @code{aes} crate.")
        #:cargo-inputs
        (("rust-block-cipher-trait" ,rust-block-cipher-trait-0.6)
         ("rust-opaque-debug" ,rust-opaque-debug-0.2)
-        ("rust-stream-cipher" ,rust-stream-cipher-0.3))))))
+        ("rust-stream-cipher" ,rust-stream-cipher-0.3))))
+    (properties '((crate-version-yanked? . #t)))))
+
+(define-public rust-aesni-0.6
+  ;; There are no non-yanked versions of this semver.
+  (deprecated-package "rust-aesni" rust-aesni-0.6.0-yanked))
 
 (define-public rust-argon2-0.5
   (package
     (name "rust-argon2")
-    (version "0.5.2")
+    (version "0.5.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "argon2" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1y820hkza66lfliaxg49zskz7agj8wf7aak528livg261an4rfhp"))))
+        (base32 "0wn0kk97k49wxidfigmz1pdqmygqzi4h6w72ib7cpq765s4i0diw"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -647,19 +610,54 @@ portable \"best effort\" constant-time operation and embedded-friendly
 @code{no_std} support.")
     (license (list license:asl2.0 license:expat))))
 
-(define-public rust-base64ct-1.1
+(define-public rust-bcrypt-pbkdf-0.10
   (package
-    (inherit rust-base64ct-1)
-    (name "rust-base64ct")
-    (version "1.1.1")
+    (name "rust-bcrypt-pbkdf")
+    (version "0.10.0")
     (source
      (origin
        (method url-fetch)
-       (uri (crate-uri "base64ct" version))
+       (uri (crate-uri "bcrypt-pbkdf" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0p4was874qc90q2chm2i14m9mn8zmxjis8vaxihd6a2x4aqxkd76"))))
-    (arguments '())))
+        (base32 "18pjhsy3m2v0silsp4mjzz8i92zrpqxk9b059zrnk1w8zvhw5ska"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-blowfish" ,rust-blowfish-0.9)
+                       ("rust-pbkdf2" ,rust-pbkdf2-0.12)
+                       ("rust-sha2" ,rust-sha2-0.10)
+                       ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs (("rust-hex-literal" ,rust-hex-literal-0.3))))
+    (home-page
+     "https://github.com/RustCrypto/password-hashes/tree/master/bcrypt-pbkdf")
+    (synopsis "Bcrypt-pbkdf password-based key derivation function")
+    (description
+     "This package provides bcrypt-pbkdf password-based key derivation function.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-bcrypt-pbkdf-0.6
+  (package
+    (inherit rust-bcrypt-pbkdf-0.10)
+    (name "rust-bcrypt-pbkdf")
+    (version "0.6.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "bcrypt-pbkdf" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ms9c5z90n5szx5nbxrqaihny5fs3sl6a1pm3szr5g86jlxw0f3w"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (substitute* "Cargo.toml"
+                   (("\"= ?([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                    (string-append "\"^" version)))))))
+    (arguments
+     `(#:cargo-inputs (("rust-blowfish" ,rust-blowfish-0.8)
+                       ("rust-crypto-mac" ,rust-crypto-mac-0.11)
+                       ("rust-pbkdf2" ,rust-pbkdf2-0.8)
+                       ("rust-sha2" ,rust-sha2-0.9)
+                       ("rust-zeroize" ,rust-zeroize-1))))))
 
 (define-public rust-blake2-0.10
   (package
@@ -760,19 +758,16 @@ BLAKE2bp hash functions.")
   (package
     (inherit rust-blake2b-simd-1)
     (name "rust-blake2b-simd")
-    (version "0.5.10")
+    (version "0.5.11")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "blake2b_simd" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "12icvk8ixlivv3jv5nyrg01sajp4s279zb1kmif0nfja4ms2vyyq"))))
+        (base32 "11y5nm06lpypz65dbxgncs12ckx24i5i4a777ckfhfxd93ili9xg"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-arrayref" ,rust-arrayref-0.3)
         ("rust-arrayvec" ,rust-arrayvec-0.5)
         ("rust-constant-time-eq" ,rust-constant-time-eq-0.1))))))
@@ -823,15 +818,15 @@ based on Blake2s.")
 ciphers.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-block-cipher-trait-0.6
+(define-public rust-block-cipher-trait-0.6.2-yanked
   (package
     (name "rust-block-cipher-trait")
-    (version "0.6.2")
+    (version "0.6.2") ; This version was yanked!
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "block-cipher-trait" version))
-       (file-name (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version "-yanked.tar.gz"))
        (sha256
         (base32 "0x273w6fwka0i48nrv428birdrs2jz6jdnmc0dhc1rq9pm4lv4hw"))))
     (build-system cargo-build-system)
@@ -844,24 +839,36 @@ ciphers.")
     (synopsis "Block cipher algorithms")
     (description "This package provides a collection of block cipher
 algorithms.  This package is deprecated.  Please use block-cipher instead.")
-    (license (list license:expat license:asl2.0))))
+    (license (list license:expat license:asl2.0))
+    (properties '((crate-version-yanked? . #t)))))
 
-(define-public rust-block-cipher-trait-0.4
+(define-public rust-block-cipher-trait-0.6
+  ;; There are no non-yanked versions of this semver.
+  (deprecated-package "rust-block-cipher-trait"
+                      rust-block-cipher-trait-0.6.2-yanked))
+
+(define-public rust-block-cipher-trait-0.4.2-yanked
   (package
     (inherit rust-block-cipher-trait-0.6)
     (name "rust-block-cipher-trait")
-    (version "0.4.2")
+    (version "0.4.2") ; This version was yanked!
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "block-cipher-trait" version))
-       (file-name (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version "-yanked.tar.gz"))
        (sha256
         (base32
          "10qmg8vphqmfllb9a2yx6s7r66jh1wh33clhsawq7ikg2wgz2p6q"))))
     (arguments
      `(#:cargo-inputs
-       (("rust-generic-array" ,rust-generic-array-0.8))))))
+       (("rust-generic-array" ,rust-generic-array-0.8))))
+    (properties '((crate-version-yanked? . #t)))))
+
+(define-public rust-block-cipher-trait-0.4
+  ;; There are no non-yanked versions of this semver.
+  (deprecated-package "rust-block-cipher-trait"
+                      rust-block-cipher-trait-0.4.2-yanked))
 
 (define-public rust-block-modes-0.8
   (package
@@ -886,27 +893,6 @@ algorithms.  This package is deprecated.  Please use block-cipher instead.")
 and block modes.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-block-modes-0.7
-  (package
-    (inherit rust-block-modes-0.8)
-    (name "rust-block-modes")
-    (version "0.7.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "block-modes" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1w3jc3n7k4xq98b9mfina4wwpg1fq1s3b0mm5whqialb7q3yi82p"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-block-padding" ,rust-block-padding-0.2)
-        ("rust-cipher" ,rust-cipher-0.2))
-       #:cargo-development-inputs
-       (("rust-aes" ,rust-aes-0.6)
-        ("rust-hex-literal" ,rust-hex-literal-0.2))))))
-
 (define-public rust-blowfish-0.9
   (package
     (name "rust-blowfish")
@@ -929,6 +915,24 @@ and block modes.")
     (synopsis "Blowfish block cipher")
     (description "Blowfish block cipher")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-blowfish-0.8
+  (package
+    (inherit rust-blowfish-0.9)
+    (name "rust-blowfish")
+    (version "0.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "blowfish" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ax736islxcbghc2lqq4vy7zn6qdigrls71lwg11m3743pyg6gzy"))))
+    (arguments
+     `(#:cargo-inputs (("rust-byteorder" ,rust-byteorder-1)
+                       ("rust-cipher" ,rust-cipher-0.3)
+                       ("rust-opaque-debug" ,rust-opaque-debug-0.3))
+       #:cargo-development-inputs (("rust-cipher" ,rust-cipher-0.3))))))
 
 (define-public rust-botan-0.10
   (package
@@ -971,42 +975,6 @@ and block modes.")
         ("rust-cstr-core" ,rust-cstr-core-0.2)
         ("rust-cty" ,rust-cty-0.2))))))
 
-(define-public rust-botan-sys-0.10
-  (package
-    (name "rust-botan-sys")
-    (version "0.10.5")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "botan-sys" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1ji12rxvi4h7pap772cd2hw4xdgqdsgw6m8wqin9klpbp3hxsjcz"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-botan-src" ,rust-botan-src-0.30101))))
-    (inputs (list botan))
-    (home-page "https://botan.randombit.net/")
-    (synopsis "FFI wrapper for Botan cryptography library")
-    (description "FFI wrapper for Botan cryptography library")
-    (license license:expat)))
-
-(define-public rust-botan-sys-0.8
-  (package
-    (inherit rust-botan-sys-0.10)
-    (name "rust-botan-sys")
-    (version "0.8.1")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "botan-sys" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32 "1m11zblxfanrhl97j7z3ap7n17rr8j0rg91sr7f9j6y2bsniaz1x"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-botan-src" ,rust-botan-src-0.21703)
-        ("rust-cty" ,rust-cty-0.2))))))
-
 (define-public rust-botan-src-0.30101
   (package
     (name "rust-botan-src")
@@ -1044,25 +1012,57 @@ and block modes.")
               (snippet
                '(begin (delete-file-recursively "botan")))))))
 
+(define-public rust-botan-sys-0.10
+  (package
+    (name "rust-botan-sys")
+    (version "0.10.5")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "botan-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1ji12rxvi4h7pap772cd2hw4xdgqdsgw6m8wqin9klpbp3hxsjcz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-botan-src" ,rust-botan-src-0.30101))))
+    (inputs (list botan))
+    (home-page "https://botan.randombit.net/")
+    (synopsis "FFI wrapper for Botan cryptography library")
+    (description "FFI wrapper for Botan cryptography library")
+    (license license:expat)))
+
+(define-public rust-botan-sys-0.8
+  (package
+    (inherit rust-botan-sys-0.10)
+    (name "rust-botan-sys")
+    (version "0.8.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "botan-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "1m11zblxfanrhl97j7z3ap7n17rr8j0rg91sr7f9j6y2bsniaz1x"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-botan-src" ,rust-botan-src-0.21703)
+        ("rust-cty" ,rust-cty-0.2))))))
+
 (define-public rust-c2-chacha-0.2
   (package
     (name "rust-c2-chacha")
-    (version "0.2.2")
+    (version "0.2.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "c2-chacha" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "00a11qdc8mg3z0k613rhprkc9p6xz0y7b1681x32ixg0hr3x0r3x"))))
+        (base32 "16mxizk6a1lq6fv1m9zmlc3s9s4wvx8iv2n3p89qp38h8g4r4w91"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-byteorder" ,rust-byteorder-1)
-        ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-ppv-lite86" ,rust-ppv-lite86-0.2)
         ("rust-stream-cipher" ,rust-stream-cipher-0.3))
        #:cargo-development-inputs
@@ -1197,14 +1197,14 @@ XChaCha20, XChaCha12 and XChaCha8 stream ciphers, and also optional
   (package
     (inherit rust-chacha20-0.9)
     (name "rust-chacha20")
-    (version "0.8.1")
+    (version "0.8.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "chacha20" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "14cgpnnpqsn5hmqkgrj4yaqdsvy56hkgcw5s2gqsxwhc7m1jmdq1"))
+        (base32 "19l0nrizh0v9mj2dcd1y0mh7nn9sjnmvvg203nwy6vx6193fb02w"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -1417,49 +1417,17 @@ traits.")
 Cipher-based Message Authentication Code.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-crypto-secretbox-0.1
-  (package
-    (name "rust-crypto-secretbox")
-    (version "0.1.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "crypto_secretbox" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1qa1w5s8dbyb88269zrmvbnillqahz394pl07bsds6gpmn3wzmmr"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-aead" ,rust-aead-0.5)
-                       ("rust-chacha20" ,rust-chacha20-0.9)
-                       ("rust-cipher" ,rust-cipher-0.4)
-                       ("rust-generic-array" ,rust-generic-array-0.14)
-                       ("rust-poly1305" ,rust-poly1305-0.8)
-                       ("rust-salsa20" ,rust-salsa20-0.10)
-                       ("rust-subtle" ,rust-subtle-2)
-                       ("rust-zeroize" ,rust-zeroize-1))
-       #:cargo-development-inputs (("rust-hex-literal" ,rust-hex-literal-0.4))))
-    (home-page
-     "https://github.com/RustCrypto/nacl-compat/tree/master/crypto_secretbox")
-    (synopsis
-     "Pure Rust implementation of the XSalsa20Poly1305")
-    (description
-     "Pure Rust implementation of the XSalsa20Poly1305 (a.k.a. @code{NaCl}
-crypto_secretbox) authenticated encryption cipher as well as the libsodium
-variant of X@code{ChaCha20Poly1305}.")
-    (license (list license:asl2.0 license:expat))))
-
 (define-public rust-crypto-bigint-0.5
   (package
     (name "rust-crypto-bigint")
-    (version "0.5.2")
+    (version "0.5.5")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "crypto-bigint" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "05gy7sqkxg65bj1wrgq1pbh8iwn1kmfysvzx1g22p4gx3972yk6g"))))
+                "0xmbdff3g6ii5sbxjxc31xfkv9lrmyril4arh3dzckd4gjsjzj8d"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -1472,7 +1440,7 @@ variant of X@code{ChaCha20Poly1305}.")
         ("rust-zeroize" ,rust-zeroize-1))
        #:cargo-development-inputs
        (("rust-bincode" ,rust-bincode-1)
-        ("rust-criterion" ,rust-criterion-0.4)
+        ("rust-criterion" ,rust-criterion-0.5)
         ("rust-hex-literal" ,rust-hex-literal-0.4)
         ("rust-num-bigint" ,rust-num-bigint-0.4)
         ("rust-num-integer" ,rust-num-integer-0.1)
@@ -1563,6 +1531,40 @@ using const generics.")
         ("rust-subtle" ,rust-subtle-2)
         ("rust-zeroize" ,rust-zeroize-1))))))
 
+(define-public rust-crypto-box-0.8
+  (package
+    (name "rust-crypto-box")
+    (version "0.8.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "crypto_box" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1g4fhdsx1g1d0algpkfwsmclbcbj6k27anj4mj5d0zrhwlnw69px"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-aead" ,rust-aead-0.5)
+                       ("rust-blake2" ,rust-blake2-0.10)
+                       ("rust-chacha20" ,rust-chacha20-0.9)
+                       ("rust-chacha20poly1305" ,rust-chacha20poly1305-0.10)
+                       ("rust-salsa20" ,rust-salsa20-0.10)
+                       ("rust-serdect" ,rust-serdect-0.1)
+                       ("rust-x25519-dalek" ,rust-x25519-dalek-1)
+                       ("rust-xsalsa20poly1305" ,rust-xsalsa20poly1305-0.9)
+                       ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs (("rust-bincode" ,rust-bincode-1)
+                                   ("rust-rand" ,rust-rand-0.8)
+                                   ("rust-rmp-serde" ,rust-rmp-serde-1))))
+    (home-page "https://github.com/RustCrypto/nacl-compat")
+    (synopsis "Pure Rust implementation of crypto_box")
+    (description
+     "This package provides a pure Rust implementation of @code{NaCl's}
+crypto_box public-key authenticated encryption primitive, which combines the
+X25519 Elliptic Curve Diffie-Hellman function and the XSalsa20Poly1305
+authenticated encryption cipher.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-crypto-common-0.1
   (package
     (name "rust-crypto-common")
@@ -1591,16 +1593,19 @@ of cryptographic primitives.")
 (define-public rust-crypto-mac-0.11
   (package
     (name "rust-crypto-mac")
-    (version "0.11.0")
+    (version "0.11.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "crypto-mac" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "0ghh3qmjf7hv580zqdk4yrbg99v57jx773zb7lzi7j4hj24bdyi5"))))
+        (base32 "05672ncc54h66vph42s0a42ljl69bwnqjh0x4xgj2v1395psildi"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (substitute* "Cargo.toml"
+                   (("\"= ?([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                    (string-append "\"^" version)))))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -1618,18 +1623,21 @@ Code} (MAC) algorithms.")
   (package
     (inherit rust-crypto-mac-0.11)
     (name "rust-crypto-mac")
-    (version "0.10.0")
+    (version "0.10.1")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "crypto-mac" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
+        (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32 "19iyh7h9qaqrv29dhbd31rm6pq023ry78nw7jwr3qjy3l22zsms8"))))
+         (base32 "06h84hcaksgjzzzc9g9dpmifwx221qzzif6fw8l807khxh471w5z"))
+        (snippet
+         #~(begin (use-modules (guix build utils))
+                  (substitute* "Cargo.toml"
+                    (("\"= ?([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                     (string-append "\"^" version)))))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-blobby" ,rust-blobby-0.3)
         ("rust-cipher" ,rust-cipher-0.2)
         ("rust-generic-array" ,rust-generic-array-0.14)
@@ -1675,22 +1683,59 @@ Code} (MAC) algorithms.")
         ("rust-generic-array" ,rust-generic-array-0.12)
         ("rust-subtle" ,rust-subtle-1))))))
 
-(define-public rust-crypto-mac-0.4
+(define-public rust-crypto-mac-0.4.0-yanked
   (package
     (inherit rust-crypto-mac-0.11)
     (name "rust-crypto-mac")
-    (version "0.4.0")
+    (version "0.4.0") ; This version was yanked!
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "crypto-mac" version))
-       (file-name (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version "-yanked.tar.gz"))
        (sha256
         (base32 "160ixpghhz5kz16f38kzcyv6lx8wmi4cgbhlhq4nazf678iib43p"))))
     (arguments
      `(#:cargo-inputs
        (("rust-constant-time-eq" ,rust-constant-time-eq-0.1)
-        ("rust-generic-array" ,rust-generic-array-0.8))))))
+        ("rust-generic-array" ,rust-generic-array-0.8))))
+    (properties '((crate-version-yanked? . #t)))))
+
+(define-public rust-crypto-mac-0.4
+  ;; There are no non-yanked versions of this semver.
+  (deprecated-package "rust-crypto-mac" rust-crypto-mac-0.4.0-yanked))
+
+(define-public rust-crypto-secretbox-0.1
+  (package
+    (name "rust-crypto-secretbox")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "crypto_secretbox" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1qa1w5s8dbyb88269zrmvbnillqahz394pl07bsds6gpmn3wzmmr"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-aead" ,rust-aead-0.5)
+                       ("rust-chacha20" ,rust-chacha20-0.9)
+                       ("rust-cipher" ,rust-cipher-0.4)
+                       ("rust-generic-array" ,rust-generic-array-0.14)
+                       ("rust-poly1305" ,rust-poly1305-0.8)
+                       ("rust-salsa20" ,rust-salsa20-0.10)
+                       ("rust-subtle" ,rust-subtle-2)
+                       ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs (("rust-hex-literal" ,rust-hex-literal-0.4))))
+    (home-page
+     "https://github.com/RustCrypto/nacl-compat/tree/master/crypto_secretbox")
+    (synopsis
+     "Pure Rust implementation of the XSalsa20Poly1305")
+    (description
+     "Pure Rust implementation of the XSalsa20Poly1305 (a.k.a. @code{NaCl}
+crypto_secretbox) authenticated encryption cipher as well as the libsodium
+variant of X@code{ChaCha20Poly1305}.")
+    (license (list license:asl2.0 license:expat))))
 
 (define-public rust-crypto-tests-0.5
   (package
@@ -1717,33 +1762,29 @@ Code} (MAC) algorithms.")
 algorithms.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-crypto-hash-0.3
+(define-public rust-cryptovec-0.6
   (package
-    (name "rust-crypto-hash")
-    (version "0.3.4")
+    (name "rust-cryptovec")
+    (version "0.6.1")
     (source
      (origin
        (method url-fetch)
-       (uri (crate-uri "crypto-hash" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (uri (crate-uri "cryptovec" version))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "1jnxgpk0j29hzcv42viq5dckyfjnxdjsar55366j95zx80i1cxwa"))))
+        (base32 "1pqb2g1n3sx0d2cjiy06amcr2wlf9izwb4jj68nk5cmvlq9zmiyc"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-commoncrypto" ,rust-commoncrypto-0.2)
-        ("rust-hex" ,rust-hex-0.3)
-        ("rust-openssl" ,rust-openssl-0.10)
-        ("rust-winapi" ,rust-winapi-0.3))))
-    (inputs
-     (list openssl))
-    (home-page "https://github.com/malept/crypto-hash")
-    (synopsis "Wrapper for OS-level cryptographic hash functions")
-    (description "This package provides a wrapper for OS-level cryptographic
-hash functions.")
-    (license license:expat)))
+     `(#:cargo-test-flags '("--"
+                            "--skip=CryptoVec::from_slice (line 406)")
+       #:cargo-inputs (("rust-libc" ,rust-libc-0.2)
+                       ("rust-winapi" ,rust-winapi-0.3))))
+    (home-page "https://pijul.org/cryptovec")
+    (synopsis "Vector which zeroes its memory on clears and reallocations")
+    (description
+     "This package provides a vector which zeroes its memory on clears and
+reallocations.")
+    (license license:asl2.0)))
 
 (define-public rust-csrf-0.4
   (package
@@ -1841,14 +1882,14 @@ re-exported cipher crate.")
 (define-public rust-curve25519-dalek-4
   (package
     (name "rust-curve25519-dalek")
-    (version "4.1.2")
+    (version "4.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "curve25519-dalek" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0j7kqchcgycs4a11gvlda93h9w2jr05nn4hjpfyh2kn94a4pnrqa"))))
+        (base32 "1gmjb9dsknrr8lypmhkyjd67p1arb8mbfamlwxm7vph38my8pywp"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -1882,14 +1923,21 @@ on ristretto255 and Curve25519.")
   (package
     (inherit rust-curve25519-dalek-4)
     (name "rust-curve25519-dalek")
-    (version "3.2.0")
+    (version "3.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "curve25519-dalek" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0q8v97275cy6v4ly6y2qwv9a8phnpjg9sy8kv7r6mgdjfacxz7qb"))))
+        (base32 "1h0vcl8p4syvci9zxkn3h80h06xv1fyqgcrfwrv0lnbzjr9d1ych"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (((string-append ">=([[:digit:]]+(\\.[[:digit:]]+)*),"
+                                   " <([[:digit:]]+(\\.[[:digit:]]+)*)")
+                    _ version _)
+                   (string-append ">=" version)))))))
     (arguments
      `(#:cargo-inputs
        (("rust-byteorder" ,rust-byteorder-1)
@@ -2002,27 +2050,6 @@ ciphers implementations.")
        (("rust-byteorder" ,rust-byteorder-1)
         ("rust-cipher" ,rust-cipher-0.3)
         ("rust-opaque-debug" ,rust-opaque-debug-0.3))))))
-
-(define-public rust-des-0.6
-  (package
-    (inherit rust-des-0.7)
-    (name "rust-des")
-    (version "0.6.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "des" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1bigk1x1kxvnfjn1alr8cc383z1flmj8q7g2pjl2zal8i1s7qkmj"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-byteorder" ,rust-byteorder-1)
-        ("rust-cipher" ,rust-cipher-0.2)
-        ("rust-opaque-debug" ,rust-opaque-debug-0.3))
-       #:cargo-development-inputs
-       (("rust-cipher" ,rust-cipher-0.2))))))
 
 (define-public rust-digest-0.10
   (package
@@ -2208,28 +2235,6 @@ Signature Standard), providing RFC6979 deterministic signatures as well as
 support for added entropy.")
     (license (list license:asl2.0 license:expat))))
 
-(define-public rust-ecdsa-0.14
-  (package
-    (inherit rust-ecdsa-0.16)
-    (name "rust-ecdsa")
-    (version "0.14.8")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "ecdsa" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0p1wxap2s6jm06y2w3cal8dkz6p9223ir9wws70rgx8h929h2cs1"))))
-    (arguments
-     `(#:cargo-inputs (("rust-der" ,rust-der-0.6)
-                       ("rust-elliptic-curve" ,rust-elliptic-curve-0.12)
-                       ("rust-rfc6979" ,rust-rfc6979-0.3)
-                       ("rust-serdect" ,rust-serdect-0.1)
-                       ("rust-signature" ,rust-signature-1))
-       #:cargo-development-inputs (("rust-elliptic-curve" ,rust-elliptic-curve-0.12)
-                                   ("rust-hex-literal" ,rust-hex-literal-0.3)
-                                   ("rust-sha2" ,rust-sha2-0.10))))))
-
 (define-public rust-ecies-ed25519-0.5
   (package
     (name "rust-ecies-ed25519")
@@ -2259,6 +2264,43 @@ support for added entropy.")
     (home-page "https://github.com/phayes/ecies-ed25519")
     (synopsis
      "Integrated encryption scheme on Twisted Edwards Curve25519")
+    (description
+     "ECIES on Twisted Edwards Curve25519 using AES-GCM and HKDF-SHA256.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-ecies-ed25519-ng-0.5
+  (package
+    (name "rust-ecies-ed25519-ng")
+    (version "0.5.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Revertron/ecies-ed25519-ng")
+             ;; Version bump without a git tag.
+             (commit "554ca29a1bbd55f0c7e2f75cb3c7e0e3030afc15")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04s0ycvnz1wbccf46a63w6zxiqm9yszw71q6fk1ssdc64qj7k5mh"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-aes-gcm" ,rust-aes-gcm-0.10)
+        ("rust-curve25519-dalek" ,rust-curve25519-dalek-4)
+        ("rust-digest" ,rust-digest-0.10)
+        ("rust-hex" ,rust-hex-0.4)
+        ("rust-hkdf" ,rust-hkdf-0.12)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-ring" ,rust-ring-0.17)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-sha2" ,rust-sha2-0.10)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs
+       (("rust-serde-cbor" ,rust-serde-cbor-0.11)
+        ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/Revertron/ecies-ed25519-ng")
+    (synopsis "Integrated encryption scheme on Twisted Edwards Curve25519")
     (description
      "ECIES on Twisted Edwards Curve25519 using AES-GCM and HKDF-SHA256.")
     (license (list license:expat license:asl2.0))))
@@ -2330,19 +2372,19 @@ implementations, including HSMs or Cloud KMS services.")
 (define-public rust-ed25519-compact-2
   (package
     (name "rust-ed25519-compact")
-    (version "2.0.4")
+    (version "2.1.1")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "ed25519-compact" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0k4y7bjl5g0l871iav4zj35qx047n0a4qsvhr28p6434hhp3hgba"))))
+                "1431kxw67xkk5y5kamfdjxnqbzqy5y4p032syi3wva5y8h7ldcz9"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-ct-codecs" ,rust-ct-codecs-1)
-        ("rust-ed25519" ,rust-ed25519-1)
+        ("rust-ed25519" ,rust-ed25519-2)
         ("rust-getrandom" ,rust-getrandom-0.2))
        #:cargo-development-inputs
        (("rust-ct-codecs" ,rust-ct-codecs-1)
@@ -2428,6 +2470,59 @@ generations, signing, and verification in pure Rust.")
          ("rust-sha2" ,rust-sha2-0.9)
          ("rust-zeroize" ,rust-zeroize-1))))))
 
+(define-public rust-ed25519-zebra-2
+  (package
+    (name "rust-ed25519-zebra")
+    (version "2.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ed25519-zebra" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0284mnhc2514b9hzyhgcf8vfggwdqwyx8vsawckv9m3dmxv8n4ha"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-curve25519-dalek" ,rust-curve25519-dalek-3)
+                       ("rust-hex" ,rust-hex-0.4)
+                       ("rust-rand-core" ,rust-rand-core-0.5)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-sha2" ,rust-sha2-0.9)
+                       ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs (("rust-bincode" ,rust-bincode-1)
+                                   ("rust-color-eyre" ,rust-color-eyre-0.5)
+                                   ("rust-criterion" ,rust-criterion-0.3)
+                                   ("rust-ed25519-zebra" ,rust-ed25519-zebra-1)
+                                   ("rust-once-cell" ,rust-once-cell-1)
+                                   ("rust-rand" ,rust-rand-0.7))))
+    (home-page "https://github.com/ZcashFoundation/ed25519-zebra")
+    (synopsis "Zcash-flavored Ed25519 for use in Zebra")
+    (description
+     "This package provides Zcash-flavored Ed25519 for use in Zebra.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-ed25519-zebra-1
+  (package
+    (inherit rust-ed25519-zebra-2)
+    (name "rust-ed25519-zebra")
+    (version "1.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ed25519-zebra" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1zyi37p8p1qqbbkd27w52zvx5cj9b56rvc17jiw9d71j3gziynn8"))))
+    (arguments
+     `(#:cargo-inputs (("rust-curve25519-dalek" ,rust-curve25519-dalek-3)
+                       ("rust-hex" ,rust-hex-0.4)
+                       ("rust-rand-core" ,rust-rand-core-0.5)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-sha2" ,rust-sha2-0.9)
+                       ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs (("rust-bincode" ,rust-bincode-1)
+                                   ("rust-criterion" ,rust-criterion-0.3)
+                                   ("rust-rand" ,rust-rand-0.7))))))
 
 (define-public rust-elliptic-curve-0.13
   (package
@@ -2474,52 +2569,17 @@ generations, signing, and verification in pure Rust.")
 curve forms, scalars, points, and public/secret keys composed thereof.")
     (license (list license:asl2.0 license:expat))))
 
-(define-public rust-elliptic-curve-0.12
-  (package
-    (inherit rust-elliptic-curve-0.13)
-    (name "rust-elliptic-curve")
-    (version "0.12.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "elliptic-curve" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1lwi108mh6drw5nzqzlz7ighdba5qxdg5vmwwnw1j2ihnn58ifz7"))))
-    (arguments
-     `(#:cargo-inputs (("rust-base16ct" ,rust-base16ct-0.1)
-                       ("rust-base64ct" ,rust-base64ct-1)
-                       ("rust-crypto-bigint" ,rust-crypto-bigint-0.4)
-                       ("rust-der" ,rust-der-0.6)
-                       ("rust-digest" ,rust-digest-0.10)
-                       ("rust-ff" ,rust-ff-0.12)
-                       ("rust-generic-array" ,rust-generic-array-0.14)
-                       ("rust-group" ,rust-group-0.12)
-                       ("rust-hex-literal" ,rust-hex-literal-0.3)
-                       ("rust-hkdf" ,rust-hkdf-0.12)
-                       ("rust-pem-rfc7468" ,rust-pem-rfc7468-0.6)
-                       ("rust-pkcs8" ,rust-pkcs8-0.9)
-                       ("rust-rand-core" ,rust-rand-core-0.6)
-                       ("rust-sec1" ,rust-sec1-0.3)
-                       ("rust-serde-json" ,rust-serde-json-1)
-                       ("rust-serdect" ,rust-serdect-0.1)
-                       ("rust-subtle" ,rust-subtle-2)
-                       ("rust-zeroize" ,rust-zeroize-1))
-       #:cargo-development-inputs (("rust-hex-literal" ,rust-hex-literal-0.3)
-                                   ("rust-sha2" ,rust-sha2-0.10)
-                                   ("rust-sha3" ,rust-sha3-0.10))))))
-
 (define-public rust-fiat-crypto-0.2
   (package
     (name "rust-fiat-crypto")
-    (version "0.2.6")
+    (version "0.2.9")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "fiat-crypto" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "10hkkkjynhibvchznkxx81gwxqarn9i5sgz40d6xxb8xzhsz8xhn"))))
+        (base32 "07c1vknddv3ak7w89n85ik0g34nzzpms6yb845vrjnv9m4csbpi8"))))
     (build-system cargo-build-system)
     (home-page "https://github.com/mit-plv/fiat-crypto")
     (synopsis "Fiat-crypto generated Rust")
@@ -2544,14 +2604,14 @@ curve forms, scalars, points, and public/secret keys composed thereof.")
 (define-public rust-ghash-0.5
   (package
     (name "rust-ghash")
-    (version "0.5.0")
+    (version "0.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "ghash" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0h1y3v3kj8xxkf2snv1yly0lr20fdh3jrm60p382szbiwl6pac6r"))))
+        (base32 "1wbg4vdgzwhkpkclz1g6bs4r5x984w5gnlsj4q5wnafb5hva9n7h"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -2612,24 +2672,6 @@ authenticated encryption cipher.")
         ("rust-zeroize" ,rust-zeroize-1))
        #:cargo-development-inputs
        (("rust-hex-literal" ,rust-hex-literal-0.2))))))
-
-(define-public rust-ghash-0.2
-  (package
-    (inherit rust-ghash-0.3)
-    (name "rust-ghash")
-    (version "0.2.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "ghash" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0lijv1y6qcysnxv45ny5fjvc4v9gmpggxlj6xa4l065737nk02cz"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-polyval" ,rust-polyval-0.3)
-        ("rust-zeroize" ,rust-zeroize-1))))))
 
 (define-public rust-hkdf-0.12
   (package
@@ -2705,48 +2747,6 @@ Derivation Function (HKDF).")
         ("rust-sha-1" ,rust-sha-1-0.9)
         ("rust-sha2" ,rust-sha2-0.9))))))
 
-(define-public rust-hkdf-0.9
-  (package
-    (inherit rust-hkdf-0.11)
-    (name "rust-hkdf")
-    (version "0.9.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "hkdf" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1jdvmf8aadk3s0kn9kk3dj00nprjk9glks5f8dm55r43af34j4gy"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-digest" ,rust-digest-0.9)
-        ("rust-hmac" ,rust-hmac-0.8))
-       #:cargo-development-inputs
-       (("rust-bencher" ,rust-bencher-0.1)
-        ("rust-crypto-tests" ,rust-crypto-tests-0.5)
-        ("rust-hex" ,rust-hex-0.4)
-        ("rust-sha-1" ,rust-sha-1-0.9)
-        ("rust-sha2" ,rust-sha2-0.9))))))
-
-(define-public rust-hkdf-0.8
-  (package
-    (inherit rust-hkdf-0.9)
-    (name "rust-hkdf")
-    (version "0.8.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "hkdf" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1qzsmqrvcmgnrb109qr2mvsmr5c4psm1702vrpcqnj02c408m81z"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-digest" ,rust-digest-0.8)
-        ("rust-hmac" ,rust-hmac-0.7))))))
-
 (define-public rust-hmac-0.12
   (package
     (name "rust-hmac")
@@ -2818,52 +2818,6 @@ Hash-based Message Authentication Code}.")
         ("rust-md-5" ,rust-md-5-0.9)
         ("rust-sha2" ,rust-sha2-0.9))))))
 
-(define-public rust-hmac-0.8
-  (package
-    (inherit rust-hmac-0.11)
-    (name "rust-hmac")
-    (version "0.8.1")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "hmac" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "0h48wc7iysh4xd6ci4prh8bb7nszijrh9w3blaaq8a6cilk8hs0j"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-crypto-mac" ,rust-crypto-mac-0.8)
-        ("rust-digest" ,rust-digest-0.9))
-       #:cargo-development-inputs
-       (("rust-crypto-mac" ,rust-crypto-mac-0.8)
-        ("rust-md-5" ,rust-md-5-0.9)
-        ("rust-sha2" ,rust-sha2-0.9))))))
-
-(define-public rust-hmac-0.7
-  (package
-    (inherit rust-hmac-0.8)
-    (name "rust-hmac")
-    (version "0.7.1")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "hmac" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "15cnwpssp2n1kdm9x7abir67f2hp3q6rdfj1mcck3hm4rmj5xjsx"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-crypto-mac" ,rust-crypto-mac-0.7)
-        ("rust-digest" ,rust-digest-0.8))
-       #:cargo-development-inputs
-       (("rust-crypto-mac" ,rust-crypto-mac-0.7)
-        ("rust-md-5" ,rust-md-5-0.8)
-        ("rust-sha2" ,rust-sha2-0.8))))))
-
 (define-public rust-hmac-sha1-0.1
   (package
     (name "rust-hmac-sha1")
@@ -2890,14 +2844,14 @@ Hash-based Message Authentication Code algorithm} for SHA1.")
 (define-public rust-k256-0.13
   (package
     (name "rust-k256")
-    (version "0.13.3")
+    (version "0.13.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "k256" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0ysq18pjz040am5llgly90464x7qqq98yxfbcsladq96gsvgjvwm"))))
+        (base32 "06s1lxjp49zgmbxnfdy2kajyklbkl4s3jvdvy0amg552padr3qzn"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1)
@@ -2932,13 +2886,13 @@ be used to implement arbitrary protocols.")
 (define-public rust-kuznyechik-0.8
   (package
     (name "rust-kuznyechik")
-    (version "0.8.1")
+    (version "0.8.2")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "kuznyechik" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
-               (base32 "0av39qh65xchvpfjkcwh861h9bzmmrgcrzl5h0sa5b692xabd0w4"))))
+               (base32 "0by12awlby61ihp097gz193h8any0dkq5z46svg6130r4jjrjy6a"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -2949,6 +2903,36 @@ be used to implement arbitrary protocols.")
     (home-page "https://github.com/RustCrypto/block-ciphers")
     (synopsis "Kuznyechik (GOST R 34.12-2015) block cipher")
     (description "Kuznyechik (GOST R 34.12-2015) block cipher")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-libsodium-sys-0.2
+  (package
+    (name "rust-libsodium-sys")
+    (version "0.2.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libsodium-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1zcjka23grayr8kjrgbada6vwagp0kkni9m45v0gpbanrn3r6xvb"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (for-each delete-file-recursively
+                           (list "libsodium"
+                                 "mingw"
+                                 "msvc"))))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cc" ,rust-cc-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-pkg-config" ,rust-pkg-config-0.3)
+                       ("rust-walkdir" ,rust-walkdir-2))))
+    (native-inputs (list pkg-config))
+    (inputs (list libsodium))
+    (home-page "https://github.com/sodiumoxide/sodiumoxide.git")
+    (synopsis "FFI binding to libsodium")
+    (description "This package provides FFI bindings to libsodium.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-mas-jose-0.7
@@ -3045,31 +3029,6 @@ be used to implement arbitrary protocols.")
        (("rust-digest" ,rust-digest-0.9)
         ("rust-hex-literal" ,rust-hex-literal-0.2))))))
 
-(define-public rust-md-5-0.8
-  (package
-    (inherit rust-md-5-0.9)
-    (name "rust-md-5")
-    (version "0.8.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "md-5" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1j5rfxy2p76xf5f1lgaw85xla0b1bbv2lknvdhv1j0ibmzfg72m1"))))
-    (arguments
-     `(#:tests? #f      ; cannot find macro `proc_macro_call` in this scope
-       #:cargo-inputs
-       (("rust-block-buffer" ,rust-block-buffer-0.7)
-        ("rust-digest" ,rust-digest-0.8)
-        ("rust-md5-asm" ,rust-md5-asm-0.4)
-        ("rust-opaque-debug" ,rust-opaque-debug-0.2))
-       #:cargo-development-inputs
-       (("rust-digest" ,rust-digest-0.8)
-        ("rust-hex-literal" ,rust-hex-literal-0.1))))))
-
 (define-public rust-md5-0.7
   (package
     (name "rust-md5")
@@ -3121,14 +3080,14 @@ be used to implement arbitrary protocols.")
 (define-public rust-md5-asm-0.5
   (package
     (name "rust-md5-asm")
-    (version "0.5.0")
+    (version "0.5.2")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "md5-asm" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1ixmkg8j7sqy9zln6pz9xi2dl2d9zpm8pz6p49za47n1bvradfbk"))))
+                "1pz217kwlvrw4bj4hil5acyp3l7g37vwf25psdc210bxzkkqx6yi"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-cc" ,rust-cc-1))))
@@ -3161,14 +3120,14 @@ compression function.")
 (define-public rust-nettle-7
   (package
     (name "rust-nettle")
-    (version "7.3.0")
+    (version "7.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "nettle" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0dk36l90p79c3xgmrzp8489h8dfaal0jzaid1n8n3cg7xbrwrzdr"))))
+        (base32 "0dk9rlpz4c0kf2c7298vllpnwr3lh10kkgdbslglmlz5ji5gzrj4"))))
     (build-system cargo-build-system)
     (native-inputs
      (list pkg-config))
@@ -3187,37 +3146,17 @@ compression function.")
 cryptographic library.")
   (license (list license:lgpl3 license:gpl2 license:gpl3))))
 
-(define-public rust-nettle-5
-  (package
-    (inherit rust-nettle-7)
-    (version "5.0.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "nettle" version))
-       (file-name
-        (string-append (package-name rust-nettle-7) "-" version ".tar.gz"))
-       (sha256
-        (base32 "0zfplqdf3mag8r7lc124hl24vri8yg711jmm8gl1mpwnlhass2n4"))
-       (patches (search-patches "rust-nettle-disable-vendor.patch"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-failure" ,rust-failure-0.1)
-        ("rust-getrandom" ,rust-getrandom-0.1)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-nettle-sys" ,rust-nettle-sys-2))))))
-
 (define-public rust-nettle-sys-2
   (package
     (name "rust-nettle-sys")
-    (version "2.2.0")
+    (version "2.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "nettle-sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0wwa7pmxdz7yl9jwybml2kmrj3i87jcn0h0cdc5xl0lhgcs1rs5m"))))
+        (base32 "1v36is0kygwc4rcdqnszgdwm14z2j8p23wbblbiq16m120x0b5dl"))))
     (build-system cargo-build-system)
     (native-inputs
      (list clang pkg-config))
@@ -3225,7 +3164,7 @@ cryptographic library.")
      (list nettle))
     (arguments
      `(#:cargo-inputs
-       (("rust-bindgen" ,rust-bindgen-0.63)
+       (("rust-bindgen" ,rust-bindgen-0.68)
         ("rust-cc" ,rust-cc-1)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-pkg-config" ,rust-pkg-config-0.3)
@@ -3238,17 +3177,68 @@ cryptographic library.")
     (license ;; licensed under either of these, at your option
      (list license:lgpl3 license:gpl2 license:gpl3))))
 
+(define-public rust-oo7-0.2
+  (package
+    (name "rust-oo7")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "oo7" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "13cpaq7f51gqcspd4097vjr7r2cjpxpn6c02x67dsdizk0xaiv5c"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--"
+         "--skip=dbus::collection::tests::create_encrypted_item"
+         "--skip=dbus::collection::tests::create_plain_item"
+         "--skip=dbus::service::tests::create_collection")
+       #:cargo-inputs (("rust-aes" ,rust-aes-0.8)
+                       ("rust-async-fs" ,rust-async-fs-2)
+                       ("rust-async-io" ,rust-async-io-2)
+                       ("rust-async-lock" ,rust-async-lock-3)
+                       ("rust-blocking" ,rust-blocking-1)
+                       ("rust-byteorder" ,rust-byteorder-1)
+                       ("rust-cbc" ,rust-cbc-0.1)
+                       ("rust-cipher" ,rust-cipher-0.4)
+                       ("rust-digest" ,rust-digest-0.10)
+                       ("rust-futures-lite" ,rust-futures-lite-2)
+                       ("rust-futures-util" ,rust-futures-util-0.3)
+                       ("rust-hkdf" ,rust-hkdf-0.12)
+                       ("rust-hmac" ,rust-hmac-0.12)
+                       ("rust-num" ,rust-num-0.4)
+                       ("rust-num-bigint-dig" ,rust-num-bigint-dig-0.8)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-openssl" ,rust-openssl-0.10)
+                       ("rust-pbkdf2" ,rust-pbkdf2-0.12)
+                       ("rust-rand" ,rust-rand-0.8)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-sha2" ,rust-sha2-0.10)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-tracing" ,rust-tracing-0.1)
+                       ("rust-zbus" ,rust-zbus-3)
+                       ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs (("rust-async-std" ,rust-async-std-1)
+                                   ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/bilelmoussaoui/oo7")
+    (synopsis "Secret Service provider")
+    (description
+     "This package provides oo7, a Rust Secret Service provider.")
+    (license license:expat)))
+
 (define-public rust-orion-0.17
   (package
     (name "rust-orion")
-    (version "0.17.6")
+    (version "0.17.7")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "orion" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1rcm8vgzb1rvm1ilgak1lkia3wasdmnmv93b055qqg4hh40v3gbs"))))
+                "1lzs8dlpdbq19hi3b4358bnrypvsxvfz4xp5b492gkb0rwam9awp"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -3526,6 +3516,83 @@ in pure Rust.")
              ("rust-rand-core" ,rust-rand-core-0.6)
              ("rust-sha-1" ,rust-sha-1-0.9)
              ("rust-sha2" ,rust-sha2-0.9))))))
+
+(define-public rust-pem-rfc7468-0.7
+  (package
+    (name "rust-pem-rfc7468")
+    (version "0.7.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "pem-rfc7468" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "04l4852scl4zdva31c1z6jafbak0ni5pi0j38ml108zwzjdrrcw8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-base64ct" ,rust-base64ct-1))))
+    (home-page "https://github.com/RustCrypto/formats/tree/master/pem-rfc7468")
+    (synopsis
+     "PEM Encoding implementing a subset of Privacy-Enhanced Mail encoding")
+    (description
+     "This package provides PEM Encoding (RFC 7468) for PKIX, PKCS, and CMS
+Structures, implementing a strict subset of the original Privacy-Enhanced Mail
+encoding intended specifically for use with cryptographic keys, certificates,
+and other messages.  It provides a no_std-friendly, constant-time
+implementation suitable for use with cryptographic private keys.")
+    (license (list license:asl2.0 license:expat))))
+
+(define-public rust-pem-rfc7468-0.6
+  (package
+    (inherit rust-pem-rfc7468-0.7)
+    (name "rust-pem-rfc7468")
+    (version "0.6.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "pem-rfc7468" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1b5d8rvc4lgwxhs72m99fnrg0wq7bqh4x4wq0c7501ci7a1mkl94"))))
+    (arguments
+     `(#:cargo-inputs (("rust-base64ct" ,rust-base64ct-1))))))
+
+(define-public rust-pem-rfc7468-0.3
+  (package
+    (inherit rust-pem-rfc7468-0.7)
+    (name "rust-pem-rfc7468")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pem-rfc7468" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0c7vrrksg8fqzxb7q4clzl14f0qnqky7jqspjqi4pailiybmvph1"))))
+    (arguments
+     `(#:cargo-inputs (("rust-base64ct" ,rust-base64ct-1))))))
+
+(define-public rust-pem-rfc7468-0.2
+  (package
+    (inherit rust-pem-rfc7468-0.7)
+    (name "rust-pem-rfc7468")
+    (version "0.2.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pem-rfc7468" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1m1c9jypydzabg4yscplmvff7pdcc8gg4cqg081hnlf03hxkmsc4"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (((string-append ">=([[:digit:]]+(\\.[[:digit:]]+)*),"
+                                   " <([[:digit:]]+(\\.[[:digit:]]+)*)")
+                    _ version _)
+                   (string-append ">=" version)))))))
+    (arguments
+     `(#:cargo-inputs (("rust-base64ct" ,rust-base64ct-1))))))
 
 (define-public rust-pkcs1-0.7
   (package
@@ -3829,76 +3896,6 @@ with additional support for PKCS#8v2 asymmetric key packages (RFC 5958).")
         ("rust-spki" ,rust-spki-0.4)
         ("rust-zeroize" ,rust-zeroize-1))))))
 
-(define-public rust-pem-rfc7468-0.7
-  (package
-    (name "rust-pem-rfc7468")
-    (version "0.7.0")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "pem-rfc7468" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "04l4852scl4zdva31c1z6jafbak0ni5pi0j38ml108zwzjdrrcw8"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-base64ct" ,rust-base64ct-1))))
-    (home-page "https://github.com/RustCrypto/formats/tree/master/pem-rfc7468")
-    (synopsis
-     "PEM Encoding implementing a subset of Privacy-Enhanced Mail encoding")
-    (description
-     "This package provides PEM Encoding (RFC 7468) for PKIX, PKCS, and CMS
-Structures, implementing a strict subset of the original Privacy-Enhanced Mail
-encoding intended specifically for use with cryptographic keys, certificates,
-and other messages.  It provides a no_std-friendly, constant-time
-implementation suitable for use with cryptographic private keys.")
-    (license (list license:asl2.0 license:expat))))
-
-(define-public rust-pem-rfc7468-0.6
-  (package
-    (inherit rust-pem-rfc7468-0.7)
-    (name "rust-pem-rfc7468")
-    (version "0.6.0")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "pem-rfc7468" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1b5d8rvc4lgwxhs72m99fnrg0wq7bqh4x4wq0c7501ci7a1mkl94"))))
-    (arguments
-     `(#:cargo-inputs (("rust-base64ct" ,rust-base64ct-1))))))
-
-(define-public rust-pem-rfc7468-0.3
-  (package
-    (inherit rust-pem-rfc7468-0.7)
-    (name "rust-pem-rfc7468")
-    (version "0.3.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "pem-rfc7468" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0c7vrrksg8fqzxb7q4clzl14f0qnqky7jqspjqi4pailiybmvph1"))))
-    (arguments
-     `(#:cargo-inputs (("rust-base64ct" ,rust-base64ct-1))))))
-
-(define-public rust-pem-rfc7468-0.2
-  (package
-    (inherit rust-pem-rfc7468-0.7)
-    (name "rust-pem-rfc7468")
-    (version "0.2.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "pem-rfc7468" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1m1c9jypydzabg4yscplmvff7pdcc8gg4cqg081hnlf03hxkmsc4"))))
-    (arguments
-     `(#:cargo-inputs (("rust-base64ct" ,rust-base64ct-1.1))))))
-
 (define-public rust-poly1305-0.8
   (package
     (name "rust-poly1305")
@@ -3952,14 +3949,14 @@ a cipher, can be used as a Message Authentication Code (MAC).")
 (define-public rust-polyval-0.6
   (package
     (name "rust-polyval")
-    (version "0.6.0")
+    (version "0.6.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "polyval" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1iihmpn1h1ag5zl368yfq0jz1drfdw7xg7zpaqpcppqiikh39wky"))))
+        (base32 "09gs56vm36ls6pyxgh06gw2875z2x77r8b2km8q28fql0q6yc7wx"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -4024,24 +4021,6 @@ for constructing a Message Authentication Code (MAC).")
         ("rust-zeroize" ,rust-zeroize-1))
        #:cargo-development-inputs
        (("rust-hex-literal" ,rust-hex-literal-0.2))))))
-
-(define-public rust-polyval-0.3
-  (package
-    (inherit rust-polyval-0.4)
-    (name "rust-polyval")
-    (version "0.3.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "polyval" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256 (base32 "04m2wf4pk6gglvl12fj7ylc2iqhxmzqj46rds6zy73cpk0a39hvy"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-cfg-if" ,rust-cfg-if-0.1)
-        ("rust-universal-hash" ,rust-universal-hash-0.3)
-        ("rust-zeroize" ,rust-zeroize-1))))))
 
 (define-public rust-ppv-lite86-0.2
   (package
@@ -4135,11 +4114,11 @@ Digital Signature Algorithm} (ECDSA).")
                        ("rust-zeroize" ,rust-zeroize-1))
        #:cargo-development-inputs (("rust-sha2" ,rust-sha2-0.10))))))
 
-(define computed-origin-method (@@ (guix packages) computed-origin-method))
 (define rust-ring-0.17-sources
-  (let* ((version "0.17.8")
-         (upstream-source
-           (origin
+  (package
+    (name "rust-ring")
+    (version "0.17.8.tar.gz")   ; Hack to adjust the output name.
+    (source (origin
              (method git-fetch)
              (uri (git-reference
                     (url "https://github.com/briansmith/ring")
@@ -4147,182 +4126,185 @@ Digital Signature Algorithm} (ECDSA).")
              (file-name (git-file-name "rust-ring" version))
              (sha256
               (base32 "0rqfal81bf4l3dja98cajfjq2jbz1rcx7xdp2r33cxrm5y5psr28"))
-             (patches (search-patches "rust-ring-0.17-ring-core.patch")))))
-    (origin
-      (method computed-origin-method)
-      (file-name (string-append "rust-ring-" version ".tar.gz"))
-      (sha256 #f)
-      (uri
-        (delay
-          (with-imported-modules '((guix build utils))
-            #~(begin
-                (use-modules (guix build utils))
-                (set-path-environment-variable
-                  "PATH" '("bin")
-                  (list #+(canonical-package gzip)
-                        #+(canonical-package tar)
-                        #+perl
-                        #+nasm
-                        #+go
-                        #+clang             ; clang-format
-                        #+python-minimal))
-                (setenv "HOME" (getcwd))
-                (copy-recursively #+upstream-source
-                                  (string-append "ring-" #$version))
-                (with-directory-excursion (string-append "ring-" #$version)
-                  (begin
-                    ;; It turns out Guix's nasm works just fine here.
-                    (substitute* "build.rs"
-                      (("./target/tools/windows/nasm/nasm") "nasm"))
-                    ;; Files which would be deleted in a snippet:
-                    (delete-file "crypto/curve25519/curve25519_tables.h")
-                    (delete-file "crypto/fipsmodule/ec/p256-nistz-table.h")
-                    (delete-file "crypto/fipsmodule/ec/p256_table.h")
-                    ;; This file causes problems during the 'package phase and
-                    ;; is not distributed with the packaged crate.
-                    (substitute* "Cargo.toml"
-                      (("\"bench\",") ""))
-                    (delete-file "bench/Cargo.toml")
-                    ;; Files to be generated in the sources:
-                    (format #t "Generating the missing files ...~%")
-                    (force-output)
-                    (with-directory-excursion "crypto/curve25519"
-                      (with-output-to-file "curve25519_tables.h"
-                        (lambda _ (invoke "python3" "make_curve25519_tables.py")))
-                      ;; As seen in git between 0.17.0 and 0.17.1.
-                      (substitute* "curve25519_tables.h"
-                        (("static const uint8_t k25519Precomp")
-                         "const uint8_t k25519Precomp")))
-                    (with-directory-excursion "crypto/fipsmodule/ec"
-                      (invoke "go" "run" "make_tables.go")
-                      (invoke "go" "run" "make_ec_scalar_base_mult_tests.go"))
-                    (format #t "Generating the pregenerated files ...~%")
-                    (force-output)
-                    (mkdir-p "pregenerated/tmp/ring_core_generated")
+             (patches (search-patches "rust-ring-0.17-ring-core.patch"))
+             (snippet
+              #~(begin (use-modules (guix build utils))
+                       ;; It turns out Guix's nasm works just fine here.
+                       (substitute* "build.rs"
+                         (("./target/tools/windows/nasm/nasm") "nasm"))
+                       ;; These files are pregenerated:
+                       (delete-file "crypto/curve25519/curve25519_tables.h")
+                       (delete-file "crypto/fipsmodule/ec/p256-nistz-table.h")
+                       (delete-file "crypto/fipsmodule/ec/p256_table.h")
+                       ;; As seen in git between 0.17.0 and 0.17.1.
+                       (substitute* "crypto/curve25519/make_curve25519_tables.py"
+                         (("static const uint8_t k25519Precomp")
+                          "const uint8_t k25519Precomp"))
+                       ;; This file causes problems during the 'package phase and
+                       ;; is not distributed with the packaged crate.
+                       (substitute* "Cargo.toml"
+                         (("\"bench\",") ""))
+                       (delete-file "bench/Cargo.toml")))))
+    (build-system trivial-build-system)
+    (arguments
+     (list
+       #:modules '((guix build utils))
+       #:builder
+       #~(begin
+           (use-modules (guix build utils))
+           (setenv "PATH"
+                   (string-join
+                     (list #+(this-package-native-input "clang") ; for clang-format
+                           #+(this-package-native-input "go")
+                           #+(this-package-native-input "gzip")
+                           #+(this-package-native-input "nasm")
+                           #+(this-package-native-input "perl")
+                           #+(this-package-native-input "python-minimal")
+                           #+(this-package-native-input "tar"))
+                     "/bin:" 'suffix))
 
-                    ;; We generate all the files which upstream would normally be
-                    ;; generate by using 'RING_PREGENERATE_ASM=1 cargo build
-                    ;; --target-dir=target/pregenerate_asm' in order to not include
-                    ;; a dependency on cargo when generating the sources.
-                    (define (prefix script)
-                      (string-append
-                        "pregenerated/"
-                        (string-drop-right
-                          (string-drop script
-                                       (string-index-right script #\/)) 3)))
+           (setenv "HOME" (getcwd))
+           (copy-recursively #+source (string-append "ring-" #$version))
+           (with-directory-excursion (string-append "ring-" #$version)
+             (begin
+               (with-directory-excursion "crypto/curve25519"
+                 (with-output-to-file "curve25519_tables.h"
+                   (lambda _ (invoke "python3" "make_curve25519_tables.py"))))
+               (with-directory-excursion "crypto/fipsmodule/ec"
+                 (invoke "go" "run" "make_tables.go")
+                 (invoke "go" "run" "make_ec_scalar_base_mult_tests.go"))
+               (format #t "Generating the pregenerated files ...~%")
+               (force-output)
+               (mkdir-p "pregenerated/tmp/ring_core_generated")
 
-                    (for-each
-                      (lambda (script)
-                        (invoke "perl" script "ios64"
-                                (string-append (prefix script) "-ios64.S"))
-                        (invoke "perl" script "linux64"
-                                (string-append (prefix script) "-linux64.S"))
-                        (invoke "perl" script "win64"
-                                (string-append (prefix script) "-win64.S")))
-                      '("crypto/fipsmodule/aes/asm/aesv8-armx.pl"
-                        "crypto/fipsmodule/modes/asm/ghashv8-armx.pl"
-                        "crypto/chacha/asm/chacha-armv8.pl"
-                        "crypto/cipher_extra/asm/chacha20_poly1305_armv8.pl"
-                        "crypto/fipsmodule/aes/asm/vpaes-armv8.pl"
-                        "crypto/fipsmodule/bn/asm/armv8-mont.pl"
-                        "crypto/fipsmodule/ec/asm/p256-armv8-asm.pl"
-                        "crypto/fipsmodule/modes/asm/ghash-neon-armv8.pl"
-                        "crypto/fipsmodule/modes/asm/aesv8-gcm-armv8.pl"
-                        "crypto/fipsmodule/sha/asm/sha512-armv8.pl"))
+               ;; We generate all the files which upstream would normally be
+               ;; generate by using 'RING_PREGENERATE_ASM=1 cargo build
+               ;; --target-dir=target/pregenerate_asm' in order to not include
+               ;; a dependency on cargo when generating the sources.
+               (define (prefix script)
+                 (string-append
+                   "pregenerated/"
+                   (string-drop-right
+                     (string-drop script
+                                  (string-index-right script #\/)) 3)))
 
-                    (for-each
-                      (lambda (arch)
-                        (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-armv8.pl"
-                                arch (string-append
-                                       "pregenerated/sha256-armv8-" arch ".S")))
-                      '("ios64" "linux64" "win64"))
+               (for-each
+                 (lambda (script)
+                   (invoke "perl" script "ios64"
+                           (string-append (prefix script) "-ios64.S"))
+                   (invoke "perl" script "linux64"
+                           (string-append (prefix script) "-linux64.S"))
+                   (invoke "perl" script "win64"
+                           (string-append (prefix script) "-win64.S")))
+                 '("crypto/fipsmodule/aes/asm/aesv8-armx.pl"
+                   "crypto/fipsmodule/modes/asm/ghashv8-armx.pl"
+                   "crypto/chacha/asm/chacha-armv8.pl"
+                   "crypto/cipher_extra/asm/chacha20_poly1305_armv8.pl"
+                   "crypto/fipsmodule/aes/asm/vpaes-armv8.pl"
+                   "crypto/fipsmodule/bn/asm/armv8-mont.pl"
+                   "crypto/fipsmodule/ec/asm/p256-armv8-asm.pl"
+                   "crypto/fipsmodule/modes/asm/ghash-neon-armv8.pl"
+                   "crypto/fipsmodule/modes/asm/aesv8-gcm-armv8.pl"
+                   "crypto/fipsmodule/sha/asm/sha512-armv8.pl"))
 
-                    (for-each
-                      (lambda (script)
-                        (invoke "perl" script "linux32"
-                                (string-append (prefix script) "-linux32.S")))
-                      '("crypto/fipsmodule/aes/asm/aesv8-armx.pl"
-                        "crypto/fipsmodule/modes/asm/ghashv8-armx.pl"
-                        "crypto/fipsmodule/aes/asm/bsaes-armv7.pl"
-                        "crypto/fipsmodule/aes/asm/vpaes-armv7.pl"
-                        "crypto/fipsmodule/bn/asm/armv4-mont.pl"
-                        "crypto/chacha/asm/chacha-armv4.pl"
-                        "crypto/fipsmodule/modes/asm/ghash-armv4.pl"
-                        "crypto/fipsmodule/sha/asm/sha256-armv4.pl"
-                        "crypto/fipsmodule/sha/asm/sha512-armv4.pl"))
+               (for-each
+                 (lambda (arch)
+                   (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-armv8.pl"
+                           arch (string-append
+                                  "pregenerated/sha256-armv8-" arch ".S")))
+                 '("ios64" "linux64" "win64"))
 
-                    (for-each
-                      (lambda (script)
-                        (invoke "perl" script "elf"
-                                "-fPIC" "-DOPENSSL_IA32_SSE2"
-                                (string-append (prefix script) "-elf.S"))
-                        (invoke "perl" script "win32n"
-                                "-fPIC" "-DOPENSSL_IA32_SSE2"
-                                (string-append
-                                  "pregenerated/tmp/"
-                                  (string-drop (prefix script) 13) "-win32n.asm")))
-                      '("crypto/fipsmodule/aes/asm/aesni-x86.pl"
-                        "crypto/fipsmodule/aes/asm/vpaes-x86.pl"
-                        "crypto/fipsmodule/bn/asm/x86-mont.pl"
-                        "crypto/chacha/asm/chacha-x86.pl"
-                        "crypto/fipsmodule/modes/asm/ghash-x86.pl"))
+               (for-each
+                 (lambda (script)
+                   (invoke "perl" script "linux32"
+                           (string-append (prefix script) "-linux32.S")))
+                 '("crypto/fipsmodule/aes/asm/aesv8-armx.pl"
+                   "crypto/fipsmodule/modes/asm/ghashv8-armx.pl"
+                   "crypto/fipsmodule/aes/asm/bsaes-armv7.pl"
+                   "crypto/fipsmodule/aes/asm/vpaes-armv7.pl"
+                   "crypto/fipsmodule/bn/asm/armv4-mont.pl"
+                   "crypto/chacha/asm/chacha-armv4.pl"
+                   "crypto/fipsmodule/modes/asm/ghash-armv4.pl"
+                   "crypto/fipsmodule/sha/asm/sha256-armv4.pl"
+                   "crypto/fipsmodule/sha/asm/sha512-armv4.pl"))
 
-                    (for-each
-                      (lambda (script)
-                        (invoke "perl" script "elf"
-                                (string-append (prefix script) "-elf.S"))
-                        (invoke "perl" script "macosx"
-                                (string-append (prefix script) "-macosx.S"))
-                        (invoke "perl" script "nasm"
-                                (string-append
-                                  "pregenerated/tmp/"
-                                  (string-drop (prefix script) 13) "-nasm.asm")))
-                      '("crypto/chacha/asm/chacha-x86_64.pl"
-                        "crypto/fipsmodule/aes/asm/aesni-x86_64.pl"
-                        "crypto/fipsmodule/aes/asm/vpaes-x86_64.pl"
-                        "crypto/fipsmodule/bn/asm/x86_64-mont.pl"
-                        "crypto/fipsmodule/bn/asm/x86_64-mont5.pl"
-                        "crypto/fipsmodule/ec/asm/p256-x86_64-asm.pl"
-                        "crypto/fipsmodule/modes/asm/aesni-gcm-x86_64.pl"
-                        "crypto/fipsmodule/modes/asm/ghash-x86_64.pl"
-                        "crypto/fipsmodule/sha/asm/sha512-x86_64.pl"
-                        "crypto/cipher_extra/asm/chacha20_poly1305_x86_64.pl"))
+               (for-each
+                 (lambda (script)
+                   (invoke "perl" script "elf"
+                           "-fPIC" "-DOPENSSL_IA32_SSE2"
+                           (string-append (prefix script) "-elf.S"))
+                   (invoke "perl" script "win32n"
+                           "-fPIC" "-DOPENSSL_IA32_SSE2"
+                           (string-append
+                             "pregenerated/tmp/"
+                             (string-drop (prefix script) 13) "-win32n.asm")))
+                 '("crypto/fipsmodule/aes/asm/aesni-x86.pl"
+                   "crypto/fipsmodule/aes/asm/vpaes-x86.pl"
+                   "crypto/fipsmodule/bn/asm/x86-mont.pl"
+                   "crypto/chacha/asm/chacha-x86.pl"
+                   "crypto/fipsmodule/modes/asm/ghash-x86.pl"))
 
-                    (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-x86_64.pl"
-                            "elf" "pregenerated/sha256-x86_64-elf.S")
+               (for-each
+                 (lambda (script)
+                   (invoke "perl" script "elf"
+                           (string-append (prefix script) "-elf.S"))
+                   (invoke "perl" script "macosx"
+                           (string-append (prefix script) "-macosx.S"))
+                   (invoke "perl" script "nasm"
+                           (string-append
+                             "pregenerated/tmp/"
+                             (string-drop (prefix script) 13) "-nasm.asm")))
+                 '("crypto/chacha/asm/chacha-x86_64.pl"
+                   "crypto/fipsmodule/aes/asm/aesni-x86_64.pl"
+                   "crypto/fipsmodule/aes/asm/vpaes-x86_64.pl"
+                   "crypto/fipsmodule/bn/asm/x86_64-mont.pl"
+                   "crypto/fipsmodule/bn/asm/x86_64-mont5.pl"
+                   "crypto/fipsmodule/ec/asm/p256-x86_64-asm.pl"
+                   "crypto/fipsmodule/modes/asm/aesni-gcm-x86_64.pl"
+                   "crypto/fipsmodule/modes/asm/ghash-x86_64.pl"
+                   "crypto/fipsmodule/sha/asm/sha512-x86_64.pl"
+                   "crypto/cipher_extra/asm/chacha20_poly1305_x86_64.pl"))
 
-                    (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-x86_64.pl"
-                            "macosx" "pregenerated/sha256-x86_64-macosx.S")
+               (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-x86_64.pl"
+                       "elf" "pregenerated/sha256-x86_64-elf.S")
 
-                    (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-x86_64.pl"
-                            "nasm" "pregenerated/tmp/sha256-x86_64-nasm.asm")
+               (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-x86_64.pl"
+                       "macosx" "pregenerated/sha256-x86_64-macosx.S")
 
-                    ;; TODO: Extract ring_core_generated/prefix_symbols_nasm.inc
-                    ;; and ring_core_generated/prefix_symbols_asm.h from build.rs.
+               (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-x86_64.pl"
+                       "nasm" "pregenerated/tmp/sha256-x86_64-nasm.asm")
 
-                    (for-each
-                      (lambda (script)
-                        (invoke "nasm" "-o" (string-append (prefix script) "o")
-                                "-f" "win32" "-i" "include/" "-i" "pregenerated/tmp/"
-                                "-Xgnu" "-gcv8" script))
-                    (find-files "pregenerated/tmp" "win32n\\.asm"))
+               ;; TODO: Extract ring_core_generated/prefix_symbols_nasm.inc
+               ;; and ring_core_generated/prefix_symbols_asm.h from build.rs.
 
-                    (for-each
-                      (lambda (script)
-                        (invoke "nasm" "-o" (string-append (prefix script) "o")
-                                "-f" "win64" "-i" "include/" "-i" "pregenerated/tmp/"
-                                "-Xgnu" "-gcv8" script))
-                    (find-files "pregenerated/tmp" "nasm\\.asm"))
+               (for-each
+                 (lambda (script)
+                   (invoke "nasm" "-o" (string-append (prefix script) "o")
+                           "-f" "win32" "-i" "include/" "-i" "pregenerated/tmp/"
+                           "-Xgnu" "-gcv8" script))
+                 (find-files "pregenerated/tmp" "win32n\\.asm"))
 
-                    (format #t "Creating the tarball ...~%")
-                    (force-output)
-                    ;; The other option is to use cargo package --allow-dirty
-                    (with-directory-excursion "../"
-                      (invoke "tar" "czf" #$output
-                              ;; avoid non-determinism in the archive
-                              "--sort=name" "--mtime=@0"
-                              "--owner=root:0" "--group=root:0"
-                              (string-append "ring-" #$version))))))))))))
+               (for-each
+                 (lambda (script)
+                   (invoke "nasm" "-o" (string-append (prefix script) "o")
+                           "-f" "win64" "-i" "include/" "-i" "pregenerated/tmp/"
+                           "-Xgnu" "-gcv8" script))
+                 (find-files "pregenerated/tmp" "nasm\\.asm"))
+
+               (format #t "Creating the tarball ...~%")
+               (force-output)
+               (with-directory-excursion "../"
+                 (invoke "tar" "czf" #$output
+                         ;; avoid non-determinism in the archive
+                         "--sort=name" "--mtime=@0"
+                         "--owner=root:0" "--group=root:0"
+                         (string-append "ring-" #$version))))))))
+    (native-inputs
+     (list clang go gzip nasm perl python-minimal tar))
+    (home-page "https://github.com/briansmith/ring")
+    (synopsis "Safe, fast, small crypto using Rust")
+    (description "This package provided safe, fast, small crypto using Rust.")
+    (license (list license:isc license:openssl))))
 
 (define-public rust-ring-0.17
   (package
@@ -4347,179 +4329,180 @@ Digital Signature Algorithm} (ECDSA).")
     (license (list license:isc license:openssl))))
 
 (define rust-ring-0.16-sources
-  (let* ((version "0.16.20")
-         (upstream-source
-           (origin
+  (package
+    (inherit rust-ring-0.17-sources)
+    (name "rust-ring")
+    (version "0.16.20.tar.gz")  ; Hack to adjust the output name.
+    (source (origin
              (method git-fetch)
              (uri (git-reference
                     (url "https://github.com/briansmith/ring")
                     (commit "9cc0d45f4d8521f467bb3a621e74b1535e118188")))
              (file-name (git-file-name "rust-ring" version))
              (sha256
-              (base32 "1aps05i5308ka03968glnnqr4kdkk2x4ghlg5vrqhl78jm6ivvby")))))
-    (origin
-      (method computed-origin-method)
-      (file-name (string-append "rust-ring-" version ".tar.gz"))
-      (sha256 #f)
-      (uri
-        (delay
-          (with-imported-modules '((guix build utils))
-            #~(begin
-                (use-modules (guix build utils))
-                (set-path-environment-variable
-                  "PATH" '("bin")
-                  (list #+(canonical-package gzip)
-                        #+(canonical-package tar)
-                        #+perl
-                        #+nasm
-                        #+go
-                        #+clang             ; clang-format
-                        #+python2-minimal))
-                (setenv "HOME" (getcwd))
-                (copy-recursively #+upstream-source
-                                  (string-append "ring-" #$version))
-                (with-directory-excursion (string-append "ring-" #$version)
-                  (begin
-                    ;; It turns out Guix's nasm works just fine here.
-                    (substitute* "build.rs"
-                      (("./target/tools/nasm") "nasm"))
-                    ;; Files which would be deleted in a snippet:
-                    (delete-file "crypto/curve25519/curve25519_tables.h")
-                    (delete-file "crypto/fipsmodule/ec/ecp_nistz256_table.inl")
-                    ;; Files to be generated in the sources:
-                    (format #t "Generating the missing files ...~%")
-                    (force-output)
-                    (with-directory-excursion "crypto/curve25519"
-                      (with-output-to-file "curve25519_tables.h"
-                        (lambda _ (invoke "python" "make_curve25519_tables.py"))))
-                    (with-directory-excursion "crypto/fipsmodule/ec"
-                      (with-output-to-file "ecp_nistz256_table.inl"
-                        (lambda _ (invoke "go" "run" "make_p256-x86_64-table.go"))))
-                    (format #t "Generating the pregenerated files ...~%")
-                    (force-output)
-                    (mkdir-p "pregenerated/tmp")
+              (base32 "1aps05i5308ka03968glnnqr4kdkk2x4ghlg5vrqhl78jm6ivvby"))
+             (snippet
+              #~(begin (use-modules (guix build utils))
+                       ;; It turns out Guix's nasm works just fine here.
+                       (substitute* "build.rs"
+                         (("./target/tools/nasm") "nasm"))
+                       ;; These files are pregenerated:
+                       (delete-file "crypto/curve25519/curve25519_tables.h")
+                       (delete-file "crypto/fipsmodule/ec/ecp_nistz256_table.inl")))))
+    (arguments
+     (list
+       #:modules '((guix build utils))
+       #:builder
+       #~(begin
+           (use-modules (guix build utils))
+           (setenv "PATH"
+                   (string-join
+                     (list #+(this-package-native-input "clang") ; for clang-format
+                           #+(this-package-native-input "go")
+                           #+(this-package-native-input "gzip")
+                           #+(this-package-native-input "nasm")
+                           #+(this-package-native-input "perl")
+                           #+(this-package-native-input "python2-minimal")
+                           #+(this-package-native-input "tar"))
+                     "/bin:" 'suffix))
 
-                    ;; We generate all the files which upstream would normally be
-                    ;; generate by using '(cd pregenerate_asm && cargo clean &&
-                    ;; cargo build) ./pregenerate_asm/target/debug/pregenerate_asm'
-                    ;; in order to not include a dependency on cargo when
-                    ;; generating the sources.
-                    (define (prefix script)
-                      (string-append
-                        "pregenerated/"
-                        (string-drop-right
-                          (string-drop script
-                                       (string-index-right script #\/)) 3)))
+           (setenv "HOME" (getcwd))
+           (copy-recursively #+source (string-append "ring-" #$version))
+           (with-directory-excursion (string-append "ring-" #$version)
+             (begin
+               (with-directory-excursion "crypto/curve25519"
+                 (with-output-to-file "curve25519_tables.h"
+                   (lambda _ (invoke "python" "make_curve25519_tables.py"))))
+               (with-directory-excursion "crypto/fipsmodule/ec"
+                 (with-output-to-file "ecp_nistz256_table.inl"
+                   (lambda _ (invoke "go" "run" "make_p256-x86_64-table.go"))))
+               (format #t "Generating the pregenerated files ...~%")
+               (force-output)
+               (mkdir-p "pregenerated/tmp")
 
-                    (for-each
-                      (lambda (script)
-                        (invoke "perl" script "elf"
-                                (string-append (prefix script) "-elf.S"))
-                        (invoke "perl" script "macosx"
-                                (string-append (prefix script) "-macosx.S"))
-                        (invoke "perl" script "nasm"
-                                (string-append
-                                  "pregenerated/tmp/"
-                                  (string-drop (prefix script) 13) "-nasm.asm")))
-                      '("crypto/fipsmodule/aes/asm/aesni-x86_64.pl"
-                        "crypto/fipsmodule/aes/asm/vpaes-x86_64.pl"
-                        "crypto/fipsmodule/bn/asm/x86_64-mont.pl"
-                        "crypto/fipsmodule/bn/asm/x86_64-mont5.pl"
-                        "crypto/chacha/asm/chacha-x86_64.pl"
-                        "crypto/fipsmodule/ec/asm/p256-x86_64-asm.pl"
-                        "crypto/fipsmodule/modes/asm/aesni-gcm-x86_64.pl"
-                        "crypto/fipsmodule/modes/asm/ghash-x86_64.pl"
-                        "crypto/fipsmodule/sha/asm/sha512-x86_64.pl"
-                        "crypto/cipher_extra/asm/chacha20_poly1305_x86_64.pl"))
+               ;; We generate all the files which upstream would normally be
+               ;; generate by using '(cd pregenerate_asm && cargo clean &&
+               ;; cargo build) ./pregenerate_asm/target/debug/pregenerate_asm'
+               ;; in order to not include a dependency on cargo when
+               ;; generating the sources.
+               (define (prefix script)
+                 (string-append
+                   "pregenerated/"
+                   (string-drop-right
+                     (string-drop script
+                                  (string-index-right script #\/)) 3)))
 
-                    (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-x86_64.pl"
-                            "elf" "pregenerated/sha256-x86_64-elf.S")
+               (for-each
+                 (lambda (script)
+                   (invoke "perl" script "elf"
+                           (string-append (prefix script) "-elf.S"))
+                   (invoke "perl" script "macosx"
+                           (string-append (prefix script) "-macosx.S"))
+                   (invoke "perl" script "nasm"
+                           (string-append
+                             "pregenerated/tmp/"
+                             (string-drop (prefix script) 13) "-nasm.asm")))
+                 '("crypto/fipsmodule/aes/asm/aesni-x86_64.pl"
+                   "crypto/fipsmodule/aes/asm/vpaes-x86_64.pl"
+                   "crypto/fipsmodule/bn/asm/x86_64-mont.pl"
+                   "crypto/fipsmodule/bn/asm/x86_64-mont5.pl"
+                   "crypto/chacha/asm/chacha-x86_64.pl"
+                   "crypto/fipsmodule/ec/asm/p256-x86_64-asm.pl"
+                   "crypto/fipsmodule/modes/asm/aesni-gcm-x86_64.pl"
+                   "crypto/fipsmodule/modes/asm/ghash-x86_64.pl"
+                   "crypto/fipsmodule/sha/asm/sha512-x86_64.pl"
+                   "crypto/cipher_extra/asm/chacha20_poly1305_x86_64.pl"))
 
-                    (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-x86_64.pl"
-                            "macosx" "pregenerated/sha256-x86_64-macosx.S")
+               (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-x86_64.pl"
+                       "elf" "pregenerated/sha256-x86_64-elf.S")
 
-                    (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-x86_64.pl"
-                            "nasm" "pregenerated/tmp/sha256-x86_64-nasm.asm")
+               (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-x86_64.pl"
+                       "macosx" "pregenerated/sha256-x86_64-macosx.S")
 
-                    (for-each
-                      (lambda (script)
-                        (invoke "nasm" "-o" (string-append (prefix script) "obj")
-                                "-f" "win64" "-Xgnu" "-gcv8" script))
-                    (find-files "pregenerated/tmp" "\\.asm"))
+               (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-x86_64.pl"
+                       "nasm" "pregenerated/tmp/sha256-x86_64-nasm.asm")
 
-                    (for-each
-                      (lambda (script)
-                        (invoke "perl" script "ios64"
-                                (string-append (prefix script) "-ios64.S"))
-                        (invoke "perl" script "linux64"
-                                (string-append (prefix script) "-linux64.S")))
-                      '("crypto/fipsmodule/aes/asm/aesv8-armx.pl"
-                        "crypto/fipsmodule/modes/asm/ghashv8-armx.pl"
-                        "crypto/fipsmodule/aes/asm/vpaes-armv8.pl"
-                        "crypto/fipsmodule/bn/asm/armv8-mont.pl"
-                        "crypto/chacha/asm/chacha-armv8.pl"
-                        "crypto/fipsmodule/ec/asm/ecp_nistz256-armv8.pl"
-                        "crypto/fipsmodule/modes/asm/ghash-neon-armv8.pl"
-                        "crypto/fipsmodule/sha/asm/sha512-armv8.pl"))
+               (for-each
+                 (lambda (script)
+                   (invoke "nasm" "-o" (string-append (prefix script) "obj")
+                           "-f" "win64" "-Xgnu" "-gcv8" script))
+               (find-files "pregenerated/tmp" "\\.asm"))
 
-                    (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-armv8.pl"
-                            "ios64" "pregenerated/sha256-armv8-ios64.S")
+               (for-each
+                 (lambda (script)
+                   (invoke "perl" script "ios64"
+                           (string-append (prefix script) "-ios64.S"))
+                   (invoke "perl" script "linux64"
+                           (string-append (prefix script) "-linux64.S")))
+                 '("crypto/fipsmodule/aes/asm/aesv8-armx.pl"
+                   "crypto/fipsmodule/modes/asm/ghashv8-armx.pl"
+                   "crypto/fipsmodule/aes/asm/vpaes-armv8.pl"
+                   "crypto/fipsmodule/bn/asm/armv8-mont.pl"
+                   "crypto/chacha/asm/chacha-armv8.pl"
+                   "crypto/fipsmodule/ec/asm/ecp_nistz256-armv8.pl"
+                   "crypto/fipsmodule/modes/asm/ghash-neon-armv8.pl"
+                   "crypto/fipsmodule/sha/asm/sha512-armv8.pl"))
 
-                    (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-armv8.pl"
-                            "linux64" "pregenerated/sha256-armv8-linux64.S")
+               (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-armv8.pl"
+                       "ios64" "pregenerated/sha256-armv8-ios64.S")
 
-                    (for-each
-                      (lambda (script)
-                        (invoke "perl" script "elf"
-                                "-fPIC" "-DOPENSSL_IA32_SSE2"
-                                (string-append (prefix script) "-elf.S"))
-                        (invoke "perl" script "macosx"
-                                "-fPIC" "-DOPENSSL_IA32_SSE2"
-                                (string-append (prefix script) "-macosx.S"))
-                        (invoke "perl" script "win32n"
-                                "-fPIC" "-DOPENSSL_IA32_SSE2"
-                                (string-append
-                                  "pregenerated/tmp/"
-                                  (string-drop (prefix script) 13) "-win32n.asm")))
-                      '("crypto/fipsmodule/aes/asm/aesni-x86.pl"
-                        "crypto/fipsmodule/aes/asm/vpaes-x86.pl"
-                        "crypto/fipsmodule/bn/asm/x86-mont.pl"
-                        "crypto/chacha/asm/chacha-x86.pl"
-                        "crypto/fipsmodule/ec/asm/ecp_nistz256-x86.pl"
-                        "crypto/fipsmodule/modes/asm/ghash-x86.pl"))
+               (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-armv8.pl"
+                       "linux64" "pregenerated/sha256-armv8-linux64.S")
 
-                    (for-each
-                      (lambda (script)
-                        (invoke "nasm" "-o" (string-append (prefix script) "obj")
-                                "-f" "win32" "-Xgnu" "-gcv8" script))
-                    (find-files "pregenerated/tmp" "-win32n\\.asm"))
+               (for-each
+                 (lambda (script)
+                   (invoke "perl" script "elf"
+                           "-fPIC" "-DOPENSSL_IA32_SSE2"
+                           (string-append (prefix script) "-elf.S"))
+                   (invoke "perl" script "macosx"
+                           "-fPIC" "-DOPENSSL_IA32_SSE2"
+                           (string-append (prefix script) "-macosx.S"))
+                   (invoke "perl" script "win32n"
+                           "-fPIC" "-DOPENSSL_IA32_SSE2"
+                           (string-append
+                             "pregenerated/tmp/"
+                             (string-drop (prefix script) 13) "-win32n.asm")))
+                 '("crypto/fipsmodule/aes/asm/aesni-x86.pl"
+                   "crypto/fipsmodule/aes/asm/vpaes-x86.pl"
+                   "crypto/fipsmodule/bn/asm/x86-mont.pl"
+                   "crypto/chacha/asm/chacha-x86.pl"
+                   "crypto/fipsmodule/ec/asm/ecp_nistz256-x86.pl"
+                   "crypto/fipsmodule/modes/asm/ghash-x86.pl"))
 
-                    (for-each
-                      (lambda (script)
-                        (invoke "perl" script "ios32"
-                                (string-append (prefix script) "-ios32.S"))
-                        (invoke "perl" script "linux32"
-                                (string-append (prefix script) "-linux32.S")))
-                      '("crypto/fipsmodule/aes/asm/aesv8-armx.pl"
-                        "crypto/fipsmodule/modes/asm/ghashv8-armx.pl"
-                        "crypto/fipsmodule/aes/asm/bsaes-armv7.pl"
-                        "crypto/fipsmodule/aes/asm/vpaes-armv7.pl"
-                        "crypto/fipsmodule/bn/asm/armv4-mont.pl"
-                        "crypto/chacha/asm/chacha-armv4.pl"
-                        "crypto/fipsmodule/ec/asm/ecp_nistz256-armv4.pl"
-                        "crypto/fipsmodule/modes/asm/ghash-armv4.pl"
-                        "crypto/fipsmodule/sha/asm/sha256-armv4.pl"
-                        "crypto/fipsmodule/sha/asm/sha512-armv4.pl"))
+               (for-each
+                 (lambda (script)
+                   (invoke "nasm" "-o" (string-append (prefix script) "obj")
+                           "-f" "win32" "-Xgnu" "-gcv8" script))
+               (find-files "pregenerated/tmp" "-win32n\\.asm"))
 
-                    (format #t "Creating the tarball ...~%")
-                    (force-output)
-                    ;; The other option is to use cargo package --allow-dirty
-                    (with-directory-excursion "../"
-                      (invoke "tar" "czf" #$output
-                              ;; avoid non-determinism in the archive
-                              "--sort=name" "--mtime=@0"
-                              "--owner=root:0" "--group=root:0"
-                              (string-append "ring-" #$version))))))))))))
+               (for-each
+                 (lambda (script)
+                   (invoke "perl" script "ios32"
+                           (string-append (prefix script) "-ios32.S"))
+                   (invoke "perl" script "linux32"
+                           (string-append (prefix script) "-linux32.S")))
+                 '("crypto/fipsmodule/aes/asm/aesv8-armx.pl"
+                   "crypto/fipsmodule/modes/asm/ghashv8-armx.pl"
+                   "crypto/fipsmodule/aes/asm/bsaes-armv7.pl"
+                   "crypto/fipsmodule/aes/asm/vpaes-armv7.pl"
+                   "crypto/fipsmodule/bn/asm/armv4-mont.pl"
+                   "crypto/chacha/asm/chacha-armv4.pl"
+                   "crypto/fipsmodule/ec/asm/ecp_nistz256-armv4.pl"
+                   "crypto/fipsmodule/modes/asm/ghash-armv4.pl"
+                   "crypto/fipsmodule/sha/asm/sha256-armv4.pl"
+                   "crypto/fipsmodule/sha/asm/sha512-armv4.pl"))
+
+               (format #t "Creating the tarball ...~%")
+               (force-output)
+               ;; The other option is to use cargo package --allow-dirty
+               (with-directory-excursion "../"
+                 (invoke "tar" "czf" #$output
+                         ;; avoid non-determinism in the archive
+                         "--sort=name" "--mtime=@0"
+                         "--owner=root:0" "--group=root:0"
+                         (string-append "ring-" #$version))))))))
+    (native-inputs
+     (list clang go gzip nasm perl python2-minimal tar))))
 
 (define-public rust-ring-0.16
   (package
@@ -4546,196 +4529,197 @@ Digital Signature Algorithm} (ECDSA).")
                              "i686-linux" "x86_64-linux"))))
 
 (define rust-ring-0.14-sources
-  (let* ((version "0.14.6")
-         (upstream-source
-           (origin
+  (package
+    (inherit rust-ring-0.17-sources)
+    (name "rust-ring")
+    (version "0.14.6.tar.gz")   ; Hack to adjust the output name.
+    (source (origin
              (method git-fetch)
              (uri (git-reference
                     (url "https://github.com/briansmith/ring")
                     (commit "ef85df478152aa3fe06c811309379efa08f8a529")))
              (file-name (git-file-name "rust-ring" version))
              (sha256
-              (base32 "12dgw2spvmkdypgzymw3bxpv4bbpnlq8s10sdggral31x597n6xx")))))
-    (origin
-      (method computed-origin-method)
-      (file-name (string-append "rust-ring-" version ".tar.gz"))
-      (sha256 #f)
-      (uri
-        (delay
-          (with-imported-modules '((guix build utils))
-            #~(begin
-                (use-modules (guix build utils))
-                (set-path-environment-variable
-                  "PATH" '("bin")
-                  (list #+(canonical-package gzip)
-                        #+(canonical-package tar)
-                        #+perl
-                        #+yasm
-                        #+go
-                        #+clang             ; clang-format
-                        #+python2-minimal))
-                (setenv "HOME" (getcwd))
-                (copy-recursively #+upstream-source
-                                  (string-append "ring-" #$version))
-                (with-directory-excursion (string-append "ring-" #$version)
-                  (begin
-                    ;; It turns out Guix's yasm works just fine here.
-                    (substitute* "build.rs"
-                      (("yasm.exe") "yasm"))
-                    ;; Files which would be deleted in a snippet:
-                    (delete-file "third_party/fiat/curve25519_tables.h")
-                    (delete-file "crypto/fipsmodule/ec/ecp_nistz256_table.inl")
-                    (delete-file "util/ar/testdata/linux/libsample.a")
-                    (delete-file "util/ar/testdata/mac/libsample.a")
-                    (delete-file "util/ar/testdata/windows/sample.lib")
-                    ;; Fix the doc tests.
-                    (substitute* "src/ec/curve25519/ed25519/verification.rs"
-                      ((";;") ";"))
-                    ;; Files to be generated in the sources:
-                    (format #t "Generating the missing files ...~%")
-                    (force-output)
-                    (with-directory-excursion "third_party/fiat"
-                      (with-output-to-file "curve25519_tables.h"
-                        (lambda _ (invoke "python" "make_curve25519_tables.py"))))
-                    (with-directory-excursion "crypto/fipsmodule/ec"
-                      ;; This one seems to have been changed elsewhere in the
-                      ;; sources but not in the script generating the definition.
-                      (substitute* "make_p256-x86_64-table.go"
-                        (("ecp_nistz256_precomputed") "GFp_nistz256_precomputed"))
-                      (with-output-to-file "ecp_nistz256_table.inl"
-                        (lambda _ (invoke "go" "run" "make_p256-x86_64-table.go"))))
-                    (format #t "Generating the pregenerated files ...~%")
-                    (force-output)
-                    (mkdir-p "pregenerated/tmp")
+              (base32 "12dgw2spvmkdypgzymw3bxpv4bbpnlq8s10sdggral31x597n6xx"))
+             (snippet
+              #~(begin (use-modules (guix build utils))
+                       ;; It turns out Guix's yasm works just fine here.
+                       (substitute* "build.rs"
+                         (("yasm.exe") "yasm"))
+                       ;; These files are pregenerated:
+                       (delete-file "third_party/fiat/curve25519_tables.h")
+                       (delete-file "crypto/fipsmodule/ec/ecp_nistz256_table.inl")
+                       (delete-file "util/ar/testdata/linux/libsample.a")
+                       (delete-file "util/ar/testdata/mac/libsample.a")
+                       (delete-file "util/ar/testdata/windows/sample.lib")
+                       ;; Fix the doc tests.
+                       (substitute* "src/ec/curve25519/ed25519/verification.rs"
+                         ((";;") ";"))))))
+    (arguments
+     (list
+       #:modules '((guix build utils))
+       #:builder
+       #~(begin
+           (use-modules (guix build utils))
+           (setenv "PATH"
+                   (string-join
+                     (list #+(this-package-native-input "clang") ; for clang-format
+                           #+(this-package-native-input "go")
+                           #+(this-package-native-input "gzip")
+                           #+(this-package-native-input "perl")
+                           #+(this-package-native-input "python2-minimal")
+                           #+(this-package-native-input "tar")
+                           #+(this-package-native-input "yasm"))
+                     "/bin:" 'suffix))
 
-                    ;; We generate all the files which upstream would normally be
-                    ;; generate by using '(cd pregenerate_asm && cargo clean &&
-                    ;; cargo build) ./pregenerate_asm/target/debug/pregenerate_asm'
-                    ;; in order to not include a dependency on cargo when
-                    ;; generating the sources.
-                    (define (prefix script)
-                      (string-append
-                        "pregenerated/"
-                        (string-drop-right
-                          (string-drop script
-                                       (string-index-right script #\/)) 3)))
+           (setenv "HOME" (getcwd))
+           (copy-recursively #+source (string-append "ring-" #$version))
+           (with-directory-excursion (string-append "ring-" #$version)
+             (begin
+               (with-directory-excursion "third_party/fiat"
+                 (with-output-to-file "curve25519_tables.h"
+                   (lambda _ (invoke "python" "make_curve25519_tables.py"))))
+               (with-directory-excursion "crypto/fipsmodule/ec"
+                 ;; This one seems to have been changed elsewhere in the
+                 ;; sources but not in the script generating the definition.
+                 (substitute* "make_p256-x86_64-table.go"
+                   (("ecp_nistz256_precomputed") "GFp_nistz256_precomputed"))
+                 (with-output-to-file "ecp_nistz256_table.inl"
+                   (lambda _ (invoke "go" "run" "make_p256-x86_64-table.go"))))
+               (format #t "Generating the pregenerated files ...~%")
+               (force-output)
+               (mkdir-p "pregenerated/tmp")
 
-                    (for-each
-                      (lambda (script)
-                        (invoke "perl" script "elf"
-                                (string-append (prefix script) "-elf.S"))
-                        (invoke "perl" script "macosx"
-                                (string-append (prefix script) "-macosx.S"))
-                        (invoke "perl" script "nasm"
-                                (string-append
-                                  "pregenerated/tmp/"
-                                  (string-drop (prefix script) 13) "-nasm.asm")))
-                      '("crypto/fipsmodule/aes/asm/aes-x86_64.pl"
-                        "crypto/fipsmodule/aes/asm/aesni-x86_64.pl"
-                        "crypto/fipsmodule/aes/asm/vpaes-x86_64.pl"
-                        "crypto/fipsmodule/bn/asm/x86_64-mont.pl"
-                        "crypto/fipsmodule/bn/asm/x86_64-mont5.pl"
-                        "crypto/chacha/asm/chacha-x86_64.pl"
-                        "crypto/fipsmodule/ec/asm/p256-x86_64-asm.pl"
-                        "crypto/fipsmodule/modes/asm/aesni-gcm-x86_64.pl"
-                        "crypto/fipsmodule/modes/asm/ghash-x86_64.pl"
-                        "crypto/poly1305/asm/poly1305-x86_64.pl"
-                        "crypto/fipsmodule/sha/asm/sha512-x86_64.pl"))
+               ;; We generate all the files which upstream would normally be
+               ;; generate by using '(cd pregenerate_asm && cargo clean &&
+               ;; cargo build) ./pregenerate_asm/target/debug/pregenerate_asm'
+               ;; in order to not include a dependency on cargo when
+               ;; generating the sources.
+               (define (prefix script)
+                 (string-append
+                   "pregenerated/"
+                   (string-drop-right
+                     (string-drop script (string-index-right script #\/)) 3)))
 
-                    (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-x86_64.pl"
-                            "elf" "pregenerated/sha256-x86_64-elf.S")
+               (for-each
+                 (lambda (script)
+                   (invoke "perl" script "elf"
+                           (string-append (prefix script) "-elf.S"))
+                   (invoke "perl" script "macosx"
+                           (string-append (prefix script) "-macosx.S"))
+                   (invoke "perl" script "nasm"
+                           (string-append
+                             "pregenerated/tmp/"
+                             (string-drop (prefix script) 13) "-nasm.asm")))
+                 '("crypto/fipsmodule/aes/asm/aes-x86_64.pl"
+                   "crypto/fipsmodule/aes/asm/aesni-x86_64.pl"
+                   "crypto/fipsmodule/aes/asm/vpaes-x86_64.pl"
+                   "crypto/fipsmodule/bn/asm/x86_64-mont.pl"
+                   "crypto/fipsmodule/bn/asm/x86_64-mont5.pl"
+                   "crypto/chacha/asm/chacha-x86_64.pl"
+                   "crypto/fipsmodule/ec/asm/p256-x86_64-asm.pl"
+                   "crypto/fipsmodule/modes/asm/aesni-gcm-x86_64.pl"
+                   "crypto/fipsmodule/modes/asm/ghash-x86_64.pl"
+                   "crypto/poly1305/asm/poly1305-x86_64.pl"
+                   "crypto/fipsmodule/sha/asm/sha512-x86_64.pl"))
 
-                    (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-x86_64.pl"
-                            "macosx" "pregenerated/sha256-x86_64-macosx.S")
+               (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-x86_64.pl"
+                       "elf" "pregenerated/sha256-x86_64-elf.S")
 
-                    (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-x86_64.pl"
-                            "nasm" "pregenerated/tmp/sha256-x86_64-nasm.asm")
+               (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-x86_64.pl"
+                       "macosx" "pregenerated/sha256-x86_64-macosx.S")
 
-                    (for-each
-                      (lambda (script)
-                        (invoke "yasm" "-X" "vc" "--dformat=cv8"
-                                "--oformat=win64" "--machine=amd64" "-o"
-                                (string-append (prefix script) "obj") script))
-                      (find-files "pregenerated/tmp" "\\.asm"))
+               (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-x86_64.pl"
+                       "nasm" "pregenerated/tmp/sha256-x86_64-nasm.asm")
 
-                    (for-each
-                      (lambda (script)
-                        (invoke "perl" script "ios64"
-                                (string-append (prefix script) "-ios64.S"))
-                        (invoke "perl" script "linux64"
-                                (string-append (prefix script) "-linux64.S")))
-                      '("crypto/fipsmodule/aes/asm/aesv8-armx.pl"
-                        "crypto/fipsmodule/modes/asm/ghashv8-armx.pl"
-                        "crypto/fipsmodule/bn/asm/armv8-mont.pl"
-                        "crypto/chacha/asm/chacha-armv8.pl"
-                        "crypto/fipsmodule/ec/asm/ecp_nistz256-armv8.pl"
-                        "crypto/poly1305/asm/poly1305-armv8.pl"
-                        "crypto/fipsmodule/sha/asm/sha512-armv8.pl"))
+               (for-each
+                 (lambda (script)
+                   (invoke "yasm" "-X" "vc" "--dformat=cv8"
+                           "--oformat=win64" "--machine=amd64" "-o"
+                           (string-append (prefix script) "obj") script))
+                 (find-files "pregenerated/tmp" "\\.asm"))
 
-                    (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-armv8.pl"
-                            "ios64" "pregenerated/sha256-armv8-ios64.S")
+               (for-each
+                 (lambda (script)
+                   (invoke "perl" script "ios64"
+                           (string-append (prefix script) "-ios64.S"))
+                   (invoke "perl" script "linux64"
+                           (string-append (prefix script) "-linux64.S")))
+                 '("crypto/fipsmodule/aes/asm/aesv8-armx.pl"
+                   "crypto/fipsmodule/modes/asm/ghashv8-armx.pl"
+                   "crypto/fipsmodule/bn/asm/armv8-mont.pl"
+                   "crypto/chacha/asm/chacha-armv8.pl"
+                   "crypto/fipsmodule/ec/asm/ecp_nistz256-armv8.pl"
+                   "crypto/poly1305/asm/poly1305-armv8.pl"
+                   "crypto/fipsmodule/sha/asm/sha512-armv8.pl"))
 
-                    (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-armv8.pl"
-                            "linux64" "pregenerated/sha256-armv8-linux64.S")
+               (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-armv8.pl"
+                       "ios64" "pregenerated/sha256-armv8-ios64.S")
 
-                    (for-each
-                      (lambda (script)
-                        (invoke "perl" script "elf"
-                                "-fPIC" "-DOPENSSL_IA32_SSE2"
-                                (string-append (prefix script) "-elf.S"))
-                        (invoke "perl" script "macosx"
-                                "-fPIC" "-DOPENSSL_IA32_SSE2"
-                                (string-append (prefix script) "-macosx.S"))
-                        (invoke "perl" script "win32n"
-                                "-fPIC" "-DOPENSSL_IA32_SSE2"
-                                (string-append
-                                  "pregenerated/tmp/"
-                                  (string-drop (prefix script) 13) "-win32n.asm")))
-                      '("crypto/fipsmodule/aes/asm/aes-586.pl"
-                        "crypto/fipsmodule/aes/asm/aesni-x86.pl"
-                        "crypto/fipsmodule/aes/asm/vpaes-x86.pl"
-                        "crypto/fipsmodule/bn/asm/x86-mont.pl"
-                        "crypto/chacha/asm/chacha-x86.pl"
-                        "crypto/fipsmodule/ec/asm/ecp_nistz256-x86.pl"
-                        "crypto/fipsmodule/modes/asm/ghash-x86.pl"
-                        "crypto/poly1305/asm/poly1305-x86.pl"
-                        "crypto/fipsmodule/sha/asm/sha256-586.pl"
-                        "crypto/fipsmodule/sha/asm/sha512-586.pl"))
+               (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-armv8.pl"
+                       "linux64" "pregenerated/sha256-armv8-linux64.S")
 
-                    (for-each
-                      (lambda (script)
-                        (invoke "yasm" "-X" "vc" "--dformat=cv8"
-                                "--oformat=win32" "--machine=x86" "-o"
-                                (string-append (prefix script) "obj") script))
-                      (find-files "pregenerated/tmp" "-win32n\\.asm"))
+               (for-each
+                 (lambda (script)
+                   (invoke "perl" script "elf"
+                           "-fPIC" "-DOPENSSL_IA32_SSE2"
+                           (string-append (prefix script) "-elf.S"))
+                   (invoke "perl" script "macosx"
+                           "-fPIC" "-DOPENSSL_IA32_SSE2"
+                           (string-append (prefix script) "-macosx.S"))
+                   (invoke "perl" script "win32n"
+                           "-fPIC" "-DOPENSSL_IA32_SSE2"
+                           (string-append
+                             "pregenerated/tmp/"
+                             (string-drop (prefix script) 13) "-win32n.asm")))
+                 '("crypto/fipsmodule/aes/asm/aes-586.pl"
+                   "crypto/fipsmodule/aes/asm/aesni-x86.pl"
+                   "crypto/fipsmodule/aes/asm/vpaes-x86.pl"
+                   "crypto/fipsmodule/bn/asm/x86-mont.pl"
+                   "crypto/chacha/asm/chacha-x86.pl"
+                   "crypto/fipsmodule/ec/asm/ecp_nistz256-x86.pl"
+                   "crypto/fipsmodule/modes/asm/ghash-x86.pl"
+                   "crypto/poly1305/asm/poly1305-x86.pl"
+                   "crypto/fipsmodule/sha/asm/sha256-586.pl"
+                   "crypto/fipsmodule/sha/asm/sha512-586.pl"))
 
-                    (for-each
-                      (lambda (script)
-                        (invoke "perl" script "ios32"
-                                (string-append (prefix script) "-ios32.S"))
-                        (invoke "perl" script "linux32"
-                                (string-append (prefix script) "-linux32.S")))
-                      '("crypto/fipsmodule/aes/asm/aesv8-armx.pl"
-                        "crypto/fipsmodule/modes/asm/ghashv8-armx.pl"
-                        "crypto/fipsmodule/aes/asm/aes-armv4.pl"
-                        "crypto/fipsmodule/aes/asm/bsaes-armv7.pl"
-                        "crypto/fipsmodule/bn/asm/armv4-mont.pl"
-                        "crypto/chacha/asm/chacha-armv4.pl"
-                        "crypto/fipsmodule/ec/asm/ecp_nistz256-armv4.pl"
-                        "crypto/fipsmodule/modes/asm/ghash-armv4.pl"
-                        "crypto/poly1305/asm/poly1305-armv4.pl"
-                        "crypto/fipsmodule/sha/asm/sha256-armv4.pl"
-                        "crypto/fipsmodule/sha/asm/sha512-armv4.pl"))
+               (for-each
+                 (lambda (script)
+                   (invoke "yasm" "-X" "vc" "--dformat=cv8"
+                           "--oformat=win32" "--machine=x86" "-o"
+                           (string-append (prefix script) "obj") script))
+                 (find-files "pregenerated/tmp" "-win32n\\.asm"))
 
-                    (format #t "Creating the tarball ...~%")
-                    (force-output)
-                    ;; The other option is to use cargo package --allow-dirty
-                    (with-directory-excursion "../"
-                      (invoke "tar" "czf" #$output
-                              ;; avoid non-determinism in the archive
-                              "--sort=name" "--mtime=@0"
-                              "--owner=root:0" "--group=root:0"
-                              (string-append "ring-" #$version))))))))))))
+               (for-each
+                 (lambda (script)
+                   (invoke "perl" script "ios32"
+                           (string-append (prefix script) "-ios32.S"))
+                   (invoke "perl" script "linux32"
+                           (string-append (prefix script) "-linux32.S")))
+                 '("crypto/fipsmodule/aes/asm/aesv8-armx.pl"
+                   "crypto/fipsmodule/modes/asm/ghashv8-armx.pl"
+                   "crypto/fipsmodule/aes/asm/aes-armv4.pl"
+                   "crypto/fipsmodule/aes/asm/bsaes-armv7.pl"
+                   "crypto/fipsmodule/bn/asm/armv4-mont.pl"
+                   "crypto/chacha/asm/chacha-armv4.pl"
+                   "crypto/fipsmodule/ec/asm/ecp_nistz256-armv4.pl"
+                   "crypto/fipsmodule/modes/asm/ghash-armv4.pl"
+                   "crypto/poly1305/asm/poly1305-armv4.pl"
+                   "crypto/fipsmodule/sha/asm/sha256-armv4.pl"
+                   "crypto/fipsmodule/sha/asm/sha512-armv4.pl"))
+
+               (format #t "Creating the tarball ...~%")
+               (force-output)
+               ;; The other option is to use cargo package --allow-dirty
+               (with-directory-excursion "../"
+                 (invoke "tar" "czf" #$output
+                         ;; avoid non-determinism in the archive
+                         "--sort=name" "--mtime=@0"
+                         "--owner=root:0" "--group=root:0"
+                         (string-append "ring-" #$version))))))))
+    (native-inputs
+     (list clang go gzip perl python2-minimal tar yasm))))
+
 (define-public rust-ring-0.14
   (package
     (inherit rust-ring-0.16)
@@ -4752,197 +4736,199 @@ Digital Signature Algorithm} (ECDSA).")
         ("rust-winapi" ,rust-winapi-0.3))))))
 
 (define rust-ring-0.13-sources
-  (let* ((version "0.13.5")
-         (upstream-source
-           (origin
+  (package
+    (inherit rust-ring-0.17-sources)
+    (name "rust-ring")
+    (version "0.13.5.tar.gz")   ; Hack to adjust the output name
+    (source (origin
              (method git-fetch)
              (uri (git-reference
                     (url "https://github.com/briansmith/ring")
                     (commit "704e4216a397bd830479bcd6d7dd67fc62cdbe67")))
              (file-name (git-file-name "rust-ring" version))
              (sha256
-              (base32 "0iqwf8i2i0a46ymrqss1ngbd2lqphk0mw74c65pxb8skyn2n7csi")))))
-    (origin
-      (method computed-origin-method)
-      (file-name (string-append "rust-ring-" version ".tar.gz"))
-      (sha256 #f)
-      (uri
-        (delay
-          (with-imported-modules '((guix build utils))
-            #~(begin
-                (use-modules (guix build utils))
-                (set-path-environment-variable
-                  "PATH" '("bin")
-                  (list #+(canonical-package gzip)
-                        #+(canonical-package tar)
-                        #+perl
-                        #+yasm
-                        #+go
-                        #+clang             ; clang-format
-                        #+python2-minimal))
-                (setenv "HOME" (getcwd))
-                (copy-recursively #+upstream-source
-                                  (string-append "ring-" #$version))
-                (with-directory-excursion (string-append "ring-" #$version)
-                  (begin
-                    ;; Make some adjustments for newer versions of rust
-                    ;; error: `...` range patterns are deprecated
-                    (substitute* "src/digest/sha1.rs"
-                      (("0\\.\\.\\.") "0..="))
-                    (substitute* "build.rs"
-                      (("out_dir\\.clone\\(\\)") "out_dir")
-                      (("libs\\.into_iter\\(\\)") "libs.iter()"))
-                    ;; It turns out Guix's yasm works just fine here.
-                    (substitute* "build.rs"
-                      (("yasm.exe") "yasm"))
-                    ;; Files which would be deleted in a snippet:
-                    (delete-file "third_party/fiat/curve25519_tables.h")
-                    (delete-file "crypto/fipsmodule/ec/ecp_nistz256_table.inl")
-                    ;; Files to be generated in the sources:
-                    (format #t "Generating the missing files ...~%")
-                    (force-output)
-                    (with-directory-excursion "third_party/fiat"
-                      (with-output-to-file "curve25519_tables.h"
-                        (lambda _ (invoke "python" "make_curve25519_tables.py"))))
-                    (with-directory-excursion "crypto/fipsmodule/ec"
-                      ;; This one seems to have been changed elsewhere in the
-                      ;; sources but not in the script generating the definition.
-                      (substitute* "make_p256-x86_64-table.go"
-                        (("ecp_nistz256_precomputed") "GFp_nistz256_precomputed"))
-                      (with-output-to-file "ecp_nistz256_table.inl"
-                        (lambda _ (invoke "go" "run" "make_p256-x86_64-table.go"))))
-                    (format #t "Generating the pregenerated files ...~%")
-                    (force-output)
-                    (mkdir-p "pregenerated/tmp")
+              (base32 "0iqwf8i2i0a46ymrqss1ngbd2lqphk0mw74c65pxb8skyn2n7csi"))
+             (snippet
+              #~(begin (use-modules (guix build utils))
+                       ;; Make some adjustments for newer versions of rust
+                       ;; error: `...` range patterns are deprecated
+                       (substitute* "src/digest/sha1.rs"
+                         (("0\\.\\.\\.") "0..="))
+                       (substitute* "build.rs"
+                         (("out_dir\\.clone\\(\\)") "out_dir")
+                         (("libs\\.into_iter\\(\\)") "libs.iter()"))
+                       ;; It turns out Guix's yasm works just fine here.
+                       (substitute* "build.rs"
+                         (("yasm.exe") "yasm"))
+                       ;; Files which would be deleted in a snippet:
+                       (delete-file "third_party/fiat/curve25519_tables.h")
+                       (delete-file "crypto/fipsmodule/ec/ecp_nistz256_table.inl")))))
+    (arguments
+     (list
+       #:modules '((guix build utils))
+       #:builder
+       #~(begin
+           (use-modules (guix build utils))
+           (setenv "PATH"
+                   (string-join
+                     (list #+(this-package-native-input "clang") ; for clang-format
+                           #+(this-package-native-input "go")
+                           #+(this-package-native-input "gzip")
+                           #+(this-package-native-input "perl")
+                           #+(this-package-native-input "python2-minimal")
+                           #+(this-package-native-input "tar")
+                           #+(this-package-native-input "yasm"))
+                     "/bin:" 'suffix))
 
-                    ;; We generate all the files which upstream would normally be
-                    ;; generate by using '(cd pregenerate_asm && cargo clean &&
-                    ;; cargo build) ./pregenerate_asm/target/debug/pregenerate_asm'
-                    ;; in order to not include a dependency on cargo when
-                    ;; generating the sources.
-                    (define (prefix script)
-                      (string-append
-                        "pregenerated/"
-                        (string-drop-right
-                          (string-drop script
-                                       (string-index-right script #\/)) 3)))
+           (setenv "HOME" (getcwd))
+           (copy-recursively #+source (string-append "ring-" #$version))
+           (with-directory-excursion (string-append "ring-" #$version)
+             (begin
+               (with-directory-excursion "third_party/fiat"
+                 (with-output-to-file "curve25519_tables.h"
+                   (lambda _ (invoke "python" "make_curve25519_tables.py"))))
+               (with-directory-excursion "crypto/fipsmodule/ec"
+                 ;; This one seems to have been changed elsewhere in the
+                 ;; sources but not in the script generating the definition.
+                 (substitute* "make_p256-x86_64-table.go"
+                   (("ecp_nistz256_precomputed") "GFp_nistz256_precomputed"))
+                 (with-output-to-file "ecp_nistz256_table.inl"
+                   (lambda _ (invoke "go" "run" "make_p256-x86_64-table.go"))))
+               (format #t "Generating the pregenerated files ...~%")
+               (force-output)
+               (mkdir-p "pregenerated/tmp")
 
-                    (for-each
-                      (lambda (script)
-                        (invoke "perl" script "elf"
-                                (string-append (prefix script) "-elf.S"))
-                        (invoke "perl" script "macosx"
-                                (string-append (prefix script) "-macosx.S"))
-                        (invoke "perl" script "nasm"
-                                (string-append
-                                  "pregenerated/tmp/"
-                                  (string-drop (prefix script) 13) "-nasm.asm")))
-                      '("crypto/fipsmodule/aes/asm/aes-x86_64.pl"
-                        "crypto/fipsmodule/aes/asm/aesni-x86_64.pl"
-                        "crypto/fipsmodule/aes/asm/vpaes-x86_64.pl"
-                        "crypto/fipsmodule/bn/asm/x86_64-mont.pl"
-                        "crypto/fipsmodule/bn/asm/x86_64-mont5.pl"
-                        "crypto/chacha/asm/chacha-x86_64.pl"
-                        "crypto/fipsmodule/ec/asm/p256-x86_64-asm.pl"
-                        "crypto/fipsmodule/modes/asm/aesni-gcm-x86_64.pl"
-                        "crypto/fipsmodule/modes/asm/ghash-x86_64.pl"
-                        "crypto/poly1305/asm/poly1305-x86_64.pl"
-                        "crypto/fipsmodule/sha/asm/sha512-x86_64.pl"))
+               ;; We generate all the files which upstream would normally be
+               ;; generate by using '(cd pregenerate_asm && cargo clean &&
+               ;; cargo build) ./pregenerate_asm/target/debug/pregenerate_asm'
+               ;; in order to not include a dependency on cargo when
+               ;; generating the sources.
+               (define (prefix script)
+                 (string-append
+                   "pregenerated/"
+                   (string-drop-right
+                     (string-drop script
+                                  (string-index-right script #\/)) 3)))
 
-                    (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-x86_64.pl"
-                            "elf" "pregenerated/sha256-x86_64-elf.S")
+               (for-each
+                 (lambda (script)
+                   (invoke "perl" script "elf"
+                           (string-append (prefix script) "-elf.S"))
+                   (invoke "perl" script "macosx"
+                           (string-append (prefix script) "-macosx.S"))
+                   (invoke "perl" script "nasm"
+                           (string-append
+                             "pregenerated/tmp/"
+                             (string-drop (prefix script) 13) "-nasm.asm")))
+                 '("crypto/fipsmodule/aes/asm/aes-x86_64.pl"
+                   "crypto/fipsmodule/aes/asm/aesni-x86_64.pl"
+                   "crypto/fipsmodule/aes/asm/vpaes-x86_64.pl"
+                   "crypto/fipsmodule/bn/asm/x86_64-mont.pl"
+                   "crypto/fipsmodule/bn/asm/x86_64-mont5.pl"
+                   "crypto/chacha/asm/chacha-x86_64.pl"
+                   "crypto/fipsmodule/ec/asm/p256-x86_64-asm.pl"
+                   "crypto/fipsmodule/modes/asm/aesni-gcm-x86_64.pl"
+                   "crypto/fipsmodule/modes/asm/ghash-x86_64.pl"
+                   "crypto/poly1305/asm/poly1305-x86_64.pl"
+                   "crypto/fipsmodule/sha/asm/sha512-x86_64.pl"))
 
-                    (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-x86_64.pl"
-                            "macosx" "pregenerated/sha256-x86_64-macosx.S")
+               (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-x86_64.pl"
+                       "elf" "pregenerated/sha256-x86_64-elf.S")
 
-                    (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-x86_64.pl"
-                            "nasm" "pregenerated/tmp/sha256-x86_64-nasm.asm")
+               (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-x86_64.pl"
+                       "macosx" "pregenerated/sha256-x86_64-macosx.S")
 
-                    (for-each
-                      (lambda (script)
-                        (invoke "yasm" "-X" "vc" "--dformat=cv8"
-                                "--oformat=win64" "--machine=amd64" "-o"
-                                (string-append (prefix script) "obj") script))
-                      (find-files "pregenerated/tmp" "\\.asm"))
+               (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-x86_64.pl"
+                       "nasm" "pregenerated/tmp/sha256-x86_64-nasm.asm")
 
-                    (for-each
-                      (lambda (script)
-                        (invoke "perl" script "ios64"
-                                (string-append (prefix script) "-ios64.S"))
-                        (invoke "perl" script "linux64"
-                                (string-append (prefix script) "-linux64.S")))
-                      '("crypto/fipsmodule/aes/asm/aesv8-armx.pl"
-                        "crypto/fipsmodule/modes/asm/ghashv8-armx.pl"
-                        "crypto/fipsmodule/bn/asm/armv8-mont.pl"
-                        "crypto/chacha/asm/chacha-armv8.pl"
-                        "crypto/fipsmodule/ec/asm/ecp_nistz256-armv8.pl"
-                        "crypto/poly1305/asm/poly1305-armv8.pl"
-                        "crypto/fipsmodule/sha/asm/sha512-armv8.pl"))
+               (for-each
+                 (lambda (script)
+                   (invoke "yasm" "-X" "vc" "--dformat=cv8"
+                           "--oformat=win64" "--machine=amd64" "-o"
+                           (string-append (prefix script) "obj") script))
+                 (find-files "pregenerated/tmp" "\\.asm"))
 
-                    (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-armv8.pl"
-                            "ios64" "pregenerated/sha256-armv8-ios64.S")
+               (for-each
+                 (lambda (script)
+                   (invoke "perl" script "ios64"
+                           (string-append (prefix script) "-ios64.S"))
+                   (invoke "perl" script "linux64"
+                           (string-append (prefix script) "-linux64.S")))
+                 '("crypto/fipsmodule/aes/asm/aesv8-armx.pl"
+                   "crypto/fipsmodule/modes/asm/ghashv8-armx.pl"
+                   "crypto/fipsmodule/bn/asm/armv8-mont.pl"
+                   "crypto/chacha/asm/chacha-armv8.pl"
+                   "crypto/fipsmodule/ec/asm/ecp_nistz256-armv8.pl"
+                   "crypto/poly1305/asm/poly1305-armv8.pl"
+                   "crypto/fipsmodule/sha/asm/sha512-armv8.pl"))
 
-                    (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-armv8.pl"
-                            "linux64" "pregenerated/sha256-armv8-linux64.S")
+               (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-armv8.pl"
+                       "ios64" "pregenerated/sha256-armv8-ios64.S")
 
-                    (for-each
-                      (lambda (script)
-                        (invoke "perl" script "elf"
-                                "-fPIC" "-DOPENSSL_IA32_SSE2"
-                                (string-append (prefix script) "-elf.S"))
-                        (invoke "perl" script "macosx"
-                                "-fPIC" "-DOPENSSL_IA32_SSE2"
-                                (string-append (prefix script) "-macosx.S"))
-                        (invoke "perl" script "win32n"
-                                "-fPIC" "-DOPENSSL_IA32_SSE2"
-                                (string-append
-                                  "pregenerated/tmp/"
-                                  (string-drop (prefix script) 13) "-win32n.asm")))
-                      '("crypto/fipsmodule/aes/asm/aes-586.pl"
-                        "crypto/fipsmodule/aes/asm/aesni-x86.pl"
-                        "crypto/fipsmodule/aes/asm/vpaes-x86.pl"
-                        "crypto/fipsmodule/bn/asm/x86-mont.pl"
-                        "crypto/chacha/asm/chacha-x86.pl"
-                        "crypto/fipsmodule/ec/asm/ecp_nistz256-x86.pl"
-                        "crypto/fipsmodule/modes/asm/ghash-x86.pl"
-                        "crypto/poly1305/asm/poly1305-x86.pl"
-                        "crypto/fipsmodule/sha/asm/sha256-586.pl"
-                        "crypto/fipsmodule/sha/asm/sha512-586.pl"))
+               (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-armv8.pl"
+                       "linux64" "pregenerated/sha256-armv8-linux64.S")
 
-                    (for-each
-                      (lambda (script)
-                        (invoke "yasm" "-X" "vc" "--dformat=cv8"
-                                "--oformat=win32" "--machine=x86" "-o"
-                                (string-append (prefix script) "obj") script))
-                      (find-files "pregenerated/tmp" "-win32n\\.asm"))
+               (for-each
+                 (lambda (script)
+                   (invoke "perl" script "elf"
+                           "-fPIC" "-DOPENSSL_IA32_SSE2"
+                           (string-append (prefix script) "-elf.S"))
+                   (invoke "perl" script "macosx"
+                           "-fPIC" "-DOPENSSL_IA32_SSE2"
+                           (string-append (prefix script) "-macosx.S"))
+                   (invoke "perl" script "win32n"
+                           "-fPIC" "-DOPENSSL_IA32_SSE2"
+                           (string-append
+                             "pregenerated/tmp/"
+                             (string-drop (prefix script) 13) "-win32n.asm")))
+                 '("crypto/fipsmodule/aes/asm/aes-586.pl"
+                   "crypto/fipsmodule/aes/asm/aesni-x86.pl"
+                   "crypto/fipsmodule/aes/asm/vpaes-x86.pl"
+                   "crypto/fipsmodule/bn/asm/x86-mont.pl"
+                   "crypto/chacha/asm/chacha-x86.pl"
+                   "crypto/fipsmodule/ec/asm/ecp_nistz256-x86.pl"
+                   "crypto/fipsmodule/modes/asm/ghash-x86.pl"
+                   "crypto/poly1305/asm/poly1305-x86.pl"
+                   "crypto/fipsmodule/sha/asm/sha256-586.pl"
+                   "crypto/fipsmodule/sha/asm/sha512-586.pl"))
 
-                    (for-each
-                      (lambda (script)
-                        (invoke "perl" script "ios32"
-                                (string-append (prefix script) "-ios32.S"))
-                        (invoke "perl" script "linux32"
-                                (string-append (prefix script) "-linux32.S")))
-                      '("crypto/fipsmodule/aes/asm/aesv8-armx.pl"
-                        "crypto/fipsmodule/modes/asm/ghashv8-armx.pl"
-                        "crypto/fipsmodule/aes/asm/aes-armv4.pl"
-                        "crypto/fipsmodule/aes/asm/bsaes-armv7.pl"
-                        "crypto/fipsmodule/bn/asm/armv4-mont.pl"
-                        "crypto/chacha/asm/chacha-armv4.pl"
-                        "crypto/fipsmodule/ec/asm/ecp_nistz256-armv4.pl"
-                        "crypto/fipsmodule/modes/asm/ghash-armv4.pl"
-                        "crypto/poly1305/asm/poly1305-armv4.pl"
-                        "crypto/fipsmodule/sha/asm/sha256-armv4.pl"
-                        "crypto/fipsmodule/sha/asm/sha512-armv4.pl"))
+               (for-each
+                 (lambda (script)
+                   (invoke "yasm" "-X" "vc" "--dformat=cv8"
+                           "--oformat=win32" "--machine=x86" "-o"
+                           (string-append (prefix script) "obj") script))
+                 (find-files "pregenerated/tmp" "-win32n\\.asm"))
 
-                    (format #t "Creating the tarball ...~%")
-                    (force-output)
-                    ;; The other option is to use cargo package --allow-dirty
-                    (with-directory-excursion "../"
-                      (invoke "tar" "czf" #$output
-                              ;; avoid non-determinism in the archive
-                              "--sort=name" "--mtime=@0"
-                              "--owner=root:0" "--group=root:0"
-                              (string-append "ring-" #$version))))))))))))
+               (for-each
+                 (lambda (script)
+                   (invoke "perl" script "ios32"
+                           (string-append (prefix script) "-ios32.S"))
+                   (invoke "perl" script "linux32"
+                           (string-append (prefix script) "-linux32.S")))
+                 '("crypto/fipsmodule/aes/asm/aesv8-armx.pl"
+                   "crypto/fipsmodule/modes/asm/ghashv8-armx.pl"
+                   "crypto/fipsmodule/aes/asm/aes-armv4.pl"
+                   "crypto/fipsmodule/aes/asm/bsaes-armv7.pl"
+                   "crypto/fipsmodule/bn/asm/armv4-mont.pl"
+                   "crypto/chacha/asm/chacha-armv4.pl"
+                   "crypto/fipsmodule/ec/asm/ecp_nistz256-armv4.pl"
+                   "crypto/fipsmodule/modes/asm/ghash-armv4.pl"
+                   "crypto/poly1305/asm/poly1305-armv4.pl"
+                   "crypto/fipsmodule/sha/asm/sha256-armv4.pl"
+                   "crypto/fipsmodule/sha/asm/sha512-armv4.pl"))
+
+               (format #t "Creating the tarball ...~%")
+               (force-output)
+               ;; The other option is to use cargo package --allow-dirty
+               (with-directory-excursion "../"
+                 (invoke "tar" "czf" #$output
+                         ;; avoid non-determinism in the archive
+                         "--sort=name" "--mtime=@0"
+                         "--owner=root:0" "--group=root:0"
+                         (string-append "ring-" #$version))))))))
+    (native-inputs
+     (list clang go gzip perl python2-minimal tar yasm))))
+
 (define-public rust-ring-0.13
   (package
     (inherit rust-ring-0.14)
@@ -5017,14 +5003,14 @@ traits with cryptographic algorithm implementations from @code{ring}.")
 (define-public rust-rsa-0.9
   (package
     (name "rust-rsa")
-    (version "0.9.6")
+    (version "0.9.7")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "rsa" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1z0d1aavfm0v4pv8jqmqhhvvhvblla1ydzlvwykpc3mkzhj523jx"))))
+                "06amqm85raq26v6zg00fbf93lbj3kx559n2lpxc3wrvbbiy5vis7"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -5186,27 +5172,6 @@ hashing function.")
         ("rust-crossbeam-utils" ,rust-crossbeam-utils-0.8)
         ("rust-serde" ,rust-serde-1))))))
 
-(define-public rust-rust-argon2-0.7
-  (package
-    (inherit rust-rust-argon2-0.8)
-    (name "rust-rust-argon2")
-    (version "0.7.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "rust-argon2" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "05xh5wfxgzq3b6jys8r34f3hmqqfs8ylvf934n9z87wfv95szj1b"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-constant-time-eq" ,rust-constant-time-eq-0.1)
-        ("rust-base64" ,rust-base64-0.11)
-        ("rust-blake2b-simd" ,rust-blake2b-simd-0.5)
-        ("rust-crossbeam-utils" ,rust-crossbeam-utils-0.7))))))
-
 (define-public rust-salsa20-0.10
   (package
     (name "rust-salsa20")
@@ -5248,25 +5213,6 @@ in pure Rust.")
        #:cargo-inputs
        (("rust-cipher" ,rust-cipher-0.3)
         ("rust-zeroize" ,rust-zeroize-1))))))
-
-(define-public rust-salsa20-0.7
-  (package
-    (inherit rust-salsa20-0.10)
-    (name "rust-salsa20")
-    (version "0.7.1")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "salsa20" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-          (base32 "09c16m566g45f41xx3673zyzwca3mykz630fmv2mbjbvmwcc4fw0"))))
-    (arguments
-      `(#:cargo-inputs
-        (("rust-cipher" ,rust-cipher-0.2)
-         ("rust-zeroize" ,rust-zeroize-1))
-        #:cargo-development-inputs
-        (("rust-cipher" ,rust-cipher-0.2))))))
 
 (define-public rust-scrypt-0.11
   (package
@@ -5367,66 +5313,10 @@ function.")
     (synopsis
      "Rust implementation of SEC1: Elliptic Curve Cryptography encoding formats")
     (description
-     "This package procides a pure Rust implementation of SEC1: Elliptic Curve
+     "This package provides a pure Rust implementation of SEC1: Elliptic Curve
 Cryptography encoding formats including ASN.1 DER-serialized private keys as
 well as the Elliptic-Curve-Point-to-Octet-String encoding.")
     (license (list license:asl2.0 license:expat))))
-
-(define-public rust-sec1-0.3
-  (package
-    (inherit rust-sec1-0.7)
-    (name "rust-sec1")
-    (version "0.3.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "sec1" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0a09lk5w3nyggpyz54m10nnlg9v8qbh6kw3v1bgla31988c4rqiv"))))
-    (arguments
-     `(#:cargo-inputs (("rust-base16ct" ,rust-base16ct-0.1)
-                       ("rust-der" ,rust-der-0.6)
-                       ("rust-generic-array" ,rust-generic-array-0.14)
-                       ("rust-pkcs8" ,rust-pkcs8-0.9)
-                       ("rust-serdect" ,rust-serdect-0.1)
-                       ("rust-subtle" ,rust-subtle-2)
-                       ("rust-zeroize" ,rust-zeroize-1))
-       #:cargo-development-inputs (("rust-hex-literal" ,rust-hex-literal-0.3)
-                                   ("rust-tempfile" ,rust-tempfile-3))))))
-
-(define-public rust-secp256k1-0.21
-  (package
-    (name "rust-secp256k1")
-    (version "0.21.2")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "secp256k1" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-          (base32 "09gia5hjf1hb9jgac9nzq0s0ijbsdjfflh40xw8z08avgl0q6y5b"))))
-    (build-system cargo-build-system)
-    (arguments
-      `(#:cargo-inputs
-        (("rust-bitcoin-hashes" ,rust-bitcoin-hashes-0.10)
-         ("rust-rand" ,rust-rand-0.6)
-         ("rust-secp256k1-sys" ,rust-secp256k1-sys-0.4)
-         ("rust-serde" ,rust-serde-1))
-        #:cargo-development-inputs
-        (("rust-bitcoin-hashes" ,rust-bitcoin-hashes-0.10)
-         ("rust-rand" ,rust-rand-0.6)
-         ("rust-rand-core" ,rust-rand-core-0.4)
-         ("rust-serde-test" ,rust-serde-test-1)
-         ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))
-    (home-page "https://github.com/rust-bitcoin/rust-secp256k1/")
-    (synopsis
-      "Rust wrapper library for Pieter Wuille's @code{libsecp256k1}")
-    (description
-      "This package is a Rust wrapper library for Pieter Wuille's
-@code{libsecp256k1}.  It implements ECDSA and BIP 340 signatures for the
-SECG elliptic curve group secp256k1 and related utilities.")
-    (license license:cc0)))
 
 (define-public rust-secp256k1-sys-0.4
   (package
@@ -5562,34 +5452,6 @@ for data that potentially contains secrets (e.g. cryptographic keys).")
        (("rust-digest" ,rust-digest-0.9)
         ("rust-hex-literal" ,rust-hex-literal-0.2))))))
 
-(define-public rust-sha-1-0.8
-  (package
-    (inherit rust-sha-1-0.9)
-    (name "rust-sha-1")
-    (version "0.8.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "sha-1" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1pv387q0r7llk2cqzyq0nivzvkgqgzsiygqzlv7b68z9xl5lvngp"))))
-    (arguments
-     `(#:cargo-test-flags
-       '("--release" "--lib" "--bins" "--tests")
-       #:cargo-inputs
-       (("rust-block-buffer" ,rust-block-buffer-0.7)
-        ("rust-digest" ,rust-digest-0.8)
-        ("rust-fake-simd" ,rust-fake-simd-0.1)
-        ("rust-opaque-debug" ,rust-opaque-debug-0.2)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-sha1-asm" ,rust-sha1-asm-0.4))
-       #:cargo-development-inputs
-       (("rust-digest" ,rust-digest-0.8)
-        ("rust-hex-literal" ,rust-hex-literal-0.1))))))
-
 (define-public rust-sha1-0.10
   (package
     (name "rust-sha1")
@@ -5621,24 +5483,16 @@ for data that potentially contains secrets (e.g. cryptographic keys).")
   (package
     (inherit rust-sha1-0.10)
     (name "rust-sha1")
-    (version "0.6.0")
+    (version "0.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "sha1" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "03gs2q4m67rn2p8xcdfxhip6mpgahdwm12bnb3vh90ahv9grhy95"))))
+        (base32 "0w1p0s9060cv1vlgfa5c93kjksmvzjjc8j780lns3jj5fk4hbnn1"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-serde" ,rust-serde-1))
-       #:cargo-development-inputs
-       (("rust-openssl" ,rust-openssl-0.10)
-        ("rust-rand" ,rust-rand-0.4)
-        ("rust-serde-json" ,rust-serde-json-1))))))
+     `(#:cargo-inputs (("rust-sha1-smol" ,rust-sha1-smol-1))))))
 
 (define-public rust-sha1-0.2
   (package
@@ -5649,75 +5503,57 @@ for data that potentially contains secrets (e.g. cryptographic keys).")
      (origin
        (method url-fetch)
        (uri (crate-uri "sha1" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "0p09zfhd27z6yr5in07gfjcx345010rw51ivlcf14364x3hv2c6c"))))
+        (base32 "0p09zfhd27z6yr5in07gfjcx345010rw51ivlcf14364x3hv2c6c"))
+       (modules '((guix build utils)))
+       (snippet #~(substitute* "Cargo.toml"
+                    ((", path =.*}") "}")))))
     (arguments
      `(#:tests? #f  ; Tests require openssl-1.0
        #:cargo-development-inputs
        (("rust-openssl" ,rust-openssl-0.7)
-        ("rust-rand" ,rust-rand-0.3))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-cargo-toml
-           (lambda _
-             (substitute* "Cargo.toml"
-               ((", path =.*}") "}"))
-             #t)))))))
+        ("rust-rand" ,rust-rand-0.3))))))
 
 (define-public rust-sha1-asm-0.5
   (package
     (name "rust-sha1-asm")
-    (version "0.5.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "sha1-asm" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1b7ab7f4n87pqdmbl1a5jrc2axf27pvbndsz9qiwwgxw01qlygan"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-cc" ,rust-cc-1))))
-    (home-page "https://github.com/RustCrypto/asm-hashes")
-    (synopsis "Assembly implementation of SHA-1 compression function")
-    (description
-     "Assembly implementation of SHA-1 compression function.")
-    (license license:expat)))
-
-(define-public rust-sha1-asm-0.4
-  (package
-    (inherit rust-sha1-asm-0.5)
-    (name "rust-sha1-asm")
-    (version "0.4.4")
+    (version "0.5.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "sha1-asm" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1z5vdimd7l0vmr2p7kjibi0rghf5frb1ld0gzdkxrxfmkllf5nmr"))))))
+        (base32 "0asqxlxf5li7ac9mi49qj890rzsfb5px5ynzmqq12z5nz2xcwsi8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cc" ,rust-cc-1))))
+    (home-page "https://github.com/RustCrypto/asm-hashes")
+    (synopsis "Assembly implementation of SHA-1 compression function")
+    (description
+     "Assembly implementation of SHA-1 compression function.")
+    (license license:expat)))
 
 (define-public rust-sha1-smol-1
   (package
     (name "rust-sha1-smol")
-    (version "1.0.0")
+    (version "1.0.1")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "sha1_smol" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "04nhbhvsk5ms1zbshs80iq5r1vjszp2xnm9f0ivj38q3dhc4f6mf"))))
+                "0pbh2xjfnzgblws3hims0ib5bphv7r5rfdpizyh51vnzvnribymv"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs (("rust-serde" ,rust-serde-1))))
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-openssl" ,rust-openssl-0.10)
+                                   ("rust-rand" ,rust-rand-0.4)
+                                   ("rust-serde-json" ,rust-serde-json-1))))
+    (native-inputs (list pkg-config))
+    (inputs (list openssl))
     (home-page "https://github.com/mitsuhiko/sha1-smol")
     (synopsis "Dependency free SHA1 implementation")
     (description
@@ -5761,23 +5597,21 @@ code is translated from C to Rust using c2rust.")
   (package
     (inherit rust-sha1collisiondetection-0.3)
     (name "rust-sha1collisiondetection")
-    (version "0.2.3")
+    (version "0.2.7")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "sha1collisiondetection" version))
-        (file-name
-          (string-append name "-" version ".tar.gz"))
+        (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-          (base32 "10nh7s3d02136kkz93pxyfv628ls5xz8ndg27pkb6na0ghccz9np"))))
+         (base32 "13mkl29ma6sqybzvr8dqpj0f697d1xk1d0a39kdcgcihhg7r61xj"))))
     (arguments
-      `(#:skip-build? #t
-        #:cargo-inputs
-        (("rust-digest" ,rust-digest-0.9)
-         ("rust-generic-array" ,rust-generic-array-0.14)
-         ("rust-libc" ,rust-libc-0.2)
-         ("rust-sha-1" ,rust-sha-1-0.9)
-         ("rust-structopt" ,rust-structopt-0.3))))))
+     `(#:cargo-inputs (("rust-digest" ,rust-digest-0.9)
+                       ("rust-generic-array" ,rust-generic-array-0.14)
+                       ("rust-sha-1" ,rust-sha-1-0.9)
+                       ("rust-structopt" ,rust-structopt-0.3))
+       #:cargo-development-inputs (("rust-getrandom" ,rust-getrandom-0.2)
+                                   ("rust-hex-literal" ,rust-hex-literal-0.3))))))
 
 (define-public rust-sha2-0.10
   (package
@@ -5860,14 +5694,14 @@ function family including SHA-224, SHA-256, SHA-384, and SHA-512.")
 (define-public rust-sha2-asm-0.6
   (package
     (name "rust-sha2-asm")
-    (version "0.6.3")
+    (version "0.6.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "sha2-asm" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0kp480744vkwg3fqx98379nsdw1lzzzimd88v0qgpqqic03afyzj"))))
+        (base32 "1ay1vai08d802avl41r0s6r1nrcnzv7jnj5xna34d03mc56j2idq"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -5882,14 +5716,16 @@ functions core functionality.")
   (package
     (inherit rust-sha2-asm-0.6)
     (name "rust-sha2-asm")
-    (version "0.5.4")
+    (version "0.5.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "sha2-asm" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0y4n8r4362y2fa6p2j0dgny4zfi194gdf01l6j850n9vf8ha3kwj"))))))
+        (base32 "192xi35b9qp2ph4fv584z8gy8mr9bsxkbfvb9q9z40k5pqjz5hm7"))))
+    (arguments
+     `(#:cargo-inputs (("rust-cc" ,rust-cc-1))))))
 
 (define-public rust-sha256-1
   (package
@@ -6058,8 +5894,35 @@ for additional details.")
         ("rust-syn" ,rust-syn-1)
         ("rust-synstructure" ,rust-synstructure-0.12))))))
 
+(define-public rust-simple-asn1-0.6
+  (package
+    (name "rust-simple-asn1")
+    (version "0.6.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "simple_asn1" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "11d0l3l7lppzr1wxhvsbmjmw6s2vy3v7b8ygz500z4di9qhfbi5d"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-num-bigint" ,rust-num-bigint-0.4)
+                       ("rust-num-traits" ,rust-num-traits-0.2)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-time" ,rust-time-0.3))
+       #:cargo-development-inputs (("rust-quickcheck" ,rust-quickcheck-1)
+                                   ("rust-rand" ,rust-rand-0.8)
+                                   ("rust-time" ,rust-time-0.3))))
+    (home-page "https://github.com/acw/simple_asn1")
+    (synopsis "Simple DER/ASN.1 encoding/decoding library")
+    (description
+     "This package provides a simple DER/ASN.1 encoding/decoding library.")
+    (license license:isc)))
+
 (define-public rust-simple-asn1-0.4
   (package
+    (inherit rust-simple-asn1-0.6)
     (name "rust-simple-asn1")
     (version "0.4.1")
     (source
@@ -6069,18 +5932,12 @@ for additional details.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0jxy9as8nj65c2n27j843g4fpb95x4fjz31w6qx63q3wwlys2b39"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-chrono" ,rust-chrono-0.4)
                        ("rust-num-bigint" ,rust-num-bigint-0.2)
                        ("rust-num-traits" ,rust-num-traits-0.2))
        #:cargo-development-inputs (("rust-quickcheck" ,rust-quickcheck-0.7)
-                                   ("rust-rand" ,rust-rand-0.5))))
-    (home-page "https://github.com/acw/simple_asn1")
-    (synopsis "Simple DER/ASN.1 encoding/decoding library")
-    (description
-     "This package provides a simple DER/ASN.1 encoding/decoding library.")
-    (license license:isc)))
+                                   ("rust-rand" ,rust-rand-0.5))))))
 
 (define-public rust-sm3-0.4
   (package
@@ -6187,6 +6044,106 @@ OIDs)")
         (base32 "0ckgkcg6db5y94dqhmyikgn8yrsah6pyf4j197hv1c51bp0s00aw"))))
     (arguments `(#:skip-build? #t #:cargo-inputs (("rust-der" ,rust-der-0.4))))))
 
+(define-public rust-ssh-cipher-0.2
+  (package
+    (name "rust-ssh-cipher")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ssh-cipher" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0kvq113x9fcy2jcxp00xk472zxm8d9zxxz2vyqx3rlzh88ki7b6a"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-aes" ,rust-aes-0.8)
+                       ("rust-aes-gcm" ,rust-aes-gcm-0.10)
+                       ("rust-cbc" ,rust-cbc-0.1)
+                       ("rust-chacha20" ,rust-chacha20-0.9)
+                       ("rust-cipher" ,rust-cipher-0.4)
+                       ("rust-ctr" ,rust-ctr-0.9)
+                       ("rust-des" ,rust-des-0.8)
+                       ("rust-poly1305" ,rust-poly1305-0.8)
+                       ("rust-ssh-encoding" ,rust-ssh-encoding-0.2)
+                       ("rust-subtle" ,rust-subtle-2))))
+    (home-page "https://github.com/RustCrypto/SSH/tree/master/ssh-cipher")
+    (synopsis "Pure Rust implementation of SSH symmetric encryption")
+    (description
+     "This package provides Pure Rust implementation of SSH symmetric encryption
+including support for the modern aes128-gcm@@openssh.com/aes256-gcm@@openssh.com
+and chacha20-poly1305@@openssh.com algorithms as well as legacy support for
+older ciphers.")
+    (license (list license:asl2.0 license:expat))))
+
+(define-public rust-ssh-encoding-0.2
+  (package
+    (name "rust-ssh-encoding")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ssh-encoding" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "05aavlhk68vm60vbw8lcgx1p5wry367ck8niij7af221xywl54pb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-base64ct" ,rust-base64ct-1)
+                       ("rust-bytes" ,rust-bytes-1)
+                       ("rust-pem-rfc7468" ,rust-pem-rfc7468-0.7)
+                       ("rust-sha2" ,rust-sha2-0.10))
+       #:cargo-development-inputs (("rust-hex-literal" ,rust-hex-literal-0.4))))
+    (home-page "https://github.com/RustCrypto/SSH/tree/master/ssh-encoding")
+    (synopsis "Pure Rust implementation of SSH data type decoders/encoders")
+    (description
+     "This package provides Pure Rust implementation of SSH data type
+decoders/encoders as described in RFC4251.")
+    (license (list license:asl2.0 license:expat))))
+
+(define-public rust-ssh-key-0.6
+  (package
+    (name "rust-ssh-key")
+    (version "0.6.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ssh-key" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1hx8as8rvnk31ncqg7dlqgcw9bmngkznn3xamf6d010ggwlzb1iv"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bcrypt-pbkdf" ,rust-bcrypt-pbkdf-0.10)
+                       ("rust-dsa" ,rust-dsa-0.6)
+                       ("rust-ed25519-dalek" ,rust-ed25519-dalek-2)
+                       ("rust-num-bigint-dig" ,rust-num-bigint-dig-0.8)
+                       ("rust-p256" ,rust-p256-0.13)
+                       ("rust-p384" ,rust-p384-0.13)
+                       ("rust-p521" ,rust-p521-0.13)
+                       ("rust-rand-core" ,rust-rand-core-0.6)
+                       ("rust-rsa" ,rust-rsa-0.9)
+                       ("rust-sec1" ,rust-sec1-0.7)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-sha1" ,rust-sha1-0.10)
+                       ("rust-sha2" ,rust-sha2-0.10)
+                       ("rust-signature" ,rust-signature-2)
+                       ("rust-ssh-cipher" ,rust-ssh-cipher-0.2)
+                       ("rust-ssh-encoding" ,rust-ssh-encoding-0.2)
+                       ("rust-subtle" ,rust-subtle-2)
+                       ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs (("rust-hex-literal" ,rust-hex-literal-0.4)
+                                   ("rust-rand-chacha" ,rust-rand-chacha-0.3))))
+    (home-page "https://github.com/RustCrypto/SSH/tree/master/ssh-key")
+    (synopsis "Pure Rust implementation of SSH key file format decoders/encoders")
+    (description
+     "This package provides Pure Rust implementation of SSH key file format
+decoders/encoders as described in RFC4251/RFC4253 and @code{OpenSSH} key
+formats, as well as \"sshsig\" signatures and certificates (including
+certificate validation and certificate authority support), with further support
+for the `authorized_keys` and `known_hosts` file formats.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-stream-cipher-0.4
   (package
     (name "rust-stream-cipher")
@@ -6210,37 +6167,39 @@ OIDs)")
     (description "This package provides stream cipher traits.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-stream-cipher-0.3
+(define-public rust-stream-cipher-0.3.2-yanked
   (package
     (inherit rust-stream-cipher-0.4)
     (name "rust-stream-cipher")
-    (version "0.3.0")
+    (version "0.3.2") ; This version was yanked!
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "stream-cipher" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version "-yanked.tar.gz"))
        (sha256
-        (base32
-         "1g1nd8r6pph70rzk5yyvg7a9ji7pkap9ddiqpp4v9xa9ys0bqqc8"))))
+        (base32 "1333qng84n6b15p8kndhajlgvbp1rgdddx04xgsvrjlnb1m2acc1"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-blobby" ,rust-blobby-0.1)
-        ("rust-generic-array" ,rust-generic-array-0.13))))))
+        ("rust-generic-array" ,rust-generic-array-0.14))))
+    (properties '((crate-version-yanked? . #t)))))
+
+(define-public rust-stream-cipher-0.3
+  ;; There are no non-yanked versions of this semver.
+  (deprecated-package "rust-stream-cipher" rust-stream-cipher-0.3.2-yanked))
 
 (define-public rust-streebog-0.10
   (package
     (name "rust-streebog")
-    (version "0.10.0")
+    (version "0.10.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "streebog" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1w7sxj3risp0zqm6r4mc73bd3fn3bnlxi4l10gp7661i5asr6ajz"))))
+        (base32 "0dnm1f3bkm8rvskvl3cvhh1f2nbrpckr8c3hw1hc7kj2ibnyczwy"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -6280,14 +6239,14 @@ OIDs)")
 (define-public rust-subtle-2
   (package
     (name "rust-subtle")
-    (version "2.5.0")
+    (version "2.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "subtle" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1g2yjs7gffgmdvkkq0wrrh0pxds3q0dv6dhkw9cdpbib656xdkc1"))))
+        (base32 "14ijxaymghbl1p0wql9cib5zlwiina7kall6w7g89csprkgbvhhk"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-development-inputs (("rust-rand" ,rust-rand-0.8))))
@@ -6450,31 +6409,6 @@ and deserialization.")
 One-Time Password library.")
     (license license:expat)))
 
-(define-public rust-totp-lite-1
-  (package
-    (name "rust-totp-lite")
-    (version "1.0.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "totp-lite" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "12ql4pi9q7sf5651588wia2l5h4mil3kv9jrrkib5gvlpvl0k05i"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-digest" ,rust-digest-0.9)
-        ("rust-hmac" ,rust-hmac-0.11)
-        ("rust-sha-1" ,rust-sha-1-0.9)
-        ("rust-sha2" ,rust-sha2-0.9))))
-    (home-page "https://github.com/fosskers/totp-lite")
-    (synopsis "Simple, correct TOTP library")
-    (description "Rust-totp-lite provides a simple, correct time-based
-One-Time Password library.")
-    (license license:expat)))
-
 (define-public rust-twofish-0.7
   (package
     (name "rust-twofish")
@@ -6527,7 +6461,7 @@ One-Time Password library.")
   (package
     (inherit rust-universal-hash-0.5)
     (name "rust-universal-hash")
-    (version "0.4.0")
+    (version "0.4.1")
     (source
      (origin
        (method url-fetch)
@@ -6535,28 +6469,15 @@ One-Time Password library.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "00hljq64l0p68yrncvyww4cdgkzpzl49vrlnj57kwblkak3b49l3"))))
+         "01av09i0rqcl8f0xgvn2g07kzyafgbiwdhkfwq0m14kyd67lw8cz"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (substitute* "Cargo.toml"
+                   (("\"= ?([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                    (string-append "\"^" version)))))))
     (arguments
      `(#:cargo-inputs
        (("rust-generic-array" ,rust-generic-array-0.14)
-        ("rust-subtle" ,rust-subtle-2))))))
-
-(define-public rust-universal-hash-0.3
-  (package
-    (inherit rust-universal-hash-0.4)
-    (name "rust-universal-hash")
-    (version "0.3.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "universal-hash" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "00aa241pab99z66f0s464vdrxnk3igs8z1qm6j01chcv5w7r036z"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-generic-array" ,rust-generic-array-0.12)
         ("rust-subtle" ,rust-subtle-2))))))
 
 (define-public rust-x25519-dalek-2
@@ -6637,6 +6558,30 @@ Diffie-Hellman key exchange, with curve operations provided by
     (description "This package provides a fork x25519-dalek, with an updated
 rand_core.")
     (license license:bsd-3)))
+
+(define-public rust-xsalsa20poly1305-0.9
+  (package
+    (name "rust-xsalsa20poly1305")
+    (version "0.9.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "xsalsa20poly1305" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ixnzy6srqk9gkxyh2rrwhpvnc0v3z3gfxgfg36q2zsnaz9xm9h2"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-aead" ,rust-aead-0.5)
+                       ("rust-poly1305" ,rust-poly1305-0.8)
+                       ("rust-salsa20" ,rust-salsa20-0.10)
+                       ("rust-subtle" ,rust-subtle-2)
+                       ("rust-zeroize" ,rust-zeroize-1))))
+    (home-page "https://github.com/RustCrypto/AEADs")
+    (synopsis "DEPRECATED: please use the `crypto_secretbox` crate")
+    (description
+     "DEPRECATED: please use the `crypto_secretbox` crate.")
+    (license (list license:asl2.0 license:expat))))
 
 (define-public rust-z85-3
   (package

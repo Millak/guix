@@ -34,6 +34,7 @@
 ;;; Copyright © 2023 David Pflug <david@pflug.io>
 ;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
 ;;; Copyright © 2024 Spencer King <spencer.king@wustl.edu>
+;;; Copyright © 2024 Murilo <murilo@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -76,6 +77,8 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages crates-io)
+  #:use-module (gnu packages crates-check)
+  #:use-module (gnu packages crates-vcs)
   #:use-module (gnu packages crates-web)
   #:use-module (gnu packages crates-windows)
   #:use-module (gnu packages crypto)
@@ -376,7 +379,7 @@ competitive (as in keystroke count) with Vim.")
 (define-public kak-lsp
   (package
     (name "kak-lsp")
-    (version "9.0.0")
+    (version "18.1.1")
     (source
      (origin
        (method git-fetch)
@@ -384,32 +387,49 @@ competitive (as in keystroke count) with Vim.")
              (url "https://github.com/kak-lsp/kak-lsp")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
-       (sha256 "1wfv2fy5ga6kc51zka3pak0hq97csm2l11bz74w3n1hrf5q9nnf8")))
+       (sha256 "1dinxd3h0dllws1v28l1igvns94j91kifv1bxjds6859q22yhhpd")))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-crossbeam-channel" ,rust-crossbeam-channel-0.4)
-        ("rust-clap" ,rust-clap-2)
-        ("rust-daemonize" ,rust-daemonize-0.4)
-        ("rust-dirs" ,rust-dirs-2)
-        ("rust-enum_primitive" ,rust-enum-primitive-0.1)
+     `(#:install-source? #f
+       #:cargo-inputs
+       (("rust-clap" ,rust-clap-4)
+        ("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
+        ("rust-daemonize" ,rust-daemonize-0.5)
+        ("rust-diffs" ,rust-diffs-0.5)
+        ("rust-dirs" ,rust-dirs-5)
+        ("rust-enum-primitive" ,rust-enum-primitive-0.1)
+        ("rust-fs4" ,rust-fs4-0.8)
         ("rust-glob" ,rust-glob-0.3)
-        ("rust-itertools" ,rust-itertools-0.9)
-        ("rust-lsp-types" ,rust-lsp-types-0.80)
-        ("rust-jsonrpc-core" ,rust-jsonrpc-core-14)
+        ("rust-indoc" ,rust-indoc-2)
+        ("rust-itertools" ,rust-itertools-0.13)
+        ("rust-jsonrpc-core" ,rust-jsonrpc-core-18)
+        ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-libc" ,rust-libc-0.2)
-        ("rust-rand" ,rust-rand-0.7)
+        ("rust-lsp-types" ,rust-lsp-types-0.95)
+        ("rust-mio" ,rust-mio-1)
+        ("rust-notify-debouncer-full" ,rust-notify-debouncer-full-0.3)
+        ("rust-pulldown-cmark" ,rust-pulldown-cmark-0.9)
+        ("rust-rand" ,rust-rand-0.8)
         ("rust-regex" ,rust-regex-1)
         ("rust-ropey" ,rust-ropey-1)
+        ;("rust-sentry" ,rust-sentry-0.35)
         ("rust-serde" ,rust-serde-1)
-        ("rust-serde_derive" ,rust-serde-derive-1)
-        ("rust-serde_json" ,rust-serde-json-1)
+        ("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-serde-repr" ,rust-serde-repr-0.1)
         ("rust-slog" ,rust-slog-2)
         ("rust-slog-scope" ,rust-slog-scope-4)
-        ("rust-sloggers" ,rust-sloggers-1)
-        ("rust-toml" ,rust-toml-0.5)
+        ("rust-sloggers" ,rust-sloggers-2)
+        ("rust-toml" ,rust-toml-0.8)
+        ("rust-unicode-width" ,rust-unicode-width-0.1)
         ("rust-url" ,rust-url-2)
-        ("rust-whoami" ,rust-whoami-0.8))))
+        ("rust-whoami" ,rust-whoami-1))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'disable-optional-crash-reporting
+           (lambda _
+             (substitute* "Cargo.toml"
+               ((".*sentry.*") "")))))))
     (home-page "https://github.com/kak-lsp/kak-lsp")
     (synopsis "Language Server Protocol (LSP) client for Kakoune")
     (description
@@ -513,6 +533,110 @@ itself an implementation of Shaun Lebron’s Parinfer.  This builds a shared
 library intended to be loaded by the @command{emacs-parinfer-rust-mode} Emacs
 plugin, though a standalone binary is built also.")
     (license license:isc)))
+
+(define-public helix
+  (package
+    (name "helix")
+    (version "23.10")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/helix-editor/helix")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0gl5iplj9x58pgqvb296d70xgq8fslqk8chai2arn65bcbgaw014"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+       #:install-source? #f
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'disable-grammar-build
+             (lambda _
+               (setenv "HELIX_DISABLE_AUTO_GRAMMAR_BUILD" "1")))
+           (replace 'install
+             (lambda _
+               (let* ((bin (string-append #$output "/bin"))
+                      (hx (string-append bin "/hx"))
+                      (share (string-append #$output "/share/helix"))
+                      (runtime (string-append share "/runtime"))
+                      (applications (string-append share "/applications")))
+                 (install-file "target/release/hx" bin)
+                 (install-file "contrib/Helix.desktop" applications)
+                 (copy-recursively "runtime" runtime)
+                 (wrap-program hx
+                   `("HELIX_RUNTIME" prefix
+                     (,runtime)))))))
+       #:cargo-inputs
+       (list rust-ahash-0.8
+             rust-anyhow-1
+             rust-arc-swap-1
+             rust-bitflags-2
+             rust-cassowary-0.3
+             rust-cc-1
+             rust-chardetng-0.1
+             rust-chrono-0.4
+             rust-clipboard-win-4
+             rust-content-inspector-0.2
+             rust-crossterm-0.27
+             rust-dunce-1
+             rust-encoding-rs-0.8
+             rust-etcetera-0.8
+             rust-fern-0.6
+             rust-futures-executor-0.3
+             rust-futures-util-0.3
+             rust-gix-0.55
+             rust-globset-0.4
+             rust-grep-regex-0.1
+             rust-grep-searcher-0.1
+             rust-hashbrown-0.14
+             rust-ignore-0.4
+             rust-imara-diff-0.1
+             rust-libc-0.2
+             rust-libloading-0.8
+             rust-log-0.4
+             rust-lsp-types-0.94
+             rust-nucleo-0.2
+             rust-once-cell-1
+             rust-parking-lot-0.12
+             rust-pulldown-cmark-0.9
+             rust-regex-1
+             rust-ropey-1
+             rust-rustix-0.38
+             rust-serde-1
+             rust-serde-json-1
+             rust-signal-hook-0.3
+             rust-signal-hook-tokio-0.3
+             rust-slotmap-1
+             rust-smallvec-1
+             rust-smartstring-1
+             rust-tempfile-3
+             rust-termini-1
+             rust-textwrap-0.16
+             rust-thiserror-1
+             rust-threadpool-1
+             rust-tokio-1
+             rust-tokio-stream-0.1
+             rust-toml-0.7
+             rust-tree-sitter-0.20
+             rust-unicode-general-category-0.6
+             rust-unicode-segmentation-1
+             rust-unicode-width-0.1
+             rust-url-2
+             rust-which-4)
+       #:cargo-development-inputs
+       (list rust-fern-0.6
+             rust-indoc-2
+             rust-quickcheck-1
+             rust-smallvec-1
+             rust-tempfile-3)))
+    (inputs (list bash-minimal))
+    (home-page "https://helix-editor.com/")
+    (synopsis "Post-modern modal text editor")
+    (description "A Kakoune / Neovim inspired editor, written in Rust.")
+    (license (list license:mpl2.0))))
 
 (define-public joe
   (package

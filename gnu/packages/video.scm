@@ -130,6 +130,7 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
+  #:use-module (gnu packages crates-check)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages crates-graphics)
   #:use-module (gnu packages curl)
@@ -1318,14 +1319,17 @@ on the Invidious instances only as a fallback method.")
     (build-system cmake-build-system)
     (native-inputs
      ;; XXX: ASM optimization fails on i686-linux, see <https://bugs.gnu.org/41768>.
-     (if (string-prefix? "i686" (%current-system))
-         '()
-         `(("nasm" ,nasm))))
+     (if (target-x86-64?)
+         (list nasm)
+         '()))
     (arguments
      `(#:tests? #f ; tests are skipped if ENABLE_ASSEMBLY is TRUE.
        #:configure-flags
-         ;; Ensure position independent code for everyone.
          (list "-DENABLE_PIC=TRUE"
+               "-DLINKED_10BIT=ON"
+               "-DLINKED_12BIT=ON"
+               "-DEXTRA_LIB=x265_main10.a;x265_main12.a"
+               "-DEXTRA_LINK_FLAGS=-L../build-10bit -L../build-12bit"
                (string-append "-DCMAKE_INSTALL_PREFIX="
                               (assoc-ref %outputs "out")))
        #:phases
@@ -1344,7 +1348,7 @@ on the Invidious instances only as a fallback method.")
            (lambda* (#:key (configure-flags '()) #:allow-other-keys #:rest args)
              (mkdir "../build-12bit")
              (with-directory-excursion "../build-12bit"
-               (apply invoke
+               (invoke
                  "cmake" "../source"
                  ,@(if (target-aarch64?)
                      '("-DENABLE_ASSEMBLY=OFF")
@@ -1356,8 +1360,9 @@ on the Invidious instances only as a fallback method.")
                  "-DHIGH_BIT_DEPTH=ON"
                  "-DEXPORT_C_API=OFF"
                  "-DENABLE_CLI=OFF"
-                 "-DMAIN12=ON"
-                 configure-flags)
+                 "-DENABLE_SHARED=OFF"
+                 "-DENABLE_PIC=TRUE"
+                 "-DMAIN12=ON")
                (substitute* (cons "cmake_install.cmake"
                                   (append
                                     (find-files "CMakeFiles/x265-shared.dir")
@@ -1368,7 +1373,7 @@ on the Invidious instances only as a fallback method.")
            (lambda* (#:key (configure-flags '()) #:allow-other-keys #:rest args)
              (mkdir "../build-10bit")
              (with-directory-excursion "../build-10bit"
-               (apply invoke
+               (invoke
                  "cmake" "../source"
                  ,@(if (target-aarch64?)
                      '("-DENABLE_ASSEMBLY=OFF")
@@ -1380,19 +1385,14 @@ on the Invidious instances only as a fallback method.")
                  "-DHIGH_BIT_DEPTH=ON"
                  "-DEXPORT_C_API=OFF"
                  "-DENABLE_CLI=OFF"
-                 configure-flags)
+                 "-DENABLE_SHARED=OFF"
+                 "-DENABLE_PIC=TRUE")
                (substitute* (cons "cmake_install.cmake"
                                   (append
                                     (find-files "CMakeFiles/x265-shared.dir")
                                     (find-files "CMakeFiles/x265-static.dir")))
                  (("libx265") "libx265_main10"))
                ((assoc-ref %standard-phases 'build)))))
-         (add-after 'install 'install-more-libs
-           (lambda args
-             (with-directory-excursion "../build-12bit"
-               ((assoc-ref %standard-phases 'install)))
-             (with-directory-excursion "../build-10bit"
-               ((assoc-ref %standard-phases 'install)))))
          (add-before 'strip 'move-static-libs
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out"))
@@ -6537,7 +6537,7 @@ result in several formats:
                  '())
              (list pkg-config rust-cargo-c)))
     (inputs
-     (list libgit2-1.7 zlib))
+     (list libgit2-1.8 zlib))
     (home-page "https://github.com/xiph/rav1e/")
     (synopsis "Fast and safe AV1 encoder")
     (description "@code{rav1e} is an AV1 video encoder.  It is designed to

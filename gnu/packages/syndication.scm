@@ -46,6 +46,7 @@
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages crates-crypto)
   #:use-module (gnu packages crates-io)
+  #:use-module (gnu packages crates-web)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gettext)
@@ -236,23 +237,24 @@ cards.")
 (define-public newsboat
   (package
     (name "newsboat")
-    (version "2.36.1")
+    (version "2.38")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://newsboat.org/releases/" version
                            "/newsboat-" version ".tar.xz"))
        (sha256
-        (base32 "1pgi19y1ym5dhh0szs0w0cjbvx83bzq30af24h73nwdalkwb3nhl"))))
+        (base32 "11fv2klyc16sfma0zy8phmp4x61w0hswxfwdds10gwa8i7qgdznn"))))
     (build-system cargo-build-system)
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("openssl" ,openssl)
-       ("pkg-config" ,pkg-config)
+     (append
+       (list gettext-minimal
+             openssl
+             pkg-config)
        ;; For building documentation.
-       ,@(if (supported-package? ruby-asciidoctor)
-           `(("asciidoctor" ,ruby-asciidoctor))
-           `())))
+       (if (supported-package? ruby-asciidoctor)
+           (list ruby-asciidoctor)
+           '())))
     (inputs
      (list curl
            json-c
@@ -261,71 +263,74 @@ cards.")
            stfl
            sqlite))
     (arguments
-     `(#:modules ((guix build cargo-build-system)
-                  (guix build utils)
-                  ((guix build gnu-build-system) #:prefix gnu:))
+     (list
+       #:modules '((guix build cargo-build-system)
+                   (guix build utils)
+                   ((guix build gnu-build-system) #:prefix gnu:))
        #:install-source? #f
        #:cargo-inputs
-       (("rust-backtrace" ,rust-backtrace-0.3)
-        ("rust-bitflags" ,rust-bitflags-2)
-        ("rust-chrono" ,rust-chrono-0.4)
-        ("rust-curl-sys" ,rust-curl-sys-0.4)
-        ("rust-cxx" ,rust-cxx-1)
-        ("rust-cxx-build" ,rust-cxx-build-1)
-        ("rust-fastrand" ,rust-fastrand-2)
-        ("rust-gettext-rs" ,rust-gettext-rs-0.7)
-        ("rust-lexopt" ,rust-lexopt-0.3)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-md5" ,rust-md5-0.7)
-        ("rust-natord" ,rust-natord-1)
-        ("rust-nom" ,rust-nom-7)
-        ("rust-percent-encoding" ,rust-percent-encoding-2)
-        ("rust-url" ,rust-url-2)
-        ("rust-unicode-width" ,rust-unicode-width-0.1)
-        ("rust-xdg" ,rust-xdg-2))
+       (list rust-backtrace-0.3
+             rust-bitflags-2
+             rust-chrono-0.4
+             rust-curl-sys-0.4
+             rust-cxx-1
+             rust-cxx-build-1
+             rust-fastrand-2
+             rust-gettext-rs-0.7
+             rust-httpmock-0.7
+             rust-lexopt-0.3
+             rust-libc-0.2
+             rust-md5-0.7
+             rust-natord-1
+             rust-nom-7
+             rust-percent-encoding-2
+             rust-url-2
+             rust-unicode-width-0.1
+             rust-unicode-segmentation-1
+             rust-xdg-2)
        #:cargo-development-inputs
-       (("rust-tempfile" ,rust-tempfile-3)
-        ("rust-proptest" ,rust-proptest-1)
-        ("rust-section-testing" ,rust-section-testing-0.0.5))
+       (list rust-tempfile-3
+             rust-proptest-1
+             rust-section-testing-0.0.5)
        #:phases
-       (modify-phases %standard-phases
-         ,@(if (not (assoc-ref inputs "asciidoctor"))
-             `((add-after 'unpack 'dont-use-asciidoctor
-                 (lambda _
-                   (substitute* "config.sh"
-                     ((".*asciidoctor.*") ""))
-                   (substitute* "Makefile"
-                     (("^doc:.*") "doc:\n")
-                     (("install-podboat install-docs") "install-podboat")))))
-             '())
-         (add-after 'unpack 'pre-build
-           (lambda* (#:key inputs #:allow-other-keys)
-             (setenv "CXX" ,(cxx-for-target))
-             (setenv "CXX_FOR_BUILD" (which "g++"))
-             (substitute* "config.sh"
-               (("if curl-config")
-                (string-append
-                  "if " (search-input-file inputs "/bin/curl-config"))))))
-         (add-after 'configure 'dont-vendor-self
-           (lambda* (#:key vendor-dir #:allow-other-keys)
-             ;; Don't keep the whole tarball in the vendor directory
-             (delete-file-recursively
-               (string-append vendor-dir "/" ,name "-" ,version ".tar.xz"))))
-         (add-after 'unpack 'patch-source
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "Makefile"
-               (("Cargo.lock") "")
-               ;; Replace the prefix in the Makefile.
-               (("/usr/local") (assoc-ref outputs "out")))))
-         (replace 'build
-           (assoc-ref gnu:%standard-phases 'build))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys #:rest args)
-             (when tests?
-               ((assoc-ref gnu:%standard-phases 'check)
-                #:test-target "test"))))
-         (replace 'install
-           (assoc-ref gnu:%standard-phases 'install)))))
+       #~(modify-phases %standard-phases
+           #$@(if (not (this-package-native-input "asciidoctor"))
+                  #~((add-after 'unpack 'dont-use-asciidoctor
+                       (lambda _
+                         (substitute* "config.sh"
+                           ((".*asciidoctor.*") ""))
+                         (substitute* "Makefile"
+                           (("^doc:.*") "doc:\n")
+                           (("install-podboat install-docs") "install-podboat")))))
+                   #~())
+           (add-after 'unpack 'pre-build
+             (lambda* (#:key inputs #:allow-other-keys)
+               (setenv "CXX" #$(cxx-for-target))
+               (setenv "CXX_FOR_BUILD" (which "g++"))
+               (substitute* "config.sh"
+                 (("if curl-config")
+                  (string-append
+                    "if " (search-input-file inputs "/bin/curl-config"))))))
+           (add-after 'configure 'dont-vendor-self
+             (lambda* (#:key vendor-dir #:allow-other-keys)
+               ;; Don't keep the whole tarball in the vendor directory
+               (delete-file-recursively
+                 (string-append vendor-dir "/" #$name "-" #$version ".tar.xz"))))
+           (add-after 'unpack 'patch-source
+             (lambda* (#:key outputs #:allow-other-keys)
+               (substitute* "Makefile"
+                 (("Cargo.lock") "")
+                 ;; Replace the prefix in the Makefile.
+                 (("/usr/local") (assoc-ref outputs "out")))))
+           (replace 'build
+             (assoc-ref gnu:%standard-phases 'build))
+           (replace 'check
+             (lambda* (#:key tests? #:allow-other-keys #:rest args)
+               (when tests?
+                 ((assoc-ref gnu:%standard-phases 'check)
+                  #:test-target "test"))))
+           (replace 'install
+             (assoc-ref gnu:%standard-phases 'install)))))
     (native-search-paths
      ;; Newsboat respects CURL_CA_BUNDLE.
      (list (search-path-specification

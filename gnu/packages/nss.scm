@@ -37,6 +37,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages crates-check)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages perl)
@@ -404,7 +405,7 @@ This package tracks the Rapid Release channel, which updates frequently.")))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
-       '("--release" "--"
+       '("--"
          ;; These tests fail with the current builder network setup
          "--skip=ffi::test_gethostbyaddr_r"
          "--skip=ffi::test_gethostbyname2_r"

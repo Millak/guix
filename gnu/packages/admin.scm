@@ -5652,7 +5652,7 @@ it won't take longer to install 15 machines than it would to install just 2.")
 (define-public greetd
   (package
     (name "greetd")
-    (version "0.9.0")
+    (version "0.10.3")
     (home-page "https://git.sr.ht/~kennylevinsen/greetd")
     (source (origin
               (method git-fetch)
@@ -5661,25 +5661,28 @@ it won't take longer to install 15 machines than it would to install just 2.")
                     (commit version)))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "1b79lb0vikh5vwpdlyga6zwzm11gpsd7ghp8zb0q2m6mlqlj5by3"))))
+               (base32 "1j3c7skby9scsq6p1f6nacbiy9b26y1sswchdsp8p3vv7fgdh2wf"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-nix" ,rust-nix-0.26)
+       (("rust-async-trait" ,rust-async-trait-0.1)
+        ("rust-enquote" ,rust-enquote-1)
+        ("rust-getopts" ,rust-getopts-0.2)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-nix" ,rust-nix-0.27)
         ("rust-pam-sys" ,rust-pam-sys-0.5)
         ("rust-rpassword" ,rust-rpassword-5)
-        ("rust-users" ,rust-users-0.11)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-tokio" ,rust-tokio-1)
-        ("rust-getopts" ,rust-getopts-0.2)
         ("rust-thiserror" ,rust-thiserror-1)
-        ("rust-async-trait" ,rust-async-trait-0.1)
-        ("rust-enquote" ,rust-enquote-1))
+        ("rust-tokio" ,rust-tokio-1))
+       #:install-source? #f
        #:phases
        (modify-phases %standard-phases
-         (delete 'package)
+         (add-after 'unpack 'patch-/bin/sh
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "greetd/src/session/worker.rs"
+               (("/bin/sh") (search-input-file inputs "/bin/sh")))))
          (add-after 'build 'build-man-pages
            (lambda* (#:key inputs #:allow-other-keys)
              (define (scdoc-cmd doc lvl)
@@ -5764,73 +5767,70 @@ This allows greetd-pam-mount to auto-(un)mount @env{XDG_RUNTIME_DIR} without
 interfering with any pam-mount configuration.")))
 
 (define-public wlgreet
-  (let ((commit "7e79d6004fc5e765a5c3ece6d377f8c5999d9dfa")
-        (revision "1"))
-    (package
-      (name "wlgreet")
-      (version (git-version "0.4.1" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://git.sr.ht/~kennylevinsen/wlgreet")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "039a05v6c2i3al86k4fncqr3z47dnrz7y8wmhx6wvm08zx8s89ww"))))
-      (build-system cargo-build-system)
-      (arguments
-       (list #:cargo-inputs
-             `(("rust-chrono" ,rust-chrono-0.4)
-               ("rust-getopts" ,rust-getopts-0.2)
-               ("rust-greetd-ipc" ,rust-greetd-ipc-0.9)
-               ("rust-lazy-static" ,rust-lazy-static-1)
-               ("rust-memmap2" ,rust-memmap2-0.3)
-               ("rust-nix" ,rust-nix-0.25)
-               ("rust-os-pipe" ,rust-os-pipe-1)
-               ("rust-rusttype" ,rust-rusttype-0.9)
-               ("rust-serde" ,rust-serde-1)
-               ("rust-smithay-client-toolkit"
-                ,rust-smithay-client-toolkit-0.15)
-               ("rust-toml" ,rust-toml-0.5)
-               ("rust-wayland-client" ,rust-wayland-client-0.29)
-               ("rust-wayland-protocols" ,rust-wayland-protocols-0.29))
-             #:phases
-             #~(modify-phases %standard-phases
-                 (add-after 'unpack 'remove-bundled-fonts
-                   (lambda _
-                     (delete-file-recursively "fonts")))
-                 (add-after 'remove-bundled-fonts 'fix-font-references
-                   (lambda* (#:key inputs #:allow-other-keys)
-                     (substitute* "src/draw.rs"
-                       (("\\.\\./fonts/dejavu/DejaVuSansMono\\.ttf" _)
-                        (search-input-file
-                         inputs
-                         "share/fonts/truetype/DejaVuSansMono.ttf"))
-                       (("\\.\\./fonts/Roboto-Regular\\.ttf" _)
-                        (search-input-file
-                         inputs
-                         "share/fonts/truetype/Roboto-Regular.ttf")))))
-                 (add-after 'configure 'fix-library-references
-                   (lambda* (#:key inputs vendor-dir #:allow-other-keys)
-                     (substitute* (find-files vendor-dir "\\.rs$")
-                       (("lib(wayland-.*|xkbcommon)\\.so" so-file)
-                        (search-input-file
-                         inputs
-                         (string-append "lib/" so-file)))))))))
-      (inputs
-       (list font-dejavu
-             font-google-roboto
-             libxkbcommon
-             wayland))
-      (home-page "https://git.sr.ht/~kennylevinsen/wlgreet")
-      (synopsis "Bare-bones Wayland-based greeter for @command{greetd}")
-      (description
-       "@command{wlgreet} provides a @command{greetd} greeter
+  (package
+    (name "wlgreet")
+    (version "0.5.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.sr.ht/~kennylevinsen/wlgreet")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0d7lfx5jg2w7fp7llwrirnbsp27nv74f21mhrspd9ilk2cacf12d"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-inputs
+           `(("rust-chrono" ,rust-chrono-0.4)
+             ("rust-getopts" ,rust-getopts-0.2)
+             ("rust-greetd-ipc" ,rust-greetd-ipc-0.10)
+             ("rust-lazy-static" ,rust-lazy-static-1)
+             ("rust-memmap2" ,rust-memmap2-0.3)
+             ("rust-nix" ,rust-nix-0.25)
+             ("rust-os-pipe" ,rust-os-pipe-1)
+             ("rust-rusttype" ,rust-rusttype-0.9)
+             ("rust-serde" ,rust-serde-1)
+             ("rust-toml" ,rust-toml-0.5)
+             ("rust-wayland-client" ,rust-wayland-client-0.29)
+             ("rust-smithay-client-toolkit" ,rust-smithay-client-toolkit-0.15)
+             ("rust-wayland-protocols" ,rust-wayland-protocols-0.29))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'remove-bundled-fonts
+                 (lambda _
+                   (delete-file-recursively "fonts")))
+               (add-after 'remove-bundled-fonts 'fix-font-references
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "src/draw.rs"
+                     (("\\.\\./fonts/dejavu/DejaVuSansMono\\.ttf")
+                      (search-input-file
+                       inputs
+                       "share/fonts/truetype/DejaVuSansMono.ttf"))
+                     (("\\.\\./fonts/Roboto-Regular\\.ttf")
+                      (search-input-file
+                       inputs
+                       "share/fonts/truetype/Roboto-Regular.ttf")))))
+               (add-after 'configure 'fix-library-references
+                 (lambda* (#:key inputs vendor-dir #:allow-other-keys)
+                   (substitute* (find-files vendor-dir "\\.rs$")
+                     (("lib(wayland-.*|xkbcommon)\\.so" so-file)
+                      (search-input-file
+                       inputs
+                       (string-append "lib/" so-file)))))))))
+    (inputs
+     (list font-dejavu
+           font-google-roboto
+           libxkbcommon
+           wayland))
+    (home-page "https://git.sr.ht/~kennylevinsen/wlgreet")
+    (synopsis "Bare-bones Wayland-based greeter for @command{greetd}")
+    (description
+     "@command{wlgreet} provides a @command{greetd} greeter
 that runs on a Wayland compositor such as @command{sway}.  It
 is implemented with pure Wayland APIs, so it does not depend
 on a GUI toolkit.")
-      (license license:gpl3))))
+    (license license:gpl3)))
 
 (define-public libseat
   (package
@@ -6304,9 +6304,7 @@ file or files to several hosts.")
         (base32 "0qr6ikq2ds8bq35iw480qyhf3d43dj61wiwp8587n3mgqf5djx8w"))))
     (build-system cargo-build-system)
     (arguments
-     (list #:cargo-test-flags `(list "--release" "--"
-                                     "--skip=test_apparent_size")
-           #:install-source? #f
+     (list #:install-source? #f
            #:cargo-inputs `(("rust-ansi-term" ,rust-ansi-term-0.12)
                             ("rust-chrono" ,rust-chrono-0.4)
                             ("rust-clap" ,rust-clap-4)

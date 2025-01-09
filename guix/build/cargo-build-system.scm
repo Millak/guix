@@ -2,9 +2,11 @@
 ;;; Copyright © 2016 David Craven <david@craven.ch>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2019 Ivan Petkov <ivanppetkov@gmail.com>
-;;; Copyright © 2019-2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2025 Herman Rimm <herman@rimm.ee>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -24,8 +26,7 @@
 (define-module (guix build cargo-build-system)
   #:use-module ((guix build gnu-build-system) #:prefix gnu:)
   #:use-module (guix build json)
-  #:use-module (guix build utils)
-  #:use-module (guix build cargo-utils)
+  #:use-module ((guix build utils) #:hide (delete))
   #:use-module (ice-9 popen)
   #:use-module (ice-9 rdelim)
   #:use-module (ice-9 ftw)
@@ -105,8 +106,7 @@ Cargo.toml file present at its root."
 
       (for-each (lambda (crate)
                   (invoke "tar" "xzf" crate "-C" vendor-dir))
-                (find-files "target/package" "\\.crate$"))))
-  #t)
+                (find-files "target/package" "\\.crate$")))))
 
 (define (rust-package? name)
   (string-prefix? "rust-" name))
@@ -120,6 +120,7 @@ libraries or executables."
 
 (define* (configure #:key inputs
                     target system
+                    cargo-target
                     (vendor-dir "guix-vendor")
                     #:allow-other-keys)
   "Vendor Cargo.toml dependencies as guix inputs."
@@ -149,24 +150,7 @@ libraries or executables."
 
   ;; For cross-building
   (when target
-    (setenv "CARGO_BUILD_TARGET"
-            ;; Can this be replaced with platform-rust-architecture?
-            ;; Keep this synchronized with (guix platforms *)
-            (match target
-                   ("aarch64-linux-gnu" "aarch64-unknown-linux-gnu")
-                   ("arm-linux-gnueabihf" "armv7-unknown-linux-gnueabihf")
-                   ("i686-linux-gnu" "i686-unknown-linux-gnu")
-                   ("mips64el-linux-gnu" "mips64el-unknown-linux-gnuabi64")
-                   ("powerpc-linux-gnu" "powerpc-unknown-linux-gnu")
-                   ("powerpc64-linux-gnu" "powerpc64-unknown-linux-gnu")
-                   ("powerpc64le-linux-gnu" "powerpc64le-unknown-linux-gnu")
-                   ("riscv64-linux-gnu" "riscv64gc-unknown-linux-gnu")
-                   ("x86_64-linux-gnu" "x86_64-unknown-linux-gnu")
-                   ("x86_64-linux-gnux32" "x86_64-unknown-linux-gnux32")
-                   ("i586-pc-gnu" "i686-unknown-hurd-gnu")
-                   ("i686-w64-mingw32" "i686-pc-windows-gnu")
-                   ("x86_64-w64-mingw32" "x86_64-pc-windows-gnu")
-                   (else #f)))
+    (setenv "CARGO_BUILD_TARGET" cargo-target)
     (setenv "RUSTFLAGS" (string-append
                           (or (getenv "RUSTFLAGS") "")
                           " --sysroot " (assoc-ref inputs "rust-sysroot")))
@@ -223,6 +207,7 @@ directory = '" vendor-dir "'") port)
 
   (setenv "LIBGIT2_SYS_USE_PKG_CONFIG" "1")
   (setenv "LIBSSH2_SYS_USE_PKG_CONFIG" "1")
+  (setenv "SODIUM_USE_PKG_CONFIG" "1")
   (setenv "ZSTD_SYS_USE_PKG_CONFIG" "1")
   (when (assoc-ref inputs "openssl")
     (setenv "OPENSSL_DIR" (assoc-ref inputs "openssl")))
@@ -236,19 +221,24 @@ directory = '" vendor-dir "'") port)
   ;; during building, and in any case if one is not present it is created
   ;; during the 'build phase by cargo.
   (when (file-exists? "Cargo.lock")
-    (delete-file "Cargo.lock"))
-  #t)
+    (delete-file "Cargo.lock")))
 
-;; After the 'patch-generated-file-shebangs phase any vendored crates who have
-;; their shebangs patched will have a mismatch on their checksum.
+;; See: https://github.com/rust-lang/cargo/issues/11063.
 (define* (patch-cargo-checksums #:key
                                 (vendor-dir "guix-vendor")
                                 #:allow-other-keys)
-  "Patch the checksums of the vendored crates after patching their shebangs."
-  (generate-all-checksums vendor-dir)
-  #t)
+  "Add a stub checksum to each crate in VENDOR-DIR."
+  (with-directory-excursion vendor-dir
+    (call-with-output-file ".cargo-checksum.json"
+      (cut display "{\"files\":{}}" <>))
+    (for-each (lambda (dir)
+                (copy-file ".cargo-checksum.json"
+                           (string-append dir "/.cargo-checksum.json")))
+              (drop (scandir ".") 3))
+    (delete-file ".cargo-checksum.json")))
 
 (define* (build #:key
+                parallel-build?
                 skip-build?
                 (features '())
                 (cargo-build-flags '("--release"))
@@ -257,19 +247,35 @@ directory = '" vendor-dir "'") port)
   (or skip-build?
       (apply invoke
              `("cargo" "build"
+               ,@(if parallel-build?
+                     (list "-j" (number->string (parallel-job-count)))
+                     (list "-j" "1"))
                ,@(if (null? features)
                      '()
                      `("--features" ,(string-join features)))
                ,@cargo-build-flags))))
 
 (define* (check #:key
+                parallel-build?
+                parallel-tests?
                 tests?
-                (cargo-test-flags '("--release"))
+                (cargo-test-flags '())
                 #:allow-other-keys)
   "Run tests for a given Cargo package."
-  (if tests?
-      (apply invoke "cargo" "test" cargo-test-flags)
-      #t))
+  (when tests?
+    (apply invoke
+           `("cargo" "test"
+             ,@(if parallel-build?
+                   (list "-j" (number->string (parallel-job-count)))
+                   (list "-j" "1"))
+             ,@cargo-test-flags
+             ,@(if (member "--" cargo-test-flags)
+                   '()
+                   '("--"))
+             ,@(if parallel-tests?
+                   (list "--test-threads"
+                         (number->string (parallel-job-count)))
+                   (list "--test-threads" "1"))))))
 
 (define* (package #:key
                   source
@@ -327,8 +333,7 @@ directory = '" vendor-dir "'") port)
                        (find-files dir #:directories? #t))
                 (delete-file-recursively dir)))
             (find-files "." "\\.crate$")))))
-    (format #t "Not installing cargo sources, skipping `cargo package`.~%"))
-  #t)
+    (format #t "Not installing cargo sources, skipping `cargo package`.~%")))
 
 (define* (install #:key
                   inputs
@@ -364,9 +369,7 @@ directory = '" vendor-dir "'") port)
 
       (for-each (lambda (crate)
                   (invoke "tar" "xzf" crate "-C" sources))
-                (find-files registry "\\.crate$")))
-
-    #t))
+                (find-files registry "\\.crate$")))))
 
 (define %standard-phases
   (modify-phases gnu:%standard-phases

@@ -83,6 +83,7 @@
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages cpio)
   #:use-module (gnu packages cran)
+  #:use-module (gnu packages crates-compression)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages docbook)

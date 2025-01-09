@@ -5,7 +5,9 @@
 ;;; Copyright © 2016 David Craven <david@craven.ch>
 ;;; Copyright © 2019 Ivan Petkov <ivanppetkov@gmail.com>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
-;;; Copyright © 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2021, 2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
+;;; Copyright © 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -29,6 +31,7 @@
   #:use-module (guix gexp)
   #:use-module (guix monads)
   #:use-module (guix packages)
+  #:use-module (guix platform)
   #:use-module (guix build-system)
   #:use-module (guix build-system gnu)
   #:use-module (ice-9 match)
@@ -67,6 +70,11 @@ to NAME and VERSION."
   (let ((module (resolve-interface '(gnu packages rust))))
     (module-ref module 'make-rust-sysroot)))
 
+(define (cargo-triplet target)
+  (false-if-exception
+    (platform-rust-target
+      (lookup-platform-by-target-or-system target))))
+
 (define %cargo-utils-modules
   ;; Build-side modules imported by default.
   `((guix build cargo-utils)
@@ -85,10 +93,12 @@ to NAME and VERSION."
                       (test-target #f)
                       (vendor-dir "guix-vendor")
                       (cargo-build-flags ''("--release"))
-                      (cargo-test-flags ''("--release"))
+                      (cargo-test-flags ''())
                       (cargo-package-flags ''("--no-metadata" "--no-verify"))
                       (features ''())
                       (skip-build? #f)
+                      (parallel-build? #t)
+                      (parallel-tests? #t)
                       (install-source? #t)
                       (phases '%standard-phases)
                       (outputs '("out"))
@@ -113,8 +123,11 @@ to NAME and VERSION."
                        #:cargo-build-flags #$(sexp->gexp cargo-build-flags)
                        #:cargo-test-flags #$(sexp->gexp cargo-test-flags)
                        #:cargo-package-flags #$(sexp->gexp cargo-package-flags)
+                       #:cargo-target #$(cargo-triplet system)
                        #:features #$(sexp->gexp features)
                        #:skip-build? #$skip-build?
+                       #:parallel-build? #$parallel-build?
+                       #:parallel-tests? #$parallel-tests?
                        #:install-source? #$install-source?
                        #:tests? #$(and tests? (not skip-build?))
                        #:phases #$(if (pair? phases)
@@ -140,10 +153,13 @@ to NAME and VERSION."
                             (test-target #f)
                             (vendor-dir "guix-vendor")
                             (cargo-build-flags ''("--release"))
-                            (cargo-test-flags ''("--release"))
+                            (cargo-test-flags ''())
                             (cargo-package-flags ''("--no-metadata" "--no-verify"))
+                            (cargo-target (cargo-triplet (or target system)))
                             (features ''())
                             (skip-build? #f)
+                            (parallel-build? #t)
+                            (parallel-tests? #t)
                             (install-source? (not (target-mingw? target)))
                             (phases '%standard-phases)
                             (outputs '("out"))
@@ -170,8 +186,11 @@ to NAME and VERSION."
                        #:cargo-build-flags #$(sexp->gexp cargo-build-flags)
                        #:cargo-test-flags #$(sexp->gexp cargo-test-flags)
                        #:cargo-package-flags #$(sexp->gexp cargo-package-flags)
+                       #:cargo-target #$(cargo-triplet (or target system))
                        #:features #$(sexp->gexp features)
                        #:skip-build? #$skip-build?
+                       #:parallel-build? #$parallel-build?
+                       #:parallel-tests? #$parallel-tests?
                        #:install-source? #$install-source?
                        #:tests? #$(and tests? (not skip-build?))
                        #:phases #$(if (pair? phases)
@@ -233,11 +252,14 @@ do not extract the conventional inputs)."
        (if (null? propagated)
            (reverse result)
            (loop (reverse (concatenate propagated)) result '() seen)))
-      (((and input (label (? package? package))) rest ...)
+      ;; Match inputs with labels for backward compatibility.
+      (((or (_ (? package? package))
+            (? package? package))
+        rest ...)
        (if (seen? seen package)
            (loop rest result propagated seen)
            (loop rest
-                 (cons input result)
+                 (cons package result)
                  (cons (package-cargo-inputs package)
                        propagated)
                  (vhash-consq package package seen))))
@@ -294,8 +316,8 @@ any dependent crates. This can be a benefits:
   something that can always be extended or reworked in the future)."
   (filter-map
     (match-lambda
-      ((label (? package? p))
-       (list label (package-source p)))
+      ((? package? p)
+       (list (package-name p) (package-source p)))
       ((label input)
        (list label input)))
     (crate-closure (append cargo-inputs cargo-development-inputs))))
@@ -313,7 +335,7 @@ any dependent crates. This can be a benefits:
   (define private-keywords
     `(#:rust #:inputs #:native-inputs #:outputs
       #:cargo-inputs #:cargo-development-inputs
-      #:rust-sysroot
+      #:rust-sysroot #:cargo-target
       ,@(if target '() '(#:target))))
 
   (bag

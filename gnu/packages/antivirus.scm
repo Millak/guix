@@ -2,6 +2,7 @@
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2018 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2019–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -20,24 +21,29 @@
 
 (define-module (gnu packages antivirus)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix build-system cargo)
+  #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix utils)
   #:use-module (gnu packages)
-  #:use-module (gnu packages autotools)
-  #:use-module (gnu packages bison)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cmake)
+  #:use-module (gnu packages crates-compression)
+  #:use-module (gnu packages crates-crypto)
+  #:use-module (gnu packages crates-graphics)
+  #:use-module (gnu packages crates-io)
   #:use-module (gnu packages curl)
-  #:use-module (gnu packages cyrus-sasl)
-  #:use-module (gnu packages flex)
-  #:use-module (gnu packages llvm)
-  #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages python)
+  #:use-module (gnu packages python-check)
+  #:use-module (gnu packages rust-apps)
+  #:use-module (gnu packages rust)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml))
@@ -45,97 +51,118 @@
 (define-public clamav
   (package
     (name "clamav")
-    (version "0.103.11")
+    (version "1.4.1")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://www.clamav.net/downloads/production/"
-                                  "clamav-" version ".tar.gz"))
+              (uri
+               (list
+                (string-append "https://www.clamav.net/downloads/production/"
+                               "clamav-" version ".tar.gz")
+                (string-append "https://github.com/Cisco-Talos/clamav/"
+                               "releases/download/clamav-" version
+                               "/clamav-" version ".tar.gz")))
               (sha256
                (base32
-                "04by1g3p6awhi3j1y6zpwzmasdnvjgi6lwm34l2gadlwgkdfpmv1"))
+                "1n3a87niad76h3mn3qxq9379gppdjqpkhwb9qkbb79irmj0ff653"))
               (modules '((guix build utils)))
               (snippet
                '(begin
                   (for-each delete-file-recursively
-                            '("win32"                  ; unnecessary
-                              "libclamav/c++/llvm"     ; use system llvm
-                              "libclamav/tomsfastmath" ; use system tomsfastmath
-                              "libclamunrar"))))       ; non-free license
-              (patches
-               (search-patches "clamav-system-tomsfastmath.patch"
-                               "clamav-config-llvm-libs.patch"))))
-    (build-system gnu-build-system)
+                            '(".cargo"                 ; vendored rust inputs
+                              "win32"                  ; unnecessary
+                              "libclamunrar"))))))     ; non-free license
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:cargo-inputs
+      `(("rust-flate2" ,rust-flate2-1)
+        ("rust-hex" ,rust-hex-0.4)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-sha2" ,rust-sha2-0.10)
+        ("rust-tempfile" ,rust-tempfile-3)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-image" ,rust-image-0.24)
+        ("rust-rustdct" ,rust-rustdct-0.7)
+        ("rust-transpose" ,rust-transpose-0.2)
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-base64" ,rust-base64-0.21)
+        ("rust-sha1" ,rust-sha1-0.10)
+        ("rust-unicode-segmentation" ,rust-unicode-segmentation-1)
+        ("rust-bindgen" ,rust-bindgen-0.65)
+        ("rust-onenote-parser-for-clamav" ,rust-onenote-parser-for-clamav)
+        ("rust-hex-literal" ,rust-hex-literal-0.4)
+        ("rust-inflate" ,rust-inflate-0.4)
+        ("rust-bzip2-rs" ,rust-bzip2-rs-0.1)
+        ("rust-byteorder" ,rust-byteorder-1)
+        ("rust-delharc" ,rust-delharc-0.6)
+        ("rust-cbindgen" ,rust-cbindgen))
+      #:vendor-dir ".cargo/vendor"
+      #:imported-modules `(,@%cmake-build-system-modules
+                           ,@%cargo-build-system-modules)
+      #:modules '((guix build cargo-build-system)
+                  ((guix build cmake-build-system) #:prefix cmake:)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; There is a test.exe file used in unit tests.
+          (delete 'check-for-pregenerated-files)
+          (add-after 'configure 'fix-cargo-inputs-vendoring
+            (lambda _
+              ;; Reproduce the original layout, fails with config.
+              (rename-file ".cargo/config" ".cargo/config.toml")
+              ;; Wrongly placed by configure
+              (delete-file-recursively
+               (string-append ".cargo/vendor/clamav-" #$version ".tar.zst"))))
+          (add-after 'patch-cargo-checksums 'cmake-configure
+            (lambda* (#:key outputs #:allow-other-keys)
+              ((assoc-ref cmake:%standard-phases 'configure)
+               #:configure-flags
+               (list "-DENABLE_MILTER=OFF" "-DENABLE_UNRAR=OFF")
+               #:outputs outputs)))
+          (replace 'build
+            (assoc-ref cmake:%standard-phases 'build))
+          (add-after 'patch-cargo-checksums 'patch-rust-requirements
+            (lambda _
+              (substitute* "libclamav_rust/Cargo.toml"
+                ;; We make sure we use their fork.
+                (("onenote_parser = .*")
+                 "onenote_parser = \"*\"\n")
+                ;; As long as it builds later versions of (c)bindgen are fine
+                (("cbindgen = \\{ version =\".*\",")
+                 "cbindgen = { version = \"*\","))))
+          (replace 'install
+            (assoc-ref cmake:%standard-phases 'install))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              ((assoc-ref cmake:%standard-phases 'check)
+               #:tests? tests?
+               #:test-target "test")))
+          (add-after 'unpack 'skip-clamd-tests
+            ;; XXX: The check?_clamd tests fail inside the build
+            ;; chroot, but pass outside.
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (substitute* "unit_tests/CMakeLists.txt"
+                  (("clamd_test\\.py" test)
+                   (string-append
+                    test " -k \"not test_clamd_08_VirusEvent\"")))))))))
     (native-inputs
-     (list autoconf
-           automake
-           check ; for tests
-           libtool
-           pkg-config))
+     (list check ; for tests
+           cmake-minimal
+           pkg-config
+           python-minimal
+           python-pytest))
     (inputs
       (list bzip2
             curl
             json-c
-            libltdl
-            libmspack
-            llvm-3.6               ; requires <3.7, for JIT/verifier
-            ncurses
             libressl
-            pcre2
-            cyrus-sasl             ; for linking curl with libtool
-            tomsfastmath
             libxml2
+            ncurses
+            pcre2
             zlib))
-    (arguments
-      (list #:configure-flags
-            #~(let-syntax ((with (syntax-rules ()
-                            ((_ name use)
-                             (string-append "--with-" name "="
-                                            (assoc-ref %build-inputs use))))))
-              (list "--disable-unrar"
-                    "--enable-llvm"
-                    "--with-system-llvm"
-                    "--with-system-libmspack"
-                    "--without-included-ltdl"
-                    (with "xml" "libxml2")
-                    (with "openssl" "libressl")
-                    (with "libjson" "json-c")
-                    (with "pcre2" "pcre2")
-                    (with "zlib" "zlib")
-                    (with "libcurl" "curl")
-                    ;; For sanity, specifying --enable-* flags turns
-                    ;; "support unavailable" warnings into errors.
-                    "--enable-bzip2"
-                    "--enable-check"
-                    "--sysconfdir=/etc/clamav"
-                    ;; Default database directory needs to be writeable
-                    "--with-dbdir=/var/db/clamav"))
-            ;; install sample .conf files to %output/etc rather than /etc/clamav
-            #:make-flags
-            #~(list (string-append "sysconfdir=" %output "/etc"))
-            #:phases
-            #~(modify-phases %standard-phases
-                ;; Regenerate configure script.  Without this we don't get
-                ;; the correct value for LLVM linker variables.
-                (add-after 'unpack 'reconf
-                  (lambda _ (invoke "autoreconf" "-vfi")))
-                (add-before 'configure 'patch-llvm-config
-                  (lambda _
-                    (substitute* '("libclamav/c++/detect.cpp"
-                                   "libclamav/c++/ClamBCRTChecks.cpp"
-                                   "libclamav/c++/bytecode2llvm.cpp")
-                      (("llvm/Config/config.h") "llvm/Config/llvm-config.h"))
-                    ;; `llvm-config --libfiles` inappropriately lists lib*.a
-                    ;; libraries, rather than the lib*.so's that our llvm
-                    ;; contains.  They're used only for listing extra build
-                    ;; dependencies, so ignore them until that's fixed.
-                    (substitute* "libclamav/c++/Makefile.in"
-                      (("@LLVMCONFIG_LIBFILES@") ""))))
-                (add-before 'check 'skip-clamd-tests
-                  ;; XXX: The check?_clamd tests fail inside the build
-                  ;; chroot, but pass outside.
-                  (lambda _
-                    (substitute* "unit_tests/Makefile"
-                      (("check2_clamd.sh.*check4_clamd.sh") "")))))))
     (home-page "https://www.clamav.net")
     (synopsis "Antivirus engine")
     (description
@@ -144,6 +171,8 @@ scanning on mail gateways.  It provides a number of utilities including a
 flexible and scalable multi-threaded daemon, a command line scanner, and
 advanced tool for automatic database updates.  The core of the package is an
 anti-virus engine available in the form of a shared library.")
+    (properties `((release-monitoring-url
+                   . "https://github.com/Cisco-Talos/clamav/releases")))
     (license (list license:gpl2+        ;ClamAV itself
                    license:lgpl2.1      ;libclamav/mspack.[ch]
                    license:public-domain ;libclamav/7z/*, libclamav/rijndael.[ch], etc...

@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2024 Danny Milosavljevic <dannym@friendly-machines.com>
+;;; Copyright © 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -21,87 +22,14 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix build-system cargo)
-  #:use-module (guix build-system gnu)
-  #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages crates-vcs)
-  #:use-module (gnu packages pkg-config)
-  #:use-module (gnu packages qt)
   #:use-module (gnu packages llvm)
   #:use-module ((guix licenses) #:prefix license:))
 
-(define-public rust-c2rust-bitfields-derive-0.18
-  (package
-    (name "rust-c2rust-bitfields-derive")
-    (version "0.18.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "c2rust-bitfields-derive" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0i95j6q1d61h1m1pk84i3ih00hsmbn8ib35xr129fz2rw81c3jyk"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
-                       ("rust-quote" ,rust-quote-1)
-                       ("rust-syn" ,rust-syn-1))))
-    (home-page "https://c2rust.com/")
-    (synopsis
-     "C-compatible struct bitfield derive implementation used in the C2Rust project")
-    (description
-     "This package provides C-compatible struct bitfield derive implementation used in the C2Rust project.")
-    (license license:bsd-3)))
-
-(define-public rust-c2rust-bitfields-0.18
-  (package
-    (name "rust-c2rust-bitfields")
-    (version "0.18.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "c2rust-bitfields" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0h9cnyijk65zypv8dqbmr5r238pqq9pa8njrdzx09xhfmc3kyg5l"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs (("rust-c2rust-bitfields-derive" ,rust-c2rust-bitfields-derive-0.18))))
-    (home-page "https://c2rust.com/")
-    (synopsis
-     "C-compatible struct bitfield implementation used in the C2Rust project")
-    (description
-     "This package provides C-compatible struct bitfield implementation used in the C2Rust project.")
-    (license license:bsd-3)))
-
-(define-public rust-c2rust-ast-printer-0.18
-  (package
-    (name "rust-c2rust-ast-printer")
-    (version "0.18.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "c2rust-ast-printer" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1a02bnnxn1difq917c2rv8b7654ni65lyk37hdyklv9n96inr07r"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs (("rust-log" ,rust-log-0.4)
-                       ("rust-prettyplease" ,rust-prettyplease-0.1)
-                       ("rust-proc-macro2" ,rust-proc-macro2-1)
-                       ("rust-syn" ,rust-syn-1))))
-    (home-page "https://c2rust.com/")
-    (synopsis "Customized version of libsyntax rust pretty-printer")
-    (description
-     "This package provides Customized version of libsyntax rust pretty-printer.")
-    (license (list license:expat license:asl2.0))))
 
 (define-public rust-c2rust-ast-builder-0.18
   (package
@@ -116,48 +44,14 @@
         (base32 "0w63rp66g6axkymxd16avxp3gjnphy3mg9938gsh52p4aak83nq5"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
                        ("rust-syn" ,rust-syn-1))))
     (home-page "https://c2rust.com/")
     (synopsis "Rust AST builder support crate for the C2Rust project")
     (description
-     "This package provides Rust AST builder support crate for the C2Rust project.")
+     "This package provides the rust AST builder support crate for the
+C2Rust project.")
     (license license:bsd-3)))
-
-(define-public rust-c2rust-build-paths-0.18
-  (package
-    (name "rust-c2rust-build-paths")
-    (version "0.18.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "c2rust-build-paths" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0b2liaxbqksgfbsmr6hacdia6czlq7m0pyqx3l2rrcfcnb2ksgv0"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs (("rust-print-bytes" ,rust-print-bytes-1))))
-    (home-page "https://c2rust.com/")
-    (synopsis
-     "C2Rust utilities related to build paths, primarily at build time")
-    (description
-     "This package provides C2Rust utilities related to build paths, primarily at build time.")
-    (license license:bsd-3)))
-
-;; Note: It has expat license.
-;; Note: That is supposedly the (unreleased) version 0.6.3.
-(define %tinycbor-source
-  (origin
-    (method git-fetch)
-    (uri (git-reference
-          (url "https://github.com/intel/tinycbor.git")
-          (commit "d393c16f3eb30d0c47e6f9d92db62272f0ec4dc7")))
-    (sha256
-     (base32
-      "0w38lzj0rz36skc1cn3shllc82c7nn32h88frb8f164a8haq3hkw"))))
 
 (define-public rust-c2rust-ast-exporter-0.18
   (package
@@ -174,8 +68,7 @@
        (modules '((guix build utils)))))
     (build-system cargo-build-system)
     (native-inputs
-     `(("cmake" ,cmake)
-       ("clang" ,clang)))
+     (list cmake-minimal clang))
     (inputs
      `(("llvm" ,llvm)
        ("tinycbor-src" ,%tinycbor-source)))
@@ -188,10 +81,9 @@
              (copy-recursively (assoc-ref inputs "tinycbor-src")
                                "/tmp/tinycbor")
              (setenv "GUIX_TINYCBOR_SOURCE_DIR" "/tmp/tinycbor"))))
-       #:skip-build? #f
        #:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.65)
                        ("rust-c2rust-build-paths" ,rust-c2rust-build-paths-0.18)
-                       ("rust-clang-sys" ,rust-clang-sys-1.8)
+                       ("rust-clang-sys" ,rust-clang-sys-1)
                        ("rust-cmake" ,rust-cmake-0.1)
                        ("rust-env-logger" ,rust-env-logger-0.10)
                        ("rust-libc" ,rust-libc-0.2)
@@ -201,8 +93,114 @@
     (home-page "https://c2rust.com/")
     (synopsis "Clang AST extraction API for use in the C2Rust project")
     (description
-     "This package provides Clang AST extraction API for use in the C2Rust project.")
+     "This package provides the Clang AST extraction API for use in the
+C2Rust project.")
     (license license:bsd-3)))
+
+(define-public rust-c2rust-ast-printer-0.18
+  (package
+    (name "rust-c2rust-ast-printer")
+    (version "0.18.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "c2rust-ast-printer" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1a02bnnxn1difq917c2rv8b7654ni65lyk37hdyklv9n96inr07r"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-log" ,rust-log-0.4)
+                       ("rust-prettyplease" ,rust-prettyplease-0.1)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-syn" ,rust-syn-1))))
+    (home-page "https://c2rust.com/")
+    (synopsis "Customized version of libsyntax rust pretty-printer")
+    (description
+     "This package provides a customized version of libsyntax rust pretty-printer.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-c2rust-bitfields-0.18
+  (package
+    (name "rust-c2rust-bitfields")
+    (version "0.18.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "c2rust-bitfields" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0h9cnyijk65zypv8dqbmr5r238pqq9pa8njrdzx09xhfmc3kyg5l"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-inputs
+           (list rust-c2rust-bitfields-derive-0.18)
+           #:cargo-development-inputs
+           (list rust-libc-0.2)))
+    (home-page "https://c2rust.com/")
+    (synopsis
+     "C-compatible struct bitfield implementation used in the C2Rust project")
+    (description
+     "This package provides a C-compatible struct bitfield implementation used
+in the C2Rust project.")
+    (license license:bsd-3)))
+
+(define-public rust-c2rust-bitfields-derive-0.18
+  (package
+    (name "rust-c2rust-bitfields-derive")
+    (version "0.18.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "c2rust-bitfields-derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0i95j6q1d61h1m1pk84i3ih00hsmbn8ib35xr129fz2rw81c3jyk"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-1))))
+    (home-page "https://c2rust.com/")
+    (synopsis
+     "C-compatible struct bitfield derive implementation used in the C2Rust project")
+    (description
+     "This package provides a C-compatible struct bitfield derive implementation
+used in the C2Rust project.")
+    (license license:bsd-3)))
+
+(define-public rust-c2rust-build-paths-0.18
+  (package
+    (name "rust-c2rust-build-paths")
+    (version "0.18.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "c2rust-build-paths" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0b2liaxbqksgfbsmr6hacdia6czlq7m0pyqx3l2rrcfcnb2ksgv0"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-print-bytes" ,rust-print-bytes-1))))
+    (home-page "https://c2rust.com/")
+    (synopsis "C2Rust utilities related to build paths, primarily at build time")
+    (description
+     "This package provides C2Rust utilities related to build paths, primarily
+at build time.")
+    (license license:bsd-3)))
+
+;; Note: It has expat license.
+;; Note: That is supposedly the (unreleased) version 0.6.3.
+(define %tinycbor-source
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+          (url "https://github.com/intel/tinycbor.git")
+          (commit "d393c16f3eb30d0c47e6f9d92db62272f0ec4dc7")))
+    (sha256
+     (base32
+      "0w38lzj0rz36skc1cn3shllc82c7nn32h88frb8f164a8haq3hkw"))))
 
 (define-public rust-c2rust-transpile-0.18
   (package
@@ -217,8 +215,7 @@
         (base32 "09fvi2id0qjhfvsqcz9222ac81lyl2j6rbq280dhn06y1nvy000c"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs (("rust-c2rust-ast-builder" ,rust-c2rust-ast-builder-0.18)
+     `(#:cargo-inputs (("rust-c2rust-ast-builder" ,rust-c2rust-ast-builder-0.18)
                        ("rust-c2rust-ast-exporter" ,rust-c2rust-ast-exporter-0.18)
                        ("rust-c2rust-ast-printer" ,rust-c2rust-ast-printer-0.18)
                        ("rust-c2rust-bitfields" ,rust-c2rust-bitfields-0.18)
@@ -243,10 +240,23 @@
                        ("rust-smallvec" ,rust-smallvec-1)
                        ("rust-strum" ,rust-strum-0.24)
                        ("rust-strum-macros" ,rust-strum-macros-0.24)
-                       ("rust-syn" ,rust-syn-1))))
+                       ("rust-syn" ,rust-syn-1))
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'build 'patch
+           (lambda* (#:key inputs #:allow-other-keys)
+             ;; The build process will slightly patch the sources.
+             (copy-recursively (assoc-ref inputs "tinycbor-src")
+                               "/tmp/tinycbor")
+             (setenv "GUIX_TINYCBOR_SOURCE_DIR" "/tmp/tinycbor"))))))
+    (native-inputs
+     `(("clang" ,clang)
+       ("cmake" ,cmake-minimal)
+       ("tinycbor-src" ,%tinycbor-source)))
+    (inputs (list llvm))
     (home-page "https://c2rust.com/")
     (synopsis "C2Rust transpiler implementation")
-    (description "This package provides C2Rust transpiler implementation.")
+    (description "This package provides the C2Rust transpiler implementation.")
     (license license:bsd-3)))
 
 (define-public c2rust
@@ -259,15 +269,21 @@
        (uri (crate-uri "c2rust" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1rg9cvvmh9zw89mz2bpyvqlwbfhzl5dw2hab9z6d5rasr8mir7nh"))))
+        (base32 "1rg9cvvmh9zw89mz2bpyvqlwbfhzl5dw2hab9z6d5rasr8mir7nh"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (("\"= ?([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                   (string-append "\"^" version)))))))
     (build-system cargo-build-system)
     (native-inputs
      `(("tinycbor-src" ,%tinycbor-source)
-       ("cmake" ,cmake)
+       ("cmake" ,cmake-minimal)
        ("clang" ,clang)))
     (inputs (list llvm))
     (arguments
-     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+     `(#:install-source? #f
+       #:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
                        ("rust-c2rust-build-paths" ,rust-c2rust-build-paths-0.18)
                        ("rust-c2rust-transpile" ,rust-c2rust-transpile-0.18)
                        ("rust-clap" ,rust-clap-3)
@@ -280,11 +296,6 @@
                        ("rust-time-macros" ,rust-time-macros-0.2))
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'patch-deps
-           (lambda _
-             ;; This is incorrect in the release to begin with.
-             (substitute* "Cargo.toml"
-              (("=0.2.6") "=0.2.18"))))
          (add-before 'build 'patch
            (lambda* (#:key inputs #:allow-other-keys)
              ;; The build process will slightly patch the sources.

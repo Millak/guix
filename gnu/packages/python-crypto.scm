@@ -72,7 +72,7 @@
   #:use-module (gnu packages python-compression)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
-  #:use-module (gnu packages rust)
+  #:use-module (gnu packages rust-apps)
   #:use-module (gnu packages swig)
   #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
@@ -519,14 +519,14 @@ is used by the Requests library to verify HTTPS requests.")
 (define-public python-cryptography-vectors
   (package
     (name "python-cryptography-vectors")
-    (version "42.0.5")
+    (version "43.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "cryptography_vectors" version))
        (sha256
         (base32
-         "1lcflcvv0xjz5cyvf33iav1vd91qzjvl4w7h4qaxlcnbn3ixap2h"))))
+         "1d46wj4831g2vmixffk2b0bb0x67x5rlnqbpfa8fi17lcm98hspz"))))
     (build-system pyproject-build-system)
     (arguments (list #:tests? #f))  ; No tests included.
     (native-inputs
@@ -543,33 +543,61 @@ is used by the Requests library to verify HTTPS requests.")
 (define-public python-cryptography
   (package
     (name "python-cryptography")
-    (version "42.0.5")
+    (version "43.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "cryptography" version))
        (sha256
         (base32
-         "1qdz0yk5smi0dnywbxmanccwizilmnzgbbihjpmpgm6zjpn7xq3g"))))
-    (build-system pyproject-build-system)
+         "01d8anh4crjvpa0s044rxkdi9cjnz4w15dj3yipjljba4q0r0nri"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 ;; Help the configure phase.  Remove this next release.
+                 (with-output-to-file "Cargo.toml"
+                   (lambda () (newline)))
+                 (for-each delete-file
+                           (find-files "." "Cargo\\.lock$"))
+                 (substitute* "pyproject.toml"
+                   (("locked = true") "offline = true"))))))
+    (build-system cargo-build-system)
     (arguments
      (list
-      #:phases #~(modify-phases %standard-phases
-                   (add-after 'unpack 'disable-rust-extension-build
-                     (lambda _
-                       ;; The Rust extension is built separately as
-                       ;; 'python-cryptography-rust', so there's no need
-                       ;; to build it here.
-                       (substitute* "pyproject.toml"
-                         (("\\s+\\\"setuptools-rust.*") ""))))
-                   (add-before 'check 'symlink-rust-library
-                     (lambda* (#:key inputs outputs #:allow-other-keys)
-                       (symlink (search-input-file
-                                 inputs "lib/libcryptography_rust.so")
-                                (string-append (site-packages inputs outputs)
-                                               "/cryptography/hazmat/bindings/"
-                                               "_rust.abi3.so")))))))
-
+      #:imported-modules `(,@%cargo-build-system-modules
+                           ,@%pyproject-build-system-modules)
+      #:modules '((guix build cargo-build-system)
+                  ((guix build pyproject-build-system) #:prefix py:)
+                  (guix build utils))
+      #:cargo-inputs
+      (list rust-asn1-0.16
+            rust-cc-1
+            rust-cfg-if-1
+            rust-foreign-types-0.3
+            rust-foreign-types-shared-0.1
+            rust-once-cell-1
+            rust-openssl-0.10
+            rust-openssl-sys-0.9
+            rust-pem-3
+            rust-pyo3-0.22
+            rust-self-cell-1)
+      #:install-source? #false
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'configure 'dont-vendor-self
+            (lambda* (#:key vendor-dir #:allow-other-keys)
+              ;; Don't keep the whole tarball in the vendor directory
+              (delete-file-recursively
+                (string-append vendor-dir "/cryptography-" #$version ".tar.zst"))))
+          (replace 'build
+            (assoc-ref py:%standard-phases 'build))
+          (delete 'check)
+          (add-after 'install 'check
+            (lambda* (#:key tests? inputs outputs #:allow-other-keys)
+              (when tests?
+                (py:add-installed-pythonpath inputs outputs)
+                (invoke "python" "-m" "pytest" "tests"))))
+          (replace 'install
+            (assoc-ref py:%standard-phases 'install)))))
     (native-inputs
      (list python-certifi
            python-cryptography-vectors
@@ -580,7 +608,7 @@ is used by the Requests library to verify HTTPS requests.")
            python-pytest-subtests
            python-setuptools
            python-wheel))
-    (inputs (list python-cryptography-rust))
+    (inputs (list maturin openssl python-wrapper))
     (propagated-inputs (list python-cffi))
     (home-page "https://github.com/pyca/cryptography")
     (synopsis "Cryptographic recipes and primitives for Python")
@@ -593,73 +621,17 @@ ciphers, message digests and key derivation functions.")
     ;; Distributed under either BSD-3 or ASL2.0
     (license (list license:bsd-3 license:asl2.0))))
 
-;;; This is the Rust component of the python-cryptography library, extracted
-;;; as a separate package to ease the Rust build.
-(define-public python-cryptography-rust
-  (package
-    (inherit python-cryptography)
-    (name "python-cryptography-rust")
-    (build-system cargo-build-system)
-    (arguments
-     (list
-      #:modules '((guix build cargo-build-system)
-                  (guix build utils)
-                  (srfi srfi-1)
-                  (ice-9 match))
-      #:install-source? #f
-      ;; As seen in noxfile.py
-      #:cargo-test-flags ''("--release" "--no-default-features")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'chdir
-            (lambda _
-              (chdir "src/rust")))
-          (replace 'unpack-rust-crates
-            ;; This is to avoid the non-crate source from being erroneously
-            ;; unpacked by this phase, causing an error.
-            (lambda* (#:key inputs #:allow-other-keys #:rest args)
-              (apply (assoc-ref %standard-phases 'unpack-rust-crates)
-                     (append args
-                             (list #:inputs (alist-delete "source" inputs))))))
-          (replace 'configure
-            (lambda* (#:key inputs #:allow-other-keys #:rest args)
-              (apply (assoc-ref %standard-phases 'configure)
-                     (append args
-                             (list #:inputs (alist-delete "source" inputs))))))
-          (add-after 'install 'install-shared-library
-            (lambda _
-              (install-file "target/release/libcryptography_rust.so"
-                            (string-append #$output "/lib")))))
-      #:cargo-inputs
-      `(("rust-asn1" ,rust-asn1-0.15)
-        ("rust-cc" ,rust-cc-1)
-        ("rust-cfg-if" ,rust-cfg-if-1)
-        ("rust-foreign-types" ,rust-foreign-types-0.3)
-        ("rust-foreign-types-shared" ,rust-foreign-types-shared-0.1)
-        ("rust-once-cell" ,rust-once-cell-1)
-        ("rust-openssl" ,rust-openssl-0.10)
-        ("rust-openssl-sys" ,rust-openssl-sys-0.9)
-        ("rust-pem" ,rust-pem-3)
-        ("rust-pyo3" ,rust-pyo3-0.20)
-        ("rust-self-cell" ,rust-self-cell-1))))
-    (native-inputs (list pkg-config python python-cffi))
-    ;; XXX: Adding rust-openssl-sys-0.9 is needed because #:cargo-inputs
-    ;; doesn't honor propagated-inputs.
-    (inputs (list python rust-openssl-sys-0.9))
-    (propagated-inputs '())
-    (synopsis "Core implementation of the Cryptography Python library")))
-
 (define-public python-pyopenssl
   (package
     (name "python-pyopenssl")
-    (version "24.1.0")
+    (version "24.2.1")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "pyOpenSSL" version))
+       (uri (pypi-uri "pyopenssl" version))
        (sha256
         (base32
-         "0vqsyji1q4vhd5yxlzks0z6va62knq64mxhfdjhz3yaxmazx9gna"))))
+         "158fpy6fsmkrci67qpzg06ha3ygh3ah3xzxjrc6md3blwgdz0is2"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -671,7 +643,7 @@ ciphers, message digests and key derivation functions.")
                 ;; PyOpenSSL runs tests against a certificate with a fixed
                 ;; expiry time.  To ensure successful builds in the future,
                 ;; set the time to roughly the release date.
-                (invoke "faketime" "2024-03-09" "pytest" "-vv" "-k"
+                (invoke "faketime" "2024-07-20" "pytest" "-vv" "-k"
                         ;; This test tries to look up certificates from
                         ;; the compiled-in default path in OpenSSL, which
                         ;; does not exist in the build environment.

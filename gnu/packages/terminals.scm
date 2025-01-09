@@ -1558,6 +1558,10 @@ basic input/output.")
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
+       #:cargo-test-flags
+       '("--release" "--"
+         ;; Changes in clap regularly break this test.
+         "--skip=cli::tests::completions")
        #:cargo-inputs
        (("rust-ahash" ,rust-ahash-0.8)
         ("rust-base64" ,rust-base64-0.22)

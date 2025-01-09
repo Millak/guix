@@ -11,6 +11,7 @@
 ;;; Copyright © 2023 Steve George <steve@futurile.net>
 ;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
 ;;; Copyright © 2024 Wilko Meyer <w@wmeyer.eu>
+;;; Copyright © 2024 Jordan Moore <lockbox@struct.foo>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -56,12 +57,50 @@
     (arguments
      `(#:skip-build? #t
        #:cargo-development-inputs
-       (("rust-objc-test-utils" ,rust-objc-test-utils-0.0))))
+       (("rust-objc-test-utils" ,rust-objc-test-utils-0.0.2))))
     (home-page "https://github.com/SSheldon/rust-block")
     (synopsis "Rust interface for Apple's C language extension of blocks")
     (description "This package provides a rust interface for Apple's C language
 extension of blocks.")
     (license license:expat)))
+
+(define-public rust-block-sys-0.2
+  (package
+    (name "rust-block-sys")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "block-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1rzp0218mwigdmfd5rhmj5h7c1vp0bq0nxaklhsvi8vydrls11df"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f          ; Needs to bind to MacOS libraries.
+       #:cargo-inputs (("rust-objc-sys" ,rust-objc-sys-0.3))))
+    (home-page "https://github.com/madsmtm/objc2")
+    (synopsis "Raw bindings to Apple's C language extension of blocks")
+    (description "This package contains raw bindings to Apple's C language
+extension of blocks.")
+    (license license:expat)))
+
+(define-public rust-block-sys-0.1
+  (package
+    (inherit rust-block-sys-0.2)
+    (name "rust-block-sys")
+    (version "0.1.0-beta.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "block-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0ihiar08hk0das4q0ii1gsmql975z3rslli1h13jb44hxr0mg98g"))))
+    (arguments
+     `(#:tests? #f  ; Tests require gcc-objc.
+       #:cargo-inputs
+       (("rust-objc-sys" ,rust-objc-sys-0.2))))))
 
 (define-public rust-block2-0.5
   (package
@@ -119,55 +158,17 @@ extension of blocks.")
        (("rust-block-sys" ,rust-block-sys-0.1)
         ("rust-objc2-encode" ,rust-objc2-encode-2))))))
 
-(define-public rust-block-sys-0.2
-  (package
-    (name "rust-block-sys")
-    (version "0.2.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "block-sys" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1rzp0218mwigdmfd5rhmj5h7c1vp0bq0nxaklhsvi8vydrls11df"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:tests? #f          ; Needs to bind to MacOS libraries.
-       #:cargo-inputs (("rust-objc-sys" ,rust-objc-sys-0.3))))
-    (home-page "https://github.com/madsmtm/objc2")
-    (synopsis "Raw bindings to Apple's C language extension of blocks")
-    (description "This package contains raw bindings to Apple's C language
-extension of blocks.")
-    (license license:expat)))
-
-(define-public rust-block-sys-0.1
-  (package
-    (inherit rust-block-sys-0.2)
-    (name "rust-block-sys")
-    (version "0.1.0-beta.1")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "block-sys" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0ihiar08hk0das4q0ii1gsmql975z3rslli1h13jb44hxr0mg98g"))))
-    (arguments
-     `(#:tests? #f  ; Tests require gcc-objc.
-       #:cargo-inputs
-       (("rust-objc-sys" ,rust-objc-sys-0.2))))))
-
 (define-public rust-cargo-credential-macos-keychain-0.4
   (package
     (name "rust-cargo-credential-macos-keychain")
-    (version "0.4.8")
+    (version "0.4.9")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "cargo-credential-macos-keychain" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1mb5ckal65llh7c0p2a3ivwbv8802s9ysrr0wsjn82fj8jv05kla"))))
+        (base32 "10djgy45fsirckyjjk7m63vfd6fkp9wrjfxznb5rplz1p4y0acfk"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-cargo-credential" ,rust-cargo-credential-0.4)
@@ -178,23 +179,6 @@ extension of blocks.")
      "This package provides a Cargo credential process that stores tokens in a
 @code{macOS} keychain.")
     (license (list license:expat license:asl2.0))))
-
-(define-public rust-cargo-credential-macos-keychain-0.3
-  (package
-    (inherit rust-cargo-credential-macos-keychain-0.4)
-    (name "rust-cargo-credential-macos-keychain")
-    (version "0.3.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "cargo-credential-macos-keychain" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "15i7gq5z6a3896aq2bci9mc9h77g91ziij87c2zhhd91g1pf41rs"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-cargo-credential" ,rust-cargo-credential-0.3)
-        ("rust-security-framework" ,rust-security-framework-2))))))
 
 (define-public rust-cocoa-0.25
   (package
@@ -401,7 +385,7 @@ extension of blocks.")
     (arguments
       `(#:skip-build? #t
         #:cargo-inputs
-        (("rust-clippy" ,rust-clippy-0.0)
+        (("rust-clippy" ,rust-clippy-0.0.302)
          ("rust-commoncrypto-sys" ,rust-commoncrypto-sys-0.2))))
     (home-page "https://github.com/malept/rust-commoncrypto")
     (synopsis "Idiomatic Rust wrappers for Mac OS X's CommonCrypto library")
@@ -426,57 +410,13 @@ idiomatic wrappers for Mac OS X's CommonCrypto library.")
     (arguments
       `(#:skip-build? #t                ;requires the Mac OS library
         #:cargo-inputs
-        (("rust-clippy" ,rust-clippy-0.0)
+        (("rust-clippy" ,rust-clippy-0.0.302)
          ("rust-libc" ,rust-libc-0.2))))
     (home-page "https://github.com/malept/rust-commoncrypto")
     (synopsis "FFI bindings to Mac OS X's CommonCrypto library")
     (description "This package is a component of the @code{commoncrypto}
 library which provides Rust FFI bindings and idiomatic wrappers for Mac OS X's
 CommonCrypto library.")
-    (license license:expat)))
-
-(define-public rust-coreaudio-rs-0.10
-  (package
-    (name "rust-coreaudio-rs")
-    (version "0.10.0")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "coreaudio-rs" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "125d4zr3n363ybga4629p41ym7iqjfb2alnwrc1zj7zyxch4p28i"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t ; Only builds for macos or ios.
-       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-1)
-                       ("rust-coreaudio-sys" ,rust-coreaudio-sys-0.2))))
-    (home-page "https://github.com/RustAudio/coreaudio-rs")
-    (synopsis "Rust interface for Apple's CoreAudio API")
-    (description
-     "This package provides a rust interface for Apple's CoreAudio API.")
-    (license (list license:expat license:asl2.0))))
-
-(define-public rust-coreaudio-sys-0.2
-  (package
-    (name "rust-coreaudio-sys")
-    (version "0.2.15")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "coreaudio-sys" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1agmf1idf5m08rgkvsdxqni985acmrs629xzlpqgazq54x85h0bz"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t ; Only builds for macos or ios.
-       #:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.69))))
-    (home-page "https://github.com/RustAudio/coreaudio-sys")
-    (synopsis
-     "Bindings for Apple's CoreAudio frameworks generated via rust-bindgen")
-    (description
-     "Bindings for Apple's CoreAudio frameworks generated via rust-bindgen.")
     (license license:expat)))
 
 (define-public rust-core-foundation-0.10
@@ -563,26 +503,6 @@ CommonCrypto library.")
         ("rust-libc" ,rust-libc-0.2)
         ("rust-uuid" ,rust-uuid-0.5))))))
 
-(define-public rust-core-foundation-0.2
-  (package
-    (inherit rust-core-foundation-0.6)
-    (name "rust-core-foundation")
-    (version "0.2.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "core-foundation" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0rvcn7ab5r69wvn7gby745jlpy8pirfywcdxbiypy083s93dggr5"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-core-foundation-sys" ,rust-core-foundation-sys-0.2)
-        ("rust-libc" ,rust-libc-0.2))))))
-
 (define-public rust-core-foundation-sys-0.8
   (package
     (name "rust-core-foundation-sys")
@@ -627,24 +547,6 @@ CommonCrypto library.")
         (base32
          "0fzsw1j9g1x598yhwklg59l15hwzc0pyvs01w9fg2kin4598mjp7"))))))
 
-(define-public rust-core-foundation-sys-0.2
-  (package
-    (inherit rust-core-foundation-sys-0.6)
-    (name "rust-core-foundation-sys")
-    (version "0.2.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "core-foundation-sys" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "13f7f3kblyj6yxcxm74yg84vj9ahaprlc1vgblagmj6bzmzmsnh6"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-libc" ,rust-libc-0.2))))))
-
 (define-public rust-core-text-20
   (package
     (name "rust-core-text")
@@ -688,6 +590,50 @@ CommonCrypto library.")
         ("rust-foreign-types" ,rust-foreign-types-0.3)
         ("rust-libc" ,rust-libc-0.2))))))
 
+(define-public rust-coreaudio-rs-0.10
+  (package
+    (name "rust-coreaudio-rs")
+    (version "0.10.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "coreaudio-rs" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "125d4zr3n363ybga4629p41ym7iqjfb2alnwrc1zj7zyxch4p28i"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t ; Only builds for macos or ios.
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-1)
+                       ("rust-coreaudio-sys" ,rust-coreaudio-sys-0.2))))
+    (home-page "https://github.com/RustAudio/coreaudio-rs")
+    (synopsis "Rust interface for Apple's CoreAudio API")
+    (description
+     "This package provides a rust interface for Apple's CoreAudio API.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-coreaudio-sys-0.2
+  (package
+    (name "rust-coreaudio-sys")
+    (version "0.2.16")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "coreaudio-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0asnnypbsqzj2lxx4irnmyi9b32sl0vkxb61mj3p5mvp1fm5gs1c"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t ; Only builds for macos or ios.
+       #:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.70))))
+    (home-page "https://github.com/RustAudio/coreaudio-sys")
+    (synopsis
+     "Bindings for Apple's CoreAudio frameworks generated via rust-bindgen")
+    (description
+     "Bindings for Apple's CoreAudio frameworks generated via rust-bindgen.")
+    (license license:expat)))
+
 (define-public rust-dispatch-0.2
   (package
     (name "rust-dispatch")
@@ -726,14 +672,14 @@ Central Dispatch.")
 (define-public rust-fat-macho-0.4
   (package
     (name "rust-fat-macho")
-    (version "0.4.8")
+    (version "0.4.9")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "fat-macho" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1pqsjf13pdbhki2sdh70575hwqd18gm3vp8hpir3vl5djgrr6k0d"))
+                "0idkn366wipv2l757yqfgzgibqc6jvm89gdk9kpgmvf6lv54b72c"))
               (snippet
                #~(begin (use-modules (guix build utils))
                         (delete-file-recursively "tests/fixtures")))))
@@ -741,7 +687,7 @@ Central Dispatch.")
     (arguments
      `(#:tests? #f      ; Test files removed.
        #:cargo-inputs
-       (("rust-goblin" ,rust-goblin-0.8)
+       (("rust-goblin" ,rust-goblin-0.9)
         ("rust-llvm-bitcode" ,rust-llvm-bitcode-0.1))))
     (home-page "https://github.com/messense/fat-macho-rs.git")
     (synopsis "Mach-O Fat Binary Reader and Writer")
@@ -882,6 +828,31 @@ macOS API for file changes notifications")
     (home-page "https://github.com/madsmtm/objc2")
     (synopsis "Bindings to Apple's frameworks")
     (description "This package provides bindings to Apple's frameworks.")
+    (license license:expat)))
+
+(define-public rust-mac-notification-sys-0.6
+  (package
+    (name "rust-mac-notification-sys")
+    (version "0.6.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "mac-notification-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "14cgvhb2790fzsilwdw720m2pc2zzk0zcgbjgqbkgahp6x7z7s6w"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t ;Requires OSX to build framework "Foundation"
+       #:cargo-inputs (("rust-cc" ,rust-cc-1)
+                       ("rust-dirs-next" ,rust-dirs-next-2)
+                       ("rust-objc-foundation" ,rust-objc-foundation-0.1)
+                       ("rust-objc-id" ,rust-objc-id-0.1)
+                       ("rust-time" ,rust-time-0.3))))
+    (home-page "https://github.com/h4llow3En/mac-notification-sys")
+    (synopsis "Thin wrapper around macOS Notifications")
+    (description
+     "This package provides Thin wrapper around @code{macOS} Notifications.")
     (license license:expat)))
 
 (define-public rust-mach-0.3
@@ -1126,7 +1097,7 @@ Foundation framework.")
      `(#:skip-build? #t         ; Needs gcc-objc
        #:cargo-inputs (("rust-cc" ,rust-cc-1))))))
 
-(define-public rust-objc-test-utils-0.0
+(define-public rust-objc-test-utils-0.0.2
   (package
     (name "rust-objc-test-utils")
     (version "0.0.2")
@@ -1544,6 +1515,28 @@ the Cocoa Foundation framework.")
 framework.")
     (license license:expat)))
 
+(define-public rust-objc2-symbols-0.2
+  (package
+    (name "rust-objc2-symbols")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "objc2-symbols" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1p04hjkxan18g2b7h9n2n8xxsvazapv2h6mfmmdk06zc7pz4ws0a"))))
+    (build-system cargo-build-system)
+    (arguments
+     ;; Must specify the desired runtime using Cargo features on non-Apple platforms
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-objc2" ,rust-objc2-0.5)
+                       ("rust-objc2-foundation" ,rust-objc2-foundation-0.2))))
+    (home-page "https://github.com/madsmtm/objc2")
+    (synopsis "Bindings to the Symbols framework")
+    (description "This package Provides Bindings to the Symbols framework.")
+    (license license:expat)))
+
 (define-public rust-objc2-ui-kit-0.2
   (package
     (name "rust-objc2-ui-kit")
@@ -1576,28 +1569,6 @@ framework.")
     (home-page "https://github.com/madsmtm/objc2")
     (synopsis "Bindings to the UIKit framework")
     (description "This package provides bindings to the UIKit framework.")
-    (license license:expat)))
-
-(define-public rust-objc2-symbols-0.2
-  (package
-    (name "rust-objc2-symbols")
-    (version "0.2.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "objc2-symbols" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1p04hjkxan18g2b7h9n2n8xxsvazapv2h6mfmmdk06zc7pz4ws0a"))))
-    (build-system cargo-build-system)
-    (arguments
-     ;; Must specify the desired runtime using Cargo features on non-Apple platforms
-     `(#:skip-build? #t
-       #:cargo-inputs (("rust-objc2" ,rust-objc2-0.5)
-                       ("rust-objc2-foundation" ,rust-objc2-foundation-0.2))))
-    (home-page "https://github.com/madsmtm/objc2")
-    (synopsis "Bindings to the Symbols framework")
-    (description "This package Provides Bindings to the Symbols framework.")
     (license license:expat)))
 
 (define-public rust-objc2-uniform-type-identifiers-0.2
@@ -1650,28 +1621,41 @@ framework.")
      "This package provides bindings to the @code{UserNotifications} framework.")
     (license license:expat)))
 
-(define-public rust-readkey-0.1
+(define-public rust-security-framework-3
   (package
-    (name "rust-readkey")
-    (version "0.1.7")
+    (name "rust-security-framework")
+    (version "3.1.0")
     (source
      (origin
        (method url-fetch)
-       (uri (crate-uri "readkey" version))
+       (uri (crate-uri "security-framework" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0iiip8bq4yhal5rv6wlws0xgz798blki7s5ly5cmlwm1ssv03m46"))))
+        (base32 "1g1wq04rb6gsyfawphv5vhmmicbm5l25gsvr05mvng6cpz4zilw1"))))
     (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
-    (home-page "https://github.com/segeljakt/readkey")
-    (synopsis "Library for finding out if a key is currently pressed on macOS")
-    (description
-     "This package provides a very small library for finding out if a key is
-currently pressed on macOS.")
-    (license license:expat)))
+    (arguments
+     `(#:tests? #f      ; unresolved import `security_framework::secure_transport`
+       #:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-2)
+        ("rust-core-foundation" ,rust-core-foundation-0.10)
+        ("rust-core-foundation-sys" ,rust-core-foundation-sys-0.8)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-security-framework-sys" ,rust-security-framework-sys-2))
+       #:cargo-development-inputs (("rust-env-logger" ,rust-env-logger-0.10)
+                                   ("rust-hex" ,rust-hex-0.4)
+                                   ("rust-tempfile" ,rust-tempfile-3)
+                                   ("rust-time" ,rust-time-0.3)
+                                   ("rust-x509-parser" ,rust-x509-parser-0.16))))
+    (home-page "https://lib.rs/crates/security_framework")
+    (synopsis "@code{Security.framework} bindings for macOS and iOS")
+    (description "This package provides @code{Security.framework} bindings for
+macOS and iOS.")
+    (license (list license:expat license:asl2.0))))
 
 (define-public rust-security-framework-2
   (package
+    (inherit rust-security-framework-3)
     (name "rust-security-framework")
     (version "2.11.1")
     (source
@@ -1681,7 +1665,6 @@ currently pressed on macOS.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "00ldclwx78dm61v7wkach9lcx76awlrv0fdgjdwch4dmy12j4yw9"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; unresolved import `security_framework::secure_transport`
        #:cargo-inputs
@@ -1697,12 +1680,7 @@ currently pressed on macOS.")
         ("rust-hex" ,rust-hex-0.4)
         ("rust-tempdir" ,rust-tempdir-0.3)
         ("rust-time" ,rust-time-0.3)
-        ("rust-x509-parser" ,rust-x509-parser-0.16))))
-    (home-page "https://lib.rs/crates/security_framework")
-    (synopsis "@code{Security.framework} bindings for macOS and iOS")
-    (description "This package provides @code{Security.framework} bindings for
-macOS and iOS.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-x509-parser" ,rust-x509-parser-0.16))))))
 
 (define-public rust-security-framework-1
   (package
@@ -1754,45 +1732,45 @@ macOS and iOS.")
        (("rust-hex" ,rust-hex-0.4)
         ("rust-tempdir" ,rust-tempdir-0.3))))))
 
-(define-public rust-security-framework-0.2
+(define-public rust-security-framework-0.2.4-yanked
   (package
     (inherit rust-security-framework-0.3)
     (name "rust-security-framework")
-    (version "0.2.4")
+    (version "0.2.4") ;This version was yanked!
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "security-framework" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version "-yanked.tar.gz"))
        (sha256
-        (base32
-         "0gw3xxg8yzbjb4ny5cy07gky177c1nbgpxqjsw3hfzpfgrxji9bz"))))
+        (base32 "0gw3xxg8yzbjb4ny5cy07gky177c1nbgpxqjsw3hfzpfgrxji9bz"))))
     (arguments
-     `(#:skip-build? #t ; MacOS specific
+     `(#:skip-build? #t ;MacOS specific
        #:cargo-inputs
-       (("rust-core-foundation"
-         ,rust-core-foundation-0.6)
-        ("rust-core-foundation-sys"
-         ,rust-core-foundation-sys-0.6)
+       (("rust-core-foundation" ,rust-core-foundation-0.6)
+        ("rust-core-foundation-sys" ,rust-core-foundation-sys-0.6)
         ("rust-libc" ,rust-libc-0.2)
-        ("rust-security-framework-sys"
-         ,rust-security-framework-sys-0.2))
-       #:cargo-development-inputs
-       (("rust-hex" ,rust-hex-0.3)
-        ("rust-tempdir" ,rust-tempdir-0.3))))))
+        ("rust-security-framework-sys" ,rust-security-framework-sys-0.2))
+       #:cargo-development-inputs (("rust-hex" ,rust-hex-0.3)
+                                   ("rust-tempdir" ,rust-tempdir-0.3))))
+    (properties '((crate-version-yanked? . #t)))))
+
+(define-public rust-security-framework-0.2
+  ;; There are no non-yanked versions of this semver.
+  (deprecated-package "rust-security-framework"
+                      rust-security-framework-0.2.4-yanked))
 
 (define-public rust-security-framework-sys-2
   (package
     (name "rust-security-framework-sys")
-    (version "2.12.1")
+    (version "2.13.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "security-framework-sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "18pafp0bn41bcbm66qrhb3pg4c8dddvc28jdr51mb2y57lqcffgs"))))
+        (base32 "1mbhagj98y2byhjkr353y1nings01pfa9yk0gxmcb0ydd0vzsqqq"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -1840,27 +1818,57 @@ macOS and iOS.")
      `(#:cargo-inputs
        (("rust-core-foundation-sys" ,rust-core-foundation-sys-0.6))))))
 
-(define-public rust-security-framework-sys-0.2
+(define-public rust-security-framework-sys-0.2.4-yanked
   (package
     (inherit rust-security-framework-sys-0.3)
     (name "rust-security-framework-sys")
-    (version "0.2.4")
+    (version "0.2.4") ;This version was yanked!
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "security-framework-sys" version))
+       (file-name (string-append name "-" version "-yanked.tar.gz"))
+       (sha256
+        (base32 "07zv0szz2kfy1hn251h0qsq0q9i1zia768d8vzril1g6xarj7mcj"))))
+    (arguments
+     `(#:skip-build? #t ;MacOS specific
+       #:cargo-inputs (("rust-core-foundation-sys" ,rust-core-foundation-sys-0.6)
+                       ("rust-libc" ,rust-libc-0.2))))
+    (properties '((crate-version-yanked? . #t)))))
+
+(define-public rust-security-framework-sys-0.2
+  ;; There are no non-yanked versions of this semver.
+  (deprecated-package "rust-security-framework-sys"
+                      rust-security-framework-sys-0.2.4-yanked))
+
+(define-public rust-system-configuration-0.6
+  (package
+    (name "rust-system-configuration")
+    (version "0.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "system-configuration" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "07zv0szz2kfy1hn251h0qsq0q9i1zia768d8vzril1g6xarj7mcj"))))
+        (base32 "0sxslml567zm0v8g732314vd2gk9sd3k4xj22xk6p64xir29v1rw"))))
+    (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t ; MacOS specific
+     `(#:skip-build? #t ; struct `sockaddr_in` has no field named `sin_len`
        #:cargo-inputs
-       (("rust-core-foundation-sys" ,rust-core-foundation-sys-0.6)
-        ("rust-libc" ,rust-libc-0.2))))))
+       (("rust-bitflags" ,rust-bitflags-2)
+        ("rust-core-foundation" ,rust-core-foundation-0.9)
+        ("rust-system-configuration-sys" ,rust-system-configuration-sys-0.6))))
+    (home-page "https://github.com/mullvad/system-configuration-rs")
+    (synopsis "Bindings to SystemConfiguration framework for macOS")
+    (description
+     "This package provides bindings to the @code{SystemConfiguration} framework
+for @code{macOS}.")
+    (license (list license:expat license:asl2.0))))
 
 (define-public rust-system-configuration-0.5
   (package
+    (inherit rust-system-configuration-0.6)
     (name "rust-system-configuration")
     (version "0.5.1")
     (source
@@ -1870,30 +1878,24 @@ macOS and iOS.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1rz0r30xn7fiyqay2dvzfy56cvaa3km74hnbz2d72p97bkf3lfms"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t ; struct `sockaddr_in` has no field named `sin_len`
        #:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-1)
         ("rust-core-foundation" ,rust-core-foundation-0.9)
-        ("rust-system-configuration-sys" ,rust-system-configuration-sys-0.5))))
-    (home-page "https://github.com/mullvad/system-configuration-rs")
-    (synopsis "Bindings to SystemConfiguration framework for macOS")
-    (description
-     "Bindings to @code{SystemConfiguration} framework for @code{macOS}.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-system-configuration-sys" ,rust-system-configuration-sys-0.5))))))
 
-(define-public rust-system-configuration-sys-0.5
+(define-public rust-system-configuration-sys-0.6
   (package
     (name "rust-system-configuration-sys")
-    (version "0.5.0")
+    (version "0.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "system-configuration-sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1jckxvdr37bay3i9v52izgy52dg690x5xfg3hd394sv2xf4b2px7"))))
+        (base32 "1i5sqrmgy58l4704hibjbl36hclddglh73fb3wx95jnmrq81n7cf"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-core-foundation-sys" ,rust-core-foundation-sys-0.8)
@@ -1903,3 +1905,19 @@ macOS and iOS.")
     (description
      "Low level bindings to @code{SystemConfiguration} framework for @code{macOS}.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-system-configuration-sys-0.5
+  (package
+    (inherit rust-system-configuration-sys-0.6)
+    (name "rust-system-configuration-sys")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "system-configuration-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1jckxvdr37bay3i9v52izgy52dg690x5xfg3hd394sv2xf4b2px7"))))
+    (arguments
+     `(#:cargo-inputs (("rust-core-foundation-sys" ,rust-core-foundation-sys-0.8)
+                       ("rust-libc" ,rust-libc-0.2))))))

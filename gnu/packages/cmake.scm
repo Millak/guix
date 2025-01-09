@@ -447,7 +447,7 @@ and workspaces that can be used in the compiler environment of your choice.")
 (define-public corrosion
   (package
     (name "corrosion")
-    (version "0.5.0")
+    (version "0.5.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -455,7 +455,7 @@ and workspaces that can be used in the compiler environment of your choice.")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "1sm1jhdrqzp3f36f7grh900wp7pk9l1zim49hrk87ac6frfmg8xx"))))
+               (base32 "1bylfjji4yw88r00hgb69nfl9lz73bhc7q3n64myif4alr4b8ypx"))))
     (build-system cmake-build-system)
     (arguments
      (list

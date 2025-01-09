@@ -37,6 +37,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages crates-io)
+  #:use-module (gnu packages crates-database)
   #:use-module (gnu packages crates-tls)
   #:use-module (gnu packages dbm)
   #:use-module (gnu packages docbook)
@@ -272,7 +273,7 @@ Random Cage Fighting Birds, Cool Music etc.")
 (define-public libchewing
   (package
     (name "libchewing")
-    (version "0.9.0")
+    (version "0.9.1")
     (source
      (origin
        (method git-fetch)
@@ -281,7 +282,7 @@ Random Cage Fighting Birds, Cool Music etc.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1n0w9niff46w7vncs699gj4y2xghn1sbl0f4mg5x33dcapqd14sg"))))
+        (base32 "0gh64wvrk5pn0fhmpvj1j99d5g7f7697rk96zbkc8l72yjr819z5"))))
     (build-system cargo-build-system)
     (arguments
      `(#:modules ((guix build cargo-build-system)
@@ -305,10 +306,6 @@ Random Cage Fighting Birds, Cool Music etc.")
        (("rust-tempfile" ,rust-tempfile-3))
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'allow-older-version-of-clap-mangen
-           (lambda _
-             (substitute* "tools/Cargo.toml"
-               (("0.2.12") "0.2.11"))))
          (add-after 'configure 'cmake-configure
            (lambda args
              (apply (assoc-ref cmake:%standard-phases 'configure)
