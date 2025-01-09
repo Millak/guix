@@ -681,7 +681,7 @@ highlighting and other features typical of a source code editor.")
 (define-public gtksourceview-4
   (package
     (inherit gtksourceview)
-    (version "4.8.3")
+    (version "4.8.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/gtksourceview/"
@@ -689,7 +689,7 @@ highlighting and other features typical of a source code editor.")
                                   "gtksourceview-" version ".tar.xz"))
               (sha256
                (base32
-                "10n61sa0g447nx73yapb00z57shp48gfvk1lv1s29ji0cd81j063"))))
+                "0zd84229bddvp8zpnn86q34i16mhf9x3pzry795gilc3na7x3jby"))))
     (native-inputs
      (modify-inputs (package-native-inputs gtksourceview)
        (replace "gobject-introspection" gobject-introspection)))
