@@ -12849,6 +12849,34 @@ all types of configuration needs and formats.")
       (home-page "https://github.com/stathat/go")
       (license license:expat))))
 
+(define-public go-github-com-stoewer-go-strcase
+  (package
+    (name "go-github-com-stoewer-go-strcase")
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/stoewer/go-strcase")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1gqswiyj71h676lmqb78rs125iq8msklymhzw0w59afywxqsaj2z"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/stoewer/go-strcase"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/stoewer/go-strcase")
+    (synopsis "Convert snake case, camel case and kebap case strings")
+    (description
+     "Package strcase converts between different kinds of naming formats such
+as camel case (@code{CamelCase}), snake case (@code{snake_case}) or kebab
+case (@code{kebab-case}).  The package is designed to work only with strings
+consisting of standard ASCII letters.")
+    (license license:expat)))
+
 (define-public go-github-com-stretchr-objx
   (package
     (name "go-github-com-stretchr-objx")
