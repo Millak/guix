@@ -2919,7 +2919,7 @@ Its features include:
 (define-public plymouth
   (package
     (name "plymouth")
-    (version "22.02.122")
+    (version "24.004.60")
     (source
      (origin
        (method url-fetch)
@@ -2927,29 +2927,42 @@ Its features include:
                            "plymouth/releases/" name "-" version ".tar.xz"))
        (sha256
         (base32
-         "1sysx8s7w870iawk5qlaq44x4cfqfinasiy4d3l3q0r14925218h"))))
-    (build-system gnu-build-system)
+         "0d0wbfsy70xhgxv4mldv72gzv0k8bvfxpvm90rxmx3y9b09q9xzk"))))
+    (build-system meson-build-system)
     (arguments
      (list
       #:configure-flags
-      '(list "--with-logo=/var/run/plymouth/logo.png"
-             "--localstatedir=/var"
-             "--with-boot-tty=/dev/console"
-             "--without-system-root-install"
-             "--without-rhgb-compat-link"
-             "--enable-drm"
-             "--disable-systemd-integration"
+      '(list "-Dlogo=/var/run/plymouth/logo.png"
+             "-Dlocalstatedir=/var"
+             "-Dboot-tty=/dev/console"
+             "-Ddrm=true"
+             "-Dsystemd-integration=false"
              ;; Disable GTK to dramatically reduce the closure
              ;; size from ~800 MiB to a little more than 200 MiB
-             "--disable-gtk")
+             "-Dgtk=disabled")
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-install
+            (lambda _
+              (substitute* "src/meson.build"
+                (("install_emptydir" all) (string-append "# " all)))
+              (substitute* "themes/meson.build"
+                ;; XXX: meson barfs when installing (temporarily broken)
+                ;; symlink to logo.
+                (("subdir\\('spinfinity'\\)") ""))))
           (add-after 'unpack 'make-reproducible
             (lambda _
               (substitute* "src/main.c"
                 (("__DATE__") "\"guix\"")))))))
     (inputs
-     (list glib pango libdrm libpng eudev))
+     (list eudev
+           glib
+           libdrm
+           libevdev
+           libpng
+           libxkbcommon
+           pango
+           xkeyboard-config))
     (native-inputs
      (list gettext-minimal
            pkg-config
