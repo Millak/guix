@@ -2549,31 +2549,6 @@ GIT_TRACE mechanism.")
 anchor names.")
     (license license:expat)))
 
-(define-public go-github-com-lucasb-eyer-go-colorful
-  (package
-    (name "go-github-com-lucasb-eyer-go-colorful")
-    (version "1.2.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/lucasb-eyer/go-colorful")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "08c3fkf27r16izjjd4w94xd1z7w1r4mdalbl53ms2ka2j465s3qs"))))
-    (build-system go-build-system)
-    (propagated-inputs (list go-golang-org-x-image))
-    (arguments
-     (list #:import-path "github.com/lucasb-eyer/go-colorful"))
-    (home-page "https://github.com/lucasb-eyer/go-colorful")
-    (synopsis "Library for playing with colors in Go")
-    (description
-     "The colorful package provides a library for using colors in Go.
-It stores colors in RGB and provides methods for converting these to
-various color spaces.")
-    (license license:expat)))
-
 (define-public go-github-com-cention-sany-utf7
   (package
     (name "go-github-com-cention-sany-utf7")
