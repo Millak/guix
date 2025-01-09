@@ -12827,17 +12827,15 @@ all types of configuration needs and formats.")
     (license license:expat)))
 
 (define-public go-github-com-stathat-go
-  (let ((commit "74669b9f388d9d788c97399a0824adbfee78400e")
-        (revision "0"))
     (package
       (name "go-github-com-stathat-go")
-      (version (git-version "0.0.0" revision commit))
+      (version "1.0.0")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/stathat/go")
-               (commit commit)))
+               (commit (string-append "v" version))))
          (file-name (git-file-name name version))
          (sha256
           (base32 "1zzlsl24dyr202qkr2pay22m6d0gb7ssms77wgdx0r0clgm7dihw"))))
@@ -12847,7 +12845,7 @@ all types of configuration needs and formats.")
       (synopsis "Post statistics to StatHat")
       (description "This is a Go package for posting to a StatHat account.")
       (home-page "https://github.com/stathat/go")
-      (license license:expat))))
+      (license license:expat)))
 
 (define-public go-github-com-stoewer-go-strcase
   (package
