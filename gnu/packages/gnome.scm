@@ -6004,7 +6004,7 @@ service via the system message bus.")
 (define-public libgweather
   (package
     (name "libgweather")
-    (version "40.0")
+    (version "4.4.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -6012,7 +6012,7 @@ service via the system message bus.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1rkf4yv43qcahyx7bismdv6z2vh5azdnm1fqfmnzrada9cm8ykna"))))
+                "10s2pyf96yj287929px8jfbkda7bn76vzr2mqgyx3xydadvnf5vh"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -6020,11 +6020,18 @@ service via the system message bus.")
       #:configure-flags
       #~(list (string-append "-Dzoneinfo_dir="
                              (search-input-directory %build-inputs
-                                                     "share/zoneinfo")))))
+                                                     "share/zoneinfo")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-home
+            (lambda _
+              ;; Build writes to $HOME via fontconfig.
+              (setenv "HOME" (getcwd)))))))
     (native-inputs
      (list gettext-minimal
            `(,glib "bin")               ;for glib-mkenums
            gobject-introspection
+           gi-docgen
            pkg-config
            python
            vala
@@ -6034,12 +6041,13 @@ service via the system message bus.")
      ;; libsoup.
      (list gtk+
            gdk-pixbuf
+           json-glib
            libxml2
-           libsoup-minimal-2
-           geocode-glib-with-libsoup2))
+           libsoup
+           geocode-glib))
     (inputs
      (list tzdata))
-    (home-page "https://wiki.gnome.org/action/show/Projects/LibGWeather")
+    (home-page "https://gnome.pages.gitlab.gnome.org/libgweather/")
     (synopsis "Location, time zone, and weather library for GNOME")
     (description
      "libgweather is a library to access weather information from online
