@@ -573,7 +573,7 @@ and linear forms into vectors.")
      (list
       #:test-flags #~(list "--pyargs" "skfuzzy")))
     (native-inputs
-     (list python-pytest))
+     (list python-pytest python-setuptools python-wheel))
     (propagated-inputs
      (list python-networkx python-numpy python-scipy))
     (home-page "https://github.com/scikit-fuzzy/scikit-fuzzy")
