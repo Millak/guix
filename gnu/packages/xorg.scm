@@ -2760,7 +2760,7 @@ X server.")
 (define-public xf86-video-ast
   (package
     (name "xf86-video-ast")
-    (version "1.1.6")
+    (version "1.2.0")
     (home-page "https://cgit.freedesktop.org/xorg/driver/xf86-video-ast/")
     (source (origin
               (method url-fetch)
@@ -2769,7 +2769,7 @@ X server.")
                     version ".tar.xz"))
               (sha256
                (base32
-                "1bqdjcxi8fj48821322djdqnrla2i48wqckdf364zagrqyllyxbm"))))
+                "14sx6dm0nmbf1fs8cazmak0aqjpjpv9wv7v09w86ff04m7f4gal6"))))
     (build-system gnu-build-system)
     (inputs (list xorg-server))
     (native-inputs (list pkg-config))
