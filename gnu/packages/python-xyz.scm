@@ -30839,13 +30839,15 @@ access the system cron automatically and simply using a direct API.")
     (native-inputs (list python-mock
                          python-twisted
                          python-gevent
+                         python-setuptools
                          python-setuptools-scm
                          python-sqlalchemy
                          python-pyside-6
                          python-pytest
                          python-pytest-asyncio
                          python-pytest-cov
-                         python-pytest-tornado5))
+                         python-pytest-tornado5
+                         python-wheel))
     (home-page "https://github.com/agronholm/apscheduler")
     (synopsis "Task scheduling library for Python")
     (description "Advanced Python Scheduler (APScheduler) is a Python library
