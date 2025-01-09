@@ -130,7 +130,7 @@ universal addresses.")
 (define-public rpcsvc-proto
   (package
     (name "rpcsvc-proto")
-    (version "1.4")
+    (version "1.4.4")
     (home-page "https://github.com/thkukuk/rpcsvc-proto")
     (source (origin
               (method url-fetch)
@@ -138,7 +138,7 @@ universal addresses.")
                                   "/rpcsvc-proto-" version ".tar.xz"))
               (sha256
                (base32
-                "0i93wbpw5dk2gf5v4a5hq6frh814wzgjydh7saj28wlgbpqdaja1"))))
+                "12smb8a073xcsjcvsr8chssxad22k2xiw217y27a3n5mxlksmhw1"))))
     (build-system gnu-build-system)
     (synopsis "RPCSVC protocol definitions")
     (description
