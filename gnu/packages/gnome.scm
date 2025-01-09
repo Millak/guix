@@ -9359,7 +9359,7 @@ usage and information about running processes.")
 (define-public gnome-bluetooth
   (package
     (name "gnome-bluetooth")
-    (version "46.0")
+    (version "46.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/gnome-bluetooth/"
@@ -9367,7 +9367,7 @@ usage and information about running processes.")
                                   "gnome-bluetooth-" version ".tar.xz"))
               (sha256
                (base32
-                "1vzv45859dvfwcxa8wngkh5dcch65sfh5jc0bvgxpb0pydsixzhk"))))
+                "0d9n02a4ii7gr29vxn5qbhib6ddx9v6fgk34wnkg3d5qfpngwj0v"))))
     (build-system meson-build-system)
     (native-inputs
      (list gettext-minimal
