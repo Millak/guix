@@ -219,7 +219,7 @@ of categories with some of the activities available in that category.
 (define-public gcompris-qt
   (package
     (name "gcompris-qt")
-    (version "4.1")
+    (version "4.3")
     (source
      (origin
        (method url-fetch)
@@ -227,7 +227,7 @@ of categories with some of the activities available in that category.
              "mirror://kde/stable/gcompris/qt/src/gcompris-qt-"
              version ".tar.xz"))
        (sha256
-        (base32 "1186ba3vn59fqdpgbvnvxqm8a3b7ginmw1sb3m5fr2az40xiqg9z"))))
+        (base32 "1ixm0gdpxpbkz2zspvvrkwdjadrc03wxm4d1kk1ckv3f8f3i7sn7"))))
     (build-system qt-build-system)
     (arguments
      `(#:phases
