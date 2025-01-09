@@ -47,7 +47,7 @@
 ;;; Copyright © 2021 muradm <mail@muradm.net>
 ;;; Copyright © 2021 pineapples <guixuser6392@protonmail.com>
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
-;;; Copyright © 2021-2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2021-2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2022 Wamm K. D. <jaft.r@outlook.com>
 ;;; Copyright © 2022 Roman Riabenko <roman@riabenko.com>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
@@ -4372,7 +4372,7 @@ information tool.")
 (define-public fastfetch
   (package
     (name "fastfetch")
-    (version "2.16.0")
+    (version "2.34.0")
     (source
      (origin
        (method git-fetch)
@@ -4381,7 +4381,7 @@ information tool.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "112dvfx7gvp6n20i1lkd0jbh897jf7bxjxq96bj4099j3x313y3m"))))
+        (base32 "17033prhikj3aajfcfzi0mjc4487hyq5r2av38rw59yb95hl6fv5"))))
     (build-system cmake-build-system)
     (inputs (list dbus
                   glib
