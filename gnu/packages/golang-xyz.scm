@@ -13319,6 +13319,29 @@ supported by the time package
 @uref{freedesktop.org}.")
     (license license:expat)))
 
+(define-public go-github-com-twpayne-go-xdg-v6
+  (package
+    (inherit go-github-com-twpayne-go-xdg-v3)
+    (name "go-github-com-twpayne-go-xdg-v6")
+    (version "6.1.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/twpayne/go-xdg")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ihpljay4waw3qss40bwd230wwpq3vm25qiy3y5yfhmybk8wr6jx"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/twpayne/go-xdg/v6"))
+    (native-inputs
+     (list go-github-com-alecthomas-assert-v2))
+    (propagated-inputs
+     (list go-github-com-twpayne-go-vfs-v5))))
+
 (define-public go-github-com-urfave-cli
   (package
     (name "go-github-com-urfave-cli")
