@@ -59,6 +59,7 @@
 ;;; Copyright © 2024 Javier Olaechea <pirata@gmail.com>
 ;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2024 Wilko Meyer <w@wmeyer.eu>
+;;; Copyright © 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3524,7 +3525,7 @@ be served with a HTTP file server of your choice.")
 (define-public gource
   (package
     (name "gource")
-    (version "0.54")
+    (version "0.55")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3532,7 +3533,7 @@ be served with a HTTP file server of your choice.")
                     "/gource-" version "/gource-" version ".tar.gz"))
               (sha256
                (base32
-                "1rgsssff5ygafc5svg19p046r4h2q9a3wqqbzrllvkyjcpgwxjqx"))))
+                "0hh17h0pf4b7yq23xsr5zhl1cs02d2bijxj7ks6m01wbs89948y8"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
