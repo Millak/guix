@@ -325,6 +325,31 @@ Go 1.20 @code{crypto/ecdh} standard package.")
 cryptographic standards that are not included in the Go standard library.")
       (license license:asl2.0))))
 
+(define-public go-github-com-bradenhilton-cityhash
+  (package
+    (name "go-github-com-bradenhilton-cityhash")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/bradenhilton/cityhash")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0rfmbis47m42w05inqmph7jk6kza79miq9ifqlsdiax38b684yky"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/bradenhilton/cityhash"))
+    (home-page "https://github.com/bradenhilton/cityhash")
+    (synopsis "Google CityHash version 1 in Golang")
+    (description
+     "This package provides a Go implementation of Google City Hash,
+originated from https://github.com/zhenjl/cityhash and
+https://github.com/zentures/cityhash projects.")
+    (license license:expat)))
+
 (define-public go-github-com-btcsuite-btcd-btcec
   (let ((commit "67e573d211ace594f1366b4ce9d39726c4b19bd0")
         (revision "0"))
