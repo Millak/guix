@@ -298,7 +298,12 @@ formulas for Python.")
     (propagated-inputs (list python-numpy python-qdldl python-scipy))
     ;; We need setuptools-scm only for the version number.  Without it the
     ;; version number will be "0.0.0" and downstream packages will complain.
-    (native-inputs (list cmake-minimal python-pytest python-setuptools-scm))
+    (native-inputs
+     (list cmake-minimal
+           python-pytest
+           python-setuptools-scm
+           python-setuptools
+           python-wheel))
     (home-page "https://osqp.org/")
     (synopsis "OSQP: operator splitting QP solver")
     (description "The OSQP (Operator Splitting Quadratic Program) solver is a
