@@ -13544,28 +13544,27 @@ host to avoid parser overhead and memory-allocator fragmentation.")
 (define-public gmobile
   (package
     (name "gmobile")
-    (version "0.0.3")
+    (version "0.2.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://gitlab.gnome.org/guidog/gmobile")
+             (url "https://gitlab.gnome.org/World/Phosh/gmobile")
              (commit (string-append "v" version))))
        (file-name (git-file-name "gmobile" version))
        (sha256
         (base32
-         "0lr22nj4ypzxbjim1a7ay07nh4vx3dqc895qql437gda6x0rvn2p"))
-       (patches
-        (search-patches "gmobile-make-it-installable.patch"))))
+         "1cnm4vkvgrkxf1nnghs5zc13d6f46h4c57vn54rlcy6q7qjkdr74"))))
     (build-system meson-build-system)
     (native-inputs
      (list `(,glib "bin") ; for glib-compile-resources
+           gobject-introspection
            pkg-config))
     (propagated-inputs
      (list glib json-glib))
     (synopsis "Functions useful in mobile related, glib based projects")
     (description "This package provides functions for mobiles.")
-    (home-page "https://gitlab.gnome.org/guidog/gmobile")
+    (home-page "https://gitlab.gnome.org/World/Phosh/gmobile")
     (license license:lgpl2.1+)))
 
 (define-public feedbackd
