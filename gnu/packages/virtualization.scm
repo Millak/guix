@@ -2912,7 +2912,7 @@ about events that change the virtualized hardware, such as hotplugging.")
 (define-public osinfo-db-tools
   (package
     (name "osinfo-db-tools")
-    (version "1.10.0")
+    (version "1.12.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://releases.pagure.org/libosinfo/osinfo-db-tools-"
@@ -2920,7 +2920,7 @@ about events that change the virtualized hardware, such as hotplugging.")
 
               (sha256
                (base32
-                "0s6ah44wbay7kb3l1ydr0r4ip335zgf6s12ghjjnww0nni9xsb40"))))
+                "1wz7fqvrqpw1bvp3f37n03xhxj4g1fr09vd8vqjhyxqqbmkmycgk"))))
     (build-system meson-build-system)
     (inputs
      (list libsoup-minimal-2 libxml2 libxslt json-glib libarchive))
