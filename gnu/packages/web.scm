@@ -5770,13 +5770,13 @@ fast and flexible way of exploring HTML from the terminal.")
            glib-networking gsettings-desktop-schemas pkg-config))
     (inputs (list libsoup))
     (arguments
-     `(#:glib-or-gtk? #t
-       #:configure-flags '("-Dgtk_doc=false")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'set-home-for-tests
-           (lambda _
-             (setenv "HOME" "/tmp"))))))
+     (list #:glib-or-gtk? #t
+           #:configure-flags #~(list "-Dgtk_doc=false")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'set-home-for-tests
+                 (lambda _
+                   (setenv "HOME" "/tmp"))))))
     (home-page "https://gitlab.com/groups/uhttpmock")
     (synopsis "Library for mocking web service APIs which use HTTP or HTTPS")
     (description
