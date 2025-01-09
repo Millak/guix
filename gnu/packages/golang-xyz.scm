@@ -13255,15 +13255,7 @@ supported by the time package
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/twpayne/go-vfs/v5"
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; XXX: Replace when go-build-system supports nested path.
-          (replace 'check
-            (lambda* (#:key import-path tests? #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion (string-append "src/" import-path)
-                  (invoke "go" "test" "-v" "./..."))))))))
+      #:import-path "github.com/twpayne/go-vfs/v5"))
     (native-inputs
      (list go-github-com-alecthomas-assert-v2))
     (home-page "https://github.com/twpayne/go-vfs/")
