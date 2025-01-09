@@ -1372,7 +1372,7 @@ of abstraction on top of @code{sd-bus}, the C D-Bus implementation by systemd.")
 (define-public appstream-glib
   (package
     (name "appstream-glib")
-    (version "0.8.2")
+    (version "0.8.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://people.freedesktop.org/~hughsient/"
@@ -1380,7 +1380,7 @@ of abstraction on top of @code{sd-bus}, the C D-Bus implementation by systemd.")
                                   "appstream-glib-" version ".tar.xz"))
               (sha256
                (base32
-                "15lbrmyx94cf6p6svq02yiskh31xidq092c711pqs16mml06a9bi"))))
+                "04fgm19p4qf970dvj5phk1bml8zwai1wc78mmghsdz30qmj40xc4"))))
     (build-system meson-build-system)
     (native-inputs
      (list gettext-minimal
@@ -1403,8 +1403,7 @@ of abstraction on top of @code{sd-bus}, the C D-Bus implementation by systemd.")
       #:configure-flags
       #~(list "-Ddep11=false"
               "-Dintrospection=false"    ; avoid g-ir-scanner dependency
-              "-Drpm=false"
-              "-Dstemmer=false")
+              "-Drpm=false")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-tests
