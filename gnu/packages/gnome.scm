@@ -11037,7 +11037,7 @@ existing databases over the internet.")
 (define-public gnome-tweaks
   (package
     (name "gnome-tweaks")
-    (version "40.10")
+    (version "46.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/gnome-tweaks/"
@@ -11047,7 +11047,7 @@ existing databases over the internet.")
                (list (search-patch "gnome-tweaks-search-paths.patch")))
               (sha256
                (base32
-                "1z13xy804hld9q8k0vq5y4j5jk7m0ayqzkli8jxpymwrlcrkpzfg"))))
+                "104v62nf0ng1ycsyljci09r95v11vbcicmw2rwz89mpvhmq2l69g"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -11064,8 +11064,11 @@ existing databases over the internet.")
           (add-after 'unpack 'skip-gtk-update-icon-cache
             ;; Don't create 'icon-theme.cache'.
             (lambda _
-              (substitute* "meson-postinstall.py"
-                (("gtk-update-icon-cache") "true"))))
+             (substitute* "meson.build"
+               (("gtk_update_icon_cache: true")
+                "gtk_update_icon_cache: false")
+               (("update_desktop_database: true")
+                "update_desktop_database: false"))))
           (add-after 'install 'wrap
             (assoc-ref python:%standard-phases 'wrap))
           (add-after 'wrap 'wrap-gi-typelib-and-python
@@ -11082,20 +11085,21 @@ existing databases over the internet.")
     (inputs
      (list bash-minimal                 ; to execute the wrapper program
            gnome-desktop
-           gtk+
+           gtk
            gobject-introspection
            gsettings-desktop-schemas
-           libhandy
+           libadwaita
+           libgudev
            libnotify
            libsoup
            nautilus
            python
            python-pygobject))
-    (synopsis "Customize advanced GNOME 3 options")
+    (synopsis "Customize advanced GNOME options")
     (home-page "https://wiki.gnome.org/Apps/Tweaks")
     (description
      "GNOME Tweaks allows adjusting advanced configuration settings in
-GNOME 3.  This includes things like the fonts used in user interface elements,
+GNOME.  This includes things like the fonts used in user interface elements,
 alternative user interface themes, changes in window management behavior,
 GNOME Shell appearance and extension, etc.")
     (license license:gpl3+)))
