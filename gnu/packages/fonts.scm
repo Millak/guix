@@ -3896,3 +3896,24 @@ written with the Devanagari script.")
 It is relatively compact to allow a lot of code on screen, while (hopefully) clear
 enough to remain readable even at high resolutions.")
     (license license:expat)))
+
+(define-public font-cica
+  (package
+    (name "font-cica")
+    (version "5.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/miiton/Cica/releases/download/"
+             "v" version "/Cica_v" version ".zip"))
+       (sha256
+        (base32 "0vshn2cd70mnbavsw9cbagcasa95wiv9qdj4wkzxn7gxygqvrlfb"))))
+    (build-system font-build-system)
+    (home-page "https://github.com/miiton/Cica")
+    (synopsis "Japanese monospaced font for programming")
+    (description
+     "Cica is a Japanese monospaced font for programming.
+Hack + DejaVu Sans Mono is used for ASCII, and Rounded Mgen+ for the other.
+In addition, Nerd Fonts, Noto Emoji, Icons for Devs, and some adjustment forked
+from the Ricty generator are converted and adjusted.")
+    (license license:silofl1.1)))
