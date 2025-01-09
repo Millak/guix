@@ -15319,6 +15319,33 @@ kubernetes-independent packages supplementing the
     (description "Package fileutil collects some file utility functions.")
     (license license:bsd-3)))
 
+(define-public go-modernc-org-lexer
+  (package
+    (name "go-modernc-org-lexer")
+    (version "1.0.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/cznic/lexer")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00ahagg81vbm8k9an5l8gn8plr7d53955v54mv0g811hfqxacja2"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "modernc.org/lexer"))
+    (propagated-inputs
+     (list go-golang-org-x-exp
+           go-modernc-org-fileutil))
+    (home-page "https://gitlab.com/cznic/lexer")
+    (synopsis "Run time generator of action less scanners")
+    (description
+     "Package lexer provides generating actionless scanners (lexeme
+recognizers) at run time.")
+    (license license:bsd-3)))
+
 (define-public go-modernc-org-memory
   (package
     (name "go-modernc-org-memory")
