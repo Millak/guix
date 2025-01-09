@@ -6911,6 +6911,35 @@ on @@url{https://github.com/quic-go/quic-go,quic-go}.  It currently implements
 of the specification.")
     (license license:expat)))
 
+(define-public go-github-com-rcrowley-go-metrics
+  (package
+    (name "go-github-com-rcrowley-go-metrics")
+    (version "0.0.0-20201227073835-cf1acfcdf475")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/rcrowley/go-metrics")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0s7zab04slz07c7l4h2cqz62qnqah69r6p157vvbd7725a7wzkr0"))))
+    (build-system go-build-system)
+    (arguments
+     ;; Arbitrary precision tests are known to be broken on aarch64, ppc64le
+     ;; and s390x. See: https://github.com/rcrowley/go-metrics/issues/249
+     `(#:tests? ,(not (string-prefix? "aarch64" (or (%current-target-system)
+                                                    (%current-system))))
+       #:import-path "github.com/rcrowley/go-metrics"))
+    (propagated-inputs
+     (list go-github-com-stathat-go))
+    (home-page "https://github.com/rcrowley/go-metrics")
+    (synopsis "Go port of Coda Hale's Metrics library")
+    (description
+     "This package provides a Go implementation of Coda Hale's Metrics
+library.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-rs-cors
   (package
     (name "go-github-com-rs-cors")
