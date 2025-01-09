@@ -7926,7 +7926,20 @@ configuration program to choose applications starting on login.")
              (setenv "DISPLAY" ":1")
 
              ;; For the missing /etc/machine-id.
-             (setenv "DBUS_FATAL_WARNINGS" "0"))))))
+             (setenv "DBUS_FATAL_WARNINGS" "0")))
+         (add-after 'install 'wrap-gi
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (wrap-program (string-append (assoc-ref outputs "out")
+                                          "/bin/gjs")
+               `("GI_TYPELIB_PATH" suffix
+                 (,(dirname
+                    (search-input-file
+                     inputs
+                     "lib/girepository-1.0/GObject-2.0.typelib"))
+                  ,(dirname
+                    (search-input-file
+                     inputs
+                     "lib/girepository-1.0/GIRepository-2.0.typelib"))))))))))
     (native-inputs
      (list `(,glib "bin")               ;for glib-compile-resources
            pkg-config
