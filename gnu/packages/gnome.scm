@@ -14377,7 +14377,7 @@ receive calls.")
 (define-public calls
   (package
     (name "calls")
-    (version "45.0")
+    (version "46.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -14385,7 +14385,7 @@ receive calls.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1mvnrm5wbl69xbcjg8nxd6l6nj2fd3whbyh70axlm75c7l7d5j5r"))
+                "0a21anz81a3pqlrmzgyb1az53wc7kyz61xafxsylpxf41cm8vm0x"))
               (patches
                (search-patches "calls-disable-application-test.patch"
                                "calls-disable-sip-test.patch"))))
@@ -14412,11 +14412,11 @@ receive calls.")
            gst-plugins-base
            gst-plugins-good
            gst-plugins-bad
-           gtk+
+           gtk
            libcall-ui
            libgee
            libpeas
-           libhandy
+           libadwaita
            modem-manager
            sofia-sip))
     (native-inputs
