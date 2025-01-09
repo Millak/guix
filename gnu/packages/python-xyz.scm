@@ -21208,40 +21208,6 @@ doesn't know about.")
         ; for dictionary*.txt
         license:cc-by-sa3.0))))
 
-(define-public python-pathlib
-  (package
-    (name "python-pathlib")
-    (version "1.0.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pathlib" version))
-              (sha256
-               (base32
-                "17zajiw4mjbkkv6ahp3xf025qglkj0805m9s41c45zryzj6p2h39"))))
-    (build-system python-build-system)
-    ;; The tests depend on the internal "test" module, which does not provide
-    ;; a stable interface.
-    (arguments `(#:tests? #f))
-    (home-page "https://pathlib.readthedocs.org/")
-    (synopsis "Object-oriented file system paths")
-    (description "Pathlib offers a set of classes to handle file system paths.
-It offers the following advantages over using string objects:
-
-@enumerate
-@item No more cumbersome use of os and os.path functions.  Everything can
-be done easily through operators, attribute accesses, and method calls.
-@item Embodies the semantics of different path types.  For example,
-comparing Windows paths ignores casing.
-@item Well-defined semantics, eliminating any inconsistencies or
-ambiguities (forward vs. backward slashes, etc.).
-@end enumerate
-
-Note: In Python 3.4, pathlib is now part of the standard library.  For other
-Python versions please consider python-pathlib2 instead, which tracks the
-standard library module.  This module (python-pathlib) isn't maintained
-anymore.")
-    (license license:expat)))
-
 (define-public python-jellyfish
   (package
     (name "python-jellyfish")
