@@ -29,14 +29,14 @@
 (define-public moe
   (package
     (name "moe")
-    (version "1.14")
+    (version "1.15")
     (source
      (origin
       (method url-fetch)
       (uri (string-append "mirror://gnu/moe/moe-"
                           version ".tar.lz"))
       (sha256
-       (base32 "17cw43zsahisz5msqdv366np3zrdschgnm1lk1pm26dfw1nbvfpl"))))
+       (base32 "0rhakw6qpnhj98cqq9mv7z3yjhwj1nk9gq54bja4fc6fk6qciy21"))))
     (build-system gnu-build-system)
     (native-inputs (list lzip))
     (inputs (list ncurses))
