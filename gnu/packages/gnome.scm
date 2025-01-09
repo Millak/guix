@@ -7005,7 +7005,7 @@ supports playlists, song ratings, and any codecs installed through gstreamer.")
 (define-public eog
   (package
     (name "eog")
-    (version "44.3")
+    (version "47.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -7013,7 +7013,7 @@ supports playlists, song ratings, and any codecs installed through gstreamer.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "134xvb2fcfh6ciyk2f3rh7khh7b2n8lr13sc977zhbs39c7xgcnn"))))
+                "0rnyrgh0qg1zdnpmn79kaflk0bra4zly93kxgdm14xad4bsxnpnv"))))
     (build-system meson-build-system)
     (arguments
      (list
