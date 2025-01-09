@@ -3120,10 +3120,10 @@ replacement for memcached in many cases.  It provides a data loading mechanism
 with caching and de-duplication that works across a set of peer processes.")
     (license license:asl2.0)))
 
-(define-public go-github-com-google-go-github
+(define-public go-github-com-google-go-github-v31
   (package
-    (name "go-github-com-google-go-github")
-    (version "26.1.3")
+    (name "go-github-com-google-go-github-v31")
+    (version "31.0.0")
     (source
      (origin
        (method git-fetch)
@@ -3132,12 +3132,30 @@ with caching and de-duplication that works across a set of peer processes.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0x0zz1vcmllp6r6l2qin9b2llm5cxbf6n84rf99h8wrmhvzs2ipi"))))
+        (base32 "0bcybmr341hnp8k630pi4dcgia7561yzqc874l4c3nl4bc9rkh5j"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/google/go-github/scrape
+            ;; - github.com/google/go-github/update-urls
+            (delete-file-recursively "scrape")
+            (delete-file-recursively "update-urls")))))
     (build-system go-build-system)
     (arguments
-     `(#:tests? #f ;application/octet-stream instead of text/plain
-       #:import-path "github.com/google/go-github/v26/github"
-       #:unpack-path "github.com/google/go-github/v26"))
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/google/go-github/v31"
+      ;; repos_releases_test.go:449: Header.Get("Content-Type") returned
+      ;; "application/octet-stream", want "text/plain; charset=utf-8"
+      #:test-flags #~(list "-skip" "TestRepositoriesService_UploadReleaseAsset")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "example")))))))
     (propagated-inputs
      (list go-github-com-google-go-querystring
            go-golang-org-x-crypto
@@ -3152,7 +3170,7 @@ GitHub API v3.")
 ;; For chezmoi-1.8.10
 (define-public go-github-com-google-go-github-v33
   (package
-    (inherit go-github-com-google-go-github)
+    (inherit go-github-com-google-go-github-v31)
     (name "go-github-com-google-go-github-v33")
     (version "33.0.0")
     (source
@@ -3163,14 +3181,19 @@ GitHub API v3.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1nzwgvaa9k1ky3sfynib6nhalam9dx66h5lxff334m9kk3rf5nn0"))))
+        (base32 "1nzwgvaa9k1ky3sfynib6nhalam9dx66h5lxff334m9kk3rf5nn0"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/google/go-github/scrape
+            (delete-file-recursively "scrape")
+            (delete-file-recursively "update-urls")))))
     (arguments
      (substitute-keyword-arguments
-         (package-arguments go-github-com-google-go-github)
-       ((#:unpack-path _ "github.com/google/go-github/v26")
-        "github.com/google/go-github/v33")
-       ((#:import-path _ "github.com/google/go-github/v26/github")
-        "github.com/google/go-github/v33/github")))))
+         (package-arguments go-github-com-google-go-github-v31)
+       ((#:import-path _) "github.com/google/go-github/v33")))))
 
 (define-public go-github-com-google-go-querystring
   (package
