@@ -13265,6 +13265,24 @@ supported by the time package
 @code{ioutil} packages that is easy to test.")
     (license license:expat)))
 
+;; XXX: For chezmoi 2.30.1, remove it when updated.
+(define-public go-github-com-twpayne-go-vfs-v4
+  (hidden-package (package (inherit go-github-com-twpayne-go-vfs-v5)
+   (name "go-github-com-twpayne-go-vfs-v4")
+   (version "4.3.0")
+   (source
+    (origin
+      (method git-fetch)
+      (uri (git-reference
+            (url "https://github.com/twpayne/go-vfs")
+            (commit (string-append "v" version))))
+      (file-name (git-file-name name version))
+      (sha256
+       (base32 "1hbrm6b0ca116h8mc8nkq04nba685wmp52pz5980ivvi86ji9b1y"))))
+    (arguments
+     (list
+      #:import-path "github.com/twpayne/go-vfs/v4")))))
+
 ;; XXX: For chezmoi 1.8.10, remove it when updated.
 (define-public go-github-com-twpayne-go-vfs-1.0.1
   (hidden-package (package (inherit go-github-com-twpayne-go-vfs-v5)
