@@ -26,8 +26,10 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
+  #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages golang-web)
-  #:use-module (gnu packages golang-xyz))
+  #:use-module (gnu packages golang-xyz)
+  #:use-module (gnu packages version-control))
 
 ;;; Commentary:
 ;;;
@@ -66,6 +68,67 @@
     (synopsis "Gcfg reads INI-style configuration files into Go structs")
     (description "Gcfg reads INI-style configuration files into Go structs.")
     (license license:bsd-3)))
+
+(define-public go-github-com-go-git-go-git-v5
+  (package
+    (name "go-github-com-go-git-go-git-v5")
+    (version "5.13.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/go-git/go-git")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1mgzwwmq1awai9n8vkjp8xpq26hvivl53g57f1k2cgg6bkj13r2a"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ;requires network connection
+      #:import-path "github.com/go-git/go-git/v5"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'setup
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let* ((git #$(this-package-native-input "git-minimal"))
+                     (git-bin (string-append git "/bin"))
+                     (git-exe (string-append git-bin "/git")))
+                (setenv "GIT_DIST_PATH=" git)
+                (setenv "GIT_EXEC_PATH=" git-bin)
+                (setenv "HOME" (getcwd))
+                (invoke git-exe "config" "--global" "user.email" "gha@example.com")
+                (invoke git-exe "config" "--global" "user.name" "GitHub Actions")))))))
+    (native-inputs
+     (list git-minimal/pinned
+           go-github-com-stretchr-testify
+           go-gopkg-in-check-v1))
+    (propagated-inputs
+     (list go-dario-cat-mergo
+           go-github-com-armon-go-socks5
+           go-github-com-elazarl-goproxy
+           go-github-com-emirpasic-gods
+           go-github-com-gliderlabs-ssh
+           go-github-com-go-git-gcfg
+           go-github-com-go-git-go-billy-v5
+           go-github-com-go-git-go-git-fixtures-v4
+           go-github-com-golang-groupcache
+           go-github-com-google-go-cmp
+           go-github-com-jbenet-go-context
+           go-github-com-kevinburke-ssh-config
+           go-github-com-pjbgf-sha1cd
+           go-github-com-protonmail-go-crypto
+           go-github-com-sergi-go-diff
+           go-github-com-skeema-knownhosts
+           go-github-com-xanzy-ssh-agent
+           go-golang-org-x-crypto
+           go-golang-org-x-net
+           go-golang-org-x-sys
+           go-golang-org-x-text))
+    (home-page "https://github.com/go-git/")
+    (synopsis "Git implementation library")
+    (description "This package provides a Git implementation library.")
+    (license license:asl2.0)))
 
 (define-public go-github-com-xanzy-go-gitlab
   (package
