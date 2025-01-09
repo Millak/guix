@@ -40,6 +40,7 @@
 ;;; Copyright © 2024 Jakob Kirsch <jakob.kirsch@web.de>
 ;;; Copyright © 2024 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2025 Karl Hallsby <karl@hallsby.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -79,6 +80,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages containers)
   #:use-module (gnu packages cpio)
+  #:use-module (gnu packages crates-io)
   #:use-module (gnu packages cross-base)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages cryptsetup)
@@ -118,6 +120,7 @@
   #:use-module (gnu packages libbsd)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages llvm)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages m4)
   #:use-module (gnu packages man)
@@ -159,6 +162,7 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix build-system cargo)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
@@ -2771,6 +2775,56 @@ which is a hypervisor.")
     ;; TODO: Some files are licensed differently.  List those.
     (license license:gpl2)
     (supported-systems '("i686-linux" "x86_64-linux" "armhf-linux"))))
+
+(define-public xen-guest-agent
+  (package
+    (name "xen-guest-agent")
+    (version "0.4.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/xen-project/xen-guest-agent")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "1ab6mgrvnd49m0ay9fbfyd02xaf3qvkwhyyavra4a7wpz0brg54h"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+       #:install-source? #f
+       #:cargo-inputs
+       (list rust-futures-0.3
+             rust-libc-0.2
+             rust-tokio-1
+             rust-netlink-packet-core-0.7
+             rust-netlink-packet-route-0.18
+             rust-netlink-proto-0.11
+             rust-rtnetlink-0.14
+             rust-async-stream-0.3
+             rust-os-info-3
+             rust-pnet-datalink-0.35    ; any version
+             rust-pnet-base-0.35        ; any version
+             rust-ipnetwork-0.20        ; any version
+             rust-log-0.4
+             rust-env-logger-0.10
+             rust-clap-4
+             rust-xenstore-rs-0.6
+             ;; Unix-specific dependencies
+             rust-uname-0.1
+             rust-syslog-6
+             rust-sysctl-0.5)))
+    (native-inputs
+     (list pkg-config
+           xen ; Pull in Xen for libxenstore
+           clang))
+    (home-page "https://gitlab.com/xen-project/xen-guest-agent")
+    (synopsis "Provides guest VM information to hosting Xen hypervisor")
+    (description "The agent gathers some guest information, and writes them to
+xenstore so tooling in dom0 can read it.  The default behavior is to be
+compatible with the XAPI toolstack as currently used in XCP-ng and Citrix
+Hypervisor/Xenserver, and thus roughly follow what @code{xe-guest-utilities}
+is doing.")
+    (license license:agpl3)))
 
 (define-public osinfo-db-tools
   (package
