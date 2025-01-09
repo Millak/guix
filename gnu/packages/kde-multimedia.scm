@@ -825,27 +825,6 @@ Its features include:
     (license ;; GPL for programs, LGPL for libraries, FDL for documentation
      (list license:gpl2+ license:lgpl2.0+ license:fdl1.2+))))
 
-(define-public libkcddb-qt5
-  (package
-    (inherit libkcddb)
-    (name "libkcddb-qt5")
-    (native-inputs
-     (list extra-cmake-modules kdoctools-5))
-    (inputs
-     (list kcodecs-5
-           kconfig-5
-           ki18n-5
-           kio-5
-           kcmutils-5
-           kwidgetsaddons-5
-           libmusicbrainz))
-    (arguments
-     (list
-      #:qtbase qtbase-5
-      #:configure-flags #~(list "-DQT_MAJOR_VERSION=5")
-      ;; Most tests require network
-      #:tests? #f))))
-
 (define-public libkcompactdisc
   (package
     (name "libkcompactdisc")
