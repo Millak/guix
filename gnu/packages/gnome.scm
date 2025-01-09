@@ -6805,117 +6805,107 @@ discovery protocols.")
     (license license:lgpl2.1+)))
 
 (define-public totem
-  ;; Use the commit used in their flatpak, as it includes unreleased fixes
-  ;; (see:
-  ;; https://raw.githubusercontent.com/flathub/org.gnome.Totem/refs/heads/master/org.gnome.Totem.json).
-  (let ((revision "0")
-        (commit "50cbd3f08d360e28c9aa93ff1aadcb83f505ce59"))
-    (package
-      (name "totem")
-      (version (git-version "43.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://gitlab.gnome.org/GNOME/totem.git")
-               (commit commit)
-               ;; XXX: Totem uses a GNOME-ified, bundled fork of the gd
-               ;; library that doesn't appear to be compatible with our
-               ;; current gd library.
-               (recursive? #t)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "1qyv5s1bmaxqi82361g18mnqwji74ck8x0vcl00lidxi4d1xqw6n"))))
-      (build-system meson-build-system)
-      (native-inputs
-       (list `(,glib "bin")             ;for 'glib-mkenums'
-             desktop-file-utils
-             gettext-minimal
-             gobject-introspection
-             intltool
-             itstool
-             libxml2
-             perl                       ;for pod2man
-             pkg-config
-             xorg-server-for-tests))
-      (propagated-inputs
-       (list dconf))
-      (inputs
-       (list (librsvg-for-system)
-             adwaita-icon-theme
-             at-spi2-core
-             bash-minimal
-             cairo
-             dbus-glib
-             gdk-pixbuf
-             gnome-desktop
-             grilo
-             grilo-plugins
-             gsettings-desktop-schemas
-             gst-libav
-             gst-plugins-base
-             gst-plugins-good
-             gstreamer
-             gtk+
-             libhandy
-             libpeas
-             libportal
-             libsoup
-             libxml2
-             libxrandr
-             libxtst
-             libxxf86vm
-             python
-             python-pygobject
-             totem-pl-parser
-             vala
-             xorgproto))
-      (arguments
-       (list
-        #:glib-or-gtk? #t
-        ;; Disable automatic GStreamer plugin installation via PackageKit and
-        ;; all that.
-        #:configure-flags
-        ;; Do not build .a files for the plugins, it's completely useless.
-        ;; This saves 2 MiB.
-        #~(list "--default-library" "shared")
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'unpack 'skip-gtk-update-icon-cache
-              ;; Don't create 'icon-theme.cache'.
-              (lambda _
-                (substitute* "meson.build"
-                  (("gtk_update_icon_cache: true")
-                   "gtk_update_icon_cache: false"))))
-            (add-before 'install 'disable-cache-generation
-              (lambda _
-                (setenv "DESTDIR" "/")))
-            (add-before 'check 'pre-check
-              (lambda _
-                ;; Tests require a running X server.
-                (system "Xvfb :1 &")
-                (setenv "DISPLAY" ":1")))
-            (add-after 'install 'wrap-totem
-              (lambda* (#:key inputs outputs #:allow-other-keys)
-                (let ((out             (assoc-ref outputs "out"))
-                      (gi-typelib-path (getenv "GI_TYPELIB_PATH"))
-                      (gst-plugin-path (getenv "GST_PLUGIN_SYSTEM_PATH"))
-                      (grl-plugin-path (getenv "GRL_PLUGIN_PATH")))
-                  (wrap-program (string-append out "/bin/totem")
-                    `("GI_TYPELIB_PATH"        ":" suffix (,gi-typelib-path))
-                    `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path))
-                    `("GRL_PLUGIN_PATH"        ":" prefix (,grl-plugin-path)))
-                  (wrap-program (string-append out "/bin/totem-video-thumbnailer")
-                    `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path)))))))))
-      (home-page "https://wiki.gnome.org/Apps/Videos")
-      (synopsis "Simple media player for GNOME based on GStreamer")
-      (description "Totem is a simple yet featureful media player for GNOME
+  (package
+    (name "totem")
+    (version "43.1")
+    (source
+     (origin
+       (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/totem/"
+                                  (version-major version) "/"
+                                  "totem-" version ".tar.xz"))
+       (sha256
+        (base32
+         "0vcyfna0z58s9h8h3pb0pqmlrx8j097ymr7zndf9hi34khg2js2n"))))
+    (build-system meson-build-system)
+    (native-inputs
+     (list `(,glib "bin")             ;for 'glib-mkenums'
+           desktop-file-utils
+           gettext-minimal
+           gobject-introspection
+           intltool
+           itstool
+           libxml2
+           perl                       ;for pod2man
+           pkg-config
+           xorg-server-for-tests))
+    (propagated-inputs
+     (list dconf))
+    (inputs
+     (list (librsvg-for-system)
+           adwaita-icon-theme
+           at-spi2-core
+           bash-minimal
+           cairo
+           dbus-glib
+           gdk-pixbuf
+           gnome-desktop
+           grilo
+           grilo-plugins
+           gsettings-desktop-schemas
+           gst-libav
+           gst-plugins-base
+           gst-plugins-good
+           gstreamer
+           gtk+
+           libhandy
+           libpeas
+           libportal
+           libsoup
+           libxml2
+           libxrandr
+           libxtst
+           libxxf86vm
+           python
+           python-pygobject
+           totem-pl-parser
+           vala
+           xorgproto))
+    (arguments
+     (list
+      #:glib-or-gtk? #t
+      ;; Disable automatic GStreamer plugin installation via PackageKit and
+      ;; all that.
+      #:configure-flags
+      ;; Do not build .a files for the plugins, it's completely useless.
+      ;; This saves 2 MiB.
+      #~(list "--default-library" "shared")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'skip-gtk-update-icon-cache
+            ;; Don't create 'icon-theme.cache'.
+            (lambda _
+              (substitute* "meson.build"
+                (("gtk_update_icon_cache: true")
+                 "gtk_update_icon_cache: false"))))
+          (add-before 'install 'disable-cache-generation
+            (lambda _
+              (setenv "DESTDIR" "/")))
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; Tests require a running X server.
+              (system "Xvfb :1 &")
+              (setenv "DISPLAY" ":1")))
+          (add-after 'install 'wrap-totem
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let ((out             (assoc-ref outputs "out"))
+                    (gi-typelib-path (getenv "GI_TYPELIB_PATH"))
+                    (gst-plugin-path (getenv "GST_PLUGIN_SYSTEM_PATH"))
+                    (grl-plugin-path (getenv "GRL_PLUGIN_PATH")))
+                (wrap-program (string-append out "/bin/totem")
+                  `("GI_TYPELIB_PATH"        ":" suffix (,gi-typelib-path))
+                  `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path))
+                  `("GRL_PLUGIN_PATH"        ":" prefix (,grl-plugin-path)))
+                (wrap-program (string-append out "/bin/totem-video-thumbnailer")
+                  `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path)))))))))
+    (home-page "https://wiki.gnome.org/Apps/Videos")
+    (synopsis "Simple media player for GNOME based on GStreamer")
+    (description "Totem is a simple yet featureful media player for GNOME
 which can read a large number of file formats.")
-      ;; GPL2+ with an exception clause for non-GPL compatible GStreamer plugins
-      ;; to be used and distributed together with GStreamer and Totem.  See
-      ;; file://COPYING in the source distribution for details.
-      (license license:gpl2+))))
+    ;; GPL2+ with an exception clause for non-GPL compatible GStreamer plugins
+    ;; to be used and distributed together with GStreamer and Totem.  See
+    ;; file://COPYING in the source distribution for details.
+    (license license:gpl2+)))
 
 (define-public rhythmbox
   (package
