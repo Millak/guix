@@ -155,13 +155,13 @@ Advanced plugins:
 (define-public ghostwriter
   (package
     (name "ghostwriter")
-    (version "24.05.2")
+    (version "24.12.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/" version
                                   "/src/ghostwriter-" version ".tar.xz"))
               (sha256
-               (base32 "181izld9wnbwlknw7h876ysranqqvbvb0h2p4ky54jfb82f9h513"))))
+               (base32 "04pslp9660cwdpdqd93ldrzlkszq0kp0vb2vgl94vmark7r29xrz"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
