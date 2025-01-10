@@ -291,14 +291,14 @@ This package is part of the KDE multimedia module.")
 (define-public juk
   (package
     (name "juk")
-    (version "24.05.2")
+    (version "24.12.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/juk-" version ".tar.xz"))
        (sha256
-        (base32 "1yk6c0lagj47m5i7s73rsrk61fs1cjbf0dhhvbyasy4avlxsfgxa"))))
+        (base32 "0flypcz4975z9jwja2lab1k5g0s2ln31pkadn8gmklsah8jc33js"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
