@@ -38,6 +38,7 @@
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages glib) ; dbus for tests
   #:use-module (gnu packages gnome)
+  #:use-module (gnu packages gnupg)
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages multiprecision)
@@ -49,7 +50,8 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages samba)
   #:use-module (gnu packages xdisorg)
-  #:use-module (gnu packages xorg))
+  #:use-module (gnu packages xorg)
+  #:use-module (gnu packages version-control))
 
 (define-public ark
   (package
@@ -167,8 +169,8 @@ well as CD-ROM images.")
       (license license:gpl3+))))
 
 (define-public basket
-  (let ((commit "e23a8b3b1198d51f770523c7fb4652750810359a")
-        (revision "1"))
+  (let ((commit "bb230be9f6fb838b02ca85c45f9a0ca244efe967")
+        (revision "2"))
     (package
       (name "basket")
       (version (git-version "2.49" revision commit))
@@ -180,10 +182,17 @@ well as CD-ROM images.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1i7hrrlwyzzh7mm9xc8hjix24rvy1b2cvvbkhxh9mmdbmphwdhhd"))))
+                  "0r5f48vvahhmqfsl9svnkqg83y39570pa944yb9s09h10z96d16i"))))
       (build-system qt-build-system)
-      (native-inputs (list extra-cmake-modules))
+      (arguments (list #:qtbase qtbase
+                       #:configure-flags
+                       #~(list "-DENABLE_GPG=ON"
+                               "-DENABLE_GIT=ON")))
+      (native-inputs (list extra-cmake-modules
+                           kdoctools
+                           pkg-config))
       (inputs (list breeze-icons
+                    gpgme
                     karchive
                     kcompletion
                     kconfig
@@ -191,7 +200,6 @@ well as CD-ROM images.")
                     kcoreaddons
                     kcrash
                     kdbusaddons
-                    kdoctools
                     kfilemetadata
                     kglobalaccel
                     kguiaddons
@@ -206,7 +214,9 @@ well as CD-ROM images.")
                     kwidgetsaddons
                     kwindowsystem
                     kxmlgui
-                    phonon))
+                    libgit2-1.8
+                    phonon
+                    qt5compat))
       (home-page "https://invent.kde.org/utilities/basket")
       (synopsis "Notes and to-dos organizer")
       (description "This package provides simple note taking and to-do app.")
