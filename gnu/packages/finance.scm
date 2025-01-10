@@ -410,8 +410,8 @@ in ability, and easy to use.")
 
 (define-public emacs-ledger-mode
   ;; The last release was on Nov 8, 2019 and doesn't build with Emacs 28.
-  (let ((commit "11e850395448ee7012dba16bd6df103f5552ebfb")
-        (revision "0"))
+  (let ((commit "356d8049ede02c06db4f487d1d6076f74d6098c5")
+        (revision "1"))
     (package
       (name "emacs-ledger-mode")
       (version (git-version "4.0.0" revision commit))
@@ -423,18 +423,19 @@ in ability, and easy to use.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0hzky36vrlb7kvpyz4gy3zn01zdlmlx0s58w6ggk5djbcvjc2rfx"))))
+          (base32 "1wssagczhils0nx12b2nq2jk2gp9j26jn8nrqdrj255nzl40aia1"))))
       (build-system emacs-build-system)
       (arguments
        (list
-        ;; ledger-test.el is needed at runtime (but probably not for a good reason).
-        #:exclude #~'()
         #:tests? #t
         #:phases
         #~(modify-phases %standard-phases
+            (add-after 'unpack 'do-not-require-tests-at-runtime
+              (lambda _
+                (substitute* "ledger-mode.el"
+                  (("\\(require 'ledger-test\\)") ""))))
             (add-after 'unpack 'patch-path
               (lambda* (#:key inputs #:allow-other-keys)
-                (make-file-writable "ledger-exec.el")
                 (emacs-substitute-variables "ledger-exec.el"
                   ("ledger-binary-path" (search-input-file inputs "/bin/ledger")))))
             (add-after 'build 'build-doc
@@ -447,7 +448,9 @@ in ability, and easy to use.")
               (lambda* (#:key tests? #:allow-other-keys)
                 (when tests?
                   (with-directory-excursion "../source/test"
-                    (invoke "make" "test-batch"))))))))
+                    ;; Test does not respect `ledger-binary-path' and thus fails
+                    (delete-file-recursively "report-test.el")
+                    (invoke "make" "test"))))))))
       (inputs
        (list ledger))
       (native-inputs
