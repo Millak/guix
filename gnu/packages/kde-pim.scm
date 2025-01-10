@@ -2256,7 +2256,7 @@ is a Sieve parser and interpreter library for KDE.")
 (define-public merkuro
   (package
     (name "merkuro")
-    (version "24.05.2")
+    (version "24.12.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
@@ -2264,7 +2264,7 @@ is a Sieve parser and interpreter library for KDE.")
                                   ".tar.xz"))
               (sha256
                (base32
-                "0n6na806g4xlx66ay0vk3iw9xs1h48ya7l0zpa3nqikr1by79lfh"))))
+                "18sdf4nd0dl36d3wv4hl99d1by5871wdblc9d9z72kph4jgyyacm"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
@@ -2277,45 +2277,47 @@ is a Sieve parser and interpreter library for KDE.")
                      (invoke "dbus-launch" "ctest")))))))
     (native-inputs (list dbus extra-cmake-modules))
     (inputs (list akonadi
+                  akonadi-calendar
                   akonadi-contacts
+                  akonadi-mime
                   akonadi-mime
                   breeze-icons
                   gpgme
                   grantleetheme
+                  kcalendarcore
+                  kcalendarsupport
+                  kcalutils
+                  kconfigwidgets
+                  kcontacts
+                  kcoreaddons
+                  kcrash
+                  kdbusaddons
+                  keventviews
+                  ki18n
+                  kiconthemes
+                  kidentitymanagement
+                  kimap
                   kio
                   kirigami
                   kirigami-addons
-                  kdbusaddons
-                  ki18n
-                  kimap
-                  kcalendarcore
-                  kcalendarsupport
-                  kconfigwidgets
-                  kwindowsystem
-                  kcoreaddons
-                  kcontacts
                   kitemmodels
                   kmailcommon
                   kmailtransport
                   kmessagelib
                   kmime
-                  kidentitymanagement
+                  knotifications
                   kpimcommon
                   kpimtextedit
                   ktextaddons
                   ktextwidgets
-                  akonadi-calendar
-                  akonadi-mime
-                  keventviews
-                  kcalutils
+                  kwindowsystem
                   kxmlgui
-                  kiconthemes
                   libkdepim
                   libkleo
                   mimetreeparser
+                  qqc2-desktop-style
                   qtdeclarative
                   qtsvg
-                  qqc2-desktop-style
                   qtwebengine))
     (home-page "https://apps.kde.org/kalendar/")
     (synopsis "Calendar application")
