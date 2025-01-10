@@ -664,20 +664,20 @@ software (Git, Subversion, Mercurial, CVS and Bazaar).")
 (define-public kdevelop-pg-qt
   (package
     (name "kdevelop-pg-qt")
-    (version "2.2.2")
+    (version "2.3.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-              (url "https://github.com/KDE/kdevelop-pg-qt")
-              (commit (string-append "v" version))))
+             (url "https://github.com/KDE/kdevelop-pg-qt")
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0kdi12phrl5afv41dy856g2vv3bp0a1b1vwp90h08wbqsfyy1zlm"))))
+        (base32 "0wbfgd1d995cmqbfz2bvdsz02jhcvgd5jam7wm4m5npqwzgl5f7v"))))
     (native-inputs
      (list extra-cmake-modules))
     (inputs
-     (list qtbase-5))
+     (list qtbase))
     (build-system cmake-build-system)
     (home-page "https://kde.org")
     (synopsis "Parser generator library for KDevplatform")
