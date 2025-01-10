@@ -1812,7 +1812,7 @@ a variety of formats, including PDF, PostScript, DejaVu, and EPub.")
 (define-public poxml
   (package
     (name "poxml")
-    (version "24.05.2")
+    (version "24.12.1")
     (source (origin
               (method url-fetch)
               (uri
@@ -1820,12 +1820,12 @@ a variety of formats, including PDF, PostScript, DejaVu, and EPub.")
                               "/src/poxml-" version ".tar.xz"))
               (sha256
                (base32
-                "0998ss7jib255x9kyhsz79lgnf97m7hbm6dsyh6xj9rcwv8i9srk"))))
+                "1mbkmh0zy5bi13vbcqdnppg2f1cl77hdfscy3wp2mfz209sa83a0"))))
     (build-system cmake-build-system)
     (native-inputs
-     (list extra-cmake-modules kdoctools-5))
+     (list extra-cmake-modules kdoctools))
     (inputs
-     (list gettext-minimal qtbase-5))
+     (list gettext-minimal qtbase))
     (home-page "https://apps.kde.org/development/")
     (synopsis "Tools for translating DocBook XML files with Gettext")
     (description "This is a collection of tools that facilitate translating
