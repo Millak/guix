@@ -10849,6 +10849,40 @@ multibase} (self identifying base encodings) in Go.")
 varints.")
     (license license:expat)))
 
+(define-public go-github-com-nakagami-firebirdsql
+  (package
+    (name "go-github-com-nakagami-firebirdsql")
+    (version "0.9.12")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/nakagami/firebirdsql")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "043wc8pigv0cpnzljry1vfdnwlmbfy14b5yhbkyhnndk81c4pl7s"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ; tests require running database service
+      #:import-path "github.com/nakagami/firebirdsql"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-kardianos-osext
+           go-github-com-shopspring-decimal
+           go-gitlab-com-nyarla-go-crypt
+           go-golang-org-x-crypto
+           go-golang-org-x-text
+           go-modernc-org-mathutil))
+    (home-page "https://github.com/nakagami/firebirdsql")
+    (synopsis "Firebird RDBMS sql driver for Golang")
+    (description
+     "Package firebird provides database/sql driver for
+@url{https://firebirdsql.org/, Firebird} RDBMS.")
+    (license license:expat)))
+
 (define-public go-github-com-nathan-osman-go-sunrise
   (package
     (name "go-github-com-nathan-osman-go-sunrise")
