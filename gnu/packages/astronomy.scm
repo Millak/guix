@@ -3460,7 +3460,8 @@ astronomy and astrophysics.")
            python-cython-3
            python-extension-helpers
            python-setuptools
-           python-setuptools-scm))
+           python-setuptools-scm
+           python-wheel))
     (propagated-inputs
      (modify-inputs (package-propagated-inputs python-astropy)
        (delete python-matplotlib
