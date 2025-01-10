@@ -1821,8 +1821,13 @@ version_spec = re.sub('[()]', '', version_spec)\n" m)))))
                              python-scipy
                              python-traitlets
                              python-xarray))
-    (native-inputs (list python-netcdf4 python-packaging python-pytest
-                         python-pytest-mpl))
+    (native-inputs
+     (list python-netcdf4
+           python-packaging
+           python-pytest
+           python-pytest-mpl
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/Unidata/MetPy")
     (synopsis "Collection of tools to deal with weather data")
     (description "MetPy is a collection of tools in Python for reading,
