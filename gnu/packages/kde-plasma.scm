@@ -429,7 +429,7 @@ concept.")
 (define-public krdp
   (package
     (name "krdp")
-    (version "6.1.4")
+    (version "6.2.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
@@ -437,7 +437,7 @@ concept.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1jwiqmmwhcslj6zcjgm3jj3xkr3zkp3r8hbassykazg6bcc8xpkl"))))
+                "1z3k9b1jbiw1qixvlmi4vrwl4p4qhrcirgr2ksp0rs4ivgikg38s"))))
     (build-system qt-build-system)
     (arguments (list #:qtbase qtbase
                      #:phases
@@ -457,6 +457,7 @@ concept.")
                          wayland))
     (inputs (list
              kconfig
+             kcrash
              kdbusaddons
              kcmutils
              ki18n
