@@ -35,6 +35,14 @@
 (channel-news
  (version 0)
 
+ (entry (commit "3a4209224e7e3121189390307295fccdc0612db4")
+        (title
+         (en "Linux-libre updated to 6.12"))
+        (body
+         (en "The default linux-libre package has been updated to the
+             6.12 series.  The 6.11 series will be removed soon, due to
+             end of upstream support.")))
+
  (entry (commit "1dcd0ded86e341cbfd0567cefde1e71684c0cdba")
         (title
          (en "Linux-libre 6.12 now available"))
