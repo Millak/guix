@@ -577,48 +577,47 @@ structure.  It features:
 (define-public kdevelop
   (package
     (name "kdevelop")
-    (version "24.05.2")
+    (version "24.12.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kdevelop-" version ".tar.xz"))
        (sha256
-        (base32 "10z53ri4g3b199cv9394pflgdlcnr9y2gh7xr4isl2kpn26jiwh0"))))
+        (base32 "17g170cacdqgvxb8csd4ifv4jc0dcam7xki690hm8jw55rfpa2z9"))))
     (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules pkg-config shared-mime-info qttools-5))
+     (list extra-cmake-modules pkg-config shared-mime-info qttools))
     (inputs (list boost
                   clang
                   grantlee
-                  karchive-5
-                  kcmutils-5
-                  kcrash-5
-                  kdeclarative-5
-                  kdoctools-5
-                  kguiaddons-5
-                  ki18n-5
-                  kiconthemes-5
-                  kio-5 ;; not checked as requirement
-                  kitemmodels-5
-                  kitemviews-5
-                  kjobwidgets-5
-                  knotifications-5
-                  knotifyconfig-5
-                  kparts-5
-                  kservice-5
-                  ksyntaxhighlighting-5
-                  ktexteditor-5
-                  kwindowsystem-5
-                  kxmlgui-5
+                  karchive
+                  kcmutils
+                  kcrash
+                  kdeclarative
+                  kguiaddons
+                  ki18n
+                  kiconthemes
+                  kio ;; not checked as requirement
+                  kitemmodels
+                  kitemviews
+                  kjobwidgets
+                  knotifications
+                  knotifyconfig
+                  kparts
+                  kservice
+                  ksyntaxhighlighting
+                  ktexteditor
+                  ktexttemplate
+                  ktextwidgets
+                  kwindowsystem
+                  kxmlgui
                   libkomparediff2
                   breeze-icons
-                  qtbase-5
-                  qtdeclarative-5
-                  qtquickcontrols-5 ;; not checked as requirement
-                  qtquickcontrols2-5 ;; not checked as requirement
-                  qtwebengine-5
-                  threadweaver-5
+                  qt5compat
+                  qtdeclarative
+                  qtwebengine
+                  threadweaver
                   ;; recommendes
                   astyle
                   kdevelop-pg-qt
@@ -626,14 +625,14 @@ structure.  It features:
                   ;; optional
                   apr ; required for subversion support
                   apr-util ; required for subversion support
-                  attica-5
-                  kconfigwidgets-5
-                  knewstuff-5
-                  krunner-5
+                  attica
+                  kconfigwidgets
+                  knewstuff
+                  krunner
                   ;; TODO: OktetaGui, OktetaKastenControllers
-                  plasma-framework
+                  libplasma
                   ;; TODO: purpose
-                  sonnet-5
+                  sonnet
                   subversion))
     ;; run-time packages - TODO
     ;; ClazyStandalone
@@ -642,7 +641,8 @@ structure.  It features:
     ;; heaptrack_gui
     ;; meson
     (arguments
-     (list #:tests? #f ;; there are some issues with the test suite
+     (list #:qtbase qtbase
+           #:tests? #f ;; there are some issues with the test suite
            #:phases
            #~(modify-phases %standard-phases
                (add-before 'configure 'add-include-path
