@@ -120,7 +120,7 @@ Other notable features include:
 (define-public falkon
   (package
     (name "falkon")
-    (version "24.05.2")
+    (version "24.12.1")
     (source
      (origin
        (method url-fetch)
@@ -128,7 +128,7 @@ Other notable features include:
                            "/src/falkon-" version ".tar.xz"))
        (sha256
         (base32
-         "0j930i2nvg71p05z881inbk59c54gx8dzhyjb8iaqkw8i5s5r983"))))
+         "1hhljgv5c0na4851r9klwzwgifygmq9xkrii7c8hvd7bnwc0jmwd"))))
     (build-system qt-build-system)
     (arguments
      (list #:phases
