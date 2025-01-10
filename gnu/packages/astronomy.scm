@@ -3493,7 +3493,8 @@ astronomy and astrophysics.")
      (list python-extension-helpers
            python-hypothesis
            python-pytest-astropy
-           python-setuptools-scm))
+           python-setuptools-scm
+           python-wheel))
     (propagated-inputs
      (list python-astropy python-numpy))
     (home-page "https://github.com/astropy/astropy-healpix")
