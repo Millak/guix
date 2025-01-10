@@ -37777,38 +37777,19 @@ writing STL files.  It supports both the text and binary forms of STL.")
 (define-public python-multipart
   (package
     (name "python-multipart")
-    (version "0.0.5")
+    (version "0.0.20")
     (source (origin
               (method url-fetch)
-              (uri (pypi-uri "python-multipart" version))
+              (uri (pypi-uri "python_multipart" version))
               (sha256
                (base32
-                "0hzshd665rl1bkwvaj9va4j3gs8nmb478fbvligx20663xhmzfzp"))))
-    (build-system python-build-system)
-    (propagated-inputs (list python-six))
+                "04wxzakk3hs4z4xf3ldhym3gm46hjicn4iwiw150c8wfbfscml4d"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-mock
+     (list python-hatchling
            python-pytest
            python-pytest-cov
-           python-pyyaml
-           python-setuptools
-           python-wheel))
-    (arguments
-     `(#:phases (modify-phases %standard-phases
-                  ;; There is a bug in the test_suit specification.
-                  (add-after 'unpack 'patch-test-suite
-                    (lambda _
-                      ;; Make compatible with PyYAML 6.
-                      (substitute* "multipart/tests/test_multipart.py"
-                        (("yaml.load")
-                         "yaml.safe_load"))
-                      (substitute* "setup.py"
-                        (("test_suite = 'multipart.tests.suite'")
-                         "test_suite = 'multipart.tests.test_multipart.suite'"))
-                      ;; Needed by PyYAML 6.0.
-                      (substitute* "multipart/tests/test_multipart.py"
-                        (("yaml_data = yaml.load\\(f\\)")
-                         "yaml_data = yaml.load(f, Loader=yaml.SafeLoader)")))))))
+           python-pyyaml))
     (home-page "https://github.com/andrew-d/python-multipart")
     (synopsis "Streaming multipart parser for Python")
     (description
