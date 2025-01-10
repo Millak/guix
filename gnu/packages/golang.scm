@@ -1997,10 +1997,7 @@ containers.")
                   "1pvrbrvmrf4mx0fxbfaphbzgqgwn8v6lkfk2vyrs0znxrs1xyc5r"))))
       (build-system go-build-system)
       (arguments
-       `(#:import-path "github.com/kardianos/osext"
-         ;; The tests are flaky:
-         ;; <https://github.com/kardianos/osext/issues/21>
-         #:tests? #f))
+       `(#:import-path "github.com/kardianos/osext"))
       (synopsis "Find the running executable")
       (description "Osext provides a method for finding the current executable
 file that is running.  This can be used for upgrading the current executable or
