@@ -534,14 +534,14 @@ such as addition, trigonometric functions or derivatives.")
 (define-public kapptemplate
   (package
     (name "kapptemplate")
-    (version "24.05.2")
+    (version "24.12.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kapptemplate-" version ".tar.xz"))
        (sha256
-        (base32 "0mgpk6879dprhpxmbdgbb6sz3ik9ycav4sihh20qmsgj09h8qp3g"))))
+        (base32 "1wiv509y80m6gf891yw55d9429a35axngi922k119zvxfk5641as"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
@@ -554,6 +554,7 @@ such as addition, trigonometric functions or derivatives.")
            kcompletion
            kconfigwidgets
            kcoreaddons
+           kirigami-addons
            ki18n
            kio))
     (home-page "https://apps.kde.org/kapptemplate/")
