@@ -11302,6 +11302,31 @@ millisecond)
 @end itemize")
     (license license:expat)))
 
+(define-public go-github-com-olekukonko-ts
+  (package
+    (name "go-github-com-olekukonko-ts")
+    (version "0.0.0-20171002115256-78ecb04241c0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/olekukonko/ts")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0k88n5rvs5k5zalbfa7c71jkjb8dhpk83s425z728qn6aq49c978"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f  ; inappropriate ioctl for device.
+      #:import-path "github.com/olekukonko/ts"))
+    (home-page "https://github.com/olekukonko/ts/")
+    (synopsis "Simple Go application to get the size of the terminal")
+    (description
+     "This package provides a simple Go application to get the size of the
+terminal.")
+    (license license:expat)))
+
 (define-public go-github-com-op-go-logging
   (package
     (name "go-github-com-op-go-logging")
