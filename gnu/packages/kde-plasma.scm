@@ -137,14 +137,14 @@
 (define-public breeze
   (package
     (name "breeze")
-    (version "6.1.4")
+    (version "6.2.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version "/"
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1981va061mrb3r01wm38xq55d7xnqdfwp7s02npbqg5h6zgjcrr2"))))
+                "09afs2x33mgv4by2v1r0wrsjkzsipr95hpdc2d52gkdp3d4d8fqx"))))
     (build-system qt-build-system)
     ;; TODO: Check whether is makes sence splitting into several outputs.
     (native-inputs
