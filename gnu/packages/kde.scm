@@ -233,14 +233,14 @@ translation engines.")
 (define-public akregator
   (package
     (name "akregator")
-    (version "24.05.2")
+    (version "24.12.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/akregator-" version ".tar.xz"))
        (sha256
-        (base32 "07flc3617px9w1c729p0lsixf1g0h297hkbip259ykkbwxizn71q"))))
+        (base32 "0gimz1k5yzkmpn4mq1dfvx3x5n6y7jmm74npy2mn3mdmi9lrg6hh"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
@@ -269,6 +269,7 @@ translation engines.")
            kcmutils
            kcontacts
            kcrash
+           kiconthemes
            kimap
            kitemmodels
            kmessagelib
