@@ -1815,7 +1815,7 @@ KF5/Qt5 to KF6/Qt6")
 (define-public mpvqt
   (package
     (name "mpvqt")
-    (version "1.0.0")
+    (version "1.0.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1823,7 +1823,7 @@ KF5/Qt5 to KF6/Qt6")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1fafyn3a8hgg1g3nfka6hyynlmqdygaxz0fhp4ckxwz54nlx4cci"))))
+                "130p3irs1llv7n1hs7w5xms29amh0aa2bi238wjgc9ww65gvhdwz"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules pkg-config))
