@@ -659,6 +659,30 @@ strings, based on the Levenshtein measure.")
 Distance}.")
     (license license:expat)))
 
+(define-public go-github-com-agonopol-go-stem
+  (package
+    (name "go-github-com-agonopol-go-stem")
+    (version "0.0.0-20150630113328-985885018250")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/agonopol/go-stem")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "128qv5s2g13akbsclyi6kyvx52gx20wz81yxkd3qnlfh0f5fqjd0"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/agonopol/go-stem"))
+    (home-page "https://github.com/agonopol/go-stem")
+    (synopsis "Word Stemming in Golang")
+    (description
+     "This package provides a implementation of the porter stemming algorithm:
+http://tartarus.org/~martin/PorterStemmer/index.html.")
+    (license license:expat)))
+
 (define-public go-github-com-alecthomas-chroma
   (package
     (name "go-github-com-alecthomas-chroma")
