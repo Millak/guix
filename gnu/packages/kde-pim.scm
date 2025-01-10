@@ -2004,14 +2004,14 @@ text in the text edit to all kinds of markup, like HTML or BBCODE.")
 (define-public ksmtp
   (package
     (name "ksmtp")
-    (version "24.05.2")
+    (version "24.12.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/ksmtp-" version ".tar.xz"))
        (sha256
-        (base32 "1v7kami1f75gin7293kk07imkdnmvf9bfn49fc6lzbb52im4nh4b"))))
+        (base32 "0kn4kh71kxjr8pgngdkm298xdzj3jbn44dyllvm582m035hm5nx4"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
@@ -2024,15 +2024,7 @@ text in the text edit to all kinds of markup, like HTML or BBCODE.")
            kio))
     (arguments
      (list #:qtbase qtbase
-           #:tests? #f ;; TODO: does not find sasl mechs
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'Use-KDE_INSTALL_TARGETS_DEFAULT_ARGS-when-installing
-                 (lambda _
-                   (substitute* "src/CMakeLists.txt"
-                     (("^(install\\(.* )\\$\\{KF5_INSTALL_TARGETS_DEFAULT_ARGS\\}\\)"
-                       _ prefix)
-                      (string-append prefix "${KDE_INSTALL_TARGETS_DEFAULT_ARGS})"))))))))
+           #:tests? #f)) ;; TODO: does not find sasl mechs
     (home-page "https://invent.kde.org/pim/ksmtp")
     (synopsis "Library for sending email through an SMTP server")
     (description "This library provides an API for handling SMTP
