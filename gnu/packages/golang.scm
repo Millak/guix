@@ -2087,31 +2087,6 @@ information about the resource usage and performance characteristics of running
 containers.")
       (license license:asl2.0))))
 
-(define-public go-github-com-rifflock-lfshook
-  (package
-    (name "go-github-com-rifflock-lfshook")
-    (version "2.4")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/rifflock/lfshook")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0wxqjcjfg8c0klmdgmbw3ckagby3wg9rkga9ihd4fsf05x5scxrc"))))
-    (build-system go-build-system)
-    (arguments
-     `(#:import-path "github.com/rifflock/lfshook"))
-    (propagated-inputs
-     (list go-github-com-sirupsen-logrus))
-    (home-page "https://github.com/rifflock/lfshook")
-    (synopsis "Local File System hook for Logrus logger")
-    (description "This package provides a hook for Logrus to write directly to
-a file on the file system.  The log levels are dynamic at instantiation of the
-hook, so it is capable of logging at some or all levels.")
-    (license license:expat)))
-
 (define-public go-github-com-kardianos-osext
   (let ((commit "ae77be60afb1dcacde03767a8c37337fad28ac14")
         (revision "1"))
