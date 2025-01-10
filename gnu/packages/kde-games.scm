@@ -1291,14 +1291,14 @@ This package is part of the KDE games module.")
 (define-public bovo
   (package
     (name "bovo")
-    (version "24.05.2")
+    (version "24.12.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/bovo-" version ".tar.xz"))
        (sha256
-        (base32 "0rcnc3v4p0xgkybk4csjwkd7mfiffhqfwx3c5yfwnnrh7rdrmh5j"))))
+        (base32 "1bxbcxv4fggm5cm4xk06xmg7n670xd4lxcazbhwb8bcz23lmggjp"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
