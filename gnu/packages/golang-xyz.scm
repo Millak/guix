@@ -10800,6 +10800,30 @@ multibase} (self identifying base encodings) in Go.")
 varints.")
     (license license:expat)))
 
+(define-public go-github-com-nathan-osman-go-sunrise
+  (package
+    (name "go-github-com-nathan-osman-go-sunrise")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/nathan-osman/go-sunrise")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "017zwzx05r5spxcs07dp6bnh7waknzsd819k7aqd8kr819v3x9in"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/nathan-osman/go-sunrise"))
+    (home-page "https://github.com/nathan-osman/go-sunrise")
+    (synopsis "Calculate sunrise and sunset times in Go")
+    (description
+     "This package provides a Go library for calculating sunrise and
+sunset times from geographical coordinates and a date.")
+    (license license:expat)))
+
 (define-public go-github-com-nats-io-nats-go
   (package
     (name "go-github-com-nats-io-nats-go")
