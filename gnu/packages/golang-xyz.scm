@@ -8410,6 +8410,31 @@ import this package to enable running programs as services without modifying
 them.")
     (license license:zlib)))
 
+(define-public go-github-com-kardianos-osext
+  (package
+    (name "go-github-com-kardianos-osext")
+    (version "0.0.0-20190222173326-2bc1f35cddc0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kardianos/osext")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1pvrbrvmrf4mx0fxbfaphbzgqgwn8v6lkfk2vyrs0znxrs1xyc5r"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/kardianos/osext"))
+    (home-page "https://github.com/kardianos/osext")
+    (synopsis "Find the running executable")
+    (description
+     "Osext provides a method for finding the current executable file that is
+running.  This can be used for upgrading the current executable or finding
+resources located relative to the executable file.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-kardianos-service
   (package
     (name "go-github-com-kardianos-service")

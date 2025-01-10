@@ -1982,29 +1982,6 @@ information about the resource usage and performance characteristics of running
 containers.")
       (license license:asl2.0))))
 
-(define-public go-github-com-kardianos-osext
-    (package
-      (name "go-github-com-kardianos-osext")
-      (version "0.0.0-20190222173326-2bc1f35cddc0")
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/kardianos/osext")
-                      (commit (go-version->git-ref version))))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1pvrbrvmrf4mx0fxbfaphbzgqgwn8v6lkfk2vyrs0znxrs1xyc5r"))))
-      (build-system go-build-system)
-      (arguments
-       `(#:import-path "github.com/kardianos/osext"))
-      (synopsis "Find the running executable")
-      (description "Osext provides a method for finding the current executable
-file that is running.  This can be used for upgrading the current executable or
-finding resources located relative to the executable file.")
-      (home-page "https://github.com/kardianos/osext")
-      (license license:bsd-3)))
-
 (define-public go-github-com-aarzilli-golua
   (let ((commit "03fc4642d792b1f2bc5e7343b403cf490f8c501d")
         (revision "0"))
