@@ -1581,29 +1581,25 @@ TrueType font files in your system's user and system font directories.")
   (package
     (name "go-github-com-wraparound-wrap")
     (version "0.3.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/Wraparound/wrap")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0scf7v83p40r9k7k5v41rwiy9yyanfv3jm6jxs9bspxpywgjrk77"))
-              (patches (search-patches
-                        "go-github-com-wraparound-wrap-free-fonts.patch"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Wraparound/wrap")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0scf7v83p40r9k7k5v41rwiy9yyanfv3jm6jxs9bspxpywgjrk77"))
+       (patches (search-patches
+                 "go-github-com-wraparound-wrap-free-fonts.patch"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/Wraparound/wrap/"
-      #:tests? #f                       ; no tests
+      #:install-source? #f
+      #:import-path "github.com/Wraparound/wrap/cmd/wrap"
+      #:unpack-path "github.com/Wraparound/wrap"
       #:phases
       #~(modify-phases %standard-phases
-          (replace 'build
-            (lambda* (#:key import-path #:allow-other-keys)
-              (invoke "go" "install" "-v" "-x"
-                      "-ldflags=-s -w"
-                      (string-append import-path "cmd/wrap"))))
           (add-after 'install 'wrap-fonts
             (lambda* (#:key inputs outputs #:allow-other-keys)
               (for-each
@@ -1615,15 +1611,18 @@ TrueType font files in your system's user and system font directories.")
                                                 (map cdr inputs))))))
                (find-files (string-append (assoc-ref outputs "out")
                                           "/bin"))))))))
-    (propagated-inputs (list go-github-com-spf13-cobra
-                             go-github-com-signintech-gopdf
-                             go-github-com-flopp-go-findfont))
-    (inputs (list font-liberation font-gnu-freefont))
+    (native-inputs
+     (list go-github-com-spf13-cobra
+           go-github-com-signintech-gopdf
+           go-github-com-flopp-go-findfont))
+    (inputs
+     (list font-liberation
+           font-gnu-freefont))
     (home-page "https://github.com/Wraparound/wrap")
     (synopsis "Format Fountain screenplays")
     (description
-     "Wrap is a command line tool that is able to convert Fountain files into a
-correctly formatted screen- or stageplay as an HTML or a PDF.  It supports
+     "Wrap is a command line tool that is able to convert Fountain files into
+a correctly formatted screen- or stageplay as an HTML or a PDF.  It supports
 standard Fountain, but also has some custom syntax extensions such as
 translated keywords and acts.")
     (license license:gpl3)))
