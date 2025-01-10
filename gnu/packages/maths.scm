@@ -10808,7 +10808,7 @@ to Wolfram.")
                              python-prompt-toolkit
                              python-pygments
                              python-term-background))
-    (native-inputs (list python-pytest))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://mathics.org/")
     (synopsis "Command-line interface to Mathics3")
     (description "This package provides a command-line interface to
