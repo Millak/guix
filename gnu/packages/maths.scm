@@ -5,7 +5,7 @@
 ;;; Copyright © 2014-2022 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2014 Federico Beffa <beffa@fbengineering.ch>
 ;;; Copyright © 2014 Mathieu Lirzin <mathieu.lirzin@openmailbox.org>
-;;; Copyright © 2015–2024 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015–2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2015, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015-2024 Efraim Flashner <efraim@flashner.co.il>
@@ -10835,13 +10835,13 @@ Mathics3.")
              (setenv "PYTHONPATH" (getcwd))
              (setenv "DJANGO_SETTINGS_MODULE" "mathics_django.settings")
              (invoke "django-admin" "test"))))))
-    (native-inputs (list python-pytest))
     (propagated-inputs (list python-django-4.2
                              python-mathics-scanner
                              python-mathics-core
                              python-networkx-next
                              python-pygments
                              python-requests))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://mathics.org/")
     (synopsis "A Django front end for Mathics3.")
     (description "This package provides a Django front end for Mathics3.")
