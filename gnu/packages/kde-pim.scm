@@ -384,14 +384,14 @@ Akonadi PIM data server.  It uses Xapian for indexing and querying.")
 (define-public itinerary
   (package
     (name "itinerary")
-    (version "24.05.2")
+    (version "24.12.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
                                   version "/src/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1p05v9r1ipi465nmka8n2gs7npc6wdgfxzj7523plnja9kfa8bmb"))))
+                "0d2nckmi4j36k9nhp62zdjyb2fckzq3205fy221nxn8cnpi121ni"))))
     (build-system qt-build-system)
 
     (arguments
@@ -403,8 +403,8 @@ Akonadi PIM data server.  It uses Xapian for indexing and querying.")
                    ;; HACK: ecm_find_qmlmodule cann't find qmlmodule on other
                    ;; prefix, so we remove it require.
                    (substitute* "CMakeLists.txt"
-                     (("24.02 REQUIRED")
-                      "24.02")))))
+                     (("\\$\\{GEAR_MIN_VERSION\\} REQUIRED")
+                      "${GEAR_MIN_VERSION}")))))
            #:tests? #f)) ;Fails 20/27
     (native-inputs (list extra-cmake-modules python-minimal))
     (inputs (list karchive
@@ -430,6 +430,7 @@ Akonadi PIM data server.  It uses Xapian for indexing and querying.")
                   kwindowsystem
                   prison
                   qtdeclarative
+                  qtkeychain-qt6
                   qtpositioning
                   qtlocation
                   qtmultimedia
