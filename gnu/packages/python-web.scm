@@ -6591,7 +6591,12 @@ library to create slugs from unicode strings while keeping it DRY.")
                    (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
                            #$(package-version this-package)))))))
     (propagated-inputs (list python-jinja2))
-    (native-inputs (list python-numpy python-pytest python-setuptools-scm))
+    (native-inputs
+     (list python-numpy
+           python-pytest
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
     (home-page "https://github.com/python-visualization/branca")
     (synopsis "Generate complex HTML+JS pages with Python")
     (description "This library is a spinoff from @code{folium} that would host
