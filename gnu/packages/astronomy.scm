@@ -2710,7 +2710,8 @@ across many files.")
      (list python-pytest
            python-pytest-astropy
            python-pyyaml
-           python-setuptools-scm))
+           python-setuptools-scm
+           python-wheel))
     (propagated-inputs
      (list python-asdf
            python-asdf-astropy
