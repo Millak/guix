@@ -2308,6 +2308,7 @@ from high-throughput single-cell RNA sequencing (scRNA-seq) data.")
            python-scanpy
            python-scikit-learn
            python-requests))
+    (native-inputs (list python-wheel))
     (home-page "https://github.com/Teichlab/celltypist")
     (synopsis "Tool for semi-automatic cell type classification")
     (description
