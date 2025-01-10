@@ -4512,7 +4512,8 @@ setup(ext_modules=get_extensions())")))))
            python-pytest-runner
            python-pytest-xdist
            python-setuptools
-           python-setuptools-scm))
+           python-setuptools-scm
+           python-wheel))
     (home-page "https://github.com/astropy/regions")
     (synopsis "Package for region handling")
     (description "Regions is an Astropy package for region handling.")
