@@ -37,7 +37,7 @@
 ;;; Copyright © 2022-2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023-2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
-;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2023, 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 chris <chris@bumblehead.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -1958,7 +1958,7 @@ medical image data, e.g. magnetic resonance image (MRI) and functional MRI
 (define-public mini
   (package
     (name "mini")
-    (version "0.9.15")
+    (version "0.9.17")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1967,7 +1967,7 @@ medical image data, e.g. magnetic resonance image (MRI) and functional MRI
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "088rz9d639lhr8sbk9z67jy981ffd7swlc8ld0qr09v51hryhwya"))))
+                "0n4c4dsmycp9pgaykc7rpgrgs23nb5gc9fb4agq95fdfpphdarm4"))))
     (build-system gnu-build-system)
     (arguments
      (list #:phases
