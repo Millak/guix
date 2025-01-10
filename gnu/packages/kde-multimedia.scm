@@ -711,48 +711,48 @@ This package is part of the KDE multimedia module.")
 (define-public kwave
   (package
     (name "kwave")
-    (version "24.05.2")
+    (version "24.12.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kwave-" version ".tar.xz"))
        (sha256
-        (base32 "1g3gaxmchsf9c7zvx608wl41qs001vr1zm0cgnaim753446vb08f"))))
+        (base32 "0xkyfji6wfkm36796ijrkbm455fl2ppp9c1yvr1d8dawqrkxflaq"))))
     (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules (librsvg-for-system) pkg-config kdoctools-5
+     (list extra-cmake-modules (librsvg-for-system) pkg-config kdoctools
            tzdata-for-tests))
     (inputs
      (list alsa-lib
            audiofile
            flac
            id3lib
-           karchive-5
-           kcompletion-5
-           kconfig-5
-           kconfigwidgets-5
-           kcoreaddons-5
-           kcrash-5
-           kdbusaddons-5
-           ki18n-5
-           kiconthemes-5
-           kio-5
-           kservice-5
-           ktextwidgets-5
-           kwidgetsaddons-5
-           kxmlgui-5
+           karchive
+           kcompletion
+           kconfig
+           kconfigwidgets
+           kcoreaddons
+           kcrash
+           kdbusaddons
+           ki18n
+           kiconthemes
+           kio
+           kservice
+           ktextwidgets
+           kwidgetsaddons
+           kxmlgui
            libmad
            libsamplerate
            libvorbis
            opus
            breeze-icons ; default icon set
            pulseaudio
-           qtbase-5
-           qtmultimedia-5
+           qtmultimedia
            zlib))
     (arguments
      (list
+      #:qtbase qtbase
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'set-TZDATA
