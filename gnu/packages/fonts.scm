@@ -3457,7 +3457,7 @@ and readability.  This package bundles those icons into a font.")
 (define-public font-lxgw-wenkai
   (package
     (name "font-lxgw-wenkai")
-    (version "1.330")
+    (version "1.501")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3465,7 +3465,7 @@ and readability.  This package bundles those icons into a font.")
                     version "/lxgw-wenkai-v" version ".tar.gz"))
               (sha256
                (base32
-                "1wpxi4jwxkjslnyi0axqyvqqbf58j7hxllsbxz94zclbri8i9iqa"))))
+                "04lqlnyd8d85b11fbk60vf4ycd8n0qvcvwkk0ih3bkc967ln047c"))))
     (build-system font-build-system)
     (home-page "https://lxgw.github.io/2021/01/28/Klee-Simpchin/")
     (synopsis "Simplified Chinese Imitation Song typeface")
@@ -3473,7 +3473,8 @@ and readability.  This package bundles those icons into a font.")
      "LXGW Wenkai is a Simplified Chinese Imitation Song typeface covering the
 CJK Unified Ideographs (base block) and commonly used Hangul.  For characters
 within GB 2312, standard glyphs for Mainland China is used.")
-    (license license:silofl1.1)))
+    (license license:silofl1.1)
+    (properties '((upstream-name . "lxgw-wenkai")))))
 
 (define-public font-lxgw-wenkai-tc
   (package
