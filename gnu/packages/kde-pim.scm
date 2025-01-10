@@ -49,6 +49,7 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages search)
   #:use-module (gnu packages sqlite)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xml))
@@ -56,14 +57,14 @@
 (define-public akonadi
   (package
     (name "akonadi")
-    (version "24.05.2")
+    (version "24.12.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
                                   version "/src/akonadi-" version ".tar.xz"))
               (sha256
                (base32
-                "0ygxj2hhslg5frarwhmdqqhvd37kzcgm60krs979f378dkj6cyc8"))
+                "183158qrd19hk7jphhgd3wcm3vzyd117nqs3kzsqq7mabqzvj0z9"))
               (patches (search-patches "akonadi-paths.patch"
                                        "akonadi-timestamps.patch"
                                        "akonadi-not-relocatable.patch"))))
@@ -73,7 +74,8 @@
            extra-cmake-modules
            qttools
            shared-mime-info
-           pkg-config))
+           pkg-config
+           gcc-12))
     (inputs
      (list boost
            libaccounts-qt6
