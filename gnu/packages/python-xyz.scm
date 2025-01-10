@@ -26796,17 +26796,20 @@ web frameworks.")
 (define-public python-swagger-spec-validator
   (package
     (name "python-swagger-spec-validator")
-    (version "2.4.3")
+    (version "3.0.4")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "swagger-spec-validator" version))
+       (uri (pypi-uri "swagger_spec_validator" version))
        (sha256
         (base32
-         "11g627icrsqwazsncwi0sdvprcj6hwaayw5xk3xsj8d97bmrzqjp"))))
-    (build-system python-build-system)
+         "0jzdpzg3zyipv9axikxd76f1s7vfira0aipjgp8gq2r7cpcccyk3"))))
+    (build-system pyproject-build-system)
     (propagated-inputs
-     (list python-jsonschema python-pyyaml python-six))
+     (list python-importlib-resources python-jsonschema python-pyyaml
+           python-typing-extensions))
+    (native-inputs
+     (list python-setuptools python-wheel))
     (home-page
      "https://github.com/Yelp/swagger_spec_validator")
     (synopsis "Validation of Swagger specifications")
