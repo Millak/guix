@@ -2996,7 +2996,7 @@ and communicating with them using a pty.")
 (define-public kunitconversion
   (package
     (name "kunitconversion")
-    (version "6.5.0")
+    (version "6.10.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3005,7 +3005,7 @@ and communicating with them using a pty.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1r1gk4p8dlwdrsdv0wvw3jggln7zimp60bryh02x6hvl7i123mf7"))))
+                "1gwxhqrn8i2g5yikd3w0hbyaj40cgdpab2nyy6wdwjc0sh29ki93"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules))
