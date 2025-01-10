@@ -348,14 +348,14 @@ your computer.")
 (define-public kate
   (package
     (name "kate")
-    (version "24.05.2")
+    (version "24.12.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kate-" version ".tar.xz"))
        (sha256
-        (base32 "085hbl6xzzihnhy8pjwdjdsrww6l1h70m4sf2s1b5c1xsnvhhkvp"))))
+        (base32 "1fps1dxf59b9kq8dw190khi8sh3fcphxh6d2j2d5xr5dlal30j7c"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
