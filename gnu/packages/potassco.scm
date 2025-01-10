@@ -2,7 +2,7 @@
 ;;; Copyright © 2022–2024 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2023 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2023 David Elsing <david.elsing@posteo.net>
-;;; Copyright © 2024 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2024-2025 Ricardo Wurmus <rekado@elephly.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -804,7 +804,7 @@ certain.")
                                               "\"\n"))
                               (("\"autoflake\",") "")))))))
     (propagated-inputs (list python-clingo))
-    (native-inputs (list python-pytest))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/potassco/clingo-explaid")
     (synopsis "Develop explanation systems with Clingo")
     (description "This package provides tools to develop explanation systems
