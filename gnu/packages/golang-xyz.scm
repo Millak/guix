@@ -10350,6 +10350,31 @@ standard @code{copy} will copy the pointers where @code{deepcopy} copies the
 values pointed to.  Unexported field values are not copied.")
     (license license:expat)))
 
+(define-public go-github-com-motemen-go-colorine
+  (package
+    (name "go-github-com-motemen-go-colorine")
+    (version "0.0.0-20180816141035-45d19169413a")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/motemen/go-colorine")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1mdy6q0926s1frj027nlzlvm2qssmkpjis7ic3l2smajkzh07118"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/motemen/go-colorine"))
+    (propagated-inputs
+     (list go-github-com-daviddengcn-go-colortext))
+    (home-page "https://github.com/motemen/go-colorine")
+    (synopsis "Simple colorized console logger for golang")
+    (description
+     "This package provides simple colorized console logger for golang.")
+    (license license:expat)))
+
 (define-public go-github-com-mreiferson-go-options
   (package
     (name "go-github-com-mreiferson-go-options")

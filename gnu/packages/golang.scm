@@ -1841,29 +1841,6 @@ your Go binary to be later served from an http.FileSystem.")
     (description "This package provides additions to Go's stdlib @code{fmt}.")
     (license license:bsd-3)))
 
-(define-public go-github-com-motemen-go-colorine
-    (package
-      (name "go-github-com-motemen-go-colorine")
-      (version "0.0.0-20180816141035-45d19169413a")
-      (home-page "https://github.com/motemen/go-colorine")
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url home-page)
-                      (commit (go-version->git-ref version))))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32 "1mdy6q0926s1frj027nlzlvm2qssmkpjis7ic3l2smajkzh07118"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path "github.com/motemen/go-colorine"))
-      (propagated-inputs
-       (list go-github-com-daviddengcn-go-colortext))
-      (synopsis "Simple colorized console logger for golang")
-      (description
-       "This package provides simple colorized console logger for golang.")
-      (license license:expat)))
-
 (define-public go-github-com-daviddengcn-go-colortext
   (package
     (name "go-github-com-daviddengcn-go-colortext")
