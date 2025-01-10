@@ -9854,9 +9854,6 @@ and FastAPI.")
       '(list "--ignore=tests/test_fastapi_cli.py"
              ;; cannot import name 'StaticPool' from 'sqlalchemy'
              "--ignore-glob=tests/test_tutorial/*"
-             ;; FIXME: we have python-multipart, but these tests fail to find
-             ;; it.
-             "--ignore=tests/test_multipart_installation.py"
              ;; FIXME: Unclear why these 8 tests fail.
              "--ignore=tests/test_dependency_contextmanager.py")
       #:phases
