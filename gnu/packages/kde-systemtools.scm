@@ -44,6 +44,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages icu4c)
+  #:use-module (gnu packages image-processing)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages xdisorg))
 
@@ -389,14 +390,14 @@ This package is part of the KDE administration module.")
 (define-public spectacle
   (package
     (name "spectacle")
-    (version "24.02.2")
+    (version "24.12.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/spectacle-" version ".tar.xz"))
        (sha256
-        (base32 "0li1fhhvqk5y1j0jpazhjw1qh5mnwzn4dkl85bmlsn5hbqszf621"))))
+        (base32 "16dr9h4inh2z9j1lm8f4yx9m7n0vxf1sm80afslk6lgixc1hwwfz"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
@@ -412,6 +413,7 @@ This package is part of the KDE administration module.")
     (inputs
      (list kconfig
            kcoreaddons
+           kcrash
            kdbusaddons
            kglobalaccel
            kguiaddons
@@ -420,12 +422,16 @@ This package is part of the KDE administration module.")
            kirigami
            knotifications
            kpipewire
+           kstatusnotifieritem
            kwidgetsaddons
            kwindowsystem
            kxmlgui
+           opencv
            purpose
            layer-shell-qt
+           prison
            qtdeclarative
+           qtimageformats
            qtmultimedia
            qtwayland
            wayland
