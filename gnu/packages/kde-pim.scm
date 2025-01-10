@@ -1028,14 +1028,14 @@ easier to do so.")
 (define-public kitinerary
   (package
     (name "kitinerary")
-    (version "24.05.2")
+    (version "24.12.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
                                   version "/src/kitinerary-" version ".tar.xz"))
               (sha256
                (base32
-                "1c7dd85n1amyi9hdzfjlchcj156kfy64rw915bymcbvdy6y3m6ji"))))
+                "1fxrhhffkp5mw5i8pdaxj92ggs5zx7z8vgdarjqr1ml48sl1cv7a"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
@@ -1060,6 +1060,7 @@ easier to do so.")
                   openssl
                   poppler
                   qtdeclarative
+                  qtkeychain-qt6
                   libxml2
                   zlib
                   zxing-cpp))
