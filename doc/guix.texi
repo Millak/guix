@@ -23337,10 +23337,10 @@ vrrp_instance my-group @{
 
 @cindex unattended upgrades
 @cindex upgrades, unattended
-Guix provides a service to perform @emph{unattended upgrades}:
-periodically, the system automatically reconfigures itself from the
-latest Guix.  Guix System has several properties that make unattended
-upgrades safe:
+The @code{(gnu services admin)} module provides a service to perform
+@emph{unattended upgrades}: periodically, the system automatically
+reconfigures itself from the latest Guix.  Guix System has several
+properties that make unattended upgrades safe:
 
 @itemize
 @item
