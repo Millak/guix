@@ -1508,14 +1508,14 @@ using a Qt/KMime C++ API.")
 (define-public kmessagelib
   (package
     (name "kmessagelib")
-    (version "24.05.2")
+    (version "24.12.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/messagelib-" version ".tar.xz"))
        (sha256
-        (base32 "1m7mah1zqfn9r3jw1lg303kg023lgl77r6if5g4ifv3lsih52pgl"))))
+        (base32 "0v8yrl6j5325mwnhix43qp4s9jjny2437hns9sr5zq7ry4zfas73"))))
     (properties `((upstream-name . "messagelib")))
     (build-system qt-build-system)
     (native-inputs
@@ -1556,6 +1556,7 @@ using a Qt/KMime C++ API.")
            kwidgetsaddons
            kwindowsystem
            kxmlgui
+           openssl
            libgravatar
            qca-qt6
            qgpgme-qt6
