@@ -23395,6 +23395,11 @@ populations.")
          (add-before 'check 'build-extensions
            (lambda _
              (invoke "python" "setup.py" "build_ext" "--inplace")))
+         ;; NumPy 1.20 deprecated the type wrappers for int and float.
+         (add-after 'unpack 'compatibility
+           (lambda _
+             (substitute* "src/scregseg/_utils.pyx"
+               (("np.float") "float"))))
          (add-after 'unpack 'do-not-fail-to-find-sklearn
            (lambda _
              ;; XXX: I have no idea why it cannot seem to find sklearn.
