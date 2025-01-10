@@ -1059,48 +1059,44 @@ to save the times and resume them later.")
 (define-public krusader
   (package
     (name "krusader")
-    (version "2.8.1")
+    (version "2.9.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/krusader/" version
                            "/krusader-" version ".tar.xz"))
        (sha256
-        (base32 "10w2y66kapd0ii8lr37jjwgg2a623ds05bv416j1payh352j1grp"))))
+        (base32 "012f75afp7vjpp7wps4lzvcszj6a5y9yzv21wgh9zikcvvx9pdy9"))))
     (build-system qt-build-system)
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'patch-compat.h
-                 (lambda _
-                   ;; Those fallbacks for pre KF-5.91 cause missing includes.
-                   (substitute* "app/compat.h"
-                     (("#  include <kcompletion_version\\.h>") "")
-                     (("#  include <karchive_version\\.h>") "")))))))
+     (list #:qtbase qtbase))
     (native-inputs
-     (list extra-cmake-modules kdoctools-5))
+     (list extra-cmake-modules kdoctools))
     (inputs
-     (list karchive-5
-           kbookmarks-5
-           kcodecs-5
-           kcompletion-5
-           kconfig-5
-           kcoreaddons-5
-           kguiaddons-5
-           ki18n-5
-           kiconthemes-5
-           kio-5
-           kitemviews-5
-           knotifications-5
-           kparts-5
-           ktextwidgets-5
-           kwallet-5
-           kwidgetsaddons-5
-           kwindowsystem-5
-           kxmlgui-5
-           breeze-icons ;; default icon set
-           qtbase-5
-           solid-5
+     (list breeze-icons ;; default icon set
+           karchive
+           kbookmarks
+           kcodecs
+           kcompletion
+           kconfig
+           kcoreaddons
+           kcrash
+           kglobalaccel
+           kguiaddons
+           ki18n
+           kiconthemes
+           kio
+           kitemviews
+           knotifications
+           kparts
+           kstatusnotifieritem
+           ktextwidgets
+           kwallet
+           kwidgetsaddons
+           kwindowsystem
+           kxmlgui
+           qt5compat
+           solid
            zlib))
     (home-page "https://krusader.org/")
     (synopsis "Twin-panel (commander-style) file manager")
