@@ -1199,7 +1199,7 @@ analyzing Jupyter Notebooks.")
 (define-public python-voila
   (package
     (name "python-voila")
-    (version "0.3.5")
+    (version "0.5.8")
     (source
      (origin
        (method git-fetch)               ;no tests in pypi archive
@@ -1209,26 +1209,65 @@ analyzing Jupyter Notebooks.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "10qn34ddmcwcl9zxa0gwxarxr64k8hx4yysdwrf0iqvmzmkwmbbj"))))
-    (build-system python-build-system)
+         "1fxw7m03iqd4bj1075mx6bspl48nj1rddi4mbs9jkziadc5yv7in"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
+      ;; Many tests depend on Node JavaScript dependencies and a running HTTP
+      ;; server; ignore them.
+      #:test-flags
+      '(list "--ignore" "tests/app"
+             "--ignore" "tests/server"
+             ;; No python3 jupyter kernel in the build environment.
+             "-k" "not test_execute_output")
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'relax-requirements
-            (lambda _
-              (substitute* "setup.cfg"
-                (("nbclient>=0.4.0,<0.6")
-                 "nbclient"))))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (setenv "HOME" "/tmp")
-                (invoke "pytest" "-vv"
-                        ;; Many tests depend on Node JavaScript dependencies
-                        ;; and a running HTTP server; ignore them.
-                        "--ignore" "tests/app"
-                        "--ignore" "tests/server")))))))
+          (add-after 'unpack 'prepare-css
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; FIXME: we skip the build of the JavaScript extension.  We
+              ;; hadn't built it in previous versions, because we could easily
+              ;; get away with it, but in this version we have to patch the
+              ;; build system.
+              (substitute* "pyproject.toml"
+                (("\"voila/labextensions/jupyterlab-preview/static/style.js\",") "")
+                (("\"share/jupyter/voila/themes/@jupyterlab/theme-dark-extension/index.css\"") ""))
+              (copy-file (assoc-ref inputs "variables.css")
+                         "share/jupyter/voila/templates/base/static/labvariables.css")
+              (copy-file (assoc-ref inputs "materialcolors.css")
+                         "share/jupyter/voila/templates/base/static/materialcolors.css")))
+          ;; FIXME: This is likely wrong.  The official wheel has very
+          ;; different contents, which must be the result of actually running
+          ;; jlpm and building the JavaScript packages.
+          (add-after 'install 'install-extensions
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((dir (string-append #$output
+                                        "/share/jupyter/voila/labextensions/"
+                                        "@voila-dashboards/widgets-manager7")))
+                (mkdir-p dir)
+                (invoke "tar" "xf"
+                        (assoc-ref inputs
+                                   (string-append "voila-dashboards-widgets-manager7-"
+                                                  #$version ".tgz"))
+                        "--strip-components=1" "-C" dir))
+              (let ((dir (string-append #$output
+                                        "/share/jupyter/voila/labextensions/"
+                                        "@voila-dashboards/widgets-manager8")))
+                (mkdir-p dir)
+                (invoke "tar" "xf"
+                        (assoc-ref inputs
+                                   (string-append "voila-dashboards-widgets-manager8-"
+                                                  #$version ".tgz"))
+                        "--strip-components=1" "-C" dir))
+              (let ((dir (string-append #$output
+                                        "/share/jupyter/voila/labextensions/"
+                                        "@voila-dashboards/jupyterlab-preview")))
+                (mkdir-p dir)
+                (invoke "tar" "xf"
+                        (assoc-ref inputs
+                                   "voila-dashboards-jupyterlab-preview-2.3.8.tgz")
+                        "--strip-components=1" "-C" dir))))
+          (add-before 'check 'set-HOME
+            (lambda _ (setenv "HOME" "/tmp"))))))
     (propagated-inputs
      (list python-jupyter-client
            python-jupyter-server
@@ -1238,14 +1277,53 @@ analyzing Jupyter Notebooks.")
            python-traitlets
            python-websockets))
     (native-inputs
-     (list python-ipywidgets
+     (list python-hatchling
+           python-hatch-jupyter-builder
+           python-ipywidgets
            python-matplotlib
            python-mock
            python-numpy
            python-pandas
            python-pytest
            python-pytest-tornasync
-           python-tornado-6))
+           python-tornado-6
+           (origin
+             (method url-fetch)
+             (uri "https://unpkg.com/@jupyterlab/apputils@3.2.8/style/materialcolors.css")
+             (sha256
+              (base32
+               "1kvb24r3hbhmjdiip09w9pgzv6xmjzndch279r3ppf7rkgdcgirs")))
+           (origin
+             (method url-fetch)
+             (uri "https://unpkg.com/@jupyterlab/theme-light-extension@3.2.8/style/variables.css")
+             (sha256
+              (base32
+               "1mq6pr8w1r4jb2jgav15kkmjbca0x3nfsdv7q40xai994gsw5ygi")))
+           (origin
+             (method url-fetch)
+             (uri (string-append
+                   "https://github.com/voila-dashboards/voila/releases/download/v"
+                   version "/voila-dashboards-widgets-manager7-" version ".tgz"))
+             (sha256
+              (base32
+               "14fzn89nd6fnixzsy8jhz1y40z82msj5n44242zsjfxhlq8203rm")))
+           (origin
+             (method url-fetch)
+             (uri (string-append
+                   "https://github.com/voila-dashboards/voila/releases/download/v"
+                   version "/voila-dashboards-widgets-manager8-" version ".tgz"))
+             (sha256
+              (base32
+               "09kdrzpiw5psdq0ybrmmav1bwbli9gb4bdg0507069sipkap1nh4")))
+           ;; FIXME: we are not yet using this release tarball.
+           (origin
+             (method url-fetch)
+             (uri (string-append
+                   "https://github.com/voila-dashboards/voila/releases/download/v"
+                   version "/voila-dashboards-jupyterlab-preview-2.3.8.tgz"))
+             (sha256
+              (base32
+               "1bj2v03183aksn0qcqvb6p6kh8p992pk0zyz1x4s2xpijyh0fxpm")))))
     (home-page "https://github.com/voila-dashboards/voila")
     (synopsis "Render live Jupyter notebooks with interactive widgets")
     (description
