@@ -203,14 +203,14 @@ translation engines.")
 (define-public grantleetheme
   (package
     (name "grantleetheme")
-    (version "24.05.2")
+    (version "24.12.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/grantleetheme-" version ".tar.xz"))
        (sha256
-        (base32 "0fsp9698wh2h53qglfg6576m309yb91s5ix4sdzckyilh31y1j2y"))))
+        (base32 "0imf47wf4v8vzzyk9sq6plh9pp2l2q0dycyhdb7hp4jxlj3n4jcg"))))
     (build-system qt-build-system)
     (arguments (list
                 #:qtbase qtbase
