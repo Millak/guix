@@ -1363,7 +1363,7 @@ model to observers
 (define-public kitemviews
   (package
     (name "kitemviews")
-    (version "6.5.0")
+    (version "6.10.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1372,7 +1372,7 @@ model to observers
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "175nrc2yirv6hpnj7d03qm795k9bp9yw96rwpjdmm6cp0n4b7wq7"))))
+                "0vfpasfk4zfrz7575j29vbchab9i5r0sdvi2qz8fjrga35bzy5cb"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules qttools))
