@@ -410,14 +410,14 @@ variety of formats.")
 (define-public k3b
   (package
     (name "k3b")
-    (version "24.12.1")
+    (version "25.04.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/k3b-" version ".tar.xz"))
        (sha256
-        (base32 "1sp34fs0w20622h0sm1w8zc74nqdz4rs6kzi9gak8d192xdrmji6"))))
+        (base32 "14rfgn8m476bvimz07lgag5spz7ff1fxqlmw3d6hm901rzc7487z"))))
     (build-system qt-build-system)
     (arguments
      (list
