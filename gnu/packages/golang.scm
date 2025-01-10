@@ -2963,31 +2963,6 @@ parser.")
      "This package provides INI file read and write functionality in Go.")
     (license license:asl2.0)))
 
-;; XXX: This repository has been archived by the owner on Dec 29, 2022. It is
-;; now read-only.  It's only used by kiln, consider to remove it when it does
-;; no longer require it.
-(define-public go-github-com-google-shlex
-  (package
-    (name "go-github-com-google-shlex")
-    (version "0.0.0-20191202100458-e7afc7fbc510")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/google/shlex")
-             (commit (go-version->git-ref version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "14z8hqyik910wk2qwnzgz8mjsmiamxa0pj55ahbv0jx6j3dgvzfm"))))
-    (build-system go-build-system)
-    (arguments (list #:import-path "github.com/google/shlex"))
-    (home-page "https://github.com/google/shlex")
-    (synopsis "Simple lexer for Go")
-    (description
-     "@code{shlex} implements a simple lexer which splits input into tokens
-using shell-style rules for quoting and commenting.")
-    (license license:asl2.0)))
-
 (define notmuch-fixtures
   (origin
     (method url-fetch)
