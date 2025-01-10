@@ -1102,15 +1102,15 @@ cards.")
 (define-public kommit
   (package
     (name "kommit")
-    (version "1.6.0")
+    (version "1.7.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/"
                                   name "/" name "-"
-                                  version ".tar.xz"))
+                                  "v" version ".tar.xz"))
               (sha256
                (base32
-                "09ahnizl5mqdrg583lxkwwnsq8ci95fk49wx9733ah4c39gync5c"))))
+                "14gr0ms99il76k3yrdff2z4fj5pi5c613gk9n60gg66rmr7m3pnx"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
@@ -1125,26 +1125,26 @@ cards.")
                      (invoke "ctest" "-E"
                              "(difftest|clonedialogtest|tagtest|indextest|\
 branchestest|configtest|stashtest|filetest|overlaytest|remotetest|clonetest|\
-submoduletest)")))))))
+submoduletest|cachetest|switchtest)")))))))
     (native-inputs
      (list extra-cmake-modules kdoctools pkg-config))
     (inputs
      (list ;; module cyclic referencing
-            (module-ref
-             (resolve-interface
-              '(gnu packages kde-systemtools))
-             'dolphin)         ;for dolphin plugin
-           kconfigwidgets
-           kcoreaddons
-           kcrash
-           kdbusaddons
-           ki18n
-           kxmlgui
-           kio
-           ktextwidgets
-           ktexteditor
-           ksyntaxhighlighting
-           libgit2-1.8))
+      (module-ref
+       (resolve-interface
+        '(gnu packages kde-systemtools))
+       'dolphin)         ;for dolphin plugin
+      kconfigwidgets
+      kcoreaddons
+      kcrash
+      kdbusaddons
+      ki18n
+      kxmlgui
+      kio
+      ktextwidgets
+      ktexteditor
+      ksyntaxhighlighting
+      libgit2-1.8))
     (home-page "https://apps.kde.org/kommit/")
     (synopsis "Git client for KDE")
     (description
