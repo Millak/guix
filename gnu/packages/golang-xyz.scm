@@ -8755,6 +8755,31 @@ very eas to use.")
      (list
       #:import-path "github.com/klauspost/cpuid/v2"))))
 
+(define-public go-github-com-kljensen-snowball
+  (package
+    (name "go-github-com-kljensen-snowball")
+    (version "0.10.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kljensen/snowball")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ldc8hw13jwffhfac3w19033rxg8042jpwnw16l5mnwc0rg8b23l"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/kljensen/snowball"))
+    (home-page "https://github.com/kljensen/snowball")
+    (synopsis "Go implementation of the Snowball stemmers")
+    (description
+     "This package provides a implementation of the
+@url{http://snowball.tartarus.org/, Snowball stemmer} for natural language
+processing.")
+    (license license:expat)))
+
 (define-public go-github-com-knz-go-libedit
   (package
     (name "go-github-com-knz-go-libedit")
