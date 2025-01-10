@@ -1175,24 +1175,24 @@ accessibility clients such as screen readers.")
 (define-public libkomparediff2
   (package
     (name "libkomparediff2")
-    (version "24.05.2")
+    (version "24.12.1")
     (source
-      (origin
-        (method url-fetch)
-        (uri (string-append "mirror://kde/stable/release-service/" version
-                            "/src/libkomparediff2-" version ".tar.xz"))
-        (sha256
-         (base32 "1g4zjsdd49n2kh5m8ijm9cm95wfn2rglgnmvvr0ap1iidy4843hy"))))
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/" version
+                           "/src/libkomparediff2-" version ".tar.xz"))
+       (sha256
+        (base32 "0zz7cyz2hpdzqfxr01yjf57r629h1lj3j129si69n1r0rpq2lbf2"))))
     (native-inputs
      (list extra-cmake-modules pkg-config))
     (inputs
-     (list kcodecs-5
-           kconfig-5
-           kcoreaddons-5
-           ki18n-5
-           kio-5
-           kxmlgui-5
-           qtbase-5))
+     (list kcodecs
+           kconfig
+           kcoreaddons
+           ki18n
+           kio
+           kxmlgui
+           qtbase))
     (build-system cmake-build-system)
     (home-page "https://kde.org")
     (synopsis "Library to compare files and strings, used in Kompare and KDevelop")
