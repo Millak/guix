@@ -1002,7 +1002,7 @@ call it if it is not associated to a terminal.")
 (define-public ksystemstats
   (package
     (name "ksystemstats")
-    (version "6.1.4")
+    (version "6.2.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
@@ -1010,7 +1010,7 @@ call it if it is not associated to a terminal.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1743q0xyx1b465qhv7bg1xyblfwm515xfvifgzc3qxwhkyci64d4"))))
+                "18cmjp6jykzg8iiihkfp23ylcgcds3448ym4651fvrbgbvsmdzzg"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
@@ -1022,6 +1022,7 @@ call it if it is not associated to a terminal.")
     (native-inputs (list extra-cmake-modules pkg-config))
     (inputs (list glib
                   kcoreaddons
+                  kcrash
                   kdbusaddons
                   solid
                   networkmanager-qt
