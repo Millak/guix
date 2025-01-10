@@ -168,14 +168,14 @@ Other notable features include:
 (define-public kget
   (package
     (name "kget")
-    (version "24.05.2")
+    (version "24.12.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kget-" version ".tar.xz"))
        (sha256
-        (base32 "0xm3a3bxk4gb1yxpq3icg1wh5sqpmxqlr9n8j1gffszzd6c9x8mn"))))
+        (base32 "0pj7zrmdccbwd4bwrh76p23xfw40544vvqh4hdi7gvmcrkvris3n"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools pkg-config))
