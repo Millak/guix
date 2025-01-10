@@ -301,14 +301,14 @@ Features are:
 (define-public krdc
   (package
     (name "krdc")
-    (version "24.05.2")
+    (version "24.12.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/krdc-" version ".tar.xz"))
        (sha256
-        (base32 "0xw9ks43llm4lnnswv1h81gmr8mr6191bblmd21c1a5a6vvr935h"))))
+        (base32 "0kwsnmvnqyaj53njpd0424fsd7pkdcv5h162dym2binkq710mdvf"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules pkg-config kdoctools))
@@ -319,6 +319,7 @@ Features are:
            kcmutils
            kcompletion
            kconfig
+           kcrash
            kdnssd
            ki18n
            kio
