@@ -5,7 +5,7 @@
 ;;; Copyright © 2020, 2021, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2024, 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -64,7 +64,7 @@ text editors.")
 (define-public lesspipe
   (package
     (name "lesspipe")
-    (version "2.13")
+    (version "2.17")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -73,7 +73,7 @@ text editors.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1hhxikpvmjwg90a3rpnxssq3ws6l2hv76d04h4fgvxhbsrr7imiv"))))
+                "0fc01pb0qps48wi9cw06sraqbxkcx6nik1jsj0xcal463i66xwk9"))))
     (build-system gnu-build-system)
     (arguments
      (list
