@@ -1983,20 +1983,18 @@ containers.")
       (license license:asl2.0))))
 
 (define-public go-github-com-kardianos-osext
-  (let ((commit "ae77be60afb1dcacde03767a8c37337fad28ac14")
-        (revision "1"))
     (package
       (name "go-github-com-kardianos-osext")
-      (version (git-version "0.0.0" revision commit))
+      (version "0.0.0-20190222173326-2bc1f35cddc0")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
                       (url "https://github.com/kardianos/osext")
-                      (commit commit)))
+                      (commit (go-version->git-ref version))))
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "056dkgxrqjj5r18bnc3knlpgdz5p3yvp12y4y978hnsfhwaqvbjz"))))
+                  "1pvrbrvmrf4mx0fxbfaphbzgqgwn8v6lkfk2vyrs0znxrs1xyc5r"))))
       (build-system go-build-system)
       (arguments
        `(#:import-path "github.com/kardianos/osext"
@@ -2008,7 +2006,7 @@ containers.")
 file that is running.  This can be used for upgrading the current executable or
 finding resources located relative to the executable file.")
       (home-page "https://github.com/kardianos/osext")
-      (license license:bsd-3))))
+      (license license:bsd-3)))
 
 (define-public go-github-com-aarzilli-golua
   (let ((commit "03fc4642d792b1f2bc5e7343b403cf490f8c501d")
