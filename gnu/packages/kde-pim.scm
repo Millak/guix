@@ -1850,14 +1850,14 @@ Virtual Contact File}) files to the KPeople contact management library.")
 (define-public kpkpass
   (package
     (name "kpkpass")
-    (version "24.05.2")
+    (version "24.12.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/" version
                                   "/src/kpkpass-" version ".tar.xz"))
               (sha256
                (base32
-                "1cqpmag3n58nzcbyb1rkkvwx9lzff1l8nawbqz2g1gqk2diny0wx"))))
+                "1hrqzy8rc51sixkmkfl8zvqpynyv7zb8sfjlbxslnjrib9p9i2vx"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules))
     (inputs (list karchive shared-mime-info))
