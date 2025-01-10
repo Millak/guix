@@ -1119,7 +1119,7 @@ way around.  It depends only on the Python standard library.")
                (base32
                 "1m6rwvivg61l3h34hf6p6gkqmr69sb1c4k5ha379nxq0p8bfgahb"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-pytest))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/jonashaag/httpauth")
     (synopsis "WSGI HTTP Digest Authentication middleware")
     (description "@code{python-httpauth} is WSGI middleware that secures some/all
