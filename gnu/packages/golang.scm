@@ -1842,17 +1842,15 @@ your Go binary to be later served from an http.FileSystem.")
     (license license:bsd-3)))
 
 (define-public go-github-com-nathan-osman-go-sunrise
-  (let ((commit "c8f9f1eb869135f07378e7e3c5ec7a005f806c73")
-        (revision "0"))
     (package
       (name "go-github-com-nathan-osman-go-sunrise")
-      (version (git-version "1.1.0" revision commit))
+      (version "1.1.0")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/nathan-osman/go-sunrise")
-               (commit commit)))
+               (commit (string-append "v" version))))
          (file-name (git-file-name name version))
          (sha256
           (base32
@@ -1865,7 +1863,7 @@ your Go binary to be later served from an http.FileSystem.")
       (description
        "This package provides a Go library for calculating sunrise and
 sunset times from geographical coordinates and a date.")
-      (license license:expat))))
+      (license license:expat)))
 
 (define-public go-github-com-hebcal-gematriya
   (let ((commit "fe3043f73e415eb82727701d10f2fb40f87675e9")
