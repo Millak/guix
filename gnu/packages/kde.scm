@@ -267,14 +267,14 @@ browser for easy news reading.")
 (define-public gwenview
   (package
     (name "gwenview")
-    (version "24.05.2")
+    (version "24.12.1")
     (source
      (origin
-        (method url-fetch)
-        (uri (string-append "mirror://kde/stable/release-service/" version
-                            "/src/gwenview-" version ".tar.xz"))
-        (sha256
-         (base32 "0ybsra2c5dhagd8w81sccz3d9rfsj2mdnwrc4jcnkffjjk4ys09g"))))
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/" version
+                           "/src/gwenview-" version ".tar.xz"))
+       (sha256
+        (base32 "08s5ksqqwj6d46drkvl8ka9c2lp62z3j5vhg65d762s6xnnd5a19"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
@@ -302,6 +302,7 @@ browser for easy news reading.")
            exiv2
            plasma-activities
            kcolorpicker
+           kcrash
            kguiaddons
            ki18n
            kiconthemes
