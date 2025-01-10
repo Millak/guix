@@ -37518,6 +37518,77 @@ host.  If empty, QEMU uses a default file name.
 @end table
 @end deftp
 
+@subsubheading Xen Guest Agent
+
+@cindex Xen
+@cindex Xen guest agent
+
+The Xen guest agent allows a Xen host to control the emulated system.
+The @code{xe-guest-utilities} service runs the agent on Guix guests.
+
+@url{https://github.com/xenserver/xe-guest-utilities, xe-guest-utilities} collects information about the running virtualized guest. This includes:
+@itemize
+@item
+static information
+@itemize
+@item
+The operating system running
+@item
+The Linux kernel version
+@end itemize
+
+@item
+dynamic information
+@itemize
+@item
+Network interfaces (devices) being added/removed
+@item
+Network connections being unplugged/plugged-in
+@item
+CPUs being added or removed
+@item
+The guest migrating, being paused/resumed, etc.
+@end itemize
+
+@item
+ephemeral information
+@itemize
+@item
+The amount of memory currently in-use and free
+@item
+The amount of disk-space used
+@end itemize
+@end itemize
+
+@quotation Note
+The default Linux-libre kernel that Guix ships already enables the
+necessary paravirtualization features for a guest.  There is nothing you
+need to do for the guest to support Xen's paravirtualization features.
+
+The guest utilities are used to have the guest report information
+@emph{back} to the virtualizing host and support tasks that require
+cooperation between host and guest, like CPU hotplugging.
+@end quotation
+
+@defvar xe-guest-utilities-service-type
+Service type for the Xen guest utilities service.
+@end defvar
+
+@deftp {Data Type} xe-guest-utilities-configuration
+Configuration for the @code{xe-guest-utilities} service.
+
+@table @asis
+@item @code{package} (default: @code{xe-guest-utilities})
+The Xen guest utilities package to use.
+
+@item @code{pid-file} (default: @code{"/var/run/xe-daemon.pid"})
+Name of the file holding the PID of @code{xe-deamon}.
+
+@item @code{log-file} (default: @code{"/var/log/xe-guest-utilities.log"})
+Name of the @code{xe-guest-utilities} log file.
+@end table
+@end deftp
+
 
 @anchor{build-vm}
 @subsubheading Virtual Build Machines

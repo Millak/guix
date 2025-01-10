@@ -6,6 +6,7 @@
 ;;; Copyright © 2022 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2022 Leo Nikkilä <hello@lnikki.la>
 ;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2024 Raven Hallsby <karl@hallsby.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -32,6 +33,9 @@
   #:autoload   (gnu packages gnupg) (guile-gcrypt)
   #:use-module (gnu packages package-management)
   #:use-module (gnu packages ssh)
+  #:use-module (gnu packages base)
+  #:use-module (gnu packages gawk)
+  #:use-module (gnu packages linux)
   #:use-module (gnu packages virtualization)
   #:use-module (gnu services base)
   #:use-module (gnu services configuration)
@@ -106,7 +110,10 @@
 
             qemu-guest-agent-configuration
             qemu-guest-agent-configuration?
-            qemu-guest-agent-service-type))
+            qemu-guest-agent-service-type
+
+            xe-guest-utilities-configuration
+            xe-guest-utilities-service-type))
 
 (define (uglify-field-name field-name)
   (let ((str (symbol->string field-name)))
@@ -1002,6 +1009,79 @@ specified, the QEMU default path is used."))
                              qemu-guest-agent-shepherd-service)))
    (default-value (qemu-guest-agent-configuration))
    (description "Run the QEMU guest agent.")))
+
+
+;;;
+;;; Guest agent for VMs running under Xen
+;;;
+(define-configuration/no-serialization xe-guest-utilities-configuration
+  (package
+   (package xe-guest-utilities)
+   "Xen guest management utilities package.")
+  (pid-file
+   (string "/var/run/xe-daemon.pid")
+   "Path to the file holding the PID of xe-deamon.")
+  (log-file
+   (string "/var/log/xe-guest-utilties.log")
+   "Path to xe-guest-utilities log file."))
+
+(define (generate-xe-guest-utilities-documentation)
+  "Generate documentation for xe-guest-utilities-configuration fields"
+  (generate-documentation
+   `((xe-guest-utilities-configuration ,xe-guest-utilities-configuration-fields))
+   'xe-guest-utilities-configuration))
+
+(define (xe-guest-utilities-shepherd-service config)
+  (let ((xe-guest-utils (xe-guest-utilities-configuration-package config))
+        (pid-file (xe-guest-utilities-configuration-pid-file config))
+        (log-file (xe-guest-utilities-configuration-log-file config)))
+    (list
+     (shepherd-service
+      (provision '(xen-guest-agent))
+      (requirement '(networking user-processes udev))
+      (documentation "Run the Xen guest management agent.")
+      (start
+       #~(lambda _
+           (let ((pid (make-forkexec-constructor
+                       (list
+                        #$(file-append xe-guest-utils
+                                       "/sbin/xe-daemon")
+                        "-p" #$pid-file)
+                       #:log-file #$log-file
+                       #:pid-file #$pid-file
+                       #:environment-variables
+                       (list (string-append
+                              "PATH="
+                              #$(file-append xe-guest-utils "/bin") ":"
+                              ;; logger
+                              #$(file-append inetutils "/bin"))))))
+             ;; Run xe-linux-distribution script before starting the actual
+             ;; daemon. The script collects some basic system information that
+             ;; is shared back to the Xen host.
+             (system* #$(file-append xe-guest-utils "/sbin/xe-linux-distribution")
+                      "/var/cache/xe-linux-distribution")
+             ;; Finally, start and return the PID made by
+             ;; make-forkexec-constructor.
+             pid)))
+      (stop #~(make-kill-destructor))))))
+
+(define (xe-guest-utilities-udev-rules-service config)
+  (let ((guest-utils (xe-guest-utilities-configuration-package config)))
+    (list
+     (file->udev-rule
+      "z10_xen-vcpu-hotplug.rules"
+      (file-append guest-utils "/lib/udev/rules.d/z10_xen-vcpu-hotplug.rules")))))
+
+(define xe-guest-utilities-service-type
+  (service-type
+   (name 'xe-guest-utilities)
+   (extensions
+    (list (service-extension shepherd-root-service-type
+                             xe-guest-utilities-shepherd-service)
+          (service-extension udev-service-type
+                             xe-guest-utilities-udev-rules-service)))
+   (default-value (xe-guest-utilities-configuration))
+   (description "Run the Xen guest management utilities.")))
 
 
 ;;;
