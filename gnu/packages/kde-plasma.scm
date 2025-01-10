@@ -858,19 +858,21 @@ computer's hardware.")
 (define-public kongress
   (package
     (name "kongress")
-    (version "24.05.2")
+    (version "24.12.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/" version
                                   "/src/kongress-" version ".tar.xz"))
               (sha256
                (base32
-                "1bg7fsa4va59cg84r9vjiycl7g4b130m6m6sis9pc6w44jkcbjg2"))))
+                "06xhlr39wglnis9nbxgvkp5sz74g5hms0cahlvm8pmphvd5aygnv"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules python-minimal))
     ;; NOTE: Reporting bugs is linked to web browser, better not link it and let
     ;; it reslove through xdg-open in the run time
     (inputs (list kirigami
+                  kirigami-addons
+                  kcrash
                   kdbusaddons
                   ki18n
                   kcalendarcore
@@ -880,6 +882,7 @@ computer's hardware.")
                   kcontacts
                   kitemmodels
                   knotifications
+                  kosmindoormap
                   kxmlgui
                   kiconthemes
                   qtdeclarative
