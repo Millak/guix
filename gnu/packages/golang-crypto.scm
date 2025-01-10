@@ -2197,6 +2197,30 @@ vectorized version of BLAKE3 implementation in Golang.")
 Congruential Generator} (PCG) algorithm.")
     (license license:cc0)))
 
+(define-public go-gitlab-com-nyarla-go-crypt
+  (package
+    (name "go-gitlab-com-nyarla-go-crypt")
+    (version "0.0.0-20160106005555-d9a5dc2b789b")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/nyarla/go-crypt.git")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0249hbwvhy0xywi9b5k8964km27pvfkr3jvliy3azri6vnyvkkx1"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "gitlab.com/nyarla/go-crypt"))
+    (home-page "https://gitlab.com/nyarla/go-crypt")
+    (synopsis "Implementation of @code{crypt(3)} in Golang")
+    (description
+     "Package crypt is a implementation of crypt(3) by golang, originated from
+https://code.google.com/p/go-crypt.")
+    (license license:bsd-3)))
+
 (define-public go-gitlab-com-yawning-bsaes-git
   (package
     (name "go-gitlab-com-yawning-bsaes-git")
