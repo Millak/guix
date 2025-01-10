@@ -3689,6 +3689,30 @@ console APIs are used.  Otherwise, ANSI texts are output.")
 more complicated parallel cases.")
     (license license:expat)))
 
+(define-public go-github-com-dchest-stemmer
+  (package
+    (name "go-github-com-dchest-stemmer")
+    (version "0.0.0-20161207102402-66719a20c4b5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dchest/stemmer")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1r2rz8ynmcrkwjk8sq10n6jgxmkfqf2wqy8nvgriyww41pfq5fgn"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/dchest/stemmer"))
+    (home-page "https://github.com/dchest/stemmer")
+    (synopsis "Stemmer package for Golang")
+    (description
+     "Stemmer package provides an interface for stemmers and includes English,
+German and Dutch stemmers as sub-packages.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-deckarep-golang-set
   (package
     (name "go-github-com-deckarep-golang-set")
