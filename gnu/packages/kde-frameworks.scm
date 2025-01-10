@@ -1991,7 +1991,7 @@ feel.")
 (define-public solid
   (package
     (name "solid")
-    (version "6.5.0")
+    (version "6.10.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2000,13 +2000,13 @@ feel.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0p3af1p8137yij3m8ksxw6pmgjhpfjxn2i67byzz9ghpjrn7q8z8"))))
+                "134f67pwy3wv54ybzq4f7maa5i9mfss89lyv34spazq4lf0jx294"))))
     (build-system cmake-build-system)
     (native-inputs
-     (list bison dbus extra-cmake-modules flex qttools))
+     (list bison dbus extra-cmake-modules flex pkg-config qttools))
     ;; TODO: Add runtime-only dependency MediaPlayerInfo
     (inputs
-     (list `(,util-linux "lib") ;; Optional, for libmount
+     (list `(,util-linux "lib")
            libxkbcommon
            vulkan-headers
            qtbase qtdeclarative eudev))
