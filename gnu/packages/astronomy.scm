@@ -1678,12 +1678,6 @@ implementation of the ASDF Standard.")
       #~(list "--numprocesses" (number->string (parallel-job-count)))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'relax-requirements
-            (lambda _
-              (substitute* "pyproject.toml"
-                ;; numpy>=1.24, all tests passed successfuly. Scheduled for
-                ;; update in python-team.
-                ((">=1.24") ">=1.23"))))
           (add-before 'check 'set-home-env
             (lambda _ (setenv "HOME" "/tmp"))))))
     (native-inputs
@@ -1694,7 +1688,8 @@ implementation of the ASDF Standard.")
            python-pytest-astropy
            python-pytest-xdist
            python-scipy
-           python-setuptools-scm))
+           python-setuptools-scm
+           python-wheel))
     (propagated-inputs
      (list python-asdf
            python-asdf-coordinates-schemas
