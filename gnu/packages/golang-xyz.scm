@@ -12128,6 +12128,45 @@ watches memory utilization and forces Go GC in accordance with a user-defined
 policy.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public go-github-com-reiver-go-porterstemmer
+  ;; The latest commit contain test fixtures.
+  (let ((commit "ab0f922907ea0321367a5776bd7a6c35d505d53b")
+        (revision "0"))
+    (package
+      (name "go-github-com-reiver-go-porterstemmer")
+      (version (git-version "1.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/reiver/go-porterstemmer")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "10inyn0hdwdp619fk9lamq7cffalq4b201s3m75dfsqrb46az1ph"))))
+      (build-system go-build-system)
+      (arguments
+       (list
+        #:import-path "github.com/reiver/go-porterstemmer"
+        ;; Could not download test file (from web) from URL:
+        ;; [http://tartarus.org/martin/PorterStemmer/voc.txt]
+        #:test-flags #~(list "-skip" "TestHasSuffix|TestStemString")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'fix-tests
+              (lambda* (#:key import-path #:allow-other-keys)
+                (with-directory-excursion (string-append "src/" import-path)
+                  (substitute* "porterstemmer_has_suffix_test.go"
+                    ;; (*testing.common).Errorf format %d has arg
+                    ;; datum.Expected of wrong type bool
+                    (("%d") "%t"))))))))
+      (home-page "https://github.com/reiver/go-porterstemmer")
+      (synopsis "Clean room implementation of the Porter Stemming algorithm")
+      (description
+       "This package provides a native Go clean room implementation of the
+Porter Stemming Algorithm.")
+      (license license:expat))))
+
 (define-public go-github-com-remeh-sizedwaitgroup
   (package
     (name "go-github-com-remeh-sizedwaitgroup")
