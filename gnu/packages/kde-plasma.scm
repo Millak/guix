@@ -1823,14 +1823,14 @@ on top of Baloo.")
 (define-public plasma5support
   (package
     (name "plasma5support")
-    (version "6.1.4")
+    (version "6.2.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version
                                   "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1mj4vm1av582xq1ykxqacy06rkfb1dwpdqqi7l9czxwnch6xb7y9"))))
+                "014bdrh23cnnby5r8ydixj1390p0i5rl4hrcxlhd06lnl9529ifa"))))
     (build-system qt-build-system)
     (arguments (list #:qtbase qtbase
 
@@ -1848,14 +1848,15 @@ on top of Baloo.")
                                          "1")))))))
     (native-inputs (list extra-cmake-modules))
     (propagated-inputs (list kcoreaddons))
-    (inputs (list
-             kconfig
-             ki18n
-             qtdeclarative
-             kguiaddons
-             knotifications
-             solid
-             libksysguard))
+    (inputs (list kconfig
+                  ki18n
+                  kio
+                  kguiaddons
+                  knotifications
+                  kservice
+                  libksysguard
+                  qtdeclarative
+                  solid))
     (home-page "https://invent.kde.org/plasma/plasma5support")
     (synopsis "Support components for porting from KF5/Qt5 to KF6/Qt6")
     (description "This package provides support components for porting from
