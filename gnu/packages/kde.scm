@@ -1290,27 +1290,29 @@ submoduletest|cachetest|switchtest)")))))))
 (define-public kompare
   (package
     (name "kompare")
-    (version "24.05.2")
+    (version "24.12.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/" version
                                   "/src/kompare-" version ".tar.xz"))
               (sha256
                (base32
-                "13kvxa3l5hp9fi6ijy8vyzzm4ackrf09k6rm0nicb5z1s3iyyvxh"))))
+                "1ajr7qaf4dcccl5pc09ywfa4mgrfpa3qq1w7x4lfmv82gvp7ld64"))))
     (build-system qt-build-system)
+    (arguments (list #:qtbase qtbase))
     (native-inputs
-     (list extra-cmake-modules kdoctools-5))
+     (list extra-cmake-modules kdoctools))
     (inputs
      (list libkomparediff2
-           kcodecs-5
-           kconfig-5
-           kcoreaddons-5
-           kiconthemes-5
-           kjobwidgets-5
-           kparts-5
-           ktexteditor-5
-           kwidgetsaddons-5))
+           kcodecs
+           kconfig
+           kcoreaddons
+           ki18n
+           kiconthemes
+           kjobwidgets
+           kparts
+           ktexteditor
+           kwidgetsaddons))
     (home-page "https://apps.kde.org/kompare/")
     (synopsis "Graphical file differences tool")
     (description
