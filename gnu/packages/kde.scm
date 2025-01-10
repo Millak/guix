@@ -829,7 +829,7 @@ painting, image manipulating and icon editing.")
 (define-public krita
   (package
     (name "krita")
-    (version "5.2.3")
+    (version "5.2.6")
     (source
      (origin
        (method url-fetch)
@@ -837,7 +837,7 @@ painting, image manipulating and icon editing.")
              "mirror://kde/stable/krita/" version "/krita-" version
              ".tar.gz"))
        (sha256
-        (base32 "1h2whbccgr2xhln4zx708hksg4284dhgjz10cnnkfgiwp7nlcsj6"))
+        (base32 "1yymhbybnjkl0smfqv6sm13iz4pp5ask3bjl5klv9x7xaj2i5ms8"))
        (patches (search-patches "krita-bump-sip-abi-version-to-12.8.patch"))))
     (build-system qt-build-system)
     (arguments
