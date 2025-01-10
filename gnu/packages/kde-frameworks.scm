@@ -190,7 +190,7 @@ common build settings used in software produced by the KDE community.")
 (define-public kquickcharts
   (package
     (name "kquickcharts")
-    (version "6.5.0")
+    (version "6.10.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/frameworks/"
@@ -198,7 +198,7 @@ common build settings used in software produced by the KDE community.")
                                   "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "00lhiiyl8yv7cn06b2xjpcwgcxb5n60v1122hn32mpbg436abaf5"))))
+                "13sr67bvxvkc02gvz7fsavc63mi3hz0jz0n7g31bkaz73rxny0x2"))))
     (build-system qt-build-system)
     (arguments (list #:qtbase qtbase))
     (native-inputs (list extra-cmake-modules glslang pkg-config))
