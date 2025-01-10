@@ -721,14 +721,14 @@ functionality")
 (define-public kinfocenter
   (package
     (name "kinfocenter")
-    (version "6.1.4")
+    (version "6.2.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version
                                   "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1n904nn0jrrih9qk8cz2d2sp9pghr6qn0ra5jbbg2rpz4k1gv78p"))))
+                "1yczcgq4rnfmg3g8sb83nym8jmglp0hwhyfwz24n29947bdpxn4y"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -747,7 +747,8 @@ functionality")
                                    (search-input-file
                                     inputs
                                     (string-append "/bin/" cmd))
-                                   "\""))))))
+                                   "\"")))))
+                    (dmidecode (search-input-file inputs "/sbin/dmidecode")))
                 (substitute* "CMakeLists.txt"
                   (("\\$\\{KDE_INSTALL_FULL_BINDIR\\}/systemsettings")
                    (search-input-file inputs
@@ -758,7 +759,20 @@ functionality")
                 (substitute* "kcms/kwinsupportinfo/main.cpp"
                   (("QLibraryInfo::path\\(QLibraryInfo::BinariesPath\\) \\+ QStringLiteral\\(\"/qdbus\"\\)")
                    (string-append "QStringLiteral(\"" (search-input-file inputs "/bin/qdbus") "\")")))
-
+                (substitute* "kcms/memory/kcm_memory.json"
+                  (("pkexec dmidecode")
+                   (string-append
+                    "pkexec " dmidecode)))
+                (substitute* "kcms/memory/main.cpp"
+                  (("dmidecode") dmidecode))
+                (substitute* '("kcms/firmware_security/main.cpp"
+                               "kcms/firmware_security/fwupdmgr.sh"
+                               "kcms/firmware_security/kcm_firmware_security.json")
+                  (("aha") (search-input-file inputs "/bin/aha"))
+                  (("\"fwupdmgr\"") (string-append "\"" (search-input-file inputs "/bin/fwupdmgr") "\""))
+                  (("fwupdmgr security") (string-append (search-input-file inputs "/bin/fwupdmgr") " security"))
+                  (("sed") (search-input-file inputs "/bin/sed"))
+                  (("/bin/sh") (search-input-file inputs "/bin/sh")))
                 (replace '("kcms/cpu/kcm_cpu.json"
                            "kcms/cpu/main.cpp") "lscpu")
                 (replace '("kcms/opencl/kcm_opencl.json"
@@ -776,8 +790,9 @@ functionality")
     (native-inputs (list aha extra-cmake-modules kdoctools pkg-config qttools))
     ;; * vulkaninfo
     ;; Wayland KCM
-    (inputs (list dmidecode
-                  ;; fwupdmgr ;; Packaged on master branch already
+    (inputs (list bash-minimal
+                  dmidecode
+                  fwupd
                   kauth
                   kconfig
                   kconfigwidgets
