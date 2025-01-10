@@ -354,14 +354,14 @@ This package is part of the KDE networking module.")
 (define-public ktorrent
   (package
     (name "ktorrent")
-    (version "24.05.2")
+    (version "24.12.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/ktorrent-" version ".tar.xz"))
        (sha256
-        (base32 "1m96ch4rfrjnrw9rd7ad3ipc0hvhxl2awb7aqfnk4dd1g8hhjkq0"))))
+        (base32 "178mri9hjlriji43rf36h0bfp5zsy4ky8aczsnxxawrg25c8h2ma"))))
     (build-system qt-build-system)
     (arguments (list #:qtbase qtbase))
     (native-inputs
