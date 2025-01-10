@@ -3491,14 +3491,14 @@ interfaces.")
 (define-public xdg-desktop-portal-kde
   (package
     (name "xdg-desktop-portal-kde")
-    (version "6.1.4")
+    (version "6.2.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version "/"
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1cm7vh179dvb4jrd70ifsgpkrnfk9imzb65cg76g5znmhvyibjiq"))))
+                "1w9sc8a4a3h3604x6vakhbiqibcwxiqpcd4kvq540cy4gmpvz1hy"))))
     (build-system qt-build-system)
     (arguments (list
                 #:tests? #f ;; colorschemetest test fail, because require dbus.
@@ -3510,6 +3510,7 @@ interfaces.")
     (inputs (list cups
                   kcoreaddons
                   kconfig
+                  kcrash
                   ki18n
                   kdeclarative
                   kio
