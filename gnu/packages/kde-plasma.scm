@@ -3082,46 +3082,52 @@ UI for Plasma")
 (define-public powerdevil
   (package
     (name "powerdevil")
-    (version "6.1.4")
+    (version "6.2.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version
                                   "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1r8kj118vnjy3kcv16bhrdgja44dlvgjgvwp6gihb0s9wbi6dad1"))))
+                "0js63y5q5503bq6nd45kpzcxhpz3w1wfh6r0sgklpbpgsnb069bh"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules qttools pkg-config))
     (inputs (list bluez-qt
+                  ddcutil
+                  eudev
                   glib
                   kauth
-                  plasma-activities
                   kcmutils
-                  kscreen
-                  kidletime
                   kconfig
+                  kcrash
+                  kcrash
                   kdbusaddons
-                  kxmlgui
-                  kitemmodels
-                  layer-shell-qt
-                  solid
-                  ki18n
-                  kcrash
-                  knotifyconfig
-                  networkmanager-qt
-                  kio
-                  kwayland
                   kglobalaccel
-                  kcrash
-                  knotifications
+                  ki18n
+                  kidletime
+                  kio
                   kirigami
+                  kitemmodels
+                  knotifications
+                  knotifyconfig
+                  krunner
+                  kscreen
+                  kwayland
+                  kxmlgui
+                  layer-shell-qt
                   libcap
                   libkscreen
+                  libplasma
+                  libxkbcommon
                   network-manager
+                  networkmanager-qt
+                  plasma-activities
+                  plasma-wayland-protocols
                   plasma-workspace
-                  eudev
-                  ddcutil
-                  libxkbcommon))
+                  qcoro-qt6
+                  qtwayland
+                  solid
+                  wayland))
     (arguments (list #:qtbase qtbase
                      #:phases #~(modify-phases %standard-phases
                                   (add-before 'check 'setenv
