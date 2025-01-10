@@ -939,19 +939,20 @@ expression library, that is used in Krita.")
 (define-public kolourpaint
   (package
     (name "kolourpaint")
-    (version "24.05.2")
+    (version "24.12.1")
     (source
      (origin
-        (method url-fetch)
-        (uri (string-append "mirror://kde/stable/release-service/" version
-                            "/src/kolourpaint-" version ".tar.xz"))
-        (sha256
-         (base32 "1fi1y74s2lnrxdnr9ym4b1ilj9qi019gaavfv0sq1xg8ppbpgcbr"))))
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/" version
+                           "/src/kolourpaint-" version ".tar.xz"))
+       (sha256
+        (base32 "0fg72dfk5jh2hqf2lplivc0a6gilzgz8l14wfk95s8fmmcsilxxs"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
-     (list kguiaddons
+     (list kcrash
+           kguiaddons
            ki18n
            kio
            kjobwidgets
