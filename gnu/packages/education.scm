@@ -701,14 +701,14 @@ charts.")
 (define-public ktouch
   (package
     (name "ktouch")
-    (version "24.05.2")
+    (version "24.12.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/"
                            version "/src/ktouch-" version ".tar.xz"))
        (sha256
-        (base32 "1636s1brigmd7wbmjlfgz2qlrrp592rrk9nylh9bi0j1nf3xa8c5"))))
+        (base32 "0ma65m6lprxrp3xdcxpbx6k8hqzzczv3wb2g52aqn19z5jhphr4p"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools-5 pkg-config))
