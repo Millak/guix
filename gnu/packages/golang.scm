@@ -1842,17 +1842,15 @@ your Go binary to be later served from an http.FileSystem.")
     (license license:bsd-3)))
 
 (define-public go-github-com-hebcal-gematriya
-  (let ((commit "fe3043f73e415eb82727701d10f2fb40f87675e9")
-        (revision "0"))
     (package
       (name "go-github-com-hebcal-gematriya")
-      (version (git-version "1.0.1" revision commit))
+      (version "1.0.1")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/hebcal/gematriya")
-               (commit commit)))
+               (commit (string-append "v" version))))
          (file-name (git-file-name name version))
          (sha256
           (base32
@@ -1865,7 +1863,7 @@ your Go binary to be later served from an http.FileSystem.")
       (description
        "This package provides a Go library for printing numbers as
 Hebrew letters.")
-      (license license:bsd-2))))
+      (license license:bsd-2)))
 
 (define-public go-gopkg.in-tomb.v2
   (let ((commit "d5d1b5820637886def9eef33e03a27a9f166942c")
