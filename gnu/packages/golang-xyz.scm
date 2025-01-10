@@ -14216,6 +14216,29 @@ programming language.")
      (list go-github-com-vmihailenco-tagparser
            go-google-golang-org-appengine))))
 
+(define-public go-github-com-vmihailenco-tagparser
+  (package
+    (name "go-github-com-vmihailenco-tagparser")
+    (version "2.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/vmihailenco/tagparser")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "13arliaz3b4bja9jj7cr5ax4zvxaxm484fwrn0q6d6jjm1l35m1k"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/vmihailenco/tagparser"))
+    (home-page "https://github.com/vmihailenco/tagparser")
+    (synopsis "Tag parser for Golang")
+    (description
+     "This package is a simple Golang implementation of tag parser.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-warpfork-go-fsx
   (package
     (name "go-github-com-warpfork-go-fsx")
