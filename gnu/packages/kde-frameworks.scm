@@ -2137,14 +2137,14 @@ uses a job-based interface to queue tasks and execute them in an efficient way."
 (define-public libkdcraw
   (package
     (name "libkdcraw")
-    (version "24.05.2")
+    (version "24.12.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "0a4aifi3jwkizdn2qsa441f28j9ykymw4bn922d5pz6c9riw3ssr"))))
+        (base32 "0m2wi3bhfd5yn57dpix9mbsrzkxm7p1s42zs1x899wmznk8blnib"))))
     (build-system cmake-build-system)
     (native-inputs
      (list pkg-config extra-cmake-modules))
