@@ -3633,6 +3633,34 @@ gist (https://gist.github.com/kballard/272720).")
     (description "This package provides functionality to generate Go code.")
     (license license:expat)))
 
+(define-public go-github-com-daviddengcn-go-colortext
+  (package
+    (name "go-github-com-daviddengcn-go-colortext")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/daviddengcn/go-colortext")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0j5ldwg3a768d3nniiglghr9axj4p87k7f7asqxa1a688xvcms48"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/daviddengcn/go-colortext"))
+    (native-inputs
+     (list go-github-com-golangplus-testing))
+    (home-page "https://github.com/daviddengcn/go-colortext")
+    (synopsis "Change the color of console text and background")
+    (description
+     "This is a package to change the color of the text and background in the
+console, working both under Windows and other systems.  Under Windows, the
+console APIs are used.  Otherwise, ANSI texts are output.")
+    ;; dual-licensed
+    (license (list license:bsd-3 license:expat))))
+
 (define-public go-github-com-dbaggerman-cuba
   (package
     (name "go-github-com-dbaggerman-cuba")
