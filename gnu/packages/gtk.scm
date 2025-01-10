@@ -2125,19 +2125,24 @@ so that they can be used normally in signals and properties.")
     (native-inputs
      (list perl-extutils-depends perl-extutils-pkgconfig pkg-config))
     (inputs
-     (list gtk+-2))
+     (list gtk+-2 gdk-pixbuf))
     (propagated-inputs
      (list perl-pango))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'remove-broken-test
-           ;; See https://gitlab.gnome.org/GNOME/perl-gtk2/issues/3.
-           (lambda _
-             (substitute* "t/GdkPixbuf.t"
-               (("tests => 112") "tests => 111")
-               (("ok \\(defined \\$pixbuf, \"Don't crash on partial pixmap data\"\\);")
-                "# ok (defined $pixbuf, \"Don't crash on partial pixmap data\");")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'fix-tests
+            (lambda _
+              ;; XXX: by default it uses 'loaders.cache' from librsvg, which supports SVG only.
+              (setenv "GDK_PIXBUF_MODULE_FILE"
+                      (string-append #$(this-package-input "gdk-pixbuf")
+                                     "/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache"))
+              ;; See https://gitlab.gnome.org/GNOME/perl-gtk2/issues/3.
+              (substitute* "t/GdkPixbuf.t"
+                (("tests => 112") "tests => 111")
+                (("ok \\(defined \\$pixbuf, \"Don't crash on partial pixmap data\"\\);")
+                 "# ok (defined $pixbuf, \"Don't crash on partial pixmap data\");")))))))
     (home-page "https://metacpan.org/release/Gtk2")
     (synopsis "Perl interface to the 2.x series of the Gimp Toolkit library")
     (description "Perl bindings to the 2.x series of the Gtk+ widget set.
