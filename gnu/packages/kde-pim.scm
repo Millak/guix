@@ -571,14 +571,14 @@ CalDAV server.")
 (define-public kaccounts-integration
   (package
     (name "kaccounts-integration")
-    (version "24.05.2")
+    (version "24.12.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
                                   version "/src/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0dbv1yv6qq0rgjlczmky7fmwa3rspyssd6grdbgzyy3k0v35m1fi"))))
+                "1y19kb87wqf8w5b5yvnkykqkrri7djrb8gd39c734zq7ks5wjd67"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules))
     (inputs (list kcmutils
