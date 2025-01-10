@@ -7244,7 +7244,7 @@ and random access tool.")
            python-pysam
            python-tbb
            python-umap-learn))
-    (native-inputs (list python-pytest python-setuptools-scm))
+    (native-inputs (list python-pytest python-setuptools-scm python-wheel))
     (home-page "https://github.com/colomemaria/epiScanpy")
     (synopsis "Tool for epigenomics single cell analysis")
     (description
