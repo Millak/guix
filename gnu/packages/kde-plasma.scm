@@ -2353,36 +2353,43 @@ connections.")
 (define-public plasma-mobile
   (package
     (name "plasma-mobile")
-    (version "5.24.3")
+    (version "6.2.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
                                   version "/plasma-mobile-" version ".tar.xz"))
               (sha256
                (base32
-                "1bwmy7xvd8wmh0snqqjh9jjgawib8ks2g30w48sqxwhplhf3da58"))))
+                "1lhqcpn8igc14mr2fjbrc108q1qi58h3r4d5vsgkvz4jnfxbkkmf"))))
     (build-system cmake-build-system)
-    (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (add-after 'install 'wrap-script
-                          (lambda* (#:key inputs outputs #:allow-other-keys)
-                            (wrap-program (string-append #$output
-                                                         "/bin/kwinwrapper")
-                                          `("PATH" ":" prefix
-                                            (,(string-append #$plasma-framework
-                                                             "/bin")))))))))
     (native-inputs (list extra-cmake-modules pkg-config qttools))
     (inputs (list bash-minimal
+                  eudev
+                  kcmutils
+                  kdbusaddons
                   kdeclarative
+                  kglobalaccel
                   ki18n
                   kio
+                  kirigami-addons
+                  kitemmodels
                   knotifications
                   kwayland
                   kwin
+                  layer-shell-qt
+                  libepoxy
+                  libkscreen
+                  libplasma
+                  libxkbcommon
                   modemmanager-qt
                   networkmanager-qt
-                  plasma-framework
-                  qtbase-5))
+                  plasma-activities
+                  plasma-workspace
+                  qcoro-qt6
+                  qtbase
+                  qtsensors
+                  qtwayland
+                  wayland))
     (home-page "https://plasma-mobile.org/")
     (synopsis
      "General UI components for Plasma Phone including shell, containment and applets")
