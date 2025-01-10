@@ -985,7 +985,7 @@ WSGI.  This package includes libraries for implementing ASGI servers.")
 (define-public python-asgi-csrf
   (package
     (name "python-asgi-csrf")
-    (version "0.9")
+    (version "0.11")
     (source (origin
               (method git-fetch)        ;for tests
               (uri (git-reference
@@ -994,38 +994,8 @@ WSGI.  This package includes libraries for implementing ASGI servers.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1j134mjh0ff61rvkm3q67m463j1bhyxc9dwsdany3scnd4vsqqws"))))
+                "1dn9v47z2b599cnwahxvzsll2w28940ycgh5skxgq04vcqqssf29"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list #:test-flags
-           ;; Provide a null config to avoid the extraneous dependency on
-           ;; python-pytest-coverage.
-           #~(list "-c" "/dev/null"
-                   ;; Disable two failing tests (see:
-                   ;; https://github.com/simonw/asgi-csrf/issues/24).
-                   "-k" (string-append
-                         "not (test_multipart "
-                         "or test_multipart_failure_wrong_token)"))
-           #:phases
-           '(modify-phases %standard-phases
-              (add-after 'unpack 'compatibility
-                (lambda _
-                  ;; httpx version 0.28.0 removed the "app" shortcut.
-                  (substitute* "test_asgi_csrf.py"
-                    (("httpx.AsyncClient\\(app=app_csrf\\)")
-                     "httpx.AsyncClient(transport=httpx.ASGITransport(app_csrf))")
-                    (("httpx.AsyncClient\\(app=hello_world_app\\)")
-                     "httpx.AsyncClient(transport=httpx.ASGITransport(hello_world_app))")
-                    (("httpx.AsyncClient\\(app=app\\)")
-                     "httpx.AsyncClient(transport=httpx.ASGITransport(app))")
-                    ;; The remaining invocations are harder to patch, so we
-                    ;; define a wrapper.
-                    (("^SECRET =")
-                     "def asgi_csrf_transport(*args, **kwargs):
-  return httpx.ASGITransport(asgi_csrf(*args, **kwargs))
-
-SECRET =")
-                    (("app=asgi_csrf") "transport=asgi_csrf_transport")))))))
     (propagated-inputs (list python-itsdangerous python-multipart))
     (native-inputs (list python-asgi-lifespan
                          python-httpx
