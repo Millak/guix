@@ -2158,14 +2158,14 @@ picture metadata as EXIF/IPTC and XMP.")
 (define-public kio-zeroconf
   (package
     (name "kio-zeroconf")
-    (version "24.05.2")
+    (version "24.12.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kio-zeroconf-" version ".tar.xz"))
        (sha256
-        (base32 "058w37n7s8lbc8mjqjpqarhg8b2796x2yssrxnppib12dld9x4wb"))))
+        (base32 "1ngn1iz4nybix7wshjsddvlm69mdvj8pis63yiyk5p3aiv0h2axl"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
