@@ -712,14 +712,14 @@ functions for accessing calendar data using the kcalcore API.")
 (define-public kdepim-runtime
   (package
     (name "kdepim-runtime")
-    (version "24.05.2")
+    (version "24.12.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kdepim-runtime-" version ".tar.xz"))
        (sha256
-        (base32 "1jymvmiqbyl8qcff835sp6kw8w4lg4clm7p5cscfmcx6b9bg4w7l"))))
+        (base32 "0n7wdnx7zl9pykg75naai0g1b0m3ck20g61k0rqj9gx6dmfy468i"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules dbus kdoctools libxslt shared-mime-info))
@@ -786,11 +786,12 @@ functions for accessing calendar data using the kcalcore API.")
                             (when tests?
                               ;; FIXME: Atleast some appear to require network.
                               (invoke "dbus-launch" "ctest" "-E" "\
-(akonadi-sqlite-synctest|akonadi-sqlite-pop3test|storecompacttest\
-|akonadi-sqlite-ewstest|ewsmoveitemrequest_ut|ewsdeleteitemrequest_ut\
+(akonadi-sqlite-icalcategoriestotagsmigrationtest|akonadi-sqlite-synctest\
+|akonadi-sqlite-pop3test|storecompacttest|akonadi-sqlite-ewstest\
+|ewsmoveitemrequest_ut|ewsdeleteitemrequest_ut\
 |ewsgetitemrequest_ut|ewsunsubscriberequest_ut|ewssettings_ut\
-|templatemethodstest|akonadi-sqlite-serverbusytest|ewsattachment_ut|\\
-testmovecollectiontask)")))))))
+|templatemethodstest|akonadi-sqlite-serverbusytest|ewsattachment_ut\
+|testmovecollectiontask)")))))))
     (home-page "https://invent.kde.org/pim/kdepim-runtime")
     (synopsis "Runtime components for Akonadi KDE")
     (description "This package contains Akonadi agents written using KDE
