@@ -1320,14 +1320,14 @@ Features:
 (define-public sweeper
   (package
     (name "sweeper")
-    (version "24.05.2")
+    (version "24.12.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/sweeper-" version ".tar.xz"))
        (sha256
-        (base32 "0s1cj86p8wa9ngdqxff6mf4fx4b388b6il02g442g8q1kcqcnla5"))))
+        (base32 "1h5pj60h36j3034p5218mm2m0hqnlv4cb36gpkm0yi9faq8gwhvy"))))
     (build-system qt-build-system)
     (arguments (list #:qtbase qtbase))
     (native-inputs
