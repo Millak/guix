@@ -16579,6 +16579,46 @@ go-github-com-tklauser-numcpus source.")))
      "This package provides a CLI build from the
 go-github-com-orisano-pixelmatch source.")))
 
+(define-public go-porter2
+  (package
+    (inherit go-github-com-surgebase-porter2)
+    (name "go-porter2")
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-surgebase-porter2)
+       ((#:tests? _ #t) #f)
+       ((#:install-source? _ #t) #f)
+       ((#:unpack-path _) "github.com/surgebase/porter2")
+       ((#:phases phases '%standard-phases)
+        #~(modify-phases #$phases
+            (replace 'build
+              (lambda arguments
+                (for-each
+                 (lambda (cmd)
+                   (apply (assoc-ref %standard-phases 'build)
+                          `(,@arguments #:import-path ,cmd)))
+                 (list "github.com/surgebase/porter2/cmd/compare"
+                       "github.com/surgebase/porter2/cmd/suffixfsm"
+                       "github.com/surgebase/porter2/cmd/switchvsmap"))))
+            (replace 'install
+              (lambda arguments
+                (for-each
+                 (lambda (cmd)
+                   (apply (assoc-ref %standard-phases 'install)
+                          `(,@arguments #:import-path ,cmd)))
+                 (list "github.com/surgebase/porter2/cmd/compare"
+                       "github.com/surgebase/porter2/cmd/suffixfsm"
+                       "github.com/surgebase/porter2/cmd/switchvsmap"))))))))
+    (description
+     (string-append (package-description go-github-com-mattn-go-sixel)
+                    "  This package provides an command line interface (CLI)
+tools:
+@itemize
+@item @code{compare}
+@item @code{suffixfsm} is a finite state machine generator for the porter2
+@item @code{switchvsmap}
+@end itemize"))))
+
 (define-public go-sentences
   (package
     (inherit go-github-com-neurosnap-sentences)
