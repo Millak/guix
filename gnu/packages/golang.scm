@@ -2963,14 +2963,6 @@ parser.")
      "This package provides INI file read and write functionality in Go.")
     (license license:asl2.0)))
 
-(define notmuch-fixtures
-  (origin
-    (method url-fetch)
-    (uri "http://notmuchmail.org/releases/test-databases/database-v1.tar.xz")
-    (sha256
-     (base32
-      "1lk91s00y4qy4pjh8638b5lfkgwyl282g1m27srsf7qfn58y16a2"))))
-
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
