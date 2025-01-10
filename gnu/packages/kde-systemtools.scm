@@ -108,14 +108,14 @@ The main features of Dolphin are:
 (define-public dolphin-plugins
   (package
     (name "dolphin-plugins")
-    (version "24.05.2")
+    (version "24.12.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/dolphin-plugins-" version ".tar.xz"))
        (sha256
-        (base32 "08xyjjwkcr08ncc4xrj65c44iya4byvf1xhnwjg21i7zxls51zir"))))
+        (base32 "0c2gfix61kisva7abbcq41ixhbpzrshr2qm3vazmil4a4lv4n5n4"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
