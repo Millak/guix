@@ -1931,14 +1931,14 @@ pass files.")
 (define-public libgravatar
   (package
     (name "libgravatar")
-    (version "24.05.2")
+    (version "24.12.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/libgravatar-" version ".tar.xz"))
        (sha256
-        (base32 "0xk6i1rndhh58p20hx6473hc29njg03qcy7ymdvflr5lgr7qavwy"))))
+        (base32 "1grs2dnxlh1lb1mv47aggymawvc6lb7yjrnw1sqwbiwj8ign2p66"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules))
     (inputs (list kconfig
