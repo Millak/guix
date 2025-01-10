@@ -2197,7 +2197,7 @@ KDE using certificate-based crypto.")
 (define-public libksieve
   (package
     (name "libksieve")
-    (version "24.05.2")
+    (version "24.12.1")
     (source
      (origin
        (method url-fetch)
@@ -2205,7 +2205,7 @@ KDE using certificate-based crypto.")
                            "/src/libksieve-" version ".tar.xz"))
        (sha256
         (base32
-	 "1zsc84ylrylby28ypdg47kmf911dmi5hi6745wvjsrxcwnpqag37"))))
+	 "1syshv3i1qfs6mg8cds9jkpzgngkiy1i1l5p0qva2hvz6lp64kmk"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
