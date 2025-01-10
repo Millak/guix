@@ -6830,6 +6830,30 @@ expressing configuration which is easy for both humans and machines to read.")
     (home-page "https://github.com/hashicorp/hcl")
     (license license:mpl2.0)))
 
+(define-public go-github-com-hebcal-gematriya
+  (package
+    (name "go-github-com-hebcal-gematriya")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hebcal/gematriya")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xmnb2i80dy380yv8c4pd04bbyqgbc7c40p8hz1vqj2lhbm6jabf"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/hebcal/gematriya"))
+    (home-page "https://github.com/hebcal/gematriya")
+    (synopsis "Print numbers as Hebrew letters in Go")
+    (description
+     "This package provides a Go library for printing numbers as Hebrew
+letters.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-hebcal-greg
   (package
     (name "go-github-com-hebcal-greg")
