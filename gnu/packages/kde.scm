@@ -1502,7 +1502,7 @@ FAT16/32, JFS, XFS and more.")
 (define-public kpublictransport
   (package
     (name "kpublictransport")
-    (version "24.05.2")
+    (version "24.12.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
@@ -1510,7 +1510,7 @@ FAT16/32, JFS, XFS and more.")
                                   ".tar.xz"))
               (sha256
                (base32
-                "1g78kmnqg9y4mvd7nmlb4nd02ch3p5gxhnbphcnisc3ym3w3q1jj"))))
+                "1hi189yx81gabpk7czmqx2xy1slnjhhq8m5gv07avfhsw0kab8ba"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
