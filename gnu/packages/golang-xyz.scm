@@ -13376,6 +13376,48 @@ slices, JSON and other data.")
      "Go library for loading environment variables from files")
     (license license:expat)))
 
+(define-public go-github-com-surgebase-porter2
+  (package
+    (name "go-github-com-surgebase-porter2")
+    (version "0.0.0-20150829210152-56e4718818e8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/surgebase/porter2")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ivcf83jlj9s7q5y9dfbpyl0br35cz8fcp0dm8sxxvqh54py06v2"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/surgebase/porter2"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-build
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (substitute* "cmd/suffixfsm/suffixfsm.go"
+                  ;; fmt.Println arg list ends with redundant newline
+                  (("fmt.Println") "fmt.Printf"))))))))
+    (native-inputs
+     (list go-github-com-agonopol-go-stem
+           go-github-com-dchest-stemmer
+           go-github-com-kljensen-snowball
+           go-github-com-reiver-go-porterstemmer
+           go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-surge-glog))
+    (home-page "https://github.com/surgebase/porter2")
+    (synopsis "Go library implementing english Porter2 stemmer")
+    (description
+     "Porter2 implements the
+@url{http://snowball.tartarus.org/algorithms/english/stemmer.html, english
+Porter2 stemmer}.  It is written completely using finite state machines to do
+suffix comparison, rather than the string-based or tree-based approaches.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-syndtr-goleveldb
   (package
     (name "go-github-com-syndtr-goleveldb")
