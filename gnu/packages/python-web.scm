@@ -1005,7 +1005,27 @@ WSGI.  This package includes libraries for implementing ASGI servers.")
                    ;; https://github.com/simonw/asgi-csrf/issues/24).
                    "-k" (string-append
                          "not (test_multipart "
-                         "or test_multipart_failure_wrong_token)"))))
+                         "or test_multipart_failure_wrong_token)"))
+           #:phases
+           '(modify-phases %standard-phases
+              (add-after 'unpack 'compatibility
+                (lambda _
+                  ;; httpx version 0.28.0 removed the "app" shortcut.
+                  (substitute* "test_asgi_csrf.py"
+                    (("httpx.AsyncClient\\(app=app_csrf\\)")
+                     "httpx.AsyncClient(transport=httpx.ASGITransport(app_csrf))")
+                    (("httpx.AsyncClient\\(app=hello_world_app\\)")
+                     "httpx.AsyncClient(transport=httpx.ASGITransport(hello_world_app))")
+                    (("httpx.AsyncClient\\(app=app\\)")
+                     "httpx.AsyncClient(transport=httpx.ASGITransport(app))")
+                    ;; The remaining invocations are harder to patch, so we
+                    ;; define a wrapper.
+                    (("^SECRET =")
+                     "def asgi_csrf_transport(*args, **kwargs):
+  return httpx.ASGITransport(asgi_csrf(*args, **kwargs))
+
+SECRET =")
+                    (("app=asgi_csrf") "transport=asgi_csrf_transport")))))))
     (propagated-inputs (list python-itsdangerous python-multipart))
     (native-inputs (list python-asgi-lifespan
                          python-httpx
