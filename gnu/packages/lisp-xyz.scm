@@ -697,6 +697,35 @@ weight, temperature, names of physical quantitites, etc.")
 (define-public ecl-acclimation
   (sbcl-package->ecl-package sbcl-acclimation))
 
+(define-public sbcl-ecclesia
+  (let ((commit "605debb6f28f120243da66c281274011e292ce46"))
+    (package
+      (name "sbcl-ecclesia")
+      (version (git-version "0.0.0" "0" commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/s-expressionists/Ecclesia")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0lmy03lqk82301b86pli9qd6493q6fr7vd5h29j4gwc778awbmf5"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs (list sbcl-acclimation))
+      (home-page "https://github.com/s-expressionists/Ecclesia")
+      (synopsis "Utilities for parsing Lisp code")
+      (description "This library contains utilities for parsing Common Lisp
+code.")
+      (license license:bsd-2))))
+
+(define-public cl-ecclesia
+  (sbcl-package->cl-source-package sbcl-ecclesia))
+
+(define-public ecl-ecclesia
+  (sbcl-package->ecl-package sbcl-ecclesia))
+
 (define-public sbcl-acl-compat
   ;; There does not seem to be proper releases.
   (let ((commit "cac1d6920998ddcbee8310a873414732e707d8e5"))
