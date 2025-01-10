@@ -4612,7 +4612,8 @@ setup(ext_modules=get_extensions())")))))
            python-pytest-xdist
            python-pyvo
            ;; python-sunpy ; circular dependencies, test optional
-           python-setuptools-scm))
+           python-setuptools-scm
+           python-wheel))
     (home-page "https://reproject.readthedocs.io")
     (synopsis "Astronomical image reprojection in Python")
     (description
