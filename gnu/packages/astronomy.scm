@@ -4827,7 +4827,8 @@ SolarSoft data analysis environment.")
            python-pytest-astropy
            python-pytest-xdist
            python-regions
-           python-setuptools-scm))
+           python-setuptools-scm
+           python-wheel))
     (home-page "https://spectral-cube.readthedocs.io/en/latest/")
     (synopsis "Library for reading and analyzing astrophysical spectral data cubes")
     (description
