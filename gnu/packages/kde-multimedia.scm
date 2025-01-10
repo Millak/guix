@@ -101,14 +101,14 @@ This package is part of the KDE multimedia module.")
 (define-public dragon
   (package
     (name "dragon")
-    (version "24.05.2")
+    (version "24.12.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/dragon-" version ".tar.xz"))
        (sha256
-        (base32 "1waq80b5lxmk6q31yzs24mrz3nwm1y2rvz21bfhsgh2xw4fqmfsy"))))
+        (base32 "03xkdmh28m933sfyxyxzh0mva327wrpbxnkw2f72ck8v88afjb8a"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
