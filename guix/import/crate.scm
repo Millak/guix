@@ -7,6 +7,7 @@
 ;;; Copyright © 2023 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2023, 2024 David Elsing <david.elsing@posteo.net>
+;;; Copyright © 2025 Herman Rimm <herman@rimm.ee>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -290,6 +291,31 @@ and LICENSE."
             (not (crate-version-yanked? entry)))
           (crate-versions crate)))
 
+(define (find-package-version name range allow-yanked?)
+  "Find the latest existing package that fulfills the SemVer RANGE.  If
+ALLOW-YANKED? is #t, include packages marked as yanked at a lower
+priority."
+  (set! range (string->semver-range range))
+  (let loop ((packages (find-packages-by-name
+                         (crate-name->package-name name)))
+             (semver #f)
+             (yanked? #f))
+    (match packages
+      ((pkg packages ...)
+       (let ((pkg-yanked? (assoc-ref (package-properties pkg)
+                                    'crate-version-yanked?)))
+         (if (or allow-yanked? (not pkg-yanked?))
+             (let ((pkg-semver (string->semver (package-version pkg))))
+               (if (and (or (not semver)
+                            (and yanked? (not pkg-yanked?))
+                            (and (eq? yanked? pkg-yanked?)
+                                 (semver>? pkg-semver semver)))
+                        (semver-range-contains? range pkg-semver))
+                   (loop packages pkg-semver pkg-yanked?)
+                   (loop packages semver yanked?)))
+             (loop packages semver yanked?))))
+      (() (and semver (list (semver->string semver) yanked?))))))
+
 (define* (crate->guix-package
           crate-name
           #:key version include-dev-deps? allow-yanked? #:allow-other-keys)
@@ -316,32 +342,6 @@ look up the development dependencs for the given crate."
          (or version
              (crate-latest-version crate))))
 
-  ;; Find the highest existing package that fulfills the semver <range>.
-  ;; Packages previously marked as yanked take lower priority.
-  (define (find-package-version name range)
-    (let* ((semver-range (string->semver-range range))
-           (version
-            (min-element
-             (filter (match-lambda ((semver yanked)
-                                    (and
-                                     (or allow-yanked? (not yanked))
-                                     (semver-range-contains? semver-range semver))))
-                     (map (lambda (pkg)
-                            (let ((version (package-version pkg)))
-                              (list
-                                (string->semver version)
-                                (assoc-ref (package-properties pkg)
-                                           'crate-version-yanked?))))
-                          (find-packages-by-name
-                           (crate-name->package-name name))))
-             (match-lambda* (((semver1 yanked1) (semver2 yanked2))
-                             (and (or (not yanked1) yanked2)
-                                  (or (not (eq? yanked1 yanked2))
-                                      (semver>? semver1 semver2))))))))
-      (and (not (eq? #f version))
-           (match-let (((semver yanked) version))
-             (list (semver->string semver) yanked)))))
-
   ;; Find the highest version of a crate that fulfills the semver <range>.
   ;; If no matching non-yanked version has been found and allow-yanked? is #t,
   ;; also consider yanked packages.
@@ -361,7 +361,8 @@ look up the development dependencs for the given crate."
   (define (dependency-name+version+yanked dep)
     (let* ((name (crate-dependency-id dep))
                  (req (crate-dependency-requirement dep))
-                 (existing-version (find-package-version name req)))
+                 (existing-version
+                  (find-package-version name req allow-yanked?)))
       (if (and existing-version (not (second existing-version)))
           (cons name existing-version)
           (let* ((crate (lookup-crate* name))
