@@ -16023,6 +16023,63 @@ recognizers) at run time.")
 defined in @url{https://editorconfig.org/,https://editorconfig.org/}.")
     (license license:bsd-3)))
 
+(define-public go-mvdan-cc-gofumpt
+  (package
+    (name "go-mvdan-cc-gofumpt")
+    (version "0.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mvdan/gofumpt")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0sz58av4jg0q26y1s4pznnvrzp1gi8brz9zw8aa46pzdmjw394wq"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.22
+      #:build-flags
+      ;; Gofumpt formats Go files, and therefore modifies them. To help the
+      ;; developers diagnose issues, it replaces any occurrence of a
+      ;; `//gofumpt:diagnose` comment with some debugging information which
+      ;; includes the module version.
+      #~(list (format #f "-ldflags=-X ~s"
+                      (string-append "main.version=" #$version " (GNU Guix)")))
+      #:import-path "mvdan.cc/gofumpt"
+      #:skip-build? #t
+      #:test-flags #~(list "-skip" "TestScript/diagnose")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-fallback-version
+            ;; In the event gofumpt was built without module support, it falls
+            ;; back to a string "(devel)". Since our build system does not yet
+            ;; support modules, we'll inject our version string instead, since
+            ;; this is more helpful.
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (substitute* "internal/version/version.go"
+                  (("^const fallbackVersion.+")
+                   (format #f "const fallbackVersion = ~s~%"
+                           (string-append #$version " (GNU Guix)"))))))))))
+    (native-inputs
+     (list go-github-com-go-quicktest-qt))
+    (propagated-inputs
+     (list go-github-com-google-go-cmp
+           go-github-com-rogpeppe-go-internal
+           go-golang-org-x-mod
+           go-golang-org-x-sync
+           go-golang-org-x-sys
+           go-golang-org-x-tools))
+    (home-page "https://mvdan.cc/gofumpt/")
+    (synopsis "Formats Go files with a stricter ruleset than gofmt")
+    (description
+     "Enforce a stricter format than @code{gofmt}, while being backwards
+compatible.  That is, @code{gofumpt} is happy with a subset of the formats
+that @code{gofmt} is happy with.")
+    (license license:bsd-3)))
+
 (define-public go-mvdan-cc-sh-v3
   (package
     (name "go-mvdan-cc-sh-v3")
@@ -16715,6 +16772,20 @@ tool."))))
      (string-append (package-description go-github-com-oklog-ulid)
                     "  This package provides an command line interface (CLI)
 tool."))))
+
+(define-public gofumpt
+  (package
+    (inherit go-mvdan-cc-gofumpt)
+    (name "gofumpt")
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-mvdan-cc-gofumpt)
+       ((#:tests? _ #t) #f)
+       ((#:install-source? _ #t) #f)
+       ((#:skip-build? _ #t) #f)))
+    (native-inputs (package-propagated-inputs go-mvdan-cc-gofumpt))
+    (propagated-inputs '())
+    (inputs '())))
 
 (define-public misspell
   (package
