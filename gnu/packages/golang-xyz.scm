@@ -14332,6 +14332,31 @@ supported by the time package
     (propagated-inputs
      (list go-github-com-twpayne-go-vfs-v5))))
 
+(define-public go-github-com-txthinking-runnergroup
+  (package
+    (name "go-github-com-txthinking-runnergroup")
+    (version "0.0.0-20241229123329-7b873ad00768")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/txthinking/runnergroup")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0l0accx6c880smkcma0qca3c67kx8p1bc4q2zq54iv8yjy1b2h4w"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/txthinking/runnergroup"))
+    (home-page "https://github.com/txthinking/runnergroup")
+    (synopsis "Golang standard @code{sync.WaitGroup} alternative")
+    (description
+     "This package implements a similar functionality like standard
+@code{sync.WaitGroup}}, the difference is if one task stops, all will be
+stopped.")
+    (license license:expat)))
+
 (define-public go-github-com-urfave-cli
   (package
     (name "go-github-com-urfave-cli")
