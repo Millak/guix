@@ -2328,18 +2328,15 @@ characters with their ASCII approximations.")
     (license license:expat)))
 
 (define-public go-github-com-gedex-inflector
-  (let ((commit "16278e9db8130ac7ec405dc174cfb94344f16325")
-        (revision "1"))
     (package
       (name "go-github-com-gedex-inflector")
-      (version (git-version "0.0.0" revision commit))
+      (version "0.0.0-20170307190818-16278e9db813")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
-                       (url "https://github.com/gedex/inflector")
-                       (commit commit)))
-                (file-name (string-append "go-github-com-gedex-inflector-"
-                                          version "-checkout"))
+                      (url "https://github.com/gedex/inflector")
+                      (commit (go-version->git-ref version))))
+                (file-name (git-file-name name version))
                 (sha256
                  (base32
                   "05hjqw1m71vww4914d9h6nqa9jw3lgjzwsy7qaffl02s2lh1amks"))))
@@ -2349,7 +2346,7 @@ characters with their ASCII approximations.")
       (home-page "https://github.com/gedex/inflector")
       (synopsis "Go library that pluralizes and singularizes English nouns")
       (description "Go library that pluralizes and singularizes English nouns.")
-      (license license:bsd-2))))
+      (license license:bsd-2)))
 
 (define-public go-github-com-surge-glog
   (let ((commit "2578deb2b95c665e6b1ebabf304ce2085c9e1985")
