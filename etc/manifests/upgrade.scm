@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2024-2025 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -36,11 +36,14 @@
               #:select (all-packages specification->package))
 
              (gnu packages backup)
+             (gnu packages crypto)
              (gnu packages curl)
              (gnu packages freedesktop)
              (gnu packages gnupg)
+             (gnu packages nettle)
              (gnu packages ssh)
              (gnu packages tls)
+             (gnu packages web)
              (gnu packages xorg)
 
              (ice-9 match)
@@ -59,6 +62,10 @@
         curl
         curl-ssh
 
+        ;; Web.
+        nghttp2
+        nginx
+
         libarchive
         libssh
 
@@ -74,7 +81,11 @@
         npth
         gnupg
         gpgme
-        pinentry))
+        pinentry
+
+        ;; Other crypto libraries.
+        nettle
+        libsodium))
 
 (define latest-version
   (mlambdaq (package)
