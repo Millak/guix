@@ -56,6 +56,7 @@
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
+  #:use-module (gnu packages sphinx)
   #:use-module (gnu packages time)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages web)
@@ -3058,22 +3059,25 @@ servers.")
 (define-public python-sybil
   (package
     (name "python-sybil")
-    (version "3.0.1")
+    (version "9.0.0")
     (source
       (origin
-        (method url-fetch)
-        (uri (pypi-uri "sybil" version))
+        (method git-fetch)
+        (uri (git-reference
+              (url "https://github.com/simplistix/sybil")
+              (commit version)))
         (sha256
-          (base32 "03ak1w93linfqx6c9lwgq5niyy3j9yblv4ip40hmlzmg0hidq0kg"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-        (modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest")))))))
-    (native-inputs (list python-pytest python-pytest-cov))
+         (base32 "0r491k91fi2nb0kdd6di8cb2kxcvsk1xzw3sgwsxhhg4qynsp3bi"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-mypy
+                         python-myst-parser
+                         python-pytest
+                         python-pytest-cov
+                         python-pyyaml
+                         python-seedir
+                         python-setuptools
+                         python-testfixtures
+                         python-wheel))
     (home-page "https://github.com/simplistix/sybil")
     (synopsis "Automated testing for examples in code and documentation")
     (description
