@@ -16472,6 +16472,30 @@ of its name.")
 names, e.g., @samp{#0000ff} is displayed in white with a blue background.")
     (license license:gpl3+)))
 
+(define-public emacs-indent-bars
+  (package
+    (name "emacs-indent-bars")
+    (version "0.8.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://elpa.gnu.org/packages/indent-bars-"
+                           version ".tar"))
+       (sha256
+        (base32 "1bhdrykkklsscgiz3p29x8kdkw0kbc4mlpnhxghvphx159clhgym"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-compat))
+    (home-page "https://github.com/jdtsmith/indent-bars")
+    (synopsis "Highlight indentation with bars")
+    (description
+     "Indent Bars highlights indentation with configurable vertical graphical
+bars, using stipples.  The color and appearance (weight, pattern, position
+within the character, zigzag, etc.) are all configurable.  Indent Bars works
+in any mode using fixed tab or space-based indentation.  In the terminal (or
+on request) it uses vertical bar characters instead of stipple patterns.
+Optional Treesitter support is also available.")
+    (license license:gpl3+)))
+
 (define-public emacs-ryo-modal
   ;; Package has no release.  Version is extracted from "Version:" keyword in
   ;; main file.
