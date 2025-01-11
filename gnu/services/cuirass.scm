@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016 Mathieu Lirzin <mthl@gnu.org>
-;;; Copyright © 2016-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2017 Jan Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2018, 2019 Ricardo Wurmus <rekado@elephly.net>
@@ -103,6 +103,8 @@
                     (default 60))
   (ttl              cuirass-configuration-ttl ;integer
                     (default 2592000))
+  (build-expiry     cuirass-configuration-build-expiry
+                    (default (* 4 30 24 3600)))   ;integer(seconds)
   (threads          cuirass-configuration-threads ;integer
                     (default #f))
   (parameters       cuirass-configuration-parameters ;string
@@ -136,6 +138,7 @@
         (group            (cuirass-configuration-group config))
         (interval         (cuirass-configuration-interval config))
         (ttl              (cuirass-configuration-ttl config))
+        (build-expiry     (cuirass-configuration-build-expiry config))
         (threads          (cuirass-configuration-threads config))
         (parameters       (cuirass-configuration-parameters config))
         (remote-server    (cuirass-configuration-remote-server config))
@@ -167,6 +170,12 @@
                                       "--ttl="
                                       (number->string ttl)
                                                  "s"))
+                               '())
+                        #$@(if build-expiry
+                               (list (string-append
+                                      "--build-expiry="
+                                      (number->string build-expiry)
+                                      "s"))
                                '())
                         #$@(if threads
                                (list (string-append

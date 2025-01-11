@@ -35285,6 +35285,10 @@ Cuirass jobs.
 @item @code{ttl} (default: @code{2592000})
 Duration to keep build results' GC roots alive, in seconds.
 
+@item @code{build-expiry} (default: 4 months)
+Duration in seconds after which pending builds are canceled.  This helps
+ensure that the backlog does not grow indefinitely.
+
 @item @code{threads} (default: @code{#f})
 Number of kernel threads to use for Cuirass. The default value should be appropriate for most cases.
 
