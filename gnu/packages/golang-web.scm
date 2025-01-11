@@ -657,6 +657,58 @@ credentials sources.")
 parameter types for AWS Secrets Manager.")
     (license license:asl2.0)))
 
+(define-public go-github-com-aws-aws-sdk-go-v2-service-sqs
+  (package
+    (name "go-github-com-aws-aws-sdk-go-v2-service-sqs")
+    (version "1.37.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/aws/aws-sdk-go-v2")
+             (commit (go-version->git-ref version
+                                          #:subdir "service/sqs"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "158mgp8czzkhjdwli2wciwqihs56jp879ahjdjyy8c6fn0g3xdvb"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            ;; XXX: 'delete-all-but' is copied from the turbovnc package.
+            ;; Consider to implement it as re-usable procedure in
+            ;; guix/build/utils or guix/build-system/go.
+            (define (delete-all-but directory . preserve)
+              (define (directory? x)
+                (and=> (stat x #f)
+                       (compose (cut eq? 'directory <>) stat:type)))
+              (with-directory-excursion directory
+                (let* ((pred
+                        (negate (cut member <> (append '("." "..") preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (lambda (item)
+                              (if (directory? item)
+                                  (delete-file-recursively item)
+                                  (delete-file item)))
+                            items))))
+            (delete-all-but "service" "sqs")
+            (delete-all-but "." "service")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/aws/aws-sdk-go-v2/service/sqs"
+      #:unpack-path "github.com/aws/aws-sdk-go-v2"))
+    (propagated-inputs
+     (list go-github-com-aws-smithy-go
+           go-github-com-aws-aws-sdk-go-v2))
+    (home-page "https://github.com/aws/aws-sdk-go-v2")
+    (synopsis "AWS Golang SDK for Simple Queue Service")
+    (description
+     "Package sqs provides the API client, operations, and parameter types for
+Amazon Simple Queue Service.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-aws-aws-sdk-go-v2-service-sso
   (package
     (inherit go-github-com-aws-aws-sdk-go-v2)
