@@ -1630,7 +1630,7 @@ translated keywords and acts.")
 (define-public go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-lyrebird
   (package
     (name "go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-lyrebird")
-    (version "0.3.0")
+    (version "0.5.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1639,36 +1639,22 @@ translated keywords and acts.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1bmljd81vc8b4kzmpgmx1n1vvjn5y1s2w01hjxwplmnchv9dndkl"))))
+                "1qk7npkj0a3a28rp38whl1jwjr0z0hdcsq5bgm8bl1fk9g6cqbnp"))))
     (build-system go-build-system)
     (arguments
-     `(#:unpack-path "gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/lyrebird"
-       #:import-path "gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/lyrebird/cmd/lyrebird"
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'substitutions
-           (lambda _
-             (with-directory-excursion
-                 "src/gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/lyrebird"
-               (for-each
-                (lambda (file)
-                  (substitute* file
-                    (("edwards25519-extra.git") "edwards25519-extra")))
-                (list "common/ntor/ntor_test.go"
-                      "internal/x25519ell2/x25519ell2.go"))
-               (substitute* "internal/x25519ell2/x25519ell2.go"
-                 (("gitlab.com/yawning/obfs4.git")
-                  "gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/lyrebird"))))))))
+     (list
+      #:unpack-path "gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/lyrebird"
+      #:import-path "gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/lyrebird/cmd/lyrebird"))
     (propagated-inputs
      (list go-filippo-io-edwards25519
            go-github-com-dchest-siphash
            go-github-com-refraction-networking-utls
            go-gitlab-com-yawning-edwards25519-extra
            go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-goptlib
+           go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-snowflake-v2
            go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-webtunnel
            go-golang-org-x-crypto
-           go-golang-org-x-net
-           go-golang-org-x-text))
+           go-golang-org-x-net))
     (home-page "https://gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/lyrebird")
     (synopsis "Look-like nothing obfuscation protocol")
     (description "This is a look-like nothing obfuscation protocol that
