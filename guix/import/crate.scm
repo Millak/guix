@@ -335,9 +335,9 @@ look up the development dependencs for the given crate."
                           (find-packages-by-name
                            (crate-name->package-name name))))
              (match-lambda* (((semver1 yanked1) (semver2 yanked2))
-                             (or (and yanked1 (not yanked2))
-                                 (and (eq? yanked1 yanked2)
-                                      (semver<? semver1 semver2))))))))
+                             (and (or (not yanked1) yanked2)
+                                  (or (not (eq? yanked1 yanked2))
+                                      (semver>? semver1 semver2))))))))
       (and (not (eq? #f version))
            (match-let (((semver yanked) version))
              (list (semver->string semver) yanked)))))
