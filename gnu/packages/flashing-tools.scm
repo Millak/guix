@@ -76,15 +76,15 @@
 (define-public flashrom
   (package
     (name "flashrom")
-    (version "1.3.0")
+    (version "1.5.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
                     "https://download.flashrom.org/releases/flashrom-v"
-                    version ".tar.bz2"))
+                    version ".tar.xz"))
               (sha256
                (base32
-                "08wn2j5vxzzvigflrjypgxxzjp32c76bshrlkzki5l6cad226lx0"))))
+                "14v2bd46wyz46bvsxr3zx2wacqbqzi4w4pk50giar7nldq3lp4qz"))))
     (build-system meson-build-system)
     (inputs (list bash-minimal dmidecode pciutils libusb libftdi libjaylink))
     (native-inputs (list cmocka pkg-config))
@@ -93,13 +93,14 @@
            #~'("-Dprogrammer=all")
            #:phases
            #~(modify-phases %standard-phases
-               (add-after 'install 'wrap-program
+               (add-after 'unpack 'fix-path
                  (lambda* (#:key inputs #:allow-other-keys)
-                   (let ((flashrom (string-append #$output "/sbin/flashrom")))
-                     (wrap-program flashrom
-                       `("PATH" ":" prefix
-                         (,(dirname (search-input-file
-                                     inputs "/sbin/dmidecode")))))))))))
+                   (substitute* "dmi.c"
+                     (("(dmidecode)( 2>/dev/null)" _ command suffix)
+                      (string-append
+                       (search-input-file
+                        inputs (in-vicinity "sbin" command))
+                       suffix))))))))
     (home-page "https://flashrom.org/")
     (synopsis "Identify, read, write, erase, and verify ROM/flash chips")
     (description
