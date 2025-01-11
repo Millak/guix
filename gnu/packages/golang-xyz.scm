@@ -13888,6 +13888,30 @@ Included modules are:
 standard library.")
     (license license:bsd-3)))
 
+(define-public go-github-com-templexxx-xorsimd
+  (package
+    (name "go-github-com-templexxx-xorsimd")
+    (version "0.4.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/templexxx/xorsimd")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01227dcf5mjc2v9f3shvqvbx3vxz89la7imjnjfmas61fcjwdlj5"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/templexxx/xorsimd"))
+    (propagated-inputs (list go-github-com-templexxx-cpu))
+    (home-page "https://github.com/templexxx/xorsimd")
+    (synopsis "XOR in pure Golang")
+    (description
+     "This package provides XOR bitwise code engine.")
+    (license license:expat)))
+
 (define-public go-github-com-thejerf-suture
   (package
     (name "go-github-com-thejerf-suture")
