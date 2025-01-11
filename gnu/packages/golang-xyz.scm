@@ -15077,6 +15077,30 @@ popular Levenshtein distance (aka Edit Distance or Wagner-Fischer), as well as
 the Jaro distance, the Jaro-Winkler distance, and more.")
     (license license:expat)))
 
+(define-public go-github-com-xtgo-uuid
+  (package
+    (name "go-github-com-xtgo-uuid")
+    (version "0.0.0-20140804021211-a0b114877d4c")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/xtgo/uuid")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "10pmay90is5x8cv5ckcajw3s7g2rpk4ix6kl4qhq8qx05x2ivlrw"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/xtgo/uuid"))
+    (home-page "https://github.com/xtgo/uuid")
+    (synopsis "Go UUID parsing and generation")
+    (description
+     "Package uuid can be used to generate and parse universally unique
+identifiers, a standardized format in the form of a 128 bit number.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-xuanwo-go-locale
   (package
     (name "go-github-com-xuanwo-go-locale")
