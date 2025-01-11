@@ -2161,32 +2161,6 @@ methods can be called and usual operations such as indexing or arithmetic can
 be performed.")
       (license license:expat))))
 
-(define-public go-github-com-michiwend-gomusicbrainz
-    (package
-      (name "go-github-com-michiwend-gomusicbrainz")
-      (version "0.0.0-20181012083520-6c07e13dd396")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url
-                "https://github.com/michiwend/gomusicbrainz")
-               (commit (go-version->git-ref version))))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "1c13hyv34l5hm7hrwrm62s2414ivx6dbbyhb7rw90bni78q441b1"))))
-      (build-system go-build-system)
-      (propagated-inputs
-       (list go-github-com-michiwend-golang-pretty))
-      (arguments
-       `(#:import-path "github.com/michiwend/gomusicbrainz"))
-      (home-page "https://github.com/michiwend/gomusicbrainz")
-      (synopsis "MusicBrainz WS2 client library for Golang")
-      (description "Currently GoMusicBrainz provides methods to perform search
-and lookup requests.  Browse requests are not supported yet.")
-      (license license:expat)))
-
 (define-public go-github-com-wtolson-go-taglib
   (let ((commit "6e68349ff94ecea412de7e748cb5eaa26f472777")
         (revision "0"))

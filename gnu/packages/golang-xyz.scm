@@ -10162,6 +10162,31 @@ that accepts a format string.  It also provides convenience wrappers for
 functions in packages @code{fmt} and @code{log}.")
     (license license:expat)))
 
+(define-public go-github-com-michiwend-gomusicbrainz
+  (package
+    (name "go-github-com-michiwend-gomusicbrainz")
+    (version "0.0.0-20181012083520-6c07e13dd396")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/michiwend/gomusicbrainz")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1c13hyv34l5hm7hrwrm62s2414ivx6dbbyhb7rw90bni78q441b1"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/michiwend/gomusicbrainz"))
+    (propagated-inputs
+     (list go-github-com-michiwend-golang-pretty))
+    (home-page "https://github.com/michiwend/gomusicbrainz")
+    (synopsis "MusicBrainz WS2 client library for Golang")
+    (description
+     "Currently GoMusicBrainz provides methods to perform search and lookup
+requests.  Browse requests are not supported yet.")
+    (license license:expat)))
+
 (define-public go-github-com-miolini-datacounter
   (package
     (name "go-github-com-miolini-datacounter")
