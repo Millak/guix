@@ -1630,7 +1630,7 @@ translated keywords and acts.")
 (define-public go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-goptlib
   (package
     (name "go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-goptlib")
-    (version "1.5.0")
+    (version "1.6.0")
     (source
      (origin
        (method git-fetch)
@@ -1640,7 +1640,7 @@ translated keywords and acts.")
          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1kmdpxrbnxnpsi7dkgk85z005vjyj74b3wxxqrf68wg3svy69620"))))
+        (base32 "0jw9vlvlx7rrl366kwz47414aciw3r37lwg6h4jq8cj5hb4bqnd9"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/goptlib"))
