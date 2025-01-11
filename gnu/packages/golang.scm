@@ -2698,9 +2698,9 @@ sinks and sources.")
 or capture raw audio.")
       (license license:expat))))
 
-(define-public gofumpt
+(define-public go-mvdan-cc-gofumpt
   (package
-    (name "gofumpt")
+    (name "go-mvdan-cc-gofumpt")
     (version "0.7.0")
     (source (origin
               (method git-fetch)
@@ -2723,6 +2723,7 @@ or capture raw audio.")
       #~(list (format #f "-ldflags=-X ~s"
                       (string-append "main.version=" #$version " (GNU Guix)")))
       #:import-path "mvdan.cc/gofumpt"
+      #:skip-build? #t
       #:test-flags #~(list "-skip" "TestScript/diagnose")
       #:phases
       #~(modify-phases %standard-phases
@@ -2753,18 +2754,18 @@ That is, @code{gofumpt} is happy with a subset of the formats that
 @code{gofmt} is happy with.")
     (license license:bsd-3)))
 
-(define-public go-mvdan-cc-gofumpt
+(define-public gofumpt
   (package
-    (inherit gofumpt)
-    (name "go-mvdan-cc-gofumpt")
+    (inherit go-mvdan-cc-gofumpt)
+    (name "gofumpt")
     (arguments
-     `(#:import-path "mvdan.cc/gofumpt"
-       #:tests? #f
-       #:install-source? #t
-       #:phases (modify-phases %standard-phases
-                  (delete 'build))))
-    (propagated-inputs (package-inputs gofumpt))
-    (native-inputs '())
+     (substitute-keyword-arguments
+         (package-arguments go-mvdan-cc-gofumpt)
+       ((#:tests? _ #t) #f)
+       ((#:install-source? _ #t) #f)
+       ((#:skip-build? _ #t) #f)))
+    (native-inputs (package-propagated-inputs go-mvdan-cc-gofumpt))
+    (propagated-inputs '())
     (inputs '())))
 
 (define-public go-github-com-mtibben-percent
