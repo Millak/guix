@@ -144,13 +144,13 @@ code.  Agate was previously known as journalism.")))
               (base32
                "112q523w4jf3k8p4ynvjzfqa4j32ri34h2ppvicialp2lz5drvf0"))))
    (native-inputs
-    `(("python-nose" ,python-nose)
-      ("python-sphinx" ,python-sphinx)
-      ("python-sphinx-rtd-theme" ,python-sphinx-rtd-theme)))
+    (list python-nose
+          python-sphinx
+          python-sphinx-rtd-theme))
    (propagated-inputs
-    `(("python-agate" ,python-agate)
-      ("python-crate" ,python-crate)
-      ("python-sqlalchemy" ,python-sqlalchemy)))
+    (list python-agate
+          python-crate
+          python-sqlalchemy))
    (home-page "https://agate-sql.rtfd.org")
    (synopsis "SQL read/write support to agate")
    (description "@code{agatesql} uses a monkey patching pattern to add SQL
