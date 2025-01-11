@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2019, 2021-2024 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2019, 2021-2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019, 2020, 2021, 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -871,7 +871,7 @@ running the tests.")
         (base32 "1wbgfsn4pcdm0bw61pwaaq707mlfnixlff3x8m5mpsf6jhrzql30"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest))
+     (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/omarkohl/pytest-datafiles")
     (synopsis "Pytest plugin to create a tmpdir")
     (description
