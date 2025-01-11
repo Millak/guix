@@ -11,6 +11,7 @@
 ;;; Copyright © 2022 Pavel Shlyak <p.shlyak@pantherx.org>
 ;;; Copyright © 2022 Matthew James Kraai <kraai@ftbfs.org>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2025 Ricardo Wurmus <rekado@elephly.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -506,7 +507,9 @@ them via CalDAV using, for example, @code{vdirsyncer}.")
      (list python-mock
            python-pytest
            python-pytest-datafiles
-           python-pytest-mock))
+           python-pytest-mock
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-arrow
            python-click
