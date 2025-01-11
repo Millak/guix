@@ -8342,6 +8342,82 @@ Go.")
      "This package provides a collection of utilities for Pluggable Transports.")
     (license license:bsd-3)))
 
+(define-public go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-snowflake-v2
+  (package
+    (name
+     "go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-snowflake-v2")
+    (version "2.10.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append
+                   "https://gitlab.torproject.org/tpo/anti-censorship"
+                   "/pluggable-transports/snowflake"))
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14ypgzj6c6vjw9s85wf2vdfa9l06iandx7gz90i3w6r65q2cp6vj"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; Project provides a Go library and also CLI builds.
+      #:skip-build? #t
+      #:import-path
+      "gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/snowflake/v2"
+      ;; panic: empty transcript [recovered]
+      #:test-flags #~(list "-skip" "TestQueuePacketConnWriteToKCP")))
+    (native-inputs
+     (list go-github-com-golang-mock
+           go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-aws-aws-sdk-go-v2
+           go-github-com-aws-aws-sdk-go-v2-config
+           go-github-com-aws-aws-sdk-go-v2-credentials
+           go-github-com-aws-aws-sdk-go-v2-service-sqs
+           go-github-com-golang-mock
+           go-github-com-gorilla-websocket
+           go-github-com-miekg-dns
+           go-github-com-pion-ice-v2
+           go-github-com-pion-sdp-v3
+           go-github-com-pion-stun-v3
+           go-github-com-pion-transport-v2
+           go-github-com-pion-webrtc-v3
+           go-github-com-prometheus-client-golang
+           go-github-com-realclientip-realclientip-go
+           go-github-com-refraction-networking-utls
+           go-github-com-smartystreets-goconvey
+           go-github-com-stretchr-testify
+           go-github-com-txthinking-socks5
+           go-github-com-xtaci-kcp-go-v5
+           go-github-com-xtaci-smux
+           go-gitlab-torproject-org-tpo-anti-censorship-geoip
+           go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-goptlib
+           go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-ptutil
+           go-golang-org-x-crypto
+           go-golang-org-x-net
+           go-golang-org-x-sys))
+    (home-page
+     "https://gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/snowflake")
+    (synopsis "Pluggable Transport using WebRTC, inspired by Flashproxy")
+    (description
+     "Pluggable Transport using @code{WebRTC}, inspired by Flashproxy and
+adheres to the pluggable transports v2.1 Go AP.
+This package provides:
+@itemize
+@item @code{broker} contains code for the Snowflake broker
+@item @code{doc} contains Snowflake documentation and manpages
+@item @code{client} contains the Tor pluggable transport client and client
+library code
+@item @code{common} contains generic libraries used by multiple pieces of
+Snowflake
+@item @code{proxy} contains code for the Go standalone Snowflake proxy
+@item @code{probetest} contains code for a NAT probetesting service
+@item @code{server} contains the Tor pluggable transport server and server
+library code
+@end itemize")
+    (license license:bsd-3)))
+
 (define-public go-go-opentelemetry-io-otel
   (package
     (name "go-go-opentelemetry-io-otel")
