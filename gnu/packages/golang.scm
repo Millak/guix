@@ -2254,29 +2254,6 @@ be performed.")
 of building man pages.")
     (license license:expat)))
 
-(define-public go-github-com-rubyist-tracerx
-    (package
-      (name "go-github-com-rubyist-tracerx")
-      (version "0.0.0-20170927163412-787959303086")
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/rubyist/tracerx")
-                      (commit (go-version->git-ref version))))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1xj5213r00zjhb7d2l6wlwv62g6mss50jwjpf7g8fk8djv3l29zz"))))
-      (build-system go-build-system)
-      (arguments
-       `(#:import-path "github.com/rubyist/tracerx"))
-      (home-page "https://github.com/rubyist/tracerx/")
-      (synopsis "Output tracing information in your Go app")
-      (description "This package is a simple tracing application that logs
-messages depending on environment variables.  It is very much inspired by git's
-GIT_TRACE mechanism.")
-      (license license:expat)))
-
 (define-public go-github-com-shurcool-sanitized-anchor-name
   (package
     (name "go-github-com-shurcool-sanitized-anchor-name")
