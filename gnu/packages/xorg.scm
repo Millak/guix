@@ -5424,7 +5424,17 @@ Wayland.")
          "1h62narayrhrkqalrmx7z3s6yppw1acbp5id3skrvrygshnl1sgx"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags '("--disable-static")))
+     (list
+      #:configure-flags
+      #~(list "--disable-static"
+              ;; Set default path, used when XCURSOR_PATH is unset.
+              (string-append "--with-cursorpath="
+                             (string-join
+                              '("~/.local/share/icons" "~/.icons"
+                                "~/.guix-profile/share/icons"
+                                "/run/current-system/profile/share/icons"
+                                "/usr/share/icons")
+                              ":")))))
     (propagated-inputs
      (list libx11 libxrender libxfixes xorgproto))
     (native-inputs
