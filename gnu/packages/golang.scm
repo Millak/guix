@@ -2701,7 +2701,7 @@ or capture raw audio.")
 (define-public gofumpt
   (package
     (name "gofumpt")
-    (version "0.4.0")
+    (version "0.7.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2710,53 +2710,41 @@ or capture raw audio.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "13ahi8q1a9h4dj6a7xp95c79d5svz5p37b6z91aswbq043qd417k"))
-              (modules '((guix build utils)))
-              (snippet `(let ((fixed-version (string-append ,version
-                                                            " (GNU Guix)")))
-                          ;; Gofumpt formats Go files, and therefore modifies
-                          ;; them. To help the developers diagnose issues, it
-                          ;; replaces any occurrence of a `//gofumpt:diagnose`
-                          ;; comment with some debugging information which
-                          ;; includes the module version. In the event gofumpt
-                          ;; was built without module support, it falls back
-                          ;; to a string "(devel)". Since our build system
-                          ;; does not yet support modules, we'll inject our
-                          ;; version string instead, since this is more
-                          ;; helpful.
-                          (substitute* "internal/version/version.go"
-                            (("^const fallbackVersion.+")
-                             (format #f "const fallbackVersion = \"~a\"~%"
-                                     fixed-version)))
-                          ;; These tests rely on `//gofumpt:diagnose` comments
-                          ;; being replaced with fixed information injected
-                          ;; from the test scripts, but this requires a binary
-                          ;; compiled as a Go module. Since we can't do this
-                          ;; yet, modify the test scripts with the version
-                          ;; string we're injecting.
-                          (delete-file "testdata/script/diagnose.txtar")
-                          (substitute* (find-files "testdata/script/"
-                                                   "\\.txtar$")
-                            (("v0.0.0-20220727155840-8dda8068d9f3")
-                             fixed-version)
-                            (("(devel)")
-                             fixed-version)
-                            (("v0.3.2-0.20220627183521-8dda8068d9f3")
-                             fixed-version))))))
+                "0sz58av4jg0q26y1s4pznnvrzp1gi8brz9zw8aa46pzdmjw394wq"))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "mvdan.cc/gofumpt"))
-    (native-inputs (list go-gopkg-in-errgo-v2))
-    (propagated-inputs (list go-github-com-pkg-diff
-                             go-github-com-kr-text
-                             go-github-com-kr-pretty
-                             go-golang-org-x-tools
-                             go-golang-org-x-sys
-                             go-golang-org-x-sync
-                             go-golang-org-x-mod
+     (list
+      #:go go-1.22
+      #:build-flags
+      ;; Gofumpt formats Go files, and therefore modifies them. To help the
+      ;; developers diagnose issues, it replaces any occurrence of a
+      ;; `//gofumpt:diagnose` comment with some debugging information which
+      ;; includes the module version.
+      #~(list (format #f "-ldflags=-X ~s"
+                      (string-append "main.version=" #$version " (GNU Guix)")))
+      #:import-path "mvdan.cc/gofumpt"
+      #:test-flags #~(list "-skip" "TestScript/diagnose")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-fallback-version
+            ;; In the event gofumpt was built without module support, it falls
+            ;; back to a string "(devel)". Since our build system does not yet
+            ;; support modules, we'll inject our version string instead, since
+            ;; this is more helpful.
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (substitute* "internal/version/version.go"
+                  (("^const fallbackVersion.+")
+                   (format #f "const fallbackVersion = ~s~%"
+                           (string-append #$version " (GNU Guix)"))))))))))
+    (native-inputs
+     (list go-github-com-go-quicktest-qt))
+    (propagated-inputs (list go-github-com-google-go-cmp
                              go-github-com-rogpeppe-go-internal
-                             go-github-com-google-go-cmp
-                             go-github-com-frankban-quicktest))
+                             go-golang-org-x-mod
+                             go-golang-org-x-sync
+                             go-golang-org-x-sys
+                             go-golang-org-x-tools))
     (home-page "https://mvdan.cc/gofumpt/")
     (synopsis "Formats Go files with a stricter ruleset than gofmt")
     (description
