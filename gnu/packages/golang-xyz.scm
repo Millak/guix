@@ -8830,6 +8830,30 @@ Goroutine-safe connections)
 manipulate processes in a safe way.")
     (license license:expat)))
 
+(define-public go-github-com-klauspost-asmfmt
+  (package
+    (name "go-github-com-klauspost-asmfmt")
+    (version "1.3.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/klauspost/asmfmt")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01qas9x9qb0s1aiq0235p8hvvqqn76ff0cs4cg71paxcy6l1a4k3"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/klauspost/asmfmt"))
+    (home-page "https://github.com/klauspost/asmfmt")
+    (synopsis "Go Assembler Formatter")
+    (description
+     "This package implements functionality to format Assembler code the same
+way that @code{gofmt} formats Go code.")
+    (license license:expat)))
+
 (define-public go-github-com-klauspost-cpuid
   (package
     (name "go-github-com-klauspost-cpuid")
@@ -16709,6 +16733,17 @@ library.")
       #:install-source? #f
       #:import-path "github.com/yuin/gopher-lua/cmd/glua"
       #:unpack-path "github.com/yuin/gopher-lua"))))
+
+(define-public go-asmfmt
+  (package
+    (inherit go-github-com-klauspost-asmfmt)
+    (name "go-asmfmp")
+    (arguments
+     (list
+      #:tests? #f
+      #:install-source? #f
+      #:import-path "github.com/klauspost/asmfmt/cmd/asmfmt"
+      #:unpack-path "github.com/klauspost/asmfmt"))))
 
 (define-public go-chroma
   (package
