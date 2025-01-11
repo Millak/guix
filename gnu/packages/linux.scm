@@ -10990,7 +10990,7 @@ access to the embedded controller.")
 (define-public modprobed-db
   (package
     (name "modprobed-db")
-    (version "2.46")
+    (version "2.48")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -10999,7 +10999,7 @@ access to the embedded controller.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "017w9czm31f5c7wjyrl5fy6cw7ji681jjc7s913nbc0r43j080qr"))))
+                "0jscinga32jjvy3vwl4s1pyd5fjgqhmmk010k665nhil302hzjdc"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f                  ;no tests
