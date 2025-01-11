@@ -103,6 +103,7 @@
   #:use-module (gnu packages swig)
   #:use-module (gnu packages tbb)
   #:use-module (gnu packages tcl)
+  #:use-module (gnu packages terminals)
   #:use-module (gnu packages tex)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages time)
@@ -7184,6 +7185,56 @@ functions.")
     (description
      "rchitect provides access to R functionality from Python.  Its
 main use is as the driver for radian, the R console.")
+    (license license:expat)))
+
+(define-public python-radian
+  (package
+    (name "python-radian")
+    (version "0.6.13")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/randy3k/radian")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0nnwgvifhsxdac7rr9d2zspc97xx0vyzxn1v9g4bnm9061rragc3"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (add-before 'check 'set-home
+                     (lambda _
+                       ;; During tests radian wants to write history files to
+                       ;; $HOME which causes tests to fail when that does not
+                       ;; exist. Test fails then look like
+                       ;; "Exception: value is " with the value being empty.
+                       (setenv "HOME" "/tmp"))))))
+    (propagated-inputs (list python-prompt-toolkit python-pygments
+                             python-rchitect))
+    (native-inputs (list python-coverage
+                         python-pexpect
+                         python-ptyprocess
+                         python-pyte
+                         python-pytest
+                         python-setuptools
+                         python-wheel
+                         ;; Needed afaict only for
+                         ;; `tests/test_reticulate.py::test_completion`.
+                         python-jedi
+                         ;; R dependencies needed only for testing.
+                         r-askpass
+                         r-minimal
+                         r-reticulate
+                         ;; Needed for sh tests.
+                         git-minimal))
+    (home-page "https://github.com/randy3k/radian")
+    (synopsis "R console")
+    (description
+     "Radian is an alternative console for the R program with multiline
+editing and rich syntax highlight.  One would consider Radian as a IPython
+clone for R, though its design is more aligned to Julia.")
     (license license:expat)))
 
 (define-public java-jdistlib
