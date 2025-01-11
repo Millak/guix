@@ -8094,6 +8094,39 @@ multiplexing.  The original intention of this library is to power the
 connection management for @url{https://github.com/xtaci/kcp-go,kcp-go}.")
     (license license:expat)))
 
+(define-public go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-ptutil
+  (package
+    (name
+     "go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-ptutil")
+    (version "0.0.0-20240710081135-6c4d8ed41027")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append
+                   "https://gitlab.torproject.org/tpo/anti-censorship"
+                   "/pluggable-transports/ptutil.git"))
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1h7ssgsny6abhpycgks1kvqzvd20s081n39j5yxjjr7zn495ysdc"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path
+      "gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/ptutil"))
+    (propagated-inputs
+     (list go-github-com-prometheus-client-golang
+           go-github-com-prometheus-client-model
+           go-google-golang-org-protobuf))
+    (home-page
+     "https://gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/ptutil")
+    (synopsis "Collection of utilities for Pluggable Transports")
+    (description
+     "This package provides a collection of utilities for Pluggable Transports.")
+    (license license:bsd-3)))
+
 (define-public go-go-opentelemetry-io-otel
   (package
     (name "go-go-opentelemetry-io-otel")
