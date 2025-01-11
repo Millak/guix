@@ -5339,56 +5339,6 @@ workspace.")
 ;; from kdelibs 4 to KDE Frameworks 5. Code should aim to port away from this
 ;; framework, new projects should avoid using these libraries.
 
-(define-public khtml
-  (package
-    (name "khtml")
-    (version "5.116.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append
-             "mirror://kde/stable/frameworks/"
-             (version-major+minor version) "/portingAids/"
-             name "-" version ".tar.xz"))
-       (sha256
-        (base32 "13nc5dcj536xyd87prla30mpbzsyjnylb34a979qn7qvpr0zn8c9"))))
-    (build-system qt-build-system)
-    (native-inputs
-     (list extra-cmake-modules perl))
-    (inputs
-     (list giflib
-           gperf
-           karchive-5
-           kcodecs-5
-           kglobalaccel-5
-           ki18n-5
-           kiconthemes-5
-           kio-5
-           kjs
-           knotifications-5
-           kparts-5
-           ktextwidgets-5
-           kwallet-5
-           kwidgetsaddons-5
-           kwindowsystem-5
-           kxmlgui-5
-           libjpeg-turbo
-           libpng
-           openssl
-           phonon
-           qtbase-5
-           qtx11extras
-           sonnet-5))
-    (home-page "https://community.kde.org/Frameworks")
-    (synopsis "KDE Frameworks 5 HTML widget and component")
-    (description "KHTML is a web rendering engine, based on the KParts
-technology and using KJS for JavaScript support.")
-    ;; Most files are distributed under LGPL2+, but the package includes code
-    ;; under a variety of licenses.
-    (license (list license:lgpl2.0+ license:lgpl2.1+
-                   license:gpl2  license:gpl3+
-                   license:expat license:bsd-2 license:bsd-3))))
-
 (define-public kjs
   (package
     (name "kjs")
