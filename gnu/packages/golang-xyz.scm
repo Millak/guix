@@ -5224,6 +5224,29 @@ also favors portability, and includes support for all POSIX systems.")
       (modify-inputs (package-inputs go-github-com-gdamore-tcell)
         (prepend go-golang-org-x-term go-golang-org-x-sys))))))
 
+(define-public go-github-com-gedex-inflector
+  (package
+    (name "go-github-com-gedex-inflector")
+    (version "0.0.0-20170307190818-16278e9db813")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gedex/inflector")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05hjqw1m71vww4914d9h6nqa9jw3lgjzwsy7qaffl02s2lh1amks"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/gedex/inflector"))
+    (home-page "https://github.com/gedex/inflector")
+    (synopsis "Go library that pluralizes and singularizes English nouns")
+    (description
+     "Go library that pluralizes and singularizes English nouns.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-git-lfs-go-netrc
   (package
     (name "go-github-com-git-lfs-go-netrc")

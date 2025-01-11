@@ -2327,27 +2327,6 @@ characters with their ASCII approximations.")
     (description "@code{gg} is a library for rendering 2D graphics in pure Go.")
     (license license:expat)))
 
-(define-public go-github-com-gedex-inflector
-    (package
-      (name "go-github-com-gedex-inflector")
-      (version "0.0.0-20170307190818-16278e9db813")
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/gedex/inflector")
-                      (commit (go-version->git-ref version))))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "05hjqw1m71vww4914d9h6nqa9jw3lgjzwsy7qaffl02s2lh1amks"))))
-      (build-system go-build-system)
-      (arguments
-       `(#:import-path "github.com/gedex/inflector"))
-      (home-page "https://github.com/gedex/inflector")
-      (synopsis "Go library that pluralizes and singularizes English nouns")
-      (description "Go library that pluralizes and singularizes English nouns.")
-      (license license:bsd-2)))
-
 (define-public go-github-com-surge-glog
   (let ((commit "2578deb2b95c665e6b1ebabf304ce2085c9e1985")
         (revision "1"))
