@@ -6971,6 +6971,30 @@ of the specification.")
 library.")
     (license license:bsd-2)))
 
+(define-public go-github-com-realclientip-realclientip-go
+  (package
+    (name "go-github-com-realclientip-realclientip-go")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/realclientip/realclientip-go")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1mg3nrb4b1q38q9j1diz4pl2nqpa3ay45gi81i6ma3bvss8v7ri3"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/realclientip/realclientip-go"))
+    (home-page "https://github.com/realclientip/realclientip-go")
+    (synopsis "Go reference implementation of \"real\" client IP algorithms")
+    (description
+     "Package realclientip provides strategies for obtaining the \"real\"
+client IP from HTTP requests.")
+    (license license:bsd-0)))
+
 (define-public go-github-com-rs-cors
   (package
     (name "go-github-com-rs-cors")
