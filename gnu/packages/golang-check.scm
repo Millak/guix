@@ -2115,34 +2115,6 @@ accurate testing of your code.")
                 (with-directory-excursion (string-append "src/" import-path)
                   (invoke "go" "test" "-v" "./..."))))))))))
 
-(define-public go-gopkg-in-errgo-v2
-  (package
-    (name "go-gopkg-in-errgo-v2")
-    (version "2.1.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/go-errgo/errgo")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "065mbihiy7q67wnql0bzl9y1kkvck5ivra68254zbih52jxwrgr2"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:skip-build? #t
-      #:import-path "gopkg.in/errgo.v2"))
-    (native-inputs
-     (list go-gopkg-in-check-v1))
-    (home-page "https://godoc.org/gopkg.in/errgo.v2")
-    (synopsis "Functions that use the fmt package to format error messages")
-    (description
-     "This package is the same as @code{gopkg.in/errgo.v2/errors} except that
-it adds convenience functions that use the fmt package to format error
-messages.")
-    (license license:bsd-3)))
-
 (define-public go-gopkg-in-go-playground-assert-v1
   (package
     (name "go-gopkg-in-go-playground-assert-v1")
