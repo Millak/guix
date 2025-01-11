@@ -8155,6 +8155,58 @@ Server, in addition to most other SQL databases with a publicly available Go
 driver.")
     (license license:expat)))
 
+(define-public go-github-com-xtaci-kcp-go-v5
+  (package
+    (name "go-github-com-xtaci-kcp-go-v5")
+    (version "5.6.18")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/xtaci/kcp-go")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "17jqgl2zdra9rz8ap3zlrk7ljnm316gd4dy4cimlk2641n8r5bjx"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/xtaci/kcp-go/v5"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-klauspost-reedsolomon
+           go-github-com-pkg-errors
+           go-github-com-templexxx-xorsimd
+           go-github-com-tjfoc-gmsm
+           go-github-com-xtaci-lossyconn
+           go-golang-org-x-crypto
+           go-golang-org-x-net))
+    (home-page "https://github.com/xtaci/kcp-go")
+    (synopsis "Crypto-Secure Reliable-UDP Library with FEC")
+    (description
+     "This package provides smooth, resilient, ordered, error-checked and
+anonymous delivery of streams over UDP packets.
+Features:
+@itemize
+@item designed for latency-sensitive scenarios
+@item cache-friendly and memory-optimized design
+@item handles >5K concurrent connections on a single commodity server
+@item compatible with @code{net.Conn} and @code{net.Listener}, serving as a
+drop-in replacement for @code{net.TCPConn}
+@item @acronym{Forward Error Correction, FEC} support with
+@url{https://en.wikipedia.org/wiki/Reed%E2%80%93Solomon_error_correction,
+Reed-Solomon Codes}
+@item packet-level encryption support with @code{3DES}, @code{AES},
+@code{Blowfish}, @code{Cast5}, @code{PBKDF2}, @code{SM4}, @code{Salsa20},
+@code{TEA}, @code{Twofish}, and @code{XTEA}
+@item only a fixed number of goroutines are created for the entire server
+application
+@item compatible with @url{https://github.com/skywind3000, skywind3000}'s C
+version with various improvements
+@end itemize")
+    (license license:expat)))
+
 (define-public go-github-com-xtaci-lossyconn
   (package
     (name "go-github-com-xtaci-lossyconn")
