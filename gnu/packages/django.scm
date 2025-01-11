@@ -378,15 +378,17 @@ when coding custom template tags.")
 (define-public python-django-taggit
   (package
     (name "python-django-taggit")
-    (version "1.3.0")
+    (version "6.1.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "django-taggit" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jazzband/django-taggit")
+             (commit version)))
        (sha256
         (base32
-         "0bbkabbs77z229ps0800gxfhf75yagp4x4j5jzfysbac3zvkp0sa"))))
-    (build-system python-build-system)
+         "1i8an3wcl7nygl5f565jcpyhyws9gabawazggxpf6m3vklxn3cj0"))))
+    (build-system pyproject-build-system)
     (arguments
      '(#:phases
        (modify-phases %standard-phases
@@ -394,13 +396,14 @@ when coding custom template tags.")
            (lambda _
              (invoke "python3" "-m" "django" "test" "--settings=tests.settings"))))))
     (propagated-inputs
-     (list python-django python-isort))
+     (list python-django))
     (native-inputs
-     (list python-pytest python-mock))
-    (home-page
-     "https://github.com/jazzband/django-taggit")
-    (synopsis
-     "Reusable Django application for simple tagging")
+     (list python-django-rest-framework
+           python-setuptools
+           python-wheel
+           tzdata-for-tests))
+    (home-page "https://github.com/jazzband/django-taggit")
+    (synopsis "Reusable Django application for simple tagging")
     (description
      "Django-taggit is a reusable Django application for simple tagging.")
     (license license:bsd-3)))
