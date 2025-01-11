@@ -3681,6 +3681,27 @@ a platform independent file lock in Python, which provides a simple way of
 inter-process communication.")
     (license license:unlicense)))
 
+(define-public python-seedir
+  (package
+    (name "python-seedir")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "seedir" version))
+       (sha256
+        (base32 "1ibgzji9ijm37vgwmg37s2hsqmpqd793z4q41w816x5m6nahzy76"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-natsort))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (home-page "https://github.com/earnestt1234/seedir")
+    (synopsis
+     "Package for creating, editing, and reading folder tree diagrams.")
+    (description
+     "This is a package for creating, editing, and reading folder tree
+diagrams.")
+    (license license:expat)))
+
 (define-public python-semantic-version
   (package
     (name "python-semantic-version")
