@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2010-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2010-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2019, 2022-2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
@@ -435,16 +435,18 @@ string such as \"xz\".  Otherwise return #f."
   "Return two values: a source URL that matches the archive type of
 PACKAGE (gz, xz, bz2, etc.) and the corresponding signature URL or #f if there
 is no signature.  Return #f and #f when this is not applicable."
-  (let ((archive-type (package-archive-type package)))
-    (find2 (lambda (url sig-url)
-             ;; Some URIs lack a file extension, like
-             ;; 'https://crates.io/???/0.1/download'.  In that case, pick the
-             ;; first URL.
-             (or (not archive-type)
-                 (string-suffix? archive-type url)))
-           (upstream-source-urls source)
-           (or (upstream-source-signature-urls source)
-               (circular-list #f)))))
+  (if (pair? (upstream-source-urls source))
+      (let ((archive-type (package-archive-type package)))
+        (find2 (lambda (url sig-url)
+                 ;; Some URIs lack a file extension, like
+                 ;; 'https://crates.io/???/0.1/download'.  In that case, pick the
+                 ;; first URL.
+                 (or (not archive-type)
+                     (string-suffix? archive-type url)))
+               (upstream-source-urls source)
+               (or (upstream-source-signature-urls source)
+                   (circular-list #f))))
+      (values #f #f)))                ;'source-urls' must be a <git-reference>
 
 (define (preferred-upstream-source source package)
   "Return a variant of SOURCE that uses the same archive type as PACKAGE's
