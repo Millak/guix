@@ -5464,7 +5464,7 @@ operations.")
     (build-system go-build-system)
     (arguments
      (list #:import-path "github.com/go-ini/ini"))
-    (propagated-inputs
+    (native-inputs
      (list go-github-com-stretchr-testify))
     (home-page "https://gopkg.in/ini.v1")
     (synopsis "INI file read and write functionality in Go")
