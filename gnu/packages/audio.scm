@@ -3146,29 +3146,33 @@ included are the command line utilities @code{send_osc} and @code{dump_osc}.")
 (define-public python-soundfile
   (package
     (name "python-soundfile")
-    (version "0.10.3.post1")
+    (version "0.13.0")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "SoundFile" version))
+       (uri (pypi-uri "soundfile" version))
        (sha256
         (base32
-         "0yqhrfz7xkvqrwdxdx2ydy4h467sk7z3gf984y1x2cq7cm1gy329"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-cffi python-numpy libsndfile))
-    (native-inputs
-     (list python-pytest))
+         "0mc3g5l9fzj57m62zrwwz0w86cbihpna3mikgh8kpmz7ppc9jcz8"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f ; missing OGG support
-       #:phases
-       (modify-phases %standard-phases
+     (list
+      #:test-flags
+      ;; Error opening 'tests/stereo.mp3': File contains data in an
+      ;; unimplemented format.
+      '(list "-k" "not test_write_mp3_compression")
+      #:phases
+      '(modify-phases %standard-phases
          (add-after 'unpack 'patch
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "soundfile.py"
                (("_find_library\\('sndfile'\\)")
-                (string-append "\"" (assoc-ref inputs "libsndfile")
-                               "/lib/libsndfile.so\""))))))))
+                (string-append "\"" (search-input-file inputs "/lib/libsndfile.so")
+                               "\""))))))))
+    (propagated-inputs
+     (list python-cffi python-numpy libsndfile))
+    (native-inputs
+     (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/bastibe/SoundFile")
     (synopsis "Python bindings for libsndfile")
     (description "This package provides python bindings for libsndfile based on
