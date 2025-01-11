@@ -8875,6 +8875,49 @@ very eas to use.")
      (list
       #:import-path "github.com/klauspost/cpuid/v2"))))
 
+(define-public go-github-com-klauspost-reedsolomon
+  (package
+    (name "go-github-com-klauspost-reedsolomon")
+    (version "1.12.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/klauspost/reedsolomon")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04j6arqk9pisn3yjr9k90nmfs51fh5i7firl7lzs3x98d84qq5lv"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/klauspost/reedsolomon"
+      #:test-flags #~(list "-short")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples-and-benchmarks
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "benchmark")
+                (delete-file-recursively "examples"))))
+        (add-before 'build 'go-generate
+          (lambda* (#:key import-path #:allow-other-keys)
+            (with-directory-excursion (string-append "src/" import-path)
+              (invoke "go" "generate" "-v" "-n" "_gen")))))))
+    (propagated-inputs (list go-github-com-klauspost-cpuid-v2))
+    (home-page "https://github.com/klauspost/reedsolomon")
+    (synopsis "Reed-Solomon algorithm implementation in Golang")
+    (description
+     "Package reedsolomon enables
+@url{https://en.wikipedia.org/wiki/Reed%E2%80%93Solomon_error_correction,
+Erasure Coding}.  It's a Go port of the
+@url{https://github.com/Backblaze/JavaReedSolomon, JavaReedSolomon}.
+
+For encoding high shard counts (>256) a Leopard implementation is used.  For
+most platforms this performs close to the original Leopard implementation in
+terms of speed.")
+    (license license:expat)))
+
 (define-public go-github-com-kljensen-snowball
   (package
     (name "go-github-com-kljensen-snowball")
