@@ -7530,6 +7530,34 @@ can run applications in other languages and still keep cross compilation.")
 sockets.")
       (license license:expat))))
 
+(define-public go-github-com-txthinking-socks5
+  (package
+    (name "go-github-com-txthinking-socks5")
+    (version "0.0.0-20230325130024-4230056ae301")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/txthinking/socks5")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zbwczxwmx8ngs6s0bnb0v73jvx96m9ll753zfgcns8fvvgdi2lb"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/txthinking/socks5"))
+    (propagated-inputs
+     (list go-github-com-miekg-dns
+           go-github-com-patrickmn-go-cache
+           go-github-com-txthinking-runnergroup))
+    (home-page "https://github.com/txthinking/socks5")
+    (synopsis "SOCKSv5 protocol Golang library")
+    (description
+     "This package provides a SOCKS protocol version 5 library with full
+TCP/UDP and IPv4/IPv6 support.")
+    (license license:expat)))
+
 (define-public go-github-com-ucarion-urlpath
   (package
     (name "go-github-com-ucarion-urlpath")
