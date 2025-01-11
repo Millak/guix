@@ -2161,38 +2161,6 @@ methods can be called and usual operations such as indexing or arithmetic can
 be performed.")
       (license license:expat))))
 
-(define-public go-github-com-michiwend-golang-pretty
-    (package
-      (name "go-github-com-michiwend-golang-pretty")
-      (version "0.0.0-20141116172505-8ac61812ea3f")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url
-                "https://github.com/michiwend/golang-pretty")
-               (commit (go-version->git-ref version))))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "0rjfms0csjqi91xnddzx3rcrcaikc7xc027617px3kdwdap80ir4"))))
-      (build-system go-build-system)
-      (propagated-inputs
-       (list go-github-com-kr-text))
-      (arguments
-       `(#:tests? #f                    ; Upstream tests seem to be broken.
-         #:import-path "github.com/michiwend/golang-pretty"))
-      (home-page "https://github.com/michiwend/golang-pretty")
-      (synopsis "Pretty printing for Go values")
-      (description "Package @code{pretty} provides pretty-printing for Go
-values.  This is useful during debugging, to avoid wrapping long output lines
-in the terminal.
-
-It provides a function, @code{Formatter}, that can be used with any function
-that accepts a format string.  It also provides convenience wrappers for
-functions in packages @code{fmt} and @code{log}.")
-      (license license:expat)))
-
 (define-public go-github-com-michiwend-gomusicbrainz
   (let ((commit "0cdeb13f9b24d2c714feb7e3c63d595cf7121d7d")
         (revision "0"))
