@@ -1021,7 +1021,7 @@ tasks.")
 (define-public nm-tray
   (package
     (name "nm-tray")
-    (version "0.5.0")
+    (version "0.5.1")
     (home-page "https://github.com/palinek/nm-tray")
     (source (origin
               (method git-fetch)
@@ -1030,13 +1030,14 @@ tasks.")
                     (commit version)))
               (sha256
                (base32
-                "14i8sl0hrnyidlvqnxza0v4018f7p685ksn8419i2w7f9yqpvpiw"))
+                "1myg7sxiszllh5agg6pi5y9zagl83v8cb6l0s5f873xrv9pi3iyr"))
               (file-name (git-file-name name version))))
     (build-system qt-build-system)
     (arguments
-     (list #:tests? #f)) ;There are no tests upstream
-    (inputs (list qtbase-5 qtwayland-5 networkmanager-qt5))
-    (native-inputs (list qttools-5 pkg-config))
+     (list #:qtbase qtbase
+           #:tests? #f)) ;There are no tests upstream
+    (inputs (list networkmanager-qt))
+    (native-inputs (list qttools pkg-config))
     (synopsis
      "NetworkManager front-end with information icon residing in system tray")
     (description
