@@ -770,17 +770,18 @@ functions for accessing calendar data using the kcalcore API.")
 (define-public kdepim-addons
   (package
     (name "kdepim-addons")
-    (version "23.04.3")
+    (version "24.12.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kdepim-addons-" version ".tar.xz"))
        (sha256
-        (base32 "1nai47wccf1shrgvywslqdkxk066zdkpb1grf3qzh8q77za2kmqz"))))
+        (base32 "1wm1bp41q1asd6wi5q305gjvgfjaa50l401k2nnn7gvdrz3y4fa6"))))
     (build-system qt-build-system)
     (arguments
-     (list #:phases
+     (list #:qtbase qtbase
+           #:phases
            #~(modify-phases %standard-phases
                ;; TODO: Out of 156 tests, 10 fail and 2 get stuck.
                ;; kdepim-addons-todoedittest and kdepim-addons-eventedittest
@@ -815,10 +816,10 @@ functions for accessing calendar data using the kcalcore API.")
            grantlee
            grantleetheme
            kaddressbook
+           karchive
            kcalendarcore
            kcalendarsupport
            kcalutils
-           karchive
            kconfig
            kcontacts
            kdbusaddons
@@ -833,10 +834,11 @@ functions for accessing calendar data using the kcalcore API.")
            kincidenceeditor
            kio
            kitemmodels
+           kitinerary
+           kldap
            kmailcommon
            kmailimporter
            kmailtransport
-           kitinerary
            kmessagelib
            kmime
            kparts
@@ -853,7 +855,7 @@ functions for accessing calendar data using the kcalcore API.")
            libkleo
            libksieve
            prison
-           qtwebengine-5))
+           qtwebengine))
     (home-page "https://invent.kde.org/pim/kdepim-addons")
     (synopsis "Add-ons for KDE PIM applications")
     (description "This package contains add-ons for KDE PIM applications such
