@@ -10255,17 +10255,6 @@ three-way Venn diagrams in @code{matplotlib}.")
        (sha256
         (base32 "1j301mr7ai2jmbm5mkva0jd99fzxhyq585pqzqfmrf5pil8j4q8i"))))
     (build-system pyproject-build-system)
-    (propagated-inputs
-      (list python-matplotlib
-            python-numpy
-            ;; optional dependencies
-            python-networkx
-            python-pypng
-            python-scipy))
-    (native-inputs (list python-imageio
-                         python-meshzoo
-                         python-pytest
-                         python-scikit-fem))
     (arguments
      (list
       #:test-flags
@@ -10273,6 +10262,19 @@ three-way Venn diagrams in @code{matplotlib}.")
       #~(list "--deselect" "tests/test_spy.py::test_cli"
               ;; XXX: unknown failure
               "--deselect" "tests/test_spy.py::test_png")))
+    (propagated-inputs
+     (list python-matplotlib
+           python-numpy
+           ;; optional dependencies
+           python-networkx
+           python-pypng
+           python-scipy))
+    (native-inputs (list python-imageio
+                         python-meshzoo
+                         python-pytest
+                         python-scikit-fem
+                         python-setuptools
+                         python-wheel))
     (home-page "https://github.com/nschloe/matplotx")
     (synopsis "Minimal matplotlib styles")
     (description
