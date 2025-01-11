@@ -313,7 +313,7 @@ exec \"$@\" \
 \"-L~a/lib %{!static:-rpath=~a/lib %{!static-libgcc:-rpath=~a/lib -lgcc_s}} \" ~a"
                                libc libc libdir suffix))
                       (("#define GNU_USER_TARGET_STARTFILE_SPEC.*$" line)
-                       (format #f "#define STANDARD_STARTFILE_PREFIX_1 \"~a/lib\"
+                       (format #f "#define STANDARD_STARTFILE_PREFIX_1 \"~a/lib/\"
 #define STANDARD_STARTFILE_PREFIX_2 \"\"
 ~a"
                                libc line)))
@@ -327,7 +327,7 @@ exec \"$@\" \
 \"-L~a/lib %{!static:-rpath=~a/lib %{!static-libgcc:-rpath=~a/lib -lgcc_s}} \" ~a"
                                libc libc libdir suffix))
                       (("#define	STARTFILE_LINUX_SPEC.*$" line)
-                       (format #f "#define STANDARD_STARTFILE_PREFIX_1 \"~a/lib\"
+                       (format #f "#define STANDARD_STARTFILE_PREFIX_1 \"~a/lib/\"
 #define STANDARD_STARTFILE_PREFIX_2 \"\"
 ~a"
                                libc line))))
