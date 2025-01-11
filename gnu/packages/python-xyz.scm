@@ -35753,6 +35753,7 @@ metadata.")
                       (when tests?
                         (with-directory-excursion "tests"
                           (invoke "python" "-m" "unittest"))))))))
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/angr/ailment")
     (synopsis "The angr intermediate language")
     (description
