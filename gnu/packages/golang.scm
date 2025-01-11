@@ -2540,29 +2540,6 @@ or capture raw audio.")
 @code{Secret Service} DBus interface.")
     (license license:expat)))
 
-(define-public go-github-com-go-ini-ini
-  (package
-    (name "go-github-com-go-ini-ini")
-    (version "1.67.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/go-ini/ini")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1vpzkjmrwp7bqqsijp61293kk2vn6lcck56j8m5y6ks6cf21lpap"))))
-    (build-system go-build-system)
-    (arguments
-     (list #:import-path "github.com/go-ini/ini"))
-    (propagated-inputs (list go-github-com-stretchr-testify))
-    (home-page "https://gopkg.in/ini.v1")
-    (synopsis "INI file read and write functionality in Go")
-    (description
-     "This package provides INI file read and write functionality in Go.")
-    (license license:asl2.0)))
-
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
