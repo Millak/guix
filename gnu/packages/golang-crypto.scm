@@ -1948,6 +1948,64 @@ revision (aka MurmurHash3).  Reference algorithm has been slightly hacked as
 to support the streaming mode required by Go's standard Hash interface.")
     (license license:bsd-3)))
 
+(define-public go-github-com-tjfoc-gmsm
+  (package
+    (name "go-github-com-tjfoc-gmsm")
+    (version "1.4.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tjfoc/gmsm")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "18x1g555a3i86rkjrlxa6h6j3j87vhx480dqnv9hdij6cy3zph7i"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/tjfoc/gmsm"
+      #:test-subdirs
+      #~(list ;; "gmtls/..." ; requires go-google-golang-org-grpc
+              "pkcs12/..."
+              "sm2/..."
+              "sm3/..."
+              "sm4/..."
+              "x509/...")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda* (#:key import-path #:allow-other-keys)
+              ;; Tests need to write to that files.
+              (with-directory-excursion (string-append "src/" import-path)
+                (make-file-writable "sm3/ifile"))))
+          (add-after 'check 'post-check
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                ;; Remove modified testdata just in case.
+                (delete-file-recursively "sm3/ifile")))))))
+    (propagated-inputs
+     (list go-github-com-golang-protobuf
+           go-golang-org-x-crypto
+           go-golang-org-x-net
+           #;go-google-golang-org-grpc)) ; not packed yet
+    (home-page "https://github.com/tjfoc/gmsm")
+    ;; Project's README is in Chinese Mandarin, translated with
+    ;; auto translator and corrected manually.
+    (synopsis "ShangMi (SM) cipher suites for Golang")
+    (description
+     "This package provides @url{https://en.wikipedia.org/wiki/SM4_(cipher),
+ShāngMì 4} cipher suites implementation (GM SM2/3/4).
+
+Main functions:
+@itemize
+@item @code{SM2} national secret elliptic curve algorithm library
+@item @code{SM3} national secret hash algorithm library
+@item @code{SM4} national secret block cipher algorithm library
+@end itemize")
+    (license license:asl2.0)))
+
 (define-public go-github-com-twmb-murmur3
   (package
     (name "go-github-com-twmb-murmur3")
