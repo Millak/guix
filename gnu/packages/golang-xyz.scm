@@ -13864,6 +13864,30 @@ Included modules are:
 @end itemize")
     (license license:expat)))
 
+(define-public go-github-com-templexxx-cpu
+  (package
+    (name "go-github-com-templexxx-cpu")
+    (version "0.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/templexxx/cpu")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1bfygzjz2n8fbc9n9k7hfdnaz5mw6g4n4n1q3a0hyv33j9bvl5hh"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/templexxx/cpu"))
+    (home-page "https://github.com/templexxx/cpu")
+    (synopsis "@code{internal/cpu} in Go (add AVX512)")
+    (description
+     "Package cpu implements processor feature detection used by the Go
+standard library.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-thejerf-suture
   (package
     (name "go-github-com-thejerf-suture")
