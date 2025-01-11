@@ -515,7 +515,7 @@ functions.")
 (define-public go-github-com-aws-aws-sdk-go-v2
   (package
     (name "go-github-com-aws-aws-sdk-go-v2")
-    (version "1.30.5")
+    (version "1.32.0")
     (source
      (origin
        (method git-fetch)
@@ -524,13 +524,21 @@ functions.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1mxm3j8xwlzjqhdw515kwzzhnfr325s08ry73chjbdw6qb940lb1"))))
+        (base32 "1iflf2ski7vm2z78wdmbrqpchc3qr50macnf965wmdyfinvx58wn"))
+       ;; XXX: It contains a lot of sub packages defined with go.mod, consider
+       ;; to pack them separately.
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/aws/aws-sdk-go-v2/service/sqs
+            (for-each delete-file-recursively
+                      (list "service/sqs"))))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/aws/aws-sdk-go-v2"
-      ;; XXX: It contains a lot of sub packages defined with go.mod, consider
-      ;; to pack them separately.
       #:test-subdirs #~(list ".")))
     (propagated-inputs
      (list go-github-com-jmespath-go-jmespath
