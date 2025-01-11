@@ -6487,30 +6487,52 @@ Home Page}.")
 (define-public python-librosa
   (package
     (name "python-librosa")
-    (version "0.8.1")
+    (version "0.10.2.post1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "librosa" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/librosa/librosa/")
+             (commit version)
+             ;; For test files.
+             (recursive? #true)))
        (sha256
-        (base32 "1cx6rhcvak0hy6bx84jwzpxmwgi92m82w77279akwjmfd3khagf5"))))
-    (build-system python-build-system)
+        (base32 "1x37148y1rh4sq2nc59iw9jlza3zwawxnlb7bd9w36an05aclmnh"))))
+    (build-system pyproject-build-system)
     (arguments
-     ;; Tests require internet connection to download MATLAB scripts for
-     ;; generating the testing data.
-     `(#:tests? #f))
+     (list
+      #:test-flags
+      ;; Ignore --mpl flag.
+      '(list "-c" "/dev/null"
+             "-k" (string-append
+                   ;; Resampling tests require python-samplerate.
+                   "not resample"
+                   ;; These tests use Pooch and download data files.
+                   " and not example and not test_cite"
+                   ;; XXX assert 22050 == 31744
+                   " and not test_stream"))))
     (propagated-inputs
      (list python-audioread
            python-decorator
            python-joblib
+           python-lazy-loader
+           python-msgpack
            python-numba
            python-numpy
-           python-packaging
            python-pooch
-           python-resampy
            python-scikit-learn
            python-scipy
-           python-soundfile))
+           python-soundfile
+           python-soxr
+           python-typing-extensions))
+    (native-inputs
+     (list python-matplotlib
+           python-packaging
+           python-pytest
+           python-pytest-cov
+           python-resampy
+           python-setuptools
+           python-wheel))
     (home-page "https://librosa.org")
     (synopsis "Python module for audio and music processing")
     (description
