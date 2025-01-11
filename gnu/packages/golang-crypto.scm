@@ -198,25 +198,15 @@ primitives.")
     (arguments
      (list
       #:import-path "github.com/99designs/keyring"
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'disable-failing-tests
-            (lambda* (#:key tests? unpack-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" unpack-path)
-                (substitute* (find-files "." "\\_test.go$")
-                  ;; Disable test requring running DBus.
-                  (("TestLibSecretKeysWhenEmpty")
-                   "OffTestLibSecretKeysWhenEmpty")
-                  (("TestLibSecretKeysWhenNotEmpty")
-                   "OffTestLibSecretKeysWhenNotEmpty")
-                  (("TestLibSecretGetWhenEmpty")
-                   "OffTestLibSecretGetWhenEmpty")
-                  (("TestLibSecretGetWhenNotEmpty")
-                   "OffTestLibSecretGetWhenNotEmpty")
-                  (("TestLibSecretRemoveWhenEmpty")
-                   "OffTestLibSecretRemoveWhenEmpty")
-                  (("TestLibSecretRemoveWhenNotEmpty")
-                   "OffTestLibSecretRemoveWhenNotEmpty"))))))))
+      #:test-flags
+      #~(list "-skip" (string-join
+                       (list "TestLibSecretKeysWhenEmpty"
+                             "TestLibSecretKeysWhenNotEmpty"
+                             "TestLibSecretGetWhenEmpty"
+                             "TestLibSecretGetWhenNotEmpty"
+                             "TestLibSecretRemoveWhenEmpty"
+                             "TestLibSecretRemoveWhenNotEmpty")
+                       "|"))))
     (native-inputs
      (list gnupg go-github-com-stretchr-testify password-store))
     (propagated-inputs
