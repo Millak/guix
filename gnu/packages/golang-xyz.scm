@@ -11924,6 +11924,33 @@ throughput and hit ratio performance.  It's a fork of
 @code{dgraph-io/ristretto} project.")
     (license license:asl2.0)))
 
+(define-public go-github-com-patrickmn-go-cache
+  (package
+    (name "go-github-com-patrickmn-go-cache")
+    (version "2.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/patrickmn/go-cache")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "10020inkzrm931r4bixf8wqr9n39wcrb78vfyxmbvjavvw4zybgs"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/patrickmn/go-cache"))
+    (home-page "https://github.com/patrickmn/go-cache")
+    (synopsis "In-memory key:value store/cache Golang library")
+    (description
+     "go-cache is an in-memory key:value store/cache similar to Memcached that
+is suitable for applications running on a single machine.  Its major advantage
+is that, being essentially a thread-safe @code{map[string]interface{}} with
+expiration times, it doesn't need to serialize or transmit its contents over
+the network.")
+    (license license:expat)))
+
 (define-public go-github-com-pbnjay-memory
   (let ((commit "7b4eea64cf580186c0eceb10dc94ba3a098af46c")
         (revision "2"))
