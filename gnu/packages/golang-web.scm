@@ -8418,6 +8418,32 @@ library code
 @end itemize")
     (license license:bsd-3)))
 
+(define-public go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-webtunnel
+  (package
+    (name "go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-webtunnel")
+    (version "0.0.0-20240711104640-e64b1b3562f3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/webtunnel")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0nvd0qp1mdy7w32arnkhghxm5k2g6gy33cxlarxc6vdm4yh6v5nv"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/webtunnel"))
+    (propagated-inputs
+     (list go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-goptlib))
+    (home-page "https://gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/webtunnel")
+    (synopsis "Go WebTunnel Pluggable Transport")
+    (description
+     "WebTunnel is a Go Pluggable Transport that attempts to imitate web
+browsing activities based on HTTP Upgrade (HTTPT).")
+    (license license:bsd-2)))
+
 (define-public go-go-opentelemetry-io-otel
   (package
     (name "go-go-opentelemetry-io-otel")
