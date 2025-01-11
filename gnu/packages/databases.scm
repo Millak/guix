@@ -28,7 +28,7 @@
 ;;; Copyright © 2017, 2018 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2017 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2017, 2018, 2019 Pierre Langlois <pierre.langlois@gmx.com>
-;;; Copyright © 2015, 2017, 2018, 2019, 2021, 2022, 2023, 2024 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2017, 2018, 2019, 2021-2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Kristofer Buffington <kristoferbuffington@gmail.com>
 ;;; Copyright © 2018 Amirouche Boubekki <amirouche@hypermove.net>
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
@@ -90,6 +90,7 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages certs)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
@@ -5900,7 +5901,7 @@ mechanism of @code{dogpile}.")
 (define-public datasette
   (package
     (name "datasette")
-    (version "1.0a7")
+    (version "1.0a16")
     (source (origin
               (method git-fetch)        ;for tests
               (uri (git-reference
@@ -5909,41 +5910,17 @@ mechanism of @code{dogpile}.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1wwdx2xqkxygbww1nzpr6h702ims6zcxpjskh8fldn1kby591qgg"))))
+                "10c754idn9ka5hhai1qwjwlxw4dajdlrh162k71i5gwn4cgq6wr5"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      ;; There are multiple unexplained test failures (see:
-      ;; https://github.com/simonw/datasette/issues/2048).
+      ;; See https://github.com/simonw/datasette/issues/2048
       #~(list "-k" (string-append
-                    "not (test_database_page_for_database_with_dot_in_name"
-                    " or test_row_strange_table_name"
-                    " or test_database_with_space_in_name"
-                    " or test_tilde_encoded_database_names"
-                    " or test_weird_database_names"
-                    " or test_css_classes_on_body"
-                    " or test_templates_considered"
-                    " or test_row_html_compound_primary_key"
-                    " or test_edit_sql_link_on_canned_queries"
-                    " or test_alternate_url_json"
-                    " or test_table_with_slashes_in_name"
-                    " or test_searchable"
-                    " or test_custom_query_with_unicode_characters"
-                    " or test_searchmode)")
-              "-n" (number->string (parallel-job-count))
-              "-m" "not serial")        ;cannot run in parallel
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'relax-requirements
-            (lambda _
-              ;; The package needlessly specifies exact versions
-              ;; of dependencies, when it works fine with others.
-              (substitute* "setup.py"
-                (("(black)==[0-9\\.]+" _ package)
-                 package)
-                (("click-default-group-wheel")
-                 "click-default-group")))))))
+                    ;; These contain two unexpected extra items.
+                    "not test_searchable"
+                    " and not test_searchmode")
+              "-n" (number->string (parallel-job-count)))))
     (propagated-inputs
      (list python-aiofiles
            python-asgi-csrf
@@ -5963,7 +5940,8 @@ mechanism of @code{dogpile}.")
            python-sqlite-utils
            python-uvicorn))
     (native-inputs
-     (list python-beautifulsoup4
+     (list nss-certs-for-test
+           python-beautifulsoup4
            python-black
            python-cogapp
            python-pip
