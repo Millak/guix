@@ -16986,6 +16986,61 @@ tool."))))
     (propagated-inputs '())
     (inputs '())))
 
+(define-public gopls
+  (package
+    (name "gopls")
+    ;; XXX: Starting from 0.14.0 gppls needs golang.org/x/telemetry, which
+    ;; needs to be discussed if it may be included in Guix.
+    (version "0.17.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://go.googlesource.com/tools")
+             (commit (go-version->git-ref version #:subdir "gopls"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qksn79nc94fig5bia0l8h7fzm1zbn9rvya25hwf0f18v8a0id9l"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.23
+      #:install-source? #f
+      #:import-path "golang.org/x/tools/gopls"
+      #:unpack-path "golang.org/x/tools"
+      ;; XXX: No tests in project's root, limit to some of subdris, try to
+      ;; enable more.
+      #:test-subdirs
+      #~(list "internal/protocol/..."
+              "internal/util/..."
+              "internal/vulncheck/...")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'unpack 'override-tools
+            (lambda _
+              ;; XXX: Write a procedure deleting all but current module source
+              ;; to cover case with monorepo.
+              (delete-file-recursively "src/golang.org/x/tools"))))))
+    (native-inputs
+     (list go-github-com-google-go-cmp
+           go-github-com-jba-templatecheck
+           go-golang-org-x-mod
+           go-golang-org-x-sync
+           go-golang-org-x-telemetry
+           go-golang-org-x-text
+           go-golang-org-x-vuln
+           go-gopkg-in-yaml-v3
+           go-honnef-co-go-tools
+           go-mvdan-cc-gofumpt
+           go-mvdan-cc-xurls-v2))
+    (home-page "https://golang.org/x/tools/gopls")
+    (synopsis "Official language server for the Go language")
+    (description
+     "Pronounced ``Go please'', this is the official Go language server
+developed by the Go team.  It provides IDE features to any LSP-compatible
+editor.")
+    (license license:bsd-3)))
+
 (define-public misspell
   (package
     (inherit go-github-com-client9-misspell)
