@@ -3,7 +3,7 @@
 ;;; Copyright © 2016, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017, 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2017 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2017, 2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Vijayalakshmi Vedantham <vijimay12@gmail.com>
 ;;; Copyright © 2019 Sam <smbaines8@gmail.com>
 ;;; Copyright © 2020, 2021, 2022, 2023 Marius Bakke <marius@gnu.org>
@@ -178,8 +178,7 @@ to the @dfn{don't repeat yourself} (DRY) principle.")
        ;; Django 4.0 deprecated pytz in favor of Pythons built-in zoneinfo.
        (append python-pytz)))))
 
-;; Use 3.2 LTS as the default until packages gain support for 4.x.
-(define-public python-django python-django-3.2)
+(define-public python-django python-django-4.2)
 
 (define-public python-django-cache-url
   (package
