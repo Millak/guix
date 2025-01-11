@@ -9389,24 +9389,43 @@ objects.")
 (define-public python-sparse
   (package
     (name "python-sparse")
-    (version "0.14.0")
+    (version "0.15.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sparse" version))
        (sha256
         (base32
-         "1600xad37mff46xg80cy6bi3l2n6jm69j7sl19rzdmkcgyijfn2z"))))
+         "111bqz2xqr17rrc7svd20z94xf3zkfs9anjvzpr683zz4iywbcfl"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-version
+            (lambda _
+              (with-output-to-file "sparse/_version.py"
+                (let* ((version #$(package-version this-package) )
+                       (version-tuple (string-join (string-split version #\.) ", ")))
+                  (lambda ()
+                    (format #t
+                            "__version__ = version = '~a'
+__version_tuple__ = version_tuple = (~a)~%" version version-tuple))))
+              (substitute* "pyproject.toml"
+                (("\\[tool\\.setuptools_scm\\]") "")
+                (("^version_file.*") "")
+                (("^dynamic = \\[\"version\"\\]")
+                 (string-append "version = \"" #$version "\"\n"))))))))
     (propagated-inputs
      (list python-numba python-numpy python-scipy))
     (native-inputs
      (list python-dask
-           python-importlib-metadata
+           python-pre-commit
            python-pytest
-           python-pytest-black
            python-pytest-cov
-           python-setuptools))
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
     (home-page "https://github.com/pydata/sparse/")
     (synopsis "Library for multi-dimensional sparse arrays")
     (description
