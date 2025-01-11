@@ -2678,6 +2678,54 @@ grid in the right direction to combine all components into a single circuit.
 Every puzzle has a complete solution, although there may be more than one.")
     (license license:gpl3+)))
 
+(define-public dsda-doom
+  (package
+    (name "dsda-doom")
+    (version "0.28.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kraflab/dsda-doom")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qvxx4r3ahiy8w9x0559g581971ycmbqm1kszzc65w1aa85f5q2f"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f ;no tests
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'chdir
+                     (lambda _
+                       (chdir "prboom2"))))))
+    (inputs
+     (list sdl2
+           sdl2-mixer
+           fluidsynth
+           portmidi
+           libmad
+           libzip
+           glu
+           dumb
+           libvorbis))
+    (home-page "https://github.com/kraflab/dsda-doom")
+    (synopsis "Doom source port, successor of PrBoom+")
+    (description
+     "This is a successor of PrBoom+ with new features, including:
+@enumerate
+@item Heretic, Hexen, MBF21, Doom-in-Hexen, UDMF, and MAPINFO support
+@item In-game console and scripting
+@item Full controller support
+@item Palette-based opengl renderer
+@item Debugging features for testing
+@item Strict mode for speedrunning
+@item Various quality of life improvements
+@item Advanced tools for TASing
+@item Rewind
+@end enumerate")
+    (license license:gpl2+)))
+
 (define-public prboom-plus
   (package
    (name "prboom-plus")
