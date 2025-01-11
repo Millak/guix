@@ -6,7 +6,7 @@
 ;;; Copyright © 2017 Thomas Danckaert <post@thomasdanckaert.be>
 ;;; Copyright © 2017, 2019, 2020 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2019 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2019, 2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2021 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
@@ -45,12 +45,15 @@
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages gnome)
+  #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages xiph)
@@ -64,6 +67,7 @@
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system meson))
 
@@ -671,17 +675,21 @@ is to provide an accurate identifier for record tracks.")
 (define-public python-audioread
   (package
     (name "python-audioread")
-    (version "2.1.9")
+    (version "3.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "audioread" version))
        (sha256
-        (base32 "129hab8x9sb3plff2bkq4xnzc3i8k9rgcm1a36l813kc0m10wj53"))))
-    (build-system python-build-system)
-    (arguments `(#:tests? #f)) ; there is no "audiofile" fixture
+        (base32 "0v866n5rwdz45ks8dlhl8hzx3p54hcjl0rz7x3rbsj4c96jn0m5c"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list ffmpeg python-pygobject))
     (native-inputs
-     (list python-pytest python-pytest-runner))
+     (list gstreamer
+           gst-plugins-base
+           python-flit-core
+           python-pytest
+           python-tox))
     (home-page "https://github.com/sampsyo/audioread")
     (synopsis "Decode audio files using whichever backend is available")
     (description
