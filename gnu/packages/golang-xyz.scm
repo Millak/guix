@@ -6013,6 +6013,31 @@ execution.")
      "The chardet package ports character set detection from ICU to Go.")
     (license license:expat)))
 
+(define-public go-github-com-golang-freetype
+  (package
+    (name "go-github-com-golang-freetype")
+    (version "0.0.0-20170609003504-e2365dfdc4a0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/golang/freetype")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "194w3djc6fv1rgcjqds085b9fq074panc5vw582bcb8dbfzsrqxc"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/golang/freetype"))
+    (propagated-inputs
+     (list go-golang-org-x-image))
+    (home-page "https://github.com/golang/freetype")
+    (synopsis "Freetype font rasterizer in the Go programming language")
+    (description
+     "The Freetype font rasterizer in the Go programming language.")
+    (license (list license:freetype
+                   license:gpl2+))))
+
 (define-public go-github-com-golangplus-bytes
   (package
     (name "go-github-com-golangplus-bytes")
