@@ -161,7 +161,7 @@ composability.")
 (define-public go-filippo-io-edwards25519
   (package
     (name "go-filippo-io-edwards25519")
-    (version "1.0.0")
+    (version "1.1.0")
     (source
      (origin
        (method git-fetch)
@@ -170,7 +170,7 @@ composability.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01m8hpaj0cwp250f7b0din09cf8j6j5y631grx67qfhvfrmwr1zr"))))
+        (base32 "1b2c4iv13mfa0dydr8wawpnnrxgwl7mxzhryfrkjxrgwad8gas5k"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "filippo.io/edwards25519"))
