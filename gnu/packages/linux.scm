@@ -10150,7 +10150,7 @@ tools for managing PipeWire.")
 (define-public ell
   (package
     (name "ell")
-    (version "0.69")
+    (version "0.71")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -10159,7 +10159,7 @@ tools for managing PipeWire.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "06gsij5fsf3jgwjx1ijn9l5lyvd09007mfn8dygqnv6xk6g1bq8l"))))
+                "09s674lh2fafw7cpwldbi8cd89arbajgvhy9j5vgqg1kbn6xddwx"))))
     (build-system gnu-build-system)
     (arguments
      ;; Tests launch dbus-daemon instances that all try to bind to
