@@ -2144,6 +2144,42 @@ generator MkDocs.")
 bindings to the C++ random forest implementation, ranger, using Cython.")
     (license license:gpl3+)))
 
+(define-public python-nanobind
+  (package
+    (name "python-nanobind")
+    (version "2.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "nanobind" version))
+       (sha256
+        (base32 "15hw9r0znv7pz8mlgcb892m8ahppaf7gx2xcna2i122qbzp2sfd0"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'configure-cmake
+            (lambda _
+              (invoke "cmake" "-S" "." "-B" "build" "-DNB_TEST_STABLE_ABI=ON")))
+          (add-after 'configure-cmake 'build-c++
+            (lambda _
+              (invoke "cmake" "--build" "build" "-j" "2")))
+          (add-before 'check 'pre-check
+            (lambda _ (chdir "build"))))))
+    (inputs (list eigen))
+    (native-inputs (list cmake-minimal
+                         python-pytest
+                         python-scikit-build-core))
+    (home-page "https://github.com/wjakob/nanobind/")
+    (synopsis "nanobind: tiny and efficient C++/Python bindings")
+    (description "Nanobind is a small binding library that exposes C++ types
+in Python and vice versa.  It is reminiscent of @code{Boost.Python} and
+@code{pybind11} and uses near-identical syntax.  In contrast to these existing
+tools, @code{nanobind} is more efficient: bindings compile in a shorter amount
+of time, produce smaller binaries, and have better runtime performance.")
+    (license license:bsd-3)))
+
 (define-public python-nr-date
   (package
     (name "python-nr-date")
