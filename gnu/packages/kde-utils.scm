@@ -805,50 +805,6 @@ combinations are distinct enough to be readable and accessible.")
 the computer and 3D Printers.")
       (license (list license:lgpl2.1 license:lgpl3)))))
 
-(define-public wacomtablet
-  (package
-    (name "wacomtablet")
-    (version "3.2.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://kde/stable/"
-                                  name "/" version "/"
-                                  name "-" version ".tar.xz"))
-              (patches (search-patches
-                        "wacomtablet-add-missing-includes.patch"
-                        "wacomtablet-qt5.15.patch"))
-              (sha256
-               (base32
-                "197pwpl87gqlnza36bp68jvw8ww25znk08acmi8bpz7n84xfc368"))))
-    (build-system qt-build-system)
-    (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (replace 'check
-                          (lambda* (#:key tests? #:allow-other-keys)
-                            (when tests?
-                              (invoke "dbus-launch" "ctest" "-E"
-                                      "(Test.KDED.DBusTabletService|Test.KDED.TabletHandler|Test.KDED.XInputAdaptor|Test.KDED.XsetWacomAdaptor)")))))))
-    (native-inputs (list dbus extra-cmake-modules kdoctools-5 pkg-config))
-    (inputs (list kcoreaddons-5
-                  ki18n-5
-                  kglobalaccel-5
-                  kconfig-5
-                  kxmlgui-5
-                  kwidgetsaddons-5
-                  kwindowsystem-5
-                  knotifications-5
-                  kdbusaddons-5
-                  qtx11extras
-                  qtdeclarative-5
-                  libwacom
-                  xf86-input-wacom
-                  libxi))
-    (propagated-inputs (list plasma-framework))
-    (home-page "https://invent.kde.org/system/wacomtablet")
-    (synopsis "KDE GUI for the Wacom Linux Drivers")
-    (description "Provides KDE GUI for the Wacom Linux Drivers.")
-    (license license:gpl2+)))
-
 (define-public kmag
   (package
     (name "kmag")
