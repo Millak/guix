@@ -23,6 +23,7 @@
 ;;; Copyright © 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2025 Jonas Freimuth <jonas.freimuth@posteo.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -7154,6 +7155,36 @@ functions.")
     ;; project is released under GPLv2+ according to the license declaration
     ;; in "setup.py".
     (license (list license:mpl2.0 license:gpl2+ license:lgpl2.1+))))
+
+(define-public python-rchitect
+  (package
+    (name "python-rchitect")
+    (version "0.4.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/randy3k/rchitect")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ijbb0v77ir7j64r4r4kznv03wyc57rcqa9jnsc46476il79dcrk"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-cffi python-packaging python-six))
+    (native-inputs (list python-pytest
+                         python-pytest-cov
+                         python-pytest-mock
+                         python-setuptools
+                         python-wheel
+                         ;; R dependencies needed only for testing.
+                         r-minimal
+                         r-reticulate))
+    (home-page "https://github.com/randy3k/rchitect")
+    (synopsis "Mapping R API to Python")
+    (description
+     "rchitect provides access to R functionality from Python.  Its
+main use is as the driver for radian, the R console.")
+    (license license:expat)))
 
 (define-public java-jdistlib
   (package
