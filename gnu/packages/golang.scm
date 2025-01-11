@@ -2162,24 +2162,22 @@ be performed.")
       (license license:expat))))
 
 (define-public go-github-com-michiwend-golang-pretty
-  (let ((commit "8ac61812ea3fa540f3f141a444fcb0dd713cdca4")
-        (revision "0"))
     (package
       (name "go-github-com-michiwend-golang-pretty")
-      (version (git-version "0.0.0" revision commit))
+      (version "0.0.0-20141116172505-8ac61812ea3f")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url
                 "https://github.com/michiwend/golang-pretty")
-               (commit commit)))
+               (commit (go-version->git-ref version))))
          (file-name (git-file-name name version))
          (sha256
           (base32
            "0rjfms0csjqi91xnddzx3rcrcaikc7xc027617px3kdwdap80ir4"))))
       (build-system go-build-system)
-      (native-inputs
+      (propagated-inputs
        (list go-github-com-kr-text))
       (arguments
        `(#:tests? #f                    ; Upstream tests seem to be broken.
@@ -2193,7 +2191,7 @@ in the terminal.
 It provides a function, @code{Formatter}, that can be used with any function
 that accepts a format string.  It also provides convenience wrappers for
 functions in packages @code{fmt} and @code{log}.")
-      (license license:expat))))
+      (license license:expat)))
 
 (define-public go-github-com-michiwend-gomusicbrainz
   (let ((commit "0cdeb13f9b24d2c714feb7e3c63d595cf7121d7d")
