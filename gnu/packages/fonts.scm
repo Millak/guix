@@ -1188,7 +1188,7 @@ display all Unicode symbols.")
 (define-public font-google-noto-emoji
   (package
     (name "font-google-noto-emoji")
-    (version "2.042")
+    (version "2.047")
     (source
      (origin
        (method git-fetch)
@@ -1198,7 +1198,7 @@ display all Unicode symbols.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "17i7awyqz9jv0j2blcf0smmpas375c3pdhjv1zqzl861g8qm1lm2"))))
+         "0p9wa55fyxih0bm81h55ip9rc12rh1c2v0dq9dxd2y19rxgcnnxz"))))
     (build-system font-build-system)
     (arguments
      (list
