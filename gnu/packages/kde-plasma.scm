@@ -3184,3 +3184,50 @@ of a Plasma shell.")
     (home-page "https://invent.kde.org/plasma/systemsettings")
     (properties '((upstream-name . "systemsettings")))
     (license license:gpl2+)))
+
+(define-public wacomtablet
+  (package
+    (name "wacomtablet")
+    (version "6.2.5")
+    (source (origin
+              (method url-fetch)
+              (uri
+               (string-append "mirror://kde/stable/plasma/" version
+                              "/wacomtablet-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0yrqrxxa1233fqji12nz0gvkiiffwg0sfvbxhllmrman7s76zcz5"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:qtbase qtbase
+           #:phases #~(modify-phases %standard-phases
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (invoke "dbus-launch" "ctest" "-E"
+                                      "(Test.KDED.DBusTabletService\
+|Test.KDED.TabletHandler|Test.KDED.XInputAdaptor|\
+Test.KDED.XsetWacomAdaptor)")))))))
+    (native-inputs (list dbus extra-cmake-modules kdoctools pkg-config))
+    (inputs (list kcoreaddons
+                  ki18n
+                  kio
+                  kglobalaccel
+                  kconfig
+                  kcmutils
+                  kxmlgui
+                  kwidgetsaddons
+                  kwindowsystem
+                  knotifications
+                  kdbusaddons
+                  plasma5support
+                  qtdeclarative
+                  libwacom
+                  libxi
+                  libxkbcommon
+                  libplasma
+                  xf86-input-wacom))
+    (home-page "https://invent.kde.org/plasma/wacomtablet")
+    (synopsis "KDE GUI for the Wacom Linux Drivers")
+    (description "Provides KDE GUI for the Wacom Linux Drivers.")
+    (license license:gpl2+)))
