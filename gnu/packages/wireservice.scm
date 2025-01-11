@@ -170,12 +170,12 @@ support to all @code{agate.Table} instances.")))
               (base32
                "03l3qlyw7588jhjjsiy15valqlzs8gjai8f74v18zv2za0zjqbzl"))))
    (native-inputs
-    `(("python-nose" ,python-nose)
-      ("python-sphinx" ,python-sphinx)
-      ("python-sphinx-rtd-theme" ,python-sphinx-rtd-theme)))
+    (list python-nose
+          python-sphinx
+          python-sphinx-rtd-theme))
    (propagated-inputs
-    `(("python-agate" ,python-agate)
-      ("python-dbfread" ,python-dbfread)))
+    (list python-agate
+          python-dbfread))
    (home-page "https://agate-dbf.rtfd.org")
    (synopsis "Add read support for dbf files to agate")
    (description "@code{agatedbf} uses a monkey patching pattern to add read
