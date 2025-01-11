@@ -216,7 +216,7 @@ Browser.")
          "16zyixbddwaiw1bzsai5crdg58kmacshsr0rp37m85qk0a8vryg3"))))
     (build-system mozilla-build-system)
     (inputs
-     (list go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-lyrebird
+     (list lyrebird
            firefox-locales
            tor-client
            alsa-lib
@@ -956,7 +956,7 @@ Mullvad Browser.")
             (delete 'autoconfig-tor)))))
     (inputs
      (modify-inputs (package-inputs torbrowser)
-       (delete go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-lyrebird)))
+       (delete lyrebird)))
     (propagated-inputs
      (modify-inputs (package-propagated-inputs torbrowser)
        (append ublock-origin/icecat)))

@@ -1627,9 +1627,9 @@ standard Fountain, but also has some custom syntax extensions such as
 translated keywords and acts.")
     (license license:gpl3)))
 
-(define-public go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-lyrebird
+(define-public lyrebird
   (package
-    (name "go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-lyrebird")
+    (name "lyrebird")
     (version "0.5.0")
     (source (origin
               (method git-fetch)
@@ -1643,6 +1643,7 @@ translated keywords and acts.")
     (build-system go-build-system)
     (arguments
      (list
+      #:install-source? #f
       #:unpack-path "gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/lyrebird"
       #:import-path "gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/lyrebird/cmd/lyrebird"))
     (propagated-inputs
@@ -1660,6 +1661,13 @@ translated keywords and acts.")
     (description "This is a look-like nothing obfuscation protocol that
 incorporates ideas and concepts from Philipp Winter's ScrambleSuit protocol.")
     (license (list license:bsd-2 license:bsd-3))))
+
+(define-public go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-lyrebird
+  ;; This is a final command, no need for a full name of the go.mod module path
+  ;; style. The same is suggested in project's README and Makefile.
+  (deprecated-package
+   "go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-lyrebird"
+   lyrebird))
 
 (define-public go-github-com-apparentlymart-go-openvpn-mgmt
   (let ((commit "4d2ce95ae600ee04eeb020ee0997aabb82752210")
