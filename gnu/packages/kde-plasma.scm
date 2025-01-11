@@ -2523,26 +2523,25 @@ PulseAudio.")
 (define-public plasma-phonebook
   (package
     (name "plasma-phonebook")
-    (version "0.1")
+    (version "24.02.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma-phonebook/"
-                                  version "/plasma-phonebook-" version
+                                  "plasma-phonebook-" version
                                   ".tar.xz"))
               (sha256
                (base32
-                "13nnzdzpganlp319sc9dm9w5hsjhw4f3w8rb80q3nd8q6nyrpky8"))))
-    (build-system cmake-build-system)
+                "1f2z3djq8q2z90vrn18k5qbiw8crhs69c5qvdnzxmp3s3f63bk4l"))))
+    (build-system qt-build-system)
+    (arguments (list #:qtbase qtbase))
     (native-inputs (list extra-cmake-modules pkg-config))
     (inputs (list kpeople
                   kirigami
-                  kpeoplevcard
+                  kirigami-addons
                   kcoreaddons
                   kcontacts
-                  qtbase-5
-                  qtdeclarative-5
-                  qtquickcontrols2-5
-                  qtsvg-5))
+                  qtdeclarative
+                  qtsvg))
     (home-page "https://plasma-mobile.org/")
     (synopsis "Phonebook for Plasma Mobile devices")
     (description "This package provides contacts application which allows
