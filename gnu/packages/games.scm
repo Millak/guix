@@ -1517,6 +1517,58 @@ practise.")
                    license:gpl1+        ;ansidecl.h
                    license:bsd-3))))    ;random.c
 
+(define-public doom-runner
+  (package
+    (name "doom-runner")
+    (version "1.8.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Youda008/DoomRunner")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0rpywq95zy9w0wj1262x4rf84c52wg1rgf0by549qph6fybn34rn"))))
+    (build-system qt-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda _
+              (substitute* "DoomRunner.pro"
+                (("/usr")
+                 #$output))
+              (invoke "qmake" "DoomRunner.pro" "-spec" "linux-g++"
+                      "\"CONFIG+=release\"")))
+          (add-after 'install 'install-xdg
+            (lambda _
+              (with-directory-excursion "Install/XDG"
+                (install-file "DoomRunner.desktop"
+                              (string-append #$output
+                                             "/share/applications"))
+                (let ((install-icon
+                       (lambda (size)
+                         (install-file (simple-format
+                                        #f "DoomRunner.~sx~s.png"
+                                        size size)
+                                       (simple-format
+                                        #f "~a/share/icons/hicolor/~sx~s/apps"
+                                        #$output size size)))))
+                  (for-each install-icon
+                            '(16 24 32 48 64 128)))))))))
+    (home-page "https://github.com/Youda008/DoomRunner")
+    (synopsis "Launcher for Doom engine games")
+    (description
+     "Doom Runner is yet another launcher of common Doom source ports (like
+GZDoom, Zandronum, PrBoom, ...) with graphical user interface.  It is
+written in C++ and Qt, and it is designed around the idea of presets
+for various multi-file modifications to allow one-click switching
+between them and minimize any repetitive work.")
+    (license license:gpl3)))
+
 (define-public falltergeist
   (package
     (name "falltergeist")
