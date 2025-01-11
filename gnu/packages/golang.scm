@@ -2698,29 +2698,6 @@ sinks and sources.")
 or capture raw audio.")
       (license license:expat))))
 
-(define-public go-github-com-mtibben-percent
-  (package
-    (name "go-github-com-mtibben-percent")
-    (version "0.2.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/mtibben/percent")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1iqivw8pigj259rj5yifibbvic70f9hb7k24a4sa967s4fj6agb6"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:import-path "github.com/mtibben/percent"
-       #:phases %standard-phases))
-    (synopsis "Package percent escapes strings using percent-encoding")
-    (description
-     "Package percent escapes strings using percent-encoding.")
-    (home-page "https://github.com/mtibben/percent")
-    (license license:expat)))
-
 (define-public go-github-com-gsterjov-go-libsecret
   (package
     (name "go-github-com-gsterjov-go-libsecret")
