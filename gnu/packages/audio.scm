@@ -79,6 +79,7 @@
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cdrom)
+  #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages crates-audio)
@@ -140,6 +141,7 @@
   #:use-module (gnu packages samba)
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages serialization)
+  #:use-module (gnu packages sphinx)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages tbb)
   #:use-module (gnu packages telephony)
@@ -3172,6 +3174,53 @@ included are the command line utilities @code{send_osc} and @code{dump_osc}.")
     (description "This package provides python bindings for libsndfile based on
 CFFI and NumPy.")
     (license license:expat)))
+
+(define-public python-soxr
+  (package
+    (name "python-soxr")
+    (version "0.5.0.post1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "soxr" version))
+       (sha256
+        (base32 "0wzz7j0z814mm99xr19vfrwp2x904lbwhf513x7085m4x3rvk4kh"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'find-nanobind
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let* ((python #$(this-package-native-input "python"))
+                     (version (python-version python))
+                     (nanobind (search-input-file
+                                inputs
+                                (string-append "lib/python" version
+                                               "/site-packages/nanobind/"
+                                               "cmake/nanobind-config.cmake"))))
+                (setenv "CMAKE_PREFIX_PATH"
+                        (string-append (dirname nanobind)
+                                       ":" (getenv "CMAKE_PREFIX_PATH")))))))))
+    (propagated-inputs (list python-numpy))
+    (native-inputs (list cmake-minimal
+                         python
+                         python-linkify-it-py
+                         python-myst-parser
+                         python-nanobind
+                         python-pytest
+                         python-scikit-build-core
+                         python-setuptools
+                         python-setuptools-scm
+                         python-sphinx
+                         python-typing-extensions
+                         python-wheel))
+    (home-page "https://github.com/dofuuz/python-soxr")
+    (synopsis "High quality, one-dimensional sample-rate conversion library")
+    (description
+     "Python-SoXR is a Python wrapper of libsoxr, a high quality,
+one-dimensional sample-rate conversion library.")
+    (license license:lgpl2.1)))
 
 (define-public python-python3-midi
   (package
