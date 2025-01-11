@@ -8094,6 +8094,34 @@ multiplexing.  The original intention of this library is to power the
 connection management for @url{https://github.com/xtaci/kcp-go,kcp-go}.")
     (license license:expat)))
 
+(define-public go-gitlab-torproject-org-tpo-anti-censorship-geoip
+  (package
+    (name "go-gitlab-torproject-org-tpo-anti-censorship-geoip")
+    (version "0.0.0-20210928150955-7ce4b3d98d01")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url
+              "https://gitlab.torproject.org/tpo/anti-censorship/geoip.git")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0i7dc717w1g7hk7488vscqxj0a10af6fz9jczxxsfyxagynfzqcq"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "gitlab.torproject.org/tpo/anti-censorship/geoip"))
+    (propagated-inputs
+     (list go-github-com-smartystreets-goconvey))
+    (home-page "https://gitlab.torproject.org/tpo/anti-censorship/geoip")
+    (synopsis "GeoIP go library that uses the tor geoipdb")
+    (description
+     "This code is for loading database data that maps IP addresses to
+countries for collecting and presenting statistics on snowflake use that might
+alert us to censorship events.")
+    (license license:bsd-3)))
+
 (define-public go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-goptlib
   (package
     (name "go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-goptlib")
