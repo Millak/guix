@@ -1028,7 +1028,7 @@ using password-store through rofi interface:
 (define-public tessen
   (package
     (name "tessen")
-    (version "2.2.1")
+    (version "2.2.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1037,7 +1037,7 @@ using password-store through rofi interface:
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0v0mkdwwxpy23fm5dqspp9c77b5ifcj7fsi8xhjrkrv1vqwmh67j"))))
+                "0pxx3x50k1zi82vjvib94rar6sy5bz3s2amq4zyba6s1a8isqlcr"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests?
