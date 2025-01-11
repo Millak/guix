@@ -2304,18 +2304,15 @@ characters with their ASCII approximations.")
       (license license:asl2.0))))
 
 (define-public go-github-com-golang-freetype
-  (let ((commit "e2365dfdc4a05e4b8299a783240d4a7d5a65d4e4")
-        (revision "1"))
     (package
       (name "go-github-com-golang-freetype")
-      (version (git-version "0.0.0" revision commit))
+      (version "0.0.0-20170609003504-e2365dfdc4a0")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
-                       (url "https://github.com/golang/freetype")
-                       (commit commit)))
-                (file-name (string-append "go-github-com-golang-freetype-"
-                                          version "-checkout"))
+                      (url "https://github.com/golang/freetype")
+                      (commit (go-version->git-ref version))))
+                (file-name (git-file-name name version))
                 (sha256
                  (base32
                   "194w3djc6fv1rgcjqds085b9fq074panc5vw582bcb8dbfzsrqxc"))))
@@ -2328,7 +2325,7 @@ characters with their ASCII approximations.")
       (synopsis "Freetype font rasterizer in the Go programming language")
       (description "The Freetype font rasterizer in the Go programming language.")
       (license (list license:freetype
-                     license:gpl2+)))))
+                     license:gpl2+))))
 
 (define-public go-github-com-fogleman-gg
   (package
