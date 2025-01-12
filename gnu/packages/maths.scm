@@ -4085,18 +4085,6 @@ savings are consistently > 5x.")
        (sha256
         (base32 "0qxb0sn624jaxjxg2ayd65zaiq1p043w3kk55w8r6drkjiar70yj"))))
     (build-system pyproject-build-system)
-    (native-inputs (list ncurses
-                         python-mock
-                         python-mpi4py
-                         python-pytest
-                         python-pytest-cov
-                         python-pytest-timeout))
-    (propagated-inputs (list python-mpmath
-                             python-numpy
-                             python-psutil
-                             python-pydantic-2
-                             python-pyyaml
-                             python-tomli))
     (arguments
      (list
       #:phases
@@ -4124,6 +4112,20 @@ savings are consistently > 5x.")
                    "export UNIT_TEST_MPI_SUBDIR=''"))
                 ;; Run only unit tests, regression tests require MPI.
                 (invoke "bash" "libensemble/tests/run-tests.sh" "-u")))))))
+    (native-inputs (list ncurses
+                         python-mock
+                         python-mpi4py
+                         python-pytest
+                         python-pytest-cov
+                         python-pytest-timeout
+                         python-setuptools
+                         python-wheel))
+    (propagated-inputs (list python-mpmath
+                             python-numpy
+                             python-psutil
+                             python-pydantic-2
+                             python-pyyaml
+                             python-tomli))
     (home-page "https://github.com/Libensemble/libensemble")
     (synopsis "Toolkit for dynamic ensembles of calculations")
     (description "@code{libensemble} is a complete toolkit for dynamic
