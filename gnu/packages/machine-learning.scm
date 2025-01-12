@@ -5748,6 +5748,7 @@ and Numpy.")
            python-pyro-api
            python-pytorch
            python-tqdm))
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://pyro.ai")
     (synopsis "Python library for probabilistic modeling and inference")
     (description
