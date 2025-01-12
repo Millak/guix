@@ -7035,11 +7035,16 @@ the Go standard library}.")
             (lambda* (#:key tests? import-path #:allow-other-keys)
               (when tests?
                 (with-directory-excursion (string-append "src/" import-path)
-                  (invoke "ginkgo" "-r" "-v"
+                  (setenv "TIMESCALE_FACTOR" "10")
+                  (invoke "ginkgo" "-r" "-v" "--no-color"
                           (string-append
-                           "--procs=" (number->string (parallel-job-count)))
-                          "--randomize-all"
-                          "--randomize-suites"
+                           "--procs=" (number->string
+                                       ;; All tests passed on 16 threads
+                                       ;; mathine, but fail on
+                                       ;; ci.guix.gnu.org.
+                                       (if (> (parallel-job-count) 17)
+                                           16
+                                           (parallel-job-count))))
                           "--skip-package=integrationtests"))))))))
     (native-inputs
      (list go-ginkgo
