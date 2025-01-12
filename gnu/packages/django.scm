@@ -1005,24 +1005,31 @@ support, and optional data-URI image and font embedding.")
               (sha256
                (base32
                 "0qvsm8yjchl0d3i7g20wba6px9lb5gv8kp3fcnr6hr0y0b3qjr9h"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
+     (list
+      #:phases
+      '(modify-phases %standard-phases
          (replace 'check
-           (lambda _
-             (invoke "redis-server" "--daemonize" "yes")
-             (with-directory-excursion "tests"
-               (invoke "python" "runtests.py")))))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "redis-server" "--daemonize" "yes")
+               (with-directory-excursion "tests"
+                 (invoke "python" "runtests.py"))))))))
     (native-inputs
-     (list python-fakeredis python-hiredis python-mock python-msgpack
+     (list python-fakeredis
+           python-hiredis
+           python-mock
+           python-msgpack
+           python-setuptools
+           python-wheel
            redis))
     (propagated-inputs
      (list python-django python-redis))
     (home-page "https://github.com/niwibe/django-redis")
     (synopsis "Full featured redis cache backend for Django")
     (description
-      "Full featured redis cache backend for Django.")
+     "This package provides a full featured Redis cache backend for Django.")
     (license license:bsd-3)))
 
 (define-public python-django-rq
