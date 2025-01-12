@@ -9404,6 +9404,46 @@ to serve as a building block for such an interface.")
 (define-public ecl-cl-rmath
   (sbcl-package->ecl-package sbcl-cl-rmath))
 
+(define-public sbcl-cl-semver
+  (let ((commit "b125d2c49ea6d370302dde73a6e0841c0e928184")
+        (revision "0"))
+    (package
+      (name "sbcl-cl-semver")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/cldm/cl-semver")
+               (commit commit)))
+         (file-name (git-file-name "cl-semver" version))
+         (sha256
+          (base32 "1zlcn7lrpvjiixgqm4yxnqqwak1hxfmxmchkpvrly41yhl586ril"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs (list sbcl-stefil))
+      (inputs
+       (list sbcl-alexandria
+             sbcl-esrap
+             sbcl-named-readtables))
+      (home-page "https://github.com/cldm/cl-semver")
+      (synopsis "Semantic version handling in Common Lisp")
+      (description
+       "This package provides a Common Lisp implementation of the semantic
+versioning specification: @url{http://semver.org}.")
+      (license license:expat))))
+
+(define-public ecl-cl-semver
+  (let ((pkg (sbcl-package->ecl-package sbcl-cl-semver)))
+    (package
+      (inherit pkg)
+      (arguments
+       (substitute-keyword-arguments (package-arguments pkg)
+         ;; TODO: https://github.com/cldm/cl-semver/issues/9
+         ((#:tests? _ #f) #f))))))
+
+(define-public cl-semver
+  (sbcl-package->cl-source-package sbcl-cl-semver))
+
 (define-public sbcl-cl-setlocale
   (let ((commit "f660d07dac72bc3e99caae1c6c8a789991e2694c")
         (revision "0"))
