@@ -1098,30 +1098,29 @@ using Python multiprocessing.")
 (define-public python-django-sortedm2m
   (package
     (name "python-django-sortedm2m")
-    (version "3.0.2")
+    (version "4.0.0")
     (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "django-sortedm2m" version))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/jazzband/django-sortedm2m")
+                    (commit version)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "0z0yymmrr2l5cznqbzwziw624df0qsiflvbpqwrpan52nww3dk4a"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda _
-                      (invoke "django-admin"
-                              "test" "--settings=test_project.settings"
-                              "--pythonpath=."))))))
-    (propagated-inputs
-     (list python-django))
-    (home-page "https://github.com/jazzband/django-sortedm2m")
-    (synopsis "Drop-in replacement for django's own ManyToManyField")
-    (description
-      "Sortedm2m is a drop-in replacement for django's own ManyToManyField.
+                "13sm7axrmk60ai8jcd17x490yhg0svdmfj927vvfkq4lszmc5g96"))))
+    (build-system pyproject-build-system)
+    ;; Tests are disable because they need a live instance of PostgreSQL.
+    (arguments (list #:tests? #false))
+  (propagated-inputs
+   (list python-django python-psycopg2))
+  (native-inputs (list python-setuptools python-wheel))
+  (home-page "https://github.com/jazzband/django-sortedm2m")
+  (synopsis "Drop-in replacement for django's own ManyToManyField")
+  (description
+   "Sortedm2m is a drop-in replacement for django's own ManyToManyField.
 The provided SortedManyToManyField behaves like the original one but remembers
 the order of added relations.")
-    (license license:bsd-3)))
+  (license license:bsd-3)))
 
 (define-public python-django-appconf
   (package
