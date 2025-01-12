@@ -16,6 +16,7 @@
 ;;; Copyright © 2020 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Julian Flake <flake@uni-koblenz.de>
+;;; Copyright © 2025 Yovan Naumovski <yovan@gorski.stream>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -209,6 +210,37 @@ CD, DVD and BD.  It can operate on existing ISO images or it can create new
 ones.  xorriso can then be used to copy files directly into or out of ISO
 files.")
     (license gpl3+)))
+
+(define-public bchunk
+  (package
+    (name "bchunk")
+    (version "1.2.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hessu/bchunk")
+             (commit
+              (string-append "release/" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0amhc196ibg7gj2iki0z9kykvcm85jxpbnkcmk2jxj3hni242n60"))))
+    (build-system gnu-build-system)
+    (arguments
+     '(#:tests? #f ;; no check target
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'configure)
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out")))
+               (install-file "bchunk" (string-append out "/bin"))
+               (install-file "bchunk.1" (string-append out "/share/man/man.1"))))))))
+    (home-page "http://he.fi/bchunk/")
+    (synopsis "Bin/cue to ISO image converter")
+    (description "@command{cdrecord} converts a CD image in a \".bin / .cue\"
+format (sometimes \".raw / .cue\") to a set of .iso and .cdr tracks.")
+    (license gpl2)))
 
 (define-public cdparanoia
   (package
