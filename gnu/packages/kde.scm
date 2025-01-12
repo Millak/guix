@@ -46,6 +46,7 @@
   #:use-module (guix utils)
   #:use-module (guix packages)
   #:use-module (gnu packages)
+  #:use-module (gnu packages admin)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages apr)
   #:use-module (gnu packages astronomy)
@@ -59,6 +60,7 @@
   #:use-module (gnu packages code)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cryptsetup)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages djvu)
   #:use-module (gnu packages documentation)
@@ -1271,14 +1273,21 @@ multi-floor indoor maps.")
     (native-inputs
      (list extra-cmake-modules pkg-config))
     (inputs
-     (list kauth
-           kcoreaddons
-           ki18n
-           kwidgetsaddons
-           polkit-qt6
-           qtbase
-           qca-qt6
-           `(,util-linux "lib")))
+     `(("coreutils" ,coreutils)
+       ("cryptsetup" ,cryptsetup)
+       ("eudev" ,eudev)
+       ("kauth" ,kauth)
+       ("kcoreaddons" ,kcoreaddons)
+       ("ki18n" ,ki18n)
+       ("kwidgetsaddons" ,kwidgetsaddons)
+       ("lvm2" ,lvm2)
+       ("mdadm" ,mdadm)
+       ("polkit-qt6" ,polkit-qt6)
+       ("qtbase" ,qtbase)
+       ("qca-qt6" ,qca-qt6)
+       ("smartmontools" ,smartmontools)
+       ("util-linux" ,util-linux)
+       ("util-linux:lib" ,util-linux "lib")))
     (arguments
      (list
       #:phases
@@ -1289,7 +1298,24 @@ multi-floor indoor maps.")
                 (("DESTINATION \\$\\{POLKITQT-1_POLICY_FILES_INSTALL_DIR\\}")
                  "DESTINATION share/polkit-1/actions"))
               (substitute* "src/backend/corebackend.cpp"
-                  (("\\/usr") #$output)))))))
+                  (("\\/usr") #$output))))
+          (add-before 'configure 'patch-trustedprefixes-file
+              (lambda* (#:key inputs #:allow-other-keys)
+                (call-with-output-file "src/util/trustedprefixes"
+                  (lambda (port)
+                    (map (lambda (prefix)
+                           (display prefix port)
+                           (newline port))
+                         (list (assoc-ref inputs "coreutils")
+                               (assoc-ref inputs "util-linux")
+                               (assoc-ref inputs "eudev")
+                               (assoc-ref inputs "cryptsetup")
+                               (assoc-ref inputs "lvm2")
+                               (assoc-ref inputs "mdadm")
+                               (assoc-ref inputs "smartmontools")
+                               "/run/current-system/profile"
+                               "/usr"
+                               "/")))))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Library for managing partitions")
     (description "Library for managing partitions.")
