@@ -19055,44 +19055,54 @@ set.")
 (define-public instrain
   (package
     (name "instrain")
-    (version "1.5.4")
+    (version "1.9.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "inStrain" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/MrOlm/instrain")
+             ;; There are no tags.
+             (commit "168f3f777b45139a9f6099f68974105b45e2d8ba")))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "05w1lw75x4lwkzg4qpi055g7hdjp9rnc4ksbxg2hfgksq9djk0hx"))))
-    (build-system python-build-system)
+         "1wc69ggyiacm1slb678239lqmf1g5dlb4alwsbp14gi6393gj9fg"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
+     (list
+      ;; Tests assume that test files exist (they don't) and are located in
+      ;; the developer's home directory.
+      #:tests? #false
+      #:phases
+      '(modify-phases %standard-phases
          (add-after 'unpack 'patch-relative-imports
            (lambda _
+             (substitute* (find-files "test/tests" "test_.*\\.py")
+               (("from test_utils import BTO")
+                "from .test_utils import BTO")
+               (("import test_utils") "from . import test_utils"))
              (substitute* "docker/run_instrain.py"
                (("from s3_utils")
                 "from .s3_utils")
                (("from job_utils")
                 "from .job_utils")))))))
-    (inputs
+    (propagated-inputs
      (list python-biopython-1.73
-           python-boto3
            python-h5py
            python-lmfit
            python-matplotlib
            python-networkx
-           python-numba
            python-numpy
            python-pandas
            python-psutil
            python-pysam
-           python-scikit-learn
            python-seaborn
-           python-tqdm
-           ;; drep is needed for deprecated plot utilities
-           python-drep))
+           python-tqdm))
     (native-inputs
-     (list python-pytest))
+     (list python-boto3
+           python-pytest
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/MrOlm/inStrain")
     (synopsis "Calculation of strain-level metrics")
     (description
