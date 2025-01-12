@@ -5,7 +5,7 @@
 ;;; Copyright © 2020, 2021, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2023, 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
-;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2024-2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2024 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -1239,33 +1239,13 @@ also mount the world at @code{/ipfs}.")
       (build-system go-build-system)
       (arguments
        (list
-        #:go go-1.21
-        #:import-path "gitlab.com/spritely/spritely-libp2p-daemon"
-        #:tests? #f
+        #:embed-files #~(list "sorted-network-list.bin")
         #:install-source? #f
-        #:phases
-        #~(modify-phases %standard-phases
-            ;; libp2p-asn-util uses go://embed to embed a file, but Go
-            ;; does *not* accept files that are symlinks.  Guix sets up
-            ;; all dependency files as symlinks, though.  To work around
-            ;; this, we delete the symlink and copy over the file to be
-            ;; embedded.
-            (add-after 'unpack 'fix-libp2p-asn-util-embed
-              (lambda _
-                (let ((file-name
-                       (string-append
-                        "src/github.com/libp2p/go-libp2p-asn-util/"
-                        "sorted-network-list.bin")))
-                  (delete-file file-name)
-                  (copy-file
-                   (string-append #$go-github-com-libp2p-go-libp2p-asn-util
-                                  "/" file-name)
-                   file-name)))))))
-      (propagated-inputs
+        #:import-path "gitlab.com/spritely/spritely-libp2p-daemon"))
+      (native-inputs
        (list go-github-com-libp2p-go-libp2p
-             go-github-com-libp2p-go-libp2p-peer
-             go-github-com-libp2p-go-libp2p-crypto
-             go-github-com-multiformats-go-multiaddr))
+             go-github-com-multiformats-go-multiaddr
+             go-github-com-stretchr-testify))
       (home-page "https://gitlab.com/spritely/go-libp2p-daemon")
       (synopsis "Simple daemon to connect over libp2p")
       (description "This package provides a very simple daemon to interface to
