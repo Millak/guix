@@ -31861,24 +31861,24 @@ of octave or matlab.")
 (define-public ecl-vgplot
   (sbcl-package->ecl-package sbcl-vgplot))
 
-(define-public sbcl-virality
-  (let ((commit "cdc19cca9b028f0c30d14ed8b3e51359dd46069a")
-        (revision "1"))
+(define-public sbcl-colony
+  (let ((commit "54d020e80192e325311feffa1ecb00f02416541a")
+        (revision "0"))
     (package
-      (name "sbcl-virality")
-      (version (git-version "0.3.0" revision commit))
+      (name "sbcl-colony")
+      (version (git-version "0.1.0" revision commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/bufferswap/ViralityEngine")
+               (url "https://github.com/colonyengine/colony")
                (commit commit)))
-         (file-name (git-file-name "cl-virality" version))
+         (file-name (git-file-name "cl-colony" version))
          (sha256
-          (base32 "1s25aapkqcr8fxi0i9wjw0n4jax7r4a9d9wflpr3sqz2vgrg2lz6"))))
+          (base32 "0wgjr2ss7j42pzx4vx9l9c82i7b1h6ph9b7gi4b1ipjv7bv0ncf5"))))
       (build-system asdf-build-system/sbcl)
       (arguments
-       `(#:asd-systems '("virality"
+       `(#:asd-systems '("colony"
                          "vorigin"
                          "vorigin.test"
                          "vshadow"
@@ -31896,6 +31896,7 @@ of octave or matlab.")
                          delete-file
                          (find-files "."
                                      "^xXx-SYSTEM-NAME-xXx\\.asd$")))))))
+      (native-inputs (list sbcl-parachute))
       (inputs
        (list sbcl-3b-bmfont
              sbcl-babel
@@ -31919,27 +31920,27 @@ of octave or matlab.")
              sbcl-static-vectors
              sbcl-trivial-features
              sbcl-varjo))
-      (home-page "https://github.com/bufferswap/ViralityEngine")
+      (home-page "https://github.com/colonyengine/colony")
       (synopsis "Component-based game engine written in Common Lisp")
       (description
-       "Virality Engine provides a system and workflow that helps describe the
+       "Colony provides a system and workflow that helps describe the
 elements needed to write 2D or 3D games.  It was designed with several domain
 specific languages that make it easier to describe, manipulate, and use assets
 commonly found in game making.  Such assets include (but are not limited to)
 textures, materials, shader programs, and scene trees of actors that are
-available for instantiation.  Virality Engine also knows how to accept input
+available for instantiation.  Colony Engine also knows how to accept input
 from keyboards and most joysticks and gamepads.
 
 The component system is a hybrid model between an ECS and an object model.  The
 components are defined similar to CLOS defclass, and regular generic methods
 can be used with them.  Components are added to Actors which represent game
 concepts like players, scenery, effects, etc.  We define a component protocol
-invoked by Virality Engine to move your components to the next state and
+invoked by Colony Engine to move your components to the next state and
 render them each frame.")
       (license license:expat))))
 
-(define-public cl-virality
-  (sbcl-package->cl-source-package sbcl-virality))
+(define-public cl-colony
+  (sbcl-package->cl-source-package sbcl-colony))
 
 (define-public sbcl-vom
   (let ((commit "1aeafeb5b74c53741b79497e0ef4acf85c92ff24")
