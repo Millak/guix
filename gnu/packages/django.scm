@@ -952,34 +952,40 @@ to asyncio and Pydantic.")
 (define-public python-django-pipeline
   (package
     (name "python-django-pipeline")
-    (version "2.1.0")
+    (version "4.0.0")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "django-pipeline" version))
+       (uri (pypi-uri "django_pipeline" version))
        (sha256
         (base32
-         "194j8xihx5yr1yfrssdy6nxmx8yc999pz2ai9lg83l7izmbcx9in"))))
-    (build-system python-build-system)
+         "125wkgi3hf1ly34ps7n63k6agb067h17ngxyf9xjykn6kl6ikc8a"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
+     (list
+      #:phases
+      '(modify-phases %standard-phases
          (add-after 'unpack 'patch-source
            (lambda _
              (substitute* "tests/tests/test_compiler.py"
                (("\\/usr\\/bin\\/env")
                 (which "env")))))
          (replace 'check
-           (lambda*(#:key tests? #:allow-other-keys)
+           (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
                (setenv "DJANGO_SETTINGS_MODULE" "tests.settings")
                (invoke "django-admin" "test" "tests"
                        "--pythonpath=.")))))))
+    (propagated-inputs
+     (list python-jsmin
+           python-css-html-js-minify))
     (native-inputs
-     (list python-django
+     (list python-coveralls
+           python-django
+           python-setuptools
            python-setuptools-scm
-           python-css-html-js-minify
-           python-jsmin))
+           python-tox
+           python-wheel))
     (home-page
      "https://github.com/jazzband/django-pipeline")
     (synopsis "Asset packaging library for Django")
