@@ -484,42 +484,41 @@ useful tools for testing Django applications and projects.")
 (define-public python-django-haystack
   (package
     (name "python-django-haystack")
-    (version "3.1.1")
+    (version "3.3.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "django-haystack" version))
         (sha256
          (base32
-          "10kaa5641cakpra2x3jqgys085gdkjcyns26plfyrmfpjmmpa1bd"))))
-    (build-system python-build-system)
+          "1arfl0y34nfvpzwiib6859g9154qqvdb97j09nhmsqh0h1myvkp3"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'loosen-verion-restrictions
-           (lambda _
-             (substitute* "setup.py"
-               (("geopy.*") "geopy\",\n"))))
+     (list
+      ;; It is unclear how to run the tests.  They require a running local
+      ;; solr server.
+      #:tests? #false
+      #:phases
+      '(modify-phases %standard-phases
          (add-before 'check 'set-gdal-lib-path
            (lambda* (#:key inputs #:allow-other-keys)
              (setenv "GDAL_LIBRARY_PATH"
                      (string-append (assoc-ref inputs "gdal")
                                     "/lib"))))
          ;; Importing this module requires setting up a Django project.
-         (delete 'sanity-check))
-       #:tests? #f)) ; OSError: libgdal.so.27: cannot open shared object file
+         (delete 'sanity-check))))
     (propagated-inputs
-     (list python-django))
+     (list python-django python-packaging))
+    (inputs (list gdal))
     (native-inputs
-     (list gdal
-           python-coverage
+     (list python-coverage
            python-dateutil
            python-geopy
-           python-mock
-           python-nose
-           python-requests
-           python-setuptools-scm
            python-pysolr
+           python-requests
+           python-setuptools
+           python-setuptools-scm
+           python-wheel
            python-whoosh))
     (home-page "https://haystacksearch.org/")
     (synopsis "Pluggable search for Django")
