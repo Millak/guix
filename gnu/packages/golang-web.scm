@@ -4459,6 +4459,53 @@ protocol in Go language.")
 webhooks in Golang.")
     (license license:expat)))
 
+(define-public go-github-com-labstack-echo-v4
+  (package
+    (name "go-github-com-labstack-echo-v4")
+    (version "4.13.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/labstack/echo")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1i4w36f1k17bykc24dzr2ng5zpsyysfg5bzfvlbrphxxzhsngxdy"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/labstack/echo/v4"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-labstack-gommon
+           go-github-com-valyala-fasttemplate
+           go-golang-org-x-crypto
+           go-golang-org-x-net
+           go-golang-org-x-time))
+    (home-page "https://echo.labstack.com/")
+    (synopsis "High performance, minimalist Go web framework")
+    (description
+     "Package echo implements a high performance, minimalist Go web framework.
+Features:
+@itemize
+@item optimized HTTP router which smartly prioritize routes
+@item build robust and scalable RESTful APIs
+@item group APIs
+@item extensible middleware framework
+@item define middleware at root, group or route level
+@item data binding for JSON, XML and form payload
+@item handy functions to send variety of HTTP responses
+@item centralized HTTP error handling
+@item template rendering with any template engine
+@item define your format for the logger
+@item highly customizable
+@item automatic TLS via Let’s Encrypt
+@item HTTP/2 support
+@end itemize")
+    (license license:expat)))
+
 (define-public go-github-com-levigross-grequests
   (package
     (name "go-github-com-levigross-grequests")
