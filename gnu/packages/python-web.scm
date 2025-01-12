@@ -8555,6 +8555,33 @@ through the network, it only deals with the implementation details of the
 SOCKS protocols.  It can be paired with any I/O library.")
     (license license:expat)))
 
+(define-public python-simple-websocket
+  (package
+    (name "python-simple-websocket")
+    (version "1.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "simple_websocket" version))
+       (sha256
+        (base32 "1r1all55d5dimiw3qwdhj53cxj9yjgnskcysmcscarx0g9726fbr"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; Requires Internet access to resolve example.com
+     (list #:test-flags '(list "--ignore=tests/test_client.py")))
+    (propagated-inputs (list python-wsproto))
+    (native-inputs (list python-flake8
+                         python-pytest
+                         python-pytest-cov
+                         python-setuptools
+                         python-tox
+                         python-wheel))
+    (home-page "https://github.com/miguelgrinberg/simple-websocket")
+    (synopsis "Simple WebSocket server and client for Python")
+    (description "This package provides a simple @code{WebSocket} server and
+client for Python.")
+    (license license:expat)))
+
 (define-public python-siosocks
   (package
     (name "python-siosocks")
