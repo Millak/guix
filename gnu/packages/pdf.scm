@@ -1777,7 +1777,7 @@ Keywords: html2pdf, htmltopdf")
            jbig2dec
            libjpeg-turbo
            mujs
-           mupdf
+           mupdf-1.24
            openjpeg
            qt3d-5
            qtbase-5
