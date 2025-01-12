@@ -152,6 +152,7 @@
   #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages image)
   #:use-module (gnu packages kde-frameworks)
+  #:use-module (gnu packages libedit)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages libunwind)
   #:use-module (gnu packages libusb)
@@ -3236,6 +3237,40 @@ block devices, UUIDs, TTYs, and many other tools.")
    (inputs
     (modify-inputs (package-inputs util-linux)
       (prepend eudev)))))
+
+(define-public chimerautils
+  (package
+    (name "chimerautils")
+    (version "14.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/chimera-linux/chimerautils")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "10xs9i9w9an9jjq7vgkyfqfyzdisbb57c8c1rryjpfiz8dmi8g41"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:tests? #f)) ;no test suite
+    (inputs (list acl
+                  libedit
+                  libxo
+                  ncurses
+                  openssl
+                  zlib
+                  (list zstd "lib")))
+    (native-inputs (list flex bison pkg-config))
+    (home-page "https://github.com/chimera-linux/chimerautils")
+    (synopsis "The FreeBSD-based core Linux userland from Chimera Linux")
+    (description
+     "This is a port of the FreeBSD userland for Linux provided by
+the Chimera Linux distribution.  Essentially, it is a collection of UNIX tools
+such as @command{grep}, @command{cp}, @command{vi}, etc. and can be used as an
+alternative to the corresponding implementations from the GNU project.")
+    (license license:bsd-2)))
 
 (define-public ddate
   (package
