@@ -1375,6 +1375,7 @@ for and start applications.")
            xfce4-notifyd                          ;for pop-up notifications
            xfce4-panel
            xfce4-power-manager
+           xfce4-screensaver
            xfce4-screenshooter
            xfce4-session
            xfce4-settings

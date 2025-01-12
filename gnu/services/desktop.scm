@@ -1660,12 +1660,17 @@ rules."
          '("thunar"
            "xfce4-power-manager"))))
 
+(define (xfce-pam-services config)
+  (list (unix-pam-service "xfce4-screensaver")))
+
 (define xfce-desktop-service-type
   (service-type
    (name 'xfce-desktop)
    (extensions
     (list (service-extension polkit-service-type
                              xfce-polkit-settings)
+          (service-extension pam-root-service-type
+                             xfce-pam-services)
           (service-extension profile-service-type
                              (compose list xfce-package))))
    (default-value (xfce-desktop-configuration))
