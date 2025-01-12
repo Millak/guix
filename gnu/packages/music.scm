@@ -3335,14 +3335,14 @@ browser.")
 (define-public drumstick
   (package
     (name "drumstick")
-    (version "2.9.1")
+    (version "2.10.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/drumstick/"
                                   version "/drumstick-" version ".tar.bz2"))
               (sha256
                (base32
-                "1n1kkxkl1y4bwbm8hmqbc58l643qpyh8s7r4rw6jzi63jkvad42k"))))
+                "1ggwf9qzaj8vh66g29cb4m0i2cxvkgzl944m5pvj87lpsvahfnmc"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
