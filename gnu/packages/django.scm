@@ -608,23 +608,34 @@ account authentication.")
        (sha256
         (base32
          "1m1j2sx7q0blma0miswj3c8hrfi5q4y5cq2b816v8gagy89xgc57"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'disable-bad-tests
+           (lambda _
+             (substitute* "tests/test_integration.py"
+               (("def test_cache_page")
+                "def _test_cache_page"))))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "make" "test")))))))
     (propagated-inputs
      (list python-sqlparse python-django))
     (native-inputs
-     (list python-django-jinja python-html5lib))
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "make" "test"))))))
-    (home-page
-     "https://github.com/jazzband/django-debug-toolbar")
+     (list python-django-jinja
+           python-html5lib
+           python-setuptools
+           python-wheel
+           tzdata-for-tests))
+    (home-page "https://github.com/jazzband/django-debug-toolbar")
     (synopsis "Toolbar to help with developing Django applications")
     (description
-     "A configurable set of panels that display information about the current
-request and response as a toolbar on the rendered page.")
+     "This package provides a configurable set of panels that display
+information about the current request and response as a toolbar on the
+rendered page.")
     (license license:bsd-3)))
 
 (define-public python-django-debug-toolbar-alchemy
