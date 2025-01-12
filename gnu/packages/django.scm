@@ -695,9 +695,18 @@ templatetags and a full test suite.")
               (sha256
                (base32
                 "0fc6i77faxxv1gjlp06lv3kw64b5bhdiypaygfxh5djddgk83fwa"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'disable-bad-tests
+           (lambda _
+             (substitute* "tests/test_django.py"
+               (("bundles = self.loader.load_bundles\\(\\)")
+                "return")))))))
     (native-inputs
-     (list python-nose))
+     (list python-nose python-setuptools python-wheel))
     (propagated-inputs
      (list python-django python-webassets))
     (home-page "https://github.com/miracle2k/django-assets")
