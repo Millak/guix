@@ -991,14 +991,14 @@ archive on a per-file basis.")
 (define-public love
   (package
     (name "love")
-    (version "11.4")
+    (version "11.5")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/love2d/love/releases/download/"
                            version "/love-" version "-linux-src.tar.gz"))
        (sha256
-        (base32 "0sak3zjpzfs3ys315m8qvszi946fz76jcpsb58j11wplyp5fwbz3"))))
+        (base32 "0fachzyfl26gwg13l5anfppzljxpmd0pvwpap0lgva8syx1hhvh6"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
