@@ -36068,6 +36068,7 @@ interactions with lists of Python objects.")
               (when tests?
                 (with-directory-excursion "tests"
                   (invoke "python" "-m" "unittest"))))))))
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/whitequark/python-itanium_demangler/")
     (synopsis "Pure Python Itanium C++ ABI demangler")
     (description
