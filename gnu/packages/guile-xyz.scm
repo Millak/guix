@@ -149,14 +149,14 @@
 (define-public artanis
   (package
     (name "artanis")
-    (version "1.0.0")
+    (version "1.1.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/artanis/artanis-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "05sigqvm04x0r1gwpwrxjffb3i13bss3ff24frr477zqm54wv5d8"))
+                "1b7mab8izvli4152hzv4n2z67kw0kwm7pvh0m960whr77rdxwid4"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -164,6 +164,7 @@
                   (delete-file-recursively "artanis/third-party/redis.scm")
                   (substitute* '("artanis/artanis.scm"
                                  "artanis/lpc.scm"
+                                 "artanis/i18n/json.scm"
                                  "artanis/oht.scm"
                                  "artanis/tpl/parser.scm")
                     (("(#:use-module \\()artanis third-party (json\\))" _
