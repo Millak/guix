@@ -989,6 +989,41 @@ the OTEL Go SDK.")
 Manager,NTLM}/Negotiate authentication over HTTP.")
     (license license:expat)))
 
+(define-public go-github-com-babolivier-go-doh-client
+  (package
+    (name "go-github-com-babolivier-go-doh-client")
+    (version "0.0.0-20201028162107-a76cff4cb8b6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/babolivier/go-doh-client")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ca72jz5d5wf5hkcjiwrjvh4fp9p0nqhgwyx9p3vq9sdrx524d21"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/babolivier/go-doh-client"))
+    (home-page "https://github.com/babolivier/go-doh-client")
+    (synopsis "DNS over HTTPS client implementation written in Golang")
+    (description
+     "Package doh implements client operations for @code{DoH} (DNS over HTTPS)
+lookups.  It implements looking up the following records:
+@itemize
+@item A
+@item AAAA
+@item CNAME
+@item MX
+@item NS
+@item TXT
+@item SRV
+@item SOA
+@item PTR
+@end itemize")
+    (license license:gpl3)))
+
 (define-public go-github-com-beevik-ntp
   (package
     (name "go-github-com-beevik-ntp")
