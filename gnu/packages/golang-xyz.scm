@@ -9212,6 +9212,40 @@ structure.  It can also produce a much more verbose, one-item-per-line
 representation suitable for computing diffs.")
     (license license:asl2.0)))
 
+(define-public go-github-com-labstack-gommon
+  (package
+    (name "go-github-com-labstack-gommon")
+    (version "0.4.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/labstack/gommon")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05mafzmx050hc3js3i0h05ga81kk3hhhlv395xwzv9n38h27xpnz"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/labstack/gommon"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-mattn-go-colorable
+           go-github-com-mattn-go-isatty
+           go-github-com-valyala-fasttemplate))
+    (home-page "https://github.com/labstack/gommon")
+    (synopsis "Common libraries for Go")
+    (description
+     "This package provides functionlaity for common tasks:
+@itemize
+@item @code{Bytes} - format/parse bytes
+@item @code{Color} - style terminal text
+@item @code{Log} - simple logging
+@end itemize")
+    (license license:expat)))
+
 (define-public go-github-com-lann-builder
   (package
     (name "go-github-com-lann-builder")
