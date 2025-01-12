@@ -35874,6 +35874,7 @@ it was loader by the operating system's loader.")
                        (setenv "CC" #$(cc-for-target))
                        (setenv "CC_NATIVE" "gcc"))))))
     (propagated-inputs (list python-archinfo python-bitstring python-cffi))
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/angr/pyvex")
     (synopsis "Python interface to libVEX and VEX IR")
     (description
