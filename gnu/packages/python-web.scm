@@ -7826,18 +7826,19 @@ Swagger.")
 (define-public python-flask-socketio
   (package
     (name "python-flask-socketio")
-    (version "5.0.1")
+    (version "5.5.1")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "Flask-SocketIO" version))
+       (uri (pypi-uri "flask_socketio" version))
        (sha256
         (base32
-         "09r2gpj2nbn72v2zaf6xsvlazln77pgqzp2pg2021nja47sijhsw"))))
-    (build-system python-build-system)
+         "1i0yqn39b4v4r2whppx47sg7iicvqzssd1clx7cclk07l52cjinr"))))
+    (build-system pyproject-build-system)
     (propagated-inputs
      (list python-flask python-socketio))
-    (arguments '(#:tests? #f))        ; Tests not included in release tarball.
+    (native-inputs
+     (list python-pytest python-redis python-setuptools python-wheel))
     (home-page "https://github.com/miguelgrinberg/Flask-SocketIO/")
     (synopsis "Socket.IO integration for Flask applications")
     (description "Socket.IO integration for Flask applications")
