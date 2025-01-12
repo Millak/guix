@@ -36009,6 +36009,7 @@ were local.")
         (base32 "0k6cq2gflpkm40qhgqbbcjmq5lq589c15bmk567qyh3d08062hvd"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-future))
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/thebabush/nampa")
     (synopsis "Python implementation of IDA Pro's FLIRT technology")
     (description
