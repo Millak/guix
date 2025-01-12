@@ -1321,6 +1321,45 @@ multi-floor indoor maps.")
     (description "Library for managing partitions.")
     (license license:gpl3+)))
 
+(define-public partitionmanager
+  (package
+    (name "partitionmanager")
+    (version "24.05.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/" version
+                           "/src/partitionmanager-" version ".tar.xz"))
+       (sha256
+        (base32 "01xmwkwv8jrwx2jpg797ar8ac9gbdagrl2v3yzqn62fhwcwjcxy6"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:qtbase qtbase))
+    (native-inputs
+     (list extra-cmake-modules kdoctools))
+    (inputs
+     (list kconfig
+           kconfigwidgets
+           kcoreaddons
+           kcrash
+           kdbusaddons
+           ki18n
+           kio
+           kjobwidgets
+           kpmcore
+           kwidgetsaddons
+           kwindowsystem
+           kxmlgui
+           polkit-qt6))
+    (home-page "https://apps.kde.org/partitionmanager/")
+    (synopsis "Disk device, partition and file system manager")
+    (description "KDE Partition Manager is a utility to help you manage the
+disks, partitions, and file systems.  It allows you to easily create, copy,
+move, delete, back up, restore, and resize them without losing data.  It
+supports a large number of file systems, including ext2/3/4, btrfs, NTFS,
+FAT16/32, JFS, XFS and more.")
+    (license license:gpl3+)))
+
 (define-public kpublictransport
   (package
     (name "kpublictransport")
