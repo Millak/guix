@@ -36161,6 +36161,8 @@ mangled symbols, which can be used for directly extracting type information.")
                              unicorn))
     (native-inputs `(("python-pytest" ,python-pytest)
                      ("python-pytest-xdist" ,python-pytest-xdist)
+                     ("python-setuptools" ,python-setuptools)
+                     ("python-wheel" ,python-wheel)
                      ("binaries"
                       ;; This repository ships several binaries used only for testing
                       ;; purpose.  The binaries are not executed and not part of the
