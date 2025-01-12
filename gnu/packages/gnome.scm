@@ -14189,6 +14189,63 @@ backends, such as ModemManager for phones and @acronym{SIP, Session Initiation
 Protocol} for @acronym{VoIP, Voice over @acronym{IP, Internet Protocol}}.")
     (license license:gpl3+)))
 
+(define-public confy
+  (package
+    (name "confy")
+    (version "0.8.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.sr.ht/~fabrixxm/confy")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "0hjj1klndhjmy02lxn15cnid0ydnxi0ki59h4an0zsyaha77s1lm"))))
+    (build-system meson-build-system)
+    (arguments
+     (list #:glib-or-gtk? #t
+           #:imported-modules `(,@%meson-build-system-modules
+                                (guix build python-build-system))
+           #:modules '((guix build meson-build-system)
+                       ((guix build python-build-system) #:prefix python:)
+                       (guix build utils))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'disable-post-install
+                 (lambda _
+                   (substitute* "meson.build"
+                     (("gtk_update_icon_cache: true")
+                      "gtk_update_icon_cache: false")
+                     (("update_desktop_database: true")
+                      "update_desktop_database: false"))))
+               (add-after 'unpack 'patch-for-compatibility
+                 (lambda _
+                   ;; TODO: Remove when Python is updated to >= 3.11.
+                   (substitute* (find-files "." "\\.py$")
+                     (("import Self") "import Any as Self"))))
+               (add-after 'glib-or-gtk-wrap 'python-and-gi-wrap
+                 (lambda* (#:key inputs outputs #:allow-other-keys)
+                   (wrap-program (search-input-file outputs "bin/confy")
+                     `("GUIX_PYTHONPATH" =
+                       (,(getenv "GUIX_PYTHONPATH")
+                        ,(python:site-packages inputs outputs)))
+                     `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))))))))
+    (inputs (list gtk
+                  libadwaita
+                  libnotify
+                  python
+                  python-icalendar
+                  python-pygobject))
+    (native-inputs (list blueprint-compiler
+                         gettext-minimal
+                         `(,glib "bin")
+                         pkg-config))
+    (home-page "https://confy.kirgroup.net")
+    (synopsis "Conference Schedule Viewer")
+    (description "Confy is a conference schedule viewer for GNOME.  It allows
+you to mark favorite talks and highlights conflicts between favorited talks.")
+    (license license:gpl3+)))
+
 (define-public gtk-frdp
   (package
     (name "gtk-frdp")
