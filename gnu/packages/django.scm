@@ -720,7 +720,7 @@ merging, minifying and compiling CSS and Javascript files.")
 (define-public python-django-jinja
   (package
     (name "python-django-jinja")
-    (version "2.9.1")
+    (version "2.11.0")
     (source
      (origin
        (method git-fetch)
@@ -730,24 +730,22 @@ merging, minifying and compiling CSS and Javascript files.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0p9pkn6jjzagpnvcrl9c2vjqamkms7ymvyhhmaqqqhrlv89qnzp7"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-django python-jinja2 python-pytz python-django-pipeline))
+         "17irzcwxm49iqyn3q2rpfncj41r6gywh938q9myfq7m733vjy2fj"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(;; TODO Tests currently fail due to issues with the configuration for
-       ;; django-pipeline
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
+     (list
+      #:phases
+      '(modify-phases %standard-phases
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
-             (or
-              (not tests?)
-              (with-directory-excursion "testing"
-                (invoke "python" "runtests.py"))))))))
-    (home-page
-     "https://niwinz.github.io/django-jinja/latest/")
+             (when tests?
+               (with-directory-excursion "testing"
+                 (invoke "python" "runtests.py"))))))))
+    (propagated-inputs
+     (list python-django python-jinja2 python-pytz python-django-pipeline))
+    (native-inputs
+     (list python-setuptools python-wheel tzdata-for-tests))
+    (home-page "https://niwinz.github.io/django-jinja/latest/")
     (synopsis "Simple jinja2 templating backend for Django")
     (description
      "This package provides a templating backend for Django, using Jinja2.  It
