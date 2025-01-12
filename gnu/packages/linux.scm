@@ -1937,7 +1937,7 @@ application by hooking GStreamer into the loopback device.")
 (define-public xpadneo
   (package
     (name "xpadneo")
-    (version "0.9.5")
+    (version "0.9.7")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1946,7 +1946,7 @@ application by hooking GStreamer into the loopback device.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1pq7p9sxlw1v9rnny9070b39rpwfq6rip0z92mwlw4qzinmqqgdd"))))
+                "1v5akvz14izxk3fav6x4l50gi8xzsjwxjddczc2yy78gni1a7ybs"))))
     (build-system linux-module-build-system)
     (arguments
      (list #:tests? #f                  ; no `check' target
