@@ -998,29 +998,36 @@ support, and optional data-URI image and font embedding.")
 (define-public python-django-redis
   (package
     (name "python-django-redis")
-    (version "4.12.1")
+    (version "5.4.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "django-redis" version))
               (sha256
                (base32
-                "0qvsm8yjchl0d3i7g20wba6px9lb5gv8kp3fcnr6hr0y0b3qjr9h"))))
+                "0hlch69b4v1fc29xpcjhk50cgbdn78v2qzbhkfzsizmh6jman0ka"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags
+      ;; These fail with: No module named 'test_client'
+      '(list "-k" "not test_custom_key_function and not delete")
       #:phases
       '(modify-phases %standard-phases
-         (replace 'check
+         (add-before 'check 'start-redis
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
                (invoke "redis-server" "--daemonize" "yes")
-               (with-directory-excursion "tests"
-                 (invoke "python" "runtests.py"))))))))
+               (setenv "PYTHONPATH" ".")
+               (setenv "DJANGO_SETTINGS_MODULE" "tests.settings.sqlite")))))))
     (native-inputs
      (list python-fakeredis
            python-hiredis
            python-mock
            python-msgpack
+           python-pytest
+           python-pytest-cov
+           python-pytest-django
+           python-pytest-mock
            python-setuptools
            python-wheel
            redis))
