@@ -4853,7 +4853,7 @@ after Andy Lester’s Perl module WWW::Mechanize.")
 (define-public python-mediapy
   (package
     (name "python-mediapy")
-    (version "1.2.0")
+    (version "1.2.2")
     (source
      (origin
        (method git-fetch)
@@ -4862,7 +4862,7 @@ after Andy Lester’s Perl module WWW::Mechanize.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "14hmwib0dmy9h1w7allwsp0cgrfdv8f2sm9qlvy65yxai68v6vnl"))))
+        (base32 "08dj0h7xkpaj552pzjln1chshxsfxbwhv29p2npsmscy907s322l"))))
     (build-system pyproject-build-system)
     (arguments
      (list
