@@ -35945,7 +35945,7 @@ SMT solvers and is built on top of the Z3 solver.")
                   (add-before 'check 'set-pysmt-solver
                     (lambda _
                       (setenv "PYSMT_SOLVER" "z3"))))))
-    (native-inputs (list python-pytest))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (propagated-inputs (list z3))
     (home-page "https://github.com/pysmt/pysmt")
     (synopsis
