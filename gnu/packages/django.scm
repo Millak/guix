@@ -411,17 +411,25 @@ when coding custom template tags.")
 (define-public python-easy-thumbnails
   (package
     (name "python-easy-thumbnails")
-    (version "2.7")
+    (version "2.10")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "easy-thumbnails" version))
+       (uri (pypi-uri "easy_thumbnails" version))
        (sha256
         (base32
-         "14gzp5cv24z0qhxb7f7k7v9jgzpaj4n8yhjq83ynpx8183fs1rz4"))))
-    (build-system python-build-system)
+         "1xafj3lh4841y960wq6lnw31lbki8k84dvg5jqjdy7krrlplc2fh"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-flags '(list "--pyargs" "easy_thumbnails")))
     (propagated-inputs
      (list python-django python-pillow))
+    (native-inputs
+     (list python-pytest
+           python-pytest-django
+           python-setuptools
+           python-testfixtures
+           python-wheel))
     (home-page "https://github.com/SmileyChris/easy-thumbnails")
     (synopsis "Easy thumbnails for Django")
     (description
