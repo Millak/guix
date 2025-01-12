@@ -19316,7 +19316,11 @@ bgzipped text file that contains a pair of genomic coordinates per line.")
                   (with-directory-excursion (string-append cwd "/build/" libdir)
                     (invoke "python3" "-m" "unittest" "pyrodigal.tests" "-vv")))))))))
     (propagated-inputs (list python-archspec python-importlib-resources))
-    (native-inputs (list python-cython-3 python-mock python-unittest2))
+    (native-inputs
+     (list python-cython-3
+           python-mock
+           python-unittest2
+           python-wheel))
     (home-page "https://github.com/althonos/pyrodigal")
     (synopsis "Cython bindings and Python interface for Prodigal")
     (description
