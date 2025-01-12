@@ -720,13 +720,31 @@ your system in categories, so you can quickly find and launch them.")
            #t))))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags
-       (list "--enable-maintainer-mode" ;for xfce4-session-settings_ui.h
-        (string-append "--with-xsession-prefix=" %output)
-             (string-append "--with-wayland-session-prefix=" %output))
+     (list
+      #:configure-flags
+      #~(list "--enable-maintainer-mode" ;for xfce4-session-settings_ui.h
+              (string-append "--with-xsession-prefix=" #$output)
+              (string-append "--with-wayland-session-prefix=" #$output))
        ;; Disable icon cache update.
        #:make-flags
-       '("gtk_update_icon_cache=true")))
+       #~(list "gtk_update_icon_cache=true")
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'install 'patch-command-paths
+             (lambda* (#:key inputs outputs #:allow-other-keys)
+               (let ((out (assoc-ref outputs "out"))
+                     (search-command (lambda (cmd)
+                                       (search-input-file
+                                        inputs
+                                        (string-append "bin/" cmd)))))
+                 (substitute* (string-append out "/bin/xflock4")
+                   (("gdbus call")
+                    (string-append (search-command "gdbus") " call")))
+                 (substitute* (string-append out "/etc/xdg/xfce4/xinitrc")
+                   (("[|] xrdb")
+                    (string-append "| " (search-command "xrdb")))
+                   (("&& xmodmap")
+                    (string-append "&& " (search-command "xmodmap"))))))))))
     (native-inputs
      (list xfce4-dev-tools))
     (inputs
@@ -737,7 +755,10 @@ your system in categories, so you can quickly find and launch them.")
            libsm
            libwnck
            libxfce4ui
-           libxfce4windowing))
+           libxfce4windowing
+           (list glib "bin")
+           xmodmap
+           xrdb))
     (home-page "https://docs.xfce.org/xfce/xfce4-session/")
     (synopsis "Xfce session manager")
     (description
