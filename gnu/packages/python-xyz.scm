@@ -35839,7 +35839,7 @@ binary analysis platform.")
       #:tests? #f))
     (propagated-inputs (list python-pefile python-pyelftools python-pyvex
                              python-sortedcontainers python-cart))
-    (native-inputs (list python-cffi))
+    (native-inputs (list python-cffi python-setuptools python-wheel))
     (home-page "https://github.com/angr/cle")
     (synopsis "Python loader for binaries and their associated libraries")
     (description
