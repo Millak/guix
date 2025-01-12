@@ -5822,17 +5822,21 @@ thread-local variable.")
 (define-public python-flask-httpauth
   (package
     (name "python-flask-httpauth")
-    (version "3.2.3")
+    (version "4.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Flask-HTTPAuth" version))
        (sha256
         (base32
-         "13gff5w1mqpzm5nccyg02v3ifb9ifqh5k866cssjhghhg6msfjsz"))))
-    (build-system python-build-system)
+         "0yh9fn6pak64has89pcy03f1cn198vkil872y5jjr53kph2qlmk6"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-flask))
     (native-inputs
-     (list python-flask))
+     (list nss-certs-for-test
+           python-pytest
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/miguelgrinberg/flask-httpauth/")
     (synopsis "Basic and Digest HTTP authentication for Flask routes")
     (description "@code{flask_httpauth} provides Basic and Digest HTTP
