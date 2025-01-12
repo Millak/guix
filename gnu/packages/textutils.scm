@@ -340,6 +340,88 @@ nested include statements).")
 the Hannon Lab.")
     (license license:agpl3+)))
 
+(define-public libxo
+  (package
+    (name "libxo")
+    (version "1.7.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Juniper/libxo")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "115jv067msym0lsxkiz95ddvspd6smvww37248xkqyin0rxb2m0j"))
+       (snippet
+         '(for-each
+            delete-file
+            '("xohtml/external/jquery.js"
+              "xohtml/external/jquery.qtip.css"
+              "xohtml/external/jquery.qtip.js")))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:modules '((guix build gnu-build-system)
+                  (guix build minify-build-system)
+                  (guix build utils)
+                  (ice-9 match))
+      #:imported-modules
+      `(,@%default-gnu-imported-modules
+         (guix build minify-build-system))
+      #:phases
+      '(modify-phases (@ (guix build gnu-build-system) %standard-phases)
+         (add-after 'unpack 'process-javascript
+           (lambda* (#:key inputs #:allow-other-keys)
+             (with-directory-excursion "xohtml/external"
+               (for-each (match-lambda
+                           ((source . target)
+                            (minify source #:target target)))
+                         `((,(assoc-ref inputs "js-jquery")
+                            . "jquery.js")
+                           (,(assoc-ref inputs "js-qtip2")
+                            . "jquery.qtip.js")
+                           (,(assoc-ref inputs "js-qtip2.css")
+                            . "jquery.qtip.css")))))))))
+    (inputs
+      `(("perl", perl)
+        ("js-jquery"
+         ,(origin
+            (method url-fetch)
+            (uri "https://code.jquery.com/jquery-1.7.0.js")
+            (sha256
+             (base32
+              "1qz3jmzg5ac6nkgivzyjgd7rr3vvkwzqv525s080mx10hvn8a63w"))))
+        ("js-qtip2"
+         ,(origin
+            (method url-fetch)
+            (uri "https://cdnjs.cloudflare.com/ajax/libs/qtip2/2.1.1/jquery.qtip.js")
+            (sha256
+             (base32
+              "05aq2x5hd8jnpnhkn41ivsbdg3rqmk093bb2vqzswbihvsizyx64"))))
+        ("js-qtip2.css"
+         ,(origin
+            (method url-fetch)
+            (uri "https://cdnjs.cloudflare.com/ajax/libs/qtip2/2.1.1/jquery.qtip.css")
+            (sha256
+             (base32
+              "18h10klb84jqpasvjymlaskj0442wcain434iwydikpdxmrr7g0n"))))))
+    (native-inputs
+     `(("autoconf" ,autoconf)
+       ("automake" ,automake)
+       ("esbuild" ,esbuild)
+       ("libtool" ,libtool)))
+    (home-page "https://juniper.github.io/libxo/libxo-manual.html")
+    (synopsis "Library for Generating Text, XML, JSON, and HTML Output")
+    (description
+     "This package implements the functionality to generate text, XML,
+JSON, and HTML output using a common set of function calls.  The caller
+decides at run time which output style should be produced.  Afterwards, the caller
+calls the function @code{xo_emit} to produce output in a format described using
+a format string.")
+    ;; license:expat: jquery and qtip2.
+    (license (list license:bsd-2 license:expat))))
+
 (define-public cityhash
   (let ((commit "8af9b8c"))
     (package
