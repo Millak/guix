@@ -35,6 +35,13 @@
 (channel-news
  (version 0)
 
+ (entry (commit "5c2bcafd281fdd31b3dfec5a67ba85084c58cf60")
+        (title
+         (en "Linux-libre 6.11 removed from GNU Guix"))
+        (body
+         (en "The linux-libre 6.11 kernel series is no longer supported
+             upstream, so it has been removed from GNU Guix.")))
+
  (entry (commit "3a4209224e7e3121189390307295fccdc0612db4")
         (title
          (en "Linux-libre updated to 6.12"))
