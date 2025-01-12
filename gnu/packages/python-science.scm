@@ -2114,7 +2114,11 @@ functions and around einops with an API and features adapted to xarray.")
         (base32 "08194629696z98dkc74i6c9zmy1jicvd2ajb75q0lsf0i427cv4w"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-numpy python-xarray))
-    (native-inputs (list python-pytest python-setuptools-scm))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
     (home-page "https://github.com/carbonplan/xarray-schema")
     (synopsis "Schema validation for Xarray objects")
     (description "This package implements schema validation for Xarray
