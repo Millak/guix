@@ -10260,23 +10260,25 @@ hardware on Grid'5000 or via OpenStack, to Vagrant, Chameleon, and more.")
 (define-public python-pynetbox
   (package
     (name "python-pynetbox")
-    (version "7.2.0")
+    (version "7.4.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "pynetbox" version))
               (sha256
                (base32
-                "1pzmkl4nr247v4022i33v32jlx88wwcdy7ycyfd4pnl19vag8d9p"))))
+                "1hq0mqykwdsmcrj61fxxzdkpc7wnld4grhkcxy560ym79jbbb0iz"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (add-after 'unpack 'disable-failing-tests
-                          (lambda _
-                            ;; Integration tests depend on docker.
-                            (delete-file-recursively "tests/integration"))))))
-    (propagated-inputs (list python-requests))
-    (native-inputs (list python-pytest python-pyyaml python-setuptools
-                         python-setuptools-scm python-wheel))
+     (list
+      #:test-flags
+      ;; Integration tests depend on docker.
+      '(list "--ignore=tests/integration")))
+    (propagated-inputs (list python-packaging python-requests))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
     (home-page "https://github.com/netbox-community/pynetbox")
     (synopsis "NetBox API client library")
     (description "Python module to query and edit data stored in a
