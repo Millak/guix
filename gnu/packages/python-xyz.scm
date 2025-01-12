@@ -35915,6 +35915,7 @@ to enable all kinds of binary analysis tasks.")
                           (invoke "python" "-m" "unittest"))))))))
     (propagated-inputs (list python-cachetools python-decorator python-pysmt
                              z3))
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/angr/claripy")
     (synopsis "Abstraction layer for constraint solvers")
     (description
