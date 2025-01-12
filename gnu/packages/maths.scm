@@ -5326,7 +5326,7 @@ point numbers.")
 (define-public wxmaxima
   (package
     (name "wxmaxima")
-    (version "24.02.2")
+    (version "24.11.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5335,7 +5335,7 @@ point numbers.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1k2fbhyg7xrbk6ivfns6sq68rrbcl5dn84s64viv6iavk3ws033v"))))
+                "1q66qv7m7dky9h7m6dzvlw6pkzixna4bhrdkz11sg7bv3a9qrlfy"))))
     (build-system cmake-build-system)
     (native-inputs (list gettext-minimal))
     (inputs (list bash-minimal
