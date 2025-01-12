@@ -8486,27 +8486,34 @@ fast.  It allows the usage of the @code{async/await} syntax added in Python
 (define-public python-socketio
   (package
     (name "python-socketio")
-    (version "5.1.0")
+    (version "5.12.1")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "python-socketio" version))
+       (uri (pypi-uri "python_socketio" version))
        (sha256
         (base32
-         "14vhpxdn54lz54mhcqlgcks0ssbws9gd1y7ii16a2g3gpfdc531k"))))
-    (build-system python-build-system)
+         "175sd3fdld3s477i6b3v49yhf1alsbm1vaxzq44nqrqb8wgzz682"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-flags
+           '(list "--timeout=60"
+                  ;; These tests freeze.
+                  "--ignore-glob=tests/async/*")))
     (propagated-inputs
-     (list python-aiohttp
-           python-bidict
-           python-engineio
-           python-requests
-           python-websocket-client
-           python-websockets))
-    (arguments '(#:tests? #f))        ; Tests not included in release tarball.
+     (list python-bidict python-engineio python-msgpack))
+    (native-inputs
+     (list python-pytest
+           python-pytest-asyncio
+           python-pytest-timeout
+           python-setuptools
+           python-uvicorn
+           python-wheel))
     (home-page "https://github.com/miguelgrinberg/python-socketio/")
     (synopsis "Python Socket.IO server")
     (description
-     "Python implementation of the Socket.IO realtime client and server.")
+     "This package provides a Python implementation of the @code{Socket.IO}
+realtime client and server.")
     (license license:expat)))
 
 (define-public python-socks
