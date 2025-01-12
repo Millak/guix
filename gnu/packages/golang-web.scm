@@ -89,6 +89,52 @@
 ;;; Libraries:
 ;;;
 
+(define-public go-0xacab-org-leap-obfsvpn
+  (package
+    (name "go-0xacab-org-leap-obfsvpn")
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://0xacab.org/leap/obfsvpn.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1iq3m2j6m9n1h9rkysaj97nnqx65fn7vz9jskl4qa4rwh002pv3d"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; It's the same project.
+            (substitute* (find-files "." "\\.go$")
+              (("git.torproject.org/pluggable-transports/goptlib.git")
+               (string-append "gitlab.torproject.org/tpo/anti-censorship"
+                              "/pluggable-transports/goptlib")))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "0xacab.org/leap/obfsvpn"))
+    (native-inputs
+     (list go-github-com-spf13-pflag
+           go-github-com-spf13-viper))
+    (propagated-inputs
+     (list go-github-com-labstack-echo-v4
+           go-github-com-quic-go-quic-go
+           go-github-com-sirupsen-logrus
+           go-github-com-xtaci-kcp-go-v5
+           go-gitlab-com-yawning-obfs4-git
+           go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-goptlib))
+    (home-page "https://0xacab.org/leap/obfsvpn")
+    (synopsis "OBFS4 client and server proxies")
+    (description
+     "The @@code{obfsvpn} module contains a Go package that provides server
+and client components to use variants of the obfs4 obfuscation protocol.  It
+is intended to be used as a drop-in Pluggable Transport for @code{OpenVPN}
+connections
+(although it can be used for other, more generic purposes).")
+    (license license:bsd-2)))
+
 (define-public go-cloud-google-com-go-compute-metadata
   (package
     (name "go-cloud-google-com-go-compute-metadata")
