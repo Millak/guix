@@ -14468,6 +14468,34 @@ distributable command line applications in an expressive way.")
 anti-fragmentation protection.")
     (license license:expat)))
 
+(define-public go-github-com-valyala-fasttemplate
+  (package
+    (name "go-github-com-valyala-fasttemplate")
+    (version "1.2.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/valyala/fasttemplate")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12hywkz2mfvxzfpgabc53bm4jkxxmcssrr0k4wxzzrnv0v7mj6bj"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (delete-file-recursively "vendor")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/valyala/fasttemplate"))
+    (propagated-inputs
+     (list go-github-com-valyala-bytebufferpool))
+    (home-page "https://github.com/valyala/fasttemplate")
+    (synopsis "Template engine for Golang")
+    (description
+     "Package fasttemplate implements simple and fast template library.")
+    (license license:expat)))
+
 (define-public go-github-com-vburenin-ifacemaker
   (package
     (name "go-github-com-vburenin-ifacemaker")
