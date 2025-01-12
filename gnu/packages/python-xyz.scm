@@ -35776,12 +35776,15 @@ and BMI2).")
         (base32 "1zycv620iljrsval5rai1wsn0hr25ddx9xhjsyy6xxrgprfxvlfi"))))
     (build-system pyproject-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (when tests?
-                        (invoke "python" "-m" "unittest" "discover")))))))
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "python" "-m" "unittest" "discover")))))))
     (propagated-inputs (list python-pycryptodome))
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/CybercentreCanada/cart")
     (synopsis "Library for interacting with the CaRT file format")
     (description
