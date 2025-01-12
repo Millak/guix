@@ -22,6 +22,7 @@
 ;;; Copyright © 2023 Hendursaga <hendursaga@aol.com>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2025 Ricardo Wurmus <rekado@elephly.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4078,11 +4079,6 @@ Python 3.11 for Python >=3.8.6.")
        (sha256
         (base32 "011n9vrrsbqbnw2i38ls7f0xkd85kxcnn14fm4lhxjpi91p7hshb"))))
     (build-system pyproject-build-system)
-    (propagated-inputs
-      (list
-        python-backports-strenum
-        python-capstone
-        python-keystone-engine))
     (arguments
      `(#:phases (modify-phases %standard-phases
                   (add-after 'unpack 'patch
@@ -4095,6 +4091,12 @@ Python 3.11 for Python >=3.8.6.")
                       (when tests?
                         (with-directory-excursion "tests"
                           (invoke "python" "-m" "unittest"))))))))
+    (propagated-inputs
+     (list python-backports-strenum
+           python-capstone
+           python-keystone-engine))
+    (native-inputs
+     (list python-setuptools python-wheel))
     (home-page "https://github.com/angr/archinfo")
     (synopsis "Extract architecture-specific information from binaries")
     (description
