@@ -5704,22 +5704,30 @@ this it tries to be opinion-free and very extendable.")
 (define-public python-engineio
   (package
     (name "python-engineio")
-    (version "4.0.1")
+    (version "4.11.2")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "python-engineio" version))
+       (uri (pypi-uri "python_engineio" version))
        (sha256
         (base32
-         "0xqkjjxbxakz9fd7v94rkr2r5r9nrkap2c3gf3abbd0j6ld5qmxv"))))
-    (build-system python-build-system)
+         "0abijzn4srf89jlj0kqcd9xbhyxvglzxkciy5nxv815rrvdb0nql"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; File not found.
+      #:test-flags '(list "-k" "not test_static_files")))
     (propagated-inputs
-     (list python-aiohttp python-requests python-websocket-client))
-    (arguments '(#:tests? #f))        ; Tests not included in release tarball.
+     (list python-aiohttp
+           python-requests
+           python-simple-websocket
+           python-tornado
+           python-websocket-client))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/miguelgrinberg/python-engineio/")
     (synopsis "Engine.IO server")
-    (description "Python implementation of the Engine.IO realtime client and
-server.")
+    (description "This package provides a Python implementation of the
+@code{Engine.IO} realtime client and server.")
     (license license:expat)))
 
 (define-public python-ephemeral-port-reserve
