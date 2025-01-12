@@ -1042,18 +1042,26 @@ support, and optional data-URI image and font embedding.")
               (sha256
                (base32
                 "0aw0fi0lg80qgdp9fhjbnlhvfh2p09rgy1nj6hxpyhi37kihni2h"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
+     (list
+      #:phases
+      '(modify-phases %standard-phases
          (replace 'check
-           (lambda _
-             (invoke "redis-server" "--daemonize" "yes")
-             (invoke "django-admin" "test" "django_rq"
-                     "--settings=django_rq.tests.settings"
-                     "--pythonpath=."))))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "redis-server" "--daemonize" "yes")
+               (invoke "django-admin" "test" "django_rq"
+                       "--settings=django_rq.tests.settings"
+                       "--pythonpath=.")))))))
     (native-inputs
-     (list python-django-redis python-mock python-rq-scheduler redis))
+     (list python-django-redis
+           python-mock
+           python-rq-scheduler
+           python-setuptools
+           python-wheel
+           redis
+           tzdata-for-tests))
     (propagated-inputs
      (list python-django python-rq))
     (home-page "https://github.com/ui/django-rq")
