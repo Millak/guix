@@ -36030,11 +36030,14 @@ common library subroutines in disassembled binaries.")
         (base32 "0c5xzci1djy1yi9hxxh8g67l6ms8r7ad7ja20pv8hfbdysdrwkhl"))))
     (build-system pyproject-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (when tests?
-                        (invoke "python" "mulpyplexer.py")))))))
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "python" "mulpyplexer.py")))))))
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/zardus/mulpyplexer/")
     (synopsis "Multiplexes interactions with lists of Python objects")
     (description "This module provides utilities for multiplexing
