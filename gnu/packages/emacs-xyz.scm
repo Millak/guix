@@ -151,6 +151,7 @@
 ;;; Copyright © 2024 aurtzy <aurtzy@gmail.com>
 ;;; Copyright © 2024 Olivier Rojon <o.rojon@posteo.net>
 ;;; Copyright © 2024 Divya Ranjan Pattanaik <divya@subvertising.org>
+;;; Copyright © 2025 Remco van 't Veer <remco@remworks.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -41361,13 +41362,13 @@ with the ed editor.")
        (method git-fetch)
        (uri
         (git-reference
-         (url "https://github.com/remvee/alsamixer-el")
+         (url "https://codeberg.org/rwv/alsamixer-el.git")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0c40vycphv5nf374rp8pnzvi50vlmgab3wrdq92hyprjw76gwxhk"))))
     (build-system emacs-build-system)
-    (home-page "https://github.com/remvee/alsamixer-el")
+    (home-page "https://codeberg.org/rwv/alsamixer-el")
     (synopsis "Emacs interface to amixer")
     (description "@code{emacs-alsamixer-el} provides basic commands to control
 audio volume via amixer.")
