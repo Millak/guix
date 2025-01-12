@@ -313,34 +313,34 @@ that are useful for particular countries or cultures.")
 (define-public python-django-simple-math-captcha
   (package
     (name "python-django-simple-math-captcha")
-    (version "1.0.9")
+    (version "2.0.0")
     (home-page "https://github.com/alsoicode/django-simple-math-captcha")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url home-page)
-                    (commit (string-append "v" version))))
+                    (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0fhy9k8haqa1296v0qpg1b5w7y3pyw9qi9z9laj5ijry1gk35qaw"))))
-    (build-system python-build-system)
+                "1pqriqvg1bfx36p8hxzh47zl5qk911vgf3xaxfvhkjyi611rbxzy"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'patch-six-imports
-                    (lambda _
-                      ;; Django no longer bundles six, adjust the imports
-                      ;; accordingly.  The six dependency can likely be
-                      ;; removed in the next version.
-                      (substitute* (find-files "." "\\.py$")
-                        (("from django\\.utils import six")
-                         "import six"))
-                      #t))
-                  (replace 'check
-                    (lambda _
-                      (invoke "python" "runtests.py"))))))
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'compatibility
+           (lambda _
+             (substitute* "test_simplemathcaptcha/form_tests.py"
+               (("label for=\"id_captcha_0\"") "label"))
+             (substitute* "simplemathcaptcha/widgets.py"
+               (("ugettext_lazy") "gettext_lazy"))))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "python" "runtests.py")))))))
     (native-inputs
-     (list python-mock))
+     (list python-mock python-setuptools python-wheel))
     (propagated-inputs
      (list python-django python-six))
     (synopsis "Easy-to-use math field/widget captcha for Django forms")
