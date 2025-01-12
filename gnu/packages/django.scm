@@ -531,23 +531,26 @@ your code.")
 (define-public python-django-filter
   (package
     (name "python-django-filter")
-    (version "2.3.0")
+    (version "24.3")
     (source (origin
               (method url-fetch)
-              (uri (pypi-uri "django-filter" version))
+              (uri (pypi-uri "django_filter" version))
               (sha256
                (base32
-                "1bz5qzdk9pk4a2lp2yacrdnqmkv24vxnz4k3lykrnpc3b7bkvrhi"))))
-    (build-system python-build-system)
+                "1hyr5i5f4n5kk5ax3y39hslhy0wi2nqk6rrgajh1rlmg69kszk6q"))))
+    (build-system pyproject-build-system)
     (arguments
      '(#:phases
        (modify-phases %standard-phases
          (replace 'check
-           (lambda _
-             (invoke "python" "runtests.py"))))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "python" "runtests.py")))))))
     (native-inputs
-     (list python-django python-django-rest-framework
-           python-django-crispy-forms python-mock))
+     (list python-django
+           python-django-rest-framework
+           python-flit-core
+           tzdata-for-tests))
     (home-page "https://django-filter.readthedocs.io/en/latest/")
     (synopsis "Reusable Django application to filter querysets dynamically")
     (description
