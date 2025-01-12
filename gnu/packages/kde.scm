@@ -1283,11 +1283,13 @@ multi-floor indoor maps.")
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-cmake-install-directories
+          (add-after 'unpack 'fix-polkit-action-path
             (lambda _
               (substitute* "src/util/CMakeLists.txt"
                 (("DESTINATION \\$\\{POLKITQT-1_POLICY_FILES_INSTALL_DIR\\}")
-                 "DESTINATION share/polkit-1/actions")))))))
+                 "DESTINATION share/polkit-1/actions"))
+              (substitute* "src/backend/corebackend.cpp"
+                  (("\\/usr") #$output)))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Library for managing partitions")
     (description "Library for managing partitions.")
