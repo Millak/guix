@@ -1154,7 +1154,7 @@ name is purely coincidental.")
 (define-public python-django-statici18n
   (package
     (name "python-django-statici18n")
-    (version "2.1.0")
+    (version "2.6.0")
     (home-page "https://github.com/zyegfryed/django-statici18n")
     (source (origin
               (method git-fetch)
@@ -1164,20 +1164,22 @@ name is purely coincidental.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0x0xvfqd40is2ks43d65awgqkx3wk10lvdim15scvbjhkh301b6v"))))
-    (build-system python-build-system)
+                "13caylidzlsb25gihc6xyqfzmdikj240kqvbdb1hn3h40ky4alhv"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda _
-                      (setenv "PYTHONPATH" "./tests/test_project")
-                      (setenv "DJANGO_SETTINGS_MODULE" "project.settings")
-                      (invoke "pytest" "-vv"))))))
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (setenv "PYTHONPATH" "./tests/test_project")
+               (setenv "DJANGO_SETTINGS_MODULE" "project.settings")
+               (invoke "pytest" "-vv")))))))
     (native-inputs
-     (list python-pytest python-pytest-django))
+     (list python-pytest python-pytest-django python-setuptools python-wheel))
     (propagated-inputs
-     `(("python-django" ,python-django)
-       ("django-appconf" ,python-django-appconf)))
+     (list python-django python-django-appconf))
     (synopsis "Generate JavaScript catalog to static files")
     (description
       "A Django app that provides helper for generating JavaScript catalog to
