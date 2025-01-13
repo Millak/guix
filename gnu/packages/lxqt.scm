@@ -611,24 +611,21 @@ when laptop batteries are low on power.")
 (define-public lxqt-qtplugin
   (package
     (name "lxqt-qtplugin")
-    (version "1.3.0")
+    (version "2.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "0hdxa9cb39vklx616ywcc7jgipij99p4bd16w0f0cvidh6p1rqhv"))))
+        (base32 "0giql40mnl100zhqcyxi1vxsfyvx5hvi9zibjh5krr6nwrwwflhb"))))
     (build-system cmake-build-system)
     (inputs
-     (list libdbusmenu-qt
+     (list libdbusmenu-lxqt
            libfm-qt
-           libqtxdg
-           qtbase-5
-           qtsvg-5
-           qtx11extras))
+           libqtxdg))
     (native-inputs
-     (list lxqt-build-tools qttools-5))
+     (list lxqt-build-tools))
     (arguments
      '(#:tests? #f                      ; no tests
        #:phases
@@ -637,7 +634,7 @@ when laptop batteries are low on power.")
            (lambda _
              (substitute* '("src/CMakeLists.txt")
                (("DESTINATION \"\\$\\{QT_PLUGINS_DIR\\}")
-                "DESTINATION \"lib/qt5/plugins"))
+                "DESTINATION \"lib/qt6/plugins"))
              #t)))))
     (home-page "https://lxqt-project.org")
     (synopsis "LXQt Qt platform integration plugin")
