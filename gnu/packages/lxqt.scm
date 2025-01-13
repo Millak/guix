@@ -1088,6 +1088,11 @@ like @command{tar} and @command{zip}.")
            pavucontrol-qt
            qps
            qterminal))
+    (native-search-paths
+     (list (search-path-specification
+            ;; For finding qtsvg, lxqt-qtplugin, etc.
+            (variable "QT_PLUGIN_PATH")
+            (files '("lib/qt6/plugins")))))
     (synopsis "The Lightweight Qt Desktop Environment")
     (description "LXQt is a lightweight Qt desktop environment.")
     (home-page "https://lxqt-project.org")
