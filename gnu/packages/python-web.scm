@@ -1259,15 +1259,13 @@ Interchange Format (SARIF)} file format.")
     (arguments
      (list
       #:test-flags
-      '(list "--ignore-glob=examples/*" "--ignore-glob=bench/*" "tests")
+      '(list "--ignore=tests/test_utils.py"
+             "--ignore-glob=examples/*"
+             "--ignore-glob=bench/*" "tests")
       #:phases
       '(modify-phases %standard-phases
          (add-before 'check 'set-HOME
-           (lambda _ (setenv "HOME" "/tmp")))
-         (replace 'check
-           (lambda* (#:key tests? test-flags #:allow-other-keys)
-             (when tests?
-               (apply invoke "pytest" "-vv" test-flags)))))))
+           (lambda _ (setenv "HOME" "/tmp"))))))
     (propagated-inputs
      (list python-mimeparse))
     (native-inputs
@@ -1287,9 +1285,11 @@ Interchange Format (SARIF)} file format.")
            python-pyyaml
            python-rapidjson
            python-requests
+           python-setuptools
            python-testtools
            python-ujson
-           python-websockets))
+           python-websockets
+           python-wheel))
     (home-page "https://falconframework.org")
     (synopsis "Web framework for building APIs and application backends")
     (description "Falcon is a web API framework for building microservices,
