@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2015, 2022 Sou Bunnbu <iyzsong@gmail.com>
+;;; Copyright © 2015, 2022, 2025 宋文武 <iyzsong@envs.net>
 ;;; Copyright © 2016 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
@@ -102,7 +102,7 @@ to statistics about the system on which it's run.")
 (define-public lxqt-build-tools
   (package
     (name "lxqt-build-tools")
-    (version "0.13.0")
+    (version "2.1.0")
     (source
      (origin
        (method url-fetch)
@@ -110,7 +110,7 @@ to statistics about the system on which it's run.")
                            "/download/" version
                            "/lxqt-build-tools-" version ".tar.xz"))
        (sha256
-        (base32 "1kjrxc1aj7yfn3v72lwryn58hkwsribsspm480qg4qbw1nfijg7x"))))
+        (base32 "1ycfzl8sfa2d1bnlyj6b3726mfb6kpj5768fhpw1ypkgjclvcn14"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -128,18 +128,18 @@ to statistics about the system on which it's run.")
           (add-after 'install 'patch-LXQtConfigVars.cmake
             (lambda _
               (substitute* (string-append #$output
-                                          "/share/cmake/lxqt-build-tools"
+                                          "/share/cmake/lxqt2-build-tools"
                                           "/modules/LXQtConfigVars.cmake")
                 (((regexp-quote (string-append #$output "/"))) "")))))
       #:configure-flags
       #~(list "-DLXQT_ETC_XDG_DIR=etc/xdg")))
-    (native-inputs
-     (list pkg-config glib))
     (inputs
-     (list qtbase-5))
+     (list qtbase))
+    (native-inputs
+     (list pkg-config))
     (propagated-inputs
-     ;; Dependent projects require Perl via the CMake files.
-     (list perl))
+     ;; Required by lxqt2-transupdate and CMake files.
+     (list perl qttools))
     (synopsis "LXQt Build tools")
     (description
      "Lxqt-build-tools is providing several tools needed to build LXQt
