@@ -1057,52 +1057,6 @@ easily publishing them on internet image hosting services.")
 like @command{tar} and @command{zip}.")
     (license license:gpl2+)))
 
-(define-public lxqt-connman-applet
-  ;; since the main developers didn't release any version yet,  their
-  ;; latest commit on `master` branch at the moment used for this version.
-  (let ((commit "db1618d58fd3439142c4e44b24cba0dbb68b7141")
-        (revision "0"))
-    (package
-      (name "lxqt-connman-applet")
-      (version (git-version "0.15.0" revision commit))
-      (source
-        (origin
-          (method git-fetch)
-          (uri (git-reference
-            (url (string-append "https://github.com/lxqt/" name))
-            (commit commit)))
-          (file-name (git-file-name name version))
-          (sha256
-           (base32 "087641idpg7n8yhh5biis4wv52ayw3rddirwqb34bf5fwj664pw9"))))
-      (build-system cmake-build-system)
-      (inputs
-        (list kwindowsystem-5
-              qtbase-5
-              qtsvg-5
-              liblxqt
-              qtx11extras
-              libqtxdg))
-      (native-inputs
-        `(("lxqt-build-tools" ,lxqt-build-tools)
-          ("qtlinguist" ,qttools-5)))
-      (arguments
-        `(#:tests? #f                   ; no tests
-          #:phases
-            (modify-phases %standard-phases
-              (add-after 'unpack 'remove-definitions
-                (lambda _
-                  (substitute* "CMakeLists.txt"
-                    (("include\\(LXQtCompilerSettings NO_POLICY_SCOPE\\)")
-                     "include(LXQtCompilerSettings NO_POLICY_SCOPE)
-remove_definitions(-DQT_NO_CAST_TO_ASCII -DQT_NO_CAST_FROM_ASCII)"))
-                  #t)))))
-      (home-page "https://github.com/lxqt/lxqt-connman-applet")
-      (synopsis "System-tray applet for connman")
-      (description "This package provides a Qt-based system-tray applet for
-the network management tool Connman, originally developed for the LXQT
-desktop.")
-      (license license:lgpl2.1+))))
-
 ;; The LXQt Desktop Environment
 
 (define-public lxqt
