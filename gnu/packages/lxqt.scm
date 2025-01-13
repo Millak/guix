@@ -210,7 +210,7 @@ applications.")
 (define-public liblxqt
   (package
     (name "liblxqt")
-    (version "1.3.0")
+    (version "2.1.0")
     (source
      (origin
        (method url-fetch)
@@ -218,7 +218,7 @@ applications.")
              "https://github.com/lxqt/" name "/releases/download/"
              version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "1vr43sd2dzs4gmiaidr1gpm64fl500k30rlxxq7yj9p3iwk5d3xp"))))
+        (base32 "1q1wn53rsy6bagngj1k53sipmbga3pbwk446kd1m6prwz1i0p0hh"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ; no tests
@@ -231,14 +231,16 @@ applications.")
                 "DESTINATION \"share/polkit-1/actions"))
              #t)))))
     (inputs
-     (list kwindowsystem-5
+     (list libxscrnsaver polkit-qt6))
+    (propagated-inputs
+     ;; Required by lxqt-config.cmake
+     (list kwindowsystem
            libqtxdg
-           libxscrnsaver
-           polkit-qt
-           qtsvg-5
-           qtx11extras))
+           lxqt-build-tools
+           qtbase
+           qttools))
     (native-inputs
-     (list lxqt-build-tools qttools-5))
+     (list lxqt-build-tools))
     (home-page "https://lxqt-project.org")
     (synopsis "Core utility library for all LXQt components")
     (description "liblxqt provides the basic libraries shared by the
