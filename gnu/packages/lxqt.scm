@@ -150,7 +150,7 @@ itself as well as other components maintained by the LXQt project.")
 (define-public libqtxdg
   (package
     (name "libqtxdg")
-    (version "3.11.0")
+    (version "4.1.0")
     (source
      (origin
        (method url-fetch)
@@ -158,12 +158,12 @@ itself as well as other components maintained by the LXQt project.")
              "https://github.com/lxqt/libqtxdg/releases/download/"
              version "/libqtxdg-" version ".tar.xz"))
        (sha256
-        (base32 "0alphfvkwxaqfnckjxbrwjkj7wjl4yff7qxzmyjz67c8728lxbny"))))
+        (base32 "02c8irxyra0kfm7k1jkcxinfipib3w9jn2lk91hnl6jnv6bx6106"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags
        '("-DBUILD_TESTS=ON"
-         "-DQTXDGX_ICONENGINEPLUGIN_INSTALL_PATH=lib/qt5/plugins/iconengines")
+         "-DQTXDGX_ICONENGINEPLUGIN_INSTALL_PATH=lib/qt6/plugins/iconengines")
        #:phases
        (modify-phases %standard-phases
          (add-before 'check 'pre-check
@@ -172,10 +172,12 @@ itself as well as other components maintained by the LXQt project.")
              (setenv "QT_QPA_PLATFORM" "offscreen")
              #t)))))
     (propagated-inputs
-     ;; required by Qt5XdgIconLoader.pc
-     (list glib qtbase-5 qtsvg-5))
+     ;; required by Qt6XdgIconLoader.pc
+     (list qtbase qtsvg))
     (native-inputs
      (list lxqt-build-tools pkg-config))
+    (inputs
+     (list glib))
     (home-page "https://github.com/lxqt/libqtxdg")
     (synopsis "Qt implementation of freedesktop.org xdg specifications")
     (description "Libqtxdg implements the freedesktop.org xdg specifications
