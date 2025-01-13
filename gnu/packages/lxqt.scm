@@ -363,35 +363,30 @@ LXQt Panel, Configuration Center and PCManFM-Qt/libfm-qt.")
 (define-public lxqt-config
   (package
     (name "lxqt-config")
-    (version "1.3.0")
+    (version "2.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "13v9mrp6dswdw9vq39lfpd5cgz2bg74mk2kp1x7zinzqijsn17wj"))))
+        (base32 "03bq440npq3l4ssx7l1a15962q1jylfzdldfr66dm5nkjgvvv0gs"))))
     (build-system cmake-build-system)
     (inputs
      (list eudev
-           kwindowsystem-5
            liblxqt
-           libqtxdg
            libxcursor
            libxi
-           qtbase-5
-           qtsvg-5
-           qtx11extras
-           solid-5
+           lxqt-menu-data
            xf86-input-libinput
            xkeyboard-config
            zlib))
     (native-inputs
-     (list pkg-config lxqt-build-tools qttools-5))
+     (list pkg-config lxqt-build-tools))
     ;; XXX: This is a workaround so libkscreen can find the backends as we
     ;; dont have a way specify them. We may want to  patch like Nix does.
     (propagated-inputs
-     (list libkscreen-5))
+     (list libkscreen))
     (arguments
      '(#:tests? #f                      ; no tests
        #:phases
