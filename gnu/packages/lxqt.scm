@@ -561,26 +561,19 @@ possible for applications to export and import their menus over DBus.")
 (define-public lxqt-policykit
   (package
     (name "lxqt-policykit")
-    (version "1.3.0")
+    (version "2.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "051lb4kx29rx3ls3whlrbi83r9z9pdiqwyb1wbni56aqilv0svh0"))))
+        (base32 "0h0hi7aimjhc6rn4w8wz3kmvpkx7g6bf9i1fclan7j7ic80cf160"))))
     (build-system cmake-build-system)
     (inputs
-     (list kwindowsystem-5
-           liblxqt
-           libqtxdg
-           pcre
-           polkit-qt
-           qtbase-5
-           qtsvg-5
-           qtx11extras))
+     (list liblxqt polkit polkit-qt6))
     (native-inputs
-     (list pkg-config polkit lxqt-build-tools qttools-5))
+     (list pkg-config lxqt-build-tools))
     (arguments '(#:tests? #f))          ; no test target
     (home-page "https://lxqt-project.org")
     (synopsis "The LXQt PolicyKit agent")
