@@ -504,19 +504,19 @@ possible for applications to export and import their menus over DBus.")
 (define-public lxqt-panel
   (package
     (name "lxqt-panel")
-    (version "1.3.0")
+    (version "2.1.4")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "1lnqiw1rd5m9576rsg7lx8v95nc8krrj35fbi54ipc688na3j6s3"))))
+        (base32 "1rhm57nnwr0mhii2r40gmawllj4cza9qb25qykkn236jfgpbilgz"))))
     (build-system cmake-build-system)
     (inputs
      (list alsa-lib
-           kguiaddons
-           libdbusmenu-qt
+           layer-shell-qt
+           libdbusmenu-lxqt
            liblxqt
            libqtxdg
            libstatgrab
@@ -528,21 +528,19 @@ possible for applications to export and import their menus over DBus.")
            libxtst
            `(,lm-sensors "lib")
            lxqt-globalkeys
-           pcre
            pulseaudio
-           qtbase-5
-           qtsvg-5
-           qtx11extras
-           solid-5
+           qtwayland
+           solid
+           wayland
            xcb-util
            xcb-util-image
            xkeyboard-config))
     (native-inputs
-     (list pkg-config lxqt-build-tools qttools-5))
+     (list pkg-config lxqt-build-tools))
     (propagated-inputs
      ;; Propagating KWINDOWSYSTEM so that the list of opened applications
      ;; shows up in lxqt-panel's taskbar plugin.
-     (list kwindowsystem-5 lxmenu-data))
+     (list kwindowsystem lxqt-menu-data))
     (arguments
      '(#:tests? #f                      ; no tests
        #:phases
