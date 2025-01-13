@@ -21660,31 +21660,28 @@ CloudFront content delivery network.")
 (define-public python-pkgconfig
   (package
     (name "python-pkgconfig")
-    (version "1.3.1")
+    (version "1.5.5")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "pkgconfig" version))
         (sha256
           (base32
-            "107x2wmchlch8saixb488cgjz9n6inl38wi7nxkb942rbaapxiqb"))))
-    (build-system python-build-system)
-    (native-inputs
-      (list python-nose))
-    (inputs
-      (list pkg-config))
+            "16dqm2g7b2c6s09vf6wv62s629s63xf51n92v0hbax8zy4z1dd6y"))))
+    (build-system pyproject-build-system)
     (arguments
-      `(#:phases
-        (modify-phases %standard-phases
-          (add-before 'build 'patch
-            ;; Hard-code the path to pkg-config.
-            (lambda _
-              (substitute* "pkgconfig/pkgconfig.py"
-                (("'pkg-config'")
-                 (string-append "'" (which "pkg-config") "'")))))
-          (replace 'check
-            (lambda _
-              (invoke "nosetests" "test.py"))))))
+     (list
+      #:tests? #false                   ;there are none
+      #:phases
+      '(modify-phases %standard-phases
+         (add-before 'build 'patch
+           ;; Hard-code the path to pkg-config.
+           (lambda _
+             (substitute* "pkgconfig/pkgconfig.py"
+               (("'pkg-config'")
+                (string-append "'" (which "pkg-config") "'"))))))))
+    (native-inputs (list python-poetry-core))
+    (inputs (list pkg-config))
     (home-page "https://github.com/matze/pkgconfig")
     (synopsis "Python interface for pkg-config")
     (description "This module provides a Python interface to pkg-config.  It
