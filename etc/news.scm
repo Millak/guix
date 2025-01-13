@@ -5,7 +5,7 @@
 ;; Copyright © 2019, 2020 Miguel Ángel Arruga Vivas <rosen644835@gmail.com>
 ;; Copyright © 2019, 2020 Konrad Hinsen <konrad.hinsen@fastmail.net>
 ;; Copyright © 2019, 2020, 2021, 2023 Julien Lepiller <julien@lepiller.eu>
-;; Copyright © 2019–2024 Florian Pelz <pelzflorian@pelzflorian.de>
+;; Copyright © 2019–2025 Florian Pelz <pelzflorian@pelzflorian.de>
 ;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
 ;; Copyright © 2020, 2021 Mathieu Othacehe <m.othacehe@gmail.com>
 ;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
@@ -37,26 +37,39 @@
 
  (entry (commit "5c2bcafd281fdd31b3dfec5a67ba85084c58cf60")
         (title
-         (en "Linux-libre 6.11 removed from GNU Guix"))
+         (en "Linux-libre 6.11 removed from GNU Guix")
+         (de "Linux-libre 6.11 wurde aus GNU Guix entfernt"))
         (body
          (en "The linux-libre 6.11 kernel series is no longer supported
-             upstream, so it has been removed from GNU Guix.")))
+             upstream, so it has been removed from GNU Guix.")
+         (de "Die Versionsreihe 6.11 des Linux-libre-Kernels wurde aus GNU Guix
+entfernt, weil sie von dessen Anbieter nicht mehr unterstützt wird.")))
 
  (entry (commit "3a4209224e7e3121189390307295fccdc0612db4")
         (title
-         (en "Linux-libre updated to 6.12"))
+         (en "Linux-libre updated to 6.12")
+         (de "Linux-libre wird auf 6.12 aktualisiert"))
         (body
          (en "The default linux-libre package has been updated to the
              6.12 series.  The 6.11 series will be removed soon, due to
-             end of upstream support.")))
+             end of upstream support.")
+         (de "Das standardmäßig verwendete @code{linux-libre}-Paket basiert
+              jetzt auf der 6.12-Versionsreihe.  Die Versionsreihe 6.11 wird
+bald entfernt werden, weil sie von dessen Anbieter nicht mehr unterstützt
+wird.")))
 
  (entry (commit "1dcd0ded86e341cbfd0567cefde1e71684c0cdba")
         (title
-         (en "Linux-libre 6.12 now available"))
+         (en "Linux-libre 6.12 now available")
+         (de "Linux-libre 6.12 jetzt verfügbar"))
         (body
          (en "The 6.12 linux-libre series is now available in GNU Guix.  This
 kernel will receive upstream long-term support, so the @code{linux-libre-lts}
-package has been updated to 6.12.")))
+package has been updated to 6.12.")
+         (de "Die Versionsreihe 6.12 von Linux-libre ist ab jetzt in GNU Guix
+verfügbar.  Dieser Kernel wird langfristig vom Anbieter mit Aktualisierungen
+versorgt werden, daher wurde das Paket @code{linux-libre-lts} auf 6.12
+aktualisiert.")))
 
  (entry (commit "7b40b9d2d2ddafd6945f18f19f5e621086d57169")
         (title
