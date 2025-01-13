@@ -1059,9 +1059,9 @@ like @command{tar} and @command{zip}.")
            xdg-user-dirs
            xdg-utils
            ;; Base
-           ;; TODO: qtsvg-5 is needed for lxqt apps to display icons. Maybe it
+           ;; TODO: qtsvg is needed for lxqt apps to display icons. Maybe it
            ;; should be added to their propagated-inputs?
-           qtsvg-5
+           qtsvg
            ;; Core
            lxqt-about
            lxqt-admin
