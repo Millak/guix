@@ -135,6 +135,38 @@ the namespace @code{/nbclassic/}.")
 to Jupyter Server for their Python Web application backend.")
     (license license:bsd-3)))
 
+(define-public python-jupyter-lsp
+  (package
+    (name "python-jupyter-lsp")
+    (version "2.2.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "jupyter-lsp" version))
+       (sha256
+        (base32 "00ahai7wp0m98glpqsrd1bymcllzkb8irvskzl4zhinlbah4fcbr"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; No R language server is present.
+      '(list "-k" "not test_r_package_detection")
+      #:phases
+      '(modify-phases %standard-phases
+         ;; Some tests require a writable HOME
+         (add-before 'check 'set-HOME
+           (lambda _ (setenv "HOME" "/tmp"))))))
+    (propagated-inputs (list python-jupyter-server))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (home-page "https://pypi.org/project/jupyter-lsp/")
+    (synopsis "Multi-Language Server WebSocket proxy for Jupyter Notebook/Lab server")
+    (description
+     "This package provides a multi-language server WebSocket proxy for
+Jupyter Notebook/Lab server.  It provides coding assistance for
+JupyterLab (code navigation, hover suggestions, linters, autocompletion, and
+rename) using the Language Server Protocol.")
+    (license license:bsd-3)))
+
 (define-public python-jupyter-protocol
   (package
     (name "python-jupyter-protocol")
