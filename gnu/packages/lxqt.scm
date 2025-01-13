@@ -673,28 +673,26 @@ allows for launching applications or shutting down the system.")
 (define-public lxqt-session
   (package
     (name "lxqt-session")
-    (version "1.3.0")
+    (version "2.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "0xa5nqiq9mxwfynnw91i4c2cgpmpapl4nxys084nbs7yd88kbm2l"))))
+        (base32 "06f8kfy859ri2wbjpz7yx69jw0gfxm80f46729lcl2vd23a0qari"))))
     (build-system cmake-build-system)
     (inputs
      (list bash-minimal
            eudev
-           kwindowsystem-5
+           kwindowsystem
+           layer-shell-qt
            liblxqt
            qtxdg-tools
            procps
-           qtbase-5
-           qtsvg-5
-           qtx11extras
            xdg-user-dirs))
     (native-inputs
-     (list pkg-config lxqt-build-tools qttools-5))
+     (list pkg-config lxqt-build-tools))
     (arguments
      `(#:tests? #f
        #:phases
