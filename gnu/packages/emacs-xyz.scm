@@ -22979,6 +22979,27 @@ files.  It parses the source files using Ruby's builtin @code{Ripper} class
 and performs syntax checks on them.")
       (license license:ruby))))
 
+(define-public emacs-enwc
+  (package
+    (name "emacs-enwc")
+    (version "2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://elpa.gnu.org/packages/enwc-" version
+                           ".tar"))
+       (sha256
+        (base32 "0y8154ykrashgg0bina5ambdrxw2qpimycvjldrk9d67hrccfh3m"))))
+    (build-system emacs-build-system)
+    (home-page "https://savannah.nongnu.org/p/enwc")
+    (synopsis "The Emacs Network Client")
+    (description
+     "ENWC is the Emacs Network Client.  It is designed to provide a front-end
+to various network managers, such as @code{NetworkManager} and Wicd.
+Currently, only @code{NetworkManager} and Wicd are supported, although
+experimental support exists for Connman.")
+    (license license:gpl3+)))
+
 (define-public emacs-inheritenv
   (package
     (name "emacs-inheritenv")
