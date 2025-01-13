@@ -808,14 +808,14 @@ components to build desktop file managers which belongs to LXDE.")
 (define-public pcmanfm-qt
   (package
     (name "pcmanfm-qt")
-    (version "1.3.0")
+    (version "2.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "190gfq6sp2z6hs7wy02xw831gdp2sxfrpy6jrhrf0zlfv26f6z3w"))))
+        (base32 "0kvbw1slbcism42rqn09h1q3dirq44g8h3azg1vc86zs3mbqcd76"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -830,9 +830,9 @@ components to build desktop file managers which belongs to LXDE.")
                  (("Wallpaper=.*")
                   (string-append "Wallpaper=" wallpaper "\n")))))))))
     (inputs
-     (list libfm-qt qtbase-5 qtx11extras lxqt-themes))
+     (list layer-shell-qt libfm-qt lxqt-themes))
     (native-inputs
-     (list pkg-config qttools-5 lxqt-build-tools))
+     (list pkg-config lxqt-build-tools))
     (home-page "https://lxqt-project.org")
     (synopsis "File manager and desktop icon manager")
     (description "PCManFM-Qt is the Qt port of PCManFM, the file manager of
