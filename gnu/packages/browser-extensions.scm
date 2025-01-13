@@ -87,7 +87,7 @@ supported content to the Kodi media center.")
   ;; Arbitrary commit of branch master,
   ;; Update when updating uBlockOrigin.
   (let* ((name "ublock-main-assets")
-         (commit "bfbafa49f72d078fd1126033be1d4434ca6d5009")
+         (commit "9b6960f06bd36d77e67544c478899980e6aa1cf2")
          (revision "2")
          (version (git-version "0" revision commit)))
     (origin
@@ -97,13 +97,13 @@ supported content to the Kodi media center.")
             (commit commit)))
       (file-name (git-file-name name version))
       (sha256
-       (base32 "0m7v8qjs941g2pr1b50vxa68g9psv2vvxzfz43iyfmv3gyypdh59")))))
+       (base32 "0rbn4zqc6rw9pb0z99v7mahywl4ry5i7ygdvr3vir5yszznm7ag0")))))
 
 (define ublock-prod-assets
   ;; Arbitrary commit of branch gh-pages,
   ;; Update when updating uBlockOrigin.
   (let* ((name "ublock-prod-assets")
-         (commit "873eb22777b9a951e64d6453048bec9291db2ed7")
+         (commit "08387160d86372d5a25f81f7c57d5c634457b9ed")
          (revision "2")
          (version (git-version "0" revision commit)))
     (origin
@@ -113,12 +113,12 @@ supported content to the Kodi media center.")
             (commit commit)))
       (file-name (git-file-name name version))
       (sha256
-       (base32 "1p3ajvqsvpc3nkh2zjrx6g12fbismc18d0wskva4ifl0ckx521rj")))))
+       (base32 "0ly90skji4bpdfy8aqykm3ibxxwxi6p1zvhd2mwrfbwj9sq5794s")))))
 
 (define ublock-origin
   (package
     (name "ublock-origin")
-    (version "1.61.0")
+    (version "1.62.0")
     (home-page "https://github.com/gorhill/uBlock")
     (source (origin
               (method git-fetch)
@@ -128,7 +128,7 @@ supported content to the Kodi media center.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0iikd3l02nd0lgns33i95fzi7xh4hwzkng5r14lk0cmmr97phn6y"))))
+                "04z1yb1z9wz22fn1lih4an05kcpp9a1fhcpkn5lkrhackfxf85vw"))))
     (build-system gnu-build-system)
     (outputs '("xpi" "firefox" "chromium"))
     (properties '((addon-id . "uBlock0@raymondhill.net")))
