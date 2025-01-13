@@ -1277,6 +1277,47 @@ Model} (SAM) templates into AWS CloudFormation templates.")
 emit information from within their applications to the AWS X-Ray service.")
     (license license:asl2.0)))
 
+(define-public python-python3-saml
+  (package
+    (name "python-python3-saml")
+    (version "1.16.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/SAML-Toolkits/python3-saml")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1isisymhk8zblj5942jfl0zq392q5fpjikx52nywvzb0m2dcc81b"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; 214 tests pass, 50 fail; many fail because of required Internet
+      ;; access or because of assumptions about the location of test files.
+      #:tests? #false
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; FIXME: This should be fixed in python-xmlsec
+          (add-before 'check 'pre-check
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "LD_LIBRARY_PATH"
+                      (dirname (search-input-file inputs "lib/libxmlsec1-openssl.so.1.2.37"))))))))
+    (propagated-inputs (list python-isodate python-lxml python-xmlsec))
+    (native-inputs (list python-coverage
+                         python-flake8
+                         python-freezegun
+                         python-poetry-core
+                         python-pytest
+                         python-setuptools
+                         python-wheel))
+    (home-page "https://github.com/SAML-Toolkits/python3-saml")
+    (synopsis "Saml Python toolkit")
+    (description
+     "The SAML Python Toolkit lets you add SAML support to your Python
+software.")
+    (license license:expat)))
+
 (define-public python-ovh
   (package
     (name "python-ovh")
