@@ -1795,8 +1795,8 @@ in an isolated environment, in separate namespaces.")
     (license license:gpl3+)))
 
 (define-public nar-herder
-  (let ((commit "59d2b8aa23d0119a3c95e9d3b90fd6b36d1bde6a")
-        (revision "38"))
+  (let ((commit "70df5af752ba9ed9dc414d011a1358babc5e40b1")
+        (revision "39"))
     (package
       (name "nar-herder")
       (version (git-version "0" revision commit))
@@ -1807,7 +1807,7 @@ in an isolated environment, in separate namespaces.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "0rqa9ypdzp3j3ss1c5r0wyqhx61rmsb0s4hlqwnwga5iyimp91sy"))
+                  "1b2slw0963avh31xdb8g1zm6mcdvaya4js1ak53wvbzjwrrr2pv6"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -1844,7 +1844,8 @@ in an isolated environment, in separate namespaces.")
                                           "guile-prometheus"
                                           "guile-sqlite3"
                                           "guile-gnutls"
-                                          "guile-fibers")))
+                                          "guile-fibers"
+                                          "guile-knots")))
                        (wrap-program file
                          `("GUILE_LOAD_PATH" ":" prefix
                            (,scm ,(string-join
@@ -1877,6 +1878,7 @@ in an isolated environment, in separate namespaces.")
              guile-gcrypt
              guix
              guile-fibers
+             guile-knots
              guile-prometheus
              guile-lib
              guile-lzlib
@@ -1890,6 +1892,7 @@ in an isolated environment, in separate namespaces.")
              guile-gcrypt
              guix
              guile-fibers
+             guile-knots
              guile-prometheus
              guile-lib
              guile-lzlib
