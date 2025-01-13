@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014, 2019 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2015-2024 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015-2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Paul van der Walt <paul@denknerd.org>
 ;;; Copyright © 2016 Al McElrath <hello@yrns.org>
 ;;; Copyright © 2016, 2017, 2019, 2021-2024 Efraim Flashner <efraim@flashner.co.il>
@@ -4318,6 +4318,7 @@ websites such as Libre.fm.")
            python-munkres
            python-musicbrainzngs
            python-pyyaml
+           python-typing-extensions
            python-unidecode
            ;; Optional dependencies for plugins. Some of these are also required by tests.
            python-beautifulsoup4 ; For lyrics.
