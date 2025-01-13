@@ -4067,7 +4067,7 @@ These include a barrier, broadcast, and allreduce.")
 (define-public python-tensorly
   (package
     (name "python-tensorly")
-    (version "0.8.1")
+    (version "0.9.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4076,7 +4076,7 @@ These include a barrier, broadcast, and allreduce.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "184mvs1gwycsh2f8jgdyc3jyhiylbn4xw2srpjd264dz2l9ms2l7"))))
+                "01xdkhzwq7s18pp6433d4dhyblmlhjs87acagxh73vfsqyknb9h3"))))
     (build-system pyproject-build-system)
     (arguments
      (list
