@@ -56,18 +56,14 @@
             dnsmasq-configuration
 
             unbound-service-type
-            unbound-zone
-            unbound-server
             unbound-configuration
             unbound-configuration?
-            unbound-configuration-server
-            unbound-configuration-remote-control
-            unbound-configuration-forward-zone
-            unbound-configuration-stub-zone
-            unbound-configuration-auth-zone
-            unbound-configuration-view
-            unbound-configuration-python
-            unbound-configuration-dynlib))
+            unbound-server
+            unbound-server?
+            unbound-zone
+            unbound-zone?
+            unbound-remote
+            unbound-remote?))
 
 ;;;
 ;;; Knot DNS.
@@ -1065,7 +1061,9 @@ cache.size = 100 * MB
     (list (shepherd-service
             (documentation "Unbound daemon.")
             (provision '(unbound dns))
-            (requirement '(networking))
+            ;; unbound may be bound to a particular IP address, hence
+            ;; only start it after the networking service has started.
+            (requirement '(user-processes networking))
             (actions (list (shepherd-configuration-action config-file)))
             (start #~(make-forkexec-constructor
                        (list (string-append #$unbound "/sbin/unbound")
@@ -1080,11 +1078,11 @@ cache.size = 100 * MB
          (system? #t)
          (comment "Unbound daemon user")
          (home-directory "/var/empty")
-         (shell "/run/current-system/profile/sbin/nologin"))))
+         (shell (file-append shadow "/sbin/nologin")))))
 
 (define unbound-service-type
   (service-type (name 'unbound)
-                (description "Run the unbound DNS resolver.")
+                (description "Run the Unbound DNS resolver.")
                 (extensions
                   (list (service-extension account-service-type
                                            (const unbound-account-service))
