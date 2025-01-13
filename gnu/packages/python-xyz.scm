@@ -185,6 +185,7 @@
   #:use-module (gnu packages astronomy)
   #:use-module (gnu packages attr)
   #:use-module (gnu packages audio)
+  #:use-module (gnu packages autotools)
   #:use-module (gnu packages backup)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
@@ -585,6 +586,48 @@ edit distance algorithm for Python in Cython for high performance.")
     (synopsis "Creates diffs of XML files")
     (description "This Python tool figures out the differences between two
 similar XML files, in the same way the @command{diff} utility does it.")
+    (license license:expat)))
+
+(define-public python-xmlsec
+  (package
+    (name "python-xmlsec")
+    (version "1.3.14")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "xmlsec" version))
+       (sha256
+        (base32 "1nd2jbrfbmnd566i1v39xrh3a0b1nqvf5bhydywcsnw95x7q0kwk"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; See https://github.com/xmlsec/python-xmlsec/issues/210
+      #:test-flags '(list "-n" "1"
+                          ;; This causes other tests to segfault.
+                          "-k" "not test_reinitialize_module")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; FIXME: This is very unfortunate.  I can't seem to find a way to
+          ;; hardcode the location of this library, so users will also need to
+          ;; set LD_LIBRARY_PATH.
+          (add-before 'check 'pre-check
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "LD_LIBRARY_PATH"
+                      (dirname (search-input-file inputs "lib/libxmlsec1-openssl.so.1.2.37"))))))))
+    (inputs (list openssl libltdl libxslt libxml2))
+    (propagated-inputs (list python-lxml xmlsec-openssl))
+    (native-inputs (list pkg-config
+                         python-lxml
+                         python-pkgconfig
+                         python-pytest
+                         python-pytest-xdist
+                         python-setuptools
+                         python-setuptools-scm
+                         python-wheel))
+    (home-page "https://github.com/mehcode/python-xmlsec")
+    (synopsis "Python bindings for the XML Security Library")
+    (description "This package provides Python bindings for the XML Security
+Library.")
     (license license:expat)))
 
 (define-public python-janus
