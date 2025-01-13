@@ -949,19 +949,19 @@ processes currently in existence, much like code{top} or code{ps}.")
 (define-public qtermwidget
   (package
     (name "qtermwidget")
-    (version "1.3.0")
+    (version "2.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "0kl0lmd6np0lka60372sn8xd7l5h67hvy11x4gbf665p5fhsigkl"))))
+        (base32 "0jwfpv9dwifkjgzy2fiffkvj0dd3aw4rf95fnnrhvqcdlg1v5v16"))))
     (build-system cmake-build-system)
     (inputs
-     (list qtbase-5 utf8proc))
+     (list qtbase utf8proc))
     (native-inputs
-     (list lxqt-build-tools qttools-5))
+     (list lxqt-build-tools))
     (arguments
      '(#:tests? #f))                    ; no tests
     (home-page "https://lxqt-project.org")
