@@ -42780,7 +42780,7 @@ previous example to your operating system declaration by appending it to
   (privileged-programs
     (append (list (privileged-program
                     (program (file-append nfs-utils "/sbin/mount.nfs"))
-                    (setuid? #t))
+                    (setuid? #t)))
             %default-privileged-programs)))
 @end lisp
 
