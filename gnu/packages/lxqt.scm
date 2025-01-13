@@ -850,29 +850,6 @@ LXDE.")
 
 ;; Extra
 
-(define-public compton-conf
-  (package
-    (name "compton-conf")
-    (version "0.16.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
-                           version "/" name "-" version ".tar.xz"))
-       (sha256
-        (base32 "0haarzhndjp0wndfhcdy6zl2whpdn3w0qzr3rr137kfqibc58lvx"))))
-    (build-system cmake-build-system)
-    (inputs
-     (list libconfig qtbase-5))
-    (native-inputs
-     (list lxqt-build-tools pkg-config qttools-5))
-    (arguments '(#:tests? #f))          ; no tests
-    (home-page "https://lxqt-project.org")
-    (synopsis "GUI configuration tool for compton X composite manager")
-    (description "@code{compton-conf} is a configuration tool for X composite
-manager Compton.")
-    (license license:lgpl2.1+)))
-
 (define-public lximage-qt
   (package
     (name "lximage-qt")
