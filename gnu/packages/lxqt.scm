@@ -336,6 +336,30 @@ LXQt and the system it's running on.")
 the operating system LXQt is running on.")
     (license license:lgpl2.1+)))
 
+(define-public lxqt-menu-data
+  (package
+    (name "lxqt-menu-data")
+    (version "2.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
+                           version "/" name "-" version ".tar.xz"))
+       (sha256
+        (base32 "1d7asl9zmz9vsnf0sv6ynnhcnz6f1aw56giilwsw8vy12driilnj"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:tests? #f))                ;no tests
+    (inputs
+     (list qtbase))
+    (native-inputs
+     (list lxqt-build-tools))
+    (home-page "https://lxqt-project.org")
+    (synopsis "LXQt menu files")
+    (description "This package provides freedesktop compliant menu files for
+LXQt Panel, Configuration Center and PCManFM-Qt/libfm-qt.")
+    (license license:lgpl2.1+)))
+
 (define-public lxqt-config
   (package
     (name "lxqt-config")
