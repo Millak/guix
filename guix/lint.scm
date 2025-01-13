@@ -15,6 +15,7 @@
 ;;; Copyright © 2021-2023 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2024 Gabriel Wicki <gabriel@erlikon.ch>
+;;; Copyright © 2025 Ricardo Wurmus <rekado@elephly.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -610,8 +611,7 @@ of a package, and INPUT-NAMES, a list of package specifications such as
 (define (check-inputs-should-not-be-an-input-at-all package)
   ;; Emit a warning if some inputs of PACKAGE are likely to should not be
   ;; an input at all.
-  (let ((input-names '("python-setuptools"
-                       "python-pip"
+  (let ((input-names '("python-pip"
                        "python-pre-commit")))
     (map (lambda (input)
            (make-warning
