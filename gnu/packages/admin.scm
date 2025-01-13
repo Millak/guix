@@ -2982,99 +2982,85 @@ specified directories.")
 (define-public ansible-core
   (package
     (name "ansible-core")
-    (version "2.17.1")
+    ;; XXX: Starting from 2.18.1, Ansible requires Python 3.11 or newer on the
+    ;; controller, this is the latest version supporting 3.10.
+    (version "2.17.7")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ansible_core" version))
        (sha256
-        (base32 "007ginimzbizx2c3fp3vccizscyki0fp4yg3bzl3qz6ipdqrsi26"))))
-    (build-system python-build-system)
+        (base32 "1kysajyc0kh885dlba6aj0a2mnpcq06q09n3kcixdqn4sqsvgais"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:modules ((guix build python-build-system)
+     (list
+      #:modules '((guix build pyproject-build-system)
                   (guix build utils)
                   (ice-9 ftw))
-       #:phases
-       (modify-phases %standard-phases
-         ;; Several ansible commands (ansible-config, ansible-console, etc.)
-         ;; are just symlinks to a single ansible executable.  The ansible
-         ;; executable behaves differently based on the value of sys.argv[0].
-         ;; This does not work well with our wrap phase, and therefore the
-         ;; following two phases are required as a workaround.
-         (add-after 'unpack 'hide-wrapping
-           (lambda _
-             ;; Overwrite sys.argv[0] to hide the wrapper script from it.
-             (substitute* "bin/ansible"
-               (("import traceback" all)
-                (string-append all "
+      #:test-flags
+      #~(list "units"
+              "--exclude" "test/units/cli/test_adhoc.py"
+              "--exclude" "test/units/galaxy/test_collection_install.py"
+              "--num-workers" (number->string (parallel-job-count)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "requirements.txt"
+                ;; resolvelib >= 0.5.3, < 1.1.0
+                ((">= 0.5.3, < 1.1.0") ""))))
+          ;; Several ansible commands (ansible-config, ansible-console, etc.)
+          ;; are just symlinks to a single ansible executable.  The ansible
+          ;; executable behaves differently based on the value of sys.argv[0].
+          ;; This does not work well with our wrap phase, and therefore the
+          ;; following two phases are required as a workaround.
+          (add-after 'unpack 'hide-wrapping
+            (lambda _
+              ;; Overwrite sys.argv[0] to hide the wrapper script from it.
+              (substitute* "bin/ansible"
+                (("import traceback" all)
+                 (string-append all "
 import re
 sys.argv[0] = re.sub(r'\\.([^/]*)-real$', r'\\1', sys.argv[0])
 ")))))
-         (add-after 'install 'replace-symlinks
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; Replace symlinks with duplicate copies of the ansible
-             ;; executable so that sys.argv[0] has the correct value.
-             (define bin (string-append (assoc-ref outputs "out") "/bin"))
-             (with-directory-excursion bin
-               (for-each
-                (lambda (ansible-symlink)
-                  (delete-file ansible-symlink)
-                  (copy-file "ansible" ansible-symlink))
-                (scandir "." (lambda (x)
-                               (and (eq? 'symlink (stat:type (lstat x)))
-                                    (string-prefix? "ansible-" x)
-                                    (string=? "ansible" (readlink x)))))))))
-         (add-after 'unpack 'skip-controller-tests
-           (lambda _
-             ;; XXX: This disables all the controller tests, which fail for
-             ;; unknown reasons, seemingly while attempting to set the
-             ;; locale to en_US.UTF-8.
-             (substitute* "test/lib/ansible_test/_internal/commands\
-/units/__init__.py"
-               (("^            if test_context == TestContext.controller:.*"
-                 all)
-                (string-append all "                continue\n")))))
-         (add-after 'unpack 'preserve-pythonpath
-           (lambda _
-             (substitute* "test/lib/ansible_test/_internal/ansible_util.py"
-               (("PYTHONPATH=get_ansible_python_path\\(args\\)" all)
-                (string-append all "+ ':' + os.environ['GUIX_PYTHONPATH']")))
-             (substitute* "test/lib/ansible_test/_internal/commands\
-/units/__init__.py"
-               (("PYTHONPATH=get_units_ansible_python_path\\(args, \
-test_context)" all)
-                (string-append all "+ ':' + os.environ['GUIX_PYTHONPATH']")))))
-         (add-after 'unpack 'patch-paths
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (substitute* "lib/ansible/module_utils/compat/selinux.py"
-               (("libselinux.so.1" name)
-                (string-append (assoc-ref inputs "libselinux")
-                               "/lib/" name)))
-             (substitute* "test/units/modules/test_async_wrapper.py"
-               (("/usr/bin/python")
-                (which "python")))))
+          (add-after 'install 'replace-symlinks
+            (lambda _
+              ;; Replace symlinks with duplicate copies of the ansible
+              ;; executable so that sys.argv[0] has the correct value.
+              (with-directory-excursion (string-append #$output "/bin")
+                (for-each
+                 (lambda (ansible-symlink)
+                   (delete-file ansible-symlink)
+                   (copy-file "ansible" ansible-symlink))
+                 (scandir "." (lambda (x)
+                                (and (eq? 'symlink (stat:type (lstat x)))
+                                     (string-prefix? "ansible-" x)
+                                     (string=? "ansible" (readlink x)))))))))
+          (add-after 'unpack 'patch-paths
+            (lambda _
+              (substitute* "lib/ansible/module_utils/compat/selinux.py"
+                (("libselinux.so.1" name)
+                 (string-append #$(this-package-input "libselinux")
+                                "/lib/" name)))
+              (substitute* "test/lib/ansible_test/_internal/ansible_util.py"
+                (("PYTHONPATH=get_ansible_python_path\\(args\\)" all)
+                 (string-append all "+ ':' + os.environ['GUIX_PYTHONPATH']")))
+              (substitute* "test/lib/ansible_test/_internal/commands/units/__init__.py"
+                (("PYTHONPATH=get_units_ansible_python_path\\(args, test_context)" all)
+                 (string-append all "+ ':' + os.environ['GUIX_PYTHONPATH']")))
+              (substitute* "test/units/modules/test_async_wrapper.py"
+                (("/usr/bin/python")
+                 (which "python")))))
          (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+           (lambda* (#:key inputs outputs tests? test-flags #:allow-other-keys)
              (when tests?
                ;; Otherwise Ansible fails to create its config directory.
                (setenv "HOME" "/tmp")
-               ;; These tests fail in the container; it appears that the
-               ;; mocking of the absolute file names such as /usr/bin/svcs do
-               ;; not work as intended there.
-               (delete-file "test/units/modules/test_iptables.py")
-               (delete-file "test/units/modules/test_service.py")
-               ;; These tests fail with a "unsupported locale setting" error
-               ;; when invoking 'locale.setlocale(locale.LC_ALL, '')'
-               (delete-file "test/units/module_utils/basic/\
-test_command_nonexisting.py")
-               (delete-file "test/units/module_utils/basic/test_tmpdir.py")
                ;; The test suite needs to be run with 'ansible-test', which
                ;; does some extra environment setup.  Taken from
                ;; https://raw.githubusercontent.com/ansible/ansible/\
                ;; devel/test/utils/shippable/shippable.sh.
-               (invoke "./bin/ansible-test" "units" "-v"
-                       "--num-workers" (number->string
-                                        (parallel-job-count)))))))))
+               (apply invoke "python" "bin/ansible-test" test-flags)))))))
     (native-inputs
      (list openssh
            openssl
@@ -3084,15 +3070,20 @@ test_command_nonexisting.py")
            python-pytest-forked
            python-pytest-mock
            python-pytest-xdist
-           python-pytz))
+           python-pytz
+           python-setuptools
+           python-wheel))
     (inputs                    ;optional dependencies captured in wrap scripts
-     (list libselinux python-paramiko python-passlib python-pexpect
+     (list libselinux
            sshpass))
     (propagated-inputs      ;core dependencies listed in egg-info/requires.txt
      (list python-cryptography
            python-jinja2
-           python-pyyaml
            python-packaging             ;for version number parsing
+           python-paramiko
+           python-passlib
+           python-pexpect
+           python-pyyaml
            python-resolvelib))
     (home-page "https://www.ansible.com/")
     (synopsis "Radically simple IT automation")
