@@ -730,25 +730,19 @@ for the LXQt desktop environment.")
 (define-public lxqt-sudo
   (package
     (name "lxqt-sudo")
-    (version "1.3.0")
+    (version "2.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "0pqz2pkzwq3af70s90p9x3a8rvlpl2jjb4mnjwgs1wz30cb7jrii"))))
+        (base32 "17bk4bcvm919q7h63q2sdnzwwbqjpk98kb5ij14rqs9v2psbqfks"))))
     (build-system cmake-build-system)
     (inputs
-     (list kwindowsystem-5
-           liblxqt
-           libqtxdg
-           qtbase-5
-           qtsvg-5
-           qtx11extras
-           sudo))
+     (list liblxqt sudo))
     (native-inputs
-     (list pkg-config qttools-5 lxqt-build-tools))
+     (list pkg-config lxqt-build-tools))
     (arguments '(#:tests? #f))          ; no tests
     (home-page "https://lxqt-project.org")
     (synopsis "GUI frontend for sudo/su")
