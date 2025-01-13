@@ -456,24 +456,19 @@ according to the Desktop Notifications Specification.")
 (define-public lxqt-openssh-askpass
   (package
     (name "lxqt-openssh-askpass")
-    (version "1.3.0")
+    (version "2.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "014jpyw4sgr63kjqdmksi6fsaz7pm5gkzr17f5rkaadx640ij4m0"))))
+        (base32 "1inkicq0p5pxqpw9k13vx421fvpgmkn2lsskvlzqy1nnab3ilaf5"))))
     (build-system cmake-build-system)
     (inputs
-     (list kwindowsystem-5
-           liblxqt
-           libqtxdg
-           qtbase-5
-           qtsvg-5
-           qtx11extras))
+     (list liblxqt))
     (native-inputs
-     (list lxqt-build-tools qttools-5))
+     (list lxqt-build-tools))
     (arguments '(#:tests? #f))          ; no tests
     (home-page "https://lxqt-project.org")
     (synopsis "GUI to query passwords on behalf of SSH agents")
