@@ -2701,8 +2701,8 @@ productive, customizable lisp based systems.")
            (delete 'cleanup)))))))
 
 (define stumpwm-contrib
-  (let ((commit "042a9fcb053839f4b1527d2e6f4baf33e2d16434")
-        (revision "6"))
+  (let ((commit "c4f077b1fe97cd8da6d710e5cbe390eb680629bd")
+        (revision "7"))
     (package
       (name "stumpwm-contrib")
       (version (git-version "0.0.1" revision commit)) ;no upstream release
@@ -2714,7 +2714,7 @@ productive, customizable lisp based systems.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1fdlb7zqgn24qpvmq4d56zn4f455vc2jcln609by4g0py87rvm49"))))
+          (base32 "0fdv4d0rlca64p4dakp1l60701vls2s6kx3gzlflmcf2l49kdbnn"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list stumpwm))
