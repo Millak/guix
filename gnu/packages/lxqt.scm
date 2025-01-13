@@ -1021,21 +1021,21 @@ easily publishing them on internet image hosting services.")
 (define-public lxqt-archiver
   (package
     (name "lxqt-archiver")
-    (version "0.8.0")
+    (version "1.1.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
-        (sha256
-          (base32 "096fjx86w413k8z8vhmk44k08d25dmagv6w4gc88hpqq4r81klr9"))))
+       (sha256
+        (base32 "1ir6dc45qp4g6iv57nyn9z1bh06ih9cm8gmgw646370m1jvh06k9"))))
     (build-system cmake-build-system)
     (inputs
-      (list glib json-glib libfm-qt qtbase-5 qtx11extras))
+     (list glib json-glib libfm-qt qtbase))
     (native-inputs
-      (list pkg-config lxqt-build-tools qttools-5))
+     (list pkg-config lxqt-build-tools qttools))
     (arguments
-      '(#:tests? #f))
+     '(#:tests? #f))
     (home-page "https://lxqt-project.org")
     (synopsis "Simple & lightweight desktop-agnostic Qt file archiver")
     (description
