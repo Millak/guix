@@ -3282,6 +3282,21 @@ turn into actual gradients (without influencing the sharpness of the artwork).
 @end table")
     (license license:gpl3+)))
 
+(define-public libretro-bsnes-hd
+  (package/inherit bsnes-hd
+    (name "libretro-bsnes-hd")
+    (arguments
+     (substitute-keyword-arguments (package-arguments bsnes-hd)
+       ((#:make-flags flags ''())
+        #~(cons "target=libretro" #$flags))
+       ((#:phases phases '%standard-phases)
+        #~(modify-phases #$phases
+            (replace 'install           ;no install target
+              (lambda _
+                (install-file "bsnes/out/bsnes_hd_beta_libretro.so"
+                              (string-append #$output "/lib/libretro/"))))))))
+    (synopsis "Libretro port of bsnes-hd")))
+
 (define-public jg-api
   (package
     (name "jg-api")
