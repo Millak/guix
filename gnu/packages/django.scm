@@ -50,6 +50,7 @@
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages security-token)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages time)
   #:use-module (gnu packages xml))
@@ -563,29 +564,43 @@ them do this.")
 (define-public python-django-allauth
   (package
     (name "python-django-allauth")
-    (version "0.42.0")
+    (version "65.3.1")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "django-allauth" version))
+       (uri (pypi-uri "django_allauth" version))
        (sha256
         (base32
-         "0c0x8izvrnjhrr48w6pwsfk9ddbi6yfxg7v3hh5dm1vz1d0hjwpi"))))
-    (build-system python-build-system)
+         "11q56p07g987hsz7v27nrvr2piy72jhyzwjrcis3lxd2f4drabp0"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (setenv "DJANGO_SETTINGS_MODULE" "test_settings")
-             (invoke "django-admin" "test" "allauth.tests"
-                     "--pythonpath=."))))))
+     (list
+      #:test-flags
+      ;; XXX: KeyError: location
+      '(list "--ignore=allauth/socialaccount/providers/openid/tests.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; FIXME: This should be fixed in python-xmlsec
+          (add-before 'check 'pre-check
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "LD_LIBRARY_PATH"
+                      (dirname (search-input-file inputs "lib/libxmlsec1-openssl.so.1.2.37"))))))))
     (propagated-inputs
-     (list python-openid python-requests python-requests-oauthlib))
+     (list python-asgiref
+           python-django
+           python-fido2
+           python-openid
+           python-pyjwt
+           python-qrcode
+           python-requests
+           python-requests-oauthlib
+           python-python3-saml))
     (native-inputs
-     (list python-mock))
-    (inputs
-     (list python-django))
+     (list tzdata-for-tests
+           python-pytest
+           python-pytest-django
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/pennersr/django-allauth")
     (synopsis "Set of Django applications addressing authentication")
     (description
