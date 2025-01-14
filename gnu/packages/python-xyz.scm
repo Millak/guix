@@ -22135,30 +22135,79 @@ format.")
 (define-public python-twisted
   (package
     (name "python-twisted")
-    (version "19.7.0")
+    (version "24.11.0")
     (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "Twisted" version ".tar.bz2"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/twisted/twisted")
+                    (commit (string-append "twisted-" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "17d3hnxv9qndagzz63mdpyk99xj63p9gq586vjn0rxk8cl197nym"))))
-    (build-system python-build-system)
+                "0k4rd5bpx40j1k0mgbhzqa35dyni0kk7pxjr8x3pm1iaka1718rh"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:tests? #f                    ; FIXME: some tests fail
-       #:phases
-       (modify-phases %standard-phases
-         ;; Remove scripts, because they depend on [conch]
-         (add-after 'unpack 'remove-entrypoint
-           (lambda _
-             (substitute* "src/twisted/python/_setup.py"
-               (("\".+ = twisted\\.conch\\.scripts\\..+\",") "")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-build-system
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("    \"version\",") "")
+                (("name = \"Twisted\".*" m)
+                 (string-append m "version = \"" #$version "\"\n"))
+                (("\\[tool.hatch.version\\]") "")
+                (("source = \"incremental\"") ""))))
+          (add-after 'unpack 'disable-broken-tests
+            (lambda _
+              (for-each delete-file
+                        (list
+                         ;; No idea why they fail
+                         "src/twisted/test/test_log.py"
+                         ;; Network tests
+                         "src/twisted/conch/test/test_cftp.py"
+                         "src/twisted/internet/test/test_endpoints.py"
+                         "src/twisted/protocols/test/test_tls.py"
+                         "src/twisted/test/test_sslverify.py"
+                         "src/twisted/web/test/test_agent.py"
+                         "src/twisted/web/test/test_tap.py"
+                         ;; These need a git executable
+                         "src/twisted/python/test/test_release.py"
+                         ;; These leave behind a socket file, which breaks the
+                         ;; build with "...has an unsupported type"
+                         "src/twisted/internet/test/test_unix.py"
+                         "src/twisted/test/test_unix.py"
+                         ;; These complain about missing test modules.
+                         "src/twisted/test/test_failure.py"
+                         "src/twisted/web/test/test_http2.py"
+                         "src/twisted/conch/test/test_forwarding.py"))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion #$output
+                  (setenv "HOME" (getcwd))
+                  (invoke "python3" "-m" "twisted.trial" "twisted"))))))))
     (propagated-inputs
-     (list python-zope-interface
-           python-pyhamcrest
-           python-incremental
-           python-hyperlink
+     (list python-attrs
+           python-automat
+           python-bcrypt
            python-constantly
-           python-automat))
+           python-hyperlink
+           python-incremental
+           python-typing-extensions
+           python-zope-interface))
+    (native-inputs
+     (list glibc-utf8-locales
+           python-coverage
+           python-hatch-fancy-pypi-readme
+           python-hatchling
+           python-httpx
+           python-hypothesis
+           python-pyflakes
+           python-pyhamcrest
+           python-pytest
+           python-sphinx
+           python-sphinx-rtd-theme))
     (home-page "https://twistedmatrix.com/")
     (synopsis "Asynchronous networking framework written in Python")
     (description
