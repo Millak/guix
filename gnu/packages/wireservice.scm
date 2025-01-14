@@ -3,6 +3,7 @@
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2022 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -239,33 +240,42 @@ xlsx files support to all @code{agate.Table} instances.")
 (define-public csvkit
   (package
     (name "csvkit")
-    (version "1.1.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "csvkit" version))
-              (sha256
-               (base32
-                "08wj0hlmbdmklar12cjzqp91vcxzwifsvmgasszas8kbiyvvgpdy"))
-              (patches
-               (search-patches "csvkit-set-locale-for-tests.patch"))))
-    (build-system python-build-system)
+    (version "2.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "csvkit" version))
+       (sha256
+        (base32 "1lbd2khkyr75rdc2fblvv8qkl33fv3nx6kj158qzy4spdlk6155a"))
+       (patches
+        (search-patches "csvkit-set-locale-for-tests.patch"))))
+    (outputs (list "out" "doc"))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; AssertionError: '9748.346\n' != '9,748.346\n
+      #:test-flags #~(list "-k" "not test_decimal_format")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-docs
+            (lambda _
+              (let* ((man1 (string-append #$output:doc "/share/man/man1")))
+                (with-directory-excursion "docs"
+                  (invoke "make" "man")
+                  (copy-recursively "_build/man" man1))))))))
     (native-inputs
      (list (libc-utf8-locales-for-target)
            python-psycopg2 ; to test PostgreSQL support
-           python-sphinx python-sphinx-rtd-theme))
+           python-pytest
+           python-setuptools
+           python-sphinx
+           python-sphinx-rtd-theme
+           python-wheel))
     (inputs
-     (list python-agate-dbf python-agate-excel python-agate-sql
-           python-six python-text-unidecode))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'install-docs
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out  (assoc-ref outputs "out"))
-                    (man1 (string-append out "/share/man/man1")))
-               (with-directory-excursion "docs"
-                 (invoke "make" "man")
-                 (copy-recursively "_build/man" man1))))))))
+     (list python-agate-dbf
+           python-agate-excel
+           python-agate-sql
+           python-text-unidecode))
     (home-page "https://csvkit.rtfd.org")
     (synopsis "Command-line tools for working with CSV")
     (description "csvkit is a suite of command-line tools for converting to
