@@ -3265,6 +3265,11 @@ but has evolved to support other missions as well.")
              ;; (/homeless-shelter/.config/matplotlib) is not a writable
              ;; directory ...
              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list python-photutils
+           python-pytest-astropy
+           python-setuptools-scm
+           python-wheel))
     (propagated-inputs
      (list python-astropy
            python-gwcs
@@ -3272,10 +3277,6 @@ but has evolved to support other missions as well.")
            python-photutils
            python-specutils
            python-synphot))
-    (native-inputs
-     (list python-photutils
-           python-setuptools-scm
-           python-pytest-astropy))
     (home-page "https://specreduce.readthedocs.io/")
     (synopsis "Spectroscopic Reductions")
     (description
