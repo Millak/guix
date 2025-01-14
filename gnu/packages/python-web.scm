@@ -6657,41 +6657,6 @@ library to create slugs from unicode strings while keeping it DRY.")
 the non-map-specific features.  It can be used to generate HTML + JS.")
     (license license:expat)))
 
-(define-public python-tinycss
-  (package
-    (name "python-tinycss")
-    (version "0.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "tinycss" version))
-       (sha256
-        (base32 "0vkifr595h28ymkjhrswwf0bm23lhznh5f44xyp7x7jy1ssnyc0j"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:test-flags
-           '(list "-k" "not test_speedups")))
-    (native-inputs
-     (list python-pytest-cov
-           python-pytest-flake8
-           python-pytest-isort
-           python-pytest-runner
-           python-setuptools
-           python-wheel))
-    (home-page "https://tinycss.readthedocs.io/")
-    (synopsis "Complete yet simple CSS parser for Python")
-    (description
-     "@code{tinycss} is a complete yet simple CSS parser for Python.  It
-supports the full syntax and error handling for CSS 2.1 as well as some CSS 3
-modules:
-
-@itemize
-@item CSS Color 3
-@item CSS Fonts 3
-@item CSS Paged Media 3
-@end itemize")
-    (license license:bsd-3)))
-
 (define-public python-tinycss2
   (package
     (name "python-tinycss2")
