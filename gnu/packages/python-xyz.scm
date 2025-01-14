@@ -37770,7 +37770,7 @@ async I/O support.")
     (build-system pyproject-build-system)
     (arguments (list #:tests? #f)) ; no tests
     (native-inputs
-     (list python-pytest python-setuptools))
+     (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/python/typeshed")
     (synopsis "Typing stubs for python-dateutil")
     (description
