@@ -596,9 +596,21 @@ which will be used as a snippet in origin."
 (define-public tree-sitter-clojure
   (tree-sitter-grammar
    "clojure" "Clojure"
-   "0bgd9g1j4ww45g0l0aa1jac49421z95cc2rhcgqmgx7nzn94rszp"
-   "0.0.11"
-   #:repository-url "https://github.com/sogaiu/tree-sitter-clojure"))
+   "1j41ba48sid6blnfzn6s9vsl829qxd86lr6yyrnl95m42x8q5cx4"
+   "0.0.13"
+   #:repository-url "https://github.com/sogaiu/tree-sitter-clojure"
+   #:get-cleanup-snippet
+   (lambda (grammar-directories)
+     #~(begin
+         (use-modules (guix build utils))
+         (for-each
+          (lambda (lang)
+            (with-directory-excursion lang
+              (delete-file "src/grammar.json")
+              (delete-file "src/node-types.json")
+              (delete-file "src/parser.c")
+              (delete-file-recursively "src/tree_sitter")))
+          '#$grammar-directories)))))
 
 (define-public tree-sitter-markdown
   ;; No tags
