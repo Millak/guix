@@ -15369,7 +15369,7 @@ you do not want to store entirely on disk or on memory.")
 (define-public python-sentry-sdk
   (package
     (name "python-sentry-sdk")
-    (version "1.5.1")
+    (version "1.5.5")
     (source
      (origin
        (method git-fetch)               ; no tests in PyPI release
@@ -15378,81 +15378,50 @@ you do not want to store entirely on disk or on memory.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "128bm136l5zprr3sqqb8j3d6k5i1fhz853mzvh3w8g0w1dw763mx"))))
-    (build-system python-build-system)
+        (base32 "0dygfaapvznpj2j7cfjb0vlwhsn5qa5kf0kq488xbhjg06n8rrc4"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'fix-test
-           ;; See https://github.com/getsentry/sentry-python/pull/2712
-           (lambda _
-             (substitute* "tests/__init__.py"
-               (("import pytest")
-                "import warnings")
-               (("pytest.warns\\(None\\)")
-                "warnings.catch_warnings(record=True)"))))
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "python" "-m" "pytest" "-k"
-                       (string-append
-                        ;; This test requires extra dependencies.
-                        "not test_auto_enabling_integrations"
-                        "_catches_import_error"
-                        ;; Tests below run pip command.
-                        " and not test_unhandled_exception"
-                        " and not test_timeout_error"
-                        " and not test_performance_no_error"
-                        " and not test_performance_error"
-                        " and not test_traces_sampler_gets_correct"
-                        "_values_in_sampling_context"
-                        " and not test_handled_exception"
-                        ;; Tests below require network.
-                        " and not test_crumb_capture"
-                        " and not test_crumb_capture"
-                        " and not test_crumb_capture_hint"
-                        " and not test_httplib_misuse"
-                        ;; Fails with IndexError.
-                        " and not test_session_mode_defaults_to"
-                        "_request_mode_in_wsgi_handler"
-                        ;; Tests below fail with pytest 7
-                        " and not test_leaks"
-                        " and not test_basic"
-                        " and not test_keyboard_interrupt_is_captured"
-                        " and not test_transaction_with_error"
-                        " and not test_transaction_no_error"
-                        " and not test_start_span_to_start_transaction"
-                        " and not test_tracestate_computation"
-                        " and not test_doesnt_add_new_tracestate_to_transaction_when_none_given"
-                        " and not test_adds_tracestate_to_transaction_when_to_traceparent_called"
-                        " and not test_adds_tracestate_to_transaction_when_getting_trace_context"
-                        " and not test_tracestate_is_immutable_once_set"
-                        " and not test_to_traceparent"
-                        " and not test_to_tracestate"
-                        " and not test_sentrytrace_extraction"
-                        " and not test_tracestate_extraction"
-                        " and not test_iter_headers"
-                        " and not test_tracestate_reinflation"
-                        " and not test_continue_from_headers"
-                        " and not test_memory_usage"
-                        " and not test_transactions_do_not_go_through_before_send"
-                        " and not test_start_span_after_finish"
-                        " and not test_span_trimming"
-                        " and not test_transaction_naming"
-                        " and not test_start_transaction"
-                        " and not test_finds_transaction_on_scope"
-                        " and not test_finds_transaction_when_descendent_span_is_on_scope"
-                        " and not test_finds_orphan_span_on_scope"
-                        " and not test_finds_non_orphan_span_on_scope"
-                        " and not test_circular_references"
-
-                        ;; AttributeError: module 'py' has no attribute 'process'
-                        ;; See <https://github.com/pytest-dev/pytest-forked/issues/88>.
-                        " and not test_threading"
-                        " and not test_transport"))))))))
+     (list
+      #:test-flags
+      ;; See <https://github.com/pytest-dev/pytest-forked/issues/88>.
+      ;; AttributeError: module 'py' has no attribute 'process'
+      '(list "--ignore=tests/integrations/django/test_basic.py"
+             "--ignore=tests/utils/test_contextvars.py"
+             ;; These try to use pip to install packages.
+             "--ignore=tests/integrations/gcp/test_gcp.py"
+             "-k"
+             (string-append
+              ;; This test requires extra dependencies.
+              "not test_auto_enabling_integrations"
+              ;; AttributeError: module 'py' has no attribute 'process'
+              " and not test_threading"
+              " and not test_transport"
+              ;; Tests below require network.
+              " and not test_crumb_capture"
+              " and not test_crumb_capture_hint"
+              " and not test_httplib_misuse"
+              ;; Unclear assert error
+              " and not test_auto_session_tracking_with_aggregates"
+              ;; Fails with IndexError.
+              " and not test_session_mode_defaults_to"
+              "_request_mode_in_wsgi_handler"))
+       #:phases
+       '(modify-phases %standard-phases
+          (add-before 'check 'fix-test
+            ;; See https://github.com/getsentry/sentry-python/pull/2712
+            (lambda _
+              (substitute* "tests/__init__.py"
+                (("import pytest")
+                 "import warnings")
+                (("pytest.warns\\(None\\)")
+                 "warnings.catch_warnings(record=True)"))))
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (when tests?
+                (apply invoke "python" "-m" "pytest" test-flags)))))))
     (native-inputs
-     (list python-django
+     (list nss-certs-for-test
+           python-django
            python-executing
            python-gevent
            python-jsonschema
@@ -15463,7 +15432,9 @@ you do not want to store entirely on disk or on memory.")
            python-pytest-django
            python-pytest-forked
            python-pytest-localserver
-           python-werkzeug))
+           python-setuptools
+           python-werkzeug
+           python-wheel))
     (propagated-inputs
      (list python-certifi python-urllib3))
     (home-page "https://github.com/getsentry/sentry-python")
