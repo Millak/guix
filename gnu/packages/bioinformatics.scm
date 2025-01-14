@@ -3273,7 +3273,7 @@ Python.")
       (propagated-inputs
        (list python-beautifulsoup4 python-numpy
              python-psutil python-pysam python-requests))
-      (native-inputs (list python-pytest))
+      (native-inputs (list python-pytest python-setuptools python-wheel))
       (home-page "https://github.com/grexor/pybio")
       (synopsis "Basic genomics toolset")
       (description
