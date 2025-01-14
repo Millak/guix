@@ -24734,21 +24734,16 @@ the network.")
 (define-public python-rcssmin
   (package
     (name "python-rcssmin")
-    (version "1.0.6")
+    (version "1.2.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "rcssmin" version))
         (sha256
          (base32
-          "0w42l4dhxghcz7pj3q7hkxp015mvb8z2cq9sfxbl31npsfavd1ya"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "python" "run_tests.py" "tests"))))))
+          "0k68sw163vc36nb3nck0kwwal4vb4hi6634rzx7z19ng28j8fdpl"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "http://opensource.perlig.de/rcssmin/")
     (synopsis "CSS Minifier")
     (description "The minifier is based on the semantics of the YUI compressor,
