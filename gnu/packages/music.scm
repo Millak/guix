@@ -4647,7 +4647,12 @@ standard MIDI file with the csvmidi program.")
              python-pyinotify
              python-pyliblo
              python-pysmf))
-      (native-inputs (list python-pytest pkg-config scdoc))
+      (native-inputs
+       (list python-pytest
+             python-setuptools
+             python-wheel
+             pkg-config
+             scdoc))
       (home-page "https://github.com/mididings/mididings")
       (synopsis "MIDI router and processor")
       (description
