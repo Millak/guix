@@ -3831,7 +3831,7 @@ filters using the so-called @emph{window method}.")
 (define-public rubberband
   (package
     (name "rubberband")
-    (version "3.3.0")
+    (version "4.0.0")
     (source (origin
               (method url-fetch)
               (uri
@@ -3839,7 +3839,7 @@ filters using the so-called @emph{window method}.")
                               "rubberband-" version ".tar.bz2"))
               (sha256
                (base32
-                "0v2pbv4jnzv3rr2qr71skwncy2p263ngmhn37aqqb7zgp3i8kvyr"))))
+                "1s98h0pzxlffha52paniysm7dch5rrflw1ifbfriig33xq9h61dg"))))
     (build-system meson-build-system)
     (arguments
      (list
