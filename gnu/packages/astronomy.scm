@@ -2305,10 +2305,11 @@ used with local NetDRMS sites.")
        (sha256
         (base32 "0f0g6gh4kj83xfv0cdp30dahs80pnhsj7c6ryz3f59qf6d5zqard"))))
     (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest-astropy
+           python-wheel))
     (propagated-inputs
      (list python-astropy python-scipy))
-    (native-inputs
-     (list python-pytest-astropy))
     (home-page "http://dust-extinction.readthedocs.io/")
     (synopsis "Interstellar Dust Extinction Models")
     (description
