@@ -2185,6 +2185,9 @@ side-effects (such as setting environment variables).")
     (build-system python-build-system)
     (native-inputs
      (list python-pytest))
+    (arguments
+     ;; Tests not shipped with PyPI archive, and require TLS CA cert.
+     (list #:tests? #f))
     (home-page (string-append "https://web.archive.org/web/20161029233413/"
                               "http://pythonpaste.org/scripttest/"))
     (synopsis "Python library to test command-line scripts")
