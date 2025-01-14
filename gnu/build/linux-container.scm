@@ -109,8 +109,14 @@ for the process."
   ;; A sysfs mount requires the user to have the CAP_SYS_ADMIN capability in
   ;; the current network namespace.
   (when mount-/sys?
-    (mount* "none" (scope "/sys") "sysfs"
-            (logior MS_NOEXEC MS_NOSUID MS_NODEV MS_RDONLY)))
+    (catch 'system-error
+      (lambda ()
+        (mount* "none" (scope "/sys") "sysfs"
+                (logior MS_NOEXEC MS_NOSUID MS_NODEV MS_RDONLY)))
+      (lambda args
+        ;; EPERM means that CAP_SYS_ADMIN is missing.  Ignore.
+        (unless (= EPERM (system-error-errno args))
+          (apply throw args)))))
 
   (mount* "none" (scope "/dev") "tmpfs"
           (logior MS_NOEXEC MS_STRICTATIME)
