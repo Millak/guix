@@ -15,7 +15,7 @@
 ;;; Copyright © 2020 Christopher Howard <christopher@librehacker.com>
 ;;; Copyright © 2021 Felipe Balbi <balbi@kernel.org>
 ;;; Copyright © 2021, 2024 Felix Gruber <felgru@posteo.net>
-;;; Copyright © 2021, 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2024, 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2023 c4droid <c4droid@foxmail.com>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
@@ -95,6 +95,7 @@
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
@@ -295,58 +296,112 @@ console.")
              ;; Remove external stuff we don't need.
              (for-each (lambda (dir)
                          (delete-file-recursively
-                           (string-append "Externals/" dir)))
-                       '("LZO" "OpenAL" "Qt" "SFML" "curl" "ffmpeg"
-                         "gettext" "hidapi" "libpng" "libusb" "mbedtls"
-                         "miniupnpc" "MoltenVK" "zlib"))
+                          (string-append "Externals/" dir)))
+                       '("LZO" "OpenAL" "Qt" "SFML" "bzip2"
+                         ;; XXX: Attempting to use the vulkan-headers package
+                         ;; results in "error:
+                         ;; ‘VK_PRESENT_MODE_RANGE_SIZE_KHR’ was not declared
+                         ;; in this scope".
+                         ;;"Vulkan"
+                         "cubeb" "curl" "enet"
+                         "ffmpeg" "fmt" "gettext"
+                         ;; XXX: Attempting to use an unbundled glslang at the
+                         ;; exact commit used by Dolphin still results in
+                         ;; "error: ‘DefaultTBuiltInResource’ is not a member
+                         ;; of ‘glslang’".
+                         ;;"glslang"
+                         ;; XXX: Googletest cannot currently easily be
+                         ;; unbundled, as there are missing linking
+                         ;; directives.
+                         ;;"gtest"
+                         "hidapi" "libpng" "libusb" "mbedtls"
+                         "miniupnpc" "minizip" "MoltenVK" "pugixml"
+                         "soundtouch"
+                         "xxhash" "zlib" "zstd"))
              ;; Clean up source.
              (for-each delete-file
-                       (find-files "." ".*\\.(bin|dsy|exe|jar|rar)$"))))))
+                       (find-files "." ".*\\.(bin|dsy|exe|jar|rar)$"))
+             ;; Do not attempt to include now-missing directories.
+             (substitute* "CMakeLists.txt"
+               ((".*add_subdirectory.*Externals/enet.*") "")
+               ((".*add_subdirectory.*Externals/soundtouch.*") "")
+               ((".*add_subdirectory.*Externals/xxhash.*") ""))))))
       (build-system cmake-build-system)
       (arguments
-       '(#:tests? #f
-         #:phases
-         (modify-phases %standard-phases
-           (add-before 'configure 'generate-fonts&hardcore-libvulkan-path
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (let ((fontfile
-                      (search-input-file inputs
-                                         "/share/fonts/truetype/wqy-microhei.ttc"))
-                     (libvulkan
-                      (search-input-file inputs "/lib/libvulkan.so")))
-                 (chdir "docs")
-                 (invoke "bash" "-c" "g++ -O2 $(freetype-config \
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'configure 'remove-unittests-target-post-build-command
+              (lambda _
+                ;; To skip a few problematic tests, CTest will be manually
+                ;; invoked in the post-check phase.
+                (with-directory-excursion "Source/UnitTests"
+                  (substitute* "CMakeLists.txt"
+                    (("add_custom_command\\(TARGET unittests POST_BUILD.*")
+                     "")))))
+            (add-before 'configure 'generate-fonts&hardcore-libvulkan-path
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let ((fontfile
+                       (search-input-file inputs
+                                          "/share/fonts/truetype/wqy-microhei.ttc"))
+                      (libvulkan
+                       (search-input-file inputs "/lib/libvulkan.so")))
+                  (chdir "docs")
+                  (invoke "bash" "-c" "g++ -O2 $(freetype-config \
 --cflags --libs) gc-font-tool.cpp -o gc-font-tool")
-                 (invoke "./gc-font-tool" "a" fontfile "font_western.bin")
-                 (invoke "./gc-font-tool" "s" fontfile "font_japanese.bin")
-                 (copy-file "font_japanese.bin" "../Data/Sys/GC/font_japanese.bin")
-                 (copy-file "font_western.bin" "../Data/Sys/GC/font_western.bin")
-                 (chdir "..")
-                 (substitute* "Source/Core/VideoBackends/Vulkan/VulkanLoader.cpp"
-                   (("\"vulkan\", 1") (string-append "\"vulkan\""))
-                   (("\"vulkan\"") (string-append "\"" libvulkan "\""))
-                   (("Common::DynamicLibrary::GetVersionedFilename") ""))))))
-
-         ;; The FindGTK2 cmake script only checks hardcoded directories for
-         ;; glib/gtk headers.
-
-         #:configure-flags
-         (list (string-append "-DX11_INCLUDE_DIR="
-                              (assoc-ref %build-inputs "libx11")
-                              "/include")
-               (string-append "-DX11_LIBRARIES="
-                              (assoc-ref %build-inputs "libx11")
-                              "/lib/libX11.so")
-               "-DX11_FOUND=1")))
+                  (invoke "./gc-font-tool" "a" fontfile "font_western.bin")
+                  (invoke "./gc-font-tool" "s" fontfile "font_japanese.bin")
+                  (copy-file "font_japanese.bin" "../Data/Sys/GC/font_japanese.bin")
+                  (copy-file "font_western.bin" "../Data/Sys/GC/font_western.bin")
+                  (chdir "..")
+                  (substitute* "Source/Core/VideoBackends/Vulkan/VulkanLoader.cpp"
+                    (("\"vulkan\", 1") (string-append "\"vulkan\""))
+                    (("\"vulkan\"") (string-append "\"" libvulkan "\""))
+                    (("Common::DynamicLibrary::GetVersionedFilename") "")))))
+            (add-after 'check 'post-check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (with-directory-excursion "Source/UnitTests"
+                    (invoke "ctest" "-V" "--output-on-failure"
+                            ;; These tests fail due to libusb failing to
+                            ;; init inside the build container.
+                            "-E" (string-join
+                                  '("MMIOTest"
+                                    "PageFaultTest"
+                                    "CoreTimingTest"
+                                    "FileSystemTest"
+                                    "PowerPCTest"
+                                    "VertexLoaderTest")
+                                  "|")))))))
+        ;; The FindGTK2 cmake script only checks hardcoded directories for
+        ;; glib/gtk headers.  Also add some include directories via the CXX
+        ;; flags to let GCC find some headers not actively searched by the
+        ;; build system.
+        #:configure-flags
+        #~(list (string-append "-DCMAKE_CXX_FLAGS="
+                               "-I" (search-input-directory
+                                     %build-inputs "include/soundtouch"))
+                (string-append "-DX11_INCLUDE_DIR="
+                               #$(this-package-input "libx11")
+                               "/include")
+                (string-append "-DX11_LIBRARIES="
+                               (search-input-file %build-inputs
+                                                  "lib/libX11.so"))
+                "-DX11_FOUND=1")
+        #:test-target "unittests"))
       (native-inputs
        (list gettext-minimal pkg-config))
       (inputs
        (list alsa-lib
              ao
              bluez
+             bzip2
+             cubeb
              curl
+             enet
              eudev
              ffmpeg-4
+             fmt-7
              font-wqy-microhei
              freetype
              glew
@@ -364,6 +419,7 @@ console.")
              mbedtls-lts
              mesa
              miniupnpc
+             minizip-ng
              openal
              pugixml
              pulseaudio
@@ -371,9 +427,11 @@ console.")
              sdl2
              sfml
              soil
-             soundtouch
+             soundtouch-1/integer-samples
              vulkan-loader
-             zlib))
+             xxhash
+             zlib
+             `(,zstd "lib")))
       (home-page "https://dolphin-emu.org/")
       (synopsis "Nintendo Wii and GameCube emulator")
       (description
@@ -381,7 +439,7 @@ console.")
 GameCube and the Wii.  It provides compatibility with all PC controllers,
 turbo speed, networked multiplayer, and graphical enhancements.")
       (supported-systems '("x86_64-linux" "aarch64-linux"))
-      ; dolphin/Data/Sys/GC/font_*.bin: Licensed under ASL2.0.
+      ;; dolphin/Data/Sys/GC/font_*.bin: Licensed under ASL2.0.
       (license (list license:gpl2+ license:asl2.0 license:fdl1.2+)))))
 
 (define-public dosbox
