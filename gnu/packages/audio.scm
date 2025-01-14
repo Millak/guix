@@ -11,7 +11,7 @@
 ;;; Copyright © 2016–2023 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2020, 2024 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2018 okapi <okapi@firemail.cc>
-;;; Copyright © 2018, 2020, 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2018, 2020, 2022-2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2018 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2018, 2019, 2022 Marius Bakke <marius@gnu.org>
@@ -4408,6 +4408,30 @@ and playback rates of audio streams or audio files.  It is intended for
 application developers writing sound processing tools that require tempo/pitch
 control functionality, or just for playing around with the sound effects.")
     (license license:lgpl2.1+)))
+
+(define-public soundtouch-1/integer-samples
+  (package
+    (inherit soundtouch)
+    (name "soundtouch")
+    (version "1.9.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/soundtouch/soundtouch.git")
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ir961w5gz86cm6yivr1ypi6n2y52vn319gy2gvdkkbbz5wyjkrq"))))
+    (arguments
+     ;; Dolphin expects the samples to be of the integer type.
+     (list #:configure-flags #~(list "--enable-integer-samples")
+           #:phases #~(modify-phases %standard-phases
+                        (replace 'bootstrap
+                          (lambda _
+                            ;; Avoid the bootstrap script, which has a broken
+                            ;; shebang.
+                            (invoke "autoreconf" "-vif"))))))))
 
 (define-public stargate-soundtouch
   ;; Stargate's fork of soundtouch.
