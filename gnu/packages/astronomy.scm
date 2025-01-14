@@ -1489,17 +1489,19 @@ model-fitting photometry or morphological analyses.")
        (sha256
         (base32 "0kc1lwr160awk3rq44iav2bk8b9w7vw4q6dd1s035yb442cqz0qh"))))
     (build-system pyproject-build-system)
+    (native-inputs
+     (list python-ci-watson
+           python-pytest
+           python-pytest-astropy-header
+           python-pytest-remotedata
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
     (propagated-inputs
      (list python-astropy
            python-numpy
            python-pyyaml
            python-requests))
-    (native-inputs
-     (list python-ci-watson
-           python-pytest
-           python-setuptools-scm
-           python-pytest-astropy-header
-           python-pytest-remotedata))
     (home-page "https://github.com/spacetelescope/acstools")
     (synopsis "Hubble Space Telescope Advanced Camera for Surveys Tools")
     (description
