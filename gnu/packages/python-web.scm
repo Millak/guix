@@ -3221,18 +3221,27 @@ term.js Javascript terminal emulator library.")
 (define-public python-wsgi-intercept
   (package
     (name "python-wsgi-intercept")
-    (version "1.2.2")
+    (version "1.13.1")
     (source (origin
              (method url-fetch)
              (uri (pypi-uri "wsgi_intercept" version))
              (sha256
               (base32
-               "0kjj2v2dvmnpdd5h5gk9rzz0f54rhjb0yiz3zg65bmp65slfw65d"))))
-    (build-system python-build-system)
+               "1h94dj7h7n7zdj3ll4imqjhq5vk21yidk2niwnmpw7xik9inrgbr"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; XXX: tests required internet access
+      #:tests? #f))
     (propagated-inputs
      (list python-six))
     (native-inputs
-     (list python-pytest python-httplib2 python-requests python-urllib3))
+     (list python-httplib2
+           python-pytest
+           python-requests
+           python-setuptools
+           python-urllib3
+           python-wheel))
     (synopsis "Puts a WSGI application in place of a real URI for testing")
     (description "Wsgi_intercept installs a WSGI application in place of a real
 URI for testing.  Testing a WSGI application normally involves starting a
