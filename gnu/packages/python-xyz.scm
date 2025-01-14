@@ -25405,34 +25405,31 @@ manipulation and interaction with formal grammars.")
 (define-public python-automat
   (package
     (name "python-automat")
-    (version "22.10.0")
+    (version "24.8.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "Automat" version))
               (sha256
                (base32
-                "0kmh9fwb6rkh8r5bi5jyxysywpgpjnwdks1h3p0xq6ddxn2fnsz5"))))
+                "123d63k8wg9pfv9j7hr0kd1kw23m0rwdx7irsa55ncpncg7jfhmk"))))
     (build-system pyproject-build-system)
-    ;; We disable the tests because they require python-twisted, while
-    ;; python-twisted depends on python-automat.  Twisted is optional, but the
-    ;; tests fail if it is not available.  Also see
-    ;; <https://github.com/glyph/automat/issues/71>.
     (arguments
-     `(#:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         ;; Remove script, because it depends on python-twisted.
-         (add-after 'unpack 'remove-entrypoint
-           (lambda _
-             (substitute* "setup.py"
-               (("\"automat-visualize = automat._visualize:tool\"") "")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (with-directory-excursion #$output
+                (apply invoke "pytest" "-vv" test-flags))))
+          ;; Remove script, because it depends on python-twisted.
+          (add-after 'unpack 'remove-entrypoint
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("automat-visualize = \"automat._visualize:tool\"") "")))))))
     (native-inputs
-     (list python-graphviz
-           python-setuptools
-           python-setuptools-scm
-           python-wheel))
+     (list python-pytest python-setuptools python-setuptools-scm python-wheel))
     (propagated-inputs
-     (list python-six python-attrs))
+     (list python-graphviz python-typing-extensions))
     (home-page "https://github.com/glyph/Automat")
     (synopsis "Self-service finite-state machines")
     (description "Automat is a library for concise, idiomatic Python
