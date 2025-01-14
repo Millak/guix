@@ -4,7 +4,7 @@
 ;;; Copyright © 2016, 2017, 2019, 2021 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2022 Marius Bakke <marius@gnu.org>
-;;; Copyright © 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2020, 2021, 2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
@@ -44,6 +44,7 @@
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages xml)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix download)
   #:use-module ((guix licenses)
                 #:select (asl2.0))
@@ -139,27 +140,28 @@ manner.")
 (define-public python-hacking
   (package
     (name "python-hacking")
-    (version "5.0.0")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "hacking" version))
        (sha256
         (base32
-         "09p0avmz914asszvdknc46n43bl070f369wmjmppl51zmw4b4ddb"))))
-    (build-system python-build-system)
+         "1dya2mbnm8cbkwrzmhsacdpmp37nhfcy13y5hbx58z8g53jw5dmr"))))
+    (build-system pyproject-build-system)
     (propagated-inputs
      (list python-flake8))
     (native-inputs
-     (list ;; Tests
-           python-coverage
+     (list python-coverage
            python-ddt
            python-eventlet
            python-fixtures
-           python-subunit
+           python-setuptools
            python-stestr
+           python-subunit
            python-testscenarios
-           python-testtools))
+           python-testtools
+           python-wheel))
     (home-page "https://github.com/openstack-dev/hacking")
     (synopsis "OpenStack hacking guideline enforcement")
     (description
