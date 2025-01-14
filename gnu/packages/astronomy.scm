@@ -6497,7 +6497,8 @@ direct imaging, coronagraphic, and spectroscopic modes.")
     (build-system pyproject-build-system)
     (propagated-inputs (list python-numpy python-scipy))
     (native-inputs (list python-codecov python-pytest python-pytest-cov
-                         python-pytest-doctestplus python-setuptools-scm))
+                         python-pytest-doctestplus python-setuptools-scm
+                         python-wheel))
     (home-page "https://github.com/spacetelescope/wiimatch")
     (synopsis
      "Optimal matching of weighted N-dimensional image intensity data")
