@@ -3399,7 +3399,7 @@ not an object-relational mapping.  This comes with several advantaged:
                           (invoke "zope-testrunner" "-vv" "--test-path=src"
                                   "--all")
                           (format #t "test suite not run~%")))))))
-    (native-inputs (list python-zope-testrunner))
+    (native-inputs (list python-zope-testrunner python-setuptools python-wheel))
     (home-page "https://github.com/zopefoundation/zodbpickle")
     (synopsis "Uniform pickling interface for @code{zodb}")
     (description
