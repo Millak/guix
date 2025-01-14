@@ -1306,6 +1306,8 @@ support and @code{subtests} fixture.")
              (lambda* (#:key inputs outputs #:allow-other-keys)
                (add-installed-pythonpath inputs outputs)
                (invoke "pytest" "tests/"))))))
+      (native-inputs
+       (list python-urllib3))
       (propagated-inputs
        (list python-pytest python-vcrpy))
       (home-page "https://github.com/ktosiek/pytest-vcr")
