@@ -19964,6 +19964,7 @@ text.")
        (sha256
         (base32 "0iwcsk7ryjw5h1wp10ykwd01f3am8gdlga6461q1v1njsk0rxh41"))))
     (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "http://packages.python.org/MonthDelta")
     (synopsis "Date computations with months")
     (description
