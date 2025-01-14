@@ -4083,7 +4083,9 @@ astronomical tables
            python-pytest-doctestplus
            python-pytest-mpl
            python-pytest-xdist
-           python-setuptools-scm))
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
     (propagated-inputs
      (list python-astropy
            python-matplotlib
