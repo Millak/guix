@@ -10763,15 +10763,16 @@ e.g. copy examples, fetch data, etc.")
 (define-public python-multidict
   (package
     (name "python-multidict")
-    (version "5.2.0")
+    (version "6.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "multidict" version))
        (sha256
         (base32
-         "1kjrxav572j45xvr1iy60zb2g8zqvrinzdkl4ax36js4vczckl8d"))))
+         "0jlgjpclkh5g6vr1danl6alz0cza2jlzdqh3q03d4s8ckfzjxbi2"))))
     (build-system pyproject-build-system)
+    (propagated-inputs (list python-typing-extensions))
     (native-inputs
      (list python-pytest python-pytest-cov python-setuptools python-wheel))
     (home-page "https://github.com/aio-libs/multidict/")
