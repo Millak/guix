@@ -39,34 +39,6 @@
   #:use-module (gnu packages time)
   #:use-module (gnu packages xml))
 
-;; Common package definition for packages from https://github.com/wireservice.
-(define-syntax-rule (wireservice-package extra-fields ...)
-  (package
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "nosetests" "tests")))
-         (add-after 'install 'install-docs
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (doc (string-append out "/share/doc/"
-                                        ,(package-name this-package)
-                                        "-"
-                                        ,(package-version this-package))))
-               (with-directory-excursion "docs"
-                 (for-each
-                  (lambda (target)
-                    (invoke "make" target)
-                    (copy-recursively (string-append "_build/" target)
-                                      (string-append doc "/" target)))
-                  '("html" "dirhtml" "singlehtml" "text")))
-               #t))))))
-    (license license:expat)
-    extra-fields ...))
-
 (define-public python-leather
   (package
     (name "python-leather")
