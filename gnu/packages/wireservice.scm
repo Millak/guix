@@ -21,14 +21,17 @@
 
 (define-module (gnu packages wireservice)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix packages)
   #:use-module (gnu packages)
   #:use-module (gnu packages base)
   #:use-module (gnu packages check)
   #:use-module (gnu packages databases)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages sphinx)
@@ -64,30 +67,35 @@
     extra-fields ...))
 
 (define-public python-leather
-  (wireservice-package
-   (name "python-leather")
-   (version "0.3.4")
-   (source (origin
-             (method git-fetch)
-             (uri (git-reference
-                   (url "https://github.com/wireservice/leather")
-                   (commit version)))
-             (file-name (git-file-name name version))
-             (sha256
-              (base32
-               "00cg4cidl15q1xv2pmxdkia5brig7x0xy9hwf2mlf9cq39bpj1w6"))))
-   (native-inputs
-    `(("python-nose" ,python-nose)
-      ("python-sphinx" ,python-sphinx)
-      ("python-sphinx-rtd-theme" ,python-sphinx-rtd-theme)
-      ("python-csselect" ,python-cssselect)
-      ("python-lxml" ,python-lxml)))
-   (propagated-inputs
-    `(("python-six" ,python-six)))
-   (home-page "https://leather.rtfd.org")
-   (synopsis "Python charting for 80% of humans")
-   (description "Leather is a Python charting library for those who need
-charts now and don't care if they're perfect.")))
+  (package
+    (name "python-leather")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/wireservice/leather")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "193hchrcrh5zyj0xlfs839h25jwzxvzjpbniqjd18mgnip5mk0zn"))))
+    (build-system pyproject-build-system)
+    ;; XXX: Documentation requires <https://github.com/pradyunsg/furo> which
+    ;; is not packaged yet and depends on some missing Node.js packages
+    (native-inputs
+     (list python-cssselect
+           python-lxml
+           python-pytest
+           python-setuptools
+           python-sphinx
+           python-sphinx-design
+           python-wheel))
+    (home-page "https://leather.rtfd.org")
+    (synopsis "Python charting for 80% of humans")
+    (description
+     "Leather is a Python charting library for those who need charts now and
+don't care if they're perfect.")
+    (license license:expat)))
 
 (define python-agate-locales
   (make-glibc-utf8-locales
