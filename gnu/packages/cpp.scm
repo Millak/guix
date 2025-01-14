@@ -3531,3 +3531,34 @@ system to prevent more bugs.")
      "Ada is a fast and spec-compliant URL parser written in C++.
 Specification for URL parser can be found from the WHATWG website.")
     (license license:gpl3+)))
+
+(define-public tclap
+  (package
+    (name "tclap")
+    (version "1.4.0-rc1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://sourceforge/" name "/" name "-" version
+                           ".tar.bz2"))
+       (sha256
+        (base32 "1ii0gs965xagqfdwln9hd61y68352msybbq059grwspp51w8rq9k"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (replace 'check
+                     (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
+                       (if tests?
+                           (invoke "ctest" "-j"
+                                   (if parallel-tests?
+                                       (number->string (parallel-job-count))
+                                       "1"))
+                           (format #t "test suite not run~%")))))))
+    (native-inputs (list python))
+    (home-page "https://sourceforge.net/p/tclap/discussion/")
+    (synopsis "Templatized Command Line Argument Parser")
+    (description
+     "This is a simple C++ library that facilitates parsing command line
+arguments in a type independent manner.")
+    (license license:expat)))
