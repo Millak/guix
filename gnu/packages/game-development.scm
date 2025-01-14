@@ -506,7 +506,7 @@ types (revolute, prismatic, wheel, etc.).")
     (arguments
      (list #:tests? #f)) ; no tests
     (native-inputs
-     (list python-setuptools))
+     (list python-setuptools python-wheel))
     (propagated-inputs
      (list python-pygame python-uniseg))
     (home-page "https://python-sge.github.io/")
