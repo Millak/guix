@@ -4905,13 +4905,11 @@ multiple sequence alignments.")
     (license license:expat)))
 
 (define-public python-mofax
-  ;; This is a recent commit from the "dev" branch, which is much more recent
-  ;; than the latest commit from the "master" branch.
-  (let ((commit "4d96f8f0a5d5251847353656f523684d66c3c47a")
-        (revision "0"))
+  (let ((commit "e4821fef8b1f9f50afd84a6acb96fcc49445c967")
+        (revision "1"))
     (package
       (name "python-mofax")
-      (version (git-version "0.4.0" revision commit))
+      (version (git-version "0.3.7" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -4920,26 +4918,15 @@ multiple sequence alignments.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1lwrw0qyvvnyiqz1l20dhcf7dxidb80cqgvk78czvdgba87yxzqx"))
-                (modules '((guix build utils)))
-                ;; Prevent the pyproject-build-system from guessing that flit
-                ;; should be used as a builder.
-                (snippet '(substitute* "pyproject.toml"
-                            (("^#.*") "")))))
+                  "07lkz51n7p7inmmh4bpr6fcr6b6jcjvkfws06zn8kpxfsv5z9kxa"))))
       (build-system pyproject-build-system)
-      (arguments
-       (list
-        ;; This test is failing due to a bug. The bug has been reported to the
-        ;; developers. See https://github.com/bioFAM/mofax/issues/12 for more
-        ;; info.
-        #:test-flags '(list "-k" "not test_get_methods")))
       (propagated-inputs (list python-h5py
                                python-matplotlib
                                python-pandas
-                               python-poetry-core
                                python-scipy
                                python-seaborn))
-      (native-inputs (list python-numpy python-pytest))
+      (native-inputs (list python-poetry-core
+                           python-numpy python-pytest))
       (home-page "https://github.com/bioFAM/mofax")
       (synopsis
        "Motif activity finder for transcription factor motif analysis")
