@@ -1153,6 +1153,37 @@ Django.  Django Q2 is a fork of Django Q with the new updated version of
 Django Q, dependencies updates, docs updates and several bug fixes.")
     (license license:expat)))
 
+(define-public python-django-q-sentry
+  (package
+    (name "python-django-q-sentry")
+    (version "0.1.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/danielwelch/django-q-sentry")
+             ;; There are no tags.
+             (commit "6ed0b372c502c18101c7b77dce162dcf2262c7bb")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0c7rypsfax1l1j587p4cvcypa7if3vcyz2l806s6z27ajz0bz3v4"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-poetry-core
+            (lambda _
+              ;; Patch to use the core poetry API.
+              (substitute* "pyproject.toml"
+                (("poetry.masonry.api") "poetry.core.masonry.api")))))))
+    (propagated-inputs (list python-sentry-sdk))
+    (native-inputs (list python-poetry-core python-setuptools python-wheel))
+    (home-page "https://django-q.readthedocs.org")
+    (synopsis "Sentry support plugin for Django Q")
+    (description "This package provides a Sentry support plugin for Django Q.")
+    (license license:expat)))
+
 (define-public python-django-sortedm2m
   (package
     (name "python-django-sortedm2m")
