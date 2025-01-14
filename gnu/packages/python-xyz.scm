@@ -2874,6 +2874,26 @@ ICMP is typically used for diagnostic or control purposes - well known from
 utilities such as ping(1).")
     (license license:lgpl3)))
 
+(define-public python-iron-core
+  (package
+    (name "python-iron-core")
+    (version "1.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "iron-core" version))
+       (sha256
+        (base32 "158vdymq6nbym0v1f9l5gz42j1gsq09b9yw9hgd70m5ymy30n6dp"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-dateutil python-requests))
+    (native-inputs (list python-setuptools python-wheel))
+    (home-page "https://www.github.com/iron-io/iron_core_python")
+    (synopsis "Universal classes and methods for Iron.io API wrappers")
+    (description
+     "This package provides universal classes and methods for the Iron.io API
+wrappers to build on.")
+    (license license:bsd-2)))
+
 (define-public python-rasterio
   (package
     (name "python-rasterio")
