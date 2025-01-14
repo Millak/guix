@@ -2357,7 +2357,7 @@ and sequence consensus.")
 (define-public python-cyvcf2
   (package
     (name "python-cyvcf2")
-    (version "0.30.28")
+    (version "0.31.1")
     (source
      (origin
        (method git-fetch)
@@ -2366,7 +2366,7 @@ and sequence consensus.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "16yhfax509zyip8kkq2b0lflx5bdq5why7d785ayrqyzzq2rxqkk"))
+        (base32 "02x7ic2q4x3sfwx9n2sxg0a79iifjal0a68fqp9ljsfvdx4b7nq5"))
        (modules '((guix build utils)))
        (snippet
         ;; Delete bundled library
@@ -2395,7 +2395,11 @@ and sequence consensus.")
               (setenv "CYTHONIZE" "1")
               (setenv "CYVCF2_HTSLIB_MODE" "EXTERNAL"))))))
     (inputs (list curl htslib libdeflate openssl zlib))
-    (native-inputs (list python-cython python-pytest))
+    (native-inputs
+     (list python-cython
+           python-pytest
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-click
            python-coloredlogs
