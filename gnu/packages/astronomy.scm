@@ -3655,6 +3655,16 @@ constraints (i.e., altitude, airmass, moon separation/illumination, etc.)
                 ;; we want to run the installed code with extensions etc.
                 (with-directory-excursion "/tmp"
                   (apply invoke "pytest" "-v" test-flags))))))))
+    (native-inputs
+     (list nss-certs-for-test
+           python-astropy-healpix
+           python-matplotlib
+           ;; python-mocpy : Not packed yet, optional
+           python-pytest-astropy
+           python-pytest-dependency
+           python-regions
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-astropy
            python-beautifulsoup4
@@ -3663,14 +3673,6 @@ constraints (i.e., altitude, airmass, moon separation/illumination, etc.)
            python-numpy
            python-pyvo
            python-requests))
-    (native-inputs
-     (list nss-certs-for-test
-           python-astropy-healpix
-           python-matplotlib
-           ;; python-mocpy : Not packed yet, optional
-           python-pytest-astropy
-           python-pytest-dependency
-           python-regions))
     (home-page "https://astroquery.readthedocs.io/en/latest/index.html")
     (synopsis "Access online astronomical data resources")
     (description "Astroquery is a package that contains a collection of tools
