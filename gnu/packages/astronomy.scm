@@ -4888,6 +4888,13 @@ of axis order, spatial projections, and spectral units that exist in the wild.
               ;; Tests require HOME to be set.
               ;;  Permission denied: '/homeless-shelter'
               (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list python-matplotlib
+           python-pytest-astropy
+           python-setuptools
+           python-setuptools-scm
+           python-spectral-cube
+           python-wheel))
     (propagated-inputs
      (list python-asdf
            python-asdf-astropy
@@ -4896,12 +4903,6 @@ of axis order, spatial projections, and spectral units that exist in the wild.
            python-ndcube
            python-numpy
            python-scipy))
-    (native-inputs
-     (list python-matplotlib
-           python-pytest-astropy
-           python-setuptools
-           python-setuptools-scm
-           python-spectral-cube))
     (home-page "https://specutils.readthedocs.io/")
     (synopsis "Package for spectroscopic astronomical data")
     (description
