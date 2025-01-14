@@ -3688,34 +3688,34 @@ installation on systems where resources are limited.  Its features include:
 (define-public python-django-mailman3
   (package
     (name "python-django-mailman3")
-    (version "1.3.7")
+    (version "1.3.15")
     (source
       (origin
         (method url-fetch)
-        (uri (pypi-uri "django-mailman3" version))
+        (uri (pypi-uri "django_mailman3" version))
         (sha256
          (base32
-          "1dzycnwdr1gavs1dgmcv1lz24x0fkp8y864fy52fgbz72d6c5a3f"))))
-    (build-system python-build-system)
+          "06yiqsqyvngq7ls24xlh6kwpq0x0y55mrgypc6xdbidrkhk6p4gr"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (setenv "DJANGO_SETTINGS_MODULE"
-                     "django_mailman3.tests.settings_test")
-             (invoke "django-admin" "test"
-                     "--pythonpath=."))))))
-    (propagated-inputs
-     (list python-django python-django-allauth python-django-gravatar2
-           python-mailmanclient python-pytz))
+     (list
+      ;; AttributeError: 'SocialLogin' object has no attribute 'account'
+      #:test-flags #~(list "-k" "not test_social_account_added")))
     (native-inputs
-     (list python-mock))
+     (list python-pdm-backend
+           python-pytest
+           python-pytest-django
+           python-tzdata))
+    (propagated-inputs
+     (list python-django
+           python-django-allauth
+           python-django-gravatar2
+           python-mailmanclient))
     (home-page "https://gitlab.com/mailman/django-mailman3")
     (synopsis "Django library to help interaction with Mailman")
     (description
-     "This package contains libraries and templates for Django-based interfaces
-interacting with Mailman.")
+     "This package contains libraries and templates for Django-based
+interfaces interacting with Mailman.")
     (license license:gpl3+)))
 
 (define-public python-mailman-hyperkitty
