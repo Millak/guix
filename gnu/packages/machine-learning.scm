@@ -1986,6 +1986,7 @@ citation number.")
     ;; v0.6 relies on deprecated scikit-learn functionality
     (arguments `(#:tests? #f))
     (inputs (list python-numpy python-scipy python-scikit-learn))
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://pypi.org/project/mord/")
     (synopsis "Ordinal regression models for scikit-learn")
     (description
