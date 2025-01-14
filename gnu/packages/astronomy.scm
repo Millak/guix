@@ -3591,17 +3591,18 @@ celestial-to-terrestrial coordinate transformations.")
             (lambda _
               (setenv "HOME" "/tmp")
               (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (native-inputs
+     (list python-pytest-astropy
+           python-pytest-mpl
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
     (propagated-inputs
      (list python-astropy
            python-astroquery
            python-matplotlib
            python-numpy
-           python-pytz
-           python-six))
-    (native-inputs
-     (list python-pytest-astropy
-           python-pytest-mpl
-           python-setuptools-scm))
+           python-pytz))
     (home-page "https://github.com/astropy/astroplan")
     (synopsis "Observation planning package for astronomers")
     (description
