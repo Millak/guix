@@ -3609,34 +3609,6 @@ development.")
     ;; source files are in the public domain.
     (license (list license:public-domain license:bsd-3))))
 
-(define-public python-pyodbc-c
-  (package
-    (name "python-pyodbc-c")
-    (version "3.1.5")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://gitlab.com/daym/pyodbc-c/")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "08y60c5sx0k953zfx0s2a155l8py968sb17ap9a9fg8bjnj783k8"))))
-    (build-system python-build-system)
-    (inputs
-     (list unixodbc))
-    (arguments
-     `(;; The tests require a running SQL server that they don't help set up.
-       #:tests? #f))
-    (home-page "https://gitlab.com/daym/pyodbc-c")
-    (synopsis "Python ODBC Library written in C")
-    (description "@code{python-pyodbc-c} provides a Python DB-API driver
-for ODBC, similar to python-pyodbc but written in C.
-
-It's designed to stand alone and not have other dependencies on other packages
-or languages.  It uses only Python's built-in data types.")
-    (license (license:x11-style "file://LICENSE.TXT"))))
-
 (define-public python-pyodbc
   (package
     (name "python-pyodbc")
