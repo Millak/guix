@@ -3165,7 +3165,9 @@ and the options
            python-cython
            python-pytest
            python-pytest-astropy
-           python-pytest-cov))
+           python-pytest-cov
+           python-setuptools
+           python-wheel))
     (home-page "https://sncosmo.readthedocs.org")
     (synopsis "Package for supernova cosmology based on astropy")
     (description
