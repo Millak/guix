@@ -11086,18 +11086,22 @@ complexity samples.")
 (define-public python-screed
   (package
     (name "python-screed")
-    (version "1.1.2")
+    (version "1.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "screed" version))
        (sha256
-        (base32 "0slva743xn93h4sl5zg2as4ricnnj5pp6nw9dm4qclk4i9xglkvk"))))
+        (base32 "1f3jw3g8d9cdgdggqpfgw42rfcpzdalbbral6l2mmafvqybids1p"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest-cov
-           python-pytest-runner
+     (list python-importlib-resources
+           python-pycodestyle
+           python-pytest
+           python-pytest-cov
            python-setuptools
+           python-setuptools-scm
+           python-setuptools-scm-git-archive
            python-wheel))
     (home-page "https://github.com/dib-lab/screed/")
     (synopsis "Short read sequence database utilities")
