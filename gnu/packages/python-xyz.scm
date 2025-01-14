@@ -1199,25 +1199,6 @@ Python dictionaries and provides a syntax to access nested dictionaries values
 using a dot syntax, for example: @code{dictionary['deeply.nested.key']}.")
     (license license:expat)))
 
-(define-public python-twodict
-  (package
-    (name "python-twodict")
-    (version "1.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "twodict" version))
-       (sha256
-        (base32 "0ifv7dv18jn2lg0a3l6zdlvmmlda2ivixfjbsda58a2ay6kxznr0"))))
-    (build-system python-build-system)
-    (home-page "https://github.com/MrS0m30n3/twodict")
-    (synopsis "Two way ordered dictionary for Python")
-    (description "TwoDict is a custom dictionary in which you can get the
-key:value relationship but you can also get the value:key relationship.  It also
-remembers the order in which the items were inserted and supports almost all the
-features of the Python's built-in dict.")
-    (license license:unlicense)))
-
 (define-public python-adjusttext
   (package
     (name "python-adjusttext")
