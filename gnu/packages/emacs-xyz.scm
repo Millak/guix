@@ -4403,6 +4403,28 @@ from Emacs.  It is similar to BBDB, except much, much simpler.")
 shine on top of your cursor so you know where it is.")
     (license license:gpl3+)))
 
+(define-public emacs-bar-cursor
+  (let ((revision "0")
+        (commit "78f195b6db63459033c4f1c7e7add5d82f3ce424"))
+    (package
+      (name "emacs-bar-cursor")
+      (version (git-version "0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/ajsquared/bar-cursor.git")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1g344fzfkq5z53vja68kv55l1x29v15q41qb08nqc9k4pvpwdvmp"))))
+      (build-system emacs-build-system)
+      (synopsis "Bar cursor shape")
+      (description "This package provides a bar cursor shape.  When in
+overwrite mode, it will turn into a block cursor.")
+      (home-page "https://github.com/ajsquared/bar-cursor")
+      (license license:gpl2+))))
+
 (define-public emacs-paradox
   (let ((commit "96401577ed02f433debe7604e49afd478e9eda61")) ;version bump
     (package
