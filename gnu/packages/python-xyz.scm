@@ -22197,7 +22197,7 @@ format.")
            python-typing-extensions
            python-zope-interface))
     (native-inputs
-     (list glibc-utf8-locales
+     (list glibc-utf8-locales ;for OpenTestLogTests.test_utf8
            python-coverage
            python-hatch-fancy-pypi-readme
            python-hatchling
