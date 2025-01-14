@@ -39625,7 +39625,7 @@ write text fast, and for various text generation, statistics, and modeling tasks
                         (string-append exempi "/lib"))))))))
     (inputs (list exempi))
     (propagated-inputs (list python-pytz))
-    (native-inputs (list python-pytest))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/python-xmp-toolkit/python-xmp-toolkit")
     (synopsis "Python XMP Toolkit for working with metadata")
     (description "Python XMP Toolkit is a library for working with XMP
