@@ -7773,7 +7773,8 @@ based on filters.")
        (sha256
         (base32 "1dx533fsbq1mbz3by7qkm5bh2c253nwvm8214pqbwbfq07kqkwf2"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-coverage python-coveralls python-pytest))
+    (native-inputs (list python-coverage python-coveralls python-pytest
+                         python-setuptools python-wheel))
     (home-page "https://github.com/danvk/RangeHTTPServer")
     (synopsis "SimpleHTTPServer with support for range requests")
     (description
