@@ -1639,19 +1639,23 @@ framework.")
 (define-public python-pytest-pycodestyle
   (package
     (name "python-pytest-pycodestyle")
-    (version "2.2.0")
+    (version "2.4.1")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "pytest-pycodestyle" version))
+       (uri (pypi-uri "pytest_pycodestyle" version))
        (sha256
         (base32
-         "1clyjypn93hwvz17f4i6n2688835d4y8qsq2aw17d6fkbqiy8mg7"))))
-    (build-system python-build-system)
+         "1jdm5arsh150fvph0960kycb1cwj728mksfwxb65bbbl4zaypkr7"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; XXX: pytest failed to import 'py.io', while python can.
+      #:tests? #f))
     (propagated-inputs
-     (list python-pycodestyle))
+     (list python-py python-pycodestyle python-pytest))
     (native-inputs
-     (list python-pytest))
+     (list python-pytest-isort python-setuptools python-wheel))
     (home-page "https://github.com/henry0312/pytest-pycodestyle")
     (synopsis "Pytest plugin to run pycodestyle")
     (description "This package provides a plugin to run @code{pycodestyle}
