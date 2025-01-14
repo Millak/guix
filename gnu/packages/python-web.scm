@@ -9354,7 +9354,8 @@ Full documentation may be found at
          "0jl3j20iqvzqqw5q5ldval5wrc2pdx94zff3b6b87j51yjx3qjhr"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
+     `(#:tests? #f         ;XXX: need /etc/ssl/certs/ca-certificates.crt
+       #:phases
        (modify-phases %standard-phases
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
