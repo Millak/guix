@@ -9658,27 +9658,29 @@ resources using Web Application Description Language (WADL) files as guides.")
 (define-public python-zeep
   (package
     (name "python-zeep")
-    (version "4.1.0")
+    (version "4.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "zeep" version))
-       (patches
-        (search-patches "python-zeep-Fix-pytest_httpx-test-cases.patch"))
        (sha256
-        (base32 "1ranr4hkjd2kbbhxa3is1qlgkankj3sml5gla6bqs0kbvpmg4rsq"))))
-    (build-system python-build-system)
+        (base32 "0vm0asfak0pxfa9i753imcy72hk8gkxbj6pmw185b7dhw7lqalzl"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (setenv "HOME" (getcwd)) ; one test requires write access
-               (invoke "pytest" "-vv")))))))
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'compatibility
+           (lambda _
+             ;; httpx removed the "proxies" keyword.  It's now either "mounts"
+             ;; or "proxy".  See https://github.com/encode/httpx/pull/2879.
+             (substitute* "src/zeep/transports.py"
+               (("proxies=") "proxy="))))
+         ;; One test requires write access
+         (add-before 'check 'set-HOME
+           (lambda _ (setenv "HOME" (getcwd)))))))
     (propagated-inputs
      (list python-attrs
-           python-cached-property
            python-isodate
            python-lxml
            python-platformdirs
@@ -9687,16 +9689,21 @@ resources using Web Application Description Language (WADL) files as guides.")
            python-requests-file
            python-requests-toolbelt))
     (native-inputs
-     (list python-aiohttp
-           python-aioresponses
+     (list nss-certs-for-test
+           python-coverage
+           python-flake8
+           python-flake8-blind-except
+           python-flake8-debugger
            python-freezegun
-           python-mock
+           python-isort
            python-pretend
            python-pytest
            python-pytest-asyncio
            python-pytest-cov
            python-pytest-httpx
-           python-requests-mock))
+           python-requests-mock
+           python-setuptools
+           python-wheel))
     (home-page "https://docs.python-zeep.org/en/stable/")
     (synopsis "Python SOAP client based on lxml / requests")
     (description "Zeep is a Python SOAP client.  Highlights:

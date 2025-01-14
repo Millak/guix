@@ -7,7 +7,7 @@
 # Copyright © 2016, 2017, 2018 Kei Kebreau <kkebreau@posteo.net>
 # Copyright © 2016, 2017 Rene Saavedra <rennes@openmailbox.org>
 # Copyright © 2016 Adonay "adfeno" Felipe Nogueira <https://libreplanet.org/wiki/User:Adfeno> <adfeno@openmailbox.org>
-# Copyright © 2016-2024 Ricardo Wurmus <rekado@elephly.net>
+# Copyright © 2016-2025 Ricardo Wurmus <rekado@elephly.net>
 # Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
 # Copyright © 2016, 2017, 2018, 2019 Alex Vong <alexvong1995@gmail.com>
 # Copyright © 2016-2023 Efraim Flashner <efraim@flashner.co.il>
@@ -2126,7 +2126,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-versioneer-guix-support.patch	\
   %D%/packages/patches/python-werkzeug-tests.patch		\
   %D%/packages/patches/python-xmp-toolkit-add-missing-error-codes.patch	\
-  %D%/packages/patches/python-zeep-Fix-pytest_httpx-test-cases.patch	\
   %D%/packages/patches/qemu-7.2.4-build-info-manual.patch	\
   %D%/packages/patches/qemu-build-info-manual.patch		\
   %D%/packages/patches/qemu-disable-aarch64-migration-test.patch	\
