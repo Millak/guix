@@ -94,7 +94,7 @@
 ;;; Copyright © 2020, 2021, 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2020 EuAndreh <eu@euandre.org>
 ;;; Copyright © 2021, 2022 Morgan Smith <Morgan.J.Smith@outlook.com>
-;;; Copyright © 2021-2024 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2021-2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021 Ellis Kenyő <me@elken.dev>
 ;;; Copyright © 2021 LibreMiami <packaging-guix@libremiami.org>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
@@ -37467,19 +37467,30 @@ these linters: @code{pycodestlye}, @code{pyflakes}")
 (define-public nikola
   (package
     (name "nikola")
-    (version "8.2.2")
+    (version "8.3.1")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "Nikola" version))
         (sha256
-          (base32 "1h96y4sfypp2fbqxa8xrqch5f7r3srm2ly222k9w2n143h2spx4m"))))
+          (base32 "1fdgqx828b1syd1z2miliwrykmxryya3dcib28r56wvp37cl3wi1"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags #~(list "--durations=10"
+                           "--ignore=tests/integration/test_dev_server.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              ;; Drop test coverage requirements.
+              (substitute* "setup.cfg"
+                ((".*--cov.*") "")))))))
     (native-inputs
       (list nss-certs-for-test
+            python-feedparser
             python-freezegun
             python-pytest
-            python-pytest-cov
             python-setuptools
             python-wheel))
     (propagated-inputs
