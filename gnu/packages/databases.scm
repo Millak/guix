@@ -4539,7 +4539,7 @@ for Python.  The design goals are:
 (define-public python-hiredis
   (package
     (name "python-hiredis")
-    (version "2.2.2")
+    (version "3.1.0")
     (source (origin
               (method git-fetch)        ;for tests
               (uri (git-reference
@@ -4548,18 +4548,10 @@ for Python.  The design goals are:
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "066rm5m7aa8skm0a57cf45153bwmbl9yyi4s60an14hb25n947gi"))
+                "1g9qj37phq9989av0bwkqy40f5wx9q08y19dsmzwd1ssqsxwhfav"))
               (patches
-               (search-patches "python-hiredis-fix-header.patch"
-                               "python-hiredis-use-system-hiredis.patch"))))
+               (search-patches "python-hiredis-use-system-hiredis.patch"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (add-before 'check 'delete-extraneous-__init__.py
-                          (lambda _
-                            ;; The fix was forwarded upstream, see:
-                            ;; https://github.com/redis/hiredis-py/pull/160.
-                            (delete-file "tests/__init__.py"))))))
     (native-inputs (list python-pytest python-setuptools python-wheel))
     (inputs (list hiredis))
     (home-page "https://github.com/redis/hiredis-py")
