@@ -1097,18 +1097,25 @@ settings.py and easily use them in your project.")
 (define-public python-django-q
   (package
     (name "python-django-q")
-    (version "1.3.4")
+    (version "1.3.9")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "django-q" version))
-        (sha256
-         (base32 "03z1pf6wlf47i7afr79a8fiiidfk1vq19yaqnv0m4qdny7f58gaj"))))
-    (build-system python-build-system)
-    ;; FIXME: Tests require disque, Redis, MongoDB, Docker.
-    (arguments '(#:tests? #f))
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "django-q" version))
+       (sha256
+        (base32 "06x9l2j54km0nww71dv22ndgiax23kd7cwx5dafbzam3199lsssw"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; FIXME: Tests require disque, Redis, MongoDB, Docker.
+      #:tests? #f))
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
     (propagated-inputs
-     (list python-arrow python-blessed python-django
+     (list python-arrow
+           python-blessed
+           python-django
            python-django-picklefield))
     (home-page "https://django-q.readthedocs.io/")
     (synopsis "Multiprocessing distributed task queue for Django")
