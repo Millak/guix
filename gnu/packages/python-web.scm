@@ -10345,7 +10345,7 @@ hardware on Grid'5000 or via OpenStack, to Vagrant, Chameleon, and more.")
     (arguments
      (list #:tests? #f)) ; would require network (and SSL certificates)
     (propagated-inputs (list python-requests))
-    (native-inputs (list python-pytest))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/jsvine/waybackpack")
     (synopsis
      "Download the entire Wayback Machine archive for a given URL")
