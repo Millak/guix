@@ -1812,7 +1812,7 @@ evaluating arrays of polynomials based on @code{numpy.ndarray objects}.")
       (base32 "0ff48nagfaai3j26g1db4zq2bwdv6kj5l7xhcs2l9kzg7qzrmhr7"))))
   (build-system pyproject-build-system)
   (propagated-inputs (list python-click python-colorama python-tomli))
-  (native-inputs (list python-pytest))
+  (native-inputs (list python-pytest python-setuptools python-wheel))
   (home-page "https://github.com/scientific-python/spin")
   (synopsis "Developer tool for scientific Python libraries")
   (description "@code{spin} is a simple interface for common development
