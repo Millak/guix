@@ -5436,6 +5436,35 @@ Betamax that may possibly end up in the main package.")
     (home-page "https://gitlab.com/betamax/serializers")
     (license license:asl2.0)))
 
+(define-public python-s3fs
+  (package
+    (name "python-s3fs")
+    (version "2024.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "s3fs" version))
+       (sha256
+        (base32 "0mpxk4xvg0gwzapdh9r3fvnjhi8ymf96f7c756xabk26b67kl3qv"))))
+    (build-system pyproject-build-system)
+    ;; Many tests fail with "No such file or directory" raised by the HTTP
+    ;; client.
+    (arguments (list #:tests? #false))
+    (propagated-inputs (list python-aiobotocore python-aiohttp python-fsspec))
+    (native-inputs
+     (list python-flask ;for moto
+           python-flask-cors
+           python-moto
+           python-pytest
+           python-pytest-asyncio
+           python-setuptools
+           python-wheel))
+    (home-page "https://github.com/fsspec/s3fs/")
+    (synopsis "Convenient filesystem interface over S3")
+    (description "This package provides a convenient filesystem interface over
+S3.")
+    (license license:bsd-3)))
+
 (define-public python-s3transfer
   (package
     (name "python-s3transfer")
