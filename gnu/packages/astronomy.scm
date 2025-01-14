@@ -2278,7 +2278,11 @@ code to be greatly simplified.")
         (base32 "19lqy510d7iyxfz445h2rn4d0rvmd4d3lnjmvbkvv270ckpfw09f"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-astropy python-pytest-astropy python-setuptools-scm))
+     (list python-astropy
+           python-pytest-astropy
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
     (propagated-inputs
      (list python-numpy python-pandas))
     (home-page "https://sunpy.org")
