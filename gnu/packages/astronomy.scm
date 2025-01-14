@@ -4040,7 +4040,7 @@ files.")
      (list python-astropy
            python-matplotlib
            python-numpy
-           python-pandas-1
+           python-pandas
            python-requests
            python-scipy
            ;; Optional
