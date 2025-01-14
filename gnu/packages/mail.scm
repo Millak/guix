@@ -3748,45 +3748,50 @@ which sends emails to HyperKitty, the official Mailman3 web archiver.")
 (define-public python-hyperkitty
   (package
     (name "python-hyperkitty")
-    (version "1.3.5")
+    (version "1.3.12")
     (source
       (origin
         (method url-fetch)
-        (uri (pypi-uri "HyperKitty" version))
+        (uri (pypi-uri "hyperkitty" version))
         (sha256
          (base32
-          "11lz1s2p8n43h1cdr9l5dppsigg8qdppckdwdndzn7a8r8mj4sc2"))))
-    (build-system python-build-system)
+          "078nrxkwdrv4d7ysdzp1c2dl5nm4fvxnpn6mq6lrxg65gs9q5dfy"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
+     (list
+      #:phases
+      '(modify-phases %standard-phases
          (replace 'check
-           (lambda _
-             (invoke "example_project/manage.py" "test"
-                     "--settings=hyperkitty.tests.settings_test"
-                     "--pythonpath=."))))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "example_project/manage.py" "test"
+                       "--settings=hyperkitty.tests.settings_test"
+                       "--pythonpath=.")))))))
     (propagated-inputs
      (list python-dateutil
            python-django
            python-django-compressor
+           python-django-debug-toolbar
            python-django-extensions
            python-django-gravatar2
            python-django-haystack
            python-django-mailman3
-           python-django-q
+           python-django-q2
            python-django-rest-framework
+           python-elasticsearch
            python-flufl-lock
+           python-isort
+           python-lxml
            python-mailmanclient
            python-mistune
            python-networkx
-           python-pytz
-           python-robot-detection))
+           python-robot-detection
+           python-tzdata
+           python-whoosh))
     (native-inputs
-     (list python-beautifulsoup4
-           python-elasticsearch
-           python-isort
-           python-lxml
-           python-mock
+     (list tzdata-for-tests
+           python-beautifulsoup4
+           python-pdm-backend
            python-whoosh))
     (home-page "https://gitlab.com/mailman/hyperkitty")
     (synopsis "Web interface to access GNU Mailman v3 archives")
