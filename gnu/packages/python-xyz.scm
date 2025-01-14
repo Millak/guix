@@ -7754,6 +7754,8 @@ with Python.")
         (base32
          "1bz2gn04pl6rj2mawlzlirz1ygg4rdypq0pxbyg018873vs1jm7x"))))
     (build-system pyproject-build-system)
+    (native-inputs
+     (list python-setuptools python-wheel))
     (home-page "https://github.com/ValvePython/vdf")
     (synopsis "Work with Valve's VDF text format")
     (description "This package provides @code{python-vdf}, a library for
