@@ -5315,7 +5315,9 @@ implemented in the @acronym{JWST, James Webb Space Telescope} and
      (list python-pytest
            python-pytest-doctestplus
            python-pytest-openfiles
-           python-setuptools-scm))
+           python-setuptools-scm
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-asdf
            python-astropy
