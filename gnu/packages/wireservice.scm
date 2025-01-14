@@ -175,29 +175,34 @@ previously known as journalism.")
     (license license:expat)))
 
 (define-public python-agate-dbf
-  (wireservice-package
-   (name "python-agate-dbf")
-   (version "0.2.2")
-   (source (origin
-             (method git-fetch)
-             (uri (git-reference
-                   (url "https://github.com/wireservice/agate-dbf")
-                   (commit version)))
-             (file-name (git-file-name name version))
-             (sha256
-              (base32
-               "03l3qlyw7588jhjjsiy15valqlzs8gjai8f74v18zv2za0zjqbzl"))))
-   (native-inputs
-    (list python-nose
-          python-sphinx
-          python-sphinx-rtd-theme))
-   (propagated-inputs
-    (list python-agate
-          python-dbfread))
-   (home-page "https://agate-dbf.rtfd.org")
-   (synopsis "Add read support for dbf files to agate")
-   (description "@code{agatedbf} uses a monkey patching pattern to add read
-for dbf files support to all @code{agate.Table} instances.")))
+  (package
+    (name "python-agate-dbf")
+    (version "0.2.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/wireservice/agate-dbf")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0z9zmc05sjxw02xl9ygjsdyp32nb3m2qrig0pmvhvf5hj1faigxi"))))
+    (build-system pyproject-build-system)
+    ;; XXX: Documentation requires <https://github.com/pradyunsg/furo> which
+    ;; is not packaged yet and depends on some missing Node.js packages
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-agate
+           python-dbfread))
+    (home-page "https://agate-dbf.rtfd.org")
+    (synopsis "Add read support for dbf files to agate")
+    (description
+     "@code{agatedbf} uses a monkey patching pattern to add read for dbf files
+support to all @code{agate.Table} instances.")
+    (license license:expat)))
 
 (define-public python-agate-excel
   (wireservice-package
