@@ -144,30 +144,35 @@ previously known as journalism.")
     (license license:expat)))
 
 (define-public python-agate-sql
-  (wireservice-package
-   (name "python-agate-sql")
-   (version "0.5.9")
-   (source (origin
-             (method git-fetch)
-             (uri (git-reference
-                   (url "https://github.com/wireservice/agate-sql")
-                   (commit version)))
-             (file-name (git-file-name name version))
-             (sha256
-              (base32
-               "112q523w4jf3k8p4ynvjzfqa4j32ri34h2ppvicialp2lz5drvf0"))))
-   (native-inputs
-    (list python-nose
-          python-sphinx
-          python-sphinx-rtd-theme))
-   (propagated-inputs
-    (list python-agate
-          python-crate
-          python-sqlalchemy))
-   (home-page "https://agate-sql.rtfd.org")
-   (synopsis "SQL read/write support to agate")
-   (description "@code{agatesql} uses a monkey patching pattern to add SQL
-support to all @code{agate.Table} instances.")))
+  (package
+    (name "python-agate-sql")
+    (version "0.7.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/wireservice/agate-sql")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "03pvya65jm4s5sxwz0msj5dwjr6mk7dja3wdyh7hmf31dpczkjm8"))))
+    (build-system pyproject-build-system)
+    ;; XXX: Documentation requires <https://github.com/pradyunsg/furo> which
+    ;; is not packaged yet and depends on some missing Node.js packages
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-agate
+           python-crate
+           python-sqlalchemy))
+    (home-page "https://agate-sql.rtfd.org")
+    (synopsis "SQL read/write support to agate")
+    (description
+     "@code{agatesql} uses a monkey patching pattern to add SQL support to all
+@code{agate.Table} instances.")
+    (license license:expat)))
 
 (define-public python-agate-dbf
   (wireservice-package
