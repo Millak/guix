@@ -32967,6 +32967,28 @@ utilities.")
                emacs-perspective
                mu)))))
 
+(define-public emacs-treemacs-nerd-icons
+  (let ((revision "0")
+        (commit "9876cb478145a0ec4e36f64ff6583f3de7126216"))
+    (package
+      (name "emacs-treemacs-nerd-icons")
+      (version (git-version "0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/rainstormstudio/treemacs-nerd-icons.git")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1xphhxdibjhp27z2lj1nxlxf7cfm8vpi44fr01fk9krqy9vaz0q0"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-nerd-icons emacs-treemacs))
+      (synopsis "emacs-treemacs-nerd-icons")
+      (description "This package provides nerd-icons integration for treemacs.")
+      (home-page "https://github.com/rainstormstudio/treemacs-nerd-icons")
+      (license license:gpl3+))))
+
 (define-public emacs-libyaml
   ;; Upstream made no release so far.
   (let ((version "0.1")
