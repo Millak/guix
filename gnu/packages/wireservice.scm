@@ -104,39 +104,44 @@ don't care if they're perfect.")
    #:name "python-agate-locales"))
 
 (define-public python-agate
-  (wireservice-package
-   (name "python-agate")
-   (version "1.7.1")
-   (source (origin
-             (method git-fetch)
-             (uri (git-reference
-                   (url "https://github.com/wireservice/agate")
-                   (commit version)))
-             (file-name (git-file-name name version))
-             (sha256
-              (base32
-               "1wqyml7f70hr7zhgwvwqy4bdshlbcmp4jmyc5y12jyx10xp3sk7c"))))
-   (native-inputs
-    (list (libc-utf8-locales-for-target)
-          python-agate-locales
-          python-nose
-          python-sphinx
-          python-sphinx-rtd-theme
-          python-cssselect
-          python-lxml))
-   (propagated-inputs
-    (list python-babel
-          python-isodate
-          python-leather
-          python-parsedatetime
-          python-pytimeparse
-          python-six
-          python-slugify))
-   (home-page "https://agate.rtfd.org")
-   (synopsis "Data analysis library")
-   (description "Agate is a Python data analysis library.  It is an
-alternative to numpy and pandas that solves real-world problems with readable
-code.  Agate was previously known as journalism.")))
+  (package
+    (name "python-agate")
+    (version "1.12.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/wireservice/agate")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qvjlcbv42pjphz5i7vvd5p25barqmglhdzksaspg66n83gps8gv"))))
+    (build-system pyproject-build-system)
+    ;; XXX: Documentation requires <https://github.com/pradyunsg/furo> which
+    ;; is not packaged yet and depends on some missing Node.js packages
+    (native-inputs
+     (list (libc-utf8-locales-for-target)
+           python-agate-locales
+           python-cssselect
+           python-lxml
+           python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-babel
+           python-isodate
+           python-leather
+           python-parsedatetime
+           python-pytimeparse
+           python-slugify
+           python-tzdata))
+    (home-page "https://agate.rtfd.org")
+    (synopsis "Data analysis library")
+    (description
+     "Agate is a Python data analysis library.  It is an alternative to numpy
+and pandas that solves real-world problems with readable code.  Agate was
+previously known as journalism.")
+    (license license:expat)))
 
 (define-public python-agate-sql
   (wireservice-package
