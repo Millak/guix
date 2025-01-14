@@ -7698,7 +7698,7 @@ changed the process is restarted.")
          "1ha4pp96y3jk33qnyir5851cnj4dc06q6wqn1b0w54l3fsds28vi"))))
     (build-system pyproject-build-system)
     (arguments (list #:test-flags #~(list "tests/unit")))
-    (native-inputs (list python-pytest))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (propagated-inputs
      (list python-geojson-for-pyowm
            python-pysocks
