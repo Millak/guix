@@ -10,6 +10,7 @@
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Luis Felipe López Acevedo <luis.felipe.la@protonmail.com>
 ;;; Copyright © 2022 Pradana Aumars <paumars@courrier.dev>
+;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1122,6 +1123,34 @@ settings.py and easily use them in your project.")
     (description
      "Django Q is a native Django task queue, scheduler and worker application
 using Python multiprocessing.")
+    (license license:expat)))
+
+(define-public python-django-q2
+  (package
+    (name "python-django-q2")
+    (version "1.7.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "django_q2" version))
+       (sha256
+        (base32 "0zd1zpi5d3ky26i9rv0aii6kkb6gwvpypnwmsjbmpxiwawhv242j"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; FIXME: Tests require disque, Redis, MongoDB, Docker.
+      #:tests? #f))
+    (native-inputs
+     (list python-poetry-core))
+    (propagated-inputs
+     (list python-django
+           python-django-picklefield))
+    (home-page "https://django-q2.readthedocs.org")
+    (synopsis "Multiprocessing distributed task queue for Django")
+    (description
+     "This package provides a multiprocessing distributed task queue for
+Django.  Django Q2 is a fork of Django Q with the new updated version of
+Django Q, dependencies updates, docs updates and several bug fixes.")
     (license license:expat)))
 
 (define-public python-django-sortedm2m
