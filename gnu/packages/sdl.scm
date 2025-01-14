@@ -150,7 +150,7 @@ hardware.")
   (package
     (inherit sdl2)
     (name "sdl3")
-    (version "3.1.6")
+    (version "3.1.8")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -160,7 +160,7 @@ hardware.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1plyp0x8rvfwxpmfdjndj78kbfaisljjza700mvks4qyjjvmk2rh"))))
+                "13iw79lhr1hrs6yqfnnaacsgdwawlsavvbqnglifh4bx5zkxdyf9"))))
     (build-system cmake-build-system)
     (arguments
      (list
