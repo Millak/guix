@@ -1184,6 +1184,38 @@ Django Q, dependencies updates, docs updates and several bug fixes.")
     (description "This package provides a Sentry support plugin for Django Q.")
     (license license:expat)))
 
+(define-public python-django-q-rollbar
+  (package
+    (name "python-django-q-rollbar")
+    (version "0.1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "django-q-rollbar" version))
+       (sha256
+        (base32 "0jzf84h4vr335ppp7x4d3pm04dlz8b75w0bswyynqzjhjji6vpm4"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-poetry-core
+            (lambda _
+              ;; Patch to use the core poetry API.
+              (substitute* "pyproject.toml"
+                (("poetry.masonry.api") "poetry.core.masonry.api"))))
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("rollbar = .*") "rollbar = \"^1\"")))))))
+    (propagated-inputs (list python-rollbar python-requests))
+    (native-inputs (list python-poetry-core python-setuptools))
+    (home-page "https://django-q.readthedocs.org")
+    (synopsis "Rollbar support plugin for Django Q")
+    (description
+     "This package provides a Rollbar support plugin for Django Q.")
+    (license license:expat)))
+
 (define-public python-django-sortedm2m
   (package
     (name "python-django-sortedm2m")
