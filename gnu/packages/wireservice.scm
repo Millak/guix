@@ -205,31 +205,36 @@ support to all @code{agate.Table} instances.")
     (license license:expat)))
 
 (define-public python-agate-excel
-  (wireservice-package
-   (name "python-agate-excel")
-   (version "0.2.5")
-   (source (origin
-             (method git-fetch)
-             (uri (git-reference
-                   (url "https://github.com/wireservice/agate-excel")
-                   (commit version)))
-             (file-name (git-file-name name version))
-             (sha256
-              (base32
-               "1y3cw57000inwczx50n16kxkr3xi2l241iml1qcqp29a0ba5c519"))))
-   (native-inputs
-    (list python-nose
-          python-sphinx
-          python-sphinx-rtd-theme))
-   (propagated-inputs
-    (list python-agate
-          python-olefile
-          python-openpyxl
-          python-xlrd))
-   (home-page "https://agate-excel.rtfd.org")
-   (synopsis "Add read support for Excel files (xls and xlsx) to agate")
-   (description "@code{agateexcel} uses a monkey patching pattern to add read
-for xls and xlsx files support to all @code{agate.Table} instances.")))
+  (package
+    (name "python-agate-excel")
+    (version "0.4.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/wireservice/agate-excel")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0mg5ldnyc72yllwl8x2gpb142l43wss5f4sgp610db1v2w12rzhj"))))
+    (build-system pyproject-build-system)
+    ;; XXX: Documentation requires <https://github.com/pradyunsg/furo> which
+    ;; is not packaged yet and depends on some missing Node.js packages
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-agate
+           python-olefile
+           python-openpyxl
+           python-xlrd))
+    (home-page "https://agate-excel.rtfd.org")
+    (synopsis "Add read support for Excel files (xls and xlsx) to agate")
+    (description
+     "@code{agateexcel} uses a monkey patching pattern to add read for xls and
+xlsx files support to all @code{agate.Table} instances.")
+    (license license:expat)))
 
 (define-public csvkit
   (package
