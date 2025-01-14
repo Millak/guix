@@ -20968,7 +20968,9 @@ Python 2.4 and 2.5, and will draw its fixes/improvements from python-trunk.")
            python-pytest-click
            python-pytest-subtests
            python-pytest-timeout
-           python-toml))
+           python-toml
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-billiard
            python-click
