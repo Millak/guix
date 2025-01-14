@@ -6079,7 +6079,7 @@ available in Django, but is a standalone package.")
        (sha256
         (base32 "1nx4x0ifanlbrzh3f9ns8ihnchlkzf54ilvqmgcgcz2j72vm43rp"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-pytest))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (propagated-inputs (list python-sqlalchemy python-wtforms))
     (home-page "https://github.com/wtforms/wtforms-sqlalchemy/")
     (synopsis "SQLAlchemy tools for WTForms")
