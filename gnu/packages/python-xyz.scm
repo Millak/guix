@@ -30106,7 +30106,7 @@ append on old values.  Partd excels at shuffling operations.")
 (define-public python-fsspec
   (package
     (name "python-fsspec")
-    (version "2024.10.0")
+    (version "2024.12.0")
     (source
      (origin
        (method git-fetch)
@@ -30115,7 +30115,7 @@ append on old values.  Partd excels at shuffling operations.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0fba2wsf0z80y2x60rag5h393vn0ln7s0fbmvvl1cwjw30pgl9qb"))))
+        (base32 "14hj13nnqd39z1x0vlf0939a08c5qb0jcwgawgcsr0wgmh2jzkam"))))
     (build-system pyproject-build-system)
     (arguments
      (list
