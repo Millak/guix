@@ -5768,7 +5768,7 @@ well as ephemerides services
     (arguments
      (list #:test-flags #~(list "test.py")))
     (native-inputs
-     (list python-cython python-pytest))
+     (list python-cython python-pytest python-setuptools python-wheel))
     (propagated-inputs
      (list  python-numpy))
     (synopsis "Python library for Source Extraction and Photometry")))
