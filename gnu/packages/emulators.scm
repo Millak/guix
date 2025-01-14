@@ -482,6 +482,57 @@ turbo speed, networked multiplayer, and graphical enhancements.")
       ;; dolphin/Data/Sys/GC/font_*.bin: Licensed under ASL2.0.
       (license (list license:gpl2+ license:asl2.0 license:fdl1.2+)))))
 
+(define-public libretro-dolphin-emu
+  ;; There are no tag or release; use the latest commit.
+  (let ((commit "89a4df725d4eb24537728f7d655cddb1add25c18")
+        (revision "0"))
+    (package
+      (inherit dolphin-emu)
+      (name "libretro-dolphin-emu")
+      (version (git-version "5.0" revision commit))
+      (source (origin
+                (inherit (package-source dolphin-emu))
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/libretro/dolphin")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1fvm6hy0ihc0j3sgv88a7ak08c0kyikmmiif827j981fy7zvglvz"))))
+      (arguments
+       (substitute-keyword-arguments (package-arguments dolphin-emu)
+         ((#:configure-flags flags ''())
+          #~(cons "-DLIBRETRO=ON" #$flags))
+         ((#:phases phases '%standard-phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'deregister-bundled-sources
+                (lambda _
+                  (substitute* "CMakeLists.txt"
+                    ((".*add_subdirectory.*Externals/curl.*") "")
+                    ((".*add_subdirectory.*Externals/libpng.*") ""))))
+              (replace 'install
+                (lambda _
+                  (install-file "dolphin_libretro.so"
+                                (string-append #$output "/lib/libretro"))
+                  ;; The system data files are also required for the proper
+                  ;; functioning of dolphin; without them, it crashes with
+                  ;; segmentation faults and cannot save files to the memory
+                  ;; card.
+                  (let ((sysdir (string-append
+                                 #$output
+                                 "/share/libretro/system/dolphin-emu")))
+                    (mkdir-p sysdir)
+                    (copy-recursively "../source/Data/Sys"
+                                      (string-append sysdir "/Sys")))))))))
+      (inputs
+       ;; Delete large and extraneous inputs.
+       (modify-inputs (package-inputs dolphin-emu)
+         (delete "ffmpeg"
+                 "gtk+"
+                 "qtbase")))
+      (synopsis "Libretro port of Dolphin, the Nintendo Wii/GameCube emulator"))))
+
 (define-public dosbox
   (package
     (name "dosbox")
