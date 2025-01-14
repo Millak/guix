@@ -1740,43 +1740,6 @@ rounds that are calibrated to the chosen timer.")
 service processes for your tests with pytest.")
     (license license:expat)))
 
-(define-public python-pytest-toolbox
-  (package
-    (name "python-pytest-toolbox")
-    (version "0.4")
-    (source
-     (origin
-       ;; No tests in the PyPI tarball.
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/samuelcolvin/pytest-toolbox")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1wqkr3g5gmqdxmhzfsxbwy8pm3cadaj6a8cxq58w9bacly4hqbh0"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'pre-check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (substitute* "setup.cfg"
-                  ((".*timeout.*") ""))))))))
-    (native-inputs
-     (list python-pydantic
-           python-pytest
-           python-pytest-isort
-           python-setuptools
-           python-wheel))
-    (home-page "https://github.com/samuelcolvin/pytest-toolbox")
-    (synopsis "Numerous useful plugins for Pytest")
-    (description
-     "Pytest Toolbox contains many useful plugins for Pytest.  Among them are
-new fixtures, new methods and new comparison objects.")
-    (license license:expat)))
-
 (define-public python-pytest-aiohttp
   (package
     (name "python-pytest-aiohttp")
