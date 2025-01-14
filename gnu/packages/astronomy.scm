@@ -3706,8 +3706,11 @@ to access online Astronomical data.  Each web service has its own sub-package.")
            python-extension-helpers
            python-pytest-astropy
            python-scipy
-           python-setuptools-scm))
-    (propagated-inputs (list python-astropy python-numpy))
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (list python-astropy
+           python-numpy))
     (home-page "https://github.com/astropy/astroscrappy")
     (synopsis "Speedy Cosmic Ray Annihilation Package in Python")
     (description
