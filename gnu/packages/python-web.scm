@@ -639,6 +639,58 @@ implements @code{collections.abc.MutableSequence}.  It can be made immutable
 by calling @code{FrozenList.freeze}.")
     (license license:asl2.0)))
 
+(define-public python-aiobotocore
+  (package
+    (name "python-aiobotocore")
+    (version "2.17.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "aiobotocore" version))
+       (sha256
+        (base32 "1hlwgy1z6ln6bh7b2i9syv7q2bagjkjbws247gbgkgv5qlri6153"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; Too many tests fail seemingly because they need Internet access.
+      #:tests? #false
+      #:test-flags
+      '(list
+        ;; No module named 'tests'
+        "--ignore=tests/test_config.py"
+        ;; function uses no argument 's3_verify'
+        "--ignore=tests/test_basic_s3.py"
+        ;; function uses no argument 'signature_version'
+        "--ignore=tests/test_dynamodb.py"
+        ;; attempted relative import with no known parent package
+        "--ignore=tests/test_stubber.py"
+        ;; No module named 'pip'
+        "--ignore=tests/test_version.py")))
+    (propagated-inputs (list python-aiohttp
+                             python-aioitertools
+                             python-botocore
+                             python-jmespath
+                             python-multidict
+                             python-dateutil
+                             python-urllib3
+                             python-wrapt))
+    (native-inputs
+     (list python-dill
+           python-docutils
+           python-moto
+           python-pytest
+           python-pytest-asyncio
+           python-requests
+           python-setuptools
+           python-werkzeug
+           python-wheel))
+    (home-page "https://pypi.org/project/aiobotocore/")
+    (synopsis "Async client for AWS services using botocore and aiohttp")
+    (description "This package provides an async client for Amazon services
+using botocore and aiohttp/asyncio.  This library is a mostly full featured
+asynchronous version of botocore.")
+    (license license:asl2.0)))
+
 (define-public python-aiohappyeyeballs
   (package
     (name "python-aiohappyeyeballs")
