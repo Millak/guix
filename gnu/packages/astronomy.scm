@@ -5532,7 +5532,8 @@ setup(ext_modules=get_extensions())")))))
            python-pytest-astropy
            python-pytest-astropy-header
            python-setuptools
-           python-setuptools-scm))
+           python-setuptools-scm
+           python-wheel))
     (home-page "https://github.com/astropy/pyregion")
     (synopsis "Python parser for ds9 region files")
     (description
