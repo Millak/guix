@@ -3301,6 +3301,13 @@ instruments.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; XXX: Disable as not compatible with Pytest 8+, check with upstream.
+      ;;
+      ;; pytest.PytestRemovedIn9Warning: Marks applied to fixtures have no
+      ;; effect
+      ;;
+      ;; See docs: <https://docs.pytest.org/en/stable/deprecations.html>.
+      #:tests? #f
       ;; XXX: Check with upstram: assert False.
       #:test-flags
       #~(list "-k" (string-append
