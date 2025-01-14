@@ -1136,15 +1136,24 @@ using Python multiprocessing.")
        (sha256
         (base32 "0zd1zpi5d3ky26i9rv0aii6kkb6gwvpypnwmsjbmpxiwawhv242j"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; FIXME: Tests require disque, Redis, MongoDB, Docker.
-      #:tests? #f))
-    (native-inputs
-     (list python-poetry-core))
-    (propagated-inputs
-     (list python-django
-           python-django-picklefield))
+    ;; XXX: I just don't know how to correctly run the tests.
+    (arguments (list #:tests? #false))
+    (native-inputs (list python-poetry-core python-pytest))
+    (propagated-inputs (list python-blessed
+                             python-boto3
+                             python-croniter
+                             python-django
+                             python-django-picklefield
+                             python-django-q-rollbar
+                             python-django-q-sentry
+                             python-django-redis
+                             python-hiredis
+                             python-importlib-metadata
+                             python-iron-mq
+                             python-psutil
+                             python-pymongo
+                             python-redis
+                             python-setproctitle))
     (home-page "https://django-q2.readthedocs.org")
     (synopsis "Multiprocessing distributed task queue for Django")
     (description
