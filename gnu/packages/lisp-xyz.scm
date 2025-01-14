@@ -45,6 +45,7 @@
 ;;; Copyright © 2024 Carlo Zancanaro <carlo@zancanaro.id.au>
 ;;; Copyright © 2024 Nik Gaffney <nik@fo.am>
 ;;; Copyright © 2024 Grigory Shepelev <shegeley@gmail.com>
+;;; Copyright © 2025 Junker <dk@junkeria.club>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -29995,6 +29996,36 @@ backtrace portably.")
 
 (define-public ecl-trivial-backtrace
   (sbcl-package->ecl-package sbcl-trivial-backtrace))
+
+(define-public sbcl-trivial-battery
+  (let ((commit "318c9da88b4d11d3f33062e0fd09be660a383404")
+        (revision "1"))
+    (package
+      (name "sbcl-trivial-battery")
+      (version (git-version "0.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/pokepay/trivial-battery")
+               (commit commit)))
+         (file-name (git-file-name "cl-trivial-battery" version))
+         (sha256
+          (base32 "12ni2502v9gjszhjsh0aai08cm64gl8g815xghdjhcf7y34ffl2b"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs (list sbcl-split-sequence))
+      (home-page "https://github.com/pokepay/trivial-battery")
+      (synopsis "Trivial library for getting the battery information")
+      (description
+       "This package provides a Common Lisp library for getting the battery
+information.")
+      (license license:bsd-2))))
+
+(define-public cl-trivial-battery
+  (sbcl-package->cl-source-package sbcl-trivial-battery))
+
+(define-public ecl-trivial-battery
+  (sbcl-package->ecl-package sbcl-trivial-battery))
 
 (define-public sbcl-trivial-benchmark
   (let ((commit "1fbc8d15f09ed8aa426bc73956b8b7c9b2668802")
