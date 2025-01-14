@@ -1377,33 +1377,45 @@ forms using your favorite CSS framework, without writing template code.")
 (define-public python-django-compressor
   (package
     (name "python-django-compressor")
-    (version "2.4.1")
+    (version "4.5.1")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "django_compressor" version))
         (sha256
-         (base32 "1q0m0hfg7sqmj5km924g4dgy3nx51aszzsprlp6gsin10mv0fn1k"))))
-    (build-system python-build-system)
+         (base32 "08m8cs1mnpwd2zlck8cbl4cdp21dgv4vj7j17krbgn745s5a9n61"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "setup.py"
+               (("==") ">="))))
+         ;; This needs calmjs.
+         (add-after 'unpack 'skip-bad-test
+           (lambda _
+             (substitute* "compressor/tests/test_filters.py"
+               (("test_calmjs_filter") "_test_calmjs_filter"))))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
-             (if tests?
-               (begin
-                 (setenv "DJANGO_SETTINGS_MODULE" "compressor.test_settings")
-                 (invoke "django-admin" "test"
-                         "--pythonpath=."))
-               #t))))
-       ;; Tests fail with beautifulsoup 4.9+
-       ;; https://github.com/django-compressor/django-compressor/issues/998
-       #:tests? #f))
+             (when tests?
+               (setenv "DJANGO_SETTINGS_MODULE" "compressor.test_settings")
+               (invoke "django-admin" "test"
+                       "--pythonpath=.")))))))
     (propagated-inputs
-     (list python-django-appconf python-rcssmin python-rjsmin))
+     (list python-django
+           python-django-appconf
+           python-django-sekizai
+           python-rcssmin
+           python-rjsmin))
     (native-inputs
-     (list python-beautifulsoup4 python-brotli python-csscompressor
-           python-django-sekizai python-mock))
+     (list python-beautifulsoup4
+           python-brotli
+           python-csscompressor
+           python-setuptools
+           python-wheel))
     (home-page "https://django-compressor.readthedocs.io/en/latest/")
     (synopsis
      "Compress linked and inline JavaScript or CSS into single cached files")
