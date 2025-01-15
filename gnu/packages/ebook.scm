@@ -699,6 +699,7 @@ format documents, with the following features:
     (build-system pyproject-build-system)
     (arguments (list #:tests? #f)) ; There are no tests.
     (propagated-inputs (list python-lxml python-six))
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/aerkalov/ebooklib")
     (synopsis "Ebook library which can handle EPUB2/EPUB3 and Kindle format")
     (description
