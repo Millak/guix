@@ -34817,6 +34817,27 @@ bytestring representations.")
     (description "This package provides an interprocess communication toolkit.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-intmap-0.7
+  (package
+    (name "rust-intmap")
+    (version "0.7.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "intmap" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ffph34qfda5zxdvy2pvjnip9hgzbjcxw53pvdpcjaxc8n7z4lmf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs (("rust-ordermap" ,rust-ordermap-0.2)
+                                   ("rust-rand" ,rust-rand-0.3))))
+    (home-page "https://github.com/JesperAxelsson/rust-intmap")
+    (synopsis "Specialized HashMap for integer keys")
+    (description
+     "This package provides a specialized @code{HashMap} for integer keys.")
+    (license license:expat)))
+
 (define-public rust-invalidstring-0.1
   (package
     (name "rust-invalidstring")
