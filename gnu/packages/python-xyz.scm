@@ -33172,14 +33172,14 @@ tbutils
 (define-public python-eliot
   (package
     (name "python-eliot")
-    (version "1.13.0")
+    (version "1.16.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "eliot" version))
        (sha256
-        (base32 "1xzzhsjrrw430dc84vamf683bwp9i0nr86xf2iav6yla615ijq2p"))))
-    (build-system python-build-system)
+        (base32 "1ybf5klr8r28yfrkm1a3598h83h10pkx1j1saf9h3lk21isxl9la"))))
+    (build-system pyproject-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -33206,21 +33206,21 @@ tbutils
                 "_test_logCallsDefaultLoggerWrite"))
              #t)))))
     (propagated-inputs
-     (list python-boltons python-pyrsistent python-six
-           python-zope-interface))
+     (list python-boltons python-orjson python-pyrsistent python-zope-interface))
     (native-inputs
      (list python-black
            python-coverage
-           python-dask
            python-flake8
            python-hypothesis
            python-pytest
+           python-pytest-xdist
            python-setuptools
            python-sphinx
            python-sphinx-rtd-theme
            python-testtools
            python-twine
-           python-twisted))
+           python-twisted
+           python-wheel))
     (home-page "https://github.com/itamarst/eliot/")
     (synopsis "Eliot: the logging system that tells you why it happened")
     (description
