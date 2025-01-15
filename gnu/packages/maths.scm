@@ -65,7 +65,7 @@
 ;;; Copyright © 2023 David Elsing <david.elsing@posteo.net>
 ;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
 ;;; Copyright © 2024 Foundation Devices, Inc. <hello@foundation.xyz>
-;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2024, 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -7390,7 +7390,7 @@ evaluates expressions using the standard order of operations.")
 (define-public xaos
   (package
     (name "xaos")
-    (version "4.3.2")
+    (version "4.3.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -7399,7 +7399,7 @@ evaluates expressions using the standard order of operations.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0a5n3g1xcsd8k65q5skm4xsdllr3mmkahh4vi59db1l0jv81v06q"))))
+                "0imq6rvvjwjgmrfr25yr5lmhmqr4s6a5174jhah90mhf7pb62j0i"))))
     (build-system gnu-build-system)
     (native-inputs `(("gettext" ,gettext-minimal)
                      ("qtbase" ,qtbase)
