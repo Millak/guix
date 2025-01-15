@@ -110,35 +110,3 @@ The user space applications allow you to control your computer with a remote
 control: you can send X events to applications, start programs and much more
 on just one button press.")
     (license license:gpl2+)))
-
-(define-public python-lirc
-  (let ((commit "c28708bbeb6e02d85f13dd7e0b24e8e86abc215b")
-        (revision "2"))
-    (package
-      (name "python-lirc")
-      (version (git-version "1.2.1" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/tompreston/python-lirc")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "13s9zqyfh871ls1aha47rhmk13b4mcyfckcn2sw70bvc26832gk6"))))
-      (build-system python-build-system)
-      (inputs
-       (list lirc))
-      (native-inputs
-       (list python-cython))
-      (arguments
-       `(#:tests? #f         ; the only tests that exist are interactive
-         #:phases
-         (modify-phases %standard-phases
-           (add-before 'build 'build-from-cython-files
-             (lambda _ (invoke "make" "py3"))))))
-      (home-page "https://github.com/tompreston/python-lirc")
-      (synopsis "Python bindings for LIRC")
-      (description "@code{lirc} is a Python module which provides LIRC bindings.")
-      (license license:gpl3))))
