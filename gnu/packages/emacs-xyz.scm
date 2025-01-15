@@ -4933,37 +4933,33 @@ as brings user experience improvements.")
       (license license:gpl3+))))
 
 (define-public emacs-xenops
-  (let ((revision "0")
-        (commit "6d9a8d654a6102484ac9087f25931f0664e7dd07"))
-    (package
-      (name "emacs-xenops")
-      (version (git-version "0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/dandavison/xenops.git")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1sasm6rrhvsqndcwm74cgmlk96g2wx81fk9z32rq095yvim4y5qq"))))
-      (propagated-inputs (list emacs-aio emacs-auctex emacs-avy emacs-dash
-                               emacs-f emacs-s))
-      (build-system emacs-build-system)
-      (arguments
-       (list
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'unpack 'chdir
-              (lambda _
-                (setenv "HOME" "/tmp")
-                (chdir "lisp"))))))
-      (synopsis "WYSIWYG LaTeX environment")
-      (description "This package provides a WYSIWYG LaTeX environment.
+  (package
+    (name "emacs-xenops")
+    (version "0.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/dandavison/xenops/archive/"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "1gaym5bl6fhdp4pa283qcx5qf77wz2g7xl9n1gyvvl9yl0kvrb48"))))
+    (propagated-inputs (list emacs-aio emacs-auctex emacs-avy emacs-dash
+                             emacs-f emacs-s))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (setenv "HOME" "/tmp")
+              (chdir "lisp"))))))
+    (synopsis "WYSIWYG LaTeX environment")
+    (description "This package provides a WYSIWYG LaTeX environment.
 It uses @command{dvisvgm}, @command{xclip}, @command{pngpaste} and
 @command{latex}.")
-      (home-page "https://github.com/dandavison/xenops")
-      (license license:expat))))
+    (home-page "https://github.com/dandavison/xenops")
+    (license license:expat)))
 
 (define-public emacs-autothemer
   (let ((commit "8f72afc6dba5ad7cc3a201a084fd20571f945d2e")) ;version bump
