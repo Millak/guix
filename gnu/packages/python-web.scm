@@ -8397,7 +8397,7 @@ challenges.")
 (define-public python-imap-tools
   (package
     (name "python-imap-tools")
-    (version "1.6.0")
+    (version "1.9.0")
     (source
      (origin
        (method git-fetch)               ; no tests in PyPI release
@@ -8406,7 +8406,7 @@ challenges.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0w4x5l5w7rz1mrmbbjbfqbf3f5p89wi2fw245yvg8k98zgy012sg"))))
+        (base32 "0iawc6shxn8p0ysiqiahfic5rp1r16f7rfn11c8y2fl8falckynr"))))
     (arguments
      (list
       #:test-flags
@@ -8419,7 +8419,7 @@ challenges.")
                                   " and not test_live"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest))
+     (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/ikvk/imap_tools")
     (synopsis "Work with email and mailbox by IMAP")
     (description
