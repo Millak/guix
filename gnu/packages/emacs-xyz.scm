@@ -8278,6 +8278,24 @@ for the Zig programming language in Emacs.")
      "Emacs packages for working with Zettelkasten-style linked notes.")
     (license license:gpl3+)))
 
+(define-public emacs-erc
+  (package
+    (name "emacs-erc")
+    (version "5.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://elpa.gnu.org/packages/erc-" version ".tar"))
+       (sha256
+        (base32 "16qyfsa2q297xcfjiacjms9v14kjwwrsp3m8kcs5s50aavzfvc1s"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-compat))
+    (home-page "https://www.gnu.org/software/emacs/erc.html")
+    (synopsis "An Emacs Internet Relay Chat client")
+    (description
+     "ERC is a powerful, modular, and extensible IRC client for Emacs.")
+    (license license:gpl3+)))
+
 (define-public emacs-znc
   (package
     (name "emacs-znc")
