@@ -867,21 +867,21 @@ nbshow present a single notebook in a terminal-friendly way
 (define-public python-nbstripout
   (package
     (name "python-nbstripout")
-    (version "0.5.0")
+    (version "0.8.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "nbstripout" version))
               (sha256
                (base32
-                "1n57nvxsc94gz9w8ymi83bjkfhfwkpmx4y14m6gjrmlqd49m1aw6"))))
+                "1c8b4fz807qlh028yi35gahwbas4pbwc1wjx3vz8v7kj9rmqpb7a"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; These tests use git and hg, and they are sensitive to the
-      ;; exact printed output.
-      #:test-flags '(map (lambda (test)
-                           (string-append "--ignore=tests/test-" test ".t"))
-                         '("git" "hg" "status" "uninstall"))
+      #:test-flags
+      ;; These tests use git.
+      '(list "--ignore=tests/test_git_integration.py"
+             ;; These complain about missing files.
+             "--ignore=tests/test_end_to_end.py")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'set-CRAMSHELL
@@ -889,12 +889,7 @@ nbshow present a single notebook in a terminal-friendly way
               (setenv "CRAMSHELL" (which "bash")))))))
     (propagated-inputs (list python-nbformat))
     (native-inputs
-     (list python-pytest
-           python-pytest-cram
-           python-pytest-flake8
-           python-pytest-runner
-           python-setuptools
-           python-wheel))
+     (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/kynan/nbstripout")
     (synopsis "Strips outputs from Jupyter and IPython notebooks")
     (description
