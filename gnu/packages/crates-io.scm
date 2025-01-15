@@ -49788,6 +49788,27 @@ iteration.  NOTE: This crate was renamed to @code{indexmap}.  Please use it
 under its new name.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-ordermap-0.2
+  (package
+    (inherit rust-ordermap-0.3)
+    (name "rust-ordermap")
+    (version "0.2.13")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ordermap" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "12wy6zbndxp6wi5lg3dsahlfr7yh12bxrz7dpdrhxalnrfwg675q"))))
+    (arguments
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-fnv" ,rust-fnv-1)
+                                   ("rust-itertools" ,rust-itertools-0.5)
+                                   ("rust-lazy-static" ,rust-lazy-static-0.2)
+                                   ("rust-quickcheck" ,rust-quickcheck-0.4)
+                                   ("rust-rand" ,rust-rand-0.3)
+                                   ("rust-serde-test" ,rust-serde-test-1))))))
+
 (define-public rust-orgize-0.9
   (package
     (name "rust-orgize")
