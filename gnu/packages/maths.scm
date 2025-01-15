@@ -12,7 +12,7 @@
 ;;; Copyright © 2015 Fabian Harfert <fhmgufs@web.de>
 ;;; Copyright © 2016 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016, 2018, 2020, 2021 Kei Kebreau <kkebreau@posteo.net>
-;;; Copyright © 2016-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2017 Thomas Danckaert <post@thomasdanckaert.be>
 ;;; Copyright © 2017, 2018, 2019, 2020, 2021 Paul Garlick <pgarlick@tourbillion-technology.com>
@@ -1168,19 +1168,20 @@ large scale eigenvalue problems.")
 (define-public lapack
   (package
     (name "lapack")
-    (version "3.9.0")
+    (version "3.12.1")
     (source
      (origin
-      (method url-fetch)
-      (uri (string-append "http://www.netlib.org/lapack/lapack-"
-                          version ".tgz"))
+      (method git-fetch)
+      (uri (git-reference
+            (url "https://github.com/Reference-LAPACK/lapack/")
+            (commit (string-append "v" version))))
+      (file-name (git-file-name name version))
       (sha256
        (base32
-        "1155qixp26c12yrxc76z9mlfw2h3xxymxxv5znpgzh5gaykpndgj"))))
+        "19387ifv5kplnggw5fgz4nzspmqi11wnwzap2knwxgrvknysrwj9"))))
     (build-system cmake-build-system)
     (home-page "https://www.netlib.org/lapack/")
-    (inputs `(("fortran" ,gfortran)
-              ("python" ,python-wrapper)))
+    (inputs (list gfortran python-wrapper))
     (arguments
      `(#:configure-flags (list
                           "-DBUILD_SHARED_LIBS:BOOL=YES"
