@@ -2349,19 +2349,21 @@ into Jinja2 by default.")
 (define-public python-flask-misaka
   (package
     (name "python-flask-misaka")
-    (version "1.0.0")
+    (version "1.0.1")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "Flask-Misaka" version))
         (sha256
           (base32
-            "12gm6hq3lvlj0ddw8p6lk5pky8jk3pw758ihffjl49shnnzc68zl"))))
-    (build-system python-build-system)
+            "1yi9iall3ml1n8bff1mg49xajmldcm5pc0fkpl3w2rlnny08giax"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-flags #~(list "tests.py")))
     (native-inputs
-      (list python-coverage python-mock))
+     (list python-flask python-pytest python-setuptools python-wheel))
     (propagated-inputs
-      (list python-flask python-misaka))
+      (list python-markupsafe python-misaka))
     (home-page "https://github.com/singingwolfboy/flask-misaka/")
     (synopsis "Flask interface to Misaka, a Markdown parsing library")
     (description
