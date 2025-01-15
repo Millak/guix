@@ -17302,6 +17302,8 @@ structures.")
        (sha256
         (base32 "1bh1dkrbmcqb46r7j4fazzq7j6zfr2f04frm6h4bhhpcjx5lhb57"))))
     (build-system pyproject-build-system)
+    (native-inputs
+     (list python-setuptools python-wheel))
     (home-page "https://github.com/tkrajina/gpxpy")
     (synopsis "Python GPX parser")
     (description "GPX file parser and GPS track manipulation library.")
