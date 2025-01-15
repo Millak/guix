@@ -2885,14 +2885,14 @@ for clients and servers.")
 (define-public python-cssutils
   (package
     (name "python-cssutils")
-    (version "2.6.0")
+    (version "2.11.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "cssutils" version))
        (sha256
         (base32
-         "13l1y0xr3fgbl95w3pinb5av5dqk2ip39pih6vgrz47c3hyd5p7p"))))
+         "1qpq7xvzqp4cfcb8837rnd30x4hws3rkp33qpvmnxbxn2djsfqq5"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2901,12 +2901,17 @@ for clients and servers.")
           (replace 'check
             (lambda _
               (invoke "pytest" "-vv" "-k"
-                      ;; disable tests requiring network
-                      (string-append "not test_parseUrl "
-                                     "and not encutils "
+                      (string-append "not encutils "
                                      "and not website.logging")))))))
     (native-inputs
-     (list python-pytest python-jaraco-test python-setuptools python-wheel))
+     (list python-cssselect
+           python-jaraco-test
+           python-lxml
+           python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-more-itertools))
     (home-page "https://github.com/jaraco/cssutils")
     (synopsis
       "CSS Cascading Style Sheets library for Python")
