@@ -7508,64 +7508,6 @@ similarity of community members.")
 Oxford Nanopore Technologies sequencing data.")
     (license license:expat)))
 
-(define-public fanc
-  (let ((commit "354401e52ba2320e6b1ba0d3b5aab3541d31c9f3")
-	(revision "1"))
-    (package
-      (name "fanc")
-      (version (git-version "0" revision commit))
-      (source (origin
-		(method git-fetch)
-		(uri (git-reference
-		      (url "https://github.com/vaquerizaslab/fanc.git")
-		      (commit commit)))
-		(file-name (git-file-name name version))
-		(sha256
-		 (base32
-		  "0vp2cak5snla4j2q23d3ixx016bwzvxfiv4z6yp7anl0xaksd5bl"))))
-      (build-system pyproject-build-system)
-      (arguments
-       (list
-        #:test-flags
-        '(list "-m" "not longrunning"
-               ;; XXX: some of the tests here just take forever
-               "--ignore=fanc/test/test_matrix.py")))
-      (propagated-inputs
-       (list python-biopython
-	     python-cooler
-             python-deprecated
-	     python-future
-	     python-genomic-regions
-	     python-gridmap
-	     python-h5py
-	     python-imageio
-	     python-intervaltree
-	     python-matplotlib
-	     python-msgpack
-	     python-msgpack-numpy
-             python-numpy
-	     python-pandas
-	     python-pillow
-	     python-progressbar2
-	     python-pybedtools
-	     python-pybigwig
-	     python-pysam
-	     python-pywavelets
-	     python-pyyaml
-	     python-scikit-image
-	     python-scikit-learn
-	     python-scipy
-	     python-seaborn
-	     python-tables
-	     python-tifffile))
-      (native-inputs
-       (list python-cython python-pytest))
-      (home-page "https://github.com/vaquerizaslab/fanc")
-      (synopsis "Framework for the analysis of C-like data")
-      (description "FAN-C provides a pipeline for analysing Hi-C data starting
-at mapped paired-end sequencing reads.")
-      (license license:gpl3+))))
-
 (define-public fasttree
   (package
    (name "fasttree")
@@ -16447,6 +16389,9 @@ lowly expressed transcripts.")
      "FAN-C provides a pipeline for analysing Hi-C data starting at
 mapped paired-end sequencing reads.")
     (license license:gpl3+)))
+
+(define-public fanc
+  (deprecated-package "fanc" python-fanc))
 
 (define-public python-genomic-regions
   (package
