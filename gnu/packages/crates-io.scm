@@ -75519,6 +75519,21 @@ iterated over only by reference rather than by value.")
     (license (list license:unlicense
                    license:expat))))
 
+(define-public rust-streaming-stats-0.1
+  (package
+    (inherit rust-streaming-stats-0.2)
+    (name "rust-streaming-stats")
+    (version "0.1.29")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "streaming-stats" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "09cbpj40g1wcmkz9bpm9yrqyrvqizn6kmwac1jpb2prq6gr2phyv"))))
+    (arguments
+     `(#:cargo-inputs (("rust-num-traits" ,rust-num-traits-0.2))))))
+
 (define-public rust-strength-reduce-0.2
   (package
     (name "rust-strength-reduce")
