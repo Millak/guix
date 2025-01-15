@@ -189,14 +189,14 @@ than just headers; it requires tight integration with the MUA.")
 (define-public rust-sequoia-cert-store-0.6
   (package
     (name "rust-sequoia-cert-store")
-    (version "0.6.1")
+    (version "0.6.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "sequoia-cert-store" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "14f3zhkh0hrjmkv6ksvyr29z6mfq1hadqzqsvhp3xwlf9y66bhjg"))))
+        (base32 "19drjzxihs1bgqb0klwf81nxxx9jqgifzi49v8gqw00d6ba9lcwy"))))
     (build-system cargo-build-system)
     (arguments
      `(#:features '("sequoia-openpgp/crypto-nettle")
@@ -208,7 +208,7 @@ than just headers; it requires tight integration with the MUA.")
                        ("rust-openpgp-cert-d" ,rust-openpgp-cert-d-0.3)
                        ("rust-rayon" ,rust-rayon-1)
                        ("rust-rusqlite" ,rust-rusqlite-0.29)
-                       ("rust-sequoia-net" ,rust-sequoia-net-0.28)
+                       ("rust-sequoia-net" ,rust-sequoia-net-0.29)
                        ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1)
                        ("rust-smallvec" ,rust-smallvec-1)
                        ("rust-thiserror" ,rust-thiserror-1)
