@@ -7127,18 +7127,23 @@ deconvolution).  Such post-processing is not performed by Stackistry.")
     (license license:gpl3+)))
 
 (define-public stellarium
-  (package
+  ;; XXX fatal error: libs/indiclient/baseclient.h: No such file or directory
+  ;; <https://github.com/Stellarium/stellarium/issues/4019>, using the latest
+  ;; commit.
+  (let ((commit "60b6becd4147dd7c731ed0be790b1a30cdc0039b")
+        (revision "0"))
+    (package
     (name "stellarium")
-    (version "24.3")
+    (version (git-version "24.4" revision commit))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/Stellarium/stellarium")
-             (commit (string-append "v" version))))
+             (commit commit)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0wwaddbqcia6jaz3lc1cf63pvi9bqj2cglp428i77jlfs3dfj45j"))))
+        (base32 "1i00f63pmyy55mwagab4pv419agzmg2c4075hc8cgbhhhfr6gm8d"))))
     (build-system cmake-build-system)
     ;; TODO: Complete documentation build and split into dedicated outputs.
     (arguments
@@ -7162,7 +7167,7 @@ deconvolution).  Such post-processing is not performed by Stackistry.")
     (inputs
      (list calcmysky-qt5
            gpsd
-           indi
+           indi-2.0
            libnova
            nlopt
            openssl
@@ -7192,7 +7197,7 @@ deconvolution).  Such post-processing is not performed by Stackistry.")
 3D, just like what you see with the naked eye, binoculars, or a telescope.  It
 can be used to control telescopes over a serial port for tracking celestial
 objects.")
-    (license license:gpl2+)))
+    (license license:gpl2+))))
 
 (define-public stuff
   (package
