@@ -72,6 +72,7 @@
 ;;; Copyright © 2024 Nikita Domnitskii <nikita@domnitskii.me>
 ;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2024 Ashvith Shetty <ashvithshetty10@gmail.com>
+;;; Copyright © 2025 Dariqq <dariqq@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4450,7 +4451,7 @@ information tool.")
 (define-public fastfetch
   (package
     (name "fastfetch")
-    (version "2.34.0")
+    (version "2.34.1")
     (source
      (origin
        (method git-fetch)
@@ -4459,17 +4460,26 @@ information tool.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "17033prhikj3aajfcfzi0mjc4487hyq5r2av38rw59yb95hl6fv5"))))
+        (base32 "1fb8ix2wxvqb414gvc6174dwigpixswbysq7yp9c3rw3c55r294h"))
+       (modules '((guix build utils)))
+       (snippet '(begin
+                   (delete-file-recursively "src/3rdparty")))))
     (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags #~(list "-DENABLE_SYSTEM_YYJSON=ON"
+                                "-DBUILD_FLASHFETCH=OFF"
+                                "-DBUILD_TESTS=ON"
+                                "-DINSTALL_LICENSE=OFF")))
     (inputs (list dbus
                   glib
                   imagemagick
                   libxcb
                   mesa
                   wayland
+                  yyjson
                   zlib)) ;for imagemagick and an #ifdef
-    (native-inputs (list pkg-config))
-    (arguments (list #:tests? #f)) ; no test target
+    (native-inputs (list pkg-config python-minimal))
     (home-page "https://github.com/fastfetch-cli/fastfetch")
     (synopsis "Display system information in a stylized manner")
     (description
