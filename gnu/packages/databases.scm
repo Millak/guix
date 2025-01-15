@@ -4079,7 +4079,7 @@ this library provides functions to facilitate such comparisons.")
      (list python-dateutil
            python-editor
            python-mako
-           python-sqlalchemy
+           python-sqlalchemy-2
            python-typing-extensions))
     (home-page "https://bitbucket.org/zzzeek/alembic")
     (synopsis "Database migration tool for SQLAlchemy")
