@@ -45,6 +45,7 @@
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages sphinx))
 
 (define-public tmux
@@ -221,7 +222,7 @@ with live tmux sessions.")
     (propagated-inputs
      (list python-libtmux))
     (native-inputs
-     (list python-coverage python-sphinx tmux))
+     (list python-coverage python-flake8 python-sphinx tmux))
     (home-page "https://github.com/edouardklein/daemux")
     (synopsis "Start, stop, restart and check daemons via tmux")
     (description
