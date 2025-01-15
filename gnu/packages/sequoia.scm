@@ -295,6 +295,40 @@ than just headers; it requires tight integration with the MUA.")
      "This package provides a library for interacting with @code{GnuPG's} gpg-agent.")
     (license license:lgpl2.0+)))
 
+(define-public rust-sequoia-gpg-agent-0.4
+  (package
+    (inherit rust-sequoia-gpg-agent-0.5)
+    (name "rust-sequoia-gpg-agent")
+    (version "0.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sequoia-gpg-agent" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "119njpmhg0is0vlba199bmyp7fi19w8y555i89njkyrfv7yvakds"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:features '("sequoia-openpgp/crypto-nettle")
+       #:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-futures" ,rust-futures-0.3)
+                       ("rust-lalrpop" ,rust-lalrpop-0.17)
+                       ("rust-lalrpop-util" ,rust-lalrpop-util-0.17)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-sequoia-ipc" ,rust-sequoia-ipc-0.35)
+                       ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1)
+                       ("rust-stfu8" ,rust-stfu8-0.2)
+                       ("rust-tempfile" ,rust-tempfile-3)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-tokio" ,rust-tokio-1))
+       #:cargo-development-inputs (("rust-clap" ,rust-clap-4)
+                                   ("rust-lazy-static" ,rust-lazy-static-1)
+                                   ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1)
+                                   ("rust-tempfile" ,rust-tempfile-3)
+                                   ("rust-tokio" ,rust-tokio-1)
+                                   ("rust-tokio-test" ,rust-tokio-test-0.4))))))
+
 (define-public rust-sequoia-ipc-0.35
   (package
     (name "rust-sequoia-ipc")
