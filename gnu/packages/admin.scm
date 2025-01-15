@@ -4470,10 +4470,20 @@ information tool.")
       #:configure-flags #~(list "-DENABLE_SYSTEM_YYJSON=ON"
                                 "-DBUILD_FLASHFETCH=OFF"
                                 "-DBUILD_TESTS=ON"
-                                "-DINSTALL_LICENSE=OFF")))
+                                "-DINSTALL_LICENSE=OFF"
+                                "-DBINARY_LINK_TYPE=dynamic"
+                                "-DENABLE_DIRECTX_HEADERS=OFF"
+                                (string-append "-DCUSTOM_PCI_IDS_PATH="
+                                               #$(this-package-input "hwdata")
+                                               "/share/hwdata/pci.ids")
+                                (string-append "-DCUSTOM_AMDGPU_IDS_PATH="
+                                               #$(this-package-input "libdrm")
+                                               "share/libdrm/amdgpu.ids"))))
     (inputs (list dbus
                   glib
+                  hwdata
                   imagemagick
+                  libdrm
                   libxcb
                   mesa
                   wayland
