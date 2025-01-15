@@ -2193,34 +2193,37 @@ files and provide related services.")
 (define-public python-czml3
   (package
     (name "python-czml3")
-    (version "1.0.2")
+    (version "2.3.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/poliastro/czml3")
+             ;; Maintainer of the project has been changed, see
+             ;; <https://github.com/poliastro/czml3/issues/112>.
+             (url "https://github.com/Stoops-ML/czml3")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0gsdffn5w7j1aridvmx4xh6axvmbmqjwawacc8fnshpcyh4md5pn"))))
+        (base32 "1125239knl4w2njnrqvdc5qzjvq80zlf247z72za7qz6k0rnv3rw"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-astropy-minimal
-           python-pytest
-           python-pytest-mypy
+     (list python-pytest
            python-setuptools
            python-wheel))
     (propagated-inputs
-     (list python-attrs
-           python-dateutil
+     (list python-dateutil
+           python-numpy
+           python-pydantic-2
+           python-strenum
+           python-typing-extensions
            python-w3lib))
-    (home-page "https://github.com/poliastro/czml3")
+    (home-page "https://github.com/Stoops-ML/czml3")
     (synopsis "Python library to write CZML")
     (description
      "CZML3 is a Python library to write CZML, a JSON format for describing
 a time-dynamic graphical scene, primarily for display in a web browser running
 Cesium.")
-    (license license:expat)))
+    (license license:bsd-3)))
 
 (define-public python-drizzle
   (package
