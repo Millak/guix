@@ -5911,7 +5911,7 @@ it.")
 (define-public python-flask-migrate
   (package
     (name "python-flask-migrate")
-    (version "3.1.0")
+    (version "4.1.0")
     (home-page "https://github.com/miguelgrinberg/flask-migrate/")
     (source (origin
               (method git-fetch)
@@ -5920,10 +5920,12 @@ it.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0zj7qpknvlhrh4fsp5sx4fwyx3sp41ynclka992zympm3xym9zyq"))))
-    (build-system python-build-system)
+                "09qw1hhyssa5gahm199x67d55c55m3k9m23xp2bdacwsiv8jw57g"))))
+    (build-system pyproject-build-system)
     (propagated-inputs
      (list python-flask python-alembic python-flask-sqlalchemy))
+    (native-inputs
+     (list python-pytest python-setuptools python-wheel))
     (synopsis "SQLAlchemy database migrations for Flask programs using
 Alembic")
     (description "This package contains SQLAlchemy database migration tools
