@@ -74549,6 +74549,26 @@ allowing @code{thread::sleep} to wait the bulk of a sleep time, and spin the fin
 section to guarantee accuracy.")
     (license license:asl2.0)))
 
+(define-public rust-spinning-0.1
+  (package
+    (name "rust-spinning")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "spinning" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0yrs2lzyyrwvs58pya2h22pfdx3vv0h76w1av5c2dbbw5630wkrd"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-lock-api" ,rust-lock-api-0.4))))
+    (home-page "https://github.com/4lDO2/spinning-rs.git")
+    (synopsis "Mutexes and SIX locks implemented by spinning")
+    (description
+     "This package provides Mutexes and SIX locks implemented by spinning.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-spinning-top-0.2
   (package
     (name "rust-spinning-top")
