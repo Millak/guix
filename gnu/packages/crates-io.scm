@@ -34817,6 +34817,37 @@ bytestring representations.")
     (description "This package provides an interprocess communication toolkit.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-interprocess-1
+  (package
+    (inherit rust-interprocess-2)
+    (name "rust-interprocess")
+    (version "1.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "interprocess" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1yrq3xmyf8c506z2fkiyqcxiqv21rap72fz6npizybz47czm7wl1"))))
+    (arguments
+     `(#:tests? #f  ; expected tuple struct or tuple variant, found function `Ok`
+       #:cargo-inputs (("rust-blocking" ,rust-blocking-1)
+                       ("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-futures-core" ,rust-futures-core-0.3)
+                       ("rust-futures-io" ,rust-futures-io-0.3)
+                       ("rust-intmap" ,rust-intmap-0.7)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-rustc-version" ,rust-rustc-version-0.4)
+                       ("rust-spinning" ,rust-spinning-0.1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-to-method" ,rust-to-method-1)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-winapi" ,rust-winapi-0.3))
+       #:cargo-development-inputs (("rust-anyhow" ,rust-anyhow-1)
+                                   ("rust-futures" ,rust-futures-0.3)
+                                   ("rust-tokio" ,rust-tokio-1))))))
+
 (define-public rust-intmap-0.7
   (package
     (name "rust-intmap")
