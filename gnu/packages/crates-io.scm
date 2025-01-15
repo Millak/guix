@@ -49161,6 +49161,31 @@ the system.")
 the default program configured on the system.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-openssh-keys-0.6
+  (package
+    (name "rust-openssh-keys")
+    (version "0.6.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "openssh-keys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0gkcflf89fdzpmy066larfwk8fxc77ldq3b2r4bsrclq52l31f5b"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-base64" ,rust-base64-0.21)
+                       ("rust-byteorder" ,rust-byteorder-1)
+                       ("rust-md-5" ,rust-md-5-0.10)
+                       ("rust-sha2" ,rust-sha2-0.10)
+                       ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs (("rust-home" ,rust-home-0.5))))
+    (home-page "https://github.com/coreos/openssh-keys")
+    (synopsis "Read and write OpenSSH public keys")
+    (description
+     "This package provides macros to read and write @code{OpenSSH} public keys.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-openssl-0.10
   (package
     (name "rust-openssl")
