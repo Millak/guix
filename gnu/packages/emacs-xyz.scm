@@ -23874,6 +23874,24 @@ presentations by progressively revealing individual subtrees of the
 document.")
       (license license:gpl3+))))
 
+(define-public emacs-org-sticky-header
+  (package
+    (name "emacs-org-sticky-header")
+    (version "1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/alphapapa/org-sticky-header/archive/"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "1lr7khrs3d4229h5mmxbwc2jp192m2b9gfl85s3bhzbp6jpjf17y"))))
+    (build-system emacs-build-system)
+    (synopsis "Always show current org header line")
+    (description "This package provides the ability to always show the current
+org header line at the top of the window--no matter how far down you scrolled.")
+    (home-page "https://github.com/alphapapa/org-sticky-header")
+    (license license:gpl3+)))
+
 (define-public emacs-scratch-el
   (package
     (name "emacs-scratch-el")
