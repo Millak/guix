@@ -37000,13 +37000,13 @@ command-line applications.
 (define-public python-glom
   (package
     (name "python-glom")
-    (version "20.11.0")
+    (version "24.11.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "glom" version))
        (sha256
-        (base32 "04pba09vdr3qjvqvy14g60fscdsi35chbbyqpczdp76cpir101al"))))
+        (base32 "09xv44h1sri9fc2sp2h3nqg8rba4p86vvimnyx5084m9b5kzj9a3"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
