@@ -16328,33 +16328,26 @@ lowly expressed transcripts.")
 (define-public python-fanc
   (package
     (name "python-fanc")
-    (version "0.9.25")
+    (version "0.9.28")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/vaquerizaslab/fanc")
                     ;; There are no tags.  This commit corresponds to
-                    ;; version 0.9.25.
-                    (commit "e2205346c13ea5349681dff21adeb271d4ea5261")))
+                    ;; version 0.9.28.
+                    (commit "d5d86085c920a4dca6e5f6be4857129d718243cc")))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0rxq24p852iiayi0083fyigvc30as695rha71q6xd4s2ij1k9mqi"))))
+                "0pfl35ancd0izw9w2dp85lznq9rsyv2nv5f5la6dnbvj20d1m06d"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-vv"
-                       "-k"
-                       ;; XXX: These all fail because they fail to read
-                       ;; the included test_{cooler,juicer}.hic files.
-                       (string-append "not test_edges_iter"
-                                      " and not test_get_edges_uncorrected"
-                                      " and not test_get_edges"))))))))
+      #:test-flags
+      '(list "-m" "not longrunning"
+             ;; XXX: some of the tests here just take forever
+             "--ignore=fanc/test/test_matrix.py"
+             "--ignore=fanc/test/test_pairs.py")))
     (propagated-inputs
      (list python-biopython
            python-cooler
@@ -16363,6 +16356,7 @@ lowly expressed transcripts.")
            python-genomic-regions
            python-gridmap
            python-h5py
+           python-imageio
            python-intervaltree
            python-matplotlib
            python-msgpack
@@ -16374,15 +16368,16 @@ lowly expressed transcripts.")
            python-pybedtools
            python-pybigwig
            python-pysam
-           python-pytest
+           python-pywavelets
            python-pyyaml
            python-scikit-image
            python-scikit-learn
            python-scipy
            python-seaborn
-           python-tables))
+           python-tables
+           python-tifffile))
     (native-inputs
-     (list python-cython))
+     (list python-cython python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/vaquerizaslab/fanc")
     (synopsis "Framework for the analysis of C-data")
     (description
