@@ -3311,7 +3311,9 @@ from the Cyrus IMAP project.")
            libxcrypt
            zlib))
     (native-inputs
-     (list bison
+     (list autoconf
+           automake
+           bison
            groff                        ;for man pages
            pkg-config))
     (arguments
@@ -3336,10 +3338,13 @@ from the Cyrus IMAP project.")
          ;; Fix some incorrectly hard-coded external tool file names.
          (add-after 'unpack 'patch-FHS-file-names
            (lambda* (#:key inputs #:allow-other-keys)
-             ;; avoids warning smtpd: couldn't enqueue offline message
-             ;; smtpctl exited abnormally
-             (substitute* "usr.sbin/smtpd/smtpd.h"
-               (("/usr/bin/smtpctl") "/run/privileged/bin/smtpctl"))
+             (substitute* "mk/pathnames"
+               ;; avoids warning smtpd: couldn't enqueue offline message
+               ;; smtpctl exited abnormally
+               (("(-DPATH_SMTPCTL=).*\\\\" all def)
+                (string-append def "\\\"/run/privileged/bin/smtpctl\\\" \\"))
+               (("(-DPATH_MAKEMAP=).*\\\\" all def)
+                (string-append def "\\\"/run/privileged/bin/makemap\\\" \\")))
              (substitute* "usr.sbin/smtpd/smtpctl.c"
                ;; ‘gzcat’ is auto-detected at compile time, but ‘cat’ isn't.
                (("/bin/cat" file) (search-input-file inputs file)))
