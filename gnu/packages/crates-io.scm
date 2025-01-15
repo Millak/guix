@@ -31891,6 +31891,27 @@ the C library @code{hidapi}.  Based off of @code{hidapi-rs} by Osspial.")
 scientific applications with leap second support.")
     (license license:asl2.0)))
 
+(define-public rust-histo-1
+  (package
+    (name "rust-histo")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "histo" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0v6znd33clam2b37rhn2pldd39l61605s1ivxzpjwdygi8f6mad6"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-quickcheck" ,rust-quickcheck-0.4)
+                       ("rust-streaming-stats" ,rust-streaming-stats-0.1))))
+    (home-page "https://github.com/fitzgen/histo")
+    (synopsis "Simple histograms with configurable buckets")
+    (description
+     "This package provides simple histograms with configurable buckets.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-home-0.5
   (package
     (name "rust-home")
