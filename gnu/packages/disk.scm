@@ -594,6 +594,30 @@ which respectively make and check MS-DOS FAT file systems.")
 and a @command{fsck.vfat} compatibility symlink for use in an initrd.")
     (license (package-license dosfstools))))
 
+(define-public fatresize
+  (package
+    (name "fatresize")
+    (version "1.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ya-mouse/fatresize")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1vhz84kxfyl0q7mkqn68nvzzly0a4xgzv76m6db0bk7xyczv1qr2"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list parted))
+    (home-page "https://github.com/ya-mouse/fatresize")
+    (synopsis "Resize FAT partitions")
+    (description
+     "This package provides a tool to resize FAT partitions using libparted.")
+    (license license:gpl3+)))
+
 (define-public hdparm
   (package
     (name "hdparm")
