@@ -262,7 +262,7 @@ wide set of telescopes.")
 (define-public calceph
   (package
     (name "calceph")
-    (version  "4.0.3")
+    (version  "4.0.4")
     (source
      (origin
        (method git-fetch)
@@ -271,7 +271,7 @@ wide set of telescopes.")
              (commit (string-append name "_"
                                     (string-replace-substring version "." "_")))))
        (sha256
-        (base32 "1985ihkpxr0vra5xr664yxg9llby88j3zkbhqn38lh8wn0gwivj9"))
+        (base32 "0cs34iwrgja7f47l8cvpxzgljxay5x4bx80hdpclaksilysvlyk0"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (native-inputs
