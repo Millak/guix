@@ -6585,7 +6585,7 @@ using (multivariate) polynomials.")
            python-ewah-bool-utils
            python-ipywidgets
            python-matplotlib
-           python-more-itertools-next
+           python-more-itertools
            python-numpy
            python-packaging
            python-pillow

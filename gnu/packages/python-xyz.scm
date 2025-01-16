@@ -28353,42 +28353,17 @@ interpreter. bpython's main features are
 file system events on Linux.")
     (license license:expat)))
 
-
 (define-public python-more-itertools
   (package
     (name "python-more-itertools")
-    (version "8.2.0")
+    (version "10.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "more-itertools" version))
        (sha256
         (base32
-         "01x5nwm1zxmnd06cllbdd095xxc2nd25ing1a726m2kd30rbkpdi"))))
-    (build-system python-build-system)
-    (home-page "https://github.com/erikrose/more-itertools")
-    (synopsis "More routines for operating on iterables, beyond itertools")
-    (description "Python's built-in @code{itertools} module implements a
-number of iterator building blocks inspired by constructs from APL, Haskell,
-and SML.  @code{more-itertools} includes additional building blocks for
-working with iterables.")
-    (license license:expat)))
-
-;; Needed for python-yt, older version fails with exception: E ImportError:
-;; cannot import name 'mark_ends' from 'more_itertools'
-;; (<...>more_itertools/__init__.py)
-(define-public python-more-itertools-next
-  (package
-    (inherit python-more-itertools)
-    (name "python-more-itertools")
-    (version "10.2.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "more-itertools" version))
-       (sha256
-        (base32
-         "1q9rq9g026m4wl6ki2q8pw7xbc02vl34qqw702h9jgixqj0b9k4g"))
+         "0fzfnfga0jdx217kff57lx3pam76162i0dd0nsgwqccw038zmmrc"))
        (snippet
         ;; distutils.errors.DistutilsOptionError: No configuration found for
         ;; dynamic 'description'. Some dynamic fields need to be specified via
@@ -28406,8 +28381,13 @@ working with iterables.")
                 (invoke "python" "-m" "unittest")))))))
     (native-inputs
      (list python-flit-core))
-    (propagated-inputs
-     (list python-six))))
+    (home-page "https://github.com/erikrose/more-itertools")
+    (synopsis "More routines for operating on iterables, beyond itertools")
+    (description "Python's built-in @code{itertools} module implements a
+number of iterator building blocks inspired by constructs from APL, Haskell,
+and SML.  @code{more-itertools} includes additional building blocks for
+working with iterables.")
+    (license license:expat)))
 
 (define-public python-latexcodec
   (package
