@@ -9579,13 +9579,13 @@ regular expressions.")
 (define-public python-scrapy
   (package
     (name "python-scrapy")
-    (version "2.11.2")
+    (version "2.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "scrapy" version))
        (sha256
-        (base32 "07a0nfzkz4vr1353456lavvw36l9s2ia7x91l7mzygzwhi9mdgfz"))))
+        (base32 "13vqykvjv9d0hj02l0s025r107dncfj7as0r0iv484lv01v6wvfn"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:test-flags
@@ -9594,41 +9594,45 @@ regular expressions.")
                          "not " (string-join
                                  (list "test_pformat"
                                        "test_pformat_old_windows"
-                                       "test_pformat_windows")
-                                 " and not ")))
+                                       "test_pformat_windows"
+                                       ;; Connection refused.
+                                       "test_persist")
+                                 " and not "))
+                   ;; Connection refused to some local FTP server.
+                   "--ignore=tests/test_feedexport.py")
            #:phases
            #~(modify-phases %standard-phases
                (add-before 'check 'prepare-test-environment
                  (lambda _
                    (setenv "HOME" "/tmp"))))))
     (propagated-inputs
-     (list python-botocore              ; Optional: For S3FeedStorage class.
-           python-cryptography
+     (list python-cryptography
            python-cssselect
            python-defusedxml
            python-itemadapter
            python-itemloaders
            python-lxml
+           python-packaging
            python-parsel
            python-protego
            python-pydispatcher
            python-pyopenssl
            python-queuelib
            python-service-identity
-           python-setuptools
            python-tldextract
+           python-typing-extensions
            python-twisted
            python-w3lib
            python-zope-interface))
     (native-inputs
      (list nss-certs-for-test
+           python-mypy
            python-pexpect
-           python-pyftpdlib
            python-pytest
            python-pytest-xdist
+           python-setuptools
            python-sybil
            python-testfixtures
-           python-uvloop
            python-wheel))
     (home-page "https://scrapy.org")
     (synopsis "High-level Web crawling and Web scraping framework")
