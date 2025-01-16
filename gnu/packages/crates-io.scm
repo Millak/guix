@@ -59012,6 +59012,30 @@ in codeblocks, while assuring quality with a powerful test suite.")
     (description "This package provides a safe interface to @code{pwd.h}.")
     (license license:public-domain)))
 
+(define-public rust-py-literal-0.4
+  (package
+    (name "rust-py-literal")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "py_literal" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1qd8j3a9zlpq6rjaxabpc9sacw62dn1cr38p3y4x7fbdsjizfb8h"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-num-bigint" ,rust-num-bigint-0.4)
+                       ("rust-num-complex" ,rust-num-complex-0.4)
+                       ("rust-num-traits" ,rust-num-traits-0.2)
+                       ("rust-pest" ,rust-pest-2)
+                       ("rust-pest-derive" ,rust-pest-derive-2))))
+    (home-page "https://github.com/jturner314/py_literal")
+    (synopsis "Read and write Python literals")
+    (description "This package lets you read and write Python literals.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-pyo3-0.23
   (package
     (name "rust-pyo3")
