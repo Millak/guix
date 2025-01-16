@@ -11104,6 +11104,27 @@ is being phased out.  A modern MySQL client based on Rcpp is available from
 the RMariaDB package.")
     (license license:gpl2)))
 
+(define-public r-rpanglaodb
+  (package
+    (name "r-rpanglaodb")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "rPanglaoDB" version))
+       (sha256
+        (base32 "1ykzih3idgp2yhbw4039hhhzv0nmrmn3wx2c4dxmgp5qzhrg42nf"))))
+    (properties `((upstream-name . "rPanglaoDB")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-matrix r-pbapply r-seurat r-xml r-xml2))
+    (home-page "https://github.com/dosorio/rPanglaoDB/")
+    (synopsis
+     "Download and merge Single-Cell RNA-Seq data from the PanglaoDB database")
+    (description
+     "This R package downloads labeled single-cell RNA-seq data from PanglaoDB.
+It merges the data into a Seurat object for streamlined analysis.")
+    (license license:gpl3)))
+
 (define-public r-rpmm
   (package
     (name "r-rpmm")
