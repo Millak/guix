@@ -2165,6 +2165,29 @@ reductions on 32-bit ARM.")
      "This package provides an internal helper library of anyinput.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-anyinput-derive-0.1
+  (package
+    (name "rust-anyinput-derive")
+    (version "0.1.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "anyinput-derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1xcgkdkskmh8xxxyr1chfapn9avk8d8s7jjph5zy4ff22dri4m7y"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-anyinput-core" ,rust-anyinput-core-0.1)
+                       ("rust-proc-macro-error" ,rust-proc-macro-error-1)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1))))
+    (home-page "https://github.com/CarlKCarlK/anyinput")
+    (synopsis "Internal helper library of anyinput")
+    (description
+     "This package provides an internal helper library of anyinput.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-anyhow-1
   (package
     (name "rust-anyhow")
