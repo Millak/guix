@@ -21908,6 +21908,28 @@ objects back to their original types.  The same as the rust-downcast-rs crate.")
 parameters, associated types, and type constraints.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-dpc-pariter-0.4
+  (package
+    (name "rust-dpc-pariter")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "dpc-pariter" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0s546d43yyiw55jz3yw4nyxgzmnc4f0gamzkfi6m7kyw2xlf2anl"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-crossbeam" ,rust-crossbeam-0.8)
+                       ("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
+                       ("rust-num-cpus" ,rust-num-cpus-1))))
+    (home-page "https://github.com/dpc/pariter")
+    (synopsis "Parallel iterator processing")
+    (description "This is a package for parallel iterator processing.")
+    (license (list license:mpl2.0 license:expat license:asl2.0))))
+
 (define-public rust-draw-state-0.8
   (package
     (name "rust-draw-state")
