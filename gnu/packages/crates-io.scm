@@ -25807,6 +25807,37 @@ Atom, RSS 2.0, RSS 1.0, RSS 0.x and JSON Feed")
      "This package provides a simple, efficient logging system for Rust.")
     (license license:expat)))
 
+(define-public rust-fetch-data-0.2
+  (package
+    (name "rust-fetch-data")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "fetch-data" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1wjjb3l37kdvvq3pv93cxlxxr2pc7kx0ssk2gqispw5bhggnlyda"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-anyinput" ,rust-anyinput-0.1)
+                       ("rust-base16ct" ,rust-base16ct-0.2)
+                       ("rust-ctor" ,rust-ctor-0.2)
+                       ("rust-directories" ,rust-directories-5)
+                       ("rust-getrandom" ,rust-getrandom-0.2)
+                       ("rust-sha2" ,rust-sha2-0.10)
+                       ("rust-temp-testdir" ,rust-temp-testdir-0.2)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-ureq" ,rust-ureq-2))))
+    (home-page "https://github.com/CarlKCarlK/fetch-data")
+    (synopsis "Fetch data files from a URL")
+    (description
+     "This package lets you fetch data files from a URL, but only if needed.
+It verifies contents via SHA256 and provides some Python Pooch
+compatibility.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-fetch-unroll-0.3
   (package
     (name "rust-fetch-unroll")
