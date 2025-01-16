@@ -25404,15 +25404,31 @@ manipulation and interaction with formal grammars.")
 (define-public python-incremental
   (package
     (name "python-incremental")
-    (version "22.10.0")
+    (version "24.7.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "incremental" version))
        (sha256
         (base32
-         "1l0b9k158n04cmcccdq9phdy20h08lpis922dy71iq7pw2sywbwi"))))
-    (build-system python-build-system)
+         "1jb4skmy8awix345jk2pnar0sxmrf1gvn3kg9xyyivv0xr3iskzv"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; Tests require twisted, which needs this package.
+      #:tests? #false
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'patch-build-system
+           (lambda _
+             (substitute* "pyproject.toml"
+               (("^backend-path.*") "")
+               (("^build-backend.*")
+                "build-backend = 'setuptools.build_meta'\n")))))))
+    (native-inputs (list python-pytest
+                         python-setuptools
+                         python-wheel))
+    (propagated-inputs (list python-tomli))
     (home-page "https://github.com/hawkowl/incremental")
     (synopsis "Library for versioning Python projects")
     (description "Incremental is a small library that versions your Python
