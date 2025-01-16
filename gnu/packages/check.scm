@@ -1986,33 +1986,6 @@ Python's @code{random.seed}.")
 @file{setup.py} files can use to run tests.")
     (license license:expat)))
 
-(define-public python-pytest-lazy-fixture
-  (package
-    (name "python-pytest-lazy-fixture")
-    (version "0.6.3")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "pytest-lazy-fixture" version))
-        (sha256
-         (base32 "1b0hmnsxw4s2wf9pks8dg6dfy5cx3zcbzs8517lfccxsfizhqz8f"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             ;; Make the installed plugin discoverable by Pytest.
-             (add-installed-pythonpath inputs outputs)
-             (invoke "pytest" "-vv"))))))
-    (propagated-inputs
-     (list python-pytest))
-    (home-page "https://github.com/tvorog/pytest-lazy-fixture")
-    (synopsis "Use fixtures in @code{pytest.mark.parametrize}")
-    (description "This plugin helps to use fixtures in
-@code{pytest.mark.parametrize}.")
-    (license license:expat)))
-
 (define-public python-pytest-lazy-fixtures
   (package
     (name "python-pytest-lazy-fixtures")
