@@ -44588,6 +44588,34 @@ general elements and for numerics.")
         ("rust-quickcheck" ,rust-quickcheck-0.7)
         ("rust-rawpointer" ,rust-rawpointer-0.1))))))
 
+(define-public rust-ndarray-npy-0.9
+  (package
+    (name "rust-ndarray-npy")
+    (version "0.9.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ndarray-npy" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1abqnbfn9xhq5q5nli78yip3wh2zq4gi7dnrm50r3i38qj43fcbv"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-byteorder" ,rust-byteorder-1)
+        ("rust-ndarray" ,rust-ndarray-0.16)
+        ("rust-num-complex" ,rust-num-complex-0.4)
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-py-literal" ,rust-py-literal-0.4)
+        ("rust-zip" ,rust-zip-2))))
+    (home-page "https://github.com/jturner314/ndarray-npy")
+    (synopsis ".npy and .npz file format support for ndarray")
+    (description
+     "This package provides @file{.npy} and @file{.npz} file format support
+for @code{ndarray}.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-ndk-0.9
   (package
     (name "rust-ndk")
