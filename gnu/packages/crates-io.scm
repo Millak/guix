@@ -75580,6 +75580,30 @@ Rust.")
 Rust.")
     (license license:expat)))
 
+(define-public rust-statrs-0.17
+  (package
+    (name "rust-statrs")
+    (version "0.17.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "statrs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0mbjasnlh7xqa1rvq48xffqxnc53hgjlgqjd0ifa58068rza15zn"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-approx" ,rust-approx-0.5)
+                       ("rust-nalgebra" ,rust-nalgebra-0.32)
+                       ("rust-num-traits" ,rust-num-traits-0.2)
+                       ("rust-rand" ,rust-rand-0.8))))
+    (home-page "https://github.com/statrs-dev/statrs")
+    (synopsis "Statistical computing library for Rust")
+    (description
+     "This package provides a statistical computing library for Rust.")
+    (license license:expat)))
+
 (define-public rust-statrs-0.13
   (package
     (name "rust-statrs")
