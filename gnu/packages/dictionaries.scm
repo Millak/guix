@@ -119,14 +119,14 @@ acronyms distributed as an info document.")
 (define-public gcide
   (package
     (name "gcide")
-    (version "0.53")
+    (version "0.54")
     (source (origin
               (method url-fetch)
               (uri (string-append
                     "mirror://gnu/gcide/gcide-" version ".tar.xz"))
               (sha256
                (base32
-                "17rigzfmih5i1z5s5v1hdr1jw8rngf40768kblnh5kp19ncbvb6k"))))
+                "0hhxqlkgp3kkin4pqzfgfd24ckai29sm9dw8qc6icnqp6rpnyh92"))))
     (build-system copy-build-system)
     (arguments
      '(#:install-plan
