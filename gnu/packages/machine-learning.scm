@@ -2233,7 +2233,7 @@ standard feature selection algorithms.")
 (define-public python-cleanlab
   (package
     (name "python-cleanlab")
-    (version "2.6.3")
+    (version "2.7.0")
     ;; The version on pypi does not come with tests.
     (source (origin
               (method git-fetch)
@@ -2243,7 +2243,7 @@ standard feature selection algorithms.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1f5iq4f8rzvn8scrwgfvc9qaqs9h159wiiy7wp6526frr67xk918"))))
+                "0f8v5246nzy22r7zswv9vbpxc7wxaqjwry9iq0fqjp2ffch88h6j"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2257,7 +2257,10 @@ standard feature selection algorithms.")
              ;; the guix-science channel.
              "--ignore-glob=tests/datalab/**"
              ;; Tries to download datasets from the internet at runtime.
-             "--ignore=tests/test_dataset.py")
+             "--ignore=tests/test_dataset.py"
+             ;; Test requiring not packaged dataset.
+             "--ignore=tests/spurious_correlation/test_correlation_visualizer.py"
+             "--ignore=tests/spurious_correlation/test_spurious_correlation.py")
       #:phases
       '(modify-phases %standard-phases
          (add-after 'unpack 'remove-datasets
@@ -2270,11 +2273,12 @@ standard feature selection algorithms.")
            python-termcolor
            python-tqdm))
     (native-inputs
-     (list python-pytest
-           python-pytest-lazy-fixture
+     (list ;; python-dataset ; https://github.com/huggingface/datasets
+           python-pytest
            python-pytorch
-           python-torchvision
            python-setuptools
+           python-torchvision
+           python-typing-extensions
            python-wheel))
     (home-page "https://cleanlab.ai")
     (synopsis "Automatically find and fix dataset issues")
