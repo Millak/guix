@@ -9,7 +9,7 @@
 ;;; Copyright © 2021 Cees de Groot <cg@evrl.com>
 ;;; Copyright © 2024 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2024 Ivan Sokolov <ivan-p-sokolov@ya.ru>
-;;; Copyright © 2024 Igor Goryachev <igor@goryachev.org>
+;;; Copyright © 2024, 2025 Igor Goryachev <igor@goryachev.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -41,7 +41,7 @@
 (define-public elixir
   (package
     (name "elixir")
-    (version "1.18.0")
+    (version "1.18.1")
     (source
      (origin
        (method git-fetch)
@@ -50,7 +50,7 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ki5wfkdidgkvcm3r6b547gkdpchah4r6z0y96frzf5f3prcjgbx"))
+        (base32 "1bzg3m4dbhvrxv7f20q77j3648j0fkpnmajh4yfz53wj5ail14yc"))
        (patches (search-patches "elixir-path-length.patch"))))
     (build-system gnu-build-system)
     (arguments
