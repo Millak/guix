@@ -48822,6 +48822,53 @@ file formats.")
 attach/detach semantics.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-object-store-0.11
+  (package
+    (name "rust-object-store")
+    (version "0.11.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "object_store" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1bywk2bbjpvr26581rs44csl6myiw0cr6gqnw76zlmhsjrlcpz1w"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-async-trait" ,rust-async-trait-0.1)
+        ("rust-base64" ,rust-base64-0.22)
+        ("rust-bytes" ,rust-bytes-1)
+        ("rust-chrono" ,rust-chrono-0.4)
+        ("rust-futures" ,rust-futures-0.3)
+        ("rust-httparse" ,rust-httparse-1)
+        ("rust-humantime" ,rust-humantime-2)
+        ("rust-hyper" ,rust-hyper-1)
+        ("rust-itertools" ,rust-itertools-0.13)
+        ("rust-md-5" ,rust-md-5-0.10)
+        ("rust-parking-lot" ,rust-parking-lot-0.12)
+        ("rust-percent-encoding" ,rust-percent-encoding-2)
+        ("rust-quick-xml" ,rust-quick-xml-0.37)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-reqwest" ,rust-reqwest-0.12)
+        ("rust-ring" ,rust-ring-0.17)
+        ("rust-rustls-pemfile" ,rust-rustls-pemfile-2)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-snafu" ,rust-snafu-0.8)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tracing" ,rust-tracing-0.1)
+        ("rust-url" ,rust-url-2)
+        ("rust-walkdir" ,rust-walkdir-2))))
+    (home-page "https://github.com/apache/arrow-rs/tree/main/object_store")
+    (synopsis "Generic object store interface")
+    (description
+     "This package provides a generic object store interface for uniformly
+interacting with AWS S3, Google Cloud Storage, Azure Blob Storage and local
+files.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-object-store-0.9
   (package
     (name "rust-object-store")
