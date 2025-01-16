@@ -10,6 +10,7 @@
 ;;; Copyright © 2024 Wilko Meyer <w@wmeyer.eu>
 ;;; Copyright © 2024 Tomas Volf <~@wolfsden.cz>
 ;;; Copyright © 2024 Nguyễn Gia Phong <mcsinyx@disroot.org>
+;;; Copyright © 2025 Ricardo Wurmus <rekado@elephly.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -5841,6 +5842,35 @@ responses, and headers for the Rocket web framework.")
         ("rust-state" ,rust-state-0.4)
         ("rust-time" ,rust-time-0.1)
         ("rust-unicode-xid" ,rust-unicode-xid-0.1))))))
+
+(define-public rust-rusoto-credential-0.48
+  (package
+    (name "rust-rusoto-credential")
+    (version "0.48.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rusoto_credential" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "019dq3aq6hnfg4xvxdfsnrba08dwvciz0km4nr3n1basvc9nq2pf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-async-trait" ,rust-async-trait-0.1)
+                       ("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-dirs-next" ,rust-dirs-next-2)
+                       ("rust-futures" ,rust-futures-0.3)
+                       ("rust-hyper" ,rust-hyper-0.14)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-shlex" ,rust-shlex-1)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-zeroize" ,rust-zeroize-1))))
+    (home-page "https://github.com/rusoto/rusoto")
+    (synopsis "AWS credential tooling")
+    (description "This package provides AWS credential tooling.")
+    (license license:expat)))
 
 (define-public rust-salvo-0.16
   (package
