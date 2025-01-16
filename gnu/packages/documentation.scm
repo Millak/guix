@@ -228,15 +228,7 @@ markup) can be customized and extended by the user.")
               (let ((/bin/sh (search-input-file inputs "/bin/sh")))
                 (substitute* "src/portable.cpp"
                   (("/bin/sh")
-                   /bin/sh)))))
-          #$@(if (target-hurd?)
-                 #~((add-after 'unpack 'apply-patch
-                      (lambda _
-                        (let ((patch-file
-                               #$(local-file
-                                  (search-patch "doxygen-hurd.patch"))))
-                          (invoke "patch" "--force" "-p1" "-i" patch-file)))))
-                 #~()))))
+                   /bin/sh))))))))
     (synopsis "Generate documentation from annotated sources")
     (description "Doxygen is the de facto standard tool for generating
 documentation from annotated C++ sources, but it also supports other popular
