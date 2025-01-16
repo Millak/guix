@@ -5899,8 +5899,8 @@ of the old packages.")
 
 (define-public python-asdf-compression
   ;; TODO: No release, change to tag when it's ready.
-  (let ((commit "57cc7e76fb4163be3e99fb740b36b5ec5ae96e49")
-        (revision "0"))
+  (let ((commit "7cfd07c6f789d4919e5730e0cda150fb20da4139")
+        (revision "1"))
     (package
       (name "python-asdf-compression")
       (version (git-version "0.0.1" revision commit))
@@ -5912,7 +5912,7 @@ of the old packages.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1g6iiyls950k66dmd0pbqqdvz74kksc4j191n0ik6fhjnkiwifgs"))))
+          (base32 "198y3mnl9kvhva479k6g9zbynjg8apsrwy7lq26g5q6v55s16hgc"))))
       (build-system pyproject-build-system)
       (arguments
        (list
@@ -5932,7 +5932,7 @@ of the old packages.")
              python-blosc
              python-lz4
              python-zstandard))
-      (home-page "https://github.com/asdf-format/asdf-fits-schemas")
+      (home-page "https://github.com/asdf-format/asdf-compression")
       (synopsis "ASDF extension to support various compression algorithms")
       (description
        "This package includes a plugin for the Python library ASDF to add
