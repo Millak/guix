@@ -2188,6 +2188,28 @@ reductions on 32-bit ARM.")
      "This package provides an internal helper library of anyinput.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-anyinput-0.1
+  (package
+    (name "rust-anyinput")
+    (version "0.1.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "anyinput" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "08dkks0pg097vcjj3a43fxzazs2cnmf1jd7kcj8s3y6lfxj80n12"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-anyinput-derive" ,rust-anyinput-derive-0.1))))
+    (home-page "https://github.com/CarlKCarlK/anyinput")
+    (synopsis "Macro for functions that accept any input")
+    (description
+     "This package provides a macro for easier writing of functions that
+accept any string-, path-, iterator-, array-, or ndarray-like input.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-anyhow-1
   (package
     (name "rust-anyhow")
