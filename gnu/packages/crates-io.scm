@@ -13374,6 +13374,34 @@ or to a file as well.")
 descriptors.")
     (license license:expat)))
 
+(define-public rust-cloud-file-0.2
+  (package
+    (name "rust-cloud-file")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cloud-file" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1xvqmizskv88c9mgb78y2aclkbmq1bhlvsnk20xkx6x2wnlwyd51"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bytecount" ,rust-bytecount-0.6)
+                       ("rust-bytes" ,rust-bytes-1)
+                       ("rust-futures" ,rust-futures-0.3)
+                       ("rust-futures-util" ,rust-futures-util-0.3)
+                       ("rust-object-store" ,rust-object-store-0.11)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-url" ,rust-url-2))))
+    (home-page "https://github.com/CarlKCarlK/cloud-file")
+    (synopsis "Simple reading of cloud files in Rust")
+    (description
+     "This package is for simple reading of cloud files in Rust.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-cloudabi-0.1
   (package
     (name "rust-cloudabi")
