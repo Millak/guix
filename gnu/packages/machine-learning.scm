@@ -6218,10 +6218,6 @@ performance library of basic building blocks for deep learning applications.")
        (sha256
         (base32 "1cab4wsnlsxn2z90qmymv8ppmsq8yq2amiqwid3r0xfbxx92flqs"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-cloudpickle python-farama-notifications
-                             python-importlib-metadata python-numpy
-                             python-typing-extensions))
-    (native-inputs (list python-pytest python-scipy python-setuptools))
     (arguments
      (list
       #:phases
@@ -6230,6 +6226,11 @@ performance library of basic building blocks for deep learning applications.")
             (lambda _
               (with-output-to-file "tests/__init__.py"
                 (lambda _ (display ""))))))))
+    (propagated-inputs (list python-cloudpickle python-farama-notifications
+                             python-importlib-metadata python-numpy
+                             python-typing-extensions))
+    (native-inputs
+     (list python-pytest python-scipy python-setuptools python-wheel))
     (home-page "https://gymnasium.farama.org/")
     (synopsis
      "Standard API for reinforcement learning and a set of reference environments")
