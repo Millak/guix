@@ -2460,17 +2460,18 @@ associated with an address.")
 (define-public python-maxminddb
   (package
     (name "python-maxminddb")
-    (version "2.6.2")
+    (version "2.6.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "maxminddb" version))
        (sha256
-        (base32
-         "0r7jcqzr3hy9jims0ygjdhndysbs02hsaybx9f4vq2k2w8r2v13x"))))
+        (base32 "0m6j8pvarnw4d88537ghi1gl7nskwgkijx5c3fm4g83sm9mq1hyj"))))
     (build-system pyproject-build-system)
-    (arguments
-     `(#:tests? #f)) ;; Tests require a copy of the maxmind database
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
     (inputs
      (list libmaxminddb))
     (home-page "https://www.maxmind.com/")
