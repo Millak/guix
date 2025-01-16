@@ -5,6 +5,7 @@
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2024 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2025 Ricardo Wurmus <rekado@elephly.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -274,7 +275,11 @@ libraries GMO, MPFR and MPC.")
        (sha256
         (base32 "1zggfj09zkfcabcsasq27vwbhdmkig4yn380gi6wykcih9n22anl"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-cython-3 python-pytest))
+    (native-inputs
+     (list python-cython-3
+           python-pytest
+           python-setuptools
+           python-wheel))
     (inputs (list gmp mpc mpfr pari-gp ppl))
     (propagated-inputs (list python-cysignals python-gmpy2))
     (home-page "https://github.com/sagemath/pplpy")
