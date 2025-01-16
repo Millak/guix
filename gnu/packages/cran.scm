@@ -27739,6 +27739,34 @@ releases/download/v0.10.1/mathquill-0.10.1.tgz")
 authoring books and technical documents with R Markdown.")
     (license license:gpl3)))
 
+(define-public r-optimparallel
+  (package
+    (name "r-optimparallel")
+    (version "1.0-2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "optimParallel" version))
+       (sha256
+        (base32 "178ayfaivkbxkghxbg97lx4gl27kxkmgaaw9y8q5206r4cncd6qg"))))
+    (properties `((upstream-name . "optimParallel")))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:phases '(modify-phases %standard-phases
+                  (add-after 'unpack 'set-HOME
+                    (lambda _
+                      (setenv "HOME" "/tmp"))))))
+    (native-inputs (list r-numderiv r-r-rsp r-testthat))
+    (home-page "https://github.com/florafauna/optimParallel-R")
+    (synopsis "Parallel version of the L-BFGS-B optimization method")
+    (description
+     "This tool provides a parallel version of the L-BFGS-B method of
+@code{optim()}.  The main function of the package is @code{optimParallel()},
+which has the same usage and output as @code{optim()}.  Using
+@code{optimParallel()} can significantly reduce the optimization time.")
+    (license license:gpl2+)))
+
 (define-public r-options
   (package
     (name "r-options")
