@@ -10521,48 +10521,6 @@ snippets with input parameters (e.g., the size of an array) and plotting
 the results.")
     (license license:gpl3+)))
 
-(define-public python-pysnptools
-  (package
-    (name "python-pysnptools")
-    (version "0.5.14")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pysnptools" version))
-       (sha256
-        (base32
-         "1babnyky5fk93as1ybdvpz9x3x5099gkgscxflngzfswin23mspk"))))
-    (build-system pyproject-build-system)
-    ;; Tests require test data from python-bed-reader, which fetches data with
-    ;; python-pooch.
-    (arguments (list #:tests? #f))
-    (propagated-inputs
-     (list python-bed-reader
-           python-cloudpickle
-           python-h5py
-           python-more-itertools
-           python-numpy
-           python-pandas
-           python-psutil
-           python-scipy))
-    (native-inputs
-     (list python-pytest
-           python-pytest-cov
-           python-pytest-datadir
-           python-pytest-doctestplus
-           python-setuptools
-           python-sphinx
-           python-sphinx-rtd-theme
-           python-wheel))
-    (home-page "http://microsoftgenomics.github.io/PySnpTools/")
-    (synopsis "Library for reading and manipulating genetic data")
-    (description
-     "PySnpTools is a library for reading and manipulating genetic data.  It
-can, for example, efficiently read whole PLINK *.bed/bim/fam files or parts of
-those files.  It can also efficiently manipulate ranges of integers using set
-operators such as union, intersection, and difference.")
-    (license license:asl2.0)))
-
 (define-public python-pykdtree
   (package
     (name "python-pykdtree")
