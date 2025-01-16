@@ -7160,7 +7160,7 @@ command-line arguments or read from stdin.")
 (define-public python-internetarchive
   (package
     (name "python-internetarchive")
-    (version "1.8.5")
+    (version "5.1.0")
     (source
      (origin
        (method git-fetch)
@@ -7170,47 +7170,34 @@ command-line arguments or read from stdin.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0ih7hplv92wbv6cmgc1gs0v35qkajwicalwcq8vcljw30plr24fp"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           ;; Python 3.7 removed `_pattern_type'.
-           (for-each (lambda (file)
-                       (chmod file #o644)
-                       (substitute* file
-                         (("^import re\n" line)
-                          (string-append line "re._pattern_type = re.Pattern\n"))))
-                     (find-files "." "\\.py$"))
-           ;; Mapping got moved to collections.abc
-           (substitute* "internetarchive/utils.py"
-             (("from collections import Mapping")
-              "from collections.abc import Mapping"))))))
-    (build-system python-build-system)
+         "186nx0dj0lgqrqkg9kzng5h0scbz3m6bk44vj83wzckr8yh3q08z"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (delete 'check)
-         (add-after 'install 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             (setenv "PATH" (string-append (assoc-ref outputs "out") "/bin"
-                                           ":" (getenv "PATH")))
-             (invoke "py.test" "-v" "-k"
-                     (string-append
-                      ;; These tests attempt to make a connection to
-                      ;; an external web service.
-                      "not test_get_item_with_kwargs"
-                      " and not test_ia")))))))
+     (list
+      #:test-flags
+      '(list "-k"
+             (string-append
+              ;; These tests need Internet access.
+              "not test_get_item_with_kwargs"
+              " and not test_upload"
+              " and not test_ia"))))
     (propagated-inputs
-     (list python-requests
-           python-jsonpatch-0.4
-           python-docopt
+     (list python-backports-csv
            python-clint
+           python-docopt
+           python-importlib-metadata
+           python-jsonpatch
+           python-requests
            python-six
-           python-schema-0.5
-           python-backports-csv))
+           python-schema
+           python-tqdm))
     (native-inputs
-     (list python-pytest python-pytest-capturelog python-responses))
+     (list nss-certs-for-test
+           python-pytest
+           python-pytest-capturelog
+           python-responses
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/jjjake/internetarchive")
     (synopsis "Command-line interface to archive.org")
     (description "@code{ia} is a command-line tool for using
