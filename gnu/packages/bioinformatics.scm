@@ -85,6 +85,7 @@
   #:use-module (gnu packages cran)
   #:use-module (gnu packages crates-compression)
   #:use-module (gnu packages crates-io)
+  #:use-module (gnu packages crates-web)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
@@ -2046,6 +2047,125 @@ Format (GFF) with Biopython integration.")
      (propagated-inputs
       (modify-inputs (package-propagated-inputs python-bcbio-gff)
         (replace "python-biopython" python-biopython-1.73))))))
+
+(define-public python-bed-reader
+  (package
+    (name "python-bed-reader")
+    (version "1.0.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "bed_reader" version))
+       (sha256
+        (base32 "1c8ibwvz3b069w7ffh9aasz16lfkmx4z0249c2v909a21mrkkd6n"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      ;; Many of the tests (both the Rust tests and the Python tests) require
+      ;; Internet access to fetch samples.
+      #:tests? #false
+      #:install-source? #false
+      #:features '(list "extension-module")
+      #:cargo-test-flags '(list "--features=extension-module")
+      #:cargo-inputs
+      `(("rust-anyinput" ,rust-anyinput-0.1)
+        ("rust-bytecount" ,rust-bytecount-0.6)
+        ("rust-byteorder" ,rust-byteorder-1)
+        ("rust-bytes" ,rust-bytes-1)
+        ("rust-cloud-file" ,rust-cloud-file-0.2)
+        ("rust-derive-builder" ,rust-derive-builder-0.20)
+        ("rust-dpc-pariter" ,rust-dpc-pariter-0.4)
+        ("rust-fetch-data" ,rust-fetch-data-0.2)
+        ("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-itertools" ,rust-itertools-0.13)
+        ("rust-ndarray" ,rust-ndarray-0.16)
+        ("rust-ndarray-npy" ,rust-ndarray-npy-0.9)
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-numpy" ,rust-numpy-0.22)
+        ("rust-pyo3" ,rust-pyo3-0.22)
+        ("rust-pyo3-build-config" ,rust-pyo3-build-config-0.22)
+        ("rust-rayon" ,rust-rayon-1)
+        ("rust-statrs" ,rust-statrs-0.17)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-tokio" ,rust-tokio-1))
+      #:cargo-development-inputs
+      `(("rust-anyhow" ,rust-anyhow-1)
+        ("rust-ndarray-rand" ,rust-ndarray-rand-0.15)
+        ("rust-rusoto-credential" ,rust-rusoto-credential-0.48)
+        ("rust-temp-testdir" ,rust-temp-testdir-0.2)
+        ("rust-thousands" ,rust-thousands-0.2))
+      #:imported-modules
+      (append %cargo-build-system-modules
+              %pyproject-build-system-modules)
+      #:modules
+      '((guix build cargo-build-system)
+        ((guix build pyproject-build-system) #:prefix py:)
+        (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'prepare-python-module
+            (lambda _
+              ;; We don't use maturin.
+              (delete-file "pyproject.toml")
+              (call-with-output-file "pyproject.toml"
+                (lambda (port)
+                  (format port "\
+[build-system]
+build-backend = 'setuptools.build_meta'
+requires = ['setuptools']
+")))
+              (call-with-output-file "setup.cfg"
+                (lambda (port)
+                  (format port "\
+[metadata]
+name = bed-reader
+version = ~a
+
+[options]
+packages = find:
+
+[options.packages.find]
+exclude =
+  src
+  docs
+  tests
+  Cargo.toml
+" #$version)))))
+          (add-after 'prepare-python-module 'enable-bytecode-determinism
+            (assoc-ref py:%standard-phases 'enable-bytecode-determinism))
+          (add-after 'enable-bytecode-determinism 'build-python-module
+            (assoc-ref py:%standard-phases 'build))
+          (add-after 'build-python-module 'install-python-module
+            (assoc-ref py:%standard-phases 'install))
+          (add-after 'install-python-module 'install-python-library
+            (lambda _
+              (let ((site (string-append #$output "/lib/python"
+                                         #$(version-major+minor
+                                            (package-version python))
+                                         "/site-packages")))
+                (mkdir-p site)
+                (copy-file "target/release/libbed_reader.so"
+                           (string-append site "/bed_reader/bed_reader.so")))))
+          (add-after 'install-python-library 'add-install-to-pythonpath
+            (assoc-ref py:%standard-phases 'add-install-to-pythonpath))
+          (add-after 'add-install-to-pythonpath 'check-python
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (when tests?
+                (apply invoke "pytest" "-v" #$output test-flags)))))))
+    (native-inputs (list python-pytest
+                         python-pytest-cov
+                         python-pytest-datadir
+                         python-pytest-doctestplus
+                         python-recommonmark
+                         python-sphinx))
+    (inputs (list python-wrapper))
+    (propagated-inputs (list python-numpy python-pandas python-pooch))
+    (home-page "https://fastlmm.github.io/")
+    (synopsis "Read and write the PLINK BED format, simply and efficiently")
+    (description
+     "This package lets you read and write the PLINK BED format, simply and
+efficiently.")
+    (license license:asl2.0)))
 
 ;; Note: the name on PyPi is "biofluff".
 (define-public python-biofluff
