@@ -2139,6 +2139,32 @@ writing colored text to a terminal.")
 reductions on 32-bit ARM.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-anyinput-core-0.1
+  (package
+    (name "rust-anyinput-core")
+    (version "0.1.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "anyinput-core" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "17y761xzk0xy7n5q0d76fb29f40cd59qa3b4kv58g9n8k2qivks9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-ndarray" ,rust-ndarray-0.16)
+                       ("rust-proc-macro-error" ,rust-proc-macro-error-1)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-strum" ,rust-strum-0.26)
+                       ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/CarlKCarlK/anyinput")
+    (synopsis "Internal helper library of anyinput")
+    (description
+     "This package provides an internal helper library of anyinput.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-anyhow-1
   (package
     (name "rust-anyhow")
