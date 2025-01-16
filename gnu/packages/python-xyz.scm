@@ -3273,28 +3273,27 @@ Expressions are constructed from parsed strings or directly in Python.")
 (define-public python-hdf4
   (package
    (name "python-hdf4")
-   (version "0.9")
+   (version "0.9.2")
    (source
     (origin
       (method url-fetch)
       (uri (pypi-uri name version))
       (sha256
        (base32
-        "1hjiyrxvxk9817qyqky3nar4y3fs4z8wxz0n884zzb5wi6skrjks"))))
-   (build-system python-build-system)
-   (native-inputs `(("nose" ,python-nose)))
-   (propagated-inputs `(("numpy" ,python-numpy)))
-   (inputs
-    `(("hdf4" ,hdf4)
-      ("libjpeg" ,libjpeg-turbo)
-      ("zlib" ,zlib)))
+        "00sxppysk3w620g1jdskjzkybvpf8dkpzjfj3wlw5khpzw1g0hq5"))))
+   (build-system pyproject-build-system)
    (arguments
-    `(#:phases
-      (modify-phases %standard-phases
-        (replace 'check
+    (list
+     #:phases
+     '(modify-phases %standard-phases
+        (add-before 'check 'build-extensions
           (lambda _
-            (invoke "./runexamples.sh")
-            (invoke "nosetests" "-v"))))))
+            ;; Extensions have to be built before running the tests.
+            (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+   (native-inputs (list python-pytest python-setuptools python-wheel))
+   (propagated-inputs (list python-numpy))
+   (inputs
+    (list hdf4 libjpeg-turbo zlib))
    (home-page "https://github.com/fhs/python-hdf4")
    (synopsis "Python interface to the NCSA HDF4 library")
    (description
