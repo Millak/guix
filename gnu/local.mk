@@ -1,5 +1,5 @@
 # GNU Guix --- Functional package management for GNU
-# Copyright © 2012-2024 Ludovic Courtès <ludo@gnu.org>
+# Copyright © 2012-2025 Ludovic Courtès <ludo@gnu.org>
 # Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2022, 2023, 2024 Andreas Enge <andreas@enge.fr>
 # Copyright © 2016 Mathieu Lirzin <mthl@gnu.org>
 # Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Mark H Weaver <mhw@netris.org>
@@ -1654,7 +1654,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/libgeotiff-fix-tests-with-proj-9.3.0.patch	\
   %D%/packages/patches/libgeotiff-fix-tests-with-proj-9.3.1.patch	\
   %D%/packages/patches/libgeotiff-fix-tests-on-i386.patch	\
-  %D%/packages/patches/libgpg-error-hurd64.patch		\
   %D%/packages/patches/libguestfs-syms.patch            	\
   %D%/packages/patches/libobjc2-unbundle-robin-map.patch	\
   %D%/packages/patches/librewolf-use-system-wide-dir.patch	\

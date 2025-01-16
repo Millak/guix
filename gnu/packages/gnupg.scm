@@ -145,25 +145,9 @@
                                     ;; configuration, as this is not correct for
                                     ;; all architectures.
                                     (_ #t)))
-                            (#t #t)))))
-              #$@(if (target-hurd64?)
-                     #~((add-after 'unpack 'apply-hurd64-patch
-                         (lambda _
-                           (let ((patch
-                                  #$(local-file
-                                     (search-patch
-                                      "libgpg-error-hurd64.patch"))))
-                             (invoke "patch" "--force" "-p1" "-i" patch)))))
-                     #~())))
+                            (#t #t)))))))
           ((system-hurd?)
-           #~((add-after 'unpack 'apply-hurd64-patch
-                         (lambda _
-                           (let ((patch
-                                  #$(local-file
-                                     (search-patch
-                                      "libgpg-error-hurd64.patch"))))
-                             (invoke "patch" "--force" "-p1" "-i" patch))))
-              (add-after 'unpack 'skip-tests
+           #~((add-after 'unpack 'skip-tests
                 (lambda _
                   (substitute* "tests/t-syserror.c"
                     (("(^| )main *\\(.*" all)
