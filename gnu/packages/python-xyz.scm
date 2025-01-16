@@ -10524,35 +10524,36 @@ the results.")
 (define-public python-pysnptools
   (package
     (name "python-pysnptools")
-    (version "0.4.11")
+    (version "0.5.14")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pysnptools" version))
        (sha256
         (base32
-         "0gxr0bjix307wvk0qh7vkafbxbzfpdmq0wlswpxyyaymy0fwcypv"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f ; no test data are included
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (if tests?
-                 (begin
-                   (add-installed-pythonpath inputs outputs)
-                   (invoke "python3" "pysnptools/test.py"))
-                 #t))))))
+         "1babnyky5fk93as1ybdvpz9x3x5099gkgscxflngzfswin23mspk"))))
+    (build-system pyproject-build-system)
+    ;; Tests require test data from python-bed-reader, which fetches data with
+    ;; python-pooch.
+    (arguments (list #:tests? #f))
     (propagated-inputs
-     (list python-dill
+     (list python-bed-reader
+           python-cloudpickle
            python-h5py
+           python-more-itertools
            python-numpy
            python-pandas
            python-psutil
            python-scipy))
     (native-inputs
-     (list python-cython))
+     (list python-pytest
+           python-pytest-cov
+           python-pytest-datadir
+           python-pytest-doctestplus
+           python-setuptools
+           python-sphinx
+           python-sphinx-rtd-theme
+           python-wheel))
     (home-page "http://microsoftgenomics.github.io/PySnpTools/")
     (synopsis "Library for reading and manipulating genetic data")
     (description
