@@ -2634,6 +2634,18 @@ GLSL (@file{.slang}) shaders for use with RetroArch.")
               (separator #f)            ;single entry
               (files '("share/libretro/autoconfig")))
              (search-path-specification
+              (variable "LIBRETRO_CHEATS_DIRECTORY")
+              (separator #f)            ;single entry
+              (files '("share/libretro/database/cht")))
+             (search-path-specification
+              (variable "LIBRETRO_DATABASE_DIRECTORY")
+              (separator #f)            ;single entry
+              (files '("share/libretro/database/rdb")))
+             (search-path-specification
+              (variable "LIBRETRO_SYSTEM_DIRECTORY")
+              (separator #f)            ;single entry
+              (files '("share/libretro/system")))
+             (search-path-specification
               (variable "LIBRETRO_VIDEO_FILTER_DIRECTORY")
               (separator #f)            ;single entry
               (files '("share/libretro/filters/video")))
