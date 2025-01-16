@@ -4500,7 +4500,7 @@ engineering.")
 (define-public seahorse
   (package
     (name "seahorse")
-    (version "43.0")
+    (version "47.0.1")
     (source
      (origin
        (method url-fetch)
@@ -4508,7 +4508,7 @@ engineering.")
                            (version-major version) "/" name "-"
                            version ".tar.xz"))
        (sha256
-        (base32 "0bc3xbjzwa4245m6nqzl3v6hzp9hyfbf50iwgwi5hdjglzxin7av"))))
+        (base32 "1k6avgd58v853nchp226qc3fgz0pwxnf7744hyvynzqzlvj1f6cw"))))
     (build-system meson-build-system)
     (arguments
      '(#:glib-or-gtk? #t
