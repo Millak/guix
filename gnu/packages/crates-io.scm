@@ -44616,6 +44616,31 @@ general elements and for numerics.")
 for @code{ndarray}.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-ndarray-rand-0.15
+  (package
+    (name "rust-ndarray-rand")
+    (version "0.15.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ndarray-rand" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1n15dm0x9g6s69vwqgsfj2pdw5wlha6bv9pfrn6p356idzdv74zh"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-ndarray" ,rust-ndarray-0.16)
+                       ("rust-quickcheck" ,rust-quickcheck-1)
+                       ("rust-rand" ,rust-rand-0.8)
+                       ("rust-rand-distr" ,rust-rand-distr-0.4))))
+    (home-page "https://github.com/rust-ndarray/ndarray")
+    (synopsis "Constructors for randomized arrays")
+    (description
+     "This package provides constructors for randomized arrays.  It provides
+@{rand} integration for @{ndarray}.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-ndk-0.9
   (package
     (name "rust-ndk")
