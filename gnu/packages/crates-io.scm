@@ -44273,6 +44273,41 @@ a non-blocking way, without waiting for the connection to become fully
 established.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-ndarray-0.16
+  (package
+    (name "rust-ndarray")
+    (version "0.16.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ndarray" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ha8sg5ad501pgkxw0wczh8myc2ma3gyxgcny4mq8rckrqnxfbl8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-approx" ,rust-approx-0.5)
+        ("rust-cblas-sys" ,rust-cblas-sys-0.1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-matrixmultiply" ,rust-matrixmultiply-0.3)
+        ("rust-num-complex" ,rust-num-complex-0.4)
+        ("rust-num-integer" ,rust-num-integer-0.1)
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-portable-atomic" ,rust-portable-atomic-1)
+        ("rust-portable-atomic-util" ,rust-portable-atomic-util-0.2)
+        ("rust-rawpointer" ,rust-rawpointer-0.2)
+        ("rust-rayon" ,rust-rayon-1)
+        ("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/rust-ndarray/ndarray")
+    (synopsis "N-dimensional container for general elements and for numerics")
+    (description
+     "This package implements an n-dimensional array for general elements and
+for numerics.  Lightweight array views and slicing; views support chunking and
+splitting.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-ndarray-0.15
   (package
     (name "rust-ndarray")
