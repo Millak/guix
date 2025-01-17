@@ -199,13 +199,13 @@ Erlang and Elixir.")
 (define-public erlang-p1-pgsql
   (package
     (name "erlang-p1-pgsql")
-    (version "1.1.27")
+    (version "1.1.29")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "p1_pgsql" version))
        (sha256
-        (base32 "1fgzchikv31gbyid3qqy9wzwmap1nalwb7fqal77hs6b09v1lkcf"))))
+        (base32 "1h9qigb3qfys46rqpqm6s5a0r7cz38hscgnsjlw3z6bln7l5izx6"))))
     (build-system rebar-build-system)
     (inputs (list erlang-xmpp))
     (synopsis "PostgreSQL driver for Erlang")
