@@ -3408,16 +3408,20 @@ path loss.")
 (define-public python-geographiclib
   (package
     (name "python-geographiclib")
-    (version "1.50")
+    (version "2.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "geographiclib" version))
         (sha256
          (base32
-          "0cn6ap5fkh3mkfa57l5b44z3gvz7j6lpmc9rl4g2jny2gvp4dg8j"))))
-    (build-system python-build-system)
-    (home-page "https://geographiclib.sourceforge.io/1.50/python/")
+          "0naql53537dsa6g9lzz1hf688b1vvih6dj2yjcyjs71yvj2irx7p"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (home-page "https://geographiclib.sourceforge.io/2.0/python/")
     (synopsis "Python geodesic routines from GeographicLib")
     (description
      "This is a python implementation of the geodesic routines in GeographicLib.")
