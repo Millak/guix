@@ -16,6 +16,7 @@
 ;;; Copyright © 2020, 2021, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2021, 2022 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2021 André A. Gomes <andremegafone@gmail.com>
+;;; Copyright © 2025 Tomáš Čech <sleep_walker@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -589,6 +590,31 @@ to an auto mixer tool like pavucontrol.  It can optionally handle multimedia
 keys for controlling the audio volume.")
     (license gpl2+)
     (properties `((release-tag-prefix . ,(string-append name "-"))))))
+
+(define-public xfce4-i3-workspaces-plugin
+  (package
+    (name "xfce4-i3-workspaces-plugin")
+    (version "1.4.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/denesb/xfce4-i3-workspaces-plugin")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1l957xzs479mnl1la6lx3ysaiqc0z8l84jg442wif9k8x9z6iah8"))))
+    (build-system gnu-build-system)
+    (native-inputs (list xfce4-dev-tools))
+    (inputs (list i3ipc-glib libxfce4ui xfce4-panel))
+    (home-page "https://github.com/denesb/xfce4-i3-workspaces-plugin")
+    (synopsis "Xfce panel workspace switcher plugin for the i3 window manager")
+    (description
+     "This plugin is designed for switching workspaces and displaying which screen is
+currently visible, as well as indicating which workspace has a window requiring
+attention.  Although it is intended for the Xfce4 panel, it is custom-built to work
+seamlessly with the tiling window manager i3.")
+    (license gpl3+)))
 
 (define-public xfce4-whiskermenu-plugin
   (package
