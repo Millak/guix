@@ -284,22 +284,22 @@ sources.")
 (define-public python-sphinxcontrib-apidoc
   (package
     (name "python-sphinxcontrib-apidoc")
-    (version "0.3.0")
+    (version "0.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sphinxcontrib-apidoc" version))
        (sha256
         (base32
-         "1f9zfzggs8a596jw51fpfmr149n05mrlyy859iydazbvry9gb6vj"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f))                    ;requires python-pytest<4.0
+         "0mfdfxqxksixxpcigrjykaq6p2j5ic4yx5gv2lvq4pra469cvvv5"))))
+    (build-system pyproject-build-system)
     (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
      (list python-pbr
-           python-pytest
-           python-sphinx
-           python-testrepository))
+           python-sphinx))
     (home-page "https://github.com/sphinx-contrib/apidoc")
     (synopsis "Sphinx extension for running @code{sphinx-apidoc}")
     (description "This package provides Sphinx extension for running
