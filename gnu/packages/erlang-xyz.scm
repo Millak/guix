@@ -35,13 +35,13 @@
 (define-public erlang-luerl
   (package
     (name "erlang-luerl")
-    (version "1.2.0")
+    (version "1.2.3")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "luerl" version))
        (sha256
-        (base32 "0paj3gr0kn8v9g6wmdnz1f16q0iy1pb83zbqsalzbw2g17vd9bww"))))
+        (base32 "1v9svw2ki9dsaqazkgv23dj158pmx5g6lykqsb8q1lnpll69sjqv"))))
     (build-system rebar-build-system)
     (synopsis "Implementation of Lua on Erlang")
     (description "This package provides implementation of Lua on Erlang.")
