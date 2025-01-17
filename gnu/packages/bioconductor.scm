@@ -18633,7 +18633,7 @@ Bioconductor.")
          (add-after 'unpack 'process-javascript
            (lambda* (#:key inputs #:allow-other-keys)
              (with-directory-excursion "inst/htmlwidgets/lib/d3"
-               (let ((source (assoc-ref inputs "_"))
+               (let ((source (assoc-ref inputs "d3.v4.js"))
                      (target "d3.v4.min.js"))
                  (invoke "esbuild" source "--minify"
                          (string-append "--outfile=" target)))))))))
