@@ -2253,16 +2253,21 @@ for path in [path for path in sys.path if 'site-packages' in path]: site.addsite
           (add-after 'install 'wrap-program
             (lambda* (#:key outputs #:allow-other-keys)
               ;; Make sure 'solfege' runs with the correct PYTHONPATH.
-              (let ((path (getenv "GUIX_PYTHONPATH")))
+              (let ((python-path (getenv "GUIX_PYTHONPATH"))
+                    (typelib-path (getenv "GI_TYPELIB_PATH")))
                 (wrap-program (search-input-file outputs "bin/solfege")
-                  `("GUIX_PYTHONPATH" ":" prefix (,path)))))))))
+                  `("GUIX_PYTHONPATH" ":" prefix (,python-path))
+                  `("GI_TYPELIB_PATH" ":" prefix (,typelib-path)))))))))
     (inputs
      (list bash-minimal
            python-wrapper
+           python-pycairo
            python-pygobject
            gettext-minimal
            gtk+
            lilypond))
+    (propagated-inputs
+     (list timidity++))                 ; default player
     (native-inputs
      (list autoconf
            automake
