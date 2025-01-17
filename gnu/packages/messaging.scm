@@ -44,7 +44,7 @@
 ;;; Copyright © 2024 Carlo Zancanaro <carlo@zancanaro.id.au>
 ;;; Copyright © 2024 Wilko Meyer <w@wmeyer.eu>
 ;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
-;;; Copyright © 2024 Igor Goryachev <igor@goryachev.org>
+;;; Copyright © 2024, 2025 Igor Goryachev <igor@goryachev.org>
 ;;; Copyright © 2024 Nguyễn Gia Phong <mcsinyx@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -3739,7 +3739,7 @@ a text snippet), using @code{libphonenumber}.")
 (define-public ejabberd
   (package
     (name "ejabberd")
-    (version "24.07")
+    (version "24.12")
     (source
      (origin
        (method git-fetch)
@@ -3748,7 +3748,7 @@ a text snippet), using @code{libphonenumber}.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0d5i9skgfjzs2100k0g99sigc2w61480ysz3va6pmb4nx43100g3"))))
+        (base32 "1l82d8l4ck60vijzirl4xkyc2wv28jnq6amwi8dralm7r218hg7m"))))
     (build-system rebar-build-system)
     (inputs (list bash-minimal coreutils procps sed))
     (native-inputs
