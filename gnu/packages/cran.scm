@@ -14971,7 +14971,7 @@ local smoothers and many more.")
           (add-after 'unpack 'process-javascript
             (lambda* (#:key inputs #:allow-other-keys)
               (with-directory-excursion "inst/assets/html2canvas/"
-                (minify (assoc-ref inputs "_")
+                (minify (assoc-ref inputs "html2canvas.js")
                         #:target "html2canvas.min.js")))))))
     (propagated-inputs
      (list r-base64enc
