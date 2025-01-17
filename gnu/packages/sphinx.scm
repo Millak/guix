@@ -182,6 +182,9 @@ sources.")
               ;; XXX: Not clear why this fails with a version comparison
               ;; failure.
               " and not test_needs_sphinx"
+              ;; This fails on some machines with the failed assertion
+              ;; '5:11:17\u202fAM' == '5:11:17 AM'.
+              " and not test_format_date"
               ;; This is a harmless failure.  The expected output looks for a
               ;; long string that happens to contain a literal space
               ;; character, but in the actual output the space character is
