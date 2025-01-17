@@ -9811,7 +9811,11 @@ debugger, with which it shares the same interface.")
              "--ignore=test/test_async.py"
              "--ignore=test/test_ipfs.py")))
     (propagated-inputs (list python-aiohttp python-fsspec python-requests))
-    (native-inputs (list python-pytest python-pytest-asyncio))
+    (native-inputs
+     (list python-pytest
+           python-pytest-asyncio
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/fsspec/ipfsspec")
     (synopsis "Read-only implementation of fsspec for IPFS")
     (description "This package provides a read-only implementation of
