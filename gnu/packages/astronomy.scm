@@ -2146,13 +2146,13 @@ cosmological parameters e.g. redshift or luminosity-distance.")
 (define-public python-crds
   (package
     (name "python-crds")
-    (version "12.0.8")
+    (version "12.0.9")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "crds" version))
        (sha256
-        (base32 "09kdpaywj88n31jard4wbqmb9132qf6fk0ar2z6ca9vswavivfk8"))))
+        (base32 "0cf6pr6lixqhmvig9ajhh68yd1ri7dninamakvs728mjd5nswmw3"))))
     (build-system pyproject-build-system)
     (arguments
      (list
