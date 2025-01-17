@@ -4743,60 +4743,6 @@ XLTX and XLTM file formats that are defined by the Office Open XML (OOXML)
 standard.")
     (license license:expat)))
 
-(define-public python-eventlet
-  (package
-    (name "python-eventlet")
-    (version "0.38.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "eventlet" version))
-       (sha256
-        (base32
-         "1b7dhy3pyp3nfv0zzjrs7i3kam40cl1nh3acy2fd59ywy4x84ika"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      '(list "-k"
-             (string-append
-              "not TestGetaddrinfo"
-              " and not TestProxyResolver"
-              " and not test_noraise_dns_tcp"
-              " and not test_raise_dns_tcp"
-              " and not test_hosts_no_network"
-              " and not test_import_rdtypes_then_eventlet"
-              " and not test_patcher_existing_locks"
-              " and not test_dns_methods_are_green"))
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'avoid-OSError
-           (lambda _
-             ;; If eventlet tries to load greendns, an OSError is thrown when
-             ;; getprotobyname is called.  Thankfully there is an environment
-             ;; variable to disable the greendns import, so use it:
-             (setenv "EVENTLET_NO_GREENDNS" "yes"))))))
-    (native-inputs
-     (list python-hatch-vcs
-           python-hatchling
-           python-pytest
-           python-twine))
-    (propagated-inputs
-     (list python-dnspython
-           python-greenlet
-           python-monotonic))
-    (home-page "https://eventlet.net")
-    (synopsis "Concurrent networking library for Python")
-    (description
-     "Eventlet is a concurrent networking library for Python that
-allows you to change how you run your code, not how you write it.
-It uses @code{epoll} or @code{libevent} for highly scalable non-blocking I/O.
-Coroutines ensure that the developer uses a blocking style of programming
-that is similar to threading, but provide the benefits of non-blocking I/O.
-The event dispatch is implicit, which means you can easily use @code{Eventlet}
-from the Python interpreter, or as a small part of a larger application.")
-    (license license:expat)))
-
 (define-public python-sinfo
   (package
     (name "python-sinfo")
