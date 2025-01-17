@@ -430,13 +430,13 @@ Erlang/Elixir.")
 (define-public erlang-fast-xml
   (package
     (name "erlang-fast-xml")
-    (version "1.1.52")
+    (version "1.1.55")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "fast_xml" version))
        (sha256
-        (base32 "1z8vrpnjx8y9qfqhhj4is8k4lzvjlnzhp6d62r8bdlh61qwr4lbr"))))
+        (base32 "11czr4iqv2m9b5msigwxf26q6ny90qzrawzcrmkzbm8fg0xf5ww3"))))
     (build-system rebar-build-system)
     (inputs (list erlang-p1-utils))
     (native-inputs (list erlang-pc))
