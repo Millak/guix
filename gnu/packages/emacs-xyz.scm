@@ -30725,10 +30725,10 @@ and comments.")
       (license license:gpl3+))))
 
 (define-public emacs-yeetube
-  (let ((commit "5c0a3efd2fb5cc25a6a90741ad198e31fdb15640")) ;version bump
+  (let ((commit "b8877e61b58dfabcc30044680d0975b3c6b12052")) ;version bump
     (package
       (name "emacs-yeetube")
-      (version "2.1.7")
+      (version "2.1.8")
       (source
        (origin
          (method git-fetch)
@@ -30737,7 +30737,7 @@ and comments.")
                (commit commit)))
          (sha256
           (base32
-           "0a3pm8cz6yl5s2xnbnjvdwm8mf5hyman419xl4fyyfgwy6vrxp70"))
+           "1gii2y4cvw795039kdky1mdmgpfrfm4s48ld7z4gv7bvb0fs9hpq"))
          (file-name (git-file-name name version))))
       (build-system emacs-build-system)
       (arguments
