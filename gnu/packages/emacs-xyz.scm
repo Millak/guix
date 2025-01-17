@@ -141,7 +141,7 @@
 ;;; Copyright © 2024 Ilya Chernyshov <ichernyshovvv@gmail.com>
 ;;; Copyright © 2024 Wilko Meyer <w@wmeyer.eu>
 ;;; Copyright © 2024 Noé Lopez <noelopez@free.fr>
-;;; Copyright © 2024 gemmaro <gemmaro.dev@gmail.com>
+;;; Copyright © 2024, 2025 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2024 Daniel Szmulewicz <daniel.szmulewicz@gmail.com>
 ;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
@@ -14056,26 +14056,28 @@ line program.")
       (license license:gpl3+))))
 
 (define-public emacs-ruby-electric
-  (package
-    (name "emacs-ruby-electric")
-    (version "2.3.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/ruby/elisp-ruby-electric")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1p0l0fsn0jcgb4raimyc4d1wpfksrfhn0rkwdazadvm6s8baydf7"))))
-    (build-system emacs-build-system)
-    (home-page "https://github.com/ruby/elisp-ruby-electric")
-    (synopsis "Minor mode for electrically editing Ruby code")
-    (description
-     "Ruby Electric mode accelerates code writing in Ruby by making some keys
+  (let ((revision "0")
+        (commit "c53376da891713e0c49f01aad2ff64d4fbb0b812"))
+    (package
+      (name "emacs-ruby-electric")
+      (version (git-version "2.3.3" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/ruby/elisp-ruby-electric")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "14grv2gwr6lyjlcp8h1frvipyisakkw2q0jpv4h5rd5bzky7m8w0"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/ruby/elisp-ruby-electric")
+      (synopsis "Minor mode for electrically editing Ruby code")
+      (description
+       "Ruby Electric mode accelerates code writing in Ruby by making some keys
 electric and automatically supplying with closing parentheses and @code{end}
 as appropriate.")
-    (license license:ruby)))
+      (license license:ruby))))
 
 (define-public emacs-rudel
   (package
