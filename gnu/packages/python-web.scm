@@ -4139,7 +4139,8 @@ WebSocket usage in Python programs.")
     (propagated-inputs
      (list python-requests))
     (native-inputs
-     (list python-pytest python-pytest-cov))
+     (list python-pytest python-pytest-cov
+           python-setuptools python-wheel))
     (home-page "https://github.com/ithaka/apiron")
     (synopsis "Python wrapper for interacting with RESTful APIs")
     (description
