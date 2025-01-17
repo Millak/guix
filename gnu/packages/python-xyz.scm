@@ -23087,17 +23087,21 @@ Python versions that don't natively support them.")
 (define-public python-typing-inspect
   (package
     (name "python-typing-inspect")
-    (version "0.6.0")
+    (version "0.9.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "typing_inspect" version))
               (sha256
                (base32
-                "1dzs9a1pr23dhbvmnvms2jv7l7jk26023g5ysf0zvnq8b791s6wg"))
-              (patches (search-patches "python-typing-inspect-fix.patch"))))
-    (build-system python-build-system)
+                "0y0z8v4wr5bahlgzjd1il2z8vlfd2asiyb45wia6kvznyqpw8gxj"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
     (propagated-inputs
-     (list python-mypy-extensions python-typing-extensions))
+     (list python-mypy-extensions
+           python-typing-extensions))
     (home-page "https://github.com/ilevkivskyi/typing_inspect")
     (synopsis "API for inspection of types in the Python @code{typing} module")
     (description
