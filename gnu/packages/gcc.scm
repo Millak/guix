@@ -17,6 +17,7 @@
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2024 Nguyễn Gia Phong <mcsinyx@disroot.org>
+;;; Copyright © 2025 Leo Nikkilä <hello@lnikki.la>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -51,6 +52,7 @@
   #:use-module (gnu packages perl)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix memoization)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
   #:use-module (guix gexp)
@@ -577,7 +579,7 @@ Go.  It also includes runtime support libraries for these languages.")
        ;; XXX: This gross hack allows us to have libstdc++'s <bits/c++config.h>
        ;; in the search path, thereby avoiding misconfiguration of libstdc++:
        ;; <https://bugs.gnu.org/42392>.
-       ("libstdc++" ,libstdc++-headers)
+       ("libstdc++" ,(make-libstdc++-headers this-package))
 
        ,@(package-inputs gcc-4.7)))))
 
@@ -1080,30 +1082,28 @@ using compilers other than GCC."
     (propagated-inputs '())
     (synopsis "GNU C++ standard library")))
 
-(define libstdc++
-  ;; Libstdc++ matching the default GCC.
-  (make-libstdc++ gcc))
-
-(define libstdc++-headers
-  ;; XXX: This package is for internal use to work around
-  ;; <https://bugs.gnu.org/42392> (see above).  The main difference compared
-  ;; to the libstdc++ headers that come with 'gcc' is that <bits/c++config.h>
-  ;; is right under include/c++ and not under
-  ;; include/c++/x86_64-unknown-linux-gnu (aka. GPLUSPLUS_TOOL_INCLUDE_DIR).
-  (package
-    (inherit libstdc++)
-    (name "libstdc++-headers")
-    (outputs '("out"))
-    (build-system trivial-build-system)
-    (arguments
-     '(#:builder (let* ((out       (assoc-ref %outputs "out"))
-                        (libstdc++ (assoc-ref %build-inputs "libstdc++")))
-                   (mkdir out)
-                   (mkdir (string-append out "/include"))
-                   (symlink (string-append libstdc++ "/include")
-                            (string-append out "/include/c++")))))
-    (inputs `(("libstdc++" ,libstdc++)))
-    (synopsis "Headers of GNU libstdc++")))
+(define make-libstdc++-headers
+  (mlambdaq (gcc)      ;memoize to play well with the object cache
+    ;; XXX: This package is for internal use to work around
+    ;; <https://bugs.gnu.org/42392> (see above).  The main difference compared
+    ;; to the libstdc++ headers that come with 'gcc' is that <bits/c++config.h>
+    ;; is right under include/c++ and not under
+    ;; include/c++/x86_64-unknown-linux-gnu (aka. GPLUSPLUS_TOOL_INCLUDE_DIR).
+    (let ((libstdc++ (make-libstdc++ gcc)))
+      (package
+        (inherit libstdc++)
+        (name "libstdc++-headers")
+        (outputs '("out"))
+        (build-system trivial-build-system)
+        (arguments
+         '(#:builder (let* ((out       (assoc-ref %outputs "out"))
+                            (libstdc++ (assoc-ref %build-inputs "libstdc++")))
+                       (mkdir out)
+                       (mkdir (string-append out "/include"))
+                       (symlink (string-append libstdc++ "/include")
+                                (string-append out "/include/c++")))))
+        (inputs `(("libstdc++" ,libstdc++)))
+        (synopsis "Headers of GNU libstdc++")))))
 
 (define-public libstdc++-4.9
   (make-libstdc++ gcc-4.9))
