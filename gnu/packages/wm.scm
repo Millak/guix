@@ -78,6 +78,7 @@
 ;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2024 Josep Bigorra <jjbigorra@gmail.com>
 ;;; Copyright © 2024 Jakob Kirsch <jakob.kirsch@web.de>
+;;; Copyright © 2025 Tomáš Čech <sleep_walker@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -570,6 +571,43 @@ many programming languages.")
 
 (define-public i3-gaps
   (deprecated-package "i3-gaps" i3-wm))
+
+(define-public i3ipc-glib
+  (package
+    (name "i3ipc-glib")
+    (version "1.0.1")
+    (source (origin
+              (method git-fetch)
+              (uri
+               (git-reference
+                (url "https://github.com/altdesktop/i3ipc-glib")
+                (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "01fzvrbnzcwx0vxw29igfpza9zwzp2s7msmzb92v01z0rz0y5m0p"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list
+      autoconf
+      automake
+      `(,glib "bin")                    ;for glib-mkenums
+      gobject-introspection
+      gtk-doc
+      libtool
+      pkg-config
+      which))
+    (propagated-inputs
+     ;; In Requires.private of i3ipc-glib-1.0.pc.
+     (list
+      glib
+      json-glib
+      libxcb))
+    (home-page "https://github.com/altdesktop/i3ipc-glib")
+    (synopsis "C interface library to i3 window manager")
+    (description
+     "@code{i3ipc-GLib} is a C library for controlling the i3 window manager.")
+    (license license:gpl3+)))
 
 (define-public i3lock
   (package
