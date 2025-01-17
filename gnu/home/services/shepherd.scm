@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2021, 2023 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
-;;; Copyright © 2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2024-2025 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -34,7 +34,10 @@
             home-shepherd-configuration-auto-start?
             home-shepherd-configuration-daemonize?
             home-shepherd-configuration-silent?
-            home-shepherd-configuration-services)
+            home-shepherd-configuration-services
+
+            home-shepherd-transient-service-type
+            home-shepherd-timer-service-type)
   #:re-export (shepherd-service
                shepherd-service?
                shepherd-service-documentation
@@ -181,3 +184,17 @@ as shepherd package."
 (define-service-type-mapping
   shepherd-root-service-type => home-shepherd-service-type)
 
+
+;;;
+;;; Timer and transient service maker.
+;;;
+
+(define home-shepherd-timer-service-type
+  (service-type
+   (inherit (system->home-service-type shepherd-timer-service-type))
+   (default-value '())))                          ;requirement
+
+(define home-shepherd-transient-service-type
+  (service-type
+   (inherit (system->home-service-type shepherd-transient-service-type))
+   (default-value '())))                          ;requirement

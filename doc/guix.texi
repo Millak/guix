@@ -45702,6 +45702,7 @@ system:
                                             (shepherd my-shepherd))))))
 @end lisp
 
+@anchor{shepherd-transient-timer-services}
 @cindex @code{transient} service, Shepherd
 @defvar shepherd-transient-service-type
 This service type represents the Shepherd's @code{transient} service,
@@ -47364,6 +47365,17 @@ for its system-wide counterpart.  @xref{log-rotation-configuration}, for
 its reference.
 
 This service is part of @code{%base-home-services}.
+@end defvar
+
+@defvar home-shepherd-transient-service-type
+@defvarx home-shepherd-timer-service-type
+These are the @code{timer} and @code{transient} Shepherd services.  The
+former lets you schedule command execution for later, while the latter
+can run commands in the background as a regular service.
+
+@xref{shepherd-transient-timer-services, the system @code{timer} and
+@code{transient} services}, which are their Guix System counterparts,
+for more info.
 @end defvar
 
 @node Secure Shell
