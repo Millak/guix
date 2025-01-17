@@ -4793,7 +4793,7 @@ more.")
 (define-public python-asyncua
   (package
     (name "python-asyncua")
-    (version "1.0.3")
+    (version "1.1.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4803,11 +4803,11 @@ more.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0bazk3k2dyzlrh7yxs4pc76m5ysm7riia3ncg7as3xr4y9dy29bx"))))
+                "0aisj8cpfhq50h4pv2p0c9iw5cqy3hxhn5adp8wd01c46dhg6y2x"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-asynctest
-           python-pytest-asyncio
+           python-pytest-asyncio-0.21
            python-pytest-mock
            python-pytest-runner
            python-setuptools
@@ -4816,13 +4816,16 @@ more.")
      (list python-aiofiles
            python-aiosqlite
            python-cryptography
-           python-dateutil python-pytz
+           python-dateutil
+           python-pyopenssl
+           python-pytz
            python-importlib-metadata
-           python-sortedcontainers))
+           python-sortedcontainers
+           python-typing-extensions))
+    (home-page "https://freeopcua.github.io/")
     (synopsis "OPC UA / IEC 62541 client and server library")
     (description "This package provides an OPC UA / IEC 62541 client and
 server for Python and pypy3.")
-    (home-page "https://freeopcua.github.io/")
     (license license:lgpl3+)))
 
 (define-public modglue
