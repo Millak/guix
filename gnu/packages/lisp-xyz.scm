@@ -23,7 +23,7 @@
 ;;; Copyright © 2020-2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021, 2022 Aurora <rind38@disroot.org>
 ;;; Copyright © 2021 Matthew James Kraai <kraai@ftbfs.org>
-;;; Copyright © 2021-2024 André A. Gomes <andremegafone@gmail.com>
+;;; Copyright © 2021-2025 André A. Gomes <andremegafone@gmail.com>
 ;;; Copyright © 2021, 2022, 2023 Cage <cage-dev@twistfold.it>
 ;;; Copyright © 2021 Cameron Chaparro <cameron@cameronchaparro.com>
 ;;; Copyright © 2021, 2024 Charles Jackson <charles.b.jackson@protonmail.com>
@@ -126,6 +126,7 @@
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages statistics)
   #:use-module (gnu packages tcl)
+  #:use-module (gnu packages texinfo)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages video)
@@ -933,8 +934,17 @@ within your Lisp program, so you don't need to invoke a separate tool.")
          (sha256
           (base32 "0pdj779j3nwzn8f1661vf00rrjrbks1xgiq0rvwjw6qyxsfqfnl9"))))
       (build-system asdf-build-system/sbcl)
+      (arguments
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'build 'build-doc
+                   (lambda _
+                     (with-directory-excursion "doc"
+                       (invoke "make" "info")
+                       (install-file "alexandria.info"
+                                     (string-append #$output "/share/info"))))))))
       (native-inputs
-       (list sbcl-rt))
+       (list sbcl-rt texinfo))
       (synopsis "Collection of portable utilities for Common Lisp")
       (description
        "Alexandria is a collection of portable utilities.  It does not contain
@@ -947,7 +957,15 @@ portable between implementations.")
   (sbcl-package->cl-source-package sbcl-alexandria))
 
 (define-public ecl-alexandria
-  (sbcl-package->ecl-package sbcl-alexandria))
+  (let ((pkg (sbcl-package->ecl-package sbcl-alexandria)))
+    (package
+      (inherit pkg)
+      (outputs '("out"))
+      (arguments
+       (substitute-keyword-arguments (package-arguments pkg)
+         ((#:phases phases)
+          `(modify-phases ,phases
+             (delete 'build-doc))))))))
 
 (define-public sbcl-alexandria-plus
   (let ((commit "adafb09838a84895bedb119f8253b89b6a04a2c5")
