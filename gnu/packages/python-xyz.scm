@@ -19381,7 +19381,7 @@ the standard library.")
         (base32 "00a9h06a1wj66935n863qlk4jpl9gvdvzkkhl8xmgqwdkwv0js54"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-decorator python-unittest2))
-    (native-inputs (list python-mock))
+    (native-inputs (list python-mock python-setuptools python-wheel))
     (home-page "https://github.com/brouberol/contexttimer")
     (synopsis "Timer as a context manager")
     (description
