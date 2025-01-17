@@ -2879,7 +2879,7 @@ computing in Python.  It extends both the @code{concurrent.futures} and
 (define-public python-modin
   (package
     (name "python-modin")
-    (version "0.15.1")
+    (version "0.32.0")
     (source
      (origin
        ;; The archive on pypi does not include all required files.
@@ -2890,38 +2890,40 @@ computing in Python.  It extends both the @code{concurrent.futures} and
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0nf2pdqna2vn7vq7q7b51f3cfbrxfn77pyif3clibjsxzvfm9k03"))))
-    (build-system python-build-system)
+         "1vb3iffgspryb6nvwiwdnypb922vkn2yvyzc1y0wwxcb0c0fl78d"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'make-files-writable
-           (lambda _
-             (for-each make-file-writable (find-files "."))))
+     (list
+      #:test-flags
+      ;; These four tests fail because an expected error is not raised.
+      '(list "-k" "not test_binary_bad_broadcast")
+      #:phases
+      '(modify-phases %standard-phases
          (add-after 'unpack 'loosen-requirements
            (lambda _
              (substitute* "setup.py"
                ;; Don't depend on a specific version of Pandas.
-               (("pandas==")
-                "pandas>="))))
+               (("pandas==") "pandas>="))))
          (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
+           (lambda* (#:key tests? test-flags #:allow-other-keys)
              (when tests?
                (setenv "MODIN_ENGINE" "dask")
-               (invoke "python" "-m" "pytest"
-                       "modin/pandas/test/test_concat.py")
+               (apply invoke "python" "-m" "pytest"
+                      "modin/tests/numpy" test-flags)
                (setenv "MODIN_ENGINE" "python")
-               (invoke "python" "-m" "pytest"
-                       "modin/pandas/test/test_concat.py")))))))
+               (apply invoke "python" "-m" "pytest"
+                      "modin/tests/numpy" test-flags)))))))
     (propagated-inputs
      (list python-cloudpickle
            python-dask
            python-distributed
            python-numpy
            python-packaging
-           python-pandas))
+           python-pandas
+           python-s3fs))
     (native-inputs
-     (list python-coverage
+     (list python-boto3
+           python-coverage
            python-jinja2
            python-lxml
            python-matplotlib
@@ -2938,7 +2940,8 @@ computing in Python.  It extends both the @code{concurrent.futures} and
            python-tables
            python-tqdm
            python-xarray
-           python-xlrd))
+           python-xlrd
+           python-wheel))
     (home-page "https://github.com/modin-project/modin")
     (synopsis "Make your pandas code run faster")
     (description
