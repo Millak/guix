@@ -183,13 +183,13 @@ Erlang and Elixir.")
 (define-public erlang-p1-mysql
   (package
     (name "erlang-p1-mysql")
-    (version "1.0.24")
+    (version "1.0.25")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "p1_mysql" version))
        (sha256
-        (base32 "0pv5zfpkw6sgmn6jbm5k635xnx8kkcvgynka5ix50zr5cigqcn7h"))))
+        (base32 "0d7438sfzzh57d0fxq165k75khja6krfcglgx2c60wjvx7x7y676"))))
     (build-system rebar-build-system)
     (synopsis "Pure Erlang MySQL driver")
     (description "This package provides pure Erlang @code{MySQL} driver.")
