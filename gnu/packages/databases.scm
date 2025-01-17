@@ -4366,7 +4366,7 @@ with the @code{psycopg} PostgreSQL driver.")
 (define-public python-psycopg
   (package
     (name "python-psycopg")
-    (version "3.1.10")
+    (version "3.2.4")
     (source (origin
               ;; Fetch from git because PyPI contains only cythonized sources.
               (method git-fetch)
@@ -4376,54 +4376,41 @@ with the @code{psycopg} PostgreSQL driver.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0hqk45wlaflz69cy1r0hbv11bwb89p6hjb7zmgqas26gdhg37n0r"))))
-    (build-system python-build-system)
+                "0fb83fhaa3saapqv37901hlv017bj40q0dmkxd79aaq442sjf9w2"))))
+    (build-system pyproject-build-system)
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-before 'build 'change-directory
-                 (lambda _
-                   (chdir "psycopg")))
-               (add-after 'build 'build-c-extensions
-                 (lambda _
-                   (with-directory-excursion "../psycopg_c"
-                     ((assoc-ref %standard-phases 'build)))))
-               (add-after 'install 'install-c-extensions
-                 (lambda* (#:key inputs outputs #:allow-other-keys)
-                   ;; For some reason setup.py refuses to install if the
-                   ;; installation directory is not on PYTHONPATH.
-                   (setenv "PYTHONPATH" (site-packages inputs outputs))
-                   (with-directory-excursion "../psycopg_c"
-                     ((assoc-ref %standard-phases 'install)
-                      #:inputs inputs
-                      #:outputs outputs))))
-               (add-before 'check 'start-postgresql
-                 (lambda _
-                   (let ((dbdir (string-append (getcwd) "/../pgdir")))
-                     (invoke "initdb" "-D" dbdir)
-                     (invoke "pg_ctl" "-D" dbdir
-                             "-o" (string-append "-k " dbdir)
-                             "-l" (string-append dbdir "/db.log")
-                             "start")
-
-	             (invoke "psql" "-h" dbdir "-d" "postgres"
-                             "-c" "CREATE DATABASE nixbld;"))))
-               (replace 'check
-                 (lambda* (#:key inputs tests? #:allow-other-keys)
-                   (when tests?
-                     (setenv "TZDIR" (search-input-directory inputs
-                                                             "share/zoneinfo"))
-                     (with-directory-excursion ".."
-                       (invoke "pytest" "-vv"
-                               "-o" "asyncio_mode=auto"
-                               ;; FIXME: Many of the typing tests are failing,
-                               ;; conveniently tagged as slow...
-                               "-k" "not slow")))))
-               ;; The sanity check phase attempts loading the C extension
-               ;; before the Python library, which results in the following:
-               ;;   <ImportError: the psycopg package should be imported
-               ;;    before psycopg_c>.
-               (delete 'sanity-check))))
+     (list
+      #:test-flags
+      '(list "-o" "asyncio_mode=auto"
+             ;; FIXME: Many of the typing tests are failing,
+             ;; conveniently tagged as slow...
+             "-k" "not slow" "..")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'change-directory
+            (lambda _ (chdir "psycopg")))
+          (add-after 'build 'build-c-extensions
+            (lambda _
+              (with-directory-excursion "../psycopg_c"
+                ((assoc-ref %standard-phases 'build)))))
+          (add-after 'install 'install-c-extensions
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (with-directory-excursion "../psycopg_c"
+                ((assoc-ref %standard-phases 'install)
+                 #:inputs inputs #:outputs outputs))))
+          (add-before 'check 'start-postgresql
+            (lambda* (#:key inputs tests? #:allow-other-keys)
+              (when tests?
+                (setenv "TZDIR" (search-input-directory inputs
+                                                        "share/zoneinfo"))
+                (let ((dbdir (string-append (getcwd) "/../pgdir")))
+                  (invoke "initdb" "-D" dbdir)
+                  (invoke "pg_ctl" "-D" dbdir
+                          "-o" (string-append "-k " dbdir)
+                          "-l" (string-append dbdir "/db.log")
+                          "start")
+	          (invoke "psql" "-h" dbdir "-d" "postgres"
+                          "-c" "CREATE DATABASE nixbld;"))))))))
     (native-inputs
      (list python-cython-3
            python-mypy
@@ -4431,7 +4418,9 @@ with the @code{psycopg} PostgreSQL driver.")
            python-pytest
            python-pytest-asyncio
            python-anyio
+           python-setuptools
            python-tenacity
+           python-wheel
            pproxy
            tzdata-for-tests))
     (inputs
