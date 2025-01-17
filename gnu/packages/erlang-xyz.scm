@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2024 Igor Goryachev <igor@goryachev.org>
+;;; Copyright © 2024, 2025 Igor Goryachev <igor@goryachev.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -489,13 +489,13 @@ for Erlang/Elixir.")
 (define-public erlang-esip
   (package
     (name "erlang-esip")
-    (version "1.0.54")
+    (version "1.0.56")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "esip" version))
        (sha256
-        (base32 "1vip49gbz1z6sgrab6021fdlqq7g7712d5znvanwsnbjkn0sz1w1"))))
+        (base32 "07ys2n43fdg3cka6v7lh6633a177yiwmrkcd6vvj7dlkxw66dwwy"))))
     (build-system rebar-build-system)
     (inputs (list erlang-fast-tls erlang-p1-utils erlang-stun))
     (native-inputs (list erlang-pc))
