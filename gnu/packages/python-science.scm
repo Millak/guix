@@ -3745,13 +3745,13 @@ NeuroML2 models.")
 (define-public python-pynetdicom
   (package
     (name "python-pynetdicom")
-    (version "2.0.2")
+    (version "2.1.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "pynetdicom" version))
               (sha256
                (base32
-                "0farmgviaarb3f4xn751card3v0lza57vwgl5azxxq65p7li44i3"))))
+                "1smzrnc93nmv8jz4np9knas74a46b1nhb3hjpf8n9vfpxypgnwcn"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -3770,9 +3770,19 @@ NeuroML2 models.")
                     " and not test_pr_level_patient"
                     " and not test_pr_level_series"
                     " and not test_scp_cancelled"))))
-    (native-inputs (list python-pyfakefs python-pytest python-setuptools
-                         python-wheel))
-    (propagated-inputs (list python-pydicom python-sqlalchemy))
+    (native-inputs (list python-codespell
+                         python-coverage
+                         python-poetry-core
+                         python-pytest
+                         python-pytest-cov
+                         python-pytest-xdist
+                         python-sphinx
+                         python-sphinx-rtd-theme))
+    (propagated-inputs (list python-mypy
+                             python-numpydoc
+                             python-pydicom
+                             python-pyfakefs
+                             python-sqlalchemy))
     (home-page "https://github.com/pydicom/pynetdicom")
     (synopsis "Python implementation of the DICOM networking protocol")
     (description
