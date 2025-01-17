@@ -2206,6 +2206,13 @@ Key features include:
      (list
       #:tests? #f                       ;xmllint attempts to download DTD
       #:test-target "test"
+      #:configure-flags
+      #~(list (string-append "--enable-docbook-stylesheet="
+                             #$(this-package-native-input "docbook-xsl")
+                             "/xml/xsl/"
+                             #$(package-name docbook-xsl) "-"
+                             #$(package-version docbook-xsl)
+                             "/html/chunk.xsl"))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'set-version
@@ -2250,6 +2257,9 @@ for path in [path for path in sys.path if 'site-packages' in path]: site.addsite
               (substitute* "run-solfege.py"
                 (("prefix = os.path.*$")
                  (string-append "prefix = " #$output)))))
+          (add-after 'build 'build-manual
+            (lambda _
+              (invoke "make" "update-manual")))
           (add-after 'install 'wrap-program
             (lambda* (#:key outputs #:allow-other-keys)
               ;; Make sure 'solfege' runs with the correct PYTHONPATH.
@@ -2274,6 +2284,10 @@ for path in [path for path in sys.path if 'site-packages' in path]: site.addsite
            pkg-config
            txt2man
            libxml2                      ; for tests
+           docbook-xsl                  ; for manual
+           docbook-xml-4.1.2
+           itstool
+           libxslt
            ghostscript
            texinfo))
     (home-page "https://www.gnu.org/software/solfege/")
