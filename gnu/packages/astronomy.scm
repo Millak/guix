@@ -1511,13 +1511,13 @@ model-fitting photometry or morphological analyses.")
 (define-public python-ads
   (package
     (name "python-ads")
-    (version "0.12.6")
+    (version "0.12.7")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ads" version))
        (sha256
-        (base32 "18aizbsmhwz99flz8n101mi0n0lk3m3qqzfvmxrmjwqvydfypjml"))))
+        (base32 "156y3zp0nm77976rwsxjjdh7yvggas8s6m0nm523khvn4lq8f9n0"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list nss-certs-for-test
