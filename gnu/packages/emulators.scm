@@ -99,6 +99,7 @@
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages sphinx)
@@ -290,7 +291,8 @@ console.")
          (file-name (git-file-name name version))
          (sha256
           (base32 "1p8qsxlabgmz3nic0a9ghh9d3lzl5f8i3kmdrrvx6w8kdlp33018"))
-         (modules '((guix build utils)))
+         (modules '((guix build utils)
+                    (ice-9 regex)))
          (snippet
           '(begin
              ;; Remove external stuff we don't need.
@@ -318,9 +320,19 @@ console.")
                          "miniupnpc" "minizip" "MoltenVK" "pugixml"
                          "soundtouch"
                          "xxhash" "zlib" "zstd"))
-             ;; Clean up source.
+             ;; Clean up the source.
              (for-each delete-file
-                       (find-files "." ".*\\.(bin|dsy|exe|jar|rar)$"))
+                       (find-files
+                        "."
+                        (lambda (file _)
+                          (and (string-match "\\.(bin|dsy|exe|jar|rar)$" file)
+                               ;; Preserve the important wc24 .bin
+                               ;; configuration *data* files.
+                               (not (member (basename file)
+                                            '("misc.bin"
+                                              "nwc24dl.bin"
+                                              "nwc24fl.bin"
+                                              "nwc24fls.bin")))))))
              ;; Do not attempt to include now-missing directories.
              (substitute* "CMakeLists.txt"
                ((".*add_subdirectory.*Externals/enet.*") "")
@@ -372,7 +384,30 @@ console.")
                                     "FileSystemTest"
                                     "PowerPCTest"
                                     "VertexLoaderTest")
-                                  "|")))))))
+                                  "|"))))))
+            (add-before 'install 'build-codeloader.bin
+              (lambda _
+                (with-directory-excursion "../source/docs"
+                  ;; The following command-line is adapted from the example in
+                  ;; codehandler.s.
+                  (invoke "powerpc-linux-gnu-gcc" "-mpowerpc" "-mbig"
+                          "codehandler.s" "-nostartfiles" "-nodefaultlibs"
+                          "-nostdlib" "-T" "codehandler.ld"
+                          "-o" "codehandler.bin")
+                  (copy-file "codehandler.bin" "../Data/Sys/codehandler.bin"))))
+            (add-before 'install 'build-dsp_rom.bin
+              (lambda _
+                ;; Ensure dsptool is on PATH.
+                (setenv "PATH" (string-append (getenv "PATH") ":"
+                                              (getcwd) "/Binaries"))
+                (with-directory-excursion "../source"
+                  (invoke "dsptool" "-o" "Data/Sys/GC/dsp_rom.bin"
+                          "docs/DSP/free_dsp_rom/dsp_rom.ds"))))
+            (add-before 'install 'build-dsp_coefs.bin
+              (lambda _
+                (with-directory-excursion "../source"
+                  (invoke "python3" "docs/DSP/free_dsp_rom/generate_coefs.py")
+                  (rename-file "dsp_coef.bin" "Data/Sys/GC/dsp_coef.bin")))))
         ;; The FindGTK2 cmake script only checks hardcoded directories for
         ;; glib/gtk headers.  Also add some include directories via the CXX
         ;; flags to let GCC find some headers not actively searched by the
@@ -381,6 +416,7 @@ console.")
         #~(list (string-append "-DCMAKE_CXX_FLAGS="
                                "-I" (search-input-directory
                                      %build-inputs "include/soundtouch"))
+                "-DDSPTOOL=ON"
                 (string-append "-DX11_INCLUDE_DIR="
                                #$(this-package-input "libx11")
                                "/include")
@@ -390,7 +426,11 @@ console.")
                 "-DX11_FOUND=1")
         #:test-target "unittests"))
       (native-inputs
-       (list gettext-minimal pkg-config))
+       (list (cross-gcc "powerpc-linux-gnu")
+             gettext-minimal
+             pkg-config
+             python-minimal
+             python-numpy))
       (inputs
        (list alsa-lib
              ao
