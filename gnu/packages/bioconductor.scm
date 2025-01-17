@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015-2024 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015-2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2017, 2018, 2020, 2021 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016 Pjotr Prins <pjotr.guix@thebird.nl>
 ;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
@@ -12002,7 +12002,7 @@ region sets and other genomic features.")
              (for-each (match-lambda
                          ((source . target)
                           (minify source #:target target)))
-                       `((,(assoc-ref inputs "_")
+                       `((,(assoc-ref inputs "jquery-1.8.0.js")
                           . "inst/extdata/jslib/jquery-1.8.0.min.js"))))))))
     (propagated-inputs
      (list r-annotate
