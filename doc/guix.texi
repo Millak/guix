@@ -45702,6 +45702,39 @@ system:
                                             (shepherd my-shepherd))))))
 @end lisp
 
+@cindex @code{transient} service, Shepherd
+@defvar shepherd-transient-service-type
+This service type represents the Shepherd's @code{transient} service,
+which lets you spawn commands in the background and interact with them
+as regular Shepherd service; it is similar to @command{systemd-run}.
+
+For example, the command below spawns @command{rsync} in the background,
+in an environment where the @env{SSH_AUTH_SOCK} environment variable has
+the given value:
+
+@example
+herd spawn transient -E SSH_AUTH_SOCK=$SSH_AUTH_SOCK -- \
+  rsync -e ssh -vur . backup.example.org:
+@end example
+
+@xref{Transient Service Maker,,, shepherd, The GNU Shepherd Manual}, for
+more info on the @code{transient} service.
+@end defvar
+
+@cindex @code{timer} service, Shepherd
+@defvar shepherd-timer-service-type
+This is the service type representing the Shepherd's @code{timer}
+service, which lets you schedule the execution of commands, similar to
+the venerable @command{at} command.  Here is an example:
+
+@example
+herd schedule timer at 07:00 -- mpg123 Music/alarm.mp3
+@end example
+
+@xref{Timer Service,,, shepherd, The GNU Shepherd Manual}, for more info
+on the @code{timer} service.
+@end defvar
+
 @defvar %shepherd-root-service
 This service represents PID@tie{}1.
 @end defvar

@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013-2016, 2018-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2016, 2018-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2018 Carlo Zancanaro <carlo@zancanaro.id.au>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
@@ -81,6 +81,8 @@
             shepherd-service-upgrade
 
             user-processes-service-type
+            shepherd-timer-service-type
+            shepherd-transient-service-type
 
             assert-valid-graph))
 
@@ -668,4 +670,52 @@ read-only, just before rebooting/halting.  Processes still running after a few
 seconds after @code{SIGTERM} has been sent are terminated with
 @code{SIGKILL}.")))
 
-;;; shepherd.scm ends here
+
+;;;
+;;; Timer and transient service maker.
+;;;
+
+(define shepherd-timer-service-type
+  (shepherd-service-type
+   'shepherd-timer
+   (const (shepherd-service
+           (provision '(timer))
+           (requirement '(user-processes))
+           (modules '((shepherd service timer)))
+           (free-form #~(timer-service
+                         '#$provision
+                         #:requirement '#$requirement))))
+   #t                                             ;ignored
+   (description "The Shepherd @code{timer} service lets you schedule commands
+dynamically, similar to the @code{at} command that your grandparents would use
+on that Slackware they got on a floppy disk.  For example, consider this
+command:
+
+@example
+herd schedule timer at 07:00 -- mpg123 Music/alarm.mp3
+@end example
+
+It does exactly what you would expect.")))
+
+(define shepherd-transient-service-type
+  (shepherd-service-type
+   'shepherd-transient
+   (const (shepherd-service
+           (provision '(transient))
+           (requirement '(user-processes))
+           (modules '((shepherd service transient)))
+           (free-form #~(transient-service
+                         '#$provision
+                         #:requirement '#$requirement))))
+   #t                                             ;ignored
+   (description "The Shepherd @code{transient} service lets you run commands
+asynchronously, in the background, similar to @command{systemd-run}, as in
+this example:
+
+@example
+herd spawn transient -E SSH_AUTH_SOCK=$SSH_AUTH_SOCK -- \\
+  rsync -e ssh -vur . backup.example.org:
+@end example
+
+This runs @command{rsync} in the background, as a service that you can inspect
+with @command{herd status} and stop with @command{herd stop}.")))
