@@ -4755,16 +4755,6 @@ standard.")
         (base32
          "1b7dhy3pyp3nfv0zzjrs7i3kam40cl1nh3acy2fd59ywy4x84ika"))))
     (build-system pyproject-build-system)
-    (propagated-inputs
-     (list python-dnspython python-greenlet python-monotonic))
-    (native-inputs
-     (list python-black
-           python-hatch-vcs
-           python-hatchling
-           python-isort
-           python-pre-commit
-           python-pytest
-           python-twine))
     (arguments
      (list
       #:test-flags
@@ -4786,6 +4776,15 @@ standard.")
              ;; getprotobyname is called.  Thankfully there is an environment
              ;; variable to disable the greendns import, so use it:
              (setenv "EVENTLET_NO_GREENDNS" "yes"))))))
+    (native-inputs
+     (list python-hatch-vcs
+           python-hatchling
+           python-pytest
+           python-twine))
+    (propagated-inputs
+     (list python-dnspython
+           python-greenlet
+           python-monotonic))
     (home-page "https://eventlet.net")
     (synopsis "Concurrent networking library for Python")
     (description
