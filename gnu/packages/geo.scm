@@ -14,7 +14,7 @@
 ;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2020–2024 Felix Gruber <felgru@posteo.net>
-;;; Copyright © 2021, 2023, 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2021, 2023-2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021, 2023, 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2021, 2022 Nikolay Korotkiy <sikmir@disroot.org>
@@ -3455,26 +3455,27 @@ Maxmind-Geolite2-CSV, supports IPv4/IPv6 and is pure Python.")
 (define-public python-geopy
   (package
     (name "python-geopy")
-    (version "2.0.0")
+    (version "2.4.1")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "geopy" version))
         (sha256
          (base32
-          "0fx0cv0kgbvynpmjgsvq2fpsyngd5idiscdn8pd5201f1ngii3mq"))))
-    (build-system python-build-system)
+          "1lfhnd04hbzmsdm5bqisvx2218v5cf6369xhbjz8jzfhga73sa2h"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags #~(list "--skip-tests-requiring-internet")))
     (propagated-inputs
      (list python-geographiclib))
     (native-inputs
-     (list python-async-generator
-           python-coverage
-           python-flake8
-           python-isort
+     (list python-docutils
            python-pytest
-           python-pytest-aiohttp
-           python-readme-renderer
-           python-pytz))
+           python-pytest-asyncio
+           python-pytz
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/geopy/geopy")
     (synopsis "Geocoding library for Python")
     (description "@code{geopy} is a Python client for several popular geocoding
