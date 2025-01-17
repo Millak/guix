@@ -1105,23 +1105,11 @@ useful for reverse engineering, analysis of Android applications and more.")
        (sha256
         (base32
          "05kc0icap3a4iw4910zfqi61zphcf6x958v2b5x68fy51ld3b704"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'relax-requirements
-           (lambda _
-             (substitute* "setup.py"
-               (("cryptography>=35")
-                "cryptography"))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-vv" "miio")))))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest
+     (list python-poetry-core
+           python-pytest
            python-pytest-mock
-           python-sphinx
            python-sphinx-click
            python-sphinx-rtd-theme
            python-sphinxcontrib-apidoc))
