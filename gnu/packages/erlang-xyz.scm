@@ -124,13 +124,13 @@ Erlang and Elixir.")
 (define-public erlang-p1-acme
   (package
     (name "erlang-p1-acme")
-    (version "1.0.23")
+    (version "1.0.25")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "p1_acme" version))
        (sha256
-        (base32 "0nfxs3ldgbh7a8r7wxl0gw98r1v50jaj54c0nw8fl8ixdvr9dqcc"))))
+        (base32 "136h8nkfd62xd76p8p4mgdiz8hxdqcg4arayl6c4znsx953mpdd7"))))
     (build-system rebar-build-system)
     (inputs (list erlang-base64url erlang-idna erlang-jiffy erlang-jose
                   erlang-yconf))
