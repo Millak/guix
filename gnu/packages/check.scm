@@ -2539,6 +2539,23 @@ to make testing async code easier.")
        (sha256
         (base32 "1lz4h8y6m6hxnsl7kqh0rjxqp5q2wc2m5gd88371rikd7ari16vm"))))))
 
+(define-public python-pytest-asyncio-0.21
+  (package
+    (inherit python-pytest-asyncio)
+    (version "0.21.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest_asyncio" version))
+       (sha256
+        (base32 "0iag2lmglfajiasxi3dr2110gq0nxc5paq6hp4kb751b4gy3hxyn"))))
+    (native-inputs
+     (list python-flaky
+           python-pytest-trio
+           python-setuptools-scm
+           python-setuptools
+           python-wheel))))
+
 (define-public python-cov-core
   (package
     (name "python-cov-core")
