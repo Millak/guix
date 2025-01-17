@@ -497,21 +497,17 @@ useful tools for testing Django applications and projects.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; It is unclear how to run the tests.  They require a running local
-      ;; solr server.
-      #:tests? #false
       #:phases
-      '(modify-phases %standard-phases
-         (add-before 'check 'set-gdal-lib-path
-           (lambda* (#:key inputs #:allow-other-keys)
-             (setenv "GDAL_LIBRARY_PATH"
-                     (string-append (assoc-ref inputs "gdal")
-                                    "/lib"))))
+      #~(modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "python" "test_haystack/run_tests.py"))))
          ;; Importing this module requires setting up a Django project.
          (delete 'sanity-check))))
     (propagated-inputs
      (list python-django python-packaging))
-    (inputs (list gdal))
+    ;; (inputs (list gdal)) ; it's optional, tests fail when provided
     (native-inputs
      (list python-coverage
            python-dateutil
