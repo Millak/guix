@@ -2604,7 +2604,7 @@ C/C++, R, and more, and uploads it to the @code{codecov.io} service.")
 (define-public python-testpath
   (package
     (name "python-testpath")
-    (version "0.5.0")
+    (version "0.6.0")
     (source
      (origin
        (method git-fetch)
@@ -2614,32 +2614,11 @@ C/C++, R, and more, and uploads it to the @code{codecov.io} service.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "08r1c6bhvj8pcdvzkqv1950k36a6q3v81fd2p1yqdq3c07mcwgif"))))
-    (build-system python-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'relax-requirements
-            (lambda _
-              (substitute* "pyproject.toml"
-                (("flit_core >=3.2.0,<3.3")
-                 "flit_core >=3.2.0"))))
-          ;; XXX: PEP 517 manual build copied from python-isort.
-          (replace 'build
-            (lambda _
-              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
-          (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest"))))
-          (replace 'install
-            (lambda _
-              (let ((whl (car (find-files "dist" "\\.whl$"))))
-                (invoke "pip" "--no-cache-dir" "--no-input"
-                        "install" "--no-deps" "--prefix" #$output whl)))))))
+         "0pib1xsvjwwyyhv0sqzxvgg814k83dmv1ppwfkkq9llkhr8k7s9y"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pypa-build python-flit-core python-pytest))
+     (list python-flit-core
+           python-pytest))
     (home-page "https://github.com/jupyter/testpath")
     (synopsis "Test utilities for code working with files and commands")
     (description
