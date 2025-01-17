@@ -3750,6 +3750,10 @@ login manager daemon.")
 
         (service log-rotation-service-type)
 
+        ;; Convenient services brought by the Shepherd.
+        (service shepherd-timer-service-type)
+        (service shepherd-transient-service-type)
+
         ;; Periodically delete old build logs.
         (service log-cleanup-service-type
                  (log-cleanup-configuration

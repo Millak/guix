@@ -678,14 +678,15 @@ seconds after @code{SIGTERM} has been sent are terminated with
 (define shepherd-timer-service-type
   (shepherd-service-type
    'shepherd-timer
-   (const (shepherd-service
-           (provision '(timer))
-           (requirement '(user-processes))
-           (modules '((shepherd service timer)))
-           (free-form #~(timer-service
-                         '#$provision
-                         #:requirement '#$requirement))))
-   #t                                             ;ignored
+   (lambda (requirement)
+     (shepherd-service
+      (provision '(timer))
+      (requirement requirement)
+      (modules '((shepherd service timer)))
+      (free-form #~(timer-service
+                    '#$provision
+                    #:requirement '#$requirement))))
+   '(user-processes)
    (description "The Shepherd @code{timer} service lets you schedule commands
 dynamically, similar to the @code{at} command that your grandparents would use
 on that Slackware they got on a floppy disk.  For example, consider this
@@ -700,14 +701,15 @@ It does exactly what you would expect.")))
 (define shepherd-transient-service-type
   (shepherd-service-type
    'shepherd-transient
-   (const (shepherd-service
-           (provision '(transient))
-           (requirement '(user-processes))
-           (modules '((shepherd service transient)))
-           (free-form #~(transient-service
-                         '#$provision
-                         #:requirement '#$requirement))))
-   #t                                             ;ignored
+   (lambda (requirement)
+     (shepherd-service
+      (provision '(transient))
+      (requirement requirement)
+      (modules '((shepherd service transient)))
+      (free-form #~(transient-service
+                    '#$provision
+                    #:requirement '#$requirement))))
+   '(user-processes)
    (description "The Shepherd @code{transient} service lets you run commands
 asynchronously, in the background, similar to @command{systemd-run}, as in
 this example:
