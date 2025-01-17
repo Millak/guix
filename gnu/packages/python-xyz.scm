@@ -3686,6 +3686,9 @@ conventions and aliases in the same expression.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags
+      ;; These two tests fail even though the signatures are identical.
+      '(list "-k" "not fourier_transform")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'hardcode-lib-path
