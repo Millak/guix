@@ -36097,6 +36097,27 @@ time.")
 federated microblogging social network.")
     (license license:gpl3+)))
 
+(define-public emacs-fedi
+  (package
+    (name "emacs-fedi")
+    (version "0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/martianh/fedi.el")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0a5zq7axxh3khx6465s7ym9s7v2iw7ky9z486d0zg41k7926bm9d"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-markdown-mode))
+    (home-page "https://codeberg.org/martianh/fedi.el")
+    (synopsis "Library to make writing clients for APIs easier")
+    (description "@code{fedi.el} is an Emacs library used by several fediverse
+frontend packages.")
+    (license license:gpl3+)))
+
 (define-public emacs-ebdb
   (package
     (name "emacs-ebdb")
