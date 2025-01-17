@@ -38038,24 +38038,6 @@ Python iterables (lists, tuples, dicts).")
 and setting the color of terminal output, via HyDEV.")
     (license license:expat)))
 
-(define-public python-pathspec
-  (package
-    (name "python-pathspec")
-    (version "0.12.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pathspec" version))
-       (sha256
-        (base32 "04jpkzic8f58z6paq7f3f7fdnlv9l89khv3sqsqk7ax10caxb0m4"))))
-    (build-system pyproject-build-system)
-    (native-inputs (list python-flit-core python-setuptools))
-    (home-page "https://github.com/cpburnz/python-pathspec")
-    (synopsis "Gitignore style pattern matching of file paths")
-    (description
-     "Utility library for gitignore style pattern matching of file paths.")
-    (license license:mpl2.0)))
-
 (define-public python-mike
   (package
     (name "python-mike")
