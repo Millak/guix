@@ -682,7 +682,7 @@ verifying the cryptographic operations.")
 (define-public pam-u2f
   (package
     (name "pam-u2f")
-    (version "1.3.0")
+    (version "1.3.2")
     (source (origin
               (method git-fetch)
               (uri
@@ -691,7 +691,7 @@ verifying the cryptographic operations.")
                 (commit (string-append "pam_u2f-" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "1swvys98mw7ailllgqicvhj315qajhvqrmm314cp3bj0l76s9qpv"))))
+               (base32 "0528r0q3j1d6cb3dzh9vgagr8v2b2y5yylykr1cqjmg9hvp35a4i"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
