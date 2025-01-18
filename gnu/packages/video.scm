@@ -2737,6 +2737,7 @@ SVCD, DVD, 3ivx, DivX 3/4/5, WMV and H.264 movies.")
            ;; XXX: lua > 5.2 is not currently supported; see meson.build
            lua-5.2
            mesa
+           pipewire
            pulseaudio
            shaderc
            wayland
