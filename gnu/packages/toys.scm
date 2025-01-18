@@ -7,6 +7,7 @@
 ;;; Copyright © 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023 Sarthak Shah <shahsarthakw@gmail.com>
+;;; Copyright © 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -239,16 +240,16 @@ It was written for the X Window system and does not work well on Wayland.")
 (define-public sl
   (package
     (name "sl")
-    (version "5.02")
+    (version "5.05")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/mtoyoda/sl")
+             (url "https://github.com/eyJhb/sl")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1zrfd71zx2px2xpapg45s8xvi81xii63yl0h60q72j71zh4sif8b"))))
+        (base32 "11a1rdgb8wagikhxgm81g80g5qsl59mv4qgsval3isykqh8729bj"))))
     (build-system gnu-build-system)
     (inputs
      (list ncurses))
