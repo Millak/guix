@@ -568,8 +568,13 @@ bindings for Clingo.")
                   (string-append "\""
                                  (search-input-file inputs "bin/clingo")
                                  "\""))))))))
-     (inputs (list clingo))
-     (propagated-inputs (list python-clingo))
+     (native-inputs
+      (list python-setuptools
+            python-wheel))
+     (inputs
+      (list clingo))
+     (propagated-inputs
+      (list python-clingo))
      (home-page "https://potassco.org/")
      (synopsis "Optimization in Answer Set Programming")
      (description "@command{asprin} is a general framework for optimization in
