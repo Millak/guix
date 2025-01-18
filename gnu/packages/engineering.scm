@@ -33,7 +33,7 @@
 ;;; Copyright © 2022 Malte Frank Gerdes <malte.f.gerdes@gmail.com>
 ;;; Copyright © 2022 Konstantinos Agiannis <agiannis.kon@gmail.com>
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
-;;; Copyright © 2022, 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2022, 2024, 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022, 2023, 2025 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2023 Theofilos Pechlivanis <theofilos.pechlivanis@gmail.com>
@@ -174,6 +174,33 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   #:use-module ((srfi srfi-1) #:hide (zip)))
+
+(define-public cutecom
+  (package
+    (name "cutecom")
+    (version "0.60.0-RC1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/cutecom/cutecom")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1k67x4l27ac6sb944b42zscm0ffq2fxbghapspgj75g4dr8ip38a"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f))                       ;no tests
+    (inputs
+     (list qtbase qttools qtserialport))
+    (home-page "https://gitlab.com/cutecom/cutecom")
+    (synopsis "Graphical serial terminal")
+    (description
+     "@code{cutecom} is a graphical serial terminal, like @code{minicom}.  It is
+aimed mainly at hardware developers or other people who need a terminal to talk to
+their devices.")
+    (license license:gpl3)))
 
 (define-public librecad
   (package
