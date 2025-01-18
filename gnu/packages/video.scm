@@ -3420,17 +3420,22 @@ playlists.")
                            "--disable-static")
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'refer-to-libxml2-in-.pc-file
-           ;; Avoid the need to propagate libxml2 by referring to it
-           ;; directly, as is already done for fontconfig & freetype.
+         (add-after 'unpack 'move-packages-to-libs
+           ;; Avoid the need to propagate libxml2 et al. by referring to them
+           ;; directly.
            (lambda* (#:key inputs #:allow-other-keys)
-             (let ((libxml2 (assoc-ref inputs "libxml2")))
-               (substitute* "configure"
-                 ((" libxml-2.0") ""))
-               (substitute* "src/libbluray.pc.in"
-                 (("^Libs.private:" field)
-                  (string-append field " -L" libxml2 "/lib -lxml2")))
-               #t)))
+             (define (search-input-vicinity lib)
+               (dirname
+                (search-input-file inputs
+                                   (string-append "lib/lib" lib ".so"))))
+             (substitute* "src/libbluray.pc.in"
+               (("@PACKAGES@") "")
+               (("^Libs.private:" field)
+                (string-append field
+                               " -L" (search-input-vicinity "xml2")
+                               " -L" (search-input-vicinity "freetype")
+                               " -L" (search-input-vicinity "fontconfig")
+                               " -lxml2 -lfreetype -lfontconfig")))))
          (add-before 'build 'fix-dlopen-paths
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((libaacs (assoc-ref inputs "libaacs"))
