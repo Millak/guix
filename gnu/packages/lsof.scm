@@ -73,6 +73,8 @@
                      ;; Fails with ‘ERROR!!! client gethostbyaddr() failure’.
                      (("(TESTS \\+=.*) tests/LTsock" _ prefix)
                       prefix)
+                     ;; Fails on CoW filesystems (eg. btrfs)
+                     (("tests/LTlock") "")
                      ;; Fails because /proc not mounted in sandbox
                      (("\tdialects/linux/tests/case-20-epoll.bash \\\\")
                       "\\")))))))
