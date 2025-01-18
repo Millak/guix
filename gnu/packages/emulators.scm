@@ -2768,6 +2768,7 @@ multi-system game/emulator system.")
            ;; configuration file values.
            retroarch-assets
            libretro-core-info
+           libretro-database
            retroarch-joypad-autoconfig))))
 
 (define-public wasm4
