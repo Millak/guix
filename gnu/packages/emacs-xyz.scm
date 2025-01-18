@@ -15183,6 +15183,29 @@ Emacs default configuration in uncontroversial ways that nearly everyone can
 agree upon.")
     (license license:gpl3+)))
 
+(define-public emacs-uniquify-files
+  (package
+    (name "emacs-uniquify-files")
+    (version "1.0.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://elpa.gnu.org/packages/uniquify-files-"
+                           version ".tar"))
+       (sha256
+        (base32 "0xw2l49xhdy5qgwja8bkiq2ibdppl45xzqlr17z92l1vfq4akpzp"))))
+    (build-system emacs-build-system)
+    (home-page "https://elpa.gnu.org/packages/uniquify-files.html")
+    (synopsis "Disambiguate files with the same basename")
+    (description "This package helps differentiate files with the same name
+but in different directories when displayed in Emacs buffers or completion
+interfaces.
+
+Generally, you probably want to use emacs' builtin uniquify instead--which
+makes unique buffer names.  Only if you want to programmatically generate
+unique file names you need this package here.")
+    (license license:gpl3+)))
+
 (define-public emacs-undohist-el
   (package
     (name "emacs-undohist-el")
