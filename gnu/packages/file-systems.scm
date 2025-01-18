@@ -14,6 +14,7 @@
 ;;; Copyright © 2023 Aaron Covrig <aaron.covrig.us@ieee.org>
 ;;; Copyright © 2024 Ahmad Draidi <a.r.draidi@redscript.org>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2025 Julian Flake <flake@uni-koblenz.de>
 ;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -322,14 +323,14 @@ integration with @code{avfs}.")
 (define-public davfs2
   (package
     (name "davfs2")
-    (version "1.6.1")
+    (version "1.7.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://download.savannah.nongnu.org/releases/"
                            "davfs2/davfs2-" version ".tar.gz"))
        (sha256
-        (base32 "1h65j2py59b97wbzzjhp4wbkk6351v3hrjscjcfab0p5xi4bjgnf"))))
+        (base32 "1b5izj2qivys6nkqjy08nznjwszar8d46ajmw5cf5jvkcw6dv3i9"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
