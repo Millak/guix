@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2014, 2016, 2018 David Thompson <davet@gnu.org>
 ;;; Copyright © 2014, 2017, 2018 Mark H Weaver <mhw@netris.org>
@@ -888,7 +888,7 @@ manipulate repositories of the Git version control system.")
 (define-public guile-zlib
   (package
     (name "guile-zlib")
-    (version "0.2.1")
+    (version "0.2.2")
     (source
      (origin
        ;; XXX: Do not use "git-fetch" method here that would create and
@@ -900,9 +900,9 @@ manipulate repositories of the Git version control system.")
                        version ".tar.gz"))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        ;; content hash: 09zfka3js7dp39fnplxbp90x98s5nj0pc93p1l9cmgrbj8nyn2sv
+        ;; content nar-sha256: 0rwjlqr1hl2vczs16xsihw8pyj6s70p1yv9ky0sawhm6g30639k9
         (base32
-         "0wqva23zrxcsj9cp3xqmqpxqyd7a4nnja3dc7v7g0i9yfixi7xd5"))))
+         "1h9q7rw8bh5mwa8qjik0pqwcr8v9hnk7xnvwcbsg6yfa695wlv3g"))))
     (build-system gnu-build-system)
     (native-inputs (list autoconf automake pkg-config guile-3.0))
     (inputs (list guile-3.0 zlib))
