@@ -3416,44 +3416,39 @@ playlists.")
                 "0aszpsz3pc7p7z6yahlib4na585m6pqbg2d9dkpyipgml1lgv3s7"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags '("--disable-bdjava-jar"
-                           "--disable-static")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'move-packages-to-libs
-           ;; Avoid the need to propagate libxml2 et al. by referring to them
-           ;; directly.
-           (lambda* (#:key inputs #:allow-other-keys)
-             (define (search-input-vicinity lib)
-               (dirname
-                (search-input-file inputs
-                                   (string-append "lib/lib" lib ".so"))))
-             (substitute* "src/libbluray.pc.in"
-               (("@PACKAGES@") "")
-               (("^Libs.private:" field)
-                (string-append field
-                               " -L" (search-input-vicinity "xml2")
-                               " -L" (search-input-vicinity "freetype")
-                               " -L" (search-input-vicinity "fontconfig")
-                               " -lxml2 -lfreetype -lfontconfig")))))
-         (add-before 'build 'fix-dlopen-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((libaacs (assoc-ref inputs "libaacs"))
-                   (libbdplus (assoc-ref inputs "libbdplus")))
-               (substitute* "src/libbluray/disc/aacs.c"
-                 (("\"libaacs\"")
-                  (string-append "\"" libaacs "/lib/libaacs\"")))
-               (substitute* "src/libbluray/disc/bdplus.c"
-                 (("\"libbdplus\"")
-                  (string-append "\"" libbdplus "/lib/libbdplus\"")))
-               #t))))))
+     (list
+      #:configure-flags #~(list "--disable-bdjava-jar" "--disable-static")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'move-packages-to-libs
+            ;; Avoid the need to propagate libxml2 et al. by referring to them
+            ;; directly.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (define (search-input-vicinity lib)
+                (dirname
+                 (search-input-file inputs
+                                    (string-append "lib/lib" lib ".so"))))
+              (substitute* "src/libbluray.pc.in"
+                (("@PACKAGES@") "")
+                (("^Libs.private:" field)
+                 (string-append field
+                                " -L" (search-input-vicinity "xml2")
+                                " -L" (search-input-vicinity "freetype")
+                                " -L" (search-input-vicinity "fontconfig")
+                                " -lxml2 -lfreetype -lfontconfig")))))
+          (add-before 'build 'fix-dlopen-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (define (lib/no.so library)
+                (let ((found (search-input-file inputs library)))
+                  (substring found 0 (- (string-length found)
+                                        (string-length ".so")))))
+              (substitute* "src/libbluray/disc/aacs.c"
+                (("\"libaacs\"")
+                 (string-append "\"" (lib/no.so "lib/libaacs.so") "\""))
+                (("\"libbdplus\"")
+                 (string-append "\"" (lib/no.so "lib/libbdplus.so") "\""))))))))
     (native-inputs (list pkg-config))
-    (inputs
-     `(("fontconfig" ,fontconfig)
-       ("freetype" ,freetype)
-       ("libaacs" ,libaacs)
-       ("libbdplus" ,libbdplus)
-       ("libxml2" ,libxml2)))
+    (inputs (list fontconfig freetype libaacs libbdplus libxml2))
     (home-page "https://www.videolan.org/developers/libbluray.html")
     (synopsis "Blu-Ray Disc playback library")
     (description
