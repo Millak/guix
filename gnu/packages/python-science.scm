@@ -23,7 +23,7 @@
 ;;; Copyright © 2022, 2024 Antero Mejr <antero@mailbox.org>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2023, 2024 Troy Figiel <troy@troyfigiel.com>
-;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2024-2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2024 Marco Baggio <marco.baggio@mdc-berlin.de>
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2024 Rick Huijzer <ikbenrickhuyzer@gmail.com>
@@ -3862,7 +3862,7 @@ compagnies.")
 (define-public python-libneuroml
   (package
     (name "python-libneuroml")
-    (version "0.4.1")
+    (version "0.6.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3871,15 +3871,18 @@ compagnies.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0mrm4rd6x1sm6hkvhk20mkqp9q53sl3lbvq6hqzyymkw1iqq6bhy"))))
+                "04cfff9phm19x87p86xrkhd6wlpxvdwk3rf1c3qgyncfchws0sjh"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-lxml python-six))
     (native-inputs
      (list python-pytest
            python-numpy
            python-setuptools
            python-tables
            python-wheel))
+    (propagated-inputs
+     (list python-lxml
+           python-natsort
+           python-networkx))
     (home-page "https://libneuroml.readthedocs.org/en/latest/")
     (synopsis
      "Python library for working with NeuroML descriptions of neuronal models")
