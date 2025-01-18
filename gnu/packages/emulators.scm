@@ -1806,6 +1806,44 @@ metadata about each known libretro core.  The snapshot is taken from the
 (define-public retroarch-core-info
   (deprecated-package "retroarch-core-info" libretro-core-info))
 
+(define-public libretro-database
+  (package
+    (name "libretro-database")
+    (version "1.20.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/libretro/libretro-database")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "086a9grpd1irsdns2zx3hlna72bbrmsfra4r498wi4ia9zf8nb0p"))))
+    (build-system gnu-build-system)
+    (arguments (list #:tests? #f
+                     #:make-flags #~(list (string-append "PREFIX=" #$output))))
+    (home-page "https://github.com/libretro/libretro-database/")
+    (synopsis "Cheat codes and content data files for RetroArch")
+    (description "RetroArch incorporates a ROM scanning system to
+automatically produce playlists.  Each ROM that is scanned by the playlist
+generator is checked against a database of ROMs that are known to be good
+copies.  The various directories contain:
+@table @code
+@item cht
+Cheat codes for various games
+@item cursors
+Methods for querying the playlists
+@item dat
+Customized DAT files, maintained by the libretro team
+@item metadat
+Different metadata and third-party DATs available to the system
+@item rdb
+The compiled RetroArch database files
+@item scripts
+Various scripts that are used to maintain the database files.
+@end table")
+    (license license:cc-by-sa4.0)))
+
 (define-public retroarch-joypad-autoconfig
   (package
     (name "retroarch-joypad-autoconfig")
