@@ -1779,9 +1779,9 @@ libretro API, based on Mupen64Plus.  It incorporates the following projects:
 generate the various User Experience (UX) environments.")
     (license license:cc-by4.0)))
 
-(define-public retroarch-core-info
+(define-public libretro-core-info
   (package
-    (name "retroarch-core-info")
+    (name "libretro-core-info")
     (version "1.20.0")
     (source (origin
               (method git-fetch)
@@ -1802,6 +1802,9 @@ generate the various User Experience (UX) environments.")
 metadata about each known libretro core.  The snapshot is taken from the
 @url{https://github.com/libretro/libretro-super, libretro-super} repository.")
     (license license:expat)))
+
+(define-public retroarch-core-info
+  (deprecated-package "retroarch-core-info" libretro-core-info))
 
 (define-public retroarch-joypad-autoconfig
   (package
@@ -2726,7 +2729,7 @@ multi-system game/emulator system.")
            ;; which is problematic.  The environment variables overrides the
            ;; configuration file values.
            retroarch-assets
-           retroarch-core-info
+           libretro-core-info
            retroarch-joypad-autoconfig))))
 
 (define-public wasm4
