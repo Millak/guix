@@ -244,6 +244,33 @@ their devices.")
 plans and designs.")
     (license license:gpl2)))
 
+(define-public mbpoll
+  (package
+    (name "mbpoll")
+    (version "1.5.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/epsilonrt/mbpoll")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0h5qsgy5hkrq92nxfkl564w21g5vp9nnch04fdqij06ckvzf7vdc"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f)) ;no tests
+    (native-inputs (list pkg-config))
+    (inputs (list libmodbus))
+    (home-page "https://github.com/epsilonrt/mbpoll")
+    (synopsis
+     "Command line utility to communicate with ModBus slave (RTU or TCP)")
+    (description
+     "@code{mbpoll} is a command line utility to communicate with
+@url{https://en.wikipedia.org/wiki/Modbus, ModBus} slave (RTU or TCP).")
+    (license license:gpl3)))
+
 (define-public geda-gaf
   (package
     (name "geda-gaf")
