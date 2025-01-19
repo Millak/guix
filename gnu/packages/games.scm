@@ -9399,8 +9399,8 @@ their own levels.")
     (native-inputs
      (list `(,glib "bin") ; for glib-compile-resources
            gobject-introspection pkg-config vala))
-    (inputs
-     (list libevdev libgudev))
+    (propagated-inputs
+     (list glib libevdev libgudev))     ; as per manette-0.2.pc
     (home-page "https://wiki.gnome.org/Apps/Games")
     (synopsis "Game controller library")
     (description "Libmanette is a small GObject library giving you simple
