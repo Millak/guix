@@ -589,6 +589,30 @@ just one-off queries and multiple independent sessions.  It requires an OpenAI
 API key.")
     (license license:gpl3+)))
 
+(define-public emacs-gptel-quick
+  (let ((commit "79c33058e605b4fbdb1d1f98d1ab428d6eed111d")
+        (revision "0"))
+    (package
+      (name "emacs-gptel-quick")
+      (version (git-version "0.0.5" revision commit))
+      (source
+       (origin
+         (uri (git-reference
+               (url "https://github.com/karthink/gptel-quick")
+               (commit commit)))
+         (method git-fetch)
+         (sha256
+          (base32 "0bw3zjpzyc574jw2qr0j042x68llkjxn66gkfnw7dwwpgwplz671"))
+         (file-name (git-file-name name version))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-gptel))
+      (home-page "https://github.com/karthink/gptel-quick")
+      (synopsis "Quick LLM lookups in Emacs")
+      (description
+       "This package provides a tiny everyday helper for easily looking up or
+summarizing text using an LLM.")
+      (license license:gpl3+))))
+
 (define-public emacs-chatgpt-shell
   (package
     (name "emacs-chatgpt-shell")
