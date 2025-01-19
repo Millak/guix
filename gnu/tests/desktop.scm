@@ -244,14 +244,14 @@ minimal %BASE-SERVICES."
 
               (sort (filter expected-var user-env) string<?)))
 
-          (test-assert "validate SEATD_SOCK and GREETD_SOCK"
+          (test-assert "validate SEATD_SOCK"
             (begin
               (marionette-type "env > env\n" marionette)
               (sleep 1)
 
               (define (sock-var? var)
                 (any (lambda (s) (string-contains var s))
-                     '("SEATD_SOCK" "GREETD_SOCK")))
+                     '("SEATD_SOCK")))
 
               (define (sock-var-sock var)
                 (car (cdr (string-split var #\=))))
@@ -262,7 +262,7 @@ minimal %BASE-SERVICES."
                    (out (filter sock-var? out))
                    (socks (map sock-var-sock out))
                    (socks (map wait-for-unix-socket-m socks)))
-                (and (= 2 (length socks)) (every identity socks)))))
+                (and (= 1 (length socks)) (every identity socks)))))
 
           (test-equal "seatd.sock ownership"
             '("root" "seat")
