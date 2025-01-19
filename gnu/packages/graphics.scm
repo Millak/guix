@@ -1397,8 +1397,8 @@ graphics.")
                                 "")))))))))
     (inputs (list imath))
     (propagated-inputs
-     ;; Marked as Requires.private in OpenEXR.pc.
-     (list libdeflate))
+     (list libdeflate ; Marked as Requires.private in OpenEXR.pc.
+           imath)) ; Marked as Requires in OpenEXR.pc.
     (home-page "https://www.openexr.com/")
     (synopsis "High-dynamic-range file format library")
     (description
