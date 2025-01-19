@@ -2629,6 +2629,51 @@ Format) file format decoder and encoder.")
 (encoder and decoder).")
     (license license:bsd-3)))
 
+(define-public libjxl-0.10
+  (package
+    (inherit libjxl)
+    (name "libjxl")
+    (version "0.10.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/libjxl/libjxl")
+             (commit (string-append "v" version))
+             (recursive? #t)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0la5xkb3zsz8df1x2phld275w2j847hwpy4vlb249g2cqaqnvg9f"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; Delete the bundles that will not be used.
+        '(begin
+           (for-each (lambda (directory)
+                       (delete-file-recursively
+                        (string-append "third_party/" directory)))
+                     '("brotli" "googletest" "highway" "lcms" "libpng"
+                       "zlib"))))))
+    (arguments
+     `(;; Otherwise gcc segfaults after using up all memory available.
+       #:parallel-build? #f
+       #:configure-flags
+       (list "-DJPEGXL_FORCE_SYSTEM_GTEST=true"
+             "-DJPEGXL_FORCE_SYSTEM_BROTLI=true"
+             "-DJPEGXL_FORCE_SYSTEM_LCMS2=true"
+             "-DJPEGXL_FORCE_SYSTEM_HWY=true"
+             "-DJPEGXL_BUNDLE_LIBPNG=false")
+       ,@(if (target-riscv64?)
+             '(#:phases
+               (modify-phases %standard-phases
+                 (add-after 'unpack 'fix-atomic
+                   (lambda _
+                     (substitute* "lib/jxl/enc_xyb.cc"
+                       (("#include \"lib/jxl/enc_xyb.h\"" a)
+                        (string-append a "\n#include <atomic>")))))))
+             '())))
+    (native-inputs
+     (list asciidoc doxygen googletest pkg-config python))))
+
 (define-public mtpaint
   (package
     (name "mtpaint")
