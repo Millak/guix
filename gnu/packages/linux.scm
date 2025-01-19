@@ -10046,6 +10046,7 @@ types and interfaces and translates so that the X server can use them.")
                   jack-2
                   ldacbt
                   libcamera
+                  libdrm
                   libfdk
                   libfreeaptx
                   libsndfile
