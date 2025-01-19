@@ -3562,3 +3562,92 @@ Specification for URL parser can be found from the WHATWG website.")
      "This is a simple C++ library that facilitates parsing command line
 arguments in a type independent manner.")
     (license license:expat)))
+
+(define-public aklomp-base64
+  (package
+    (name "aklomp-base64")
+    (version "0.5.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/aklomp/base64.git")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0xc541vhq44d9i1vf5hyrznqd1kyad9qbvsghcfr17pk1xyqv1kl"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:tests? #t
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
+                   (if tests?
+                       (invoke "ctest" "-VV" "--build-config" "Release" "--output-on-failure")
+                       (format #t "test suite not run~%")))))
+
+           #:configure-flags
+           #~(append
+              (list "-DBASE64_BUILD_TESTS=ON"
+                    "-DCMAKE_BUILD_TYPE=Release")
+              (let ((system #$(or (%current-target-system)
+                                  (%current-system))))
+                (cond
+                 ;; ARM 64-bit (aarch64)
+                 ((string-prefix? "aarch64-" system)
+                  (list
+                   "-DCMAKE_C_FLAGS=-march=armv8-a"
+                   "-DNEON64_CFLAGS= "
+                   "-DBASE64_WITH_NEON64=ON"
+                   "-DBASE64_WITH_AVX2=OFF"
+                   "-DBASE64_WITH_SSSE3=OFF"
+                   "-DBASE64_WITH_SSE41=OFF"
+                   "-DBASE64_WITH_SSE42=OFF"
+                   "-DBASE64_WITH_AVX=OFF"
+                   "-DBASE64_WITH_AVX512=OFF"))
+                 ;; ARM 32-bit (armhf)
+                 ((string-prefix? "armhf-" system)
+                  (list
+                   "-DCMAKE_C_FLAGS=-march=armv7 -mfpu=neon"
+                   "-DNEON32_CFLAGS=-march=armv7 -mfpu=neon"
+                   "-DBASE64_WITH_NEON32=ON"
+                   "-DBASE64_WITH_AVX2=OFF"
+                   "-DBASE64_WITH_SSSE3=OFF"
+                   "-DBASE64_WITH_SSE41=OFF"
+                   "-DBASE64_WITH_SSE42=OFF"
+                   "-DBASE64_WITH_AVX=OFF"
+                   "-DBASE64_WITH_AVX512=OFF"))
+                 ;; x86_64 (with all extensions except AVX512).
+                 ((string-prefix? "x86_64-" system)
+                  (list
+                   "-DAVX2_CFLAGS=-mavx2"
+                   "-DSSSE3_CFLAGS=-mssse3"
+                   "-DSSE41_CFLAGS=-msse4.1"
+                   "-DSSE42_CFLAGS=-msse4.2"
+                   "-DAVX_CFLAGS=-mavx"
+                   "-DBASE64_WITH_AVX512=OFF"))
+                 ;; i686 (32-bit x86, limited extensions)
+                 ((string-prefix? "i686-" system)
+                  (list
+                   "-DSSE41_CFLAGS=-msse4.1"
+                   "-DSSE42_CFLAGS=-msse4.2"
+                   "-DBASE64_WITH_AVX=OFF"
+                   "-DBASE64_WITH_AVX2=OFF"
+                   "-DBASE64_WITH_AVX512=OFF"))
+                 (else
+                  (list
+                   "-DBASE64_WITH_AVX2=OFF"
+                   "-DBASE64_WITH_SSSE3=OFF"
+                   "-DBASE64_WITH_SSE41=OFF"
+                   "-DBASE64_WITH_SSE42=OFF"
+                   "-DBASE64_WITH_AVX=OFF"
+                   "-DBASE64_WITH_AVX512=OFF"
+                   "-DBASE64_WITH_NEON32=OFF"
+                   "-DBASE64_WITH_NEON64=OFF")))))))
+    (synopsis "Fast base64 stream encoder/decoder")
+    (description "This package provides a base64 stream encoder/decoder
+written in C99.")
+    (properties `((tunable? . #t)))
+    (home-page "https://github.com/aklomp/base64")
+    (license license:bsd-2)))
