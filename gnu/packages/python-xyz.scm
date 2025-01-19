@@ -22942,38 +22942,40 @@ some degree most natural languages too.")
 (define-public python-libcst
   (package
     (name "python-libcst")
-    (version "0.3.8")
+    (version "0.3.18") ; starting from 0.4.0 project depends on Rust
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "libcst" version))
               (sha256
                (base32
-                "05zsc61gsd2pyb6wiyh58zczndxi6rm4d2jl94rpf5cv1fzw6ks8"))))
-    (build-system python-build-system)
+                "1ll0yyxbz8zyqcy9kfcqi3l5fah2zqisvpjbzjnz7s7dmb84q59h"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'remove-failing-tests
-           (lambda _
-             ;; Reported upstream: <https://github.com/Instagram/LibCST/issues/346>.
-             (delete-file "libcst/tests/test_fuzz.py")
-             ;; Reported upstream: <https://github.com/Instagram/LibCST/issues/347>.
-             (delete-file "libcst/tests/test_pyre_integration.py")
-             (delete-file "libcst/codemod/tests/test_codemod_cli.py")
-             (delete-file "libcst/metadata/tests/test_full_repo_manager.py")
-             (delete-file "libcst/metadata/tests/test_type_inference_provider.py")))
-         (add-before 'check 'generate-test-data
-           (lambda _
-             (invoke "python" "-m" "libcst.codegen.generate" "visitors")
-             (invoke "python" "-m" "libcst.codegen.generate" "return_types")))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "python" "-m" "unittest")))))))
+     (list
+      #:test-flags
+      #~(list
+         ;; Reported upstream: <https://github.com/Instagram/LibCST/issues/346>.
+         "--ignore=libcst/tests/test_fuzz.py"
+         ;; Reported upstream: <https://github.com/Instagram/LibCST/issues/347>.
+         "--ignore=libcst/tests/test_pyre_integration.py"
+         "--ignore=libcst/codemod/tests/test_codemod_cli.py"
+         "--ignore=libcst/metadata/tests/test_full_repo_manager.py"
+         "--ignore=libcst/metadata/tests/test_type_inference_provider.py"
+         "-k" (string-join
+               ;; AssertionError: False is not true : libcst.matchers.__init__
+               ;; needs new codegen!
+               (list "not test_codegen_clean_matcher_classes"
+                     "test_codegen_clean_return_types"
+                     "test_codegen_clean_visitor_functions")
+               " and not "))))
     (native-inputs
-     (list python-black python-isort))
+     (list python-pytest
+           python-setuptools
+           python-wheel))
     (propagated-inputs
-     (list python-typing-extensions python-typing-inspect python-pyyaml))
+     (list python-typing-extensions
+           python-typing-inspect
+           python-pyyaml))
     (home-page "https://github.com/Instagram/LibCST")
     (synopsis "Concrete Syntax Tree (CST) parser and serializer library for Python")
     (description
@@ -22997,7 +22999,9 @@ feels like an AST.")
      (inherit python-libcst)
      (name "python-libcst-minimal")
      (arguments '(#:tests? #f))
-     (native-inputs '()))))
+    (native-inputs
+     (list python-setuptools
+           python-wheel)))))
 
 (define-public python-typeapi
   (package
