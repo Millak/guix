@@ -2421,7 +2421,7 @@ a JACK session.")
 (define-public mixxx
   (package
     (name "mixxx")
-    (version "2.4.2")
+    (version "2.5")
     (source
      (origin
        (method git-fetch)
@@ -2430,48 +2430,50 @@ a JACK session.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1xvmha9q2f1gclb5js09l511v3b5zbp3gnbrz11q681cp924byk1"))
+        (base32 "1xj5ylmfry0yxfsrbfl3kyxm7xgclzh5zfv1g81vl0pgjmd6zw1c"))
        (modules '((guix build utils)))
        (snippet
         ;; Delete libraries that we already have or don't need.
         ;; TODO: try to unbundle more (see lib/).
         `(begin
-           (let ((third-parties '("apple" "hidapi")))
+           (let ((third-parties '("apple" "hidapi" "libshout-idjc")))
              (with-directory-excursion "lib"
                (map (lambda (third-party)
                       (delete-file-recursively third-party)) third-parties)))
            #t))))
     (build-system qt-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'disable-bugged-test
-                    ;; This test regularly fails and aborts the build process, hence it
-                    ;; was disabled (no impact on functionality).  It appears this is a
-                    ;; problem for some upstream as well, as indicated by:
-                    ;; https://github.com/mixxxdj/mixxx/issues/12887 (featuring a
-                    ;; reference to another issue related to the same problem).
-                    (lambda _
-                      (substitute* "src/test/soundproxy_test.cpp"
-                        (("TEST_F\\(SoundSourceProxyTest, firstSoundTest\\)")
-                         "TEST_F(SoundSourceProxyTest, DISABLED_firstSoundTest)"))))
-                  (add-after 'install 'wrap-executable
-                    (lambda* (#:key inputs outputs #:allow-other-keys)
-                      (let* ((out (assoc-ref outputs "out"))
-                             (faad2 (assoc-ref inputs "faad2")))
-                        (wrap-program (string-append out "/bin/mixxx")
-                          `("LD_LIBRARY_PATH" ":" prefix
-                            ,(list (string-append faad2 "/lib"))))))))))
-    (native-inputs (list benchmark googletest python-wrapper qttools-5
+     (list
+      #:qtbase qtbase
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'qualify-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/sources/libfaadloader.cpp"
+                (("libfaad\\.so")
+                 (search-input-file inputs "lib/libfaad.so")))))
+          (add-after 'unpack 'disable-bugged-test
+            ;; This test regularly fails and aborts the build process, hence it
+            ;; was disabled (no impact on functionality).  It appears this is a
+            ;; problem for some upstream as well, as indicated by:
+            ;; https://github.com/mixxxdj/mixxx/issues/12887 (featuring a
+            ;; reference to another issue related to the same problem).
+            (lambda _
+              (substitute* "src/test/soundproxy_test.cpp"
+                (("TEST_F\\(SoundSourceProxyTest, firstSoundTest\\)")
+                 "TEST_F(SoundSourceProxyTest, DISABLED_firstSoundTest)")))))))
+    (native-inputs (list benchmark googletest pkg-config python-wrapper qttools
                          xorg-server-for-tests))
     (inputs (list bash-minimal
                   chromaprint
+                  eudev
+                  libxkbcommon          ;required by qtbase
                   faad2
-                  ffmpeg
+                  ffmpeg-4              ;XXX: chromaprint linked with ffmpeg-4
                   fftw
                   flac
                   glu
                   hidapi
-                  jack-1
                   lame
                   libdjinterop
                   libebur128
@@ -2481,9 +2483,6 @@ a JACK session.")
                   libmp4v2
                   libmodplug
                   libsndfile
-                  libshout
-                  ;; XXX: Mixxx complains the libshout-idjc package suffers from bug
-                  ;; lp1833225 and refuses to use it.  Use the bundle for now.
                   libshout-idjc
                   libusb
                   libvorbis
@@ -2494,12 +2493,12 @@ a JACK session.")
                   portaudio
                   portmidi
                   protobuf
-                  qtbase-5
-                  qtdeclarative-5
-                  qtkeychain
-                  qtscript
-                  qtsvg-5
-                  qtx11extras
+                  qtbase
+                  qtdeclarative
+                  qtkeychain-qt6
+                  qtsvg
+                  qtshadertools
+                  qt5compat
                   rubberband
                   soundtouch
                   sqlite
