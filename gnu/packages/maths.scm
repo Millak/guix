@@ -4013,6 +4013,46 @@ extensive standard library and on the strengths of Python as a high-level
 programming language.")
     (license license:gpl3+)))
 
+(define-public python-ducc0
+  (package
+    (name "python-ducc0")
+    (version "0.36.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.mpcdf.mpg.de/mtr/ducc")
+             (commit (string-append
+                      "ducc0_" (string-replace-substring version "." "_")))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1pfj7k5s3d237r7diqrd7cgvf8p5zms6pp64nfdildx49kwggwab"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags #~(list "python/test")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-env
+            (lambda _
+              (setenv "DUCC0_OPTIMIZATION" "portable-strip"))))))
+    (native-inputs
+     (list pybind11
+           python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-numpy))
+    (home-page "https://gitlab.mpcdf.mpg.de/mtr/ducc")
+    (synopsis "Distinctly Useful Code Collection")
+    (description
+     "This package provides a collection of basic programming tools for
+numerical computation, including Fast Fourier Transforms, Spherical Harmonic
+Transforms, non-equispaced Fourier transforms, as well as some concrete
+applications like 4pi convolution on the sphere and gridding/degridding of
+radio interferometry data.")
+    (license license:gpl2+)))
+
 (define-public python-kiwisolver
   (package
     (name "python-kiwisolver")
