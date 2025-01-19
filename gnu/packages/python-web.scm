@@ -1591,6 +1591,69 @@ for resource properties and best practices.")
 @url{http://jschema.org,JSchema} JSON schema.")
     (license license:expat)))
 
+(define-public python-requests-cache
+  (package
+    (name "python-requests-cache")
+    (version "1.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "requests_cache" version))
+       (sha256
+        (base32 "1l8i4l2pd26gbrlcdb5z056wvsqfr3vvbyqq2f8x1f65zn3ckav8"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--numprocesses" (number->string (parallel-job-count))
+              ;; These tests require access to external services, e.g. MongoDB
+              ;; and Redis.
+              "--ignore=tests/integration"
+              ;; AttributeError: <class 'requests.adapters.HTTPAdapter'> does
+              ;; not have the attribute 'get_connection_with_tls_context'
+              "-k" "not test_mock_session")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; PermissionError: [Errno 13] Permission denied:
+              ;; '/homeless-shelter'
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list python-poetry-core
+           python-pytest
+           python-pytest-rerunfailures
+           python-pytest-xdist
+           python-requests-mock
+           python-responses
+           python-rich
+           python-tenacity
+           python-time-machine
+           python-timeout-decorator))
+    (propagated-inputs
+     (list python-attrs
+           python-boto3
+           python-bson
+           python-cattrs
+           python-itsdangerous
+           python-orjson
+           python-platformdirs
+           python-pymongo
+           python-pyyaml
+           python-redis
+           python-requests
+           python-ujson
+           python-url-normalize
+           python-urllib3))
+    (home-page "https://github.com/requests-cache/requests-cache")
+    (synopsis "Persistent HTTP cache for Python requests")
+    (description
+     "This package provides a drop-in replacement for @code{requests.Session}
+with caching offload to SQLite, Redis, MongoDB and AWS DynamoDB or save
+responses as planin JSON/YAML file or save responses as plain JSON/YAML
+files.")
+    (license license:bsd-2)))
+
 (define-public python-sarif-om
   (package
     (name "python-sarif-om")
