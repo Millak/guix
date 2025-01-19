@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2021, 2022 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -18,11 +19,14 @@
 
 (define-module (gnu packages orange)
   #:use-module ((guix licenses) #:prefix license:)
-  #:use-module (guix packages)
-  #:use-module (guix download)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
+  #:use-module (guix download)
+  #:use-module (guix gexp)
+  #:use-module (guix packages)
   #:use-module (gnu packages)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages graph)
   #:use-module (gnu packages machine-learning)
@@ -36,32 +40,54 @@
 (define-public python-orange-canvas-core
   (package
     (name "python-orange-canvas-core")
-    (version "0.1.24")
+    (version "0.2.5")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "orange-canvas-core" version))
+       (uri (pypi-uri "orange_canvas_core" version))
        (sha256
-        (base32 "0m3dszdkc5bc80ahcvrqxz8jahs33js9cx1mc6rc9ihysq2ddnfz"))))
-    (build-system python-build-system)
+        (base32 "0bp6c5y4a4fzr1hg7aijlbfwp6bqacxxcqhwb2swc21aj846ns0n"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'check-setup
+     (list
+      #:test-flags
+      #~(list "-k" (string-join
+                    (list
+                     ;; AttributeError: 'NoneType' object has no attribute
+                     ;; 'trigger'
+                     "not test_context_menu_delete"
+                     "test_copy_cut_paste"
+                     ;; AttributeError: 'NoneType' object has no attribute
+                     ;; 'isEnabled'
+                     "test_item_context_menu")
+                    " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
            (lambda _
-             ;; This test fails with: RuntimeError: Event loop is closed.
-             (substitute* "orangecanvas/application/tests/test_mainwindow.py"
-               (("test_help_requests") "_test_help_requests"))
-             (setenv "HOME" "/tmp")
-             (setenv "QT_QPA_PLATFORM" "offscreen"))))))
+             (substitute* "setup.py"
+               ;; Relax hard requirment of PIP.
+               ((".*pip>=18.0.*") ""))))
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" "/tmp")
+              (setenv "QT_QPA_PLATFORM" "offscreen"))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-trubar
+           python-wheel))
     (propagated-inputs
      (list python-anyqt
            python-cachecontrol
            python-commonmark
            python-dictdiffer
            python-docutils
+           python-numpy
            python-qasync
-           python-requests))
+           python-requests
+           python-requests-cache
+           python-typing-extensions))
     (home-page "https://github.com/biolab/orange-canvas-core")
     (synopsis "Core component of Orange Canvas")
     (description
