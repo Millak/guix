@@ -570,6 +570,45 @@ comparison operators, as defined in the original
 edit distance algorithm for Python in Cython for high performance.")
     (license license:bsd-3)))
 
+(define-public python-trubar
+  (package
+    (name "python-trubar")
+    (version "0.3.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "trubar" version))
+       (sha256
+        (base32 "149l5wid1b41gmfzsrhapcigcbcsflviz8p1pfa937443fxw1dkd"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k" (string-join
+                    ;; AttributeError: module 'libcst' has no attribute
+                    ;; 'FlattenSentinel'. Did you mean: 'MaybeSentinel'?
+                    (list "not test_import_from_future"
+                          "test_inport_after_docstring"
+                          ;; AssertionError: Items in the second set but not
+                          ;; the first
+                          "test_walk_files")
+                    " and not "))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-libcst
+           python-pyyaml))
+    (home-page "https://github.com/janezd/trubar")
+    (synopsis "Utility for translation of Python sources")
+    (description
+     "This package provides a tool for translation and localization of Python
+programs via modification of source files. Trubar supports f-strings and does
+not require any changes to the original source code, such as marking strings
+for translation.")
+    (license license:expat)))
+
 (define-public python-xmldiff
   (package
     (name "python-xmldiff")
