@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2024 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2024, 2025 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -18,9 +18,10 @@
 
 (define-module (gnu services backup)
   #:use-module (gnu packages backup)
+  #:use-module (gnu packages bash)
   #:use-module (gnu services)
   #:use-module (gnu services configuration)
-  #:use-module (gnu services mcron)
+  #:use-module (gnu services shepherd)
   #:use-module (guix build-system copy)
   #:use-module (guix gexp)
   #:use-module ((guix licenses)
@@ -33,11 +34,16 @@
             restic-backup-job-fields
             restic-backup-job-restic
             restic-backup-job-user
+            restic-backup-job-group
+            restic-backup-job-log-file
+            restic-backup-job-max-duration
+            restic-backup-job-wait-for-termination?
             restic-backup-job-name
             restic-backup-job-repository
             restic-backup-job-password-file
             restic-backup-job-schedule
             restic-backup-job-files
+            restic-backup-job-requirement
             restic-backup-job-verbose?
             restic-backup-job-extra-flags
 
@@ -64,6 +70,12 @@
 (define list-of-lowerables?
   (list-of lowerable?))
 
+(define list-of-symbols?
+  (list-of symbol?))
+
+(define-maybe/no-serialization string)
+(define-maybe/no-serialization number)
+
 (define-configuration/no-serialization restic-backup-job
   (restic
    (package restic)
@@ -71,6 +83,23 @@
   (user
    (string "root")
    "The user used for running the current job.")
+  (group
+   (string "root")
+   "The group used for running the current job.")
+  (log-file
+   (maybe-string)
+   "The file system path to the log file for this job.  By default the file will
+have be @file{/var/log/restic-backup/@var{job-name}.log}, where @var{job-name} is the
+name defined in the @code{name} field.")
+  (max-duration
+   (maybe-number)
+   "The maximum duration in seconds that a job may last.  Past
+@code{max-duration} seconds, the job is forcefully terminated.")
+  (wait-for-termination?
+   (boolean #f)
+   "Wait until the job has finished before considering executing it again;
+otherwise, perform it strictly on every occurrence of event, at the risk of
+having multiple instances running concurrently.")
   (name
    (string)
    "A string denoting a name for this job.")
@@ -84,9 +113,12 @@ will be used to set the @code{RESTIC_PASSWORD} environment variable for the
 current job.")
   (schedule
    (gexp-or-string)
-   "A string or a gexp that will be passed as time specification in the mcron
-job specification (@pxref{Syntax, mcron job specifications,, mcron,
-GNU@tie{}mcron}).")
+   "A string or a gexp representing the frequency of the backup.  Gexp must
+evaluate to @code{calendar-event} records or to strings.  Strings must contain
+Vixie cron date lines.")
+  (requirement
+   (list-of-symbols '())
+   "The list of Shepherd services that this backup job depends upon.")
   (files
    (list-of-lowerables '())
    "The list of files or directories to be backed up.  It must be a list of
@@ -175,16 +207,59 @@ command-line arguments to the current job @command{restic backup} invokation."))
 
        (main (command-line)))))
 
-(define (restic-backup-job->mcron-job config)
-  (let ((user
-         (restic-backup-job-user config))
-        (schedule
-         (restic-backup-job-schedule config))
-        (name
-         (restic-backup-job-name config)))
-    #~(job #$schedule
-           #$(string-append "restic-guix backup " name)
-           #:user #$user)))
+(define (restic-job-log-file job)
+  (let ((name (restic-backup-job-name job))
+        (log-file (restic-backup-job-log-file job)))
+    (if (maybe-value-set? log-file)
+        log-file
+        (string-append "/var/log/restic-backup/" name ".log"))))
+
+(define (restic-backup-job->shepherd-service config)
+  (let ((schedule (restic-backup-job-schedule config))
+        (name (restic-backup-job-name config))
+        (user (restic-backup-job-user config))
+        (group (restic-backup-job-group config))
+        (max-duration (restic-backup-job-max-duration config))
+        (wait-for-termination? (restic-backup-job-wait-for-termination? config))
+        (log-file (restic-job-log-file config))
+        (requirement (restic-backup-job-requirement config)))
+    (shepherd-service (provision `(,(string->symbol name)))
+                      (requirement
+                       `(user-processes file-systems ,@requirement))
+                      (documentation
+                       "Run @code{restic} backed backups on a regular basis.")
+                      (modules '((shepherd service timer)))
+                      (start
+                       #~(make-timer-constructor
+                          (if (string? #$schedule)
+                              (cron-string->calendar-event #$schedule)
+                              #$schedule)
+                          (command
+                           (list
+                            ;; We go through bash, instead of executing
+                            ;; restic-guix directly, because the login shell
+                            ;; gives us the correct user environment that some
+                            ;; backends require, such as rclone.
+                            (string-append #+bash-minimal "/bin/bash")
+                            "-l" "-c"
+                            (string-append "restic-guix backup " #$name))
+                           #:user #$user
+                           #:group #$group
+                           #:environment-variables
+                           (list
+                            (string-append
+                             "HOME=" (passwd:dir (getpwnam #$user)))))
+                          #:log-file #$log-file
+                          #:wait-for-termination? #$wait-for-termination?
+                          #:max-duration #$(and (maybe-value-set? max-duration)
+                                                max-duration)))
+                      (stop
+                       #~(make-timer-destructor))
+                      (actions (list (shepherd-action
+                                      (name 'trigger)
+                                      (documentation "Manually trigger a backup,
+without waiting for the scheduled time.")
+                                      (procedure #~trigger-timer)))))))
 
 (define (restic-guix-wrapper-package jobs)
   (package
@@ -212,15 +287,24 @@ without waiting for the scheduled job to run.")
          (restic-guix-wrapper-package jobs))
         '())))
 
+(define (restic-backup-activation config)
+  #~(for-each
+     (lambda (log-file)
+       (mkdir-p (dirname log-file)))
+     (list #$@(map restic-job-log-file
+                   (restic-backup-configuration-jobs config)))))
+
 (define restic-backup-service-type
   (service-type (name 'restic-backup)
                 (extensions
                  (list
+                  (service-extension activation-service-type
+                                     restic-backup-activation)
                   (service-extension profile-service-type
                                      restic-backup-service-profile)
-                  (service-extension mcron-service-type
+                  (service-extension shepherd-root-service-type
                                      (lambda (config)
-                                       (map restic-backup-job->mcron-job
+                                       (map restic-backup-job->shepherd-service
                                             (restic-backup-configuration-jobs
                                              config))))))
                 (compose concatenate)
@@ -232,5 +316,5 @@ without waiting for the scheduled job to run.")
                                   jobs)))))
                 (default-value (restic-backup-configuration))
                 (description
-                 "This service configures @code{mcron} jobs for running backups
-with @code{restic}.")))
+                 "This service configures Shepherd timers for running backups
+with restic.")))

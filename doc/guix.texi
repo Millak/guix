@@ -111,7 +111,7 @@ Copyright @copyright{} 2022 (@*
 Copyright @copyright{} 2022 John Kehayias@*
 Copyright @copyright{} 2022⁠–⁠2023 Bruno Victal@*
 Copyright @copyright{} 2022 Ivan Vilata-i-Balaguer@*
-Copyright @copyright{} 2023-2024 Giacomo Leidi@*
+Copyright @copyright{} 2023-2025 Giacomo Leidi@*
 Copyright @copyright{} 2022 Antero Mejr@*
 Copyright @copyright{} 2023 Karl Hallsby@*
 Copyright @copyright{} 2023 Nathaniel Nicandro@*
@@ -42710,19 +42710,16 @@ following configuration:
                                     "/etc/guix/signing-key.sec"))))))))))
 @end lisp
 
-Each @code{restic-backup-job} translates to an mcron job which sets the
+Each @code{restic-backup-job} translates to a Shepherd timer which sets the
 @env{RESTIC_PASSWORD} environment variable by reading the first line of
 @code{password-file} and runs @command{restic backup}, creating backups
 using rclone of all the files listed in the @code{files} field.
 
-The @code{restic-backup-service-type} installs as well @code{restic-guix}
-to the system profile, a @code{restic} utility wrapper that allows for easier
-interaction with the Guix configured backup jobs.  For example the following
-could be used to instantaneusly trigger a backup for the above shown
-configuration, without waiting for the scheduled job:
+The @code{restic-backup-service-type} provides the ability to instantaneously
+trigger a backup with the @code{trigger} Shepherd action:
 
 @example
-restic-guix backup remote-ftp
+sudo herd trigger remote-ftp
 @end example
 
 @c %start of fragment
@@ -42753,6 +42750,23 @@ The restic package to be used for the current job.
 @item @code{user} (default: @code{"root"}) (type: string)
 The user used for running the current job.
 
+@item @code{group} (default: @code{"root"}) (type: string)
+The group used for running the current job.
+
+@item @code{log-file} (type: maybe-string)
+The file system path to the log file for this job.  By default the file will
+have be @file{/var/log/restic-backup/@var{job-name}.log}, where @var{job-name} is the
+name defined in the @code{name} field.
+
+@item @code{max-duration} (type: maybe-number)
+The maximum duration in seconds that a job may last.  Past
+@code{max-duration} seconds, the job is forcefully terminated.
+
+@item @code{wait-for-termination?} (default: @code{#f}) (type: boolean)
+Wait until the job has finished before considering executing it again;
+otherwise, perform it strictly on every occurrence of event, at the risk of
+having multiple instances running concurrently.
+
 @item @code{repository} (type: string)
 The restic repository target of this job.
 
@@ -42765,9 +42779,12 @@ that will be used to set the @env{RESTIC_PASSWORD} environment variable
 for the current job.
 
 @item @code{schedule} (type: gexp-or-string)
-A string or a gexp that will be passed as time specification in the
-mcron job specification (@pxref{Syntax, mcron job specifications,,
-mcron,GNU@tie{}mcron}).
+A string or a gexp representing the frequency of the backup.  Gexp must
+evaluate to @code{calendar-event} records or to strings.  Strings must contain
+Vixie cron date lines.
+
+@item @code{requirement} (default: @code{'()}) (type: list-of-symbols)
+The list of Shepherd services that this backup job depends upon.
 
 @item @code{files} (default: @code{'()}) (type: list-of-lowerables)
 The list of files or directories to be backed up.  It must be a list of
