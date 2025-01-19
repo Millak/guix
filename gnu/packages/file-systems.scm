@@ -1356,7 +1356,7 @@ APFS.")
 (define-public snapper
   (package
     (name "snapper")
-    (version "0.10.7")
+    (version "0.12.1")
     (source
      (origin
        (method git-fetch)
@@ -1365,7 +1365,7 @@ APFS.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0nwmyzjwid1lf29dsr6w72dr781c81xyrjpk5y3scn4r55b5df0h"))
+        (base32 "1i5623cnhzivf64zr0g1nlyn9sjgabhyawhpsffykdxvcrnyqn69"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -1382,8 +1382,10 @@ APFS.")
                         (add-after 'unpack 'relative-file-locations
                           (lambda* (#:key outputs #:allow-other-keys)
                             (let* ((out (assoc-ref outputs "out")))
-                              (substitute* (list "scripts/Makefile.am"
-                                                 "data/Makefile.am")
+                              (substitute* '("scripts/Makefile.am"
+                                             "client/systemd-helper/Makefile.am"
+                                             "client/installation-helper/Makefile.am"
+                                             "data/Makefile.am")
                                 (("/usr/share")
                                  (string-append out "/share"))
                                 (("/usr/lib")
