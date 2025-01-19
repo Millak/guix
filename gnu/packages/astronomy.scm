@@ -3065,6 +3065,88 @@ position-frequency slice.")
 natively in Siril.")
     (license license:gpl3)))
 
+(define-public python-pysm3
+  (package
+    (name "python-pysm3")
+    (version "3.4.1a1")
+    (source
+     (origin
+       (method git-fetch) ; no tests data in the PyPI tarball
+       (uri (git-reference
+             (url "https://github.com/galsci/pysm")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0rp22d1ckln9j490ga5snk0xb28qal1i10m4kqmhg7sfkw7dnnzs"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Tests requiring additinal FITS files.
+      ;; <https://healpy.github.io/healpy-data>
+      ;; <https://portal.nersc.gov/project/cmb/pysm-data>
+      #~(list "-k" (string-join
+                    (list "not test_model"
+                          "test_bandpass_unit_conversion_CMB2MJysr"
+                          "test_bandpass_unit_conversion_MJysr2KRJ"
+                          "test_cmb_lensed"
+                          "test_cmb_map"
+                          "test_cmb_map_bandpass"
+                          "test_co"
+                          "test_co_model"
+                          "test_dust_model"
+                          "test_model_d12"
+                          "test_d10_vs_d11"
+                          "test_dust_model_353"
+                          "test_gnilc_857"
+                          "test_highfreq_dust_model"
+                          "test_presmoothed"
+                          "test_sky_max_nside"
+                          "test_sky_max_nside_highres"
+                          "test_read_map_unit"
+                          "test_read_map_unit_dimensionless"
+                          "test_healpix_output_nside"
+                          "test_smoothing_healpix"
+                          "test_smoothing_healpix_beamwindow"
+                          "test_s6_vs_s5"
+                          "test_synch_44"
+                          "test_synch_model_noscaling"
+                          "test_synch_model_s7_44"
+                          "test_synch_model_s7_noscaling"
+                          "test_synchrotron_model"
+                          "test_bandpass_unit_conversion")
+                    " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+    (native-inputs
+     (list nss-certs-for-test
+           python-hatch-vcs
+           python-hatchling
+           python-netcdf4
+           python-pixell
+           python-psutil
+           python-pytest
+           python-pytest-astropy
+           python-setuptools-scm
+           python-xarray))
+    (propagated-inputs
+     (list python-astropy
+           python-healpy
+           python-numba
+           python-toml))
+    (home-page "https://pysm3.readthedocs.io/")
+    (synopsis "Sky emission simulations for Cosmic Microwave Background experiments")
+    (description
+     "PySM generates full-sky simulations of Galactic emissions in intensity
+and polarization relevant to @acronym{Cosmic Microwave Background, CMB}
+experiments.  It is a large refactor of
+@url{https://github.com/bthorne93/PySM_public, PySM 2} focused on reducing
+memory usage, improving performance and run in parallel with MPI.")
+    (license license:bsd-3)))
+
 (define-public python-pyxsim
   (package
     (name "python-pyxsim")
