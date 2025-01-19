@@ -933,14 +933,14 @@ line tools for batch rendering @command{pdfdraw}, rewriting files
 (define-public qpdf
   (package
     (name "qpdf")
-    (version "11.9.1")
+    (version "11.8.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/qpdf/qpdf/" version
                                   "/qpdf-" version ".tar.gz"))
               (sha256
                (base32
-                "1l8k1ls5kclizrglay3r64i9dgckvksjwxxr8v0jfyjnz54d591b"))))
+                "0n8jfk4yf0m36rs9lg82pj9lv6pdqpfh8mhacc1ih9ahpigiycnr"))))
     (build-system cmake-build-system)
     (arguments
      (list #:configure-flags #~'("-DBUILD_STATIC_LIBS=OFF")))
