@@ -99,27 +99,43 @@ data-mining application.")
 (define-public python-orange-widget-base
   (package
     (name "python-orange-widget-base")
-    (version "4.16.1")
+    (version "4.25.1")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "orange-widget-base" version))
+       (uri (pypi-uri "orange_widget_base" version))
        (sha256
-        (base32 "0a0sijsvzijj71sxq8ckpgz59z1cq9sxn4fya3z23ibdzjzwrsi7"))))
-    (build-system python-build-system)
+        (base32 "1vms6bf96dnx5ban30xd0r0ipc318iq9q2wwgnazphf4hic8vxzi"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(;; unittest fails to load one test, all other tests are passing:
-       ;; AttributeError: module 'orangewidget' has no attribute 'version'.
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'check-setup
-           (lambda _
-             (setenv "HOME" "/tmp")
-             (setenv "QT_QPA_PLATFORM" "offscreen"))))))
+     (list
+      #:test-flags
+      #~(list "-k" (string-join
+                    (list
+                     ;;  KeyError: 'HTML (*.html)'
+                     "not test_save_report_html"
+                     ;; KeyError: 'PDF (*.pdf)'
+                     "test_save_report_pdf"
+                     ;; AssertionError: False is not true
+                     "test_menu")
+                    " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" "/tmp")
+              (setenv "QT_QPA_PLATFORM" "offscreen"))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-trubar
+           python-wheel))
     (propagated-inputs
-     (list python-anyqt python-matplotlib python-orange-canvas-core
-           python-pyqtgraph python-typing-extensions))
+     (list python-anyqt
+           python-matplotlib
+           python-orange-canvas-core
+           python-pyqtgraph
+           python-typing-extensions))
     (home-page "https://github.com/biolab/orange-widget-base")
     (synopsis "Base Widget for Orange Canvas")
     (description
