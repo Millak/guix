@@ -29,14 +29,14 @@
 (define-public mtools
   (package
     (name "mtools")
-    (version "4.0.46")
+    (version "4.0.47")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/mtools/mtools-"
                                   version ".tar.bz2"))
               (sha256
                (base32
-                "1h0npkb90hl5ki841j6npbvsplwj05clgv14g5wbg3zqb7c8vbcs"))
+                "1zy7gjyrbr9myixw1gcwgvc7klbdql4sjwayp68hbxf3ih3hdaii"))
               (patches
                (search-patches "mtools-mformat-uninitialized.patch"))))
     (build-system gnu-build-system)
