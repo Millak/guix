@@ -2618,6 +2618,57 @@ high-speed transfers via libcurl and frequently outperforms alternatives.")
     ;; under the terms of LGPLv2.1+ or Expat.
     (license (list license:lgpl2.1+ license:expat))))
 
+(define-public python-url-normalize
+  (package
+    (name "python-url-normalize")
+    (version "1.4.3")
+    (source
+     (origin
+       (method git-fetch)               ; no tests in PyPI release
+       (uri (git-reference
+             (url "https://github.com/niksite/url-normalize")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09nac5nh94x0n4bfazjfxk96b20mfsx6r1fnvqv85gkzs0rwqkaq"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-poetry-core
+            (lambda _
+              ;; Patch to use the core poetry API.
+              (substitute* "pyproject.toml"
+                (("poetry.masonry.api") "poetry.core.masonry.api")))))))
+    (native-inputs
+     (list python-poetry-core
+           python-pytest
+           python-pytest-flakes
+           python-pytest-cov
+           python-pytest-socket))
+    (home-page "https://github.com/niksite/url-normalize")
+    (synopsis "URL normalization for Python")
+    (description
+     "This package provides a URI Normalization function with following
+features:
+@itemize
+@item take care of IDN domains
+@item always provide the URI scheme in lowercase characters
+@item always provide the host, if any, in lowercase characters
+@item only perform percent-encoding where it is essential
+@item always use uppercase A-through-F characters when percent-encoding
+@item prevent dot-segments appearing in non-relative URI paths
+@item for schemes that define a default authority, use an empty authority if
+the default is desired
+@item for schemes that define an empty path to be equivalent to a path of
+@code{/}, use @code{/}
+@item for schemes that define a port, use an empty port if the default is
+desired
+@item all portions of the URI must be utf-8 encoded NFC from Unicode strings
+@end itemize")
+    (license license:expat)))
+
 (define-public python-webencodings
   (package
     (name "python-webencodings")
