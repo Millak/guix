@@ -70,7 +70,7 @@
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2022, 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;; Copyright © 2022 Roman Riabenko <roman@riabenko.com>
-;;; Copyright © 2022, 2023 zamfofex <zamfofex@twdb.moe>
+;;; Copyright © 2022, 2023, 2025 zamfofex <zamfofex@twdb.moe>
 ;;; Copyright © 2022 Gabriel Arazas <foo.dogsquared@gmail.com>
 ;;; Copyright © 2022-2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Hendursaga <hendursaga@aol.com>
@@ -11314,36 +11314,41 @@ ChessX.")
       (license license:gpl3+))))
 
 (define-public moonfish
-  (let ((commit "fb2cb4f53876b1b0c6060464e0dd5a05ab00e502")
-        (revision "2"))
-    (package
-      (name "moonfish")
-      (version (git-version "0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://git.sr.ht/~zamfofex/moonfish")
-                      (commit commit)))
-                (sha256
-                 (base32
-                  "1rbhdahp0s2qm1zi7lpr0bb6zq02y76fc9d9nc2k5n03zh2as97i"))
-                (file-name (git-file-name name version))))
-      (build-system gnu-build-system)
-      (arguments
-       (list
-        #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
-                             (string-append "PREFIX=" %output))
-        #:tests? #f ;no check target
-        #:phases #~(modify-phases %standard-phases
-                     (delete 'configure)))) ;no configure script
-      (inputs (list bearssl cjson))
-      (home-page "https://git.sr.ht/~zamfofex/moonfish")
-      (synopsis "Simple chess engine written in C")
-      (description
-       "moonfish is a toy UCI chess engine written in C for fun.  It has TUI/CLI
-tools for using any UCI engine and also to connect UCI engines to Lichess, as
-well as for converting engines between UCI and UGI.")
-      (license license:agpl3+))))
+  (package
+    (name "moonfish")
+    (version "1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~zamfofex/moonfish")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "0p5rdrqiip6n5wdxjvlsg7qnwdwrpl9g3j1mx7q0i9a8zmkj2ryv"))
+       (file-name (git-file-name name version))
+       (modules '((guix build utils)))
+       (snippet #~(begin
+                    ;; Avoid relying on '/dev/stderr', which doesn't work at the
+                    ;; top-level of a Guix build, because it refers to a pipe
+                    ;; that the build user doesn't have permission to access.
+                    (substitute* "scripts/check.sh"
+                      (("\\btee /dev/stderr\\b")
+                       "tee"))))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:make-flags #~(list (string-append "CC="
+                                          #$(cc-for-target))
+                           (string-append "PREFIX=" %output))
+      #:phases #~(modify-phases %standard-phases
+                   (delete 'configure)))) ;no configure script
+    (inputs (list libressl cjson))
+    (home-page "https://moonfish.neocities.org")
+    (synopsis "Simple chess engine written in C")
+    (description
+     "moonfish is a toy UCI chess engine written in C.  It has TUI/CLI tools
+for using any UCI engine and also to connect UCI engines to Lichess and IRC.")
+    (license license:agpl3+)))
 
 (define-public morris
   (package
