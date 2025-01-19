@@ -14048,27 +14048,25 @@ fully-functional one.")
     (license license:gpl3+)))
 
 (define-public emacs-wakib-keys
-  (let ((revision "0")
-        (commit "85a96e0476d620add31e6e73481dbcf57cabc13e"))
-    (package
-      (name "emacs-wakib-keys")
-      (version (git-version "0.0.1" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/darkstego/wakib-keys.git")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0fr70jmrcnyyl16h0k6kj3gcd50422ggqps688wa7x51dk6f9cvr"))))
-      (build-system emacs-build-system)
-      (synopsis "Make C-c, C-v and C-x clipboard keys work reliably in Emacs")
-      (description "This package provides an Emacs minor mode that provides
+  (package
+    (name "emacs-wakib-keys")
+    (version "1.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/darkstego/wakib-keys.git")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0fr70jmrcnyyl16h0k6kj3gcd50422ggqps688wa7x51dk6f9cvr"))))
+    (build-system emacs-build-system)
+    (synopsis "Make C-c, C-v and C-x clipboard keys work reliably in Emacs")
+    (description "This package provides an Emacs minor mode that provides
 modern, efficient and easy to learn keybindings (especially C-c, C-x and C-v
 work and provide clipboard action).")
-      (home-page "https://github.com/darkstego/wakib-project")
-      (license license:gpl3+))))
+    (home-page "https://github.com/darkstego/wakib-project")
+    (license license:gpl3+)))
 
 (define-public emacs-hydra
   (package
