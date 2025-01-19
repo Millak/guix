@@ -39,6 +39,7 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages build-tools)
   #:use-module (gnu packages certs)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
@@ -2933,6 +2934,48 @@ to perform population synthesis using a variety of methodologies from
 semi-analytic models, to cosmological hydrodynamic simulations, and even
 observationally-derived galaxy merger catalogs.")
     (license license:expat)))
+
+(define-public python-pixell
+  (package
+    (name "python-pixell")
+    (version "0.28.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pixell" version))
+       (sha256
+        (base32 "11xd0ld329vr3spg5nzszn0bxzahnvkrh2akkd7qff33ndf75hkk"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list gfortran
+           meson-python
+           perl ; fortran/Makefile
+           pkg-config
+           python-cython
+           python-pytest))
+    (propagated-inputs
+     (list python-astropy
+           python-coveralls
+           python-cython ; check why it needs in installation
+           python-dateutil
+           python-ducc0
+           python-h5py
+           python-healpy
+           python-matplotlib
+           python-numba
+           python-numpy
+           python-pillow
+           python-pyyaml
+           python-scipy))
+    (home-page "https://pixell.readthedocs.io/")
+    (synopsis "Tectangular pixel map manipulation and harmonic analysis")
+    (description
+     "pixell is a library for loading, manipulating and analyzing maps stored
+in rectangular pixelization.  It is mainly intended for use with maps of the
+sky (e.g. CMB intensity and polarization maps, stacks of 21 cm intensity maps,
+binned galaxy positions or shear) in cylindrical projection, but its core
+functionality is more general.")
+    (license license:bsd-3)))
 
 (define-public python-pvextractor
   (package
