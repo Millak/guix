@@ -1998,16 +1998,18 @@ is independent of and does not use @code{casacore}.")
 (define-public python-ccdproc
   (package
     (name "python-ccdproc")
-    (version "2.4.2")
+    (version "2.4.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ccdproc" version))
        (sha256
-        (base32 "14faivm9nihpdwzg0jx1c9zr7jk22gjfjw78raq6h63ypl10i6yx"))))
+        (base32 "1crc565n0x1krd59cjm2vnmzyi0p83yc8vpxq6hldj7vdnqgl8yq"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-memory-profiler
+     (list python-hatch-vcs
+           python-hatchling
+           python-memory-profiler
            python-pytest-astropy))
     (propagated-inputs
      (list python-astropy
