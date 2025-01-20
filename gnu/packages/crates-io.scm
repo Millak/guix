@@ -83309,19 +83309,14 @@ a syntax tree of Rust source code.")
      (origin
        (method url-fetch)
        (uri (crate-uri "syn" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "1b8x8jdsmj6r9ck7n1pg371526n1q90kx6rv6ivcb22w06wr3f6k"))))
+        (base32 "1b8x8jdsmj6r9ck7n1pg371526n1q90kx6rv6ivcb22w06wr3f6k"))
+       (modules '((guix build utils)))
+       (snippet #~(substitute* "Cargo.toml"
+                    ((", path =.*,") ",")))))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'fixup-cargo-toml
-           (lambda _
-             (substitute* "Cargo.toml"
-               ((", path =.*,") ",")))))
-       #:tests? #f      ; Tests don't compile correctly.
+     `(#:tests? #f      ; Tests don't compile correctly.
        #:cargo-inputs
        (("rust-quote" ,rust-quote-0.3)
         ("rust-synom" ,rust-synom-0.11)
