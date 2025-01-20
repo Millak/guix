@@ -83440,21 +83440,15 @@ standard library.")
      (origin
        (method url-fetch)
        (uri (crate-uri "synom" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "1dj536sh5xxhan2h0znxhv0sl6sb7lvzmsmrc3nvl3h1v5p0d4x3"))))
+        (base32 "1dj536sh5xxhan2h0znxhv0sl6sb7lvzmsmrc3nvl3h1v5p0d4x3"))
+       (modules '((guix build utils)))
+       (snippet #~(substitute* "Cargo.toml"
+                    (("^path =.*") "")))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; doc tests fail
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'fixup-cargo-toml
-           (lambda _
-             (substitute* "Cargo.toml"
-               (("^path =.*") ""))
-             #t)))
        #:cargo-inputs
        (("rust-unicode-xid" ,rust-unicode-xid-0.0.4))
        #:cargo-development-inputs
