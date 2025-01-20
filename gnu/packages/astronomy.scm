@@ -4386,36 +4386,34 @@ Low-Earth Orbit (LEO).")
 (define-public python-poppy
   (package
     (name "python-poppy")
-    (version "1.1.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "poppy" version))
-              (sha256
-               (base32
-                "0s8rb61q8dz66s8d3qg44kb6bb5gi40zl41ik9wyccgb4kyf3brp"))))
+    (version "1.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "poppy" version))
+       (sha256
+        (base32 "0mvnd9rlglb1cqhaavd2lyxnvi4xmc133x50rzzlh00xn0gyxgfq"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
       #~(list "--numprocesses" (number->string (parallel-job-count)))))
+    (native-inputs
+     (list python-docutils
+           python-pytest
+           python-pytest-astropy
+           python-pytest-xdist
+           python-setuptools-scm
+           python-wheel))
     (propagated-inputs
      ;; XXX: With python-synphot (marked as optional) package added to the list
      ;; it tries to download from remote host during tests and fails. Overall
      ;; tests take up to 5-8min to pass.
      (list python-astropy
            python-matplotlib
+           python-numexpr
            python-numpy
            python-scipy))
-    (native-inputs
-     (list python-docutils
-           python-h5py
-           python-pandas
-           python-pytest
-           python-pytest-astropy
-           python-pytest-xdist
-           python-scikit-image
-           python-setuptools-scm
-           python-sphinx))
     (home-page "https://poppy-optics.readthedocs.io/")
     (synopsis "Physical Optics Propagation in Python")
     (description
