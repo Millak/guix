@@ -93400,12 +93400,15 @@ panic-free alternative to @code{core::fmt}.")
     (name "rust-uint")
     (version "0.9.5")
     (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "uint" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-          (base32 "0ljb2q0waadsr56w6j5wwchwibby8bbsf09wnv54zc2k5jx4pxkn"))))
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "uint" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ljb2q0waadsr56w6j5wwchwibby8bbsf09wnv54zc2k5jx4pxkn"))
+       (modules '((guix build utils)))
+       (snippet #~(substitute* "Cargo.toml"
+                    (("integer") "default")))))
     (build-system cargo-build-system)
     (arguments
       `(#:cargo-inputs
@@ -93418,13 +93421,7 @@ panic-free alternative to @code{core::fmt}.")
         #:cargo-development-inputs
         (("rust-criterion" ,rust-criterion-0.4)
          ("rust-num-bigint" ,rust-num-bigint-0.4)
-         ("rust-rug" ,rust-rug-1))
-        #:phases
-        (modify-phases %standard-phases
-          (add-after 'unpack 'adjust-cargo-toml
-            (lambda _
-              (substitute* "Cargo.toml"
-                (("integer") "default")))))))
+         ("rust-rug" ,rust-rug-1))))
     (inputs
      (list gmp mpc mpfr))
     (home-page "https://parity.io")
