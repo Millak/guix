@@ -2028,7 +2028,7 @@ bad pixel tracking throughout the reduction process.")
 (define-public python-cdflib
   (package
     (name "python-cdflib")
-    (version "1.3.2")
+    (version "1.3.3")
     (source
      (origin
        (method git-fetch)               ; no tests in PyPI release
@@ -2037,28 +2037,26 @@ bad pixel tracking throughout the reduction process.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0g723s5xg7vd37vlbjpgpiljd3vxwccslwzcf619zvdnc2xbcw2c"))))
+        (base32 "1b7r3hfkb3ldi02a6pzdcm4vrnz2ywsxy7zgg5jn903i4686wnsb"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:phases
            #~(modify-phases %standard-phases
                (add-before 'build 'set-env-version
                  (lambda _
-                   (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
-                           #$version)))
+                   (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
                (add-before 'check 'set-home-env
                  (lambda _
                    (setenv "HOME" (getcwd)))))))
     (native-inputs
-     (list python-astropy
-           python-hypothesis
+     (list python-astropy-minimal
            python-pytest
            python-pytest-cov
            python-pytest-remotedata
            python-setuptools
            python-setuptools-scm
-           python-xarray
-           python-wheel))
+           python-wheel
+           python-xarray))
     (propagated-inputs
      (list python-numpy))
     (home-page "https://github.com/MAVENSDC/cdflib")
