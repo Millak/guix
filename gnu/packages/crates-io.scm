@@ -83445,6 +83445,7 @@ standard library.")
         (base32 "1dj536sh5xxhan2h0znxhv0sl6sb7lvzmsmrc3nvl3h1v5p0d4x3"))
        (modules '((guix build utils)))
        (snippet #~(substitute* "Cargo.toml"
+                    (("\\.\\./README.md") "README.md")
                     (("^path =.*") "")))))
     (build-system cargo-build-system)
     (arguments
