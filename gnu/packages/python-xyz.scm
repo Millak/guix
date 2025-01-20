@@ -9984,16 +9984,25 @@ parse and apply unified diffs.  It has features such as:
 (define-public python-numexpr
   (package
     (name "python-numexpr")
-    (version "2.8.4")
+    (version "2.9.0") ; starting from 2.10.0, NumPy 2+ is required
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "numexpr" version))
        (sha256
-        (base32
-         "0iv1h1lvry5vmzqyvwxfbckyhzm1vbb1bmhmj4dnj64d84vjahym"))))
-    (build-system python-build-system)
-    (arguments `(#:tests? #f))          ; no tests included
+        (base32 "1w5ampdamlwj8ix1ipzxngmrlqpnmcmk95gbi6839kijqkv147gj"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'build-extensions
+            (lambda _
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-numpy))
     (home-page "https://github.com/pydata/numexpr")
