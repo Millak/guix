@@ -960,17 +960,15 @@ server functionality.")
        (uri (crate-uri "user32-sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0ivxc7hmsxax9crdhxdd1nqwik4s9lhb2x59lc8b88bv20fp3x2f"))))
+        (base32 "0ivxc7hmsxax9crdhxdd1nqwik4s9lhb2x59lc8b88bv20fp3x2f"))
+       (modules '((guix build utils)))
+       (snippet #~(substitute* "Cargo.toml"
+                    ((", path =.*}") "}")))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-winapi" ,rust-winapi-0.2))
-       #:cargo-development-inputs (("rust-winapi-build" ,rust-winapi-build-0.1))
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'fix-cargo-toml
-                    (lambda _
-                      (substitute* "Cargo.toml"
-                        ((", path =.*}")
-                         "}")) #t)))))
+       #:cargo-development-inputs
+       (("rust-winapi-build" ,rust-winapi-build-0.1))))
     (home-page "https://github.com/retep998/winapi-rs")
     (synopsis "Function definitions for the Windows API library user32")
     (description
