@@ -1083,14 +1083,14 @@ however, pgpdump produces more detailed and easier to understand output.")
 (define-public gpa
   (package
     (name "gpa")
-    (version "0.10.0")
+    (version "0.11.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnupg/gpa/"
                                   name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "1cbpc45f8qbdkd62p12s3q2rdq6fa5xdzwmcwd3xrj55bzkspnwm"))))
+                "1k1kvxffyb4nm83yp3mnx9bfmcciwb7vfw8c3xscnh85yxdzma16"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -1108,7 +1108,7 @@ however, pgpdump produces more detailed and easier to understand output.")
            gpgme
            libassuan
            libgpg-error
-           gtk+-2))
+           gtk+))
     (home-page "https://gnupg.org/software/gpa/")
     (synopsis "Graphical user interface for GnuPG")
     (description
