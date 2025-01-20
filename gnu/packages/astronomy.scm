@@ -2935,6 +2935,71 @@ semi-analytic models, to cosmological hydrodynamic simulations, and even
 observationally-derived galaxy merger catalogs.")
     (license license:expat)))
 
+(define-public python-mapsims
+  (package
+    (name "python-mapsims")
+    (version "2.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "mapsims" version))
+       (sha256
+        (base32 "15mkdbmcys42vh46wzvaw8avx54dicav3dazflpfr634jw9bd8hs"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Tests requiring additinal FITS files.
+      ;; <https://portal.nersc.gov/project/cmb>
+      ;; <https://portal.nersc.gov/project/sobs>
+      #~(list "-k" (string-join
+                    (list "not test_noise_simulator[ST0]"
+                          "test_noise_simulator[ST3]"
+                          "test_homogeneous_noise"
+                          "test_from_classes_car_healpix"
+                          "test_from_config_v02"
+                          "test_from_classes"
+                          "test_s4sim_202222_ame_high")
+                    " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "pyproject.toml"
+               ;; pixell==0.17.3
+               (("==0.17.3") ">=0.17.3")))))))
+    (native-inputs
+     (list nss-certs-for-test
+           python-flit-core
+           python-nbformat
+           python-nbval
+           python-pytest
+           python-pytest-astropy))
+    (propagated-inputs
+     (list python-astropy
+           python-healpy
+           python-numpy
+           python-pixell
+           python-pysm3
+           python-pyyaml
+           python-so-noise-models
+           python-toml))
+    (home-page "https://github.com/galsci/mapsims")
+    (synopsis "Map based simulations software for CMB Experiments")
+    (description
+     "This package implements a functionality to produce map based simulations
+for the @url{https://simonsobservatory.org/, Simons Observatory} or other CMB
+experiments.  It creates simulated maps in HEALPix and CAR pixelization based
+on:
+@itemize
+@item foreground models included in PySM
+@item custom foregrounds models from the so_pysm_models package
+@item precomputed Cosmic Microwave Background simulations
+@item noise simulations based on expected performance and simulated hitmaps
+@item effect of gaussian beam convolution
+@end itemize")
+    (license license:bsd-2)))
+
 (define-public python-pixell
   (package
     (name "python-pixell")
