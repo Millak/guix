@@ -81767,31 +81767,24 @@ defining a struct.")
      (origin
        (method url-fetch)
        (uri (crate-uri "structopt" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "043sg3qxllann6q9i71d05qp3q13scmcvhxhd950ka2v8ij5qsqc"))))
+        (base32 "043sg3qxllann6q9i71d05qp3q13scmcvhxhd950ka2v8ij5qsqc"))
+       (modules '((guix build utils)))
+       (snippet #~(begin
+                    (substitute* "Cargo.toml"
+                      ;; feature does not exist
+                      (("lints.*") "")
+                      (("2.33") #$(package-version rust-clap-2)))))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-structopt-derive" ,rust-structopt-derive-0.4)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-paw" ,rust-paw-1)
-        ("rust-clap" ,rust-clap-2))
-       #:cargo-development-inputs
-       (("rust-strum" ,rust-strum-0.21)
-        ("rust-trybuild" ,rust-trybuild-1)
-        ("rust-rustversion" ,rust-rustversion-1))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'fixup-cargo-toml
-           (lambda _
-             (substitute* "Cargo.toml"
-               ;; feature does not exist
-               (("lints.*") "")
-               (("2.33") ,(package-version rust-clap-2))))))))
+     `(#:cargo-inputs (("rust-structopt-derive" ,rust-structopt-derive-0.4)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-paw" ,rust-paw-1)
+                       ("rust-clap" ,rust-clap-2))
+       #:cargo-development-inputs (("rust-strum" ,rust-strum-0.21)
+                                   ("rust-trybuild" ,rust-trybuild-1)
+                                   ("rust-rustversion" ,rust-rustversion-1))))
     (home-page "https://github.com/TeXitoi/structopt")
     (synopsis "Parse command line argument by defining a struct")
     (description
