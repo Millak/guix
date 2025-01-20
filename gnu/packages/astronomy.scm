@@ -3323,6 +3323,39 @@ and the options
 to make such analysis both as flexible and clear as possible.")
     (license license:bsd-3)))
 
+(define-public python-so-noise-models
+  (let ((commit "fac881eb5ee012673d8994443caa3c6ad7fac2b6")
+        (revision "0"))
+    (package
+      (name "python-so-noise-models")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch) ; no release on PyPI
+         (uri (git-reference
+               (url "https://github.com/simonsobs/so_noise_models")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "02ridxr3a8dx2nwsv386fxin4qs5f7h6q5sk28n9jprgnmgzzsfa"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:tests? #f)) ; no tests
+      (native-inputs
+       (list python-setuptools
+             python-wheel))
+      (propagated-inputs
+       (list python-matplotlib
+             python-numpy))
+      (home-page "https://github.com/simonsobs/so_noise_models")
+      (synopsis "Simons Observatory N(ell) noise models")
+      (description
+       "This package provides N(ell) noise curve projection code for the
+Simons Observatory.  The intention is that the full history of noise models
+will be provided to supplement published projections and simulations.")
+      (license license:bsd-2))))
+
 (define-public python-soxs
   (package
     (name "python-soxs")
