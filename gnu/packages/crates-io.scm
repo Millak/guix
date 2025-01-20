@@ -83215,28 +83215,19 @@ a syntax tree of Rust source code.")
 
 (define-public rust-syn-1
   (package
+    (inherit rust-syn-2)
     (name "rust-syn")
     (version "1.0.109")
     (source
      (origin
-       (method url-fetch)
+       (inherit (package-source rust-syn-2))
        (uri (crate-uri "syn" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
          "0ds2if4600bd59wsv7jjgfkayfzy3hnazs394kz6zdkmna8l3dkj"))))
-    (build-system cargo-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; The syn-test-suite crate is empty.
-         (add-after 'unpack 'patch-test-suite
-           (lambda _
-             (substitute* "Cargo.toml"
-               (("^\\[dev-dependencies.syn-test-suite\\]") "")
-               (("^version = \"0\"") "")
-               (("^test = \\[\"syn-test-suite/all-features\"\\]") "")))))
-       ;; Tests fail to compile
+     `(;; Tests fail to compile
        ;; error[E0432]: unresolved imports `syn::Item`, `syn::Pat`
        #:tests? #false
        #:cargo-inputs
@@ -83254,15 +83245,7 @@ a syntax tree of Rust source code.")
         ("rust-reqwest" ,rust-reqwest-0.11)
         ("rust-tar" ,rust-tar-0.4)
         ("rust-termcolor" ,rust-termcolor-1)
-        ("rust-walkdir" ,rust-walkdir-2))))
-    (inputs (list openssl))
-    (native-inputs (list pkg-config))
-    (home-page "https://github.com/dtolnay/syn")
-    (synopsis "Parser for Rust source code")
-    (description
-     "Syn is a parsing library for parsing a stream of Rust tokens into
-a syntax tree of Rust source code.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-walkdir" ,rust-walkdir-2))))))
 
 (define-public rust-syn-0.15
   (package
