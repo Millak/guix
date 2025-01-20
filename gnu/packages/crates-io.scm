@@ -81775,7 +81775,13 @@ defining a struct.")
                     (substitute* "Cargo.toml"
                       ;; feature does not exist
                       (("lints.*") "")
-                      (("2.33") #$(package-version rust-clap-2)))))))
+                      (("2.33") #$(package-version rust-clap-2)))
+                    ;; Cargo build stderr does not exactly match.
+                    (with-directory-excursion "tests/ui"
+                      (for-each delete-file
+                                '("external_subcommand_wrong_type.rs"
+                                  "positional_bool.rs" "raw.rs"
+                                  "skip_without_default.rs")))))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-structopt-derive" ,rust-structopt-derive-0.4)
