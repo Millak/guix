@@ -4157,18 +4157,19 @@ Carlo.")
 (define-public python-ndcube
   (package
     (name "python-ndcube")
-    (version "2.2.4")
+    (version "2.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ndcube" version))
        (sha256
-        (base32 "08l4nq43igpic6v3zjnyjq3yy44czg79798rmv5la52hbzbz1kj3"))))
+        (base32 "1pza5g38gn941dwy8yahkd37lb7z80czs1yj38xhn2cf0s69779h"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      #~(list "-k" (string-append
+      #~(list "--numprocesses" (number->string (parallel-job-count))
+              "-k" (string-append
                     ;; Break cycle: python-ndcube -> python-specutils ->
                     ;; python-ndcube, see
                     ;; <https://github.com/sunpy/ndcube/issues/733>.
@@ -4200,6 +4201,8 @@ Carlo.")
            python-pytest
            python-pytest-astropy
            python-pytest-mpl
+           ;; python-pytest-memray ; not packaged yet
+           python-pytest-xdist
            python-scipy
            python-setuptools
            python-setuptools-scm
