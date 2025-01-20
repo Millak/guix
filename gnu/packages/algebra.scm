@@ -1590,7 +1590,7 @@ of M4RI from F_2 to F_{2^e}.")
 (define-public eclib
   (package
     (name "eclib")
-    (version "20220621")
+    (version "20241112")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1599,7 +1599,7 @@ of M4RI from F_2 to F_{2^e}.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "07wbkzmn6w0hrv2vim7f0il7k59ccc66x5vnn623xkmhfw32b3nz"))))
+                "0v5981y0bv9s2sz6x2yh7mxzqsp9rrfv1jvdv12rwf64yacgmbz0"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake libtool))
@@ -1610,8 +1610,7 @@ of M4RI from F_2 to F_{2^e}.")
 elliptic curves over Q) and modular symbol code; it has been written by
 John Cremona to compute his elliptic curve database.")
     (license license:gpl2+)
-    (home-page (string-append "http://homepages.warwick.ac.uk/staff/"
-                              "J.E.Cremona/mwrank/index.html"))))
+    (home-page "https://johncremona.github.io/mwrank/index.html")))
 
 (define-public lrcalc
   (package
