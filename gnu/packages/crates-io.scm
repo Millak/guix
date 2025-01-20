@@ -83168,26 +83168,25 @@ languages and compilers.")
   (package
     (name "rust-syn")
     (version "2.0.90")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "syn" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-                (base32 "0cfg5dsr1x0hl6b9hz08jp1197mx0rq3xydqmqaws36xlms3p7ci"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "syn" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0cfg5dsr1x0hl6b9hz08jp1197mx0rq3xydqmqaws36xlms3p7ci"))
+       (modules '((guix build utils)))
+       ;; The syn-test-suite crate is empty.
+       (snippet
+        #~(substitute* "Cargo.toml"
+            (("^\\[dev-dependencies.syn-test-suite\\]") "")
+            (("^version = \"0\"") "")
+            (("^test = \\[\"syn-test-suite/all-features\"\\]") "")))))
     (build-system cargo-build-system)
     (arguments
      ;; Tests fail to compile
      ;; error[E0463]: can't find crate for `rustc_ast` (among other errors).
      `(#:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         ;; The syn-test-suite crate is empty.
-         (add-after 'unpack 'patch-test-suite
-           (lambda _
-             (substitute* "Cargo.toml"
-               (("^\\[dev-dependencies.syn-test-suite\\]") "")
-               (("^version = \"0\"") "")
-               (("^test = \\[\"syn-test-suite/all-features\"\\]") "")))))
        #:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
