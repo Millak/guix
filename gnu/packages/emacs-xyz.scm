@@ -28034,8 +28034,10 @@ keep Parens and Indentation inline with one another.")
           (add-after 'unpack 'configure
             (lambda* (#:key inputs #:allow-other-keys)
               (let ((parinfer-lib
-                     (dirname
-                      (search-input-file inputs "lib/libparinfer_rust.so"))))
+                     (string-append
+                      (dirname
+                       (search-input-file inputs "lib/libparinfer_rust.so"))
+                      "/")))
                 ;; Specify the absolute file names of the parinfer shared
                 ;; library.
                 ;; (make-file-writable "parinfer-rust-mode.el")
