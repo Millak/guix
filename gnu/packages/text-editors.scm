@@ -494,7 +494,7 @@ can load dynamic libraries.")
 (define-public parinfer-rust-emacs
   (package
     (name "parinfer-rust-emacs")
-    (version "0.4.6")
+    (version "0.4.7")
     (source
      (origin
        (method git-fetch)
@@ -502,7 +502,7 @@ can load dynamic libraries.")
              (url "https://github.com/justinbarclay/parinfer-rust-emacs")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "1v5lcbs1x4f3b428sj9rkjbmfpzyxzny7i0pgdpnr8nyjvpkzns8"))
+        (base32 "1gay4m6hd893p5m3fayfdqxncg8cg9kw60w5qm8z14p9nxyqb0i5"))
        (file-name (git-file-name name version))))
     (build-system cargo-build-system)
     (arguments
