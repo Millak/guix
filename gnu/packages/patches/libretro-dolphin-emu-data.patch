@@ -1,0 +1,17 @@
+Resolve a hang in the menu of this game.
+
+Upstream-status: https://github.com/libretro/dolphin/pull/337
+
+diff --git a/Data/Sys/GameSettings/GWR.ini b/Data/Sys/GameSettings/GWR.ini
+new file mode 100644
+index 0000000000..a55f4d29cd
+--- /dev/null
++++ b/Data/Sys/GameSettings/GWR.ini
+@@ -0,0 +1,7 @@
++# GWR - WAVE RACE / BLUE STORM
++
++[Core]
++# Disable multi-threading to avoid a hang in the game menu.
++# TODO: Change to 'CPUThread = False' after rebasing to latest
++# upstream (see commit 869edd5a66).
++SyncGPU = True

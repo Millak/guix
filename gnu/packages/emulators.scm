@@ -337,7 +337,8 @@ console.")
              (substitute* "CMakeLists.txt"
                ((".*add_subdirectory.*Externals/enet.*") "")
                ((".*add_subdirectory.*Externals/soundtouch.*") "")
-               ((".*add_subdirectory.*Externals/xxhash.*") ""))))))
+               ((".*add_subdirectory.*Externals/xxhash.*") ""))))
+         (patches (search-patches "dolphin-emu-data.patch"))))
       (build-system cmake-build-system)
       (arguments
        (list
@@ -499,7 +500,8 @@ turbo speed, networked multiplayer, and graphical enhancements.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1fvm6hy0ihc0j3sgv88a7ak08c0kyikmmiif827j981fy7zvglvz"))))
+                  "1fvm6hy0ihc0j3sgv88a7ak08c0kyikmmiif827j981fy7zvglvz"))
+                (patches (search-patches "libretro-dolphin-emu-data.patch"))))
       (arguments
        (substitute-keyword-arguments (package-arguments dolphin-emu)
          ((#:configure-flags flags ''())
