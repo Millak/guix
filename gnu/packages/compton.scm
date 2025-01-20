@@ -41,7 +41,8 @@
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xml)
-  #:use-module (gnu packages xorg))
+  #:use-module (gnu packages xorg)
+  #:use-module (gnu packages ruby))
 
 (define-public compton
   (let ((upstream-version "0.1_beta2"))
@@ -113,7 +114,7 @@ performance).
 (define-public picom
   (package
     (name "picom")
-    (version "11.2")
+    (version "12.5")
     (source
      (origin
        (method git-fetch)
@@ -122,7 +123,7 @@ performance).
              (commit (string-append "v" version))))
        (sha256
         (base32
-         "0swmpw6lj0aiwypdfkzsy38jwsm9wfcn7i5klrqfn2klrwinv27f"))
+         "1skkchrlir9si9ljawg0xcgpfnd2macw7ny5vhx5f5zk7b7iphhz"))
        (file-name (string-append "picom-" version))))
     (build-system meson-build-system)
     (inputs
@@ -142,7 +143,7 @@ performance).
            xcb-util-image
            xprop))
     (native-inputs
-     (list asciidoc pkg-config xorgproto))
+     (list pkg-config xorgproto ruby-asciidoctor))
     (arguments
      (list #:build-type "release"
            #:configure-flags #~'("-Dwith_docs=true")
