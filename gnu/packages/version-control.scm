@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2013 Cyril Roelandt <tipecaml@gmail.com>
-;;; Copyright © 2013-2022, 2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2022, 2024-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013, 2014 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015, 2016 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2014, 2015, 2016 Mark H Weaver <mhw@netris.org>
@@ -265,14 +265,14 @@ Python 3.3 and later, rather than on Python 2.")
 (define-public git-minimal
   (package
     (name "git-minimal")
-    (version "2.47.1")
+    (version "2.48.1")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://kernel.org/software/scm/git/git-"
                                  version ".tar.xz"))
              (sha256
               (base32
-               "046kdr5dhg31hjcg6wpfqnwwbaqdjyax7n8wx5s26fdf4fxzkn7k"))))
+               "1bc29w1cd1akbnpfjc7sl5ms7cc8vy7xjl1cbplm3sy1bmgm8p8w"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -434,7 +434,24 @@ Python 3.3 and later, rather than on Python 2.")
                 (for-each delete-file
                           '("t/t9128-git-svn-cmd-branch.sh"
                             "t/t9167-git-svn-cmd-branch-subproject.sh"
-                            "t/t9141-git-svn-multiple-branches.sh")))))
+                            "t/t9141-git-svn-multiple-branches.sh"))
+
+                #$@(if (version>=? (package-version this-package)
+                                   "2.48.0")
+                       ;; Purge the purged tests in meson.build
+                       #~((substitute
+                           "t/meson.build"
+                           (list (cons "^(.+')(t[^']+[.]sh)('.*)$"
+                                       (lambda (line matches)
+                                         (let* ((match-offset (vector-ref (car matches) 3))
+                                                (test-file (string-append "t/"
+                                                                          (substring line
+                                                                                     (car match-offset)
+                                                                                     (cdr match-offset)))))
+                                           (if (file-exists? test-file)
+                                               line
+                                               "")))))))
+                       #~()))))
           (add-after 'install 'install-shell-completion
             (lambda _
               (let ((bash (string-append #$output "/etc/bash_completion.d"))
@@ -566,6 +583,7 @@ everything from small to very large projects with speed and efficiency.")
                   (("/usr/bin/python") (which "python3")))))
             (add-after 'build 'build-subtree
               (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                (invoke "make" "-C" "Documentation" "asciidoc.conf")
                 (with-directory-excursion "contrib/subtree"
                   (invoke "make")
                   (invoke "make" "install")
@@ -721,7 +739,7 @@ everything from small to very large projects with speed and efficiency.")
                                ".tar.xz"))
                          (sha256
                           (base32
-                           "04zfxwdhja82mm24isk2jxhp30q6l3nnnzv6gdrc0mmhi5d01hpz"))))))))))))
+                           "11k871fz119f6hbzvfg64hr7vdbaqd8x2brg5mhbyvadz9xdw3jc"))))))))))))
     (native-inputs
      (modify-inputs (package-native-inputs git-minimal)
        ;; For subtree documentation.
