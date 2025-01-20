@@ -5643,6 +5643,29 @@ that.")
 regression and Passing-Bablock regression functions.")
     (license license:lgpl2.0+)))
 
+(define-public r-deoptim
+  (package
+    (name "r-deoptim")
+    (version "2.2-8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "DEoptim" version))
+       (sha256
+        (base32 "0k7mvf7j8y1sqv8zpiwkw4xcmgki37drkxjijrsmmhkfybfan7k3"))))
+    (properties `((upstream-name . "DEoptim")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-parallelly))
+    (home-page "https://github.com/ArdiaD/DEoptim")
+    (synopsis "Global optimization by differential evolution")
+    (description
+     "This package implements the Differential Evolution algorithm.
+This algorithm is used for the global optimization of a real-valued function
+of a real-valued parameter vector.  The implementation of
+@code{DifferentialEvolution} in DEoptim interfaces with C code for
+efficiency.")
+    (license license:gpl2+)))
+
 (define-public r-depmixs4
   (package
     (name "r-depmixs4")
