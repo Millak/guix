@@ -2719,7 +2719,8 @@ forgotten when the session ends.")
     (arguments
      `(#:glib-or-gtk? #t
        #:build-type "release"
-       #:configure-flags '("-Dnautilus=false")
+       #:configure-flags '("-Dnautilus=false"
+                           "-Dps=enabled")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'skip-gtk-update-icon-cache
