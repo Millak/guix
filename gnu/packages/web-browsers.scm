@@ -1044,6 +1044,40 @@ Features include
 @end itemize")
     (license license:bsd-2)))
 
+(define-public dillo
+  (package
+    (name "dillo")
+    (version "3.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dillo-browser/dillo")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19rr09b4xvnz7isng8pzxm5879g3pqvml5v8vh4gbwwn93dnlwpn"))))
+    (build-system gnu-build-system)
+    (native-inputs (list autoconf automake))
+    (inputs (list fltk
+                  fontconfig
+                  openssl
+                  libjpeg-turbo
+                  libpng
+                  libwebp
+                  libxext
+                  libx11
+                  libxfixes
+                  libxft
+                  libxrender
+                  zlib))
+    (home-page "https://dillo-browser.github.io/")
+    (synopsis "Very small and fast graphical web browser")
+    (description
+     "Dillo is a minimalistic web browser particularly intended for
+-older or slower computers and embedded systems.")
+    (license license:gpl3+)))
+
 (define-public edbrowse
   (package
     (name "edbrowse")
