@@ -5062,17 +5062,34 @@ over many parameters:
 (define-public python-statmorph
   (package
     (name "python-statmorph")
-    (version "0.6.0")
+    (version "0.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "statmorph" version))
        (sha256
-        (base32 "1575vmk4kl06yxyid7mb1r7llbrmraagvx2b0h5x335ha7irnkjk"))))
+        (base32 "0q9h8yqd8w8ckakn3hx7r5mag3vpgaah077rvi3bdmkmix5ky7r9"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; See <https://github.com/vrodgom/statmorph/issues/13>.
+      #~(list "-k" (string-join
+                    (list "not test_no_psf"
+                          "test_psf"
+                          "test_weightmap")
+                    " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "setup.py"
+                ;; scikit-image>=0.25.0
+                ((">=0.25.0") ">=0.23.2")))))))
     (native-inputs
      (list python-pytest
-           python-setuptools))
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-astropy
            python-numpy
