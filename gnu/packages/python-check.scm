@@ -288,6 +288,34 @@ Avocado machine readable outputs this one is streamlined (per test results).
 @end table")
     (license license:gpl2)))            ;some files are under GPLv2 only
 
+(define-public python-pytest-black
+  (package
+    (name "python-pytest-black")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest_black" version))
+       (sha256
+        (base32
+         "04dmhv8dzh356qdxz6hrwfz3nk3mlc9shicgpns5r03rydap9dzc"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-black
+           python-pytest
+           python-toml))
+    ;; Project maintenance has been changed, see
+    ;; <https://github.com/shopkeep/pytest-black/issues/70>.
+    (home-page "https://github.com/coherent-oss/pytest-black")
+    (synopsis "Pytest plugin to enable format checking with black")
+    (description
+     "This package provides a pytest plugin to enable format checking with the
+Python code formatter \"black\".")
+    (license license:expat)))
+
 (define-public python-beartype
   (package
     (name "python-beartype")
