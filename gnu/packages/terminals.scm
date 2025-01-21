@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015-2021, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2021, 2023-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Mckinley Olsen <mck.olsen@gmail.com>
 ;;; Copyright © 2016, 2017, 2019 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
@@ -1542,7 +1542,7 @@ basic input/output.")
 (define-public alacritty
   (package
     (name "alacritty")
-    (version "0.14.0")
+    (version "0.15.0")
     (source
      (origin
        ;; XXX: The crate at "crates.io" contains only the alacritty subproject
@@ -1554,12 +1554,12 @@ basic input/output.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0wfrj3h6rp90mclvssansh6p48q394xa8pzw74pjznzi2jxjw6b6"))))
+        (base32 "1nh5w037rwf00z9b21803184j561s44js9ilfq9pcqbgbg95y308"))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
        #:cargo-test-flags
-       '("--release" "--"
+       '("--"
          ;; Changes in clap regularly break this test.
          "--skip=cli::tests::completions")
        #:cargo-inputs
@@ -1567,7 +1567,6 @@ basic input/output.")
         ("rust-base64" ,rust-base64-0.22)
         ("rust-bitflags" ,rust-bitflags-2)
         ("rust-clap" ,rust-clap-4)
-        ("rust-cocoa" ,rust-cocoa-0.25)
         ("rust-copypasta" ,rust-copypasta-0.10)
         ("rust-crossfont" ,rust-crossfont-0.8)
         ("rust-dirs" ,rust-dirs-5)
@@ -1579,7 +1578,9 @@ basic input/output.")
         ("rust-log" ,rust-log-0.4)
         ("rust-miow" ,rust-miow-0.6)
         ("rust-notify" ,rust-notify-6)
-        ("rust-objc" ,rust-objc-0.2)
+        ("rust-objc2" ,rust-objc2-0.5)
+        ("rust-objc2-app-kit" ,rust-objc2-app-kit-0.2)
+        ("rust-objc2-foundation" ,rust-objc2-foundation-0.2)
         ("rust-parking-lot" ,rust-parking-lot-0.12)
         ("rust-piper" ,rust-piper-0.2)
         ("rust-polling" ,rust-polling-3)
