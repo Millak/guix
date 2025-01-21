@@ -4783,29 +4783,42 @@ SolarSoft data analysis environment.")
 (define-public python-sunpy-soar
   (package
     (name "python-sunpy-soar")
-    (version "1.10")
+    (version "1.11.0")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "sunpy-soar" version))
+       (uri (pypi-uri "sunpy_soar" version))
        (sha256
-        (base32 "0pb7dr06n20hdhlqf8npb4j1qb5034cgwqi3iciqdi1wxyy5pjc6"))))
+        (base32 "015pc6m7bdmgyw2inmjv84fgsjj8x90f91gphyv9ql4xn6yspnc2"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      ;; Disabe tests requireing network access.
-      #~(list "-k" (string-append
-                    "not test_search"
-                    " and not test_search_low_latency"
-                    " and not test_insitu_search"
-                    " and not test_no_results"
-                    " and not test_no_instrument"
-                    " and not test_download_path"
-                    " and not test_search_soop"
-                    " and not test_when_soar_provider_passed"
-                    " and not test_when_sdac_provider_passed"
-                    " and not test_when_wrong_provider_passed"))
+      ;; Disable tests requiring network access to download test data from
+      ;; <http://soar.esac.esa.int> and <http://docs.virtualsolar.org>.
+      #~(list "-k" (string-join
+                    (list "not test_distance_out_of_bounds_warning"
+                          "test_distance_search_insitu"
+                          "test_distance_search_remote_sensing"
+                          "test_distance_time_search"
+                          "test_download_path"
+                          "test_insitu_search"
+                          "test_invalid_detector"
+                          "test_no_instrument"
+                          "test_no_results"
+                          "test_search"
+                          "test_search_detector_instrument_dimension_2"
+                          "test_search_detector_instrument_dimension_4"
+                          "test_search_low_latency"
+                          "test_search_soop"
+                          "test_search_wavelength_detector_column"
+                          "test_wavelength_column_wavelength_exists"
+                          "test_wavelength_range"
+                          "test_wavelength_single"
+                          "test_when_sdac_provider_passed"
+                          "test_when_soar_provider_passed"
+                          "test_when_wrong_provider_passed")
+                    " and not "))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'set-home-env
@@ -4813,10 +4826,17 @@ SolarSoft data analysis environment.")
               ;; Tests require HOME to be set.
               ;;  Permission denied: '/homeless-shelter'
               (setenv "HOME" "/tmp"))))))
-    (propagated-inputs
-     (list python-sunpy))
     (native-inputs
-     (list python-pytest))
+     (list python-pytest
+           python-pytest-doctestplus
+           python-responses
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-astropy
+           python-matplotlib
+           python-requests
+           python-sunpy))
     (home-page "https://docs.sunpy.org/projects/soar")
     (synopsis "Solar Orbiter Archive plugin for SunPy")
     (description
