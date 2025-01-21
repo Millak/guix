@@ -515,11 +515,13 @@ share a name are placed with versions in descending order."
   (define (package>? lst1 lst2)
     (let-values (((name1 version1) (package-fields lst1))
                  ((name2 version2) (package-fields lst2)))
-      (and name1 name2 (or (string>? name1 name2)
-                           (and (string=? name1 name2)
-                                version1
-                                version2
-                                (version>? version2 version1))))))
+      (and (string? name1)
+           (string? name2)
+           (or (string>? name1 name2)
+               (and (string=? name1 name2)
+                    (string? version1)
+                    (string? version2)
+                    (version>? version2 version1))))))
 
         ;; Group define-public with preceding blanks and defines.
   (let ((lst (fold2 (lambda (expr tail head)
