@@ -3530,7 +3530,7 @@ Unicode-to-LaTeX conversion.")
 (define-public python-lsp-black
   (package
     (name "python-lsp-black")
-    (version "1.3.0")
+    (version "2.0.0")
     (source
      (origin
        (method git-fetch)
@@ -3539,8 +3539,16 @@ Unicode-to-LaTeX conversion.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1gwf3vwb01a3l8b75jbn8kyfmn0lva8vpgjnr75vazhm3lsf78fp"))))
+        (base32 "0ilh6nx15kzrp29nkrpx03vx6dw3n7wq65qwv7bg7kcnyiwacplx"))))
     (build-system pyproject-build-system)
+    (arguments
+     ;; The python version is too old for these tests to pass properly.
+     (list #:test-flags
+           `'("-k" ,(string-append
+                     "not test_pylsp_format_document_syntax_error"
+                     " and not test_pylsp_format_range_syntax_error"
+                     " and not test_load_config_defaults"
+                     " and not test_load_config_with_skip_options"))))
     (propagated-inputs
      (list python-black python-lsp-server python-tomli))
     (native-inputs
