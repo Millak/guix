@@ -6179,13 +6179,13 @@ install an implementation package such as gwcs.")
 (define-public python-rad
   (package
     (name "python-rad")
-    (version "0.22.0")
+    (version "0.23.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "rad" version))
        (sha256
-        (base32 "1p6v49gzbzishy1kdd5g8nbl97qp459s1smb6j94wvif4262zkm8"))))
+        (base32 "1c771lxj45iakj4ynjmfg332cm10yllmwniigs9zzjnb02kmaks5"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -6194,11 +6194,12 @@ install an implementation package such as gwcs.")
       #:test-flags #~(list "--ignore=tests/test_schemas.py")))
     (native-inputs
      (list python-pytest
+           python-pytest-doctestplus
            python-setuptools
            python-setuptools-scm
            python-wheel))
     (propagated-inputs
-     (list python-asdf-3
+     (list python-asdf
            python-asdf-astropy))
     (home-page "https://github.com/spacetelescope/rad")
     (synopsis "Roman Attribute Dictionary")
