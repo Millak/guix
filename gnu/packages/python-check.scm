@@ -209,6 +209,83 @@ the implementation of that name.")
     (license (list license:asl2.0
                    license:lgpl3))))    ; only for setup_helpers.py
 
+(define-public python-avocado-framework
+  (package
+    (name "python-avocado-framework")
+    (version "96.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "avocado-framework" version))
+       (sha256
+        (base32 "0zhz6423p0b5gqx2mvg7dmq8m9gbsay7wqjdwzirlwcg2v3rcz0m"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      ;; The test suite hangs, due to a serious bug in Python/Avocado (see:
+      ;; https://github.com/avocado-framework/avocado/issues/4935).
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-paths
+            (lambda* (#:key native-inputs inputs #:allow-other-keys)
+              ;; These are runtime dependencies (inputs).
+              (substitute* "avocado/plugins/spawners/podman.py"
+                (("default='/usr/bin/podman'")
+                 "default='podman'"))
+              (substitute* "avocado/utils/podman.py"
+                (("\"/usr/bin/env\", \"python3\"")
+                 (format #f "~s" (search-input-file inputs "bin/python"))))
+              (substitute* "avocado/utils/memory.py"
+                (("\"sync\"")
+                 (format #f "~s" (search-input-file inputs "bin/sync")))
+                (("/bin/sh")
+                 (search-input-file inputs "bin/sh")))
+              ;; Batch process the tests modules with less care; if something
+              ;; is wrong, the test suite will fail.  These are tests
+              ;; dependencies (native inputs).
+              (substitute* (find-files "selftests" "\\.py$")
+                (("#!/usr/bin/env")
+                 (string-append "#!" (search-input-file (or native-inputs inputs)
+                                                        "bin/env")))
+                (("/bin/(false|true|sh|sleep|sudo)" _ name)
+                 (search-input-file (or native-inputs inputs)
+                                    (string-append "bin/" name))))))
+          (add-after 'unpack 'remove-broken-entrypoints
+            ;; The avocado-external-runner entry point fails to load, the
+            ;; 'scripts' top level package not being found (see:
+            ;; https://github.com/avocado-framework/avocado/issues/5370).
+            (lambda _
+              (substitute* "setup.py"
+                (("'avocado-external-runner = scripts.external_runner:main'.*")
+                 ""))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "HOME" "/tmp")
+                (setenv "PYTHONPATH" (getcwd))
+                (invoke "./selftests/check.py" "--skip" "static-checks")))))))
+    (native-inputs (list bash-minimal coreutils-minimal perl sudo))
+    (inputs (list bash-minimal coreutils-minimal))
+    (home-page "https://avocado-framework.github.io/")
+    (synopsis "Tools and libraries to help with automated testing")
+    (description "Avocado is a set of tools and libraries to help with
+automated testing, i.e. a test framework.  Native tests are written in Python
+and they follow the unittest pattern, but any executable can serve as a
+test.  The following output formats are supported:
+@table @asis
+@item xUnit
+an XML format that contains test results in a structured form, and are used by
+other test automation projects, such as Jenkins.
+@item JSON
+a widely used data exchange format.  The JSON Avocado plugin outputs job
+information, similarly to the xunit output plugin.
+@item TAP
+Provides the basic TAP (Test Anything Protocol) results.  Unlike most existing
+Avocado machine readable outputs this one is streamlined (per test results).
+@end table")
+    (license license:gpl2)))            ;some files are under GPLv2 only
+
 (define-public python-beartype
   (package
     (name "python-beartype")
@@ -259,6 +336,36 @@ of the code is covered by them.  This tool is part of the Codacy suite for
 analysing code quality.")
     (license license:expat)))
 
+(define-public python-covdefaults
+  (package
+    (name "python-covdefaults")
+    (version "1.1.0")
+    (source
+     (origin
+       ;; The PyPI tarball does not include tests.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/asottile/covdefaults")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "11a24c0wzv01n55fy4kdpnyqna4m9k0mp58kmhiaks34xw4k37hq"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda _
+             (invoke "pytest" "-vv"))))))
+    (native-inputs
+     (list python-coverage python-pytest))
+    (home-page "https://github.com/asottile/covdefaults")
+    (synopsis "Coverage plugin to provide opinionated default settings")
+    (description
+     "Covdefaults is a coverage plugin to provide opinionated default
+ settings.")
+    (license license:expat)))
+
 (define-public python-cucumber-tag-expressions
   (package
     (name "python-cucumber-tag-expressions")
@@ -296,6 +403,25 @@ analysing code quality.")
     (description
      "This package provides a tag-expression parser for Cucumber and
 @command{behave}.")
+    (license license:expat)))
+
+(define-public python-eradicate
+  (package
+    (name "python-eradicate")
+    (version "2.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "eradicate" version))
+       (sha256
+        (base32
+         "1j30g9jfmbfki383qxwrfds8b23yiwywj40lng4lqcf5yab4ahr7"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/myint/eradicate")
+    (synopsis "Remove commented-out code from Python sources")
+    (description "The @command{eradicate} command removes commented-out code
+from Python files.  It does this by detecting block comments that contain
+valid Python syntax that are likely to be commented out code.")
     (license license:expat)))
 
 (define-public python-pytest-click
@@ -1211,36 +1337,6 @@ in Pytest.")
     (synopsis "Pytest plugin to run @command{pydocstyle}")
     (description "This package provides a Pytest plugin to run
 @command{pydocstyle}.")
-    (license license:expat)))
-
-(define-public python-covdefaults
-  (package
-    (name "python-covdefaults")
-    (version "1.1.0")
-    (source
-     (origin
-       ;; The PyPI tarball does not include tests.
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/asottile/covdefaults")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "11a24c0wzv01n55fy4kdpnyqna4m9k0mp58kmhiaks34xw4k37hq"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "pytest" "-vv"))))))
-    (native-inputs
-     (list python-coverage python-pytest))
-    (home-page "https://github.com/asottile/covdefaults")
-    (synopsis "Coverage plugin to provide opinionated default settings")
-    (description
-     "Covdefaults is a coverage plugin to provide opinionated default
- settings.")
     (license license:expat)))
 
 (define-public python-pytest-subtests
@@ -2450,25 +2546,6 @@ among others.")
 annotations.")
     (license license:asl2.0)))
 
-(define-public python-eradicate
-  (package
-    (name "python-eradicate")
-    (version "2.0.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "eradicate" version))
-       (sha256
-        (base32
-         "1j30g9jfmbfki383qxwrfds8b23yiwywj40lng4lqcf5yab4ahr7"))))
-    (build-system python-build-system)
-    (home-page "https://github.com/myint/eradicate")
-    (synopsis "Remove commented-out code from Python sources")
-    (description "The @command{eradicate} command removes commented-out code
-from Python files.  It does this by detecting block comments that contain
-valid Python syntax that are likely to be commented out code.")
-    (license license:expat)))
-
 (define-public python-expecttest
   (let ((commit "683b09a352cc426851adc2e3a9f46e0ab25e4dee")
         (revision "0"))
@@ -2687,83 +2764,6 @@ help in debugging failures and optimizing the scheduler to improve speed.")
     (description "This package provides a pytest plugin for Sanic.  It helps
 you to test your code asynchronously.")
     (license license:expat)))
-
-(define-public python-avocado-framework
-  (package
-    (name "python-avocado-framework")
-    (version "96.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "avocado-framework" version))
-       (sha256
-        (base32 "0zhz6423p0b5gqx2mvg7dmq8m9gbsay7wqjdwzirlwcg2v3rcz0m"))))
-    (build-system python-build-system)
-    (arguments
-     (list
-      ;; The test suite hangs, due to a serious bug in Python/Avocado (see:
-      ;; https://github.com/avocado-framework/avocado/issues/4935).
-      #:tests? #f
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-paths
-            (lambda* (#:key native-inputs inputs #:allow-other-keys)
-              ;; These are runtime dependencies (inputs).
-              (substitute* "avocado/plugins/spawners/podman.py"
-                (("default='/usr/bin/podman'")
-                 "default='podman'"))
-              (substitute* "avocado/utils/podman.py"
-                (("\"/usr/bin/env\", \"python3\"")
-                 (format #f "~s" (search-input-file inputs "bin/python"))))
-              (substitute* "avocado/utils/memory.py"
-                (("\"sync\"")
-                 (format #f "~s" (search-input-file inputs "bin/sync")))
-                (("/bin/sh")
-                 (search-input-file inputs "bin/sh")))
-              ;; Batch process the tests modules with less care; if something
-              ;; is wrong, the test suite will fail.  These are tests
-              ;; dependencies (native inputs).
-              (substitute* (find-files "selftests" "\\.py$")
-                (("#!/usr/bin/env")
-                 (string-append "#!" (search-input-file (or native-inputs inputs)
-                                                        "bin/env")))
-                (("/bin/(false|true|sh|sleep|sudo)" _ name)
-                 (search-input-file (or native-inputs inputs)
-                                    (string-append "bin/" name))))))
-          (add-after 'unpack 'remove-broken-entrypoints
-            ;; The avocado-external-runner entry point fails to load, the
-            ;; 'scripts' top level package not being found (see:
-            ;; https://github.com/avocado-framework/avocado/issues/5370).
-            (lambda _
-              (substitute* "setup.py"
-                (("'avocado-external-runner = scripts.external_runner:main'.*")
-                 ""))))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (setenv "HOME" "/tmp")
-                (setenv "PYTHONPATH" (getcwd))
-                (invoke "./selftests/check.py" "--skip" "static-checks")))))))
-    (native-inputs (list bash-minimal coreutils-minimal perl sudo))
-    (inputs (list bash-minimal coreutils-minimal))
-    (home-page "https://avocado-framework.github.io/")
-    (synopsis "Tools and libraries to help with automated testing")
-    (description "Avocado is a set of tools and libraries to help with
-automated testing, i.e. a test framework.  Native tests are written in Python
-and they follow the unittest pattern, but any executable can serve as a
-test.  The following output formats are supported:
-@table @asis
-@item xUnit
-an XML format that contains test results in a structured form, and are used by
-other test automation projects, such as Jenkins.
-@item JSON
-a widely used data exchange format.  The JSON Avocado plugin outputs job
-information, similarly to the xunit output plugin.
-@item TAP
-Provides the basic TAP (Test Anything Protocol) results.  Unlike most existing
-Avocado machine readable outputs this one is streamlined (per test results).
-@end table")
-    (license license:gpl2)))            ;some files are under GPLv2 only
 
 (define-public python-pandas-vet
   (package
