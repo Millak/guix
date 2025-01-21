@@ -14,7 +14,7 @@
 ;;; Copyright © 2015, 2016, 2017, 2019, 2022 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2015, 2017 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2015, 2016 Erik Edrosa <erik.edrosa@gmail.com>
-;;; Copyright © 2015-2025 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2015, 2017, 2020 Kyle Meyer <kyle@kyleam.com>
 ;;; Copyright © 2015, 2016 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2016 Danny Milosavljevic <dannym+a@scratchpost.org>
@@ -23191,24 +23191,13 @@ until the object is actually required, and caches the result of said call.")
      (list python-hatchling
            python-pytest))
     (propagated-inputs
-     ;; According to pyproject.toml all these are technically optional.
-     (append
-       (let ((if-supported
-               (lambda (package)
-                 (if (and (not (%current-target-system))
-                          (member (%current-system)
-                                  (package-transitive-supported-systems package)))
-                     (list package)
-                     '()))))
-         ;; DNSSEC
-         (if-supported python-cryptography)
-         ;; DNS over HTTPS
-         (if-supported python-h2)
-         (if-supported python-httpcore)
-         (if-supported python-httpx)
-         ;; DNS over Quic
-         (if-supported python-trio))
-       (list python-idna)))
+     (list python-cryptography
+           python-aioquic
+           python-h2
+           python-httpcore
+           python-httpx
+           python-idna
+           python-trio))
     (home-page "https://www.dnspython.org")
     (synopsis "DNS toolkit for Python")
     (description
