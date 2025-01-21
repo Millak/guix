@@ -36559,6 +36559,7 @@ heavily inspired by the Temporal project.")
 
 (define-public rust-jiter-0.5
   (package
+    (inherit rust-jiter-0.7)
     (name "rust-jiter")
     (version "0.5.0")
     (source
@@ -36568,7 +36569,6 @@ heavily inspired by the Temporal project.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0ayj16d1rx5h5v7ihxgg198a9c190b6shsylzzfhxx9y2i4kbqh2"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-ahash" ,rust-ahash-0.8)
                        ("rust-bitvec" ,rust-bitvec-1)
@@ -36584,12 +36584,7 @@ heavily inspired by the Temporal project.")
         ("rust-paste" ,rust-paste-1)
         ("rust-pyo3" ,rust-pyo3-0.22)
         ("rust-serde" ,rust-serde-1)
-        ("rust-serde-json" ,rust-serde-json-1))))
-    (native-inputs (list python-minimal-wrapper))   ; For the tests.
-    (home-page "https://github.com/pydantic/jiter/")
-    (synopsis "Iterable JSON parser")
-    (description "This package provides an iterable JSON parser.")
-    (license license:expat)))
+        ("rust-serde-json" ,rust-serde-json-1))))))
 
 (define-public rust-jiter-0.2
   (package
