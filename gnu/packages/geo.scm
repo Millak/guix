@@ -2499,6 +2499,8 @@ MaxMind DB files.")
      (list python-maxminddb
            python-requests
            python-aiohttp))
+    (native-inputs
+     (list python-setuptools python-wheel))
     (home-page "https://www.maxmind.com/")
     (synopsis "MaxMind GeoIP2 API")
     (description "Provides an API for the GeoIP2 web services and databases.
