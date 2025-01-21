@@ -31169,7 +31169,7 @@ time-or-computationally-expensive properties quick and easy and works in Python
 (define-public python-folium
   (package
     (name "python-folium")
-    (version "0.16.0")
+    (version "0.19.4")
     (source
      (origin
        ;; PyPI has a ".whl" file but not a proper source release.
@@ -31180,7 +31180,7 @@ time-or-computationally-expensive properties quick and easy and works in Python
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1dbndpqpd7c5pmc58yxz7m6bsll377fz7xqpzh58wm0hjn6ylc00"))))
+        (base32 "1659hvvraax7npgsfi93l7vsd191ysvf5vj369f8h757blmwjd59"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:test-flags
@@ -31195,6 +31195,8 @@ time-or-computationally-expensive properties quick and easy and works in Python
                          " and not test_heat_map_with_weights"
                          ;; This performs an online request.
                          " and not test_json_request"
+                         ;; Requires geodatasets package.
+                         " and not test_timedynamic_geo_json"
                          ;; AssertionError.
                          " and not test_minimap"))
            #:phases
@@ -31219,7 +31221,9 @@ time-or-computationally-expensive properties quick and easy and works in Python
            python-pillow
            python-pytest
            python-selenium
-           python-setuptools-scm))
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
     (home-page "https://github.com/python-visualization/folium")
     (synopsis "Make beautiful maps with Leaflet.js & Python")
     (description "@code{folium} makes it easy to visualize data that’s been
