@@ -2139,6 +2139,55 @@ writing colored text to a terminal.")
 reductions on 32-bit ARM.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-anyhow-1
+  (package
+    (name "rust-anyhow")
+    (version "1.0.95")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "anyhow" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "010vd1ki8w84dzgx6c81sc8qm9n02fxic1gkpv52zp4nwrn0kb1l"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-backtrace" ,rust-backtrace-0.3))
+       #:cargo-development-inputs
+       (("rust-futures" ,rust-futures-0.3)
+        ("rust-rustversion" ,rust-rustversion-1)
+        ("rust-syn" ,rust-syn-2)
+        ("rust-thiserror" ,rust-thiserror-2)
+        ("rust-trybuild" ,rust-trybuild-1))))
+    (home-page "https://github.com/dtolnay/anyhow")
+    (synopsis "Flexible concrete Error type")
+    (description "This package provides a flexible concrete Error type built on
+@code{std::error::Error}.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-anyinput-0.1
+  (package
+    (name "rust-anyinput")
+    (version "0.1.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "anyinput" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "08dkks0pg097vcjj3a43fxzazs2cnmf1jd7kcj8s3y6lfxj80n12"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-anyinput-derive" ,rust-anyinput-derive-0.1))))
+    (home-page "https://github.com/CarlKCarlK/anyinput")
+    (synopsis "Macro for functions that accept any input")
+    (description
+     "This package provides a macro for easier writing of functions that
+accept any string-, path-, iterator-, array-, or ndarray-like input.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-anyinput-core-0.1
   (package
     (name "rust-anyinput-core")
@@ -2186,55 +2235,6 @@ reductions on 32-bit ARM.")
     (synopsis "Internal helper library of anyinput")
     (description
      "This package provides an internal helper library of anyinput.")
-    (license (list license:expat license:asl2.0))))
-
-(define-public rust-anyinput-0.1
-  (package
-    (name "rust-anyinput")
-    (version "0.1.8")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "anyinput" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "08dkks0pg097vcjj3a43fxzazs2cnmf1jd7kcj8s3y6lfxj80n12"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs (("rust-anyinput-derive" ,rust-anyinput-derive-0.1))))
-    (home-page "https://github.com/CarlKCarlK/anyinput")
-    (synopsis "Macro for functions that accept any input")
-    (description
-     "This package provides a macro for easier writing of functions that
-accept any string-, path-, iterator-, array-, or ndarray-like input.")
-    (license (list license:expat license:asl2.0))))
-
-(define-public rust-anyhow-1
-  (package
-    (name "rust-anyhow")
-    (version "1.0.95")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "anyhow" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "010vd1ki8w84dzgx6c81sc8qm9n02fxic1gkpv52zp4nwrn0kb1l"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-backtrace" ,rust-backtrace-0.3))
-       #:cargo-development-inputs
-       (("rust-futures" ,rust-futures-0.3)
-        ("rust-rustversion" ,rust-rustversion-1)
-        ("rust-syn" ,rust-syn-2)
-        ("rust-thiserror" ,rust-thiserror-2)
-        ("rust-trybuild" ,rust-trybuild-1))))
-    (home-page "https://github.com/dtolnay/anyhow")
-    (synopsis "Flexible concrete Error type")
-    (description "This package provides a flexible concrete Error type built on
-@code{std::error::Error}.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-apache-avro-0.16
