@@ -6823,7 +6823,7 @@ convenient access to metadata from a regular web browser
 (define-public sextractor
   (package
     (name "sextractor")
-    (version "2.28.0")
+    (version "2.28.2")
     (source
      (origin
        (method git-fetch)
@@ -6832,12 +6832,8 @@ convenient access to metadata from a regular web browser
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "15v7brjiraj2rdyxiidcgb58b3dqzdd363j31cjrfqhd1wc8ii5j"))))
+        (base32 "05i2q1665y4hv0dymgcwraq7ixwr706gwfb88vyvi8hazgym2iaq"))))
     (build-system gnu-build-system)
-    ;; NOTE: (Sharlatan-20210124T103117+0000): Building with `atlas' is failing
-    ;; due to missing shared library which required on configure phase. Switch
-    ;; build to use `openblas' instead. It requires FFTW with single precision
-    ;; `fftwf'.
     (arguments
      (list
       #:configure-flags
