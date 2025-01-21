@@ -5897,14 +5897,14 @@ from xml files.")
 (define-public rust-winit-0.30
   (package
     (name "rust-winit")
-    (version "0.30.5")
+    (version "0.30.8")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "winit" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0rrczmdykbn43bkl3jvi2yg374rwpnf9h2qz855f0xqh3xmfgs8b"))))
+        (base32 "03rvf3pj0ag1nlr5xpndza5wy9chrzxnrzsbhrr815dvma045mzm"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
