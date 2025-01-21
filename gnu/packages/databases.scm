@@ -1404,6 +1404,13 @@ Language.")
 as a drop-in replacement of MySQL.")
     (license license:gpl2)))
 
+(define-public mariadb-embedded
+  (package/inherit mariadb
+    (arguments
+     (substitute-keyword-arguments (package-arguments mariadb)
+       ((#:configure-flags flags)
+        #~(append '("-DWITH_EMBEDDED_SERVER=ON") #$flags))))))
+
 (define-public mariadb-connector-c
   (package
     (name "mariadb-connector-c")
