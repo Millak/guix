@@ -71,6 +71,44 @@
   #:use-module (guix packages)
   #:use-module (guix utils))
 
+(define-public python-aioresponses
+  (package
+    (name "python-aioresponses")
+    (version "0.7.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "aioresponses" version))
+       (sha256
+        (base32 "16p8mdyfirddrsay62ji7rwcrqmmzxzf2isdbfm9cj5p338rbr42"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke
+                "pytest" "-vv" "tests" "-k"
+                (string-append
+                 ;; These tests require network access.
+                 "not test_address_as_instance_of_url_combined_with_pass_through "
+                 "and not test_pass_through_with_origin_params"))))))))
+    (native-inputs
+     (list python-pbr python-ddt python-pytest))
+    (propagated-inputs
+     (list python-aiohttp python-setuptools))
+    (home-page "https://github.com/pnuckowski/aioresponses")
+    (synopsis "Mock out requests made by ClientSession from aiohttp package")
+    (description
+     "Aioresponses is a helper to mock/fake web requests in python aiohttp
+package.  For requests module there are a lot of packages that help us with
+testing (eg. httpretty, responses, requests-mock).  When it comes to testing
+asynchronous HTTP requests it is a bit harder (at least at the beginning).
+The purpose of this package is to provide an easy way to test asynchronous
+HTTP requests.")
+    (license license:expat)))
+
 (define-public python-assay
   ;; No release yet.
   (let ((commit "74617d70e77afa09f58b3169cf496679ac5d5621")
@@ -123,6 +161,31 @@
      "This package provides a simple assertion library for unit testing in
 Python with a fluent API.")
     (license license:bsd-3)))
+
+(define-public python-atpublic
+  (package
+    (name "python-atpublic")
+    (version "3.1.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "atpublic" version))
+        (sha256
+         (base32
+          "060v2b5jfn7p99j09amxlb6w9ynwbq7fix31kl0caz0hs09fx61h"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:build-backend "pdm.backend"))
+    (native-inputs
+     (list python-pytest python-pdm-backend python-sybil python-pytest-cov))
+    (home-page "https://public.readthedocs.io/")
+    (synopsis "@code{@@public} decorator for populating @code{__all__}")
+    (description
+     "This Python module adds a @code{@@public} decorator and function which
+populates a module's @code{__all__} and optionally the module globals.  With
+it, the declaration of a name's public export semantics are not separated from
+the implementation of that name.")
+    (license (list license:asl2.0
+                   license:lgpl3))))    ; only for setup_helpers.py
 
 (define-public python-inline-snapshot
   (package
@@ -260,6 +323,29 @@ data in a standard way.")
     (synopsis "Fast runtime type checking for Python")
     (description "Beartype aims to be a very fast runtime type checking tool
 written in pure Python.")
+    (license license:expat)))
+
+(define-public python-codacy-coverage
+  (package
+    (name "python-codacy-coverage")
+    (version "1.3.11")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "codacy-coverage" version))
+        (sha256
+         (base32
+          "1g0c0w56xdkmqb8slacyw5qhzrkp814ng3ddh2lkiij58y9m2imr"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:tests? #f)); no tests
+    (propagated-inputs
+     (list python-check-manifest python-requests))
+    (home-page "https://github.com/codacy/python-codacy-coverage")
+    (synopsis "Codacy coverage reporter for Python")
+    (description "This package analyses Python test suites and reports how much
+of the code is covered by them.  This tool is part of the Codacy suite for
+analysing code quality.")
     (license license:expat)))
 
 (define-public python-pytest-click
@@ -2086,29 +2172,6 @@ The main usage is to use the @code{qtbot} fixture, responsible for handling
 interaction, like key presses and mouse clicks.")
     (license license:expat)))
 
-(define-public python-codacy-coverage
-  (package
-    (name "python-codacy-coverage")
-    (version "1.3.11")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "codacy-coverage" version))
-        (sha256
-         (base32
-          "1g0c0w56xdkmqb8slacyw5qhzrkp814ng3ddh2lkiij58y9m2imr"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f)); no tests
-    (propagated-inputs
-     (list python-check-manifest python-requests))
-    (home-page "https://github.com/codacy/python-codacy-coverage")
-    (synopsis "Codacy coverage reporter for Python")
-    (description "This package analyses Python test suites and reports how much
-of the code is covered by them.  This tool is part of the Codacy suite for
-analysing code quality.")
-    (license license:expat)))
-
 (define-public python-httmock
   (package
     (name "python-httmock")
@@ -2130,31 +2193,6 @@ analysing code quality.")
     (description "This package provides a library for replying fake data to
 Python software under test, when they make an HTTP query.")
     (license license:asl2.0)))
-
-(define-public python-atpublic
-  (package
-    (name "python-atpublic")
-    (version "3.1.1")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "atpublic" version))
-        (sha256
-         (base32
-          "060v2b5jfn7p99j09amxlb6w9ynwbq7fix31kl0caz0hs09fx61h"))))
-    (build-system pyproject-build-system)
-    (arguments (list #:build-backend "pdm.backend"))
-    (native-inputs
-     (list python-pytest python-pdm-backend python-sybil python-pytest-cov))
-    (home-page "https://public.readthedocs.io/")
-    (synopsis "@code{@@public} decorator for populating @code{__all__}")
-    (description
-     "This Python module adds a @code{@@public} decorator and function which
-populates a module's @code{__all__} and optionally the module globals.  With
-it, the declaration of a name's public export semantics are not separated from
-the implementation of that name.")
-    (license (list license:asl2.0
-                   license:lgpl3))))    ; only for setup_helpers.py
 
 (define-public python-memory-profiler
   (package
@@ -2669,44 +2707,6 @@ reducing a number of combinations of variables into a lesser set that covers
 most situations.")
     (license license:expat)))
 
-(define-public python-aioresponses
-  (package
-    (name "python-aioresponses")
-    (version "0.7.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "aioresponses" version))
-       (sha256
-        (base32 "16p8mdyfirddrsay62ji7rwcrqmmzxzf2isdbfm9cj5p338rbr42"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke
-                "pytest" "-vv" "tests" "-k"
-                (string-append
-                 ;; These tests require network access.
-                 "not test_address_as_instance_of_url_combined_with_pass_through "
-                 "and not test_pass_through_with_origin_params"))))))))
-    (native-inputs
-     (list python-pbr python-ddt python-pytest))
-    (propagated-inputs
-     (list python-aiohttp python-setuptools))
-    (home-page "https://github.com/pnuckowski/aioresponses")
-    (synopsis "Mock out requests made by ClientSession from aiohttp package")
-    (description
-     "Aioresponses is a helper to mock/fake web requests in python aiohttp
-package.  For requests module there are a lot of packages that help us with
-testing (eg. httpretty, responses, requests-mock).  When it comes to testing
-asynchronous HTTP requests it is a bit harder (at least at the beginning).
-The purpose of this package is to provide an easy way to test asynchronous
-HTTP requests.")
-    (license license:expat)))
-
 (define-public python-avocado-framework
   (package
     (name "python-avocado-framework")
@@ -3153,27 +3153,6 @@ attachments).
 @end itemize")
     (license license:expat)))
 
-(define-public python-xvfbwrapper
-  (package
-    (name "python-xvfbwrapper")
-    (version "0.2.9")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "xvfbwrapper" version))
-              (sha256
-               (base32
-                "097wxhvp01ikqpg1z3v8rqhss6f1vwr399zpz9a05d2135bsxx5w"))))
-    (build-system python-build-system)
-    (propagated-inputs (list xorg-server-for-tests))
-    (home-page "https://github.com/cgoldberg/xvfbwrapper")
-    (synopsis "Python module for controlling virtual displays with Xvfb")
-    (description
-     "Xvfb (X virtual framebuffer) is a display server implementing
-the X11 display server protocol.  It runs in memory and does not require a
-physical display.  Only a network layer is necessary.  Xvfb is useful for
-running acceptance tests on headless servers.")
-    (license license:expat)))
-
 (define-public python-vulture
   (package
     (name "python-vulture")
@@ -3263,4 +3242,25 @@ Bash-completion and ZSH-completion of options and test targets.
 @item Thorough
 Built-in integration with @url{http://nedbatchelder.com/code/coverage/, coverage}.
 @end table")
+    (license license:expat)))
+
+(define-public python-xvfbwrapper
+  (package
+    (name "python-xvfbwrapper")
+    (version "0.2.9")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "xvfbwrapper" version))
+              (sha256
+               (base32
+                "097wxhvp01ikqpg1z3v8rqhss6f1vwr399zpz9a05d2135bsxx5w"))))
+    (build-system python-build-system)
+    (propagated-inputs (list xorg-server-for-tests))
+    (home-page "https://github.com/cgoldberg/xvfbwrapper")
+    (synopsis "Python module for controlling virtual displays with Xvfb")
+    (description
+     "Xvfb (X virtual framebuffer) is a display server implementing
+the X11 display server protocol.  It runs in memory and does not require a
+physical display.  Only a network layer is necessary.  Xvfb is useful for
+running acceptance tests on headless servers.")
     (license license:expat)))
