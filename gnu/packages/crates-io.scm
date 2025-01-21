@@ -44456,6 +44456,7 @@ splitting.")
 
 (define-public rust-ndarray-0.15
   (package
+    (inherit rust-ndarray-0.16)
     (name "rust-ndarray")
     (version "0.15.6")
     (source
@@ -44465,7 +44466,6 @@ splitting.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0cpsm28hyk8qfjs4g9649dprv3hm53z12qqwyyjqbi3yjr72vcdd"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -44484,13 +44484,7 @@ splitting.")
        (("rust-approx" ,rust-approx-0.4)
         ("rust-defmac" ,rust-defmac-0.2)
         ("rust-itertools" ,rust-itertools-0.10)
-        ("rust-quickcheck" ,rust-quickcheck-1))))
-    (home-page "https://github.com/rust-ndarray/ndarray")
-    (synopsis "N-dimensional container for general elements and for numerics")
-    (description "@code{ndarray} implements an n-dimensional container for
-general elements and for numerics.")
-    (license (list license:asl2.0
-                   license:expat))))
+        ("rust-quickcheck" ,rust-quickcheck-1))))))
 
 (define-public rust-ndarray-0.14
   (package
