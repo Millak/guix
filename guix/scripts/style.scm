@@ -503,13 +503,14 @@ top-level package definitions in alphabetical order.  Packages which
 share a name are placed with versions in descending order."
   (define (package-fields pkg)
     (match pkg
-      ((('define-public _ expr) _ ...)
+      ((('define-public pkg _ ... (or ('let _ expr) expr)) _ ...)
        (match expr
-         ((or ('package _ ('name name) ('version version) _ ...)
-              ('package ('name name) ('version version) _ ...))
-          (values name version))
-         (_ (values #f #f))))
-      (_ (values #f #f))))
+         (((or 'package 'package/inherit) fields ...)
+          (let ((name (and=> (assoc-ref fields 'name) first))
+                (version (and=> (assoc-ref fields 'version) first)))
+            (values name version)))
+         (_ (and (values #f #f)))))
+      (_ (and (values #f #f)))))
 
   (define (package>? lst1 lst2)
     (let-values (((name1 version1) (package-fields lst1))

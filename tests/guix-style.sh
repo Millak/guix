@@ -65,10 +65,16 @@ cat > "$tmpfile" <<EOF
     (name "bar")
     (version "2")))
 
+(define-public pkg-baz
+  (let ()
+    (package
+      (name "baz")
+      (version "2"))))
+
 ;; The comment below belongs to the foo package.
 (define-public pkg
-  (package
-    (name "bar")
+  (package/inherit pkg-baz
+    (name "baz")
     (version "1")))
 ;; Incomplete package definitions in alphabetical order.
 
