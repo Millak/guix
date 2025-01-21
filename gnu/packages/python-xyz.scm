@@ -30660,7 +30660,7 @@ project.")
     (arguments
      (list
       #:test-flags
-      '(list "-k"
+      `(list "-k"
              (string-append
               ;; This tests times out.
               "not test_ki_protection_works"
@@ -30692,6 +30692,11 @@ _cyclic_garbage"
               " and not test_getprotobyname"
               ;; EOFError: Ran out of input.
               " and not test_static_tool_sees_all_symbols")
+             ,@(if (package? (this-package-native-input "python-trustme"))
+                  '()
+                  `("--ignore=src/trio/_tests/test_dtls.py"
+                    "--ignore=src/trio/_tests/test_highlevel_ssl_helpers.py"
+                    "--ignore=src/trio/_tests/test_ssl.py"))
              ;; It rerquires black and ruff to generate a final report.
              "--ignore=src/trio/_tests/tools/test_gen_exports.py"
              "src/trio/_tests")
@@ -30708,11 +30713,16 @@ _cyclic_garbage"
              ;; #$output is first in path which causes "import file mismatch"
              (setenv "PYTHONPATH" (string-append (getcwd) "/src:$PYTHONPATH")))))))
     (native-inputs
-     (list python-pyopenssl
-           python-pytest
-           python-setuptools
-           python-trustme
-           python-wheel))
+     (append
+       (if (supported-package? python-pyopenssl)
+           (list python-pyopenssl)
+           '())
+       (list python-pytest
+             python-setuptools)
+       (if (supported-package? python-trustme)
+           (list python-trustme)
+           '())
+       (list python-wheel)))
     (propagated-inputs
      (list python-attrs
            python-cffi
