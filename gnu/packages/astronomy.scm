@@ -2982,6 +2982,19 @@ that path, and along the spectral axis, producing a position-velocity or
 position-frequency slice.")
     (license license:bsd-3)))
 
+(define-public python-pvextractor-bootstrap
+  (hidden-package
+   (package
+     (inherit python-pvextractor)
+     (arguments
+      (list #:tests? #f
+            #:phases #~(modify-phases %standard-phases
+                         (delete 'sanity-check))))
+     (propagated-inputs '())
+     (native-inputs
+      (list python-setuptools
+            python-wheel)))))
+
 (define-public python-pysiril
   (package
     (name "python-pysiril")
