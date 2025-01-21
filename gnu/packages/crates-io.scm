@@ -74855,25 +74855,6 @@ duration parsing.")
                                    ("rust-iso8601" ,rust-iso8601-0.6)
                                    ("rust-paste" ,rust-paste-1))))))
 
-(define-public rust-speedate-0.13
-  (package
-    (inherit rust-speedate-0.14)
-    (name "rust-speedate")
-    (version "0.13.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "speedate" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "16xi4d98ab3ag7rkba2fv37kk3d0fgg0l287hq4vz36i1z2pcbr4"))))
-    (arguments
-     `(#:cargo-inputs (("rust-strum" ,rust-strum-0.25)
-                       ("rust-strum-macros" ,rust-strum-macros-0.25))
-       #:cargo-development-inputs (("rust-chrono" ,rust-chrono-0.4)
-                                   ("rust-iso8601" ,rust-iso8601-0.4)
-                                   ("rust-paste" ,rust-paste-1))))))
-
 (define-public rust-speedy-0.8
   (package
     (name "rust-speedy")
