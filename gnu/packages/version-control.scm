@@ -804,7 +804,7 @@ everything from small to very large projects with speed and efficiency.")
                               "tests/test_make_app.py")))))))
     (inputs (list git-minimal))
     (native-inputs
-     (list python-pytest))
+     (list python-pytest python-setuptools python-wheel))
     (propagated-inputs
      (list python-dulwich python-flask python-httpauth
            python-humanize python-pygments python-werkzeug))
