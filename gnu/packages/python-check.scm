@@ -366,6 +366,38 @@ analysing code quality.")
  settings.")
     (license license:expat)))
 
+(define-public python-coveralls
+  (package
+    (name "python-coveralls")
+    (version "4.0.1")
+    (home-page "https://github.com/coveralls-clients/coveralls-python")
+    (source
+     (origin
+       ;; The PyPI release lacks tests, so we pull from git instead.
+       (method git-fetch)
+       (uri (git-reference (url home-page) (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1411h7rwxgp9ag26bmlpy7g7sdh39f56dc1mrd1n74bjsgvwzj6l"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-flags '(list
+                          ;; XXX: Avoid git dependency.
+                          "--ignore=tests/git_test.py"
+                          ;; XXX: Unable to find coverage package.
+                          "--ignore=tests/api/reporter_test.py"
+                          "--ignore=tests/integration_test.py")))
+    (propagated-inputs
+     (list python-coverage python-docopt python-pyyaml python-requests))
+    (native-inputs
+     (list poetry python-mock python-pytest python-responses))
+    (synopsis "Show coverage stats online via coveralls.io")
+    (description
+     "Coveralls.io is a service for publishing code coverage statistics online.
+This package provides seamless integration with coverage.py (and thus pytest,
+nosetests, etc...) in Python projects.")
+    (license license:expat)))
+
 (define-public python-cucumber-tag-expressions
   (package
     (name "python-cucumber-tag-expressions")
@@ -422,6 +454,95 @@ analysing code quality.")
     (description "The @command{eradicate} command removes commented-out code
 from Python files.  It does this by detecting block comments that contain
 valid Python syntax that are likely to be commented out code.")
+    (license license:expat)))
+
+(define-public python-expecttest
+  (let ((commit "683b09a352cc426851adc2e3a9f46e0ab25e4dee")
+        (revision "0"))
+    (package
+      (name "python-expecttest")
+      (version (git-version "0.2.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/ezyang/expecttest")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1djwxp9x1hczzxbimv1b1bmd083am88v27l82nmlkhvzyg2cmpvv"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  ;; The test runs tests expected to fail, so the output is
+                  ;; confusing
+                  (invoke "python3" "test_expecttest.py")))))))
+      (native-inputs (list python-hypothesis poetry))
+      (home-page "https://github.com/ezyang/expecttest")
+      (synopsis "Python module for expect tests")
+      (description "@code{expecttest} is a Python module for expect tests, where
+the initial expected value of a test can be automatically set by running the
+test itself.")
+      (license license:expat))))
+
+(define-public python-green
+  (package
+    (name "python-green")
+    (version "4.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "green" version))
+       (sha256
+        (base32 "1cd62nbn5dvlpnsyplp6cb24wd230san8dpm6pnl99n2kwzpq1m4"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags #~(list "-vr" "green")
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (when tests?
+                (apply invoke "python" "-m" "green" test-flags)))))))
+    (native-inputs
+     (list python-mypy
+           python-setuptools
+           python-testtools
+           python-wheel))
+    (propagated-inputs
+     (list python-colorama
+           python-coverage
+           python-lxml
+           python-unidecode))
+    (home-page "https://github.com/CleanCut/green")
+    (synopsis "Clean, colorful, fast Python test runner")
+    (description
+     "@code{green} is a Python test runner that describes itself as:
+@table @emph
+@item Clean
+Low redundancy in output.  Result statistics for each test is vertically aligned.
+@item Colorful
+Terminal output makes good use of color when the terminal supports it.
+@item Fast
+Tests run in independent processes (one per processor by default).
+@item Powerful
+Multi-target and auto-discovery support.
+@item Traditional
+It uses the normal @code{unittest} classes and methods.
+@item Descriptive
+Multiple verbosity levels, from just dots to full docstring output.
+@item Convenient
+Bash-completion and ZSH-completion of options and test targets.
+@item Thorough
+Built-in integration with @url{http://nedbatchelder.com/code/coverage/, coverage}.
+@end table")
     (license license:expat)))
 
 (define-public python-pytest-click
@@ -561,38 +682,6 @@ are useful when writing automated tests in Python.")
     (home-page "https://testfixtures.readthedocs.io/en/latest/")
     (license license:expat)))
 
-(define-public python-coveralls
-  (package
-    (name "python-coveralls")
-    (version "4.0.1")
-    (home-page "https://github.com/coveralls-clients/coveralls-python")
-    (source
-     (origin
-       ;; The PyPI release lacks tests, so we pull from git instead.
-       (method git-fetch)
-       (uri (git-reference (url home-page) (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1411h7rwxgp9ag26bmlpy7g7sdh39f56dc1mrd1n74bjsgvwzj6l"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:test-flags '(list
-                          ;; XXX: Avoid git dependency.
-                          "--ignore=tests/git_test.py"
-                          ;; XXX: Unable to find coverage package.
-                          "--ignore=tests/api/reporter_test.py"
-                          "--ignore=tests/integration_test.py")))
-    (propagated-inputs
-     (list python-coverage python-docopt python-pyyaml python-requests))
-    (native-inputs
-     (list poetry python-mock python-pytest python-responses))
-    (synopsis "Show coverage stats online via coveralls.io")
-    (description
-     "Coveralls.io is a service for publishing code coverage statistics online.
-This package provides seamless integration with coverage.py (and thus pytest,
-nosetests, etc...) in Python projects.")
-    (license license:expat)))
-
 (define-public python-icontract
   (package
     (name "python-icontract")
@@ -711,68 +800,6 @@ result documents that can be read by tools such as Jenkins or Bamboo.")
     (description
      "Pyinstrument is a Python profiler to help you optimize your code.")
     (license license:bsd-3)))
-
-(define-public python-vcrpy
-  (package
-    (name "python-vcrpy")
-    (version "6.0.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "vcrpy" version))
-       (sha256
-        (base32 "02fwmmc33qqybzbj1lvdz458g1fffm5cgnqihj4larw4268kvqc8"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "--ignore=tests/integration"
-              "-k" (string-join
-                    ;; These tests require network access.
-                    (list "not testing_connect"
-                          "test_get_vcr_with_matcher"
-                          "test_testcase_playback")
-                    " and not "))))
-    (native-inputs
-     (list nss-certs-for-test
-           python-flask
-           python-httplib2
-           python-ipaddress
-           python-mock
-           python-pytest
-           python-pytest-cov
-           python-pytest-httpbin
-           python-setuptools
-           python-urllib3
-           python-wheel))
-    (propagated-inputs
-     (list python-pyyaml
-           python-six
-           python-wrapt
-           python-yarl))
-    (home-page "https://github.com/kevin1024/vcrpy")
-    (synopsis "Automatically mock your HTTP interactions")
-    (description
-     "VCR.py simplifies and speeds up tests that make HTTP requests.  The first
-time you run code that is inside a VCR.py context manager or decorated function,
-VCR.py records all HTTP interactions that take place through the libraries it
-supports and serializes and writes them to a flat file (in yaml format by
-default).  This flat file is called a cassette.  When the relevant piece of code
-is executed again, VCR.py will read the serialized requests and responses from
-the aforementioned cassette file, and intercept any HTTP requests that it
-recognizes from the original test run and return the responses that corresponded
-to those requests.  This means that the requests will not actually result in
-HTTP traffic, which confers several benefits including:
-@enumerate
-@item The ability to work offline
-@item Completely deterministic tests
-@item Increased test execution speed
-@end enumerate
-If the server you are testing against ever changes its API, all you need to do
-is delete your existing cassette files, and run your tests again.  VCR.py will
-detect the absence of a cassette file and once again record all HTTP
-interactions, which will update them to correspond to the new API.")
-    (license license:expat)))
 
 (define-public python-pytest-socket
   (package
@@ -2546,41 +2573,6 @@ among others.")
 annotations.")
     (license license:asl2.0)))
 
-(define-public python-expecttest
-  (let ((commit "683b09a352cc426851adc2e3a9f46e0ab25e4dee")
-        (revision "0"))
-    (package
-      (name "python-expecttest")
-      (version (git-version "0.2.1" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/ezyang/expecttest")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "1djwxp9x1hczzxbimv1b1bmd083am88v27l82nmlkhvzyg2cmpvv"))))
-      (build-system pyproject-build-system)
-      (arguments
-       (list
-        #:phases
-        #~(modify-phases %standard-phases
-            (replace 'check
-              (lambda* (#:key tests? #:allow-other-keys)
-                (when tests?
-                  ;; The test runs tests expected to fail, so the output is
-                  ;; confusing
-                  (invoke "python3" "test_expecttest.py")))))))
-      (native-inputs (list python-hypothesis poetry))
-      (home-page "https://github.com/ezyang/expecttest")
-      (synopsis "Python module for expect tests")
-      (description "@code{expecttest} is a Python module for expect tests, where
-the initial expected value of a test can be automatically set by running the
-test itself.")
-      (license license:expat))))
-
 (define-public python-robber
   (package
     (name "python-robber")
@@ -3126,6 +3118,68 @@ attachments).
 @end itemize")
     (license license:expat)))
 
+(define-public python-vcrpy
+  (package
+    (name "python-vcrpy")
+    (version "6.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "vcrpy" version))
+       (sha256
+        (base32 "02fwmmc33qqybzbj1lvdz458g1fffm5cgnqihj4larw4268kvqc8"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--ignore=tests/integration"
+              "-k" (string-join
+                    ;; These tests require network access.
+                    (list "not testing_connect"
+                          "test_get_vcr_with_matcher"
+                          "test_testcase_playback")
+                    " and not "))))
+    (native-inputs
+     (list nss-certs-for-test
+           python-flask
+           python-httplib2
+           python-ipaddress
+           python-mock
+           python-pytest
+           python-pytest-cov
+           python-pytest-httpbin
+           python-setuptools
+           python-urllib3
+           python-wheel))
+    (propagated-inputs
+     (list python-pyyaml
+           python-six
+           python-wrapt
+           python-yarl))
+    (home-page "https://github.com/kevin1024/vcrpy")
+    (synopsis "Automatically mock your HTTP interactions")
+    (description
+     "VCR.py simplifies and speeds up tests that make HTTP requests.  The first
+time you run code that is inside a VCR.py context manager or decorated function,
+VCR.py records all HTTP interactions that take place through the libraries it
+supports and serializes and writes them to a flat file (in yaml format by
+default).  This flat file is called a cassette.  When the relevant piece of code
+is executed again, VCR.py will read the serialized requests and responses from
+the aforementioned cassette file, and intercept any HTTP requests that it
+recognizes from the original test run and return the responses that corresponded
+to those requests.  This means that the requests will not actually result in
+HTTP traffic, which confers several benefits including:
+@enumerate
+@item The ability to work offline
+@item Completely deterministic tests
+@item Increased test execution speed
+@end enumerate
+If the server you are testing against ever changes its API, all you need to do
+is delete your existing cassette files, and run your tests again.  VCR.py will
+detect the absence of a cassette file and once again record all HTTP
+interactions, which will update them to correspond to the new API.")
+    (license license:expat)))
+
 (define-public python-vulture
   (package
     (name "python-vulture")
@@ -3161,60 +3215,6 @@ both your library and test suite you can find untested code.  Due to Python's
 dynamic nature, static code analyzers like Vulture are likely to miss some
 dead code.  Also, code that is only called implicitly may be reported as
 unused.")
-    (license license:expat)))
-
-(define-public python-green
-  (package
-    (name "python-green")
-    (version "4.0.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "green" version))
-       (sha256
-        (base32 "1cd62nbn5dvlpnsyplp6cb24wd230san8dpm6pnl99n2kwzpq1m4"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags #~(list "-vr" "green")
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? test-flags #:allow-other-keys)
-              (when tests?
-                (apply invoke "python" "-m" "green" test-flags)))))))
-    (native-inputs
-     (list python-mypy
-           python-setuptools
-           python-testtools
-           python-wheel))
-    (propagated-inputs
-     (list python-colorama
-           python-coverage
-           python-lxml
-           python-unidecode))
-    (home-page "https://github.com/CleanCut/green")
-    (synopsis "Clean, colorful, fast Python test runner")
-    (description
-     "@code{green} is a Python test runner that describes itself as:
-@table @emph
-@item Clean
-Low redundancy in output.  Result statistics for each test is vertically aligned.
-@item Colorful
-Terminal output makes good use of color when the terminal supports it.
-@item Fast
-Tests run in independent processes (one per processor by default).
-@item Powerful
-Multi-target and auto-discovery support.
-@item Traditional
-It uses the normal @code{unittest} classes and methods.
-@item Descriptive
-Multiple verbosity levels, from just dots to full docstring output.
-@item Convenient
-Bash-completion and ZSH-completion of options and test targets.
-@item Thorough
-Built-in integration with @url{http://nedbatchelder.com/code/coverage/, coverage}.
-@end table")
     (license license:expat)))
 
 (define-public python-xunitparser
