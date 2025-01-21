@@ -1563,51 +1563,51 @@ basic input/output.")
          ;; Changes in clap regularly break this test.
          "--skip=cli::tests::completions")
        #:cargo-inputs
-       (("rust-ahash" ,rust-ahash-0.8)
-        ("rust-base64" ,rust-base64-0.22)
-        ("rust-bitflags" ,rust-bitflags-2)
-        ("rust-clap" ,rust-clap-4)
-        ("rust-copypasta" ,rust-copypasta-0.10)
-        ("rust-crossfont" ,rust-crossfont-0.8)
-        ("rust-dirs" ,rust-dirs-5)
-        ("rust-embed-resource" ,rust-embed-resource-2)
-        ("rust-gl-generator" ,rust-gl-generator-0.14)
-        ("rust-glutin" ,rust-glutin-0.32)
-        ("rust-home" ,rust-home-0.5)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-miow" ,rust-miow-0.6)
-        ("rust-notify" ,rust-notify-6)
-        ("rust-objc2" ,rust-objc2-0.5)
-        ("rust-objc2-app-kit" ,rust-objc2-app-kit-0.2)
-        ("rust-objc2-foundation" ,rust-objc2-foundation-0.2)
-        ("rust-parking-lot" ,rust-parking-lot-0.12)
-        ("rust-piper" ,rust-piper-0.2)
-        ("rust-polling" ,rust-polling-3)
-        ("rust-png" ,rust-png-0.17)
-        ("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-quote" ,rust-quote-1)
-        ("rust-regex-automata" ,rust-regex-automata-0.4)
-        ("rust-rustix-openpty" ,rust-rustix-openpty-0.1)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-serde-yaml" ,rust-serde-yaml-0.9)
-        ("rust-signal-hook" ,rust-signal-hook-0.3)
-        ("rust-syn" ,rust-syn-2)
-        ("rust-tempfile" ,rust-tempfile-3)
-        ("rust-toml" ,rust-toml-0.8)
-        ("rust-toml-edit" ,rust-toml-edit-0.22)
-        ("rust-unicode-width" ,rust-unicode-width-0.1)
-        ("rust-vte" ,rust-vte-0.13)
-        ("rust-windows-sys" ,rust-windows-sys-0.52)
-        ("rust-winit" ,rust-winit-0.30)
-        ("rust-xdg" ,rust-xdg-2))
+       ,(list rust-ahash-0.8
+              rust-base64-0.22
+              rust-bitflags-2
+              rust-clap-4
+              rust-copypasta-0.10
+              rust-crossfont-0.8
+              rust-dirs-5
+              rust-embed-resource-2
+              rust-gl-generator-0.14
+              rust-glutin-0.32
+              rust-home-0.5
+              rust-libc-0.2
+              rust-log-0.4
+              rust-miow-0.6
+              rust-notify-6
+              rust-objc2-0.5
+              rust-objc2-app-kit-0.2
+              rust-objc2-foundation-0.2
+              rust-parking-lot-0.12
+              rust-piper-0.2
+              rust-polling-3
+              rust-png-0.17
+              rust-proc-macro2-1
+              rust-quote-1
+              rust-regex-automata-0.4
+              rust-rustix-openpty-0.1
+              rust-serde-1
+              rust-serde-json-1
+              rust-serde-yaml-0.9
+              rust-signal-hook-0.3
+              rust-syn-2
+              rust-tempfile-3
+              rust-toml-0.8
+              rust-toml-edit-0.22
+              rust-unicode-width-0.1
+              rust-vte-0.13
+              rust-windows-sys-0.52
+              rust-winit-0.30
+              rust-xdg-2)
        #:cargo-development-inputs
-       (("rust-clap-complete" ,rust-clap-complete-4)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-toml" ,rust-toml-0.8))
+       ,(list rust-clap-complete-4
+              rust-log-0.4
+              rust-serde-1
+              rust-serde-json-1
+              rust-toml-0.8)
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-xdg-open
