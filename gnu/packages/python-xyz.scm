@@ -14,7 +14,7 @@
 ;;; Copyright © 2015, 2016, 2017, 2019, 2022 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2015, 2017 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2015, 2016 Erik Edrosa <erik.edrosa@gmail.com>
-;;; Copyright © 2015-2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2015, 2017, 2020 Kyle Meyer <kyle@kyleam.com>
 ;;; Copyright © 2015, 2016 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2016 Danny Milosavljevic <dannym+a@scratchpost.org>
@@ -23191,13 +23191,19 @@ until the object is actually required, and caches the result of said call.")
      (list python-hatchling
            python-pytest))
     (propagated-inputs
-     (list python-cryptography
-           python-aioquic
-           python-h2
-           python-httpcore
-           python-httpx
-           python-idna
-           python-trio))
+     (append
+       (if (supported-package? python-cryptography)
+           (list ;; DNSSEC
+                 python-cryptography
+                 ;; DNS over Quic
+                 python-aioquic
+                 ;; DNS over HTTPS
+                 python-h2
+                 python-httpcore
+                 python-httpx)
+           '())
+       (list python-idna
+             python-trio)))
     (home-page "https://www.dnspython.org")
     (synopsis "DNS toolkit for Python")
     (description
