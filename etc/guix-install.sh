@@ -16,6 +16,7 @@
 # Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 # Copyright © 2024 Tomas Volf <~@wolfsden.cz>
 # Copyright © 2024 Richard Sent <richard@freakingpenguin.com>
+# Copyright © 2025 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 #
 # This file is part of GNU Guix.
 #
@@ -691,10 +692,29 @@ sys_create_shell_completion()
             [ -d "$dir_shell" ] || mkdir -p $dir_shell
         done;
 
-        ln -sf ${var_guix}/etc/bash_completion.d/* "$bash_completion";
-        ln -sf ${var_guix}/share/zsh/site-functions/* "$zsh_completion";
-        ln -sf ${var_guix}/share/fish/vendor_completions.d/* "$fish_completion"; } &&
+        # Don't use globing here as we also need to delete the files when
+        # uninstalling Guix
+        ln -sf ${var_guix}/etc/bash_completion.d/guix "$bash_completion";
+        ln -sf ${var_guix}/etc/bash_completion.d/guix-daemon "$bash_completion";
+        ln -sf ${var_guix}/share/zsh/site-functions/_guix "$zsh_completion";
+        ln -sf ${var_guix}/share/fish/vendor_completions.d/guix.fish "$fish_completion"; } &&
         _msg "${PAS}installed shell completion"
+}
+
+sys_delete_shell_completion()
+{ # Symlink supported shell completions system-wide
+
+    var_guix=/var/guix/profiles/per-user/root/current-guix
+    bash_completion=/etc/bash_completion.d
+    zsh_completion=/usr/share/zsh/site-functions
+    fish_completion=/usr/share/fish/vendor_completions.d
+
+    _msg "${INF}removing shell completion"
+
+    rm -f "$bash_completion"/guix;
+    rm -f "$bash_completion"/guix-daemon;
+    rm -f "$zsh_completion"/_guix;
+    rm -f "$fish_completion"/guix.fish;
 }
 
 sys_customize_bashrc()
@@ -884,6 +904,7 @@ main_uninstall()
     # clean up the system
     sys_delete_init_profile
     sys_delete_build_user
+    sys_delete_shell_completion
 
     # these directories are created on the fly during usage.
     _msg "${INF}removing /etc/guix"
