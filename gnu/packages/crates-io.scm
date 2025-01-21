@@ -74843,6 +74843,7 @@ duration parsing.")
 
 (define-public rust-speedate-0.14
   (package
+    (inherit rust-speedate-0.15)
     (name "rust-speedate")
     (version "0.14.4")
     (source
@@ -74852,18 +74853,12 @@ duration parsing.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0mx5gx74gh2wwvq4vyn1fshj3yjvxqn0y8gkn3q97inlvf0098h8"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-strum" ,rust-strum-0.26)
                        ("rust-strum-macros" ,rust-strum-macros-0.26))
        #:cargo-development-inputs (("rust-chrono" ,rust-chrono-0.4)
                                    ("rust-iso8601" ,rust-iso8601-0.6)
-                                   ("rust-paste" ,rust-paste-1))))
-    (home-page "https://github.com/pydantic/speedate/")
-    (synopsis "Fast and simple datetime, date, time and duration parsing")
-    (description "This package provides fast and simple datetime, date, time and
-duration parsing.")
-    (license license:expat)))
+                                   ("rust-paste" ,rust-paste-1))))))
 
 (define-public rust-speedate-0.13
   (package
