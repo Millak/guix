@@ -109,6 +109,28 @@ The purpose of this package is to provide an easy way to test asynchronous
 HTTP requests.")
     (license license:expat)))
 
+(define-public python-allpairspy
+  (package
+    (name "python-allpairspy")
+    (version "2.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "allpairspy" version))
+       (sha256
+        (base32 "1c987h13dly9919d15w3h747rgn50ilnv7dginhlprxbj564hn4k"))))
+    (build-system python-build-system)
+    (native-inputs
+     (list python-pytest python-pytest-runner))
+    (home-page "https://github.com/thombashi/allpairspy")
+    (synopsis "Pairwise test combinations generator")
+    (description
+     "This is a Python library for test combinations generator.  The generator
+allows one to create a set of tests using @emph{pairwise combinations} method,
+reducing a number of combinations of variables into a lesser set that covers
+most situations.")
+    (license license:expat)))
+
 (define-public python-assay
   ;; No release yet.
   (let ((commit "74617d70e77afa09f58b3169cf496679ac5d5621")
@@ -187,117 +209,6 @@ the implementation of that name.")
     (license (list license:asl2.0
                    license:lgpl3))))    ; only for setup_helpers.py
 
-(define-public python-inline-snapshot
-  (package
-    (name "python-inline-snapshot")
-    (version "0.18.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "inline_snapshot" version))
-       (sha256
-        (base32 "09pqgz4phal2pjkv03wg3gvj7jr89rrb93rfw4hd2x9v8px4mqqv"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      ;; Missing "freezer" fixture
-      '(list "--ignore=tests/test_external.py"
-             "--ignore=tests/test_pytest_plugin.py"
-             "-k"
-             (string-append
-              "not test_trailing_comma"
-              ;; Cannot use inline-snapshop when xdist is available.
-              " and not test_xdist"
-              " and not test_xdist_disabled"
-              " and not test_xdist_and_disable"
-              " and not test_typing"))))
-    (propagated-inputs (list python-asttokens
-                             python-black
-                             python-click
-                             python-executing
-                             python-mkdocs
-                             python-rich
-                             python-tomli
-                             python-typing-extensions))
-    (native-inputs
-     (list python-dirty-equals
-           python-freezegun
-           python-hatchling
-           python-pydantic
-           python-pytest
-           python-pytest-mock
-           python-pytest-subtests))
-    (home-page "https://pypi.org/project/inline-snapshot/")
-    (synopsis "Golden master/snapshot/approval testing library")
-    (description
-     "This package can be used for different things:
-
-@enumerate
-@item golden master/approval/snapshot testing.  The idea is that you have a
-  function with a currently unknown result and you want to write a tests, which
-  ensures that the result does not change during refactoring.
-@item Compare things which are complex like lists with lot of numbers or
-  complex data structures.
-@item Things which might change during the development like error messages.
-@end enumerate
-
-@code{inline-snapshot} automates the process of recording, storing and
-updating the value you want to compare with.  The value is converted with
-@code{repr()} and stored in the source file as argument of the
-@code{snapshot()} function.")
-    (license license:expat)))
-
-(define-public python-robotframework-jsonlibrary
-  (package
-    (name "python-robotframework-jsonlibrary")
-    (version "0.5")
-    (source
-     (origin
-       (method git-fetch)   ; no tests data in PyPi package
-       (uri (git-reference
-             (url (string-append "https://github.com/robotframework-thailand/"
-                                 "robotframework-jsonlibrary"))
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1zkhcmwlp9gy9a0262ylykr9pljq9mpkaa69340hhfkzygzi30dc"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-wheel))
-    (propagated-inputs
-     (list python-jsonpath-ng
-           python-jsonschema
-           python-robotframework))
-    (home-page "https://github.com/robotframework-thailand/robotframework-jsonlibrary")
-    (synopsis "Robot Framework test library for manipulating JSON Object")
-    (description
-     "@code{robotframework-jsonlibrary} is a Robot Framework test library for
-manipulating JSON Object.  You can manipulate your JSON object using JSONPath")
-    ;; This is free and unencumbered software released into the public domain.
-    (license license:unlicense)))
-
-(define-public python-tappy
-  (package
-    (name "python-tappy")
-    (version "3.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "tap.py" version))
-       (sha256
-        (base32
-         "0w4w6pqjkv54j7rv6vdrpfxa72c5516bnlhpcqr3vrb4zpmyxvpm"))))
-    (build-system python-build-system)
-    (home-page "https://github.com/python-tap/tappy")
-    (synopsis "Tools for Test Anything Protocol")
-    (description "Tappy is a set of tools for working with the Test Anything
-Protocol (TAP) in Python.  TAP is a line based test protocol for recording test
-data in a standard way.")
-    (license license:bsd-3)))
-
 (define-public python-beartype
   (package
     (name "python-beartype")
@@ -346,6 +257,45 @@ written in pure Python.")
     (description "This package analyses Python test suites and reports how much
 of the code is covered by them.  This tool is part of the Codacy suite for
 analysing code quality.")
+    (license license:expat)))
+
+(define-public python-cucumber-tag-expressions
+  (package
+    (name "python-cucumber-tag-expressions")
+    (version "6.1.1")
+    (source
+     (origin
+       (method git-fetch)               ;no tests in PyPI archive
+       (uri (git-reference
+             (url "https://github.com/cucumber/tag-expressions")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1hanh7hzxmx0f6fp2ykabsg32snmp8y9pd7s5xix15r1gnn7lvp9"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Project's repository contains go, java, javascript, perl, python
+          ;; and ruby implementations.
+          (add-after 'unpack 'chdir-python
+            (lambda _
+              (chdir "python"))))))
+    (native-inputs
+     (list python-pathpy
+           python-pytest
+           python-pytest-html
+           python-pyyaml
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (home-page "https://github.com/cucumber/tag-expressions")
+    (synopsis "Tag-expression parser for cucumber/behave")
+    (description
+     "This package provides a tag-expression parser for Cucumber and
+@command{behave}.")
     (license license:expat)))
 
 (define-public python-pytest-click
@@ -483,45 +433,6 @@ parallel and on multiple machines.")
     (description "Testfixtures is a collection of helpers and mock objects that
 are useful when writing automated tests in Python.")
     (home-page "https://testfixtures.readthedocs.io/en/latest/")
-    (license license:expat)))
-
-(define-public python-cucumber-tag-expressions
-  (package
-    (name "python-cucumber-tag-expressions")
-    (version "6.1.1")
-    (source
-     (origin
-       (method git-fetch)               ;no tests in PyPI archive
-       (uri (git-reference
-             (url "https://github.com/cucumber/tag-expressions")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1hanh7hzxmx0f6fp2ykabsg32snmp8y9pd7s5xix15r1gnn7lvp9"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; Project's repository contains go, java, javascript, perl, python
-          ;; and ruby implementations.
-          (add-after 'unpack 'chdir-python
-            (lambda _
-              (chdir "python"))))))
-    (native-inputs
-     (list python-pathpy
-           python-pytest
-           python-pytest-html
-           python-pyyaml
-           python-setuptools
-           python-setuptools-scm
-           python-wheel))
-    (home-page "https://github.com/cucumber/tag-expressions")
-    (synopsis "Tag-expression parser for cucumber/behave")
-    (description
-     "This package provides a tag-expression parser for Cucumber and
-@command{behave}.")
     (license license:expat)))
 
 (define-public python-coveralls
@@ -2194,6 +2105,67 @@ interaction, like key presses and mouse clicks.")
 Python software under test, when they make an HTTP query.")
     (license license:asl2.0)))
 
+(define-public python-inline-snapshot
+  (package
+    (name "python-inline-snapshot")
+    (version "0.18.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "inline_snapshot" version))
+       (sha256
+        (base32 "09pqgz4phal2pjkv03wg3gvj7jr89rrb93rfw4hd2x9v8px4mqqv"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Missing "freezer" fixture
+      '(list "--ignore=tests/test_external.py"
+             "--ignore=tests/test_pytest_plugin.py"
+             "-k"
+             (string-append
+              "not test_trailing_comma"
+              ;; Cannot use inline-snapshop when xdist is available.
+              " and not test_xdist"
+              " and not test_xdist_disabled"
+              " and not test_xdist_and_disable"
+              " and not test_typing"))))
+    (propagated-inputs (list python-asttokens
+                             python-black
+                             python-click
+                             python-executing
+                             python-mkdocs
+                             python-rich
+                             python-tomli
+                             python-typing-extensions))
+    (native-inputs
+     (list python-dirty-equals
+           python-freezegun
+           python-hatchling
+           python-pydantic
+           python-pytest
+           python-pytest-mock
+           python-pytest-subtests))
+    (home-page "https://pypi.org/project/inline-snapshot/")
+    (synopsis "Golden master/snapshot/approval testing library")
+    (description
+     "This package can be used for different things:
+
+@enumerate
+@item golden master/approval/snapshot testing.  The idea is that you have a
+  function with a currently unknown result and you want to write a tests, which
+  ensures that the result does not change during refactoring.
+@item Compare things which are complex like lists with lot of numbers or
+  complex data structures.
+@item Things which might change during the development like error messages.
+@end enumerate
+
+@code{inline-snapshot} automates the process of recording, storing and
+updating the value you want to compare with.  The value is converted with
+@code{repr()} and stored in the source file as argument of the
+@code{snapshot()} function.")
+    (license license:expat)))
+
 (define-public python-memory-profiler
   (package
     (name "python-memory-profiler")
@@ -2556,6 +2528,37 @@ test itself.")
 behavior-driven development (TDD and BDD).")
     (license license:expat)))
 
+(define-public python-robotframework-jsonlibrary
+  (package
+    (name "python-robotframework-jsonlibrary")
+    (version "0.5")
+    (source
+     (origin
+       (method git-fetch)   ; no tests data in PyPi package
+       (uri (git-reference
+             (url (string-append "https://github.com/robotframework-thailand/"
+                                 "robotframework-jsonlibrary"))
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zkhcmwlp9gy9a0262ylykr9pljq9mpkaa69340hhfkzygzi30dc"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-jsonpath-ng
+           python-jsonschema
+           python-robotframework))
+    (home-page "https://github.com/robotframework-thailand/robotframework-jsonlibrary")
+    (synopsis "Robot Framework test library for manipulating JSON Object")
+    (description
+     "@code{robotframework-jsonlibrary} is a Robot Framework test library for
+manipulating JSON Object.  You can manipulate your JSON object using JSONPath")
+    ;; This is free and unencumbered software released into the public domain.
+    (license license:unlicense)))
+
 (define-public python-slotscheck
   (package
     (name "python-slotscheck")
@@ -2683,28 +2686,6 @@ help in debugging failures and optimizing the scheduler to improve speed.")
     (synopsis "Pytest plugin for Sanic")
     (description "This package provides a pytest plugin for Sanic.  It helps
 you to test your code asynchronously.")
-    (license license:expat)))
-
-(define-public python-allpairspy
-  (package
-    (name "python-allpairspy")
-    (version "2.5.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "allpairspy" version))
-       (sha256
-        (base32 "1c987h13dly9919d15w3h747rgn50ilnv7dginhlprxbj564hn4k"))))
-    (build-system python-build-system)
-    (native-inputs
-     (list python-pytest python-pytest-runner))
-    (home-page "https://github.com/thombashi/allpairspy")
-    (synopsis "Pairwise test combinations generator")
-    (description
-     "This is a Python library for test combinations generator.  The generator
-allows one to create a set of tests using @emph{pairwise combinations} method,
-reducing a number of combinations of variables into a lesser set that covers
-most situations.")
     (license license:expat)))
 
 (define-public python-avocado-framework
@@ -2875,33 +2856,6 @@ eliminate flaky failures.")
        (sha256
         (base32 "16cin0chv59w4rvnd6r0fisp0s8avmp07rwn9da6yixw43jdncp1"))))))
 
-(define-public python-xunitparser
-  (package
-    (name "python-xunitparser")
-    (version "1.3.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "xunitparser" version))
-       (sha256
-        (base32 "00lapxi770mg7jkw16zy3a91hbdfz4a9h43ryczdsgd3z4cl6vyf"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; See https://github.com/laurentb/xunitparser/pull/11
-         (add-after 'unpack 'fix-test-suite
-           (lambda _
-             (substitute* "xunitparser.py"
-               (("(^ +)self.stderr = None" m indent)
-                (string-append m "\n" indent "self._cleanup = False\n"))))))))
-    (home-page "http://git.p.engu.in/laurentb/xunitparser/")
-    (synopsis "Read JUnit/XUnit XML files and map them to Python objects")
-    (description "xunitparser reads a JUnit/XUnit XML file and maps it to
-Python objects.  It tries to use the objects available in the standard
-@code{unittest} module.")
-    (license license:expat)))
-
 (define-public python-test-utils
   (package
     (name "python-test-utils")
@@ -3064,6 +3018,25 @@ documentation by parsing them from their source and evaluating the
 parsed examples as part of your normal test run.  Integration is
 provided for the main Python test runners.")
     (license license:expat)))
+
+(define-public python-tappy
+  (package
+    (name "python-tappy")
+    (version "3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "tap.py" version))
+       (sha256
+        (base32
+         "0w4w6pqjkv54j7rv6vdrpfxa72c5516bnlhpcqr3vrb4zpmyxvpm"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/python-tap/tappy")
+    (synopsis "Tools for Test Anything Protocol")
+    (description "Tappy is a set of tools for working with the Test Anything
+Protocol (TAP) in Python.  TAP is a line based test protocol for recording test
+data in a standard way.")
+    (license license:bsd-3)))
 
 (define-public python-pytest-parawtf
   (package
@@ -3242,6 +3215,33 @@ Bash-completion and ZSH-completion of options and test targets.
 @item Thorough
 Built-in integration with @url{http://nedbatchelder.com/code/coverage/, coverage}.
 @end table")
+    (license license:expat)))
+
+(define-public python-xunitparser
+  (package
+    (name "python-xunitparser")
+    (version "1.3.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "xunitparser" version))
+       (sha256
+        (base32 "00lapxi770mg7jkw16zy3a91hbdfz4a9h43ryczdsgd3z4cl6vyf"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         ;; See https://github.com/laurentb/xunitparser/pull/11
+         (add-after 'unpack 'fix-test-suite
+           (lambda _
+             (substitute* "xunitparser.py"
+               (("(^ +)self.stderr = None" m indent)
+                (string-append m "\n" indent "self._cleanup = False\n"))))))))
+    (home-page "http://git.p.engu.in/laurentb/xunitparser/")
+    (synopsis "Read JUnit/XUnit XML files and map them to Python objects")
+    (description "xunitparser reads a JUnit/XUnit XML file and maps it to
+Python objects.  It tries to use the objects available in the standard
+@code{unittest} module.")
     (license license:expat)))
 
 (define-public python-xvfbwrapper
