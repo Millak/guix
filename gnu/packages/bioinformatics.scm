@@ -1553,6 +1553,43 @@ tests (SAIGE) and controlling for sample relatedness in region-based assoc
 tests in large cohorts and biobanks (SAIGE-GENE+).")
       (license license:gpl2+))))
 
+(define-public r-sigfit
+  (package
+    (name "r-sigfit")
+    (version "2.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kgori/sigfit")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16r6m8p90rnb4hxl86fz3kbals3626232i8fj0zhhd23p89z3w4v"))))
+    (properties `((upstream-name . "sigfit")))
+    (build-system r-build-system)
+    (native-inputs (list r-codetools))
+    (propagated-inputs (list r-rcpp
+                             r-rstan
+                             r-rstantools
+                             r-coda
+                             r-clue
+                             r-knitr
+                             r-rmarkdown
+                             r-bh
+                             r-rcppeigen
+                             r-stanheaders))
+    (home-page "https://github.com/kgori/sigfit")
+    (synopsis "Flexible Bayesian inference of mutational signatures")
+    (description
+     "This R package lets you estimate signatures of mutational processes and
+their activities on mutation count data.  Starting from a set of
+@dfn{single-nucleotide variants} (SNVs), it allows both estimation of the
+exposure of samples to predefined mutational signatures (including whether the
+signatures are present at all), and identification of signatures de novo from
+the mutation counts.")
+    (license license:gpl3)))
+
 (define-public r-singlet
   (let ((commit "765a6c45081807a1522f0e8983e2417822a36f36")
         (revision "1"))
