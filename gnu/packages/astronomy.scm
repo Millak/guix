@@ -4827,13 +4827,13 @@ SolarSoft data analysis environment.")
 (define-public python-spectral-cube
   (package
     (name "python-spectral-cube")
-    (version "0.6.5")
+    (version "0.6.6")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "spectral-cube" version))
+       (uri (pypi-uri "spectral_cube" version))
        (sha256
-        (base32 "0cqxgmk46gv2qa2kls8fph105lgwbwf13hvizh6w85mzgypyp740"))))
+        (base32 "0hz2pxc7fnxd1xr1n74ljjc84j25plnclp3y6jwg1banps360c3f"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -4842,33 +4842,24 @@ SolarSoft data analysis environment.")
       #:test-flags
       #~(list "--numprocesses" (number->string (parallel-job-count)))))
     (propagated-inputs
-     (list python-astropy
-           ;; XXX: Currently failing in upstream as it's optional silent
-           ;; until a new version is released, see:
-           ;; <https://github.com/aplpy/aplpy/issues/492>.
-           ;;
-           ;; python-aplpy
+     (list python-aplpy
+           python-astropy
            python-casa-formats-io
            python-dask
            python-distributed
            python-fsspec
-           ;; python-glue-core ; Not packed http://glueviz.org/, optional.
            python-joblib
            python-matplotlib
            python-numpy
+           python-packaging
+           python-pvextractor-bootstrap
            python-radio-beam
            python-reproject
            python-scipy
-           python-six
-           ;; python-yt ; Not packed https://yt-project.org/, optional.
+           python-tqdm
            python-zarr))
     (native-inputs
-     (list ;; XXX: Introduce cycle with pvextractor, listed as extra requiremnts
-           ;; in [noviz] option.
-           ;; python-pvextractor
-           python-pytest-astropy
-           python-pytest-xdist
-           python-regions
+     (list python-regions
            python-setuptools-scm
            python-wheel))
     (home-page "https://spectral-cube.readthedocs.io/en/latest/")
