@@ -36252,6 +36252,29 @@ a re-write of the Insidious Big Brother Database (BBDB) using Emacs
 Lisp's (relatively new) EIEIO object oriented libraries.")
     (license license:gpl3+)))
 
+(define-public emacs-fj
+  (let ((commit "c2684eab1cdd745dbc5af6cd5abacd9822099662")
+        (revision "0"))
+    (package
+      (name "emacs-fj")
+      (version (git-version "0.3" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://codeberg.org/martianh/fj.el")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "05kx1h7r4g7x58k849m4h57a7lmcbhhm40qivn39mxfjx4ckn6n9"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-fedi emacs-magit emacs-tp))
+      (home-page "https://codeberg.org/martianh/fj.el")
+      (synopsis "Client for Forgejo instances")
+      (description
+       "Fj contains basic functions for interacting with a Forgejo instance.")
+      (license license:gpl3+))))
+
 (define-public emacs-ebdb-i18n-chn
   (package
     (name "emacs-ebdb-i18n-chn")
