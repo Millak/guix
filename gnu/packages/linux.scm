@@ -34,7 +34,7 @@
 ;;; Copyright © 2018 Vasile Dumitrascu <va511e@yahoo.com>
 ;;; Copyright © 2019 Tim Gesthuizen <tim.gesthuizen@yahoo.de>
 ;;; Copyright © 2019 mikadoZero <mikadozero@yandex.com>
-;;; Copyright © 2019, 2020, 2021, 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2019-2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Stefan Stefanović <stefanx2ovic@gmail.com>
 ;;; Copyright © 2019-2022 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2019 Kei Kebreau <kkebreau@posteo.net>
@@ -9916,7 +9916,7 @@ set as @code{LD_PRELOAD} to override the C library file system functions.")
 (define-public falcosecurity-libs
   (package
     (name "falcosecurity-libs")
-    (version "0.16.0")
+    (version "0.20.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -9925,14 +9925,10 @@ set as @code{LD_PRELOAD} to override the C library file system functions.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1vzymzkfipb3bnjjd9m8ykzj0l94fm8mnpcxfm8mpxz3jbd8xnv9"))
+                "041ir9wk44v7isidwl7fzxrjvs85j637wcr7xirasd8ysxa0r4qv"))
               (patches
                (search-patches
-                "falcosecurity-libs-pkg-config.patch"
-                "falcosecurity-libs-install-pman.patch"
-                "falcosecurity-libs-libscap-pc.patch"
-                "falcosecurity-libs-shared-library-fix.patch"
-                "falcosecurity-libs-libsinsp-pkg-config.patch"))))
+                "falcosecurity-libs-shared-build.patch"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -9960,21 +9956,22 @@ set as @code{LD_PRELOAD} to override the C library file system functions.")
             (lambda _
               (delete-file-recursively
                (string-append #$output "/src")))))))
-    (native-inputs (list bpftool
-                         clang
-                         googletest
-                         pkg-config
-                         valijson))     ;header-only library
+    (native-inputs
+     (list bpftool
+           clang-18                    ;avoid stack limit exceeded build error
+           googletest
+           pkg-config
+           valijson))                   ;header-only library
     (inputs
-     (list elfutils
-           libbpf
-           libelf))
+     (list elfutils))
     (propagated-inputs
-     ;; The following inputs are in the 'Requires' field of libscap.pc and
-     ;; libsinp.pc.
+     ;; The following inputs are in the 'Requires' field of libscap.pc,
+     ;; libsinp.pc or libpman.pc.
      (list c-ares
            grpc
            jsoncpp
+           libbpf
+           libelf
            openssl
            protobuf
            uthash                       ;included in libscap headers
