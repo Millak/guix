@@ -339,9 +339,8 @@ Python 3.3 and later, rather than on Python 2.")
       #:disallowed-references (list bash perl)
       #:test-target "test"
       #:configure-flags
-      (if (%current-target-system)
-          git-cross-configure-flags
-          #~(list))
+      #~(cons "--with-gitconfig=/etc/gitconfig"
+          #$(if (%current-target-system) git-cross-configure-flags #~(list)))
       #:make-flags
       #~(list "V=1"                     ;more verbose compilation
               (string-append "SHELL_PATH="
@@ -820,7 +819,12 @@ everything from small to very large projects with speed and efficiency.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0if0vqn3fj22p95a0125zpgwz3mqfqxqnvwa7fkf7b00wh0c1wyz"))))))
+                "0if0vqn3fj22p95a0125zpgwz3mqfqxqnvwa7fkf7b00wh0c1wyz"))))
+    ;; Temporary measure to prevent unneccessary package rebuilds.
+    (arguments
+      (substitute-keyword-arguments (package-arguments git-minimal)
+        ((#:configure-flags flags #~'())
+         (if (%current-target-system) git-cross-configure-flags #~(list)))))))
 
 (define-public python-klaus
   (package
