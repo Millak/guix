@@ -1,7 +1,8 @@
 # htmlxref.cnf - reference file for free Texinfo manuals on the web.
 # Modified by Ludovic Courtès <ludo@gnu.org> for the GNU Guix manual.
+# Further modified by Tomas Volf <~@wolfsden.cz>.
 
-htmlxrefversion=2024-06-02.15; # UTC
+htmlxrefversion=2025-01-22.18; # UTC
 
 # Copyright 2010-2020, 2022 Free Software Foundation, Inc.
 # 
@@ -716,7 +717,7 @@ web2c		mono	${T}/web2c.html
 
 
 # Local Variables:
-# eval: (add-hook 'write-file-hooks 'time-stamp)
+# eval: (add-hook 'write-file-functions 'time-stamp)
 # time-stamp-start: "htmlxrefversion="
 # time-stamp-format: "%:y-%02m-%02d.%02H"
 # time-stamp-time-zone: "UTC"
