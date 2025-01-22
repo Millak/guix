@@ -402,48 +402,6 @@ FPGA place and route tool.")
       (home-page "https://github.com/YosysHQ/nextpnr")
       (license license:expat))))
 
-(define-public arachne-pnr
-  (let ((commit "840bdfdeb38809f9f6af4d89dd7b22959b176fdd")
-        (revision "2"))
-   (package
-    (name "arachne-pnr")
-    (version (string-append "0.0-" revision "-" (string-take commit 9)))
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/YosysHQ/arachne-pnr")
-                     (commit commit)))
-              (file-name (git-file-name name version))
-              (sha256
-                (base32
-                   "1dqvjvgvsridybishv4pnigw9gypxh7r7nrqp9z9qq92v7c5rxzl"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:test-target "test"
-       #:make-flags
-       (list (string-append "DESTDIR=" (assoc-ref %outputs "out"))
-             (string-append "ICEBOX=" (string-append
-                                       (assoc-ref %build-inputs "icestorm")
-                                       "/share/icebox")))
-       #:phases (modify-phases %standard-phases
-       (replace 'configure
-         (lambda* (#:key outputs inputs #:allow-other-keys)
-           (substitute* '("./tests/fsm/generate.py"
-                          "./tests/combinatorial/generate.py")
-             (("#!/usr/bin/python") "#!/usr/bin/python2"))
-           #t)))))
-    (inputs
-     (list icestorm))
-    (native-inputs
-     `(("git" ,git)  ; for determining its own version string
-       ("yosys" ,yosys) ; for tests
-       ("perl" ,perl) ; for shasum
-       ("python-2" ,python-2))) ; for tests
-    (home-page "https://github.com/YosysHQ/arachne-pnr")
-    (synopsis "Place-and-Route tool for FPGAs")
-    (description "Arachne-PNR is a Place-and-Route Tool For FPGAs.")
-    (license license:gpl2))))
-
 (define-public gtkwave
   (package
     (name "gtkwave")
