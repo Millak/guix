@@ -5550,7 +5550,7 @@ implementations and an easy-to-use API to create custom metrics.  It offers:
 (define-public python-torchvision
   (package
     (name "python-torchvision")
-    (version "0.19.0")
+    (version "0.20.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5560,7 +5560,7 @@ implementations and an easy-to-use API to create custom metrics.  It offers:
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "15zyq2k4x9yapx7qfghhslznz1mwybhf086pirsr98c4l891sp1r"))
+                "1hxcpg44bjnfzqwihzbnfgd0gpkhfgqrcg116mnvdn0fpbhf4yq5"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -5592,7 +5592,11 @@ implementations and an easy-to-use API to create custom metrics.  It offers:
            python-pillow-simd
            python-pytorch))
     (native-inputs
-     (list which python-pytest python-setuptools python-wheel))
+     (list pybind11
+           python-pytest
+           python-setuptools
+           python-wheel
+           which))
     (home-page "https://pytorch.org/vision/stable/index.html")
     (synopsis "Datasets, transforms and models specific to computer vision")
     (description
