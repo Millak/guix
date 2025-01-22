@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2021, 2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2021, 2023, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -28,8 +28,12 @@
   #:use-module (guix base32)
   #:use-module (guix packages)
   #:use-module (guix derivations)
+  #:use-module ((guix modules)
+                #:select (source-module-closure))
   #:use-module (guix serialization)
   #:use-module (guix build utils)
+  #:use-module ((gnu build linux-container)
+                #:select (unprivileged-user-namespace-supported?))
   #:use-module (guix gexp)
   #:use-module (gnu packages)
   #:use-module (gnu packages bootstrap)
@@ -390,6 +394,188 @@
                  (list o))
          (equal? (valid-derivers %store o)
                  (list (derivation-file-name d))))))
+
+(test-assert "symlink is symlink"
+  (let* ((a (add-text-to-store %store "hello.txt" (random-text)))
+         (b (build-expression->derivation
+             %store "symlink"
+             '(symlink (assoc-ref %build-inputs "a") %output)
+             #:inputs `(("a" ,a))))
+         (c (build-expression->derivation
+             %store "symlink-reference"
+             `(call-with-output-file %output
+                (lambda (port)
+                  ;; Check that B is indeed visible as a symlink.  This should
+                  ;; always be the case, both in the '--disable-chroot' and in
+                  ;; the user namespace setups.
+                  (pk 'stat (lstat (assoc-ref %build-inputs "b")))
+                  (display (readlink (assoc-ref %build-inputs "b"))
+                           port)))
+             #:inputs `(("b" ,b)))))
+    (and (build-derivations %store (list c))
+         (string=? (call-with-input-file (derivation->output-path c)
+                     get-string-all)
+                   a))))
+
+(unless (unprivileged-user-namespace-supported?)
+  (test-skip 1))
+(test-equal "isolated environment"
+  (string-join (append
+                '("PID: 1" "UID: 30001")
+                (delete-duplicates
+                 (sort (list "/dev" "/tmp" "/proc" "/etc"
+                             (match (string-tokenize (%store-prefix)
+                                                     (char-set-complement
+                                                      (char-set #\/)))
+                               ((top _ ...) (string-append "/" top))))
+                       string<?))
+                '("/etc/group" "/etc/hosts" "/etc/passwd")))
+  (let* ((b (add-text-to-store %store "build.sh"
+                               "echo -n PID: $$ UID: $UID /* /etc/* > $out"))
+         (s (add-to-store %store "bash" #t "sha256"
+                          (search-bootstrap-binary "bash"
+                                                   (%current-system))))
+         (d (derivation %store "the-thing"
+                        s `("-e" ,b)
+                        #:env-vars `(("foo" . ,(random-text)))
+                        #:sources (list b s)))
+         (o (derivation->output-path d)))
+    (and (build-derivations %store (list d))
+         (call-with-input-file o get-string-all))))
+
+(unless (unprivileged-user-namespace-supported?)
+  (test-skip 1))
+(test-equal "inputs are read-only"
+  "All good!"
+  (let* ((input (plain-file (string-append "might-be-tampered-with-"
+                                           (number->string
+                                            (car (gettimeofday))
+                                            16))
+                            "All good!"))
+         (drv
+          (run-with-store %store
+            (gexp->derivation
+             "attempt-to-write-to-input"
+             (with-imported-modules (source-module-closure
+                                     '((guix build syscalls)))
+               #~(begin
+                   (use-modules (guix build syscalls))
+
+                   (let ((input #$input))
+                     (chmod input #o666)
+                     (call-with-output-file input
+                       (lambda (port)
+                         (display "BAD!" port)))
+                     (mkdir #$output))))))))
+    (and (guard (c ((store-protocol-error? c) #t))
+           (build-derivations %store (list drv)))
+         (call-with-input-file (run-with-store %store
+                                 (lower-object input))
+           get-string-all))))
+
+(unless (unprivileged-user-namespace-supported?)
+  (test-skip 1))
+(test-assert "inputs cannot be remounted read-write"
+  (let ((drv
+         (run-with-store %store
+           (gexp->derivation
+            "attempt-to-remount-input-read-write"
+            (with-imported-modules (source-module-closure
+                                    '((guix build syscalls)))
+              #~(begin
+                  (use-modules (guix build syscalls))
+
+                  (let ((input #$(plain-file "input-that-might-be-tampered-with"
+                                             "All good!")))
+                    (mount "none" input "none" (logior MS_BIND MS_REMOUNT))
+                    (call-with-output-file input
+                      (lambda (port)
+                        (display "BAD!" port)))
+                    (mkdir #$output))))))))
+    (guard (c ((store-protocol-error? c) #t))
+      (build-derivations %store (list drv))
+      #f)))
+
+(unless (unprivileged-user-namespace-supported?)
+  (test-skip 1))
+(test-assert "build root cannot be made world-readable"
+  (let ((drv
+         (run-with-store %store
+           (gexp->derivation
+            "attempt-to-make-root-world-readable"
+            (with-imported-modules (source-module-closure
+                                    '((guix build syscalls)))
+              #~(begin
+                  (use-modules (guix build syscalls))
+
+                  (catch 'system-error
+                    (lambda ()
+                      (chmod "/" #o777))
+                    (lambda args
+                      (format #t "failed to make root writable: ~a~%"
+                              (strerror (system-error-errno args)))
+                      (format #t "attempting read-write remount~%")
+                      (mount "none" "/" "/" (logior MS_BIND MS_REMOUNT))
+                      (chmod "/" #o777)))
+
+                  ;; At this point, the build process could create a
+                  ;; world-readable setuid binary under its root (so in the
+                  ;; store) that would remain visible until the build
+                  ;; completes.
+                  (mkdir #$output)))))))
+    (guard (c ((store-protocol-error? c) #t))
+      (build-derivations %store (list drv))
+      #f)))
+
+(unless (unprivileged-user-namespace-supported?)
+  (test-skip 1))
+(test-assert "/tmp, store, and /dev/{null,full} are writable"
+  ;; All of /tmp and all of the store must be writable (the store is writable
+  ;; so that derivation outputs can be written to it, but in practice it's
+  ;; always been wide open).  Things like /dev/null must be writable too.
+  (let ((drv (run-with-store %store
+               (gexp->derivation
+                "check-tmp-and-store-are-writable"
+                #~(begin
+                    (mkdir "/tmp/something")
+                    (mkdir (in-vicinity (getenv "NIX_STORE")
+                                        "some-other-thing"))
+                    (call-with-output-file "/dev/null"
+                      (lambda (port)
+                        (display "Welcome to the void." port)))
+                    (catch 'system-error
+                      (lambda ()
+                        (call-with-output-file "/dev/full"
+                          (lambda (port)
+                            (display "No space left!" port)))
+                        (error "Should have thrown!"))
+                      (lambda args
+                        (unless (= ENOSPC (system-error-errno args))
+                          (apply throw args))))
+                    (mkdir #$output))))))
+    (build-derivations %store (list drv))))
+
+(unless (unprivileged-user-namespace-supported?)
+  (test-skip 1))
+(test-assert "network is unreachable"
+  (let ((drv (run-with-store %store
+               (gexp->derivation
+                "check-network-unreachable"
+                #~(let ((check-connection-failure
+                         (lambda (address expected-code)
+                           (let ((s (socket AF_INET SOCK_STREAM 0)))
+                             (catch 'system-error
+                               (lambda ()
+                                 (connect s AF_INET (inet-pton AF_INET address) 80))
+                               (lambda args
+                                 (let ((errno (system-error-errno args)))
+                                   (unless (= expected-code errno)
+                                     (error "wrong error code"
+                                            errno (strerror errno))))))))))
+                    (check-connection-failure "127.0.0.1" ECONNREFUSED)
+                    (check-connection-failure "9.9.9.9" ENETUNREACH)
+                    (mkdir #$output))))))
+    (build-derivations %store (list drv))))
 
 (test-equal "with-build-handler"
   'success
@@ -1333,40 +1519,31 @@ System: x86_64-linux~%"
 
 (test-assert "build-things, check mode"
   (with-store store
-    (call-with-temporary-output-file
-     (lambda (entropy entropy-port)
-       (write (random-text) entropy-port)
-       (force-output entropy-port)
-       (let* ((drv  (build-expression->derivation
-                     store "non-deterministic"
-                     `(begin
-                        (use-modules (rnrs io ports))
-                        (let ((out (assoc-ref %outputs "out")))
-                          (call-with-output-file out
-                            (lambda (port)
-                              ;; Rely on the fact that tests do not use the
-                              ;; chroot, and thus ENTROPY is readable.
-                              (display (call-with-input-file ,entropy
-                                         get-string-all)
-                                       port)))
-                          #t))
-                     #:guile-for-build
-                     (package-derivation store %bootstrap-guile (%current-system))))
-              (file (derivation->output-path drv)))
-         (and (build-things store (list (derivation-file-name drv)))
-              (begin
-                (write (random-text) entropy-port)
-                (force-output entropy-port)
-                (guard (c ((store-protocol-error? c)
-                           (pk 'determinism-exception c)
-                           (and (not (zero? (store-protocol-error-status c)))
-                                (string-contains (store-protocol-error-message c)
-                                                 "deterministic"))))
-                  ;; This one will produce a different result.  Since we're in
-                  ;; 'check' mode, this must fail.
-                  (build-things store (list (derivation-file-name drv))
-                                (build-mode check))
-                  #f))))))))
+    (let* ((drv  (build-expression->derivation
+                  store "non-deterministic"
+                  `(begin
+                     (use-modules (rnrs io ports))
+                     (let ((out (assoc-ref %outputs "out")))
+                       (call-with-output-file out
+                         (lambda (port)
+                           (let ((now (gettimeofday)))
+                             (display (+ (car now) (cdr now)) port))))
+                       #t))
+                  #:guile-for-build
+                  (package-derivation store %bootstrap-guile (%current-system))))
+           (file (derivation->output-path drv)))
+      (and (build-things store (list (derivation-file-name drv)))
+           (begin
+             (guard (c ((store-protocol-error? c)
+                        (pk 'determinism-exception c)
+                        (and (not (zero? (store-protocol-error-status c)))
+                             (string-contains (store-protocol-error-message c)
+                                              "deterministic"))))
+               ;; This one will produce a different result.  Since we're in
+               ;; 'check' mode, this must fail.
+               (build-things store (list (derivation-file-name drv))
+                             (build-mode check))
+               #f))))))
 
 (test-assert "build-succeeded trace in check mode"
   (string-contains

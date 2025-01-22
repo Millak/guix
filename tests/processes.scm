@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2018 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2018, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -25,6 +25,8 @@
   #:use-module (guix gexp)
   #:use-module ((guix utils) #:select (call-with-temporary-directory))
   #:use-module (gnu packages bootstrap)
+  #:use-module ((gnu build linux-container)
+                #:select (unprivileged-user-namespace-supported?))
   #:use-module (guix tests)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-64)
@@ -84,6 +86,11 @@
       (and (kill (process-id daemon) 0)
            (string-suffix? "guix-daemon" (first (process-command daemon)))))))
 
+(when (unprivileged-user-namespace-supported?)
+  ;; The test below assumes the build process can communicate with the outside
+  ;; world via the TOKEN1 and TOKEN2 files, which is impossible when
+  ;; guix-daemon is set up to build in separate namespaces.
+  (test-skip 1))
 (test-assert* "client + lock"
   (with-store store
     (call-with-temporary-directory
