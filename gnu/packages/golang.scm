@@ -1882,7 +1882,8 @@ termination.")
            "1w8p345z5j0gk3yiq5ah0znd5lfh348p2s624k5r10drz04p3f55"))))
       (build-system go-build-system)
       (arguments
-       '(#:import-path "github.com/google/cadvisor"))
+       '(#:import-path "github.com/google/cadvisor"
+         #:test-subdirs '(".")))
       (home-page "https://github.com/google/cadvisor")
       (synopsis "Analyze resource usage of running containers")
       (description "The package provides @code{cadvisor}, which provides
