@@ -5128,11 +5128,23 @@ Note: currently this package does not provide GPU support.")
     (name "python-pytorch")
     (version %python-pytorch-for-r-torch-version)
     (source %python-pytorch-for-r-torch-src)
+    (arguments
+     (substitute-keyword-arguments (package-arguments python-pytorch)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            ;; See https://github.com/pytorch/pytorch/issues/61244
+            (add-after 'unpack 'fix-aten-vec
+              (lambda _
+                (substitute*
+                    '("aten/src/ATen/cpu/vec/vec512/vec512_bfloat16.h"
+                      "aten/src/ATen/cpu/vec/vec256/vec256_bfloat16.h")
+                  (("map\\(const __") "map(__"))))))))
     (native-inputs
      (modify-inputs (package-native-inputs python-pytorch)
        (replace "ideep-pytorch" ideep-pytorch-for-r-torch)))
     (inputs
      (modify-inputs (package-inputs python-pytorch)
+       (prepend foxi)
        (prepend qnnpack)
        (replace "qnnpack-pytorch" qnnpack-pytorch-for-r-torch)
        (replace "oneapi-dnnl" oneapi-dnnl-for-r-torch)
