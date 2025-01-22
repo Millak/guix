@@ -713,35 +713,6 @@ around TangentOrg’s libmemcached library, and can be used as a drop-in
 replacement for the @code{python-memcached} library.")
     (license license:bsd-3)))
 
-(define-public go-github-com-couchbase-gomemcached
-  (package
-    (name "go-github-com-couchbase-gomemcached")
-    (version "0.3.2")
-    (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/couchbase/gomemcached")
-               (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32 "132zjbr7d586gb1wqlnhg3vgyshq629z1wsskrpbmyypjfkq620c"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/couchbase/gomemcached"
-      #:test-flags #~(list "-skip" "TestEncodingResponse")
-      #:test-subdirs #~(list ".")))
-    (native-inputs
-     (list go-github-com-stretchr-testify))
-    (propagated-inputs
-     (list go-github-com-pkg-errors))
-    (home-page "https://github.com/couchbase/gomemcached")
-    (synopsis "Memcached binary protocol toolkit for go")
-    (description
-     "This package provides memcache client and server functionality.")
-    (license license:expat)))
-
 (define-public litecli
  (package
   (name "litecli")
