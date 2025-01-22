@@ -6,7 +6,7 @@ is later corrected.  codegen_external.py is patched to avoid duplicate
 functions and add the static keyword as in the existing generated file.
 
 diff --git a/tools/gen_flatbuffers.sh b/tools/gen_flatbuffers.sh
-index cc0263d..ac34e84 100644
+index cc0263dbbf..ac34e84b82 100644
 --- a/tools/gen_flatbuffers.sh
 +++ b/tools/gen_flatbuffers.sh
 @@ -1,13 +1,13 @@
@@ -32,7 +32,7 @@ index cc0263d..ac34e84 100644
       -c "$ROOT/torch/csrc/jit/serialization/mobile_bytecode.fbs"
  echo '// @generated' >> "$ROOT/torch/csrc/jit/serialization/mobile_bytecode_generated.h"
 diff --git a/torch/csrc/jit/tensorexpr/codegen_external.py b/torch/csrc/jit/tensorexpr/codegen_external.py
-index 5dcf1b2..0e20b0c 100644
+index 5dcf1b2840..0e20b0c102 100644
 --- a/torch/csrc/jit/tensorexpr/codegen_external.py
 +++ b/torch/csrc/jit/tensorexpr/codegen_external.py
 @@ -21,9 +21,14 @@ def gen_external(native_functions_path, tags_path, external_path):
@@ -61,7 +61,7 @@ index 5dcf1b2..0e20b0c 100644
      void** buf_data,
      int64_t* buf_ranks,
 diff --git a/torchgen/decompositions/gen_jit_decompositions.py b/torchgen/decompositions/gen_jit_decompositions.py
-index 7a0024f..6b2445f 100644
+index b42948045c..e1cfc73a5e 100644
 --- a/torchgen/decompositions/gen_jit_decompositions.py
 +++ b/torchgen/decompositions/gen_jit_decompositions.py
 @@ -1,8 +1,12 @@
@@ -76,9 +76,9 @@ index 7a0024f..6b2445f 100644
 +else:
 +    decomposition_table = {}
  
- # from torchgen.code_template import CodeTemplate
  
-@@ -85,7 +89,7 @@ def write_decomposition_util_file(path: str) -> None:
+ # from torchgen.code_template import CodeTemplate
+@@ -86,7 +90,7 @@ def write_decomposition_util_file(path: str) -> None:
  
  
  def main() -> None:
@@ -88,27 +88,28 @@ index 7a0024f..6b2445f 100644
      write_decomposition_util_file(str(upgrader_path))
  
 diff --git a/torchgen/operator_versions/gen_mobile_upgraders.py b/torchgen/operator_versions/gen_mobile_upgraders.py
-index 2907076..6866332 100644
+index 362ce427d5..245056f815 100644
 --- a/torchgen/operator_versions/gen_mobile_upgraders.py
 +++ b/torchgen/operator_versions/gen_mobile_upgraders.py
-@@ -3,10 +3,12 @@ import os
+@@ -6,10 +6,13 @@ import os
  from enum import Enum
  from operator import itemgetter
  from pathlib import Path
 +import sys
- from typing import Any, Dict, List
+ from typing import Any
  
 -import torch
 -from torch.jit.generate_bytecode import generate_upgraders_bytecode
 +if len(sys.argv) < 2 or sys.argv[1] != "dummy":
 +    import torch
 +    from torch.jit.generate_bytecode import generate_upgraders_bytecode
- 
++
  from torchgen.code_template import CodeTemplate
  from torchgen.operator_versions.gen_mobile_upgraders_constant import (
-@@ -263,7 +265,10 @@ def construct_register_size(register_size_from_yaml: int) -> str:
+     MOBILE_UPGRADERS_HEADER_DESCRIPTION,
+@@ -265,7 +268,10 @@ def construct_register_size(register_size_from_yaml: int) -> str:
  def construct_version_maps(
-     upgrader_bytecode_function_to_index_map: Dict[str, Any]
+     upgrader_bytecode_function_to_index_map: dict[str, Any]
  ) -> str:
 -    version_map = torch._C._get_operator_version_map()
 +    if len(sys.argv) < 2 or sys.argv[1] != "dummy":
@@ -118,7 +119,7 @@ index 2907076..6866332 100644
      sorted_version_map_ = sorted(version_map.items(), key=itemgetter(0))  # type: ignore[no-any-return]
      sorted_version_map = dict(sorted_version_map_)
  
-@@ -379,7 +384,10 @@ def sort_upgrader(upgrader_list: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+@@ -381,7 +387,10 @@ def sort_upgrader(upgrader_list: list[dict[str, Any]]) -> list[dict[str, Any]]:
  
  
  def main() -> None:
@@ -131,16 +132,24 @@ index 2907076..6866332 100644
      for up in sorted_upgrader_list:
          print("after sort upgrader : ", next(iter(up)))
 diff --git a/torchgen/shape_functions/gen_jit_shape_functions.py b/torchgen/shape_functions/gen_jit_shape_functions.py
-index bdfd5c7..72b237a 100644
+index 56a3d8bf0d..490a3ea2e7 100644
 --- a/torchgen/shape_functions/gen_jit_shape_functions.py
 +++ b/torchgen/shape_functions/gen_jit_shape_functions.py
-@@ -18,16 +18,20 @@ you are in the root directory of the Pytorch git repo"""
+@@ -1,6 +1,7 @@
+ #!/usr/bin/env python3
+ import os
+ import sys
++import importlib
+ from importlib.util import module_from_spec, spec_from_file_location
+ from itertools import chain
+ from pathlib import Path
+@@ -18,16 +19,21 @@ you are in the root directory of the Pytorch git repo"""
  if not file_path.exists():
      raise Exception(err_msg)  # noqa: TRY002
  
--spec = importlib.util.spec_from_file_location(module_name, file_path)
+-spec = spec_from_file_location(module_name, file_path)
 -assert spec is not None
--module = importlib.util.module_from_spec(spec)
+-module = module_from_spec(spec)
 -sys.modules[module_name] = module
 -assert spec.loader is not None
 -assert module is not None
@@ -159,6 +168,7 @@ index bdfd5c7..72b237a 100644
 +
 +    bounded_compute_graph_mapping = module.bounded_compute_graph_mapping
 +    shape_compute_graph_mapping = module.shape_compute_graph_mapping
++
 +else:
 +    bounded_compute_graph_mapping = {}
 +    shape_compute_graph_mapping = {}

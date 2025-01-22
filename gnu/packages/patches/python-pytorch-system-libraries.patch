@@ -5,10 +5,10 @@ httlib, ideep, miniz, nnpack, oneapi-dnnl, pocketfft, pthreadpool,
 qnnpack-pytorch, tensorpipe, valgrind and xnnpack packages.
 
 diff --git a/aten/src/ATen/CMakeLists.txt b/aten/src/ATen/CMakeLists.txt
-index 0087dd9..0235fa1 100644
+index 6d9152a4d0..97cb945722 100644
 --- a/aten/src/ATen/CMakeLists.txt
 +++ b/aten/src/ATen/CMakeLists.txt
-@@ -419,9 +419,9 @@ if(AT_NNPACK_ENABLED)
+@@ -414,9 +414,9 @@ if(AT_NNPACK_ENABLED)
    list(APPEND ATen_CPU_DEPENDENCY_LIBS nnpack) # cpuinfo is added below
  endif()
  
@@ -22,7 +22,7 @@ index 0087dd9..0235fa1 100644
  if(NOT CMAKE_SYSTEM_PROCESSOR MATCHES "^(s390x|ppc64le)$")
    list(APPEND ATen_CPU_DEPENDENCY_LIBS cpuinfo)
 diff --git a/caffe2/CMakeLists.txt b/caffe2/CMakeLists.txt
-index 89c31fa..e6d9ef1 100644
+index 9be7f3732f..111215dacc 100644
 --- a/caffe2/CMakeLists.txt
 +++ b/caffe2/CMakeLists.txt
 @@ -91,9 +91,6 @@ if(NOT MSVC AND USE_XNNPACK)
@@ -35,7 +35,7 @@ index 89c31fa..e6d9ef1 100644
    endif()
  endif()
  
-@@ -1075,7 +1072,6 @@ if(USE_XPU)
+@@ -1081,7 +1078,6 @@ if(USE_XPU)
  endif()
  
  if(NOT MSVC AND USE_XNNPACK)
@@ -43,17 +43,18 @@ index 89c31fa..e6d9ef1 100644
  endif()
  
  # ==========================================================
-@@ -1189,6 +1185,9 @@ endif()
+@@ -1195,8 +1191,8 @@ endif()
  target_include_directories(torch_cpu PRIVATE
    ${TORCH_ROOT}/third_party/cpp-httplib)
  
+-target_include_directories(torch_cpu PRIVATE
+-  ${TORCH_ROOT}/third_party/nlohmann/include)
 +find_package(httplib REQUIRED)
 +target_link_libraries(torch_cpu PUBLIC httplib::httplib)
-+
+ 
  install(DIRECTORY "${TORCH_SRC_DIR}/csrc"
    DESTINATION ${TORCH_INSTALL_INCLUDE_DIR}/torch
-   FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp")
-@@ -1417,6 +1416,7 @@ target_link_libraries(torch_cpu PUBLIC c10)
+@@ -1425,6 +1421,7 @@ target_link_libraries(torch_cpu PUBLIC c10)
  target_link_libraries(torch_cpu PUBLIC ${Caffe2_PUBLIC_DEPENDENCY_LIBS})
  target_link_libraries(torch_cpu PRIVATE ${Caffe2_DEPENDENCY_LIBS})
  target_link_libraries(torch_cpu PRIVATE ${Caffe2_DEPENDENCY_WHOLE_LINK_LIBS})
@@ -61,7 +62,7 @@ index 89c31fa..e6d9ef1 100644
  if(USE_MPI)
    target_link_libraries(torch_cpu PRIVATE MPI::MPI_CXX)
  endif()
-@@ -1694,7 +1694,7 @@ if(BUILD_STATIC_RUNTIME_BENCHMARK)
+@@ -1659,7 +1656,7 @@ if(BUILD_STATIC_RUNTIME_BENCHMARK)
    add_executable(static_runtime_bench "${STATIC_RUNTIME_BENCHMARK_SRCS}")
    add_executable(static_runtime_test "${STATIC_RUNTIME_TEST_SRCS}")
    target_link_libraries(static_runtime_bench torch_library benchmark)
@@ -70,7 +71,7 @@ index 89c31fa..e6d9ef1 100644
  endif()
  
  if(BUILD_MOBILE_BENCHMARK)
-@@ -1713,7 +1713,7 @@ if(BUILD_MOBILE_TEST)
+@@ -1678,7 +1675,7 @@ if(BUILD_MOBILE_TEST)
    foreach(test_src ${ATen_MOBILE_TEST_SRCS})
      get_filename_component(test_name ${test_src} NAME_WE)
      add_executable(${test_name} "${test_src}")
@@ -79,16 +80,16 @@ index 89c31fa..e6d9ef1 100644
      target_include_directories(${test_name} PRIVATE $<INSTALL_INTERFACE:include>)
      target_include_directories(${test_name} PRIVATE $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>)
      target_include_directories(${test_name} PRIVATE ${ATen_CPU_INCLUDE})
-@@ -1734,7 +1734,7 @@ if(BUILD_TEST)
+@@ -1699,7 +1696,7 @@ if(BUILD_TEST)
          if(NOT MSVC)
            add_executable(${test_name}_${CPU_CAPABILITY} "${test_src}" ../aten/src/ATen/native/quantized/AffineQuantizerBase.cpp)
            # TODO: Get rid of c10 dependency (which is only needed for the implementation of AT_ERROR)
--          target_link_libraries(${test_name}_${CPU_CAPABILITY} c10 sleef gtest_main)
-+          target_link_libraries(${test_name}_${CPU_CAPABILITY} c10 sleef gtest_main gtest)
+-          target_link_libraries(${test_name}_${CPU_CAPABILITY} c10 sleef gtest_main nlohmann)
++          target_link_libraries(${test_name}_${CPU_CAPABILITY} c10 sleef gtest_main gtest nlohmann)
            if(USE_FBGEMM)
              target_link_libraries(${test_name}_${CPU_CAPABILITY} fbgemm)
            endif()
-@@ -1748,7 +1748,7 @@ if(BUILD_TEST)
+@@ -1713,7 +1710,7 @@ if(BUILD_TEST)
            endif()
          else()
            add_executable(${test_name}_${CPU_CAPABILITY} "${test_src}")
@@ -97,7 +98,7 @@ index 89c31fa..e6d9ef1 100644
          endif()
          target_include_directories(${test_name}_${CPU_CAPABILITY} PRIVATE $<INSTALL_INTERFACE:include>)
          target_include_directories(${test_name}_${CPU_CAPABILITY} PRIVATE $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>)
-@@ -1765,7 +1765,7 @@ if(BUILD_TEST)
+@@ -1730,7 +1727,7 @@ if(BUILD_TEST)
    foreach(test_src ${Caffe2_CPU_TEST_SRCS})
      get_filename_component(test_name ${test_src} NAME_WE)
      add_executable(${test_name} "${test_src}")
@@ -106,7 +107,7 @@ index 89c31fa..e6d9ef1 100644
      if(NOT MSVC)
        target_link_libraries(${test_name} stdc++)
      endif()
-@@ -1845,7 +1845,7 @@ if(BUILD_TEST)
+@@ -1810,7 +1807,7 @@ if(BUILD_TEST)
      foreach(test_src ${Caffe2_VULKAN_TEST_SRCS})
        get_filename_component(test_name ${test_src} NAME_WE)
        add_executable(${test_name} "${test_src}")
@@ -116,7 +117,7 @@ index 89c31fa..e6d9ef1 100644
        target_include_directories(${test_name} PRIVATE ${Caffe2_CPU_INCLUDE})
        add_test(NAME ${test_name} COMMAND $<TARGET_FILE:${test_name}>)
 diff --git a/caffe2/serialize/CMakeLists.txt b/caffe2/serialize/CMakeLists.txt
-index 1552b59..67e1a9a 100644
+index 1552b59d0d..67e1a9a1a3 100644
 --- a/caffe2/serialize/CMakeLists.txt
 +++ b/caffe2/serialize/CMakeLists.txt
 @@ -2,7 +2,6 @@ file(GLOB tmp *_test.cc)
@@ -128,10 +129,10 @@ index 1552b59..67e1a9a 100644
    ${CMAKE_CURRENT_SOURCE_DIR}/istream_adapter.cc
    ${CMAKE_CURRENT_SOURCE_DIR}/file_adapter.cc
 diff --git a/cmake/Dependencies.cmake b/cmake/Dependencies.cmake
-index f1f2eb7..b4d2033 100644
+index e78305e0a8..5b3c3d7bf2 100644
 --- a/cmake/Dependencies.cmake
 +++ b/cmake/Dependencies.cmake
-@@ -263,7 +263,7 @@ endif()
+@@ -270,7 +270,7 @@ endif()
  # --- [ PocketFFT
  set(AT_POCKETFFT_ENABLED 0)
  if(NOT AT_MKL_ENABLED)
@@ -140,7 +141,7 @@ index f1f2eb7..b4d2033 100644
    if(NOT EXISTS "${POCKETFFT_INCLUDE_DIR}")
      message(FATAL_ERROR "pocketfft directory not found, expected ${POCKETFFT_INCLUDE_DIR}")
    elif(NOT EXISTS "${POCKETFFT_INCLUDE_DIR}/pocketfft_hdronly.h")
-@@ -458,15 +458,6 @@ if(USE_PYTORCH_QNNPACK)
+@@ -465,15 +465,6 @@ if(USE_PYTORCH_QNNPACK)
        set(PYTORCH_QNNPACK_BUILD_TESTS OFF CACHE BOOL "")
        set(PYTORCH_QNNPACK_BUILD_BENCHMARKS OFF CACHE BOOL "")
        set(PYTORCH_QNNPACK_LIBRARY_TYPE "static" CACHE STRING "")
@@ -156,7 +157,7 @@ index f1f2eb7..b4d2033 100644
  
        if(PYTORCH_QNNPACK_CUSTOM_THREADPOOL)
          target_compile_definitions(
-@@ -653,11 +644,6 @@ if(BUILD_TEST OR BUILD_MOBILE_BENCHMARK OR BUILD_MOBILE_TEST)
+@@ -660,11 +651,6 @@ if(BUILD_TEST OR BUILD_MOBILE_BENCHMARK OR BUILD_MOBILE_TEST)
    # this shouldn't be necessary anymore.
    get_property(INC_DIR_temp DIRECTORY PROPERTY INCLUDE_DIRECTORIES)
    set_property(DIRECTORY PROPERTY INCLUDE_DIRECTORIES "")
@@ -168,7 +169,7 @@ index f1f2eb7..b4d2033 100644
  
    # We will not need to test benchmark lib itself.
    set(BENCHMARK_ENABLE_TESTING OFF CACHE BOOL "Disable benchmark testing as we don't need it.")
-@@ -735,16 +721,6 @@ if(USE_FBGEMM)
+@@ -742,16 +728,6 @@ if(USE_FBGEMM)
      if(USE_ASAN)
        set(USE_SANITIZER "address,undefined" CACHE STRING "-fsanitize options for FBGEMM")
      endif()
@@ -185,7 +186,7 @@ index f1f2eb7..b4d2033 100644
    endif()
  
    if(USE_FBGEMM)
-@@ -812,7 +788,7 @@ if(NOT TARGET fp16 AND NOT USE_SYSTEM_FP16)
+@@ -819,7 +795,7 @@ if(NOT TARGET fp16 AND NOT USE_SYSTEM_FP16)
      "${FP16_SOURCE_DIR}"
      "${CONFU_DEPENDENCIES_BINARY_DIR}/FP16")
  elseif(NOT TARGET fp16 AND USE_SYSTEM_FP16)
@@ -194,32 +195,24 @@ index f1f2eb7..b4d2033 100644
    set_target_properties(fp16 PROPERTIES LINKER_LANGUAGE C)
  endif()
  list(APPEND Caffe2_DEPENDENCY_LIBS fp16)
-@@ -1159,7 +1135,6 @@ if(USE_DISTRIBUTED AND USE_TENSORPIPE)
+@@ -1161,7 +1137,6 @@ if(USE_DISTRIBUTED AND USE_TENSORPIPE)
  
      # Tensorpipe uses cuda_add_library
      torch_update_find_cuda_flags()
 -    add_subdirectory(${PROJECT_SOURCE_DIR}/third_party/tensorpipe)
  
      list(APPEND Caffe2_DEPENDENCY_LIBS tensorpipe)
-     if(USE_CUDA)
-@@ -1288,7 +1263,6 @@ if(CAFFE2_CMAKE_BUILDING_WITH_MAIN_REPO AND NOT INTERN_DISABLE_ONNX)
-       set_target_properties(onnx_proto PROPERTIES CXX_STANDARD 17)
-     endif()
-   endif()
--  add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/../third_party/foxi EXCLUDE_FROM_ALL)
- 
-   add_definitions(-DONNX_NAMESPACE=${ONNX_NAMESPACE})
-   if(NOT USE_SYSTEM_ONNX)
-@@ -1319,7 +1293,7 @@ if(CAFFE2_CMAKE_BUILDING_WITH_MAIN_REPO AND NOT INTERN_DISABLE_ONNX)
+     list(APPEND Caffe2_DEPENDENCY_LIBS nlohmann)
+@@ -1317,7 +1292,7 @@ if(CAFFE2_CMAKE_BUILDING_WITH_MAIN_REPO AND NOT INTERN_DISABLE_ONNX)
      endif()
      set_property(TARGET onnx_proto PROPERTY IMPORTED_LOCATION ${ONNX_PROTO_LIBRARY})
      message("-- Found onnx: ${ONNX_LIBRARY} ${ONNX_PROTO_LIBRARY}")
 -    list(APPEND Caffe2_DEPENDENCY_LIBS onnx_proto onnx)
 +    list(APPEND Caffe2_DEPENDENCY_LIBS onnx_proto onnx onnx_optimizer)
    endif()
-   include_directories(${FOXI_INCLUDE_DIRS})
-   list(APPEND Caffe2_DEPENDENCY_LIBS foxi_loader)
-@@ -1476,9 +1450,8 @@ if(NOT INTERN_BUILD_MOBILE)
+   # Recover the build shared libs option.
+   set(BUILD_SHARED_LIBS ${TEMP_BUILD_SHARED_LIBS})
+@@ -1465,9 +1440,8 @@ if(NOT INTERN_BUILD_MOBILE)
    endif()
    if(USE_MKLDNN)
      include(${CMAKE_CURRENT_LIST_DIR}/public/mkldnn.cmake)
@@ -230,7 +223,7 @@ index f1f2eb7..b4d2033 100644
      else()
        message(WARNING "MKLDNN could not be found.")
        caffe2_update_option(USE_MKLDNN OFF)
-@@ -1530,7 +1503,7 @@ endif()
+@@ -1519,7 +1493,7 @@ endif()
  #
  set(TEMP_BUILD_SHARED_LIBS ${BUILD_SHARED_LIBS})
  set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build shared libs" FORCE)
@@ -239,7 +232,7 @@ index f1f2eb7..b4d2033 100644
  
  # Disable compiler feature checks for `fmt`.
  #
-@@ -1539,7 +1512,6 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/third_party/fmt)
+@@ -1528,7 +1502,6 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/third_party/fmt)
  # CMAKE_CXX_FLAGS in ways that break feature checks. Since we already know
  # `fmt` is compatible with a superset of the compilers that PyTorch is, it
  # shouldn't be too bad to just disable the checks.
@@ -248,7 +241,7 @@ index f1f2eb7..b4d2033 100644
  list(APPEND Caffe2_DEPENDENCY_LIBS fmt::fmt-header-only)
  set(BUILD_SHARED_LIBS ${TEMP_BUILD_SHARED_LIBS} CACHE BOOL "Build shared libs" FORCE)
 diff --git a/cmake/External/nnpack.cmake b/cmake/External/nnpack.cmake
-index 9d5f064..c3624e5 100644
+index 9d5f0643ec..c3624e582a 100644
 --- a/cmake/External/nnpack.cmake
 +++ b/cmake/External/nnpack.cmake
 @@ -40,7 +40,7 @@ endif()
@@ -270,7 +263,7 @@ index 9d5f064..c3624e5 100644
 +set(NNPACK_FOUND TRUE)
 +set(USE_NNPACK ON)
 diff --git a/cmake/public/mkldnn.cmake b/cmake/public/mkldnn.cmake
-index 8793562..9f8fa3d 100644
+index 87935625f9..9f8fa3df81 100644
 --- a/cmake/public/mkldnn.cmake
 +++ b/cmake/public/mkldnn.cmake
 @@ -4,7 +4,7 @@ if(CPU_AARCH64)
@@ -289,10 +282,10 @@ index 8793562..9f8fa3d 100644
 -  ${MKLDNN_LIBRARIES})
 +  DNNL::dnnl)
 diff --git a/setup.py b/setup.py
-index 9ec41cd..1f505fe 100644
+index 2b0cfa99d7..2d76b0d035 100644
 --- a/setup.py
 +++ b/setup.py
-@@ -494,13 +494,9 @@ def build_deps():
+@@ -491,13 +491,9 @@ def build_deps():
      # Windows has very poor support for them.
      sym_files = [
          "tools/shared/_utils_internal.py",
@@ -307,15 +300,17 @@ index 9ec41cd..1f505fe 100644
      for sym_file, orig_file in zip(sym_files, orig_files):
          same = False
 diff --git a/test/cpp/c10d/CMakeLists.txt b/test/cpp/c10d/CMakeLists.txt
-index 5c89748..ef84c57 100644
+index 0874852517..58ad3e9d66 100644
 --- a/test/cpp/c10d/CMakeLists.txt
 +++ b/test/cpp/c10d/CMakeLists.txt
-@@ -16,14 +16,14 @@ function(c10d_add_test test_src)
+@@ -16,15 +16,15 @@ function(c10d_add_test test_src)
    add_test(NAME ${test_name} COMMAND $<TARGET_FILE:${test_name}>)
  endfunction()
  
+-c10d_add_test(BackoffTest.cpp torch_cpu gtest_main)
 -c10d_add_test(FileStoreTest.cpp torch_cpu gtest_main)
 -c10d_add_test(TCPStoreTest.cpp torch_cpu gtest_main)
++c10d_add_test(BackoffTest.cpp torch_cpu gtest_main gtest)
 +c10d_add_test(FileStoreTest.cpp torch_cpu gtest_main gtest)
 +c10d_add_test(TCPStoreTest.cpp torch_cpu gtest_main gtest)
  if(INSTALL_TEST)
@@ -328,7 +323,7 @@ index 5c89748..ef84c57 100644
    if(INSTALL_TEST)
      install(TARGETS HashStoreTest DESTINATION bin)
    endif()
-@@ -31,11 +31,11 @@ endif()
+@@ -32,11 +32,11 @@ endif()
  
  if(USE_CUDA)
    if(USE_GLOO AND USE_C10D_GLOO)
@@ -342,7 +337,7 @@ index 5c89748..ef84c57 100644
    endif()
    if(USE_NCCL AND USE_C10D_NCCL)
      # NCCL is a private dependency of libtorch, but the tests include some
-@@ -44,10 +44,10 @@ if(USE_CUDA)
+@@ -45,10 +45,10 @@ if(USE_CUDA)
      # a private dependency of the tests as well.
      c10d_add_test(
        ProcessGroupNCCLTest.cpp
@@ -355,7 +350,7 @@ index 5c89748..ef84c57 100644
      if(INSTALL_TEST)
        install(TARGETS ProcessGroupNCCLTest DESTINATION bin)
        install(TARGETS ProcessGroupNCCLErrorsTest DESTINATION bin)
-@@ -61,7 +61,7 @@ if(USE_CUDA)
+@@ -62,7 +62,7 @@ if(USE_CUDA)
      # a private dependency of the tests as well.
      c10d_add_test(
        ProcessGroupUCCTest.cpp
@@ -364,7 +359,7 @@ index 5c89748..ef84c57 100644
      if(INSTALL_TEST)
        install(TARGETS ProcessGroupUCCTest DESTINATION bin)
        install(TARGETS c10d_cuda_test DESTINATION lib)
-@@ -69,7 +69,7 @@ if(USE_CUDA)
+@@ -70,7 +70,7 @@ if(USE_CUDA)
    endif()
  else()
    if(USE_GLOO AND USE_C10D_GLOO)
@@ -374,7 +369,7 @@ index 5c89748..ef84c57 100644
  endif()
  
 diff --git a/test/cpp/tensorexpr/CMakeLists.txt b/test/cpp/tensorexpr/CMakeLists.txt
-index 179270c..72f5582 100644
+index 179270c4a4..72f5582e81 100644
 --- a/test/cpp/tensorexpr/CMakeLists.txt
 +++ b/test/cpp/tensorexpr/CMakeLists.txt
 @@ -51,7 +51,7 @@ target_include_directories(tutorial_tensorexpr PRIVATE ${ATen_CPU_INCLUDE})
@@ -387,14 +382,15 @@ index 179270c..72f5582 100644
  if(USE_CUDA)
    target_compile_definitions(test_tensorexpr PRIVATE USE_CUDA)
 diff --git a/torch/CMakeLists.txt b/torch/CMakeLists.txt
-index 10a44af..33e2df4 100644
+index c74b45431c..5b5d0919d0 100644
 --- a/torch/CMakeLists.txt
 +++ b/torch/CMakeLists.txt
-@@ -81,7 +81,6 @@ set(TORCH_PYTHON_LINK_LIBRARIES
+@@ -82,8 +82,6 @@ set(TORCH_PYTHON_LINK_LIBRARIES
      Python::Module
      pybind::pybind11
      opentelemetry::api
 -    httplib
+-    nlohmann
      shm
      fmt::fmt-header-only
      ATEN_CPU_FILES_GEN_LIB)

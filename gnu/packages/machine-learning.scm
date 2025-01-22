@@ -4670,7 +4670,7 @@ PyTorch.")
         (base32
          "0hdpkhcjry22fjx2zg2r48v7f4ljrclzj0li2pgk76kvyblfbyvm"))))))
 
-(define %python-pytorch-version "2.4.0")
+(define %python-pytorch-version "2.5.1")
 
 (define %python-pytorch-src
   (origin
@@ -4681,7 +4681,7 @@ PyTorch.")
     (file-name (git-file-name "python-pytorch" %python-pytorch-version))
     (sha256
      (base32
-      "18hdhzr12brj0b7ppyiscax0dbra30207qx0cckw78midfkcn7cn"))
+      "052cvagpmm9y7jspjpcyysx8yc5fhxnjl8rcz6nndis06v8dcj8s"))
     (patches (search-patches "python-pytorch-system-libraries.patch"
                              "python-pytorch-runpath.patch"
                              "python-pytorch-without-kineto.patch"
@@ -4827,6 +4827,14 @@ PyTorch.")
                  (string-append #$output "/lib/python"
                                 #$(version-major+minor (package-version python))
                                 "/site-packages")))))
+          ;; This entry point is broken, because it refers to a module that is
+          ;; (intentionally) not installed
+          ;; (https://github.com/pytorch/pytorch/pull/134729), which causes
+          ;; the 'sanity-check phase to fail.
+          (add-after 'unpack 'remove-fr-trace-script
+            (lambda _
+              (substitute* "setup.py"
+                (("entry_points\\[\"console_scripts\"\\]\\.append\\(") "("))))
           (add-before 'build 'use-system-libraries
             (lambda _
               (substitute* '("caffe2/serialize/crc.cc"
@@ -4864,7 +4872,10 @@ PyTorch.")
                           (or (%current-target-system)
                               (%current-system))
                           (package-transitive-supported-systems qnnpack)))
-                  (setenv "USE_QNNPACK" "0"))))
+                  (setenv "USE_QNNPACK" "0"))
+              (substitute* '("requirements.txt" "setup.py")
+                (("sympy==1\\.13\\.1")
+                 "sympy>=1.13.1"))))
           ;; PyTorch is still built with AVX2 and AVX-512 support selected at
           ;; runtime, but these dependencies require it (nnpack only for
           ;; x86_64).
@@ -4965,10 +4976,11 @@ PyTorch.")
       ;; Even only the core tests take a very long time to run.
       #:tests? #f))
     (native-inputs
-     (list cmake
+     (list cmake-minimal
            doxygen
            ideep-pytorch
            ninja
+           nlohmann-json
            pocketfft-cpp
            python-expecttest
            python-pytest-flakefinder
@@ -4988,7 +5000,6 @@ PyTorch.")
             eigen
             flatbuffers-next
             fmt
-            foxi
             fp16
             fxdiv
             gemmlowp
