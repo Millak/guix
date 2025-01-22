@@ -2620,6 +2620,8 @@ It is used to control the pointer with a joystick device.")
           (base32
             "0mvwxrnkq0lzhjr894p420zxffdn34nc2scinmp7qd1hikr51kkp"))))
     (build-system gnu-build-system)
+    ;; Linux is no longer supported since 2.0.0, use libinput or evdev instead.
+    (supported-systems '("i586-gnu" "x86_64-gnu"))
     (inputs (list xorg-server))
     (native-inputs (list pkg-config))
     (home-page "https://www.x.org/wiki/")
@@ -6222,7 +6224,6 @@ basic eye-candy effects.")
            xorg-server
            xf86-video-dummy
            xf86-input-mouse
-           xf86-input-keyboard
            xxhash
            python-pillow
            ;; Optional dependencies.
@@ -6288,7 +6289,6 @@ basic eye-candy effects.")
                 "\nSection \"Files\"\nModulePath \""
                 #$(this-package-input "xf86-video-dummy") "/lib/xorg/modules,"
                 #$(this-package-input "xf86-input-mouse") "/lib/xorg/modules,"
-                #$(this-package-input "xf86-input-keyboard") "/lib/xorg/modules,"
                 #$(this-package-input "xorg-server") "/lib/xorg/modules\"\n"
                 "EndSection\n\n"))
               (substitute* '("xpra/scripts/config.py"

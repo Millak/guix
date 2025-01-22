@@ -165,9 +165,7 @@
         ;; Libinput is the new thing and is recommended over evdev/synaptics:
         ;; <http://who-t.blogspot.fr/2015/01/xf86-input-libinput-compatibility-with.html>.
         xf86-input-libinput
-
         xf86-input-evdev
-        xf86-input-keyboard
         xf86-input-mouse))
 
 (define %default-xorg-fonts

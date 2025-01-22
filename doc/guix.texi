@@ -24104,7 +24104,7 @@ SLiM@.  Thus, the configuration of these display managers aggregates an
 @table @asis
 @item @code{modules} (default: @code{%default-xorg-modules})
 This is a list of @dfn{module packages} loaded by the Xorg
-server---e.g., @code{xf86-video-vesa}, @code{xf86-input-keyboard}, and so on.
+server---e.g., @code{xf86-video-vesa}, @code{xf86-input-libinput}, and so on.
 
 @item @code{fonts} (default: @code{%default-xorg-fonts})
 This is a list of font directories to add to the server's @dfn{font path}.
