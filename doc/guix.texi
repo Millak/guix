@@ -46645,8 +46645,9 @@ dotfiles/
 @end example
 
 For an informal specification please refer to the Stow manual
-(@pxref{Top,,, stow, Introduction}). This tree structure is installed following
-GNU Stow's logic to the home directory upon @command{guix home reconfigure}.
+(@pxref{Introduction,,, stow, The GNU Stow Manual}). This tree structure
+is installed following GNU Stow's logic to the home directory upon
+@command{guix home reconfigure}.
 
 A suitable configuration with a @code{'plain} layout could be:
 

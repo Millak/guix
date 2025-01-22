@@ -665,6 +665,9 @@ sqltutor	node	${GS}/sqltutor/manual/html_node/
 
 src-highlite	mono	${GS}/src-highlite/source-highlight.html
 
+stow		mono	${GS}/stow/manual/stow.html
+stow		node	${GS}/stow/manual/html_node/
+
 swbis		mono	${GS}/swbis/manual.html
 
 tar		mono	${GS}/tar/manual/tar.html
