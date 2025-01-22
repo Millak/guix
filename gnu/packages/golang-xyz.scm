@@ -27,7 +27,7 @@
 ;;; Copyright © 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
-;;; Copyright © 2021, 2023, 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2021, 2023-2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2022 (unmatched-parenthesis <paren@disroot.org>
 ;;; Copyright © 2022 Dhruvin Gandhi <contact@dhruvin.dev>
 ;;; Copyright © 2022 Dominic Martinez <dom@dominicm.dev>
@@ -858,6 +858,44 @@ be stripped.")
     (description
      "Package kong aims to support arbitrarily complex command-line structures
 with as little developer effort as possible.")
+    (license license:expat)))
+
+(define-public go-github-com-alecthomas-kong-hcl
+  (package
+    (name "go-github-com-alecthomas-kong-hcl")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/alecthomas/kong-hcl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0q383705kavn23ay4vzr662x9lsl2xc1mv5irhcy0cazjjc7jzp2"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/alecthomas/kong-hcl/v2
+            (delete-file-recursively "v2")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:test-flags #~(list "-skip" "TestHCL/FromResolver")
+      #:import-path "github.com/alecthomas/kong-hcl"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-alecthomas-kong
+           go-github-com-hashicorp-hcl
+           go-github-com-pkg-errors))
+    (home-page "https://github.com/alecthomas/kong-hcl")
+    (synopsis "Kong configuration loader for HCL")
+    (description
+     "This package implements functionality to map HCL or JSON fragment into
+Golang structs.")
     (license license:expat)))
 
 (define-public go-github-com-alecthomas-participle-v2
