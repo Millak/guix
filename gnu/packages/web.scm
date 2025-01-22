@@ -9936,38 +9936,58 @@ grepping the list.")
     (license license:expat)))
 
 (define-public libzim
-  (package
-    (name "libzim")
-    (version "9.3.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/openzim/libzim")
-                    (commit version)))
-              (sha256
-               (base32
-                "1il1vc1hs954s3vnwhr337165dxbykvrldrvbilp5jxbkmwqb60d"))
-              (file-name (git-file-name name version))))
-    (build-system meson-build-system)
-    (arguments
-     ;; TODO: Find out why tests fail.
-     '(#:tests? #f))
-    (inputs
-     (list icu4c
-           python-wrapper ; for libzim-compile-resources
-           xapian
-           xz
-           (list util-linux "lib")
-           (list zstd "lib")))
-    (native-inputs
-     (list pkg-config googletest))
-    (home-page "https://wiki.openzim.org/wiki/Main_Page")
-    (synopsis "Reference implementation of the ZIM specification")
-    (description "The openZIM project proposes offline storage solutions for
+  (let* ((testsuite-version "0.9.0")
+         (testsuite-file-name (git-file-name "zim-testing-suite"
+                                             testsuite-version)))
+    (package
+      (name "libzim")
+      (version "9.3.0")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url "https://github.com/openzim/libzim")
+                       (commit version)))
+                (sha256
+                 (base32
+                  "1il1vc1hs954s3vnwhr337165dxbykvrldrvbilp5jxbkmwqb60d"))
+                (file-name (git-file-name name version))))
+      (build-system meson-build-system)
+      (arguments
+       (list
+        #:configure-flags
+        #~(list
+           (string-append "-Dtest_data_dir="
+                          #+(this-package-native-input testsuite-file-name)))))
+      (inputs
+       (list icu4c
+             python-wrapper ; for libzim-compile-resources
+             xapian
+             xz
+             (list util-linux "lib")
+             (list zstd "lib")))
+      (native-inputs
+       (list pkg-config
+             googletest
+             ;; The testsuite is a pre-generated artifact that can be
+             ;; regenerated from the upstream repository, but it
+             ;; explicitely advises against it.   Not knowing better,
+             ;; not doing it for now.
+             (origin
+	       (method url-fetch)
+	       (uri (apply format #f "https://github.com/openzim/\
+	zim-testing-suite/releases/download/~a/zim-testing-suite-~a.tar.gz"
+	                   (make-list 2 "0.9.0")))
+	       (file-name "zim-testing-suite.tar.gz")
+	       (sha256
+	        (base32
+	         "175916xb24xrrgwhdcnsbmpzvddz7mynacm73595qias5ias94hi")))))
+      (home-page "https://wiki.openzim.org/wiki/Main_Page")
+      (synopsis "Reference implementation of the ZIM specification")
+      (description "The openZIM project proposes offline storage solutions for
 content coming from the Web.  The zimlib is the standard implementation of the
 ZIM specification.  It is a library which implements the read and write method
 for ZIM files.")
-    (license license:gpl2)))
+      (license license:gpl2))))
 
 (define-public kiwix-lib
   (package
