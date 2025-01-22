@@ -716,7 +716,7 @@ replacement for the @code{python-memcached} library.")
 (define-public go-github-com-couchbase-gomemcached
   (package
     (name "go-github-com-couchbase-gomemcached")
-    (version "0.1.4")
+    (version "0.3.2")
     (source
       (origin
         (method git-fetch)
@@ -725,11 +725,17 @@ replacement for the @code{python-memcached} library.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "10w74gc05x5naspls39sv2r92krrg31mk266w3lyqqwc0s3fxysl"))))
+         (base32 "132zjbr7d586gb1wqlnhg3vgyshq629z1wsskrpbmyypjfkq620c"))))
     (build-system go-build-system)
-    (arguments '(#:import-path "github.com/couchbase/gomemcached"))
+    (arguments
+     (list
+      #:import-path "github.com/couchbase/gomemcached"
+      #:test-flags #~(list "-skip" "TestEncodingResponse")
+      #:test-subdirs #~(list ".")))
     (native-inputs
      (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-pkg-errors))
     (home-page "https://github.com/couchbase/gomemcached")
     (synopsis "Memcached binary protocol toolkit for go")
     (description
