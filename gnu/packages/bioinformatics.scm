@@ -3720,7 +3720,8 @@ use-case, we encourage users to compose functions to achieve their goals.")
            ;;python-scikit-bio ;mutually recursive dependency
            python-scipy))
     (native-inputs
-     (list python-cython python-pytest python-pytest-cov))
+     (list python-cython python-pytest python-pytest-cov
+           python-wheel))
     (home-page "https://www.biom-format.org")
     (synopsis "Biological Observation Matrix (BIOM) format utilities")
     (description
