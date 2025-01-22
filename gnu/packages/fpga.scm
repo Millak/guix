@@ -554,7 +554,7 @@ automated testing of HDL code.")
 (define-public nvc
   (package
     (name "nvc")
-    (version "1.14.0")
+    (version "1.15.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -563,7 +563,7 @@ automated testing of HDL code.")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "1b71j8bps9zirvxhycrc9fhbr3f89si6h064xnly7gq06ggnv8n5"))))
+                "1bcilpdd6qg0vwvbwjb4rcs0j051sc53yalxsgz8r8gm123ck40j"))))
     (build-system gnu-build-system)
     (arguments
      `(#:out-of-source? #t
