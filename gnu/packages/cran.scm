@@ -38153,6 +38153,52 @@ range of object-specific analytical and tree-visualization functions found
 across a wide array of bioinformatic R packages.")
     (license license:gpl3)))
 
+(define-public r-phytools
+  (package
+    (name "r-phytools")
+    (version "2.4-4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "phytools" version))
+       (sha256
+        (base32 "1i25dlikdx9av5653ra2709sjm9fc3fsis1yfsb7zagivi408ph9"))))
+    (properties `((upstream-name . "phytools")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-ape
+                             r-clustergeneration
+                             r-coda
+                             r-combinat
+                             r-deoptim
+                             r-doparallel
+                             r-expm
+                             r-foreach
+                             r-maps
+                             r-mass
+                             r-mnormt
+                             r-nlme
+                             r-numderiv
+                             r-optimparallel
+                             r-phangorn
+                             r-scatterplot3d))
+    (home-page "https://github.com/liamrevell/phytools")
+    (synopsis "Phylogenetic tools for comparative biology")
+    (description
+     "This package offers extensive tools for phylogenetic analysis.  It
+focuses on phylogenetic comparative biology but also includes methods for
+visualizing, analyzing, manipulating, reading, writing, and inferring
+phylogenetic trees.  Functions for comparative biology include ancestral state
+reconstruction, model fitting, and phylogeny and trait data simulation.  A
+broad range of plotting methods includes mapping trait evolution on trees,
+projecting trees into phenotype space or geographic maps, and visualizing
+correlated speciation between trees.  Additional functions allow for reading,
+writing, analyzing, inferring, simulating, and manipulating phylogenetic trees
+and comparative data.  Examples include computing consensus trees, simulating
+trees and data under various models, and attaching species or clades to a tree
+either randomly or non-randomly.  This package provides numerous tools for
+tree manipulations and analyses that are valuable for phylogenetic research.")
+    (license license:gpl2+)))
+
 (define-public r-kmer
   (package
     (name "r-kmer")
