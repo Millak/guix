@@ -1558,7 +1558,7 @@ Any}.")
 (define-public go-github-com-coreos-go-oidc
   (package
     (name "go-github-com-coreos-go-oidc")
-    (version "2.2.1")
+    (version "2.3.0")
     (source
      (origin
        (method git-fetch)
@@ -1567,14 +1567,16 @@ Any}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "11m6slbpi33ynffml7812piq4anhjlf1qszjlsf26f5y7x3qh8n5"))))
+        (base32 "180wnxiim622v17xcnrjrg9g07mg4xizmlxxyrl9p42is0abi9c8"))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "github.com/coreos/go-oidc"))
+    (native-inputs
+     (list go-golang-org-x-net))
     (propagated-inputs
      (list go-github-com-pquerna-cachecontrol
            go-golang-org-x-oauth2
-           go-gopkg-in-square-go-jose-v2))
+           go-gopkg-in-go-jose-go-jose-v2))
     (home-page "https://github.com/coreos/go-oidc")
     (synopsis "OpenID Connect support for Go")
     (description
