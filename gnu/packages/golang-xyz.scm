@@ -704,7 +704,14 @@ http://tartarus.org/~martin/PorterStemmer/index.html.")
     (arguments
      `(#:import-path "github.com/alecthomas/chroma"))
     (native-inputs
-     (list go-github-com-dlclark-regexp2
+     (list go-github-com-alecthomas-kong
+           go-github-com-alecthomas-kong-hcl
+           go-github-com-dlclark-regexp2
+           go-github-com-gorilla-csrf
+           go-github-com-gorilla-handlers
+           go-github-com-gorilla-mux
+           go-github-com-mattn-go-colorable
+           go-github-com-mattn-go-isatty
            go-github-com-stretchr-testify))
     (home-page "https://github.com/alecthomas/chroma/")
     (synopsis "General purpose syntax highlighter in pure Go")
