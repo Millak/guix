@@ -55,11 +55,12 @@
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Ahmad Draidi <a.r.draidi@redscript.org>
 ;;; Copyright © 2023 Arnaud Lechevallier <arnaud.lechevallier@free.fr>
-;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
+;;; Copyright © 2023, 2024 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2023 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2023 chris <chris@bumblehead.com>
 ;;; Copyright © 2023, 2024 Luis Felipe López Acevedo <sirgazil@zoho.com>
 ;;; Copyright © 2024 Christina O'Donnell <cdo@mutix.org>
+;;; Copyright © 2025 Ashvith Shetty <ashvithshetty10@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1054,7 +1055,7 @@ for use at smaller text sizes")))
 (define-public font-gnu-unifont
   (package
     (name "font-gnu-unifont")
-    (version "15.1.05")
+    (version "16.0.02")
     (source
      (origin
        (method url-fetch)
@@ -1064,7 +1065,7 @@ for use at smaller text sizes")))
              (string-append "mirror://gnu/unifont/unifont-"
                             version "/unifont-" version ".tar.gz")))
        (sha256
-        (base32 "1yi33kxlgw7ds99za5bclh537sw8ggl94nrhhq7hwxaq8dgzaxfj"))
+        (base32 "0bd5mf3j7f0wggh9ss3a6rji62qwcfak37q6zb8lq9pjcf3yqa7i"))
        (snippet
         '(begin
            (use-modules (guix build utils))
@@ -1086,7 +1087,12 @@ for use at smaller text sizes")))
          (add-after 'unpack 'patch-source
            (lambda _
              (substitute* (find-files "." "Makefile")
-               (("/bin/sh -s") (string-append (which "sh") " -s")))))
+               (("/bin/sh\\b") (which "sh")))
+             ;; Skip thumbnail generation as it requires ImageMagick and the generated
+             ;; thumbnails will not be installed.
+             (substitute* "font/Makefile"
+               (("^(compiled-files:.+)thumbnails(.+)" _ pre post)
+                (string-append pre post)))))
          (replace 'install
           (lambda* (#:key make-flags outputs #:allow-other-keys)
             (let* ((ttf (string-append (assoc-ref outputs "out")
