@@ -27,7 +27,7 @@
 ;;; Copyright © 2024 David Pflug <david@pflug.io>
 ;;; Copyright © 2024 Timothee Mathieu <timothee.mathieu@inria.fr>
 ;;; Copyright © 2024 Spencer King <spencer.king@geneoscopy.com>
-;;; Copyright © 2024 David Elsing <david.elsing@posteo.net>
+;;; Copyright © 2024, 2025 David Elsing <david.elsing@posteo.net>
 ;;; Copyright © 2024 Andy Tai <atai@atai.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -1514,7 +1514,7 @@ in terms of new algorithms.")
 (define-public onnx
   (package
     (name "onnx")
-    (version "1.16.2")
+    (version "1.17.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1522,7 +1522,7 @@ in terms of new algorithms.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "0f5h204ksfz4ir3qq38ckxja1jfhf1vn5xzwrj83vkkbfjq6fv16"))
+                "1i6bh4z2xzz1maykr0xmrwfybm6i3g38vnx7hsls8hr58rdr30zn"))
               (file-name (git-file-name name version))
               (patches (search-patches
                         "onnx-shared-libraries.patch"
