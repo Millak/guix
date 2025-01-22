@@ -6,7 +6,7 @@
 ;;; Copyright © 2017 Thomas Danckaert <post@thomasdanckaert.be>
 ;;; Copyright © 2017, 2021 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2017 Kei Kebreau <kkebreau@posteo.net>
-;;; Copyright © 2017, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017, 2020, 2021, 2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2017 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2018 Mark H Weaver <mhw@netris.org>
@@ -1189,6 +1189,14 @@ interactive mode.")
                          (("= /etc")
                           (string-append "= $(PREFIX)/etc")))))
                    (delete 'check)
+                   #$@(if (this-package-native-input "ruby-asciidoctor")
+                          #~()
+                          ;; The 'build phase only builds the manpages.
+                          #~((delete 'build)
+                             (add-before 'install 'adjust-install-targets
+                               (lambda _
+                                 (substitute* "Makefile"
+                                   (("install-man ") ""))))))
                    (add-after 'install 'wrap-scripts
                      (lambda* (#:key inputs outputs #:allow-other-keys)
                        (define btrbk (search-input-file outputs "bin/btrbk"))
@@ -1212,7 +1220,10 @@ interactive mode.")
                                        "bin/find"
                                        "bin/mbuffer"
                                        "bin/ssh")))))))))
-    (native-inputs (list ruby-asciidoctor))
+    (native-inputs
+     (if (supported-package? ruby-asciidoctor)
+         (list ruby-asciidoctor)
+         '()))
     (inputs (list bash-minimal
                   btrfs-progs
                   coreutils
