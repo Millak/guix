@@ -555,7 +555,7 @@ automated testing of HDL code.")
 (define-public nvc
   (package
     (name "nvc")
-    (version "1.15.0")
+    (version "1.15.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -564,7 +564,7 @@ automated testing of HDL code.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1bcilpdd6qg0vwvbwjb4rcs0j051sc53yalxsgz8r8gm123ck40j"))))
+                "1hqkgwkvflha1fpch13byb8clwa97n6z1d9a2d34cqzsjrzkdx0k"))))
     (build-system gnu-build-system)
     (arguments
      (list #:out-of-source? #t
@@ -577,7 +577,7 @@ automated testing of HDL code.")
      (list automake
            autoconf
            flex
-           gnu-gettext
+           gettext-minimal
            libtool
            pkg-config
            which
