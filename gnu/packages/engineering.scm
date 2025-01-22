@@ -1744,6 +1744,14 @@ developed at MIT to model electromagnetic systems.")
                (base32
                 "0i37c9k6q1iglmzp9736rrgsnx7sw8xn3djqbbjw29zsyl3pf62c"))))
     (build-system gnu-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-shebang
+                 (lambda _
+                   (substitute* "bootstrap.sh"
+                     (("# !/bin/sh")
+                      (string-append "#!" (which "sh")))))))))
     (native-inputs
      (list autoconf
            automake
