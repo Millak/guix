@@ -15034,24 +15034,28 @@ syllables in a word.")
 (define-public python-sympy
   (package
     (name "python-sympy")
-    (version "1.11.1")
+    (version "1.13.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sympy" version))
        (sha256
-        (base32 "0n46x1rfy8c2a9za3yp2va5icigxj805f9fmiq8c1drwwvf808z3"))))
-    (build-system python-build-system)
+        (base32 "1nf4zrjjbnv47n6sl6x9blfyarski61vdjaz4ygb62hfag3d4zxj"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
+     '(#:phases
        (modify-phases %standard-phases
          (replace 'check
-           (lambda* (#:key outputs #:allow-other-keys)
-             (invoke
-               (or (which "python3") (which "python"))
-               "-c" "import sympy; sympy.test(\"/core\")"))))))
-    (propagated-inputs
-     (list python-mpmath))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (if tests?
+                 (invoke "python3" "-c"
+                         "import sympy; sympy.test(\"/core\")")))))))
+    (propagated-inputs (list python-mpmath))
+    (native-inputs
+     (list python-hypothesis
+           python-pytest
+           python-setuptools
+           python-wheel))
     (home-page "https://www.sympy.org/")
     (synopsis "Python library for symbolic mathematics")
     (description
