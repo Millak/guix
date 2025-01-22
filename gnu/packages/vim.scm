@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013 Cyril Roelandt <tipecaml@gmail.com>
-;;; Copyright © 2016-2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Marius Bakke <mbakke@fastmail.com>
@@ -87,7 +87,7 @@
 (define-public vim
   (package
     (name "vim")
-    (version "9.1.0889")
+    (version "9.1.1046")
     (source (origin
              (method git-fetch)
              (uri (git-reference
@@ -96,7 +96,7 @@
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "1ma8g9zqqbr7pkwkb9zl62n80av18cb7yswq51fciwq3gb2hww5m"))))
+               "0zfpqx0caczy0gq3xvbkv328z7xq76jbx52vhq8x8l6nqzpyjzbc"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
@@ -161,9 +161,12 @@
                 (string-append line "return\n")))
              (with-fluids ((%default-port-encoding #f))
                (substitute* "src/testdir/test_writefile.vim"
+                 ;; No setfattr in the build environment.
                  ((".*Test_write_with_xattr_support.*" line)
                   (string-append line "return\n"))))
-             (delete-file "runtime/syntax/testdir/input/sh_11.sh")))
+             ;; These two depend on full bash.
+             (delete-file "runtime/syntax/testdir/input/sh_11.sh")
+             (delete-file "runtime/syntax/testdir/input/sh_12.sh")))
          (add-before 'install 'fix-installman.sh
            (lambda _
              (substitute* "src/installman.sh"
