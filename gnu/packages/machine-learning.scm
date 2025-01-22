@@ -1092,6 +1092,46 @@ It currently houses implementations of
 ")
     (license license:expat))) ; MIT License
 
+(define-public python-pymanopt
+  (package
+    (name "python-pymanopt")
+    (version "2.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pymanopt" version))
+       (sha256
+        (base32 "1nm1yz5hbj1valqq23r8c1g9rhfdndfswlqv6xrnvc3f8fd95167"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; Tests require jax and tensorflow, which are optional.
+      #:tests? #false
+      #:phases
+      '(modify-phases %standard-phases
+         ;; This is probably a bad idea.  We don't have scipy 1.13 just yet.
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "pyproject.toml"
+               ((",!=1.12\\.\\*") "")))))))
+    (propagated-inputs (list python-numpy python-scipy))
+    (native-inputs (list python-autograd
+                         python-flake8
+                         python-flake8-bugbear
+                         python-isort
+                         python-matplotlib
+                         python-pytest
+                         python-pytest-cov
+                         python-setuptools
+                         python-setuptools-scm
+                         python-wheel))
+    (home-page "https://pymanopt.org/")
+    (synopsis "Toolbox for optimization on Riemannian manifolds")
+    (description
+     "This package is a toolbox for optimization on Riemannian manifolds with
+support for automatic differentiation.")
+    (license license:bsd-3)))
+
 (define-public python-ripser
   (package
     (name "python-ripser")
