@@ -1773,6 +1773,7 @@ extremely large and complex data collections.")
     (license (license:x11-style
               "https://www.hdfgroup.org/ftp/HDF5/current/src/unpacked/COPYING"))))
 
+;; When updating this package, please also update hdf-java.
 (define-public hdf5-1.10
   (package
     (inherit hdf5-1.8)
@@ -1835,131 +1836,97 @@ extremely large and complex data collections.")
   ;; Default version of HDF5.
   hdf5-1.10)
 
+;; Keep this in sync with the current hdf5 package.
 (define-public hdf-java
   (package
     (name "hdf-java")
-    (version "3.3.2")
+    (version "1.10.9")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append
-             "https://www.hdfgroup.org/ftp/HDF5/releases/HDF-JAVA/hdfjni-"
-             version "/src/CMake-hdfjava-" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/HDFGroup/hdf5")
+             (commit (string-append "hdf5-"
+                                    (string-map
+                                     (lambda (c) (if (char=? c #\.) #\_ c))
+                                     version)))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0m1gp2aspcblqzmpqbdpfp6giskws85ds6p5gz8sx7asyp7wznpr"))
+        (base32 "1sjdcnafvzsy99vqhybkps8rnwmxb6fsvmkw89wb2mrrp4vi5z9v"))
        (modules '((guix build utils)))
        (snippet     ; Make sure we don't use the bundled sources and binaries.
-        `(begin
-           (for-each delete-file
-                     (list "SZip.tar.gz" "ZLib.tar.gz" "JPEG8d.tar.gz"
-                           "HDF4.tar.gz" "HDF5.tar.gz"))
-           (delete-file-recursively ,(string-append "hdfjava-" version "/lib"))
-           #t))))
+        '(for-each delete-file
+                   (find-files "java/lib" "\\.jar$")))))
     (build-system gnu-build-system)
-    (native-inputs
-     `(("jdk" ,icedtea "jdk")
-       ("automake" ,automake) ; For up to date 'config.guess' and 'config.sub'.
-       ;; For tests:
-       ("hamcrest-core" ,java-hamcrest-core)
-       ("junit" ,java-junit)
-       ("slf4j-simple" ,java-slf4j-simple)))
-    (inputs
-     `(("hdf4" ,hdf4)
-       ("hdf5" ,hdf5-1.8)
-       ("zlib" ,zlib)
-       ("libjpeg" ,libjpeg-turbo)
-       ("slf4j-api" ,java-slf4j-api)))
     (arguments
-     `(#:configure-flags
-       (list (string-append "--target=" ,(or (%current-target-system) (%current-system)))
-             (string-append "--with-jdk=" (assoc-ref %build-inputs "jdk") "/include,"
-                            (assoc-ref %build-inputs "jdk") "/lib" )
-             (string-append "--with-hdf4=" (assoc-ref %build-inputs "hdf4") "/lib")
-             (string-append "--with-hdf5=" (assoc-ref %build-inputs "hdf5") "/lib"))
-
-       #:make-flags
-       (list (string-append "HDFLIB=" (assoc-ref %build-inputs "hdf4") "/lib")
-             (string-append "HDF5LIB=" (assoc-ref %build-inputs "hdf5") "/lib")
-             (string-append "ZLIB=" (search-input-file %build-inputs "/lib/libz.so"))
-             (string-append "JPEGLIB="
-                            (search-input-file %build-inputs "/lib/libjpeg.so"))
-             "LLEXT=so")
-
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'chdir-to-source
-           (lambda _ (chdir ,(string-append "hdfjava-" version)) #t))
-         (add-before 'configure 'patch-build
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (substitute* "configure"
-               (("COPT=\"") "COPT=\"-O2 ") ; CFLAGS is ignored in Makefiles
-               (("/bin/cat") (which "cat")))
-             ;; Set classpath for compilation
-             (substitute* '("hdf/hdf5lib/Makefile.in"
-                            "hdf/hdf5lib/exceptions/Makefile.in"
-                            "hdf/hdflib/Makefile.in")
-               (("\\$\\(TOP\\)/lib/slf4j-api-1\\.7\\.5\\.jar")
-                ;; 'slf4j-api-X.Y.Z.jar' is installed in a Maven-style
-                ;; directory, so use 'find-files' to find it.
-                (car (find-files (assoc-ref inputs "slf4j-api")
-                                 "^slf4j-api.*\\.jar$"))))
-             ;; Replace outdated config.sub and config.guess:
-             (with-directory-excursion "config"
-               (for-each (lambda (file)
-                           (install-file
-                            (search-input-file inputs
-                                               (string-append
-                                                "/share/automake-"
-                                                ,(version-major+minor (package-version automake))
-                                                "/" file))
-                            "."))
-                         '("config.sub" "config.guess")))
-
-             ;; Fix embedded version number
-             (let ((hdf5version (list ,@(string-split (package-version hdf5) #\.))))
-               (substitute* "hdf/hdf5lib/H5.java"
-                 (("1, 8, 19")
-                  (string-join hdf5version ", "))))
-
-             (mkdir-p (string-append (assoc-ref outputs "out")))
-             ;; Set classpath for tests
-             (let* ((build-dir (getcwd))
-                    (lib (string-append build-dir "/lib"))
-                    (jhdf (string-append lib "/jhdf.jar"))
-                    (jhdf5 (string-append lib "/jhdf5.jar"))
-                    (testjars
-                     (append
-                       (map (lambda (i)
-                              (car (find-files (assoc-ref inputs i)
-                                               (string-append "^" i
-                                                              ".*\\.jar$"))))
-                            '("slf4j-api" "slf4j-simple"))
-                       (list
-                         (car (find-files (assoc-ref inputs "junit") "jar$"))
-                         (car (find-files (assoc-ref inputs "hamcrest-core")
-                                          "jar$")))))
-                    (class-path
-                     (string-join `("." ,build-dir ,jhdf ,jhdf5 ,@testjars) ":")))
-
-               (substitute* '("test/hdf5lib/Makefile.in"
-                              "test/hdf5lib/junit.sh.in"
-                              "examples/runExample.sh.in")
-                 (("/usr/bin/test")
-                  (search-input-file inputs "/bin/test"))
-                 (("/usr/bin/uname")
-                  (search-input-file inputs "/bin/uname"))
-                 (("CLASSPATH=[^\n]*")
-                  (string-append "CLASSPATH=" class-path)))
-               (setenv "CLASSPATH" class-path))
-             #t))
-         (add-before 'check 'build-examples
-           (lambda _
-             (apply invoke `("javac"
-                             ,@(find-files "examples" ".*\\.java"))))))
-
-       #:parallel-build? #f
-
-       #:parallel-tests? #f ))
+     (list
+      #:configure-flags
+      #~(list "--enable-java"
+              "--disable-tools")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'unbundle
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((simple
+                     (search-input-file
+                      inputs "/lib/m2/org/slf4j/slf4j-simple/1.7.25/slf4j-simple-1.7.25.jar"))
+                    (api
+                     (search-input-file
+                      inputs "/lib/m2/org/slf4j/slf4j-api/1.7.25/slf4j-api-1.7.25.jar"))
+                    (junit
+                     (search-input-file
+                      inputs "/lib/m2/junit/junit/4.12/junit-4.12.jar"))
+                    (hamcrest
+                     (search-input-file
+                      inputs "/lib/m2/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar")))
+                (substitute* (append (find-files "java" "Makefile.am")
+                                     (find-files "java" "Makefile.in"))
+                  (("\\$\\(top_srcdir\\)/java/lib/ext/slf4j-simple-1.7.33.jar")
+                   simple)
+                  (("\\$\\(top_srcdir\\)/java/lib/slf4j-api-1.7.33.jar")
+                   api)
+                  (("\\$\\(top_srcdir\\)/java/lib/junit.jar")
+                   junit)
+                  (("\\$\\(top_srcdir\\)/java/lib/hamcrest-core.jar")
+                   hamcrest))
+                (substitute* '("java/test/junit.sh.in"
+                               "java/examples/datatypes/JavaDatatypeExample.sh.in"
+                               "java/examples/datasets/JavaDatasetExample.sh.in"
+                               "java/examples/intro/JavaIntroExample.sh.in"
+                               "java/examples/groups/JavaGroupExample.sh.in")
+                  (("^LIST_JAR_TESTFILES=\"" m)
+                   (string-append m hamcrest "\n"
+                                  junit "\n"
+                                  api "\n"
+                                  simple "\n"))
+                  (("^\\$HDFLIB_HOME/.*") "")
+                  (("\"\\$BLDLIBDIR\"/junit.jar")
+                   junit)
+                  (("\"\\$BLDLIBDIR\"/hamcrest-core.jar")
+                   hamcrest)
+                  (("\"\\$BLDLIBDIR\"/slf4j-api-1.7.33.jar")
+                   api)
+                  (("\"\\$BLDLIBDIR\"/slf4j-simple-1.7.33.jar")
+                   simple)
+                  (("/usr/bin/test")
+                   (search-input-file inputs "/bin/test"))
+                  (("/usr/bin/uname")
+                   (search-input-file inputs "/bin/uname")))
+                (substitute* (find-files "java/test/testfiles/" ".*\\.txt$")
+                  (("JUnit version 4.11")
+                   "JUnit version 4.12-SNAPSHOT"))))))))
+    (native-inputs
+     (list `(,icedtea "jdk")
+           ;; For tests:
+           java-hamcrest-core
+           java-junit
+           java-slf4j-simple))
+    (inputs
+     (list hdf4
+           hdf5
+           java-slf4j-api
+           libjpeg-turbo
+           zlib))
     (home-page "https://support.hdfgroup.org/products/java")
     (synopsis "Java interface for the HDF4 and HDF5 libraries")
     (description "Java HDF Interface (JHI) and Java HDF5 Interface (JHI5) use
