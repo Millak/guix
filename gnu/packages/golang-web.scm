@@ -8999,42 +8999,6 @@ metrics SDK.")
        ((#:tests? _ #t) #f)
        ((#:import-path _) "gopkg.in/jcmturner/rpc.v2")))))
 
-;; XXX: This repository has been archived by the owner on Feb 27, 2023. It is
-;; now read-only and it is DEPRECATED.
-(define-public go-gopkg-in-square-go-jose-v2
-  (package
-    (name "go-gopkg-in-square-go-jose-v2")
-    (version "2.6.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/square/go-jose")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1b1nhqxfmhzwrfk7pkvp2w3z3d0pf5ir00vizmy2d4xdbnldn70r"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      ;; XXX: We strongly encourage users of square/go-jose to migrate to v3
-      ;; of go-jose/go-jose. No support, security fixes or updates will be
-      ;; delivered to the v1/v2 branches in the Square repository.
-      #:tests? #f
-      #:import-path "gopkg.in/square/go-jose.v2"))
-    (propagated-inputs
-     (list go-golang-org-x-crypto))
-    (native-inputs
-     (list go-github-com-google-go-cmp
-           go-github-com-stretchr-testify))
-    (home-page "https://gopkg.in/square/go-jose.v2")
-    (synopsis "Implementation of JOSE standards (JWE, JWS, JWT) in Go")
-    (description
-     "This package aims to provide an implementation of the Javascript Object
-Signing and Encryption set of standards.  This includes support for JSON Web
-Encryption, JSON Web Signature, and JSON Web Token standards.")
-    (license license:asl2.0)))
-
 (define-public go-k8s-io-kube-openapi
   (package
     (name "go-k8s-io-kube-openapi")
