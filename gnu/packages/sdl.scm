@@ -16,6 +16,7 @@
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 Evgeny Pisemsky <mail@pisemsky.site>
 ;;; Copyright © 2023, 2024 dan <i@dan.games>
+;;; Copyright © 2025 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -150,17 +151,16 @@ hardware.")
   (package
     (inherit sdl2)
     (name "sdl3")
-    (version "3.1.8")
+    (version "3.2.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/libsdl-org/SDL")
-                    ;; Change to release- when 3.2.0 is released.
-                    (commit (string-append "preview-" version))))
+                    (commit (string-append "release-" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "13iw79lhr1hrs6yqfnnaacsgdwawlsavvbqnglifh4bx5zkxdyf9"))))
+                "11hrhvf74in0amdrmhcf11ll48pxqbidyqawr9hx2cgdwlzdjll1"))))
     (build-system cmake-build-system)
     (arguments
      (list
