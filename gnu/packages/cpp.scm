@@ -1246,7 +1246,7 @@ tools:
   ;; header
   (package
     (name "cpp-httplib")
-    (version "0.16.0")
+    (version "0.18.5")
     (source
      (origin
        (method git-fetch)
@@ -1254,7 +1254,7 @@ tools:
              (url "https://github.com/yhirose/cpp-httplib")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "0n4ribq7c6lqj0hn50pdvy7wml62fqbgrgysb038fq1qc6xyw3np"))
+        (base32 "1jc31n4xdrknal4i1dvf8j6j9kafpczi0w5gbbi89xlir9dgm5kp"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
@@ -1290,7 +1290,7 @@ tools:
                 "TooManyRedirectTest" "UrlWithSpace"
                 "YahooRedirectTest" "YahooRedirectTest")))))))
     (native-inputs
-     (list googletest python))
+     (list curl googletest python))
     (inputs
      (list brotli openssl zlib))
     (home-page "https://github.com/yhirose/cpp-httplib")
