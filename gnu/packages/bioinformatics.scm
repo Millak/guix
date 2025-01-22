@@ -24338,9 +24338,9 @@ for nanopore cDNA, native RNA, and PacBio sequencing reads.")
 functions.")
     (license license:bsd-3)))
 
-(define-public go-github-com-biogo-store-interval
+(define-public go-github-com-biogo-store
   (package
-    (name "go-github-com-biogo-store-interval")
+    (name "go-github-com-biogo-store")
     (version "0.0.0-20201120204734-aad293a2328f")
     (source (origin
               (method git-fetch)
@@ -24353,8 +24353,9 @@ functions.")
                 "0skizrp1j6vgbl0g1kmh73picagqlvwckaqs0gkl6rai5lckxj8a"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/biogo/store/interval"
-       #:unpack-path "github.com/biogo/store"))
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/biogo/store"))
     (propagated-inputs
      (list go-gopkg-in-check-v1
            go-github-com-kr-pretty))
@@ -24364,42 +24365,6 @@ functions.")
      "The @code{store} package provides a number of data store types that are
 useful for bioinformatic analysis.")
     (license license:bsd-3)))
-
-(define-public go-github-com-biogo-store-kdtree
-  (package
-    (inherit go-github-com-biogo-store-interval)
-    (name "go-github-com-biogo-store-kdtree")
-    (arguments
-     '(#:import-path "github.com/biogo/store/kdtree"
-       #:unpack-path "github.com/biogo/store"))
-    (propagated-inputs
-     (list go-gopkg-in-check-v1
-           go-github-com-kr-pretty))
-    (synopsis "kdtree store type for biogo")))
-
-(define-public go-github-com-biogo-store-llrb
-  (package
-    (inherit go-github-com-biogo-store-interval)
-    (name "go-github-com-biogo-store-llrb")
-    (arguments
-     '(#:import-path "github.com/biogo/store/llrb"
-       #:unpack-path "github.com/biogo/store"))
-    (propagated-inputs
-     (list go-gopkg-in-check-v1
-           go-github-com-kr-pretty))
-    (synopsis "LLRB store for biogo")))
-
-(define-public go-github-com-biogo-store-step
-  (package
-    (inherit go-github-com-biogo-store-interval)
-    (name "go-github-com-biogo-store-step")
-    (arguments
-     '(#:import-path "github.com/biogo/store/step"
-       #:unpack-path "github.com/biogo/store"))
-    (propagated-inputs
-     (list go-gopkg-in-check-v1
-           go-github-com-kr-pretty))
-    (synopsis "Step store for biogo")))
 
 (define-public go-github-com-biogo-hts
   (package
@@ -24451,10 +24416,7 @@ CSIv1, CSIv2 and FAI files.")
      '(#:import-path "github.com/biogo/biogo"))
     (propagated-inputs
      (list go-gopkg-in-check-v1
-           go-github-com-biogo-store-interval
-           go-github-com-biogo-store-kdtree
-           go-github-com-biogo-store-llrb
-           go-github-com-biogo-store-step
+           go-github-com-biogo-store
            go-github-com-biogo-hts
            go-github-com-biogo-graph))
     (home-page "https://github.com/biogo/biogo")
