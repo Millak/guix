@@ -153,7 +153,7 @@
 ;;; Copyright © 2024 Adriel Dumas--Jondeau <leirda@disroot.org>
 ;;; Copyright © 2024 Navid Afkhami <navid.afkhami@mdc-berlin.de>
 ;;; Copyright © 2024 TakeV <takev@disroot.org>
-;;; Copyright © 2024 David Elsing <david.elsing@posteo.net>
+;;; Copyright © 2024, 2025 David Elsing <david.elsing@posteo.net>
 ;;; Copyright © 2024 Rick Huijzer <ikbenrickhuyzer@gmail.com>
 ;;; Copyright © 2024 Peter Kannewitz <petre-vps@posteo.net>
 ;;; Copyright © 2024 Aaron Covrig <aaron.covrig.us@ieee.org>
@@ -29079,6 +29079,22 @@ C++ code.  Its goals and syntax are similar to the @code{Boost.Python}
 library: to minimize boilerplate code in traditional extension modules by
 inferring type information using compile-time introspection.")
     (license license:bsd-3)))
+
+;; Needed for python-optree
+(define-public pybind11-2.13
+  (package
+    (inherit pybind11)
+    (name "pybind11")
+    (version "2.13.6")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/pybind/pybind11")
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32
+                "1dbnki0pnky39kr04afd9ks597bzjc530zbk33jjss53nfvdvlj8"))
+              (file-name (git-file-name name version))))))
 
 ;; Needed for scipy
 (define-public pybind11-2.10
