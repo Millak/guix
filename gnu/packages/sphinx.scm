@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014 David Thompson <davet@gnu.org>
-;;; Copyright © 2015, 2017, 2019, 2020, 2021, 2023, 2024 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2017, 2019, 2020, 2021, 2023, 2024, 2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2016, 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2016-2019, 2022, 2023 Marius Bakke <marius@gnu.org>
@@ -1317,7 +1317,7 @@ executed during the Sphinx build process.")
 (define-public python-jupyter-sphinx
   (package
     (name "python-jupyter-sphinx")
-    (version "0.3.2")
+    (version "0.5.3")
     (source
      (origin
        ;; Pypi tarball doesn't contain tests.
@@ -1328,21 +1328,26 @@ executed during the Sphinx build process.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0bsb17vzbgvrzvh87pi88b157hyigdwnf1lhrgvan03i2300h15c"))))
-    (build-system python-build-system)
+         "1l8skhjir7j9jr4xdmwzj5lk5w31jn21ydpcxvgr6adgnrdbgy53"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
-       #:phases
-       #~(modify-phases %standard-phases
-           (replace 'check
-             (lambda* (#:key tests? #:allow-other-keys)
-               (when tests?
-                 (invoke "pytest")))))))
+      #:test-flags
+      #~(list "-W" "ignore::DeprecationWarning")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'ignore-warnings
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("\"error\",") "")))))))
     (propagated-inputs
      (list python-ipython python-ipywidgets python-nbconvert
            python-nbformat))
     (native-inputs
-     (list python-pytest python-sphinx))
+     (list python-hatchling
+           python-ipykernel
+           python-pytest
+           python-sphinx))
     (home-page "https://github.com/jupyter/jupyter-sphinx/")
     (synopsis "Jupyter Sphinx Extensions")
     (description
