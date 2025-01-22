@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2012 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2013, 2014 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2015-2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2022, 2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 José Miguel Sánchez García <jmi2k@openmailbox.org>
 ;;; Copyright © 2016 Carlo Zancanaro <carlo@zancanaro.id.au>
 ;;; Copyright © 2016 Rene Saavedra <rennes@openmailbox.org>
@@ -508,16 +508,16 @@ can load dynamic libraries.")
     (arguments
      (list
       #:install-source? #f
-      #:cargo-inputs `(("rust-getopts" ,rust-getopts-0.2)
-                       ("rust-libc" ,rust-libc-0.2)
-                       ("rust-emacs" ,rust-emacs-0.19)
-                       ("rust-serde" ,rust-serde-1)
-                       ("rust-serde-json" ,rust-serde-json-1)
-                       ("rust-serde-derive" ,rust-serde-derive-1)
-                       ("rust-stdweb" ,rust-stdweb-0.4)
-                       ("rust-unicode-segmentation" ,rust-unicode-segmentation-1)
-                       ("rust-unicode-width" ,rust-unicode-width-0.1)
-                       ("rust-winapi" ,rust-winapi-0.3))
+      #:cargo-inputs (list rust-getopts-0.2
+                           rust-libc-0.2
+                           rust-emacs-0.19
+                           rust-serde-1
+                           rust-serde-json-1
+                           rust-serde-derive-1
+                           rust-stdweb-0.4
+                           rust-unicode-segmentation-1
+                           rust-unicode-width-0.1
+                           rust-winapi-0.3)
       #:phases #~(modify-phases %standard-phases
                    (add-after 'install 'install-library
                      (lambda _
