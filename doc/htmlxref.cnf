@@ -715,6 +715,11 @@ latex2e		mono	${T}/latex2e.html
 tlbuild		mono	${T}/tlbuild.html
 web2c		mono	${T}/web2c.html
 
+ELPA     = https://elpa.gnu.org
+ELPA_DOC = ${ELPA}/packages/doc
+
+debbugs-ug	mono	${ELPA_DOC}/debbugs-ug.html
+
 
 # Local Variables:
 # eval: (add-hook 'write-file-functions 'time-stamp)
