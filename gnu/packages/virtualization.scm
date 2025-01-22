@@ -41,6 +41,7 @@
 ;;; Copyright © 2024, 2025 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2025 Karl Hallsby <karl@hallsby.com>
+;;; Copyright © 2025 Douglas Deslauriers <Douglas.Deslauriers@vector.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1895,6 +1896,9 @@ domains, their live performance and resource utilization statistics.")
                 (("/bin/fusermount3")
                  (string-append
                   #$(this-package-input "fuse") "/bin/fusermount3")))
+              (substitute* "lib/guestApp/guestApp.c"
+                (("/etc/vmware-tools")
+                 (string-append #$output "/etc/vmware-tools")))
               ;; XXX: This part might need more testing with shutdown and halt
               ;; commands provided by Shepherd.
               (substitute* "lib/system/systemLinux.c"
