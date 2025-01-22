@@ -19,7 +19,7 @@
 ;;; Copyright © 2016 Albin Söderqvist <albin@fripost.org>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
-;;; Copyright © 2016-2021, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2021, 2023-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Jan Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2016 Steve Webber <webber.sl@gmail.com>
 ;;; Copyright © 2017 Adonay "adfeno" Felipe Nogueira <https://libreplanet.org/wiki/User:Adfeno> <adfeno@hyperbola.info>
@@ -7701,29 +7701,37 @@ at their peak of economic growth and military prowess.
             (lambda _
               (substitute* (list "tests/Makefile" "tests/tapview")
                 (("/bin/echo") (which "echo")))))
-          (add-after 'build 'build-manpage
-            (lambda _
-              ;; This target is missing a dependency
-              (substitute* "Makefile"
-                ((".adoc.6:" line)
-                 (string-append line " advent.adoc")))
-              (invoke "make" ".adoc.6")))
-          ;; There is no install target.
-          (replace 'install
-            (lambda _
-              (let ((bin (string-append #$output "/bin"))
-                    (man (string-append #$output "/share/man/man6")))
-                (install-file "advent" bin)
-                (install-file "advent.6" man)))))))
+          #$@(if (this-package-native-input "ruby-asciidoctor")
+                 #~((add-after 'build 'build-manpage
+                      (lambda _
+                        ;; This target is missing a dependency
+                        (substitute* "Makefile"
+                          ((".adoc.6:" line)
+                           (string-append line " advent.adoc")))
+                        (invoke "make" ".adoc.6")))
+                    ;; There is no install target.
+                    (replace 'install
+                      (lambda _
+                        (let ((bin (string-append #$output "/bin"))
+                              (man (string-append #$output "/share/man/man6")))
+                          (install-file "advent" bin)
+                          (install-file "advent.6" man)))))
+                 #~((replace 'install
+                      (lambda _
+                        (let ((bin (string-append #$output "/bin")))
+                          (install-file "advent" bin)))))))))
     (native-inputs
-     (list asciidoc
-           cppcheck
-           libedit
-           pkg-config
-           python-pylint
-           python-pyyaml
-           python-wrapper
-           ruby-asciidoctor))
+     (append
+       (list asciidoc
+             cppcheck
+             libedit
+             pkg-config
+             python-pylint
+             python-pyyaml
+             python-wrapper)
+       (if (supported-package? ruby-asciidoctor)
+           (list ruby-asciidoctor)
+           '())))
     (home-page "https://gitlab.com/esr/open-adventure")
     (synopsis "Colossal Cave Adventure")
     (description
