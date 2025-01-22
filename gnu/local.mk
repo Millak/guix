@@ -64,7 +64,7 @@
 # Copyright © 2023, 2024 gemmaro <gemmaro.dev@gmail.com>
 # Copyright © 2023 Herman Rimm <herman@rimm.ee>
 # Copyright © 2023 Troy Figiel <troy@troyfigiel.com>
-# Copyright © 2024 David Elsing <david.elsing@posteo.net>
+# Copyright © 2024, 2025 David Elsing <david.elsing@posteo.net>
 # Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
 # Copyright © 2024 Fabio Natali <me@fabionatali.com>
 # Copyright © 2024 Noé Lopez <noelopez@free.fr>
@@ -2096,7 +2096,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-fixtures-remove-monkeypatch-test.patch	\
   %D%/packages/patches/python-hiredis-use-system-hiredis.patch	\
   %D%/packages/patches/python-online-judge-api-client-tests.patch \
-  %D%/packages/patches/python-optree-fix-32-bit.patch		\
   %D%/packages/patches/python-pdoc3-tests.patch			\
   %D%/packages/patches/python-peachpy-determinism.patch	\
   %D%/packages/patches/python-pep8-stdlib-tokenize-compat.patch \
