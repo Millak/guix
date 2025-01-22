@@ -1342,6 +1342,33 @@ gene regulations.")
 within this package are the 3000 bone marrow cells used for vignettes.")
       (license license:gpl3))))
 
+(define-public r-pizzarr
+  (let ((commit "7b3fd727a4ce7cb0fe8e443b971c5f63e18df991")
+        (revision "1"))
+    (package
+      (name "r-pizzarr")
+      (version (git-version "0.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/keller-mark/pizzarr")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0xwb7cl52nzwgh0xiz8cda27qy5q45cqna5k40fngwj4mrbfm383"))))
+      (properties `((upstream-name . "pizzarr")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-jsonlite r-memoise r-qs r-r6 r-stringr))
+      (native-inputs (list r-pbapply r-testthat r-vcr))
+      (home-page "https://github.com/keller-mark/pizzarr")
+      (synopsis "Slice into Zarr arrays in R")
+      (description
+       "This package provides an implementation of chunked, compressed,
+N-dimensional arrays for R, Zarr specification version 2 (2024)
+<doi:10.5281/zenodo.11320255>.")
+      (license license:expat))))
+
 (define-public r-rhtslib12
   (let ((commit "ee186daf04876969c7f31c16a0e0fda8e7c16a30")
         (revision "1"))
